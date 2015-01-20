@@ -117,7 +117,7 @@ public class GenericComponentVisualiser
 		AbstractGuiAudioComponent backComponent = guiComponentFactoryService.createBackGuiComponent( rackComponent );
 
 		Span cellSpan = auui.getCellSpan();
-		Dimension gridSize = GuiRackPanel.frontGridSize;
+		Dimension gridSize = GuiRackPanel.FRONT_GRID_SIZE;
 		int width = cellSpan.x * gridSize.width;
 		int height = cellSpan.y * gridSize.height;
 		Dimension componentSize = new Dimension( width, height );

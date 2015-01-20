@@ -27,12 +27,12 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 
 public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 {
-	public static int CARDINALITY_NOT_SET = -1;
+	public final static int CARDINALITY_NOT_SET = -1;
 	private MadInstance<?,?> madInstance = null;
 	private Set<FlattenedRenderJob> producerJobsWeWaitFor = new HashSet<FlattenedRenderJob>();
 	private Set<FlattenedRenderJob> consumerJobsWaitingForUs = new HashSet<FlattenedRenderJob>();
 	private int cardinality = CARDINALITY_NOT_SET;
-	
+
 	public FlattenedRenderJob( MadInstance<?,?> madInstance, Set<FlattenedRenderJob> producerJobsWeWaitFor )
 	{
 		this.madInstance = madInstance;
@@ -69,7 +69,8 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 	{
 		return consumerJobsWaitingForUs;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return madInstance.getInstanceName() + "(" + cardinality + ")";
@@ -78,6 +79,6 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 	public void addConsumerJobWaitingForUs( FlattenedRenderJob flatJob )
 	{
 		consumerJobsWaitingForUs.add(  flatJob  );
-		
+
 	}
 }

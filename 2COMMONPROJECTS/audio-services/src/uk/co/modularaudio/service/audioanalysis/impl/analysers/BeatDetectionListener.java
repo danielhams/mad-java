@@ -36,18 +36,18 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 public class BeatDetectionListener implements AnalysisListener
 {
 	private static Log log = LogFactory.getLog( BeatDetectionListener.class.getName() );
-	
+
 	private BeatDetectionRT rt = null;
 	private BeatDetector detector = null;
 //	private int numChannels = -1;
-	private int DEFAULT_WIN_LEN = 1024;
-	
+	private final int DEFAULT_WIN_LEN = 1024;
+
 	private int numStored = 0;
 	private float[] btIn = null;
 	private float[] btOut = null;
-	
+
 //	private long currentPosition = 0;
-	
+
 	public BeatDetectionListener()
 	{
 	}
@@ -80,12 +80,12 @@ public class BeatDetectionListener implements AnalysisListener
 			{
 //				log.debug("Filling data");
 				int numToFill = DEFAULT_WIN_LEN - numStored;
-				int numToStore = ( (numRead / 2) > numToFill ? numToFill : (numRead / 2) );
+				int numToStore = numRead / 2 > numToFill ? numToFill : numRead / 2;
 //				System.arraycopy( data, dataLength - numRead, btIn, numStored, numToStore );
 				// Only push in every other sample - quick hack to get around multi-channel stuff
 				for( int i = 0 ; i < numToStore ; i++ )
 				{
-					int dataIndex = (dataLength - numRead) + (i * 2);
+					int dataIndex = dataLength - numRead + (i * 2);
 					int outputIndex = numStored + i;
 					btIn[ outputIndex] = data[ dataIndex ];
 				}
@@ -103,31 +103,31 @@ public class BeatDetectionListener implements AnalysisListener
 				storeBpmAndConfidence();
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void end()
 	{
 		storeBpmAndConfidence();
-		
+
 		debugBpmResults();
 	}
-	
+
 	private void debugBpmResults()
 	{
 		while( bpmResults.size() > 50 )
 		{
 			bpmResults.remove( bpmResults.size() - 1 );
 		}
-		
+
 		Collections.sort( bpmResults );
 		for( BpmResult bpmResult : bpmResults )
 		{
 			log.debug("Bpm Result: " + bpmResult.toString());
 		}
 	}
-	
+
 	private List<BpmResult> bpmResults = new ArrayList<BpmResult>();
 
 	private void storeBpmAndConfidence()
@@ -146,13 +146,13 @@ public class BeatDetectionListener implements AnalysisListener
 					result.confidence += origConfidence;
 				}
 			}
-			
+
 			if( !didCum )
 			{
 				BpmResult newResult = new BpmResult();
 				newResult.bpm = detectedBpm;
 				newResult.confidence = origConfidence;
-				
+
 				bpmResults.add( newResult );
 			}
 			Collections.sort( bpmResults );
@@ -170,7 +170,7 @@ public class BeatDetectionListener implements AnalysisListener
 			long[] detectedBeatPositions = new long[0];
 			analysedData.setDetectedBeatPositions( detectedBeatPositions );
 		}
-		
+
 	}
 
 	private class BpmResult implements Comparable<BpmResult>
@@ -194,10 +194,11 @@ public class BeatDetectionListener implements AnalysisListener
 				return 0;
 			}
 		}
-		
+
+		@Override
 		public String toString()
 		{
-			return("Bpm (" + bpm + ") Confidence (" + confidence + ")");
+			return "Bpm (" + bpm + ") Confidence (" + confidence + ")";
 		}
 	}
 }

@@ -38,12 +38,12 @@ public class DndTargetRegionImageGenerator extends JPanel
 	
 	private static final long serialVersionUID = 6183543013092757291L;
 	
-	private static final float strongChannelValue = 1.0f;
+	private static final float STRONG_CHANNEL_VALUE = 1.0f;
 
-	private static final float weakChannelValue = 0.1f;
+	private static final float WEAK_CHANNEL_VALUE = 0.1f;
 
-	private static final Color VALID_REGION_HINT_COLOUR = new Color( weakChannelValue, strongChannelValue, weakChannelValue );
-	private static final Color INVALID_REGION_HINT_COLOUR = new Color( strongChannelValue, weakChannelValue, weakChannelValue );
+	private static final Color VALID_REGION_HINT_COLOUR = new Color( WEAK_CHANNEL_VALUE, STRONG_CHANNEL_VALUE, WEAK_CHANNEL_VALUE );
+	private static final Color INVALID_REGION_HINT_COLOUR = new Color( STRONG_CHANNEL_VALUE, WEAK_CHANNEL_VALUE, WEAK_CHANNEL_VALUE );
 	private static final Color SOURCE_REGION_HINT_COLOUR = Color.ORANGE;
 
 	private RegionHintType regionType = RegionHintType.SOURCE;

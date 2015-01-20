@@ -39,43 +39,43 @@ public class DCTrapMadDefinition extends AbstractNonConfigurableMadDefinition<DC
 	public final static int PRODUCER_OUT_WAVE = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	private final static String definitionId = "dc_trap";
+	public final static String DEFINITION_ID = "dc_trap";
 
-	private final static String userVisibleName = "DC Trap";
+	private final static String USER_VISIBLE_NAME = "DC Trap";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "dc_trap";
-	private final static String classificationName = "DC Trap";
-	private final static String classificationDescription = "A trap to eliminate DC offset";
+	private final static String CLASSIFICATION_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASSIFICATION_ID = "dc_trap";
+	private final static String CLASSIFICATION_NAME = "DC Trap";
+	private final static String CLASSIFICATION_DESC = "A trap to eliminate DC offset";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave",
+	private final static String[] CHANNEL_NAMES = new String[] { "Input Wave",
 		"Output Wave"};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHANNEL_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHANNEL_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHANNEL_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public DCTrapMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public DCTrapMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService mcs ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( mcs.findGroupById( CLASSIFICATION_GROUP ),
+						CLASSIFICATION_ID,
+						CLASSIFICATION_NAME,
+						CLASSIFICATION_DESC,
 						ReleaseState.RELEASED ),
 				new MadNullLocklessQueueBridge<DCTrapMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHANNEL_NAMES,
+				CHANNEL_TYPES,
+				CHANNEL_DIRS,
+				CHANNEL_POSI );
 
 	}
 }

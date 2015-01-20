@@ -63,12 +63,12 @@ import uk.co.modularaudio.util.tuple.TwoTuple;
 public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
 {
 	private static Log log = LogFactory.getLog( JNAJackAppRenderingIO.class.getName() );
-	
+
 //	private final Jack jack;
 	private final JackClient client;
-	
+
 //	private JackLatencyRange latencyRange = new JackLatencyRange();
-	
+
 	private int numProducerAudioPorts  = -1;
 	private JackPort[] producerAudioPorts = null;
 	private int numConsumerAudioPorts  = -1;
@@ -77,19 +77,19 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 	private JackPort[] producerMidiPorts = null;
 	private int numConsumerMidiPorts  = -1;
 	private JackPort[] consumerMidiPorts = null;
-	
+
 	private MadChannelBuffer emptyFloatBuffer;
 //	private MadChannelBuffer emptyNoteBuffer;
-	
+
 	private JNAJackMIDIMessage jnaJackMidiMessage = new JNAJackMIDIMessage();
 	private JackMidi.Event jme = new JackMidi.Event();
-	
+
 	private MidiToHardwareMidiNoteRingDecoder midiToEventRingDecoder = null;
 	private LocklessHardwareMidiNoteRingBuffer noteEventRing = null;
-	
+
 	private HardwareMidiNoteEvent[] tmpNoteEventArray;
 	private int tmpNoteEventArrayLength = -1;
-	
+
 	public JNAJackAppRenderingIO( AppRenderingGraphService appRenderingGraphService,
 			TimingService timingService,
 			HardwareIOConfiguration hardwareConfiguration,
@@ -113,11 +113,11 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 			int sampleRate = client.getSampleRate();
 			log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")");
 			DataRate dataRate = DataRate.fromFrequency(sampleRate);
-			
+
 			client.setProcessCallback( this );
 			client.setXrunCallback(this);
 			client.onShutdown( this );
-			
+
 			// Need to register the various ports for audio/midi channels
 			AudioHardwareDevice phs = hardwareConfiguration.getProducerAudioDevice();
 			if( phs != null )
@@ -131,7 +131,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					producerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
 				}
 			}
-			
+
 			MidiHardwareDevice pmd = hardwareConfiguration.getProducerMidiDevice();
 			if( pmd != null )
 			{
@@ -141,7 +141,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 				JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
 				producerMidiPorts[0] = client.registerPort( portName, JackPortType.MIDI, portFlags );
 			}
-			
+
 			AudioHardwareDevice chs = hardwareConfiguration.getConsumerAudioDevice();
 			if( chs != null )
 			{
@@ -154,7 +154,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					consumerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
 				}
 			}
-			
+
 			MidiHardwareDevice cmd = hardwareConfiguration.getConsumerMidiDevice();
 			if( cmd != null )
 			{
@@ -164,7 +164,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 				JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
 				consumerMidiPorts[0] = client.registerPort( portName, JackPortType.MIDI, portFlags );
 			}
-			
+
 			// Assume 2 periods of buffer length in jack
 			int sampleFramesOutputLatency = bufferSize * 2;
 			long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength(sampleRate, sampleFramesOutputLatency );
@@ -174,24 +174,24 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					bufferSize,
 					hardwareConfiguration.getFps(),
 					nanosOutputLatency );
-					
+
 			HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(dataRate, bufferSize);
 			HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(oneChannelSetting, nanosOutputLatency, sampleFramesOutputLatency);
-			
+
 			emptyFloatBuffer = new MadChannelBuffer( MadChannelType.AUDIO,  bufferSize );
 //			emptyNoteBuffer = new MadChannelBuffer( MadChannelType.NOTE, dcs.getNoteChannelSetting().getChannelBufferLength() );
-			
+
 			tmpNoteEventArrayLength = dcs.getNoteChannelSetting().getChannelBufferLength();
 			noteEventRing = new LocklessHardwareMidiNoteRingBuffer( tmpNoteEventArrayLength );
 			midiToEventRingDecoder = new MidiToHardwareMidiNoteRingDecoder( noteEventRing );
-			
+
 			tmpNoteEventArray = new HardwareMidiNoteEvent[ tmpNoteEventArrayLength ];
 			for( int i = 0 ; i < tmpNoteEventArrayLength ; ++i )
 			{
 				tmpNoteEventArray[ i ] = new HardwareMidiNoteEvent();
 				tmpNoteEventArray[ i ].eventType = MadChannelNoteEventType.EMPTY;
 			}
-			
+
 			return new TwoTuple<HardwareIOChannelSettings, MadTimingParameters>( dcs,  dtp );
 		}
 		catch( Exception e )
@@ -270,7 +270,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 //	{
 //		return inNs / 1000000;
 //	}
-//	
+//
 //	private long usToMs( long inUs )
 //	{
 //		return inUs / 1000;
@@ -297,7 +297,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 			throw new RuntimeException( e );
 		}
 		boolean localShouldRecordPeriods = shouldRecordPeriods;
-		
+
 		if( localShouldRecordPeriods )
 		{
 			numPeriodsRecorded++;
@@ -305,25 +305,25 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 //		log.debug("Jack client process called with " + numFrames + " frames");
 
 		masterInBuffersResetOrCopy( numFrames, periodStartFrameTime );
-		
+
 		int numConsumersUsed = (masterOutBuffers.numAudioBuffers < numConsumerAudioPorts ? masterOutBuffers.numAudioBuffers : numConsumerAudioPorts );
 //		boolean setDestinationBuffers = masterOutBuffersTryPointerMoves(numConsumersUsed);
-		
+
 		// Now call the graph processing on all of that
 		RealtimeMethodReturnCodeEnum rc = doClockSourceProcessing( numFrames, periodStartFrameTime );
-		
+
 		if( rc != RealtimeMethodReturnCodeEnum.SUCCESS )
 		{
 			return false;
 		}
-		
+
 		// Now if we didn't reset the buffers, do the necessary copies
 //		if( !setDestinationBuffers )
 //		{
 			masterOutBuffersCopyOver( numFrames, numConsumersUsed);
 //		}
 		// Need to handle midi here, too
-		
+
 		return true;
 	}
 
@@ -375,12 +375,12 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					else
 					{
 						jme.read( jjmmb );
-						
+
 						long jackMidiEventTime = jme.time();
 //						log.debug("Within process() call at time " + periodStartFrameTime + " midi event with time " + jackMidiEventTime );
-						
+
 						long timestamp = periodStartFrameTime + jackMidiEventTime;
-						
+
 						midiToEventRingDecoder.decodeMessage( jnaJackMidiMessage.getCommand(),
 								jnaJackMidiMessage.getChannel(),
 								jnaJackMidiMessage.getData1(),
@@ -402,13 +402,13 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 						0,
 						tmpNoteEventArrayLength,
 						endCandidateFrameTime );
-						
+
 				for( int n = 0 ; n < numRead ; ++n )
 				{
 					HardwareMidiNoteEvent midiEvent = tmpNoteEventArray[n];
 					int eventMidiChannel = midiEvent.channel;
 					long eventFrameTime = midiEvent.eventFrameTime;
-					
+
 					if( eventMidiChannel <= masterInBuffers.numMidiBuffers )
 					{
 						MadChannelBuffer midiChannelBuffer = masterInBuffers.noteBuffers[ eventMidiChannel ];
@@ -416,7 +416,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 						int sampleIndex = frameTimeToIndex( startCandidateFrameTime,
 								endCandidateFrameTime,
 								eventFrameTime );
-								
+
 						noteEvent.set( midiEvent.channel,
 								sampleIndex,
 								midiEvent.eventType,
@@ -477,10 +477,10 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 	private int frameTimeToIndex( long sft, long eft, long eventFrameTime )
 	{
 		long startDiff = eventFrameTime - sft;
-		boolean eventBefore = (startDiff < 0);
+		boolean eventBefore = startDiff < 0;
 		long endDiff = eventFrameTime - eft;
-		boolean eventAfter = (endDiff > 0 );
-		
+		boolean eventAfter = endDiff > 0;
+
 		if( eventBefore )
 		{
 			return 0;

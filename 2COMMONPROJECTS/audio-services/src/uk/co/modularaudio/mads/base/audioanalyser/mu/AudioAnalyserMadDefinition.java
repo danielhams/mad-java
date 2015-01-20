@@ -39,11 +39,11 @@ public class AudioAnalyserMadDefinition extends AbstractNonConfigurableMadDefini
 
 	public static final String DEFINITION_ID = "audio_analyser";
 
-	private final static String userVisibleName = "Audio Analyser";
+	private final static String USER_VISIBLE_NAME = "Audio Analyser";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String classificationName = "Audio Analyser";
-	private final static String classificationDescription = "The Audio Analyser";
+	private final static String CLASSIFICATION_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
+	private final static String CLASSIFICATION_NAME = "Audio Analyser";
+	private final static String CLASSIFICATION_DESC = "The Audio Analyser";
 
 	// These must match the channel indexes given above
 	private final static String[] channelNames = new String[] {
@@ -65,11 +65,11 @@ public class AudioAnalyserMadDefinition extends AbstractNonConfigurableMadDefini
 	public AudioAnalyserMadDefinition( BaseComponentsCreationContext creationContext,
 			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASSIFICATION_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASSIFICATION_NAME,
+						CLASSIFICATION_DESC,
 						ReleaseState.ALPHA ),
 				new AudioAnalyserIOQueueBridge(),
 				NUM_CHANNELS,

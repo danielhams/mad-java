@@ -41,54 +41,47 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 {
 //	private static Log log = LogFactory.getLog( DCTrapMadInstance.class.getName() );
 
-	private int sampleRate = -1;
+	private transient DcTrapFilter dcFilter;
 
-	private DcTrapFilter dcFilter;
-
-	public DCTrapMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			DCTrapMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public DCTrapMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final DCTrapMadDefinition definition,
+			final Map<MadParameterDefinition, String> params,
+			final MadChannelConfiguration channels )
 	{
-		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		super( instanceName, definition, params, channels );
 	}
 
 	@Override
 	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			dcFilter = new DcTrapFilter( sampleRate );
-		}
-		catch (Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		dcFilter = new DcTrapFilter( sampleRate );
 	}
 
 	@Override
 	public void stop() throws MadProcessingException
 	{
+		// We don't do anything special on stop
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long startFrameTime,
+			final MadChannelConnectedFlags connectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
 	{
-		boolean inWaveConnected = channelConnectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE );
-		MadChannelBuffer inWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE ];
-		float[] inWaveFloats = (inWaveConnected ? inWaveCb.floatBuffer : null );
+		final boolean inWaveConnected = connectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE );
+		final MadChannelBuffer inWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE ];
+		final float[] inWaveFloats = inWaveCb.floatBuffer;
 
-		boolean outWaveConnected = channelConnectedFlags.get( DCTrapMadDefinition.PRODUCER_OUT_WAVE );
-		MadChannelBuffer outWaveCb = channelBuffers[ DCTrapMadDefinition.PRODUCER_OUT_WAVE ];
-		float[] outWaveFloats = (outWaveConnected ? outWaveCb.floatBuffer : null );
+		final boolean outWaveConnected = connectedFlags.get( DCTrapMadDefinition.PRODUCER_OUT_WAVE );
+		final MadChannelBuffer outWaveCb = channelBuffers[ DCTrapMadDefinition.PRODUCER_OUT_WAVE ];
+		final float[] outWaveFloats = outWaveCb.floatBuffer;
 
 		// Now mix them together with the precomputed amps
 		if( outWaveConnected )

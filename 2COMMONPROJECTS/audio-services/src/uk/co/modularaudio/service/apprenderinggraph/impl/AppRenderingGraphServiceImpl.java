@@ -90,27 +90,27 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	{
 	}
 
-	public void setComponentService( MadComponentService componentService )
+	public void setComponentService( final MadComponentService componentService )
 	{
 		this.componentService = componentService;
 	}
 
-	public void setGraphService( MadGraphService graphService )
+	public void setGraphService( final MadGraphService graphService )
 	{
 		this.graphService = graphService;
 	}
 
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}
 
-	public void setRenderingService( RenderingService renderingService )
+	public void setRenderingService( final RenderingService renderingService )
 	{
 		this.renderingService = renderingService;
 	}
 
-	public void setTimingService( TimingService timingService )
+	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
 	}
@@ -146,7 +146,7 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	}
 
 	@Override
-	public void destroyAppRenderingGraph( AppRenderingGraph graphToDestroy )
+	public void destroyAppRenderingGraph( final AppRenderingGraph graphToDestroy )
 		throws DatastoreException
 	{
 		// Don't need to do anything, the GC will take care of it

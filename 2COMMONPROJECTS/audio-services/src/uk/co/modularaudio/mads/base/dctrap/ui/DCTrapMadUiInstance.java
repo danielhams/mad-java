@@ -26,8 +26,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEve
 
 public class DCTrapMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<DCTrapMadDefinition, DCTrapMadInstance>
 {
-	public DCTrapMadUiInstance( DCTrapMadInstance instance,
-			DCTrapMadUiDefinition uiDefinition )
+	public DCTrapMadUiInstance( final DCTrapMadInstance instance,
+			final DCTrapMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

@@ -33,26 +33,26 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 public abstract class GuiChannelPlug extends JPanel implements GuiPlugImageCreator
 {
 //	private static Log log = LogFactory.getLog( GuiChannelPlug.class.getName() );
-	
+
 	private static final long serialVersionUID = -9176621611479002996L;
 
 	protected final static boolean DRAWN_PLUGS = true;
-	
+
 	protected MadUiChannelInstance uiChannelInstance = null;
-	
+
 	protected Point center = null;
-	
+
 	protected static final int PLUG_DIAMETER = 10;
 	protected static final int SOCKET_DIAMETER = 10;
-	
-	protected Color PLUG_INSIDE_COLOR = Color.DARK_GRAY;
-	protected Color PLUG_OUTLINE_COLOR = Color.LIGHT_GRAY;
-	
+
+	protected final Color PLUG_INSIDE_COLOR = Color.DARK_GRAY;
+	protected final Color PLUG_OUTLINE_COLOR = Color.LIGHT_GRAY;
+
 	protected Rectangle plugBounds = null;
 	protected BufferedImage plugImage = null;
-	
+
 	protected static GuiPlugImageCache plugImageCache = new GuiPlugImageCache();
-	
+
 	public GuiChannelPlug( MadUiChannelInstance sacd )
 	{
 		this.setOpaque( false );
@@ -63,7 +63,8 @@ public abstract class GuiChannelPlug extends JPanel implements GuiPlugImageCreat
 		plugBounds = new Rectangle( startX, startY, SOCKET_DIAMETER + 3, SOCKET_DIAMETER + 3);
 		this.setBounds( plugBounds );
 	}
-	
+
+	@Override
 	public abstract void paint( Graphics g );
 
 	public MadUiChannelInstance getUiChannelInstance()

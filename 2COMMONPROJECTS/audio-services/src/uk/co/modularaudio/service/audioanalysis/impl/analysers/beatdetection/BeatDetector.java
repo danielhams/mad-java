@@ -28,13 +28,13 @@ import uk.co.modularaudio.util.audio.fft.FftUtils;
 public class BeatDetector
 {
 //	private static Log log = LogFactory.getLog( BeatDetector.class.getName() );
-	
+
 	public void detect(BeatDetectionRT rt, float[] input, float[] output)
 	{
 		// First low pass filter the input
 		ButterworthFilterRT butterWorthRt = rt.butterworthRt;
 		ButterworthFilter.filter( butterWorthRt, input, 0, input.length, 60.0f, 10.0f, FrequencyFilterMode.LP, 44100);
-		
+
 		int step = rt.step;
 		int laglen = rt.rwv.length;
 		int winlen = rt.winlen;
@@ -44,9 +44,9 @@ public class BeatDetector
 		float phase;
 		float beat;
 		float bp;
-		
+
 		int kmax;
-		
+
 		System.arraycopy( input,0, rt.dfrev, 0, input.length );
 		FftUtils.weight( rt.dfrev, rt.dfwv );
 		FftUtils.rev( rt.dfrev );
@@ -61,14 +61,14 @@ public class BeatDetector
 		{
 			numelem = rt.timesig;
 		}
-		
+
 		FftUtils.zeros( rt.acfout );
 
 		for (int i = 1; i < laglen - 1; i++)
 		{
 			for (int a = 1; a <= numelem; a++)
 			{
-				for (int b = (1 - a); b < a; b++)
+				for (int b = 1 - a; b < a; b++)
 				{
 					float val1 = rt.acf[ a * (i + 1) + b - 1];
 					float tstval = val1 * 1.0f / (2.0f*a-1.0f);
@@ -77,7 +77,7 @@ public class BeatDetector
 				}
 			}
 		}
-		
+
 		FftUtils.weight( rt.acfout, rt.rwv );
 
 		maxindex = FftUtils.maxValuePos( rt.acfout );
@@ -87,7 +87,7 @@ public class BeatDetector
 		checkstate(rt);
 
 		bp = rt.bp;
-		
+
 		kmax = (int)Math.floor(winlen / bp);
 
 		FftUtils.zeros( rt.phout );
@@ -112,17 +112,17 @@ public class BeatDetector
 			phase = FftUtils.quadint( rt.phout, maxindex );
 		}
 		phase += 1.0f;
-		
+
 		FftUtils.zeros( output );
 
 		int i = 1;
 		beat = bp - phase;
-		
+
 		if( ( step - rt.lastbeat - phase ) < -0.40 * bp )
 		{
 			beat += bp;
 		}
-		
+
 		while( beat + bp < 0 )
 		{
 			beat += bp;
@@ -168,7 +168,7 @@ public class BeatDetector
 			{
 				for (int a = 1; a <= rt.timesig; a++)
 				{
-					for (int b = (1 - a); b < a; b++)
+					for (int b = 1 - a; b < a; b++)
 					{
 						acfout[i] += acf[a * (i + 1) + b - 1];
 					}
@@ -215,7 +215,7 @@ public class BeatDetector
 		{
 			counter--;
 		}
-		
+
 		rp2 = rp1;
 		rp1 = rp;
 
@@ -280,8 +280,8 @@ public class BeatDetector
 	{
 //		return 4;
 		/**/
-		float three_energy = 0.0f;
-		float four_energy = 0.0f;
+		float threeEnergy = 0.0f;
+		float fourEnergy = 0.0f;
 //		int gp = ( inGp < 0 ? -inGp : inGp );
 
 		if (acflen < 6 * gp + 2)
@@ -290,8 +290,8 @@ public class BeatDetector
 			{
 				int threeIndex = (int)(3 * gp + k);
 				int fourIndex = (int)(4 * gp + k);
-				three_energy += acf[ threeIndex ];
-				four_energy += acf[ fourIndex ];
+				threeEnergy += acf[ threeIndex ];
+				fourEnergy += acf[ fourIndex ];
 			}
 		}
 		else
@@ -304,16 +304,16 @@ public class BeatDetector
 				int sixIndex = (int)(6 * gp + k);
 				if( threeIndex > 0 && sixIndex > 0 )
 				{
-					three_energy += acf[threeIndex] + acf[sixIndex];
+					threeEnergy += acf[threeIndex] + acf[sixIndex];
 				}
 				if( fourIndex > 0 && twoIndex > 0 )
 				{
-					four_energy += acf[fourIndex] + acf[twoIndex];
+					fourEnergy += acf[fourIndex] + acf[twoIndex];
 				}
 			}
 		}
 		// return (three_energy > four_energy) ? 3 : 4;
-		return (three_energy > four_energy ? 3 : 4);
+		return (threeEnergy > fourEnergy ? 3 : 4);
 		/**/
 	}
 }

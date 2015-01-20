@@ -31,15 +31,15 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( NewDndRackDragRegionHintDecoration.class.getName() );
-	
+
 	private RegionHintType hintType = RegionHintType.INVALID;
 	private Rectangle hintRectangle = new Rectangle( 0, 0, 0, 0 );
 	private Rectangle previousRenderRectangle = null;
-	
+
 	private DndTargetRegionImageGenerator targetRegionGenerator = new DndTargetRegionImageGenerator();
-	
-	public static boolean DO_HINTING = false;
-	
+
+	public final static boolean DO_HINTING = false;
+
 	public DndRackDragRegionHintDecoration()
 	{
 	}
@@ -53,13 +53,13 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 			hintRectangle = newHintRectangle;
 			isUpdated = true;
 		}
-		
+
 		if( this.hintType != hintType )
 		{
 			this.hintType = hintType;
 			isUpdated = true;
 		}
-		
+
 		if( previousRenderRectangle != null && !previousRenderRectangle.equals( renderRectangle ) )
 		{
 			isUpdated = true;
@@ -86,12 +86,12 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 	{
 		return false;
 	}
-	
+
 	@Override
 	public void setMousePosition(Point mousePosition)
 	{
 	}
-	
+
 	@Override
 	public void setActive( boolean activeBool )
 	{
@@ -115,14 +115,14 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 			}
 		}
 	}
-	
+
 	public void updateToNewBounds()
 	{
 		if( !active )
 		{
 			return;
 		}
-		
+
 		if( DO_HINTING )
 		{
 			targetRegionGenerator.setLocation( hintRectangle.x + previousRenderRectangle.x, hintRectangle.y + previousRenderRectangle.y );

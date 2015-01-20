@@ -35,43 +35,46 @@ import uk.co.modularaudio.util.table.Span;
 public class DCTrapMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<DCTrapMadDefinition, DCTrapMadInstance, DCTrapMadUiInstance>
 {
-	private static final Span span = new Span(1,1);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(1,1);
+
+	private static final int[] UI_CHANNEL_INDEXES = new int[] {
 		DCTrapMadDefinition.CONSUMER_IN_WAVE,
 		DCTrapMadDefinition.PRODUCER_OUT_WAVE,
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] UI_CHANNEL_POSI = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 80, 30 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] UI_CONTROL_NAMES = new String[] {
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] UI_CONTROL_TYPES = new ControlType[] {
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] UI_CONTROL_CLASSES = new Class<?>[] {
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+
+	private static final Rectangle[] UI_CONTROL_BOUNDS = new Rectangle[] {
 	};
-	
-	private static final Class<DCTrapMadUiInstance> instanceClass = DCTrapMadUiInstance.class;
-	
-	public DCTrapMadUiDefinition( BufferedImageAllocator bia, DCTrapMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<DCTrapMadUiInstance> INSTANCE_CLASS = DCTrapMadUiInstance.class;
+
+	public DCTrapMadUiDefinition( final BufferedImageAllocator bia,
+			final DCTrapMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				UI_CHANNEL_INDEXES,
+				UI_CHANNEL_POSI,
+				UI_CONTROL_NAMES,
+				UI_CONTROL_TYPES,
+				UI_CONTROL_CLASSES,
+				UI_CONTROL_BOUNDS );
 	}
 }

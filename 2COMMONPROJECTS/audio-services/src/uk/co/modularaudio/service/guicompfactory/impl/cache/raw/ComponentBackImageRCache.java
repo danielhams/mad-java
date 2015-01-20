@@ -25,10 +25,10 @@ import uk.co.modularaudio.service.guicompfactory.impl.cache.painters.GuiBackComp
 
 public class ComponentBackImageRCache extends AbstractComponentImageRCache
 {
-	private static final GuiComponentPainter painter = new GuiBackComponentPainter();
+	private static final GuiComponentPainter PAINTER = new GuiBackComponentPainter();
 
 	public ComponentBackImageRCache()
 	{
-		super( painter );
+		super( PAINTER );
 	}
 }

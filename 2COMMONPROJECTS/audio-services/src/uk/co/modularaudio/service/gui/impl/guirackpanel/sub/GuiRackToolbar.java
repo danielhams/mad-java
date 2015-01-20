@@ -37,14 +37,14 @@ public class GuiRackToolbar extends JToolBar
 {
 	private static Log log = LogFactory.getLog( GuiRackToolbar.class.getName() );
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -387065135870575057L;
-	
+
 	private JComboBox<MadDefinition<?,?>> componentComboBox = null;
 	private JButton addComponentButton = null;
 	private JToggleButton rackRotateCheckbox = null;
-	
+
 	private GuiRackActions rackGuiActions = null;
 	private GuiService guiService = null;
 
@@ -58,7 +58,7 @@ public class GuiRackToolbar extends JToolBar
 		this.setFloatable( false );
 	}
 
-	public JComboBox<MadDefinition<?,?>> getComponentComboBox()
+	public final JComboBox<MadDefinition<?,?>> getComponentComboBox()
 	{
 		if( componentComboBox == null )
 		{
@@ -77,7 +77,7 @@ public class GuiRackToolbar extends JToolBar
 		return componentComboBox;
 	}
 
-	public JButton getAddComponentButton()
+	public final JButton getAddComponentButton()
 	{
 		if( addComponentButton == null )
 		{
@@ -85,8 +85,8 @@ public class GuiRackToolbar extends JToolBar
 		}
 		return addComponentButton;
 	}
-	
-	public JToggleButton getRackRotateCheckbox()
+
+	public final JToggleButton getRackRotateCheckbox()
 	{
 		if( rackRotateCheckbox == null )
 		{

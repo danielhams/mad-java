@@ -59,8 +59,8 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 	private static final long serialVersionUID = -8428902055860040205L;
 	
 	private static final boolean SHOW_GRIDS = false;
-	public final static Dimension frontGridSize = new Dimension( 300, 80 );
-	public final static Dimension backGridSize = new Dimension( 300, 80 );
+	public final static Dimension FRONT_GRID_SIZE = new Dimension( 300, 80 );
+	public final static Dimension BACK_GRID_SIZE = new Dimension( 300, 80 );
 
 	private GuiComponentFactoryService guiComponentFactoryService = null;
 	private GuiService guiService = null;
@@ -140,7 +140,7 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 				frontAudioComponentToGuiFactory,
 				rackDragDndPolicy,
 				decorations,
-				frontGridSize,
+				FRONT_GRID_SIZE,
 				SHOW_GRIDS,
 				gridColour);
 	}
@@ -169,7 +169,7 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 				backAudioComponentTableDndPolicy,
 				rackDecorations,
 				wireDecorations,
-				backGridSize,
+				BACK_GRID_SIZE,
 				SHOW_GRIDS, // showGrid,
 				gridColour );
 	}

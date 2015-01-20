@@ -50,8 +50,8 @@ public class AudioCvConverterMadUiInstance extends MadUiInstance<AudioCvConverte
 		int totalHeight = startYOffset + outputChannelsHeight;
 		
 		// 150 x 50  per cell
-		int numCellsWide = (totalWidth / GuiRackPanel.frontGridSize.width) + (totalWidth % GuiRackPanel.frontGridSize.width > 0 ? 1 : 0 );
-		int numCellsHigh = (totalHeight / GuiRackPanel.frontGridSize.height) + (totalHeight % GuiRackPanel.frontGridSize.height > 0 ? 1 : 0 );
+		int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
+		int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
 		
 		span = new Span( numCellsWide, numCellsHigh );
 	}

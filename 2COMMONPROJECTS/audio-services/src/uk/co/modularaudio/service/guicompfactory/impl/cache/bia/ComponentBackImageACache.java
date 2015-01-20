@@ -26,12 +26,12 @@ import uk.co.modularaudio.service.guicompfactory.impl.cache.painters.GuiBackComp
 
 public class ComponentBackImageACache extends AbstractComponentImageACache
 {
-	private static final String GUI_CACHE_ALLOCATION_NAME = ComponentBackImageACache.class.getSimpleName();
+	private static final String CACHE_ALLOCATION_NAME = ComponentBackImageACache.class.getSimpleName();
 
-	private static final GuiComponentPainter painter = new GuiBackComponentPainter();
+	private static final GuiComponentPainter PAINTER = new GuiBackComponentPainter();
 
-	public ComponentBackImageACache( BufferedImageAllocationService bufferedImageAllocationService )
+	public ComponentBackImageACache( final BufferedImageAllocationService imageAllocationService )
 	{
-		super( GUI_CACHE_ALLOCATION_NAME, bufferedImageAllocationService, painter );
+		super( CACHE_ALLOCATION_NAME, imageAllocationService, PAINTER );
 	}
 }

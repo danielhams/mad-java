@@ -26,12 +26,12 @@ import uk.co.modularaudio.service.guicompfactory.impl.cache.painters.GuiFrontCom
 
 public class ComponentFrontImageACache extends AbstractComponentImageACache
 {
-	private static final String GUI_CACHE_ALLOCATION_NAME = ComponentFrontImageACache.class.getSimpleName();
+	private static final String CACHE_ALLOCATION_NAME = ComponentFrontImageACache.class.getSimpleName();
 
-	private static final GuiComponentPainter painter = new GuiFrontComponentPainter();
+	private static final GuiComponentPainter PAINTER = new GuiFrontComponentPainter();
 
-	public ComponentFrontImageACache( BufferedImageAllocationService bufferedImageAllocationService )
+	public ComponentFrontImageACache( final BufferedImageAllocationService imageAllocationService )
 	{
-		super( GUI_CACHE_ALLOCATION_NAME, bufferedImageAllocationService, painter );
+		super( CACHE_ALLOCATION_NAME, imageAllocationService, PAINTER );
 	}
 }

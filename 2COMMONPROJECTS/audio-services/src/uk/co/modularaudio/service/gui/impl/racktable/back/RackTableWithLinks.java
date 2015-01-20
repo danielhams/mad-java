@@ -47,40 +47,40 @@ public class RackTableWithLinks extends RackTable
 	private static final long serialVersionUID = -2571436979816263062L;
 
 //	private static Log log = LogFactory.getLog( NewRackTableWithLinks.class.getName() );
-	
+
 	private RackDataModel dataModel = null;
 //	private Dimension gridSize = null;
 	private RackTableWithLinksRackModelListener rackModelListener = null;
 	private RackTableWithLinksRackLinkListener rackLinkListener = null;
-	
+
 	private RackLinkPainter linkPainter = null;
 
 	public RackTableWithLinks( BufferedImageAllocationService bufferedImageAllocationService,
 			RackDataModel dataModel,
 			RackTableEmptyCellPainter emptyCellPainter,
-			RackTableGuiFactory factory, 
-			RackTableDndPolicy dndPolicy, 
+			RackTableGuiFactory factory,
+			RackTableDndPolicy dndPolicy,
 			DndRackDragDecorations rackDecorations,
 			DndWireDragDecorations wireDecorations,
 			Dimension gridSize,
 			boolean showGrid, Color gridColour)
 	{
 		super( dataModel, emptyCellPainter, factory, dndPolicy, new LinksDecorations(rackDecorations, wireDecorations), gridSize, showGrid, gridColour );
-		
+
 		this.dataModel = dataModel;
 		this.gridSize = gridSize;
-		
+
 		this.linkPainter = new RackLinkPainter( bufferedImageAllocationService, dataModel, this );
-		
+
 		// Register a custom rack model listener so that when a component moves we recalculate the link images
 		rackModelListener = new RackTableWithLinksRackModelListener( this );
 		dataModel.addListener( rackModelListener );
-		
+
 		// Also add a listener to track the rack link changes
 		rackLinkListener = new RackTableWithLinksRackLinkListener( this );
 		dataModel.addRackLinksListener( rackLinkListener );
 		dataModel.addRackIOLinksListener( rackLinkListener );
-		
+
 		fullLinksRefreshFromModel();
 	}
 
@@ -101,8 +101,8 @@ public class RackTableWithLinks extends RackTable
 
 	private Rectangle compositeImageRectangle = null;
 	private BufferedImage compositeRackLinksImage = null;
-	
-	public void fullLinksRefreshFromModel()
+
+	public final void fullLinksRefreshFromModel()
 	{
 		// Make sure we are starting from a clean slate.
 		compositeImageRectangle = null;
@@ -117,27 +117,27 @@ public class RackTableWithLinks extends RackTable
 		// Now create the composite image with all of them on
 		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
-	
+
 	public void createRackLinkImageForNewLink( RackLink rackLink )
 	{
 		linkPainter.drawOneRackLinkImageAndAdd( rackLink );
 	}
-	
+
 	public void updateRackLinkImageForLink( RackLink rl )
 	{
 		linkPainter.updateRackLinkImageForLink( rl );
 	}
-	
+
 	public void removeRackLinkImageAt( int modelIndex )
 	{
 		linkPainter.removeRackLinkImageAt( modelIndex );
 	}
-	
+
 	public List<RackLink> getLinksForComponent(RackComponent componentToFindLinksFor)
 	{
 		return linkPainter.getLinksForComponent( componentToFindLinksFor );
 	}
-	
+
 	public List<RackIOLink> getIOLinksForComponent( RackComponent componentToFindLinksFor )
 	{
 		return linkPainter.getIOLinksForComponent( componentToFindLinksFor );
@@ -158,11 +158,11 @@ public class RackTableWithLinks extends RackTable
 	{
 		removeListenersFromModel();
 		linkPainter.clear();
-		
+
 		super.setRackDataModel(rackDataModel);
 		this.dataModel = rackDataModel;
 		linkPainter.setDataModel( dataModel );
-		
+
 		dataModel.addListener( rackModelListener );
 		dataModel.addRackLinksListener( rackLinkListener );
 		dataModel.addRackIOLinksListener( rackLinkListener );
@@ -198,10 +198,10 @@ public class RackTableWithLinks extends RackTable
 		// * we must release the composite rack links image
 		// * the link painter needs to release it's buffered images
 		linkPainter.destroy();
-		
+
 		// Now do any cleanup that our parent wants to do.
 		super.destroy();
-		
+
 		dataModel = null;
 	}
 }
