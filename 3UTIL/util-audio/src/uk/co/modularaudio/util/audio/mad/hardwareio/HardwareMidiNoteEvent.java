@@ -33,13 +33,13 @@ public class HardwareMidiNoteEvent
 	public int paramTwo = -1;
 	// For continuations, it's the midi number of the previous note we are a continuation of
 	public int paramThree = -1;
-	
+
 	public HardwareMidiNoteEvent()
 	{
 		reset();
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		channel = -1;
 		eventFrameTime = -1;

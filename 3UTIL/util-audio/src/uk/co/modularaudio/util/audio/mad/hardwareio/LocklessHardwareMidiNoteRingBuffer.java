@@ -29,13 +29,13 @@ import uk.co.modularaudio.util.audio.buffer.LocklessPreallocatingGenericRingBuff
 
 public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGenericRingBuffer<HardwareMidiNoteEvent>
 {
-	private final static Log log = LogFactory.getLog( LocklessHardwareMidiNoteRingBuffer.class.getName() );
-	
-	private final static HardwareMidiNoteEventCopier copier = new HardwareMidiNoteEventCopier();
-	
+	private static Log log = LogFactory.getLog( LocklessHardwareMidiNoteRingBuffer.class.getName() );
+
+	private final static HardwareMidiNoteEventCopier NOTE_COPIER = new HardwareMidiNoteEventCopier();
+
 	public LocklessHardwareMidiNoteRingBuffer( int capacity )
 	{
-		super( HardwareMidiNoteEvent.class, copier, capacity );
+		super( HardwareMidiNoteEvent.class, NOTE_COPIER, capacity );
 		// Now initialise empty objects inside the internal array
 		for( int i = 0 ; i < capacity ; i++ )
 		{
@@ -73,9 +73,9 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 				return 0;
 			}
 			int newPosition = curReadPosition;
-			
+
 			int length = ( numReadable < maxNum ? numReadable : maxNum );
-			
+
 			// Now check the timestamp to work out how many we will actually read out
 			boolean done = false;
 			int numToRead = 0;
@@ -105,7 +105,7 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 			{
 				length = numToRead;
 			}
-			
+
 			if( curWritePosition > curReadPosition )
 			{
 				// Copy from the ring buffer directly into the output and update the read position
@@ -127,7 +127,7 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 					// Fits before the end of the ring
 					copyFromToLength( buffer, curReadPosition, target, pos, length );
 				}
-				
+
 				numRead = length;
 			}
 			else
@@ -135,9 +135,9 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 				log.error( "Case analysis error in ring read" );
 				throw new BufferUnderflowException();
 			}
-			
+
 			newPosition += length;
-			
+
 			if( newPosition >= bufferLength )
 			{
 				newPosition -= bufferLength;

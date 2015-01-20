@@ -28,15 +28,15 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public abstract class MadUiControlInstance
-	<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD,MI>,
-	MUI extends MadUiInstance<MD, MI>>
-	implements IMadUiControlInstance<MD, MI, MUI>
+	<D extends MadDefinition<D,I>,
+	I extends MadInstance<D,I>,
+	U extends MadUiInstance<D, I>>
+	implements IMadUiControlInstance<D, I, U>
 {
-	protected MUI componentUiInstance = null;
-	protected MadUiControlDefinition<MD, MI, MUI> definition = null;
-	
-	public MadUiControlInstance( MUI uiInstance, MadUiControlDefinition<MD, MI, MUI> definition )
+	protected U componentUiInstance = null;
+	protected MadUiControlDefinition<D, I, U> definition = null;
+
+	public MadUiControlInstance( U uiInstance, MadUiControlDefinition<D, I, U> definition )
 	{
 		this.componentUiInstance = uiInstance;
 		this.definition = definition;
@@ -47,7 +47,7 @@ public abstract class MadUiControlInstance
 
 	@Override
 	public abstract void receiveControlValue( String value );
-	
+
 	@Override
 	public abstract boolean needsDisplayProcessing();
 
@@ -59,7 +59,7 @@ public abstract class MadUiControlInstance
 	@Override
 	public abstract Component getControl();
 
-	public MadUiControlDefinition<MD, MI, MUI> getUiControlDefinition()
+	public MadUiControlDefinition<D, I, U> getUiControlDefinition()
 	{
 		return definition;
 	}
@@ -67,6 +67,6 @@ public abstract class MadUiControlInstance
 	@Override
 	public void destroy()
 	{
-		// Do nothing, let the control decide if it want to do anything.
+		// Do nothing by default
 	}
 }

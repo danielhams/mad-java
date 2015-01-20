@@ -24,51 +24,49 @@ import java.awt.Dimension;
 
 public class GuiConstants
 {
-//	private static final int DEFAULT_WINDOW_WIDTH = 645;
-//	private static final int DEFAULT_WINDOW_HEIGHT = 800;
-//	private static final int DEFAULT_WINDOW_WIDTH = 800;
 	private static final int DEFAULT_WINDOW_WIDTH = 1250;
 	private static final int DEFAULT_WINDOW_HEIGHT = 750;
-//	private static final int DEFAULT_WINDOW_HEIGHT = 400;
-//	private static final int DEFAULT_WINDOW_HEIGHT = 1110;
 	private static final int MINIMUM_WINDOW_HEIGHT = 400;
+
 	// How big should the initial window be?
-	public static Dimension GUI_DEFAULT_DIMENSIONS;
-	public static Dimension GUI_MINIMUM_DIMENSIONS;
+	public final static Dimension GUI_DEFAULT_DIMENSIONS;
+	public final static Dimension GUI_MINIMUM_DIMENSIONS;
+
 	// How wide the rack is in total
-	public static int GUI_RACK_WIDTH = 610;
+	public final static int GUI_RACK_WIDTH = 610;
+
 	// How wide the rack edge are - there are two edges of course, so the rack still sticks out INSET amount each side.
-	public static int GUI_RACK_FRAME_WIDTH = 20;
-	
+	public final static int GUI_RACK_FRAME_WIDTH = 20;
+
 	// How much in from the rack edge does a unit actually begin? This is where we paint the edges of the component
 	// the drag handles, in fact.
-	public static int GUI_UNIT_RACK_FRAME_INSET = 5;
+	public final static int GUI_UNIT_RACK_FRAME_INSET = 5;
 	// Default height. Will see if this need deeper thought later.
-	public static int GUI_UNIT_HEIGHT = 100;
+	public final static int GUI_UNIT_HEIGHT = 100;
 	// A fatboy spans the entire width of the rack - but must still leave enough space for the inset on either side.
-	public static int GUI_UNIT_FATBOY_WIDTH = GUI_RACK_WIDTH - ( 2 * GUI_UNIT_RACK_FRAME_INSET );
+	public final static int GUI_UNIT_FATBOY_WIDTH = GUI_RACK_WIDTH - ( 2 * GUI_UNIT_RACK_FRAME_INSET );
 	// The "simple" (hahaha a Pascal Jost joke after all these years) width is half the full width minus the necessary space for two insets
-	public static int GUI_UNIT_SIMPLE_WIDTH = (GUI_RACK_WIDTH - ( 4 * GUI_UNIT_RACK_FRAME_INSET )) / 2;
+	public final static int GUI_UNIT_SIMPLE_WIDTH = (GUI_RACK_WIDTH - ( 4 * GUI_UNIT_RACK_FRAME_INSET )) / 2;
 	// How big the "handles" on the sides of a component should be for drag and drop unit re-ordering
-	public static int GUI_UNIT_DRAG_DROP_HANDLE_WIDTH = 10;
-	
+	public final static int GUI_UNIT_DRAG_DROP_HANDLE_WIDTH = 10;
+
 	// Preferences dialog
 	public static final int DEFAULT_PREFS_WIDTH = 850;
 	public static final int DEFAULT_PREFS_HEIGHT = 350;
 	public static final int MIN_PREFS_WIDTH = 850;
 	public static final int MIN_PREFS_HEIGHT = 350;
-	
+
 	public static final Dimension GUI_PREFERENCES_DEFAULT_DIMENSIONS;
 	public static final Dimension GUI_PREFERENCES_MINIMUM_DIMENSIONS;
 
 	// Some GUI messages
 	public static final String DIALOG_UNABLE_TO_PERFORM_TITLE = "Warning";
-	
+
 	static
 	{
 		GUI_DEFAULT_DIMENSIONS = new Dimension( DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 		GUI_MINIMUM_DIMENSIONS = new Dimension( DEFAULT_WINDOW_WIDTH, MINIMUM_WINDOW_HEIGHT);
-		
+
 		GUI_PREFERENCES_DEFAULT_DIMENSIONS = new Dimension( DEFAULT_PREFS_WIDTH, DEFAULT_PREFS_HEIGHT );
 		GUI_PREFERENCES_MINIMUM_DIMENSIONS = new Dimension( MIN_PREFS_WIDTH, MIN_PREFS_HEIGHT );
 	}

@@ -25,17 +25,17 @@ import uk.co.modularaudio.util.audio.buffer.LocklessPreallocatingGenericRingBuff
 public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<IOQueueEvent>
 {
 //	private static Log log = LogFactory.getLog( MadLocklessIOQueue.class.getName() );
-	
-	private static final IOQueueEventCopier copier = new IOQueueEventCopier();
-	
+
+	private static final IOQueueEventCopier COPIER = new IOQueueEventCopier();
+
 	public final static int DEFAULT_QUEUE_LENGTH = 64;
 
 	public MadLocklessIOQueue( Class<IOQueueEvent> clazz, int capacity )
 	{
-		super( clazz, copier, capacity );
-		
+		super( clazz, COPIER, capacity );
+
 	}
-	
+
 	public int copyToTemp( IOQueueEvent[] destinationEventStorage, long queuePullingFrameTime )
 	{
 		int curReadPosition = readPosition.get();
@@ -44,7 +44,7 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 
 		if( numReadable > 0 )
 		{
-			boolean isTimeBased = ( queuePullingFrameTime != -1 );
+			boolean isTimeBased = queuePullingFrameTime != -1;
 			int numCopied = 0;
 			if( isTimeBased )
 			{
@@ -55,7 +55,7 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 						posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
 						if( buffer[ posToCheck].frameTime <= queuePullingFrameTime )
 						{
-							copier.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
+							COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
 							numCopied++;
 						}
 						else
@@ -72,11 +72,11 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 				{
 					int posToCheck = curReadPosition + i;
 					posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
-					copier.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
+					COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
 					numCopied++;
 				}
 			}
-			
+
 			if( numCopied > 0 )
 			{
 				int newPosition = curReadPosition + numCopied;

@@ -29,22 +29,22 @@ import javax.swing.JToggleButton;
 public abstract class PacToggleButton extends JToggleButton
 {
 	private static final long serialVersionUID = 3894878069518305522L;
-	
+
 //	private static final Log log = LogFactory.getLog( PacToggleButton.class.getName() );
-	
+
 	protected boolean previousValue = false;
-	
+
 	public PacToggleButton( boolean defaultValue )
 	{
 		previousValue = defaultValue;
 		model.setSelected( defaultValue );
-		
+
 		this.setSelected( defaultValue );
-		// Make it an anonymous listener so we don't interfere with derived classes wishing 
+		// Make it an anonymous listener so we don't interfere with derived classes wishing
 		// to implement action listener
 		this.addItemListener( new ItemListener()
 		{
-			
+
 			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
@@ -54,16 +54,16 @@ public abstract class PacToggleButton extends JToggleButton
 				updateColours();
 			}
 		});
-		
+
 		updateColours();
 	}
-	
+
 	public String getControlValue()
 	{
 		boolean isSelected = isSelected();
 		return Boolean.toString( isSelected );
 	}
-	
+
 	public void receiveControlValue( String strValue )
 	{
 		boolean isSelected = Boolean.parseBoolean( strValue );
@@ -72,10 +72,10 @@ public abstract class PacToggleButton extends JToggleButton
 			doClick();
 		}
 	}
-	
+
 	public abstract void receiveUpdateEvent( boolean previousValue, boolean newValue );
 
-	protected void updateColours()
+	protected final void updateColours()
 	{
 		boolean newValue = isSelected();
 		if( newValue )
@@ -87,7 +87,7 @@ public abstract class PacToggleButton extends JToggleButton
 			setForeground( null );
 		}
 	}
-	
+
 	public void setButtonSelected( boolean selected )
 	{
 		setSelected( selected );

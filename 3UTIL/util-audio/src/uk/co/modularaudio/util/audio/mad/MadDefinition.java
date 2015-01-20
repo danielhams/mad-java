@@ -25,21 +25,21 @@ import java.util.Map;
 
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 
-public abstract class MadDefinition<MD extends MadDefinition<MD,MI>, MI extends MadInstance<MD,MI>>
+public abstract class MadDefinition<D extends MadDefinition<D,I>, I extends MadInstance<D,I>>
 {
 	private final String id;
 	private final String name;
 	private final MadClassification classification;
 	private final boolean isParametrable;
 	private MadParameterDefinition[] parameterDefinitions = null;
-	private final MadLocklessQueueBridge<MI> ioQueueBridge;
+	private final MadLocklessQueueBridge<I> ioQueueBridge;
 	
 	public MadDefinition( final String id,
 			final String name,
 			final boolean isParametrable,
 			final MadClassification classification,
 			final Collection<MadParameterDefinition> parameterDefinitions,
-			final MadLocklessQueueBridge<MI> ioQueueBridge )
+			final MadLocklessQueueBridge<I> ioQueueBridge )
 	{
 		this.id = id;
 		this.name = name;
@@ -82,7 +82,7 @@ public abstract class MadDefinition<MD extends MadDefinition<MD,MI>, MI extends 
 		return classification;
 	}
 
-	public final MadLocklessQueueBridge<MI> getIoQueueBridge()
+	public final MadLocklessQueueBridge<I> getIoQueueBridge()
 	{
 		return ioQueueBridge;
 	}

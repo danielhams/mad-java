@@ -31,13 +31,13 @@ public class MadChannelNoteEvent
 	protected int paramTwo = 0;
 	// For continuations, it's the midi number of the previous note we are a continuation of
 	protected int paramThree = 0;
-	
+
 	public MadChannelNoteEvent()
 	{
 		reset();
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		channel = -1;
 		eventSampleIndex = -1;
@@ -91,7 +91,8 @@ public class MadChannelNoteEvent
 	{
 		this.eventType = eventType;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder(64);

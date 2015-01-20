@@ -21,6 +21,9 @@
 package uk.co.modularaudio.util.audio.mad;
 
 
-public abstract class MadCreationContext
+public class MadCreationContext
 {
+	protected MadCreationContext()
+	{
+	}
 }

@@ -28,11 +28,11 @@ import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 
 public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericRingBuffer<MadChannelNoteEvent>
 {
-	private final static MadChannelNoteEventCopier copier = new MadChannelNoteEventCopier();
+	private final static MadChannelNoteEventCopier COPIER = new MadChannelNoteEventCopier();
 	
 	public LocklessChannelNoteRingBuffer( int capacity )
 	{
-		super( MadChannelNoteEvent.class, copier, capacity );
+		super( MadChannelNoteEvent.class, COPIER, capacity );
 		// Now initialise empty objects inside the internal array
 		for( int i = 0 ; i < capacity ; i++ )
 		{
@@ -60,7 +60,7 @@ public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericR
 		int numReadable = calcNumReadable( curReadPosition, curWritePosition );
 		if( numReadable > 0 )
 		{
-			copier.copyValues( buffer[ curReadPosition ], dest );
+			COPIER.copyValues( buffer[ curReadPosition ], dest );
 		}
 		else
 		{

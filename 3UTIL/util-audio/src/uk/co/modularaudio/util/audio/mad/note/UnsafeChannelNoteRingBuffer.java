@@ -28,11 +28,11 @@ import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 
 public class UnsafeChannelNoteRingBuffer extends UnsafePreallocatingGenericRingBuffer<MadChannelNoteEvent>
 {
-	private final static MadChannelNoteEventCopier copier = new MadChannelNoteEventCopier();
+	private final static MadChannelNoteEventCopier COPIER = new MadChannelNoteEventCopier();
 	
 	public UnsafeChannelNoteRingBuffer( int capacity )
 	{
-		super( MadChannelNoteEvent.class, copier, capacity );
+		super( MadChannelNoteEvent.class, COPIER, capacity );
 		// Now initialise empty objects inside the internal array
 		for( int i = 0 ; i < capacity ; i++ )
 		{

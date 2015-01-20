@@ -35,43 +35,43 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
-public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends MadInstance<MD,MI>>
-	implements IMadUiInstance<MD, MI>, MadInstance.InstanceLifecycleListener, IOQueueEventUiConsumer<MI>
+public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends MadInstance<D,I>>
+	implements IMadUiInstance<D, I>, MadInstance.InstanceLifecycleListener, IOQueueEventUiConsumer<I>
 {
 	private static Log log = LogFactory.getLog( MadUiInstance.class.getName() );
-	
-	protected final MI instance;
-	protected final MadUiDefinition<MD,  MI> uiDefinition;
-	
+
+	protected final I instance;
+	protected final MadUiDefinition<D,  I> uiDefinition;
+
 	protected MadUiChannelInstance[] channelInstances = new MadUiChannelInstance[0];
 	protected MadUiControlInstance<?,?,?>[] controlInstances = new MadUiControlInstance[0];
 	protected MadUiControlInstance<?,?,?>[] displayProcessingControlInstances = new MadUiControlInstance[0];
-	
+
 	protected final boolean eventsPassedBetweenInstanceAndUi;
-	
+
 	protected MadLocklessIOQueue commandToUiQueue = null;
 	protected MadLocklessIOQueue temporalToUiQueue = null;
 	protected MadLocklessIOQueue commandToInstanceQueue = null;
 	protected MadLocklessIOQueue temporalToInstanceQueue = null;
-	
-	protected final MadLocklessQueueBridge<MI> localQueueBridge;
-	
+
+	protected final MadLocklessQueueBridge<I> localQueueBridge;
+
 	private IOQueueEvent outEvent = new IOQueueEvent();
-	
+
 	// Set during startup and cleared during stop
 	protected MadFrameTimeFactory frameTimeFactory = null;
-	
-	public MadUiInstance( MI instance, MadUiDefinition<MD, MI> uiDefinition )
+
+	public MadUiInstance( I instance, MadUiDefinition<D, I> uiDefinition )
 	{
 		this.instance = instance;
 		this.uiDefinition = uiDefinition;
-		
-		MD definition = instance.getDefinition();
+
+		D definition = instance.getDefinition();
 		this.localQueueBridge = definition.getIoQueueBridge();
-		
-		MadLocklessQueueBridge<MI> bridge = definition.getIoQueueBridge();
+
+		MadLocklessQueueBridge<I> bridge = definition.getIoQueueBridge();
 		eventsPassedBetweenInstanceAndUi = bridge.hasQueueProcessing();
-		
+
 		if( eventsPassedBetweenInstanceAndUi )
 		{
 			commandToUiQueue = instance.getCommandToUiQueue();
@@ -79,7 +79,7 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 			commandToInstanceQueue = instance.getCommandToInstanceQueue();
 			temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
 		}
-		
+
 		instance.addLifecycleListener( this );
 	}
 
@@ -125,13 +125,13 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 	public abstract Span getCellSpan();
 
 	@Override
-	public MI getInstance()
+	public I getInstance()
 	{
 		return instance;
 	}
 
 	@Override
-	public MadUiDefinition<MD, MI> getUiDefinition()
+	public MadUiDefinition<D, I> getUiDefinition()
 	{
 		return uiDefinition;
 	}
@@ -147,7 +147,7 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 	{
 		return channelInstances;
 	}
-	
+
 	@Override
 	public final void receiveDisplayTick( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
@@ -166,9 +166,9 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 				guiTemporaryEventStorage.numTemporalEventsToUi = temporalToUiQueue.copyToTemp( guiTemporaryEventStorage.temporalEventsToUi,
 						currentGuiFrameTime );
 			}
-			
+
 			doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
-			
+
 			if( eventsPassedBetweenInstanceAndUi )
 			{
 				// Copy any out events from the temporary area into the instance queues
@@ -190,7 +190,7 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 			log.error( msg, e );
 		}
 	}
-	
+
 	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
@@ -205,9 +205,9 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 	@Override
 	public void receiveComponentNameChange( String newName )
 	{
-		// Most components don't care.
+		// Do nothing by default.
 	}
-	
+
 	public void setUiControlsAndChannels( MadUiControlInstance<?, ?, ?>[] controlsIn,
 			MadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,
 			MadUiChannelInstance[] channelsIn )
@@ -216,7 +216,7 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 		this.displayProcessingControlInstances = displayProcessingControlsIn;
 		this.channelInstances = channelsIn;
 	}
-	
+
 	// Useful command senders for the UI
 	// These use the immediate versions of send (i.e. not via TSES)
 	protected void sendTemporalValueToInstance(int command, long value)
@@ -253,7 +253,7 @@ public abstract class MadUiInstance<MD extends MadDefinition<MD, MI>, MI extends
 		outEvent.value = value;
 		localQueueBridge.sendCommandEventToInstance( instance, outEvent );
 	}
-	
+
 	protected void sendCommandObjectToInstance( int command, Object obj )
 	{
 		outEvent.command = command;

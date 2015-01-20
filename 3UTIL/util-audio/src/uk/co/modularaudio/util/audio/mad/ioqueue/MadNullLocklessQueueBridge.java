@@ -23,8 +23,8 @@ package uk.co.modularaudio.util.audio.mad.ioqueue;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 
 
-public class MadNullLocklessQueueBridge<MI extends MadInstance<?, MI> >
-	extends MadLocklessQueueBridge<MI>
+public class MadNullLocklessQueueBridge<I extends MadInstance<?, I> >
+	extends MadLocklessQueueBridge<I>
 {
 	public MadNullLocklessQueueBridge()
 	{
@@ -32,7 +32,7 @@ public class MadNullLocklessQueueBridge<MI extends MadInstance<?, MI> >
 	}
 	
 	@Override
-	public void receiveQueuedEventsToInstance( MI instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEvent )
+	public void receiveQueuedEventsToInstance( I instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEvent )
 	{
 	}
 }

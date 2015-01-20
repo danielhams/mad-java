@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.mad.ioqueue;
 
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 
-public abstract class MadLocklessQueueBridge<MI extends MadInstance<?, MI>>
+public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 {
 //	private final static Log log = LogFactory.getLog( MadLocklessQueueBridge.class.getName() );
 	
@@ -73,20 +73,20 @@ public abstract class MadLocklessQueueBridge<MI extends MadInstance<?, MI>>
 		return temporalEventsToUiCapacity;
 	}
 	
-	public final boolean sendCommandEventToInstance( MI instance, IOQueueEvent entry )
+	public final boolean sendCommandEventToInstance( I instance, IOQueueEvent entry )
 	{
 		MadLocklessIOQueue commandToInstanceQueue = instance.getCommandToInstanceQueue();
 		return commandToInstanceQueue.writeOne( entry );
 	}
 
-	public final boolean sendTemporalEventToInstance( MI instance, long guiFrameTime, IOQueueEvent entry )
+	public final boolean sendTemporalEventToInstance( I instance, long guiFrameTime, IOQueueEvent entry )
 	{
 		MadLocklessIOQueue temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
 		entry.frameTime = guiFrameTime;
 		return temporalToInstanceQueue.writeOne( entry );
 	}
 
-	public abstract void receiveQueuedEventsToInstance( MI instance, ThreadSpecificTemporaryEventStorage tses,
+	public abstract void receiveQueuedEventsToInstance( I instance, ThreadSpecificTemporaryEventStorage tses,
 			long periodTimestamp, IOQueueEvent queueEntry );
 	
 	public final void queueCommandEventToUi( ThreadSpecificTemporaryEventStorage tses,
@@ -147,7 +147,7 @@ public abstract class MadLocklessQueueBridge<MI extends MadInstance<?, MI>>
 //		tses.numTemporalEventsToInstance++;
 //	}
 	
-	public final void receiveQueuedEventsToUi( ThreadSpecificTemporaryEventStorage tses, MI instance, IOQueueEventUiConsumer<MI> consumer )
+	public final void receiveQueuedEventsToUi( ThreadSpecificTemporaryEventStorage tses, I instance, IOQueueEventUiConsumer<I> consumer )
 	{
 		for( int c = 0 ; c < tses.numCommandEventsToUi ; c++ )
 		{
@@ -159,7 +159,7 @@ public abstract class MadLocklessQueueBridge<MI extends MadInstance<?, MI>>
 		}
 	}
 	
-	public final void cleanupOrphanedEvents( MI instance, IOQueueEventUiConsumer<MI> consumer )
+	public final void cleanupOrphanedEvents( I instance, IOQueueEventUiConsumer<I> consumer )
 	{
 		IOQueueEvent lastEvent = new IOQueueEvent();
 
