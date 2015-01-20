@@ -23,6 +23,9 @@ package uk.co.modularaudio.util.audio.wavetablent;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.io.FileUtils;
@@ -30,6 +33,8 @@ import uk.co.modularaudio.util.io.FileUtils;
 
 public abstract class RawWaveTableGenerator
 {
+	private static Log log = LogFactory.getLog( RawWaveTableGenerator.class.getName() );
+
 	public CubicPaddedRawWaveTable readFromCacheOrGenerate( String cacheFileRoot, int cycleLength, int numHarmonics )
 			throws IOException
 	{
@@ -37,9 +42,9 @@ public abstract class RawWaveTableGenerator
 		int numChannels = 1;
 		short numBitsPerSample = 16;
 		String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
-		
+
 		CubicPaddedRawWaveTable retVal = null;
-		
+
 		// See if the file exists
 		String pathToCachedWave = cacheFileRoot + File.separatorChar + uniqueName;
 		File cachedWave = new File( pathToCachedWave );
@@ -48,7 +53,7 @@ public abstract class RawWaveTableGenerator
 			WaveFileReader fileReader = new WaveFileReader( pathToCachedWave );
 			long numTotalFloats = fileReader.getNumTotalFloats();
 			int numTotalFloatsAsInt = (int)numTotalFloats;
-			if( (long)numTotalFloatsAsInt != numTotalFloats )
+			if( numTotalFloatsAsInt != numTotalFloats )
 			{
 				throw new RuntimeException( "Internal error re-reading cached waves" );
 			}
@@ -63,17 +68,28 @@ public abstract class RawWaveTableGenerator
 		}
 		else
 		{
+			log.info("Generating wave table for " + uniqueName + " - please be patient");
 			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
 			// And write it out
 			FileUtils.recursiveMakeDir( cacheFileRoot );
-			WaveFileWriter fileWriter = new WaveFileWriter( pathToCachedWave, numChannels, sampleRate, numBitsPerSample );
+			String tmpPath = pathToCachedWave + ".tmp";
+			WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
 			fileWriter.writeFloats( retVal.buffer, retVal.bufferLength );
 			fileWriter.close();
+
+			File tmpFile = new File(tmpPath);
+			boolean success = tmpFile.renameTo( new File(pathToCachedWave ) );
+			if( !success )
+			{
+				String msg = "Failed moving temporary wave table cache file over to its final name";
+				log.error( msg );
+				throw new IOException( msg );
+			}
 		}
 
 		return retVal;
 	}
-	
+
 	public abstract String getWaveTypeId();
 	public abstract CubicPaddedRawWaveTable reallyGenerateWaveTable( int cycleLength, int numHarmonics );
 }
