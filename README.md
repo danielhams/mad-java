@@ -1,5 +1,10 @@
-# mad-java
-Java based modular audio prototyping application
+# Mad Java
+A Java based modular audio prototyping application that allows wiring of audio components together.
+
+# Screenshots
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-playingasoundfile.png>Playing a soundfile</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostrack.png>A rack boosting the bass of a signal</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostwiting.png>The wiring behind the bass booster</img>
 
 # Building And Running
 Currently development is done using Eclipse and JDK 1.8 on a Linux machine with Jack 2.
@@ -43,7 +48,13 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 
 9. You can now add (for example) a sound file player component to the rack, and wire its output to the output in the master IO at the top. Don't forget to wire up the outputs inside the Jack manager you are using too (e.g. QJackctl).
 
-10. Further tweaking - you can also add the following switches:
+10. A couple of example racks can be found in:
+    1PROJECTS/COMPONENTDESIGNER/component-designer/userpatches
+
+    And example sub-racks in:
+    1PROJECTS/COMPONENTDESIGNER/component-designer/usersubpatches
+
+11. Further tweaking - you can also add the following switches:
 
     | switch    | description                                                                             |
     |-----------|-----------------------------------------------------------------------------------------|
