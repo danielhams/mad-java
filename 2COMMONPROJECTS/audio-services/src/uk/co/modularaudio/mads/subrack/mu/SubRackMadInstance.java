@@ -38,9 +38,9 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDirtyListener;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -57,22 +57,22 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	private static Log log = LogFactory.getLog( SubRackMadInstance.class.getName() );
 
 	// Messy - should really have a way for the UI components to get references into the component graph
-	public RackService rackService = null;
-	public MadGraphService graphService = null;
-	public RackMarshallingService rackMarshallingService = null;
-	public GuiService guiService = null;
-	public String currentPatchDir = null;
+	public final RackService rackService;
+	public final MadGraphService graphService;
+	public final RackMarshallingService rackMarshallingService;
+	public final GuiService guiService;
+	public final String currentPatchDir;
 
-	private RackDataModel subRackDataModel = null;
+	private RackDataModel subRackDataModel;
 
 	private List<RackDirtyListener> dirtyListeners = new ArrayList<RackDirtyListener>();
 
-	public SubRackMadInstance( SubRackCreationContext creationContext,
-			String instanceName,
-			SubRackMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
-			throws DatastoreException, MAConstraintViolationException, RecordNotFoundException, IOException
+	public SubRackMadInstance( final SubRackCreationContext creationContext,
+			final String instanceName,
+			final SubRackMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
+		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException, IOException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		this.rackService = creationContext.getRackService();
@@ -93,7 +93,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	private void mapSubRackIntoGraph() throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 		// First add the sub rack graph as an instance inside ourselves
-		MadGraphInstance<?,?> subRackGraph = rackService.getRackGraphInstance( subRackDataModel );
+		final MadGraphInstance<?,?> subRackGraph = rackService.getRackGraphInstance( subRackDataModel );
 
 		// Need to push this down into graph service so all links are faded
 		// Now expose all the sub rack channels as our channels
@@ -103,13 +103,15 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 
 	private void unmapSubRackFromGraph() throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		MadGraphInstance<?,?> subRackGraph = rackService.getRackGraphInstance( subRackDataModel );
+		final MadGraphInstance<?,?> subRackGraph = rackService.getRackGraphInstance( subRackDataModel );
 		// Will remove anything connected to graph channels
 		graphService.removeInstanceFromGraph( this, subRackGraph );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		throw new MadProcessingException( "SubRacks should never be scheduled!" );
@@ -122,11 +124,11 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, int numFrames )
 	{
 		log.error( "Subracks should never be scheduled!" );
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
@@ -137,10 +139,13 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		return subRackDataModel.getName();
 	}
 
-	public void setCurrentPatchName( String currentPatchName )
+	public void setCurrentPatchName( final String currentPatchName )
 	{
 		subRackDataModel.setName( currentPatchName );
-		log.debug("SubRackMI setCurrentPatchName("+currentPatchName+")");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("SubRackMI setCurrentPatchName(" + currentPatchName + ")");
+		}
 	}
 
 	public RackDataModel getSubRackDataModel()
@@ -148,11 +153,11 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		return subRackDataModel;
 	}
 
-	public void setSubRackDataModel( RackDataModel newSubRackDataModel, boolean destroyPrevious )
+	public void setSubRackDataModel( final RackDataModel newSubRackDataModel, final boolean destroyPrevious )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 //		log.debug("SetSubRackDataModel called on " + subRackDataModel.getName() );
-		RackDataModel previousModel = subRackDataModel;
+		final RackDataModel previousModel = subRackDataModel;
 		// Remove listeners
 		for( RackDirtyListener rdl : dirtyListeners )
 		{
@@ -184,14 +189,14 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	}
 
 	@Override
-	public void addRackDirtyListener( RackDirtyListener rackDirtyListener )
+	public void addRackDirtyListener( final RackDirtyListener rackDirtyListener )
 	{
 		dirtyListeners.add( rackDirtyListener );
 		subRackDataModel.addRackDirtyListener( rackDirtyListener );
 	}
 
 	@Override
-	public void removeRackDirtyListener( RackDirtyListener rackDirtyListener )
+	public void removeRackDirtyListener( final RackDirtyListener rackDirtyListener )
 	{
 		dirtyListeners.remove( rackDirtyListener );
 		subRackDataModel.removeRackDirtyListener( rackDirtyListener );

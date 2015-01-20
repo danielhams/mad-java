@@ -46,14 +46,14 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 
 	public static final String DEFINITION_ID = "stereo_compressor";
 
-	private final static String userVisibleName = "Stereo Compressor";
+	private final static String USER_VISIBLE_NAME = "Stereo Compressor";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationName = "Stereo Compressor";
-	private final static String classificationDescription = "A stereo audio dynamic range compressor";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Stereo Compressor";
+	private final static String CLASS_DESC = "A stereo audio dynamic range compressor";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Input Wave Left",
 		"Input Wave Right",
 		"Input Compression Signal Left",
@@ -63,7 +63,7 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 		"Output Dry Left",
 		"Output Dry Right"};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
@@ -73,7 +73,7 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
@@ -82,7 +82,7 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] {
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
@@ -92,21 +92,22 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public StereoCompressorMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public StereoCompressorMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classService )
+		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new StereoCompressorIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

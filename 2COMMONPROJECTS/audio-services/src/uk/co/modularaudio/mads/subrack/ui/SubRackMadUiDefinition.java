@@ -44,7 +44,7 @@ import uk.co.modularaudio.util.table.Span;
 public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition, SubRackMadInstance>
 {
 //	private static Log log = LogFactory.getLog( SubRackMadUiDefinition.class.getName());
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 
 	private static final int PLUG_START_X = 130;
 	private static final int PLUG_START_Y = 20;
@@ -73,12 +73,14 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	private static final Rectangle EDIT_PATCH_BOUNDS = new Rectangle( 425, 25, 60, 30 );
 	private static final Rectangle SAVE_PATCH_BOUNDS = new Rectangle( 490, 25, 60, 30 );
 
-	private BufferedImage frontBufferedImage = null;
-	private BufferedImage backBufferedImage = null;
+	private BufferedImage frontBufferedImage;
+	private BufferedImage backBufferedImage;
 
-	public SubRackMadUiDefinition( BufferedImageAllocator bia, SubRackMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot ) throws DatastoreException
+	public SubRackMadUiDefinition( final BufferedImageAllocator bia,
+			final SubRackMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
+		throws DatastoreException
 	{
 		// Sub rack is draggable
 		super( bia, definition, true, false );
@@ -104,40 +106,40 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( SubRackMadInstance madInstance )
+	public MadUiInstance<?,?> createNewUiInstance( final SubRackMadInstance madInstance )
 		throws DatastoreException
 	{
 		MadUiInstance<SubRackMadDefinition,SubRackMadInstance> retVal = null;
 		try
 		{
 			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = madInstance.getChannelInstances();
+			final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+			final MadChannelInstance[] channelInstances = madInstance.getChannelInstances();
 
 			for( int c = 0 ; c < channelInstances.length ; c++ )
 			{
-				MadChannelInstance auci = channelInstances[ c ];
+				final MadChannelInstance auci = channelInstances[ c ];
 				uiChannelInstances.add( new MadUiChannelInstance( computeCenterForChannel( c, auci), auci ) );
 			}
 
 			retVal = new SubRackMadUiInstance( madInstance, this );
 
 			// And setup the controls
-			ArrayList<MadUiControlDefinition<?,?,?>> controlDefinitions = new ArrayList<MadUiControlDefinition<?,?,?>>();
-			SubRackShowPatchNameUiControlDefinition patchNameControlDef = new SubRackShowPatchNameUiControlDefinition( 0, PATCH_NAME_BOUNDS );
+			final ArrayList<MadUiControlDefinition<?,?,?>> controlDefinitions = new ArrayList<MadUiControlDefinition<?,?,?>>();
+			final SubRackShowPatchNameUiControlDefinition patchNameControlDef = new SubRackShowPatchNameUiControlDefinition( 0, PATCH_NAME_BOUNDS );
 			controlDefinitions.add( patchNameControlDef );
-			SubRackChoosePatchButtonUiControlDefinition choosePatchControlDef = new SubRackChoosePatchButtonUiControlDefinition( 1, CHOOSE_PATCH_BOUNDS );
+			final SubRackChoosePatchButtonUiControlDefinition choosePatchControlDef = new SubRackChoosePatchButtonUiControlDefinition( 1, CHOOSE_PATCH_BOUNDS );
 			controlDefinitions.add( choosePatchControlDef );
-			SubRackEditPatchButtonUiControlDefinition editPatchControlDef = new SubRackEditPatchButtonUiControlDefinition( 2, EDIT_PATCH_BOUNDS );
+			final SubRackEditPatchButtonUiControlDefinition editPatchControlDef = new SubRackEditPatchButtonUiControlDefinition( 2, EDIT_PATCH_BOUNDS );
 			controlDefinitions.add( editPatchControlDef );
-			SubRackSavePatchButtonUiControlDefinition savePatchControlDef = new SubRackSavePatchButtonUiControlDefinition( 3, SAVE_PATCH_BOUNDS );
+			final SubRackSavePatchButtonUiControlDefinition savePatchControlDef = new SubRackSavePatchButtonUiControlDefinition( 3, SAVE_PATCH_BOUNDS );
 			controlDefinitions.add( savePatchControlDef );
 
-			ArrayList<MadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
-			ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
-			for( MadUiControlDefinition cd : controlDefinitions )
+			final ArrayList<MadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
+			final ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
+			for( final MadUiControlDefinition cd : controlDefinitions )
 			{
-				MadUiControlInstance<?,?,?> uici = cd.createInstance( madInstance, retVal );
+				final MadUiControlInstance<?,?,?> uici = cd.createInstance( madInstance, retVal );
 				uiControlInstances.add( uici );
 				if( uici.needsDisplayProcessing() )
 				{
@@ -157,13 +159,13 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 		return retVal;
 	}
 
-	private Point computeCenterForChannel( int c, MadChannelInstance auci )
+	private Point computeCenterForChannel( final int c, final MadChannelInstance auci )
 	{
 		int x = 0;
 		int y = 0;
-		MadChannelDefinition aucd = auci.definition;
-		MadChannelDirection audirection = aucd.direction;
-		MadChannelType autype = aucd.type;
+		final MadChannelDefinition aucd = auci.definition;
+		final MadChannelDirection audirection = aucd.direction;
+		final MadChannelType autype = aucd.type;
 		int xOffset = -1;
 		int yOffset = -1;
 		int chanNum = c;
@@ -234,7 +236,7 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 		}
 		x = chanNum * CHANNEL_SPACING_X;
 
-		Point retVal = new Point( xOffset + x, yOffset + y );
+		final Point retVal = new Point( xOffset + x, yOffset + y );
 //		log.debug("For channel " + c + " direction " + audirection + " computed " + retVal.toString() );
 		return retVal;
 	}
@@ -242,6 +244,6 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	@Override
 	public Span getCellSpan()
 	{
-		return span;
+		return SPAN;
 	}
 }

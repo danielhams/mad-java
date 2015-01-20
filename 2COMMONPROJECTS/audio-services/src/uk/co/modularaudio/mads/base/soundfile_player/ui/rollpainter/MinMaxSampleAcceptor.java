@@ -26,27 +26,27 @@ import uk.co.modularaudio.util.math.MinMaxComputer;
 public class MinMaxSampleAcceptor implements SampleAcceptor
 {
 //	private static Log log = LogFactory.getLog( MinMaxSampleAcceptor.class.getName());
-	
+
 	private final int numChannels;
-	
+
 //	public float minValue;
 //	public float maxValue;
 	public float[] minMaxValues = new float[2];
-	
+
 	public MinMaxSampleAcceptor( int numChannels )
 	{
 		this.numChannels = numChannels;
 		reset();
 	}
-	
-	public void reset()
+
+	public final void reset()
 	{
 		minMaxValues[0] = Float.MAX_VALUE;
 		minMaxValues[1] = -minMaxValues[0];
 	}
 
 	@Override
-	public void acceptEmptySamples( long framePosition, int numFramesOfZeros )
+	public void acceptEmptySamples( final long framePosition, final int numFramesOfZeros )
 	{
 //		log.debug("Received empty samples at frame position " + framePosition + " of " + numFramesOfZeros );
 		minMaxValues[0] = 0.0f;
@@ -55,10 +55,10 @@ public class MinMaxSampleAcceptor implements SampleAcceptor
 
 	@Override
 	public void acceptSamples(
-			long framePosition,
-			int numFramesToAccept,
-			float[] blockBuffer,
-			int blockFloatsOffset)
+			final long framePosition,
+			final int numFramesToAccept,
+			final float[] blockBuffer,
+			final int blockFloatsOffset)
 	{
 //		log.debug("Received samples at frame position " + framePosition + " of " + numFramesToAccept  + " from " + blockFloatsOffset );
 

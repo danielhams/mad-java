@@ -24,14 +24,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<SoundfilePlayerMadInstance>
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_ACTIVE = 1;
 	public static final int COMMAND_IN_PLAYING_STATE = 2;
 	public static final int COMMAND_IN_PLAY_SPEED = 3;
@@ -43,14 +43,14 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 	public static final int COMMAND_IN_SHUTTLE_FFWD_BEGIN = 9;
 	public static final int COMMAND_IN_SHUTTLE_FFWD_END = 10;
 	public static final int COMMAND_IN_SHUTTLE_SET_POSITION_END = 11;
-	
+
 	public static final int COMMAND_OUT_RECYCLE_SAMPLE = 16;
-	
+
 	public static final int COMMAND_OUT_STATE_CHANGE = 17;
 	public static final int COMMAND_OUT_CURRENT_SAMPLE = 18;
 	public static final int COMMAND_OUT_FRAME_POSITION_ABS = 19;
 	public static final int COMMAND_OUT_FRAME_POSITION_DELTA = 20;
-	
+
 	public SoundfilePlayerIOQueueBridge()
 	{
 	}
@@ -62,27 +62,26 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 		{
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean active = ( queueEntry.value == 1 );
-				instance.active = active;
+				instance.active = queueEntry.value == 1;
 				break;
 			}
 			case COMMAND_IN_PLAYING_STATE:
 			{
-				int value = (int)queueEntry.value;
-				SoundfilePlayerMadInstance.PlayingState desiredState = SoundfilePlayerMadInstance.PlayingState.values()[ value ];
+				final int value = (int)queueEntry.value;
+				final SoundfilePlayerMadInstance.PlayingState desiredState = SoundfilePlayerMadInstance.PlayingState.values()[ value ];
 				instance.setDesiredState( desiredState );
 				break;
 			}
 			case COMMAND_IN_PLAY_SPEED:
 			{
-				float value = Float.intBitsToFloat(((int)queueEntry.value));
+				final float value = Float.intBitsToFloat(((int)queueEntry.value));
 				instance.setDesiredPlaySpeed( value );
 				break;
 			}
 			case COMMAND_IN_RESAMPLED_SAMPLE:
 			{
-				BlockResamplingClient prevSample = instance.getResampledSample();
-				BlockResamplingClient resampledSample = (BlockResamplingClient)queueEntry.object;
+				final BlockResamplingClient prevSample = instance.getResampledSample();
+				final BlockResamplingClient resampledSample = (BlockResamplingClient)queueEntry.object;
 				instance.setResampledSample( resampledSample );
 				if( prevSample != null )
 				{
@@ -95,7 +94,7 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 			}
 			case COMMAND_IN_SHUTTLE_REWIND_TO_START:
 			{
-				BlockResamplingClient curSample = instance.getResampledSample();
+				final BlockResamplingClient curSample = instance.getResampledSample();
 				if( curSample != null )
 				{
 					instance.resetFramePosition( 0 );
@@ -107,10 +106,10 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 			}
 			case COMMAND_IN_SHUTTLE_FFWD_TO_END:
 			{
-				BlockResamplingClient curSample = instance.getResampledSample();
+				final BlockResamplingClient curSample = instance.getResampledSample();
 				if( curSample != null )
 				{
-					long lastFrameNum = curSample.getTotalNumFrames() - 1;
+					final long lastFrameNum = curSample.getTotalNumFrames() - 1;
 					instance.resetFramePosition( lastFrameNum );
 					instance.addJobForSampleCachingService();
 
@@ -120,7 +119,7 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 				break;
 			}

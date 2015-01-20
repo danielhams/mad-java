@@ -34,20 +34,20 @@ import uk.co.modularaudio.util.math.MathFormatter;
 public class AmpSliderLevelsAndLabels
 {
 //	private static Log log = LogFactory.getLog( AmpSliderLevelsAndLabels.class.getName() );
-	
+
 	public final static int AMP_SLIDER_NUM_STEPS = 1000;
-	
-	private static Integer creationMutex = new Integer(0);
+
+	private static Integer creationMutex = Integer.valueOf(0);
 	private DbToLevelComputer dbToLevelComputer = null;
 	private AmpSliderLabelHashtable labels = null;
-	
+
 	private static Map<String, AmpSliderLevelsAndLabels> fontAndColorToLabelsMap = new HashMap<String, AmpSliderLevelsAndLabels>();
 
 	public AmpSliderLevelsAndLabels( Font f, Color foregroundColour )
 	{
 		dbToLevelComputer = new MixdownSliderDbToLevelComputer( AMP_SLIDER_NUM_STEPS );
 		labels = new AmpSliderLabelHashtable();
-		
+
 		float[] dbLevelsToLabel = new float[] { 10.0f, 5.0f, 0.0f, -5.0f, -10.0f, -20.0f, -30.0f, -50.0f, -70.0f, Float.NEGATIVE_INFINITY };
 		for( int i = 0 ; i < dbLevelsToLabel.length ; i++ )
 		{
@@ -59,7 +59,7 @@ public class AmpSliderLevelsAndLabels
 		}
 
 	}
-	
+
 	private JLabel buildLabel( Font f, String label, Color foregroundColour )
 	{
 		JLabel retVal = new JLabel( label );
@@ -67,7 +67,7 @@ public class AmpSliderLevelsAndLabels
 		retVal.setForeground( foregroundColour );
 		return retVal;
 	}
-	
+
 	public static AmpSliderLevelsAndLabels getInstance( Font f, Color foregroundColor )
 	{
 		AmpSliderLevelsAndLabels instance = null;
@@ -85,7 +85,7 @@ public class AmpSliderLevelsAndLabels
 //				log.debug( "Found, using existing entry" );
 			}
 		}
-		
+
 		return instance;
 	}
 

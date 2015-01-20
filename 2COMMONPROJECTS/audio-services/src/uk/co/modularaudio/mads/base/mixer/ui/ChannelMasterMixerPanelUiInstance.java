@@ -61,7 +61,7 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( true );
-		this.setBackground( MixerMadUiDefinition.masterBgColor );
+		this.setBackground( MixerMadUiDefinition.MASTER_BG_COLOR );
 
 		MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addRowConstraint( "[grow 0][fill][grow 0]" );

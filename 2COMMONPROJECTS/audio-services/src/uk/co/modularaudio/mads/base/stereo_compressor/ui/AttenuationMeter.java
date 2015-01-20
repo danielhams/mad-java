@@ -41,29 +41,29 @@ public class AttenuationMeter extends PacPanel
 {
 	public static final int PREFERRED_WIDTH = 10;
 	public static final int PREFERRED_METER_WIDTH = PREFERRED_WIDTH - 2;
-	
+
 	private static final Color OVER_THRESHOLD_COLOR = new Color( 0.4f, 0.8f, 0.4f );
-	
+
 	private static final long serialVersionUID = -7723883774839586874L;
 
 	private static Log log = LogFactory.getLog( AttenuationMeter.class.getName() );
-	
+
 	private float currentMeterValueDb = 0.0f;
 	private float previouslyPaintedMeterValueDb = 0.0f;
 
 	private long maxValueTimestamp = 0;
 	private float currentMinValueDb = 0.0f;
 	private float previouslyPaintedMinValueDb = 0.0f;
-	
+
 	private final StereoCompressorMadUiInstance uiInstance;
-	
+
 	private DbToLevelComputer dbToLevelComputer = null;
-	
+
 	private BufferedImageAllocator bufferedImageAllocator = null;
 	private TiledBufferedImage tiledBufferedImage = null;
 	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;	
-	
+	private Graphics outBufferedImageGraphics = null;
+
 	private int componentWidth = -1;
 	private int componentHeight = -1;
 	public AttenuationMeter( StereoCompressorMadUiInstance uiInstance,
@@ -73,12 +73,13 @@ public class AttenuationMeter extends PacPanel
 		this.uiInstance = uiInstance;
 		this.dbToLevelComputer = dbToLevelComputer;
 		this.bufferedImageAllocator = bia;
-		
+
 		setBackground( Color.black );
 		Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
 		this.setPreferredSize( myPreferredSize );
 	}
-	
+
+	@Override
 	public void paint( Graphics g )
 	{
 		if( outBufferedImage != null )
@@ -90,35 +91,35 @@ public class AttenuationMeter extends PacPanel
 	private void refillMeterImage()
 	{
 //		log.debug("Repainting it.");
-		
+
 		if( outBufferedImageGraphics != null )
 		{
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
-			
+
 			int meterWidth = PREFERRED_METER_WIDTH;
 			int totalMeterHeight = componentHeight - 2;
-			
+
 			int meterHeight = totalMeterHeight;
 			int meterHeightOffset = 0;
-	
+
 			int yReverser = meterHeight + 1;
-			
+
 			float levelValue = 0.0f;
 			if( currentMeterValueDb != Float.NEGATIVE_INFINITY )
 			{
 				levelValue = dbToLevelComputer.toNormalisedSliderLevelFromDb( currentMeterValueDb );
 			}
-	
+
 			outBufferedImageGraphics.setColor( OVER_THRESHOLD_COLOR );
 			float underVal = levelValue;
 			int underBarHeightInPixels = (int)(underVal * meterHeight );
-			underBarHeightInPixels = (underBarHeightInPixels > (meterHeight) ? (meterHeight) : (underBarHeightInPixels < 0 ? 0 : underBarHeightInPixels ));
+			underBarHeightInPixels = underBarHeightInPixels > meterHeight ? meterHeight : underBarHeightInPixels < 0 ? 0 : underBarHeightInPixels;
 //			int underStartY = meterHeight - underBarHeightInPixels + 1 + meterHeightOffset;
 //			outBufferedImageGraphics.fillRect( 3, underStartY, meterWidth - 4, underBarHeightInPixels );
 			int underStartY = underBarHeightInPixels + 1 + meterHeightOffset;
 			outBufferedImageGraphics.fillRect( 3, 1, meterWidth - 4, meterHeight - underStartY );
-			
+
 			float minLevelValue = 0.0f;
 			Color maxDbColor = OVER_THRESHOLD_COLOR;
 			if( currentMinValueDb != Float.NEGATIVE_INFINITY )
@@ -126,12 +127,12 @@ public class AttenuationMeter extends PacPanel
 				minLevelValue = dbToLevelComputer.toNormalisedSliderLevelFromDb( currentMinValueDb );
 			}
 			outBufferedImageGraphics.setColor( maxDbColor );
-			
+
 			int minValueHeightInPixels = (int)(minLevelValue * meterHeight);
-			minValueHeightInPixels = (minValueHeightInPixels > (meterHeight) ? (meterHeight) : (minValueHeightInPixels < 0 ? 0 : minValueHeightInPixels ));
+			minValueHeightInPixels = minValueHeightInPixels > meterHeight ? meterHeight : minValueHeightInPixels < 0 ? 0 : minValueHeightInPixels;
 			int minStartY = yReverser - minValueHeightInPixels + meterHeightOffset;
 			outBufferedImageGraphics.drawLine( 1, minStartY, meterWidth, minStartY );
-			
+
 	//		outBufferedImage.flush();
 		}
 	}
@@ -149,7 +150,7 @@ public class AttenuationMeter extends PacPanel
 			currentMinValueDb = currentMeterValueDb;
 			maxValueTimestamp = currentTime;
 		}
-		
+
 		if( showing )
 		{
 			if( currentMeterValueDb != previouslyPaintedMeterValueDb ||
@@ -186,7 +187,7 @@ public class AttenuationMeter extends PacPanel
 			outBufferedImageGraphics = null;
 		}
 	}
-	
+
 	@Override
 	public void setBounds( int x, int y, int width, int height )
 	{
@@ -217,5 +218,5 @@ public class AttenuationMeter extends PacPanel
 		componentWidth = width;
 		componentHeight = height;
 	}
-	
+
 }

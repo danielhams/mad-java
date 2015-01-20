@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<StereoCompressorMadInstance>
 {
 	private static Log log = LogFactory.getLog( StereoCompressorIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_THRESHOLD = 0;
 	public static final int COMMAND_IN_THRESHOLD_TYPE = 1;
 	public static final int COMMAND_IN_ATTACK_MILLIS = 2;
@@ -48,37 +48,38 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 	public static final int COMMAND_OUT_ENV_VALUE = 10;
 	public static final int COMMAND_OUT_ATTENUATION = 11;
 
-	
+
 	public StereoCompressorIOQueueBridge()
 	{
 	}
 
 	@Override
 	public void receiveQueuedEventsToInstance(
-			StereoCompressorMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp, IOQueueEvent queueEntry )
+			final StereoCompressorMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_THRESHOLD:
 			{
-				float valueAsFloat = Float.intBitsToFloat( (int)queueEntry.value );
+				final float valueAsFloat = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.desiredThresholdDb = valueAsFloat;
 //				log.debug("Set desired threshold dB to " + instance.desiredThresholdDb );
 				break;
 			}
 			case COMMAND_IN_THRESHOLD_TYPE:
 			{
-				int valueAsInt = (int)queueEntry.value;
+				final int valueAsInt = (int)queueEntry.value;
 				instance.desiredThresholdType = ThresholdTypeEnum.values()[ valueAsInt ];
 //				log.debug("Set thresholdtype to " + instance.desiredThresholdType );
 				break;
 			}
 			case COMMAND_IN_ATTACK_MILLIS:
 			{
-				int valueAsInt = (int)queueEntry.value;
-				float valAsFloat = Float.intBitsToFloat( valueAsInt );
+				final int valueAsInt = (int)queueEntry.value;
+				final float valAsFloat = Float.intBitsToFloat( valueAsInt );
 				instance.desiredAttack = valAsFloat;
 				instance.attackSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate,
 						valAsFloat );
@@ -87,8 +88,8 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 			}
 			case COMMAND_IN_RELEASE_MILLIS:
 			{
-				int valueAsInt = (int)queueEntry.value;
-				float valAsFloat = Float.intBitsToFloat( valueAsInt );
+				final int valueAsInt = (int)queueEntry.value;
+				final float valAsFloat = Float.intBitsToFloat( valueAsInt );
 				instance.desiredRelease = valAsFloat;
 				instance.releaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate,
 						valAsFloat );
@@ -97,7 +98,7 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 			}
 			case COMMAND_IN_RATIO:
 			{
-				int valueAsInt = (int)queueEntry.value;
+				final int valueAsInt = (int)queueEntry.value;
 				float valAsFloat = Float.intBitsToFloat( valueAsInt );
 				valAsFloat = (valAsFloat == 0.0f ? 1.0f : valAsFloat );
 				instance.desiredCompRatio = 1.0f / valAsFloat;
@@ -106,7 +107,7 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 			}
 			case COMMAND_IN_MAKEUP_GAIN:
 			{
-				int valueAsInt = (int)queueEntry.value;
+				final int valueAsInt = (int)queueEntry.value;
 				float valAsFloat = Float.intBitsToFloat( valueAsInt );
 				valAsFloat = (valAsFloat == 0.0f ? 1.0f : valAsFloat );
 				instance.desiredMakeupGain = (float)AudioMath.dbToLevel( valAsFloat );
@@ -115,22 +116,23 @@ public class StereoCompressorIOQueueBridge extends MadLocklessQueueBridge<Stereo
 			}
 			case COMMAND_IN_ACTIVE:
 			{
-				instance.active = (queueEntry.value == 1);
+				instance.active = queueEntry.value == 1;
 				break;
 			}
 			case COMMAND_IN_LOOKAHEAD:
 			{
-				boolean bValue = (queueEntry.value == 1 );
+				final boolean bValue = queueEntry.value == 1;
 				instance.desiredLookahead = bValue;
 				break;
-			}			
+			}
 			default:
 			{
-				String msg ="Unknown command to instance: " + queueEntry.command;
-				log.error( msg );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Unknown command to instance: " + queueEntry.command );
+				}
 				break;
 			}
 		}
-		
 	}
 }

@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class StereoCompressorMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
-	private static final Span span = new Span(2,4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT,
 		StereoCompressorMadDefinition.CONSUMER_IN_WAVE_RIGHT,
 		StereoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT,
@@ -47,8 +47,8 @@ public class StereoCompressorMadUiDefinition
 		StereoCompressorMadDefinition.PRODUCER_OUT_DRY_LEFT,
 		StereoCompressorMadDefinition.PRODUCER_OUT_DRY_RIGHT
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSITIONS = new Point[] {
 		new Point( 45, 100 ),
 		new Point( 65, 100 ),
 		new Point( 100, 100 ),
@@ -58,8 +58,8 @@ public class StereoCompressorMadUiDefinition
 		new Point( 230, 100 ),
 		new Point( 250, 100 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"ThresholdType",
 		"Lookahead",
 		"InMeter",
@@ -71,8 +71,8 @@ public class StereoCompressorMadUiDefinition
 		"MakeupGain",
 		"OutMeter"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.CHECKBOX,
 		ControlType.DISPLAY,
@@ -84,8 +84,8 @@ public class StereoCompressorMadUiDefinition
 		ControlType.SLIDER,
 		ControlType.DISPLAY
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		StereoCompressorThresholdTypeComboUiJComponent.class,
 		StereoCompressorLookaheadCheckboxUiJComponent.class,
 		StereoCompressorSourceSignalMeterUiComponent.class,
@@ -97,9 +97,9 @@ public class StereoCompressorMadUiDefinition
 		StereoCompressorMakeupGainSliderUiJComponent.class,
 		StereoCompressorOutSignalMeterUiComponent.class
 	};
-	
+
 	// 6 Between sliders
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 200,  3,  80,  30 ),			// Threshold Type
 		new Rectangle( 280,  3, 120,  30 ),			// Lookahead Checkbox
 		new Rectangle(  16, 40,  50, 250 ),			// In Signal Meter
@@ -111,20 +111,23 @@ public class StereoCompressorMadUiDefinition
 		new Rectangle( 420, 40,  70, 250 ),			// Makeup Gain
 		new Rectangle( 490, 40,  50, 250 )			// Out Signal Meter
 	};
-	
-	private static final Class<StereoCompressorMadUiInstance> instanceClass = StereoCompressorMadUiInstance.class;
-	
-	public StereoCompressorMadUiDefinition( BufferedImageAllocator bia, StereoCompressorMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<StereoCompressorMadUiInstance> INSTANCE_CLASS = StereoCompressorMadUiInstance.class;
+
+	public StereoCompressorMadUiDefinition( final BufferedImageAllocator bia,
+			final StereoCompressorMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSITIONS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

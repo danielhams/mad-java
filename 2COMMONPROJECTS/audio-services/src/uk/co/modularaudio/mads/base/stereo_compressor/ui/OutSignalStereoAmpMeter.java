@@ -36,28 +36,28 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 public class OutSignalStereoAmpMeter extends JPanel
 {
 	private static final long serialVersionUID = 1358562457507980606L;
-	
+
 	private static Log log = LogFactory.getLog( OutSignalStereoAmpMeter.class.getName() );
-	
-	private static int METER_NUM_STEPS = 1000;
-		
-	private OutSignalAmpMeter leftAmpMeter = null;
-	private OutSignalAmpMeterLevelMarks ampMeterLabels = null;
-	private OutSignalAmpMeter rightAmpMeter = null;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	public OutSignalStereoAmpMeter( StereoCompressorMadUiInstance uiInstance, BufferedImageAllocator bia, boolean showClipBox )
+
+	private final static int METER_NUM_STEPS = 1000;
+
+	private final OutSignalAmpMeter leftAmpMeter;
+	private final OutSignalAmpMeterLevelMarks ampMeterLabels;
+	private final OutSignalAmpMeter rightAmpMeter;
+
+	public OutSignalStereoAmpMeter( final StereoCompressorMadUiInstance uiInstance,
+			final BufferedImageAllocator bia,
+			final boolean showClipBox )
 	{
 		setOpaque( false );
 		MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
-		
+
 		Font f = getFont().deriveFont( 9.0f );
 //		Font f = getFont();
-		
-		dbToLevelComputer = new AmpMeterDbToLevelComputer( METER_NUM_STEPS );
-		
+
+		final DbToLevelComputer dbToLevelComputer = new AmpMeterDbToLevelComputer( METER_NUM_STEPS );
+
 		leftAmpMeter = new OutSignalAmpMeter( uiInstance, dbToLevelComputer, bia, showClipBox );
 		this.add( leftAmpMeter, "gaptop " +
 				OutSignalAmpMeterLevelMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", gapbottom " +
@@ -70,20 +70,20 @@ public class OutSignalStereoAmpMeter extends JPanel
 				OutSignalAmpMeterLevelMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
 	}
 
-	public void receiveMeterReadingInDb( long currentFrameTime,
-			int channelNum,
-			float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentFrameTime,
+			final int channelNum,
+			final float meterReadingDb )
 	{
 		switch( channelNum )
 		{
 			case 0:
 			{
-				leftAmpMeter.receiveMeterReadingInDb( currentFrameTime, meterReadingDb );		
+				leftAmpMeter.receiveMeterReadingInDb( currentFrameTime, meterReadingDb );
 				break;
 			}
 			case 1:
 			{
-				rightAmpMeter.receiveMeterReadingInDb( currentFrameTime, meterReadingDb );		
+				rightAmpMeter.receiveMeterReadingInDb( currentFrameTime, meterReadingDb );
 				break;
 			}
 			default:
@@ -94,10 +94,10 @@ public class OutSignalStereoAmpMeter extends JPanel
 		}
 	}
 
-	public void receiveDisplayTick( long currentGuiTime )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
 		leftAmpMeter.receiveDisplayTick( currentGuiTime );
-		rightAmpMeter.receiveDisplayTick( currentGuiTime );		
+		rightAmpMeter.receiveDisplayTick( currentGuiTime );
 	}
 
 	public void destroy()

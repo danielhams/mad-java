@@ -93,7 +93,7 @@ public class SubRackMadDefinition extends MadSubGraphDefinition<SubRackMadDefini
 	public final static int NUM_CHANNELS = 48;
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHANNEL_NAMES = new String[] {
 		"Input Channel 1",
 		"Input Channel 2",
 		"Input Channel 3",
@@ -143,7 +143,7 @@ public class SubRackMadDefinition extends MadSubGraphDefinition<SubRackMadDefini
 		 "Output Note Channel 7",
 		 "Output Note Channel 8" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHANNEL_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
@@ -192,7 +192,7 @@ public class SubRackMadDefinition extends MadSubGraphDefinition<SubRackMadDefini
 		MadChannelType.NOTE,
 		MadChannelType.NOTE };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHANNEL_DIRECTIONS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		 MadChannelDirection.CONSUMER,
 		 MadChannelDirection.CONSUMER,
 		 MadChannelDirection.CONSUMER,
@@ -241,7 +241,7 @@ public class SubRackMadDefinition extends MadSubGraphDefinition<SubRackMadDefini
 		 MadChannelDirection.PRODUCER,
 		 MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHANNEL_POSITIONS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
@@ -292,48 +292,48 @@ public class SubRackMadDefinition extends MadSubGraphDefinition<SubRackMadDefini
 
 	public static final String DEFINITION_ID = "sub_rack";
 
-	private final static String userVisibleName = "Sub Rack";
+	private final static String USER_VISIBLE_NAME = "Sub Rack";
 
-	private final static String classificationGroup = MadClassificationService.USER_RACK_GROUP_ID;
-	private final static String classificationName = "Sub Rack";
-	private final static String classificationDescription = "Internal component used to represent a sub rack placed as a component";
+	private final static String CLASS_GROUP = MadClassificationService.USER_RACK_GROUP_ID;
+	private final static String CLASS_NAME = "Sub Rack";
+	private final static String CLASS_DESC = "Internal component used to represent a sub rack placed as a component";
 
-	private MadChannelConfiguration channelConfiguration = null;
+	private MadChannelConfiguration channelConfiguration;
 
-	public SubRackMadDefinition( SubRackCreationContext creationContext,
-			MadClassificationService classificationService )
+	public SubRackMadDefinition( final SubRackCreationContext creationContext,
+			final MadClassificationService classificationService )
 		throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID,
-				userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+				USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new MadGraphQueueBridge<SubRackMadInstance>() );
 
-		MadChannelDefinition[] channelDefinitions = buildChannelDefinitions();
+		final MadChannelDefinition[] channelDefinitions = buildChannelDefinitions();
 		channelConfiguration = new MadChannelConfiguration( channelDefinitions );
 	}
 
 	private MadChannelDefinition[] buildChannelDefinitions()
 	{
-		List<MadChannelDefinition> retVal = new ArrayList<MadChannelDefinition>();
+		final List<MadChannelDefinition> retVal = new ArrayList<MadChannelDefinition>();
 
 		for( int c = 0 ; c < NUM_CHANNELS ; c++ )
 		{
-			retVal.add( new MadChannelDefinition( channelNames[ c ],
-					channelTypes[ c ],
-					channelDirections[ c ],
-					channelPositions[ c ] ) );
+			retVal.add( new MadChannelDefinition( CHANNEL_NAMES[ c ],
+					CHANNEL_TYPES[ c ],
+					CHANNEL_DIRECTIONS[ c ],
+					CHANNEL_POSITIONS[ c ] ) );
 		}
 
 		return retVal.toArray( new MadChannelDefinition[ retVal.size() ] );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
 	{
 		return channelConfiguration;
 	}

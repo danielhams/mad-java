@@ -85,11 +85,11 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private float desiredPlaySpeed = 1.0f;
 	private float playSpeed = 1.0f;
 
-	public SoundfilePlayerMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			SoundfilePlayerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public SoundfilePlayerMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final SoundfilePlayerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		advancedComponentsFrontController = creationContext.getAdvancedComponentsFrontController();
@@ -102,49 +102,44 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
-			final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioForMillisAtSampleRate( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-			curValueRatio = curValueRatio / 2.0f;
-			newValueRatio = 1.0f - curValueRatio;
+		newValueRatio = AudioTimingUtils.calculateNewValueRatioForMillisAtSampleRate( sampleRate, VALUE_CHASE_MILLIS );
+		curValueRatio = 1.0f - newValueRatio;
+		curValueRatio = curValueRatio / 2.0f;
+		newValueRatio = 1.0f - curValueRatio;
 
-			numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
+		numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
 
-			leftDcTrap.recomputeR( sampleRate );
-			rightDcTrap.recomputeR( sampleRate );
-		}
-		catch (Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		leftDcTrap.recomputeR( sampleRate );
+		rightDcTrap.recomputeR( sampleRate );
 	}
 
 	@Override
 	public void stop() throws MadProcessingException
 	{
+		// Nothing to do
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
 			final int numFrames )
 	{
-		MadChannelBuffer lb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_LEFT ];
-		boolean leftConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_LEFT );
-		float[] lfb = lb.floatBuffer;
-		MadChannelBuffer rb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_RIGHT ];
-		boolean rightConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_RIGHT );
-		float[] rfb = rb.floatBuffer;
+		final MadChannelBuffer lb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_LEFT ];
+		final boolean leftConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_LEFT );
+		final float[] lfb = lb.floatBuffer;
+		final MadChannelBuffer rb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_RIGHT ];
+		final boolean rightConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_RIGHT );
+		final float[] rfb = rb.floatBuffer;
 
 		if( desiredState != currentState )
 		{
@@ -195,8 +190,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			{
 				playSpeed = (playSpeed * curValueRatio) + (desiredPlaySpeed * newValueRatio);
 				// Emit position event
-				long eventFrameTime = periodStartFrameTime + curOutputPos;
-				long curSamplePos = resampledSample.getFramePosition();
+				final long eventFrameTime = periodStartFrameTime + curOutputPos;
+				final long curSamplePos = resampledSample.getFramePosition();
 				if( curSamplePos != lastEmittedPosition )
 				{
 					emitDeltaPositionEvent( tempQueueEntryStorage, eventFrameTime, curSamplePos, resampledSample );
@@ -241,14 +236,27 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		return advancedComponentsFrontController;
 	}
 
-	protected void emitStateChangedToStop( ThreadSpecificTemporaryEventStorage tses, long currentFrameTime, SoundfilePlayerMadInstance.PlayingState state )
+	protected void emitStateChangedToStop( final ThreadSpecificTemporaryEventStorage tses,
+			final long currentFrameTime,
+			final SoundfilePlayerMadInstance.PlayingState state )
 	{
-		localBridge.queueTemporalEventToUi(tses,  currentFrameTime,  SoundfilePlayerIOQueueBridge.COMMAND_OUT_STATE_CHANGE, state.ordinal(), null );
+		localBridge.queueTemporalEventToUi( tses,
+				currentFrameTime,
+				SoundfilePlayerIOQueueBridge.COMMAND_OUT_STATE_CHANGE,
+				state.ordinal(),
+				null );
 	}
 
-	protected void emitDeltaPositionEvent( ThreadSpecificTemporaryEventStorage tses, long eventFrameTime, long curPos, BlockResamplingClient whichSample )
+	protected void emitDeltaPositionEvent( final ThreadSpecificTemporaryEventStorage tses,
+			final long eventFrameTime,
+			final long curPos,
+			final BlockResamplingClient whichSample )
 	{
-		localBridge.queueTemporalEventToUi(tses, eventFrameTime, SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_DELTA, curPos, whichSample );
+		localBridge.queueTemporalEventToUi( tses,
+				eventFrameTime,
+				SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_DELTA,
+				curPos,
+				whichSample );
 	}
 
 	@Override
@@ -264,7 +272,10 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			}
 			catch( Exception e )
 			{
-				log.error("Exception caught cleaning up sample cache client: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Exception caught cleaning up sample cache client: " + e.toString(), e );
+				}
 			}
 			resampledSample = null;
 		}
@@ -276,22 +287,22 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		return resampledSample;
 	}
 
-	public void setResampledSample( BlockResamplingClient newSample )
+	public void setResampledSample( final BlockResamplingClient newSample )
 	{
 		resampledSample = newSample;
 	}
 
-	public void setDesiredState(PlayingState newState)
+	public void setDesiredState( final PlayingState newState )
 	{
 		desiredState = newState;
 	}
 
-	public void setDesiredPlaySpeed(float newSpeed)
+	public void setDesiredPlaySpeed( final float newSpeed )
 	{
 		desiredPlaySpeed = newSpeed;
 	}
 
-	public void resetFramePosition( long newFramePosition )
+	public void resetFramePosition( final long newFramePosition )
 	{
 		resampledSample.setFramePosition( newFramePosition );
 		resampledSample.setFpOffset( 0.0f );

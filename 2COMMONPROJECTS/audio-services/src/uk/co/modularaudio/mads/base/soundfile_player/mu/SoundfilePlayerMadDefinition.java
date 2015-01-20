@@ -40,48 +40,48 @@ public class SoundfilePlayerMadDefinition extends AbstractNonConfigurableMadDefi
 
 	public static final String DEFINITION_ID = "soundfile_player";
 
-	private final static String userVisibleName = "Soundfile Player";
+	private final static String USER_VISIBLE_NAME = "Soundfile Player";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_SOURCE_GROUP_ID;
-	private final static String classificationName = "Soundfile Player";
-	private final static String classificationDescription = "A sound file player will a wave display and adjustable speed";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_SOURCE_GROUP_ID;
+	private final static String CLASS_NAME = "Soundfile Player";
+	private final static String CLASS_DESC = "A sound file player will a wave display and adjustable speed";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Output Wave Left",
 		"Output Wave Right"
 	};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO
 	};
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] {
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER
 	};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] {
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT
 	};
 
-	public SoundfilePlayerMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public SoundfilePlayerMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new SoundfilePlayerIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

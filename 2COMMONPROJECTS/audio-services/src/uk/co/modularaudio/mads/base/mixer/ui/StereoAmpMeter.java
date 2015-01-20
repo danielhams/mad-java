@@ -36,29 +36,28 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 public class StereoAmpMeter extends JPanel
 {
 	private static final long serialVersionUID = 1358562457507980606L;
-	
+
 	private static Log log = LogFactory.getLog( StereoAmpMeter.class.getName() );
-	
-	private static int METER_NUM_STEPS = 1000;
-		
-	private AmpMeter leftAmpMeter = null;
-	private AmpMeterLevelMarks ampMeterLabels = null;
-	private AmpMeter rightAmpMeter = null;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	public StereoAmpMeter( MixerMadUiInstance uiInstance, BufferedImageAllocator bia, boolean showClipBox )
+
+	private static final int METER_NUM_STEPS = 1000;
+
+	private final AmpMeter leftAmpMeter;
+	private final AmpMeterLevelMarks ampMeterLabels;
+	private final AmpMeter rightAmpMeter;
+
+	public StereoAmpMeter( final MixerMadUiInstance uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
+		super();
 		setOpaque( false );
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
 //		MigLayout compLayout = new MigLayout("insets 2, gap 0, filly,debug");
 		this.setLayout( compLayout );
-		
-		Font f = getFont().deriveFont( 9.0f );
+
+		final Font f = getFont().deriveFont( 9.0f );
 //		Font f = getFont();
-		
-		dbToLevelComputer = new AmpMeterDbToLevelComputer( METER_NUM_STEPS );
-		
+
+		final DbToLevelComputer dbToLevelComputer = new AmpMeterDbToLevelComputer( METER_NUM_STEPS );
+
 		leftAmpMeter = new AmpMeter( uiInstance, dbToLevelComputer, bia, showClipBox );
 		this.add( leftAmpMeter, "gaptop " +
 				AmpMeterLevelMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", gapbottom " +
@@ -72,19 +71,19 @@ public class StereoAmpMeter extends JPanel
 		this.validate();
 	}
 
-	public void receiveMeterReadingInDb( long currentTimestamp, int channelNum,
-			float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentTimestamp, final int channelNum,
+			final float meterReadingDb )
 	{
 		switch( channelNum )
 		{
 			case 0:
 			{
-				leftAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );		
+				leftAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
 				break;
 			}
 			case 1:
 			{
-				rightAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );		
+				rightAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
 				break;
 			}
 			default:
@@ -95,10 +94,10 @@ public class StereoAmpMeter extends JPanel
 		}
 	}
 
-	public void receiveDisplayTick( long currentGuiTime )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
 		leftAmpMeter.receiveDisplayTick( currentGuiTime );
-		rightAmpMeter.receiveDisplayTick( currentGuiTime );		
+		rightAmpMeter.receiveDisplayTick( currentGuiTime );
 	}
 
 	public void destroy()

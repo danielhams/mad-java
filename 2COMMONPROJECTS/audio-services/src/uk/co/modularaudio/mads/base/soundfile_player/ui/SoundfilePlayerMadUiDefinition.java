@@ -35,19 +35,19 @@ import uk.co.modularaudio.util.table.Span;
 public class SoundfilePlayerMadUiDefinition extends
 		AbstractNonConfigurableMadUiDefinition<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
-	private static final Span span = new Span( 2, 4 );
+	private static final Span SPAN = new Span( 2, 4 );
 
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		SoundfilePlayerMadDefinition.PRODUCER_LEFT,
 		SoundfilePlayerMadDefinition.PRODUCER_RIGHT
 	};
 
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSITIONS = new Point[] {
 		new Point( 120, 70 ),
 		new Point( 140, 70 )
 	};
 
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"FileInfo",
 		"SelectFile",
 		"ZoomToggleGroup",
@@ -58,7 +58,7 @@ public class SoundfilePlayerMadUiDefinition extends
 		"FastForward"
 	};
 
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.DISPLAY,
 		ControlType.BUTTON,
 		ControlType.CUSTOM,
@@ -69,7 +69,7 @@ public class SoundfilePlayerMadUiDefinition extends
 		ControlType.BUTTON
 	};
 
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] COTNROL_CLASSES = new Class<?>[] {
 		SoundfilePlayerFileInfoUiJComponent.class,
 		SoundfilePlayerSelectFileUiJComponent.class,
 		SoundfilePlayerZoomToggleGroupUiJComponent.class,
@@ -80,7 +80,7 @@ public class SoundfilePlayerMadUiDefinition extends
 		SoundfilePlayerFFUiJComponent.class
 	};
 
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 47, 38, 411, 30 ),		// FileInfo
 		new Rectangle( 458, 38, 30, 30 ),		// SelectFile
 		new Rectangle( 6, 113, 41, 90 ),		// ZoomToggle
@@ -91,25 +91,25 @@ public class SoundfilePlayerMadUiDefinition extends
 		new Rectangle( 183, 246, 45, 30 )		// FastForward
 	};
 
-	private static final Class<SoundfilePlayerMadUiInstance> instanceClass = SoundfilePlayerMadUiInstance.class;
+	private static final Class<SoundfilePlayerMadUiInstance> INSTANCE_CLASS = SoundfilePlayerMadUiInstance.class;
 
-	public SoundfilePlayerMadUiDefinition( BufferedImageAllocator bia,
-			SoundfilePlayerMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public SoundfilePlayerMadUiDefinition( final BufferedImageAllocator bia,
+			final SoundfilePlayerMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia,
 				definition,
 				cif,
 				imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSITIONS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				COTNROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

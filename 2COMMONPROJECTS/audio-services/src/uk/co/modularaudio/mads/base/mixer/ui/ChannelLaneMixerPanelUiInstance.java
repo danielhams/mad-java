@@ -59,7 +59,7 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 			int controlIndex )
 	{
 		this.setOpaque( true );
-		this.setBackground( MixerMadUiDefinition.laneBgColor );
+		this.setBackground( MixerMadUiDefinition.LANE_BG_COLOR );
 		this.uiInstance = uiInstance;
 
 		laneNumber = controlIndex - 1;

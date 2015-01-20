@@ -42,68 +42,71 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	SoundfilePlayerZoomProducer
 {
 	private static final long serialVersionUID = -5668580477214022847L;
-	
-	private final static String[] toggleLabels = new String[] {
+
+	private final static String[] TOGGLE_LABELS = new String[] {
 		"+",
 		"=",
 		"-"
 	};
-	
+
 	private static Log log = LogFactory.getLog( SoundfilePlayerZoomToggleGroupUiJComponent.class.getName() );
-	
+
 	private final PacToggleGroup toggleGroup;
-	
-	private float[] toggleIndexToMillis = new float[] {
+
+	private final float[] ZOOM_MILLIS = new float[] {
 			1250.0f,
 			2500.0f,
 			5000.0f
 	};
 	private float currentZoomMillis = 2500.0f;
-	
-	private ZoomDataListener dataListener = null;
-	
+
+	private ZoomDataListener dataListener;
+
 	public SoundfilePlayerZoomToggleGroupUiJComponent( SoundfilePlayerMadDefinition definition,
 			SoundfilePlayerMadInstance instance,
 			SoundfilePlayerMadUiInstance uiInstance,
 			int controlIndex )
 	{
 		setOpaque(true);
-		
-		MigLayoutStringHelper msh = new MigLayoutStringHelper();
+
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint("fill");
 		msh.addLayoutConstraint("gap 0");
 		msh.addLayoutConstraint("insets 0");
 		setLayout( msh.createMigLayout() );
-	
-		toggleGroup = new PacToggleGroup( toggleLabels, 1)
+
+		toggleGroup = new PacToggleGroup( TOGGLE_LABELS, 1)
 		{
 			@Override
 			public void receiveUpdateEvent(int previousSelection, int newSelection)
 			{
 				if( dataListener != null )
 				{
-					currentZoomMillis = toggleIndexToMillis[ newSelection ];
+					currentZoomMillis = ZOOM_MILLIS[ newSelection ];
 //					log.debug("Set zoom millis to " + currentZoomMillis );
 					dataListener.setZoomMillis(currentZoomMillis);
 				}
 			}
 		};
-		
-		for( PacToggleButton tb : toggleGroup.getToggleButtons() )
+
+		for( final PacToggleButton tb : toggleGroup.getToggleButtons() )
 		{
 //			Font f = tb.getFont().deriveFont( 8.0f );
-			Font f = tb.getFont();
+			final Font f = tb.getFont();
 			tb.setFont( f );
 			add( tb, "grow, wrap");
 		}
-		
+
 		uiInstance.setZoomProducer( this );
 	}
 
 	@Override
-	public void setZoomDataListener(ZoomDataListener dataListener)
+	public void setZoomDataListener( final ZoomDataListener dataListener )
 	{
-		log.debug("Received data listener - will set zoom millis to " + currentZoomMillis );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received data listener - will set zoom millis to " + currentZoomMillis );
+		}
 		this.dataListener = dataListener;
 		dataListener.setZoomMillis( currentZoomMillis );
 	}
@@ -117,16 +120,19 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	@Override
 	public void receiveControlValue(String value)
 	{
-		log.debug("Receiving control value " + value );
-		int intValue = Integer.valueOf(value);
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Receiving control value " + value );
+		}
+		final int intValue = Integer.valueOf(value);
 		toggleGroup.setSelectedItemIndex( intValue );
-		this.currentZoomMillis = toggleIndexToMillis[intValue];
+		this.currentZoomMillis = ZOOM_MILLIS[intValue];
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			MadTimingParameters timingParameters,
-			long currentGuiTime)
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters,
+			final long currentGuiTime)
 	{
 	}
 

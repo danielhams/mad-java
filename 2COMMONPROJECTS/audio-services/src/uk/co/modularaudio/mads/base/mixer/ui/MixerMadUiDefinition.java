@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.table.Span;
 public class MixerMadUiDefinition
 	extends AbstractConfigurableMadUiDefinition<MixerMadDefinition, MixerMadInstance, MixerMadUiInstance>
 {
-	private static final Class<MixerMadUiInstance> instanceClass = MixerMadUiInstance.class;
+	private static final Class<MixerMadUiInstance> INSTANCE_CLASS = MixerMadUiInstance.class;
 
 	public static final Point INPUT_LANES_START = new Point( 35, 280 );
 
@@ -51,8 +51,8 @@ public class MixerMadUiDefinition
 
 	public static final int OUTPUT_CHANNELS_Y = 50;
 
-	public static final Color laneBgColor = new Color( 57, 63, 63 );
-	public static final Color masterBgColor = new Color( 0.6f, 0.6f, 0.6f );
+	public static final Color LANE_BG_COLOR = new Color( 57, 63, 63 );
+	public static final Color MASTER_BG_COLOR = new Color( 0.6f, 0.6f, 0.6f );
 
 	private final Span defaultSpan = new Span(1,1);
 
@@ -62,7 +62,7 @@ public class MixerMadUiDefinition
 			String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, instanceClass );
+		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
 	}
 
 	protected Point[] getUiChannelPositionsForAui( MixerMadInstanceConfiguration instanceConfiguration,

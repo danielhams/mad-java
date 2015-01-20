@@ -44,41 +44,41 @@ public class SoundfileDisplaySampleFactory implements
 		RollPainterSampleFactory<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer>
 {
 	private static Log log = LogFactory.getLog( SoundfileDisplaySampleFactory.class.getName() );
-	
+
 	private final SoundfileDisplayBufferClearer bufferClearer;
-	
+
 	private final SampleCachingService sampleCachingService;
 	private final BufferedImageAllocator bia;
 	private final int displayWidth;
 	private final int displayWidthMinusOneOverTwo;
 	private final int displayHeight;
 //	private final RPSoundfilePlayerMadUiInstance uiInstance;
-	
+
 	private final RollPaintDefaultUpdateStructure updateStructure = new RollPaintDefaultUpdateStructure();
-	
+
 	private final Color waveColor = new Color( 0.8f, 0.4f, 0.1f );
-	
+
 	private final AllocationMatch allocationMatch = new AllocationMatch();
-	
+
 	private long receivedBufferPos = 0;
-	
+
 	private long lastBufferPos;
 	private float captureLengthMillis;
 	private int numSamplesPerPixel;
 
 	private boolean needsFullUpdate;
-	
+
 	private float minValue;
 	private float maxValue;
 	private float previousMinValue;
 	private float previousMaxValue;
-	
+
 	private SampleCacheClient scc = null;
-	
+
 	private MinMaxSampleAcceptor minMaxSampleAcceptor = new MinMaxSampleAcceptor(2);
-	
-	private static int DEFAULT_SAMPLES_PER_PIXEL = 371;
-	
+
+	private final static int DEFAULT_SAMPLES_PER_PIXEL = 371;
+
 	public SoundfileDisplaySampleFactory(SampleCachingService sampleCachingService,
 		BufferedImageAllocator bia,
 		int displayWidth,
@@ -91,7 +91,7 @@ public class SoundfileDisplaySampleFactory implements
 		this.displayWidthMinusOneOverTwo = (int)((displayWidth-1.0f) / 2.0f);
 		this.displayHeight = displayHeight;
 //		this.uiInstance = uiInstance;
-		
+
 		lastBufferPos = 0;
 		numSamplesPerPixel = DEFAULT_SAMPLES_PER_PIXEL;
 		needsFullUpdate = true;
@@ -99,7 +99,7 @@ public class SoundfileDisplaySampleFactory implements
 		minValue = -maxValue;
 		previousMaxValue = 0.0f;
 		previousMinValue = 0.0f;
-		
+
 		bufferClearer = new SoundfileDisplayBufferClearer( displayWidth, displayHeight );
 	}
 
@@ -124,9 +124,9 @@ public class SoundfileDisplaySampleFactory implements
 			return;
 		}
 		Graphics2D g = buffer.g;
-		
+
 		g.setColor( waveColor );
-		
+
 		long bufferIndex = receivedBufferPos;
 		int bufferIndexRemainder = -(numSamplesPerPixel * (displayWidthMinusOneOverTwo));
 
@@ -134,9 +134,9 @@ public class SoundfileDisplaySampleFactory implements
 //		long startBufferPos = bufferIndex;
 //		long endBufferPos = bufferIndex + numSamplesForDisplay;
 //		log.debug("Full fill from index(" + startBufferPos + ") to (" + endBufferPos +")");
-		
+
 		int numPixelsDone = 0;
-		
+
 		// Set up min and max
 		long preIndex = bufferIndex + bufferIndexRemainder - numSamplesPerPixel;
 		calcMinMaxForSamples( preIndex );
@@ -144,25 +144,25 @@ public class SoundfileDisplaySampleFactory implements
 		previousMaxValue = maxValue;
 		minValue = 0.0f;
 		maxValue = 0.0f;
-		
+
 		for( ; numPixelsDone < displayWidth ; bufferIndexRemainder += numSamplesPerPixel, ++numPixelsDone )
 		{
 			long indexInt = bufferIndex + bufferIndexRemainder;
 //			log.debug("FullFill pulling pixel " + numPixelsDone + " from index " + indexInt + " due to pos(" + bufferIndex + ")-(" +
 //					bufferIndexRemainder + ")" );
-			
+
 			calcMinMaxForSamples( indexInt );
 			extendMinMaxWithPrevious();
-			
+
 			fillInMinMaxLine( g, numPixelsDone, minValue, maxValue );
-			
+
 			previousMinValue = minValue;
 			previousMaxValue = maxValue;
 		}
-		
+
 		lastBufferPos = receivedBufferPos;
 //		log.debug("Full fill setting last buffer pos to (" + lastBufferPos +") with zero remainder");
-	
+
 //		log.debug("Full fill");
 	}
 
@@ -177,9 +177,9 @@ public class SoundfileDisplaySampleFactory implements
 //		log.debug("DeltaFill asked to paint(" + numToPaint + ") at displayOffset(" + displayOffset + ") paintOffset(" + paintOffset + ")");
 
 		Graphics2D g = buffer.g;
-		
+
 		g.setColor(waveColor );
-		
+
 		int numPixelsDone = 0;
 		switch( update.getDirection() )
 		{
@@ -187,29 +187,29 @@ public class SoundfileDisplaySampleFactory implements
 			{
 //				g.setColor(Color.RED );
 				int offsetToBackwardEdge = numSamplesPerPixel * (displayWidthMinusOneOverTwo + numSamples );
-				
+
 				long bufferIndex = lastBufferPos;
 				int bufferRemainder = -offsetToBackwardEdge;
 
 //				log.debug("Delta backwards starting from bufferIndex(" + bufferIndex + ")");
-				
+
 				long preIndexInt = bufferIndex + bufferRemainder - numSamplesPerPixel;
 //				log.debug("So previous bottom value was as index " + preIndexInt + " due to pos(" + bufferIndex + ")-(" +
 //						(bufferRemainder + numSamplesPerPixel ) + ")");
 				calcMinMaxForSamples( preIndexInt );
 				previousMinValue = minValue;
 				previousMaxValue = maxValue;
-				
+
 				for( ; numPixelsDone < numSamples ; bufferRemainder += numSamplesPerPixel, ++numPixelsDone )
 				{
 					long indexInt = bufferIndex + bufferRemainder;
 //					log.debug("Backwards paint pixel (" + numPixelsDone + ") from index(" + indexInt +")");
-					
+
 					calcMinMaxForSamples( indexInt );
 					extendMinMaxWithPrevious();
-					
+
 					fillInMinMaxLine(g, bufferSampleOffset + numPixelsDone, minValue, maxValue);
-					
+
 					previousMinValue = minValue;
 					previousMaxValue = maxValue;
 				}
@@ -221,14 +221,14 @@ public class SoundfileDisplaySampleFactory implements
 			default:
 			{
 //				g.setColor(Color.GREEN );
-				
+
 				int offsetToForwardEdge = numSamplesPerPixel * (displayWidthMinusOneOverTwo + 1);
 
 				long bufferIndex = lastBufferPos;
 				int bufferRemainder = offsetToForwardEdge;
-				
+
 //				log.debug("Delta forwards starting from bufferIndex(" + bufferIndex + ")");
-				
+
 				// Fill in previous min max from pixel before (rough is good enough)
 				long preIndexInt = bufferIndex + bufferRemainder - numSamplesPerPixel;
 //				log.debug("So previous top value was as index " + preIndexInt + " due to pos(" + bufferIndex + ")-(" +
@@ -236,26 +236,26 @@ public class SoundfileDisplaySampleFactory implements
 				calcMinMaxForSamples(preIndexInt);
 				previousMinValue = minValue;
 				previousMaxValue = maxValue;
-				
+
 				for( ; numPixelsDone < numSamples ; bufferRemainder += numSamplesPerPixel, ++numPixelsDone )
 				{
 					long indexInt = bufferIndex + bufferRemainder;
 //					log.debug("Forwards paint pixel (" + numPixelsDone + ") from index(" + indexInt +")");
-					
+
 					calcMinMaxForSamples( indexInt );
 					extendMinMaxWithPrevious();
-					
+
 					int xOffset = bufferSampleOffset + numPixelsDone;
 					fillInMinMaxLine(g, xOffset, minValue, maxValue);
-					
+
 					previousMinValue = minValue;
 					previousMaxValue = maxValue;
 				}
-				
+
 				int numSamplesToMove = numPixelsDone * numSamplesPerPixel;
-				
+
 //				log.debug("Moving position (" + lastBufferPos + ") forward " + numSamplesToMove + " samples");
-				
+
 				lastBufferPos += numSamplesToMove;
 
 				break;
@@ -278,7 +278,7 @@ public class SoundfileDisplaySampleFactory implements
 			updateStructure.setUpdateType( RollPaintUpdateType.NONE );
 		}
 		else if( absNpa > displayWidth ||
-				(absNpa > 0 && numSamplesPerPixel < 4.0f ))
+				absNpa > 0 && numSamplesPerPixel < 4.0f )
 		{
 			resetForFullRepaint();
 		}
@@ -310,27 +310,27 @@ public class SoundfileDisplaySampleFactory implements
 	}
 
 	@Override
-	public SoundfileDisplayBuffer createBuffer(int bufNum)
+	public SoundfileDisplayBuffer createBuffer( final int bufNum )
 			throws DatastoreException
 	{
 		return new SoundfileDisplayBuffer( bufNum, bia, displayWidth, displayHeight, allocationMatch );
 	}
 
 	@Override
-	public void freeBuffer(SoundfileDisplayBuffer bufferToFree)
+	public void freeBuffer( final SoundfileDisplayBuffer bufferToFree )
 			throws DatastoreException
 	{
 		bia.freeBufferedImage( bufferToFree.tbi );
 	}
 
-	public void setSampleCacheClient( SampleCacheClient scc )
+	public void setSampleCacheClient( final SampleCacheClient scc )
 	{
 		this.scc = scc;
 //		receivedBufferPos = 0;
 //		resetForFullRepaint();
 		computeSamplesPerPixel();
 	}
-	
+
 	private void computeSamplesPerPixel()
 	{
 		if( scc == null )
@@ -345,14 +345,14 @@ public class SoundfileDisplaySampleFactory implements
 		}
 //		log.debug("Reset num samples per pixel to " + numSamplesPerPixel );
 	}
-	
+
 	public void setCaptureLengthMillis( float captureLengthMillis )
 	{
 		this.captureLengthMillis = captureLengthMillis;
 		computeSamplesPerPixel();
 		resetForFullRepaint();
 	}
-	
+
 	public void resetForFullRepaint()
 	{
 		lastBufferPos = receivedBufferPos;
@@ -360,7 +360,7 @@ public class SoundfileDisplaySampleFactory implements
 //		log.debug("Resetting for full repaint");
 	}
 
-	public void setCurrentPosition( long newPosition )
+	public void setCurrentPosition( final long newPosition )
 	{
 		receivedBufferPos = newPosition;
 	}
@@ -370,17 +370,17 @@ public class SoundfileDisplaySampleFactory implements
 		// Need the sign, too as that indicates direction
 		return receivedBufferPos - lastBufferPos;
 	}
-	
-	private void calcMinMaxForSamples( long sampleStartIndex )
+
+	private void calcMinMaxForSamples( final long sampleStartIndex )
 	{
 		minMaxSampleAcceptor.reset();
-		long endIndex = (long)(sampleStartIndex + numSamplesPerPixel);
-		
+		long endIndex = sampleStartIndex + numSamplesPerPixel;
+
 		if( numSamplesPerPixel < 1.0f )
 		{
 			endIndex = sampleStartIndex + 1;
 		}
-		
+
 		RealtimeMethodReturnCodeEnum retCode = sampleCachingService.readSamplesInBlocksForCacheClient( scc,
 				sampleStartIndex,
 				(int)(endIndex - sampleStartIndex),
@@ -390,11 +390,11 @@ public class SoundfileDisplaySampleFactory implements
 		{
 			log.error("Failed during min max fetch of sample blocks using acceptor");
 		}
-		
+
 		minValue = minMaxSampleAcceptor.minMaxValues[0];
 		maxValue = minMaxSampleAcceptor.minMaxValues[1];
 	}
-	
+
 	private void extendMinMaxWithPrevious()
 	{
 		if( previousMaxValue < minValue )
@@ -406,13 +406,13 @@ public class SoundfileDisplaySampleFactory implements
 			maxValue = previousMinValue;
 		}
 	}
-	
-	private void fillInMinMaxLine( Graphics2D g, int pixelX, float minValue, float maxValue )
+
+	private void fillInMinMaxLine( final Graphics2D g, final int pixelX, final float minValue, final float maxValue )
 	{
-		float multiplier = (displayHeight / 2.0f);
-		
-		int yMinVal = (int)((-minValue * multiplier) + multiplier);
-		int yMaxVal = (int)((-maxValue * multiplier) + multiplier);
+		final float multiplier = displayHeight / 2.0f;
+
+		final int yMinVal = (int)(-minValue * multiplier + multiplier);
+		final int yMaxVal = (int)(-maxValue * multiplier + multiplier);
 		g.drawLine(pixelX, yMinVal, pixelX, yMaxVal);
 	}
 }
