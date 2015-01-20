@@ -165,6 +165,6 @@ copyNeededLib "jna-4.1.0/dist/jna.jar"
 fetchOneLibraryDirectRename "http://www.modular-audio.co.uk/~dan/mad/jnajack-custom.jar" "jnajack-custom.jar"
 
 # Remove any .project files we find under the extract dir so that eclipse doesn't try and import them
-find $EXTRACTDIR -name ".project" -print
+find $EXTRACTDIR -name ".project" -exec rm {} \;
 
 exit
