@@ -23,8 +23,8 @@ package uk.co.modularaudio.mads.base.crossfader.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class CrossFaderIOQueueBridge extends MadLocklessQueueBridge<CrossFaderMadInstance>
@@ -38,27 +38,26 @@ public class CrossFaderIOQueueBridge extends MadLocklessQueueBridge<CrossFaderMa
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( CrossFaderMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final CrossFaderMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_AMPA_AMPB:
 			{
-				long value = queueEntry.value;
-				int lower32Bits = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampA = Float.intBitsToFloat( lower32Bits );
-				float ampB = Float.intBitsToFloat( upper32Bits );
-				instance.desiredAmpA = ampA;
-				instance.desiredAmpB = ampB;
+				final long value = queueEntry.value;
+				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampA = Float.intBitsToFloat( lower32Bits );
+				final float ampB = Float.intBitsToFloat( upper32Bits );
+				instance.setDesiredAmps( ampA, ampB );
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

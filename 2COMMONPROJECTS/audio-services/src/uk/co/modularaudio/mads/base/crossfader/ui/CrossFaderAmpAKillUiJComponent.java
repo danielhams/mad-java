@@ -36,13 +36,13 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private CrossFaderMadUiInstance uiInstance = null;
+	private final CrossFaderMadUiInstance uiInstance;
 
 	public CrossFaderAmpAKillUiJComponent(
-			CrossFaderMadDefinition definition,
-			CrossFaderMadInstance instance,
-			CrossFaderMadUiInstance uiInstance,
-			int controlIndex )
+			final CrossFaderMadDefinition definition,
+			final CrossFaderMadInstance instance,
+			final CrossFaderMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Default value
 		super( false );
@@ -50,36 +50,25 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 		this.uiInstance = uiInstance;
 		this.setOpaque( true );
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
 		this.setText( "Kill A" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
-		if (selected != uiInstance.guiKillA)
-		{
-			uiInstance.guiKillA = selected;
-			if (uiInstance.guiKillA)
-			{
-				uiInstance.guiDesiredAmpA = 0.0f;
-			}
-			else
-			{
-				// Use the value the slider set
-				uiInstance.guiDesiredAmpA = uiInstance.guiAmpA;
-			}
-		}
+		uiInstance.setGuiKillA( selected );
 		uiInstance.recalculateAmps();
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -87,7 +76,7 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 		if( previousValue != newValue )
 		{

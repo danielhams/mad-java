@@ -41,31 +41,32 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private CrossFaderMadUiInstance uiInstance = null;
+	private final CrossFaderMadUiInstance uiInstance;
 
 	private Map<String, RawCrossfadePowerTable> powerNameToPowerTable = new HashMap<String, RawCrossfadePowerTable>();
 
 	public CrossFaderPowerCurveUiJComponent(
-			CrossFaderMadDefinition definition,
-			CrossFaderMadInstance instance,
-			CrossFaderMadUiInstance uiInstance,
-			int controlIndex )
+			final CrossFaderMadDefinition definition,
+			final CrossFaderMadInstance instance,
+			final CrossFaderMadUiInstance uiInstance,
+			final int controlIndex )
 	{
+		super();
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
 
 		powerNameToPowerTable.put( "Additive", StandardCrossfadePowerTables.getAdditivePowerTable() );
 		powerNameToPowerTable.put( "Equal Power", StandardCrossfadePowerTables.getEqualPowerTable() );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for (String waveName : powerNameToPowerTable.keySet())
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for (final String waveName : powerNameToPowerTable.keySet())
 		{
 			cbm.addElement( waveName );
 		}
 		this.setModel( cbm );
 
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
 
 		this.setSelectedItem( "Additive" );
@@ -78,7 +79,7 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -86,15 +87,15 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
 			// Figure what they changed, and update the component instance data with
 			// the new table
-			String name = (String) getSelectedItem();
-			RawCrossfadePowerTable tableToUse = powerNameToPowerTable.get( name );
-			uiInstance.powerCurveWaveTable = tableToUse;
+			final String name = (String) getSelectedItem();
+			final RawCrossfadePowerTable tableToUse = powerNameToPowerTable.get( name );
+			uiInstance.setPowerCurve( tableToUse );
 			uiInstance.recalculateAmps();
 		}
 	}

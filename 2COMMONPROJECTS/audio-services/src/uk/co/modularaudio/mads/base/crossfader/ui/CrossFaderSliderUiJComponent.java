@@ -34,14 +34,15 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private CrossFaderMadUiInstance uiInstance = null;
+	private final CrossFaderMadUiInstance uiInstance;
 
 	public CrossFaderSliderUiJComponent(
-			CrossFaderMadDefinition definition,
-			CrossFaderMadInstance instance,
-			CrossFaderMadUiInstance uiInstance,
-			int controlIndex )
+			final CrossFaderMadDefinition definition,
+			final CrossFaderMadInstance instance,
+			final CrossFaderMadUiInstance uiInstance,
+			final int controlIndex )
 	{
+		super();
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
 		this.setOrientation( HORIZONTAL );
@@ -53,20 +54,21 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 		this.setValue( 0 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float newValue = ((float) value) / 1000.0f;
-		uiInstance.guiCrossFaderPosition = newValue;
+		final float newValue = (value) / 1000.0f;
+		uiInstance.setCrossFaderPosition( newValue );
 		uiInstance.recalculateAmps();
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,7 +76,7 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{
@@ -85,6 +87,7 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 	@Override
 	public void destroy()
 	{
+		// Nothing needed
 	}
 
 	@Override

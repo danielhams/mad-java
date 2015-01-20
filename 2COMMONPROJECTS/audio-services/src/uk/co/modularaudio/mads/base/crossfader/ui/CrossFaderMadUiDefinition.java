@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class CrossFaderMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT,
 		CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT,
 		CrossFaderMadDefinition.CONSUMER_CHAN2_LEFT,
@@ -46,7 +46,7 @@ public class CrossFaderMadUiDefinition
 		CrossFaderMadDefinition.PRODUCER_OUT_RIGHT
 	};
 
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSITIONS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
 		new Point( 200, 40 ),
@@ -55,50 +55,50 @@ public class CrossFaderMadUiDefinition
 		new Point( 320, 40 )
 	};
 
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"AmpAKill",
 		"AmpBKill",
 		"Slider",
 		"PowerCurve"
 	};
 
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.BUTTON,
 		ControlType.BUTTON,
 		ControlType.SLIDER,
 		ControlType.COMBO
 	};
 
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		CrossFaderAmpAKillUiJComponent.class,
 		CrossFaderAmpBKillUiJComponent.class,
 		CrossFaderSliderUiJComponent.class,
 		CrossFaderPowerCurveUiJComponent.class
 	};
 
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle(  16, 30,  75, 30 ),		// AmpA Kill
 		new Rectangle( 468, 30,  75, 30 ),		// AmpB Kill
 		new Rectangle( 116, 30, 328, 30 ),		// Fader Slider
 		new Rectangle( 240,  3, 130, 30 )		// Power Curve
 	};
 
-	private static final Class<CrossFaderMadUiInstance> instanceClass = CrossFaderMadUiInstance.class;
+	private static final Class<CrossFaderMadUiInstance> INSTANCE_CLASS = CrossFaderMadUiInstance.class;
 
-	public CrossFaderMadUiDefinition( BufferedImageAllocator bia,
-			CrossFaderMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public CrossFaderMadUiDefinition( final BufferedImageAllocator bia,
+			final CrossFaderMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSITIONS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

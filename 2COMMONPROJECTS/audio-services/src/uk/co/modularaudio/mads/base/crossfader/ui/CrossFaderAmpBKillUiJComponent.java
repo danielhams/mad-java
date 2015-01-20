@@ -37,7 +37,7 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private CrossFaderMadUiInstance uiInstance = null;
+	private final CrossFaderMadUiInstance uiInstance;
 
 	public CrossFaderAmpBKillUiJComponent(
 			CrossFaderMadDefinition definition,
@@ -56,6 +56,7 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 		this.setText( "Kill B" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
@@ -67,26 +68,14 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 		shuci.passChangeToInstanceData( shuci.isSelected() );
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
-		if (selected != uiInstance.guiKillB)
-		{
-			uiInstance.guiKillB = selected;
-			if (uiInstance.guiKillB)
-			{
-				uiInstance.guiDesiredAmpB = 0.0f;
-			}
-			else
-			{
-				// Use the value the slider set
-				uiInstance.guiDesiredAmpB = uiInstance.guiAmpB;
-			}
-		}
+		uiInstance.setGuiKillB( selected );
 		uiInstance.recalculateAmps();
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -94,7 +83,7 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 		if( previousValue != newValue )
 		{

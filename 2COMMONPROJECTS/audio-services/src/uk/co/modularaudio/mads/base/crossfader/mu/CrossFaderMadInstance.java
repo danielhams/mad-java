@@ -25,10 +25,10 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -42,16 +42,17 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 //	private static Log log = LogFactory.getLog( OscillatorMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
+
+	private float curValueRatio = 0.0f;
+	private float newValueRatio = 1.0f;
 
 	private long sampleRate = -1;
 
 	private float instanceRealAmpA = 0.0f;
 	private float instanceRealAmpB = 0.0f;
 
-	public float desiredAmpA = 1.0f;
-	public float desiredAmpB = 1.0f;
+	private float desiredAmpA = 1.0f;
+	private float desiredAmpB = 1.0f;
 
 	public CrossFaderMadInstance( BaseComponentsCreationContext creationContext,
 			String instanceName,
@@ -85,20 +86,21 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
 	{
-		boolean in1LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT );
-		boolean in1RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT );
+		final boolean in1LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT );
+		final boolean in1RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT );
 
-		boolean in2LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN2_LEFT );
-		boolean in2RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN2_RIGHT );
+		final boolean in2LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN2_LEFT );
+		final boolean in2RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN2_RIGHT );
 
-		boolean outLConnected = channelConnectedFlags.get( CrossFaderMadDefinition.PRODUCER_OUT_LEFT );
-		boolean outRConnected = channelConnectedFlags.get( CrossFaderMadDefinition.PRODUCER_OUT_RIGHT );
+		final boolean outLConnected = channelConnectedFlags.get( CrossFaderMadDefinition.PRODUCER_OUT_LEFT );
+		final boolean outRConnected = channelConnectedFlags.get( CrossFaderMadDefinition.PRODUCER_OUT_RIGHT );
 
 		// Now mix them together with the precomputed amps
 		// only if we have at least one input and output connected
@@ -107,29 +109,29 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			(outRConnected && (in1RConnected || in2RConnected))
 				)
 		{
-			MadChannelBuffer in1Lcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT ];
-			float[] in1LBuffer = in1Lcb.floatBuffer;
-			MadChannelBuffer in1Rcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT ];
-			float[] in1RBuffer = in1Rcb.floatBuffer;
-			MadChannelBuffer in2Lcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN2_LEFT ];
-			float[] in2LBuffer = in2Lcb.floatBuffer;
-			MadChannelBuffer in2Rcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN2_RIGHT ];
-			float[] in2RBuffer = in2Rcb.floatBuffer;
-			MadChannelBuffer outLcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_LEFT ];
-			float[] outLBuffer = outLcb.floatBuffer;
-			MadChannelBuffer outRcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_RIGHT ];
-			float[] outRBuffer = outRcb.floatBuffer;
+			final MadChannelBuffer in1Lcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT ];
+			final float[] in1LBuffer = in1Lcb.floatBuffer;
+			final MadChannelBuffer in1Rcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT ];
+			final float[] in1RBuffer = in1Rcb.floatBuffer;
+			final MadChannelBuffer in2Lcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN2_LEFT ];
+			final float[] in2LBuffer = in2Lcb.floatBuffer;
+			final MadChannelBuffer in2Rcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN2_RIGHT ];
+			final float[] in2RBuffer = in2Rcb.floatBuffer;
+			final MadChannelBuffer outLcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_LEFT ];
+			final float[] outLBuffer = outLcb.floatBuffer;
+			final MadChannelBuffer outRcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_RIGHT ];
+			final float[] outRBuffer = outRcb.floatBuffer;
 			for( int i = 0 ; i < numFrames ; i++ )
 			{
-				float in1lval = in1LBuffer[i];
-				float in2lval = in2LBuffer[i];
-				float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
+				final float in1lval = in1LBuffer[i];
+				final float in2lval = in2LBuffer[i];
+				final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
 				outLBuffer[i] = lVal;
 
-				float in1rval = in1RBuffer[i];
-				float in2rval = in2RBuffer[i];
+				final float in1rval = in1RBuffer[i];
+				final float in2rval = in2RBuffer[i];
 
-				float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
+				final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
 				outRBuffer[i] = rVal;
 
 				// Fade between the values
@@ -147,5 +149,11 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void setDesiredAmps( final float ampA, final float ampB )
+	{
+		this.desiredAmpA = ampA;
+		this.desiredAmpB = ampB;
 	}
 }

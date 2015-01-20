@@ -44,56 +44,56 @@ public class CrossFaderMadDefinition extends AbstractNonConfigurableMadDefinitio
 
 	public static final String DEFINITION_ID = "cross_fader";
 
-	private final static String userVisibleName = "Cross Fader";
+	private final static String USER_VISIBLE_NAME = "Cross Fader";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ROUTING_GROUP_ID;
-	private final static String classificationName = "Cross Fader";
-	private final static String classificationDescription = "A simple cross fader";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ROUTING_GROUP_ID;
+	private final static String CLASS_NAME = "Cross Fader";
+	private final static String CLASS_DESC = "A simple cross fader";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Channel 1 Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Channel 1 Left",
 		"Input Channel 1 Right",
 		"Input Channel 2 Left",
 		"Input Channel 2 Right",
 		"Output Wave Left",
 		"Output Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public CrossFaderMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public CrossFaderMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new CrossFaderIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

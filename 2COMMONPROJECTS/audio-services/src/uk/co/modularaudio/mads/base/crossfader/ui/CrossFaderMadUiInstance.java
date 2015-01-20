@@ -20,9 +20,9 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
+import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderIOQueueBridge;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
-import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.wavetable.powertable.RawCrossfadePowerTable;
@@ -32,19 +32,14 @@ public class CrossFaderMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 {
 //	private static Log log = LogFactory.getLog( CrossFaderDefUiInstance.class.getName() );
 
-	public boolean guiKillA = false;
-	public float guiDesiredAmpA = 1.0f;
-	public float guiAmpA = 1.0f;
+	private boolean guiKillA = false;
+	private boolean guiKillB = false;
+	private float guiCrossFaderPosition = 0.0f;
 
-	public boolean guiKillB = false;
-	public float guiDesiredAmpB = 1.0f;
-	public float guiAmpB = 1.0f;
+	private RawCrossfadePowerTable powerCurve = StandardCrossfadePowerTables.getAdditivePowerTable();
 
-	public float guiCrossFaderPosition = 0.0f;
-	public RawCrossfadePowerTable powerCurveWaveTable = StandardCrossfadePowerTables.getAdditivePowerTable();
-	
-	public CrossFaderMadUiInstance( CrossFaderMadInstance instance,
-			CrossFaderMadUiDefinition uiDefinition )
+	public CrossFaderMadUiInstance( final CrossFaderMadInstance instance,
+			final CrossFaderMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
@@ -53,42 +48,56 @@ public class CrossFaderMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 	{
 		// Varies from -1.0 to +1.0
 		// Now use the power table from the instance to calculate the real amps
-		float calculatedAmpA = powerCurveWaveTable.getLeftValueAt( guiCrossFaderPosition );
-		float calculatedAmpB = powerCurveWaveTable.getRightValueAt( guiCrossFaderPosition );
-		
-		// Set the values we can use to kill/unkill a channel
-		guiAmpA = calculatedAmpA;
-		guiAmpB = calculatedAmpB;
-		
+		float calculatedAmpA = powerCurve.getLeftValueAt( guiCrossFaderPosition );
+		float calculatedAmpB = powerCurve.getRightValueAt( guiCrossFaderPosition );
+
 		// Now take into account the kill buttons
 		if( guiKillA )
 		{
 			calculatedAmpA = 0.0f;
 		}
-		
+
 		if( guiKillB )
 		{
 			calculatedAmpB = 0.0f;
 		}
-		
-		guiDesiredAmpA = calculatedAmpA;
-		guiDesiredAmpB = calculatedAmpB;
-		
+
 		// Now pass these values to the running instance
-		sendAmpAAmpBChange( guiDesiredAmpA, guiDesiredAmpB );
+		sendAmpAAmpBChange( calculatedAmpA, calculatedAmpB );
 	}
-	
-	public void sendAmpAAmpBChange( float ampA, float ampB )
+
+	public void sendAmpAAmpBChange( final float ampA, final float ampB )
 	{
-		int ampAInt = Float.floatToIntBits( ampA );
-		int ampBInt = Float.floatToIntBits( ampB );
-		long combinedValue = ampAInt | ((long)ampBInt << 32 );
+		final int ampAInt = Float.floatToIntBits( ampA );
+		final int ampBInt = Float.floatToIntBits( ampB );
+		final long combinedValue = ampAInt | ((long)ampBInt << 32 );
 
 		sendTemporalValueToInstance( CrossFaderIOQueueBridge.COMMAND_AMPA_AMPB, combinedValue );
 	}
 
 	@Override
-	public void consumeQueueEntry( CrossFaderMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final CrossFaderMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
+		// No queue processing.
+	}
+
+	public void setPowerCurve( final RawCrossfadePowerTable powerCurve )
+	{
+		this.powerCurve = powerCurve;
+	}
+
+	public void setCrossFaderPosition( final float faderPosition )
+	{
+		this.guiCrossFaderPosition = faderPosition;
+	}
+
+	public void setGuiKillA( final boolean selected )
+	{
+		this.guiKillA = selected;
+	}
+
+	public void setGuiKillB( final boolean selected )
+	{
+		this.guiKillB = selected;
 	}
 }
