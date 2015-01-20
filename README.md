@@ -45,8 +45,8 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 
 10. Further tweaking - you can also add the following switches:
 
-    -------------------------------------------------------------------------------------------------------
+    | switch    | description                                                                             |
+    |-----------|-----------------------------------------------------------------------------------------|
     | --useSlaf | use the gtk2 style platform look and feel. works best with a dark one like dark-adwaita |
     | --beta    | show released and beta level DSP components                                             |
     | --alpha   | show all components include alpha and beta ones                                         |
-    -------------------------------------------------------------------------------------------------------
