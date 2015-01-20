@@ -162,7 +162,7 @@ copyNeededLib "jna-4.1.0/dist/jna.jar"
 
 # JNAJack
 # We currently need some features that aren't in this library yet, use a custom version I've been working with
-fetchOneLibraryDirectRename "http://www.modular-audio.co.uk/~dan/mad/jnajack-custom.jar" "jnajack-custom.jar"
+#fetchOneLibraryDirectRename "jnajack-custom.jar" "jnajack-custom.jar"
 
 # Remove any .project files we find under the extract dir so that eclipse doesn't try and import them
 find $EXTRACTDIR -name ".project" -exec rm {} \;
