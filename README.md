@@ -2,9 +2,9 @@
 A Java based modular audio prototyping application that allows wiring of audio components together.
 
 # Screenshots
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-playingasoundfile.png>Playing a soundfile</img>
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostrack.png>A rack boosting the bass of a signal</img>
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostwiting.png>The wiring behind the bass booster</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-playingasoundfile.png">Playing a soundfile</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostrack.png">A rack boosting the bass of a signal</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostwiting.png">The wiring behind the bass booster</img>
 
 # Building And Running
 Currently development is done using Eclipse and JDK 1.8 on a Linux machine with Jack 2.
