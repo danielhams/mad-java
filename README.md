@@ -19,7 +19,7 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 
     This will populate the libs directory as needed.
 
-3. Add the git repository you just cloned int the eclipse git perspective
+3. Add the git repository you just cloned in the eclipse git perspective.
 
 4. Import all the projects it finds under there.
 
