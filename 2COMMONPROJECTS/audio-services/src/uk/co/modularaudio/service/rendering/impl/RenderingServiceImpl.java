@@ -63,9 +63,9 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 	private TimingService timingService = null;
 
 	@Override
-	public RenderingPlanWithFanAndSync createRenderingPlan( MadGraphInstance<?,?> graph,
-			HardwareIOChannelSettings hardwareChannelSettings,
-			MadFrameTimeFactory frameTimeFactory )
+	public RenderingPlanWithFanAndSync createRenderingPlan( final MadGraphInstance<?,?> graph,
+		final HardwareIOChannelSettings hardwareChannelSettings,
+		final MadFrameTimeFactory frameTimeFactory )
 			throws DatastoreException
 	{
 		RenderingPlanWithFanAndSync retVal = null;
@@ -73,18 +73,18 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		try
 		{
 			// Remove subgraphs by recursively moving their contents 'up' until we have no more subgraphs
-			MadGraphInstance<?,?> zeroDepthGraph = graphService.flattenGraph( graph );
+			final MadGraphInstance<?,?> zeroDepthGraph = graphService.flattenGraph( graph );
 
 			// First step - create a directed graph of "renderjob" that specifies jobs it waits for and
 			// jobs that wait for it
-			DirectedDependencyGraph dependencyGraph = DirectedDependencyGraphHelper.buildDirectedDependencyGraph( graphService, zeroDepthGraph );
+			final DirectedDependencyGraph dependencyGraph = DirectedDependencyGraphHelper.buildDirectedDependencyGraph( graphService, zeroDepthGraph );
 			// Now recurse over the graph adding a "cardinality" to each node where the leaves
 			// start at one and parents have max(child_card) + 1
 			DirectedDependencyGraphHelper.annotateDependencyGraph( dependencyGraph );
 
 			// Finally now we have the cardinality we can order them and create rendering jobs
 			// based on it along with dependency information
-			MadTimingSource timingSource = timingService.getTimingSource();
+			final MadTimingSource timingSource = timingService.getTimingSource();
 
 			retVal = annotatedDependencyGraphToRenderingPlan( dependencyGraph,
 					zeroDepthGraph,
@@ -104,40 +104,39 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		return retVal;
 	}
 
-	protected void fillInBuffersAndConnectedFlags( HardwareIOChannelSettings dataRateConfiguration,
-			MadRenderingJob renderingJob,
-			MadGraphInstance<?,?> graph,
-			Map<MadChannelInstance,
-			MadChannelBuffer> channelInstanceToBufferMap,
-			Set<MadChannelBuffer> allChannelBuffersSet )
+	protected void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings dataRateConfiguration,
+			final MadRenderingJob renderingJob,
+			final MadGraphInstance<?,?> graph,
+			final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap,
+			final Set<MadChannelBuffer> allChannelBuffersSet )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
-		MadInstance<?,?> madInstance = renderingJob.getMadInstance();
-		MadChannelInstance[] allAuChannelInstances = madInstance.getChannelInstances();
-		MadChannelConnectedFlags channelActiveBitset = renderingJob.getChannelConnectedFlags();
+		final MadInstance<?,?> madInstance = renderingJob.getMadInstance();
+		final MadChannelInstance[] allAuChannelInstances = madInstance.getChannelInstances();
+		final MadChannelConnectedFlags channelActiveBitset = renderingJob.getChannelConnectedFlags();
 		// Should set the size of the bitset here
 		//channelActiveBitset.setSize( allAuChannelInstances.size() );
-		MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
+		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
-		Set<MadLink> producerLinks = graph.findAllLinksFromInstance( madInstance );
-		for( MadLink link : producerLinks )
+		final Set<MadLink> producerLinks = graph.findAllLinksFromInstance( madInstance );
+		for( final MadLink link : producerLinks )
 		{
-			MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
+			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
 			if( channelInstanceToBufferMap.containsKey( producerChannelInstance ) )
 			{
 				// Already filled in
 				continue;
 			}
-			MadInstance<?,?> producerInstance = producerChannelInstance.instance;
+			final MadInstance<?,?> producerInstance = producerChannelInstance.instance;
 			assert( producerInstance == madInstance );
 
-			int channelIndex = madInstance.getChannelInstanceIndex( producerChannelInstance );
+			final int channelIndex = madInstance.getChannelInstanceIndex( producerChannelInstance );
 
 			channelActiveBitset.set( channelIndex );
 
-			MadChannelType channelType = producerChannelInstance.definition.type;
-			MadChannelBuffer buf = new MadChannelBuffer( channelType,
+			final MadChannelType channelType = producerChannelInstance.definition.type;
+			final MadChannelBuffer buf = new MadChannelBuffer( channelType,
 					dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
 			channelBufferArray[ channelIndex ] = buf;
 			allChannelBuffersSet.add( buf );
@@ -145,20 +144,20 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 //			log.debug("Created buffer for " + producerInstance.toString() + " channel instance: " + producerChannelInstance.toString());
 		}
 
-		Set<MadLink> consumerLinks = graph.findAllLinksToInstance( madInstance );
-		for( MadLink link : consumerLinks )
+		final Set<MadLink> consumerLinks = graph.findAllLinksToInstance( madInstance );
+		for( final MadLink link : consumerLinks )
 		{
-			MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
-			MadInstance<?,?> consumerInstance = link.getConsumerChannelInstance().instance;
+			final MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
+			final MadInstance<?,?> consumerInstance = link.getConsumerChannelInstance().instance;
 			assert( consumerInstance == madInstance );
 
-			int channelIndex = madInstance.getChannelInstanceIndex( consumerChannelInstance );
+			final int channelIndex = madInstance.getChannelInstanceIndex( consumerChannelInstance );
 
 			channelActiveBitset.set( channelIndex );
 
 			// Now we need to go find the channel buffer that should already be defined for the other end of this link
-			MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
-			MadChannelBuffer producerBuffer = channelInstanceToBufferMap.get( producerChannelInstance );
+			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
+			final MadChannelBuffer producerBuffer = channelInstanceToBufferMap.get( producerChannelInstance );
 			if( producerBuffer == null )
 			{
 				throw new DatastoreException( "Unable to find already initialised produce buffer for link up to consumer" );
@@ -175,11 +174,11 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		// Finally loop over all the channels filling in empty buffers for channels that are not filled.
 		for( int i = 0 ; i < allAuChannelInstances.length ; i++ )
 		{
-			MadChannelInstance auci = allAuChannelInstances[i];
+			final MadChannelInstance auci = allAuChannelInstances[i];
 			if( channelBufferArray[i] == null )
 			{
-				MadChannelType channelType = auci.definition.type;
-				MadChannelBuffer buf = new MadChannelBuffer( channelType,
+				final MadChannelType channelType = auci.definition.type;
+				final MadChannelBuffer buf = new MadChannelBuffer( channelType,
 						dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
 				channelBufferArray[ i ] = buf;
 				allChannelBuffersSet.add( buf );
@@ -190,47 +189,47 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		}
 	}
 
-	protected RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( DirectedDependencyGraph annotatedGraph,
-			MadGraphInstance<?,?> graph,
-			HardwareIOChannelSettings planChannelSettings,
-			MadFrameTimeFactory planFrameTimeFactory,
-			MadTimingSource timingSource )
+	protected RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
+			final MadGraphInstance<?,?> graph,
+			final HardwareIOChannelSettings planChannelSettings,
+			final MadFrameTimeFactory planFrameTimeFactory,
+			final MadTimingSource timingSource )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
 		// Sort all of the jobs into cardinality order - we start from producers
 		// and work down the graph
-		List<FlattenedRenderJob> allFlattenedJobs = annotatedGraph.jobs;
+		final List<FlattenedRenderJob> allFlattenedJobs = annotatedGraph.getJobs();
 //		Collections.sort( allFlattenedJobs, Collections.reverseOrder());
 		Collections.sort( allFlattenedJobs );
 
-		Map<FlattenedRenderJob, MadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, MadParallelRenderingJob>();
+		final Map<FlattenedRenderJob, MadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, MadParallelRenderingJob>();
 		// Places we keep track of all, initial and final jobs
 		// As we want to insert a FAN job at the front, and a SYNC job at the end.
-		Set<AbstractParallelRenderingJob> allJobSet = new HashSet<AbstractParallelRenderingJob>();
-		Set<MadParallelRenderingJob> initialAuJobSet = new HashSet<MadParallelRenderingJob>();
-		Set<MadParallelRenderingJob> finalAuJobSet = new HashSet<MadParallelRenderingJob>();
+		final Set<AbstractParallelRenderingJob> allJobSet = new HashSet<AbstractParallelRenderingJob>();
+		final Set<MadParallelRenderingJob> initialAuJobSet = new HashSet<MadParallelRenderingJob>();
+		final Set<MadParallelRenderingJob> finalAuJobSet = new HashSet<MadParallelRenderingJob>();
 		// We must update the final producersWeWaitFor of the final sync job after we know how many
 
-		FinalSyncParallelRenderingJob finalSyncPrj = new FinalSyncParallelRenderingJob();
+		final FinalSyncParallelRenderingJob finalSyncPrj = new FinalSyncParallelRenderingJob();
 		allJobSet.add( finalSyncPrj );
-		Set<MadInstance<?,?>> allMadInstancesSet = new HashSet<MadInstance<?,?>>();
-		Set<MadChannelBuffer> allChannelBuffersSet = new HashSet<MadChannelBuffer>();
+		final Set<MadInstance<?,?>> allMadInstancesSet = new HashSet<MadInstance<?,?>>();
+		final Set<MadChannelBuffer> allChannelBuffersSet = new HashSet<MadChannelBuffer>();
 		int totalNumJobs = 0;
 
-		Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap =
+		final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap =
 				new HashMap<MadChannelInstance, MadChannelBuffer>();
 
 		// First pass - create entries in the flat to parallel job map for all jobs
 		// and fill in the necessary buffers
-		for( FlattenedRenderJob flatJob : allFlattenedJobs )
+		for( final FlattenedRenderJob flatJob : allFlattenedJobs )
 		{
-			MadInstance<?,?> madInstance = flatJob.getMadInstance();
+			final MadInstance<?,?> madInstance = flatJob.getMadInstance();
 			allMadInstancesSet.add( madInstance );
-			MadRenderingJob renderingJob = new MadRenderingJob( madInstance.getInstanceName(), madInstance );
+			final MadRenderingJob renderingJob = new MadRenderingJob( madInstance.getInstanceName(), madInstance );
 
 			fillInBuffersAndConnectedFlags( planChannelSettings,  renderingJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
 
-			MadParallelRenderingJob parallelJob = new MadParallelRenderingJob(flatJob.getCardinality(),  timingSource, renderingJob );
+			final MadParallelRenderingJob parallelJob = new MadParallelRenderingJob(flatJob.getCardinality(),  timingSource, renderingJob );
 			flatToParallelJobMap.put( flatJob, parallelJob );
 
 			allJobSet.add( parallelJob );
@@ -239,21 +238,21 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		}
 
 		// Second pass, filling in dependencies
-		for( FlattenedRenderJob flatJob : allFlattenedJobs )
+		for( final FlattenedRenderJob flatJob : allFlattenedJobs )
 		{
 			// Who do this job depend on, and who depends on this job
-			Set<FlattenedRenderJob> flatProducerJobsWeWaitFor = flatJob.getProducerJobsWeWaitFor();
-			int numProducersWeWaitFor = flatProducerJobsWeWaitFor.size();
-			Set<FlattenedRenderJob> flatConsJobsWaitingForUs = flatJob.getConsumerJobsWaitingForUs();
-			int numConsumersWaitForUs = flatConsJobsWaitingForUs.size();
+			final Set<FlattenedRenderJob> flatProducerJobsWeWaitFor = flatJob.getProducerJobsWeWaitFor();
+			final int numProducersWeWaitFor = flatProducerJobsWeWaitFor.size();
+			final Set<FlattenedRenderJob> flatConsJobsWaitingForUs = flatJob.getConsumerJobsWaitingForUs();
+			final int numConsumersWaitForUs = flatConsJobsWaitingForUs.size();
 
-			MadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );
+			final MadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );
 
 			// Now look up the jobs waiting for us
-			Set<AbstractParallelRenderingJob> consJobsThatWaitForUsSet = new HashSet<AbstractParallelRenderingJob>();
-			for( FlattenedRenderJob flatConJobWaitingForUs : flatConsJobsWaitingForUs )
+			final Set<AbstractParallelRenderingJob> consJobsThatWaitForUsSet = new HashSet<AbstractParallelRenderingJob>();
+			for( final FlattenedRenderJob flatConJobWaitingForUs : flatConsJobsWaitingForUs )
 			{
-				MadParallelRenderingJob relatedParallelRenderJob = flatToParallelJobMap.get( flatConJobWaitingForUs );
+				final MadParallelRenderingJob relatedParallelRenderJob = flatToParallelJobMap.get( flatConJobWaitingForUs );
 				if( relatedParallelRenderJob == null )
 				{
 					throw new RecordNotFoundException( "Unable to find related parallel job for one waiting for us. Sort order incorrect maybe?");
@@ -269,9 +268,9 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 				consJobsThatWaitForUsSet.add( finalSyncPrj );
 			}
 
-			AbstractParallelRenderingJob[] consJobsThatWaitForUs = consJobsThatWaitForUsSet.toArray( new AbstractParallelRenderingJob[ consJobsThatWaitForUsSet.size() ] );
+			final AbstractParallelRenderingJob[] consJobsThatWaitForUs = consJobsThatWaitForUsSet.toArray( new AbstractParallelRenderingJob[ consJobsThatWaitForUsSet.size() ] );
 
-			int cardinality = flatJob.getCardinality();
+			final int cardinality = flatJob.getCardinality();
 			if( numProducersWeWaitFor == 0 )
 			{
 				// Is an "initial" mad parallel job (doesn't need to wait for input, can just go)
@@ -292,19 +291,19 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 			}
 		}
 
-		MadParallelRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new MadParallelRenderingJob[ initialAuJobSet.size() ] );
+		final MadParallelRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new MadParallelRenderingJob[ initialAuJobSet.size() ] );
 
 		// Now create the initial fan and final sync jobs and re-write where necessary.
-		InitialFanParallelRenderingJob initialFanPrj = new InitialFanParallelRenderingJob( initialAuJobs, 1 );
+		final InitialFanParallelRenderingJob initialFanPrj = new InitialFanParallelRenderingJob( initialAuJobs, 1 );
 		allJobSet.add( initialFanPrj );
 		finalSyncPrj.setNumProducersWeWaitFor( finalAuJobSet.size() );
 
-		AbstractParallelRenderingJob[] realInitialJobs = new AbstractParallelRenderingJob[1];
+		final AbstractParallelRenderingJob[] realInitialJobs = new AbstractParallelRenderingJob[1];
 		realInitialJobs[0] = initialFanPrj;
 
-		AbstractParallelRenderingJob[] allJobs = allJobSet.toArray( new AbstractParallelRenderingJob[ allJobSet.size() ] );
+		final AbstractParallelRenderingJob[] allJobs = allJobSet.toArray( new AbstractParallelRenderingJob[ allJobSet.size() ] );
 
-		MadChannelBuffer[] allChannelBuffers = allChannelBuffersSet.toArray( new MadChannelBuffer[ allChannelBuffersSet.size() ] );
+		final MadChannelBuffer[] allChannelBuffers = allChannelBuffersSet.toArray( new MadChannelBuffer[ allChannelBuffersSet.size() ] );
 
 		return new RenderingPlanWithFanAndSync( planChannelSettings,
 				timingSource.getTimingParameters(),
@@ -328,28 +327,28 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 	{
 	}
 
-	public void setGraphService(MadGraphService graphService)
+	public void setGraphService( final MadGraphService graphService )
 	{
 		this.graphService = graphService;
 	}
 
 	@Override
-	public void dumpRenderingPlan(RenderingPlan renderingPlan) throws DatastoreException
+	public void dumpRenderingPlan( final RenderingPlan renderingPlan ) throws DatastoreException
 	{
 		log.debug("Rendering plan dump:");
 		log.debug("=====================");
 		@SuppressWarnings("unused")
-		Dumper dumper = new Dumper( renderingPlan );
+		final Dumper dumper = new Dumper( renderingPlan );
 		log.debug("=====================");
 	}
 
-	public void setTimingService( TimingService timingService )
+	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
 	}
 
 	@Override
-	public void destroyRenderingPlan( RenderingPlan oldRp )
+	public void destroyRenderingPlan( final RenderingPlan oldRp )
 	{
 		// Do nothing, we'll let GC take care of it.
 	}

@@ -23,12 +23,12 @@ package uk.co.modularaudio.service.rendering.vos;
 public interface RenderingJobQueue
 {
 
-	public abstract AbstractParallelRenderingJob getAJob( boolean canBlock );
+	AbstractParallelRenderingJob getAJob( boolean canBlock );
 
-	public abstract void setBlocking( boolean shouldBlock );
+	void setBlocking( boolean shouldBlock );
 
-	public abstract void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length );
+	void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length );
 
-	public abstract void writeOne( AbstractParallelRenderingJob job );
+	void writeOne( AbstractParallelRenderingJob job );
 
 }

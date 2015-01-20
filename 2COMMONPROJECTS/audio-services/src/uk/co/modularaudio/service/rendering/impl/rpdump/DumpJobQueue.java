@@ -26,23 +26,23 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class DumpJobQueue extends ArrayBlockingQueue<Runnable>
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -4860604642254737033L;
 
-	public DumpJobQueue( int capacity )
+	public DumpJobQueue( final int capacity )
 	{
 		super( capacity, false );
 	}
 
-	public DumpJobQueue(int capacity, Collection<? extends Runnable> c)
+	public DumpJobQueue( final int capacity, final Collection<? extends Runnable> c)
 	{
 		super(capacity, false, c);
 	}
 
 
 	@SuppressWarnings("unchecked")
-	public DumpJobQueue(DumpJobQueue inQueue) throws CloneNotSupportedException
+	public DumpJobQueue( final DumpJobQueue inQueue ) throws CloneNotSupportedException
 	{
 		super( inQueue.size(), false, (Collection<Runnable>)(inQueue.clone()) );
 	}

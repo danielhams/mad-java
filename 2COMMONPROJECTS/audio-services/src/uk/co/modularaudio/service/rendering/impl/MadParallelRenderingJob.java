@@ -27,34 +27,35 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MadParallelRenderingJob extends AbstractParallelRenderingJob
 {
-	private MadTimingSource timingSource = null;
-	private MadRenderingJob renderingJob = null;
-	private int cardinality = -1;
-	
-	public MadParallelRenderingJob( int cardinality,
-			MadTimingSource timingSource,
-			MadRenderingJob renderingJob )
+	private final MadTimingSource timingSource;
+	private final MadRenderingJob renderingJob;
+	private final int cardinality;
+
+	public MadParallelRenderingJob( final int cardinality,
+			final MadTimingSource timingSource,
+			final MadRenderingJob renderingJob )
 	{
 		super( renderingJob.toString(), null, 0 );
 		this.timingSource = timingSource;
 		this.cardinality = cardinality;
 		this.renderingJob = renderingJob;
 	}
-	
-	public void setDependencies( AbstractParallelRenderingJob[] consJobsThatWaitForUs, int numSourcesWeWaitFor )
+
+	public void setDependencies( final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+			final int numSourcesWeWaitFor )
 	{
 		this.consJobsThatWaitForUs = consJobsThatWaitForUs;
 		this.numProducersWeWaitFor = numSourcesWeWaitFor;
 		this.numProducersStillToComplete.set(numSourcesWeWaitFor);
 	}
-	
+
 	public MadRenderingJob getRenderingJob()
 	{
 		return renderingJob;
 	}
-	
+
 	@Override
-	public RealtimeMethodReturnCodeEnum go( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
+	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
 		return renderingJob.go( tempQueueEntryStorage, timingSource );
 	}

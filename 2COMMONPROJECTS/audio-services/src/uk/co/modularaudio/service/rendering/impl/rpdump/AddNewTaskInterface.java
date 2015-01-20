@@ -26,6 +26,6 @@ public interface AddNewTaskInterface
 
 	void addNewTask( Runnable newTask );
 
-	void addNewTasks(Runnable[] jobsToLaunch, int jobsInArray);
+	void addNewTasks( Runnable[] jobsToLaunch, int jobsInArray );
 
 }

@@ -30,26 +30,25 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class DirectedDependencyGraph
 {
-	public List<FlattenedRenderJob> jobs = new ArrayList<FlattenedRenderJob>();
-	
+	private List<FlattenedRenderJob> jobs = new ArrayList<FlattenedRenderJob>();
+
 	public DirectedDependencyGraph()
 	{
 	}
-	
-	public void addFlattenedRenderJob(FlattenedRenderJob flattenedRenderJob)
+
+	public void addFlattenedRenderJob( final FlattenedRenderJob flattenedRenderJob )
 	{
 		jobs.add( flattenedRenderJob );
 		// Add the component instance to job map
 		madInstanceToRenderJobMap.put( flattenedRenderJob.getMadInstance(), flattenedRenderJob );
 	}
-	
-	private Map<MadInstance<?,?>, FlattenedRenderJob> madInstanceToRenderJobMap = new HashMap<MadInstance<?,?>, FlattenedRenderJob>();
 
-	public FlattenedRenderJob findJobByMadInstance( MadInstance<?,?> madInstance )
+	private final Map<MadInstance<?,?>, FlattenedRenderJob> madInstanceToRenderJobMap = new HashMap<MadInstance<?,?>, FlattenedRenderJob>();
+
+	public FlattenedRenderJob findJobByMadInstance( final MadInstance<?,?> madInstance )
 		throws RecordNotFoundException
 	{
-		FlattenedRenderJob retVal = null;
-		retVal = madInstanceToRenderJobMap.get( madInstance );
+		FlattenedRenderJob retVal = madInstanceToRenderJobMap.get( madInstance );
 		if( retVal != null )
 		{
 			return retVal;
@@ -61,4 +60,8 @@ public class DirectedDependencyGraph
 		}
 	}
 
+	public List<FlattenedRenderJob> getJobs()
+	{
+		return jobs;
+	}
 }

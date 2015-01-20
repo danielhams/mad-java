@@ -28,34 +28,34 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public abstract class AbstractParallelRenderingJob
 {
 //	private static Log log = LogFactory.getLog( AbstractParallelRenderingJob.class.getName() );
-	
-	protected String jobName = null;
-	
-	protected AbstractParallelRenderingJob[] consJobsThatWaitForUs = null;
-	
+
+	protected final String jobName;
+
+	protected AbstractParallelRenderingJob[] consJobsThatWaitForUs;
+
 	// To allow dependent jobs to decrement our ready to go counter
-	protected AtomicInteger numProducersStillToComplete = null;
-	
+	protected final AtomicInteger numProducersStillToComplete;
+
 	// When the job is complete and we update the sources we check if their counter above is zero
 	// if it is, we add them to the "things to do" queue and reset this jobs counter back to it's original value
 	// This way it is ready for the next pass
-	protected int numProducersWeWaitFor = -999;
-	
+	protected int numProducersWeWaitFor;
+
 	// Timing information
 	protected long jobStartTimestamp = -1;
 	protected long jobEndTimestamp = -1;
 	protected int jobThreadExecutor = Integer.MAX_VALUE;
-	
-	public AbstractParallelRenderingJob( String iJobName,
-			AbstractParallelRenderingJob[] consJobsThatWaitForUs,
-			int numProducersWeWaitFor )
+
+	public AbstractParallelRenderingJob( final String iJobName,
+			final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+			final int numProducersWeWaitFor )
 	{
 		this.jobName = iJobName;
 		this.consJobsThatWaitForUs = consJobsThatWaitForUs;
 		this.numProducersWeWaitFor = numProducersWeWaitFor;
 		this.numProducersStillToComplete = new AtomicInteger( numProducersWeWaitFor );
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -84,17 +84,17 @@ public abstract class AbstractParallelRenderingJob
 		return numAfter == 0;
 	}
 
-	public final RealtimeMethodReturnCodeEnum goWithTimestamps( int jobThreadExecutor,
-			ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
+	public final RealtimeMethodReturnCodeEnum goWithTimestamps( final int jobThreadExecutor,
+			final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
 		this.jobThreadExecutor = jobThreadExecutor;
 		jobStartTimestamp = System.nanoTime();
-		RealtimeMethodReturnCodeEnum retVal = go( tempQueueEntryStorage );
+		final RealtimeMethodReturnCodeEnum retVal = go( tempQueueEntryStorage );
 		jobEndTimestamp = System.nanoTime();
 		numProducersStillToComplete.set( numProducersWeWaitFor );
 		return retVal;
 	}
-	
+
 	public final void forDumpResetNumProducersStillToComplete()
 	{
 		numProducersStillToComplete.set( numProducersWeWaitFor );
@@ -115,8 +115,8 @@ public abstract class AbstractParallelRenderingJob
 	{
 		return jobThreadExecutor;
 	}
-	
-	public void addSelfToQueue( RenderingJobQueue renderingJobQueue )
+
+	public void addSelfToQueue( final RenderingJobQueue renderingJobQueue )
 	{
 		renderingJobQueue.writeOne( this );
 	}

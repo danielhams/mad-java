@@ -24,13 +24,13 @@ import java.util.List;
 
 public class TmpParallelRenderingJob
 {
-	private TmpRenderingJob renderingJob = null;
-	private List<TmpParallelRenderingJob> sourceConnectedParallelJobs = null;
-	private List<TmpParallelRenderingJob> sinkConnectedParallelJobs = null;
-	
-	public TmpParallelRenderingJob( TmpRenderingJob renderingJob,
-			List<TmpParallelRenderingJob> sinkConnectedParallelJobs,
-			List<TmpParallelRenderingJob> sourceConnectedParallelJobs )
+	private final TmpRenderingJob renderingJob;
+	private List<TmpParallelRenderingJob> sourceConnectedParallelJobs;
+	private final List<TmpParallelRenderingJob> sinkConnectedParallelJobs;
+
+	public TmpParallelRenderingJob( final TmpRenderingJob renderingJob,
+			final List<TmpParallelRenderingJob> sinkConnectedParallelJobs,
+			final List<TmpParallelRenderingJob> sourceConnectedParallelJobs )
 	{
 		this.renderingJob = renderingJob;
 		this.sinkConnectedParallelJobs = sinkConnectedParallelJobs;
@@ -52,11 +52,12 @@ public class TmpParallelRenderingJob
 		return sourceConnectedParallelJobs;
 	}
 
-	public void setSourceConnectedParallelJobs(List<TmpParallelRenderingJob> sourceConnectedParallelJobs)
+	public void setSourceConnectedParallelJobs( final List<TmpParallelRenderingJob> sourceConnectedParallelJobs )
 	{
 		this.sourceConnectedParallelJobs = sourceConnectedParallelJobs;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return renderingJob.getMadInstance().getInstanceName();

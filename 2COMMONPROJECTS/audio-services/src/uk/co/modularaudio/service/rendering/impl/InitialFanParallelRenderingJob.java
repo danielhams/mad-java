@@ -27,14 +27,14 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class InitialFanParallelRenderingJob extends
 		AbstractParallelRenderingJob
 {
-	public InitialFanParallelRenderingJob( AbstractParallelRenderingJob[] consJobsThatWaitForUs,
-			int numSourcesWeWaitFor )
+	public InitialFanParallelRenderingJob( final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+			final int numSourcesWeWaitFor )
 	{
 		super( "Initial Fan", consJobsThatWaitForUs, numSourcesWeWaitFor );
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum go( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
+	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
 		// Do nothing.
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

@@ -27,29 +27,29 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 {
 //	private static Log log = LogFactory.getLog( FinalSyncParallelRenderingJob.class.getName() );
-	
-	private boolean localWasExecutedAtLeastOnce = false;
-	private volatile boolean wasExecutedAtLeastOnce = false;
-	
+
+	private boolean localExecutedAtLeastOnce = false;
+	private volatile boolean executedAtLeastOnce = false;
+
 	private boolean localWasJobExecuted = false;
 	private volatile boolean wasJobExecuted = false;
-	
+
 	public FinalSyncParallelRenderingJob()
 	{
 		super( "Final Sync", new AbstractParallelRenderingJob[0], 0 );
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum go( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
+	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
 		// We're the final job set mark us as being executed - this lets our rendering plan
 		// know that it's been used (so we can clear any old ones up).
-		if( !localWasExecutedAtLeastOnce )
+		if( !localExecutedAtLeastOnce )
 		{
-			localWasExecutedAtLeastOnce = true;
-			wasExecutedAtLeastOnce = true;
+			localExecutedAtLeastOnce = true;
+			executedAtLeastOnce = true;
 		}
-		
+
 		if( !localWasJobExecuted )
 		{
 			localWasJobExecuted = true;
@@ -59,7 +59,7 @@ public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	public void setNumProducersWeWaitFor( int numProducersWeWaitFor )
+	public void setNumProducersWeWaitFor( final int numProducersWeWaitFor )
 	{
 		this.numProducersWeWaitFor = numProducersWeWaitFor;
 		this.numProducersStillToComplete.set(  numProducersWeWaitFor );
@@ -67,7 +67,7 @@ public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 
 	public boolean wasExecutedAtLeastOnce()
 	{
-		return wasExecutedAtLeastOnce;
+		return executedAtLeastOnce;
 	}
 
 	public void resetJobExecution()
@@ -75,10 +75,10 @@ public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 		wasJobExecuted = false;
 		localWasJobExecuted = false;
 	}
-	
+
 	public boolean wasJobExecuted()
 	{
 		return wasJobExecuted;
 	}
-	
+
 }

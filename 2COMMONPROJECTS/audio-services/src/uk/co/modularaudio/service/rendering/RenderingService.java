@@ -33,13 +33,13 @@ import uk.co.modularaudio.util.exception.DatastoreException;
  */
 public interface RenderingService
 {
-	public RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graph,
+	RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graph,
 			HardwareIOChannelSettings dataRateConfiguration,
 			MadFrameTimeFactory frameTimeFactory )
 		throws DatastoreException;
-	
-	public void dumpRenderingPlan( RenderingPlan renderingPlan )
+
+	void dumpRenderingPlan( RenderingPlan renderingPlan )
 		throws DatastoreException;
 
-	public void destroyRenderingPlan( RenderingPlan oldRp );
+	void destroyRenderingPlan( RenderingPlan oldRp );
 }

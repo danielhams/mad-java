@@ -24,13 +24,13 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 
 public class TmpRenderingJob
 {
-	private MadInstance<?,?> madInstance;
-	
-	public TmpRenderingJob( MadInstance<?,?> madInstance )
+	private final MadInstance<?,?> madInstance;
+
+	public TmpRenderingJob( final MadInstance<?,?> madInstance )
 	{
 		this.madInstance = madInstance;
 	}
-	
+
 	public MadInstance<?,?> getMadInstance()
 	{
 		return madInstance;

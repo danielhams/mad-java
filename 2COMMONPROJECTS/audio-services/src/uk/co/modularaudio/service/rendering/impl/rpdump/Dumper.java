@@ -29,31 +29,31 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class Dumper
 {
 //	private static Log log = LogFactory.getLog( Dumper.class.getName() );
-	
-	public Dumper( RenderingPlan renderingPlan )
+
+	public Dumper( final RenderingPlan renderingPlan )
 		throws DatastoreException
 	{
-		AbstractParallelRenderingJob initialJobs[] = renderingPlan.getInitialJobs();
-		ArrayList<AbstractParallelRenderingJob> initialJobsArray = new ArrayList<AbstractParallelRenderingJob>();
-		for( AbstractParallelRenderingJob job : initialJobs )
+		final AbstractParallelRenderingJob initialJobs[] = renderingPlan.getInitialJobs();
+		final ArrayList<AbstractParallelRenderingJob> initialJobsArray = new ArrayList<AbstractParallelRenderingJob>();
+		for( final AbstractParallelRenderingJob job : initialJobs )
 		{
 			initialJobsArray.add( job );
 		}
-		
-		DumpJobQueue jobQueue = new DumpJobQueue( 500 );
-		
+
+		final DumpJobQueue jobQueue = new DumpJobQueue( 500 );
+
 		// Add two jobs - one for the initial fan, and a second for the sync job
-		int numJobsInOnePass = renderingPlan.getTotalNumJobs();
+		final int numJobsInOnePass = renderingPlan.getTotalNumJobs();
 
 		int numDone = 0;
-		DumpAddNewTask addNewTask = new DumpAddNewTask( jobQueue );
-		InitialTask initialTask = new InitialTask( addNewTask, initialJobsArray, numJobsInOnePass );
+		final DumpAddNewTask addNewTask = new DumpAddNewTask( jobQueue );
+		final InitialTask initialTask = new InitialTask( addNewTask, initialJobsArray, numJobsInOnePass );
 		addNewTask.addNewTask( initialTask );
 		try
 		{
 			while( numDone < numJobsInOnePass )
 			{
-				Runnable job = jobQueue.take();
+				final Runnable job = jobQueue.take();
 				job.run();
 				numDone++;
 			}
@@ -63,7 +63,7 @@ public class Dumper
 			e.printStackTrace();
 		}
 		// Now run the final sync task for completeness
-		for( Runnable job : jobQueue )
+		for( final Runnable job : jobQueue )
 		{
 			job.run();
 		}

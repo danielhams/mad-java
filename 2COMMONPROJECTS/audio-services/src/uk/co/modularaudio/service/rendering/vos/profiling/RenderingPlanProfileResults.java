@@ -26,52 +26,55 @@ import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
 
 public class RenderingPlanProfileResults
 {
-	private AbstractParallelRenderingJob[] jobsToProfile = null;
-	private int numJobs = -1;
-	
-	private HashMap<AbstractParallelRenderingJob,JobProfileResult> jobToProfileResultMap = null;
+	private AbstractParallelRenderingJob[] jobsToProfile;
+	private int numJobs;
+
+	private HashMap<AbstractParallelRenderingJob,JobProfileResult> jobToProfileResultMap;
 	private long clockCallbackStart = -1;
 	private long clockCallbackPostProducer = -1;
 	private long clockCallbackPostRpFetch = -1;
 	private long clockCallbackPostLoop = -1;
-	
+
 //	private AtomicBoolean filled = new AtomicBoolean( false );
 	private volatile boolean filled = false;
-	
-	public RenderingPlanProfileResults( AbstractParallelRenderingJob[] jobsToProfile )
+
+	public RenderingPlanProfileResults( final AbstractParallelRenderingJob[] jobsToProfile )
 	{
 		this.jobsToProfile = jobsToProfile;
 		numJobs = jobsToProfile.length;
-		
+
 		jobToProfileResultMap = new HashMap<AbstractParallelRenderingJob, JobProfileResult>( numJobs );
 		for( int i = 0 ; i < numJobs ; i++ )
 		{
 			jobToProfileResultMap.put( jobsToProfile[ i ], new JobProfileResult() );
 		}
 	}
-	
-	public void fillIn( long clockCallbackStart, long clockCallbackPostProducer, long clockCallbackPostRpFetch, long clockCallbackPostLoop )
+
+	public void fillIn( final long clockCallbackStart,
+			final long clockCallbackPostProducer,
+			final long clockCallbackPostRpFetch,
+			final long clockCallbackPostLoop )
 	{
 		this.clockCallbackStart = clockCallbackStart;
 		this.clockCallbackPostProducer = clockCallbackPostProducer;
 		this.clockCallbackPostRpFetch = clockCallbackPostRpFetch;
 		this.clockCallbackPostLoop = clockCallbackPostLoop;
-		for( AbstractParallelRenderingJob job : jobToProfileResultMap.keySet() )
+		for( final AbstractParallelRenderingJob job : jobToProfileResultMap.keySet() )
 		{
-			JobProfileResult jobResult = jobToProfileResultMap.get( job );
+			final JobProfileResult jobResult = jobToProfileResultMap.get( job );
 			jobResult.pullResultsFromJob( job );
 		}
 //		filled.set( true );
 		filled = true;
 	}
-	
+
 	public boolean isFilled()
 	{
 //		return filled.get();
 		return filled;
 	}
 
-	public void setFilled( boolean targetFilled )
+	public void setFilled( final boolean targetFilled )
 	{
 //		filled.set( targetFilled );
 		filled = targetFilled;
@@ -102,7 +105,7 @@ public class RenderingPlanProfileResults
 		return clockCallbackPostLoop;
 	}
 
-	public static void copyFromTo( RenderingPlanProfileResults from, RenderingPlanProfileResults to )
+	public static void copyFromTo( final RenderingPlanProfileResults from, final RenderingPlanProfileResults to )
 	{
 		to.clockCallbackStart = from.clockCallbackStart;
 		to.clockCallbackPostProducer = from.clockCallbackPostProducer;

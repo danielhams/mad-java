@@ -21,8 +21,8 @@
 package uk.co.modularaudio.service.rendering.impl;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
-import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadChannelPeriodData;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -33,22 +33,22 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class MadRenderingJob
 {
 //	private static Log log = LogFactory.getLog( MadRenderingJob.class.getName() );
-	
-	private String instanceName = null;
-	private MadInstance<?,?> madInstance = null;
-	private MadChannelConnectedFlags channelActiveBitset = null;
-	private MadChannelBuffer[] channelBuffers = null;
-	private RealtimeMethodErrorContext errctx = new RealtimeMethodErrorContext();
-	
-	public MadRenderingJob( String instanceName, MadInstance<?,?> madInstance )
+
+	private final String instanceName;
+	private final MadInstance<?,?> madInstance;
+	private final MadChannelConnectedFlags channelActiveBitset;
+	private final MadChannelBuffer[] channelBuffers;
+	private final RealtimeMethodErrorContext errctx = new RealtimeMethodErrorContext();
+
+	public MadRenderingJob( final String instanceName, final MadInstance<?,?> madInstance )
 	{
 		this.instanceName = instanceName;
 		this.madInstance = madInstance;
-		int numChannelInstances = madInstance.getChannelInstances().length;
+		final int numChannelInstances = madInstance.getChannelInstances().length;
 		channelBuffers = new MadChannelBuffer[ numChannelInstances ];
 		channelActiveBitset = new MadChannelConnectedFlags( numChannelInstances );
 	}
-	
+
 	public String getInstanceName()
 	{
 		return instanceName;
@@ -64,20 +64,21 @@ public class MadRenderingJob
 		return channelBuffers;
 	}
 
+	@Override
 	public String toString()
 	{
 		return madInstance.getInstanceName() + " of type " + madInstance.getDefinition().getName();
 	}
 
-	public RealtimeMethodReturnCodeEnum go( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			MadTimingSource timingSource )
 	{
 		errctx.reset();
-		
-		boolean hasQueueProcessing = madInstance.hasQueueProcessing();
-		MadTimingParameters timingParameters = timingSource.getTimingParameters();
-		MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
-		long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
+
+		final boolean hasQueueProcessing = madInstance.hasQueueProcessing();
+		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
+		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
+		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
 		if( hasQueueProcessing )
 		{
 			if( !errctx.andWith( madInstance.preProcess( tempQueueEntryStorage,
@@ -87,7 +88,7 @@ public class MadRenderingJob
 				return errctx.getCurRetCode();
 			}
 		}
-		
+
 		if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
 				timingParameters,
 				periodTimestamp,

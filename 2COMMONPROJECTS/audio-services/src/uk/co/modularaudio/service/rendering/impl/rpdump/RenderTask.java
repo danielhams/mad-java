@@ -33,17 +33,17 @@ import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 public class RenderTask implements Runnable
 {
 	private static Log log = LogFactory.getLog( RenderTask.class.getName() );
-	
-	private AddNewTaskInterface addNewTaskInterface = null;
 
-	private AbstractParallelRenderingJob parallelRenderingJob = null;
+	private final AddNewTaskInterface addNewTaskInterface;
 
-	private int maxJobs = -1;
-	private Runnable[] jobsToLaunch = null;
-	
-	public RenderTask( AddNewTaskInterface addNewTaskInterface,
-			AbstractParallelRenderingJob job,
-			int maxJobs )
+	private final AbstractParallelRenderingJob parallelRenderingJob;
+
+	private final int maxJobs;
+	private final Runnable[] jobsToLaunch;
+
+	public RenderTask( final AddNewTaskInterface addNewTaskInterface,
+			final AbstractParallelRenderingJob job,
+			final int maxJobs )
 	{
 		this.addNewTaskInterface = addNewTaskInterface;
 		this.parallelRenderingJob = job;
@@ -51,27 +51,27 @@ public class RenderTask implements Runnable
 		this.jobsToLaunch = new Runnable[ maxJobs ];
 	}
 
-	
+
 	@Override
 	public void run()
 	{
-		String renderJobName = parallelRenderingJob.toString();
+		final String renderJobName = parallelRenderingJob.toString();
 		if( parallelRenderingJob instanceof MadParallelRenderingJob )
 		{
-			MadParallelRenderingJob prj = (MadParallelRenderingJob)parallelRenderingJob;
-			MadRenderingJob auJob = prj.getRenderingJob();
-			MadInstance<?,?> renderJobInstance = auJob.getMadInstance();
+			final MadParallelRenderingJob prj = (MadParallelRenderingJob)parallelRenderingJob;
+			final MadRenderingJob auJob = prj.getRenderingJob();
+			final MadInstance<?,?> renderJobInstance = auJob.getMadInstance();
 			try
 			{
-				MadChannelInstance[] channelInstances = renderJobInstance.getChannelInstances();
-				int numChannels = channelInstances.length;
-				MadChannelConnectedFlags channelActiveBitset = auJob.getChannelConnectedFlags();
-				StringBuilder bsBuffer = new StringBuilder();
+				final MadChannelInstance[] channelInstances = renderJobInstance.getChannelInstances();
+				final int numChannels = channelInstances.length;
+				final MadChannelConnectedFlags channelActiveBitset = auJob.getChannelConnectedFlags();
+				final StringBuilder bsBuffer = new StringBuilder();
 				for( int i = 0 ; i < numChannels ; i++ )
 				{
 					if( channelActiveBitset.get( i ) )
 					{
-						MadChannelInstance curChannel = channelInstances[ i ];
+						final MadChannelInstance curChannel = channelInstances[ i ];
 						bsBuffer.append("channel \"");
 						bsBuffer.append( curChannel.definition.name );
 						bsBuffer.append( "\" (" );
@@ -84,38 +84,44 @@ public class RenderTask implements Runnable
 	//					bsBuffer.append("inactive) ");
 					}
 				}
-				int cardinality = prj.getCardinality();
-				log.debug("MU Parallel rendering job cardinality " + cardinality + " : \"" + renderJobName + "\" Channels: " + bsBuffer.toString() );
+				final int cardinality = prj.getCardinality();
+				if( log.isDebugEnabled() )
+				{
+					log.debug("MU Parallel rendering job cardinality " + cardinality + " : \"" + renderJobName + "\" Channels: " + bsBuffer.toString() );
+				}
 	//			renderJob.go();
 			}
 			catch (Exception e1)
 			{
-				String msg = "Exception caught rendering job " + renderJobInstance.getInstanceName() + ": " + e1.toString();
+				final String msg = "Exception caught rendering job " + renderJobInstance.getInstanceName() + ": " + e1.toString();
 				log.error( msg, e1 );
 				return;
 			}
 		}
 		else
 		{
-			log.debug( "Runtime parallel rendering task: \"" + renderJobName + "\"");
+			if( log.isDebugEnabled() )
+			{
+				log.debug( "Runtime parallel rendering task: \"" + renderJobName + "\"");
+			}
 		}
 
 		// Now it's complete we atomically decrement each of the sink jobs. If any of them go to zero they can be added
 		// as new jobs in the queue.
-		AbstractParallelRenderingJob sinksToUpdate[] = parallelRenderingJob.getConsJobsThatWaitForUs();
+		final AbstractParallelRenderingJob sinksToUpdate[] = parallelRenderingJob.getConsJobsThatWaitForUs();
 		int curJobNum = 0;
-		
-		for( AbstractParallelRenderingJob dJob : sinksToUpdate )
+
+		for( final AbstractParallelRenderingJob dJob : sinksToUpdate )
 		{
-			boolean readyToGo = dJob.markOneProducerAsCompleteCheckIfReadyToGo();
+			final boolean readyToGo = dJob.markOneProducerAsCompleteCheckIfReadyToGo();
 			if( readyToGo )
 			{
 //				log.debug("Launching new subtask " + dJob.getRenderingJob().getComponentInstance().getName());
-				RenderTask recurseRenderTask = new RenderTask( addNewTaskInterface, dJob, this.maxJobs );
+				final RenderTask recurseRenderTask = new RenderTask( addNewTaskInterface, dJob, this.maxJobs );
 				jobsToLaunch[curJobNum++] = recurseRenderTask;
 			}
 		}
-		
+
 		// Now reset the current jobs counters so the next rendering pass will work correctly
 		parallelRenderingJob.forDumpResetNumProducersStillToComplete();
 

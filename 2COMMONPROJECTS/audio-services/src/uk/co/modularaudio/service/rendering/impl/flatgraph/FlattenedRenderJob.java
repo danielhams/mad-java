@@ -28,12 +28,13 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 {
 	public final static int CARDINALITY_NOT_SET = -1;
-	private MadInstance<?,?> madInstance = null;
-	private Set<FlattenedRenderJob> producerJobsWeWaitFor = new HashSet<FlattenedRenderJob>();
-	private Set<FlattenedRenderJob> consumerJobsWaitingForUs = new HashSet<FlattenedRenderJob>();
+
+	private final MadInstance<?,?> madInstance;
+	private final Set<FlattenedRenderJob> producerJobsWeWaitFor;
+	private final Set<FlattenedRenderJob> consumerJobsWaitingForUs = new HashSet<FlattenedRenderJob>();
 	private int cardinality = CARDINALITY_NOT_SET;
 
-	public FlattenedRenderJob( MadInstance<?,?> madInstance, Set<FlattenedRenderJob> producerJobsWeWaitFor )
+	public FlattenedRenderJob( final MadInstance<?,?> madInstance, final Set<FlattenedRenderJob> producerJobsWeWaitFor )
 	{
 		this.madInstance = madInstance;
 		this.producerJobsWeWaitFor = producerJobsWeWaitFor;
@@ -54,13 +55,13 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 		return cardinality;
 	}
 
-	public void setCardinality(int cardinality)
+	public void setCardinality( final int cardinality )
 	{
 		this.cardinality = cardinality;
 	}
 
 	@Override
-	public int compareTo( FlattenedRenderJob c )
+	public int compareTo( final FlattenedRenderJob c )
 	{
 		return this.cardinality - c.cardinality;
 	}
@@ -76,7 +77,7 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 		return madInstance.getInstanceName() + "(" + cardinality + ")";
 	}
 
-	public void addConsumerJobWaitingForUs( FlattenedRenderJob flatJob )
+	public void addConsumerJobWaitingForUs( final FlattenedRenderJob flatJob )
 	{
 		consumerJobsWaitingForUs.add(  flatJob  );
 

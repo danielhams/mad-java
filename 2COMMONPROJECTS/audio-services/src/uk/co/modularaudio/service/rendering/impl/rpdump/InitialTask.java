@@ -27,17 +27,17 @@ import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
 public class InitialTask implements Runnable
 {
 //	private static Log log = LogFactory.getLog( InitialTask.class.getName() );
-	
-	private Collection<AbstractParallelRenderingJob> initialJobsCollection = null;
-	
-	private AddNewTaskInterface addNewTaskInterface = null;
-	
-	private int maxJobs = -1;
-	private Runnable[] newTasks = null;
-	
-	public InitialTask( AddNewTaskInterface addNewTaskInterface,
-			Collection<AbstractParallelRenderingJob> initialJobsCollection,
-			int maxJobs )
+
+	private final Collection<AbstractParallelRenderingJob> initialJobsCollection;
+
+	private final AddNewTaskInterface addNewTaskInterface;
+
+	private final int maxJobs;
+	private final Runnable[] newTasks;
+
+	public InitialTask( final AddNewTaskInterface addNewTaskInterface,
+			final Collection<AbstractParallelRenderingJob> initialJobsCollection,
+			final int maxJobs )
 	{
 		this.addNewTaskInterface = addNewTaskInterface;
 		this.initialJobsCollection = initialJobsCollection;
@@ -49,9 +49,9 @@ public class InitialTask implements Runnable
 	public void run()
 	{
 		int curJobNum = 0;
-		for( AbstractParallelRenderingJob initialJob : initialJobsCollection )
+		for( final AbstractParallelRenderingJob initialJob : initialJobsCollection )
 		{
-			RenderTask renderTask = new RenderTask( addNewTaskInterface, initialJob, maxJobs );
+			final RenderTask renderTask = new RenderTask( addNewTaskInterface, initialJob, maxJobs );
 			newTasks[ curJobNum++ ] = renderTask;
 		}
 		addNewTaskInterface.addNewTasks( newTasks, curJobNum );

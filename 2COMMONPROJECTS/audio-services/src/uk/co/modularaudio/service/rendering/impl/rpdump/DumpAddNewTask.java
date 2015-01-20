@@ -23,22 +23,22 @@ package uk.co.modularaudio.service.rendering.impl.rpdump;
 
 public class DumpAddNewTask implements AddNewTaskInterface
 {
-	
-	private DumpJobQueue jobQueue = null;
 
-	public DumpAddNewTask( DumpJobQueue jobQueue )
+	private final DumpJobQueue jobQueue;
+
+	public DumpAddNewTask( final DumpJobQueue jobQueue )
 	{
 		this.jobQueue = jobQueue;
 	}
 
 	@Override
-	public void addNewTask(Runnable newTask)
+	public void addNewTask( final Runnable newTask )
 	{
 		jobQueue.add( newTask );
 	}
 
 	@Override
-	public void addNewTasks( Runnable[] jobsToLaunch, int numJobsInArray )
+	public void addNewTasks( final Runnable[] jobsToLaunch, final int numJobsInArray )
 	{
 		for( int i = 0 ; i < numJobsInArray ; i++ )
 		{

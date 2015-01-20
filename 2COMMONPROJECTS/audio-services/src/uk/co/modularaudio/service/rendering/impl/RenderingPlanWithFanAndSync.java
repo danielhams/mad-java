@@ -35,29 +35,29 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 public class RenderingPlanWithFanAndSync implements RenderingPlan
 {
 //	private static Log log = LogFactory.getLog( RenderingPlan.class.getName() );
-	
-	private HardwareIOChannelSettings planChannelSettings = null;
-	private MadTimingParameters planTimingParameters = null;
-	private MadFrameTimeFactory planFrameTimeFactory = null;
+
+	private final HardwareIOChannelSettings planChannelSettings;
+	private final MadTimingParameters planTimingParameters;
+	private final MadFrameTimeFactory planFrameTimeFactory;
 //	private InitialFanParallelRenderingJob initialFanJob = null;
-	private FinalSyncParallelRenderingJob finalSyncJob = null;
-	private AbstractParallelRenderingJob allJobs[] = null;
-	private AbstractParallelRenderingJob initialJobs[] = null;
-	private int totalNumJobs = -1;
-	private Set<MadInstance<?,?>> allMadInstances = null;
+	private final FinalSyncParallelRenderingJob finalSyncJob;
+	private final AbstractParallelRenderingJob[] allJobs;
+	private final AbstractParallelRenderingJob[] initialJobs;
+	private final int totalNumJobs;
+	private final Set<MadInstance<?,?>> allMadInstances;
 
 	private final RenderingPlanProfileResults profileResults;
-	
-	public RenderingPlanWithFanAndSync( HardwareIOChannelSettings planChannelSettings,
-			MadTimingParameters planTimingParameters,
-			MadFrameTimeFactory planFrameTimeFactory,
-			InitialFanParallelRenderingJob initialFanJob,
-			FinalSyncParallelRenderingJob finalSyncJob,
-			AbstractParallelRenderingJob[] allJobs,
-			AbstractParallelRenderingJob[] initialJobs,
-			int totalNumJobs,
-			Set<MadInstance<?,?>> allMadInstances,
-			MadChannelBuffer[] allChannelBuffers )
+
+	public RenderingPlanWithFanAndSync( final HardwareIOChannelSettings planChannelSettings,
+			final MadTimingParameters planTimingParameters,
+			final MadFrameTimeFactory planFrameTimeFactory,
+			final InitialFanParallelRenderingJob initialFanJob,
+			final FinalSyncParallelRenderingJob finalSyncJob,
+			final AbstractParallelRenderingJob[] allJobs,
+			final AbstractParallelRenderingJob[] initialJobs,
+			final int totalNumJobs,
+			final Set<MadInstance<?,?>> allMadInstances,
+			final MadChannelBuffer[] allChannelBuffers )
 	{
 		this.planChannelSettings = planChannelSettings;
 		this.planTimingParameters = planTimingParameters;
@@ -68,28 +68,28 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 		this.initialJobs = initialJobs;
 		this.totalNumJobs = totalNumJobs;
 		this.allMadInstances = allMadInstances;
-		
+
 		profileResults = new RenderingPlanProfileResults( allJobs );
 	}
-	
+
 	@Override
 	public HardwareIOChannelSettings getPlanChannelSettings()
 	{
 		return planChannelSettings;
 	}
-	
+
 	@Override
 	public MadTimingParameters getPlanTimingParameters()
 	{
 		return planTimingParameters;
 	}
-	
+
 	@Override
 	public MadFrameTimeFactory getPlanFrameTimeFactory()
 	{
 		return planFrameTimeFactory;
 	}
-	
+
 	@Override
 	public AbstractParallelRenderingJob[] getInitialJobs()
 	{
@@ -113,7 +113,7 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	{
 		return finalSyncJob.wasExecutedAtLeastOnce();
 	}
-	
+
 	@Override
 	public AbstractParallelRenderingJob[] getAllJobs()
 	{
@@ -121,16 +121,19 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	}
 
 	@Override
-	public void fillProfilingIfNotFilled( long clockCallbackStart, long clockCallbackPostProducer, long clockCallbackPostRpFetch, long clockCallbackPostLoop )
+	public void fillProfilingIfNotFilled( final long clockCallbackStart,
+			final long clockCallbackPostProducer,
+			final long clockCallbackPostRpFetch,
+			final long clockCallbackPostLoop )
 	{
 		if( !profileResults.isFilled() )
 		{
 			profileResults.fillIn( clockCallbackStart, clockCallbackPostProducer, clockCallbackPostRpFetch, clockCallbackPostLoop );
-		}		
+		}
 	}
 
 	@Override
-	public boolean getProfileResultsIfFilled( RenderingPlanProfileResults toFillIn )
+	public boolean getProfileResultsIfFilled( final RenderingPlanProfileResults toFillIn )
 	{
 		if( profileResults.isFilled() )
 		{
