@@ -1,0 +1,1075 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package uk.co.modularaudio.componentdesigner.controller.front.impl;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.CellRendererPane;
+import javax.swing.JComponent;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
+
+import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
+import uk.co.modularaudio.componentdesigner.controller.front.RenderingStateListener;
+import uk.co.modularaudio.componentdesigner.controller.guihelper.GuiHelperController;
+import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
+import uk.co.modularaudio.controller.component.ComponentController;
+import uk.co.modularaudio.controller.rack.RackController;
+import uk.co.modularaudio.controller.rendering.RenderingController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
+import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
+import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
+import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotFrameTimeFactory;
+import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.MTRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.AppRenderingErrorStruct;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
+import uk.co.modularaudio.service.configuration.ConfigurationService;
+import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
+import uk.co.modularaudio.service.gui.GuiTabbedPane;
+import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
+import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
+import uk.co.modularaudio.service.rack.RackService;
+import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
+import uk.co.modularaudio.service.timing.TimingService;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.audio.mad.MadClassification;
+import uk.co.modularaudio.util.audio.mad.MadClassificationGroup;
+import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
+import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
+import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
+import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
+import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
+import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
+import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
+import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
+import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
+import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
+import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
+import uk.co.modularaudio.util.table.Span;
+import uk.co.modularaudio.util.table.TableCellFullException;
+import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
+
+public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, ComponentDesignerFrontController
+{
+	private static final long AUDIO_TEST_RUN_MILLIS = 4000;
+	private static final int AUDIO_ENGINE_RESTART_PAUSE_MILLIS = 2000;
+
+	private static Log log = LogFactory.getLog( ComponentDesignerFrontControllerImpl.class.getName() );
+
+	private final static String CONFIG_KEY_FORCE_HOTSPOT_COMPILE = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".ForceHotspotCompile";
+	private final static String CONFIG_KEY_RENDER_COMPONENT_IMAGES = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".RenderComponentImages";
+	private GuiHelperController guiHelperController = null;
+	private RackController rackController = null;
+	private ComponentController componentController = null;
+	private RenderingController renderingController = null;
+	private AudioProviderController audioProviderController = null;
+	private UserPreferencesController userPreferencesController = null;
+	private SampleCachingController sampleCachingController = null;
+	private ConfigurationService configurationService = null;
+	private BufferedImageAllocationService bufferedImageAllocationService = null;
+
+	private TimingService timingService = null;
+
+	private AppRenderingIO appRenderingIO = null;
+
+	private RackDataModel userVisibleRack = null;
+
+	private RackModelRenderingComponent guiRack = null;
+
+	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 10000;
+	private static final int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 512;
+
+	private boolean forceHotspotCompile = false;
+	private boolean renderComponentImages = false;
+
+	// Timer for driving the gui updates
+	private GuiDrivingTimer guiDrivingTimer = null;
+	private ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage = null;
+
+	private boolean loggingEnabled = true;
+
+	private boolean currentlyRendering = false;
+
+	private String absolutePathToFilename = null;
+
+	private List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
+	private Priority previousLoggingThreshold = null;
+
+	@Override
+	public void destroy()
+	{
+	}
+
+	@Override
+	public void init() throws ComponentConfigurationException
+	{
+		Map<String, String> errors = new HashMap<String, String>();
+		forceHotspotCompile = ConfigurationServiceHelper.checkForBooleanKey(configurationService, CONFIG_KEY_FORCE_HOTSPOT_COMPILE, errors);
+		renderComponentImages = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_RENDER_COMPONENT_IMAGES, errors );
+		ConfigurationServiceHelper.errorCheck(errors);
+		guiTemporaryEventStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
+	}
+
+	public void setRackController( RackController rackController)
+	{
+		this.rackController = rackController;
+	}
+
+	public void setComponentController( ComponentController componentController)
+	{
+		this.componentController = componentController;
+	}
+
+	public void setGuiHelperController( GuiHelperController guiController)
+	{
+		this.guiHelperController = guiController;
+	}
+
+	public void setRenderingController( RenderingController renderingController)
+	{
+		this.renderingController = renderingController;
+	}
+
+	public void setConfigurationService( ConfigurationService configurationService)
+	{
+		this.configurationService = configurationService;
+	}
+
+	public void setAudioProviderController( AudioProviderController audioProviderController)
+	{
+		this.audioProviderController = audioProviderController;
+	}
+
+	public void setUserPreferencesController( UserPreferencesController userPreferencesController)
+	{
+		this.userPreferencesController = userPreferencesController;
+	}
+
+	public void setSampleCachingController( SampleCachingController sampleCachingController )
+	{
+		this.sampleCachingController = sampleCachingController;
+	}
+
+	public void setBufferedImageAllocationService( BufferedImageAllocationService bufferedImageAllocationService )
+	{
+		this.bufferedImageAllocationService = bufferedImageAllocationService;
+	}
+
+	public void setTimingService( TimingService timingService )
+	{
+		this.timingService = timingService;
+	}
+
+	@Override
+	public void dumpRack() throws DatastoreException
+	{
+		rackController.dumpRack( userVisibleRack );
+		if( appRenderingIO != null )
+		{
+			appRenderingIO.getAppRenderingGraph().dumpRenderingPlan();
+		}
+		if( sampleCachingController != null )
+		{
+			sampleCachingController.dumpSampleCache();
+		}
+	}
+
+	@Override
+	public void dumpProfileResults() throws DatastoreException
+	{
+		if( appRenderingIO != null )
+		{
+			appRenderingIO.getAppRenderingGraph().dumpProfileResults();
+		}
+	}
+
+	@Override
+	public void toggleLogging()
+	{
+		loggingEnabled = (loggingEnabled ? false : true );
+		Logger rootLogger = LogManager.getRootLogger();
+		Appender appender = rootLogger.getAppender( "console" );
+		if( appender instanceof ConsoleAppender )
+		{
+			ConsoleAppender ca = (ConsoleAppender)appender;
+			if( loggingEnabled )
+			{
+				if( previousLoggingThreshold != null )
+				{
+					ca.setThreshold( previousLoggingThreshold );
+				}
+				else
+				{
+					ca.setThreshold( Level.TRACE );
+				}
+			}
+			else
+			{
+				previousLoggingThreshold  = ca.getThreshold();
+				ca.setThreshold( Level.ERROR );
+			}
+		}
+	}
+
+	@Override
+	public void toggleRendering()
+	{
+		try
+		{
+			if( currentlyRendering )
+			{
+				stopDisplayTick();
+				appRenderingIO.getAppRenderingGraph().deactivateApplicationGraph();
+			}
+			else
+			{
+				appRenderingIO.getAppRenderingGraph().activateApplicationGraph();
+				startDisplayTick();
+			}
+			currentlyRendering = !currentlyRendering;
+			for( RenderingStateListener l : renderingStateListeners )
+			{
+				l.receiveRenderingStateChange( currentlyRendering );
+			}
+		}
+		catch(Exception e)
+		{
+			String msg = "Exception caught toggling rendering: " + e.toString();
+			log.error( msg, e );
+		}
+	}
+
+	@Override
+	public boolean isRendering()
+	{
+		return currentlyRendering;
+	}
+
+	private void initialiseEmptyRack()
+	{
+		try
+		{
+			// Make sure we free up any resources consumed by components in the rack (IO)
+			RackDataModel previousRack = userVisibleRack;
+			if( previousRack != null )
+			{
+				MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( previousRack );
+				if( appRenderingIO != null )
+				{
+					appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
+				}
+			}
+			userVisibleRack = rackController.createNewRackDataModel( "Empty Application Rack",
+					"",
+					RackService.DEFAULT_RACK_COLS,
+					RackService.DEFAULT_RACK_ROWS,
+					true );
+			guiRack.setRackDataModel( userVisibleRack );
+
+			MadGraphInstance<?,?> graphToRender = rackController.getRackGraphInstance( userVisibleRack );
+			if( appRenderingIO != null )
+			{
+				appRenderingIO.getAppRenderingGraph().setApplicationGraph( graphToRender );
+			}
+
+			if( previousRack != null )
+			{
+				rackController.destroyRackDataModel( previousRack );
+			}
+		}
+		catch (Exception e)
+		{
+			String msg = "Exception caught creating rack: " + e.toString();
+			log.error( msg, e );
+		}
+	}
+
+	@Override
+	public void newRack() throws DatastoreException
+	{
+		// Initialise a new rack first, makes cleaning up the new one much quicker (no listeners)
+		initialiseEmptyRack();
+		absolutePathToFilename = null;
+	}
+
+	@Override
+	public void loadRackFromFile(String filename) throws DatastoreException, IOException
+	{
+		// Delete old rack contents to free up memory before we load a new one.
+		newRack();
+
+		absolutePathToFilename = filename;
+
+		RackDataModel newRack = rackController.loadRackFromFile(filename);
+		if( newRack != null )
+		{
+			RackDataModel oldModel = userVisibleRack;
+			MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( oldModel );
+			if( appRenderingIO != null )
+			{
+				appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
+			}
+			userVisibleRack = newRack;
+			guiRack.setRackDataModel( userVisibleRack );
+
+			MadGraphInstance<?,?> rackGraph = rackController.getRackGraphInstance( userVisibleRack );
+			if( appRenderingIO != null )
+			{
+				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rackGraph );
+			}
+			destroyExistingRack( oldModel );
+		}
+	}
+
+	private void destroyExistingRack( RackDataModel oldRackModel ) throws DatastoreException
+	{
+		if( oldRackModel != null )
+		{
+			try
+			{
+				rackController.destroyRackDataModel( oldRackModel );
+			}
+			catch( Exception e )
+			{
+				String msg = "Exception caught destroying rack: " + e.toString();
+				throw new DatastoreException( msg, e );
+			}
+		}
+	}
+
+	@Override
+	public void revertRack() throws DatastoreException, IOException
+	{
+		if( absolutePathToFilename != null && !absolutePathToFilename.equals("" ) )
+		{
+			loadRackFromFile( absolutePathToFilename );
+		}
+	}
+
+	@Override
+	public String getRackDataModelName()
+	{
+		return userVisibleRack.getName();
+	}
+
+	@Override
+	public void saveRackToFile( String filename, String rackName ) throws DatastoreException, IOException
+	{
+		absolutePathToFilename = filename;
+		userVisibleRack.setName( rackName );
+		rackController.saveRackToFile( userVisibleRack, filename );
+	}
+
+	@Override
+	public boolean isRackDirty()
+	{
+		return userVisibleRack.isDirty();
+	}
+
+	@Override
+	public void saveRack() throws DatastoreException, FileNotFoundException, IOException
+	{
+		if( absolutePathToFilename == null )
+		{
+			throw new FileNotFoundException();
+		}
+		else
+		{
+			rackController.saveRackToFile( userVisibleRack, absolutePathToFilename );
+			userVisibleRack.setDirty( false );
+		}
+	}
+
+	@Override
+	public void ensureRenderingStoppedBeforeExit() throws DatastoreException, MadProcessingException
+	{
+		if( isRendering() )
+		{
+			toggleRendering();
+		}
+	}
+
+	@Override
+	public void addRenderingStateListener(RenderingStateListener renderingStateListener)
+	{
+		renderingStateListeners.add( renderingStateListener );
+	}
+
+	@Override
+	public void removeRenderingStateListener(RenderingStateListener renderingStateListener)
+	{
+		renderingStateListeners.remove( renderingStateListener );
+	}
+
+	@Override
+	public void postInit() throws DatastoreException
+	{
+		// Create an empty rack during init
+		RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
+				"",
+				RackService.DEFAULT_RACK_COLS,
+				RackService.DEFAULT_RACK_ROWS,
+				true );
+		guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
+		doStartupDuties();
+	}
+
+	@Override
+	public void preShutdown() throws DatastoreException
+	{
+		guiRack.destroy();
+		doExitDuties();
+	}
+
+	protected void startDisplayTick()
+	{
+		MadTimingSource timingSource = timingService.getTimingSource();
+		MadTimingParameters timingParameters = timingSource.getTimingParameters();
+
+		int millisBetweenFrames = (int)(timingParameters.getNanosPerFrontEndPeriod() / 1000000);
+		if( guiDrivingTimer == null )
+		{
+			guiDrivingTimer = new GuiDrivingTimer( millisBetweenFrames, new GuiTickActionListener( this ) );
+		}
+
+		if( guiDrivingTimer != null && !guiDrivingTimer.isRunning() )
+		{
+			guiDrivingTimer.start();
+			log.debug("GUITIMER Starting gui driving timer");
+		}
+		else
+		{
+			log.error("Unable to start display tick!");
+		}
+//		if( guiPeriodThreadedTimer != null )
+//		{
+//			log.error("Unable to start display tick as already started!");
+//		}
+//		else
+//		{
+//			guiPeriodThreadedTimer = new NanosecondPeriodicThreadedTimer( timingParameters.getNanosPerFrontEndPeriod(), MAThreadPriority.GUI, guiPeriodJob );
+//			guiPeriodThreadedTimer.start();
+//		}
+	}
+
+	protected void stopDisplayTick()
+	{
+		if( guiDrivingTimer != null && guiDrivingTimer.isRunning() )
+		{
+			log.debug("GUITIMER Stopping gui driving timer");
+			guiDrivingTimer.stop();
+			guiDrivingTimer = null;
+		}
+		else
+		{
+			log.error("Unable to stop display tick!");
+		}
+//		if( guiPeriodThreadedTimer == null )
+//		{
+//			log.error("Unable to stop display tick as none started!");
+//		}
+//		else
+//		{
+//			guiPeriodThreadedTimer.stop();
+//			guiPeriodThreadedTimer = null;
+//		}
+	}
+
+	private boolean frontPreviouslyShowing = true;
+
+	@Override
+	public void receiveDisplayTick()
+	{
+		MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
+
+		long currentGuiFrameTime = appRenderingIO.getCurrentUiFrameTime();
+//		log.debug("Estimated GUI frame time is " + currentGuiFrameTime );
+
+		List<RackComponent> rackComponents = userVisibleRack.getEntriesAsList();
+
+		boolean doAll = false;
+
+		if( guiRack.isFrontShowing() && guiRack.getJComponent().isVisible() )
+		{
+			doAll = true;
+			frontPreviouslyShowing = true;
+		}
+		else
+		{
+			if( frontPreviouslyShowing )
+			{
+				doAll = true;
+			}
+			else
+			{
+			}
+			frontPreviouslyShowing = false;
+		}
+
+		for( int i = 0 ; i < rackComponents.size() ; i++)
+		{
+			RackComponent rc = rackComponents.get( i );
+			MadUiInstance<?, ?> uiInstance = rc.getUiInstance();
+			if( doAll || uiInstance instanceof SubRackMadUiInstance )
+			{
+//				log.debug("Calling rdt on " + uiInstance.getInstance().getInstanceName() );
+
+				rc.receiveDisplayTick( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
+			}
+		}
+	}
+
+	private boolean isDefinitionPublic( MadDefinition<?,?> definition )
+	{
+		MadClassification auc = definition.getClassification();
+		MadClassificationGroup aug = auc.getGroup();
+		return ( aug != null ? aug.getVisibility() == Visibility.PUBLIC : false );
+	}
+
+	private void doStartupDuties() throws DatastoreException
+	{
+		if( forceHotspotCompile || renderComponentImages )
+		{
+			try
+			{
+				if( renderComponentImages )
+				{
+					paintOneRackPerComponent();
+				}
+
+				if( forceHotspotCompile )
+				{
+					// Now hotspot compile them in one big rack
+
+					MadDefinitionListModel allComponentTypes = componentController.listDefinitionsAvailable();
+
+					// Create a new rack with at least four rows per component type
+					int numComponentTypes = allComponentTypes.getSize();
+					RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
+							"",
+							RackService.DEFAULT_RACK_COLS,
+							RackService.DEFAULT_RACK_ROWS * numComponentTypes,
+							false );
+
+					Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+
+					for( int i = 0 ; i < numComponentTypes ; i++ )
+					{
+						Object o = allComponentTypes.getElementAt( i );
+						MadDefinition<?,?> ct = (MadDefinition<?,?>)o;
+						if( isDefinitionPublic( ct ) )
+						{
+							if( ct.isParametrable() )
+							{
+								// Attempt empty parameters creation
+								try
+								{
+									String name = ct.getId() + i;
+									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+								}
+								catch(Exception e )
+								{
+									log.info("Skipping hotspot of " + ct.getId() + " as it needs parameters and no default didn't work." );
+								}
+							}
+							else
+							{
+								try
+								{
+									String name = ct.getId() + i;
+									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+								}
+								catch(RecordNotFoundException rnfe )
+								{
+									log.info( "Skipping hotspot of " + ct.getId() + " - probably missing UI for it" );
+								}
+							}
+						}
+					}
+
+					MadGraphInstance<?,?> hotspotGraph = rackController.getRackGraphInstance( cacheRack );
+
+					int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
+
+					HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
+							outputLatencyFrames );
+
+					long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
+							outputLatencyFrames );
+
+					HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
+					MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
+					RenderingPlan renderingPlan = renderingController.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
+
+					// Now create a rendering plan from this rack
+					log.debug("Peforming hotspot mad instance looping.");
+					AppRenderingGraph hotspotAppGraph = renderingController.createAppRenderingGraph();
+					hotspotAppGraph.startHotspotLooping( renderingPlan );
+					Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
+					hotspotAppGraph.stopHotspotLooping();
+
+					rackController.destroyRackDataModel( cacheRack );
+				}
+			}
+			catch( Exception e )
+			{
+				String msg = "Exception caught forcing hotspot compilation: " + e.toString();
+				log.error( msg, e );
+				throw new DatastoreException( msg, e );
+			}
+		}
+
+		initialiseEmptyRack();
+	}
+
+	private void paintOneRackPerComponent()
+		throws DatastoreException, ContentsAlreadyAddedException, TableCellFullException,
+			TableIndexOutOfBoundsException, MAConstraintViolationException, RecordNotFoundException
+	{
+		MadDefinitionListModel defs = componentController.listDefinitionsAvailable();
+
+		Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+
+		int numDefs = defs.getSize();
+		for( int i = 0 ; i < numDefs ; ++i )
+		{
+			MadDefinition<?,?> def = defs.getElementAt( i );
+			if( isDefinitionPublic( def ) )
+			{
+				Span curComponentCellSpan = componentController.getUiSpanForDefinition( def );
+
+				// If it's the channel 8 mixer, paint the rack master with it
+				boolean paintRackMasterToo = ( def.getId().equals( MixerMadDefinition.DEFINITION_ID ) );
+				int rackWidthToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_COLS : curComponentCellSpan.x );
+				int rackHeightToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_ROWS : curComponentCellSpan.y + 2 );
+
+				RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
+						"",
+						rackWidthToUse,
+						rackHeightToUse,
+						paintRackMasterToo );
+
+				String name = def.getId() + i;
+				rackController.createComponent( cacheRack, def, emptyParameterValues, name );
+
+				forceHotspotRackPainting( cacheRack, def.getId() );
+
+				rackController.destroyRackDataModel( cacheRack );
+			}
+		}
+	}
+
+	private void doExitDuties()
+	{
+		log.debug( "Unsetting application graph" );
+		try
+		{
+			if( appRenderingIO != null )
+			{
+				AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
+
+				if( appRenderingGraph.isApplicationGraphActive() )
+				{
+					log.debug( "Will first deactivate the application graph");
+					appRenderingGraph.deactivateApplicationGraph();
+				}
+
+				if( appRenderingGraph.isApplicationGraphSet() )
+				{
+					MadGraphInstance<?,?> graphToUnset = rackController.getRackGraphInstance( userVisibleRack );
+					appRenderingGraph.unsetApplicationGraph( graphToUnset );
+				}
+			}
+
+			destroyExistingRack( userVisibleRack );
+		}
+		catch ( Exception e)
+		{
+			String msg = "Exception caught unsetting application graph: " + e.toString();
+			log.error( msg, e );
+		}
+	}
+
+	private void forceHotspotRackPainting( RackDataModel cacheRack, String componentNameBeingDrawn )
+			throws DatastoreException
+	{
+		log.debug("Performing rack painting for " + componentNameBeingDrawn);
+		// Now create a temporary gui for it and get them to render their front and back into it
+		// This will populate the image buffer cache and clear up the stuff read from disk
+		RackModelRenderingComponent hotspotRenderingComponent = guiHelperController.createGuiForRackDataModel( cacheRack );
+		hotspotRenderingComponent.setForceRepaints( true );
+
+		JComponent renderingJComponent = hotspotRenderingComponent.getJComponent();
+		Dimension renderingPreferredSize = renderingJComponent.getPreferredSize();
+		renderingJComponent.setSize( renderingPreferredSize );
+		layoutComponent( renderingJComponent );
+
+		// Paint the front
+		AllocationMatch localAllocationMatch = new AllocationMatch();
+		TiledBufferedImage hotspotPaintTiledImage = bufferedImageAllocationService.allocateBufferedImage( this.getClass().getSimpleName(),
+				localAllocationMatch,
+				AllocationLifetime.SHORT,
+				AllocationBufferType.TYPE_INT_RGB,
+				renderingPreferredSize.width,
+				renderingPreferredSize.height );
+		BufferedImage imageToRenderInto = hotspotPaintTiledImage.getUnderlyingBufferedImage();
+		Graphics hotspotPaintGraphics = imageToRenderInto.createGraphics();
+		CellRendererPane crp = new CellRendererPane();
+		crp.add( renderingJComponent );
+		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
+
+		// And now the back
+		hotspotRenderingComponent.rotateRack();
+		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
+
+		RackDataModel emptyRack = rackController.createNewRackDataModel( "", "", 2, 2, false );
+
+		// Remove references to the data model passed in
+		hotspotRenderingComponent.setRackDataModel( emptyRack );
+
+		// And clear it up
+		hotspotRenderingComponent.destroy();
+		hotspotRenderingComponent = null;
+
+		bufferedImageAllocationService.freeBufferedImage( hotspotPaintTiledImage );
+
+	}
+
+	private void layoutComponent( Component renderingJComponent )
+	{
+        synchronized (renderingJComponent.getTreeLock()) {
+        	renderingJComponent.doLayout();
+            if (renderingJComponent instanceof Container)
+                for (Component child : ((Container) renderingJComponent).getComponents())
+                    layoutComponent(child);
+        }
+	}
+
+	@Override
+	public UserPreferencesMVCView getUserPreferencesMVCView() throws DatastoreException
+	{
+		return userPreferencesController.getUserPreferencesMVCView();
+	}
+
+	@Override
+	public void applyUserPreferencesChanges()
+	{
+		try
+		{
+			userPreferencesController.applyUserPreferencesChanges();
+
+			if( isAudioEngineRunning() )
+			{
+				// And reset the audio IO too
+				stopAudioEngine();
+				Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
+			}
+			startAudioEngine();
+		}
+		catch (Exception e)
+		{
+			String msg = "Exception caught saving user preferences: " + e.toString();
+			log.error( msg, e );
+		}
+	}
+
+	@Override
+	public boolean testUserPreferencesChanges()
+	{
+		try
+		{
+			boolean retVal = callCheckOrStartAudioEngine( false );
+
+			return retVal;
+		}
+		catch(DatastoreException de)
+		{
+			String msg = "DatastoreException caught testing user preferences changes: " + de.toString();
+			log.error( msg, de );
+			return false;
+		}
+	}
+
+	@Override
+	public void cancelUserPreferencesChanges()
+	{
+		userPreferencesController.cancelUserPreferencesChanges();
+	}
+
+	@Override
+	public void reloadUserPreferences()
+	{
+		try
+		{
+			userPreferencesController.reloadUserPreferences();
+		}
+		catch( DatastoreException de )
+		{
+			log.error( "DatastoreException caught reloading user preferences: " + de.toString(), de );
+		}
+	}
+
+	@Override
+	public boolean startAudioEngine()
+	{
+		try
+		{
+			return( callCheckOrStartAudioEngine( true ) );
+		}
+		catch( Exception de )
+		{
+			String msg = "DatatoreException caught starting audio engine: " + de.toString();
+			log.error( msg, de );
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isAudioEngineRunning()
+	{
+		return (appRenderingIO == null ? false : appRenderingIO.isRendering() );
+	}
+
+	@Override
+	public void stopAudioEngine()
+	{
+		if( appRenderingIO != null )
+		{
+			try
+			{
+				AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
+				if( appRenderingGraph.isApplicationGraphActive() )
+				{
+					appRenderingGraph.deactivateApplicationGraph();
+				}
+				appRenderingGraph.unsetApplicationGraph( userVisibleRack.getRackGraph() );
+				appRenderingIO.stopRendering();
+				appRenderingIO.destroy();
+				appRenderingIO = null;
+			}
+			catch( Exception e )
+			{
+				String msg = "Exception caught stopping audio engine: " + e.toString();
+				log.error( msg, e );
+			}
+		}
+	}
+
+	private boolean callCheckOrStartAudioEngine( boolean isStart )
+			throws DatastoreException
+	{
+		boolean retVal = false;
+
+		UserPreferencesMVCController userPreferencesMVCController = userPreferencesController.getUserPreferencesMVCController();
+		UserPreferencesMVCModel prefsModel = userPreferencesMVCController.getModel();
+
+		HardwareIOConfiguration hardwareIOConfiguration = PrefsModelToHardwareIOConfigurationBridge.modelToConfiguration( prefsModel );
+
+		AppRenderingErrorCallback errorCallback = new AppRenderingErrorCallback()
+		{
+
+			@Override
+			public void errorCallback( AppRenderingErrorStruct error )
+			{
+//				log.error( "AppRenderingErrorCallback happened: " + error.severity.toString() + " " + error.msg );
+
+				if( error.severity == ErrorSeverity.FATAL )
+				{
+					if( isRendering() )
+					{
+						toggleRendering();
+					}
+					stopAudioEngine();
+				}
+				else
+				{
+					log.warn(error.msg);
+				}
+			}
+
+			@Override
+			public String getName()
+			{
+				return "ApplicationAppRenderingErrorCallback(Anonymous)";
+			}
+		};
+
+		try
+		{
+			if( isStart )
+			{
+				if( appRenderingIO != null )
+				{
+					throw new DatastoreException( "Attempting to replace magical audio IO when one already exists!");
+				}
+				appRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
+				appRenderingIO.getAppRenderingGraph().setApplicationGraph( userVisibleRack.getRackGraph() );
+
+				appRenderingIO.startRendering();
+				retVal = true;
+			}
+			else
+			{
+				// is a config test
+				boolean wasRunningBeforeTest = false;
+				if( appRenderingIO != null && appRenderingIO.isRendering())
+				{
+					wasRunningBeforeTest = true;
+					appRenderingIO.stopRendering();
+					appRenderingIO.destroy();
+					appRenderingIO = null;
+					try
+					{
+						Thread.currentThread();
+						Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
+					}
+					catch (InterruptedException e)
+					{
+						log.error( e );
+					}
+				}
+
+				AppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
+				retVal = testAppRenderingIO.testRendering( AUDIO_TEST_RUN_MILLIS );
+
+				if( wasRunningBeforeTest && !retVal)
+				{
+					try
+					{
+						Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
+					}
+					catch (InterruptedException e)
+					{
+						log.error( e );
+					}
+					callCheckOrStartAudioEngine( true );
+				}
+			}
+		}
+		catch ( Exception e )
+		{
+			String msg = "Exception caught calling check or start audio engine: " + e.toString();
+			log.error( msg, e );
+			if( appRenderingIO != null )
+			{
+				appRenderingIO.stopRendering();
+				appRenderingIO.destroy();
+				appRenderingIO = null;
+			}
+		}
+		return retVal;
+	}
+
+	@Override
+	public RackModelRenderingComponent getGuiRack()
+	{
+		return guiRack;
+	}
+
+	@Override
+	public void registerRackTabbedPane( GuiTabbedPane rackTabbedPane )
+	{
+		guiHelperController.registerRackTabbedPane( rackTabbedPane );
+	}
+
+	@Override
+	public void showYesNoQuestionDialog( Component parentComponent,
+			String message,
+			String title,
+			int messageType,
+			String[] options,
+			String defaultChoice,
+			YesNoQuestionDialogCallback callback )
+	{
+		guiHelperController.showYesNoQuestionDialog( parentComponent, message, title, messageType,
+				options, defaultChoice, callback );
+	}
+
+	@Override
+	public void showTextInputDialog( Component parentComponent, String message,
+			String title, int messageType, String initialValue,
+			TextInputDialogCallback callback )
+	{
+		guiHelperController.showTextInputDialog( parentComponent, message, title,
+				messageType, initialValue, callback );
+	}
+
+	@Override
+	public void showMessageDialog( Component parentComponent, String message,
+			String title,
+			int messageType,
+			MessageDialogCallback callback )
+	{
+		guiHelperController.showMessageDialog( parentComponent, message, title, messageType,
+				callback );
+	}
+
+	@Override
+	public RackDataModel getUserRack()
+	{
+		return userVisibleRack;
+	}
+
+}

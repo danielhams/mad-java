@@ -1,0 +1,173 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package test.uk.co.modularaudio.mads.visualisation.base.genericsetup;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import net.miginfocom.swing.MigLayout;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.context.support.GenericApplicationContext;
+
+import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
+import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
+import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
+import uk.co.modularaudio.util.spring.SpringComponentHelper;
+import uk.co.modularaudio.util.spring.SpringContextHelper;
+import uk.co.modularaudio.util.swing.general.FontResetter;
+import uk.co.modularaudio.util.table.Span;
+
+public class GenericComponentVisualiser
+{
+	private static Log log = LogFactory.getLog( GenericComponentVisualiser.class.getName() );
+
+	private GenericApplicationContext gac = null;
+	public MadComponentService componentService = null;
+	public MadComponentUiService componentUiService = null;
+	public GuiComponentFactoryService guiComponentFactoryService = null;
+
+//	public final static Color panelBackgroundColor = new Color( 0.3f, 0.1f, 0.1f );
+	public final static Color panelBackgroundColor = new Color( 0.25f, 0.25f, 0.25f );
+
+	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	{
+		FontResetter.setUIFontFromString( "Serif", Font.PLAIN, 10 );
+//		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+//		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
+	}
+
+	public void setUp() throws Exception
+	{
+		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		PostInitPreShutdownContextHelper pipsch = new PostInitPreShutdownContextHelper();
+		clientHelpers.add( pipsch );
+		SpringComponentHelper sch = new SpringComponentHelper( clientHelpers );
+		gac = sch.makeAppContext( "componentvisualisationbeans.xml", "componentvisualisation.properties" );
+		componentService = gac.getBean( MadComponentService.class );
+		componentUiService = gac.getBean( MadComponentUiService.class );
+		guiComponentFactoryService = gac.getBean( GuiComponentFactoryService.class );
+	}
+
+	public void tearDown() throws Exception
+	{
+		if( gac != null )
+		{
+			gac.close();
+		}
+	}
+
+	public void testAndShowComponent( String definitionId )
+			throws Exception
+	{
+		MadDefinition<?,?> compressorDef = componentService.findDefinitionById( definitionId );
+		Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+		String instanceName = "panel_test";
+		MadInstance<?,?> aui = componentService.createInstanceFromDefinition( compressorDef, parameterValues, instanceName );
+
+		MadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
+
+		JFrame testFrame = new JFrame();
+		JPanel testPanel = new JPanel();
+		MigLayout layout = new MigLayout("insets 10, gap 10, fill");
+		testPanel.setLayout( layout );
+		testFrame.add( testPanel );
+		testPanel.setBackground( panelBackgroundColor );
+
+		RackComponent rackComponent = new RackComponent( "Test", aui, auui );
+		AbstractGuiAudioComponent frontComponent = guiComponentFactoryService.createFrontGuiComponent( rackComponent );
+		AbstractGuiAudioComponent backComponent = guiComponentFactoryService.createBackGuiComponent( rackComponent );
+
+		Span cellSpan = auui.getCellSpan();
+		Dimension gridSize = GuiRackPanel.frontGridSize;
+		int width = cellSpan.x * gridSize.width;
+		int height = cellSpan.y * gridSize.height;
+		Dimension componentSize = new Dimension( width, height );
+		frontComponent.setSize( componentSize );
+		frontComponent.setMinimumSize( componentSize );
+		backComponent.setSize( componentSize );
+		backComponent.setMinimumSize( componentSize );
+		testPanel.add( frontComponent, "grow, wrap" );
+		testPanel.add( backComponent, "grow");
+
+		testFrame.addComponentListener( new ComponentListener()
+		{
+
+			@Override
+			public void componentShown( ComponentEvent e )
+			{
+			}
+
+			@Override
+			public void componentResized( ComponentEvent e )
+			{
+				Object o = e.getSource();
+				JFrame frame = (JFrame)o;
+				log.debug("Component resized to be " + frame.getSize() );
+			}
+
+			@Override
+			public void componentMoved( ComponentEvent e )
+			{
+			}
+
+			@Override
+			public void componentHidden( ComponentEvent e )
+			{
+			}
+		} );
+
+		testPanel.validate();
+
+		testFrame.pack();
+		testFrame.setVisible( true );
+
+		while( testFrame.isVisible() )
+		{
+			Thread.sleep( 100 );
+		}
+		testFrame.dispose();
+		auui.destroy();
+		componentUiService.destroyUiInstance(auui);
+		componentService.destroyInstance(aui);
+	}
+
+}

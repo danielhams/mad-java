@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<project name="XJC Based Bindings Generation" default="build">
+	<!-- Configuration section -->
+	                          
+	<!-- The directory that contains the Spring context files --> 
+	<property name="output.dir" value="src" />
+	<property name="schema.dir" value="schema" />
+	
+	<property name="libs.dir" value="../../4EXTERNAL/external-libs/libs/" />
+	
+	<target name="build" depends="clean, xjcbuild" />
+	
+	<target name="clean">
+		<delete>
+			<fileset dir="${output.dir}" id="outputdir">
+			    <include name="**/*.java"/>
+			</fileset>
+			<dirset dir="${output.dir}">
+				<include name="**/*"/>
+				<exclude name="src"/>
+			</dirset>
+		</delete>
+	</target>
+	
+	<target name="xjcbuild">
+		<xjc destdir="src" package="uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1">
+			  <schema  dir="${schema.dir}" includes="madrack.xsd"/>
+		  <binding dir="${output.dir}" includes="*.xjb"/>
+		</xjc>
+	</target>
+
+	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
+	  <classpath>
+	    <fileset dir="${libs.dir}" includes="*.jar" />
+	  </classpath>
+	</taskdef>
+</project>

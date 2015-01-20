@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/pac/0_0_3" name="Empty Application Rack" cols="8" rows="39">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Lane 3 Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Lane 2 Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Lane 2 Channel 2"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Lane 3 Channel 2"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Output Channel 1"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Channel 8 Mixer 2" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackComponent name="Channel 8 Mixer 2" definitionId="channel8_mixer">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="MasterMixer" value="893:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackControl name="LaneMixer2" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+    </rackComponent>
+    <rackComponent name="DC Trap 6" definitionId="dc_trap">
+        <rackPosition column="0" row="0"/>
+    </rackComponent>
+    <rackComponent name="DC Trap 7" definitionId="dc_trap">
+        <rackPosition column="0" row="1"/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player (Roll Painter) 1" definitionId="rp_soundfile_player">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="SpeedSlider" value="71.399994"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 5" definitionId="spectral_amp">
+        <rackPosition column="2" row="6"/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 4" definitionId="spectral_roll">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 3" definitionId="sub_rack">
+        <rackPosition column="2" row="0"/>
+        <rack name="Bass Booster" cols="8" rows="39">
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Input Pre Amp" rackComponentChannelInstanceName="Lane 1 Channel 1"/>
+            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Input Pre Amp" rackComponentChannelInstanceName="Lane 1 Channel 2"/>
+            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Wet Dry Mixer" rackComponentChannelInstanceName="Output Wave Left"/>
+            <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Wet Dry Mixer" rackComponentChannelInstanceName="Output Wave Right"/>
+            <rackComponent name="Dry Mixdown" definitionId="channel8_mixer">
+                <rackPosition column="2" row="4"/>
+                <rackControl name="MasterMixer" value="824:50"/>
+                <rackControl name="LaneMixer0" value="824:50:  "/>
+                <rackControl name="LaneMixer1" value="824:50:  "/>
+                <rackControl name="LaneMixer2" value="0:50:  "/>
+                <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+            </rackComponent>
+            <rackComponent name="Dry Wave" definitionId="rp_oscilloscope">
+                <rackPosition column="2" row="8"/>
+                <rackControl name="CaptureTime" value="60.0"/>
+                <rackControl name="Left Scale" value=""/>
+                <rackControl name="Display" value=""/>
+                <rackControl name="Right Scale" value=""/>
+            </rackComponent>
+            <rackComponent name="Input Pre Amp" definitionId="channel8_mixer">
+                <rackPosition column="0" row="0"/>
+                <rackControl name="MasterMixer" value="824:50"/>
+                <rackControl name="LaneMixer0" value="734:50:  "/>
+                <rackControl name="LaneMixer1" value="0:50:  "/>
+                <rackControl name="LaneMixer2" value="0:50:  "/>
+                <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+            </rackComponent>
+            <rackComponent name="Wet Dry Mixer" definitionId="cross_fader">
+                <rackPosition column="1" row="10"/>
+                <rackControl name="AmpAKill" value="false"/>
+                <rackControl name="AmpBKill" value="false"/>
+                <rackControl name="Slider" value="-1000"/>
+                <rackControl name="PowerCurve" value="Additive"/>
+            </rackComponent>
+            <rackComponent name="Wet High" definitionId="frequency_filter">
+                <rackPosition column="2" row="0"/>
+                <rackControl name="Filter Type" value="High Pass"/>
+                <rackControl name="Toggle 24 dB" value="true"/>
+                <rackControl name="Knee" value="96.00"/>
+                <rackControl name="Bandwidth" value="500.00"/>
+            </rackComponent>
+            <rackComponent name="Wet Low" definitionId="frequency_filter">
+                <rackPosition column="2" row="2"/>
+                <rackControl name="Filter Type" value="Low Pass"/>
+                <rackControl name="Toggle 24 dB" value="true"/>
+                <rackControl name="Knee" value="96.00"/>
+                <rackControl name="Bandwidth" value="500.00"/>
+            </rackComponent>
+            <rackComponent name="Wet Mixdown" definitionId="channel8_mixer">
+                <rackPosition column="0" row="4"/>
+                <rackControl name="MasterMixer" value="824:50"/>
+                <rackControl name="LaneMixer0" value="824:50:  "/>
+                <rackControl name="LaneMixer1" value="915:50:  "/>
+                <rackControl name="LaneMixer2" value="0:50:  "/>
+                <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+            </rackComponent>
+            <rackComponent name="Wet Wave" definitionId="rp_oscilloscope">
+                <rackPosition column="0" row="8"/>
+                <rackControl name="CaptureTime" value="60.0"/>
+                <rackControl name="Left Scale" value=""/>
+                <rackControl name="Display" value=""/>
+                <rackControl name="Right Scale" value=""/>
+            </rackComponent>
+            <rackLink producerRackComponentName="Dry Mixdown" producerChannelName="Output Channel 1" consumerRackComponentName="Dry Wave" consumerChannelName="Input Wave 0"/>
+            <rackLink producerRackComponentName="Dry Mixdown" producerChannelName="Output Channel 1" consumerRackComponentName="Wet Dry Mixer" consumerChannelName="Input Channel 2 Left"/>
+            <rackLink producerRackComponentName="Dry Mixdown" producerChannelName="Output Channel 2" consumerRackComponentName="Wet Dry Mixer" consumerChannelName="Input Channel 2 Right"/>
+            <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Wet High" consumerChannelName="Input Wave Left"/>
+            <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Wet Low" consumerChannelName="Input Wave Left"/>
+            <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 2" consumerRackComponentName="Wet High" consumerChannelName="Input Wave Right"/>
+            <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 2" consumerRackComponentName="Wet Low" consumerChannelName="Input Wave Right"/>
+            <rackLink producerRackComponentName="Wet High" producerChannelName="Output Wave Left" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 1 Channel 1"/>
+            <rackLink producerRackComponentName="Wet High" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Channel 1"/>
+            <rackLink producerRackComponentName="Wet High" producerChannelName="Output Wave Right" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 1 Channel 2"/>
+            <rackLink producerRackComponentName="Wet High" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Channel 2"/>
+            <rackLink producerRackComponentName="Wet Low" producerChannelName="Output Wave Left" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 2 Channel 1"/>
+            <rackLink producerRackComponentName="Wet Low" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Channel 1"/>
+            <rackLink producerRackComponentName="Wet Low" producerChannelName="Output Wave Right" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 2 Channel 2"/>
+            <rackLink producerRackComponentName="Wet Low" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Channel 2"/>
+            <rackLink producerRackComponentName="Wet Mixdown" producerChannelName="Output Channel 1" consumerRackComponentName="Wet Dry Mixer" consumerChannelName="Input Channel 1 Left"/>
+            <rackLink producerRackComponentName="Wet Mixdown" producerChannelName="Output Channel 1" consumerRackComponentName="Wet Wave" consumerChannelName="Input Wave 0"/>
+            <rackLink producerRackComponentName="Wet Mixdown" producerChannelName="Output Channel 2" consumerRackComponentName="Wet Dry Mixer" consumerChannelName="Input Channel 1 Right"/>
+        </rack>
+    </rackComponent>
+    <rackLink producerRackComponentName="Channel 8 Mixer 2" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp 5" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 2" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Roll 4" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="DC Trap 6" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="DC Trap 7" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player (Roll Painter) 1" producerChannelName="Output Wave Left" consumerRackComponentName="DC Trap 6" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Soundfile Player (Roll Painter) 1" producerChannelName="Output Wave Right" consumerRackComponentName="DC Trap 7" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Channel 8 Mixer 2" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 2" consumerRackComponentName="Channel 8 Mixer 2" consumerChannelName="Lane 1 Channel 2"/>
+</rack>

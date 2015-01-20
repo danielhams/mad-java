@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<xsd:schema
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.modular-audio.co.uk/projects/mad/0_0_1"
+xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1"
+elementFormDefault="qualified">
+  <!-- The rack itself -->
+  <xsd:element name="rack" type="RackXmlType"/>
+  <xsd:complexType name="RackXmlType">
+    <xsd:sequence>
+            <xsd:element name="rackIOLink" type="RackIOLinkXmlType" minOccurs="0" maxOccurs="unbounded">
+    	</xsd:element>
+            <xsd:element name="rackComponent" type="RackComponentXmlType"
+    		minOccurs="0" maxOccurs="unbounded">
+    	</xsd:element>
+    	<xsd:element name="rackLink" type="RackLinkXmlType" minOccurs="0" maxOccurs="unbounded"></xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="cols" type="xsd:int" use="required"/>
+    <xsd:attribute name="rows" type="xsd:int" use="required"/>
+  </xsd:complexType>
+  <!-- A component in the rack -->
+  <xsd:element name="rackComponent" type="RackComponentXmlType"/>
+  <xsd:complexType name="RackComponentXmlType">
+    <xsd:sequence>
+    	<xsd:element name="rackPosition" minOccurs="1" maxOccurs="1"
+    		type="RackPositionXmlType" />
+    	<xsd:element name="rackControl" minOccurs="0"
+    		maxOccurs="unbounded" type="RackControlXmlType" />
+    	<xsd:element name="rackComponentParameterValue" type="RackComponentParameterValueXmlType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="required"/>
+    <xsd:attribute name="definitionId" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  <!-- The position of a component in the rack -->
+  <xsd:complexType name="RackPositionXmlType">
+    <xsd:attribute name="column" type="xsd:int" use="required"/>
+    <xsd:attribute name="row" type="xsd:int" use="required"/>
+  </xsd:complexType>
+  <!-- A control's values -->
+  <xsd:complexType name="RackControlXmlType">
+  	<xsd:attribute name="name" type="xsd:string" use="required"/>
+  	<xsd:attribute name="value" type="xsd:string" use="required"/>
+  </xsd:complexType>
+  <!-- A link -->
+  <xsd:complexType name="RackLinkXmlType">
+    <xsd:attribute name="producerRackComponentName" type="xsd:string" use="required"/>
+    <xsd:attribute name="producerChannelName" type="xsd:string" use="required"/>
+    <xsd:attribute name="consumerRackComponentName" type="xsd:string" use="required"/>
+    <xsd:attribute name="consumerChannelName" type="xsd:string" use="required"/>
+  </xsd:complexType>
+
+    <xsd:element name="subRack" type="SubRackXmlType"></xsd:element>
+
+    <xsd:complexType name="SubRackXmlType">
+    	<xsd:complexContent>
+    		<xsd:extension base="RackComponentXmlType">
+    			<xsd:sequence>
+    				<xsd:element name="rack" type="RackXmlType" minOccurs="0" maxOccurs="1"></xsd:element>
+    			</xsd:sequence>
+    			<xsd:attribute name="localSubRack" type="xsd:boolean"
+    				use="required">
+    			</xsd:attribute>
+    			<xsd:attribute name="libraryPath" type="xsd:string"></xsd:attribute>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="RackIOLinkXmlType">
+    	<xsd:attribute name="rackChannelName" type="xsd:string"
+    		use="required">
+    	</xsd:attribute>
+    	<xsd:attribute name="rackComponentName" type="xsd:string" use="required"></xsd:attribute>
+    	<xsd:attribute name="rackComponentChannelInstanceName" type="xsd:string" use="required"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:element name="rackComponentParameterValue" type="xsd:string"></xsd:element>
+
+    <xsd:complexType name="RackComponentParameterValueXmlType">
+    	<xsd:attribute name="parameterName" type="xsd:string"></xsd:attribute>
+    	<xsd:attribute name="value" type="xsd:string"></xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>

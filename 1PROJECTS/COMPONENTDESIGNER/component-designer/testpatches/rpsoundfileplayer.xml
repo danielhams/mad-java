@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/pac/0_0_3" name="Empty Application Rack" cols="8" rows="39">
+    <rackComponent name="Oscilloscope (Roll Painter) 2" definitionId="rp_oscilloscope">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player (Roll Painter) 1" definitionId="rp_soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/PreferNotToLoseMusic/SetSources/OriginalWavs/20121229/3823006_101_Original_Mix.wav"/>
+        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="SpeedSlider" value="73.8"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Soundfile Player (Roll Painter) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Oscilloscope (Roll Painter) 2" consumerChannelName="Input Wave 0"/>
+</rack>

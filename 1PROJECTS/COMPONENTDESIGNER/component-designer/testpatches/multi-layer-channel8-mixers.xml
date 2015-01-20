@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/pac/0_0_3" name="Empty Application Rack" cols="8" rows="39">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Channel 8 Mixer 1" rackComponentChannelInstanceName="Lane 1 Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Channel 8 Mixer 1" rackComponentChannelInstanceName="Lane 1 Channel 2"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Channel 8 Mixer 4" rackComponentChannelInstanceName="Output Channel 1"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Channel 8 Mixer 4" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackComponent name="Channel 8 Mixer 1" definitionId="channel8_mixer">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackControl name="LaneMixer2" value="0:50:  "/>
+        <rackControl name="LaneMixer3" value="0:50:  "/>
+        <rackControl name="LaneMixer4" value="0:50:  "/>
+        <rackControl name="LaneMixer5" value="0:50:  "/>
+        <rackControl name="LaneMixer6" value="0:50:  "/>
+        <rackControl name="LaneMixer7" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="8"/>
+    </rackComponent>
+    <rackComponent name="Channel 8 Mixer 2" definitionId="channel8_mixer">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="1"/>
+    </rackComponent>
+    <rackComponent name="Channel 8 Mixer 3" definitionId="channel8_mixer">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="2"/>
+    </rackComponent>
+    <rackComponent name="Channel 8 Mixer 4" definitionId="channel8_mixer">
+        <rackPosition column="0" row="12"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackControl name="LaneMixer2" value="0:50:  "/>
+        <rackControl name="LaneMixer3" value="0:50:  "/>
+        <rackControl name="LaneMixer4" value="0:50:  "/>
+        <rackControl name="LaneMixer5" value="0:50:  "/>
+        <rackControl name="LaneMixer6" value="0:50:  "/>
+        <rackControl name="LaneMixer7" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Channel 8 Mixer 1" producerChannelName="Output Channel 1" consumerRackComponentName="Channel 8 Mixer 2" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 1" producerChannelName="Output Channel 2" consumerRackComponentName="Channel 8 Mixer 2" consumerChannelName="Lane 1 Channel 2"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 2" producerChannelName="Output Channel 1" consumerRackComponentName="Channel 8 Mixer 3" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 2" producerChannelName="Output Channel 2" consumerRackComponentName="Channel 8 Mixer 3" consumerChannelName="Lane 1 Channel 2"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 3" producerChannelName="Output Channel 1" consumerRackComponentName="Channel 8 Mixer 4" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Channel 8 Mixer 3" producerChannelName="Output Channel 2" consumerRackComponentName="Channel 8 Mixer 4" consumerChannelName="Lane 1 Channel 2"/>
+</rack>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="SoundfilePlayerWithBassBoost" cols="4" rows="39">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Channel 1"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/GitRepositories/modular-audio-public.git/1PROJECTS/COMPONENTDESIGNER/component-designer/usersubrackpatches/bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+        <rackPosition column="2" row="4"/>
+    </rackComponent>
+    <rackComponent name="Output Amp" definitionId="mixer">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackControl name="LaneMixer2" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+    </rackComponent>
+    <rackComponent name="SFP Preamp" definitionId="mixer">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="MasterMixer" value="824:50"/>
+        <rackControl name="LaneMixer0" value="824:50:  "/>
+        <rackControl name="LaneMixer1" value="0:50:  "/>
+        <rackControl name="LaneMixer2" value="0:50:  "/>
+        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/Sasha &amp; Digweed/Global Underground - Sasha In Ibiza (2004) - House [www.torrentazos.com]/CD1/103 - Resistance D - Feel High (Humate Mix) - www.torrentazos.com.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="SpeedSlider" value="100.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp" definitionId="spectral_amp">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll" definitionId="spectral_roll">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller" definitionId="wave_roller">
+        <rackPosition column="2" row="9"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Channel 2"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Roll" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="SFP Preamp" producerChannelName="Output Channel 1" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="SFP Preamp" producerChannelName="Output Channel 2" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="SFP Preamp" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="SFP Preamp" consumerChannelName="Lane 1 Channel 2"/>
+</rack>

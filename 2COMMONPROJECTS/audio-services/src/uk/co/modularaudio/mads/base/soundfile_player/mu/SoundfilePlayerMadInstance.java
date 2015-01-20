@@ -1,0 +1,304 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package uk.co.modularaudio.mads.base.soundfile_player.mu;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
+import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.samplecaching.SampleCachingService;
+import uk.co.modularaudio.util.audio.dsp.DcTrapFilter;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
+import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
+import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
+
+public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDefinition,SoundfilePlayerMadInstance>
+{
+	private static Log log = LogFactory.getLog( SoundfilePlayerMadInstance.class.getName() );
+
+	protected boolean active = false;
+
+	public enum PlayingState
+	{
+		STOPPED,
+		PLAYING
+	};
+
+	private static final float VALUE_CHASE_MILLIS = 0.5f;
+	private float curValueRatio = 0.0f;
+	private float newValueRatio = 1.0f;
+
+	private int numSamplesPerFrontEndPeriod = -1;
+
+	private int sampleRate;
+
+	private DcTrapFilter leftDcTrap = null;
+	private DcTrapFilter rightDcTrap = null;
+
+	private final AdvancedComponentsFrontController advancedComponentsFrontController;
+	private final BlockResamplerService blockResamplerService;
+	private final SampleCachingService sampleCachingService;
+
+	private BlockResamplingClient resampledSample = null;
+
+	private long lastEmittedPosition = 0;
+
+	private PlayingState currentState = PlayingState.STOPPED;
+	private PlayingState desiredState = PlayingState.STOPPED;
+
+	private int numSamplesTillNextEvent = 0;
+
+	private float desiredPlaySpeed = 1.0f;
+	private float playSpeed = 1.0f;
+
+	public SoundfilePlayerMadInstance( BaseComponentsCreationContext creationContext,
+			String instanceName,
+			SoundfilePlayerMadDefinition definition,
+			Map<MadParameterDefinition, String> creationParameterValues,
+			MadChannelConfiguration channelConfiguration )
+	{
+		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		advancedComponentsFrontController = creationContext.getAdvancedComponentsFrontController();
+		blockResamplerService = advancedComponentsFrontController.getBlockResamplerService();
+		sampleCachingService = advancedComponentsFrontController.getSampleCachingService();
+
+		leftDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
+		rightDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
+	}
+
+	@Override
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+			throws MadProcessingException
+	{
+		try
+		{
+			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+
+			newValueRatio = AudioTimingUtils.calculateNewValueRatioForMillisAtSampleRate( sampleRate, VALUE_CHASE_MILLIS );
+			curValueRatio = 1.0f - newValueRatio;
+			curValueRatio = curValueRatio / 2.0f;
+			newValueRatio = 1.0f - curValueRatio;
+
+			numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
+
+			leftDcTrap.recomputeR( sampleRate );
+			rightDcTrap.recomputeR( sampleRate );
+		}
+		catch (Exception e)
+		{
+			throw new MadProcessingException( e );
+		}
+	}
+
+	@Override
+	public void stop() throws MadProcessingException
+	{
+	}
+
+	@Override
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			MadChannelConnectedFlags channelConnectedFlags,
+			MadChannelBuffer[] channelBuffers,
+			final int numFrames )
+	{
+		MadChannelBuffer lb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_LEFT ];
+		boolean leftConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_LEFT );
+		float[] lfb = lb.floatBuffer;
+		MadChannelBuffer rb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_RIGHT ];
+		boolean rightConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_RIGHT );
+		float[] rfb = rb.floatBuffer;
+
+		if( desiredState != currentState )
+		{
+			switch( currentState )
+			{
+				case STOPPED:
+				{
+					if( resampledSample == null )
+					{
+						emitStateChangedToStop( tempQueueEntryStorage,
+								periodStartFrameTime,
+								SoundfilePlayerMadInstance.PlayingState.STOPPED );
+						log.warn("Unable to flip to playing as no sample available.");
+						break;
+					}
+					currentState = desiredState;
+					break;
+				}
+				case PLAYING:
+				default:
+				{
+					currentState = desiredState;
+					break;
+				}
+			}
+		}
+
+		if( resampledSample == null || currentState == PlayingState.STOPPED )
+		{
+			if( leftConnected )
+			{
+				Arrays.fill( lfb, 0.0f );
+			}
+			if( rightConnected )
+			{
+				Arrays.fill( rfb, 0.0f );
+			}
+			return RealtimeMethodReturnCodeEnum.SUCCESS;
+		}
+
+//		float usedPlaySpeed = (currentState == PlayingState.PLAYING ? desiredPlaySpeed : 0.0f );
+
+		int numStillToOutput = numFrames;
+		int curOutputPos = 0;
+		while( numStillToOutput > 0 )
+		{
+			if( numSamplesTillNextEvent <= 0 )
+			{
+				playSpeed = (playSpeed * curValueRatio) + (desiredPlaySpeed * newValueRatio);
+				// Emit position event
+				long eventFrameTime = periodStartFrameTime + curOutputPos;
+				long curSamplePos = resampledSample.getFramePosition();
+				if( curSamplePos != lastEmittedPosition )
+				{
+					emitDeltaPositionEvent( tempQueueEntryStorage, eventFrameTime, curSamplePos, resampledSample );
+					postProcess(tempQueueEntryStorage, timingParameters, eventFrameTime );
+					preProcess( tempQueueEntryStorage, timingParameters, eventFrameTime );
+				}
+
+				lastEmittedPosition = curSamplePos;
+
+				numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
+			}
+
+			int numThisRound = ( numStillToOutput < numSamplesTillNextEvent ? numStillToOutput : numSamplesTillNextEvent );
+			if( !active )
+			{
+				numThisRound = numFrames;
+			}
+//			log.debug("Doing " + numThisRound + " frames");
+
+			blockResamplerService.sampleClientFetchFramesResample( tempQueueEntryStorage.temporaryFloatArray,
+					resampledSample,
+					sampleRate,
+					playSpeed,
+					lfb,
+					rfb,
+					curOutputPos,
+					numThisRound,
+					false );
+
+			numStillToOutput -= numThisRound;
+			numSamplesTillNextEvent -= numThisRound;
+			curOutputPos += numThisRound;
+		}
+
+		leftDcTrap.filter( lfb, 0, numFrames );
+		rightDcTrap.filter( rfb, 0, numFrames );
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public AdvancedComponentsFrontController getAdvancedComponentsFrontController()
+	{
+		return advancedComponentsFrontController;
+	}
+
+	protected void emitStateChangedToStop( ThreadSpecificTemporaryEventStorage tses, long currentFrameTime, SoundfilePlayerMadInstance.PlayingState state )
+	{
+		localBridge.queueTemporalEventToUi(tses,  currentFrameTime,  SoundfilePlayerIOQueueBridge.COMMAND_OUT_STATE_CHANGE, state.ordinal(), null );
+	}
+
+	protected void emitDeltaPositionEvent( ThreadSpecificTemporaryEventStorage tses, long eventFrameTime, long curPos, BlockResamplingClient whichSample )
+	{
+		localBridge.queueTemporalEventToUi(tses, eventFrameTime, SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_DELTA, curPos, whichSample );
+	}
+
+	@Override
+	public void destroy()
+	{
+		if( resampledSample != null )
+		{
+			try
+			{
+//				SampleCacheClient scc = resampledSample.getSampleCacheClient();
+//				advancedComponentsFrontController.unregisterCacheClientForFile(scc);
+				blockResamplerService.destroyResamplingClient(resampledSample);
+			}
+			catch( Exception e )
+			{
+				log.error("Exception caught cleaning up sample cache client: " + e.toString(), e );
+			}
+			resampledSample = null;
+		}
+		super.destroy();
+	}
+
+	public BlockResamplingClient getResampledSample()
+	{
+		return resampledSample;
+	}
+
+	public void setResampledSample( BlockResamplingClient newSample )
+	{
+		resampledSample = newSample;
+	}
+
+	public void setDesiredState(PlayingState newState)
+	{
+		desiredState = newState;
+	}
+
+	public void setDesiredPlaySpeed(float newSpeed)
+	{
+		desiredPlaySpeed = newSpeed;
+	}
+
+	public void resetFramePosition( long newFramePosition )
+	{
+		resampledSample.setFramePosition( newFramePosition );
+		resampledSample.setFpOffset( 0.0f );
+	}
+
+	protected void addJobForSampleCachingService()
+	{
+		sampleCachingService.addJobToCachePopulationThread();
+	}
+}
