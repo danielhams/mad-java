@@ -48,6 +48,8 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 
    Don't forget that you will need to ensure that Jack2 is already running before launching.
 
+   * Note - the first launch can potentially take a long time - it generates a cache of band limited wave files for the internal oscillators (I'll change this at some point, but for now that's what it is up to) *
+
 8. You should see the ComponentDesigner main window and the initially empty rack.
 
 9. You can now add (for example) a sound file player component to the rack, and wire its output to the output in the master IO at the top. Don't forget to wire up the outputs inside the Jack manager you are using too (e.g. QJackctl).
