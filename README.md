@@ -7,12 +7,12 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 1. Check out using git.
 
 2. Pull down the libraries it depends on using the shell script (it will need wget in your path):
-```
-cd mad-java/4EXTERNAL/external-libs/scripts
-./fetchandextractlibs.sh
-```
+    ```
+    cd mad-java/4EXTERNAL/external-libs/scripts
+    ./fetchandextractlibs.sh
+    ```
 
-This will populate the libs directory as needed.
+    This will populate the libs directory as needed.
 
 3. Add the git repository you just cloned int the eclipse git perspective
 
@@ -31,4 +31,22 @@ cd $CHECKOUTDIR/3UTIL/util-native/csrc
 
 This should place it where eclipse will pick it up and use it.
 
-7. Launch the component-designer java application - uk.co.modularaudio.componentdesigner.ComponentDesigner
+7. Launch the component-designer java application - uk.co.modularaudio.componentdesigner.ComponentDesigner - but we'll need to pass some arguments to the application so it find the necessary image and support files.
+
+```
+ComponentDesigner --development
+```
+
+Don't forget that you will need to ensure that Jack2 is already running before launching.
+
+8. You should see the ComponentDesigner main window and the initially empty rack.
+
+9. You can now add (for example) a sound file player component to the rack, and wire its output to the output in the master IO at the top. Don't forget to wire up the outputs inside the Jack manager you are using too (e.g. QJackctl).
+
+10. Further tweaking - you can also add the following switches:
+
+-------------------------------------------------------------------------------------------------------
+| --useSlaf | use the gtk2 style platform look and feel. works best with a dark one like dark-adwaita |
+| --beta    | show released and beta level DSP components                                             |
+| --alpha   | show all components include alpha and beta ones                                         |
+-------------------------------------------------------------------------------------------------------
