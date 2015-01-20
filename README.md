@@ -24,20 +24,20 @@ Currently development is done using Eclipse and JDK 1.8 on a Linux machine with 
 
 7. Build the native library for getting the thread ID in util-native. You will need to make sure that your JAVA_HOME environment is correctly set up.
 
-```
-cd $CHECKOUTDIR/3UTIL/util-native/csrc
-./buildit.sh
-```
+   ```
+   cd $CHECKOUTDIR/3UTIL/util-native/csrc
+   ./buildit.sh
+   ```
 
-This should place it where eclipse will pick it up and use it.
+   This should place it where eclipse will pick it up and use it.
 
 7. Launch the component-designer java application - uk.co.modularaudio.componentdesigner.ComponentDesigner - but we'll need to pass some arguments to the application so it find the necessary image and support files.
 
-```
-ComponentDesigner --development
-```
+   ```
+   ComponentDesigner --development
+   ```
 
-Don't forget that you will need to ensure that Jack2 is already running before launching.
+   Don't forget that you will need to ensure that Jack2 is already running before launching.
 
 8. You should see the ComponentDesigner main window and the initially empty rack.
 
@@ -45,8 +45,8 @@ Don't forget that you will need to ensure that Jack2 is already running before l
 
 10. Further tweaking - you can also add the following switches:
 
--------------------------------------------------------------------------------------------------------
-| --useSlaf | use the gtk2 style platform look and feel. works best with a dark one like dark-adwaita |
-| --beta    | show released and beta level DSP components                                             |
-| --alpha   | show all components include alpha and beta ones                                         |
--------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------
+    | --useSlaf | use the gtk2 style platform look and feel. works best with a dark one like dark-adwaita |
+    | --beta    | show released and beta level DSP components                                             |
+    | --alpha   | show all components include alpha and beta ones                                         |
+    -------------------------------------------------------------------------------------------------------
