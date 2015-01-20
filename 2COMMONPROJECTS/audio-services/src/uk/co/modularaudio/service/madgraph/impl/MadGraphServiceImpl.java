@@ -74,8 +74,8 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 
 	private MadComponentService componentService = null;
 
-	private MadClassificationGroup codeGroup = new MadClassificationGroup( Visibility.CODE, "Code" );
-	private MadClassificationGroup customisableUnitsGroup = new MadClassificationGroup( Visibility.PUBLIC, "Customisable Units" );
+	private final static MadClassificationGroup CODE_GROUP = new MadClassificationGroup( Visibility.CODE, "Code" );
+	private final static MadClassificationGroup CUSTOM_GROUP = new MadClassificationGroup( Visibility.PUBLIC, "Customisable Units" );
 	private MadRootGraphDefinition<?,?> rootGraphDefinition = null;
 	private MadAppGraphDefinition<?,?> appGraphDefinition = null;
 	private MadSubGraphDefinition<?,?> subGraphDefinition = null;
@@ -91,7 +91,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			String msg = "GraphServiceImpl is missing service dependencies - check configuration";
 			throw new ComponentConfigurationException( msg );
 		}
-		MadClassification rootGraphPrivateClassification = new MadClassification( codeGroup,
+		final MadClassification rootGraphPrivateClassification = new MadClassification( CODE_GROUP,
 				"root_graph",
 				"Root Graph",
 				"The root audio graph",
@@ -100,7 +100,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			( "root_graph", "Root Graph",
 				rootGraphPrivateClassification, new MadGraphQueueBridge() );
 
-		MadClassification appGraphPrivateClassification = new MadClassification( codeGroup,
+		final MadClassification appGraphPrivateClassification = new MadClassification( CODE_GROUP,
 				"app_graph",
 				"App Graph",
 				"The applilcation audio graph",
@@ -108,7 +108,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		appGraphDefinition = new MadAppGraphDefinition(  "app_graph", "App Graph",
 				appGraphPrivateClassification, new MadGraphQueueBridge() );
 
-		MadClassification subGraphPublicClassification = new MadClassification( customisableUnitsGroup,
+		final MadClassification subGraphPublicClassification = new MadClassification( CUSTOM_GROUP,
 				"sub_graph",
 				"Sub Graph",
 				"A customisable container graph for building re-usable mad components",
@@ -135,20 +135,21 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	@Override
 	public void preShutdown() throws DatastoreException
 	{
+		// No actions
 	}
 
 	@Override
 	public void destroy()
 	{
+		// No actions
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadGraphInstance<?,?> createNewRootGraph( String name ) throws DatastoreException
+	public MadGraphInstance<?,?> createNewRootGraph( final String name ) throws DatastoreException
 	{
-		MadGraphInstance<?,?> retVal = null;
-		MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration.getEmptyChannelConfiguration();
-		retVal = new MadGraphInstance( "Root Graph Instance",
+		final MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration.getEmptyChannelConfiguration();
+		final MadGraphInstance<?,?> retVal = new MadGraphInstance( "Root Graph Instance",
 				rootGraphDefinition,
 				new HashMap<MadParameterDefinition, String>(),
 				emptyChannelConfiguration );
@@ -158,19 +159,20 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadGraphInstance<?,?> createNewParameterisedGraph( String name, GraphType graphType,
-			int numInputAudioChannels, int numOutputAudioChannels,
-			int numInputCvChannels, int numOutputCvChannels,
-			int numInputNoteChannels, int numOutputNoteChannels )
+	public MadGraphInstance<?,?> createNewParameterisedGraph( final String name,
+			final GraphType graphType,
+			final int numInputAudioChannels, final int numOutputAudioChannels,
+			final int numInputCvChannels, final int numOutputCvChannels,
+			final int numInputNoteChannels, final int numOutputNoteChannels )
 			throws DatastoreException
 	{
 		MadGraphInstance<?,?> retVal = null;
-		Map<MadParameterDefinition, String> emptyParamValues = new HashMap<MadParameterDefinition,String>();
+		final Map<MadParameterDefinition, String> emptyParamValues = new HashMap<MadParameterDefinition,String>();
 		switch( graphType )
 		{
 			case ROOT_GRAPH:
 			{
-				MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration.getEmptyChannelConfiguration();
+				final MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration.getEmptyChannelConfiguration();
 				retVal = new MadGraphInstance( name,
 						rootGraphDefinition,
 						emptyParamValues,
@@ -179,7 +181,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			}
 			case APP_GRAPH:
 			{
-				MadChannelConfiguration userChannelConfiguration = buildUserGraphChannelConfiguration( numInputAudioChannels,
+				final MadChannelConfiguration userChannelConfiguration = buildUserGraphChannelConfiguration( numInputAudioChannels,
 						numOutputAudioChannels,
 						numInputCvChannels,
 						numOutputCvChannels,
@@ -194,7 +196,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			}
 			case SUB_GRAPH:
 			{
-				MadChannelConfiguration userChannelConfiguration = buildUserGraphChannelConfiguration( numInputAudioChannels,
+				final MadChannelConfiguration userChannelConfiguration = buildUserGraphChannelConfiguration( numInputAudioChannels,
 						numOutputAudioChannels,
 						numInputCvChannels,
 						numOutputCvChannels,
@@ -207,17 +209,19 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				break;
 			}
 			default:
+			{
 				String msg = "Unknown graph type: " + graphType.toString();
 				throw new DatastoreException( msg );
+			}
 		}
 
 		return retVal;
 	}
 
 	@Override
-	public void destroyGraph( MadGraphInstance<?,?> graphInstanceToDestroy,
-			boolean deleteLinks,
-			boolean deleteMadInstances )
+	public void destroyGraph( final MadGraphInstance<?,?> graphInstanceToDestroy,
+			final boolean deleteLinks,
+			final boolean deleteMadInstances )
 		throws DatastoreException
 	{
 //		log.debug("Destroying graph named: " + graphInstanceToDestroy.getInstanceName() );
@@ -225,21 +229,21 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		{
 			if( deleteLinks )
 			{
-				ArrayList<MadLink> links = new ArrayList<MadLink>( graphInstanceToDestroy.getLinks() );
-				for( MadLink link : links )
+				final ArrayList<MadLink> links = new ArrayList<MadLink>( graphInstanceToDestroy.getLinks() );
+				for( final MadLink link : links )
 				{
 					graphInstanceToDestroy.deleteLink( link );
 				}
 			}
-			ArrayList<MadInstance<?,?>> gins = new ArrayList<MadInstance<?,?>>( graphInstanceToDestroy.getInstances() );
-			for( MadInstance<?,?> ins : gins )
+			final ArrayList<MadInstance<?,?>> gins = new ArrayList<MadInstance<?,?>>( graphInstanceToDestroy.getInstances() );
+			for( final MadInstance<?,?> ins : gins )
 			{
 				graphInstanceToDestroy.removeInstance( ins );
 				if( deleteMadInstances )
 				{
 					if( ins.isContainer() )
 					{
-						MadGraphInstance<?, ?>  subGraphInstance = (MadGraphInstance<?,?>)ins;
+						final MadGraphInstance<?, ?>  subGraphInstance = (MadGraphInstance<?,?>)ins;
 						this.destroyGraph( subGraphInstance, deleteLinks, deleteMadInstances );
 					}
 					else
@@ -259,32 +263,33 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void addGraphListener( MadGraphInstance<?,?> g, MadGraphListener listener )
+	public void addGraphListener( final MadGraphInstance<?,?> g, final MadGraphListener listener )
 	{
 		internalSingleAddGraphListener( g, listener );
 	}
 
-	private void internalSingleAddGraphListener( MadGraphInstance<?,?> graph, MadGraphListener listener )
+	private void internalSingleAddGraphListener( final MadGraphInstance<?,?> graph, final MadGraphListener listener )
 	{
 		graph.addGraphListener( listener );
 	}
 
 	@Override
-	public void removeGraphListener( MadGraphInstance<?,?> graph, MadGraphListener listener )
+	public void removeGraphListener( final MadGraphInstance<?,?> graph, final MadGraphListener listener )
 	{
 		graph.removeGraphListener( listener );
 	}
 
 	@Override
-	public boolean checkCanAddInstanceToGraphWithName( MadGraphInstance<?,?> graph,
-			String name )
+	public boolean checkCanAddInstanceToGraphWithName( final MadGraphInstance<?,?> graph,
+			final String name )
 	{
 		return graph.checkCanAddInstanceWithName( name );
 	}
 
 	@Override
-	public void addInstanceToGraphWithName( MadGraphInstance<?,?> graph, MadInstance<?,?> instance,
-			String name )
+	public void addInstanceToGraphWithName( final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> instance,
+			final String name )
 			throws DatastoreException, MAConstraintViolationException
 	{
 		graph.addInstanceWithName( instance, name );
@@ -292,34 +297,34 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public String getNameForNewComponentOfType( MadGraphInstance<?,?> graph,
-			MadDefinition<?,?> definitionToAdd ) throws DatastoreException
+	public String getNameForNewComponentOfType( final MadGraphInstance<?,?> graph,
+			final MadDefinition<?,?> definitionToAdd ) throws DatastoreException
 	{
 		return graph.getNameForNewComponentInstance( definitionToAdd );
 	}
 
 	@Override
-	public MadInstance<?,?> findInstanceByName( MadGraphInstance<?,?> graph,
-			String name ) throws DatastoreException, RecordNotFoundException
+	public MadInstance<?,?> findInstanceByName( final MadGraphInstance<?,?> graph,
+			final String name ) throws DatastoreException, RecordNotFoundException
 	{
 		return graph.getInstanceByName( name );
 	}
 
 	@Override
-	public Collection<MadInstance<?,?>> findAllInstances( MadGraphInstance<?,?> graph )
+	public Collection<MadInstance<?,?>> findAllInstances( final MadGraphInstance<?,?> graph )
 			throws DatastoreException
 	{
 		return graph.getInstances();
 	}
 
 	@Override
-	public boolean renameInstance( MadGraphInstance<?,?> graph, String oldName,
-			String newName,
-			String newNameInGraph )
-			throws DatastoreException, RecordNotFoundException,
-			MAConstraintViolationException
+	public boolean renameInstance( final MadGraphInstance<?,?> graph,
+			final String oldName,
+			final String newName,
+			final String newNameInGraph )
+		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		MadInstance<?,?> aui = graph.getInstanceByName( oldName );
+		final MadInstance<?,?> aui = graph.getInstanceByName( oldName );
 		graph.renameInstanceByName( oldName,  newName, newNameInGraph );
 		aui.setInstanceName( newName );
 
@@ -329,7 +334,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void removeInstanceFromGraph( MadGraphInstance<?,?> graph, MadInstance<?,?> instanceToRemove )
+	public void removeInstanceFromGraph( final MadGraphInstance<?,?> graph, final MadInstance<?,?> instanceToRemove )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// Need to fade out any existing audio links if we are running
@@ -339,7 +344,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			{
 				try
 				{
-					PFadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutDeleteMadInstance( graph, instanceToRemove );
+					final PFadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutDeleteMadInstance( graph, instanceToRemove );
 					fireGraphChanged( graph );
 					fadeInOutLinkHelper.removePFadeOutDeleteMadInstance( fadeOutInstance, graph, instanceToRemove );
 					fireGraphChanged( graph );
@@ -365,25 +370,24 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void addLink( MadGraphInstance<?,?> graph, MadLink link )
-			throws DatastoreException, RecordNotFoundException,
-			MAConstraintViolationException
+	public void addLink( final MadGraphInstance<?,?> graph, final MadLink link )
+		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// Make sure the channels are of the right type
-		MadChannelDefinition consumerDefinition = link.getConsumerChannelInstance().definition;
-		MadChannelType consumerChannelType = consumerDefinition.type;
-		MadChannelDirection consumerDirection = consumerDefinition.direction;
-		MadChannelDefinition producerDefinition = link.getProducerChannelInstance().definition;
-		MadChannelType producerChannelType = producerDefinition.type;
-		MadChannelDirection producerDirection = producerDefinition.direction;
+		final MadChannelDefinition consumerDefinition = link.getConsumerChannelInstance().definition;
+		final MadChannelType consumerChannelType = consumerDefinition.type;
+		final MadChannelDirection consumerDirection = consumerDefinition.direction;
+		final MadChannelDefinition producerDefinition = link.getProducerChannelInstance().definition;
+		final MadChannelType producerChannelType = producerDefinition.type;
+		final MadChannelDirection producerDirection = producerDefinition.direction;
 		if( consumerChannelType != producerChannelType )
 		{
-			String msg = "Both the consumer and producer channel type must match";
+			final String msg = "Both the consumer and producer channel type must match";
 			throw new MAConstraintViolationException( msg );
 		}
 		else if( consumerDirection == producerDirection )
 		{
-			String msg = "A link must be between a consumer and a producer";
+			final String msg = "A link must be between a consumer and a producer";
 			throw new MAConstraintViolationException( msg );
 		}
 		else
@@ -393,7 +397,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			{
 				try
 				{
-					FadeInMadInstance fadeInInstance = fadeInOutLinkHelper.fadeInAddLink( graph, link );
+					final FadeInMadInstance fadeInInstance = fadeInOutLinkHelper.fadeInAddLink( graph, link );
 					fireGraphChanged( graph );
 					fadeInOutLinkHelper.removeFadeInAddLink( fadeInInstance, graph, link );
 					fireGraphChanged( graph );
@@ -401,7 +405,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				}
 				catch (MadProcessingException e)
 				{
-					String msg = "MadProcessingException caught adding link: " + e.toString();
+					final String msg = "MadProcessingException caught adding link: " + e.toString();
 					throw new DatastoreException( msg, e );
 				}
 			}
@@ -415,17 +419,17 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void deleteLink( MadGraphInstance<?,?> graph, MadLink link )
-			throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+	public void deleteLink( final MadGraphInstance<?,?> graph, final MadLink link )
+		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		MadChannelType producerChannelType = link.getProducerChannelInstance().definition.type;
+		final MadChannelType producerChannelType = link.getProducerChannelInstance().definition.type;
 
 		// Check if the graph has listeners - if it does, do the fade out trick.
 		if( graph.hasListeners() && producerChannelType == MadChannelType.AUDIO )
 		{
 			try
 			{
-				FadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutDeleteLink( graph, link );
+				final FadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutDeleteLink( graph, link );
 				fireGraphChanged( graph );
 				fadeInOutLinkHelper.removeFadeOutDeleteLink( fadeOutInstance, graph, link );
 				fireGraphChanged( graph );
@@ -433,7 +437,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			}
 			catch (MadProcessingException e)
 			{
-				String msg = "MadProcessingException caught deleting link: " + e.toString();
+				final String msg = "MadProcessingException caught deleting link: " + e.toString();
 				throw new DatastoreException( msg, e );
 			}
 		}
@@ -445,109 +449,117 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public Collection<MadLink> findAllLinks( MadGraphInstance<?,?> graph ) throws DatastoreException
+	public Collection<MadLink> findAllLinks( final MadGraphInstance<?,?> graph ) throws DatastoreException
 	{
 		return graph.getLinks();
 	}
 
 	@Override
-	public Set<MadLink> findAllLinksToInstance( MadGraphInstance<?,?> graph, MadInstance<?,?> instance ) throws DatastoreException
+	public Set<MadLink> findAllLinksToInstance( final MadGraphInstance<?,?> graph, final MadInstance<?,?> instance )
+		throws DatastoreException
 	{
 		return graph.findAllLinksToInstance( instance );
 	}
 
 	@Override
-	public Set<MadLink> findAllLinksFromInstance( MadGraphInstance<?,?> graph, MadInstance<?,?> instance ) throws DatastoreException
+	public Set<MadLink> findAllLinksFromInstance( final MadGraphInstance<?,?> graph, final MadInstance<?,?> instance )
+		throws DatastoreException
 	{
 		return graph.findAllLinksFromInstance( instance );
 	}
 
 	@Override
-	public void dumpGraph( MadGraphInstance<?,?> g )
+	public void dumpGraph( final MadGraphInstance<?,?> g )
 	{
-		log.debug("Dump of the graph \"" + g.getInstanceName() + "\"");
-		internalDumpGraph( g, "" );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Dump of the graph \"" + g.getInstanceName() + "\"");
+			internalDumpGraph( g, "" );
+		}
 	}
 
-	private void internalDumpGraph( MadGraphInstance<?,?> g, String indentation )
+	private void internalDumpGraph( final MadGraphInstance<?,?> g, final String indentation )
 	{
-		// Graph channel instances
-		MadChannelInstance[] graphChannelInstances = g.getChannelInstances();
-		if( graphChannelInstances.length == 0 )
+		if( log.isDebugEnabled() )
 		{
-			log.debug( indentation + "This graph has no inputs or outputs" );
-		}
-		else
-		{
-			Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelInstanceMap = g.getGraphInputChannelInstanceMap();
-			Map<MadChannelInstance, MadChannelInstance> graphOutputChannelInstanceMap = g.getGraphOutputChannelInstanceMap();
-
-			for( MadChannelInstance gci : graphChannelInstances )
+			// Graph channel instances
+			final MadChannelInstance[] graphChannelInstances = g.getChannelInstances();
+			if( graphChannelInstances.length == 0 )
 			{
-				if( gci.definition.direction == MadChannelDirection.PRODUCER )
+				log.debug( indentation + "This graph has no inputs or outputs" );
+			}
+			else
+			{
+				final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelInstanceMap = g.getGraphInputChannelInstanceMap();
+				final Map<MadChannelInstance, MadChannelInstance> graphOutputChannelInstanceMap = g.getGraphOutputChannelInstanceMap();
+
+				for( final MadChannelInstance gci : graphChannelInstances )
 				{
-					MadChannelInstance mappedTo = graphOutputChannelInstanceMap.get( gci );
-					if( mappedTo != null )
+					if( gci.definition.direction == MadChannelDirection.PRODUCER )
 					{
-						log.debug( indentation + "Graph Channel Instance named \"" + gci.definition.name + "\" - mapped to mad \"" +
-								mappedTo.instance.getInstanceName() + "\" channel \"" + mappedTo.definition.name + "\"");
-					}
-				}
-				else
-				{
-					ArrayList<MadChannelInstance> mappedList = graphInputChannelInstanceMap.get( gci );
-					if( mappedList != null )
-					{
-						for( MadChannelInstance auci : mappedList )
+						final MadChannelInstance mappedTo = graphOutputChannelInstanceMap.get( gci );
+						if( mappedTo != null )
 						{
 							log.debug( indentation + "Graph Channel Instance named \"" + gci.definition.name + "\" - mapped to mad \"" +
-									auci.instance.getInstanceName() + "\" channel \"" + auci.definition.name + "\"");
+									mappedTo.instance.getInstanceName() + "\" channel \"" + mappedTo.definition.name + "\"");
+						}
+					}
+					else
+					{
+						final ArrayList<MadChannelInstance> mappedList = graphInputChannelInstanceMap.get( gci );
+						if( mappedList != null )
+						{
+							for( final MadChannelInstance auci : mappedList )
+							{
+								log.debug( indentation + "Graph Channel Instance named \"" + gci.definition.name + "\" - mapped to mad \"" +
+										auci.instance.getInstanceName() + "\" channel \"" + auci.definition.name + "\"");
+							}
 						}
 					}
 				}
 			}
-		}
 
-		Collection<MadInstance<?,?>> ins = g.getInstances();
-		// Standard (non-composite) units
-		for( MadInstance<?,?> aui : ins )
-		{
-			if( aui instanceof MadGraphInstance )
+			final Collection<MadInstance<?,?>> ins = g.getInstances();
+			// Standard (non-composite) units
+			for( final MadInstance<?,?> aui : ins )
 			{
-				// Will print it out after the standard units and links
+				if( aui instanceof MadGraphInstance )
+				{
+					// Will print it out after the standard units and links
+				}
+				else
+				{
+					final String nameInGraph = g.getInstanceNameInGraph( aui );
+					log.debug( indentation + "MadInstance: name in graph \"" + nameInGraph + "\" of type: \"" + aui.getDefinition().getName() +"\"");
+				}
 			}
-			else
+			// Links
+			final Collection<MadLink> aulis = g.getLinks();
+			for( final MadLink aul : aulis )
 			{
-				String nameInGraph = g.getInstanceNameInGraph( aui );
-				log.debug( indentation + "MadInstance: name in graph \"" + nameInGraph + "\" of type: \"" + aui.getDefinition().getName() +"\"");
+				log.debug( indentation + "MadLink: " + aul.toStringWithNamesInGraph( g ) );
 			}
-		}
-		// Links
-		Collection<MadLink> aulis = g.getLinks();
-		for( MadLink aul : aulis )
-		{
-			log.debug( indentation + "MadLink: " + aul.toStringWithNamesInGraph( g ) );
-		}
-		// Graph (composite) units
-		for( MadInstance<?,?> aui : ins )
-		{
-			if( aui instanceof MadGraphInstance )
+			// Graph (composite) units
+			for( final MadInstance<?,?> aui : ins )
 			{
-				String nameInGraph = g.getInstanceNameInGraph( aui );
-				log.debug( indentation + "GraphInstance: name in graph \"" + nameInGraph + "\" of type: \"" + aui.getDefinition().getName() +"\"");
-				log.debug( indentation + "Graph contents:");
-				MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)aui;
-				internalDumpGraph( subGraph, indentation + "    " );
+				if( aui instanceof MadGraphInstance )
+				{
+					final String nameInGraph = g.getInstanceNameInGraph( aui );
+					log.debug( indentation + "GraphInstance: name in graph \"" + nameInGraph + "\" of type: \"" + aui.getDefinition().getName() +"\"");
+					log.debug( indentation + "Graph contents:");
+					final MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)aui;
+					internalDumpGraph( subGraph, indentation + "    " );
+				}
 			}
 		}
 	}
 
 	private MadChannelConfiguration buildUserGraphChannelConfiguration(
-			int numInputAudioChannels, int numOutputAudioChannels,
-			int numInputCvChannels, int numOutputCvChannels,
-			int numInputNoteChannels, int numOutputNoteChannels )
+			final int numInputAudioChannels, final int numOutputAudioChannels,
+			final int numInputCvChannels, final int numOutputCvChannels,
+			final int numInputNoteChannels, final int numOutputNoteChannels )
 	{
-		List<MadChannelDefinition> channelDefinitionArray = new ArrayList<MadChannelDefinition>();
+		final List<MadChannelDefinition> channelDefinitionArray = new ArrayList<MadChannelDefinition>();
 		// Just audio channels for now
 		for( int iac = 1 ; iac <= numInputAudioChannels ; iac++ )
 		{
@@ -591,26 +603,26 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 					MadChannelDirection.PRODUCER,
 					MadChannelPosition.MONO ) );
 		}
-		MadChannelDefinition[] userChannelDefinitions = channelDefinitionArray.toArray( new MadChannelDefinition[ channelDefinitionArray.size()] );
-		MadChannelConfiguration retVal = new MadChannelConfiguration( userChannelDefinitions );
+		final MadChannelDefinition[] userChannelDefinitions = channelDefinitionArray.toArray( new MadChannelDefinition[ channelDefinitionArray.size()] );
+		final MadChannelConfiguration retVal = new MadChannelConfiguration( userChannelDefinitions );
 		return retVal;
 	}
 
 	@Override
-	public void exposeAudioInstanceChannelAsGraphChannel( MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceToExpose )
-			throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+	public void exposeAudioInstanceChannelAsGraphChannel( final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
+		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 
 		// Assert that the channels are of the same type and direction
-		MadChannelDefinition gcd = graphChannelInstance.definition;
-		MadChannelDefinition aucd = channelInstanceToExpose.definition;
-		MadChannelType channelType = aucd.type;
+		final MadChannelDefinition gcd = graphChannelInstance.definition;
+		final MadChannelDefinition aucd = channelInstanceToExpose.definition;
+		final MadChannelType channelType = aucd.type;
 		if( gcd.type != channelType ||
-				gcd.direction != aucd.direction )
+			gcd.direction != aucd.direction )
 		{
-			String msg = "To expose a channel as a graph channel both the type and direction must match.";
+			final String msg = "To expose a channel as a graph channel both the type and direction must match.";
 			throw new MAConstraintViolationException( msg );
 		}
 		else
@@ -619,7 +631,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			{
 				try
 				{
-					FadeInMadInstance fadeInInstance = fadeInOutLinkHelper.fadeInExposeAsGraphChannel( graph, graphChannelInstance, channelInstanceToExpose );
+					final FadeInMadInstance fadeInInstance = fadeInOutLinkHelper.fadeInExposeAsGraphChannel( graph, graphChannelInstance, channelInstanceToExpose );
 					fireGraphChanged( graph );
 					fadeInOutLinkHelper.removeFadeInExposeAsGraphChannel( fadeInInstance, graph, graphChannelInstance, channelInstanceToExpose );
 					fireGraphChanged( graph );
@@ -641,18 +653,18 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void removeAudioInstanceChannelAsGraphChannel( MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceExposed )
-			throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
+	public void removeAudioInstanceChannelAsGraphChannel( final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceExposed )
+		throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
 	{
-		MadChannelType channelType = channelInstanceExposed.definition.type;
+		final MadChannelType channelType = channelInstanceExposed.definition.type;
 
 		if( graph.hasListeners() && channelType == MadChannelType.AUDIO )
 		{
 			try
 			{
-				FadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutRemoveExposeAsGraphChannel( graph, graphChannelInstance, channelInstanceExposed );
+				final FadeOutMadInstance fadeOutInstance = fadeInOutLinkHelper.fadeOutRemoveExposeAsGraphChannel( graph, graphChannelInstance, channelInstanceExposed );
 				fireGraphChanged( graph );
 				fadeInOutLinkHelper.removeFadeOutRemoveExposeAsGraphChannel( fadeOutInstance, graph, graphChannelInstance, channelInstanceExposed );
 				fireGraphChanged( graph );
@@ -660,7 +672,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			}
 			catch (MadProcessingException e)
 			{
-				String msg = "MadProcessingException caught adding link: " + e.toString();
+				final String msg = "MadProcessingException caught adding link: " + e.toString();
 				throw new DatastoreException( msg, e );
 			}
 		}
@@ -674,19 +686,20 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public MadGraphInstance<?,?> flattenGraph( MadGraphInstance<?,?> graph ) throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
+	public MadGraphInstance<?,?> flattenGraph( final MadGraphInstance<?,?> graph )
+		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 //		log.debug("Beginning subgraph flattening on graph "+ graph.getInstanceName() );
-		MadGraphInstance<?,?> retVal = createNewRootGraph( graph.getInstanceName() );
-		Collection<MadInstance<?,?>> curInstances = graph.getInstances();
-		Set<MadGraphInstance<?,?>> foundSubGraphs = new HashSet<MadGraphInstance<?,?>>();
-		Stack<MadGraphInstance<?,?>> graphStackToRoot = new Stack<MadGraphInstance<?,?>>();
+		final MadGraphInstance<?,?> retVal = createNewRootGraph( graph.getInstanceName() );
+		final Collection<MadInstance<?,?>> curInstances = graph.getInstances();
+		final Set<MadGraphInstance<?,?>> foundSubGraphs = new HashSet<MadGraphInstance<?,?>>();
+		final Stack<MadGraphInstance<?,?>> graphStackToRoot = new Stack<MadGraphInstance<?,?>>();
 		graphStackToRoot.push( graph );
-		for( MadInstance<?,?> aui : curInstances )
+		for( final MadInstance<?,?> aui : curInstances )
 		{
 			if( aui instanceof MadGraphInstance )
 			{
-				MadGraphInstance<?,?> g = (MadGraphInstance<?,?>)aui;
+				final MadGraphInstance<?,?> g = (MadGraphInstance<?,?>)aui;
 				// We'll do it afterwards
 				foundSubGraphs.add( g );
 			}
@@ -696,7 +709,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				retVal.addInstanceWithName( aui, aui.getInstanceName() );
 			}
 		}
-		for( MadGraphInstance<?,?> subGraph : foundSubGraphs )
+		for( final MadGraphInstance<?,?> subGraph : foundSubGraphs )
 		{
 //			log.debug("Found a sub graph \"" + subGraph.getInstanceName() + "\"");
 			graphStackToRoot.push( subGraph );
@@ -708,32 +721,32 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		return retVal;
 	}
 
-	private void recursiveAddGraphComponentsAssumeSiblingsExist( Stack<MadGraphInstance<?,?>> graphStackToRoot,
-			MadGraphInstance<?,?> parentGraph,
-			MadGraphInstance<?,?> currentGraphToProcess,
-			MadGraphInstance<?,?> graphToInsertIn )
+	private void recursiveAddGraphComponentsAssumeSiblingsExist( final Stack<MadGraphInstance<?,?>> graphStackToRoot,
+			final MadGraphInstance<?,?> parentGraph,
+			final MadGraphInstance<?,?> currentGraphToProcess,
+			final MadGraphInstance<?,?> graphToInsertIn )
 		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 		// Loop over the instances in the subgraph adding them to the parent
 		// and rewire the links
-		Collection<MadInstance<?,?>> currentGraphInstances = currentGraphToProcess.getInstances();
-		Set<MadGraphInstance<?,?>> foundSubGraphs = new HashSet<MadGraphInstance<?,?>>();
-		for( MadInstance<?,?> sbAui : currentGraphInstances )
+		final Collection<MadInstance<?,?>> currentGraphInstances = currentGraphToProcess.getInstances();
+		final Set<MadGraphInstance<?,?>> foundSubGraphs = new HashSet<MadGraphInstance<?,?>>();
+		for( final MadInstance<?,?> sbAui : currentGraphInstances )
 		{
 			if( sbAui instanceof MadGraphInstance )
 			{
-				MadGraphInstance<?,?> g = (MadGraphInstance<?,?>)sbAui;
+				final MadGraphInstance<?,?> g = (MadGraphInstance<?,?>)sbAui;
 				foundSubGraphs.add( g );
 			}
 			else
 			{
-				String uniqueInstanceNameWithPathInGraph = buildPathInGraphInstanceName( graphStackToRoot, sbAui );
+				final String uniqueInstanceNameWithPathInGraph = buildPathInGraphInstanceName( graphStackToRoot, sbAui );
 //				log.debug("Straight copying mad \"" + sbAui.getInstanceName() + "\" as \"" + uniqueInstanceNameWithPathInGraph + "\"");
 				graphToInsertIn.addInstanceWithName( sbAui, uniqueInstanceNameWithPathInGraph );
 			}
 		}
 		// Now the graphs
-		for( MadGraphInstance<?,?> subSubGraph : foundSubGraphs )
+		for( final MadGraphInstance<?,?> subSubGraph : foundSubGraphs )
 		{
 //			log.debug("Found a sub graph \"" + subSubGraph.getInstanceName() + "\"");
 			graphStackToRoot.push( subSubGraph );
@@ -745,43 +758,44 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				foundSubGraphs );
 	}
 
-	private String buildPathInGraphInstanceName( Stack<MadGraphInstance<?,?>> graphStackToRoot, MadInstance<?,?> sbAui )
+	private String buildPathInGraphInstanceName( final Stack<MadGraphInstance<?,?>> graphStackToRoot,
+			final MadInstance<?,?> sbAui )
 	{
-		StringBuilder retVal = new StringBuilder();
-		int numGraphs = graphStackToRoot.size();
+		final StringBuilder retVal = new StringBuilder();
+		final int numGraphs = graphStackToRoot.size();
 		for( int i = 0 ; i < numGraphs ; i++ )
 		{
-			MadGraphInstance<?,?> g = graphStackToRoot.get( i );
+			final MadGraphInstance<?,?> g = graphStackToRoot.get( i );
 			retVal.append( g.getInstanceName() + ":" );
 		}
 		retVal.append( sbAui.getInstanceName() );
 		return retVal.toString();
 	}
 
-	private void processCurrentGraphLinks( MadGraphInstance<?,?> currentGraphToProcess,
-			MadGraphInstance<?,?> graphToInsertIn,
-			Set<MadGraphInstance<?,?>> foundSubGraphs )
-			throws MAConstraintViolationException
+	private void processCurrentGraphLinks( final MadGraphInstance<?,?> currentGraphToProcess,
+			final MadGraphInstance<?,?> graphToInsertIn,
+			final Set<MadGraphInstance<?,?>> foundSubGraphs )
+		throws MAConstraintViolationException
 	{
-		Collection<MadLink> currentGraphLinks = currentGraphToProcess.getLinks();
-		for( MadLink sgl : currentGraphLinks )
+		final Collection<MadLink> currentGraphLinks = currentGraphToProcess.getLinks();
+		for( final MadLink sgl : currentGraphLinks )
 		{
-			MadChannelInstance producerChannelInstance = sgl.getProducerChannelInstance();
-			MadChannelInstance consumerChannelInstance = sgl.getConsumerChannelInstance();
-			MadInstance<?,?> linkProducerInstance = producerChannelInstance.instance;
-			MadInstance<?,?> linkConsumerInstance = consumerChannelInstance.instance;
-			boolean producerIsSubGraph = foundSubGraphs.contains( linkProducerInstance );
-			boolean consumerIsSubGraph = foundSubGraphs.contains( linkConsumerInstance );
+			final MadChannelInstance producerChannelInstance = sgl.getProducerChannelInstance();
+			final MadChannelInstance consumerChannelInstance = sgl.getConsumerChannelInstance();
+			final MadInstance<?,?> linkProducerInstance = producerChannelInstance.instance;
+			final MadInstance<?,?> linkConsumerInstance = consumerChannelInstance.instance;
+			final boolean producerIsSubGraph = foundSubGraphs.contains( linkProducerInstance );
+			final boolean consumerIsSubGraph = foundSubGraphs.contains( linkConsumerInstance );
 
 			if( producerIsSubGraph && consumerIsSubGraph )
 			{
 //				log.debug("Need replacement link(s) of producer and consumer for " + sgl.toString() );
 
-				MadGraphInstance<?,?> producerSubGraph = (MadGraphInstance<?,?>)linkProducerInstance;
-				MadChannelInstance producerAuci = recursiveFindConnectedProducer( foundSubGraphs, producerSubGraph, producerChannelInstance );
+				final MadGraphInstance<?,?> producerSubGraph = (MadGraphInstance<?,?>)linkProducerInstance;
+				final MadChannelInstance producerAuci = recursiveFindConnectedProducer( foundSubGraphs, producerSubGraph, producerChannelInstance );
 
-				MadGraphInstance<?,?> consumerSubGraph = (MadGraphInstance<?,?>)linkConsumerInstance;
-				ArrayList<MadChannelInstance> consumerAucis = recursiveFindConnectedConsumers( foundSubGraphs, consumerSubGraph, consumerChannelInstance );
+				final MadGraphInstance<?,?> consumerSubGraph = (MadGraphInstance<?,?>)linkConsumerInstance;
+				final ArrayList<MadChannelInstance> consumerAucis = recursiveFindConnectedConsumers( foundSubGraphs, consumerSubGraph, consumerChannelInstance );
 
 				if( producerAuci == null || consumerAucis.size() == 0 )
 				{
@@ -790,9 +804,9 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				}
 				else
 				{
-					for( MadChannelInstance consumerAuci : consumerAucis )
+					for( final MadChannelInstance consumerAuci : consumerAucis )
 					{
-						MadLink replacementLink = new MadLink( producerAuci, consumerAuci );
+						final MadLink replacementLink = new MadLink( producerAuci, consumerAuci );
 //						log.debug("Replacing it with " + replacementLink.toString() );
 						graphToInsertIn.addLink( replacementLink );
 					}
@@ -801,10 +815,10 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			else if( producerIsSubGraph )
 			{
 //				log.debug("Need a replacement link of producer for " + sgl.toString() );
-				MadChannelInstance subGraphChannelInstance = sgl.getProducerChannelInstance();
-				MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)linkProducerInstance;
+				final MadChannelInstance subGraphChannelInstance = sgl.getProducerChannelInstance();
+				final MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)linkProducerInstance;
 
-				MadChannelInstance foundChannelInstance = recursiveFindConnectedProducer( foundSubGraphs,
+				final MadChannelInstance foundChannelInstance = recursiveFindConnectedProducer( foundSubGraphs,
 						subGraph,
 						subGraphChannelInstance );
 				if( foundChannelInstance == null )
@@ -813,7 +827,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				}
 				else
 				{
-					MadLink replacementLink = new MadLink( foundChannelInstance,
+					final MadLink replacementLink = new MadLink( foundChannelInstance,
 							sgl.getConsumerChannelInstance() );
 //					log.debug("Replacing it with " + replacementLink.toString() );
 					graphToInsertIn.addLink( replacementLink );
@@ -822,10 +836,10 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			else if( consumerIsSubGraph )
 			{
 //				log.debug("Need replacement link(s) of consumer for " + sgl.toString() );
-				MadChannelInstance subGraphChannelInstance = sgl.getConsumerChannelInstance();
-				MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)linkConsumerInstance;
+				final MadChannelInstance subGraphChannelInstance = sgl.getConsumerChannelInstance();
+				final MadGraphInstance<?,?> subGraph = (MadGraphInstance<?,?>)linkConsumerInstance;
 
-				ArrayList<MadChannelInstance> foundChannelInstances = recursiveFindConnectedConsumers( foundSubGraphs,
+				final ArrayList<MadChannelInstance> foundChannelInstances = recursiveFindConnectedConsumers( foundSubGraphs,
 						subGraph,
 						subGraphChannelInstance );
 
@@ -835,9 +849,9 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				}
 				else
 				{
-					for( MadChannelInstance auci : foundChannelInstances )
+					for( final MadChannelInstance auci : foundChannelInstances )
 					{
-						MadLink replacementLink = new MadLink( sgl.getProducerChannelInstance(),
+						final MadLink replacementLink = new MadLink( sgl.getProducerChannelInstance(),
 								auci );
 //						log.debug("Replacing it with " + replacementLink.toString() );
 						graphToInsertIn.addLink( replacementLink );
@@ -848,32 +862,32 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			{
 				// It's a link between actually instances, just re-add it
 //				log.debug("Straight copying link " + sgl.toString() );
-				MadLink duplicatedLink = new MadLink( sgl.getProducerChannelInstance(), sgl.getConsumerChannelInstance() );
+				final MadLink duplicatedLink = new MadLink( sgl.getProducerChannelInstance(), sgl.getConsumerChannelInstance() );
 				graphToInsertIn.addLink( duplicatedLink );
 			}
 		}
 	}
 
 	private ArrayList<MadChannelInstance> recursiveFindConnectedConsumers(
-			Set<MadGraphInstance<?, ?>> foundSubGraphs,
-			MadGraphInstance<?, ?> graph,
-			MadChannelInstance subGraphChannelInstance)
+			final Set<MadGraphInstance<?, ?>> foundSubGraphs,
+			final MadGraphInstance<?, ?> graph,
+			final MadChannelInstance subGraphChannelInstance )
 	{
-		Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelMap = graph.getGraphInputChannelInstanceMap();
-		ArrayList<MadChannelInstance> mappedChannelInstances = graphInputChannelMap.get( subGraphChannelInstance );
-		ArrayList<MadChannelInstance> retVal = new ArrayList<MadChannelInstance>();
+		final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelMap = graph.getGraphInputChannelInstanceMap();
+		final ArrayList<MadChannelInstance> mappedChannelInstances = graphInputChannelMap.get( subGraphChannelInstance );
+		final ArrayList<MadChannelInstance> retVal = new ArrayList<MadChannelInstance>();
 		if( mappedChannelInstances == null )
 		{
 			return retVal;
 		}
 		else
 		{
-			for( MadChannelInstance auci : mappedChannelInstances )
+			for( final MadChannelInstance auci : mappedChannelInstances )
 			{
-				MadInstance<?,?> foundMad  = auci.instance;
+				final MadInstance<?,?> foundMad  = auci.instance;
 				if( foundMad instanceof MadGraphInstance )
 				{
-					MadGraphInstance<?,?> graphToSearch = (MadGraphInstance<?,?>)foundMad;
+					final MadGraphInstance<?,?> graphToSearch = (MadGraphInstance<?,?>)foundMad;
 					retVal.addAll( recursiveFindConnectedConsumers(foundSubGraphs, graphToSearch, auci ) );
 				}
 				else
@@ -886,12 +900,12 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	private MadChannelInstance recursiveFindConnectedProducer(
-			Set<MadGraphInstance<?,?>> foundSubGraphs,
-			MadGraphInstance<?,?> graph,
-			MadChannelInstance subGraphChannelInstance )
+			final Set<MadGraphInstance<?,?>> foundSubGraphs,
+			final MadGraphInstance<?,?> graph,
+			final MadChannelInstance subGraphChannelInstance )
 	{
-		Map<MadChannelInstance, MadChannelInstance> graphOutputChannelMap = graph.getGraphOutputChannelInstanceMap();
-		MadChannelInstance mappedChannelInstance = graphOutputChannelMap.get( subGraphChannelInstance );
+		final Map<MadChannelInstance, MadChannelInstance> graphOutputChannelMap = graph.getGraphOutputChannelInstanceMap();
+		final MadChannelInstance mappedChannelInstance = graphOutputChannelMap.get( subGraphChannelInstance );
 
 		if( mappedChannelInstance == null )
 		{
@@ -899,10 +913,10 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		}
 		else
 		{
-			MadInstance<?,?> foundMad = mappedChannelInstance.instance;
+			final MadInstance<?,?> foundMad = mappedChannelInstance.instance;
 			if( foundMad instanceof MadGraphInstance )
 			{
-				MadGraphInstance<?,?> graphToSearch = (MadGraphInstance<?,?>)foundMad;
+				final MadGraphInstance<?,?> graphToSearch = (MadGraphInstance<?,?>)foundMad;
 				return recursiveFindConnectedProducer(foundSubGraphs, graphToSearch, mappedChannelInstance);
 			}
 			else
@@ -912,7 +926,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		}
 	}
 
-	private void fireGraphChanged( MadGraphInstance<?,?> graph )
+	private void fireGraphChanged( final MadGraphInstance<?,?> graph )
 	{
 		graph.fireGraphChangeSignal();
 	}
@@ -922,17 +936,17 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		return componentService;
 	}
 
-	public void setComponentService( MadComponentService componentService )
+	public void setComponentService( final MadComponentService componentService )
 	{
 		this.componentService = componentService;
 	}
 
 	@Override
-	public void addInstanceToGraphWithNameAndMapChannelsToGraphChannels( MadGraphInstance<?,?> graph,
-			MadInstance<?,?> instanceToMap,
-			String name,
-			boolean warnAboutMissingChannels )
-			throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+	public void addInstanceToGraphWithNameAndMapChannelsToGraphChannels( final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> instanceToMap,
+			final String name,
+			final boolean warnAboutMissingChannels )
+		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 		graph.addInstanceWithName(instanceToMap, name);
 
@@ -941,7 +955,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			// Fade in time
 			try
 			{
-				PFadeInMadInstance pFadeInInstance = fadeInOutLinkHelper.fadeInGraphChannelMap(graph, instanceToMap, warnAboutMissingChannels );
+				final PFadeInMadInstance pFadeInInstance = fadeInOutLinkHelper.fadeInGraphChannelMap(graph, instanceToMap, warnAboutMissingChannels );
 				fireGraphChanged( graph );
 				fadeInOutLinkHelper.removePFadeInGraphChannelMap( pFadeInInstance, graph, instanceToMap );
 				fireGraphChanged( graph );
@@ -955,14 +969,14 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		}
 		else
 		{
-			MadChannelInstance[] channelInstances = graph.getChannelInstances();
+			final MadChannelInstance[] channelInstances = graph.getChannelInstances();
 
 			for( int c = 0 ; c < channelInstances.length ; c++ )
 			{
-				MadChannelInstance graphChannelInstance = channelInstances[ c ];
-				String graphChannelInstanceName = graphChannelInstance.definition.name;
+				final MadChannelInstance graphChannelInstance = channelInstances[ c ];
+				final String graphChannelInstanceName = graphChannelInstance.definition.name;
 				// Look for a channel with the same name on the sub rack
-				MadChannelInstance channelInstance = instanceToMap.getChannelInstanceByNameReturnNull( graphChannelInstanceName );
+				final MadChannelInstance channelInstance = instanceToMap.getChannelInstanceByNameReturnNull( graphChannelInstanceName );
 				if( channelInstance != null )
 				{
 					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance,

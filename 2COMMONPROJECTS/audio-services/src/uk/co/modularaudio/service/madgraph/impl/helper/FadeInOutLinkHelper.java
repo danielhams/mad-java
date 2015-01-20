@@ -54,42 +54,43 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class FadeInOutLinkHelper
 {
 	private static Log log = LogFactory.getLog( FadeInOutLinkHelper.class.getName() );
-	
+
 	private final MadComponentService componentService;
 	private final FadeInMadDefinition fadeInDefinition;
 	private final FadeOutMadDefinition fadeOutDefinition;
-	
+
 	private final PFadeInMadDefinition pfadeInDefinition;
 	private final PFadeOutMadDefinition pfadeOutDefinition;
-	
-	private Map<MadParameterDefinition, String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
-	
+
+	private final Map<MadParameterDefinition, String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+
 	private final long MAX_WAIT_MILLIS = 500;
-	
-	public FadeInOutLinkHelper( MadComponentService componentService ) throws DatastoreException, RecordNotFoundException
+
+	public FadeInOutLinkHelper( final MadComponentService componentService ) throws DatastoreException, RecordNotFoundException
 	{
 		this.componentService = componentService;
-		
+
 		fadeInDefinition = (FadeInMadDefinition) componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 		fadeOutDefinition = (FadeOutMadDefinition) componentService.findDefinitionById( FadeOutMadDefinition.DEFINITION_ID );
-		
+
 		pfadeInDefinition = (PFadeInMadDefinition)componentService.findDefinitionById( PFadeInMadDefinition.DEFINITION_ID );
 		pfadeOutDefinition = (PFadeOutMadDefinition)componentService.findDefinitionById( PFadeOutMadDefinition.definitionId );
 	}
 
-	public FadeInMadInstance fadeInAddLink( MadGraphInstance<?,?> graph,
-			MadLink link )
+	public FadeInMadInstance fadeInAddLink( final MadGraphInstance<?,?> graph,
+			final MadLink link )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, MadProcessingException
 	{
 		return insertFadeInInstanceForLink( graph, link );
 	}
 
-	public void removeFadeInAddLink( FadeInMadInstance fadeInInstance,
-			MadGraphInstance<?,?> graph,
-			MadLink link ) throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+	public void removeFadeInAddLink( final FadeInMadInstance fadeInInstance,
+			final MadGraphInstance<?,?> graph,
+			final MadLink link )
+		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 		// Need to wait until the fade in has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !fadeInInstance.completed() )
 		{
@@ -103,24 +104,26 @@ public class FadeInOutLinkHelper
 			}
 			curTime = System.currentTimeMillis();
 		}
-		
+
 		graph.removeInstance( fadeInInstance );
-		
+
 		graph.addLink( link );
 	}
 
-	public FadeOutMadInstance fadeOutDeleteLink( MadGraphInstance<?,?> graph,
-			MadLink link ) throws MAConstraintViolationException, DatastoreException, RecordNotFoundException, MadProcessingException
+	public FadeOutMadInstance fadeOutDeleteLink( final MadGraphInstance<?,?> graph,
+			final MadLink link )
+		throws MAConstraintViolationException, DatastoreException, RecordNotFoundException, MadProcessingException
 	{
 		return insertFadeOutInstanceForLink( graph, link );
 	}
 
-	public void removeFadeOutDeleteLink( FadeOutMadInstance fadeOutInstance,
-			MadGraphInstance<?,?> graph,
-			MadLink link ) throws RecordNotFoundException, DatastoreException
+	public void removeFadeOutDeleteLink( final FadeOutMadInstance fadeOutInstance,
+			final MadGraphInstance<?,?> graph,
+			final MadLink link )
+		throws RecordNotFoundException, DatastoreException
 	{
 		// Need to wait until the fade in has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !fadeOutInstance.completed() )
 		{
@@ -134,13 +137,13 @@ public class FadeInOutLinkHelper
 			}
 			curTime = System.currentTimeMillis();
 		}
-		
-		graph.removeInstance( fadeOutInstance );	
+
+		graph.removeInstance( fadeOutInstance );
 	}
 
-	public FadeInMadInstance fadeInExposeAsGraphChannel( MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceToExpose )
+	public FadeInMadInstance fadeInExposeAsGraphChannel( final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, MadProcessingException
 	{
 		return insertFadeInInstanceForExposedGraphChannel( graph,
@@ -148,13 +151,14 @@ public class FadeInOutLinkHelper
 				channelInstanceToExpose );
 	}
 
-	public void removeFadeInExposeAsGraphChannel( FadeInMadInstance fadeInInstance,
-			MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceToExpose ) throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+	public void removeFadeInExposeAsGraphChannel( final FadeInMadInstance fadeInInstance,
+			final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
+		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 		// Need to wait until the fade in has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !fadeInInstance.completed() )
 		{
@@ -168,17 +172,17 @@ public class FadeInOutLinkHelper
 			}
 			curTime = System.currentTimeMillis();
 		}
-		
+
 		// Will clean up the links
 		graph.removeInstance( fadeInInstance );
-		
+
 		graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceToExpose );
 	}
 
 	public FadeOutMadInstance fadeOutRemoveExposeAsGraphChannel(
-			MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceWasExposed )
+			final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceWasExposed )
 		 throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		return insertFadeOutInstanceForExposedGraphChannel( graph,
@@ -186,14 +190,14 @@ public class FadeInOutLinkHelper
 				channelInstanceWasExposed );
 	}
 
-	public void removeFadeOutRemoveExposeAsGraphChannel( FadeOutMadInstance fadeOutInstance,
-			MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceExposed )
+	public void removeFadeOutRemoveExposeAsGraphChannel( final FadeOutMadInstance fadeOutInstance,
+			final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceExposed )
 		 throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
 		// Need to wait until the fade out has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !fadeOutInstance.completed() )
 		{
@@ -210,25 +214,26 @@ public class FadeInOutLinkHelper
 		graph.removeInstance( fadeOutInstance );
 	}
 
-	public PFadeOutMadInstance fadeOutDeleteMadInstance( MadGraphInstance<?,?> graph, MadInstance<?,?> instanceToRemove )
+	public PFadeOutMadInstance fadeOutDeleteMadInstance( final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> instanceToRemove )
 		throws MadProcessingException, DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		Map<MadChannelInstance, MadChannelInstance> auChannelInstanceToGraphChannelInstanceMap =
+		final Map<MadChannelInstance, MadChannelInstance> auChannelInstanceToGraphChannelInstanceMap =
 				graph.getAuChannelInstanceToGraphChannelInstanceMap();
-		
-		// Any channel instances currently with producer audio links need to be replaced with a fade out
-		MadChannelInstance[] channelsToCheck = instanceToRemove.getChannelInstances();
-		
-		ArrayList<MadLink> regularLinksToFadeOut = new ArrayList<MadLink>();
-		ArrayList<MadChannelInstance> graphChannelPairsToFadeOut = new ArrayList<MadChannelInstance>();
 
-		for( MadChannelInstance auci : channelsToCheck )
+		// Any channel instances currently with producer audio links need to be replaced with a fade out
+		final MadChannelInstance[] channelsToCheck = instanceToRemove.getChannelInstances();
+
+		final ArrayList<MadLink> regularLinksToFadeOut = new ArrayList<MadLink>();
+		final ArrayList<MadChannelInstance> graphChannelPairsToFadeOut = new ArrayList<MadChannelInstance>();
+
+		for( final MadChannelInstance auci : channelsToCheck )
 		{
 			// Skip non-audio channels
 			if( auci.definition.type == MadChannelType.AUDIO && auci.definition.direction == MadChannelDirection.PRODUCER )
 			{
 				// See if it's exposed as a graph channel
-				MadChannelInstance graphChannelInstance = auChannelInstanceToGraphChannelInstanceMap.get( auci );
+				final MadChannelInstance graphChannelInstance = auChannelInstanceToGraphChannelInstanceMap.get( auci );
 				if( graphChannelInstance != null )
 				{
 //					log.debug("Channel instance " + auci.toString() + " is mapped as graph channel - will insert fade out for it");
@@ -239,7 +244,7 @@ public class FadeInOutLinkHelper
 				{
 //					log.debug("Checking if channel instance " + auci.toString() + " is linked as a producer");
 					// Find if it's exposed as a regular link
-					ArrayList<MadLink> linksForProducerChannel = graph.findLinksForProducerChannelInstanceReturnNull(auci);
+					final ArrayList<MadLink> linksForProducerChannel = graph.findLinksForProducerChannelInstanceReturnNull(auci);
 					if( linksForProducerChannel != null )
 					{
 						regularLinksToFadeOut.addAll( linksForProducerChannel );
@@ -247,18 +252,19 @@ public class FadeInOutLinkHelper
 				}
 			}
 		}
-		
+
 		return insertPFadeOutInstanceForChannels( graph,
 				graphChannelPairsToFadeOut,
 				regularLinksToFadeOut );
 	}
 
-	public void removePFadeOutDeleteMadInstance( PFadeOutMadInstance waitInstance,
-			MadGraphInstance<?, ?> graph,
-			MadInstance<?, ?> instanceToRemove ) throws RecordNotFoundException
+	public void removePFadeOutDeleteMadInstance( final PFadeOutMadInstance waitInstance,
+			final MadGraphInstance<?, ?> graph,
+			final MadInstance<?, ?> instanceToRemove )
+		throws RecordNotFoundException
 	{
 		// Need to wait until the fade out has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = startTime;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !waitInstance.completed() )
 		{
@@ -272,29 +278,29 @@ public class FadeInOutLinkHelper
 			}
 			curTime = System.currentTimeMillis();
 		}
-		
+
 		graph.removeInstance( waitInstance );
 		graph.removeInstance(instanceToRemove);
 	}
 
-	public PFadeInMadInstance fadeInGraphChannelMap( MadGraphInstance<?,?> graph,
-			MadInstance<?,?> instanceToMap,
-			boolean warnAboutMissingChannels )
+	public PFadeInMadInstance fadeInGraphChannelMap( final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> instanceToMap,
+			final boolean warnAboutMissingChannels )
 		throws MadProcessingException, DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// For each channel we find in the graph, look for a corresponding named channel in
 		// the instance, and create a fade in instance between them
-		MadChannelInstance[] graphChannels = graph.getChannelInstances();
-		ArrayList<MadChannelInstance> channelPairsToBulkFade = new ArrayList<MadChannelInstance>();
-		for( MadChannelInstance graphChannel : graphChannels )
+		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
+		final ArrayList<MadChannelInstance> channelPairsToBulkFade = new ArrayList<MadChannelInstance>();
+		for( final MadChannelInstance graphChannel : graphChannels )
 		{
-			String name = graphChannel.definition.name;
-			MadChannelInstance madInstanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
-			
+			final String name = graphChannel.definition.name;
+			final MadChannelInstance madInstanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
+
 			if( madInstanceChannel != null )
 			{
-				MadChannelType channelType = graphChannel.definition.type;
-				MadChannelDirection channelDirection = graphChannel.definition.direction;
+				final MadChannelType channelType = graphChannel.definition.type;
+				final MadChannelDirection channelDirection = graphChannel.definition.direction;
 				// Only do fade in on producer channels
 				if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
 				{
@@ -309,19 +315,23 @@ public class FadeInOutLinkHelper
 			}
 			else if( warnAboutMissingChannels )
 			{
-				log.warn( "Unable to map channel name " + name + " to appropriate instance channel" );
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Unable to map channel name " + name + " to appropriate instance channel" );
+				}
 			}
 		}
-		
+
 		return insertPFadeInInstanceForGraphChannels( graph, channelPairsToBulkFade );
 	}
 
-	public void removeFadeInGraphChannelMap( PFadeInMadInstance waitInstance,
-			MadGraphInstance<?,?> graph,
-			MadInstance<?,?> instanceToMap ) throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+	public void removeFadeInGraphChannelMap( final PFadeInMadInstance waitInstance,
+			final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> instanceToMap )
+		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 		// Need to wait until the fade in has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !waitInstance.completed() )
 		{
@@ -338,18 +348,18 @@ public class FadeInOutLinkHelper
 		// Basically remove all the fade in instances
 		// and then re-expose the instance channels that map to graph ones
 		graph.removeInstance(waitInstance);
-	
+
 		// Map channels
-		MadChannelInstance[] graphChannels = graph.getChannelInstances();
-		for( MadChannelInstance graphChannel : graphChannels )
+		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
+		for( final MadChannelInstance graphChannel : graphChannels )
 		{
 			// Only need to remap the audio ones that are output
-			String name = graphChannel.definition.name;
-			MadChannelType channelType = graphChannel.definition.type;
-			MadChannelDirection channelDirection = graphChannel.definition.direction;
+			final String name = graphChannel.definition.name;
+			final MadChannelType channelType = graphChannel.definition.type;
+			final MadChannelDirection channelDirection = graphChannel.definition.direction;
 			if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
 			{
-				MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
+				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
 				if( instanceChannel != null )
 				{
 					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
@@ -361,13 +371,14 @@ public class FadeInOutLinkHelper
 			}
 		}
 	}
-	
-	public void removePFadeInGraphChannelMap( PFadeInMadInstance waitInstance,
-			MadGraphInstance<?, ?> graph,
-			MadInstance<?, ?> instanceToMap) throws RecordNotFoundException, MAConstraintViolationException
+
+	public void removePFadeInGraphChannelMap( final PFadeInMadInstance waitInstance,
+			final MadGraphInstance<?, ?> graph,
+			final MadInstance<?, ?> instanceToMap )
+		throws RecordNotFoundException, MAConstraintViolationException
 	{
 		// Need to wait until the fade in has happened
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
 		while( curTime < startTime + MAX_WAIT_MILLIS && !waitInstance.completed() )
 		{
@@ -386,289 +397,288 @@ public class FadeInOutLinkHelper
 		graph.removeInstance(waitInstance);
 
 		// Map channels
-		MadChannelInstance[] graphChannels = graph.getChannelInstances();
-		for( MadChannelInstance graphChannel : graphChannels )
+		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
+		for( final MadChannelInstance graphChannel : graphChannels )
 		{
 			// Only need to remap the audio ones that are output
-			String name = graphChannel.definition.name;
-			MadChannelType channelType = graphChannel.definition.type;
-			MadChannelDirection channelDirection = graphChannel.definition.direction;
+			final String name = graphChannel.definition.name;
+			final MadChannelType channelType = graphChannel.definition.type;
+			final MadChannelDirection channelDirection = graphChannel.definition.direction;
 			if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
 			{
-				MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
-				
+				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
+
 				graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
 			}
 		}
 	}
 
-	public void finaliseFadeIn( FadeInMadInstance fadeInInstance ) throws RecordNotFoundException, DatastoreException
+	public void finaliseFadeIn( final FadeInMadInstance fadeInInstance ) throws RecordNotFoundException, DatastoreException
 	{
 		componentService.destroyInstance( fadeInInstance );
 	}
-	
-	public void finalisePFadeIn( PFadeInMadInstance pFadeInInstance ) throws DatastoreException, RecordNotFoundException
+
+	public void finalisePFadeIn( final PFadeInMadInstance pFadeInInstance ) throws DatastoreException, RecordNotFoundException
 	{
 		componentService.destroyInstance( pFadeInInstance );
 	}
 
-	public void finaliseFadeOut( FadeOutMadInstance fadeOutInstance ) throws DatastoreException, RecordNotFoundException
+	public void finaliseFadeOut( final FadeOutMadInstance fadeOutInstance ) throws DatastoreException, RecordNotFoundException
 	{
 		componentService.destroyInstance( fadeOutInstance );
 	}
 
-	public void finalisePFadeOut( PFadeOutMadInstance fadeOutInstance ) throws DatastoreException, RecordNotFoundException
+	public void finalisePFadeOut( final PFadeOutMadInstance fadeOutInstance ) throws DatastoreException, RecordNotFoundException
 	{
 		componentService.destroyInstance( fadeOutInstance );
 	}
 
 	private FadeOutMadInstance insertFadeOutInstanceForLink(
-			MadGraphInstance<?,?> graph,
-			MadLink link )
-			throws DatastoreException, RecordNotFoundException,
-			MadProcessingException, MAConstraintViolationException
+			final MadGraphInstance<?,?> graph,
+			final MadLink link )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		String uniqueInstanceName = link.toString();
+		final String uniqueInstanceName = link.toString();
 		// Remove the actual link
 		graph.deleteLink( link );
-	
+
 		// Add a fade out component to the graph
-		FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
+		final FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
 				emptyParameterValues,
 				"Internal Link Fade Out Component for link " + uniqueInstanceName );
-		
-		MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
-		MadChannelInstance fadeOutConsumerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.CONSUMER ];
-		
+
+		final MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
+		final MadChannelInstance fadeOutConsumerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.CONSUMER ];
+
 		graph.addInstanceWithName( fadeOutInstance, "Temporary Link Fade Out" + uniqueInstanceName );
-		
-		MadChannelInstance consumerChannel = link.getConsumerChannelInstance();
-		
-		MadChannelInstance producerChannel = link.getProducerChannelInstance();
-		
+
+		final MadChannelInstance consumerChannel = link.getConsumerChannelInstance();
+
+		final MadChannelInstance producerChannel = link.getProducerChannelInstance();
+
 		// Link the consumer to the fade out producer channel
-		MadLink consumerLink = new MadLink( fadeOutProducerChannel, consumerChannel );
+		final MadLink consumerLink = new MadLink( fadeOutProducerChannel, consumerChannel );
 		graph.addLink( consumerLink );
-		
-		MadLink producerLink = new MadLink( producerChannel, fadeOutConsumerChannel );
+
+		final MadLink producerLink = new MadLink( producerChannel, fadeOutConsumerChannel );
 		graph.addLink( producerLink );
 		return fadeOutInstance;
 	}
 
 	private FadeOutMadInstance insertFadeOutInstanceForExposedGraphChannel(
-			MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceWasExposed )
-			throws RecordNotFoundException, DatastoreException,
-			MadProcessingException, MAConstraintViolationException
+			final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceWasExposed )
+		throws RecordNotFoundException, DatastoreException, MadProcessingException, MAConstraintViolationException
 	{
-		String uniqueInstanceName = graphChannelInstance.toString();
-		
+		final String uniqueInstanceName = graphChannelInstance.toString();
+
 		graph.removeAudioInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceWasExposed );
-		
+
 		// Now insert a fade out component and map it in
-		FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
+		final FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
 				emptyParameterValues,
 				"Internal Link Fade Out Component for " + uniqueInstanceName );
-		
-		MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
-		MadChannelInstance fadeOutConsumerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.CONSUMER ];
-		
+
+		final MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
+		final MadChannelInstance fadeOutConsumerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.CONSUMER ];
+
 		graph.addInstanceWithName( fadeOutInstance, "Temporary Link Fade Out For " + uniqueInstanceName );
-		
-		MadChannelDirection channelToExposeDirection = channelInstanceWasExposed.definition.direction;
-		
+
+		final MadChannelDirection channelToExposeDirection = channelInstanceWasExposed.definition.direction;
+
 		if( channelToExposeDirection == MadChannelDirection.CONSUMER )
 		{
-			MadChannelInstance consumerChannel = channelInstanceWasExposed;
-	
+			final MadChannelInstance consumerChannel = channelInstanceWasExposed;
+
 			// Link the consumer to the fade in producer channel
-			MadLink consumerLink = new MadLink( fadeOutProducerChannel, consumerChannel );
+			final MadLink consumerLink = new MadLink( fadeOutProducerChannel, consumerChannel );
 			graph.addLink( consumerLink );
-	
+
 			// And expose the fade in consumer channel as the graph channel
 			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutConsumerChannel );
 		}
 		else
 		{
-			MadChannelInstance producerChannel = channelInstanceWasExposed;
-			
-			MadLink producerLink = new MadLink( producerChannel, fadeOutConsumerChannel );
+			final MadChannelInstance producerChannel = channelInstanceWasExposed;
+
+			final MadLink producerLink = new MadLink( producerChannel, fadeOutConsumerChannel );
 			graph.addLink( producerLink );
-			
+
 			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutProducerChannel );
-			
+
 		}
 		return fadeOutInstance;
 	}
 
-	private FadeInMadInstance insertFadeInInstanceForLink( MadGraphInstance<?,?> graph, MadLink link )
-			throws DatastoreException, RecordNotFoundException,
-			MadProcessingException, MAConstraintViolationException
+	private FadeInMadInstance insertFadeInInstanceForLink( final MadGraphInstance<?,?> graph,
+			final MadLink link )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		String uniqueInstanceName = link.toString();
+		final String uniqueInstanceName = link.toString();
 		// Add a fade in component to the graph
-		FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
+		final FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
 				emptyParameterValues,
 				"Internal Link Fade In Component for " + uniqueInstanceName );
-		
-		MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
-		MadChannelInstance fadeInConsumerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
-		
+
+		final MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance fadeInConsumerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
+
 		graph.addInstanceWithName( fadeInInstance, "Temporary Link Fade In For " + uniqueInstanceName );
-		
-		MadChannelInstance consumerChannel = link.getConsumerChannelInstance();
-		
-		MadChannelInstance producerChannel = link.getProducerChannelInstance();
-		
+
+		final MadChannelInstance consumerChannel = link.getConsumerChannelInstance();
+
+		final MadChannelInstance producerChannel = link.getProducerChannelInstance();
+
 		// Link the consumer to the fade in producer channel
-		MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
+		final MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
 		graph.addLink( consumerLink );
-		
-		MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
+
+		final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
 		graph.addLink( producerLink );
 		return fadeInInstance;
 	}
 
-	private FadeInMadInstance insertFadeInInstanceForExposedGraphChannel( MadGraphInstance<?,?> graph,
-			MadChannelInstance graphChannelInstance,
-			MadChannelInstance channelInstanceToExpose )
-			throws DatastoreException, RecordNotFoundException,
-			MadProcessingException, MAConstraintViolationException
+	private FadeInMadInstance insertFadeInInstanceForExposedGraphChannel( final MadGraphInstance<?,?> graph,
+			final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		String uniqueInstanceName = graphChannelInstance.toString();
+		final String uniqueInstanceName = graphChannelInstance.toString();
 		// Add a fade out component to the graph
-		FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
+		final FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
 				emptyParameterValues,
 				"Internal Link Fade In Component for graph channel " + uniqueInstanceName );
-		
-		MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
-		MadChannelInstance fadeInConsumerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
-		
+
+		final MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance fadeInConsumerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
+
 		graph.addInstanceWithName( fadeInInstance, "Temporary Link Fade In for " + uniqueInstanceName );
-		
-		MadChannelDirection channelToExposeDirection = channelInstanceToExpose.definition.direction;
-		
+
+		final MadChannelDirection channelToExposeDirection = channelInstanceToExpose.definition.direction;
+
 		if( channelToExposeDirection == MadChannelDirection.CONSUMER )
 		{
-			MadChannelInstance consumerChannel = channelInstanceToExpose;
-	
+			final MadChannelInstance consumerChannel = channelInstanceToExpose;
+
 			// Link the consumer to the fade in producer channel
-			MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
+			final MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
 			graph.addLink( consumerLink );
-	
+
 			// And expose the fade in consumer channel as the graph channel
 			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
 		}
 		else
 		{
-			MadChannelInstance producerChannel = channelInstanceToExpose;
-			
-			MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
+			final MadChannelInstance producerChannel = channelInstanceToExpose;
+
+			final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
 			graph.addLink( producerLink );
-			
+
 			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
-			
+
 		}
 		return fadeInInstance;
 	}
 
 	private PFadeInMadInstance insertPFadeInInstanceForGraphChannels(
-		MadGraphInstance<?, ?> graph,
-		ArrayList<MadChannelInstance> channelPairsToBulkFade ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
+			final MadGraphInstance<?, ?> graph,
+			final ArrayList<MadChannelInstance> channelPairsToBulkFade )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		int totalChannels = channelPairsToBulkFade.size();
-		int numFadedChannels = totalChannels / 2;
-		Map<MadParameterDefinition, String> params = new HashMap<MadParameterDefinition, String>();
+		final int totalChannels = channelPairsToBulkFade.size();
+		final int numFadedChannels = totalChannels / 2;
+		final Map<MadParameterDefinition, String> params = new HashMap<MadParameterDefinition, String>();
 		params.put( PFadeDefinitions.NUM_CHANNELS_PARAMETER, numFadedChannels + "");
-		PFadeInMadInstance retVal = (PFadeInMadInstance)componentService.createInstanceFromDefinition(
+		final PFadeInMadInstance retVal = (PFadeInMadInstance)componentService.createInstanceFromDefinition(
 				pfadeInDefinition, params, "Temporary component fade in");
 		graph.addInstanceWithName(retVal, retVal.getInstanceName() );
-		PFadeConfiguration pfc = retVal.getInstanceConfiguration();
-		MadChannelInstance[] pfadeChannelInstances = retVal.getChannelInstances();
-	
+		final PFadeConfiguration pfc = retVal.getInstanceConfiguration();
+		final MadChannelInstance[] pfadeChannelInstances = retVal.getChannelInstances();
+
 		int cpIndex = 0;
 		for( int c = 0 ; c < numFadedChannels ; ++c )
 		{
-			MadChannelInstance graphChannelInstance = channelPairsToBulkFade.get( cpIndex++ );
-			MadChannelInstance channelInstanceToExpose = channelPairsToBulkFade.get( cpIndex++ );
-			int producerIndex = pfc.getProducerChannelIndex( c );
-			int consumerIndex = pfc.getConsumerChannelIndex( c );
+			final MadChannelInstance graphChannelInstance = channelPairsToBulkFade.get( cpIndex++ );
+			final MadChannelInstance channelInstanceToExpose = channelPairsToBulkFade.get( cpIndex++ );
+			final int producerIndex = pfc.getProducerChannelIndex( c );
+			final int consumerIndex = pfc.getConsumerChannelIndex( c );
 
-			MadChannelInstance fadeInProducerChannel = pfadeChannelInstances[ producerIndex ];
-			MadChannelInstance fadeInConsumerChannel = pfadeChannelInstances[ consumerIndex ];
-			
-			MadChannelInstance producerChannel = channelInstanceToExpose;
-			
-			MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
+			final MadChannelInstance fadeInProducerChannel = pfadeChannelInstances[ producerIndex ];
+			final MadChannelInstance fadeInConsumerChannel = pfadeChannelInstances[ consumerIndex ];
+
+			final MadChannelInstance producerChannel = channelInstanceToExpose;
+
+			final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
 			graph.addLink( producerLink );
-			
+
 			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
 		}
 
 		return retVal;
 	}
 
-	private PFadeOutMadInstance insertPFadeOutInstanceForChannels( MadGraphInstance<?, ?> graph,
-			ArrayList<MadChannelInstance> graphChannelPairsToFadeOut,
-			ArrayList<MadLink> regularLinksToFadeOut ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
+	private PFadeOutMadInstance insertPFadeOutInstanceForChannels( final MadGraphInstance<?, ?> graph,
+			final ArrayList<MadChannelInstance> graphChannelPairsToFadeOut,
+			final ArrayList<MadLink> regularLinksToFadeOut )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		int totalGraphChannels = graphChannelPairsToFadeOut.size();
-		int numFadedGraphChannels = totalGraphChannels / 2;
+		final int totalGraphChannels = graphChannelPairsToFadeOut.size();
+		final int numFadedGraphChannels = totalGraphChannels / 2;
 
-		int totalRegularChannels = regularLinksToFadeOut.size();
-		int numFadedRegularChannels = totalRegularChannels;
+		final int totalRegularChannels = regularLinksToFadeOut.size();
+		final int numFadedRegularChannels = totalRegularChannels;
 
-		int numTotalFadedChannels = numFadedGraphChannels + numFadedRegularChannels;
-		
-		Map<MadParameterDefinition, String> params = new HashMap<MadParameterDefinition, String>();
+		final int numTotalFadedChannels = numFadedGraphChannels + numFadedRegularChannels;
+
+		final Map<MadParameterDefinition, String> params = new HashMap<MadParameterDefinition, String>();
 		params.put( PFadeDefinitions.NUM_CHANNELS_PARAMETER, numTotalFadedChannels + "");
-		PFadeOutMadInstance retVal = (PFadeOutMadInstance)componentService.createInstanceFromDefinition(
+		final PFadeOutMadInstance retVal = (PFadeOutMadInstance)componentService.createInstanceFromDefinition(
 				pfadeOutDefinition, params, "Temporary component fade out");
 		graph.addInstanceWithName(retVal, retVal.getInstanceName());
-		PFadeConfiguration pfc = retVal.getInstanceConfiguration();
-		
+		final PFadeConfiguration pfc = retVal.getInstanceConfiguration();
+
 		int fadeIndex = 0;
 		int cpIndex = 0;
-		MadChannelInstance[] pfadeChannelInstances = retVal.getChannelInstances();
+		final MadChannelInstance[] pfadeChannelInstances = retVal.getChannelInstances();
 		for( int c = 0 ; c < numFadedGraphChannels ; ++c )
 		{
-			MadChannelInstance graphChannelInstance = graphChannelPairsToFadeOut.get( cpIndex++ );
-			MadChannelInstance channelInstanceToRemove = graphChannelPairsToFadeOut.get( cpIndex++ );
-			int producerIndex = pfc.getProducerChannelIndex( fadeIndex );
-			int consumerIndex = pfc.getConsumerChannelIndex( fadeIndex );
+			final MadChannelInstance graphChannelInstance = graphChannelPairsToFadeOut.get( cpIndex++ );
+			final MadChannelInstance channelInstanceToRemove = graphChannelPairsToFadeOut.get( cpIndex++ );
+			final int producerIndex = pfc.getProducerChannelIndex( fadeIndex );
+			final int consumerIndex = pfc.getConsumerChannelIndex( fadeIndex );
 
-			MadChannelInstance fadeOutProducerChannel = pfadeChannelInstances[ producerIndex ];
-			MadChannelInstance fadeOutConsumerChannel = pfadeChannelInstances[ consumerIndex ];
-			
+			final MadChannelInstance fadeOutProducerChannel = pfadeChannelInstances[ producerIndex ];
+			final MadChannelInstance fadeOutConsumerChannel = pfadeChannelInstances[ consumerIndex ];
+
 			// Remove existing IO link
 			graph.removeAudioInstanceChannelAsGraphChannel(graphChannelInstance, channelInstanceToRemove);
-			
+
 			// Wire through fade channel
 			graph.exposeAudioInstanceChannelAsGraphChannel(graphChannelInstance, fadeOutProducerChannel);
-			MadLink graphToFadeLink = new MadLink( channelInstanceToRemove, fadeOutConsumerChannel );
+			final MadLink graphToFadeLink = new MadLink( channelInstanceToRemove, fadeOutConsumerChannel );
 			graph.addLink( graphToFadeLink );
 			fadeIndex++;
 		}
 		int linkIndex = 0;
 		for( int c = 0 ; c < numFadedRegularChannels ; ++c )
 		{
-			MadLink linkToFadeOut = regularLinksToFadeOut.get( linkIndex++ );
-			MadChannelInstance consumerChannelInstance = linkToFadeOut.getConsumerChannelInstance();
-			MadChannelInstance producerChannelInstanceToRemove = linkToFadeOut.getProducerChannelInstance();
-			int producerIndex = pfc.getProducerChannelIndex( fadeIndex );
-			int consumerIndex = pfc.getConsumerChannelIndex( fadeIndex );
+			final MadLink linkToFadeOut = regularLinksToFadeOut.get( linkIndex++ );
+			final MadChannelInstance consumerChannelInstance = linkToFadeOut.getConsumerChannelInstance();
+			final MadChannelInstance producerChannelInstanceToRemove = linkToFadeOut.getProducerChannelInstance();
+			final int producerIndex = pfc.getProducerChannelIndex( fadeIndex );
+			final int consumerIndex = pfc.getConsumerChannelIndex( fadeIndex );
 
-			MadChannelInstance fadeOutProducerChannel = pfadeChannelInstances[ producerIndex ];
-			MadChannelInstance fadeOutConsumerChannel = pfadeChannelInstances[ consumerIndex ];
-			
+			final MadChannelInstance fadeOutProducerChannel = pfadeChannelInstances[ producerIndex ];
+			final MadChannelInstance fadeOutConsumerChannel = pfadeChannelInstances[ consumerIndex ];
+
 			// Remove link
 			graph.deleteLink( linkToFadeOut );
-			
+
 			// Wire through fade channel
-			MadLink consumerLink = new MadLink( producerChannelInstanceToRemove, fadeOutConsumerChannel );
+			final MadLink consumerLink = new MadLink( producerChannelInstanceToRemove, fadeOutConsumerChannel );
 			graph.addLink( consumerLink );
-			MadLink producerLink = new MadLink( fadeOutProducerChannel, consumerChannelInstance );
+			final MadLink producerLink = new MadLink( fadeOutProducerChannel, consumerChannelInstance );
 			graph.addLink( producerLink );
 			fadeIndex++;
 		}

@@ -50,38 +50,38 @@ import uk.co.modularaudio.util.tuple.TwoTuple;
 public abstract class AppRenderingIO implements MadFrameTimeFactory
 {
 	private static Log log = LogFactory.getLog( AppRenderingIO.class.getName() );
-	
+
 	private final static long TEST_IO_WAIT_MILLIS = 200;
 	private final static long TEST_SLEEP_MILLIS = 100;
-	
+
 	protected AppRenderingGraphService appRenderingGraphService;
 	protected AppRenderingGraph appRenderingGraph;
 	protected TimingService timingService;
-	
+
 	protected AppRenderingErrorQueue errorQueue = null;
 	protected AppRenderingErrorCallback errorCallback = null;
-	
+
 	protected HardwareIOConfiguration hardwareConfiguration;
 	protected MadTimingParameters timingParameters;
-	
+
 	protected AtomicBoolean rendering = new AtomicBoolean( false );
-	
+
 	protected volatile boolean shouldRecordPeriods = false;
-	
+
 	protected int numSoftUnderflows = 0;
 	protected int numSoftOverflows = 0;
 	protected int numHardUnderflows = 0;
 	protected int numHardOverflows = 0;
 	protected long numPeriodsRecorded = 0;
 	protected boolean fatalException = false;
-	
+
 	protected IOBuffers masterInBuffers = null;
 	protected IOBuffers masterOutBuffers = null;
-	
+
 	protected ClockSourceJobQueueProcessing clockSourceJobQueueProcessing = null;
-	
+
 	protected volatile boolean shouldProfileRenderingJobs = false;
-	
+
 	public AppRenderingIO( AppRenderingGraphService appRenderingGraphService,
 			TimingService timingService,
 			HardwareIOConfiguration hardwareConfiguration,
@@ -92,11 +92,11 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 		this.timingService = timingService;
 		this.hardwareConfiguration = hardwareConfiguration;
 		appRenderingGraph = appRenderingGraphService.createAppRenderingGraph();
-		
+
 		clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( appRenderingGraph.getRenderingJobQueue() );
-		
+
 		shouldProfileRenderingJobs = appRenderingGraphService.shouldProfileRenderingJobs();
-		
+
 		this.errorQueue = errorQueue;
 		this.errorCallback = errorCallback;
 		errorQueue.addCallbackForRenderingIO( this, errorCallback );
@@ -114,24 +114,24 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			DataRate dataRate = DataRate.SR_44100;
 			long nanosOutputLatency = 10000;
 			int sampleFramesOutputLatency = hardwareConfiguration.getChannelBufferLength();
-			
+
 			HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
 			HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,
 					nanosOutputLatency,
 					sampleFramesOutputLatency );
-					
+
 			try
 			{
 				TwoTuple<HardwareIOChannelSettings, MadTimingParameters> discoveredSettings = doProviderInit( hardwareConfiguration );
-				
+
 				hardwareChannelSettings = discoveredSettings.getHead();
-				
+
 				timingParameters = timingService.getTimingSource().getTimingParameters();
 				timingParameters.reset( discoveredSettings.getTail() );
-				
+
 				log.info("Starting up audio IO with channel settings: " + hardwareChannelSettings.toString() );
 				log.info("Starting up audio IO with parameters: " + timingParameters.toString() );
-				
+
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.PRE_START );
 				doProviderStart();
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.POST_START );
@@ -145,7 +145,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			}
 		}
 	}
-	
+
 	public boolean stopRendering()
 	{
 		if( !isRendering() )
@@ -157,7 +157,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 		HardwareIOOneChannelSetting fakeAudioChannelSetting = new HardwareIOOneChannelSetting(DataRate.SR_44100, 1024);
 		HardwareIOChannelSettings fakeChannelSettings = new HardwareIOChannelSettings(fakeAudioChannelSetting, AudioTimingUtils.getNumNanosecondsForBufferLength(44100, 1024), 1024);
 		HardwareIOChannelSettings hardwareChannelSettings = (renderingPlan != null ? renderingPlan.getPlanChannelSettings() : fakeChannelSettings);
-		
+
 		try
 		{
 			fireLifecycleSignal(hardwareChannelSettings, SignalType.PRE_STOP );
@@ -168,7 +168,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			String msg = "Exception caught stopping audio IO: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 		try
 		{
 			fireLifecycleSignal(hardwareChannelSettings, SignalType.POST_STOP );
@@ -179,9 +179,9 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			String msg = "Exception caught destroying audio IO: " + e.toString();
 			log.error( msg, e );
 		}
-	
+
 		rendering.set( false );
-		
+
 		return true;
 	}
 
@@ -193,37 +193,37 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 	public boolean testRendering( long testClientRunMillis )
 	{
 		AudioTestResults retVal = new AudioTestResults();
-		
+
 		DataRate dataRate = DataRate.SR_44100;
 		long nanosOutputLatency = 10000;
 		int sampleFramesOutputLatency = hardwareConfiguration.getChannelBufferLength();
-		
+
 		HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
 		HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,
 				nanosOutputLatency,
 				sampleFramesOutputLatency );
-		
+
 		errorQueue.removeCallbackForRenderingIO( this );
 		TestRenderingErrorCallback testErrorCallback = new TestRenderingErrorCallback();
 		errorQueue.addCallbackForRenderingIO( this, testErrorCallback );
-		
+
 		try
 		{
 			TwoTuple<HardwareIOChannelSettings, MadTimingParameters> discoveredSettings = doProviderInit( hardwareConfiguration );
-			
+
 			hardwareChannelSettings = discoveredSettings.getHead();
-			
+
 			timingParameters = timingService.getTimingSource().getTimingParameters();
 			timingParameters.reset( discoveredSettings.getTail() );
-			
+
 			fireLifecycleSignal( hardwareChannelSettings, SignalType.PRE_START );
 			doProviderStart();
 			fireLifecycleSignal( hardwareChannelSettings, SignalType.POST_START );
-			
+
 			long startupTimestampMillis = System.currentTimeMillis();
-			
+
 			log.debug("Started test IO at timestamp: " + startupTimestampMillis );
-			
+
 			// Let it settle
 			try
 			{
@@ -232,15 +232,16 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			catch( InterruptedException ie )
 			{
 			}
-			
+
 			fireLifecycleSignal( hardwareChannelSettings, SignalType.START_TEST );
-			
+
 			setShouldRecordPeriods( true );
-			
+
 			startupTimestampMillis = System.currentTimeMillis();
 			long currentTimestampMillis = System.currentTimeMillis();
 			while( currentTimestampMillis <= startupTimestampMillis + testClientRunMillis )
 			{
+				appRenderingGraph.dumpProfileResults();
 				try
 				{
 					Thread.sleep( TEST_SLEEP_MILLIS );
@@ -261,6 +262,16 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			try
 			{
 				fireLifecycleSignal(hardwareChannelSettings, SignalType.STOP_TEST );
+
+				appRenderingGraph.dumpProfileResults();
+				try
+				{
+					Thread.sleep( 5 );
+				}
+				catch( InterruptedException ie )
+				{
+				}
+				appRenderingGraph.dumpProfileResults();
 
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.PRE_STOP );
 				doProviderStop();
@@ -283,20 +294,20 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				log.error("Exception caught destroying provider ari: " + e.toString(), e );
 				fatalException = true;
 			}
-			
+
 			errorQueue.removeCallbackForRenderingIO( this );
 			errorQueue.addCallbackForRenderingIO( this, errorCallback );
-			
+
 			fatalException = fatalException | testErrorCallback.hadFatalErrors;
 			retVal.fillIn(numSoftOverflows, numSoftUnderflows, numHardOverflows, numHardUnderflows, fatalException, numPeriodsRecorded);
-			
+
 			log.debug("Testing finished at timestamp: " + endTimestampMillis) ;
 			retVal.logResults( log );
 		}
 
 		return retVal.isSuccessfull();
 	}
-	
+
 	public AppRenderingGraph getAppRenderingGraph()
 	{
 		return appRenderingGraph;
@@ -322,7 +333,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				// We don't destroy it, it was set by someone else, so they are responsible for destroying it
 			}
 			appRenderingGraphService.destroyAppRenderingGraph( appRenderingGraph );
-			
+
 		}
 		catch( Exception e )
 		{
@@ -333,7 +344,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			errorQueue.removeCallbackForRenderingIO( this );
 		}
 	}
-	
+
 	private void fireLifecycleSignal( HardwareIOChannelSettings hardwareChannelSettings, AppRenderingLifecycleListener.SignalType signal )
 		throws DatastoreException, MadProcessingException
 	{
@@ -348,7 +359,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			{
 				masterInBuffers = appRenderingGraph.getMasterInBuffers();
 				masterOutBuffers = appRenderingGraph.getMasterOutBuffers();
-				
+
 				break;
 			}
 			default:
@@ -356,9 +367,9 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				break;
 			}
 		}
-		
+
 	}
-	
+
 	public void setShouldRecordPeriods( boolean should )
 	{
 		this.shouldRecordPeriods = should;
@@ -368,25 +379,25 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 	protected abstract void doProviderStart() throws DatastoreException;
 	protected abstract void doProviderStop() throws DatastoreException;
 	protected abstract void doProviderDestroy() throws DatastoreException;
-	
+
 	// Used by the providers to do the actual call through to the rendering plan and jobs
 	protected RealtimeMethodReturnCodeEnum doClockSourceProcessing( int numFrames, long periodStartFrameTime )
 	{
 		long ccs = System.nanoTime();
-		
+
 		long ccpp = System.nanoTime();
-		
+
 		RenderingPlan rp = null;
 		long  clockCallbackPostRpFetch = -1;
 		try
 		{
 			rp = appRenderingGraph.getAtomicRenderingPlan().get();
-			
+
 			clockCallbackPostRpFetch = System.nanoTime();
-			
+
 			MadChannelPeriodData autpd = timingService.getTimingSource().getTimingPeriodData();
 			autpd.reset( periodStartFrameTime,  numFrames);
-			
+
 			clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing(rp, shouldProfileRenderingJobs );
 		}
 		catch( Exception e )
@@ -396,7 +407,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
 		}
 		long ccpl = System.nanoTime();
-		
+
 		if( shouldProfileRenderingJobs )
 		{
 			rp.fillProfilingIfNotFilled(ccs,  ccpp, clockCallbackPostRpFetch,  ccpl );
@@ -405,5 +416,6 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
+	@Override
 	public abstract long getCurrentUiFrameTime();
 }
