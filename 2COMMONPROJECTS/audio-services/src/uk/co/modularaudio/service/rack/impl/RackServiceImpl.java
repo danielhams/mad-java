@@ -257,6 +257,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 					if( rack.canStoreContentsAtPosition( rci, newCol, testRow) )
 					{
 						canAdd = true;
+						break;
 					}
 				}
 				catch (TableIndexOutOfBoundsException e)
