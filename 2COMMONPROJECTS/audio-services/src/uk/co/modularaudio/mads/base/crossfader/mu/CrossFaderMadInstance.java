@@ -39,7 +39,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
 {
-//	private static Log log = LogFactory.getLog( OscillatorMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( CrossFaderMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
 
@@ -53,6 +53,9 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 	private float desiredAmpA = 1.0f;
 	private float desiredAmpB = 1.0f;
+
+	private int framesPerFrontEndPeriod = -1;
+	private int framesUntilIO = -1;
 
 	public CrossFaderMadInstance( BaseComponentsCreationContext creationContext,
 			String instanceName,
@@ -73,6 +76,9 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
+
+			framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+			framesUntilIO = framesPerFrontEndPeriod;
 		}
 		catch (Exception e)
 		{
@@ -121,33 +127,56 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			final float[] outLBuffer = outLcb.floatBuffer;
 			final MadChannelBuffer outRcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_RIGHT ];
 			final float[] outRBuffer = outRcb.floatBuffer;
-			for( int i = 0 ; i < numFrames ; i++ )
+
+			int framesLeft = numFrames;
+			int curOutputIndex = 0;
+
+			while( framesLeft > 0 )
 			{
-				final float in1lval = in1LBuffer[i];
-				final float in2lval = in2LBuffer[i];
-				final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
-				outLBuffer[i] = lVal;
-
-				final float in1rval = in1RBuffer[i];
-				final float in2rval = in2RBuffer[i];
-
-				final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
-				outRBuffer[i] = rVal;
-
-				// Fade between the values
-				instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
-				instanceRealAmpB = ((instanceRealAmpB * curValueRatio) + (desiredAmpB * newValueRatio));
-				// And dampen any values that are just noise.
-				if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+				if( framesUntilIO == 0 )
 				{
-					instanceRealAmpA = 0.0f;
+					long adjustedFrameTime = periodStartFrameTime + curOutputIndex;
+
+					preProcess( tempQueueEntryStorage, timingParameters, adjustedFrameTime );
+
+					framesUntilIO = framesPerFrontEndPeriod;
 				}
-				if( instanceRealAmpB > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpB < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+
+				int numThisRound = framesLeft < framesUntilIO ? framesLeft : framesUntilIO;
+
+				for( int i = 0 ; i < numThisRound ; i++ )
 				{
-					instanceRealAmpB = 0.0f;
+					final float in1lval = in1LBuffer[ curOutputIndex + i ];
+					final float in2lval = in2LBuffer[ curOutputIndex + i ];
+					final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
+					outLBuffer[ curOutputIndex + i ] = lVal;
+
+					final float in1rval = in1RBuffer[ curOutputIndex + i ];
+					final float in2rval = in2RBuffer[ curOutputIndex + i ];
+
+					final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
+					outRBuffer[ curOutputIndex + i ] = rVal;
+
+					// Fade between the values
+					instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
+					instanceRealAmpB = ((instanceRealAmpB * curValueRatio) + (desiredAmpB * newValueRatio));
+					// And dampen any values that are just noise.
+					if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+					{
+						instanceRealAmpA = 0.0f;
+					}
+					if( instanceRealAmpB > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpB < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+					{
+						instanceRealAmpB = 0.0f;
+					}
 				}
+
+				curOutputIndex += numThisRound;
+				framesUntilIO -= numThisRound;
+				framesLeft -= numThisRound;
 			}
 		}
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 

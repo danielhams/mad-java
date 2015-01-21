@@ -26,10 +26,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -60,6 +60,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 
 	// Set during startup and cleared during stop
 	protected MadFrameTimeFactory frameTimeFactory = null;
+	protected long temporalValueFixedLatencyFrames = 0;
 
 	public MadUiInstance( I instance, MadUiDefinition<D, I> uiDefinition )
 	{
@@ -108,6 +109,8 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 			final MadFrameTimeFactory frameTimeFactory )
 	{
 		this.frameTimeFactory = frameTimeFactory;
+		// Need to offset by the output latency so events don't get bunched up and processed in blocks
+		this.temporalValueFixedLatencyFrames = ratesAndLatency.getSampleFramesOutputLatency();
 	}
 
 	@Override
@@ -225,10 +228,12 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		outEvent.value = value;
 		if( frameTimeFactory != null )
 		{
-			localQueueBridge.sendTemporalEventToInstance( instance, frameTimeFactory.getCurrentUiFrameTime(),  outEvent );
+			long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 		}
 		else
 		{
+			// The "graph" is probably not running, so just send it
 			localQueueBridge.sendTemporalEventToInstance( instance, 0,  outEvent );
 		}
 	}
@@ -239,10 +244,12 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		outEvent.object = obj;
 		if( frameTimeFactory != null )
 		{
-			localQueueBridge.sendTemporalEventToInstance( instance, frameTimeFactory.getCurrentUiFrameTime(),  outEvent );
+			long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 		}
 		else
 		{
+			// The "graph" is probably not running, so just send it
 			localQueueBridge.sendTemporalEventToInstance( instance, 0,  outEvent );
 		}
 	}

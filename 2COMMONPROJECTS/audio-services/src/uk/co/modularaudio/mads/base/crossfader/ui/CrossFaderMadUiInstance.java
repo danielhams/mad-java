@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.wavetable.powertable.StandardCrossfadePower
 
 public class CrossFaderMadUiInstance extends AbstractNonConfigurableMadUiInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
 {
-//	private static Log log = LogFactory.getLog( CrossFaderDefUiInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
 
 	private boolean guiKillA = false;
 	private boolean guiKillB = false;
