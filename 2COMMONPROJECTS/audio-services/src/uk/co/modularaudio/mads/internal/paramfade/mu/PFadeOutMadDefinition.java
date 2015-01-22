@@ -26,41 +26,43 @@ import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
+import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class PFadeOutMadDefinition extends MadDefinition<PFadeOutMadDefinition,PFadeOutMadInstance>
 {
-	public final static String definitionId = "pfade_out";
+	public final static String DEFINITION_ID = "pfade_out";
 
-	private final static String userVisibleName = "Parametric Fade Out";
+	private final static String USER_VISIBLE_NAME = "Parametric Fade Out";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationId = "pfade_out";
-	private final static String classificationName = "Parametric Fade Out";
-	private final static String classificationDescription = "Fade out a source with a configurable number of channels";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Parametric Fade Out";
+	private final static String CLASS_DESC = "Fade out a source with a configurable number of channels";
 
-	public PFadeOutMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public PFadeOutMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService )
+		throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName, true,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME, true,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				PFadeDefinitions.parameterDefinitions,
-				new PFadeOutIOQueueBridge() );
+				PFadeDefinitions.PARAM_DEFS,
+				new MadNullLocklessQueueBridge<PFadeOutMadInstance>() );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
+		throws MadProcessingException
 	{
-		PFadeConfiguration ic = new PFadeConfiguration( parameterValues );
+		final PFadeConfiguration ic = new PFadeConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
 	}
 }

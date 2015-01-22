@@ -36,20 +36,21 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 public class AudioSystemTesterMadInstanceConfiguration
 {
 	private static Log log = LogFactory.getLog( AudioSystemTesterMadInstance.class.getName() );
-	
-	private int numOutputChannels = -1;
-	private int[] outputChannelIndexes = null;
-	private int totalNumChannels = -1;
-	
-	private MadChannelConfiguration channelConfiguration = null;
-	private MadChannelDefinition[] channelDefinitions = null;
-	
-	public AudioSystemTesterMadInstanceConfiguration( Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+
+	private int numOutputChannels;
+	private final int[] outputChannelIndexes;
+	private final int totalNumChannels;
+
+	private final MadChannelConfiguration channelConfiguration;
+	private final MadChannelDefinition[] channelDefinitions;
+
+	public AudioSystemTesterMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues )
+		throws MadProcessingException
 	{
 		numOutputChannels = 2;
 		if( parameterValues.containsKey( AudioSystemTesterMadDefinition.NUM_CHANNELS_PARAMETER ) )
 		{
-			String numChannelsStr = parameterValues.get( AudioSystemTesterMadDefinition.NUM_CHANNELS_PARAMETER );
+			final String numChannelsStr = parameterValues.get( AudioSystemTesterMadDefinition.NUM_CHANNELS_PARAMETER );
 			if( numChannelsStr != null && numChannelsStr.length() > 0 )
 			{
 				try
@@ -81,7 +82,7 @@ public class AudioSystemTesterMadInstanceConfiguration
 					MadChannelPosition.MONO );
 			curChannelCounter++;
 		}
-		
+
 		// Build the channel configuration
 		channelConfiguration = new MadChannelConfiguration( channelDefinitions );
 	}
@@ -96,7 +97,7 @@ public class AudioSystemTesterMadInstanceConfiguration
 		return numOutputChannels;
 	}
 
-	public int getIndexForOutputChannel( int c )
+	public int getIndexForOutputChannel( final int c )
 	{
 		return outputChannelIndexes[ c ];
 	}

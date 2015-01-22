@@ -26,10 +26,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -38,21 +38,23 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class FadeOutMadInstance extends MadInstance<FadeOutMadDefinition, FadeOutMadInstance>
 {
-	private AtomicInteger curTablePosition = new AtomicInteger(0);
-	private FadeOutWaveTable waveTable = null;
+	private final AtomicInteger curTablePosition = new AtomicInteger(0);
+	private FadeOutWaveTable waveTable;
 
-	public FadeOutMadInstance( InternalComponentsCreationContext creationContext,
-			String instanceName,
-			FadeOutMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public FadeOutMadInstance( final InternalComponentsCreationContext creationContext,
+			final String instanceName,
+			final FadeOutMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
 		waveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
 	}
@@ -60,31 +62,33 @@ public class FadeOutMadInstance extends MadInstance<FadeOutMadDefinition, FadeOu
 	@Override
 	public void stop() throws MadProcessingException
 	{
+		// Nothing to do
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
 	{
 		int runningTablePosition = curTablePosition.get();
 		// Only do some processing if we are connected
 		if( channelConnectedFlags.get( FadeOutMadDefinition.CONSUMER ) &&
 				channelConnectedFlags.get( FadeOutMadDefinition.PRODUCER ) )
 		{
-			MadChannelBuffer in = channelBuffers[ FadeOutMadDefinition.CONSUMER ];
-			float[] inBuffer = in.floatBuffer;
-	
-			MadChannelBuffer out = channelBuffers[ FadeOutMadDefinition.PRODUCER ];
-			float[] outBuffer = out.floatBuffer;
+			final MadChannelBuffer in = channelBuffers[ FadeOutMadDefinition.CONSUMER ];
+			final float[] inBuffer = in.floatBuffer;
+
+			final MadChannelBuffer out = channelBuffers[ FadeOutMadDefinition.PRODUCER ];
+			final float[] outBuffer = out.floatBuffer;
 
 			// Use the fade wave table and our current position to pull out the fade value to use.
 			for( int i = 0 ; i < numFrames ; i++ )
 			{
-				float curVal = inBuffer[i];
-				float currentFadeMultiplier = waveTable.getValueAt( runningTablePosition );
+				final float curVal = inBuffer[i];
+				final float currentFadeMultiplier = waveTable.getValueAt( runningTablePosition );
 				outBuffer[i] = curVal * currentFadeMultiplier;
 				runningTablePosition++;
 			}
@@ -94,7 +98,7 @@ public class FadeOutMadInstance extends MadInstance<FadeOutMadDefinition, FadeOu
 			runningTablePosition += numFrames;
 		}
 		curTablePosition.set( runningTablePosition );
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 

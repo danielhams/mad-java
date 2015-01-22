@@ -38,72 +38,74 @@ import uk.co.modularaudio.util.table.Span;
 
 public class FadeOutMadUiDefinition extends MadUiDefinition<FadeOutMadDefinition, FadeOutMadInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 
 	private static final Point CONSUMER_CHANNEL_CENTER = new Point( 120, 30 );
 
 	private static final Point PRODUCER_CHANNEL_CENTER = new Point( 160, 30 );
-	
-	private BufferedImage frontBufferedImage = null;
-	private BufferedImage backBufferedImage = null;
-	
-	public FadeOutMadUiDefinition( BufferedImageAllocator bia, FadeOutMadDefinition definition,
-			ComponentImageFactory cif, 
-			String imageRoot ) throws DatastoreException
+
+	private final BufferedImage frontBufferedImage;
+	private final BufferedImage backBufferedImage;
+
+	public FadeOutMadUiDefinition( final BufferedImageAllocator bia,
+			final FadeOutMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
+		throws DatastoreException
 	{
 		super( bia, definition );
-		
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-		
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
+
+		frontBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_front.png" );
+
+		backBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_back.png");
 	}
 
+	@Override
 	public BufferedImage getFrontBufferedImage()
 	{
 		return frontBufferedImage;
 	}
 
+	@Override
 	public BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
 	}
 
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( FadeOutMadInstance instance )
+	public MadUiInstance<?,?> createNewUiInstance( final FadeOutMadInstance instance )
 		throws DatastoreException
 	{
-		MadUiInstance<?,?> retVal = null;
 		try
 		{
 			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = instance.getChannelInstances();
-			MadChannelInstance consumerChannelInstance = channelInstances[ FadeOutMadDefinition.CONSUMER ];
+			final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+			final MadChannelInstance[] channelInstances = instance.getChannelInstances();
+			final MadChannelInstance consumerChannelInstance = channelInstances[ FadeOutMadDefinition.CONSUMER ];
 			uiChannelInstances.add(  new MadUiChannelInstance( CONSUMER_CHANNEL_CENTER, consumerChannelInstance ) );
-			MadChannelInstance producerChannelInstance = channelInstances[ FadeOutMadDefinition.PRODUCER ];
+			final MadChannelInstance producerChannelInstance = channelInstances[ FadeOutMadDefinition.PRODUCER ];
 			uiChannelInstances.add( new MadUiChannelInstance( PRODUCER_CHANNEL_CENTER, producerChannelInstance ) );
-			
+
 			// We don't have any controls...
-			
-			retVal = new FadeOutMadUiInstance( instance,
+
+			final MadUiInstance<?,?> retVal = new FadeOutMadUiInstance( instance,
 					this );
-			
+
 			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
 					 new MadUiControlInstance<?,?,?>[ 0 ],
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
+			return retVal;
 		}
 		catch(Exception e)
 		{
 			String msg = "Exception caught creating new ui instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
-		return retVal;
 	}
-	
+
+	@Override
 	public Span getCellSpan()
 	{
-		return span;
+		return SPAN;
 	}
 }

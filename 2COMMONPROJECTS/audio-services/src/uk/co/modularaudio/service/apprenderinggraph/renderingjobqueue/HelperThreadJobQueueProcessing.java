@@ -25,13 +25,13 @@ import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
 public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
 {
 //	private static Log log = LogFactory.getLog( HelperThreadJobQueueProcessing.class.getName() );
-	
-	public HelperThreadJobQueueProcessing( int threadNum, RenderingJobQueue jobQueue )
+
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue )
 	{
 		this( threadNum, jobQueue, Type.HELPER_THREAD );
 	}
 
-	public HelperThreadJobQueueProcessing( int threadNum, RenderingJobQueue jobQueue, Type threadType )
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue, final Type threadType )
 	{
 		super( threadNum, jobQueue, threadType);
 	}

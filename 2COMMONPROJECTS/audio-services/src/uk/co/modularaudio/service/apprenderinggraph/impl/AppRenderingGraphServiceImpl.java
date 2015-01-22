@@ -45,19 +45,24 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 {
 	private static Log log = LogFactory.getLog( AppRenderingGraphServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService = null;
-	private MadComponentService componentService = null;
-	private MadGraphService graphService = null;
-	private RenderingService renderingService = null;
-	private TimingService timingService = null;
+	private ConfigurationService configurationService;
+	private MadComponentService componentService;
+	private MadGraphService graphService;
+	private RenderingService renderingService;
+	private TimingService timingService;
 
 	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".NumHelperThreads";
 	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
 	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
 
 	private int numHelperThreads = -1;
-	private boolean shouldProfileRenderingJobs = false;
+	private boolean shouldProfileRenderingJobs;
 	private int maxWaitForTransitionMillis = -1;
+
+	public AppRenderingGraphServiceImpl()
+	{
+		// Uses DI.
+	}
 
 	@Override
 	public void init() throws ComponentConfigurationException

@@ -36,12 +36,12 @@ public class PFadeDefinitions
 
 	public final static int FADE_MILLIS = FADE_5_MILLIS;
 
-	protected static Set<MadParameterDefinition> parameterDefinitions;
+	protected static final Set<MadParameterDefinition> PARAM_DEFS;
 	public static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition("numchannels", "Num Channels");
-	
+
 	static
 	{
-		parameterDefinitions = new HashSet<MadParameterDefinition>();
-		parameterDefinitions.add( NUM_CHANNELS_PARAMETER );
+		PARAM_DEFS = new HashSet<MadParameterDefinition>();
+		PARAM_DEFS.add( NUM_CHANNELS_PARAMETER );
 	}
 }

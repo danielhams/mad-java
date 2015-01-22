@@ -49,13 +49,13 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 public class InternalComponentsFactory extends AbstractMadComponentFactory
 {
 	// Definitions to instances
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
+	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
 			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
-	
-	private AdvancedComponentsFrontController advancedComponentsFrontController = null;
-	
-	private InternalComponentsCreationContext creationContext = null;
-	
+
+	private AdvancedComponentsFrontController advancedComponentsFrontController;
+
+	private InternalComponentsCreationContext creationContext;
+
 	public InternalComponentsFactory()
 	{
 		defClassToInsClassMap.put( FadeOutMadDefinition.class, FadeOutMadInstance.class );
@@ -86,7 +86,7 @@ public class InternalComponentsFactory extends AbstractMadComponentFactory
 	{
 		if( advancedComponentsFrontController == null )
 		{
-			String msg = "InternalComponentsFactory has missing service dependencies. Check configuration";
+			final String msg = "InternalComponentsFactory has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );
 		}
 
@@ -95,9 +95,8 @@ public class InternalComponentsFactory extends AbstractMadComponentFactory
 		super.init();
 	}
 
-	public void setAdvancedComponentsFrontController( AdvancedComponentsFrontController advancedComponentsFrontController )
+	public void setAdvancedComponentsFrontController( final AdvancedComponentsFrontController advancedComponentsFrontController )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
 	}
-
 }

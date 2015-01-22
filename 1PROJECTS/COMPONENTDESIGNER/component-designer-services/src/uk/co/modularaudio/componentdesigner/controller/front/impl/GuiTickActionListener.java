@@ -28,7 +28,7 @@ import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFr
 public class GuiTickActionListener implements ActionListener
 {
 //	private static Log log = LogFactory.getLog( GuiTickActionListener.class.getName() );
-	
+
 	private final ComponentDesignerFrontController fc;
 
 	public GuiTickActionListener( ComponentDesignerFrontController fc )

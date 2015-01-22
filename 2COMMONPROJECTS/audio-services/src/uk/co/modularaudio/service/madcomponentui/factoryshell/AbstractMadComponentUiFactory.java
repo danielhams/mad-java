@@ -80,7 +80,7 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	}
 
 	@Override
-	public void destroyUiInstance( MadUiInstance<?,?> instanceToDestroy )
+	public void destroyUiInstance( MadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
 		throws DatastoreException, RecordNotFoundException
 	{
 		// Do nothing, java is easy :-)

@@ -30,25 +30,25 @@ import org.apache.commons.logging.LogFactory;
 public class MTSafeGenericRingBuffer<A>
 {
 	private static Log log = LogFactory.getLog( MTSafeGenericRingBuffer.class.getName() );
-	
-	protected AtomicInteger readPosition = new AtomicInteger( 0 );
-	protected AtomicInteger writePosition = new AtomicInteger( 0 );
-	
-	protected ReentrantLock writeLock = new ReentrantLock( true );
-	
+
+	protected final AtomicInteger readPosition = new AtomicInteger( 0 );
+	protected final AtomicInteger writePosition = new AtomicInteger( 0 );
+
+	protected final ReentrantLock writeLock = new ReentrantLock( true );
+
 	protected int capacity = -1;
 	protected int bufferLength = -1;
-	protected A[] buffer = null;
-	
+	protected A[] buffer;
+
 	@SuppressWarnings("unchecked")
-	public MTSafeGenericRingBuffer( Class<A> clazz,  int capacity )
+	public MTSafeGenericRingBuffer( final Class<A> clazz, final int capacity )
 	{
 		this.capacity = capacity;
 		this.bufferLength = capacity + 1;
 		buffer = (A[])Array.newInstance( clazz, bufferLength );
 	}
-	
-	public int write( A source[], int pos, int length )
+
+	public int write( final A source[], final int pos, final int length )
 	{
 		int curReadPosition = readPosition.get();
 		writeLock.lock();
@@ -57,7 +57,7 @@ public class MTSafeGenericRingBuffer<A>
 			int curWritePosition = writePosition.get();
 			int numWriteable = calcNumWriteable( curReadPosition, curWritePosition );
 			int newPosition = curWritePosition;
-			
+
 			if( numWriteable < length )
 			{
 				return 0;
@@ -65,7 +65,7 @@ public class MTSafeGenericRingBuffer<A>
 			else
 			{
 				// Treat the cases
-	
+
 				// Case where the write position might loop over the end of the buffer
 				if( newPosition + length > bufferLength )
 				{
@@ -80,15 +80,15 @@ public class MTSafeGenericRingBuffer<A>
 					System.arraycopy( source, pos, buffer, newPosition, length );
 				}
 			}
-			
+
 			newPosition += length;
-			
+
 			if( newPosition >= bufferLength )
 			{
 				newPosition -= bufferLength;
 			}
 			writePosition.set( newPosition );
-	
+
 			return length;
 		}
 		finally
@@ -96,23 +96,23 @@ public class MTSafeGenericRingBuffer<A>
 			writeLock.unlock();
 		}
 	}
-	
+
 	public int getNumReadable()
 	{
-		return( calcNumReadable( readPosition.get(), writePosition.get() ) );
+		return calcNumReadable( readPosition.get(), writePosition.get() );
 	}
-	
+
 	public int getNumWriteable()
 	{
-		return( calcNumWriteable( readPosition.get(), writePosition.get() ) );
+		return calcNumWriteable( readPosition.get(), writePosition.get() );
 	}
 
 	public void clear()
 	{
 		// Just reset the write position to be equal to the read position
-		writePosition = readPosition;
+		writePosition.set( readPosition.get() );
 	}
-	
+
 	public int size()
 	{
 		return capacity;
@@ -120,10 +120,10 @@ public class MTSafeGenericRingBuffer<A>
 
 	public A readOneOut() throws InterruptedException
 	{
-		int rp = readPosition.get();
-		int wp = writePosition.get();
-		int numReadable = calcNumReadable( rp, wp );
-		
+		final int rp = readPosition.get();
+		final int wp = writePosition.get();
+		final int numReadable = calcNumReadable( rp, wp );
+
 		return internalReadOneOut( rp, wp, numReadable );
 	}
 
@@ -140,9 +140,9 @@ public class MTSafeGenericRingBuffer<A>
 			{
 				retVal = buffer[ rp ];
 			}
-			
+
 			int newRp = rp + 1;
-			
+
 			if( newRp >= bufferLength )
 			{
 				newRp -= bufferLength;
@@ -162,16 +162,15 @@ public class MTSafeGenericRingBuffer<A>
 		}
 	}
 
-	public void writeOne( A object )
+	public void writeOne( final A object )
 	{
-		int curReadPosition = readPosition.get();
+		final int curReadPosition = readPosition.get();
 		writeLock.lock();
 		try
 		{
-			int curWritePosition = writePosition.get();
-			int numWriteable = calcNumWriteable( curReadPosition, curWritePosition );
-			int newPosition = curWritePosition;
-			
+			final int curWritePosition = writePosition.get();
+			final int numWriteable = calcNumWriteable( curReadPosition, curWritePosition );
+
 			if( numWriteable < 1 )
 			{
 				log.error("Oops in writeone");
@@ -181,9 +180,9 @@ public class MTSafeGenericRingBuffer<A>
 			{
 				buffer[ curWritePosition ] = object;
 			}
-			
-			newPosition += 1;
-			
+
+			int newPosition = curWritePosition + 1;
+
 			if( newPosition >= bufferLength )
 			{
 				newPosition -= bufferLength;
@@ -196,32 +195,32 @@ public class MTSafeGenericRingBuffer<A>
 		}
 	}
 
-	protected int calcNumReadable( int curReadPosition, int curWritePosition )
-		{
-			int retVal = -1;
-	
-			if( curWritePosition >= curReadPosition )
-			{
-				// Simple case, reading from start of buffer writing to end of it
-				retVal = curWritePosition - curReadPosition;
-			}
-			else if( curReadPosition > curWritePosition )
-			{
-				// Case we are reading from end of buffer and writing at the start
-				retVal = (bufferLength - curReadPosition) + curWritePosition;
-			}
-	//		log.debug("RingBuffer.cap(" + capacity + ").calcNumReadable(" + curReadPosition + ", " + curWritePosition + ") -> (" + retVal + ")");
-			return retVal;
-		}
-
-	protected int calcNumWriteable( int curReadPosition, int curWritePosition )
+	protected int calcNumReadable( final int curReadPosition, final int curWritePosition )
 	{
 		int retVal = -1;
-	
+
 		if( curWritePosition >= curReadPosition )
 		{
 			// Simple case, reading from start of buffer writing to end of it
-			retVal = (bufferLength - curWritePosition) + curReadPosition;
+			retVal = curWritePosition - curReadPosition;
+		}
+		else if( curReadPosition > curWritePosition )
+		{
+			// Case we are reading from end of buffer and writing at the start
+			retVal = bufferLength - curReadPosition + curWritePosition;
+		}
+//		log.debug("RingBuffer.cap(" + capacity + ").calcNumReadable(" + curReadPosition + ", " + curWritePosition + ") -> (" + retVal + ")");
+		return retVal;
+	}
+
+	protected int calcNumWriteable( final int curReadPosition, final int curWritePosition )
+	{
+		int retVal = -1;
+
+		if( curWritePosition >= curReadPosition )
+		{
+			// Simple case, reading from start of buffer writing to end of it
+			retVal = bufferLength - curWritePosition + curReadPosition;
 		}
 		else if( curReadPosition > curWritePosition )
 		{
@@ -233,9 +232,9 @@ public class MTSafeGenericRingBuffer<A>
 
 	public A readOneOrNull()
 	{
-		int rp = readPosition.get();
-		int wp = writePosition.get();
-		int numReadable = calcNumReadable( rp, wp );
+		final int rp = readPosition.get();
+		final int wp = writePosition.get();
+		final int numReadable = calcNumReadable( rp, wp );
 		if( numReadable > 0 )
 		{
 			return internalReadOneOut( rp, wp, numReadable );

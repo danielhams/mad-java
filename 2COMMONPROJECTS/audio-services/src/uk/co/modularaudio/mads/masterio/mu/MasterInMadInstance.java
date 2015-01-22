@@ -25,12 +25,12 @@ import java.util.Map;
 import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.IOBuffers;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -41,32 +41,34 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,MasterInMadInstance>
 {
 //	private static Log log = LogFactory.getLog( MasterInMadInstance.class.getName() );
-	
-	private int audioBufferLength = -1;
-	private int noteBufferLength = -1;
-	private IOBuffers producerBuffers = null;
 
-	private MadChannelNoteEventCopier noteCopier = new MadChannelNoteEventCopier();
-	
-	private IOMadConfiguration ioConfiguration = null;
-	private int numAudioChannels = -1;
-	private int numNoteChannels = -1;
-	
-	public MasterInMadInstance( MasterIOComponentsCreationContext creationContext,
-			String instanceName,
-			MasterInMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private final static MadChannelNoteEventCopier NOTE_COPIER = new MadChannelNoteEventCopier();
+
+	private final IOMadConfiguration ioConfiguration;
+	private final int numAudioChannels;
+	private final int numNoteChannels;
+
+	private int audioBufferLength;
+	private int noteBufferLength;
+	private IOBuffers producerBuffers;
+
+	public MasterInMadInstance( final MasterIOComponentsCreationContext creationContext,
+			final String instanceName,
+			final MasterInMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		ioConfiguration = MasterInMadDefinition.channelConfiguration;
+		ioConfiguration = MasterInMadDefinition.CHAN_CONFIG;
 		this.numAudioChannels = ioConfiguration.getNumAudioChannels();
 		this.numNoteChannels = ioConfiguration.getNumNoteChannels();
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
 		try
 		{
@@ -80,7 +82,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 		}
 		catch (Exception e)
 		{
-			String msg = "Exception caught starting up master in instance: " + e.toString();
+			final String msg = "Exception caught starting up master in instance: " + e.toString();
 			throw new MadProcessingException( msg, e );
 		}
 	}
@@ -92,44 +94,45 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
 	{
 		// We assume that the actual card IO has already filled in the necessary data in the buffers
 		// Iterate over the channels only processing them if they are connected
 		for( int a = 0 ; a < numAudioChannels ; a++ )
 		{
-			int audioChannelIndex = ioConfiguration.getAudioChannelIndex( a );
+			final int audioChannelIndex = ioConfiguration.getAudioChannelIndex( a );
 			if( channelConnectedFlags.get( audioChannelIndex ) )
 			{
 				if( a < producerBuffers.numAudioBuffers )
 				{
-					MadChannelBuffer producerChannelBuffer = producerBuffers.audioBuffers[ a ];
-					float[] inBuffer = producerChannelBuffer.floatBuffer;
-					MadChannelBuffer aucb = channelBuffers[ audioChannelIndex ];
-					float[] floatBuffer = aucb.floatBuffer;
+					final MadChannelBuffer producerChannelBuffer = producerBuffers.audioBuffers[ a ];
+					final float[] inBuffer = producerChannelBuffer.floatBuffer;
+					final MadChannelBuffer aucb = channelBuffers[ audioChannelIndex ];
+					final float[] floatBuffer = aucb.floatBuffer;
 					System.arraycopy( inBuffer, 0, floatBuffer, 0, numFrames );
 				}
 			}
 		}
 		for( int n = 0 ; n < numNoteChannels ; n++ )
 		{
-			int noteChannelIndex = ioConfiguration.getNoteChannelIndex( n );
+			final int noteChannelIndex = ioConfiguration.getNoteChannelIndex( n );
 			if( channelConnectedFlags.get( noteChannelIndex ) )
 			{
 				if(  n < producerBuffers.numMidiBuffers )
 				{
-					MadChannelBuffer producerChannelBuffer = producerBuffers.noteBuffers[ n ];
-					MadChannelNoteEvent[] inBuffer = producerChannelBuffer.noteBuffer;
-					MadChannelBuffer aucb = channelBuffers[ noteChannelIndex ];
-					MadChannelNoteEvent[] noteBuffer = aucb.noteBuffer;
-					int numNotes = producerChannelBuffer.numElementsInBuffer;
+					final MadChannelBuffer producerChannelBuffer = producerBuffers.noteBuffers[ n ];
+					final MadChannelNoteEvent[] inBuffer = producerChannelBuffer.noteBuffer;
+					final MadChannelBuffer aucb = channelBuffers[ noteChannelIndex ];
+					final MadChannelNoteEvent[] noteBuffer = aucb.noteBuffer;
+					final int numNotes = producerChannelBuffer.numElementsInBuffer;
 					for( int note = 0 ; note < numNotes ; note++ )
 					{
-						noteCopier.copyValues( inBuffer[ note ], noteBuffer[ note ] );
+						NOTE_COPIER.copyValues( inBuffer[ note ], noteBuffer[ note ] );
 					}
 					aucb.numElementsInBuffer = numNotes;
 				}
@@ -137,7 +140,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
+
 	public IOBuffers getMasterIOBuffers()
 	{
 		return producerBuffers;

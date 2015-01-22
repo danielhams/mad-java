@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -40,39 +41,40 @@ public class FadeInMadDefinition extends AbstractNonConfigurableMadDefinition<Fa
 
 	public final static String DEFINITION_ID = "fade_in";
 
-	private final static String userVisibleName = "Fade In";
+	private final static String USER_VISIBLE_NAME = "Fade In";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationName = "Fade In";
-	private final static String classificationDescription = "Fade in a source source.";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Fade In";
+	private final static String CLASS_DESC = "Fade in a source source.";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input", "Output" };
+	private final static String[] CHAN_NAMES = new String[] { "Input", "Output" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public FadeInMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public FadeInMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService )
+		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				new FadeInIOQueueBridge(),
+				new MadNullLocklessQueueBridge<FadeInMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

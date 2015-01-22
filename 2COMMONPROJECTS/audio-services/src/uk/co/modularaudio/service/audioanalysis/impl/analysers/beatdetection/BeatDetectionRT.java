@@ -48,7 +48,7 @@ public class BeatDetectionRT
 	float lastbeat;
 	int counter;
 	int flagstep;
-	float g_var;
+	float gvar;
 	float gp;
 	float bp;
 	float rp;
@@ -70,7 +70,7 @@ public class BeatDetectionRT
 		lastbeat = 0;
 		counter = 0;
 		flagstep = 0;
-		g_var = 3.901f;
+		gvar = 3.901f;
 		rp = 1;
 		gp = 0;
 		rayparam = (int)floatRayparam;

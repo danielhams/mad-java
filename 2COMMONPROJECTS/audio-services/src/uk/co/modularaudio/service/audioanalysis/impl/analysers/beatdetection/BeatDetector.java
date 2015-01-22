@@ -184,7 +184,7 @@ public class BeatDetector
 
 		if (counter == 0)
 		{
-			if (Math.abs(gp - rp) > 2.0 * rt.g_var)
+			if (Math.abs(gp - rp) > 2.0 * rt.gvar)
 			{
 				// Detected a beat.
 				flagstep = 1;
@@ -199,7 +199,7 @@ public class BeatDetector
 
 		if (counter == 1 && flagstep == 1)
 		{
-			if (Math.abs(2.0f * rp - rp1 - rp2) < rt.g_var)
+			if (Math.abs(2.0f * rp - rp1 - rp2) < rt.gvar)
 			{
 				flagconst = 1;
 				counter = 0;
@@ -227,7 +227,7 @@ public class BeatDetector
 			{
 				// gwv[j] = EXP(-.5* SQR((smpl_t)(j+1.-gp)) / SQR(bt->g_var) );
 				float t1sq = (j + 1.0f - gp) * (j + 1.0f - gp);
-				float gvarsq = rt.g_var * rt.g_var;
+				float gvarsq = rt.gvar * rt.gvar;
 				rt.gwv[j] = (float) Math.exp(-0.5 * t1sq / gvarsq);
 			}
 			flagconst = 0;

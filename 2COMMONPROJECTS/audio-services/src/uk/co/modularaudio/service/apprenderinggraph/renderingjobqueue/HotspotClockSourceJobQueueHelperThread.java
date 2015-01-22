@@ -45,25 +45,25 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 	private final RenderingPlan renderingPlan;
 	private final RenderingService renderingService;
 	private final TimingService timingService;
-	
+
 	private final boolean shouldProfileRenderingJobs;
 	private final ClockSourceJobQueueProcessing clockSourceJobQueueProcessing;
-	
-	private HotspotFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
-	
-	public HotspotClockSourceJobQueueHelperThread( RenderingPlan renderingPlan,
-			RenderingService renderingService,
-			TimingService timingService,
-			RenderingJobQueue renderingJobQueue, 
-			boolean shouldProfileRenderingJobs )
+
+	private final HotspotFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
+
+	public HotspotClockSourceJobQueueHelperThread( final RenderingPlan renderingPlan,
+			final RenderingService renderingService,
+			final TimingService timingService,
+			final RenderingJobQueue renderingJobQueue,
+			final boolean shouldProfileRenderingJobs )
 	{
 		super( MAThreadPriority.IDLE );
 		setName("HotspotClockSourceJobQueueHelperThread");
-		
+
 		this.renderingPlan = renderingPlan;
 		this.renderingService = renderingService;
 		this.timingService = timingService;
-		
+
 		this.shouldProfileRenderingJobs = shouldProfileRenderingJobs;
 		this.clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( renderingJobQueue );
 	}
@@ -71,29 +71,29 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 	@Override
 	protected void doJob()
 	{
-		long nanosOutputLatency = 1000000;
+		final long nanosOutputLatency = 1000000;
 
-		HardwareIOChannelSettings renderingPlanIOSettings = renderingPlan.getPlanChannelSettings();
-		int configuredSampleRate = renderingPlanIOSettings.getAudioChannelSetting().getDataRate().getValue();
-		int samplesPerRenderPeriod = renderingPlanIOSettings.getAudioChannelSetting().getChannelBufferLength();
-		
-		long nanosPerBackEndPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength( configuredSampleRate,
+		final HardwareIOChannelSettings renderingPlanIOSettings = renderingPlan.getPlanChannelSettings();
+		final int configuredSampleRate = renderingPlanIOSettings.getAudioChannelSetting().getDataRate().getValue();
+		final int samplesPerRenderPeriod = renderingPlanIOSettings.getAudioChannelSetting().getChannelBufferLength();
+
+		final long nanosPerBackEndPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength( configuredSampleRate,
 				samplesPerRenderPeriod );
-		long nanosPerBackEndSample = nanosPerBackEndPeriod / samplesPerRenderPeriod;
-		long nanosPerFrontEndPeriod = 1000000000 / 60;
-		int sampleFramesPerFrontEndPeriod = configuredSampleRate / 60;
-		
-		MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
+		final long nanosPerBackEndSample = nanosPerBackEndPeriod / samplesPerRenderPeriod;
+		final long nanosPerFrontEndPeriod = 1000000000 / 60;
+		final int sampleFramesPerFrontEndPeriod = configuredSampleRate / 60;
+
+		final MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
 		timingParameters.reset( nanosPerBackEndPeriod, nanosPerBackEndSample, nanosPerFrontEndPeriod, sampleFramesPerFrontEndPeriod, nanosOutputLatency );
 
-		MadChannelPeriodData periodData = timingService.getTimingSource().getTimingPeriodData();
+		final MadChannelPeriodData periodData = timingService.getTimingSource().getTimingPeriodData();
 		long periodStartFrameTime = 0;
 		periodData.reset( periodStartFrameTime, samplesPerRenderPeriod );
-	
+
 		try
 		{
-			Set<MadInstance<?,?>> allAuis = renderingPlan.getAllInstances();
-			for( MadInstance<?,?> aui : allAuis )
+			final Set<MadInstance<?,?>> allAuis = renderingPlan.getAllInstances();
+			for( final MadInstance<?,?> aui : allAuis )
 			{
 				aui.internalEngineStartup( renderingPlan.getPlanChannelSettings(),
 						renderingPlan.getPlanTimingParameters(),
@@ -104,24 +104,24 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 			while( !localShouldHalt )
 			{
 				periodData.reset( periodStartFrameTime, periodData.getNumFramesThisPeriod() );
-				
+
 				clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing( renderingPlan, shouldProfileRenderingJobs );
-				
+
 				localShouldHalt = shouldHalt;
 				periodStartFrameTime += periodData.getNumFramesThisPeriod();
 			}
 
-			for( MadInstance<?,?> aui : allAuis )
+			for( final MadInstance<?,?> aui : allAuis )
 			{
 				aui.internalEngineStop();
 			}
-			
+
 			// And cleanup the rendering plan
 			renderingService.destroyRenderingPlan( renderingPlan );
 		}
 		catch (MadProcessingException e)
 		{
-			String msg = "MadProcessingException caught hotspot looping: " + e.toString();
+			final String msg = "MadProcessingException caught hotspot looping: " + e.toString();
 			log.error( msg, e );
 		}
 	}

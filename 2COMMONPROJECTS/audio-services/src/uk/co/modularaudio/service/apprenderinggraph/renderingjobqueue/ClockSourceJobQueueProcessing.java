@@ -30,34 +30,34 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class ClockSourceJobQueueProcessing
 {
 //	private static Log log = LogFactory.getLog( ClockSourceJobQueueProcessing.class.getName() );
-	
-	private RealtimeMethodErrorContext errCtx = new RealtimeMethodErrorContext();
-	private HelperThreadJobQueueProcessing jobQueueProcessing;
-	private RenderingJobQueue renderingJobQueue;
-	
-	public ClockSourceJobQueueProcessing( RenderingJobQueue jobQueue )
+
+	private final RealtimeMethodErrorContext errCtx = new RealtimeMethodErrorContext();
+	private final HelperThreadJobQueueProcessing jobQueueProcessing;
+	private final RenderingJobQueue renderingJobQueue;
+
+	public ClockSourceJobQueueProcessing( final RenderingJobQueue jobQueue )
 	{
 		jobQueueProcessing = new HelperThreadJobQueueProcessing( 0,  jobQueue, Type.CLOCK_SOURCE );
 		renderingJobQueue = jobQueue;
 	}
-	
-	public RealtimeMethodReturnCodeEnum doUnblockedJobQueueProcessing( RenderingPlan renderingPlan, boolean shouldProfileRenderingJobs )
+
+	public RealtimeMethodReturnCodeEnum doUnblockedJobQueueProcessing( final RenderingPlan renderingPlan, final boolean shouldProfileRenderingJobs )
 	{
 		errCtx.reset();
-		
-		AbstractParallelRenderingJob[] initialJobs = renderingPlan.getInitialJobs();
-		
-		int numInitialJobs = initialJobs.length;
-		
+
+		final AbstractParallelRenderingJob[] initialJobs = renderingPlan.getInitialJobs();
+
+		final int numInitialJobs = initialJobs.length;
+
 		// Unblock the job queue so no waiting
 		renderingJobQueue.setBlocking( false );
-		
+
 		// Now do the job processing
 		renderingJobQueue.write( initialJobs, 0, numInitialJobs );
-		
+
 		while( !renderingPlan.wasPlanExecuted() )
 		{
-			if( !errCtx.andWith( 
+			if( !errCtx.andWith(
 					jobQueueProcessing.processJobAndDependants( false, shouldProfileRenderingJobs )
 					)
 				)

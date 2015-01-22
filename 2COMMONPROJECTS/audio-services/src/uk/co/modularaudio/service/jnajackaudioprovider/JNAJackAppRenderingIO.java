@@ -293,8 +293,8 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		}
 		catch (JackException e)
 		{
-			e.printStackTrace();
-			throw new RuntimeException( e );
+			log.error( e );
+			return false;
 		}
 		boolean localShouldRecordPeriods = shouldRecordPeriods;
 
@@ -502,7 +502,9 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		}
 		catch (JackException e)
 		{
-			throw new RuntimeException("Failed to fetch frame time: " + e.toString(), e );
+			log.error("Failed fetching frame time from jack: " + e.toString(), e );
+			// Fall back to current sytem nanos;
+			return System.nanoTime();
 		}
 	}
 

@@ -42,102 +42,93 @@ import uk.co.modularaudio.util.table.Span;
 public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMadDefinition, RackMasterIOMadInstance>
 {
 //	private static Log log = LogFactory.getLog( RackMasterIOMadUiDefinition.class.getName());
-	private static final Span span = new Span(4,1);
-	
+	private static final Span SPAN = new Span(4,1);
+
 	private static final int CHANNEL_START_X = 40;
 	private static final int CHANNEL_START_Y = 40;
-	
-//	private static final int CONSUMER_TO_PRODUCER_X_INCR = 110;
+
 	private static final int CONSUMER_TO_PRODUCER_X_INCR = 180;
 
 	private static final int CHANNEL_SPACING_X = 20;
-	
-//	private static final int NEW_TYPE_X_INCR = 330;
+
 	private static final int NEW_TYPE_X_INCR = 360;
-	
-	private static final Point CONSUMER_AUDIO_CHANNEL_START = new Point( 
-			CHANNEL_START_X, CHANNEL_START_Y );
-	private static final Point PRODUCER_AUDIO_CHANNEL_START = new Point( 
-			CONSUMER_AUDIO_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
-	
-	private static final Point CONSUMER_CV_CHANNEL_START = new Point( 
-			CONSUMER_AUDIO_CHANNEL_START.x + NEW_TYPE_X_INCR, CHANNEL_START_Y );
-	private static final Point PRODUCER_CV_CHANNEL_START = new Point( 
-			CONSUMER_CV_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
-	
-	private static final Point CONSUMER_NOTE_CHANNEL_START = new Point( 
-			CONSUMER_CV_CHANNEL_START.x + NEW_TYPE_X_INCR, CHANNEL_START_Y );
-	private static final Point PRODUCER_NOTE_CHANNEL_START = new Point(
-			CONSUMER_NOTE_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
-	
-	private BufferedImage frontBufferedImage = null;
-	private BufferedImage backBufferedImage = null;
-	
-	public RackMasterIOMadUiDefinition( BufferedImageAllocator bia, RackMasterIOMadDefinition definition,
-			ComponentImageFactory cif, 
-			String imageRoot ) throws DatastoreException
+
+	private static final Point CONSUMER_AUDIO_CHANNEL_START =
+			new Point( CHANNEL_START_X, CHANNEL_START_Y );
+	private static final Point PRODUCER_AUDIO_CHANNEL_START =
+			new Point( CONSUMER_AUDIO_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
+
+	private static final Point CONSUMER_CV_CHANNEL_START =
+			new Point( CONSUMER_AUDIO_CHANNEL_START.x + NEW_TYPE_X_INCR, CHANNEL_START_Y );
+	private static final Point PRODUCER_CV_CHANNEL_START =
+			new Point( CONSUMER_CV_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
+
+	private static final Point CONSUMER_NOTE_CHANNEL_START =
+			new Point( CONSUMER_CV_CHANNEL_START.x + NEW_TYPE_X_INCR, CHANNEL_START_Y );
+	private static final Point PRODUCER_NOTE_CHANNEL_START =
+			new Point( CONSUMER_NOTE_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
+
+	private final BufferedImage frontBufferedImage;
+	private final BufferedImage backBufferedImage;
+
+	public RackMasterIOMadUiDefinition( final BufferedImageAllocator bia,
+			final RackMasterIOMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
+		throws DatastoreException
 	{
 		// master io is not draggable.
 		super( bia, definition, false, false );
-		
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-		
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
+
+		frontBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_front.png" );
+
+		backBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_back.png");
 	}
 
+	@Override
 	public BufferedImage getFrontBufferedImage()
 	{
 		return frontBufferedImage;
 	}
 
+	@Override
 	public BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
 	}
 
 	@Override
-	public MadUiInstance<?, ?> createNewUiInstance( RackMasterIOMadInstance instance )
+	public MadUiInstance<?, ?> createNewUiInstance( final RackMasterIOMadInstance instance )
 		throws DatastoreException
 	{
-		MadUiInstance<?,?> retVal = null;
-		try
+		// Setup where the channels live
+		final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+		final MadChannelInstance[] channelInstances = instance.getChannelInstances();
+
+		for( int c = 0 ; c < channelInstances.length ; c++ )
 		{
-			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = instance.getChannelInstances();
-			
-			for( int c = 0 ; c < channelInstances.length ; c++ )
-			{
-				MadChannelInstance auci = channelInstances[ c ];
-				uiChannelInstances.add( new MadUiChannelInstance( computeCenterForChannel( c, auci), auci ) );
-			}
-			
-			// We don't have any controls...
-			
-			retVal = new RackMasterIOMadUiInstance( instance,
-					this );
-			
-			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
-					new MadUiControlInstance<?,?,?>[ 0 ],
-					uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
+			final MadChannelInstance auci = channelInstances[ c ];
+			uiChannelInstances.add( new MadUiChannelInstance( computeCenterForChannel( c, auci), auci ) );
 		}
-		catch(Exception e)
-		{
-			String msg = "Exception caught creating new ui instance: " + e.toString();
-			throw new DatastoreException( msg, e );
-		}
+
+		// We don't have any controls...
+
+		final MadUiInstance<?,?> retVal = new RackMasterIOMadUiInstance( instance,
+				this );
+
+		retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
+				new MadUiControlInstance<?,?,?>[ 0 ],
+				uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 		return retVal;
 	}
 
-	private Point computeCenterForChannel( int c, MadChannelInstance auci )
+	private Point computeCenterForChannel( final int c, final MadChannelInstance auci )
 	{
-		int x = 0;
+		int x;
 		int y = 0;
-		MadChannelDefinition aucd = auci.definition;
-		MadChannelDirection audirection = aucd.direction;
-		MadChannelType autype = aucd.type;
+		final MadChannelDefinition aucd = auci.definition;
+		final MadChannelDirection audirection = aucd.direction;
+		final MadChannelType autype = aucd.type;
 		int xOffset = -1;
 		int yOffset = -1;
 		int chanNum = c;
@@ -157,7 +148,8 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 					{
 						xOffset = PRODUCER_AUDIO_CHANNEL_START.x;
 						yOffset = PRODUCER_AUDIO_CHANNEL_START.y;
-						chanNum = chanNum - RackMasterIOMadDefinition.PRODUCER_AUDIO_OUT_1;
+
+						chanNum = chanNum - RackMasterIOMadDefinition.ChanIndexes.PRODUCER_AUDIO_OUT_1.ordinal();
 						break;
 					}
 				}
@@ -171,14 +163,14 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 					{
 						xOffset = CONSUMER_CV_CHANNEL_START.x;
 						yOffset = CONSUMER_CV_CHANNEL_START.y;
-						chanNum = chanNum - RackMasterIOMadDefinition.CONSUMER_CV_IN_1;
+						chanNum = chanNum - RackMasterIOMadDefinition.ChanIndexes.CONSUMER_CV_IN_1.ordinal();
 						break;
 					}
 					case PRODUCER:
 					{
 						xOffset = PRODUCER_CV_CHANNEL_START.x;
 						yOffset = PRODUCER_CV_CHANNEL_START.y;
-						chanNum = chanNum - RackMasterIOMadDefinition.PRODUCER_CV_OUT_1;
+						chanNum = chanNum - RackMasterIOMadDefinition.ChanIndexes.PRODUCER_CV_OUT_1.ordinal();
 						break;
 					}
 				}
@@ -192,14 +184,14 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 					{
 						xOffset = CONSUMER_NOTE_CHANNEL_START.x;
 						yOffset = CONSUMER_NOTE_CHANNEL_START.y;
-						chanNum = chanNum - RackMasterIOMadDefinition.CONSUMER_NOTE_IN_1;
+						chanNum = chanNum - RackMasterIOMadDefinition.ChanIndexes.CONSUMER_NOTE_IN_1.ordinal();
 						break;
 					}
 					case PRODUCER:
 					{
 						xOffset = PRODUCER_NOTE_CHANNEL_START.x;
 						yOffset = PRODUCER_NOTE_CHANNEL_START.y;
-						chanNum = chanNum - RackMasterIOMadDefinition.PRODUCER_NOTE_OUT_1;
+						chanNum = chanNum - RackMasterIOMadDefinition.ChanIndexes.PRODUCER_NOTE_OUT_1.ordinal();
 						break;
 					}
 				}
@@ -208,13 +200,14 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 		}
 		x = chanNum * CHANNEL_SPACING_X;
 
-		Point retVal = new Point( xOffset + x, yOffset + y );
+		final Point retVal = new Point( xOffset + x, yOffset + y );
 //		log.debug("For channel " + c + " direction " + audirection + " computed " + retVal.toString() );
 		return retVal;
 	}
-	
+
+	@Override
 	public Span getCellSpan()
 	{
-		return span;
+		return SPAN;
 	}
 }

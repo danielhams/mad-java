@@ -74,7 +74,7 @@ public class FadeInOutLinkHelper
 		fadeOutDefinition = (FadeOutMadDefinition) componentService.findDefinitionById( FadeOutMadDefinition.DEFINITION_ID );
 
 		pfadeInDefinition = (PFadeInMadDefinition)componentService.findDefinitionById( PFadeInMadDefinition.DEFINITION_ID );
-		pfadeOutDefinition = (PFadeOutMadDefinition)componentService.findDefinitionById( PFadeOutMadDefinition.definitionId );
+		pfadeOutDefinition = (PFadeOutMadDefinition)componentService.findDefinitionById( PFadeOutMadDefinition.DEFINITION_ID );
 	}
 
 	public FadeInMadInstance fadeInAddLink( final MadGraphInstance<?,?> graph,

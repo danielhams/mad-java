@@ -34,33 +34,33 @@ public class MasterInMadDefinition extends AbstractNonConfigurableMadDefinition<
 {
 	public final static String DEFINITION_ID = "master_in";
 
-	private final static String userVisibleName = "Master In";
+	private final static String USER_VISIBLE_NAME = "Master In";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationName = "Master In";
-	private final static String classificationDescription = "The input component";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Master In";
+	private final static String CLASS_DESC = "The input component";
 
 	public final static int NUM_AUDIO_CHANNELS = 8;
 	public final static int NUM_NOTE_CHANNELS = 8;
 
-	public final static IOMadConfiguration channelConfiguration = new IOMadConfiguration( NUM_AUDIO_CHANNELS,
+	public final static IOMadConfiguration CHAN_CONFIG = new IOMadConfiguration( NUM_AUDIO_CHANNELS,
 			NUM_NOTE_CHANNELS, MadChannelDirection.PRODUCER );
 
-	public MasterInMadDefinition( MasterIOComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public MasterInMadDefinition( final MasterIOComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID,
-				userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+				USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new MadNullLocklessQueueBridge<MasterInMadInstance>(),
-				channelConfiguration.getNumTotalChannels(),
-				channelConfiguration.getChannelNames(),
-				channelConfiguration.getChannelTypes(),
-				channelConfiguration.getChannelDirections(),
-				channelConfiguration.getChannelPositions() );
+				CHAN_CONFIG.getNumTotalChannels(),
+				CHAN_CONFIG.getChannelNames(),
+				CHAN_CONFIG.getChannelTypes(),
+				CHAN_CONFIG.getChannelDirections(),
+				CHAN_CONFIG.getChannelPositions() );
 	}
 }

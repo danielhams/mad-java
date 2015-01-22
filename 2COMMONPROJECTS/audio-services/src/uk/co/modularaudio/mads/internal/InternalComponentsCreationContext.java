@@ -29,7 +29,7 @@ public class InternalComponentsCreationContext extends MadCreationContext
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final OscillatorFactory oscillatorFactory;
 
-	public InternalComponentsCreationContext( AdvancedComponentsFrontController advancedComponentsFrontController )
+	public InternalComponentsCreationContext( final AdvancedComponentsFrontController advancedComponentsFrontController )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
 		this.oscillatorFactory = advancedComponentsFrontController.getOscillatorFactory();

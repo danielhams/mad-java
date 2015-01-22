@@ -38,8 +38,8 @@ public interface ComponentDesignerFrontController
 {
 	// Receive a display tick from the gui thread (Swing timer for now)
 	void receiveDisplayTick();
-	
-	// Gui components to display and drag and drop components in the rack	
+
+	// Gui components to display and drag and drop components in the rack
 	RackModelRenderingComponent getGuiRack();
 
 	// Rendering of the graph
@@ -47,12 +47,12 @@ public interface ComponentDesignerFrontController
 	void toggleRendering();
 	void addRenderingStateListener( RenderingStateListener renderingStateListener );
 	void removeRenderingStateListener( RenderingStateListener renderingStateListener );
-	
+
 	// Debugging methods
 	void dumpRack() throws DatastoreException;
 	void dumpProfileResults() throws DatastoreException;
 	void toggleLogging();
-	
+
 	boolean isRackDirty(); // See if the current rack has been modified and needs to be saved.
 	void newRack() throws DatastoreException;
 	String getRackDataModelName(); // Used by file save dialog to set the default name
@@ -68,7 +68,7 @@ public interface ComponentDesignerFrontController
 	boolean startAudioEngine();
 	boolean isAudioEngineRunning();
 	void stopAudioEngine();
-	
+
 	// User Preferences
 	UserPreferencesMVCView getUserPreferencesMVCView() throws DatastoreException;
 	void reloadUserPreferences();

@@ -42,16 +42,11 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class InternalComponentsUiFactory extends AbstractMadComponentUiFactory
 {
-	private InternalComponentsFactory internalComponentsFactory = null;
-
-	public void setInternalComponentsFactory( InternalComponentsFactory internalComponentsFactory )
-	{
-		this.internalComponentsFactory = internalComponentsFactory;
-	}
+	private InternalComponentsFactory internalComponentsFactory;
 
 	@SuppressWarnings("rawtypes")
-	private Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
-	
+	private final Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
+
 	public InternalComponentsUiFactory()
 	{
 		// Definitions to UiDefinitions
@@ -61,41 +56,46 @@ public class InternalComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( BlockingWriteRingMadDefinition.class, BlockingWriteRingMadUiDefinition.class );
 	}
 
+	public void setInternalComponentsFactory( final InternalComponentsFactory internalComponentsFactory )
+	{
+		this.internalComponentsFactory = internalComponentsFactory;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void setupTypeToDefinitionClasses() throws DatastoreException
 	{
 		try
 		{
-			Collection<MadDefinition<?,?>> auds = internalComponentsFactory.listDefinitions();
-			for( MadDefinition<?,?> aud : auds )
+			final Collection<MadDefinition<?,?>> auds = internalComponentsFactory.listDefinitions();
+			for( final MadDefinition<?,?> aud : auds )
 			{
-				Class classToInstantiate = classToUiDefinition.get( aud.getClass() );
+				final Class classToInstantiate = classToUiDefinition.get( aud.getClass() );
 				if( classToInstantiate == null )
 				{
 					// Is a mad instance without a UI, carry on
 					continue;
 				}
-				Class[] constructorParamTypes = new Class[] {
+				final Class[] constructorParamTypes = new Class[] {
 						BufferedImageAllocator.class,
 						aud.getClass(),
 						ComponentImageFactory.class,
 						String.class };
-				Object[] constructorParams = new Object[] {
+				final Object[] constructorParams = new Object[] {
 						bufferedImageAllocationService,
 						aud,
 						componentImageFactory,
 						imageRoot };
-				Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
-				Object newInstance = c.newInstance( constructorParams );
-				MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
-				
+				final Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
+				final Object newInstance = c.newInstance( constructorParams );
+				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
+
 				componentDefinitionToUiDefinitionMap.put( aud, instanceAsUiDefinition );
 			}
 		}
 		catch (Exception e)
 		{
-			String msg = "Exception caught setting up UI definitions: " + e.toString();
+			final String msg = "Exception caught setting up UI definitions: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 	}

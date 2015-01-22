@@ -33,25 +33,25 @@ public class IOMadConfiguration
 	private final MadChannelDirection[] channelDirections;
 
 	private final MadChannelPosition[] channelPositions;
-	
-	private int numAudioChannels = -1;
-	private int numNoteChannels = -1;
-	private int numTotalChannels = -1;
 
-	public IOMadConfiguration( int numAudioChannels, int numNoteChannels, MadChannelDirection configurationDirection )
+	private final int numAudioChannels;
+	private final int numNoteChannels;
+	private final int numTotalChannels;
+
+	public IOMadConfiguration( final int numAudioChannels, final int numNoteChannels, final MadChannelDirection configurationDirection )
 	{
 		this.numAudioChannels = numAudioChannels;
 		this.numNoteChannels = numNoteChannels;
-		
+
 		numTotalChannels = numAudioChannels + numNoteChannels;
-		
+
 		channelNames = new String[ numTotalChannels ];
 		channelTypes = new MadChannelType[ numTotalChannels ];
 		channelDirections = new MadChannelDirection[ numTotalChannels ];
 		channelPositions = new MadChannelPosition[ numTotalChannels ];
-		
+
 		int oi = 0;
-		String configDirStr = (configurationDirection == MadChannelDirection.PRODUCER ? "Output" : "Input" );
+		final String configDirStr = (configurationDirection == MadChannelDirection.PRODUCER ? "Output" : "Input" );
 		for( int c = 0 ; c < numAudioChannels ; c++ )
 		{
 			channelNames[ oi ] =  configDirStr + " Channel " + (c + 1);
@@ -69,33 +69,33 @@ public class IOMadConfiguration
 			oi++;
 		}
 	}
-	
+
 	public String[] getChannelNames()
 	{
 		return channelNames;
 	}
-	
+
 	public MadChannelType[] getChannelTypes()
 	{
 		return channelTypes;
 	}
-	
+
 	public MadChannelDirection[] getChannelDirections()
 	{
 		return channelDirections;
 	}
-	
+
 	public MadChannelPosition[] getChannelPositions()
 	{
 		return channelPositions;
 	}
-	
-	public int getAudioChannelIndex( int audioChannelNum )
+
+	public int getAudioChannelIndex( final int audioChannelNum )
 	{
 		return audioChannelNum;
 	}
-	
-	public int getNoteChannelIndex( int noteChannelNum )
+
+	public int getNoteChannelIndex( final int noteChannelNum )
 	{
 		return numAudioChannels + noteChannelNum;
 	}
@@ -109,10 +109,10 @@ public class IOMadConfiguration
 	{
 		return numNoteChannels;
 	}
-	
+
 	public int getNumTotalChannels()
 	{
 		return numTotalChannels;
 	}
-	
+
 }

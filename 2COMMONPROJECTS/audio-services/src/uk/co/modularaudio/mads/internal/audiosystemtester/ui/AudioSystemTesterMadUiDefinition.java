@@ -37,30 +37,28 @@ import uk.co.modularaudio.util.table.Span;
 public class AudioSystemTesterMadUiDefinition
 	extends AbstractConfigurableMadUiDefinition<AudioSystemTesterMadDefinition, AudioSystemTesterMadInstance, AudioSystemTesterMadUiInstance>
 {
-	private static final Class<AudioSystemTesterMadUiInstance> instanceClass = AudioSystemTesterMadUiInstance.class;
-	
+	private static final Class<AudioSystemTesterMadUiInstance> INSTANCE_CLASS = AudioSystemTesterMadUiInstance.class;
+
 	public static final Point OUTPUT_CHANNELS_START = new Point( 40, 40 );
 	public static final int CHANNEL_TO_CHANNEL_INCREMENT = 20;
 
-	private final Span defaultSpan = new Span(1,1);
-	
-	public AudioSystemTesterMadUiDefinition( BufferedImageAllocator bia,
-			AudioSystemTesterMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	private static final Span SPAN = new Span(1,1);
+
+	public AudioSystemTesterMadUiDefinition( final BufferedImageAllocator bia,
+			final AudioSystemTesterMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, instanceClass );
+		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
 	}
 
-	private Point[] getUiChannelPositionsForAui( AudioSystemTesterMadInstanceConfiguration instanceConfiguration,
-			int numOutputChannels,
-			int numTotalChannels )
+	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		Point[] retVal;
-
 		int curChannelIndex = 0;
-		retVal = new Point[ numTotalChannels ];
+		final Point[] retVal = new Point[ numTotalChannels ];
 		for( int ic = 0 ; ic < numOutputChannels ; ic++ )
 		{
 			retVal[ curChannelIndex++ ] = new Point( OUTPUT_CHANNELS_START.x + (ic * CHANNEL_TO_CHANNEL_INCREMENT), OUTPUT_CHANNELS_START.y );
@@ -69,14 +67,12 @@ public class AudioSystemTesterMadUiDefinition
 		return retVal;
 	}
 
-	private int[] getUiChannelInstanceIndexesForAui( AudioSystemTesterMadInstanceConfiguration instanceConfiguration,
-			int numOutputChannels,
-			int numTotalChannels )
+	private int[] getUiChannelInstanceIndexesForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		int[] retVal;
-
 		int curChannelIndex = 0;
-		retVal = new int[ numTotalChannels ];
+		final int[] retVal = new int[ numTotalChannels ];
 		for( int ic = 0 ; ic < numOutputChannels ; ic++ )
 		{
 			retVal[ curChannelIndex++ ] = instanceConfiguration.getIndexForOutputChannel( ic );
@@ -86,21 +82,21 @@ public class AudioSystemTesterMadUiDefinition
 	}
 
 	@Override
-	protected MadUiInstanceConfiguration getUiInstanceConfiguration( AudioSystemTesterMadInstance instance )
+	protected MadUiInstanceConfiguration getUiInstanceConfiguration( final AudioSystemTesterMadInstance instance )
 	{
-		AudioSystemTesterMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
-		
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
-		
-		int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration,
+		final AudioSystemTesterMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
+
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+		final int numTotalChannels = instanceConfiguration.getNumTotalChannels();
+
+		final int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration,
 				numOutputChannels,
 				numTotalChannels );
-		
-		Point[] uiChannelPositions = getUiChannelPositionsForAui( instanceConfiguration,
+
+		final Point[] uiChannelPositions = getUiChannelPositionsForAui( instanceConfiguration,
 				numOutputChannels,
 				numTotalChannels );
-		
+
 		return new MadUiInstanceConfiguration( uiChannelPositions,
 				uiChannelInstanceIndexes,
 				new Rectangle[0],
@@ -112,6 +108,6 @@ public class AudioSystemTesterMadUiDefinition
 	@Override
 	public Span getCellSpan()
 	{
-		return defaultSpan;
+		return SPAN;
 	}
 }

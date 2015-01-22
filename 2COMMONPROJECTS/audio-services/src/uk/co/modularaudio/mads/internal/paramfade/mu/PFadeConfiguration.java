@@ -33,13 +33,13 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 public class PFadeConfiguration
 {
 	protected final int numChannels;
-	
-	private MadChannelConfiguration channelConfiguration;
 
-	public PFadeConfiguration( Map<MadParameterDefinition, String> parameterValues )
+	private final MadChannelConfiguration channelConfiguration;
+
+	public PFadeConfiguration( final Map<MadParameterDefinition, String> parameterValues )
 		throws MadProcessingException
 	{
-		String numChannelsStr = parameterValues.get( PFadeDefinitions.NUM_CHANNELS_PARAMETER );
+		final String numChannelsStr = parameterValues.get( PFadeDefinitions.NUM_CHANNELS_PARAMETER );
 		boolean parsed = true;
 
 		if( numChannelsStr != null )
@@ -51,9 +51,9 @@ public class PFadeConfiguration
 		{
 			throw new MadProcessingException("Missing num channels parameter");
 		}
-		
+
 		// Consumers and producers for each channel
-		MadChannelDefinition[] channelDefinitions = new MadChannelDefinition[ numChannels * 2 ];
+		final MadChannelDefinition[] channelDefinitions = new MadChannelDefinition[ numChannels * 2 ];
 		int curChanNum = 0;
 		for( int i = 0 ; i < numChannels ; ++i )
 		{
@@ -69,7 +69,7 @@ public class PFadeConfiguration
 					MadChannelDirection.PRODUCER,
 					MadChannelPosition.MONO );
 		}
-		
+
 		channelConfiguration = new MadChannelConfiguration(channelDefinitions);
 	}
 
@@ -78,12 +78,12 @@ public class PFadeConfiguration
 		return channelConfiguration;
 	}
 
-	public int getConsumerChannelIndex( int c )
+	public int getConsumerChannelIndex( final int c )
 	{
 		return c;
 	}
-	
-	public int getProducerChannelIndex( int p )
+
+	public int getProducerChannelIndex( final int p )
 	{
 		return numChannels + p;
 	}

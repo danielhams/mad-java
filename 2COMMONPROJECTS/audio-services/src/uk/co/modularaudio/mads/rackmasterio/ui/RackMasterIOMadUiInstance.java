@@ -28,24 +28,20 @@ import uk.co.modularaudio.util.table.Span;
 
 public class RackMasterIOMadUiInstance extends MadUiInstance<RackMasterIOMadDefinition, RackMasterIOMadInstance>
 {
-	
-	private RackMasterIOMadUiDefinition rmUiDefinition = null;
-
-	public RackMasterIOMadUiInstance( RackMasterIOMadInstance instance,
-			RackMasterIOMadUiDefinition uiDefinition )
+	public RackMasterIOMadUiInstance( final RackMasterIOMadInstance instance,
+			final RackMasterIOMadUiDefinition uiDefinition )
 	{
 		super( instance, uiDefinition );
-		rmUiDefinition = uiDefinition;
 	}
 
 	@Override
 	public Span getCellSpan()
 	{
-		return rmUiDefinition.getCellSpan();
+		return uiDefinition.getCellSpan();
 	}
 
 	@Override
-	public void consumeQueueEntry( RackMasterIOMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final RackMasterIOMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 	}
 }

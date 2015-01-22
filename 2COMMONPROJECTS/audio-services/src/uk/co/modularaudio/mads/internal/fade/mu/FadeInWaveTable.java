@@ -25,14 +25,14 @@ import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTable;
 
 public class FadeInWaveTable extends RawWaveTable
 {
-	public FadeInWaveTable(DataRate dataRate, int millisForFadeIn)
+	public FadeInWaveTable( final DataRate dataRate, final int millisForFadeIn)
 	{
 		super( dataRate.calculateSamplesForLatency( millisForFadeIn), false);
-		
-		int genLength = capacity - 1;
+
+		final int genLength = capacity - 1;
 		for( int i = 0 ; i < capacity ; i++ )
 		{
-			float normalisedVal = (float)i / (float)genLength;
+			final float normalisedVal = (float)i / (float)genLength;
 			floatBuffer[i] = normalisedVal * normalisedVal;
 		}
 	}

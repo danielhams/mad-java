@@ -2,7 +2,7 @@
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="SoundfilePlayerWithBassBoost" cols="4" rows="39">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Channel 2"/>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/GitRepositories/modular-audio-public.git/1PROJECTS/COMPONENTDESIGNER/component-designer/usersubrackpatches/bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Sources/GitClones/mad-java.git/1PROJECTS/COMPONENTDESIGNER/component-designer/usersubrackpatches/bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="mixer">

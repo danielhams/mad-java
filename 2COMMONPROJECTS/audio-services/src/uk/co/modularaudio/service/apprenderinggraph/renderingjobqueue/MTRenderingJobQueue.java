@@ -28,28 +28,28 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 {
 	private static final int JOB_FETCH_TIMEOUT_MILLIS = 10;
 
-	private MTSafeGenericRingBuffer<AbstractParallelRenderingJob> mtSafeJobQueue = null;
-	
+	private final MTSafeGenericRingBuffer<AbstractParallelRenderingJob> mtSafeJobQueue;
+
 //	private AtomicBoolean internalShouldBlock = new AtomicBoolean(true);
-	private volatile boolean internalShouldBlock = true;
-	private Integer internalLock = new Integer(0);
+	private volatile boolean internalShouldBlock = true; // NOPMD by dan on 22/01/15 07:40
+	private final Integer internalLock = Integer.valueOf(0);
 
 	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
-	
-	public MTRenderingJobQueue( int capacity )
+
+	public MTRenderingJobQueue( final int capacity )
 	{
 		mtSafeJobQueue = new MTSafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#getAJob(boolean)
 	 */
 	@Override
-	public AbstractParallelRenderingJob getAJob( boolean canBlock )
+	public AbstractParallelRenderingJob getAJob( final boolean canBlock )
 	{
 		AbstractParallelRenderingJob retVal = null;
-		boolean localCanBlock = ( canBlock && internalShouldBlock );
-		
+		final boolean localCanBlock = canBlock && internalShouldBlock;
+
 		if( localCanBlock )
 		{
 			synchronized( internalLock )
@@ -79,7 +79,7 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#setBlocking(boolean)
 	 */
 	@Override
-	public void setBlocking( boolean shouldBlock )
+	public void setBlocking( final boolean shouldBlock )
 	{
 //		internalShouldBlock.set( shouldBlock );
 		internalShouldBlock = shouldBlock;
@@ -96,16 +96,16 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#write(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob[], int, int)
 	 */
 	@Override
-	public void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length )
+	public void write( final AbstractParallelRenderingJob[] jobs, final int startOffset, final int length )
 	{
 		mtSafeJobQueue.write( jobs, startOffset, length );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#writeOne(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob)
 	 */
 	@Override
-	public void writeOne( AbstractParallelRenderingJob job )
+	public void writeOne( final AbstractParallelRenderingJob job )
 	{
 		mtSafeJobQueue.writeOne( job );
 	}

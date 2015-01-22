@@ -27,10 +27,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -40,17 +40,17 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFadeOutMadInstance>
 {
 //	private static Log log = LogFactory.getLog( PFadeInMadInstance.class.getName() );
-	
+
 	private final PFadeConfiguration instanceConfiguration;
 
-	private AtomicInteger curTablePosition = new AtomicInteger( 0 );
-	private PFadeOutWaveTable waveTable = null;
+	private final AtomicInteger curTablePosition = new AtomicInteger( 0 );
+	private PFadeOutWaveTable waveTable;
 
-	public PFadeOutMadInstance( InternalComponentsCreationContext creationContext,
-			String instanceName,
-			PFadeOutMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public PFadeOutMadInstance( final InternalComponentsCreationContext creationContext,
+			final String instanceName,
+			final PFadeOutMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 		 throws MadProcessingException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
@@ -58,8 +58,10 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
 		waveTable = new PFadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), PFadeDefinitions.FADE_MILLIS );
 	}
@@ -67,44 +69,46 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 	@Override
 	public void stop() throws MadProcessingException
 	{
+		// Nothing to do
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+		final int numFrames )
 	{
 //		log.trace("Process method called");
 //		log.trace("The channel connected flags are " + channelConnectedFlags.toString() );
-		
+
 		// Only do some processing if we are connected
 		int runningTablePosition = curTablePosition.get();
-		
+
 //		int numFadedChannels = 0;
-		
+
 		for( int c = 0 ; c < instanceConfiguration.numChannels ; ++c )
 		{
-			int prodChanIndex = instanceConfiguration.getProducerChannelIndex( c );
-			
+			final int prodChanIndex = instanceConfiguration.getProducerChannelIndex( c );
+
 			if( channelConnectedFlags.get( prodChanIndex ) )
 			{
-				MadChannelBuffer out = channelBuffers[ prodChanIndex ];
-				float[] outBuffer = out.floatBuffer;
+				final MadChannelBuffer out = channelBuffers[ prodChanIndex ];
+				final float[] outBuffer = out.floatBuffer;
 
-				int consChanIndex = instanceConfiguration.getConsumerChannelIndex( c );
+				final int consChanIndex = instanceConfiguration.getConsumerChannelIndex( c );
 				if( channelConnectedFlags.get( consChanIndex ) )
 				{
-					MadChannelBuffer in = channelBuffers[ consChanIndex ];
-					float[] inBuffer = in.floatBuffer;
-		
+					final MadChannelBuffer in = channelBuffers[ consChanIndex ];
+					final float[] inBuffer = in.floatBuffer;
+
 					// Use the fade wave table and our current position to pull out the fade value to use.
 					int chanPos = runningTablePosition;
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
-						float curVal = inBuffer[i];
-						float currentFadeMultiplier = waveTable.getValueAt( chanPos++ );
+						final float curVal = inBuffer[i];
+						final float currentFadeMultiplier = waveTable.getValueAt( chanPos++ );
 						outBuffer[i] = curVal * currentFadeMultiplier;
 					}
 //					numFadedChannels++;
@@ -120,7 +124,7 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 		runningTablePosition += numFrames;
 
 		curTablePosition.set( runningTablePosition );
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -135,7 +139,7 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 			return false;
 		}
 	}
-	
+
 	public PFadeConfiguration getInstanceConfiguration()
 	{
 		return instanceConfiguration;

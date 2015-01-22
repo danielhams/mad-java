@@ -32,27 +32,27 @@ import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class AudioSystemTesterMadDefinition extends MadDefinition<AudioSystemTesterMadDefinition,AudioSystemTesterMadInstance>
 {
-	public static Set<MadParameterDefinition> parameterDefinitions;
+	public static final Set<MadParameterDefinition> PARAM_DEFS;
 	public static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition( "numchannels",
 			"Num Output Channels" );
 
 	static
 	{
-		parameterDefinitions = new HashSet<MadParameterDefinition>();
-		parameterDefinitions.add(  NUM_CHANNELS_PARAMETER );
+		PARAM_DEFS = new HashSet<MadParameterDefinition>();
+		PARAM_DEFS.add(  NUM_CHANNELS_PARAMETER );
 	}
 
 	public final static String DEFINITION_ID = "audio_system_tester";
-	private static String name = "AudioSystemTester";
-	private static String description = "Produce a nicely attenuated sine wave output for audio io testing";
-	private static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private static String classificationName = description;
-	private static String classificationDescription = description;
+	private final static String USER_VISIBLE_NAME = "AudioSystemTester";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_DESC = "Produce a nicely attenuated sine wave output for audio io testing";
+	private final static String CLASS_NAME = CLASS_DESC;
 
 	public AudioSystemTesterMadDefinition( InternalComponentsCreationContext creationContext,
 			MadClassificationService classificationService )
@@ -60,21 +60,21 @@ public class AudioSystemTesterMadDefinition extends MadDefinition<AudioSystemTes
 	{
 		// Default super constructor is
 		// super( name, isParametrable, parameterDefinitions );
-		super( DEFINITION_ID, name, true,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME, true,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				parameterDefinitions,
-				new AudioSystemTesterQueueBridge() );
+				PARAM_DEFS,
+				new MadNullLocklessQueueBridge<AudioSystemTesterMadInstance>() );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
 		throws MadProcessingException
 	{
-		AudioSystemTesterMadInstanceConfiguration ic = new AudioSystemTesterMadInstanceConfiguration( parameterValues );
+		final AudioSystemTesterMadInstanceConfiguration ic = new AudioSystemTesterMadInstanceConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
 	}
 }

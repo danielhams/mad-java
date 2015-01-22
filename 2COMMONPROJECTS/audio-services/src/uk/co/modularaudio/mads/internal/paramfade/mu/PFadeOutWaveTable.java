@@ -25,17 +25,17 @@ import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTable;
 
 public class PFadeOutWaveTable extends RawWaveTable
 {
-	public PFadeOutWaveTable(DataRate dataRate, int millisForFadeOut)
+	public PFadeOutWaveTable( final DataRate dataRate, final int millisForFadeOut)
 	{
 		super( dataRate.calculateSamplesForLatency( millisForFadeOut), false);
-		
+
 		// Now loop over the length drawing in our lookup table
 
 		// We will use simple linear fade for now
-		int genLength = capacity - 1;
+		final int genLength = capacity - 1;
 		for( int i = 0; i < capacity ; i++ )
 		{
-			float normalisedVal = (float)i / (float)genLength;
+			final float normalisedVal = (float)i / (float)genLength;
 			floatBuffer[i] = 1.0f - ( normalisedVal * normalisedVal );
 		}
 	}

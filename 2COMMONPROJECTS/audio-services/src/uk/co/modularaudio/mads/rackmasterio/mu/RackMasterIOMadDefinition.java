@@ -36,278 +36,147 @@ public class RackMasterIOMadDefinition  extends AbstractNonConfigurableMadDefini
 //	private static Log log = LogFactory.getLog( RackMasterIOMadDefinition.class.getName());
 
 	// Indexes into the channels
-	public final static int CONSUMER_AUDIO_IN_1= 0;
-	public final static int CONSUMER_AUDIO_IN_2= 1;
-	public final static int CONSUMER_AUDIO_IN_3= 2;
-	public final static int CONSUMER_AUDIO_IN_4= 3;
-	public final static int CONSUMER_AUDIO_IN_5= 4;
-	public final static int CONSUMER_AUDIO_IN_6= 5;
-	public final static int CONSUMER_AUDIO_IN_7= 6;
-	public final static int CONSUMER_AUDIO_IN_8= 7;
-	public final static int PRODUCER_AUDIO_OUT_1= 8;
-	public final static int PRODUCER_AUDIO_OUT_2= 9;
-	public final static int PRODUCER_AUDIO_OUT_3= 10;
-	public final static int PRODUCER_AUDIO_OUT_4= 11;
-	public final static int PRODUCER_AUDIO_OUT_5= 12;
-	public final static int PRODUCER_AUDIO_OUT_6= 13;
-	public final static int PRODUCER_AUDIO_OUT_7= 14;
-	public final static int PRODUCER_AUDIO_OUT_8= 15;
-	public final static int CONSUMER_CV_IN_1= 16;
-	public final static int CONSUMER_CV_IN_2= 17;
-	public final static int CONSUMER_CV_IN_3= 18;
-	public final static int CONSUMER_CV_IN_4= 19;
-	public final static int CONSUMER_CV_IN_5= 20;
-	public final static int CONSUMER_CV_IN_6= 21;
-	public final static int CONSUMER_CV_IN_7= 22;
-	public final static int CONSUMER_CV_IN_8= 23;
-	public final static int PRODUCER_CV_OUT_1= 24;
-	public final static int PRODUCER_CV_OUT_2= 25;
-	public final static int PRODUCER_CV_OUT_3= 26;
-	public final static int PRODUCER_CV_OUT_4= 27;
-	public final static int PRODUCER_CV_OUT_5= 28;
-	public final static int PRODUCER_CV_OUT_6= 29;
-	public final static int PRODUCER_CV_OUT_7= 30;
-	public final static int PRODUCER_CV_OUT_8= 31;
-	public final static int CONSUMER_NOTE_IN_1= 32;
-	public final static int CONSUMER_NOTE_IN_2= 33;
-	public final static int CONSUMER_NOTE_IN_3= 34;
-	public final static int CONSUMER_NOTE_IN_4= 35;
-	public final static int CONSUMER_NOTE_IN_5= 36;
-	public final static int CONSUMER_NOTE_IN_6= 37;
-	public final static int CONSUMER_NOTE_IN_7= 38;
-	public final static int CONSUMER_NOTE_IN_8= 39;
-	public final static int PRODUCER_NOTE_OUT_1= 40;
-	public final static int PRODUCER_NOTE_OUT_2= 41;
-	public final static int PRODUCER_NOTE_OUT_3= 42;
-	public final static int PRODUCER_NOTE_OUT_4= 43;
-	public final static int PRODUCER_NOTE_OUT_5= 44;
-	public final static int PRODUCER_NOTE_OUT_6= 45;
-	public final static int PRODUCER_NOTE_OUT_7= 46;
-	public final static int PRODUCER_NOTE_OUT_8= 47;
-	public final static int NUM_CHANNELS = 48;
+    public enum ChanIndexes
+    {
+        CONSUMER_AUDIO_IN_1,
+        CONSUMER_AUDIO_IN_2,
+        CONSUMER_AUDIO_IN_3,
+        CONSUMER_AUDIO_IN_4,
+        CONSUMER_AUDIO_IN_5,
+        CONSUMER_AUDIO_IN_6,
+        CONSUMER_AUDIO_IN_7,
+        CONSUMER_AUDIO_IN_8,
+        PRODUCER_AUDIO_OUT_1,
+        PRODUCER_AUDIO_OUT_2,
+        PRODUCER_AUDIO_OUT_3,
+        PRODUCER_AUDIO_OUT_4,
+        PRODUCER_AUDIO_OUT_5,
+        PRODUCER_AUDIO_OUT_6,
+        PRODUCER_AUDIO_OUT_7,
+        PRODUCER_AUDIO_OUT_8,
+        CONSUMER_CV_IN_1,
+        CONSUMER_CV_IN_2,
+        CONSUMER_CV_IN_3,
+        CONSUMER_CV_IN_4,
+        CONSUMER_CV_IN_5,
+        CONSUMER_CV_IN_6,
+        CONSUMER_CV_IN_7,
+        CONSUMER_CV_IN_8,
+        PRODUCER_CV_OUT_1,
+        PRODUCER_CV_OUT_2,
+        PRODUCER_CV_OUT_3,
+        PRODUCER_CV_OUT_4,
+        PRODUCER_CV_OUT_5,
+        PRODUCER_CV_OUT_6,
+        PRODUCER_CV_OUT_7,
+        PRODUCER_CV_OUT_8,
+        CONSUMER_NOTE_IN_1,
+        CONSUMER_NOTE_IN_2,
+        CONSUMER_NOTE_IN_3,
+        CONSUMER_NOTE_IN_4,
+        CONSUMER_NOTE_IN_5,
+        CONSUMER_NOTE_IN_6,
+        CONSUMER_NOTE_IN_7,
+        CONSUMER_NOTE_IN_8,
+        PRODUCER_NOTE_OUT_1,
+        PRODUCER_NOTE_OUT_2,
+        PRODUCER_NOTE_OUT_3,
+        PRODUCER_NOTE_OUT_4,
+        PRODUCER_NOTE_OUT_5,
+        PRODUCER_NOTE_OUT_6,
+        PRODUCER_NOTE_OUT_7,
+        PRODUCER_NOTE_OUT_8,
+        NUM_CHANNELS
+    };
 
-	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
-		"Input Channel 1",
-		"Input Channel 2",
-		"Input Channel 3",
-		"Input Channel 4",
-		"Input Channel 5",
-		"Input Channel 6",
-		"Input Channel 7",
-		"Input Channel 8",
-		"Output Channel 1",
-		"Output Channel 2",
-		"Output Channel 3",
-		"Output Channel 4",
-		"Output Channel 5",
-		"Output Channel 6",
-		"Output Channel 7",
-		"Output Channel 8",
-		 "Input CV Channel 1",
-		 "Input CV Channel 2",
-		 "Input CV Channel 3",
-		 "Input CV Channel 4",
-		 "Input CV Channel 5",
-		 "Input CV Channel 6",
-		 "Input CV Channel 7",
-		 "Input CV Channel 8",
-		 "Output CV Channel 1",
-		 "Output CV Channel 2",
-		 "Output CV Channel 3",
-		 "Output CV Channel 4",
-		 "Output CV Channel 5",
-		 "Output CV Channel 6",
-		 "Output CV Channel 7",
-		 "Output CV Channel 8",
-		 "Input Note Channel 1",
-		 "Input Note Channel 2",
-		 "Input Note Channel 3",
-		 "Input Note Channel 4",
-		 "Input Note Channel 5",
-		 "Input Note Channel 6",
-		 "Input Note Channel 7",
-		 "Input Note Channel 8",
-		 "Output Note Channel 1",
-		 "Output Note Channel 2",
-		 "Output Note Channel 3",
-		 "Output Note Channel 4",
-		 "Output Note Channel 5",
-		 "Output Note Channel 6",
-		 "Output Note Channel 7",
-		 "Output Note Channel 8" };
+	private final static String[] CHAN_NAMES;
+	private final static MadChannelType[] CHAN_TYPES;
+	private final static MadChannelDirection[] CHAN_DIRS;
+	private final static MadChannelPosition[] CHAN_POSI;
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE,
-		MadChannelType.NOTE };
+	static
+	{
+		final int numChannels = ChanIndexes.NUM_CHANNELS.ordinal();
+		CHAN_NAMES = new String[numChannels];
+		CHAN_TYPES = new MadChannelType[numChannels];
+		CHAN_DIRS = new MadChannelDirection[numChannels];
+		CHAN_POSI = new MadChannelPosition[numChannels];
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.CONSUMER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER,
-		 MadChannelDirection.PRODUCER };
+		int curChan = 0;
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO };
+		for( int i = 1 ; i <= 8 ; ++i )
+		{
+			CHAN_NAMES[curChan] = "Input Channel " + i;
+			CHAN_TYPES[curChan] = MadChannelType.AUDIO;
+			CHAN_DIRS[curChan] = MadChannelDirection.CONSUMER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+		for( int o = 1 ; o <= 8 ; ++o )
+		{
+			CHAN_NAMES[curChan] = "Output Channel " + o;
+			CHAN_TYPES[curChan] = MadChannelType.AUDIO;
+			CHAN_DIRS[curChan] = MadChannelDirection.PRODUCER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+		for( int i = 1 ; i <= 8 ; ++i )
+		{
+			CHAN_NAMES[curChan] = "Input CV Channel " + i;
+			CHAN_TYPES[curChan] = MadChannelType.CV;
+			CHAN_DIRS[curChan] = MadChannelDirection.CONSUMER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+		for( int o = 1 ; o <= 8 ; ++o )
+		{
+			CHAN_NAMES[curChan] = "Output CV Channel " + o;
+			CHAN_TYPES[curChan] = MadChannelType.CV;
+			CHAN_DIRS[curChan] = MadChannelDirection.PRODUCER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+		for( int i = 1 ; i <= 8 ; ++i )
+		{
+			CHAN_NAMES[curChan] = "Input Note Channel " + i;
+			CHAN_TYPES[curChan] = MadChannelType.NOTE;
+			CHAN_DIRS[curChan] = MadChannelDirection.CONSUMER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+		for( int o = 1 ; o <= 8 ; ++o )
+		{
+			CHAN_NAMES[curChan] = "Output Note Channel " + o;
+			CHAN_TYPES[curChan] = MadChannelType.NOTE;
+			CHAN_DIRS[curChan] = MadChannelDirection.PRODUCER;
+			CHAN_POSI[curChan] = MadChannelPosition.MONO;
+			curChan++;
+		}
+	}
 
 	public final static String DEFINITION_ID = "rack_master_io";
 
-	private final static String userVisibleName = "Rack Master IO";
+	private final static String USER_VISIBLE_NAME = "Rack Master IO";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationId = "rack_master_io";
-	private final static String classificationName = "Rack MasterIO";
-	private final static String classificationDescription = "Internal component used to represent the IO channels available inside a rack";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Rack MasterIO";
+	private final static String CLASS_DESC = "Internal component used to represent the IO channels available inside a rack";
 
-	public RackMasterIOMadDefinition( RackMasterIOCreationContext creationContext,
-			MadClassificationService classificationService )
+	public RackMasterIOMadDefinition( final RackMasterIOCreationContext creationContext,
+			final MadClassificationService classificationService )
 		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new RackMasterIOQueueBridge(),
-				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				ChanIndexes.NUM_CHANNELS.ordinal(),
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 	}
 }

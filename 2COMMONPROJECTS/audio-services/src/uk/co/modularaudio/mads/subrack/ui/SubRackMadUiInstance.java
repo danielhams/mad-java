@@ -206,7 +206,10 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 			currentPatchDir = d.getAbsolutePath();
 			if( f != null )
 			{
-				log.debug("Attempting to save patch to file " + f.getAbsolutePath() + " with name " + cdSaveFileNameAccessory.getName() );
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Attempting to save patch to file " + f.getAbsolutePath() + " with name " + cdSaveFileNameAccessory.getName() );
+				}
 				subRackDataModel.setName( cdSaveFileNameAccessory.getFileName() );
 				subRackDataModel.setPath( f.getAbsolutePath() );
 				rackMarshallingService.saveRackToFile( subRackDataModel, f.getAbsolutePath() );
@@ -232,7 +235,10 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 			if( f != null )
 			{
 				RackDataModel oldPatch = subRackDataModel;
-				log.debug("Attempting to load patch from file " + f.getAbsolutePath() );
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Attempting to load patch from file " + f.getAbsolutePath() );
+				}
 				subRackDataModel = rackMarshallingService.loadRackFromFile( f.getAbsolutePath() );
 				patchPanel.setRackDataModel( subRackDataModel );
 				instance.setSubRackDataModel( subRackDataModel, false );

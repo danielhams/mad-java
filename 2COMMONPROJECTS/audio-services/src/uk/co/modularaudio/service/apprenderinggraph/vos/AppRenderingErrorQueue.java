@@ -34,26 +34,27 @@ import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 public class AppRenderingErrorQueue extends AbstractInterruptableThread
 {
 	private static Log log = LogFactory.getLog( AppRenderingErrorQueue.class.getName() );
-	
+
 	public enum ErrorSeverity
 	{
 		WARNING,
 		FATAL
 	};
-	
+
 	public class AppRenderingErrorStruct
 	{
 		public AppRenderingIO sourceRenderingIO;
 		public ErrorSeverity severity;
 		public String msg;
-		
+
 		public AppRenderingErrorStruct( AppRenderingIO sourceRenderingIO, ErrorSeverity severity, String msg )
 		{
 			this.sourceRenderingIO = sourceRenderingIO;
 			this.severity = severity;
 			this.msg = msg;
 		}
-		
+
+		@Override
 		public String toString()
 		{
 			StringBuilder sb = new StringBuilder();
@@ -62,15 +63,15 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 			sb.append( sourceRenderingIO.getClass().getSimpleName() );
 			sb.append( " " );
 			sb.append( msg );
-			
+
 			return sb.toString();
 		}
 	};
-	
+
 	private final BlockingDeque<AppRenderingErrorStruct> errorQueue = new LinkedBlockingDeque<AppRenderingErrorQueue.AppRenderingErrorStruct>();
-	
+
 	private Map<AppRenderingIO, AppRenderingErrorCallback> appRenderingToCallbackMap = new HashMap<AppRenderingIO, AppRenderingErrorCallback>();
-	
+
 	public AppRenderingErrorQueue()
 	{
 		super( MAThreadPriority.APPLICATION );
@@ -85,47 +86,59 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		while( !localShouldHalt )
 		{
 			AppRenderingErrorStruct error = errorQueue.takeFirst();
-			
+
 			AppRenderingErrorCallback callbackForIo = appRenderingToCallbackMap.get( error.sourceRenderingIO );
 			if( callbackForIo == null )
 			{
-				log.error("Missing map to callback: " + callbackForIo + ": " + error.msg );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Missing map to callback: " + callbackForIo + ": " + error.msg );
+				}
 			}
 			else
 			{
 				callbackForIo.errorCallback( error );
 			}
-			
+
 			localShouldHalt = shouldHalt;
 		}
 	}
-	
+
 	public void addCallbackForRenderingIO( AppRenderingIO sourceRenderingIO, AppRenderingErrorCallback callback )
 	{
 		appRenderingToCallbackMap.put( sourceRenderingIO,  callback );
-		log.debug( "Adding error callback \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+		if( log.isDebugEnabled() )
+		{
+			log.debug( "Adding error callback \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+		}
 	}
-	
+
 	public void removeCallbackForRenderingIO( AppRenderingIO sourceRenderingIO )
 	{
 		AppRenderingErrorCallback callback = appRenderingToCallbackMap.get( sourceRenderingIO );
 		if( callback == null )
 		{
-			log.error( "Failed to find callback to remove for renderingIO: " + sourceRenderingIO.getClass().getSimpleName() );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Failed to find callback to remove for renderingIO: " + sourceRenderingIO.getClass().getSimpleName() );
+			}
 		}
 		else
 		{
-			log.debug( "Removing error callback for \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug( "Removing error callback for \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+			}
 			appRenderingToCallbackMap.remove( sourceRenderingIO );
 		}
 	}
-	
+
 	public void queueError( AppRenderingIO sourceRenderingIO, ErrorSeverity severity, String msg )
 	{
 		AppRenderingErrorStruct es = new AppRenderingErrorStruct( sourceRenderingIO, severity, msg );
 		errorQueue.add( es );
 	}
-	
+
 	public void shutdown()
 	{
 		try
@@ -133,16 +146,22 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 			this.halt();
 			this.forceHalt();
 			this.join();
-			
+
 			if( appRenderingToCallbackMap.size() > 0 )
 			{
-				log.warn("AppRenderingErrorQueue shutdown - but some error callbacks still mapped:");
-				log.warn( errorQueue.toString() );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("AppRenderingErrorQueue shutdown - but some error callbacks still mapped:");
+					log.warn( errorQueue.toString() );
+				}
 			}
 		}
 		catch( Exception e )
 		{
-			log.error("Exception caught shutting down error queue: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Exception caught shutting down error queue: " + e.toString(), e );
+			}
 		}
 	}
 

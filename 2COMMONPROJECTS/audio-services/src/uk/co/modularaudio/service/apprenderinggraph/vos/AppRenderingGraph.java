@@ -68,16 +68,16 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 {
 	private static Log log = LogFactory.getLog( AppRenderingGraph.class.getName() );
 
-	private MadComponentService componentService = null;
-	private MadGraphService graphService = null;
-	private RenderingService renderingService = null;
-	private TimingService timingService = null;
+	private final MadComponentService componentService;
+	private final MadGraphService graphService;
+	private final RenderingService renderingService;
+	private final TimingService timingService;
 
-	private MadGraphInstance<?, ?> internalRootGraph = null;
-	private MadGraphInstance<?, ?> internalHostingGraph = null;
+	private final MadGraphInstance<?, ?> internalRootGraph;
+	private final MadGraphInstance<?, ?> internalHostingGraph;
 
-	private MasterInMadInstance masterInInstance = null;
-	private MasterOutMadInstance masterOutInstance = null;
+	private MasterInMadInstance masterInInstance;
+	private MasterOutMadInstance masterOutInstance;
 
 	private final AtomicReference<RenderingPlan> renderingPlan = new AtomicReference<RenderingPlan>();
 
@@ -87,28 +87,29 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 	private final RenderingJobQueueHelperThread threads[];
 	private final int maxWaitForTransitionMillis;
 
-	private DynamicRenderingPlanGraphListener dynamicRenderingPlanGraphListener = null;
+	private DynamicRenderingPlanGraphListener dynamicRenderingPlanGraphListener;
 
-	private MadGraphInstance<?, ?> emptyGraphWhenNotRendering = null;
+	private final MadGraphInstance<?, ?> emptyGraphWhenNotRendering;
 	// The actual graph to render
-	private MadGraphInstance<?, ?> currentRenderingGraph = null;
+	private MadGraphInstance<?, ?> currentRenderingGraph;
 	// The externally set application graph
-	private MadGraphInstance<?, ?> externalApplicationGraph = null;
+	private MadGraphInstance<?, ?> externalApplicationGraph;
 
 	// The graph containing the audio system tester components
-	private MadGraphInstance<?,?> audioSystemTesterGraph = null;
+	private final MadGraphInstance<?,?> audioSystemTesterGraph;
 
-	private HotspotClockSourceJobQueueHelperThread hotspotClockSourceThread = null;
+	private HotspotClockSourceJobQueueHelperThread hotspotClockSourceThread;
 
-	private JobDataListComparator jobDataListComparator = new JobDataListComparator();
+	private final JobDataListComparator jobDataListComparator = new JobDataListComparator();
 
-	public AppRenderingGraph( MadComponentService componentService,
-			MadGraphService graphService,
-			RenderingService renderingService,
-			TimingService timingService,
-			int numHelperThreads,
-			boolean shouldProfileRenderingJobs,
-			int maxWaitForTransitionMillis ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
+	public AppRenderingGraph( final MadComponentService componentService,
+			final MadGraphService graphService,
+			final RenderingService renderingService,
+			final TimingService timingService,
+			final int numHelperThreads,
+			final boolean shouldProfileRenderingJobs,
+			final int maxWaitForTransitionMillis )
+		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		this.componentService = componentService;
 		this.graphService = graphService;
@@ -167,9 +168,9 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 
 			graphService.destroyGraph( audioSystemTesterGraph, true, true );
 		}
-		catch ( Exception e)
+		catch ( DatastoreException e)
 		{
-			String msg = "Exception caught cleaning up root graph: " + e.toString();
+			final String msg = "Exception caught cleaning up root graph: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
@@ -183,11 +184,11 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		log.debug( "####################### ROOT GRAPH END #########################" );
 		if( dynamicRenderingPlanGraphListener != null )
 		{
-			DataRate tmpDataRate = DataRate.SR_44100;
-			HardwareIOOneChannelSetting dumpChannelSetting = new HardwareIOOneChannelSetting( tmpDataRate,  1024 );
-			HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings(dumpChannelSetting, 40000, 1024 );
-			MadFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
-			RenderingPlan renderingPlan = renderingService.createRenderingPlan( internalRootGraph, dataRateConfiguration, frameTimeFactory );
+			final DataRate tmpDataRate = DataRate.SR_44100;
+			final HardwareIOOneChannelSetting dumpChannelSetting = new HardwareIOOneChannelSetting( tmpDataRate,  1024 );
+			final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings(dumpChannelSetting, 40000, 1024 );
+			final MadFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
+			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( internalRootGraph, dataRateConfiguration, frameTimeFactory );
 			renderingService.dumpRenderingPlan( renderingPlan );
 		}
 		else
@@ -203,46 +204,49 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			log.debug( "Asked for dump of profile results but profiling isn't activated!" );
 			return;
 		}
-		RenderingPlan rp = renderingPlan.get();
+		final RenderingPlan rp = renderingPlan.get();
 		if( rp != null )
 		{
-			RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
+			final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
 
-			boolean success = rp.getProfileResultsIfFilled(profileResults);
+			final boolean success = rp.getProfileResultsIfFilled(profileResults);
 
 			if( success )
 			{
-				long clockCallbackStart = profileResults.getClockCallbackStart();
-				long clockCallbackPostProducer = profileResults.getClockCallbackPostProducer();
-				long clockCallbackPostRpFetch = profileResults.getClockCallbackPostRpFetch();
-				long clockCallbackPostLoop = profileResults.getClockCallbackPostLoop();
-				long producerDuration = clockCallbackPostProducer - clockCallbackStart;
-				long rpFetchDuration = clockCallbackPostRpFetch - clockCallbackPostProducer;
-				long loopDuration = clockCallbackPostLoop - clockCallbackPostRpFetch;
-				long totalDuration = clockCallbackPostLoop - clockCallbackStart;
-				log.debug("Got rendering profile results - clockStart(" + clockCallbackStart + ") clockEnd(" +
-						clockCallbackPostLoop + ") producerDuration(" + producerDuration + ") rpFetchDuration( " +
-						rpFetchDuration + ") loopDuration(" + loopDuration + ") totalDuration(" + totalDuration + ")");
-				HashMap<AbstractParallelRenderingJob, JobProfileResult> jobToProfileResultMap = profileResults.getJobToProfileResultMap();
-
-				ArrayList<ParsedJobData> jobDataList = new ArrayList<ParsedJobData>();
-
-				for( AbstractParallelRenderingJob rj : jobToProfileResultMap.keySet() )
+				final long clockCallbackStart = profileResults.getClockCallbackStart();
+				final long clockCallbackPostProducer = profileResults.getClockCallbackPostProducer();
+				final long clockCallbackPostRpFetch = profileResults.getClockCallbackPostRpFetch();
+				final long clockCallbackPostLoop = profileResults.getClockCallbackPostLoop();
+				final long producerDuration = clockCallbackPostProducer - clockCallbackStart;
+				final long rpFetchDuration = clockCallbackPostRpFetch - clockCallbackPostProducer;
+				final long loopDuration = clockCallbackPostLoop - clockCallbackPostRpFetch;
+				final long totalDuration = clockCallbackPostLoop - clockCallbackStart;
+				if( log.isDebugEnabled() )
 				{
-					JobProfileResult jr = jobToProfileResultMap.get( rj );
-					long jobStartTimestamp = jr.getStartTimestamp();
-					long jobEndTimestamp = jr.getEndTimestamp();
-					long jobOffsetFromStart = jobStartTimestamp - clockCallbackStart;
-					long jobLength = jobEndTimestamp - jobStartTimestamp;
-					int jobThreadNum = jr.getJobThreadExecutor();
-					String jobName = rj.toString();
-					ParsedJobData pjd = new ParsedJobData( jobStartTimestamp, jobEndTimestamp, jobOffsetFromStart, jobLength, jobThreadNum, jobName );
+					log.debug("Got rendering profile results - clockStart(" + clockCallbackStart + ") clockEnd(" +
+							clockCallbackPostLoop + ") producerDuration(" + producerDuration + ") rpFetchDuration( " +
+							rpFetchDuration + ") loopDuration(" + loopDuration + ") totalDuration(" + totalDuration + ")");
+				}
+				final HashMap<AbstractParallelRenderingJob, JobProfileResult> jobToProfileResultMap = profileResults.getJobToProfileResultMap();
+
+				final ArrayList<ParsedJobData> jobDataList = new ArrayList<ParsedJobData>();
+
+				for( final AbstractParallelRenderingJob rj : jobToProfileResultMap.keySet() )
+				{
+					final JobProfileResult jr = jobToProfileResultMap.get( rj );
+					final long jobStartTimestamp = jr.getStartTimestamp();
+					final long jobEndTimestamp = jr.getEndTimestamp();
+					final long jobOffsetFromStart = jobStartTimestamp - clockCallbackStart;
+					final long jobLength = jobEndTimestamp - jobStartTimestamp;
+					final int jobThreadNum = jr.getJobThreadExecutor();
+					final String jobName = rj.toString();
+					final ParsedJobData pjd = new ParsedJobData( jobStartTimestamp, jobEndTimestamp, jobOffsetFromStart, jobLength, jobThreadNum, jobName );
 					jobDataList.add( pjd );
 				}
 
 				Collections.sort( jobDataList, jobDataListComparator );
 
-				for( ParsedJobData pjd : jobDataList )
+				for( final ParsedJobData pjd : jobDataList )
 				{
 					log.debug( pjd.toString() );
 				}
@@ -254,29 +258,32 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 	}
 
-	public void setApplicationGraph( MadGraphInstance<?, ?> newGraphToRender )
+	public void setApplicationGraph( final MadGraphInstance<?, ?> newGraphToRender )
 			throws DatastoreException
 	{
 		if( externalApplicationGraph != null )
 		{
-			String msg = "Cannot set an application graph when one is already set.";
+			final String msg = "Cannot set an application graph when one is already set.";
 			throw new DatastoreException( msg );
 		}
 		else
 		{
-			log.debug("Setting application graph to: \"" + newGraphToRender.getInstanceName() + "\"");
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Setting application graph to: \"" + newGraphToRender.getInstanceName() + "\"");
+			}
 			externalApplicationGraph = newGraphToRender;
 		}
 	}
 
-	public void unsetApplicationGraph( MadGraphInstance<?, ?> oldGraphToUnset )
+	public void unsetApplicationGraph( final MadGraphInstance<?, ?> oldGraphToUnset )
 			throws DatastoreException
 	{
 		if ( externalApplicationGraph == oldGraphToUnset)
 		{
 			if( currentRenderingGraph == oldGraphToUnset )
 			{
-				String msg = "Cannot unset application graph whilst it is active.";
+				final String msg = "Cannot unset application graph whilst it is active.";
 				throw new DatastoreException( msg );
 			}
 			else
@@ -286,7 +293,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		else
 		{
-			String msg = "Attempting to unset application graph with an incorrect graph";
+			final String msg = "Attempting to unset application graph with an incorrect graph";
 			throw new DatastoreException( msg );
 		}
 	}
@@ -301,12 +308,12 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 	{
 		if( externalApplicationGraph == null )
 		{
-			String msg = "Unable to activate application graph when one isn't set!";
+			final String msg = "Unable to activate application graph when one isn't set!";
 			throw new MadProcessingException( msg );
 		}
 		else if( currentRenderingGraph == externalApplicationGraph )
 		{
-			String msg = "Attempting to activate the application graph when it is already active.";
+			final String msg = "Attempting to activate the application graph when it is already active.";
 			throw new MadProcessingException( msg );
 		}
 
@@ -315,9 +322,9 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			// Switch over to application graph
 			internalUseGraph( externalApplicationGraph );
 		}
-		catch (Exception e)
+		catch ( DatastoreException e)
 		{
-			String msg = "Exception caught activating application graph: " + e.toString();
+			final String msg = "Exception caught activating application graph: " + e.toString();
 			log.error( msg, e );
 			throw new MadProcessingException( msg, e );
 		}
@@ -327,12 +334,12 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 	{
 		if( externalApplicationGraph == null )
 		{
-			String msg = "Unable to deactivate application when one is not being used!";
+			final String msg = "Unable to deactivate application when one is not being used!";
 			throw new MadProcessingException( msg );
 		}
 		else if( currentRenderingGraph != externalApplicationGraph )
 		{
-			String msg = "Unable to deactivate application when one is not being used!";
+			final String msg = "Unable to deactivate application when one is not being used!";
 			throw new MadProcessingException( msg );
 		}
 		else
@@ -343,7 +350,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			}
 			catch( DatastoreException de )
 			{
-				String msg = "DatastoreException caught attempting to switch to empty graph: " + de.toString();
+				final String msg = "DatastoreException caught attempting to switch to empty graph: " + de.toString();
 				throw new MadProcessingException( msg, de );
 			}
 		}
@@ -360,13 +367,16 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 	}
 
 	@Override
-	public void receiveEngineSignal( HardwareIOChannelSettings coreEngineChannelSettings,
-			MadFrameTimeFactory frameTimeFactory,
-			SignalType signalType,
-			AppRenderingErrorQueue errorQueue )
+	public void receiveEngineSignal( final HardwareIOChannelSettings coreEngineChannelSettings,
+			final MadFrameTimeFactory frameTimeFactory,
+			final SignalType signalType,
+			final AppRenderingErrorQueue errorQueue )
 		throws DatastoreException, MadProcessingException
 	{
-		log.debug("Received engine signal: " + signalType );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received engine signal: " + signalType );
+		}
 		switch( signalType )
 		{
 			case START_TEST:
@@ -380,7 +390,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				}
 				catch (Exception e)
 				{
-					String msg = "Exception caught switching to testing graph: " + e.toString();
+					final String msg = "Exception caught switching to testing graph: " + e.toString();
 					log.error( msg, e );
 					throw new DatastoreException( msg, e  );
 				}
@@ -397,7 +407,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				}
 				catch( Exception e )
 				{
-					String msg = "Exception caught switching back from testing graph: " + e.toString();
+					final String msg = "Exception caught switching back from testing graph: " + e.toString();
 					log.error( msg, e );
 					throw new DatastoreException( msg, e  );
 				}
@@ -407,7 +417,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			{
 				if( dynamicRenderingPlanGraphListener != null )
 				{
-					String msg = "Unable to add dynamic rendering plan listener as one is already set!";
+					final String msg = "Unable to add dynamic rendering plan listener as one is already set!";
 					throw new DatastoreException( msg );
 				}
 				else
@@ -434,10 +444,10 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			case POST_START:
 			{
 				// Wait for the fade in to complete
-				int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
-				long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
-				int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
-				long endTimeMillis = System.currentTimeMillis() + maxWaitForTransitionMillis;
+				final int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
+				final long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
+				final int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
+				final long endTimeMillis = System.currentTimeMillis() + maxWaitForTransitionMillis;
 				long curTimeMillis;
 				while( (curTimeMillis = System.currentTimeMillis()) < endTimeMillis )
 				{
@@ -464,13 +474,13 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			}
 			case PRE_STOP:
 			{
-				int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
-				long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
-				int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
+				final int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
+				final long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
+				final int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
 
 				masterOutInstance.setAndStartFade( FadeType.OUT );
 				// Wait for fade out to finish
-				long endTimeMillis = System.currentTimeMillis() + maxWaitForTransitionMillis;
+				final long endTimeMillis = System.currentTimeMillis() + maxWaitForTransitionMillis;
 				long curTimeMillis;
 				while( (curTimeMillis = System.currentTimeMillis()) < endTimeMillis )
 				{
@@ -499,7 +509,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			{
 				if( dynamicRenderingPlanGraphListener == null )
 				{
-					String msg = "Failed to process post stop - no plan creation listener currently being used.";
+					final String msg = "Failed to process post stop - no plan creation listener currently being used.";
 					throw new DatastoreException( msg );
 				}
 				else
@@ -512,12 +522,11 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				break;
 			}
 		}
-
 	}
 
-	public void useNewRenderingPlanWithWaitDestroyPrevious( RenderingPlan newRenderingPlan ) throws MadProcessingException
+	public void useNewRenderingPlanWithWaitDestroyPrevious( final RenderingPlan newRenderingPlan ) throws MadProcessingException
 	{
-		RenderingPlan previousPlan = this.renderingPlan.get();
+		final RenderingPlan previousPlan = this.renderingPlan.get();
 		if( previousPlan == null && newRenderingPlan == null )
 		{
 			// intentionally do nothing.
@@ -533,12 +542,12 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 
 		if( previousPlan == null && newRenderingPlan != null )
 		{
-			HardwareIOChannelSettings planChannelSettings = newRenderingPlan.getPlanChannelSettings();
-			MadTimingParameters planTimingParameters = newRenderingPlan.getPlanTimingParameters();
-			MadFrameTimeFactory planFrameTimeFactory = newRenderingPlan.getPlanFrameTimeFactory();
+			final HardwareIOChannelSettings planChannelSettings = newRenderingPlan.getPlanChannelSettings();
+			final MadTimingParameters planTimingParameters = newRenderingPlan.getPlanTimingParameters();
+			final MadFrameTimeFactory planFrameTimeFactory = newRenderingPlan.getPlanFrameTimeFactory();
 			// Start em all
-			Set<MadInstance<?,?>> auis = newRenderingPlan.getAllInstances();
-			for( MadInstance<?,?> aui : auis )
+			final Set<MadInstance<?,?>> auis = newRenderingPlan.getAllInstances();
+			for( final MadInstance<?,?> aui : auis )
 			{
 				aui.internalEngineStartup( planChannelSettings, planTimingParameters, planFrameTimeFactory );
 			}
@@ -546,20 +555,20 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		else if( previousPlan != null && newRenderingPlan == null )
 		{
 			needWaitForUse = internalRootGraph.hasListeners();
-			HardwareIOChannelSettings previousPlanChannelSettings = previousPlan.getPlanChannelSettings();
-			long nanosOutputLatency = previousPlanChannelSettings.getNanosOutputLatency();
+			final HardwareIOChannelSettings previousPlanChannelSettings = previousPlan.getPlanChannelSettings();
+			final long nanosOutputLatency = previousPlanChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
 		}
 		else // Both non-null
 		{
 			// Got to work out which components are to be stopped
-			Set<MadInstance<?,?>> previousAuis = previousPlan.getAllInstances();
-			Set<MadInstance<?,?>> newAuis = newRenderingPlan.getAllInstances();
+			final Set<MadInstance<?,?>> previousAuis = previousPlan.getAllInstances();
+			final Set<MadInstance<?,?>> newAuis = newRenderingPlan.getAllInstances();
 
-			HardwareIOChannelSettings planChannelSettings = newRenderingPlan.getPlanChannelSettings();
-			MadTimingParameters planTimingParameters = newRenderingPlan.getPlanTimingParameters();
-			MadFrameTimeFactory planFrameTimeFactory = newRenderingPlan.getPlanFrameTimeFactory();
-			for( MadInstance<?,?> newAui : newAuis )
+			final HardwareIOChannelSettings planChannelSettings = newRenderingPlan.getPlanChannelSettings();
+			final MadTimingParameters planTimingParameters = newRenderingPlan.getPlanTimingParameters();
+			final MadFrameTimeFactory planFrameTimeFactory = newRenderingPlan.getPlanFrameTimeFactory();
+			for( final MadInstance<?,?> newAui : newAuis )
 			{
 				if( !previousAuis.contains( newAui ) )
 				{
@@ -567,7 +576,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				}
 			}
 			needWaitForUse = internalRootGraph.hasListeners();
-			long nanosOutputLatency = planChannelSettings.getNanosOutputLatency();
+			final long nanosOutputLatency = planChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
 		}
 
@@ -575,7 +584,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 
 		if( needWaitForUse )
 		{
-			long startTime = System.currentTimeMillis();
+			final long startTime = System.currentTimeMillis();
 			long curTime = startTime;
 			while( curTime < startTime + maxWaitForTransitionMillis && !newRenderingPlan.getPlanUsed() )
 			{
@@ -585,7 +594,10 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				}
 				catch (InterruptedException e)
 				{
-					log.error("InterruptedException during sleep waiting for plan usage: " + e.toString(), e );
+					if( log.isErrorEnabled() )
+					{
+						log.error("InterruptedException during sleep waiting for plan usage: " + e.toString(), e );
+					}
 				}
 				curTime = System.currentTimeMillis();
 			}
@@ -598,8 +610,8 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		else if( previousPlan != null && newRenderingPlan == null )
 		{
 			// Stop em all
-			Set<MadInstance<?,?>> auis = previousPlan.getAllInstances();
-			for( MadInstance<?,?> aui : auis )
+			final Set<MadInstance<?,?>> auis = previousPlan.getAllInstances();
+			for( final MadInstance<?,?> aui : auis )
 			{
 				aui.internalEngineStop();
 			}
@@ -607,10 +619,10 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		else // Both non-null
 		{
 			// Got to work out which components are to be stopped
-			Set<MadInstance<?,?>> previousAuis = previousPlan.getAllInstances();
-			Set<MadInstance<?,?>> newAuis = newRenderingPlan.getAllInstances();
+			final Set<MadInstance<?,?>> previousAuis = previousPlan.getAllInstances();
+			final Set<MadInstance<?,?>> newAuis = newRenderingPlan.getAllInstances();
 
-			for( MadInstance<?,?> previousAui : previousAuis )
+			for( final MadInstance<?,?> previousAui : previousAuis )
 			{
 				if( !newAuis.contains( previousAui ) )
 				{
@@ -628,25 +640,25 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 	private void addIOComponentsToRootGraph()
 			throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, MadProcessingException
 	{
-		MadDefinition<?, ?> masterInDef = componentService.findDefinitionById( MasterInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?, ?> masterInDef = componentService.findDefinitionById( MasterInMadDefinition.DEFINITION_ID );
 		masterInInstance =
 				(MasterInMadInstance) componentService.createInstanceFromDefinition( masterInDef,
 						null,
 						"Master In" );
 		internalRootGraph.addInstanceWithName( masterInInstance, masterInInstance.getInstanceName() );
 
-		MadChannelInstance[] micis = masterInInstance.getChannelInstances();
+		final MadChannelInstance[] micis = masterInInstance.getChannelInstances();
 		for (int i = 0; i < micis.length; i++)
 		{
-			MadChannelInstance masterInputChannel = micis[i];
-			String channelName = masterInputChannel.definition.name;
-			String findChannelName = channelName.replaceAll( "Output", "Input" );
-			MadChannelInstance subGraphInputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
-			MadLink masterInLink = new MadLink( masterInputChannel, subGraphInputChannel );
+			final MadChannelInstance masterInputChannel = micis[i];
+			final String channelName = masterInputChannel.definition.name;
+			final String findChannelName = channelName.replaceAll( "Output", "Input" );
+			final MadChannelInstance subGraphInputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
+			final MadLink masterInLink = new MadLink( masterInputChannel, subGraphInputChannel );
 			internalRootGraph.addLink( masterInLink );
 		}
 
-		MadDefinition<?, ?> masterOutDef = componentService.findDefinitionById( MasterOutMadDefinition.DEFINITION_ID );
+		final MadDefinition<?, ?> masterOutDef = componentService.findDefinitionById( MasterOutMadDefinition.DEFINITION_ID );
 		masterOutInstance =
 				(MasterOutMadInstance) componentService.createInstanceFromDefinition( masterOutDef,
 						null,
@@ -655,22 +667,25 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		internalRootGraph.addInstanceWithName( masterOutInstance,
 				masterOutInstance.getInstanceName() );
 
-		MadChannelInstance[] mocis = masterOutInstance.getChannelInstances();
+		final MadChannelInstance[] mocis = masterOutInstance.getChannelInstances();
 		for (int o = 0; o < mocis.length; o++)
 		{
-			MadChannelInstance masterOutputChannel = mocis[o];
-			String channelName = masterOutputChannel.definition.name;
-			String findChannelName = channelName.replaceAll( "Input", "Output" );
-			MadChannelInstance subGraphOutputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
-			MadLink masterOutLink = new MadLink( subGraphOutputChannel, masterOutputChannel );
+			final MadChannelInstance masterOutputChannel = mocis[o];
+			final String channelName = masterOutputChannel.definition.name;
+			final String findChannelName = channelName.replaceAll( "Input", "Output" );
+			final MadChannelInstance subGraphOutputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
+			final MadLink masterOutLink = new MadLink( subGraphOutputChannel, masterOutputChannel );
 			internalRootGraph.addLink( masterOutLink );
 		}
 	}
 
-	private void internalUseGraph( MadGraphInstance<?, ?> newGraphToRender )
+	private void internalUseGraph( final MadGraphInstance<?, ?> newGraphToRender )
 				throws DatastoreException
 	{
-		log.debug("internalUseGraph called with graph: \"" + newGraphToRender.getInstanceName() + "\"");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("internalUseGraph called with graph: \"" + newGraphToRender.getInstanceName() + "\"");
+		}
 		try
 		{
 			// First time through this will be null
@@ -689,17 +704,20 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		catch (Exception e)
 		{
-			String msg = "Exception caught attempting to set app rack: "
+			final String msg = "Exception caught attempting to set app rack: "
 					+ e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
 	}
 
-	private void addGraphToHostingGraphAndHookupChannels( MadGraphInstance<?, ?> graphFromUser )
+	private void addGraphToHostingGraphAndHookupChannels( final MadGraphInstance<?, ?> graphFromUser )
 			throws MAConstraintViolationException, DatastoreException
 	{
-		log.debug("Hooking up channels of graph: \"" + graphFromUser.getInstanceName() + "\"");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Hooking up channels of graph: \"" + graphFromUser.getInstanceName() + "\"");
+		}
 
 		// Now loop around the appGraph channels looking for corresponding rack
 		// graph channels
@@ -710,7 +728,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		catch( RecordNotFoundException rnfe )
 		{
-			String msg = "RecordNotFoundException caught mapping app graph to hosting graph: " + rnfe.toString();
+			final String msg = "RecordNotFoundException caught mapping app graph to hosting graph: " + rnfe.toString();
 			log.error( msg, rnfe );
 		}
 	}
@@ -769,7 +787,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		return renderingJobQueue;
 	}
 
-	public void startHotspotLooping( RenderingPlan renderingPlan )
+	public void startHotspotLooping( final RenderingPlan renderingPlan )
 	{
 		hotspotClockSourceThread = new HotspotClockSourceJobQueueHelperThread( renderingPlan,
 				renderingService,
@@ -800,7 +818,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		catch (InterruptedException ie)
 		{
-			String msg = "Interrupted waiting for join to hotspot thread: " + ie.toString();
+			final String msg = "Interrupted waiting for join to hotspot thread: " + ie.toString();
 			log.error( msg, ie );
 		}
 		hotspotClockSourceThread = null;

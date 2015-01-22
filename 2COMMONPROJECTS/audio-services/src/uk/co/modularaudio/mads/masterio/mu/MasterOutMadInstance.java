@@ -30,13 +30,13 @@ import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
 import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.MadState;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.IOBuffers;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -48,7 +48,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, MasterOutMadInstance>
 {
 //	private static Log log = LogFactory.getLog( MasterOutMadInstance.class.getName() );
-	
+
 	public enum FadeType
 	{
 		NONE,
@@ -56,30 +56,33 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 		OUT
 	}
 
-	private int audioBufferLength = -1;
-	private int noteBufferLength = -1;
-	private IOBuffers consumerBuffers = null;
-	
-	private float[] emptyFloatBuffer = null;
-	
-	private AtomicInteger curTablePosition = new AtomicInteger( 0 );
-	private AtomicReference<FadeType> curFadeTable = new AtomicReference<FadeType>( FadeType.NONE );
-	private FadeInWaveTable fadeInWaveTable = null;
-	private FadeOutWaveTable fadeOutWaveTable = null;
-	private int fadeTableLength = -1;
-	
-	public MasterOutMadInstance( MasterIOComponentsCreationContext creationContext,
-			String instanceName,
-			MasterOutMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private final AtomicInteger curTablePosition = new AtomicInteger( 0 );
+	private final AtomicReference<FadeType> curFadeTable = new AtomicReference<FadeType>( FadeType.NONE );
+
+	private int audioBufferLength;
+	private int noteBufferLength;
+	private IOBuffers consumerBuffers;
+
+	private FadeInWaveTable fadeInWaveTable;
+	private FadeOutWaveTable fadeOutWaveTable;
+	private int fadeTableLength;
+
+	private float[] emptyFloatBuffer;
+
+	public MasterOutMadInstance( final MasterIOComponentsCreationContext creationContext,
+			final String instanceName,
+			final MasterOutMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
 		try
 		{
@@ -91,14 +94,14 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 					audioBufferLength,
 					MasterOutMadDefinition.NUM_NOTE_CHANNELS,
 					noteBufferLength );
-			
+
 			fadeInWaveTable = new FadeInWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
 			fadeOutWaveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
 			fadeTableLength = fadeInWaveTable.getBufferCapacity();
 		}
 		catch (Exception e)
 		{
-			String msg = "Exception caught starting up master out instance: " + e.toString();
+			final String msg = "Exception caught starting up master out instance: " + e.toString();
 			throw new MadProcessingException( msg, e );
 		}
 
@@ -111,18 +114,18 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, int numFrames )
 	{
-		FadeType localFadeTable = curFadeTable.get();
-		
+		final FadeType localFadeTable = curFadeTable.get();
+
 		RawWaveTable localFadeWaveTable = null;
-		
+
 		int localFadePosition = fadeTableLength;
-		
+
 		if( localFadeTable == FadeType.NONE )
 		{
 		}
@@ -136,31 +139,31 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 			localFadeWaveTable = fadeOutWaveTable;
 			localFadePosition = curTablePosition.get();
 		}
-		
+
 		// Assume our IO buffers are already pointing to the correct place.
 		// Copy our incoming channel data into the channels in the consumer buffers
 		for( int c = 0 ; c < channelInstances.length ; c++ )
 		{
-			MadChannelInstance auci = channelInstances[ c ];
-			
+			final MadChannelInstance auci = channelInstances[ c ];
+
 			if( auci.definition.type == MadChannelType.AUDIO )
 			{
-				float[] floatBuffer = null;
+				float[] floatBuffer;
 				if( channelConnectedFlags.get(  c  ) )
 				{
-					MadChannelBuffer aucb = channelBuffers[ c ];
+					final MadChannelBuffer aucb = channelBuffers[ c ];
 					floatBuffer = aucb.floatBuffer;
 				}
 				else
 				{
 					floatBuffer = emptyFloatBuffer;
 				}
-				
+
 				// Audio channels are from 0, we don't need to do any channel mapping magic
 				if( c < consumerBuffers.numAudioBuffers )
 				{
-					MadChannelBuffer cb = consumerBuffers.audioBuffers[ c ];
-					float[] outBuffer = cb.floatBuffer;
+					final MadChannelBuffer cb = consumerBuffers.audioBuffers[ c ];
+					final float[] outBuffer = cb.floatBuffer;
 					if( localFadeTable == FadeType.NONE )
 					{
 						// no fade, straight copy of it.
@@ -196,30 +199,30 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 //			log.debug("Moving fade table forwards by " + numFrames );
 			curTablePosition.set( localFadePosition );
 		}
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
-	public void setAndStartFade( FadeType fadeTable )
+
+	public void setAndStartFade( final FadeType fadeTable )
 	{
 		curFadeTable.set( fadeTable );
 		curTablePosition.set( 0 );
 	}
-	
-	public boolean isFadeFinished( int numSamplesClockSourceLatency )
+
+	public boolean isFadeFinished( final int numSamplesClockSourceLatency )
 	{
 		if( state == MadState.RUNNING )
 		{
-			int fadePosition = curTablePosition.get();
+			final int fadePosition = curTablePosition.get();
 //			log.debug("FadePosition is " + fadePosition + " while ftl("  +fadeTableLength + ") NSCSL(" + numSamplesClockSourceLatency + ")");
-			return( fadePosition >= (fadeTableLength + (numSamplesClockSourceLatency * 2) ) );
+			return fadePosition >= (fadeTableLength + (numSamplesClockSourceLatency * 2) );
 		}
 		else
 		{
 			return true;
 		}
 	}
-	
+
 	public IOBuffers getMasterIOBuffers()
 	{
 		return consumerBuffers;

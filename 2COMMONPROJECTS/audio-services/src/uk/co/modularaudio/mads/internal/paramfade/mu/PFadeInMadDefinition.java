@@ -30,6 +30,7 @@ import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -37,29 +38,31 @@ public class PFadeInMadDefinition extends MadDefinition<PFadeInMadDefinition,PFa
 {
 	public final static String DEFINITION_ID = "pfade_in";
 
-	private final static String userVisibleName = "Parametric Fade In";
+	private final static String USER_VISIBLE_NAME = "Parametric Fade In";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationName = "Parametric Fade In";
-	private final static String classificationDescription = "Fade in a source with a configurable number of channels";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Parametric Fade In";
+	private final static String CLASS_DESC = "Fade in a source with a configurable number of channels";
 
-	public PFadeInMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public PFadeInMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService )
+		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName, true,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME, true,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				PFadeDefinitions.parameterDefinitions,
-				new PFadeInIOQueueBridge() );
+				PFadeDefinitions.PARAM_DEFS,
+				new MadNullLocklessQueueBridge<PFadeInMadInstance>() );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
+		throws MadProcessingException
 	{
-		PFadeConfiguration ic = new PFadeConfiguration( parameterValues );
+		final PFadeConfiguration ic = new PFadeConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
 	}
 }

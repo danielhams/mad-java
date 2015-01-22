@@ -28,23 +28,20 @@ import uk.co.modularaudio.util.table.Span;
 
 public class FadeInMadUiInstance extends MadUiInstance<FadeInMadDefinition, FadeInMadInstance>
 {
-	private FadeInMadUiDefinition fiUiDefinition = null;
-	
-	public FadeInMadUiInstance( FadeInMadInstance instance,
-			FadeInMadUiDefinition uiDefinition )
+	public FadeInMadUiInstance( final FadeInMadInstance instance,
+			final FadeInMadUiDefinition uiDefinition )
 	{
 		super( instance,  uiDefinition );
-		this.fiUiDefinition = uiDefinition;
 	}
 
 	@Override
 	public Span getCellSpan()
 	{
-		return fiUiDefinition.getCellSpan();
+		return uiDefinition.getCellSpan();
 	}
 
 	@Override
-	public void consumeQueueEntry( FadeInMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final FadeInMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }

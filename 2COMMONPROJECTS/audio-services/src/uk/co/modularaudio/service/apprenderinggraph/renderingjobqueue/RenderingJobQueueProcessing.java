@@ -28,22 +28,22 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public abstract class RenderingJobQueueProcessing
 {
 //	private static Log log = LogFactory.getLog( RenderingJobQueueProcessing.class.getName() );
-	
+
 	public enum Type
 	{
 		CLOCK_SOURCE,
 		HELPER_THREAD
 	}
-	
-	protected RenderingJobQueue renderingJobQueue = null;
-	protected Type processingType = null;
 
-	protected ThreadSpecificTemporaryEventStorage tempQueueEntryStorage;
-	
-	protected long numJobsProcessed = 0;
+	protected final RenderingJobQueue renderingJobQueue;
+	protected final Type processingType;
+
+	protected final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage;
+
+	protected long numJobsProcessed;
 	protected final int threadNum;
-	
-	public RenderingJobQueueProcessing( int threadNum, RenderingJobQueue jobQueue, Type processingType )
+
+	public RenderingJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue, final Type processingType )
 	{
 		this.threadNum = threadNum;
 		this.renderingJobQueue = jobQueue;
@@ -51,16 +51,16 @@ public abstract class RenderingJobQueueProcessing
 		this.tempQueueEntryStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
 	}
 
-	public final RealtimeMethodReturnCodeEnum doBlockingProcessing( boolean shouldProfileRenderingJobs )
+	public final RealtimeMethodReturnCodeEnum doBlockingProcessing( final boolean shouldProfileRenderingJobs )
 	{
 		// First parameter says it's okay to block me
 		return processJobAndDependants( true, shouldProfileRenderingJobs );
 	}
-	
-	protected final RealtimeMethodReturnCodeEnum processJobAndDependants( boolean canBlock, boolean shouldProfileRenderingJobs )
+
+	protected final RealtimeMethodReturnCodeEnum processJobAndDependants( final boolean canBlock, final boolean shouldProfileRenderingJobs )
 	{
 		AbstractParallelRenderingJob job = renderingJobQueue.getAJob( canBlock );
-			
+
 		while( job != null )
 		{
 			numJobsProcessed++;
@@ -71,19 +71,19 @@ public abstract class RenderingJobQueueProcessing
 	}
 
 	protected final AbstractParallelRenderingJob processOneJobReturnFirstDependant( AbstractParallelRenderingJob job,
-			boolean shouldProfileRenderingJobs )
+			final boolean shouldProfileRenderingJobs )
 	{
 		job.goWithTimestamps( threadNum, tempQueueEntryStorage );
 
-		AbstractParallelRenderingJob consJobs[] = job.getConsJobsThatWaitForUs();
+		final AbstractParallelRenderingJob consJobs[] = job.getConsJobsThatWaitForUs();
 		job = null;
-		
-		for( AbstractParallelRenderingJob consJob : consJobs )
+
+		for( final AbstractParallelRenderingJob consJob : consJobs )
 		{
-			boolean readyToGo = consJob.markOneProducerAsCompleteCheckIfReadyToGo();	
+			final boolean readyToGo = consJob.markOneProducerAsCompleteCheckIfReadyToGo();
 			if( readyToGo )
 			{
-				if( job == null ) 
+				if( job == null )
 				{
 					job = consJob;
 				}
@@ -101,7 +101,7 @@ public abstract class RenderingJobQueueProcessing
 	{
 		return numJobsProcessed;
 	}
-	
+
 	public void resetNumJobProcessed()
 	{
 		numJobsProcessed = 0;

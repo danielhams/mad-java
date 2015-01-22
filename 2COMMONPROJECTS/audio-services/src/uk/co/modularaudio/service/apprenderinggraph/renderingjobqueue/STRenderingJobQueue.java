@@ -27,20 +27,20 @@ import uk.co.modularaudio.util.audio.buffer.UnsafeGenericRingBuffer;
 
 public class STRenderingJobQueue implements RenderingJobQueue
 {
-	private UnsafeGenericRingBuffer<AbstractParallelRenderingJob> jobRing = null;
-	
 	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
-	
-	public STRenderingJobQueue( int capacity )
+
+	private final UnsafeGenericRingBuffer<AbstractParallelRenderingJob> jobRing;
+
+	public STRenderingJobQueue( final int capacity )
 	{
 		jobRing = new UnsafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#getAJob(boolean)
 	 */
 	@Override
-	public AbstractParallelRenderingJob getAJob( boolean canBlock )
+	public AbstractParallelRenderingJob getAJob( final boolean canBlock )
 	{
 		return jobRing.readOneOrNull();
 	}
@@ -49,7 +49,7 @@ public class STRenderingJobQueue implements RenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#setBlocking(boolean)
 	 */
 	@Override
-	public void setBlocking( boolean shouldBlock )
+	public void setBlocking( final boolean shouldBlock )
 	{
 	}
 
@@ -57,16 +57,16 @@ public class STRenderingJobQueue implements RenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#write(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob[], int, int)
 	 */
 	@Override
-	public void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length )
+	public void write( final AbstractParallelRenderingJob[] jobs, final int startOffset, final int length )
 	{
 		jobRing.write( jobs, startOffset, length );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#writeOne(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob)
 	 */
 	@Override
-	public void writeOne( AbstractParallelRenderingJob job )
+	public void writeOne( final AbstractParallelRenderingJob job )
 	{
 		jobRing.writeOne( job );
 	}
