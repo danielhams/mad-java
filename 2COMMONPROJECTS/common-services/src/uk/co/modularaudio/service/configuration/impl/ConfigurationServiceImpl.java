@@ -86,7 +86,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		if( configFilePath != null )
 		{
 			log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
-			parseOneFilePath( configResourcePath );
+			parseOneFilePath( configFilePath );
 
 			if( additionalFilePaths != null && additionalFilePaths.length > 0 )
 			{
