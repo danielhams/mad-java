@@ -48,37 +48,39 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestSampleCachingServiceWriteFileJumpAround.class.getName() );
-	
+
 //	private final static String inputFile = "/music/Mp3Repository/TestForPac/hc.wav";
 //	private final static String inputFile = "/media/663099F83099D003/Music/Mp3Repository/MyStuff200910/ExampleBeats.mp3";
 //	private final static String inputFile1 = "/media/663099F83099D003/Music/PhaseVocoderAudioFiles/examplebeats_full.wav";
 //	private final static String outputFile1 = "/tmp/scsout1.wav";
-	
+
 //	private final static String inputFile2 = "/media/663099F83099D003/Music/Mp3Repository/20130215/3836570_The_Monkey_Dessert_Original_Mix.mp3";
 	private final static String inputFile2 = "/media/663099F83099D003/Music/Samples/House/VocalStabs/picturethisarecordingstudio.flac";
 //	private final static String inputFile2 = "/media/663099F83099D003/Music/OldCassettes/DJ Staden May 1995 - Epiphany/Side1DoWhatYouWantToDo_filtered.wav";
 	private final static String outputFile2 = "/tmp/scsout2.wav";
-	
+
 	private SpringComponentHelper sch = null;
 	private GenericApplicationContext gac = null;
-	
+
 	private AdvancedComponentsFrontController frontController = null;
 	private SampleCachingServiceImpl scsi = null;
 	private BlockBufferingConfiguration bbc = null;
 
+	@Override
 	protected void setUp() throws Exception
 	{
 		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
-		gac = sch.makeAppContext();
-		
+		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME, SampleCachingTestDefines.CONFIGURATION_FILENAME );
+
 		frontController = gac.getBean( AdvancedComponentsFrontController.class );
 		scsi = gac.getBean( SampleCachingServiceImpl.class );
 		bbc = scsi.getBlockBufferingConfiguration();
 	}
 
+	@Override
 	protected void tearDown() throws Exception
 	{
 		gac.close();
@@ -95,29 +97,29 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 			RecordNotFoundException
 	{
 		log.debug( "Will attempt to read a file from start to end." );
-		
+
 		int blockLengthInFloats = bbc.blockLengthInFloats;
 		int numChannels = 2;
-		
+
 		int numBlocksToCopy = 20;
 //		int numBlocksToCopy = 200;
-		
+
 		int numFloatsToRead = (blockLengthInFloats * numBlocksToCopy) + 20;
 		int numFramesToRead = numFloatsToRead / numChannels;
-		
+
 		int outputFrameLength = 2048;
 		float[] outputFrameFloats = new float[ (outputFrameLength + 3) * numChannels ];
-		
+
 //		int outputFrameIndex = 0;
 //		int numOutputFrames = 32;
 //		float playbackSpeed = 1.0f;
-		
+
 		SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
 		Thread.sleep( 200 );
-		
+
 		int sampleRate = 44100;
 		WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
-		
+
 		long totalNumFrames = scc1.getTotalNumFrames();
 		long numToRead = ( totalNumFrames < numFramesToRead ? totalNumFrames : numFramesToRead );
 		// Use an offset to verify block boundary reads
@@ -143,7 +145,7 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 			if( retCode == RealtimeMethodReturnCodeEnum.SUCCESS )
 			{
 				waveFileWriter.writeFloats( outputFrameFloats, 2, numFramesThisRound * numChannels );
-			
+
 				readFramePosition = readFramePosition + numFramesThisRound;
 				scc1.setCurrentFramePosition( readFramePosition );
 				numToRead -= numFramesThisRound;
@@ -155,11 +157,11 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 			}
 			Thread.sleep( 20 );
 		}
-		
+
 		frontController.unregisterCacheClientForFile( scc1 );
-		
+
 		waveFileWriter.close();
-		
+
 		log.debug( "All done" );
 	}
 }

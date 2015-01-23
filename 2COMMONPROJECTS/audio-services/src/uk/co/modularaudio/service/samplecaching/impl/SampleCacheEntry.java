@@ -31,26 +31,28 @@ import uk.co.modularaudio.service.library.vos.LibraryEntry;
 public class SampleCacheEntry
 {
 //	private static Log log = LogFactory.getLog( SampleCacheEntry.class.getName() );
-	
-	private LibraryEntry libraryEntry = null;
-	private AudioFileHandleAtom audioFileHandleAtom = null;
-	
-	private int numCacheBlocks = -1;
-	private boolean[] requiredCachedBlocks;
-	
-	private HashSet<InternalSampleCacheClient> currentClientSet = new HashSet<InternalSampleCacheClient>();
-	
-	private AtomicReference<OpenLongObjectHashMap<SampleCacheBlock>> atomicSampleCacheBlocksMap =
+
+	private final LibraryEntry libraryEntry;
+	private final AudioFileHandleAtom audioFileHandleAtom;
+
+	private final int numCacheBlocks;
+	private final boolean[] requiredCachedBlocks;
+
+	private final HashSet<InternalSampleCacheClient> currentClientSet = new HashSet<InternalSampleCacheClient>();
+
+	private final AtomicReference<OpenLongObjectHashMap<SampleCacheBlock>> atomicSampleCacheBlocksMap =
 			new AtomicReference<OpenLongObjectHashMap<SampleCacheBlock>>( new OpenLongObjectHashMap<SampleCacheBlock>() );
 
-	public SampleCacheEntry( LibraryEntry libraryEntry, AudioFileHandleAtom afha, int numCacheBlocks )
+	public SampleCacheEntry( final LibraryEntry libraryEntry,
+			final AudioFileHandleAtom afha,
+			final int numCacheBlocks )
 	{
 		this.libraryEntry = libraryEntry;
 		this.audioFileHandleAtom = afha;
 		this.numCacheBlocks = numCacheBlocks;
 		this.requiredCachedBlocks = new boolean[ numCacheBlocks ];
 	}
-	
+
 	public LibraryEntry getLibraryEntry()
 	{
 		return libraryEntry;
@@ -60,37 +62,37 @@ public class SampleCacheEntry
 	{
 		return audioFileHandleAtom;
 	}
-	
+
 	public int getNumCacheBlocks()
 	{
 		return numCacheBlocks;
 	}
-	
+
 	public boolean[] getRequiredCachedBlocks()
 	{
 		return requiredCachedBlocks;
 	}
-	
+
 	public int getReferenceCount()
 	{
 		return currentClientSet.size();
 	}
-	
-	public void addReference( InternalSampleCacheClient client )
+
+	public void addReference( final InternalSampleCacheClient client )
 	{
 		currentClientSet.add( client );
 	}
-	
-	public void removeReference( InternalSampleCacheClient client )
+
+	public void removeReference( final InternalSampleCacheClient client )
 	{
 		currentClientSet.remove( client );
 	}
-	
+
 	public HashSet<InternalSampleCacheClient> getCurrentClientSet()
 	{
 		return currentClientSet;
 	}
-	
+
 	public AtomicReference<OpenLongObjectHashMap<SampleCacheBlock>> getAtomicSampleCacheBlocksMap()
 	{
 		return atomicSampleCacheBlocksMap;

@@ -27,15 +27,12 @@ public class MinMaxSampleAcceptor implements SampleAcceptor
 {
 //	private static Log log = LogFactory.getLog( MinMaxSampleAcceptor.class.getName());
 
-	private final int numChannels;
-
 //	public float minValue;
 //	public float maxValue;
 	public float[] minMaxValues = new float[2];
 
-	public MinMaxSampleAcceptor( int numChannels )
+	public MinMaxSampleAcceptor()
 	{
-		this.numChannels = numChannels;
 		reset();
 	}
 
@@ -46,7 +43,7 @@ public class MinMaxSampleAcceptor implements SampleAcceptor
 	}
 
 	@Override
-	public void acceptEmptySamples( final long framePosition, final int numFramesOfZeros )
+	public void acceptEmptySamples( final long framePosition, final int numChannelsPerFrame, final int numFramesOfZeros )
 	{
 //		log.debug("Received empty samples at frame position " + framePosition + " of " + numFramesOfZeros );
 		minMaxValues[0] = 0.0f;
@@ -56,6 +53,7 @@ public class MinMaxSampleAcceptor implements SampleAcceptor
 	@Override
 	public void acceptSamples(
 			final long framePosition,
+			final int numChannelsPerFrame,
 			final int numFramesToAccept,
 			final float[] blockBuffer,
 			final int blockFloatsOffset)
@@ -75,6 +73,6 @@ public class MinMaxSampleAcceptor implements SampleAcceptor
 //				maxValue = value;
 //			}
 //		}
-		MinMaxComputer.calcMinMaxForFloatsWithStride(blockBuffer, blockFloatsOffset, numFramesToAccept, numChannels, minMaxValues );
+		MinMaxComputer.calcMinMaxForFloatsWithStride(blockBuffer, blockFloatsOffset, numFramesToAccept, numChannelsPerFrame, minMaxValues );
 	}
 }

@@ -75,7 +75,7 @@ public class SoundfileDisplaySampleFactory implements
 
 	private SampleCacheClient scc = null;
 
-	private MinMaxSampleAcceptor minMaxSampleAcceptor = new MinMaxSampleAcceptor(2);
+	private MinMaxSampleAcceptor minMaxSampleAcceptor = new MinMaxSampleAcceptor();
 
 	private final static int DEFAULT_SAMPLES_PER_PIXEL = 371;
 

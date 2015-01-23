@@ -41,31 +41,32 @@ import uk.co.modularaudio.util.springhibernate.SpringHibernateContextHelper;
 public class TestSampleCachingService extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestSampleCachingService.class.getName() );
-	
-	private final static String testFile1 = "/music/Samples/House/VocalStabs/comeon.flac";
-//	private final static String testFile2 = "/music/Samples/House/VocalStabs/haha.flac";
-	private final static String testFile2 = "/music/Mp3Repository/TestForPac/hc.wav";
-	
+
+	private final static String testFile1 = "/home/dan/Temp/PhaseVocoderAudioFiles/monosine44_1_long.wav";
+	private final static String testFile2 = "/home/dan/Temp/PhaseVocoderAudioFiles/sine_stereo_441k_1khz_1min.wav";
+
 	private SpringComponentHelper sch = null;
 	private GenericApplicationContext gac = null;
-	
+
 	private AdvancedComponentsFrontController frontController = null;
 	private SampleCachingServiceImpl scsi = null;
 	private BlockBufferingConfiguration bbc = null;
 
+	@Override
 	protected void setUp() throws Exception
 	{
 		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
-		gac = sch.makeAppContext();
-		
+		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME, SampleCachingTestDefines.CONFIGURATION_FILENAME );
+
 		frontController = gac.getBean( AdvancedComponentsFrontController.class );
 		scsi = gac.getBean( SampleCachingServiceImpl.class );
 		bbc = scsi.getBlockBufferingConfiguration();
 	}
 
+	@Override
 	protected void tearDown() throws Exception
 	{
 		gac.close();
@@ -74,36 +75,33 @@ public class TestSampleCachingService extends TestCase
 	public void testReadingAFile() throws Exception
 	{
 		log.debug( "Will attempt to read a file from start to end." );
-		
+
 		int blockLengthInFloats = bbc.blockLengthInFloats;
-		int numChannels = 2;
-		
+
 		int numFloatsToRead = (bbc.blockLengthInFloats * 2) + 20;
-		int numFramesToRead = numFloatsToRead / numChannels;
-		
+
 		float[] outputFrameFloats = new float[ numFloatsToRead ];
-		
-//		int outputFrameIndex = 0;
-//		int numOutputFrames = 32;
-//		float playbackSpeed = 1.0f;
-		
+
 		SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
+//		int file1NumChannels = scc1.getNumChannels();
 		SampleCacheClient scc2 = frontController.registerCacheClientForFile( testFile2 );
-		
+		int file2NumChannels = scc2.getNumChannels();
+
 		// And back (should free the block up)
-		long readFramePosition = (bbc.blockLengthInFloats * 2 + 40) / numChannels;
+		int file2NumFramesToRead = numFloatsToRead / file2NumChannels;
+		long readFramePosition = (bbc.blockLengthInFloats * 2 + 40) / file2NumChannels;
 		scc2.setCurrentFramePosition( readFramePosition );
 
-		scsi.readSamplesForCacheClient( scc2,  outputFrameFloats, 0, numFramesToRead );
-		
+		scsi.readSamplesForCacheClient( scc2,  outputFrameFloats, 0, file2NumFramesToRead );
+
 		// Just over a boundary
-		scc2.setCurrentFramePosition( (blockLengthInFloats * 2) / numChannels );
-		
+		scc2.setCurrentFramePosition( (blockLengthInFloats * 2) / file2NumChannels );
+
 		frontController.unregisterCacheClientForFile( scc1 );
 		frontController.unregisterCacheClientForFile( scc2 );
-		
+
 		scc2 = frontController.registerCacheClientForFile( testFile2 );
-		
+
 		frontController.unregisterCacheClientForFile( scc2 );
 		log.debug( "All done" );
 	}

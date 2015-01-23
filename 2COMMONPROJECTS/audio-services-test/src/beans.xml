@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans xmlns="http://www.springframework.org/schema/beans">
+    <bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="propertyFile"><value>/example.properties</value></property>
+    </bean>
 	<bean id="classificationService" class="uk.co.modularaudio.service.madclassification.impl.MadClassificationServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
 	<bean id="componentService" class="uk.co.modularaudio.service.madcomponent.impl.MadComponentServiceImpl" init-method="init" destroy-method="destroy">
@@ -29,9 +32,6 @@
 		<property name="advancedComponentsFrontController"><ref bean="advancedComponentsFrontController"></ref></property>
 	</bean>
 <!--
-	<bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="propertyFile"><value>componentdesigner.properties</value></property>
-	</bean>
 	<bean id="guiFrontController" class="uk.co.modularaudio.projects.pac.gui.impl.GuiFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiController"><ref bean="guiController"></ref></property>
 		<property name="componentController"><ref bean="componentController"></ref></property>

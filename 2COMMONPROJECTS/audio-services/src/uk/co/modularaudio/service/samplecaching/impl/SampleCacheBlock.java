@@ -33,15 +33,15 @@ public class SampleCacheBlock
 		MOVING,
 		WARM
 	};
-	
-	public long blockID = -1;
-	public AtomicReference<SampleCacheBlockEnum> useStatus = new AtomicReference<SampleCacheBlockEnum>( SampleCacheBlockEnum.NOT_IN_USE );
-	public FloatBufferBlock blockData = null;
-	
-	public SampleCacheBlock( long blockID, FloatBufferBlock floatBufferBlock )
+
+	public long blockID;
+	public final AtomicReference<SampleCacheBlockEnum> useStatus = new AtomicReference<SampleCacheBlockEnum>( SampleCacheBlockEnum.NOT_IN_USE );
+	public FloatBufferBlock blockData;
+
+	public SampleCacheBlock( final long blockID, final FloatBufferBlock floatBufferBlock )
 	{
 		this.blockID = blockID;
 		blockData = floatBufferBlock;
 	}
-			
+
 }

@@ -23,9 +23,12 @@ package uk.co.modularaudio.service.samplecaching;
 public interface SampleAcceptor
 {
 
-	void acceptEmptySamples( long readFramePosition, int numFramesOfZeros );
+	void acceptEmptySamples( long framePosition,
+			int numChannelsPerFrame,
+			int numFramesOfZeros );
 
 	void acceptSamples( long framePosition,
+		int numChannelsPerFrame,
 		int numFramesToAccept,
 		float[] blockBuffer,
 		int blockFloatsOffset );

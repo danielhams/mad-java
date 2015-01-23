@@ -55,26 +55,26 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 	private static final String CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_BEFORE = SampleCachingServiceImpl.class.getSimpleName() +".BlockBufferMinSecsBefore";
 	private static final String CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_AFTER = SampleCachingServiceImpl.class.getSimpleName() +".BlockBufferMinSecsAfter";
 
-	private LibraryService libraryService = null;
-	private AudioFileIOService audioFileIOService = null;
-	private ConfigurationService configurationService = null;
+	private LibraryService libraryService;
+	private AudioFileIOService audioFileIOService;
+	private ConfigurationService configurationService;
 
-	private boolean enabled = false;
+	private boolean enabled;
 
-	private SampleCache sampleCache = null;
+	private SampleCache sampleCache;
 
 	// Block buffering configuration
-	private BlockBufferingConfiguration blockBufferingConfiguration = null;
+	private BlockBufferingConfiguration blockBufferingConfiguration;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		HashMap<String, String> errors = new HashMap<String, String>();
+		final HashMap<String, String> errors = new HashMap<String, String>();
 		enabled = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_ENABLED, errors );
-		int maxBlocksToBuffer = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MAX_BLOCKS, errors );
-		int blockLengthInFloats = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_LENGTH, errors );
-		float minSecsBeforePosition = ConfigurationServiceHelper.checkForFloatKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_BEFORE, errors );
-		float minSecsAfterPosition = ConfigurationServiceHelper.checkForFloatKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_AFTER, errors );
+		final int maxBlocksToBuffer = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MAX_BLOCKS, errors );
+		final int blockLengthInFloats = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_LENGTH, errors );
+		final float minSecsBeforePosition = ConfigurationServiceHelper.checkForFloatKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_BEFORE, errors );
+		final float minSecsAfterPosition = ConfigurationServiceHelper.checkForFloatKey( configurationService, CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_AFTER, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
 
 		blockBufferingConfiguration = new BlockBufferingConfiguration( maxBlocksToBuffer,
@@ -92,44 +92,30 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 		sampleCache.destroy();
 	}
 
-	public LibraryService getLibraryService()
-	{
-		return libraryService;
-	}
-
-	public void setLibraryService( LibraryService libraryService )
+	public void setLibraryService( final LibraryService libraryService )
 	{
 		this.libraryService = libraryService;
 	}
 
-	public AudioFileIOService getAudioFileIOService()
-	{
-		return audioFileIOService;
-	}
-
-	public void setAudioFileIOService( AudioFileIOService audioFileIOService )
+	public void setAudioFileIOService( final AudioFileIOService audioFileIOService )
 	{
 		this.audioFileIOService = audioFileIOService;
 	}
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException
+	public SampleCacheClient registerCacheClientForFile( final String path )
+		throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException
 	{
-		InternalSampleCacheClient internalClient;
+		InternalSampleCacheClient internalClient = null;
 		try
 		{
 			// Find or add to library
-			File sampleFile = new File( path );
+			final File sampleFile = new File( path );
 			LibraryEntry libraryEntry = null;
 			try
 			{
@@ -145,21 +131,26 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 		}
 		catch (Exception e)
 		{
-			String msg = "Exception caught registering cache client for file " + path + ": " + e.toString();
+			final String msg = "Exception caught registering cache client for file " + path + ": " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 
-		log.debug( "Registered sample caching client for " + internalClient.getLibraryEntry().getLocation() );
+		if( log.isDebugEnabled() )
+		{
+			log.debug( "Registered sample caching client for " + internalClient.getLibraryEntry().getLocation() );
+		}
 		return internalClient;
 	}
 
 	@Override
-	public void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException
+	public void unregisterCacheClientForFile( final SampleCacheClient client ) throws DatastoreException, RecordNotFoundException
 	{
-		InternalSampleCacheClient internalClient = (InternalSampleCacheClient)client;
+		final InternalSampleCacheClient internalClient = (InternalSampleCacheClient)client;
 		sampleCache.removeClient( internalClient );
-		log.debug( "Unregistered sample caching client for " + internalClient.getLibraryEntry().getLocation() );
-
+		if( log.isDebugEnabled() )
+		{
+			log.debug( "Unregistered sample caching client for " + internalClient.getLibraryEntry().getLocation() );
+		}
 	}
 
 	public BlockBufferingConfiguration getBlockBufferingConfiguration()
@@ -168,12 +159,12 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( SampleCacheClient client,
-			float[] outputSamples,
-			int outputFramePos,
-			int numFrames )
+	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( final SampleCacheClient client,
+			final float[] outputSamples,
+			final int outputFramePos,
+			final int numFrames )
 	{
-		InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
+		final InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
 		return sampleCache.readSamplesForCacheClient( iscc, outputSamples, outputFramePos, iscc.getCurrentFramePosition(), numFrames );
 	}
 
@@ -187,28 +178,28 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 
 	@Override
 	public RealtimeMethodReturnCodeEnum readSamplesInBlocksForCacheClient(
-			SampleCacheClient client,
-			long framePosition,
-			int numFrames,
-			SampleAcceptor sampleAcceptor)
+			final SampleCacheClient client,
+			final long framePosition,
+			final int numFrames,
+			final SampleAcceptor sampleAcceptor)
 	{
-		InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
+		final InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
 		return sampleCache.readSamplesInBlocksForCacheClient( iscc, framePosition, numFrames, sampleAcceptor );
 	}
 
 	@Override
-	public String getSampleFileTitleForCacheClient( SampleCacheClient client )
+	public String getSampleFileTitleForCacheClient( final SampleCacheClient client )
 	{
-		InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
-		LibraryEntry le = iscc.getLibraryEntry();
+		final InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
+		final LibraryEntry le = iscc.getLibraryEntry();
 		return le.getTitle();
 	}
 
 	@Override
-	public void registerForBufferFillCompletion(SampleCacheClient client,
-			BufferFillCompletionListener completionListener)
+	public void registerForBufferFillCompletion( final SampleCacheClient client,
+			final BufferFillCompletionListener completionListener )
 	{
-		InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
+		final InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
 		sampleCache.registerForBufferFillCompletion( iscc,
 				completionListener );
 	}

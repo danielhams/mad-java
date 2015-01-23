@@ -38,24 +38,24 @@ import uk.co.modularaudio.util.audio.floatblockpool.FloatBufferBlockPool;
 public class TemperatureBufferBlockMap
 {
 	private static Log log = LogFactory.getLog( TemperatureBufferBlockMap.class.getName() );
-	
-	private FloatBufferBlockPool allocationPool;
-	
-	private OpenLongObjectHashMap<SampleCacheBlock> blockMap = new OpenLongObjectHashMap<SampleCacheBlock>();
-	
-	private HashSet<SampleCacheBlock> hotBlocks = new HashSet<SampleCacheBlock>();
-	private Queue<SampleCacheBlock> warmBlocks = new ArrayDeque<SampleCacheBlock>();
-	
-	public TemperatureBufferBlockMap( BlockBufferingConfiguration blockBufferingConfiguration )
+
+	private final FloatBufferBlockPool allocationPool;
+
+	private final OpenLongObjectHashMap<SampleCacheBlock> blockMap = new OpenLongObjectHashMap<SampleCacheBlock>();
+
+	private final HashSet<SampleCacheBlock> hotBlocks = new HashSet<SampleCacheBlock>();
+	private final Queue<SampleCacheBlock> warmBlocks = new ArrayDeque<SampleCacheBlock>();
+
+	public TemperatureBufferBlockMap( final BlockBufferingConfiguration blockBufferingConfiguration )
 	{
 		allocationPool = new FloatBufferBlockPool( blockBufferingConfiguration );
 	}
-	
+
 	public void allocate()
 	{
 		allocationPool.allocate();
 	}
-	
+
 	public void destroy()
 	{
 		allocationPool.destroy();
@@ -66,21 +66,21 @@ public class TemperatureBufferBlockMap
 		return hotBlocks;
 	}
 
-	public SampleCacheBlock getBlockById( long blockID )
+	public SampleCacheBlock getBlockById( final long blockID )
 	{
 		return blockMap.get( blockID );
 	}
 
-	public SampleCacheBlock getWarmOrFreeBlockCopyID( long blockID ) throws BlockNotAvailableException
+	public SampleCacheBlock getWarmOrFreeBlockCopyID( final long blockID ) throws BlockNotAvailableException
 	{
 		SampleCacheBlock retVal = null;
-		
-		int numFreeBlocks = allocationPool.getNumFreeBlocks();
+
+		final int numFreeBlocks = allocationPool.getNumFreeBlocks();
 		if( numFreeBlocks > 0 )
 		{
 //			log.debug("Using a free block");
-			FloatBufferBlock block = allocationPool.reserveBlock();
-			
+			final FloatBufferBlock block = allocationPool.reserveBlock();
+
 			retVal = new SampleCacheBlock( blockID, block );
 		}
 		else
@@ -90,11 +90,11 @@ public class TemperatureBufferBlockMap
 		}
 		return retVal;
 	}
-	
-	public SampleCacheBlock moveBlockFromHotToWarmQueue( long blockID ) throws BlockNotAvailableException
+
+	public SampleCacheBlock moveBlockFromHotToWarmQueue( final long blockID ) throws BlockNotAvailableException
 	{
-		SampleCacheBlock retVal = blockMap.get( blockID );
-		
+		final SampleCacheBlock retVal = blockMap.get( blockID );
+
 		if( retVal == null )
 		{
 			String msg = "Failed to find hot block to move to warm queue with ID " + blockID;
@@ -103,12 +103,12 @@ public class TemperatureBufferBlockMap
 		}
 
 		hotBlocks.remove( retVal );
-		
-		SampleCacheBlockEnum curStatus = retVal.useStatus.get();
-		
+
+		final SampleCacheBlockEnum curStatus = retVal.useStatus.get();
+
 		if( curStatus == SampleCacheBlockEnum.WARM )
 		{
-			String msg = "Expected hot block - but is warm! " + blockID;
+			final String msg = "Expected hot block - but is warm! " + blockID;
 			log.error( msg );
 			throw new BlockNotAvailableException( msg );
 		}
@@ -116,13 +116,13 @@ public class TemperatureBufferBlockMap
 		while( !retVal.useStatus.compareAndSet( curStatus, SampleCacheBlockEnum.WARM ) )
 		{
 		}
-		
+
 		warmBlocks.add( retVal );
-		
+
 		return retVal;
 	}
 
-	public void setBlockMakeHot( long blockId, SampleCacheBlock blockToUse )
+	public void setBlockMakeHot( final long blockId, final SampleCacheBlock blockToUse )
 	{
 		blockToUse.useStatus.set( SampleCacheBlockEnum.HOT );
 		blockMap.put( blockId, blockToUse );
@@ -132,12 +132,13 @@ public class TemperatureBufferBlockMap
 	public void reheatBlock( SampleCacheBlock curBlock )
 	{
 		warmBlocks.remove( curBlock );
-		assert( curBlock.useStatus.get() == SampleCacheBlockEnum.WARM );
+		assert curBlock.useStatus.get() == SampleCacheBlockEnum.WARM;
 		curBlock.useStatus.set( SampleCacheBlockEnum.HOT );
 		hotBlocks.add( curBlock );
 	}
 
-	private SampleCacheBlock repurposeWarmBlock( long replacementBlockID ) throws BlockNotAvailableException
+	private SampleCacheBlock repurposeWarmBlock( final long replacementBlockID )
+		throws BlockNotAvailableException
 	{
 		SampleCacheBlock retVal = null;
 		try
@@ -148,23 +149,26 @@ public class TemperatureBufferBlockMap
 		{
 			throw new BlockNotAvailableException();
 		}
-		
+
 		// Remove it from the block map first before we reset it's status
 		blockMap.removeKey( retVal.blockID );
-		
+
 		// Loop around attempting to set it to moving
-		assert( retVal.useStatus.get() == SampleCacheBlockEnum.WARM );
+		assert retVal.useStatus.get() == SampleCacheBlockEnum.WARM;
 		retVal.useStatus.set( SampleCacheBlockEnum.MOVING );
 		retVal.blockID = replacementBlockID;
-		
+
 		return retVal;
 	}
-	
+
 	public void dumpDetails()
 	{
-		int numFloatsInBlock = allocationPool.getNumFloatsInBlock();
-		log.debug("Temperature Buffer Block Map Details (each block is " + numFloatsInBlock + " floats):");
-		log.debug( "Total(" +  allocationPool.getNumTotalBlocks() + ") Free(" + allocationPool.getNumFreeBlocks() + ") Used(" + allocationPool.getNumUsedBlocks() +")");
-		log.debug( "Hot(" + hotBlocks.size() + ") Warm(" + warmBlocks.size() + ")");
+		final int numFloatsInBlock = allocationPool.getNumFloatsInBlock();
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Temperature Buffer Block Map Details (each block is " + numFloatsInBlock + " floats):");
+			log.debug( "Total(" +  allocationPool.getNumTotalBlocks() + ") Free(" + allocationPool.getNumFreeBlocks() + ") Used(" + allocationPool.getNumUsedBlocks() +")");
+			log.debug( "Hot(" + hotBlocks.size() + ") Warm(" + warmBlocks.size() + ")");
+		}
 	}
 }

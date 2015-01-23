@@ -39,7 +39,7 @@ public class SpringComponentHelper
 {
 	private static Log log = LogFactory.getLog( SpringComponentHelper.class.getName() );
 
-	public final String DEFAULT_BEANS_FILENAME = "beans.xml";
+	public final String DEFAULT_BEANS_FILENAME = "/beans.xml";
 
 	protected List<SpringContextHelper> contextHelpers = new ArrayList<SpringContextHelper>();
 

@@ -28,14 +28,14 @@ import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 public class InternalSampleCacheClient implements SampleCacheClient
 {
 //	private static Log log = LogFactory.getLog( InternalSampleCacheClient.class.getName() );
-	
-	private LibraryEntry libraryEntry = null;
-	private AtomicLong currentFramePosition = new AtomicLong(0);
-	private AtomicLong intendedFramePosition = new AtomicLong(0);
 
-	private int lastReadBlockNumber = 0;
+	private final LibraryEntry libraryEntry;
+	private final AtomicLong currentFramePosition = new AtomicLong(0);
+	private final AtomicLong intendedFramePosition = new AtomicLong(0);
 
-	public InternalSampleCacheClient( LibraryEntry libraryEntry, long currentFramePosition, long intendedFramePosition )
+	private int lastReadBlockNumber;
+
+	public InternalSampleCacheClient( final LibraryEntry libraryEntry, final long currentFramePosition, final long intendedFramePosition )
 	{
 		this.libraryEntry = libraryEntry;
 		this.currentFramePosition.set( currentFramePosition );
@@ -46,25 +46,25 @@ public class InternalSampleCacheClient implements SampleCacheClient
 	{
 		return libraryEntry;
 	}
-	
+
 	public long getCurrentFramePosition()
 	{
 		return currentFramePosition.get();
 	}
 
 	@Override
-	public void setCurrentFramePosition( long newFramePosition )
+	public void setCurrentFramePosition( final long newFramePosition )
 	{
 		currentFramePosition.set( newFramePosition );
 	}
-	
+
 	public long getIntendedFramePosition()
 	{
 		return intendedFramePosition.get();
 	}
-	
+
 	@Override
-	public void setIntendedFramePosition( long newIntendedPosition )
+	public void setIntendedFramePosition( final long newIntendedPosition )
 	{
 		intendedFramePosition.set( newIntendedPosition );
 	}
@@ -75,6 +75,7 @@ public class InternalSampleCacheClient implements SampleCacheClient
 		return libraryEntry.getTotalNumFrames();
 	}
 
+	@Override
 	public int getNumChannels()
 	{
 		return libraryEntry.getNumChannels();
@@ -84,12 +85,13 @@ public class InternalSampleCacheClient implements SampleCacheClient
 	{
 		return lastReadBlockNumber;
 	}
-	
-	public void setLastReadBlockNumber( int newLastReadBlockNumber )
+
+	public void setLastReadBlockNumber( final int newLastReadBlockNumber )
 	{
 		lastReadBlockNumber = newLastReadBlockNumber;
 	}
-	
+
+	@Override
 	public int getSampleRate()
 	{
 		return libraryEntry.getSampleRate();

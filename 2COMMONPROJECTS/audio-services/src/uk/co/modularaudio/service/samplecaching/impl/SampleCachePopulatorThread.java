@@ -31,14 +31,14 @@ import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 public class SampleCachePopulatorThread extends AbstractInterruptableThread
 {
 	private static Log log = LogFactory.getLog( SampleCachePopulatorThread.class.getName() );
-	
-	private SampleCache sampleCache;
-	private TemperatureBufferBlockMap temperatureBufferBlockMap;
-	
-	private Semaphore jobsToDoSemaphore = new Semaphore( 1, false );
 
-	public SampleCachePopulatorThread( SampleCache sampleCache,
-			TemperatureBufferBlockMap temperatureBufferBlockMap )
+	private final SampleCache sampleCache;
+	private final TemperatureBufferBlockMap temperatureBufferBlockMap;
+
+	private final Semaphore jobsToDoSemaphore = new Semaphore( 1, false );
+
+	public SampleCachePopulatorThread( final SampleCache sampleCache,
+			final TemperatureBufferBlockMap temperatureBufferBlockMap )
 	{
 		super( MAThreadPriority.REALTIME_SUPPORT );
 		this.setName( getClass().getSimpleName() );
@@ -51,9 +51,9 @@ public class SampleCachePopulatorThread extends AbstractInterruptableThread
 	{
 //		log.debug("doJob()");
 		temperatureBufferBlockMap.allocate();
-		
+
 		boolean localHalt = shouldHalt;
-		
+
 		while( !localHalt )
 		{
 			try
@@ -69,7 +69,10 @@ public class SampleCachePopulatorThread extends AbstractInterruptableThread
 			}
 			catch( Exception e )
 			{
-				log.error("Exception caught during cache population run: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Exception caught during cache population run: " + e.toString(), e );
+				}
 			}
 			localHalt = shouldHalt;
 		}
