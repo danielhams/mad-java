@@ -23,9 +23,11 @@ package uk.co.modularaudio.util.io;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -44,24 +46,24 @@ public final class FileUtils
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void recursiveMakeDir(String path)
+	public static void recursiveMakeDir(final String path)
 			throws IOException
 	{
 		// Basically, check if our parent dir exists, if it doesn't, then call recursiveMakeDir on it, then create
 		// ourselves.]
-		char pathSeparator = File.separatorChar;
+		final char pathSeparator = File.separatorChar;
 
-		int lastPathSepInstance = path.lastIndexOf(pathSeparator);
+		final int lastPathSepInstance = path.lastIndexOf(pathSeparator);
 
 		// We also need to know if its the first
-		int firstPathSepInstance = path.indexOf(pathSeparator);
+		final int firstPathSepInstance = path.indexOf(pathSeparator);
 
 		if (firstPathSepInstance == lastPathSepInstance )
 		{
 			if( path.charAt( 0 ) != File.separatorChar )
 			{
 				// We have a root directory that is relative - check it exists
-				File rootPathFile = new File( path );
+				final File rootPathFile = new File( path );
 				if( !rootPathFile.exists() )
 				{
 					rootPathFile.mkdir();
@@ -75,8 +77,8 @@ public final class FileUtils
 		}
 		else
 		{
-			String parentPath = path.substring(0, lastPathSepInstance);
-			File parentDir = new File(parentPath);
+			final String parentPath = path.substring(0, lastPathSepInstance);
+			final File parentDir = new File(parentPath);
 			boolean exists = parentDir.exists();
 			boolean isDir = parentDir.isDirectory();
 			boolean isFile = parentDir.isFile();
@@ -99,7 +101,7 @@ public final class FileUtils
 				FileUtils.recursiveMakeDir(parentPath);
 			}
 
-			File realDir = new File(path);
+			final File realDir = new File(path);
 			exists = realDir.exists();
 			isDir = realDir.isDirectory();
 			isFile = realDir.isFile();
@@ -117,7 +119,7 @@ public final class FileUtils
 			{
 				if (!realDir.mkdir())
 				{
-					String message = "Unable to create directory: " + realDir;
+					final String message = "Unable to create directory: " + realDir;
 					throw new IOException(message);
 				}
 			}
@@ -125,16 +127,16 @@ public final class FileUtils
 		}
 	}
 
-	public static void writeUTF8( String filePath, String content ) throws IOException
+	public static void writeUTF8( final String filePath, final String content ) throws IOException
 	{
 		Files.write( FileSystems.getDefault().getPath( filePath ),
 				content.getBytes( StandardCharsets.UTF_8 ) );
 	}
 
-	public static String basicReadInputStreamUTF8( InputStream hbmInputStream ) throws IOException
+	public static String basicReadInputStreamUTF8( final InputStream hbmInputStream ) throws IOException
 	{
 		BufferedReader br = null;
-		StringBuilder out = new StringBuilder();
+		final StringBuilder out = new StringBuilder();
 
 		try
 		{
@@ -153,7 +155,7 @@ public final class FileUtils
 			{
 				br.close();
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				log.error(e);
 			}
@@ -162,9 +164,37 @@ public final class FileUtils
 		return out.toString();
 	}
 
-	public static String basicReadFileUTF8( String headerFilename ) throws IOException
+	public static String basicReadFileUTF8( final String headerFilename ) throws IOException
 	{
 		return basicReadInputStreamUTF8( new FileInputStream( new File(headerFilename ) ) );
 	}
 
+	public static void copyFile( final File sourceFile, final File destFile ) throws IOException
+	{
+		if (!destFile.exists())
+		{
+			destFile.createNewFile();
+		}
+
+		FileChannel source = null;
+		FileChannel destination = null;
+
+		try
+		{
+			source = new FileInputStream( sourceFile ).getChannel();
+			destination = new FileOutputStream( destFile ).getChannel();
+			destination.transferFrom( source, 0, source.size() );
+		}
+		finally
+		{
+			if (source != null)
+			{
+				source.close();
+			}
+			if (destination != null)
+			{
+				destination.close();
+			}
+		}
+	}
 }

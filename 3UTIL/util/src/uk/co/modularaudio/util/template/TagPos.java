@@ -34,7 +34,7 @@ package uk.co.modularaudio.util.template;
  */
 class TagPos
 {
-	public TagPos(int p, int l, String v)
+	public TagPos(final int p, final int l, final String v)
 	{
 		position = p;
 		length = l;

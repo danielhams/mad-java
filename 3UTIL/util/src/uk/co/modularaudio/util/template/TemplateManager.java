@@ -22,7 +22,8 @@ package uk.co.modularaudio.util.template;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <P>Provides a lazy evaluation cache for required templates for a servlet.</P>
@@ -34,13 +35,13 @@ import java.util.Hashtable;
  */
 public class TemplateManager
 {
-	public TemplateManager(TemplateFactory tFactory)
+	public TemplateManager(final TemplateFactory tFactory)
 	{
-		precachedTemplates = new Hashtable<String,Template>();
+		precachedTemplates = new HashMap<String,Template>();
 		templateFactory = tFactory;
 	}
 
-	public Template getTemplate(String tname)
+	public Template getTemplate(final String tname)
 		throws IOException, FileNotFoundException
 	{
 		// Check to see if we already have that template cached,
@@ -57,7 +58,7 @@ public class TemplateManager
 		return (retTemplate);
 	}
 
-	private Hashtable<String,Template> precachedTemplates;
+	private final Map<String,Template> precachedTemplates;
 
-	private TemplateFactory templateFactory;
+	private final TemplateFactory templateFactory;
 }

@@ -24,8 +24,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <P>Allows the creation of a string (of HTML output normally) from a template file along with a list of replaceables.</P>
@@ -37,19 +38,19 @@ import java.util.LinkedList;
  */
 public class Template
 {
-	public Template(InputStream is) throws IOException
+	public Template(final InputStream is) throws IOException
 	{
 		this(is, null);
 	}
 
-	public Template(InputStream is, String[] tags) throws IOException
+	public Template(final InputStream is, final String[] tags) throws IOException
 	{
 		this( new BufferedReader( new InputStreamReader( is ) ), tags );
 	}
 
-	public Template( BufferedReader br, String[] tags) throws IOException
+	public Template( final BufferedReader br, final String[] tags) throws IOException
 	{
-		lines = new LinkedList<TemplateLine>();
+		lines = new ArrayList<TemplateLine>();
 
 		String line;
 		while ((line = br.readLine()) != null)
@@ -63,13 +64,13 @@ public class Template
 		return (replaceTags(null));
 	}
 
-	public StringBuilder replaceTags(TemplateReplacements replacements)
+	public StringBuilder replaceTags(final TemplateReplacements replacements)
 	{
-		StringBuilder retVal = new StringBuilder();
-		Iterator<TemplateLine> iter = lines.iterator();
+		final StringBuilder retVal = new StringBuilder();
+		final Iterator<TemplateLine> iter = lines.iterator();
 		while (iter.hasNext())
 		{
-			TemplateLine tl = (TemplateLine) iter.next();
+			final TemplateLine tl = iter.next();
 			retVal.append(tl.replaceTags(replacements));
 			if( lines.size() > 1 )
 			{
@@ -79,5 +80,5 @@ public class Template
 		return (retVal);
 	}
 
-	private LinkedList<TemplateLine> lines;
+	private final List<TemplateLine> lines;
 }

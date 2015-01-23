@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.util.template;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  * <P>A hash of tag-&gt;replacement</P>
@@ -28,7 +28,7 @@ import java.util.Hashtable;
  * @author D Hams
  * @version 1.0
  * @see uk.co.modularaudio.util.template.Template*/
-public class TemplateReplacements extends Hashtable<String,String>
+public class TemplateReplacements extends HashMap<String,String>
 {
 	private static final long serialVersionUID = -8545659296762439335L;
 
@@ -36,9 +36,9 @@ public class TemplateReplacements extends Hashtable<String,String>
 	{
 	}
 
-	public String get(String key)
+	public String get(final String key)
 	{
-		String retVal = (String) super.get(key);
+		String retVal = super.get(key);
 		if (retVal == null)
 		{
 			retVal = "";

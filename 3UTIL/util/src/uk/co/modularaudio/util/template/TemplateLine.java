@@ -20,8 +20,9 @@
 
 package uk.co.modularaudio.util.template;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 /**
  * <P>Represents a single line for replacement in a template.</P>
  * <P>It contains references to positions of tags (TagPos classes), along with
@@ -36,9 +37,9 @@ import java.util.LinkedList;
  */
 public class TemplateLine
 {
-	public TemplateLine(String line, String[] tags)
+	public TemplateLine(final String line, final String[] tags)
 	{
-		tagPositions = new LinkedList<TagPos>();
+		tagPositions = new ArrayList<TagPos>();
 		theLine = line;
 		// Cycle through the line, looking for the tag that matches earliest
 		// since the end of the last tag, and then create a new
@@ -70,9 +71,9 @@ public class TemplateLine
 			// is not -1, we found a new TagPos object
 			if (earliestMatchedTagNum != -1)
 			{
-				String whichTag = tags[earliestMatchedTagNum];
+				final String whichTag = tags[earliestMatchedTagNum];
 
-				TagPos tp =
+				final TagPos tp =
 					new TagPos(
 						earliestMatchedTagPos,
 						whichTag.length(),
@@ -89,9 +90,9 @@ public class TemplateLine
 		}
 	}
 
-	public StringBuilder replaceTags(TemplateReplacements reps)
+	public StringBuilder replaceTags(final TemplateReplacements reps)
 	{
-		StringBuilder retVal = new StringBuilder();
+		final StringBuilder retVal = new StringBuilder();
 
 		// Performance hack - if no tags in list, output the whole line
 		if (tagPositions.size() == 0)
@@ -104,21 +105,21 @@ public class TemplateLine
 			// (if one exists), and output
 			int lastPos = 0;
 
-			Iterator<TagPos> iter = tagPositions.iterator();
+			final Iterator<TagPos> iter = tagPositions.iterator();
 
 			while (iter.hasNext())
 			{
-				TagPos tp = iter.next();
-				int tagpos = tp.position;
-				int taglen = tp.length;
-				String tag = tp.value;
+				final TagPos tp = iter.next();
+				final int tagpos = tp.position;
+				final int taglen = tp.length;
+				final String tag = tp.value;
 
 				// Output the line from lastPos up to the startpos
 				// of the replacement only if there is some to output
 				retVal.append(theLine.substring(lastPos, tagpos));
 
 				// Now add in the replacement
-				String rep = (String) reps.get(tag);
+				final String rep = reps.get(tag);
 				retVal.append(rep);
 
 				// Now move lastPos past this tag
@@ -130,7 +131,7 @@ public class TemplateLine
 		return (retVal);
 	}
 
-	private LinkedList<TagPos> tagPositions;
+	private final List<TagPos> tagPositions;
 
-	private String theLine;
+	private final String theLine;
 }
