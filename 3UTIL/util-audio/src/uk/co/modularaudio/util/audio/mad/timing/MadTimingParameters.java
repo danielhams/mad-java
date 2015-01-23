@@ -25,31 +25,31 @@ import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class MadTimingParameters
 {
-	protected long nanosPerBackEndPeriod = -1;
-	protected long nanosPerBackEndSample = -1;
-	protected long nanosPerFrontEndPeriod = -1;
-	protected int sampleFramesPerFrontEndPeriod = -1;
-	protected long nanosOutputLatency = -1;
-	
-	public MadTimingParameters( DataRate dataRate,
-			int sampleFramesPerBackEndPeriod,
-			int frontEndFps,
-			long nanosOutputLatency )
+	protected long nanosPerBackEndPeriod;
+	protected long nanosPerBackEndSample;
+	protected long nanosPerFrontEndPeriod;
+	protected int sampleFramesPerFrontEndPeriod;
+	protected long nanosOutputLatency;
+
+	public MadTimingParameters( final DataRate dataRate,
+			final int sampleFramesPerBackEndPeriod,
+			final int frontEndFps,
+			final long nanosOutputLatency )
 	{
-		int sampleRate = dataRate.getValue();
+		final int sampleRate = dataRate.getValue();
 		this.nanosPerBackEndPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, sampleFramesPerBackEndPeriod );
 		this.nanosPerBackEndSample = nanosPerBackEndPeriod / sampleFramesPerBackEndPeriod;
-		double secondsPerFrontEndPeriod = 1.0f / frontEndFps;
+		final double secondsPerFrontEndPeriod = 1.0f / frontEndFps;
 		this.nanosPerFrontEndPeriod = (long)(secondsPerFrontEndPeriod * 1000000000L);
 		this.sampleFramesPerFrontEndPeriod = AudioTimingUtils.getNumSamplesForNanosAtSampleRate(sampleRate, nanosPerFrontEndPeriod );
 		this.nanosOutputLatency = nanosOutputLatency;
 	}
 
-	public MadTimingParameters( long nanosPerBackEndPeriod,
-			long nanosPerBackEndSample,
-			long nanosPerFrontEndPeriod,
-			int sampleFramesPerFrontEndPeriod,
-			long nanosOutputLatency )
+	public MadTimingParameters( final long nanosPerBackEndPeriod,
+			final long nanosPerBackEndSample,
+			final long nanosPerFrontEndPeriod,
+			final int sampleFramesPerFrontEndPeriod,
+			final long nanosOutputLatency )
 	{
 		this.nanosPerBackEndPeriod = nanosPerBackEndPeriod;
 		this.nanosPerBackEndSample = nanosPerBackEndSample;
@@ -57,8 +57,8 @@ public class MadTimingParameters
 		this.sampleFramesPerFrontEndPeriod = sampleFramesPerFrontEndPeriod;
 		this.nanosOutputLatency = nanosOutputLatency;
 	}
-	
-	public void reset( MadTimingParameters from )
+
+	public void reset( final MadTimingParameters from )
 	{
 		this.nanosPerBackEndPeriod = from.nanosPerBackEndPeriod;
 		this.nanosPerBackEndSample = from.nanosPerBackEndSample;
@@ -71,7 +71,7 @@ public class MadTimingParameters
 	{
 		return nanosPerBackEndPeriod;
 	}
-	
+
 	public long getNanosPerBackEndSample()
 	{
 		return nanosPerBackEndSample;
@@ -81,7 +81,7 @@ public class MadTimingParameters
 	{
 		return nanosPerFrontEndPeriod;
 	}
-	
+
 	public int getSampleFramesPerFrontEndPeriod()
 	{
 		return sampleFramesPerFrontEndPeriod;
@@ -91,12 +91,12 @@ public class MadTimingParameters
 	{
 		return nanosOutputLatency;
 	}
-	
-	public void reset( long nanosPerBackEndPeriod,
-			long nanosPerBackEndSample,
-			long nanosPerFrontEndPeriod,
-			int sampleFramesPerFrontEndPeriod,
-			long nanosOutputLatency )
+
+	public void reset( final long nanosPerBackEndPeriod,
+			final long nanosPerBackEndSample,
+			final long nanosPerFrontEndPeriod,
+			final int sampleFramesPerFrontEndPeriod,
+			final long nanosOutputLatency )
 	{
 		this.nanosPerBackEndPeriod = nanosPerBackEndPeriod;
 		this.nanosPerBackEndSample = nanosPerBackEndSample;
@@ -104,10 +104,11 @@ public class MadTimingParameters
 		this.sampleFramesPerFrontEndPeriod = sampleFramesPerFrontEndPeriod;
 		this.nanosOutputLatency = nanosOutputLatency;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("NanosBEP: ");
 		sb.append( nanosPerBackEndPeriod );
 		sb.append(" NanosBES: ");
@@ -118,7 +119,7 @@ public class MadTimingParameters
 		sb.append( sampleFramesPerFrontEndPeriod );
 		sb.append(" NanosOL: ");
 		sb.append( nanosOutputLatency );
-		
+
 		return sb.toString();
 	}
 

@@ -26,7 +26,7 @@ public class HardwareMidiNoteEventCopier implements BufferObjectCopier<HardwareM
 {
 
 	@Override
-	public void copyValues( HardwareMidiNoteEvent in, HardwareMidiNoteEvent out )
+	public void copyValues( final HardwareMidiNoteEvent in, final HardwareMidiNoteEvent out )
 	{
 		out.channel = in.channel;
 		out.eventFrameTime = in.eventFrameTime;

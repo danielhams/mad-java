@@ -29,7 +29,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericRingBuffer<MadChannelNoteEvent>
 {
 	private final static MadChannelNoteEventCopier COPIER = new MadChannelNoteEventCopier();
-	
+
 	public LocklessChannelNoteRingBuffer( int capacity )
 	{
 		super( MadChannelNoteEvent.class, COPIER, capacity );
@@ -41,23 +41,23 @@ public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericR
 	}
 
 	@Override
-	public int read( MadChannelNoteEvent[] target, int pos, int length )
+	public int read( final MadChannelNoteEvent[] target, final int pos, final int length )
 			throws BufferUnderflowException
 	{
 		return super.read( target, pos, length );
 	}
 
 	@Override
-	public int write( MadChannelNoteEvent[] source, int pos, int length )
+	public int write( final MadChannelNoteEvent[] source, final int pos, final int length )
 	{
 		return super.write( source, pos, length );
 	}
 
-	public void peekCopyToDest( MadChannelNoteEvent dest )
+	public void peekCopyToDest( final MadChannelNoteEvent dest )
 	{
-		int curReadPosition = readPosition.get();
-		int curWritePosition = writePosition.get();
-		int numReadable = calcNumReadable( curReadPosition, curWritePosition );
+		final int curReadPosition = readPosition.get();
+		final int curWritePosition = writePosition.get();
+		final int numReadable = calcNumReadable( curReadPosition, curWritePosition );
 		if( numReadable > 0 )
 		{
 			COPIER.copyValues( buffer[ curReadPosition ], dest );
@@ -67,14 +67,12 @@ public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericR
 			dest.reset();
 		}
 	}
-	
-	public void moveForward( int readAmount )
-	{
-		int curReadPosition = readPosition.get();
-		int newPosition = curReadPosition;
 
-		newPosition += readAmount;
-		
+	public void moveForward( final int readAmount )
+	{
+		final int curReadPosition = readPosition.get();
+		int newPosition = curReadPosition + readAmount;
+
 		if( newPosition > bufferLength )
 		{
 			newPosition -= bufferLength;

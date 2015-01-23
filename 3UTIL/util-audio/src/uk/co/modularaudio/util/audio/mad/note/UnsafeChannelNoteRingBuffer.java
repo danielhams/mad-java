@@ -29,8 +29,8 @@ import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 public class UnsafeChannelNoteRingBuffer extends UnsafePreallocatingGenericRingBuffer<MadChannelNoteEvent>
 {
 	private final static MadChannelNoteEventCopier COPIER = new MadChannelNoteEventCopier();
-	
-	public UnsafeChannelNoteRingBuffer( int capacity )
+
+	public UnsafeChannelNoteRingBuffer( final int capacity )
 	{
 		super( MadChannelNoteEvent.class, COPIER, capacity );
 		// Now initialise empty objects inside the internal array
@@ -41,14 +41,14 @@ public class UnsafeChannelNoteRingBuffer extends UnsafePreallocatingGenericRingB
 	}
 
 	@Override
-	public int read( MadChannelNoteEvent[] target, int pos, int length )
+	public int read( final MadChannelNoteEvent[] target, final int pos, final int length )
 			throws BufferUnderflowException
 	{
 		return super.read( target, pos, length );
 	}
 
 	@Override
-	public int write( MadChannelNoteEvent[] source, int pos, int length )
+	public int write( final MadChannelNoteEvent[] source, final int pos, final int length )
 	{
 		return super.write( source, pos, length );
 	}

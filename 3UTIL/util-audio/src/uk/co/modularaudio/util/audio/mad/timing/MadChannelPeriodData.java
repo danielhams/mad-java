@@ -24,15 +24,15 @@ package uk.co.modularaudio.util.audio.mad.timing;
 public class MadChannelPeriodData
 {
 //	private static Log log = LogFactory.getLog( MadChannelPeriodData.class.getName() );
-	
-	private long periodStartFrameTimes = -1;
-	private int numFramesThisPeriod = -1;
-	
+
+	private long periodStartFrameTimes;
+	private int numFramesThisPeriod;
+
 	public MadChannelPeriodData()
 	{
 	}
-	
-	public void reset( long periodStartFrameTime, int numFramesThisPeriod )
+
+	public void reset( final long periodStartFrameTime, final int numFramesThisPeriod )
 	{
 		this.periodStartFrameTimes = periodStartFrameTime;
 		this.numFramesThisPeriod = numFramesThisPeriod;
@@ -42,7 +42,7 @@ public class MadChannelPeriodData
 	{
 		return periodStartFrameTimes;
 	}
-	
+
 	public int getNumFramesThisPeriod()
 	{
 		return numFramesThisPeriod;

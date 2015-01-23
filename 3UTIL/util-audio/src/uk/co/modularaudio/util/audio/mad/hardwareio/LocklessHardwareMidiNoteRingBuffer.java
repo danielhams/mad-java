@@ -33,7 +33,7 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 
 	private final static HardwareMidiNoteEventCopier NOTE_COPIER = new HardwareMidiNoteEventCopier();
 
-	public LocklessHardwareMidiNoteRingBuffer( int capacity )
+	public LocklessHardwareMidiNoteRingBuffer( final int capacity )
 	{
 		super( HardwareMidiNoteEvent.class, NOTE_COPIER, capacity );
 		// Now initialise empty objects inside the internal array
@@ -44,36 +44,34 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 	}
 
 	@Override
-	public int read( HardwareMidiNoteEvent[] target, int pos, int length )
+	public int read( final HardwareMidiNoteEvent[] target, final int pos, final int length )
 			throws BufferUnderflowException
 	{
 		return super.read( target, pos, length );
 	}
 
 	@Override
-	public int write( HardwareMidiNoteEvent[] source, int pos, int length )
+	public int write( final HardwareMidiNoteEvent[] source, final int pos, final int length )
 	{
 		return super.write( source, pos, length );
 	}
 
-	public int readUpToMaxNumAndFrameTime( HardwareMidiNoteEvent[] target,
-			int pos,
-			int maxNum,
-			long endFrameTime )
+	public int readUpToMaxNumAndFrameTime( final HardwareMidiNoteEvent[] target,
+			final int pos,
+			final int maxNum,
+			final long endFrameTime )
 	{
 		boolean success = false;
 		int numRead = 0;
 		while( !success )
 		{
-			int curReadPosition = readPosition.get();
-			int curWritePosition = writePosition.get();
-			int numReadable = calcNumReadable( curReadPosition, curWritePosition );
+			final int curReadPosition = readPosition.get();
+			final int curWritePosition = writePosition.get();
+			final int numReadable = calcNumReadable( curReadPosition, curWritePosition );
 			if( numReadable == 0 )
 			{
 				return 0;
 			}
-			int newPosition = curReadPosition;
-
 			int length = ( numReadable < maxNum ? numReadable : maxNum );
 
 			// Now check the timestamp to work out how many we will actually read out
@@ -83,7 +81,7 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 			{
 				int posToCheck = curReadPosition + c;
 				if( posToCheck > (bufferLength-1) ) { posToCheck -= bufferLength; };
-				long bufferEventFrameTime = buffer[ posToCheck ].eventFrameTime;
+				final long bufferEventFrameTime = buffer[ posToCheck ].eventFrameTime;
 				if( bufferEventFrameTime > endFrameTime )
 				{
 					if( c == 0 )
@@ -117,8 +115,8 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 				// Case where the read position might loop over the end of the buffer
 				if( curReadPosition + length > bufferLength )
 				{
-					int numToReadFromEnd = bufferLength - curReadPosition;
-					int numToReadFromStart = length - numToReadFromEnd;
+					final int numToReadFromEnd = bufferLength - curReadPosition;
+					final int numToReadFromStart = length - numToReadFromEnd;
 					copyFromToLength( buffer, curReadPosition, target, pos, numToReadFromEnd );
 					copyFromToLength( buffer, 0, target, pos+ numToReadFromEnd, numToReadFromStart );
 				}
@@ -136,7 +134,7 @@ public class LocklessHardwareMidiNoteRingBuffer extends LocklessPreallocatingGen
 				throw new BufferUnderflowException();
 			}
 
-			newPosition += length;
+			int newPosition = curReadPosition + length;
 
 			if( newPosition >= bufferLength )
 			{

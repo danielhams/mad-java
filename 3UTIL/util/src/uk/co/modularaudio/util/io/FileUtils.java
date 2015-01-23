@@ -29,7 +29,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -129,8 +128,7 @@ public final class FileUtils
 	public static void writeUTF8( String filePath, String content ) throws IOException
 	{
 		Files.write( FileSystems.getDefault().getPath( filePath ),
-				content.getBytes( StandardCharsets.UTF_8 ),
-				StandardOpenOption.CREATE );
+				content.getBytes( StandardCharsets.UTF_8 ) );
 	}
 
 	public static String basicReadInputStreamUTF8( InputStream hbmInputStream ) throws IOException

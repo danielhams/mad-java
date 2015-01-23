@@ -26,13 +26,13 @@ import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
 
 public class HardwareMidiNoteEvent
 {
-	public int channel = -1;
-	public long eventFrameTime = -1;
-	public MadChannelNoteEventType eventType = null;
-	public int paramOne = -1;
-	public int paramTwo = -1;
+	public int channel;
+	public long eventFrameTime;
+	public MadChannelNoteEventType eventType;
+	public int paramOne;
+	public int paramTwo;
 	// For continuations, it's the midi number of the previous note we are a continuation of
-	public int paramThree = -1;
+	public int paramThree;
 
 	public HardwareMidiNoteEvent()
 	{
@@ -49,7 +49,12 @@ public class HardwareMidiNoteEvent
 		paramThree = -1;
 	}
 
-	public void set( int channel, long eventFrameTime, MadChannelNoteEventType eventType, int paramOne, int paramTwo, int paramThree )
+	public void set( final int channel,
+			final long eventFrameTime,
+			final MadChannelNoteEventType eventType,
+			final int paramOne,
+			final int paramTwo,
+			final int paramThree )
 	{
 		this.channel = channel;
 		this.eventFrameTime = eventFrameTime;
