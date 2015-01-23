@@ -60,10 +60,10 @@ public class ComponentDesigner implements ExitSignalReceiver
 {
 	private static Log log = LogFactory.getLog( ComponentDesigner.class.getName() );
 
-	private static final String BEANS_FILENAME = "/cdbeans.xml";
-	private static String CONFIG_FILENAME = "/cdconfiguration.properties";
-	private static final String PLUGIN_BEANS_FILENAME = "/pluginbeans.xml";
-	private static final String PLUGIN_CONFIG_FILENAME = "/pluginconfiguration.properties";
+	private static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
+	private static String CONFIG_RESOURCE_PATH = "/cdconfiguration.properties";
+	private static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";
+	private static final String PLUGIN_CONFIG_RESOURCE_PATH = "/pluginconfiguration.properties";
 
 	// Gui bits
 	private MainFrame mainFrame = null;
@@ -88,10 +88,10 @@ public class ComponentDesigner implements ExitSignalReceiver
 	}
 
 	public void init( boolean showAlpha , boolean showBeta,
-			String additionalBeansFile, String additionalConfigFile ) throws DatastoreException
+			String additionalBeansResource, String additionalConfigResource ) throws DatastoreException
 	{
 		// Setup the application context and get the necessary references to the gui controller
-		setupApplicationContext( showAlpha, showBeta, additionalBeansFile, additionalConfigFile );
+		setupApplicationContext( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
 		mainFrame = new MainFrame();
 		preferencesDialog = new PreferencesDialog( componentDesignerFrontController, mainFrame );
 		mainFrameActions = new MainFrameActions( this, componentDesignerFrontController, mainFrame, preferencesDialog, configurationService );
@@ -101,7 +101,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 	}
 
 	public void setupApplicationContext( boolean showAlpha , boolean showBeta,
-			String additionalBeansFile, String additionalConfigFile )
+			String additionalBeansResource, String additionalConfigResource )
 		throws DatastoreException
 	{
 		try
@@ -112,19 +112,19 @@ public class ComponentDesigner implements ExitSignalReceiver
 			contextHelperList.add( new PostInitPreShutdownContextHelper() );
 			contextHelperList.add( new SpringHibernateContextHelper() );
 			sch = new SpringComponentHelper( contextHelperList );
-			String[] additionalBeansFilenames = null;
-			if( additionalBeansFile != null )
+			String[] additionalBeansResources = null;
+			if( additionalBeansResource != null )
 			{
-				additionalBeansFilenames = new String[1];
-				additionalBeansFilenames[0] = additionalBeansFile;
+				additionalBeansResources = new String[1];
+				additionalBeansResources[0] = additionalBeansResource;
 			}
-			String[] additionalConfigFilenames = null;
-			if( additionalConfigFile != null )
+			String[] additionalConfigResources = null;
+			if( additionalConfigResource != null )
 			{
-				additionalConfigFilenames = new String[1];
-				additionalConfigFilenames[0] = additionalConfigFile;
+				additionalConfigResources = new String[1];
+				additionalConfigResources[0] = additionalConfigResource;
 			}
-			gac = sch.makeAppContext( BEANS_FILENAME, CONFIG_FILENAME, additionalBeansFilenames, additionalConfigFilenames );
+			gac = sch.makeAppContext( BEANS_RESOURCE_PATH, CONFIG_RESOURCE_PATH, additionalBeansResources, additionalConfigResources );
 			componentDesignerFrontController = gac.getBean( ComponentDesignerFrontController.class );
 			componentImageFactory = gac.getBean( ComponentImageFactory.class );
 			configurationService = gac.getBean( ConfigurationService.class );
@@ -221,8 +221,8 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 		boolean showAlpha = false;
 		boolean showBeta = false;
-		String additionalBeansFile = null;
-		String additionalConfigFile = null;
+		String additionalBeansResource = null;
+		String additionalConfigResource = null;
 
 		if( args.length > 0 )
 		{
@@ -244,16 +244,16 @@ public class ComponentDesigner implements ExitSignalReceiver
 				}
 				else if( arg.equals("--pluginJar") )
 				{
-					additionalBeansFile = PLUGIN_BEANS_FILENAME;
-					additionalConfigFile = PLUGIN_CONFIG_FILENAME;
+					additionalBeansResource = PLUGIN_BEANS_RESOURCE_PATH;
+					additionalConfigResource = PLUGIN_CONFIG_RESOURCE_PATH;
 
-					log.debug( "Will append plugin beans: " + additionalBeansFile );
-					log.debug( "Will append plugin config file: " + additionalConfigFile );
+					log.debug( "Will append plugin beans: " + additionalBeansResource );
+					log.debug( "Will append plugin config file: " + additionalConfigResource );
 				}
 				else if( arg.equals( "--development") )
 				{
 					// Let me specify certain things with hard paths
-					CONFIG_FILENAME = "/cddevelopment.properties";
+					CONFIG_RESOURCE_PATH = "/cddevelopment.properties";
 				}
 			}
 		}
@@ -273,7 +273,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 		JTransformsConfigurator.setThreadsToOne();
 
 		final ComponentDesigner application = new ComponentDesigner();
-		application.init( showAlpha, showBeta, additionalBeansFile, additionalConfigFile );
+		application.init( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
 
 		SwingUtilities.invokeLater( new Runnable()
 		{

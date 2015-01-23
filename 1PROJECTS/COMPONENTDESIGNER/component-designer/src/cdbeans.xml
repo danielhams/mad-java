@@ -2,7 +2,7 @@
 <!-- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> -->
 <beans xmlns="http://www.springframework.org/schema/beans">
 	<bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="propertyFile"><value>componentdesigner.properties</value></property>
+		<property name="configResourcePath"><value>/cdconfiguration.properties</value></property>
 	</bean>
 	<bean id="componentDesignerFrontController" class="uk.co.modularaudio.componentdesigner.controller.front.impl.ComponentDesignerFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiHelperController"><ref bean="guiHelperController"></ref></property>

@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.util.spring;
 
- import java.io.InputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,9 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class SpringComponentHelper
 {
+	private static final String CONFIG_RESOURCE_PATH_PROPERTY = "configResourcePath";
+	private static final String ADDITIONAL_RESOURCE_PATHS = "additionalResourcePaths";
+
 	private static Log log = LogFactory.getLog( SpringComponentHelper.class.getName() );
 
 	public final String DEFAULT_BEANS_FILENAME = "/beans.xml";
@@ -49,46 +52,46 @@ public class SpringComponentHelper
 	{
 	}
 
-	public SpringComponentHelper( List<SpringContextHelper> clientHelpers )
+	public SpringComponentHelper( final List<SpringContextHelper> clientHelpers )
 	{
 		contextHelpers.addAll( clientHelpers );
 	}
 
 	public GenericApplicationContext makeAppContext()
-		throws RecordNotFoundException, DatastoreException
+			throws RecordNotFoundException, DatastoreException
 	{
 		return makeAppContext( DEFAULT_BEANS_FILENAME, null, null, null );
 	}
 
-	public GenericApplicationContext makeAppContext( String beansFilename,
-			String configurationFilename )
-		throws RecordNotFoundException, DatastoreException
+	public GenericApplicationContext makeAppContext( final String beansResourcePath,
+			final String configResourcePath )
+					throws RecordNotFoundException, DatastoreException
 	{
-		return makeAppContext( beansFilename, configurationFilename, null, null );
+		return makeAppContext( beansResourcePath, configResourcePath, null, null );
 	}
 
-	public GenericApplicationContext makeAppContext( String beansFilename,
-			String configurationFilename,
-			String[] additionalBeansFilenames,
-			String[] additionalConfigFilenames )
-		throws RecordNotFoundException, DatastoreException
+	public GenericApplicationContext makeAppContext( final String beansResourcePath,
+			final String configResourcePath,
+			final String[] additionalBeansResources,
+			final String[] additionalConfigResources )
+					throws RecordNotFoundException, DatastoreException
 	{
 		GenericApplicationContext appContext = null;
 
-		Class<SpringComponentHelper> thisClass = SpringComponentHelper.class;
+		final Class<SpringComponentHelper> thisClass = SpringComponentHelper.class;
 
 		// Do any work needed before we instantiate the context
-		for( SpringContextHelper helper : contextHelpers )
+		for( final SpringContextHelper helper : contextHelpers )
 		{
 			try
 			{
 				helper.preContextDoThings();
 			}
-			catch(Exception ce )
+			catch(final Exception ce )
 			{
-				String msg = "Exception caught calling precontext of helper " +
-					helper.getClass() +
-					": " + ce.toString();
+				final String msg = "Exception caught calling precontext of helper " +
+						helper.getClass() +
+						": " + ce.toString();
 				log.error( msg, ce );
 				// Will halt context creation.
 				throw new DatastoreException( msg, ce );
@@ -97,30 +100,29 @@ public class SpringComponentHelper
 
 		try
 		{
-//			InputStream bIStream = thisClass.getClassLoader().getResourceAsStream( beansFilename );
-			InputStream bIStream = thisClass.getResourceAsStream( beansFilename );
+			final InputStream bIStream = thisClass.getResourceAsStream( beansResourcePath );
 			if( bIStream != null )
 			{
-				InputSource bISource = new InputSource( bIStream );
+				final InputSource bISource = new InputSource( bIStream );
 
 				appContext = new GenericApplicationContext();
 				appContext.addBeanFactoryPostProcessor( beanInstantiationList );
 
-				XmlBeanDefinitionReader xbdr = new XmlBeanDefinitionReader( appContext );
+				final XmlBeanDefinitionReader xbdr = new XmlBeanDefinitionReader( appContext );
 
 				xbdr.setValidationMode( XmlBeanDefinitionReader.VALIDATION_NONE );
 				xbdr.loadBeanDefinitions( bISource );
 
 				// And load any additional beans files now we've loaded the "driver"
-				if( additionalBeansFilenames != null && additionalBeansFilenames.length > 0 )
+				if( additionalBeansResources != null && additionalBeansResources.length > 0 )
 				{
-					for( String additionalBeansFilename : additionalBeansFilenames )
+					for( final String additionalBeansFilename : additionalBeansResources )
 					{
 						InputStream aBiStream = null;
 						InputSource aBiSource = null;
 						try
 						{
-//							aBiStream = thisClass.getClassLoader().getResourceAsStream( additionalBeansFilename );
+							//							aBiStream = thisClass.getClassLoader().getResourceAsStream( additionalBeansFilename );
 							aBiStream = thisClass.getResourceAsStream( additionalBeansFilename );
 
 							if( aBiStream != null )
@@ -143,34 +145,34 @@ public class SpringComponentHelper
 					}
 				}
 
-				BeanDefinition bd = appContext.getBeanDefinition( "configurationService" );
-				MutablePropertyValues mpvs = bd.getPropertyValues();
+				final BeanDefinition bd = appContext.getBeanDefinition( "configurationService" );
+				final MutablePropertyValues mpvs = bd.getPropertyValues();
 				// Push in the configuration file if one needs to be set
-				if( configurationFilename != null )
+				if( configResourcePath != null )
 				{
-					mpvs.removePropertyValue( "propertyFile" );
-					mpvs.addPropertyValue( "propertyFile", configurationFilename );
+					mpvs.removePropertyValue( CONFIG_RESOURCE_PATH_PROPERTY );
+					mpvs.addPropertyValue( CONFIG_RESOURCE_PATH_PROPERTY, configResourcePath );
 
 				}
-				if( additionalConfigFilenames != null && additionalConfigFilenames.length > 0 )
+				if( additionalConfigResources != null && additionalConfigResources.length > 0 )
 				{
-					mpvs.removePropertyValue( "additionalPropertyFiles" );
-					mpvs.addPropertyValue( "additionalPropertyFiles", additionalConfigFilenames );
+					mpvs.removePropertyValue( ADDITIONAL_RESOURCE_PATHS );
+					mpvs.addPropertyValue( ADDITIONAL_RESOURCE_PATHS, additionalConfigResources );
 				}
 
 				// Do any work needed before we refresh the context
 				// Prerefresh
-				for( SpringContextHelper helper : contextHelpers )
+				for( final SpringContextHelper helper : contextHelpers )
 				{
 					try
 					{
 						helper.preRefreshDoThings( appContext );
 					}
-					catch(Exception prer )
+					catch(final Exception prer )
 					{
-						String msg = "Exception caught calling prerefresh of helper " +
-							helper.getClass() +
-							": " + prer.toString();
+						final String msg = "Exception caught calling prerefresh of helper " +
+								helper.getClass() +
+								": " + prer.toString();
 						log.error( msg, prer );
 						// Will halt context creation
 						throw new DatastoreException( msg, prer );
@@ -183,31 +185,31 @@ public class SpringComponentHelper
 			else
 			{
 				// Didn't find the beans file
-				String msg = "Unable to find beans file: " + beansFilename;
+				final String msg = "Unable to find beans file: " + beansResourcePath;
 				log.error( msg );
 				throw new DatastoreException( msg );
 			}
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught setting up app context: " + e.toString();
+			final String msg = "Exception caught setting up app context: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
 
 		// Do any work needed after we refresh the context
 		// Post refresh calls
-		for( SpringContextHelper helper : contextHelpers )
+		for( final SpringContextHelper helper : contextHelpers )
 		{
 			try
 			{
 				helper.postRefreshDoThings( appContext, beanInstantiationList );
 			}
-			catch(Exception pre )
+			catch(final Exception pre )
 			{
-				String msg = "Exception caught calling postrefresh of helper " +
-					helper.getClass() +
-					": " + pre.toString();
+				final String msg = "Exception caught calling postrefresh of helper " +
+						helper.getClass() +
+						": " + pre.toString();
 				log.error( msg, pre );
 				// Will halt context creation
 				throw new DatastoreException( msg, pre );
@@ -217,20 +219,20 @@ public class SpringComponentHelper
 		return appContext;
 	}
 
-	public void destroyAppContext( GenericApplicationContext gac )
+	public void destroyAppContext( final GenericApplicationContext gac )
 	{
 		// Preshutdown calls
-		for( SpringContextHelper helper : contextHelpers )
+		for( final SpringContextHelper helper : contextHelpers )
 		{
 			try
 			{
 				helper.preShutdownDoThings( gac, beanInstantiationList );
 			}
-			catch (DatastoreException e)
+			catch (final DatastoreException e)
 			{
-				String msg = "Exception caught calling preshutdown of helper " +
-				helper.getClass() +
-				": " + e.toString();
+				final String msg = "Exception caught calling preshutdown of helper " +
+						helper.getClass() +
+						": " + e.toString();
 				log.error( msg, e );
 				// We don't halt as the destroy should try and carry on
 			}

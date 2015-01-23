@@ -46,7 +46,7 @@ public class TestUsingService extends TestCase
 		log.debug("Setting up..");
 		
 		configurationService = new ConfigurationServiceImpl();
-		configurationService.setPropertyFile( "bias.properties" );
+		configurationService.setConfigResourcePath( "bias.properties" );
 		bufferedImageAllocationService = new BufferedImageAllocationServiceImpl();
 		bufferedImageAllocationService.setConfigurationService( configurationService );
 		configurationService.init();

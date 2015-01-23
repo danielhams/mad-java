@@ -22,6 +22,8 @@ package uk.co.modularaudio.service.configuration.impl;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,11 +61,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 {
 	private static Log log = LogFactory.getLog(ConfigurationServiceImpl.class.getName());
 
-	private String propertyFile = null;
-	private String[] additionalPropertyFiles = null;
+	private String configResourcePath;
+	private String[] additionalResourcePaths;
+	private String configFilePath;
+	private String[] additionalFilePaths;
 
-	private HashMap<String,String> keyToValueMap = null;
-	private HashSet<String> usedKeys = null;
+	private final HashMap<String,String> keyToValueMap = new HashMap<String,String>();
+	private final HashSet<String> usedKeys = new HashSet<String>();
 
 	private final static String b64EncryptionKey = "eUg0lWOSVA2vSgN/OcDz8Q==";
 
@@ -73,89 +77,77 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 	public ConfigurationServiceImpl()
 	{
-		keyToValueMap = new HashMap<String,String>();
-		usedKeys = new HashSet<String>();
 	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 
-		log.info("ConfigurationServiceImpl beginning. Will use '" + propertyFile + "'");
-		parseOnePropertyFile( propertyFile );
-
-		if( additionalPropertyFiles != null && additionalPropertyFiles.length > 0 )
+		if( configFilePath != null )
 		{
-			for( String additionalPropertyFile : additionalPropertyFiles )
+			log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+			parseOneFilePath( configResourcePath );
+
+			if( additionalFilePaths != null && additionalFilePaths.length > 0 )
 			{
-				parseOnePropertyFile( additionalPropertyFile );
+				for( final String additionalFilePath : additionalFilePaths )
+				{
+					parseOneFilePath( additionalFilePath );
+				}
 			}
 		}
+		else if( configResourcePath != null )
+		{
+			log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+			parseOneResourcePath( configResourcePath );
+
+			if( additionalResourcePaths != null && additionalResourcePaths.length > 0 )
+			{
+				for( final String additionalResourcePath : additionalResourcePaths )
+				{
+					parseOneResourcePath( additionalResourcePath );
+				}
+			}
+		}
+		else
+		{
+		}
+
 
 		try
 		{
 			// Initialise the secret key with our pepper (its not salt, since salt should be added to taste i.e. random).
-			byte keyAsBytes[] = Base64.decodeBase64( b64EncryptionKey );
+			final byte keyAsBytes[] = Base64.decodeBase64( b64EncryptionKey );
 
 			keySpec = new SecretKeySpec(keyAsBytes, "Blowfish");
 			cipher = Cipher.getInstance("Blowfish");
 		}
-		catch (NoSuchAlgorithmException nsae)
+		catch (final NoSuchAlgorithmException nsae)
 		{
-			String msg = "Unable to initialise config key decryption: " + nsae.toString();
+			final String msg = "Unable to initialise config key decryption: " + nsae.toString();
 			log.error(msg, nsae);
 			throw new ComponentConfigurationException(msg);
 		}
-		catch (NoSuchPaddingException nspe)
+		catch (final NoSuchPaddingException nspe)
 		{
-			String msg = "Unable to initialise config key decryption: " + nspe.toString();
+			final String msg = "Unable to initialise config key decryption: " + nspe.toString();
 			log.error(msg, nspe);
 			throw new ComponentConfigurationException(msg);
 		}
 	}
 
-	private void parseOnePropertyFile( String pfToProcess ) throws ComponentConfigurationException
+	private void parseOneFilePath( final String fpToProcess ) throws ComponentConfigurationException
 	{
 		InputStream fis = null;
-		BufferedReader br = null;
+		final BufferedReader br = null;
 		try
 		{
-			fis = getClass().getResourceAsStream(pfToProcess);
-			if( fis == null )
-			{
-				String msg = "Unable to find application properties file '" + propertyFile +
-					"' in the current classpath";
-				log.error(msg);
-				throw new ComponentConfigurationException(msg);
-			}
-			br = new BufferedReader( new InputStreamReader( fis ) );
-
-			String line = null;
-			while( (line = br.readLine() ) != null )
-			{
-				if( line.length() == 0 || line.charAt(0) == '#' || line.charAt(0) == '/' )
-				{
-					continue;
-				}
-				else
-				{
-					int equalsIndex = line.indexOf( '=' );
-					if( equalsIndex != -1 )
-					{
-						String key = line.substring(0, equalsIndex );
-						String value = line.substring( equalsIndex + 1 );
-						keyToValueMap.put( key, value );
-					}
-					else
-					{
-						throw new ComponentConfigurationException( "Unparsable line: " + line );
-					}
-				}
-			}
+			fis = new FileInputStream( new File( fpToProcess ) );
+			parseOneInputStream( fis );
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
-			String msg = "IOException caught reading application properties file: " + ioe.toString();
+			final String msg = "IOException caught reading config file: " + ioe.toString();
 			log.error(msg);
 			throw new ComponentConfigurationException(msg);
 		}
@@ -172,9 +164,78 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 					fis.close();
 				}
 			}
-			catch (IOException e)
+			catch (final IOException e)
 			{
 				throw new ComponentConfigurationException( "Failed cleaning up config file stream: " + e.toString(), e );
+			}
+		}
+	}
+
+	private void parseOneResourcePath( final String rpToProcess ) throws ComponentConfigurationException
+	{
+		InputStream fis = null;
+		final BufferedReader br = null;
+		try
+		{
+			fis = getClass().getResourceAsStream( rpToProcess );
+			if( fis == null )
+			{
+				final String msg = "Unable to find config file '" + rpToProcess + "'";
+				log.error(msg);
+				throw new ComponentConfigurationException(msg);
+			}
+			parseOneInputStream( fis );
+		}
+		catch (final IOException ioe)
+		{
+			final String msg = "IOException caught reading config file: " + ioe.toString();
+			log.error(msg);
+			throw new ComponentConfigurationException(msg);
+		}
+		finally
+		{
+			try
+			{
+				if( br != null )
+				{
+					br.close();
+				}
+				if( fis != null )
+				{
+					fis.close();
+				}
+			}
+			catch (final IOException e)
+			{
+				throw new ComponentConfigurationException( "Failed cleaning up config file stream: " + e.toString(), e );
+			}
+		}
+	}
+
+	private void parseOneInputStream( final InputStream is ) throws ComponentConfigurationException, IOException
+	{
+		final BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
+
+		String line = null;
+		while( (line = br.readLine() ) != null )
+		{
+			if( line.length() == 0 || line.charAt(0) == '#' || line.charAt(0) == '/' )
+			{
+				continue;
+			}
+			else
+			{
+				final int equalsIndex = line.indexOf( '=' );
+				if( equalsIndex != -1 )
+				{
+					final String key = line.substring(0, equalsIndex );
+					final String value = line.substring( equalsIndex + 1 );
+					keyToValueMap.put( key, value );
+				}
+				else
+				{
+					throw new ComponentConfigurationException( "Unparsable line: " + line );
+				}
 			}
 		}
 	}
@@ -182,7 +243,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	@Override
 	public void destroy()
 	{
-		for( String key : keyToValueMap.keySet() )
+		for( final String key : keyToValueMap.keySet() )
 		{
 			if( !usedKeys.contains( key ) )
 			{
@@ -192,23 +253,23 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	/**
-	 * @param propertyFile The propertyFile to set.
+	 * @param configResource The property file to find in the classpath
 	 */
-	public void setPropertyFile(String propertyFile)
+	public void setConfigResourcePath( final String configResource )
 	{
-		this.propertyFile = propertyFile;
+		this.configResourcePath = configResource;
 	}
 
-	public void setAdditionalPropertyFiles( String[] additionalPropertyFiles )
+	public void setAdditionalResourcePaths( final String[] additionalResourcePaths )
 	{
-		this.additionalPropertyFiles = additionalPropertyFiles;
+		this.additionalResourcePaths = additionalResourcePaths;
 	}
 
 	@Override
-	public String getSingleStringValue(String key)
+	public String getSingleStringValue(final String key)
 			throws RecordNotFoundException
 	{
-		String retVal = keyToValueMap.get(key);
+		final String retVal = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (retVal == null)
@@ -221,16 +282,26 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	public void setConfigFilePath( final String configFile )
+	{
+		this.configFilePath = configFile;
+	}
+
+	public void setAdditionalFilePaths( final String[] additionalFilePaths )
+	{
+		this.additionalFilePaths = additionalFilePaths;
+	}
+
 	@Override
-	public String[] getCommaSeparatedStringValues(String key)
+	public String[] getCommaSeparatedStringValues(final String key)
 			throws RecordNotFoundException
 	{
-		String values = getSingleStringValue(key);
+		final String values = getSingleStringValue(key);
 		return values.split(",");
 	}
 
 	@Override
-	public String getSingleEncryptedStringValue(String key)
+	public String getSingleEncryptedStringValue(final String key)
 			throws RecordNotFoundException
 	{
 		String retVal = keyToValueMap.get(key);
@@ -249,9 +320,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 				// Convert the text back into bytes for decrpytion
 				retVal = decryptStringWithKey(retVal);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				String msg = "Exception thrown decrypting " + key + ": " + e.toString();
+				final String msg = "Exception thrown decrypting " + key + ": " + e.toString();
 				log.error(msg, e);
 				throw new RecordNotFoundException(msg);
 			}
@@ -268,15 +339,15 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	 * @throws BadPaddingException
 	 * @throws UnsupportedEncodingException
 	 */
-	public String decryptStringWithKey(String cipherTextString)
+	public String decryptStringWithKey(final String cipherTextString)
 			throws IOException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException, UnsupportedEncodingException
 	{
-		byte cipherTextBytes[] = Base64.decodeBase64(cipherTextString);
+		final byte cipherTextBytes[] = Base64.decodeBase64(cipherTextString);
 
 		cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
-		byte plainTextBytes[] = cipher.doFinal(cipherTextBytes);
+		final byte plainTextBytes[] = cipher.doFinal(cipherTextBytes);
 
 		return (new String(plainTextBytes, "UTF-8"));
 	}
@@ -290,29 +361,29 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	 * @throws IllegalBlockSizeException
 	 * @throws IllegalStateException
 	 */
-	public String encryptStringWithKey(String plainText)
+	public String encryptStringWithKey(final String plainText)
 			throws UnsupportedEncodingException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException
 	{
-		byte plainTextBytes[] = plainText.getBytes("UTF-8");
+		final byte plainTextBytes[] = plainText.getBytes("UTF-8");
 
 		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 
-		byte cipherTextBytes[] = cipher.doFinal(plainTextBytes);
+		final byte cipherTextBytes[] = cipher.doFinal(plainTextBytes);
 
-		String b64CipherText = Base64.encodeBase64String(cipherTextBytes);
+		final String b64CipherText = Base64.encodeBase64String(cipherTextBytes);
 
 		return (b64CipherText);
 	}
 
 	@Override
-	public int getSingleIntValue(String key)
+	public int getSingleIntValue(final String key)
 			throws RecordNotFoundException
 	{
 		int retVal = 0;
 		boolean badValue = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -325,7 +396,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				retVal = Integer.parseInt(keyToValueMap.get(key));
 			}
-			catch (NumberFormatException nfe)
+			catch (final NumberFormatException nfe)
 			{
 				badValue = true;
 			}
@@ -340,13 +411,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public long getSingleLongValue(String key)
+	public long getSingleLongValue(final String key)
 			throws RecordNotFoundException
 	{
 		long retVal = 0;
 		boolean badValue = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -359,7 +430,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				retVal = Long.parseLong(keyToValueMap.get(key));
 			}
-			catch (NumberFormatException nfe)
+			catch (final NumberFormatException nfe)
 			{
 				badValue = true;
 			}
@@ -374,13 +445,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public double getSingleDoubleValue(String key)
+	public double getSingleDoubleValue(final String key)
 			throws RecordNotFoundException
 	{
 		double retVal = 0;
 		boolean badValue = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -393,7 +464,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				retVal = Double.parseDouble(keyToValueMap.get(key));
 			}
-			catch (NumberFormatException nfe)
+			catch (final NumberFormatException nfe)
 			{
 				badValue = true;
 			}
@@ -408,13 +479,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public float getSingleFloatValue(String key)
+	public float getSingleFloatValue(final String key)
 			throws RecordNotFoundException
 	{
 		float retVal = 0;
 		boolean badValue = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -427,7 +498,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				retVal = Float.parseFloat(keyToValueMap.get(key));
 			}
-			catch (NumberFormatException nfe)
+			catch (final NumberFormatException nfe)
 			{
 				badValue = true;
 			}
@@ -442,13 +513,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public boolean getSingleBooleanValue(String key)
+	public boolean getSingleBooleanValue(final String key)
 			throws RecordNotFoundException
 	{
 		boolean retVal = false;
 		boolean badValue = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -480,11 +551,11 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public boolean getSingleBooleanValue(String key, boolean defaultValue)
+	public boolean getSingleBooleanValue(final String key, final boolean defaultValue)
 	{
 		boolean retVal = false;
 
-		String tmpStr = keyToValueMap.get(key);
+		final String tmpStr = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (tmpStr == null)
@@ -510,12 +581,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public String[] getKeysBeginningWith(String keyStart)
+	public String[] getKeysBeginningWith(final String keyStart)
 	{
-		ArrayList<String> retVal = new ArrayList<String>();
+		final ArrayList<String> retVal = new ArrayList<String>();
 
-		Set<String> keys = keyToValueMap.keySet();
-		for( String curKey : keys )
+		final Set<String> keys = keyToValueMap.keySet();
+		for( final String curKey : keys )
 		{
 			if (curKey.indexOf(keyStart) == 0)
 			{
@@ -528,9 +599,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public String getSingleStringValue(String key, String defaultValue)
+	public String getSingleStringValue(final String key, final String defaultValue)
 	{
-		String retVal = keyToValueMap.get(key);
+		final String retVal = keyToValueMap.get(key);
 		usedKeys.add( key );
 
 		if (retVal == null)
@@ -544,10 +615,10 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public Date getSingleDateValue(String key)
+	public Date getSingleDateValue(final String key)
 			throws RecordNotFoundException
 	{
-		String strVal = this.getSingleStringValue(key);
+		final String strVal = this.getSingleStringValue(key);
 
 		return DateConverter.customDateTimeStrToJavaDate( strVal, DateConverter.MA_USER_DATE_TIME_FORMAT);
 	}
@@ -558,10 +629,10 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	@Override
-	public Color getSingleColorValue(String key )
-		throws RecordNotFoundException
+	public Color getSingleColorValue(final String key )
+			throws RecordNotFoundException
 	{
-		String strVal = this.getSingleStringValue( key );
+		final String strVal = this.getSingleStringValue( key );
 		return Color.decode( strVal );
 	}
 }
