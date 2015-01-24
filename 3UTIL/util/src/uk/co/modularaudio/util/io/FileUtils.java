@@ -133,20 +133,30 @@ public final class FileUtils
 				content.getBytes( StandardCharsets.UTF_8 ) );
 	}
 
-	public static String basicReadInputStreamUTF8( final InputStream hbmInputStream ) throws IOException
+	public static String basicReadInputStreamUTF8( final InputStream inputStream ) throws IOException
+	{
+		return basicReadInputStreamUTF8( inputStream, true );
+	}
+	public static String basicReadInputStreamUTF8( final InputStream inputStream, final boolean trailingNewline ) throws IOException
 	{
 		BufferedReader br = null;
 		final StringBuilder out = new StringBuilder();
 
+		boolean doneFirst = false;
+
 		try
 		{
-			br = new BufferedReader( new InputStreamReader( hbmInputStream, "UTF-8" ) );
+			br = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
 			String line;
 
 			while( (line = br.readLine()) != null )
 			{
+				if( doneFirst )
+				{
+					out.append( '\n' );
+				}
 				out.append( line );
-				out.append( '\n' );
+				doneFirst = true;
 			}
 		}
 		finally
@@ -160,13 +170,22 @@ public final class FileUtils
 				log.error(e);
 			}
 		}
+		if( trailingNewline && doneFirst )
+		{
+			out.append( '\n' );
+		}
 
 		return out.toString();
 	}
 
 	public static String basicReadFileUTF8( final String headerFilename ) throws IOException
 	{
-		return basicReadInputStreamUTF8( new FileInputStream( new File(headerFilename ) ) );
+		return basicReadFileUTF8( headerFilename, true );
+	}
+
+	public static String basicReadFileUTF8( final String headerFilename, final boolean trailingNewline ) throws IOException
+	{
+		return basicReadInputStreamUTF8( new FileInputStream( new File(headerFilename ) ), trailingNewline );
 	}
 
 	public static void copyFile( final File sourceFile, final File destFile ) throws IOException
