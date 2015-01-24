@@ -107,7 +107,7 @@ public class SampleCache
 					cachePopulatorThread.addOneJobToDo();
 					cachePopulatorThread.join();
 				}
-				catch (InterruptedException e)
+				catch (final InterruptedException e)
 				{
 					final String msg = "InterruptedException whilst joining cache populator: " + e.toString();
 					log.error( msg, e );
@@ -122,7 +122,7 @@ public class SampleCache
 	}
 
 	public void addClient( final InternalSampleCacheClient internalClient )
-		throws DatastoreException, RecordNotFoundException, IOException
+			throws DatastoreException, RecordNotFoundException, IOException
 	{
 		final LibraryEntry libraryEntry = internalClient.getLibraryEntry();
 		try
@@ -160,7 +160,7 @@ public class SampleCache
 	}
 
 	public void removeClient( final InternalSampleCacheClient internalClient )
-		throws DatastoreException, RecordNotFoundException
+			throws DatastoreException, RecordNotFoundException
 	{
 		final LibraryEntry libraryEntry = internalClient.getLibraryEntry();
 		try
@@ -183,7 +183,7 @@ public class SampleCache
 				{
 					audioFileIOService.closeHandle( sce.getAudioFileHandleAtom() );
 				}
-				catch( IOException ioe )
+				catch( final IOException ioe )
 				{
 					if( log.isErrorEnabled() )
 					{
@@ -215,10 +215,10 @@ public class SampleCache
 		final int clientLastReadBlockNumber = client.getLastReadBlockNumber();
 
 		final int libraryEntryId = libraryEntry.getLibraryEntryId();
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead );
-		}
+		//		if( log.isDebugEnabled() )
+		//		{
+		//			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead );
+		//		}
 
 		final int leNumChannels = libraryEntry.getNumChannels();
 		final long leTotalNumFrames = libraryEntry.getTotalNumFrames();
@@ -236,27 +236,27 @@ public class SampleCache
 			final long numZeroFrames = -readFramePosition;
 			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
 			final int numZeroFloats = numZeroFramesToFill * leNumChannels;
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Fill in " + numZeroFrames + " frames of zeros ");
-			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				log.debug("Fill in " + numZeroFrames + " frames of zeros ");
+			//			}
 			Arrays.fill( outputSamples, curOutputFloatPos, curOutputFloatPos + numZeroFloats, 0.0f );
 			curOutputFloatPos += numZeroFloats;
 			totalNumFloatsToRead -= numZeroFloats;
 			readFramePosition += numZeroFramesToFill;
 			numFramesToRead -= numZeroFramesToFill;
 			outputFramePos += numZeroFramesToFill;
-			if( log.isDebugEnabled() )
-			{
-				log.debug("This leaves " + numFramesToRead + " frames to be read");
-			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				log.debug("This leaves " + numFramesToRead + " frames to be read");
+			//			}
 			if( numFramesToRead == 0 )
 			{
 				return RealtimeMethodReturnCodeEnum.SUCCESS;
 			}
 		}
 
-        if( lastFramePositon >= leTotalNumFrames )
+		if( lastFramePositon >= leTotalNumFrames )
 		{
 			final long numZeroFrames = lastFramePositon - leTotalNumFrames;
 			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
@@ -272,11 +272,11 @@ public class SampleCache
 			}
 		}
 
-        final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntryId );
+		final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntryId );
 
-        long rawFloatPosition = SampleCache.frameToRawFloat( readFramePosition, leNumChannels );
-        int blockNumber = (int)(rawFloatPosition / blockBufferingConfiguration.blockLengthInFloats );
-        boolean clientChangedBlocks = blockNumber != clientLastReadBlockNumber;
+		long rawFloatPosition = SampleCache.frameToRawFloat( readFramePosition, leNumChannels );
+		int blockNumber = (int)(rawFloatPosition / blockBufferingConfiguration.blockLengthInFloats );
+		boolean clientChangedBlocks = blockNumber != clientLastReadBlockNumber;
 		client.setLastReadBlockNumber( blockNumber );
 		int readFloatsOffset = (int)(rawFloatPosition % blockBufferingConfiguration.blockLengthInFloats );
 
@@ -284,11 +284,11 @@ public class SampleCache
 		long blockMapIndex = buildBlockMapIndex( libraryEntryId, blockNumber );
 
 		SampleCacheBlock curBlock = null;
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Reading real samples for output at position " + outputFramePos + " from read frame position " + readFramePosition + " of " + numFramesToRead + " frames");
-			log.debug("This begins in block " + blockNumber + " at raw float position " + rawFloatPosition );
-		}
+		//		if( log.isDebugEnabled() )
+		//		{
+		//			log.debug("Reading real samples for output at position " + outputFramePos + " from read frame position " + readFramePosition + " of " + numFramesToRead + " frames");
+		//			log.debug("This begins in block " + blockNumber + " at raw float position " + rawFloatPosition );
+		//		}
 		while( totalNumFloatsToRead > 0 )
 		{
 			curBlock = blockIdToSampleCacheBlockMap.get( blockMapIndex );
@@ -310,10 +310,10 @@ public class SampleCache
 			int floatsReadableFromPositionInBlock = numFloatsInBlock - readFloatsOffset;
 
 			final int numFloatsThisRound = (totalNumFloatsToRead < floatsReadableFromPositionInBlock ? totalNumFloatsToRead : floatsReadableFromPositionInBlock);
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset + " writing to pos " + curOutputFloatPos );
-			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset + " writing to pos " + curOutputFloatPos );
+			//			}
 
 			final float[] curBlockBuffer = curBlockData.getBuffer();
 
@@ -340,10 +340,10 @@ public class SampleCache
 
 		if( clientChangedBlocks )
 		{
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Client changed blocks, will wake population thread");
-			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				log.debug("Client changed blocks, will wake population thread");
+			//			}
 			cachePopulatorThread.addOneJobToDo();
 		}
 
@@ -356,14 +356,14 @@ public class SampleCache
 			int numFramesToRead,
 			final SampleAcceptor sampleAcceptor)
 	{
-		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
+		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 		final LibraryEntry libraryEntry = client.getLibraryEntry();
 
 		final int libraryEntryId = libraryEntry.getLibraryEntryId();
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Reading samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead );
-		}
+		//		if( log.isDebugEnabled() )
+		//		{
+		//			log.debug("Reading samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead );
+		//		}
 
 		final int leNumChannels = libraryEntry.getNumChannels();
 		final long leTotalNumFrames = libraryEntry.getTotalNumFrames();
@@ -372,8 +372,8 @@ public class SampleCache
 
 		if( readFramePosition < 0 )
 		{
-			long numZeroFrames = -readFramePosition;
-			int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
+			final long numZeroFrames = -readFramePosition;
+			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
 
 			sampleAcceptor.acceptEmptySamples(0, leNumChannels, numZeroFramesToFill );
 
@@ -429,10 +429,10 @@ public class SampleCache
 			int floatsReadableFromPositionInBlock = numFloatsInBlock - readFloatsOffset;
 
 			final int numFloatsThisRound = (totalNumFloatsToRead < floatsReadableFromPositionInBlock ? totalNumFloatsToRead : floatsReadableFromPositionInBlock);
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset );
-			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset );
+			//			}
 
 			final float[] curBlockBuffer = curBlockData.getBuffer();
 
@@ -451,10 +451,10 @@ public class SampleCache
 				blockNumber++;
 				blockMapIndex = buildBlockMapIndex( libraryEntryId, blockNumber );
 				readFloatsOffset = 0;
-				if( log.isDebugEnabled() )
-				{
-					log.debug("Going up a block - totalNumFloatsToRead is currently " + totalNumFloatsToRead );
-				}
+				//				if( log.isDebugEnabled() )
+				//				{
+				//					log.debug("Going up a block - totalNumFloatsToRead is currently " + totalNumFloatsToRead );
+				//				}
 			}
 			else
 			{
@@ -500,7 +500,7 @@ public class SampleCache
 					{
 						if( curBlock == null )
 						{
-//							log.debug("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
+							//							log.debug("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
 							final SampleCacheBlock newlyPopulatedBlock = populateCacheForSampleCacheEntryBlock( sce, le, i, curBlockMapIndex );
 							blocksForCacheEntry.put( curBlockMapIndex, newlyPopulatedBlock );
 						}
@@ -517,7 +517,7 @@ public class SampleCache
 								case WARM:
 								{
 									// Re-warm the cache entry
-//									log.debug("Will re-warm existing block " + curBlockMapIndex );
+									//									log.debug("Will re-warm existing block " + curBlockMapIndex );
 									temperatureBufferBlockMap.reheatBlock( curBlock );
 									break;
 								}
@@ -531,7 +531,7 @@ public class SampleCache
 					}
 					else if( !shouldCacheBlock && curBlock != null && curBlock.useStatus.get() == SampleCacheBlockEnum.HOT )
 					{
-//						log.debug("Will cool hot block " + curBlockMapIndex );
+						//						log.debug("Will cool hot block " + curBlockMapIndex );
 						temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( curBlockMapIndex );
 						hotBlocksToCoolSet.remove( curBlock );
 					}
@@ -543,7 +543,7 @@ public class SampleCache
 			// Now clean up any remaining hot blocks by moving them to "warm"
 			for( final SampleCacheBlock hotBlock : hotBlocksToCoolSet )
 			{
-//				log.debug("Will set orphaned block " + hotBlock.blockID + " to warm");
+				//				log.debug("Will set orphaned block " + hotBlock.blockID + " to warm");
 
 				temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( hotBlock.blockID );
 			}
@@ -637,7 +637,7 @@ public class SampleCache
 			final LibraryEntry libraryEntry,
 			final int blockNumber,
 			final long blockMapIndex )
-		throws BlockNotAvailableException, DatastoreException, IOException
+					throws BlockNotAvailableException, DatastoreException, IOException
 	{
 		final SampleCacheBlock blockToUse = temperatureBufferBlockMap.getWarmOrFreeBlockCopyID( blockMapIndex );
 		final int numChannels = libraryEntry.getNumChannels();
@@ -648,7 +648,7 @@ public class SampleCache
 		final int numFrames = ( numFramesLeftToRead < blockLengthInFrames ? numFramesLeftToRead : blockLengthInFrames );
 		final AudioFileHandleAtom audioFileHandleAtom = sce.getAudioFileHandleAtom();
 		final float[] cacheBuffer = blockToUse.blockData.getBuffer();
-//		log.debug( "Asking for " + numFrames + " frames at frame position " + frameReadOffset );
+		//		log.debug( "Asking for " + numFrames + " frames at frame position " + frameReadOffset );
 		audioFileIOService.readFloats( audioFileHandleAtom, cacheBuffer, destPosition, numFrames, frameReadOffset );
 		blockToUse.blockData.setNumReadableFloatsInBlock( numFrames * numChannels );
 		temperatureBufferBlockMap.setBlockMakeHot( blockMapIndex, blockToUse );
@@ -681,7 +681,7 @@ public class SampleCache
 	private final static long buildBlockMapIndex( final int libraryEntryID, final int blockNumber )
 	{
 		final long combined = ((long)libraryEntryID << 32 ) | blockNumber;
-        return combined;
+		return combined;
 	}
 
 	private final static long frameToRawFloat( final long frameOffset, final int numChannels )

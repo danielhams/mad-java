@@ -48,7 +48,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 	protected static final int BYTE_BUFFER_SIZE = 4 * 1024;
 
 	private static Log log = LogFactory.getLog( BrokenAudioDataFetcher.class.getName() );
-	
+
 	private File inputFile = null;
 
 	private int numChannels = -1;
@@ -61,20 +61,20 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 	private int sampleSizeInBits = -1;
 	private Encoding encoding = Encoding.PCM_SIGNED;
 	private boolean bigEndian = false;
-	
+
 	private AudioFormat desiredAudioFormat = null;
 	private AudioInputStream rawAudioInputStream = null;
 	private AudioInputStream desiredAudioInputStream = null;
 	private long currentReadPosition = 0;
-		
+
 	private DetectedFormat detectedFormat = DetectedFormat.NONE;
 
 	public BrokenAudioDataFetcher()
 	{
 	}
-	
+
 	@Override
-	public void open( File inputFile )
+	public void open( final File inputFile )
 			throws UnsupportedAudioFileException, IOException
 	{
 		log.debug("Beginning open");
@@ -89,8 +89,8 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 		try
 		{
 			tmpRawInputStream = AudioSystem.getAudioInputStream( inputFile );
-			
-			AudioFormat rawFormat = tmpRawInputStream.getFormat();
+
+			final AudioFormat rawFormat = tmpRawInputStream.getFormat();
 
 			boolean isCompressedFormat = false;
 			this.frameRate = rawFormat.getFrameRate();
@@ -113,7 +113,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 			}
 			this.encoding = rawFormat.getEncoding();
 			this.bigEndian = rawFormat.isBigEndian();
-			
+
 			if( isCompressedFormat )
 			{
 				// Reset the other parts to something sensible
@@ -125,9 +125,9 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				this.numFloatsPerFrame = numBytesPerFrame / 2;
 				this.sampleSizeInBits = 16;
 				this.encoding = Encoding.PCM_SIGNED;
-				this.bigEndian = false;				
+				this.bigEndian = false;
 			}
-			
+
 			// Ask for same for decoded format
 			this.desiredAudioFormat = new AudioFormat( encoding,
 					sampleRate,
@@ -136,43 +136,43 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 					numBytesPerFrame,
 					frameRate,
 					bigEndian );
-			
+
 			tmpDesiredAudioInputStream = AudioSystem.getAudioInputStream( desiredAudioFormat, tmpRawInputStream );
-			AudioFileFormat aff = AudioSystem.getAudioFileFormat( inputFile );
-			
+			final AudioFileFormat aff = AudioSystem.getAudioFileFormat( inputFile );
+
 			this.numTotalFrames = tmpDesiredAudioInputStream.getFrameLength();
 			if( numTotalFrames < 0 )
 			{
 				// Total length comes from various places depending on the audio format
 				if (aff instanceof TAudioFileFormat) {
 					// It's Ogg?
-					Map<?, ?> properties = ((TAudioFileFormat)aff).properties();
-			        String key = "duration";
-			        Long microseconds = (Long) properties.get(key);
-//			        if( DecodedVorbisAudioInputStream.class.isInstance( tmpDesiredAudioInputStream ) )
-//			        {
-//			        	log.debug("It's ogg - changing the endianess");
-//			        	boolean currentEndianSetting = desiredAudioFormat.isBigEndian();
-//			        	desiredAudioFormat = new AudioFormat( desiredAudioFormat.getSampleRate(), desiredAudioFormat.getSampleSizeInBits(), desiredAudioFormat.getChannels(), true, currentEndianSetting == false );
-//			        }
-			        // Compute the length from the time
-			        this.numTotalFrames = (long)( (microseconds / 1000000.0f) * frameRate );
-			        this.numTotalFloats = numTotalFrames * numChannels;
-			        if( tmpDesiredAudioInputStream instanceof DecodedMpegAudioInputStream )
+					final Map<?, ?> properties = ((TAudioFileFormat)aff).properties();
+					final String key = "duration";
+					final Long microseconds = (Long) properties.get(key);
+					//			        if( DecodedVorbisAudioInputStream.class.isInstance( tmpDesiredAudioInputStream ) )
+					//			        {
+					//			        	log.debug("It's ogg - changing the endianess");
+					//			        	boolean currentEndianSetting = desiredAudioFormat.isBigEndian();
+					//			        	desiredAudioFormat = new AudioFormat( desiredAudioFormat.getSampleRate(), desiredAudioFormat.getSampleSizeInBits(), desiredAudioFormat.getChannels(), true, currentEndianSetting == false );
+					//			        }
+					// Compute the length from the time
+					this.numTotalFrames = (long)( (microseconds / 1000000.0f) * frameRate );
+					this.numTotalFloats = numTotalFrames * numChannels;
+					if( tmpDesiredAudioInputStream instanceof DecodedMpegAudioInputStream )
 					{
 						detectedFormat = DetectedFormat.MP3;
 					}
-			    }
+				}
 				/**/
 				else if( tmpDesiredAudioInputStream instanceof Flac2PcmAudioInputStream )
 				{
 					// Flac
 					// Have to read some of the stream to force flac to pull in the stream info
 					tmpDesiredAudioInputStream.mark( Integer.MAX_VALUE );
-					byte[] flacFetchHack = new byte[256];
+					final byte[] flacFetchHack = new byte[256];
 					tmpDesiredAudioInputStream.read( flacFetchHack );
-					Flac2PcmAudioInputStream flacAis = (Flac2PcmAudioInputStream)tmpDesiredAudioInputStream;
-					StreamInfo si = flacAis.getStreamInfo();
+					final Flac2PcmAudioInputStream flacAis = (Flac2PcmAudioInputStream)tmpDesiredAudioInputStream;
+					final StreamInfo si = flacAis.getStreamInfo();
 					this.numTotalFrames = si.getTotalSamples();
 					detectedFormat = DetectedFormat.FLAC;
 				}
@@ -180,10 +180,10 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				else
 				{
 					this.numTotalFrames = tmpRawInputStream.getFrameLength();
-//			        throw new UnsupportedAudioFileException();
-			    }
+					//			        throw new UnsupportedAudioFileException();
+				}
 			}
-			
+
 			numTotalFloats = numTotalFrames * numFloatsPerFrame;
 
 			// Ok, now open the real desired input stream
@@ -196,7 +196,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				tmpDesiredAudioInputStream.close();
 				tmpDesiredAudioInputStream = null;
 			}
-			
+
 			if( tmpRawInputStream != null )
 			{
 				tmpRawInputStream.close();
@@ -205,13 +205,13 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 		}
 		log.debug("Open completed");
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.util.audio.saf.blockpop.IAudioDataFetcher#open(javax.sound.sampled.AudioFormat, java.io.File)
 	 */
 	@Override
-	public void open( AudioFormat desiredAudioFormat, File inputFile )
-		throws UnsupportedAudioFileException, IOException
+	public void open( final AudioFormat desiredAudioFormat, final File inputFile )
+			throws UnsupportedAudioFileException, IOException
 	{
 		log.debug("Beginning open");
 		this.inputFile = inputFile;
@@ -222,7 +222,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 		this.numChannels = desiredAudioFormat.getChannels();
 		this.numBytesPerFrame = desiredAudioFormat.getFrameSize();
 		this.numFloatsPerFrame = numBytesPerFrame / 2;
-		
+
 		// Now get the total number of frames in the file in this format and setup an
 		// AudioInputStream that has the appropriate format
 		// We use a temporary input stream as some of the SPI code forces us to read a little
@@ -233,40 +233,40 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 		{
 			tmpRawInputStream = AudioSystem.getAudioInputStream( inputFile );
 			tmpDesiredAudioInputStream = AudioSystem.getAudioInputStream( desiredAudioFormat, tmpRawInputStream );
-			AudioFileFormat aff = AudioSystem.getAudioFileFormat( inputFile );
-			
+			final AudioFileFormat aff = AudioSystem.getAudioFileFormat( inputFile );
+
 			this.numTotalFrames = tmpDesiredAudioInputStream.getFrameLength();
 			if( numTotalFrames < 0 )
 			{
 				// Total length comes from various places depending on the audio format
 				if (aff instanceof TAudioFileFormat) {
 					// It's Ogg?
-					Map<?, ?> properties = ((TAudioFileFormat)aff).properties();
-			        String key = "duration";
-			        Long microseconds = (Long) properties.get(key);
-//			        if( DecodedVorbisAudioInputStream.class.isInstance( tmpDesiredAudioInputStream ) )
-//			        {
-//			        	log.debug("It's ogg - changing the endianess");
-//			        	boolean currentEndianSetting = desiredAudioFormat.isBigEndian();
-//			        	desiredAudioFormat = new AudioFormat( desiredAudioFormat.getSampleRate(), desiredAudioFormat.getSampleSizeInBits(), desiredAudioFormat.getChannels(), true, currentEndianSetting == false );
-//			        }
-			        // Compute the length from the time
-			        this.numTotalFrames = (long)( (microseconds / 1000000.0f) * frameRate );
-			        if( tmpDesiredAudioInputStream instanceof DecodedMpegAudioInputStream )
+					final Map<?, ?> properties = ((TAudioFileFormat)aff).properties();
+					final String key = "duration";
+					final Long microseconds = (Long) properties.get(key);
+					//			        if( DecodedVorbisAudioInputStream.class.isInstance( tmpDesiredAudioInputStream ) )
+					//			        {
+					//			        	log.debug("It's ogg - changing the endianess");
+					//			        	boolean currentEndianSetting = desiredAudioFormat.isBigEndian();
+					//			        	desiredAudioFormat = new AudioFormat( desiredAudioFormat.getSampleRate(), desiredAudioFormat.getSampleSizeInBits(), desiredAudioFormat.getChannels(), true, currentEndianSetting == false );
+					//			        }
+					// Compute the length from the time
+					this.numTotalFrames = (long)( (microseconds / 1000000.0f) * frameRate );
+					if( tmpDesiredAudioInputStream instanceof DecodedMpegAudioInputStream )
 					{
 						detectedFormat = DetectedFormat.MP3;
 					}
-			    }
+				}
 				/**/
 				else if( tmpDesiredAudioInputStream instanceof Flac2PcmAudioInputStream )
 				{
 					// Flac
 					// Have to read some of the stream to force flac to pull in the stream info
 					tmpDesiredAudioInputStream.mark( Integer.MAX_VALUE );
-					byte[] flacFetchHack = new byte[256];
+					final byte[] flacFetchHack = new byte[256];
 					tmpDesiredAudioInputStream.read( flacFetchHack );
-					Flac2PcmAudioInputStream flacAis = (Flac2PcmAudioInputStream)tmpDesiredAudioInputStream;
-					StreamInfo si = flacAis.getStreamInfo();
+					final Flac2PcmAudioInputStream flacAis = (Flac2PcmAudioInputStream)tmpDesiredAudioInputStream;
+					final StreamInfo si = flacAis.getStreamInfo();
 					this.numTotalFrames = si.getTotalSamples();
 					detectedFormat = DetectedFormat.FLAC;
 				}
@@ -274,10 +274,10 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				else
 				{
 					this.numTotalFrames = tmpRawInputStream.getFrameLength();
-//			        throw new UnsupportedAudioFileException();
-			    }
+					//			        throw new UnsupportedAudioFileException();
+				}
 			}
-			
+
 			numTotalFloats = numTotalFrames * numFloatsPerFrame;
 
 			// Ok, now open the real desired input stream
@@ -290,7 +290,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				tmpDesiredAudioInputStream.close();
 				tmpDesiredAudioInputStream = null;
 			}
-			
+
 			if( tmpRawInputStream != null )
 			{
 				tmpRawInputStream.close();
@@ -300,27 +300,27 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 		log.debug("Open completed");
 	}
 
-	private void openNewAudioStreamInstance( AudioFormat desiredAudioFormat )
+	private void openNewAudioStreamInstance( final AudioFormat desiredAudioFormat )
 			throws UnsupportedAudioFileException, IOException
 	{
 		this.rawAudioInputStream = AudioSystem.getAudioInputStream( inputFile );
 		this.desiredAudioInputStream = AudioSystem.getAudioInputStream( desiredAudioFormat, rawAudioInputStream );
 		this.currentReadPosition = 0;
 	}
-	
-	private byte[] tmpByteBuf = new byte[ BYTE_BUFFER_SIZE ];
+
+	private final byte[] tmpByteBuf = new byte[ BYTE_BUFFER_SIZE ];
 
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.util.audio.saf.blockpop.IAudioDataFetcher#read(float[], int, long, int)
 	 */
 	@Override
-	public int read(float[] destBuf, int destOffset, long startPos, int length)
-		throws IOException, ArrayIndexOutOfBoundsException, UnsupportedAudioFileException
+	public int read(final float[] destBuf, final int destOffset, final long startPos, final int length)
+			throws IOException, ArrayIndexOutOfBoundsException, UnsupportedAudioFileException
 	{
-//		log.debug("Attempting to read from(" + startPos + ") to(" + (startPos + length ) +")");
+		//		log.debug("Attempting to read from(" + startPos + ") to(" + (startPos + length ) +")");
 		int numBytesRead = 0;
 		boolean endOfFile = false;
-		
+
 		if( startPos > numTotalFloats )
 		{
 			throw new ArrayIndexOutOfBoundsException();
@@ -333,7 +333,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				openNewAudioStreamInstance(desiredAudioFormat);
 			}
 			// Check if we can skip with current input stream
-			long numToSkip =  startPos - currentReadPosition;
+			final long numToSkip =  startPos - currentReadPosition;
 			if( numToSkip < 0 )
 			{
 				// Shouldn't happen
@@ -341,41 +341,30 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 			}
 			else if( numToSkip > 0 )
 			{
-				long numToSkipInBytes = numToSkip * 2;
-				log.debug("Skipping " + numToSkipInBytes + " bytes = " + numToSkip + " floats");
+				if( desiredAudioInputStream instanceof DecodedMpegAudioInputStream )
+				{
+					log.error( "Is MP3 input stream so refusing to do any skip" );
+					return -1;
+				}
+				final long numToSkipInBytes = numToSkip * 2;
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Skipping " + numToSkipInBytes + " bytes = " + numToSkip + " floats");
+				}
 				long numLeftToSkip = numToSkipInBytes;
-//				long numSkipped = 0;
+				//				long numSkipped = 0;
 
 				long numSkippedThisTime = 1;
 				while( numSkippedThisTime > 0 && numLeftToSkip > 0 )
 				{
 					numSkippedThisTime = desiredAudioInputStream.skip( numLeftToSkip );
 					numLeftToSkip -= numSkippedThisTime;
-//					numSkipped += numSkippedThisTime;
+					//					numSkipped += numSkippedThisTime;
 				}
 				if( numLeftToSkip < 0 || numLeftToSkip > 0)
 				{
 					// Over skipped
 					log.debug("Over skip happened.");
-					if( desiredAudioInputStream instanceof DecodedMpegAudioInputStream)
-					{
-//						log.debug("Is mpeg stream, will attempt to fix with frame adjustment");
-//						long numFramesToAdjustBy = (-1 * (numLeftToSkip / 2));
-//						log.debug("Skipping by " + numFramesToAdjustBy + " frames");
-//						if( numFramesToAdjustBy < 0 )
-//						{
-//							// Assume we've hit the end of the file and the number of total floats was badly reported
-//							endOfFile = true;
-//						}
-//						else
-//						{
-//							DecodedMpegAudioInputStream dmais = (DecodedMpegAudioInputStream)desiredAudioInputStream;
-//							long numReallySkipped = dmais.skipFrames( numFramesToAdjustBy);
-//							log.debug("Actually skipped " + numReallySkipped );
-//						}
-						log.debug("Is mpeg stream, assuming it's broken so we return end of file");
-						endOfFile = true;
-					}
 				}
 			}
 			int numBytesToRead = length * 2;
@@ -383,9 +372,9 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 
 			while( !endOfFile && numBytesToRead > 0 )
 			{
-				int numBytesToReadThisTime = (numBytesToRead < BYTE_BUFFER_SIZE ? numBytesToRead : BYTE_BUFFER_SIZE );
+				final int numBytesToReadThisTime = (numBytesToRead < BYTE_BUFFER_SIZE ? numBytesToRead : BYTE_BUFFER_SIZE );
 				int bytesRead = desiredAudioInputStream.read( tmpByteBuf, 0, numBytesToReadThisTime );
-				int numFloatsRead = bytesRead / 2;
+				final int numFloatsRead = bytesRead / 2;
 				if( bytesRead == -1 )
 				{
 					// End of file I'm guessing
@@ -395,7 +384,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				else if( bytesRead > 0 )
 				{
 					numBytesToRead -= bytesRead;
-					boolean isBigEndian = desiredAudioFormat.isBigEndian();
+					final boolean isBigEndian = desiredAudioFormat.isBigEndian();
 					FloatToByteConverter.byteToFloatConversion( tmpByteBuf, 0, destBuf, destOffset + curOutputPointer, numFloatsRead, isBigEndian );
 					curOutputPointer += numFloatsRead;
 					numBytesRead += bytesRead;
@@ -403,9 +392,9 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 			}
 		}
 		// Now set the current position
-		int numFloatsRead = numBytesRead / 2;
+		final int numFloatsRead = numBytesRead / 2;
 		currentReadPosition = startPos + numFloatsRead;
-		
+
 		if( numBytesRead == 0 && endOfFile )
 		{
 			// Re-open an input stream as this one is done
@@ -432,12 +421,12 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				desiredAudioInputStream.close();
 				desiredAudioInputStream = null;
 			}
-			catch (IOException e)
+			catch (final IOException e)
 			{
 				e.printStackTrace();
 			}
 		}
-		
+
 		if( rawAudioInputStream != null )
 		{
 			try
@@ -445,7 +434,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				rawAudioInputStream.close();
 				rawAudioInputStream = null;
 			}
-			catch (IOException e)
+			catch (final IOException e)
 			{
 				e.printStackTrace();
 			}
