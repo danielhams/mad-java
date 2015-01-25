@@ -314,7 +314,14 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			throws RecordNotFoundException
 	{
 		final String values = getSingleStringValue(key);
-		return values.split(",");
+		if( values.length() > 0 )
+		{
+			return values.split(",");
+		}
+		else
+		{
+			return new String[0];
+		}
 	}
 
 	@Override
