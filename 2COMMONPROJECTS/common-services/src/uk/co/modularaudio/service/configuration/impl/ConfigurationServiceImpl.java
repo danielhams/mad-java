@@ -75,8 +75,16 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 	private Cipher cipher = null;
 
+	private final boolean logFileUsed;
+
 	public ConfigurationServiceImpl()
 	{
+		this( false );
+	}
+
+	public ConfigurationServiceImpl( final boolean logFileUsed )
+	{
+		this.logFileUsed = logFileUsed;
 	}
 
 	@Override
@@ -85,7 +93,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 		if( configFilePath != null )
 		{
-			log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+			if( logFileUsed )
+			{
+				if( log.isInfoEnabled() )
+				{
+					log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+				}
+			}
 			parseOneFilePath( configFilePath );
 
 			if( additionalFilePaths != null && additionalFilePaths.length > 0 )
@@ -98,7 +112,10 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 		else if( configResourcePath != null )
 		{
-			log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+			if( logFileUsed )
+			{
+				log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+			}
 			parseOneResourcePath( configResourcePath );
 
 			if( additionalResourcePaths != null && additionalResourcePaths.length > 0 )
