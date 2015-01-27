@@ -2,7 +2,6 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans xmlns="http://www.springframework.org/schema/beans">
 	<bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="propertyFile"><value>basecomponenttest.properties</value></property>
 	</bean>
 	<bean id="guiComponentFactoryService" class="uk.co.modularaudio.service.guicompfactory.impl.GuiComponentFactoryServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>

@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
 public class AudioAnalyserMadUiDefinition
-	extends AbstractNonConfigurableMadUiDefinition<AudioAnalyserMadDefinition, AudioAnalyserMadInstance, AudioAnalyserMadUiInstance>
+extends AbstractNonConfigurableMadUiDefinition<AudioAnalyserMadDefinition, AudioAnalyserMadInstance, AudioAnalyserMadUiInstance>
 {
 	private static final Span span = new Span(2,4);
 
@@ -61,15 +61,15 @@ public class AudioAnalyserMadUiDefinition
 
 	private static final Rectangle[] uiControlBounds = new Rectangle[] {
 		new Rectangle(  6, 26, 544, 280 )
-//		new Rectangle(  6, 26, 696, 312 )
+		//		new Rectangle(  6, 26, 1160, 280 )
 	};
 
 	private static final Class<AudioAnalyserMadUiInstance> instanceClass = AudioAnalyserMadUiInstance.class;
 
-	public AudioAnalyserMadUiDefinition( BufferedImageAllocator bia, AudioAnalyserMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
-		throws DatastoreException
+	public AudioAnalyserMadUiDefinition( final BufferedImageAllocator bia, final AudioAnalyserMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
+					throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
 				span,
