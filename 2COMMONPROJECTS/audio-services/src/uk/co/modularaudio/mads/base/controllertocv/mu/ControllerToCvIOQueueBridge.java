@@ -41,10 +41,10 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( ControllerToCvMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final ControllerToCvMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
@@ -54,26 +54,26 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 			}
 			case COMMAND_EVENT_MAPPING:
 			{
-				long value = queueEntry.value;
-				ControllerEventMapping mapping = ControllerEventMapping.values()[ (int)value ];
+				final long value = queueEntry.value;
+				final ControllerEventMapping mapping = ControllerEventMapping.values()[ (int)value ];
 				instance.desiredMapping = mapping;
 				break;
 			}
 			case COMMAND_CHANNEL_NUMBER:
 			{
-				int channelNumber = (int)queueEntry.value;
+				final int channelNumber = (int)queueEntry.value;
 				instance.desiredChannel = channelNumber;
 				break;
 			}
 			case COMMAND_CONTROLLER_NUMBER:
 			{
-				int controllerNumber = (int)queueEntry.value;
+				final int controllerNumber = (int)queueEntry.value;
 				instance.desiredController = controllerNumber;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

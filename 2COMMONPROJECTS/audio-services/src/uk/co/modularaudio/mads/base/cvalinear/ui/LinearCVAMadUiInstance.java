@@ -26,8 +26,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEve
 
 public class LinearCVAMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<LinearCVAMadDefinition, LinearCVAMadInstance>
 {
-	public LinearCVAMadUiInstance( LinearCVAMadInstance instance,
-			LinearCVAMadUiDefinition uiDefinition )
+	public LinearCVAMadUiInstance( final LinearCVAMadInstance instance,
+			final LinearCVAMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

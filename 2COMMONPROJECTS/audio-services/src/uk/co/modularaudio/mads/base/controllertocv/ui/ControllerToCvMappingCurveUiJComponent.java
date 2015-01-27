@@ -39,20 +39,20 @@ public class ControllerToCvMappingCurveUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private ControllerToCvMadUiInstance uiInstance = null;
+	private final ControllerToCvMadUiInstance uiInstance;
 
-	private Map<ControllerEventMapping, String> eventMappingToDisplayNameMap = new HashMap<ControllerEventMapping, String>();
-	private Map<String, ControllerEventMapping> displayNameToEventMappingMap = new HashMap<String, ControllerEventMapping>();
+	private final Map<ControllerEventMapping, String> eventMappingToDisplayNameMap = new HashMap<ControllerEventMapping, String>();
+	private final Map<String, ControllerEventMapping> displayNameToEventMappingMap = new HashMap<String, ControllerEventMapping>();
 
 	public ControllerToCvMappingCurveUiJComponent(
-			ControllerToCvMadDefinition definition,
-			ControllerToCvMadInstance instance,
-			ControllerToCvMadUiInstance uiInstance,
-			int controlIndex )
+			final ControllerToCvMadDefinition definition,
+			final ControllerToCvMadInstance instance,
+			final ControllerToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
+
 		eventMappingToDisplayNameMap.put( ControllerEventMapping.LINEAR, "Linear" );
 		eventMappingToDisplayNameMap.put( ControllerEventMapping.LOG, "Log" );
 		eventMappingToDisplayNameMap.put( ControllerEventMapping.LOG_FREQUENCY, "Log Frequency" );
@@ -63,11 +63,11 @@ public class ControllerToCvMappingCurveUiJComponent extends PacComboBox<String>
 		eventMappingToDisplayNameMap.put( ControllerEventMapping.CIRC_Q3, "Circle, Quadrant 3" );
 		eventMappingToDisplayNameMap.put( ControllerEventMapping.CIRC_Q4, "Circle, Quadrant 4" );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		ControllerEventMapping[] eventMappingValues = ControllerEventMapping.values();
-		for( ControllerEventMapping eventMapping : eventMappingValues )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		final ControllerEventMapping[] eventMappingValues = ControllerEventMapping.values();
+		for( final ControllerEventMapping eventMapping : eventMappingValues )
 		{
-			String displayName = eventMappingToDisplayNameMap.get( eventMapping );
+			final String displayName = eventMappingToDisplayNameMap.get( eventMapping );
 			cbm.addElement( displayName );
 			displayNameToEventMappingMap.put( displayName, eventMapping );
 		}
@@ -85,7 +85,7 @@ public class ControllerToCvMappingCurveUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -93,16 +93,16 @@ public class ControllerToCvMappingCurveUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
 			// Figure what they changed, and update the component instance data with
 			// the new table
-			String name = (String) getSelectedItem();
-			
-			ControllerEventMapping mappingToUse = displayNameToEventMappingMap.get( name );
-			
+			final String name = (String) getSelectedItem();
+
+			final ControllerEventMapping mappingToUse = displayNameToEventMappingMap.get( name );
+
 			uiInstance.sendMapping( mappingToUse );
 		}
 	}

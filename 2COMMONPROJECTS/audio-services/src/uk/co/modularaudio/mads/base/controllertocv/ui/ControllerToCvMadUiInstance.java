@@ -30,30 +30,30 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 public class ControllerToCvMadUiInstance extends AbstractNonConfigurableMadUiInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ControllerToCvMadUiInstance.class.getName() );
-	
-	public ControllerToCvMadUiInstance( ControllerToCvMadInstance instance,
-			ControllerToCvMadUiDefinition uiDefinition )
+
+	public ControllerToCvMadUiInstance( final ControllerToCvMadInstance instance,
+			final ControllerToCvMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendMapping( ControllerEventMapping mappingToUse )
+	public void sendMapping( final ControllerEventMapping mappingToUse )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_EVENT_MAPPING, mappingToUse.ordinal() );
 	}
 
-	public void sendSelectedChannel( int channelNumber )
+	public void sendSelectedChannel( final int channelNumber )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_CHANNEL_NUMBER, channelNumber );
 	}
 
-	public void sendSelectedController( int controller )
+	public void sendSelectedController( final int controller )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_CONTROLLER_NUMBER, controller );
 	}
 
 	@Override
-	public void consumeQueueEntry( ControllerToCvMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final ControllerToCvMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }

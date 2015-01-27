@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -39,47 +40,46 @@ public class LinearCVAMadDefinition extends AbstractNonConfigurableMadDefinition
 	public final static int PRODUCER_OUT_WAVE = 2;
 	public final static int NUM_CHANNELS = 3;
 
-	private final static String definitionId = "linear_cva";
+	public final static String DEFINITION_ID = "linear_cva";
 
-	private final static String userVisibleName = "Linear CV Amplifier";
+	private final static String USER_VISIBLE_NAME = "Linear CV Amplifier";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ROUTING_GROUP_ID;
-	private final static String classificationId = "linear_cva";
-	private final static String classificationName = "Linear CV Amplifier";
-	private final static String classificationDescription = "A linear CV based amplifier";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ROUTING_GROUP_ID;
+	private final static String CLASS_NAME = "Linear CV Amplifier";
+	private final static String CLASS_DESC = "A linear CV based amplifier";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave",
 		"Input CV amplification factor",
 		"Output Wave"};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.CV,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public LinearCVAMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public LinearCVAMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new LinearCVAIOQueueBridge(),
+				new MadNullLocklessQueueBridge<LinearCVAMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

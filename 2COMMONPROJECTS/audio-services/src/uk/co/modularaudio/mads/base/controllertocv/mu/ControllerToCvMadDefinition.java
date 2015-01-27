@@ -38,43 +38,42 @@ public class ControllerToCvMadDefinition extends AbstractNonConfigurableMadDefin
 	public final static int PRODUCER_CV_OUT=1;
 	public final static int NUM_CHANNELS = 2;
 
-	private final static String definitionId = "controller_to_cv";
+	public final static String DEFINITION_ID = "controller_to_cv";
 
-	private final static String userVisibleName = "Controller To CV";
+	private final static String USER_VISIBLE_NAME = "Controller To CV";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationId = "controller_to_cv";
-	private final static String classificationName = "Controller To CV";
-	private final static String classificationDescription = "Convert controller changes into appropriate CV values";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Controller To CV";
+	private final static String CLASS_DESC = "Convert controller changes into appropriate CV values";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Controller Note",
+	private final static String[] CHAN_NAMES = new String[] { "Input Controller Note",
 		"Output CV" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.NOTE,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.NOTE,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public ControllerToCvMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public ControllerToCvMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new ControllerToCvIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

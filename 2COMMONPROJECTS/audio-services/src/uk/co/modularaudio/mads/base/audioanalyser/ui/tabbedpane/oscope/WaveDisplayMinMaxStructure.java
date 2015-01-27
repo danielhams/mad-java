@@ -47,7 +47,7 @@ public class WaveDisplayMinMaxStructure
 		resetPrevious();
 	}
 
-	public void resetMinMax()
+	public final void resetMinMax()
 	{
 		minLowValue = Float.MAX_VALUE;
 		maxLowValue = -minLowValue;
@@ -59,7 +59,7 @@ public class WaveDisplayMinMaxStructure
 		maxHiValue = -minHiValue;
 	}
 
-	public void resetPrevious()
+	public final void resetPrevious()
 	{
 		previousMinLowValue = 0.0f;
 		previousMaxLowValue = 0.0f;

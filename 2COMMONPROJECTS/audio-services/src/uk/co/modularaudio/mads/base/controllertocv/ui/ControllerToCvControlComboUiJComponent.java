@@ -38,30 +38,30 @@ public class ControllerToCvControlComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private ControllerToCvMadUiInstance uiInstance = null;
+	private final ControllerToCvMadUiInstance uiInstance;
 
-	private Map<Integer, String> controllerNumToDisplayNameMap = new HashMap<Integer, String>();
-	private Map<String, Integer> displayNameToControllerNumMap = new HashMap<String, Integer>();
+	private final Map<Integer, String> controllerNumToDisplayNameMap = new HashMap<Integer, String>();
+	private final Map<String, Integer> displayNameToControllerNumMap = new HashMap<String, Integer>();
 
 	public ControllerToCvControlComboUiJComponent(
-			ControllerToCvMadDefinition definition,
-			ControllerToCvMadInstance instance,
-			ControllerToCvMadUiInstance uiInstance,
-			int controlIndex )
+			final ControllerToCvMadDefinition definition,
+			final ControllerToCvMadInstance instance,
+			final ControllerToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
+
 		for( int i = 0 ; i < 127 ; i++ )
 		{
-			String controllerName = "Controller " + i;
+			final String controllerName = "Controller " + i;
 			controllerNumToDisplayNameMap.put( i, controllerName );
 		}
-		
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( Map.Entry<Integer,String> entry : controllerNumToDisplayNameMap.entrySet() )
+
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final Map.Entry<Integer,String> entry : controllerNumToDisplayNameMap.entrySet() )
 		{
-			String displayName = entry.getValue();
+			final String displayName = entry.getValue();
 			cbm.addElement( displayName );
 			displayNameToControllerNumMap.put( displayName, entry.getKey() );
 		}
@@ -79,7 +79,7 @@ public class ControllerToCvControlComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -87,16 +87,16 @@ public class ControllerToCvControlComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
 			// Figure what they changed, and update the component instance data with
 			// the new table
-			String name = (String) getSelectedItem();
-			
-			Integer controller = displayNameToControllerNumMap.get( name );
-			
+			final String name = (String) getSelectedItem();
+
+			final Integer controller = displayNameToControllerNumMap.get( name );
+
 			uiInstance.sendSelectedController( controller );
 		}
 	}

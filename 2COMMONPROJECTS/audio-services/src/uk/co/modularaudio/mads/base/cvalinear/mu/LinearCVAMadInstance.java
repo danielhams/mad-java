@@ -43,30 +43,30 @@ public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,Lin
 	private static final int VALUE_CHASE_MILLIS = 10;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
-	private long sampleRate = -1;
 
-	public LinearCVAMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			LinearCVAMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private long sampleRate;
+
+	public LinearCVAMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final LinearCVAMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -78,23 +78,23 @@ public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,Lin
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_WAVE );
-		MadChannelBuffer inWaveCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_WAVE ];
-		float[] inWaveFloats = (inWaveConnected ? inWaveCb.floatBuffer : null );
-		
-		boolean inAmpConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_AMP_CV );
-		MadChannelBuffer inAmpCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_AMP_CV ];
-		float[] inAmpFloats = (inAmpConnected ? inAmpCb.floatBuffer : null );
-		
-		boolean outWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.PRODUCER_OUT_WAVE );
-		MadChannelBuffer outWaveCb = channelBuffers[ LinearCVAMadDefinition.PRODUCER_OUT_WAVE ];
-		float[] outWaveFloats = (outWaveConnected ? outWaveCb.floatBuffer : null );
+		final boolean inWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_WAVE );
+		final MadChannelBuffer inWaveCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_WAVE ];
+		final float[] inWaveFloats = (inWaveConnected ? inWaveCb.floatBuffer : null );
+
+		final boolean inAmpConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_AMP_CV );
+		final MadChannelBuffer inAmpCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_AMP_CV ];
+		final float[] inAmpFloats = (inAmpConnected ? inAmpCb.floatBuffer : null );
+
+		final boolean outWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.PRODUCER_OUT_WAVE );
+		final MadChannelBuffer outWaveCb = channelBuffers[ LinearCVAMadDefinition.PRODUCER_OUT_WAVE ];
+		final float[] outWaveFloats = (outWaveConnected ? outWaveCb.floatBuffer : null );
 
 		// Now mix them together with the precomputed amps
 		if( outWaveConnected && inWaveConnected && inAmpConnected )

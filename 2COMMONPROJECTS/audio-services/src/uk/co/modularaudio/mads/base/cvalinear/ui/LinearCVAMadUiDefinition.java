@@ -35,45 +35,45 @@ import uk.co.modularaudio.util.table.Span;
 public class LinearCVAMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<LinearCVAMadDefinition, LinearCVAMadInstance, LinearCVAMadUiInstance>
 {
-	private static final Span span = new Span(1,1);
+	private static final Span SPAN = new Span(1,1);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		LinearCVAMadDefinition.CONSUMER_IN_WAVE,
 		LinearCVAMadDefinition.CONSUMER_IN_AMP_CV,
 		LinearCVAMadDefinition.PRODUCER_OUT_WAVE,
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 50, 30 ),
 		new Point( 80, 30 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
 	
-	private static final Class<LinearCVAMadUiInstance> instanceClass = LinearCVAMadUiInstance.class;
+	private static final Class<LinearCVAMadUiInstance> INSTANCE_CLASS = LinearCVAMadUiInstance.class;
 	
 	public LinearCVAMadUiDefinition( BufferedImageAllocator bia, LinearCVAMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }
