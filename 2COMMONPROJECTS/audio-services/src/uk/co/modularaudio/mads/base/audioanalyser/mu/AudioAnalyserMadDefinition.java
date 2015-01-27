@@ -46,19 +46,19 @@ public class AudioAnalyserMadDefinition extends AbstractNonConfigurableMadDefini
 	private final static String CLASSIFICATION_DESC = "The Audio Analyser";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Input Wave 0"
 	};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO
 	};
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] {
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
 		MadChannelDirection.CONSUMER,
 	};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] {
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
 		MadChannelPosition.MONO
 	};
 
@@ -73,10 +73,10 @@ public class AudioAnalyserMadDefinition extends AbstractNonConfigurableMadDefini
 						ReleaseState.ALPHA ),
 				new AudioAnalyserIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

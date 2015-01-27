@@ -45,7 +45,7 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 {
 	private static final long serialVersionUID = -7355046237468407858L;
 
-	private final static Log log = LogFactory.getLog( WaveDisplay.class.getName() );
+	private static Log log = LogFactory.getLog( WaveDisplay.class.getName() );
 
 	private final AudioAnalyserUiBufferState uiBufferState;
 	//	private final BufferedImageAllocator bia;
@@ -65,12 +65,7 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 		ThreeMusic
 	};
 
-	private final DisplayPresentationProcessor[] typeToDisplayProcessor = new DisplayPresentationProcessor[] {
-			null,
-			null,
-			null,
-			null
-	};
+	private final DisplayPresentationProcessor[] typeToDisplayProcessor = new DisplayPresentationProcessor[4];
 
 	private DisplayTypeEnum curDisplayType;
 
@@ -93,7 +88,10 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 		}
 		catch (final DatastoreException e)
 		{
-			log.error("DatastoreException caught initialising roll painter: " + e.toString(), e);
+			if( log.isErrorEnabled() )
+			{
+				log.error("DatastoreException caught initialising roll painter: " + e.toString(), e);
+			}
 		}
 	}
 
@@ -224,7 +222,10 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 		}
 		catch (final DatastoreException e)
 		{
-			log.error("DatastoreException caught cleaning up roll painter: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("DatastoreException caught cleaning up roll painter: " + e.toString(), e );
+			}
 		}
 	}
 }

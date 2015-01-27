@@ -25,21 +25,21 @@ import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 
 public class ThreeSpeechDataBuffers extends RmsDataBuffers
 {
-	private final static float minSmoothedFreq = 40.0f;
-	private final static float lowCof = 500.0f;
-	private final static float midCof = 500.0f;
-	private final static float highCof = 4500.0f;
+	private final static float MIN_SMOOTHED_FREQ = 40.0f;
+	private final static float LOW_COF = 500.0f;
+	private final static float MID_COF = 500.0f;
+	private final static float HIGH_COF = 4500.0f;
 	
 	public ThreeSpeechDataBuffers( AudioAnalyserUiBufferState uiBufferState )
 	{
 		// Good for music
 		super( uiBufferState,
-			minSmoothedFreq,
-			minSmoothedFreq * 2,
-			minSmoothedFreq * 4,
-			lowCof,
-			midCof,
-			highCof );
+			MIN_SMOOTHED_FREQ,
+			MIN_SMOOTHED_FREQ * 2,
+			MIN_SMOOTHED_FREQ * 4,
+			LOW_COF,
+			MID_COF,
+			HIGH_COF );
 
 //		// For male speech
 //		float minSmoothedFreq = 40.0f;

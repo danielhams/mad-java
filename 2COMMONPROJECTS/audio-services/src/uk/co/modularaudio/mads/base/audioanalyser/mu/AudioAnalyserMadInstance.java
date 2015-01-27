@@ -42,20 +42,20 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefinition,AudioAnalyserMadInstance>
 {
 	private static Log log = LogFactory.getLog( AudioAnalyserMadInstance.class.getName() );
-	
-	protected boolean active = false;
-	
-	private int maxRingBufferingInSamples = -1;
-	
-	private AudioAnalyserDataRingBuffer dataRingBuffer = null;
-	
-	private int numSamplesPerFrontEndPeriod = -1;
 
-	public AudioAnalyserMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			AudioAnalyserMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	protected boolean active;
+
+	private int maxRingBufferingInSamples;
+
+	private AudioAnalyserDataRingBuffer dataRingBuffer;
+
+	private int numSamplesPerFrontEndPeriod;
+
+	public AudioAnalyserMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final AudioAnalyserMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		dataRingBuffer = new AudioAnalyserDataRingBuffer( 1 );
@@ -63,31 +63,32 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
-			final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
-			int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+			final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
 			// We will need enough buffer space such to queue samples between GUI frames
 			// this also needs to take into account output latency - as we'll get a "big" period and need to queue
 			// all of that.
-			long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
-			long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
-			long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
-			
+			final long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
+			final long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
+			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
+
 			// We have to handle enough per visual frame along with the necessary audio IO latency
 			maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 16) +
 					AudioTimingUtils.getNumSamplesForNanosAtSampleRate( sampleRate, nanosForBuffering );
-			
+
 			dataRingBuffer = new AudioAnalyserDataRingBuffer( maxRingBufferingInSamples );
 			dataRingBuffer.numSamplesQueued = 0;
-			
+
 			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -99,18 +100,18 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartTimestamp,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
-		MadChannelBuffer inChannelBuffer = channelBuffers[ AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
-		float[] in0Floats = (inConnected ? inChannelBuffer.floatBuffer : null );
-		
+		final boolean inConnected = channelConnectedFlags.get( AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
+		final MadChannelBuffer inChannelBuffer = channelBuffers[ AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
+		final float[] in0Floats = (inConnected ? inChannelBuffer.floatBuffer : null );
+
 		if( active )
-		{			
+		{
 			try
 			{
 				if( inConnected )
@@ -118,7 +119,7 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{
-						long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
+						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
 
 						if( dataRingBuffer.numSamplesQueued >= numSamplesPerFrontEndPeriod )
 						{
@@ -131,14 +132,14 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 							postProcess(tempQueueEntryStorage, timingParameters, timestampForIndexUpdate);
 							preProcess(tempQueueEntryStorage, timingParameters, timestampForIndexUpdate);
 						}
-						int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.numSamplesQueued;
+						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.numSamplesQueued;
 
-						int numAvailable = numFrames - curSampleIndex;
-						int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
-						
-						int spaceAvailable = dataRingBuffer.getNumWriteable();
+						final int numAvailable = numFrames - curSampleIndex;
+						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
 
-						int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
+						final int spaceAvailable = dataRingBuffer.getNumWriteable();
+
+						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
 						if( numToWrite > 0 )
 						{
 							dataRingBuffer.write( in0Floats, curSampleIndex, numToWrite );
@@ -154,7 +155,7 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 					}
 				}
 			}
-			catch(Exception boe )
+			catch(final Exception boe )
 			{
 				// Do nothing.
 				log.debug("Caught boe: " + boe.toString(), boe );
@@ -163,20 +164,20 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	private void queueWriteIndexUpdate(ThreadSpecificTemporaryEventStorage tses,
-			int dataChannelNum,
-			int writePosition,
-			long frameTime)
+	private void queueWriteIndexUpdate(final ThreadSpecificTemporaryEventStorage tses,
+			final int dataChannelNum,
+			final int writePosition,
+			final long frameTime)
 	{
-		long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum);
-		
+		final long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum);
+
 		localBridge.queueTemporalEventToUi( tses,
 				frameTime,
 				AudioAnalyserIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
 				joinedParts,
 				null );
 	}
-	
+
 	public AudioAnalyserDataRingBuffer getDataRingBuffer()
 	{
 		return dataRingBuffer;

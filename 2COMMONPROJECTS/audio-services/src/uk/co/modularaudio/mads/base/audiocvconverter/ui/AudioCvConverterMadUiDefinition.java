@@ -37,25 +37,25 @@ import uk.co.modularaudio.util.table.Span;
 public class AudioCvConverterMadUiDefinition
 	extends AbstractConfigurableMadUiDefinition<AudioCvConverterMadDefinition, AudioCvConverterMadInstance, AudioCvConverterMadUiInstance>
 {
-	private static final Class<AudioCvConverterMadUiInstance> instanceClass = AudioCvConverterMadUiInstance.class;
-	
+	private static final Class<AudioCvConverterMadUiInstance> INSTANCE_CLASS = AudioCvConverterMadUiInstance.class;
+
 	public static final Point INPUT_CHANNELS_START = new Point( 40, 40 );
 	public static final int CHANNEL_TO_CHANNEL_INCREMENT = 20;
-	
+
 	public static final int INPUT_TO_OUTPUT_CHANNEL_INCREMENT = 40;
 
-	private final Span defaultSpan = new Span(1,1);
+	private static final Span DEFAULT_SPAN = new Span(1,1);
 
-	public AudioCvConverterMadUiDefinition( BufferedImageAllocator bia,
-			AudioCvConverterMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public AudioCvConverterMadUiDefinition( final BufferedImageAllocator bia,
+			final AudioCvConverterMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, instanceClass );
+		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
 	}
 
-	private Point[] getUiChannelPositionsForAui( int numInputChannels, int numOutputChannels, int numTotalChannels )
+	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )
 	{
 		Point[] retVal;
 		int curChannelIndex = 0;
@@ -65,7 +65,7 @@ public class AudioCvConverterMadUiDefinition
 			retVal[ curChannelIndex++ ] = new Point( INPUT_CHANNELS_START.x + (ic * CHANNEL_TO_CHANNEL_INCREMENT),
 					INPUT_CHANNELS_START.y + CHANNEL_TO_CHANNEL_INCREMENT );
 		}
-		Point lastInputChannelPoint = retVal[ curChannelIndex - 1 ];
+		final Point lastInputChannelPoint = retVal[ curChannelIndex - 1 ];
 		for( int oc = 0 ; oc < numOutputChannels ; oc++ )
 		{
 			retVal[ curChannelIndex++ ] = new Point( lastInputChannelPoint.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
@@ -75,8 +75,8 @@ public class AudioCvConverterMadUiDefinition
 		return retVal;
 	}
 
-	protected int[] getUiChannelInstanceIndexesForAui( AudioCvConverterMadInstanceConfiguration instanceConfiguration,
-			int numInputChannels, int numOutputChannels, int numTotalChannels )
+	protected int[] getUiChannelInstanceIndexesForAui( final AudioCvConverterMadInstanceConfiguration instanceConfiguration,
+			final int numInputChannels, final int numOutputChannels, final int numTotalChannels )
 	{
 		int[] retVal;
 
@@ -96,17 +96,17 @@ public class AudioCvConverterMadUiDefinition
 
 	@Override
 	protected MadUiInstanceConfiguration getUiInstanceConfiguration(
-			AudioCvConverterMadInstance instance )
+			final AudioCvConverterMadInstance instance )
 	{
-		AudioCvConverterMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
+		final AudioCvConverterMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
 
-		int numInputChannels = instanceConfiguration.getNumInputChannels();
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
-		
-		int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration, numInputChannels, numOutputChannels, numTotalChannels );
-		
-		Point[] uiChannelPositions = getUiChannelPositionsForAui( numInputChannels, numOutputChannels, numTotalChannels );
+		final int numInputChannels = instanceConfiguration.getNumInputChannels();
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+		final int numTotalChannels = instanceConfiguration.getNumTotalChannels();
+
+		final int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration, numInputChannels, numOutputChannels, numTotalChannels );
+
+		final Point[] uiChannelPositions = getUiChannelPositionsForAui( numInputChannels, numOutputChannels, numTotalChannels );
 
 		return new MadUiInstanceConfiguration( uiChannelPositions,
 				uiChannelInstanceIndexes,
@@ -119,6 +119,6 @@ public class AudioCvConverterMadUiDefinition
 	@Override
 	public Span getCellSpan()
 	{
-		return defaultSpan;
+		return DEFAULT_SPAN;
 	}
 }

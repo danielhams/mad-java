@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class BandLimitedOscillatorMadUiDefinition 
 	extends AbstractNonConfigurableMadUiDefinition<BandLimitedOscillatorMadDefinition, BandLimitedOscillatorMadInstance, BandLimitedOscillatorMadUiInstance>
 {
-	private static final Span span = new Span(2,2);
+	private static final Span SPAN = new Span(2,2);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ,
 		BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER,
 		BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE,
@@ -47,7 +47,7 @@ public class BandLimitedOscillatorMadUiDefinition
 		BandLimitedOscillatorMadDefinition.PRODUCER_PHASE_OUT
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSI = new Point[] {
 		new Point( 80, 30 ),
 		new Point( 60, 50 ),
 		new Point( 100, 50 ),
@@ -57,31 +57,31 @@ public class BandLimitedOscillatorMadUiDefinition
 		new Point( 200, 70 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Frequency",
 		"Shape",
 		"Pulsewidth"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.COMBO,
 		ControlType.SLIDER
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		BandLimitedOscillatorHertzSliderUiJComponent.class,
 		BandLimitedOscillatorShapeComboUiJComponent.class,
 		BandLimitedOscillatorPulseWidthUiJComponent.class
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 113, 3, 75, 43 ),
 		new Rectangle( 190, 15, 65, 20 ),
 		new Rectangle( 113, 50, 75, 42 )
 	};
 	
-	private static final Class<BandLimitedOscillatorMadUiInstance> instanceClass = BandLimitedOscillatorMadUiInstance.class;
+	private static final Class<BandLimitedOscillatorMadUiInstance> INSTANCE_CLASS = BandLimitedOscillatorMadUiInstance.class;
 	
 	public BandLimitedOscillatorMadUiDefinition( BufferedImageAllocator bia,
 			BandLimitedOscillatorMadDefinition definition, ComponentImageFactory cif, String imageRoot )
@@ -91,13 +91,13 @@ public class BandLimitedOscillatorMadUiDefinition
 				definition,
 				cif,
 				imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSI,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

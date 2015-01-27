@@ -42,7 +42,7 @@ public class AudioAnalyserSpectralAmp extends JPanel
 
 	private final PacLabel ampLabel;
 
-	private final static String[] ampOptionLabels = new String[] {
+	private final static String[] AMP_OPTION_LABELS = new String[] {
 		"lin",
 		"dB",
 		"lg(dB)"
@@ -50,7 +50,7 @@ public class AudioAnalyserSpectralAmp extends JPanel
 
 	private final PacLabel freqLabel;
 
-	private final static String[] freqOptionLabels = new String[] {
+	private final static String[] FREQ_OPTION_LABELS = new String[] {
 		"lin",
 		"lg",
 		"lg(lg)"
@@ -92,7 +92,7 @@ public class AudioAnalyserSpectralAmp extends JPanel
 		doSetFont( ampLabel );
 		add( ampLabel, "align right" );
 
-		ampToggleGroup = new PacToggleGroup( ampOptionLabels, 0 )
+		ampToggleGroup = new PacToggleGroup( AMP_OPTION_LABELS, 0 )
 		{
 
 			@Override
@@ -118,7 +118,7 @@ public class AudioAnalyserSpectralAmp extends JPanel
 		doSetFont( freqLabel );
 		add( freqLabel, "align right" );
 
-		freqToggleGroup = new PacToggleGroup( freqOptionLabels, 0 )
+		freqToggleGroup = new PacToggleGroup( FREQ_OPTION_LABELS, 0 )
 		{
 			@Override
 			public void receiveUpdateEvent(int previousSelection, int newSelection)
