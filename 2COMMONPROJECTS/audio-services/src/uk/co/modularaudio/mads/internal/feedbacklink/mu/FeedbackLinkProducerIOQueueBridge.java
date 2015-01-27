@@ -27,10 +27,10 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class FeedbackLinkProducerIOQueueBridge extends MadLocklessQueueBridge<FeedbackLinkProducerMadInstance>
 {
 	@Override
-	public void receiveQueuedEventsToInstance( FeedbackLinkProducerMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final FeedbackLinkProducerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 	}
 }

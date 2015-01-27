@@ -28,10 +28,10 @@ import uk.co.modularaudio.util.table.Span;
 
 public class FeedbackLinkProducerMadUiInstance extends MadUiInstance<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
 {
-	private FeedbackLinkProducerMadUiDefinition flUiDefinition = null;
-	
-	public FeedbackLinkProducerMadUiInstance( FeedbackLinkProducerMadInstance instance,
-			FeedbackLinkProducerMadUiDefinition uiDefinition )
+	private final FeedbackLinkProducerMadUiDefinition flUiDefinition;
+
+	public FeedbackLinkProducerMadUiInstance( final FeedbackLinkProducerMadInstance instance,
+			final FeedbackLinkProducerMadUiDefinition uiDefinition )
 	{
 		super( instance,  uiDefinition );
 		this.flUiDefinition = uiDefinition;
@@ -44,7 +44,7 @@ public class FeedbackLinkProducerMadUiInstance extends MadUiInstance<FeedbackLin
 	}
 
 	@Override
-	public void consumeQueueEntry( FeedbackLinkProducerMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final FeedbackLinkProducerMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }
