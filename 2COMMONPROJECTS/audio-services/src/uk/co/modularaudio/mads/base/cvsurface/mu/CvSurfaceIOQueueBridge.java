@@ -46,31 +46,31 @@ public class CvSurfaceIOQueueBridge extends MadLocklessQueueBridge<CvSurfaceMadI
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( CvSurfaceMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final CvSurfaceMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_NEWX:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float aa = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float aa = Float.intBitsToFloat( truncVal );
 				instance.desiredX = aa;
 				break;
 			}
 			case COMMAND_NEWY:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float ab = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float ab = Float.intBitsToFloat( truncVal );
 				instance.desiredY = ab;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

@@ -37,33 +37,33 @@ import org.apache.commons.logging.LogFactory;
 
 public final class XsltTransformer
 {
-    private static final TransformerFactory transformerFactory;
+    private static final TransformerFactory TRANSFORM_FACTORY;
 
-    private final static Log log = LogFactory.getLog(XsltTransformer.class.getName());
+    private static Log log = LogFactory.getLog(XsltTransformer.class.getName());
 
-    
-    private Transformer transformer;
-    
+
+    private final Transformer transformer;
+
     static
     {
-        transformerFactory = TransformerFactory.newInstance();
+        TRANSFORM_FACTORY = TransformerFactory.newInstance();
     }
 
     public XsltTransformer(final String xslSource) throws TransformerConfigurationException
     {
-        transformer = transformerFactory.newTransformer(new StreamSource(xslSource));
+        transformer = TRANSFORM_FACTORY.newTransformer(new StreamSource(xslSource));
     }
 
     public XsltTransformer(final Source xslSource) throws TransformerConfigurationException
     {
-        transformer = transformerFactory.newTransformer(xslSource);
+        transformer = TRANSFORM_FACTORY.newTransformer(xslSource);
     }
-    
+
     public void setParameter(final String name, final Object object)
     {
         transformer.setParameter(name, object);
     }
-    
+
     public void clearParameters()
     {
         transformer.clearParameters();
@@ -77,7 +77,7 @@ public final class XsltTransformer
         {
             transformer.transform(new StreamSource(xmlSource), new StreamResult(baos));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -94,7 +94,7 @@ public final class XsltTransformer
         {
             transformer.transform(xmlSource, new StreamResult(baos));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -103,7 +103,7 @@ public final class XsltTransformer
         }
         return baos.toString("UTF-8");
     }
-    
+
     //--- Transform from String to String
     public String transformFromStringToString(final String xmlContent) throws TransformerException, UnsupportedEncodingException
     {
@@ -112,14 +112,14 @@ public final class XsltTransformer
         {
             transformer.transform(new StreamSource(new ByteArrayInputStream(xmlContent.getBytes("UTF-8"))), new StreamResult(baos));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlContent);
             log.warn("Please verify the xlt's");
             throw(te);
         }
-        catch (UnsupportedEncodingException uee)
+        catch (final UnsupportedEncodingException uee)
         {
             log.warn("UnsupportedEncodingException occurred for the following xml, which needs to be transformed:");
             log.warn(xmlContent);
@@ -128,9 +128,9 @@ public final class XsltTransformer
         }
 
         return baos.toString("UTF-8");
-        
+
     }
-    
+
     //--- Transform to File or Result
     public void transform(final String xmlSource, final Result xmlResult) throws TransformerException
     {
@@ -138,7 +138,7 @@ public final class XsltTransformer
         {
             transformer.transform(new StreamSource(xmlSource), xmlResult);
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -153,7 +153,7 @@ public final class XsltTransformer
         {
             transformer.transform(xmlSource, new StreamResult(xmlResult));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -161,14 +161,14 @@ public final class XsltTransformer
             throw(te);
         }
     }
-    
+
     public void transform(final String xmlSource, final String xmlResult) throws TransformerException
     {
         try
         {
             transformer.transform(new StreamSource(xmlSource), new StreamResult(xmlResult));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -183,7 +183,7 @@ public final class XsltTransformer
         {
             transformer.transform(xmlSource, xmlResult);
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -199,7 +199,7 @@ public final class XsltTransformer
         {
             transformer.transform(new StreamSource(xmlSource), new StreamResult(System.out));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
@@ -214,7 +214,7 @@ public final class XsltTransformer
         {
             transformer.transform(xmlSource, new StreamResult(System.out));
         }
-        catch (TransformerException te)
+        catch (final TransformerException te)
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);

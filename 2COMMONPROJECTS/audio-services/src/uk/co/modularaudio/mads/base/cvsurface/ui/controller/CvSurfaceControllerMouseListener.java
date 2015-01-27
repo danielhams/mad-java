@@ -39,22 +39,22 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 	}
 
 	private ClickState clickState = ClickState.NOT_CLICKED;
-	private Point lastPoint = null;
+	private Point lastPoint;
 
-	private CvSurfaceMadUiInstance uiInstance = null;
-	private CvSurfaceControllerUiJComponent uiComponent = null;
-	private Rectangle bounds = null;
-	private int maxX = -1;
-	private int maxY = -1;
+	private final CvSurfaceMadUiInstance uiInstance;
+	private final CvSurfaceControllerUiJComponent uiComponent;
+	private Rectangle bounds;
+	private int maxX;
+	private int maxY;
 
-	public CvSurfaceControllerMouseListener( CvSurfaceMadUiInstance uiInstance, CvSurfaceControllerUiJComponent uiComponent )
+	public CvSurfaceControllerMouseListener( final CvSurfaceMadUiInstance uiInstance, final CvSurfaceControllerUiJComponent uiComponent )
 	{
 		this.uiInstance = uiInstance;
 		this.uiComponent = uiComponent;
 	}
 
 	@Override
-	public void mouseDragged( MouseEvent e )
+	public void mouseDragged( final MouseEvent e )
 	{
 		lastPoint = e.getPoint();
 		if( lastPoint != null )
@@ -65,7 +65,7 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 	}
 
 	@Override
-	public void mouseMoved( MouseEvent e )
+	public void mouseMoved( final MouseEvent e )
 	{
 	}
 
@@ -83,12 +83,12 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent e )
+	public void mouseClicked( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mousePressed( MouseEvent e )
+	public void mousePressed( final MouseEvent e )
 	{
 		clickState = ClickState.CLICKED;
 		lastPoint =  e.getPoint();
@@ -100,7 +100,7 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 	}
 
 	@Override
-	public void mouseReleased( MouseEvent e )
+	public void mouseReleased( final MouseEvent e )
 	{
 		clickState = ClickState.NOT_CLICKED;
 		lastPoint = null;
@@ -109,16 +109,16 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 	}
 
 	@Override
-	public void mouseEntered( MouseEvent e )
+	public void mouseEntered( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseExited( MouseEvent e )
+	public void mouseExited( final MouseEvent e )
 	{
 	}
 
-	private void sendPositionChange( Point lastPoint )
+	private void sendPositionChange( final Point lastPoint )
 	{
 		float newX = 0.0f;
 		float newY = 0.0f;
@@ -134,12 +134,12 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 		uiInstance.sendPositionChange( newX, newY );
 	}
 
-	private float normalise( int value, int maxValue )
+	private float normalise( final int value, final int maxValue )
 	{
 		// make it 0 -> 1
-		float monoPole = ((float)value) / maxValue;
+		final float monoPole = ((float)value) / maxValue;
 		// Now expand to -1 -> 1
-		float retVal = (monoPole - 0.5f) * 2.0f;
+		final float retVal = (monoPole - 0.5f) * 2.0f;
 
 		return retVal;
 	}

@@ -45,17 +45,17 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 
 	private static final Color LINE_COLOR = Color.red;
 	private static final Color UNSELECTED_COLOR = Color.red.darker().darker();
-	
+
 	private Point previousSelectionPoint = new Point(0,0);
-	private CvSurfaceControllerMouseListener mouseListener = null;
-	
-	private BufferedImage bi = null;
-	private Graphics2D g2d = null;
-	
-	public CvSurfaceControllerUiJComponent( CvSurfaceMadDefinition definition,
-			CvSurfaceMadInstance instance,
-			CvSurfaceMadUiInstance uiInstance,
-			int controlIndex )
+	private final CvSurfaceControllerMouseListener mouseListener;
+
+	private BufferedImage bi;
+	private Graphics2D g2d;
+
+	public CvSurfaceControllerUiJComponent( final CvSurfaceMadDefinition definition,
+			final CvSurfaceMadInstance instance,
+			final CvSurfaceMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Add a mouse motion  listener
 		mouseListener = new CvSurfaceControllerMouseListener( uiInstance, this );
@@ -64,13 +64,13 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		Rectangle bounds = getBounds();
-		Point currentSelectionPoint = mouseListener.getCurrentSelectionPoint();
-		
+		final Rectangle bounds = getBounds();
+		final Point currentSelectionPoint = mouseListener.getCurrentSelectionPoint();
+
 		boolean updateNeeded = false;
 		boolean pointSelected = false;
 		if( previousSelectionPoint != null && currentSelectionPoint == null )
@@ -84,7 +84,7 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 			// Selection just started...
 			updateNeeded = true;
 			pointSelected = true;
-			
+
 		}
 		else if( previousSelectionPoint == null && currentSelectionPoint == null )
 		{
@@ -96,7 +96,7 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 			updateNeeded = true;
 			pointSelected = true;
 		}
-		
+
 		if( updateNeeded )
 		{
 			g2d.setColor( BACKGROUND_COLOR );
@@ -110,8 +110,8 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 			}
 			else
 			{
-				int middlex = bounds.width / 2;
-				int middley = bounds.height / 2;
+				final int middlex = bounds.width / 2;
+				final int middley = bounds.height / 2;
 				// Draw line in the middle
 				g2d.setColor( UNSELECTED_COLOR );
 				g2d.drawLine( 0,  middley, bounds.width, middley );
@@ -129,7 +129,7 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 	}
 
 	@Override
-	public void setBounds( Rectangle r )
+	public void setBounds( final Rectangle r )
 	{
 		super.setBounds( r );
 		bi = new BufferedImage( r.width, r.height, BufferedImage.TYPE_INT_RGB );
@@ -137,7 +137,7 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 	}
 
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		if( bi != null )
 		{

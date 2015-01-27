@@ -74,18 +74,18 @@ public class LZWIndexedGIFEncoder
 
     public void encode(OutputStream output) throws IOException
     {
-        DansBitUtils.WriteString(output, "GIF87a");
+        DansBitUtils.writeString(output, "GIF87a");
 
         DansScreenDescriptor sd =
             new DansScreenDescriptor(width_, height_, numColors_);
-        sd.Write(output);
+        sd.write(output);
 
         output.write(colors_, 0, colors_.length);
 
         DansImageDescriptor id = new DansImageDescriptor(width_, height_, ',');
-        id.Write(output);
+        id.write(output);
 
-        byte codesize = DansBitUtils.BitsNeeded(numColors_);
+        byte codesize = DansBitUtils.bitsNeeded(numColors_);
         if (codesize == 1)
             ++codesize;
         output.write(codesize);
@@ -95,7 +95,7 @@ public class LZWIndexedGIFEncoder
         output.write(0);
 
         id = new DansImageDescriptor((byte) 0, (byte) 0, ';');
-        id.Write(output);
+        id.write(output);
 
         output.flush();
         //Log.printlnMemory("LZWIndexedGIFEncoder finished.");
@@ -116,7 +116,7 @@ class DansBitFile
         bitsLeft_ = 8;
     }
 
-    public void Flush() throws IOException
+    public void flush() throws IOException
     {
         int numBytes = index_ + (bitsLeft_ == 8 ? 0 : 1);
         if (numBytes > 0)
@@ -129,7 +129,7 @@ class DansBitFile
         }
     }
 
-    public void WriteBits(int bits, int numbits) throws IOException
+    public void writeBits(int bits, int numbits) throws IOException
     {
 //        int bitsWritten = 0;
         int numBytes = 255;
@@ -190,14 +190,14 @@ class DansLZWStringTable
         strHsh_ = new short[HASHSIZE];
     }
 
-    public int AddCharString(short index, byte b)
+    public int addCharString(short index, byte b)
     {
         int hshidx;
 
         if (numStrings_ >= MAXSTR)
             return 0xFFFF;
 
-        hshidx = Hash(index, b);
+        hshidx = hash(index, b);
         while (strHsh_[hshidx] != HASH_FREE)
             hshidx = (hshidx + HASHSTEP) % HASHSIZE;
 
@@ -208,14 +208,14 @@ class DansLZWStringTable
         return numStrings_++;
     }
 
-    public short FindCharString(short index, byte b)
+    public short findCharString(short index, byte b)
     {
         int hshidx, nxtidx;
 
         if (index == HASH_FREE)
             return b;
 
-        hshidx = Hash(index, b);
+        hshidx = hash(index, b);
         while ((nxtidx = strHsh_[hshidx]) != HASH_FREE)
         {
             if (strNxt_[nxtidx] == index && strChr_[nxtidx] == b)
@@ -226,7 +226,7 @@ class DansLZWStringTable
         return (short) 0xFFFF;
     }
 
-    public void ClearTable(int codesize)
+    public void clearTable(int codesize)
     {
         numStrings_ = 0;
 
@@ -237,10 +237,10 @@ class DansLZWStringTable
 
         int w = (1 << codesize) + RES_CODES;
         for (int q = 0; q < w; q++)
-            AddCharString((short) 0xFFFF, (byte) q);
+            addCharString((short) 0xFFFF, (byte) q);
     }
 
-    static public int Hash(short index, byte lastbyte)
+    static public int hash(short index, byte lastbyte)
     {
         return (((short) (lastbyte << 8) ^ index) & 0xFFFF) % HASHSIZE;
     }
@@ -269,23 +269,23 @@ class DansLZWCompressor
         numbits = codesize + 1;
         limit = (1 << numbits) - 1;
 
-        strings.ClearTable(codesize);
-        bitFile.WriteBits(clearcode, numbits);
+        strings.clearTable(codesize);
+        bitFile.writeBits(clearcode, numbits);
 
         for (int loop = 0; loop < toCompress.length; ++loop)
         {
             c = toCompress[loop];
-            if ((index = strings.FindCharString(prefix, c)) != -1)
+            if ((index = strings.findCharString(prefix, c)) != -1)
                 prefix = index;
             else
             {
-                bitFile.WriteBits(prefix, numbits);
-                if (strings.AddCharString(prefix, c) > limit)
+                bitFile.writeBits(prefix, numbits);
+                if (strings.addCharString(prefix, c) > limit)
                 {
                     if (++numbits > 12)
                     {
-                        bitFile.WriteBits(clearcode, numbits - 1);
-                        strings.ClearTable(codesize);
+                        bitFile.writeBits(clearcode, numbits - 1);
+                        strings.clearTable(codesize);
                         numbits = codesize + 1;
                     }
                     limit = (1 << numbits) - 1;
@@ -296,10 +296,10 @@ class DansLZWCompressor
         }
 
         if (prefix != -1)
-            bitFile.WriteBits(prefix, numbits);
+            bitFile.writeBits(prefix, numbits);
 
-        bitFile.WriteBits(endofinfo, numbits);
-        bitFile.Flush();
+        bitFile.writeBits(endofinfo, numbits);
+        bitFile.flush();
     }
 }
 
@@ -313,40 +313,40 @@ class DansScreenDescriptor
     {
         localScreenWidth_ = width;
         localScreenHeight_ = height;
-        SetGlobalColorTableSize(
-            (byte) (DansBitUtils.BitsNeeded(numColors) - 1));
-        SetGlobalColorTableFlag((byte) 1);
-        SetSortFlag((byte) 0);
-        SetColorResolution((byte) 7);
+        setGlobalColorTableSize(
+            (byte) (DansBitUtils.bitsNeeded(numColors) - 1));
+        setGlobalColorTableFlag((byte) 1);
+        setSortFlag((byte) 0);
+        setColorResolution((byte) 7);
         backgroundColorIndex_ = 0;
         pixelAspectRatio_ = 0;
     }
 
-    public void Write(OutputStream output) throws IOException
+    public void write(OutputStream output) throws IOException
     {
-        DansBitUtils.WriteWord(output, localScreenWidth_);
-        DansBitUtils.WriteWord(output, localScreenHeight_);
+        DansBitUtils.writeWord(output, localScreenWidth_);
+        DansBitUtils.writeWord(output, localScreenHeight_);
         output.write(byte_);
         output.write(backgroundColorIndex_);
         output.write(pixelAspectRatio_);
     }
 
-    public void SetGlobalColorTableSize(byte num)
+    public void setGlobalColorTableSize(byte num)
     {
         byte_ |= (num & 7);
     }
 
-    public void SetSortFlag(byte num)
+    public void setSortFlag(byte num)
     {
         byte_ |= (num & 1) << 3;
     }
 
-    public void SetColorResolution(byte num)
+    public void setColorResolution(byte num)
     {
         byte_ |= (num & 7) << 4;
     }
 
-    public void SetGlobalColorTableFlag(byte num)
+    public void setGlobalColorTableFlag(byte num)
     {
         byte_ |= (num & 1) << 7;
     }
@@ -365,44 +365,44 @@ class DansImageDescriptor
         topPosition_ = 0;
         width_ = width;
         height_ = height;
-        SetLocalColorTableSize((byte) 0);
-        SetReserved((byte) 0);
-        SetSortFlag((byte) 0);
-        SetInterlaceFlag((byte) 0);
-        SetLocalColorTableFlag((byte) 0);
+        setLocalColorTableSize((byte) 0);
+        setReserved((byte) 0);
+        setSortFlag((byte) 0);
+        setInterlaceFlag((byte) 0);
+        setLocalColorTableFlag((byte) 0);
     }
 
-    public void Write(OutputStream output) throws IOException
+    public void write(OutputStream output) throws IOException
     {
         output.write(separator_);
-        DansBitUtils.WriteWord(output, leftPosition_);
-        DansBitUtils.WriteWord(output, topPosition_);
-        DansBitUtils.WriteWord(output, width_);
-        DansBitUtils.WriteWord(output, height_);
+        DansBitUtils.writeWord(output, leftPosition_);
+        DansBitUtils.writeWord(output, topPosition_);
+        DansBitUtils.writeWord(output, width_);
+        DansBitUtils.writeWord(output, height_);
         output.write(byte_);
     }
 
-    public void SetLocalColorTableSize(byte num)
+    public void setLocalColorTableSize(byte num)
     {
         byte_ |= (num & 7);
     }
 
-    public void SetReserved(byte num)
+    public void setReserved(byte num)
     {
         byte_ |= (num & 3) << 3;
     }
 
-    public void SetSortFlag(byte num)
+    public void setSortFlag(byte num)
     {
         byte_ |= (num & 1) << 5;
     }
 
-    public void SetInterlaceFlag(byte num)
+    public void setInterlaceFlag(byte num)
     {
         byte_ |= (num & 1) << 6;
     }
 
-    public void SetLocalColorTableFlag(byte num)
+    public void setLocalColorTableFlag(byte num)
     {
         byte_ |= (num & 1) << 7;
     }
@@ -410,7 +410,7 @@ class DansImageDescriptor
 
 class DansBitUtils
 {
-    public static byte BitsNeeded(int n)
+    public static byte bitsNeeded(int n)
     {
         byte ret = 1;
 
@@ -423,14 +423,14 @@ class DansBitUtils
         return ret;
     }
 
-    public static void WriteWord(OutputStream output, short w)
+    public static void writeWord(OutputStream output, short w)
         throws IOException
     {
         output.write(w & 0xFF);
         output.write((w >> 8) & 0xFF);
     }
 
-    static void WriteString(OutputStream output, String string)
+    static void writeString(OutputStream output, String string)
         throws IOException
     {
         for (int loop = 0; loop < string.length(); ++loop)

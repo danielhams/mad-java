@@ -50,18 +50,13 @@ public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelpe
 	{
 	}
 
-	public GuiService getGuiService()
-	{
-		return guiService;
-	}
-
-	public void setGuiService(GuiService guiService)
+	public void setGuiService(final GuiService guiService)
 	{
 		this.guiService = guiService;
 	}
 
 	@Override
-	public UserPreferencesMVCView getUserPreferencesMVCView( UserPreferencesMVCController userPrefsMVCController )
+	public UserPreferencesMVCView getUserPreferencesMVCView( final UserPreferencesMVCController userPrefsMVCController )
 			throws DatastoreException
 	{
 		return guiService.getUserPreferencesMVCView( userPrefsMVCController );
@@ -76,44 +71,44 @@ public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelpe
 
 	@Override
 	public RackModelRenderingComponent createGuiForRackDataModel(
-			RackDataModel rackDataModel ) throws DatastoreException
+			final RackDataModel rackDataModel ) throws DatastoreException
 	{
 		return guiService.createGuiForRackDataModel( rackDataModel );
 	}
 
 	@Override
-	public void registerRackTabbedPane( GuiTabbedPane rackTabbedPane )
+	public void registerRackTabbedPane( final GuiTabbedPane rackTabbedPane )
 	{
 		guiService.registerRackTabbedPane( rackTabbedPane );
 	}
 
 	@Override
-	public void showYesNoQuestionDialog( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			String[] options,
-			String defaultChoice,
-			YesNoQuestionDialogCallback callback )
+	public void showYesNoQuestionDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String[] options,
+			final String defaultChoice,
+			final YesNoQuestionDialogCallback callback )
 	{
 		guiService.showYesNoQuestionDialog( parentComponent, message, title, messageType,
 				options, defaultChoice, callback );
 	}
 
 	@Override
-	public void showTextInputDialog( Component parentComponent, String message,
-			String title, int messageType, String initialValue,
-			TextInputDialogCallback callback )
+	public void showTextInputDialog( final Component parentComponent, final String message,
+			final String title, final int messageType, final String initialValue,
+			final TextInputDialogCallback callback )
 	{
 		guiService.showTextInputDialog( parentComponent, message, title,
 				messageType, initialValue, callback );
 	}
 
 	@Override
-	public void showMessageDialog( Component parentComponent, String message,
-			String title,
-			int messageType,
-			MessageDialogCallback callback )
+	public void showMessageDialog( final Component parentComponent, final String message,
+			final String title,
+			final int messageType,
+			final MessageDialogCallback callback )
 	{
 		guiService.showMessageDialog( parentComponent, message, title, messageType, callback );
 	}

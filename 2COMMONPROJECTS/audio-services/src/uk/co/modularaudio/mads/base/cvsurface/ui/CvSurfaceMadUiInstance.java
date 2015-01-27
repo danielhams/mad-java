@@ -29,27 +29,26 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 public class CvSurfaceMadUiInstance extends AbstractNonConfigurableMadUiInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance>
 {
 //	private static Log log = LogFactory.getLog( CvSurfaceMadUiInstance.class.getName() );
-	
-	public float guiDesiredX = 0.0f;
 
-	public float guiDesiredY = 0.0f;
-	
-	public CvSurfaceMadUiInstance( CvSurfaceMadInstance instance,
-			CvSurfaceMadUiDefinition uiDefinition )
+	public float guiDesiredX;
+	public float guiDesiredY;
+
+	public CvSurfaceMadUiInstance( final CvSurfaceMadInstance instance,
+			final CvSurfaceMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendPositionChange( float newX, float newY)
+
+	public void sendPositionChange( final float newX, final float newY)
 	{
 //		log.debug("Sending position change at " + System.nanoTime() / (1000 * 1000 ) );
-		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWX, (long)(Float.floatToIntBits( newX ) ) );
+		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWX, (Float.floatToIntBits( newX ) ) );
 
-		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWY, (long)(Float.floatToIntBits( newY ) ) );
+		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWY, (Float.floatToIntBits( newY ) ) );
 	}
 
 	@Override
-	public void consumeQueueEntry( CvSurfaceMadInstance instance, IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final CvSurfaceMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 	}
 }
