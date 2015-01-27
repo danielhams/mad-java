@@ -22,26 +22,23 @@ package uk.co.modularaudio.util.audio.buffer;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class UnsafeFloatRingBuffer
 {
-	private static Log log = LogFactory.getLog( UnsafeFloatRingBuffer.class.getName() );
-	
+//	private static Log log = LogFactory.getLog( UnsafeFloatRingBuffer.class.getName() );
+
 	public int readPosition;
 	public int writePosition;
-	
-	public int capacity = -1;
-	public int bufferLength = -1;
-	public float[] buffer = null;
-	
-	public UnsafeFloatRingBuffer( int capacity )
+
+	public int capacity;
+	public int bufferLength;
+	public float[] buffer;
+
+	public UnsafeFloatRingBuffer( final int capacity )
 	{
 		this( capacity, false );
 	}
-	
-	public UnsafeFloatRingBuffer( int capacity, boolean fillWithZeros )
+
+	public UnsafeFloatRingBuffer( final int capacity, final boolean fillWithZeros )
 	{
 		this.capacity = capacity;
 		this.bufferLength = capacity + 1;
@@ -57,13 +54,13 @@ public class UnsafeFloatRingBuffer
 			writePosition = 0;
 		}
 	}
-	
+
 	public float readOne()
 	{
 		float retVal = 0.0f;
-		int numReadable = getNumReadable();
+		final int numReadable = getNumReadable();
 		int newPosition = readPosition;
-		
+
 		if( numReadable < 1 )
 		{
 			return 0.0f;
@@ -76,7 +73,7 @@ public class UnsafeFloatRingBuffer
 				// Copy from the ring buffer directly into the output and update the read position
 				retVal = buffer[ readPosition ];
 			}
-			else if( readPosition > writePosition )
+			else // if( readPosition >= writePosition )
 			{
 				// Case where the read position might loop over the end of the buffer
 				if( readPosition + 1 > bufferLength )
@@ -89,15 +86,10 @@ public class UnsafeFloatRingBuffer
 					retVal = buffer[ readPosition ];
 				}
 			}
-			else
-			{
-				log.error( "Case analysis error in ring read" );
-				throw new RuntimeException();
-			}
 		}
-		
+
 		newPosition += 1;
-		
+
 		if( newPosition >= bufferLength )
 		{
 			newPosition -= bufferLength;
@@ -105,17 +97,17 @@ public class UnsafeFloatRingBuffer
 		readPosition = newPosition;
 		return retVal;
 	}
-	
-	public int read( float[] target, int pos, int length )
+
+	public int read( final float[] target, final int pos, final int length )
 	{
 		return internalRead( readPosition, writePosition, target, pos, length, true, false );
 	}
-	
-	public boolean writeOne( float valToWrite )
+
+	public boolean writeOne( final float valToWrite )
 	{
-		int numWriteable = getNumWriteable();
+		final int numWriteable = getNumWriteable();
 		int newPosition = writePosition;
-		
+
 		if( numWriteable < 1 )
 		{
 			return false;
@@ -127,9 +119,9 @@ public class UnsafeFloatRingBuffer
 			// Case where the write position might loop over the end of the buffer
 			buffer[ writePosition ] = valToWrite;
 		}
-		
+
 		newPosition += 1;
-		
+
 		if( newPosition >= bufferLength )
 		{
 			newPosition -= bufferLength;
@@ -137,12 +129,12 @@ public class UnsafeFloatRingBuffer
 		writePosition = newPosition;
 		return true;
 	}
-	
-	public int write( float[] source, int pos, int length )
+
+	public int write( final float[] source, final int pos, final int length )
 	{
-		int numWriteable = getNumWriteable();
+		final int numWriteable = getNumWriteable();
 		int newPosition = writePosition;
-		
+
 		if( numWriteable < length )
 		{
 			return 0;
@@ -154,8 +146,8 @@ public class UnsafeFloatRingBuffer
 			// Case where the write position might loop over the end of the buffer
 			if( writePosition + length > bufferLength )
 			{
-				int numToWriteAtEnd = bufferLength - writePosition;
-				int numToWriteAtStart = length - numToWriteAtEnd;
+				final int numToWriteAtEnd = bufferLength - writePosition;
+				final int numToWriteAtStart = length - numToWriteAtEnd;
 				System.arraycopy( source, pos, buffer, writePosition, numToWriteAtEnd );
 				System.arraycopy( source, pos + numToWriteAtEnd, buffer, 0, numToWriteAtStart );
 			}
@@ -165,9 +157,9 @@ public class UnsafeFloatRingBuffer
 				System.arraycopy( source, pos, buffer, writePosition, length );
 			}
 		}
-		
+
 		newPosition += length;
-		
+
 		if( newPosition >= bufferLength )
 		{
 			newPosition -= bufferLength;
@@ -176,8 +168,8 @@ public class UnsafeFloatRingBuffer
 
 		return length;
 	}
-	
-	protected int calcNumReadable( int curReadPosition, int curWritePosition )
+
+	protected int calcNumReadable( final int curReadPosition, final int curWritePosition )
 	{
 		int retVal = -1;
 
@@ -194,8 +186,8 @@ public class UnsafeFloatRingBuffer
 //		log.debug("RingBuffer.cap(" + capacity + ").calcNumReadable(" + curReadPosition + ", " + curWritePosition + ") -> (" + retVal + ")");
 		return retVal;
 	}
-	
-	protected int calcNumWriteable( int curReadPosition, int curWritePosition )
+
+	protected int calcNumWriteable( final int curReadPosition, final int curWritePosition )
 	{
 		int retVal = -1;
 
@@ -211,12 +203,12 @@ public class UnsafeFloatRingBuffer
 		}
 		return retVal - 1;
 	}
-	
+
 	public int getNumReadable()
 	{
 		return( calcNumReadable( readPosition, writePosition ) );
 	}
-	
+
 	public int getNumWriteable()
 	{
 		return( calcNumWriteable( readPosition, writePosition ) );
@@ -227,23 +219,23 @@ public class UnsafeFloatRingBuffer
 		// Just reset the write position to be equal to the read position
 		writePosition = readPosition;
 	}
-	
+
 	public void clearToZero()
 	{
 		Arrays.fill( buffer, 0.0f );
 	}
-	
+
 	public int size()
 	{
 		return capacity;
 	}
 
-	public int readNoMove( float[] target, int pos, int length )
+	public int readNoMove( final float[] target, final int pos, final int length )
 	{
 		return internalRead( readPosition, writePosition, target, pos, length, false, false );
 	}
 
-	public void moveForward( int numToTake )
+	public void moveForward( final int numToTake )
 	{
 		readPosition += numToTake;
 		while( readPosition >= bufferLength )
@@ -252,18 +244,18 @@ public class UnsafeFloatRingBuffer
 		}
 	}
 
-	public int readAndZero( float[] target, int pos, int length )
+	public int readAndZero( final float[] target, final int pos, final int length )
 	{
 		return internalRead( readPosition, writePosition, target, pos, length, true, true );
 	}
-	
-	protected int internalRead( int rp, int wp, float[] target, int pos, int length, boolean move, boolean zero )
+
+	protected int internalRead( final int rp, final int wp, final float[] target, final int pos, final int length, final boolean move, final boolean zero )
 	{
 		int amountRead = 0;
-		int curReadPosition = rp;
-		int curWritePosition = wp;
-		
-		int numReadable = calcNumReadable( curReadPosition, curWritePosition );
+		final int curReadPosition = rp;
+		final int curWritePosition = wp;
+
+		final int numReadable = calcNumReadable( curReadPosition, curWritePosition );
 
 		if( numReadable < length )
 		{
@@ -274,8 +266,8 @@ public class UnsafeFloatRingBuffer
 			// Case where the read position might loop over the end of the buffer
 			if( curReadPosition + length > bufferLength )
 			{
-				int numToReadFromEnd = bufferLength - curReadPosition;
-				int numToReadFromStart = length - numToReadFromEnd;
+				final int numToReadFromEnd = bufferLength - curReadPosition;
+				final int numToReadFromStart = length - numToReadFromEnd;
 				System.arraycopy( buffer, curReadPosition, target, pos, numToReadFromEnd );
 				System.arraycopy( buffer, 0, target, pos + numToReadFromEnd, numToReadFromStart );
 				if( zero )
@@ -305,19 +297,19 @@ public class UnsafeFloatRingBuffer
 			}
 			amountRead = length;
 		}
-		
+
 		if( move )
 		{
 			int newPosition = curReadPosition + amountRead;
-			
+
 			if( newPosition > bufferLength )
 			{
 				newPosition -= bufferLength;
 			}
 			readPosition = newPosition;
 		}
-		
+
 		return amountRead;
 	}
-	
+
 }

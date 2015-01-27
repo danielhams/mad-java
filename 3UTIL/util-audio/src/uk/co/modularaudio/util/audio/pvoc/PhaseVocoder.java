@@ -35,69 +35,69 @@ import uk.co.modularaudio.util.audio.pvoc.support.PvocFrameSynthesisStep;
 public class PhaseVocoder
 {
 	private static Log log = LogFactory.getLog( PhaseVocoder.class.getName() );
-	
-	private int numChannels;
-	private int numReals;
-	private int fftComplexArraySize;
-	private int numBins;
-	
+
+	private final int numChannels;
+	private final int numReals;
+	private final int fftComplexArraySize;
+	private final int numBins;
+
 	// Main algorithmic loop
-	private PvocFrameCreator frameCreator;
-	private PvocFrameProcessor frameProcessor;
-	private PvocFrameSynthesiser frameSynthesiser;
-	
-	private int numFramesLookahead;
-	
+	private final PvocFrameCreator frameCreator;
+	private final PvocFrameProcessor frameProcessor;
+	private final PvocFrameSynthesiser frameSynthesiser;
+
+	private final int numFramesLookahead;
+
 	// Our forward looking cache
-	private ArrayList<PvocDataFrame> forwardLookingFrames;
+	private final ArrayList<PvocDataFrame> forwardLookingFrames;
 
 	// Somewhere the frame processor can store it's output
 	// that we will pass to the synthesiser
 	private PvocDataFrame processedFrame;
-	
+
 	// How far we will move on synthesis. Needed by our frame processors
 	// to be able to correctly calculate phase
-	private PvocFrameSynthesisStep synthStep;
-	
-	public PhaseVocoder( PvocParameters params, PvocFrameProcessor frameProcessor )
+	private final PvocFrameSynthesisStep synthStep;
+
+	public PhaseVocoder( final PvocParameters params, final PvocFrameProcessor frameProcessor )
 	{
 		this.numChannels = params.getNumChannels();
 		this.numReals = params.getNumReals();
 		this.fftComplexArraySize = params.getFftComplexArraySize();
 		this.numBins = params.getNumBins();
-		
+
 		frameCreator = new PvocFrameCreator( params );
-		
+
 		this.frameProcessor = frameProcessor;
-		
+
 		frameSynthesiser = new PvocFrameSynthesiser( params );
-		
+
 		synthStep = new PvocFrameSynthesisStep( params );
 
 		// Need to let the frame processor have the parameters before we call this - it might be
 		// dependant on the numOverlaps (particularly in the case of transient processing)
 		numFramesLookahead = frameProcessor.getNumFramesNeeded();
 		forwardLookingFrames = new ArrayList<PvocDataFrame>( numFramesLookahead );
-		
+
 		reset();
 	}
-	
-	public int doNextStep( float[][] inputStep, double speed, double pitch, UnsafeFloatRingBuffer[] outputRingBuffers )
+
+	public int doNextStep( final float[][] inputStep, final double speed, final double pitch, final UnsafeFloatRingBuffer[] outputRingBuffers )
 	{
 		if( inputStep.length != numChannels )
 		{
-			String msg = "Number of input channels in step does not match configured number of channels.";
+			final String msg = "Number of input channels in step does not match configured number of channels.";
 			log.error( msg );
 			return -1;
 		}
 
-		PvocDataFrame latestFrame = forwardLookingFrames.remove( forwardLookingFrames.size() - 1 );
+		final PvocDataFrame latestFrame = forwardLookingFrames.remove( forwardLookingFrames.size() - 1 );
 
 		// Build the new pvframe from this step
-		int creationRc = frameCreator.makeFrameFromNextStep( inputStep, latestFrame );
+		final int creationRc = frameCreator.makeFrameFromNextStep( inputStep, latestFrame );
 		if( creationRc < 0 )
 		{
-			String msg = "Frame creation failed.";
+			final String msg = "Frame creation failed.";
 			log.error( msg );
 			return -1;
 		}
@@ -107,48 +107,48 @@ public class PhaseVocoder
 
 		synthStep.calculate( speed, pitch );
 
-		int processingRc = frameProcessor.processIncomingFrame( processedFrame, forwardLookingFrames, synthStep );
+		final int processingRc = frameProcessor.processIncomingFrame( processedFrame, forwardLookingFrames, synthStep );
 		if( processingRc < 0 )
 		{
-			String msg = "Frame processing failed.";
+			final String msg = "Frame processing failed.";
 			log.error( msg );
 			return -1;
 		}
-		
+
 		if( frameProcessor.isSynthesisingProcessor() )
 		{
 			// If we have enough frames in the look ahead structure we can go ahead
 			// and synthesise the result from the frame processor
-			int numFramesBuffered = forwardLookingFrames.size();
+			final int numFramesBuffered = forwardLookingFrames.size();
 			if( numFramesBuffered >= numFramesLookahead )
 			{
 				// Now pass the place we want the output to the synthesiser
-				int synthesisRc = frameSynthesiser.synthesiseFrame( processedFrame, speed, pitch, outputRingBuffers, synthStep );
+				final int synthesisRc = frameSynthesiser.synthesiseFrame( processedFrame, speed, pitch, outputRingBuffers, synthStep );
 				if( synthesisRc < 0 )
 				{
-					String msg = "Frame synthesis failed.";
+					final String msg = "Frame synthesis failed.";
 					log.error( msg );
 					return -1;
 				}
-				
-			}	
+
+			}
 		}
 		return 0;
 	}
-	
-	public void reset()
+
+	public final void reset()
 	{
 		frameCreator.reset();
 		frameProcessor.reset();
 		frameSynthesiser.reset();
-		
+
 		forwardLookingFrames.clear();
 		// Now fill up with empty frames
 		for( int i = 0 ; i < numFramesLookahead ; i++ )
 		{
 			forwardLookingFrames.add( new PvocDataFrame( numChannels, numReals, fftComplexArraySize, numBins ) );
 		}
-		
+
 		processedFrame = new PvocDataFrame( numChannels, numReals, fftComplexArraySize, numBins );
 	}
 

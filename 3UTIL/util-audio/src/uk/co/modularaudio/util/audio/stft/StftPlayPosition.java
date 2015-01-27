@@ -24,10 +24,11 @@ public class StftPlayPosition
 {
 	public long pos;
 	public double frac;
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder retVal = new StringBuilder( 10 );
+		final StringBuilder retVal = new StringBuilder( 10 );
 		retVal.append( "Pos: " );
 		retVal.append( pos );
 		retVal.append( "-" );

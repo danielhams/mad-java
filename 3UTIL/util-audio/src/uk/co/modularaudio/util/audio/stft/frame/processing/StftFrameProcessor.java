@@ -23,6 +23,7 @@ package uk.co.modularaudio.util.audio.stft.frame.processing;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftException;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.synthesis.StftFrameSynthesisStep;
 
@@ -33,11 +34,11 @@ public interface StftFrameProcessor
 	 * @return
 	 */
 	public boolean isSynthesisingProcessor();
-	
+
 	/**
 	 * How many frames the processor needs to see before it will begin to return generated frames.
 	 * Return <= 0 means the processor will produce a frame for every input frame.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNumFramesNeeded();
@@ -45,15 +46,15 @@ public interface StftFrameProcessor
 	/**
 	 * The frequency processor will need to know things like the sample rate,
 	 * number of overlaps and incoming step size etc
-	 * 
+	 *
 	 * @param params
 	 */
-	public void setParams( StftParameters params );
+	public void setParams( StftParameters params ) throws StftException;
 
 	/*
 	 * Perform the necessary processing using as many lookahead frames as needed
 	 * The output is placed in the passed structure for synthesis
-	 * 
+	 *
 	 * @param outputFrame
 	 * @return int success = 0
 	 * @throws PvException
@@ -61,7 +62,7 @@ public interface StftFrameProcessor
 	public int processIncomingFrame( StftDataFrame outputFrame,
 			ArrayList<StftDataFrame> lookaheadFrames,
 			StftFrameSynthesisStep synthStep );
-	
+
 	/**
 	 * Does this processor perform peak detection?
 	 * @return
@@ -74,10 +75,10 @@ public interface StftFrameProcessor
 	public void reset();
 
 	public StftFrameProcessorVisualDebugger getDebuggingVisualComponent();
-	
+
 	// Debugging methods
 	public StftDataFrame getLastDataFrame();
-	
+
 	public int[][] getPeakChannelBuffers();
 
 	public int[][] getBinToPeakChannelBuffers();

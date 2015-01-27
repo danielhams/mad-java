@@ -30,35 +30,36 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class StftParameters
 {
 	private static Log log = LogFactory.getLog( StftParameters.class.getName() );
-	
-	private DataRate outputRate = null;
-	private int sampleRate = -1;
-	private int numChannels = -1;
-	private int windowLength = -1;
-	private int numOverlaps = -1;
-	private int numReals = -1;
-	private FftWindow fftWindow = null;
-	
+
+	private final DataRate outputRate;
+	private final int sampleRate;
+	private final int numChannels;
+	private final int windowLength;
+	private final int numOverlaps;
+	private final int numReals;
+	private final FftWindow fftWindow;
+
 	// Calculated parameters
-	private int stepSize = -1;
-	private int numBins = -1;
-	private int complexArraySize = -1;
-	
-	private float freqPerBin;
-	private float[] binCenterFreqs;
-	
-	private float twoPiAnalysisStepsOverSampleRate;
-	private float sampleRateOverTwoPiAnalysisSteps;
-	
-	public StftParameters( DataRate outputRate,
-			int numChannels,
-			int windowLength,
-			int numOverlaps,
-			int numReals,
-			FftWindow fftWindow )
+	private final int stepSize;
+	private final int numBins;
+	private final int complexArraySize;
+
+	private final float freqPerBin;
+	private final float[] binCenterFreqs;
+
+	private final float twoPiAnalysisStepsOverSampleRate;
+	private final float sampleRateOverTwoPiAnalysisSteps;
+
+	public StftParameters( final DataRate outputRate,
+			final int numChannels,
+			final int windowLength,
+			final int numOverlaps,
+			final int numReals,
+			final FftWindow fftWindow )
+					throws StftException
 	{
 		// Window length must be even for correct phase alignment
-		int windowLengthTwosRemainder = windowLength % 2;
+		final int windowLengthTwosRemainder = windowLength % 2;
 		boolean paramError = false;
 		if( windowLengthTwosRemainder != 0 )
 		{
@@ -68,10 +69,10 @@ public class StftParameters
 		{
 			paramError = true;
 		}
-		
+
 		if( paramError )
 		{
-			throw new RuntimeException( "Bad parameters to stft" );
+			throw new StftException( "Bad parameters to stft" );
 		}
 
 		this.outputRate = outputRate;
@@ -85,7 +86,7 @@ public class StftParameters
 		this.stepSize = windowLength / numOverlaps;
 		this.numBins = (numReals / 2 ) + 1;
 		this.complexArraySize = numBins * 2;
-		
+
 		freqPerBin = ((float)sampleRate)/numReals;
 		binCenterFreqs = new float[ numBins ];
 		for( int b = 0 ; b < numBins ; b++ )
@@ -94,11 +95,11 @@ public class StftParameters
 //			log.debug("Bin " + b + " center frequency is " + binCenterFreqs[b] );
 		}
 //		log.debug("Last bin center freq is " + binCenterFreqs[ numBins - 1] );
-		
+
 		twoPiAnalysisStepsOverSampleRate = (MathDefines.TWO_PI_F * stepSize) / sampleRate;
 		sampleRateOverTwoPiAnalysisSteps = sampleRate / (MathDefines.TWO_PI_F * stepSize);
 	}
-	
+
 	public static Log getLog()
 	{
 		return log;
@@ -123,7 +124,7 @@ public class StftParameters
 	{
 		return numReals;
 	}
-	
+
 	public int getComplexArraySize()
 	{
 		return complexArraySize;
@@ -153,12 +154,12 @@ public class StftParameters
 	{
 		return numChannels;
 	}
-	
+
 	public float getFreqPerBin()
 	{
 		return freqPerBin;
 	}
-	
+
 	public float[] getBinCenterFreqs()
 	{
 		return binCenterFreqs;

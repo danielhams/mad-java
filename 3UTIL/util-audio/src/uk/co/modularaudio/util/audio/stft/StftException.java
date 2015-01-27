@@ -23,18 +23,18 @@ package uk.co.modularaudio.util.audio.stft;
 public class StftException extends Exception
 {
 	private static final long serialVersionUID = 6822539028992791261L;
-	
-	public StftException( String msg, int banana )
+
+	public StftException( final String msg )
 	{
 		super( msg );
 	}
 
-	public StftException( String msg, Exception e, int banana )
+	public StftException( final String msg, final Exception e )
 	{
 		super( msg, e );
 	}
 
-	public StftException( int banana )
+	public StftException()
 	{
 		super();
 	}

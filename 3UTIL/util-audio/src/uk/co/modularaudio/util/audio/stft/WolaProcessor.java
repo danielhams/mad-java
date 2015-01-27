@@ -34,32 +34,33 @@ import uk.co.modularaudio.util.audio.stft.frame.synthesis.StftFrameSynthesiser;
 public class WolaProcessor
 {
 	private static Log log = LogFactory.getLog( WolaProcessor.class.getName() );
-	
-	private int numChannels = -1;
-	private int analysisStepSize = -1;
-	private int numReals = -1;
-	private int complexArraySize = -1;
-	private int numBins = -1;
-	
+
+	private final int numChannels;
+	private final int analysisStepSize;
+	private final int numReals;
+	private final int complexArraySize;
+	private final int numBins;
+
 	// Main algorithmic loop
-	private StftFrameCreator frameCreator = null;
-	private StftFrameProcessor frameProcessor = null;
-	private StftFrameSynthesiser frameSynthesiser = null;
-	
-	private int numFramesLookahead = -1;
-	
+	private final StftFrameCreator frameCreator;
+	private final StftFrameProcessor frameProcessor;
+	private final StftFrameSynthesiser frameSynthesiser;
+
+	private final int numFramesLookahead;
+
 	// Our forward looking cache
-	private ArrayList<StftDataFrame> forwardLookingFrames = null;
+	private final ArrayList<StftDataFrame> forwardLookingFrames;
 
 	// Somewhere the frame processor can store it's output
 	// that we will pass to the synthesiser
-	private StftDataFrame processedFrame = null;
-	
+	private StftDataFrame processedFrame;
+
 	// How far we will move on synthesis. Needed by our frame processors
 	// to be able to correctly calculate phase
-	private StftFrameSynthesisStep synthStep = new StftFrameSynthesisStep();
-	
-	public WolaProcessor( StftParameters params, StftFrameProcessor frameProcessor )
+	private final StftFrameSynthesisStep synthStep = new StftFrameSynthesisStep();
+
+	public WolaProcessor( final StftParameters params, final StftFrameProcessor frameProcessor )
+			throws StftException
 	{
 		this.numChannels = params.getNumChannels();
 		this.analysisStepSize = params.getStepSize();
@@ -68,25 +69,25 @@ public class WolaProcessor
 		this.numBins = params.getNumBins();
 
 		frameCreator = new StftFrameCreator( params );
-		
+
 		this.frameProcessor = frameProcessor;
 		frameProcessor.setParams( params );
-		
+
 		frameSynthesiser = new StftFrameSynthesiser( params );
 
 		// Need to let the frame processor have the parameters before we call this - it might be
 		// dependant on the numOverlaps (particularly in the case of transient processing)
 		numFramesLookahead = frameProcessor.getNumFramesNeeded();
 		forwardLookingFrames = new ArrayList<StftDataFrame>( numFramesLookahead );
-		
+
 		reset();
 	}
-	
-	public int doNextStep( float[][] inputStep, double speed, double pitch, UnsafeFloatRingBuffer[] outputRingBuffers )
+
+	public int doNextStep( final float[][] inputStep, final double speed, final double pitch, final UnsafeFloatRingBuffer[] outputRingBuffers )
 	{
 		if( inputStep.length != numChannels )
 		{
-			String msg = "Number of input channels in step does not match configured number of channels.";
+			final String msg = "Number of input channels in step does not match configured number of channels.";
 			log.error( msg );
 			return -1;
 		}
@@ -105,9 +106,9 @@ public class WolaProcessor
 		forwardLookingFrames.add( 0, latestFrame );
 
 		synthStep.calculate( speed, pitch, analysisStepSize );
-		
+
 		frameProcessor.processIncomingFrame( processedFrame, forwardLookingFrames, synthStep );
-		
+
 		if( frameProcessor.isSynthesisingProcessor() )
 		{
 			// If we have enough frames in the look ahead structure we can go ahead
@@ -117,11 +118,11 @@ public class WolaProcessor
 			{
 				// Now pass this processed frame to the synthesiser
 				frameSynthesiser.synthesiseFrame( processedFrame, speed, pitch, outputRingBuffers, synthStep );
-			}	
+			}
 		}
 		return 0;
 	}
-	
+
 	public StftFrameSynthesisStep getLastFrameSynthesisStep()
 	{
 		return synthStep;
@@ -136,7 +137,7 @@ public class WolaProcessor
 	{
 		return frameCreator;
 	}
-	
+
 	public StftFrameSynthesiser getFrameSynthesiser()
 	{
 		return frameSynthesiser;
@@ -147,19 +148,19 @@ public class WolaProcessor
 		return frameProcessor;
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		frameCreator.reset();
 		frameProcessor.reset();
 		frameSynthesiser.reset();
-		
+
 		forwardLookingFrames.clear();
 		// Now fill up with empty frames
 		for( int i = 0 ; i < numFramesLookahead ; i++ )
 		{
 			forwardLookingFrames.add( new StftDataFrame( numChannels, numReals, complexArraySize, numBins ) );
 		}
-		
+
 		processedFrame = new StftDataFrame( numChannels, numReals, complexArraySize, numBins );
 	}
 

@@ -26,14 +26,14 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class OverlapAdder
 {
 //	private static Log log = LogFactory.getLog( OverlapAdder.class.getName() );
-	
-	private int stepSize;
-	private int ringBufferCapacity;
-	private UnsafeOverlapAndAddRingBuffer ringBuffer;
-	
+
+	private final int stepSize;
+	private final int ringBufferCapacity;
+	private final UnsafeOverlapAndAddRingBuffer ringBuffer;
+
 	private int position;
-	
-	public OverlapAdder( int inputStepSize, int numOverlaps )
+
+	public OverlapAdder( final int inputStepSize, final int numOverlaps )
 	{
 		this.stepSize = inputStepSize;
 		// We overlap the step size N times before we get output
@@ -44,17 +44,17 @@ public class OverlapAdder
 		reset();
 	}
 
-	public final RealtimeMethodReturnCodeEnum addOverlap( float[] frameData, int stepSize, int lengthOfData )
+	public final RealtimeMethodReturnCodeEnum addOverlap( final float[] frameData, final int stepSize, final int lengthOfData )
 	{
 		// The first stepsize floats
 		ringBuffer.add( frameData, 0, stepSize );
 		position = ringBuffer.readPosition;
 		ringBuffer.addNoMove( frameData, stepSize, lengthOfData - stepSize );
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	public final void readOutput( float[] output, int stepSize )
+	public final void readOutput( final float[] output, final int stepSize )
 	{
 		ringBuffer.readAndZero( output, 0, stepSize );
 	}
@@ -69,14 +69,14 @@ public class OverlapAdder
 		return position;
 	}
 
-	public void reset()
+	public final void reset()
 	{
-		ringBuffer.clear();		
+		ringBuffer.clear();
 		position = ringBuffer.readPosition;
 
 		// Need to "prime" the ring buffer to have enough zeros that when reading we aren't moving over the
 		// currently add/overlap region
-		float[] zero = new float[1];
+		final float[] zero = new float[1];
 		zero[0] = 0.0f;
 		for( int i = 0 ; i < stepSize ; i++ )
 		{

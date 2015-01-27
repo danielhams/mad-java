@@ -38,9 +38,9 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class StftFrameCreator
 {
 	public static Log log = LogFactory.getLog( StftFrameCreator.class.getName() );
-	
+
 	private StftParameters params = null;
-	
+
 	// Useful values
 	private int numChannels = -1;
 	private int windowLength = -1;
@@ -51,24 +51,24 @@ public class StftFrameCreator
 	private float inputScal = 0.0f;
 	private float inputFac = 0.0f;
 	private int sampleRate = 0;
-	
+
 	private StftPlayPosition curPos = null;
-	
+
 	private FftWindow fftWindow = null;
-	
+
 	private StftFrameCreatorBuffers buffers = null;
-	
+
 	private FrameRotatorPaddedTimeDomain frameRotator = null;
-	
+
 	private FloatFFT_1D fftComputer = null;
-	
+
 	private float[] internalComplexBuffer = null;
-	
+
 	private UnsafeFloatRingBuffer[] cumulativeWindowRingBuffer = null;
-	
+
 	private StftDataFrame lastAnalFrame = null;
-	
-	public StftFrameCreator( StftParameters params )
+
+	public StftFrameCreator( final StftParameters params )
 	{
 		this.params = params;
 		this.numChannels = params.getNumChannels();
@@ -81,32 +81,32 @@ public class StftFrameCreator
 		sampleRate = params.getSampleRate();
 		inputFac = (sampleRate / (stepSize * MathDefines.TWO_PI_F));
 		inputScal = (MathDefines.TWO_PI_F * stepSize / numReals );
-		
+
 		frameRotator = new FrameRotatorPaddedTimeDomain( params );
-		
+
 		fftComputer = new FloatFFT_1D( numReals );
-		
+
 		cumulativeWindowRingBuffer = new UnsafeFloatRingBuffer[ numChannels ];
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
 			cumulativeWindowRingBuffer[i] = new UnsafeFloatRingBuffer( windowLength + stepSize );
 		}
-		
+
 		internalComplexBuffer = new float[ complexArraySize ];
 
 		setupBuffers();
 
 		reset();
 	}
-	
-	private void setupBuffers()
+
+	private final void setupBuffers()
 	{
 		buffers = new StftFrameCreatorBuffers();
 		buffers.selectedWindowBuffer = new float[ windowLength ];
 		buffers.weightedWindowBuffer = new float[ complexArraySize ];
 	}
 
-	public StftDataFrame makeFrameFromNextStep( float[][] inputStep, StftDataFrame latestFrame )
+	public StftDataFrame makeFrameFromNextStep( final float[][] inputStep, final StftDataFrame latestFrame )
 	{
 		StftDataFrame retVal = null;
 		try
@@ -115,22 +115,22 @@ public class StftFrameCreator
 			retVal.position =  curPos.pos;
 			for( int i = 0 ; i < numChannels ; i++ )
 			{
-				float[] complexFrame = retVal.complexFrame[i];
-	
+				final float[] complexFrame = retVal.complexFrame[i];
+
 				// These will be filled in by the frame processor itself
 				retVal.inputScal = inputScal;
 				retVal.inputFac = inputFac;
-				
+
 				cumulativeWindowRingBuffer[i].write( inputStep[i], 0, stepSize );
-				
+
 				// Now read out (and move) stepSize, then read out windowLength - stepSize without moving
 				cumulativeWindowRingBuffer[i].read( buffers.selectedWindowBuffer, 0, stepSize );
 				cumulativeWindowRingBuffer[i].readNoMove( buffers.selectedWindowBuffer, stepSize, windowLength - stepSize );
-				
+
 				applyWindowing();
-				
+
 				rotateWindowForAlignment( (int)curPos.pos );
-				
+
 				// The FFT is really costly when values are really small or zero
 				// we check first here and skip the FFT if it isn't necessary
 				boolean allZeros = true;
@@ -142,7 +142,7 @@ public class StftFrameCreator
 						break;
 					}
 				}
-				
+
 				if( allZeros )
 				{
 					Arrays.fill( internalComplexBuffer, 0.0f );
@@ -152,19 +152,19 @@ public class StftFrameCreator
 				{
 					forwardFft();
 				}
-				
+
 				// Make the complex frame available to the frame processor (for phase unwrapping)
 				System.arraycopy( internalComplexBuffer, 0, complexFrame, 0, complexArraySize );
 			}
-			
+
 			// Move us along.
 			curPos.pos += stepSize;
-			
+
 			lastAnalFrame = retVal;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught building frame in PvFrameCreator: " + e.toString();
+			final String msg = "Exception caught building frame in PvFrameCreator: " + e.toString();
 			log.error( msg );
 			return null;
 		}
@@ -175,18 +175,18 @@ public class StftFrameCreator
 	private void applyWindowing()
 		throws StftException
 	{
-		float[] selectedWindowBuffer = buffers.selectedWindowBuffer;
-		float[] outputWindowBuffer = buffers.weightedWindowBuffer;
-		int windowLength = params.getWindowLength();
+		final float[] selectedWindowBuffer = buffers.selectedWindowBuffer;
+		final float[] outputWindowBuffer = buffers.weightedWindowBuffer;
+		final int windowLength = params.getWindowLength();
 		System.arraycopy( selectedWindowBuffer, 0, outputWindowBuffer, 0, windowLength );
 		fftWindow.apply( outputWindowBuffer );
 	}
 
-	private void rotateWindowForAlignment( int curPosition )
+	private void rotateWindowForAlignment( final int curPosition )
 			throws StftException
 	{
-		float[] inWindow = buffers.weightedWindowBuffer;
-		float[] fftBuffer = internalComplexBuffer;
+		final float[] inWindow = buffers.weightedWindowBuffer;
+		final float[] fftBuffer = internalComplexBuffer;
 //			log.debug("InRotating window at position " + curPosition);
 		frameRotator.inRotate( inWindow, curPosition, fftBuffer );
 
@@ -214,15 +214,15 @@ public class StftFrameCreator
 		return lastAnalFrame;
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		curPos = new StftPlayPosition();
-		
+
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
 			cumulativeWindowRingBuffer[i].clear();
 			// Now we need to prime the window ring buffer
-			float[] primer = new float[ windowLength - stepSize ];
+			final float[] primer = new float[ windowLength - stepSize ];
 			cumulativeWindowRingBuffer[i].write( primer, 0, primer.length );
 		}
 	}

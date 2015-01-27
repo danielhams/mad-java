@@ -31,7 +31,7 @@ import uk.co.modularaudio.util.math.MathFormatter;
 public class PeakFinder
 {
 	private static Log log = LogFactory.getLog( PeakFinder.class.getName() );
-	
+
 	// Anything below this threshold is marked as not involved in a peak
 	// -60 dB seems a nice level
 //	public static final float LOCK_THRESHOLD = AudioMath.FdbToLevel( -60.0f );
@@ -47,33 +47,36 @@ public class PeakFinder
 	private static final int LOWER_BIN_INDEX_THRESHOLD = -1;
 
 //	private StftParameters params = null;
-	private int numBins = -1;
-	private int lastBinIndex = -1;
-	
-	public PeakFinder( StftParameters params )
+	private final int numBins;
+	private final int lastBinIndex;
+
+	public PeakFinder( final StftParameters params )
 	{
 //		this.params = params;
 		this.numBins = params.getNumBins();
 		this.lastBinIndex = numBins - 1;
-		log.debug("Peak threshold set to " + LOCK_THRESHOLD);
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Peak threshold set to " + LOCK_THRESHOLD);
+		}
 	}
 
-	public final void identifyPeaks( float[] inAmps,
-			int[] peaksBuffer,
-			int[] binToPeakBuffer )
+	public final void identifyPeaks( final float[] inAmps,
+			final int[] peaksBuffer,
+			final int[] binToPeakBuffer )
 	{
 		setupLockIndicatorsNew( inAmps, peaksBuffer, binToPeakBuffer );
 		getRegionsOfInfluence( peaksBuffer, binToPeakBuffer, inAmps );
-	
+
 		// Finally knock out all the peaks and regions where amp < tolerance
 // 		unlockQuietBins( peaksBuffer, binToPeakBuffer, inAmps );
 	}
 
-	protected final void unlockQuietBins(int[] peaksBuffer, int[] binToPeakBuffer, float[] amps)
+	protected final void unlockQuietBins(final int[] peaksBuffer, final int[] binToPeakBuffer, final float[] amps)
 	{
 		for( int i = 0 ; i < lastBinIndex ; i++ )
 		{
-			float a = amps[i];
+			final float a = amps[i];
 			// Not sure this is smart enough
 			if( a <= LOCK_THRESHOLD )
 			{
@@ -81,7 +84,7 @@ public class PeakFinder
 				{
 //					log.debug("Unlocking bin " + i);
 				}
-				int peakBinNum = binToPeakBuffer[ i ];
+				final int peakBinNum = binToPeakBuffer[ i ];
 				// Check if we are leaving any orphaned peak bin references
 				if( peakBinNum < i && peakBinNum != -1 )
 				{
@@ -123,16 +126,16 @@ public class PeakFinder
 		}
 	}
 
-	private final void getRegionsOfInfluence(int[] peaksBuffer, int[] binToPeakBuffer, float[] amps)
+	private final void getRegionsOfInfluence(final int[] peaksBuffer, final int[] binToPeakBuffer, final float[] amps)
 	{
 		int lowerBound = 0;
 		int upperBound = -1;
-		
-		int maxPeaksBufferIndex = peaksBuffer.length - 1;
-		
+
+		final int maxPeaksBufferIndex = peaksBuffer.length - 1;
+
 		for( int i = 0 ; i <= maxPeaksBufferIndex ; i++ )
 		{
-			int lockedBinNum = peaksBuffer[ i ];
+			final int lockedBinNum = peaksBuffer[ i ];
 			if( lockedBinNum == -1 )
 			{
 				break;
@@ -158,32 +161,32 @@ public class PeakFinder
 				}
 				// Fill in the bins to be "locked" to this one
 				Arrays.fill( binToPeakBuffer, lowerBound, upperBound, lockedBinNum );
-				
+
 				// Now move up lower bound
 				lowerBound = upperBound;
 			}
 		}
 	}
-	
-	private final void setupLockIndicatorsNew( float[] amps, int[] peaksBuffer, int[] binToPeakBuffer )
+
+	private final void setupLockIndicatorsNew( final float[] amps, final int[] peaksBuffer, final int[] binToPeakBuffer )
 	{
 //		float maxAmp = 0.0f;
 		int sliIndex = 0;
-		
+
 		for( int i = 0 ; i < numBins ; i++ )
 		{
-			float curAmp = amps[i];
+			final float curAmp = amps[i];
 //			if( curAmp > maxAmp )
 //			{
 //				maxAmp = curAmp;
 //			}
 			if( curAmp > LOCK_THRESHOLD )
 			{
-				int indexMinus2 = ( i <3 ? 0 : i - 2 );
-				int indexMinus1 = ( i <2 ? 0 : i - 1 );
-				int indexPlus1 = ( i > numBins - 3 ? numBins - 1 : i + 1 );
-				int indexPlus2 = ( i > numBins - 4 ? numBins - 1 : i + 2 );
-				
+				final int indexMinus2 = ( i <3 ? 0 : i - 2 );
+				final int indexMinus1 = ( i <2 ? 0 : i - 1 );
+				final int indexPlus1 = ( i > numBins - 3 ? numBins - 1 : i + 1 );
+				final int indexPlus2 = ( i > numBins - 4 ? numBins - 1 : i + 2 );
+
 				boolean isPeak = false;
 				// (i2 > i0) && (i2 >= i1) && (i2 >= i3) && (i2 > i4);
 				if( i == 0 )
@@ -215,10 +218,10 @@ public class PeakFinder
 						isPeak = true;
 					}
 				}
-				
+
 				if( isPeak )
 				{
-					int peakBinNum = ( i == 0 ? 1 : i );
+					final int peakBinNum = ( i == 0 ? 1 : i );
 //					int peakBinNum = i;
 					binToPeakBuffer[ peakBinNum ] = -2;
 					peaksBuffer[ sliIndex++ ] = peakBinNum ;
@@ -227,7 +230,7 @@ public class PeakFinder
 						log.debug("Found a peak at index " + peakBinNum + " around " +
 								MathFormatter.slowFloatPrint( amps[ indexMinus2 ], 5, true ) + ", " +
 								MathFormatter.slowFloatPrint( amps[ indexMinus1 ], 5, true ) + ", " +
-								MathFormatter.slowFloatPrint( curAmp, 5, true ) + ", " + 
+								MathFormatter.slowFloatPrint( curAmp, 5, true ) + ", " +
 								MathFormatter.slowFloatPrint( amps[ indexPlus1 ], 5, true ) + ", " +
 								MathFormatter.slowFloatPrint( amps[ indexPlus2 ], 5, true ) );
 					}
@@ -246,9 +249,9 @@ public class PeakFinder
 //		log.debug("MaxAmp is " + MathFormatter.slowFloatPrint( maxAmp, 10, true ) );
 	}
 
-	private final int findMinimaBetween( int lockedBinNum,
-			int nextBinNum,
-			float[] amps )
+	private final int findMinimaBetween( final int lockedBinNum,
+			final int nextBinNum,
+			final float[] amps )
 	{
 		int retBin = -1;
 		boolean foundIt = false;
@@ -261,7 +264,7 @@ public class PeakFinder
 		float derivativeSignum = ( derivative < 0.0f ? -1.0f : 1.0f );
 //		log.debug("Examining bin " + lockedBinNum + " prevAmp " + prevAmp + " and curAmp " + curAmp + " with der " + derivative );
 //		log.debug("PrevDerSig is " + prevDerSig + " and derSig is " + derivativeSignum );
-		
+
 		boolean lastDerivativeWasNegative = false;
 		int binAtFirstNegativeDerivative = -1;
 		// Basically walk the amps from lockedBinNum to nextBinNum
@@ -274,7 +277,7 @@ public class PeakFinder
 			derivativeSignum = ( derivative < 0.0f ? -1.0f : 1.0f );
 //			log.debug("Examining bin " + i + " prevAmp " + prevAmp + " and curAmp " + curAmp + " with der " + derivative );
 //			log.debug("PrevDerSig is " + prevDerSig + " and derSig is " + derivativeSignum );
-			
+
 			// derivative sign is positive, we are decreasing
 			// if negative, we are increasing in amplitude.
 			// for the sake of avoiding lobes being detected, we look for two negative derivatives
@@ -312,8 +315,8 @@ public class PeakFinder
 		}
 		return retBin;
 	}
-	
-	public final void quickHackZeroQuietBins( float[] amps, float[] complexFrame )
+
+	public final void quickHackZeroQuietBins( final float[] amps, final float[] complexFrame )
 	{
 		for( int i = 1 ; i < numBins - 1 ; i++ )
 		{
@@ -326,11 +329,11 @@ public class PeakFinder
 		}
 	}
 
-	public final void quickHackBinZeroing( int[] binToPeakBuffer, float[] amps )
+	public final void quickHackBinZeroing( final int[] binToPeakBuffer, final float[] amps )
 	{
 		// Now zero all the bins that aren't marked as a peak (ignore dc and nyquist)
-		float[] synthAmps = amps;
-		
+		final float[] synthAmps = amps;
+
 		synthAmps[0] = 0.0f;
 		synthAmps[synthAmps.length - 1] = 0.0f;
 		for( int i = 1 ; i < lastBinIndex ; i++ )
@@ -340,16 +343,16 @@ public class PeakFinder
 				synthAmps[ i ] = 0.0f;
 			}
 		}
-		
+
 		// Overamping peaks
 		for( int i = 1 ; i < numBins - 1 ; i++ )
 		{
 			if( binToPeakBuffer [ i ] == i )
 			{
-				float newAmp = synthAmps[ i ]; // * 2;
+				final float newAmp = synthAmps[ i ]; // * 2;
 				synthAmps[ i ] = newAmp;
 				// Make two surrounding bins 2/3 of the power with inverted phase
-				float surroundBinAmp = newAmp * ((float)2/3);
+				final float surroundBinAmp = newAmp * ((float)2/3);
 				if( i > 0 )
 				{
 					synthAmps[ i - 1] = surroundBinAmp;
@@ -362,24 +365,24 @@ public class PeakFinder
 		}
 	}
 
-	public final void quickZeroingLeaveBins( int[] binToPeakBuffer,
-			float[] amps,
-			float[] complexFrame,
-			int binsOnEachSide,
-			boolean cleanPeak,
-			boolean cleanAllBinsAbovePeaks,
-			boolean cleanAllBinsBelowPeaks )
+	public final void quickZeroingLeaveBins( final int[] binToPeakBuffer,
+			final float[] amps,
+			final float[] complexFrame,
+			final int binsOnEachSide,
+			final boolean cleanPeak,
+			final boolean cleanAllBinsAbovePeaks,
+			final boolean cleanAllBinsBelowPeaks )
 	{
 		// Now zero all the bins that aren't marked as a peak (ignore dc and nyquist)
-		
+
 		amps[0] = 0.0f;
 		amps[amps.length - 1] = 0.0f;
 		for( int i = 1 ; i < lastBinIndex ; i++ )
 		{
-			int currentBinPeakPointer = binToPeakBuffer[ i ];
+			final int currentBinPeakPointer = binToPeakBuffer[ i ];
 
-			int distanceToPeak = currentBinPeakPointer - i;
-			
+			final int distanceToPeak = currentBinPeakPointer - i;
+
 			if( distanceToPeak == 0 )
 			{
 				if( cleanPeak )
@@ -401,7 +404,7 @@ public class PeakFinder
 			else if( distanceToPeak < 0 )
 			{
 				if( cleanAllBinsAbovePeaks || -distanceToPeak > binsOnEachSide )
-				{		
+				{
 					amps[ i ] = 0.0f;
 					complexFrame[ 2*i ] = 0.0f;
 					complexFrame[ (2*i)+1 ] = 0.0f;

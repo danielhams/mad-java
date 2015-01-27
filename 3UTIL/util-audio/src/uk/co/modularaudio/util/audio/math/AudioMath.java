@@ -89,12 +89,12 @@ public class AudioMath
 		return Math.pow(10.0D, value / 20.0D);
 	}
 
-	public static float FdbToLevel(float value)
+	public static float dbToLevelF(float value)
 	{
 		return (float)Math.pow(10.0D, value / 20.0f);
 	}
 
-	public static float FlevelToDb(float value)
+	public static float levelToDbF(float value)
 	{
 		return 20.0f * (float)(Math.log10(value));
 	}
