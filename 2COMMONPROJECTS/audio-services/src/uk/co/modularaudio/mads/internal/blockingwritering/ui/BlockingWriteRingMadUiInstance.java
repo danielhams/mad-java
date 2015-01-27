@@ -28,10 +28,10 @@ import uk.co.modularaudio.util.table.Span;
 
 public class BlockingWriteRingMadUiInstance extends MadUiInstance<BlockingWriteRingMadDefinition, BlockingWriteRingMadInstance>
 {
-	private BlockingWriteRingMadUiDefinition fiUiDefinition = null;
-	
-	public BlockingWriteRingMadUiInstance( BlockingWriteRingMadInstance instance,
-			BlockingWriteRingMadUiDefinition uiDefinition )
+	private final BlockingWriteRingMadUiDefinition fiUiDefinition;
+
+	public BlockingWriteRingMadUiInstance( final BlockingWriteRingMadInstance instance,
+			final BlockingWriteRingMadUiDefinition uiDefinition )
 	{
 		super( instance,  uiDefinition );
 		this.fiUiDefinition = uiDefinition;
@@ -44,7 +44,7 @@ public class BlockingWriteRingMadUiInstance extends MadUiInstance<BlockingWriteR
 	}
 
 	@Override
-	public void consumeQueueEntry( BlockingWriteRingMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final BlockingWriteRingMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }

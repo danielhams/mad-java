@@ -38,73 +38,75 @@ import uk.co.modularaudio.util.table.Span;
 
 public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWriteRingMadDefinition, BlockingWriteRingMadInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 
 	private static final Point PRODUCER_LEFT_CHANNEL_CENTER = new Point( 160, 30 );
 	private static final Point PRODUCER_RIGHT_CHANNEL_CENTER = new Point( 180, 30 );
-	
-	private BufferedImage frontBufferedImage = null;
-	private BufferedImage backBufferedImage = null;
-	
-	public BlockingWriteRingMadUiDefinition( BufferedImageAllocator bia, BlockingWriteRingMadDefinition definition,
-			ComponentImageFactory cif, 
-			String imageRoot ) throws DatastoreException
+
+	private final BufferedImage frontBufferedImage;
+	private final BufferedImage backBufferedImage;
+
+	public BlockingWriteRingMadUiDefinition( final BufferedImageAllocator bia, final BlockingWriteRingMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot ) throws DatastoreException
 	{
 		super( bia, definition );
-		
+
 		frontBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_front.png" );
-		
+
 		backBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_back.png");
 	}
 
+	@Override
 	public BufferedImage getFrontBufferedImage()
 	{
 		return frontBufferedImage;
 	}
 
+	@Override
 	public BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
 	}
 
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( BlockingWriteRingMadInstance instance )
+	public MadUiInstance<?,?> createNewUiInstance( final BlockingWriteRingMadInstance instance )
 		throws DatastoreException
 	{
-		MadUiInstance<?,?> retVal = null;
 		try
 		{
 			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = instance.getChannelInstances();
+			final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+			final MadChannelInstance[] channelInstances = instance.getChannelInstances();
 
-			MadChannelInstance leftProducerChannelInstance = channelInstances[ BlockingWriteRingMadDefinition.PRODUCER_LEFT ];
+			final MadChannelInstance leftProducerChannelInstance = channelInstances[ BlockingWriteRingMadDefinition.PRODUCER_LEFT ];
 			uiChannelInstances.add( new MadUiChannelInstance( PRODUCER_LEFT_CHANNEL_CENTER, leftProducerChannelInstance ) );
-			
-			MadChannelInstance rightProducerChannelInstance = channelInstances[ BlockingWriteRingMadDefinition.PRODUCER_RIGHT ];
+
+			final MadChannelInstance rightProducerChannelInstance = channelInstances[ BlockingWriteRingMadDefinition.PRODUCER_RIGHT ];
 			uiChannelInstances.add( new MadUiChannelInstance( PRODUCER_RIGHT_CHANNEL_CENTER, rightProducerChannelInstance ) );
-			
+
 			// We don't have any controls...
-			
-			retVal = new BlockingWriteRingMadUiInstance( instance,
+
+			final MadUiInstance<?,?> retVal = new BlockingWriteRingMadUiInstance( instance,
 					this );
-			
+
 			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
 					 new MadUiControlInstance<?,?,?>[ 0 ],
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
+			return retVal;
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught creating new ui instance: " + e.toString();
+			final String msg = "Exception caught creating new ui instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
-		return retVal;
 	}
-	
+
+	@Override
 	public Span getCellSpan()
 	{
-		return span;
+		return SPAN;
 	}
 }

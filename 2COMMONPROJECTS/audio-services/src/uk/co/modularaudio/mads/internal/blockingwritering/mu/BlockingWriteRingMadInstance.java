@@ -42,27 +42,27 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingMadDefinition, BlockingWriteRingMadInstance>
 {
 	private static Log log = LogFactory.getLog( BlockingWriteRingMadInstance.class.getName() );
-	
-	private int periodLength = -1;
-	
-	private BlockingWriteRingBuffer leftRingBuffer = null;
-	private BlockingWriteRingBuffer rightRingBuffer = null;
 
-	public BlockingWriteRingMadInstance( InternalComponentsCreationContext creationContext,
-			String instanceName,
-			BlockingWriteRingMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private int periodLength;
+
+	private BlockingWriteRingBuffer leftRingBuffer;
+	private BlockingWriteRingBuffer rightRingBuffer;
+
+	public BlockingWriteRingMadInstance( final InternalComponentsCreationContext creationContext,
+			final String instanceName,
+			final BlockingWriteRingMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		periodLength = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
-		
+
 		leftRingBuffer = new BlockingWriteRingBuffer( periodLength * 8 );
 		rightRingBuffer = new BlockingWriteRingBuffer( periodLength * 8 );
 	}
@@ -73,11 +73,11 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
 //		log.trace( "Doing stuff in blocking write ring" );
 		int numAvail = leftRingBuffer.getNumReadable();
@@ -87,25 +87,25 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 //		{
 //			log.warn( "Underflowed from blocking ring by " + numToPad + " samples" );
 //		}
-		
-		MadChannelBuffer outLeftCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_LEFT ];
-		float outLeftBuf[] = outLeftCb.floatBuffer;
-		
+
+		final MadChannelBuffer outLeftCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_LEFT ];
+		final float outLeftBuf[] = outLeftCb.floatBuffer;
+
 		try
 		{
 			leftRingBuffer.readMaybeBlock( outLeftBuf, 0, numToRead );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught during ring buffer read: " + e.toString();
+			final String msg = "Exception caught during ring buffer read: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 		for( int i = 0 ; i < numToPad ; i++ )
 		{
 			outLeftBuf[ numToRead + i ] = 0.0f;
 		}
-		
+
 		numAvail = rightRingBuffer.getNumReadable();
 		numToRead = ( numFrames < numAvail ? numFrames : numAvail );
 		numToPad = (numToRead < numFrames ? numFrames - numToRead : 0 );
@@ -113,27 +113,27 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 //		{
 //			log.warn( "Underflowed from blocking ring by " + numToPad + " samples" );
 //		}
-		MadChannelBuffer outRightCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_RIGHT ];
-		float outRightBuf[] = outRightCb.floatBuffer;
-		
+		final MadChannelBuffer outRightCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_RIGHT ];
+		final float outRightBuf[] = outRightCb.floatBuffer;
+
 		try
 		{
 			rightRingBuffer.readMaybeBlock( outRightBuf, 0, numToRead );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught during ring buffer read: " + e.toString();
+			final String msg = "Exception caught during ring buffer read: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 		for( int i = 0 ; i < numToPad ; i++ )
 		{
 			outRightBuf[ numToRead + i ] = 0.0f;
 		}
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
+
 	public BlockingWriteRingBuffer getLeftRingBuffer()
 	{
 		return leftRingBuffer;
