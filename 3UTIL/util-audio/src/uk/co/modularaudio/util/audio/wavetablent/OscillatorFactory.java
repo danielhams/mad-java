@@ -31,22 +31,22 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.wavetablent.pulsewidth.ExpCurvePulseWidthMapper;
 
 
-public class OscillatorFactory
+public final class OscillatorFactory
 {
 	private static Log log = LogFactory.getLog( OscillatorFactory.class.getName() );
-	
-	private StandardWaveTables standardWaveTables = null;
-	private StandardBandLimitedWaveTables standardBandLimitedWaveTables = null;
-	
-	private OscillatorFactory( String pathToCacheRoot ) throws IOException
+
+	private final StandardWaveTables standardWaveTables;
+	private final StandardBandLimitedWaveTables standardBandLimitedWaveTables;
+
+	private OscillatorFactory( final String pathToCacheRoot ) throws IOException
 	{
 		standardWaveTables = StandardWaveTables.getInstance( pathToCacheRoot );
 		standardBandLimitedWaveTables = StandardBandLimitedWaveTables.getInstance( pathToCacheRoot );
 	}
-	
-	public Oscillator createOscillator( OscillatorWaveTableType waveTableType,
-			OscillatorInterpolationType interpolationType,
-			OscillatorWaveShape waveShape )
+
+	public Oscillator createOscillator( final OscillatorWaveTableType waveTableType,
+			final OscillatorInterpolationType interpolationType,
+			final OscillatorWaveShape waveShape )
 		throws NoWaveTableForShapeException, OscillatorFactoryException
 	{
 		WaveTableValueFetcher valueFetcher;
@@ -69,21 +69,21 @@ public class OscillatorFactory
 			}
 			default:
 			{
-				String msg = "Unknown interpolation type: " + interpolationType;
+				final String msg = "Unknown interpolation type: " + interpolationType;
 				log.error( msg );
 				throw new OscillatorFactoryException( msg );
 			}
 		}
-		
+
 //		PulseWidthMapper pulseWidthMapper = new HardKneePulseWidthMapper();
-		PulseWidthMapper pulseWidthMapper = new ExpCurvePulseWidthMapper();
-		
+		final PulseWidthMapper pulseWidthMapper = new ExpCurvePulseWidthMapper();
+
 		Oscillator retVal;
-		
+
 		if( waveShape == OscillatorWaveShape.SINE )
 		{
 			// Sine doesn't have harmonics, so always use the single variant.
-			CubicPaddedRawWaveTable waveTable = standardWaveTables.getTableForShape( waveShape );
+			final CubicPaddedRawWaveTable waveTable = standardWaveTables.getTableForShape( waveShape );
 			retVal = new SingleWaveTableOscillator( waveTable, valueFetcher, pulseWidthMapper );
 		}
 		else
@@ -92,19 +92,19 @@ public class OscillatorFactory
 			{
 				case SINGLE:
 				{
-					CubicPaddedRawWaveTable waveTable = standardWaveTables.getTableForShape( waveShape );
+					final CubicPaddedRawWaveTable waveTable = standardWaveTables.getTableForShape( waveShape );
 					retVal = new SingleWaveTableOscillator( waveTable, valueFetcher, pulseWidthMapper );
 					break;
 				}
 				case BAND_LIMITED:
 				{
-					BandLimitedWaveTableMap waveTableMap = standardBandLimitedWaveTables.getMapForShape( waveShape );
+					final BandLimitedWaveTableMap waveTableMap = standardBandLimitedWaveTables.getMapForShape( waveShape );
 					retVal = new BandLimitedWaveTableOscillator( waveTableMap, valueFetcher, pulseWidthMapper );
 					break;
 				}
 				default:
 				{
-					String msg = "Unknown wave table type: " + waveTableType;
+					final String msg = "Unknown wave table type: " + waveTableType;
 					log.error( msg );
 					throw new OscillatorFactoryException( msg );
 				}
@@ -113,23 +113,23 @@ public class OscillatorFactory
 
 		return retVal;
 	}
-	
-	private static Lock instanceLock = new ReentrantLock();
-	private static AtomicReference<OscillatorFactory> privateInstance = new AtomicReference<OscillatorFactory>();
-	
-	public static OscillatorFactory getInstance( String pathToCacheRoot ) throws IOException
+
+	private final static Lock INSTANCE_LOCK = new ReentrantLock();
+	private final static AtomicReference<OscillatorFactory> PRIVATE_INSTANCE = new AtomicReference<OscillatorFactory>();
+
+	public static OscillatorFactory getInstance( final String pathToCacheRoot ) throws IOException
 	{
-		OscillatorFactory retVal = privateInstance.get();
+		OscillatorFactory retVal = PRIVATE_INSTANCE.get();
 		if( retVal == null )
 		{
 			try
 			{
-				instanceLock.lock();
-				retVal = privateInstance.get();
+				INSTANCE_LOCK.lock();
+				retVal = PRIVATE_INSTANCE.get();
 				if( retVal == null )
 				{
 					retVal = new OscillatorFactory( pathToCacheRoot );
-					if( !privateInstance.compareAndSet( null,  retVal ) )
+					if( !PRIVATE_INSTANCE.compareAndSet( null,  retVal ) )
 					{
 						log.error( "Failed creating the singleton....");
 					}
@@ -137,7 +137,7 @@ public class OscillatorFactory
 			}
 			finally
 			{
-				instanceLock.unlock();
+				INSTANCE_LOCK.unlock();
 			}
 		}
 

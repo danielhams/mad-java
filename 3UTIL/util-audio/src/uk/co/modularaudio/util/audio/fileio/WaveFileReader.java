@@ -33,35 +33,35 @@ import uk.co.modularaudio.util.io.FloatToByteConverter;
 public class WaveFileReader
 {
 	private static Log log = LogFactory.getLog( WaveFileReader.class.getName() );
-	
+
 	private final String inputFilePath;
 	private RandomAccessFile raf;
-	
-	private int internalFloatBufferLength = 0;
-	private byte[] internalByteBuffer = null;
 
-	private int numChannels = 0;
-	private long numTotalFrames = 0;
-	private long numTotalFloats = 0;
-	
-	private int fileSize = -1;
-	
-	private int formatChunkSize = 0;
-	private short formatType = 0;
-	private int byteRate = 0;
-	private short blockAlign = 0;
-	private int dataChunkSize = 0;
-	private long dataChunkOffset = 0;
-	private int sampleRate = 0;
-	private short bitsPerSample = 0;
-	
-	public WaveFileReader( String inputFilePath )
+	private final int internalFloatBufferLength;
+	private final byte[] internalByteBuffer;
+
+	private int numChannels;
+	private long numTotalFrames;
+	private long numTotalFloats;
+
+	private int fileSize;
+
+	private int formatChunkSize;
+	private short formatType;
+	private int byteRate;
+	private short blockAlign;
+	private int dataChunkSize;
+	private long dataChunkOffset;
+	private int sampleRate;
+	private short bitsPerSample;
+
+	public WaveFileReader( final String inputFilePath )
 			throws IOException
 	{
 		this( inputFilePath, WaveFileDefines.FLOAT_BUFFER_LENGTH );
 	}
-	
-	public WaveFileReader( String inputFilePath, int internalFloatBufferLength )
+
+	public WaveFileReader( final String inputFilePath, final int internalFloatBufferLength )
 			throws IOException
 	{
 		this.internalFloatBufferLength = internalFloatBufferLength;
@@ -70,7 +70,7 @@ public class WaveFileReader
 		raf = new RandomAccessFile( new File( inputFilePath ), "r" );
 		readHeader();
 	}
-	
+
 	public void close()
 	{
 		if( raf != null )
@@ -79,9 +79,9 @@ public class WaveFileReader
 			{
 				raf.close();
 			}
-			catch (IOException ioe)
+			catch (final IOException ioe)
 			{
-				String msg = "IOException caught closing raf input stream: " + ioe.toString();
+				final String msg = "IOException caught closing raf input stream: " + ioe.toString();
 				log.error( msg, ioe );
 			}
 			raf = null;
@@ -91,25 +91,25 @@ public class WaveFileReader
 	private void readHeader()
 		throws IOException
 	{
-		int riffChunkId = readInt();
+		final int riffChunkId = readInt();
 		if( riffChunkId != WaveFileDefines.RIFF_CHUNK_ID )
 		{
 			throw new IOException("File is not a WAV file (chunk ID mismatch)");
 		}
 		fileSize = readInt();
-		int riffTypeId = readInt();
+		final int riffTypeId = readInt();
 		if( riffTypeId != WaveFileDefines.RIFF_TYPE_ID )
 		{
 			throw new IOException("File is not a WAV file (RIFF TYPE ID mismatch)");
 		}
-		int fmtChunkId = readInt();
+		final int fmtChunkId = readInt();
 		if( fmtChunkId != WaveFileDefines.FMT_CHUNK_ID )
 		{
 			throw new IOException("File is not a WAV file (FMT CHUNK ID mismatch)");
 		}
 		formatChunkSize = readInt();
 		formatType = readShort();
-		numChannels = (int)readShort();
+		numChannels = readShort();
 		sampleRate = readInt();
 		byteRate = readInt();
 		blockAlign = readShort();
@@ -118,10 +118,10 @@ public class WaveFileReader
 		int amountSkipped = 0;
 		while( nextChunkId != WaveFileDefines.DATA_CHUNK_ID )
 		{
-			char c0 = (char)( (nextChunkId & 0xff ) );
-			char c1 = (char)( (nextChunkId & 0xff00 ) >> 8 );
-			char c2 = (char)( (nextChunkId & 0xff0000 ) >> 16 );
-			char c3 = (char)( (nextChunkId & 0xff000000 ) >> 24 );
+			final char c0 = (char)( (nextChunkId & 0xff ) );
+			final char c1 = (char)( (nextChunkId & 0xff00 ) >> 8 );
+			final char c2 = (char)( (nextChunkId & 0xff0000 ) >> 16 );
+			final char c3 = (char)( (nextChunkId & 0xff000000 ) >> 24 );
 //			StringBuilder sb = new StringBuilder();
 //			sb.append( c0 );
 //			sb.append( c1 );
@@ -129,7 +129,7 @@ public class WaveFileReader
 //			sb.append( c3 );
 //			log.debug("Found chunk to skip: " + sb.toString() );
 			log.debug("Found chunk to skip: '" + c0 + "' '" + c1 + "' '" + c2 + "' '" + c3 + "'" );
-			int sizeToSkip = readInt();
+			final int sizeToSkip = readInt();
 			if( sizeToSkip < 0 )
 			{
 				throw new IOException("Didn't find DATA CHUNK ID during chunk parsing.");
@@ -138,8 +138,8 @@ public class WaveFileReader
 			amountSkipped += sizeToSkip + 4;
 			nextChunkId = readInt();
 		}
-		
-		int dataChunkId = nextChunkId;
+
+		final int dataChunkId = nextChunkId;
 		if( dataChunkId != WaveFileDefines.DATA_CHUNK_ID )
 		{
 			throw new IOException("File is not a WAV file (DATA CHUNK ID mismatch)");
@@ -165,49 +165,49 @@ public class WaveFileReader
 		return numTotalFrames;
 	}
 
-	public void read( float[] result, int resultStartIndex, long waveReadPosition, int numFloatsToRead )
+	public void read( final float[] result, final int resultStartIndex, final long waveReadPosition, final int numFloatsToRead )
 		throws IOException
 	{
-		long seekPosition = dataChunkOffset + (waveReadPosition * 2);
+		final long seekPosition = dataChunkOffset + (waveReadPosition * 2);
 		if( seekPosition != raf.getFilePointer() )
 		{
 			raf.seek( seekPosition );
 		}
-		
+
 		int curOutputPos = resultStartIndex;
 		int numFloatsLeft = numFloatsToRead;
-		
+
 		while( numFloatsLeft > 0 )
 		{
-			int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
-			int numBytesThisRound = numFloatsThisRound * 2;
+			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
+			final int numBytesThisRound = numFloatsThisRound * 2;
 			raf.read( internalByteBuffer, 0, numBytesThisRound );
 			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFloatsThisRound, false );
-			
+
 			curOutputPos += numFloatsThisRound;
 			numFloatsLeft -= numFloatsThisRound;
 		}
 	}
-	
-	public void readFrames( float[] result, int outFrameStartIndex, long frameReadPosition, int numFramesToRead )
+
+	public void readFrames( final float[] result, final int outFrameStartIndex, final long frameReadPosition, final int numFramesToRead )
 		throws IOException
 	{
-		long seekPosition = dataChunkOffset + (frameReadPosition * numChannels * 2 );
+		final long seekPosition = dataChunkOffset + (frameReadPosition * numChannels * 2 );
 		if( seekPosition != raf.getFilePointer() )
 		{
 			raf.seek( seekPosition );
 		}
-		
+
 		int curOutputPos = outFrameStartIndex * numChannels;
 		int numFloatsLeft = numFramesToRead * numChannels;
-		
+
 		while( numFloatsLeft > 0 )
 		{
-			int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
-			int numBytesThisRound = numFloatsThisRound * 2;
+			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
+			final int numBytesThisRound = numFloatsThisRound * 2;
 			raf.read( internalByteBuffer, 0, numBytesThisRound );
 			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFloatsThisRound, false );
-			
+
 			curOutputPos += numFloatsThisRound;
 			numFloatsLeft -= numFloatsThisRound;
 		}
@@ -215,19 +215,19 @@ public class WaveFileReader
 
 	private int readInt() throws IOException
 	{
-		int b1 = raf.read();
-		int b2 = raf.read();
-		int b3 = raf.read();
-		int b4 = raf.read();
-		int retVal = (b1) | ((b2) << 8) | ((b3) << 16) | ((b4) << 24);
+		final int b1 = raf.read();
+		final int b2 = raf.read();
+		final int b3 = raf.read();
+		final int b4 = raf.read();
+		final int retVal = (b1) | ((b2) << 8) | ((b3) << 16) | ((b4) << 24);
 		return retVal;
 	}
-	
+
 	private short readShort() throws IOException
 	{
-		int b1 = raf.read();
-		int b2 = raf.read();
-		int retVal  = (b1) | ((b2) << 8);
+		final int b1 = raf.read();
+		final int b2 = raf.read();
+		final int retVal  = (b1) | ((b2) << 8);
 		return (short)retVal;
 	}
 }

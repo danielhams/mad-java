@@ -31,20 +31,20 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTableDefines;
 
-public class StandardWaveTables
+public final class StandardWaveTables
 {
 	private static Log log = LogFactory.getLog( StandardWaveTables.class.getName() );
-	
-	private String pathToCacheRoot;
-	private HashMap<OscillatorWaveShape, CubicPaddedRawWaveTable> shapeToTableMap = new HashMap<OscillatorWaveShape, CubicPaddedRawWaveTable>();
-	
-	private StandardWaveTables( String pathToCacheRoot ) throws IOException
+
+	private final String pathToCacheRoot;
+	private final HashMap<OscillatorWaveShape, CubicPaddedRawWaveTable> shapeToTableMap = new HashMap<OscillatorWaveShape, CubicPaddedRawWaveTable>();
+
+	private StandardWaveTables( final String pathToCacheRoot ) throws IOException
 	{
 		this.pathToCacheRoot = pathToCacheRoot;
 
 	}
-	
-	public CubicPaddedRawWaveTable getTableForShape( OscillatorWaveShape shape ) throws NoWaveTableForShapeException
+
+	public CubicPaddedRawWaveTable getTableForShape( final OscillatorWaveShape shape ) throws NoWaveTableForShapeException
 	{
 		if( !shapeToTableMap.containsKey( shape ) )
 		{
@@ -54,8 +54,8 @@ public class StandardWaveTables
 				{
 					case SINE:
 					{
-						SineRawWaveTableGenerator sineWaveTableGenerator = new SineRawWaveTableGenerator();
-						CubicPaddedRawWaveTable sineTable = sineWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final SineRawWaveTableGenerator sineWaveTableGenerator = new SineRawWaveTableGenerator();
+						final CubicPaddedRawWaveTable sineTable = sineWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.SINE, sineTable );
@@ -63,8 +63,8 @@ public class StandardWaveTables
 					}
 					case SAW:
 					{
-						SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
-						CubicPaddedRawWaveTable sawTable = sawWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
+						final CubicPaddedRawWaveTable sawTable = sawWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.SAW, sawTable );
@@ -72,8 +72,8 @@ public class StandardWaveTables
 					}
 					case SQUARE:
 					{
-						SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
-						CubicPaddedRawWaveTable squareTable = squareWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
+						final CubicPaddedRawWaveTable squareTable = squareWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.SQUARE, squareTable );
@@ -81,8 +81,8 @@ public class StandardWaveTables
 					}
 					case TEST1:
 					{
-						Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
-						CubicPaddedRawWaveTable test1Table = test1WaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
+						final CubicPaddedRawWaveTable test1Table = test1WaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.TEST1, test1Table );
@@ -90,8 +90,8 @@ public class StandardWaveTables
 					}
 					case TRIANGLE:
 					{
-						TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
-						CubicPaddedRawWaveTable triangleTable = triangleWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
+						final CubicPaddedRawWaveTable triangleTable = triangleWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.TRIANGLE, triangleTable );
@@ -99,8 +99,8 @@ public class StandardWaveTables
 					}
 					case JUNO:
 					{
-						JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
-						CubicPaddedRawWaveTable junoTable = junoWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
+						final JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
+						final CubicPaddedRawWaveTable junoTable = junoWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH,
 								RawWaveTableDefines.OSCILLATOR_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.JUNO, junoTable );
@@ -112,7 +112,7 @@ public class StandardWaveTables
 					}
 				}
 			}
-			catch( IOException ioe )
+			catch( final IOException ioe )
 			{
 				throw new NoWaveTableForShapeException( ioe );
 			}
@@ -121,20 +121,20 @@ public class StandardWaveTables
 		return shapeToTableMap.get( shape );
 	}
 
-	private static Lock instanceLock = new ReentrantLock();
-	private static AtomicReference<StandardWaveTables> privateInstance = new AtomicReference<StandardWaveTables>();
-	
-	public static StandardWaveTables getInstance( String pathToCacheRoot ) throws IOException
+	private final static Lock INSTANCE_LOCK = new ReentrantLock();
+	private final static AtomicReference<StandardWaveTables> PRIVATE_INSTANCE = new AtomicReference<StandardWaveTables>();
+
+	public static StandardWaveTables getInstance( final String pathToCacheRoot ) throws IOException
 	{
 		StandardWaveTables retVal = null;
 		try
 		{
-			instanceLock.lock();
-			retVal = privateInstance.get();
+			INSTANCE_LOCK.lock();
+			retVal = PRIVATE_INSTANCE.get();
 			if( retVal == null )
 			{
 				retVal = new StandardWaveTables( pathToCacheRoot );
-				if( !privateInstance.compareAndSet( null,  retVal ) )
+				if( !PRIVATE_INSTANCE.compareAndSet( null,  retVal ) )
 				{
 					log.error( "Failed creating the singleton....");
 				}
@@ -142,10 +142,10 @@ public class StandardWaveTables
 		}
 		finally
 		{
-			instanceLock.unlock();
+			INSTANCE_LOCK.unlock();
 		}
 
 		return retVal;
 	}
-	
+
 }

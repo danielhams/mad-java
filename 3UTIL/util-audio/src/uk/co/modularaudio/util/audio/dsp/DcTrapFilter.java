@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.dsp;
 
 public class DcTrapFilter
 {
-	private float R;
+	private float r;
 	private float previousValue;
 	private float previousOutValue;
 
@@ -36,7 +36,7 @@ public class DcTrapFilter
 		// -3dB @ 40hz  R = 1 - (250 / sampleRate)
 		// -3dB @ 30hz  R = 1 - (190 / sampleRate)
 		// -3dB @ 20hz  R = 1 - (126 / sampleRate)
-		R = 1.0f - (126.0f / sampleRate );
+		r = 1.0f - (126.0f / sampleRate );
 	}
 
 	public void filter( final float[] samples, final int position, final int length )
@@ -45,7 +45,7 @@ public class DcTrapFilter
 		for( int i = position ; i < position + length ; ++i )
 		{
 			final float curValue = samples[i];
-			previousOutValue = curValue - tmpPrevValue + (R * previousOutValue );
+			previousOutValue = curValue - tmpPrevValue + (r * previousOutValue );
 			samples[i] = previousOutValue;
 			tmpPrevValue = curValue;
 		}
