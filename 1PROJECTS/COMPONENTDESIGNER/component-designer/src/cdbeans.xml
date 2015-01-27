@@ -47,7 +47,6 @@
 	</bean>
 	<bean id="sampleCachingController" class="uk.co.modularaudio.controller.samplecaching.impl.SampleCachingControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
-		<property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
 	</bean>
 	<bean id="rackService" class="uk.co.modularaudio.service.rack.impl.RackServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="graphService"><ref bean="graphService"></ref></property>

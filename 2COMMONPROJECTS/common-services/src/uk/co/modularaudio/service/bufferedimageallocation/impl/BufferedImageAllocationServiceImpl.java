@@ -54,18 +54,18 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 
 	private static Log log = LogFactory.getLog( BufferedImageAllocationServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService = null;
+	private ConfigurationService configurationService;
 
-	private boolean showDebugWindow = false;
-	private int debugWindowX = -1;
-	private int debugWindowY = -1;
+	private boolean showDebugWindow;
+	private int debugWindowX;
+	private int debugWindowY;
 
-	private BufferedImageDebugWindow debugWindow = null;
+	private BufferedImageDebugWindow debugWindow;
 
-	private AllocationStrategy allocationStrategy = new BraindeadAllocationStrategy();
-	private AllocationCacheConfiguration cacheConfiguration = null;
-//	private AllocationCacheForImageType allocationCache = null;
-	private OpenLongObjectHashMap<AllocationCacheForImageType> lifetimeAndImageTypeToAllocationCacheMap = new OpenLongObjectHashMap<AllocationCacheForImageType>();
+	private final AllocationStrategy allocationStrategy = new BraindeadAllocationStrategy();
+	private AllocationCacheConfiguration cacheConfiguration;
+	//	private AllocationCacheForImageType allocationCache;
+	private final OpenLongObjectHashMap<AllocationCacheForImageType> lifetimeAndImageTypeToAllocationCacheMap = new OpenLongObjectHashMap<AllocationCacheForImageType>();
 
 	public BufferedImageAllocationServiceImpl()
 	{
@@ -74,12 +74,12 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//		GraphicsDevice[] gs = ge.getScreenDevices();
-		JFrame tmpFrame = new JFrame();
-		GraphicsConfiguration graphicsConfiguration = tmpFrame.getGraphicsConfiguration();
+		//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		//		GraphicsDevice[] gs = ge.getScreenDevices();
+		final JFrame tmpFrame = new JFrame();
+		final GraphicsConfiguration graphicsConfiguration = tmpFrame.getGraphicsConfiguration();
 
-		Map<String,String> configErrors = new HashMap<String,String>();
+		final Map<String,String> configErrors = new HashMap<String,String>();
 
 		showDebugWindow = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_SHOW_DEBUG_WINDOW, configErrors );
 		debugWindowX = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_DEBUG_WINDOW_X, configErrors );
@@ -91,11 +91,11 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 
 		for( int bic = 0 ; bic < cacheConfiguration.getNumBufferedImageTypes() ; bic++ )
 		{
-			AllocationLifetime lifetime = cacheConfiguration.getLifetimeAt( bic );
-			AllocationBufferType bufferedImageType = cacheConfiguration.getBufferedImageTypeAt( bic );
-			long lifetimeAndImageType = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
+			final AllocationLifetime lifetime = cacheConfiguration.getLifetimeAt( bic );
+			final AllocationBufferType bufferedImageType = cacheConfiguration.getBufferedImageTypeAt( bic );
+			final long lifetimeAndImageType = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
 
-			AllocationCacheForImageType cacheForType = new AllocationCacheForImageType( graphicsConfiguration,
+			final AllocationCacheForImageType cacheForType = new AllocationCacheForImageType( graphicsConfiguration,
 					lifetime.toString() + " " + bufferedImageType.toString(),
 					cacheConfiguration,
 					lifetime,
@@ -112,9 +112,9 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 				debugWindow.setVisible( true );
 			}
 		}
-		catch ( Exception e)
+		catch ( final Exception e)
 		{
-			String msg = "Exception caught initialising debug window: " + e.toString();
+			final String msg = "Exception caught initialising debug window: " + e.toString();
 			throw new ComponentConfigurationException( msg, e );
 		}
 	}
@@ -128,7 +128,7 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 			debugWindow.dispose();
 		}
 
-		for( AllocationCacheForImageType cache : lifetimeAndImageTypeToAllocationCacheMap.values() )
+		for( final AllocationCacheForImageType cache : lifetimeAndImageTypeToAllocationCacheMap.values() )
 		{
 			if( cache.getNumUsed() > 0 )
 			{
@@ -139,40 +139,40 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 	}
 
 	@Override
-	public TiledBufferedImage allocateBufferedImage( String allocationSource,
-			AllocationMatch allocationMatchToUse,
-			AllocationLifetime lifetime,
-			AllocationBufferType bufferedImageType,
-			int imageWidthToUse,
-			int imageHeightToUse )
-			throws DatastoreException
+	public TiledBufferedImage allocateBufferedImage( final String allocationSource,
+			final AllocationMatch allocationMatchToUse,
+			final AllocationLifetime lifetime,
+			final AllocationBufferType bufferedImageType,
+			final int imageWidthToUse,
+			final int imageHeightToUse )
+					throws DatastoreException
 	{
 		TiledBufferedImage retVal = null;
-		long compoundKey = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
-		AllocationCacheForImageType cache = lifetimeAndImageTypeToAllocationCacheMap.get( compoundKey );
+		final long compoundKey = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
+		final AllocationCacheForImageType cache = lifetimeAndImageTypeToAllocationCacheMap.get( compoundKey );
 		if( cache != null )
 		{
-//			if( log.isTraceEnabled() )
-//			{
-//				log.trace("Attempting to find and allocate buffered image for " + allocationSource + " of size " + imageWidthToUse + ", " + imageHeightToUse );
-//				log.trace("There are currently " + cache.getNumRaw() + " raw images in the cache");
-//			}
+			//			if( log.isTraceEnabled() )
+			//			{
+			//				log.trace("Attempting to find and allocate buffered image for " + allocationSource + " of size " + imageWidthToUse + ", " + imageHeightToUse );
+			//				log.trace("There are currently " + cache.getNumRaw() + " raw images in the cache");
+			//			}
 			allocationStrategy.huntForTileToUse( allocationSource, cache, cacheConfiguration, imageWidthToUse, imageHeightToUse, allocationMatchToUse );
 
 			if( allocationMatchToUse.getFoundTile() != null )
 			{
-//				log.trace("Using found tile for allocation of lifetime: " + lifetime.name() + " and imagetype: " + bufferedImageType.name());
+				//				log.trace("Using found tile for allocation of lifetime: " + lifetime.name() + " and imagetype: " + bufferedImageType.name());
 				retVal = allocationMatchToUse.getFoundTile();
 			}
 			else
 			{
-//				log.trace("Allocating new raw image as no existing tile suitable for allocation of lifetime: " + lifetime.name() + " and imagetype: " + bufferedImageType.name());
+				//				log.trace("Allocating new raw image as no existing tile suitable for allocation of lifetime: " + lifetime.name() + " and imagetype: " + bufferedImageType.name());
 				retVal = cache.allocateNewRawImageMakeSubimage( allocationSource, allocationMatchToUse, imageWidthToUse, imageHeightToUse );
 			}
-//			if( log.isDebugEnabled() )
-//			{
-//				cache.doConsistencyChecks();
-//			}
+			//			if( log.isDebugEnabled() )
+			//			{
+			//				cache.doConsistencyChecks();
+			//			}
 
 			return retVal;
 		}
@@ -183,48 +183,43 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 	}
 
 	@Override
-	public void freeBufferedImage( TiledBufferedImage imageToFree )
+	public void freeBufferedImage( final TiledBufferedImage imageToFree )
 			throws DatastoreException
 	{
-		TiledBufferedImageImpl realThing = (TiledBufferedImageImpl)imageToFree;
+		final TiledBufferedImageImpl realThing = (TiledBufferedImageImpl)imageToFree;
 		if( realThing == null )
 		{
 			log.error( "OOps!");
 		}
-		AllocationCacheForImageType cache = realThing.getSourceCache();
+		final AllocationCacheForImageType cache = realThing.getSourceCache();
 		if( cache == null )
 		{
 			log.error("OOOPpppsss!");
 		}
-//		if( log.isTraceEnabled() )
-//		{
-//			log.trace("Attempting to free buffered image for " + realThing.getUsedEntry().getAllocationSource() + " in cache: " + cache.getCacheName() );
-//			log.trace("There are currently " + cache.getNumRaw() + " raw images in the cache");
-//		}
+		//		if( log.isTraceEnabled() )
+		//		{
+		//			log.trace("Attempting to free buffered image for " + realThing.getUsedEntry().getAllocationSource() + " in cache: " + cache.getCacheName() );
+		//			log.trace("There are currently " + cache.getNumRaw() + " raw images in the cache");
+		//		}
 		cache.freeTiledBufferedImage( realThing );
-//		if( log.isDebugEnabled() )
-//		{
-//			cache.doConsistencyChecks();
-//		}
+		//		if( log.isDebugEnabled() )
+		//		{
+		//			cache.doConsistencyChecks();
+		//		}
 	}
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}
 
-	private long buildCompoundKey( AllocationLifetime lifetime,
-			int bufferedImageType )
+	private long buildCompoundKey( final AllocationLifetime lifetime,
+			final int bufferedImageType )
 	{
-		int lifetimeInt = lifetime.ordinal() & 0xffff;
-		int bitInt = bufferedImageType & 0xffff;
-		long shiftedTop = (long)lifetimeInt << 32;
-		long retVal = shiftedTop | bitInt;
+		final int lifetimeInt = lifetime.ordinal() & 0xffff;
+		final int bitInt = bufferedImageType & 0xffff;
+		final long shiftedTop = (long)lifetimeInt << 32;
+		final long retVal = shiftedTop | bitInt;
 		return retVal;
 	}
 

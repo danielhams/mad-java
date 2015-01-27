@@ -44,22 +44,12 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 
 	private ConfigurationService configurationService;
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
-	public HibernateSessionService getHibernateSessionService()
-	{
-		return hibernateSessionService;
-	}
-
-	public void setHibernateSessionService(HibernateSessionService sessionService)
+	public void setHibernateSessionService(final HibernateSessionService sessionService)
 	{
 		this.hibernateSessionService = sessionService;
 	}
@@ -70,14 +60,14 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 	@Override
 	public void getThreadSession()
 	{
-		Session tmpSession = hibernateSessionService.getSession();
+		final Session tmpSession = hibernateSessionService.getSession();
 		ThreadLocalSessionResource.setSessionResource( tmpSession );
 	}
 
 	@Override
 	public void releaseThreadSession() throws NoSuchHibernateSessionException
 	{
-		Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
+		final Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
 		ThreadLocalSessionResource.setSessionResource( null );
 		hibernateSessionService.releaseSession( currentThreadSession );
 	}
@@ -87,11 +77,11 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 	{
 		try
 		{
-			Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
+			final Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
 			ThreadLocalSessionResource.setSessionResource( null );
 			hibernateSessionService.releaseSession( currentThreadSession );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
 			log.error("Throwable caught releasing thread session: " + t.toString(), t );
 		}

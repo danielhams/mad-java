@@ -79,29 +79,30 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 {
 	private static Log log = LogFactory.getLog( RackMarshallingServiceImpl.class.getName() );
 
-	private RackService rackService = null;
-	private MadComponentService componentService = null;
+	private RackService rackService;
+	private MadComponentService componentService;
 
-	private ObjectFactory objectFactory = null;
-	private JAXBContext jbContext = null;
-	private Unmarshaller unmarshaller = null;
-	private Marshaller marshaller = null;
+	private ObjectFactory objectFactory;
+	private JAXBContext jbContext;
+	private Unmarshaller unmarshaller;
+	private Marshaller marshaller;
 
 	@Override
-	public RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException
+	public RackDataModel loadRackFromFile(final String filename) throws DatastoreException, IOException
 	{
 		log.debug("Load rack from file (" + filename + ")");
 		RackDataModel retVal = null;
 		try
 		{
 			@SuppressWarnings("unchecked")
+			final
 			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( filename ) );
-			RackXmlType jbRackXml = jbRackElement.getValue();
+			final RackXmlType jbRackXml = jbRackElement.getValue();
 			retVal = loadRackFromStructure( filename, jbRackXml );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught loading rack from file: " + e.toString();
+			final String msg = "Exception caught loading rack from file: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
@@ -109,82 +110,82 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		return retVal;
 	}
 
-	private RackDataModel loadRackFromStructure( String filename, RackXmlType jbRackXml )
-		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException, IOException, ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
+	private RackDataModel loadRackFromStructure( final String filename, final RackXmlType jbRackXml )
+			throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException, IOException, ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
 	{
 		log.debug("Load rack from structure (" + filename + ")");
 		RackDataModel retVal = null;
 
-		String rackName = jbRackXml.getName();
-		int numCols = jbRackXml.getCols();
-		int numRows = jbRackXml.getRows();
+		final String rackName = jbRackXml.getName();
+		final int numCols = jbRackXml.getCols();
+		final int numRows = jbRackXml.getRows();
 
 		// TODO: Move the size check of the rack master io to the post init
 		// so it's only done once.
 		// Work out how big the IO component is
-		RackDataModel blah = rackService.createNewRackDataModel( "tmp", "", 8, 10, true );
-		RackComponent tmpmirc = blah.getContentsAtPosition( 0, 0 );
+		final RackDataModel blah = rackService.createNewRackDataModel( "tmp", "", 8, 10, true );
+		final RackComponent tmpmirc = blah.getContentsAtPosition( 0, 0 );
 
-		int masterIOYOffset = tmpmirc.getCellSpan().y;
+		final int masterIOYOffset = tmpmirc.getCellSpan().y;
 
 		retVal = rackService.createNewRackDataModel( rackName, filename, numCols, numRows + masterIOYOffset, true );
 
-		RackComponent mirc = retVal.getContentsAtPosition( 0, 0 );
+		final RackComponent mirc = retVal.getContentsAtPosition( 0, 0 );
 
 		// Now loop over all the components creating them
-		List<RackComponentXmlType> jbRackComponentXmls = jbRackXml.getRackComponent();
-		for( RackComponentXmlType jbRackComponentXml : jbRackComponentXmls )
+		final List<RackComponentXmlType> jbRackComponentXmls = jbRackXml.getRackComponent();
+		for( final RackComponentXmlType jbRackComponentXml : jbRackComponentXmls )
 		{
-			String definitionId = jbRackComponentXml.getDefinitionId();
-			String componentName = jbRackComponentXml.getName();
-			MadDefinition<?,?> madDefinition = componentService.findDefinitionById( definitionId );
-			RackPositionXmlType rackPositionXml = jbRackComponentXml.getRackPosition();
-			int col = rackPositionXml.getColumn();
-			int row = rackPositionXml.getRow() + masterIOYOffset;
+			final String definitionId = jbRackComponentXml.getDefinitionId();
+			final String componentName = jbRackComponentXml.getName();
+			final MadDefinition<?,?> madDefinition = componentService.findDefinitionById( definitionId );
+			final RackPositionXmlType rackPositionXml = jbRackComponentXml.getRackPosition();
+			final int col = rackPositionXml.getColumn();
+			final int row = rackPositionXml.getRow() + masterIOYOffset;
 
-			Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-			List<RackComponentParameterValueXmlType> jbParamValues = jbRackComponentXml.getRackComponentParameterValue();
-			for( RackComponentParameterValueXmlType jbParamValue : jbParamValues )
+			final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+			final List<RackComponentParameterValueXmlType> jbParamValues = jbRackComponentXml.getRackComponentParameterValue();
+			for( final RackComponentParameterValueXmlType jbParamValue : jbParamValues )
 			{
 				lookupAndAddParameterValue( madDefinition, parameterValues, jbParamValue );
 			}
 
-			RackComponent rackComponent = rackService.createComponentAtPosition( retVal, madDefinition, parameterValues, componentName, col, row );
-			MadInstance<?,?> madInstance = rackComponent.getInstance();
+			final RackComponent rackComponent = rackService.createComponentAtPosition( retVal, madDefinition, parameterValues, componentName, col, row );
+			final MadInstance<?,?> madInstance = rackComponent.getInstance();
 
 			// If it's a subgraph, check to see if we load the library path, or we "load" from the incoming data.
 			if( jbRackComponentXml instanceof SubRackXmlType )
 			{
-				SubRackMadInstance subRackInstance = (SubRackMadInstance)madInstance;
-				SubRackMadUiInstance subRackUiInstance = (SubRackMadUiInstance)rackComponent.getUiInstance();
+				final SubRackMadInstance subRackInstance = (SubRackMadInstance)madInstance;
+				final SubRackMadUiInstance subRackUiInstance = (SubRackMadUiInstance)rackComponent.getUiInstance();
 
-				SubRackXmlType jbSubRackType = (SubRackXmlType)jbRackComponentXml;
+				final SubRackXmlType jbSubRackType = (SubRackXmlType)jbRackComponentXml;
 				if( jbSubRackType.isLocalSubRack() )
 				{
 					// Create the rack structure from what's below in the file
-					RackDataModel subRackDataModel = loadRackFromStructure( subRackInstance.getInstanceName(), jbSubRackType.getRack() );
+					final RackDataModel subRackDataModel = loadRackFromStructure( subRackInstance.getInstanceName(), jbSubRackType.getRack() );
 
 					subRackUiInstance.setSubRackDataModel( subRackDataModel, true );
 				}
 				else
 				{
 					// Load the rack structure from the library path
-					String libraryPath = jbSubRackType.getLibraryPath();
-					RackDataModel subRackDataModel = loadRackFromFile( libraryPath );
+					final String libraryPath = jbSubRackType.getLibraryPath();
+					final RackDataModel subRackDataModel = loadRackFromFile( libraryPath );
 
 					subRackUiInstance.setSubRackDataModel( subRackDataModel, true );
 				}
 			}
 
-			List<RackControlXmlType> jbRackControlXmls = jbRackComponentXml.getRackControl();
-//			RackComponent uiComponent = slowLookupByName( retVal, componentName );
-			MadUiControlInstance<?,?,?>[] uiControlInstances = rackComponent.getUiControlInstances();
-			for( RackControlXmlType jbControlType : jbRackControlXmls )
+			final List<RackControlXmlType> jbRackControlXmls = jbRackComponentXml.getRackControl();
+			//			RackComponent uiComponent = slowLookupByName( retVal, componentName );
+			final MadUiControlInstance<?,?,?>[] uiControlInstances = rackComponent.getUiControlInstances();
+			for( final RackControlXmlType jbControlType : jbRackControlXmls )
 			{
-				String name = jbControlType.getName();
-				String value = jbControlType.getValue();
+				final String name = jbControlType.getName();
+				final String value = jbControlType.getValue();
 				// Find the control
-				MadUiControlInstance<?,?,?> uiControlInstance = lookupUiControlInstanceByName( uiControlInstances, name );
+				final MadUiControlInstance<?,?,?> uiControlInstance = lookupUiControlInstanceByName( uiControlInstances, name );
 				if( uiControlInstance != null )
 				{
 					uiControlInstance.receiveControlValue( value );
@@ -197,46 +198,46 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 
 		// Now the Graph IO links
-		List<RackIOLinkXmlType> rackIOLinkXmls = jbRackXml.getRackIOLink();
-		for( RackIOLinkXmlType rackIOLinkXml : rackIOLinkXmls )
+		final List<RackIOLinkXmlType> rackIOLinkXmls = jbRackXml.getRackIOLink();
+		for( final RackIOLinkXmlType rackIOLinkXml : rackIOLinkXmls )
 		{
-			String rackChannelName = rackIOLinkXml.getRackChannelName();
-			String componentName = rackIOLinkXml.getRackComponentName();
-			String componentChannelName = rackIOLinkXml.getRackComponentChannelInstanceName();
-			MadChannelInstance rackChannelInstance = mirc.getInstance().getChannelInstanceByName( rackChannelName );
-			RackComponent rackComponent = slowLookupByName( retVal,  componentName );
-			MadChannelInstance rackComponentChannelInstance = rackComponent.getInstance().getChannelInstanceByName( componentChannelName );
+			final String rackChannelName = rackIOLinkXml.getRackChannelName();
+			final String componentName = rackIOLinkXml.getRackComponentName();
+			final String componentChannelName = rackIOLinkXml.getRackComponentChannelInstanceName();
+			final MadChannelInstance rackChannelInstance = mirc.getInstance().getChannelInstanceByName( rackChannelName );
+			final RackComponent rackComponent = slowLookupByName( retVal,  componentName );
+			final MadChannelInstance rackComponentChannelInstance = rackComponent.getInstance().getChannelInstanceByName( componentChannelName );
 			rackService.addRackIOLink( retVal, rackChannelInstance, rackComponent, rackComponentChannelInstance );
 		}
 
 		// And the links
-		List<RackLinkXmlType> rackLinkXmls = jbRackXml.getRackLink();
-		for( RackLinkXmlType rackLinkXml : rackLinkXmls )
+		final List<RackLinkXmlType> rackLinkXmls = jbRackXml.getRackLink();
+		for( final RackLinkXmlType rackLinkXml : rackLinkXmls )
 		{
-			String producerName = rackLinkXml.getProducerRackComponentName();
-			String producerChannelName = rackLinkXml.getProducerChannelName();
-			String consumerName = rackLinkXml.getConsumerRackComponentName();
-			String consumerChannelName = rackLinkXml.getConsumerChannelName();
-			RackComponent producerRackComponent = slowLookupByName( retVal, producerName );
-			MadChannelInstance producerChannelInstance = producerRackComponent.getInstance().getChannelInstanceByName( producerChannelName );
-			RackComponent consumerRackComponent = slowLookupByName( retVal, consumerName );
-			MadChannelInstance consumerChannelInstance = consumerRackComponent.getInstance().getChannelInstanceByName( consumerChannelName );
+			final String producerName = rackLinkXml.getProducerRackComponentName();
+			final String producerChannelName = rackLinkXml.getProducerChannelName();
+			final String consumerName = rackLinkXml.getConsumerRackComponentName();
+			final String consumerChannelName = rackLinkXml.getConsumerChannelName();
+			final RackComponent producerRackComponent = slowLookupByName( retVal, producerName );
+			final MadChannelInstance producerChannelInstance = producerRackComponent.getInstance().getChannelInstanceByName( producerChannelName );
+			final RackComponent consumerRackComponent = slowLookupByName( retVal, consumerName );
+			final MadChannelInstance consumerChannelInstance = consumerRackComponent.getInstance().getChannelInstanceByName( consumerChannelName );
 			rackService.addRackLink( retVal, producerRackComponent, producerChannelInstance, consumerRackComponent, consumerChannelInstance );
 		}
 		return retVal;
 	}
 
-	private void lookupAndAddParameterValue( MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			RackComponentParameterValueXmlType jbParamValue )
-		throws RecordNotFoundException
+	private void lookupAndAddParameterValue( final MadDefinition<?,?> definition,
+			final Map<MadParameterDefinition, String> parameterValues,
+			final RackComponentParameterValueXmlType jbParamValue )
+					throws RecordNotFoundException
 	{
-		MadParameterDefinition[] paramDefs = definition.getParameterDefinitions();
-		String paramId = jbParamValue.getParameterName();
+		final MadParameterDefinition[] paramDefs = definition.getParameterDefinitions();
+		final String paramId = jbParamValue.getParameterName();
 		boolean foundIt = false;
 		for( int i = 0; !foundIt && i < paramDefs.length ; i++ )
 		{
-			MadParameterDefinition aupd = paramDefs[ i ];
+			final MadParameterDefinition aupd = paramDefs[ i ];
 			if( aupd.getKey().equals( paramId ) )
 			{
 				foundIt = true;
@@ -245,20 +246,20 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 		if( !foundIt )
 		{
-			String msg = "Unable to find parameter with id " + paramId + " for definition " + definition.getId();
+			final String msg = "Unable to find parameter with id " + paramId + " for definition " + definition.getId();
 			throw new RecordNotFoundException( msg );
 		}
 	}
 
-	private MadUiControlInstance<?,?,?> lookupUiControlInstanceByName( MadUiControlInstance<?,?,?>[] uiControlInstances,
-			String name)
-		throws RecordNotFoundException
-	{
+	private MadUiControlInstance<?,?,?> lookupUiControlInstanceByName( final MadUiControlInstance<?,?,?>[] uiControlInstances,
+			final String name)
+					throws RecordNotFoundException
+					{
 		MadUiControlInstance<?,?,?> retVal = null;
 		boolean foundIt = false;
 		for( int i = 0 ; !foundIt && i < uiControlInstances.length ; i++ )
 		{
-			MadUiControlInstance<?,?,?> uci = uiControlInstances[ i ];
+			final MadUiControlInstance<?,?,?> uci = uiControlInstances[ i ];
 			if( uci.getUiControlDefinition().getControlName().equals( name ) )
 			{
 				foundIt = true;
@@ -267,16 +268,16 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 
 		return retVal;
-	}
+					}
 
-	private RackComponent slowLookupByName( RackDataModel rackDataModel, String componentName ) throws RecordNotFoundException
+	private RackComponent slowLookupByName( final RackDataModel rackDataModel, final String componentName ) throws RecordNotFoundException
 	{
 		RackComponent retVal = null;
 		boolean foundIt = false;
-		List<RackComponent> entries = rackDataModel.getEntriesAsList();
+		final List<RackComponent> entries = rackDataModel.getEntriesAsList();
 		for( int i = 0 ; !foundIt && i < entries.size() ; i++ )
 		{
-			RackComponent test = entries.get( i );
+			final RackComponent test = entries.get( i );
 			if( test.getComponentName().equals( componentName ) )
 			{
 				foundIt = true;
@@ -291,13 +292,13 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	}
 
 	@Override
-	public void saveRackToFile(RackDataModel dataModel, String filename) throws DatastoreException, IOException
+	public void saveRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
 	{
 		dataModel.setPath( filename );
 
-		RackXmlType jbRackXmlType = rackDataModelToXmlTypes( dataModel );
+		final RackXmlType jbRackXmlType = rackDataModelToXmlTypes( dataModel );
 
-		JAXBElement<RackXmlType> jbRack = objectFactory.createRack( jbRackXmlType );
+		final JAXBElement<RackXmlType> jbRack = objectFactory.createRack( jbRackXmlType );
 
 		try
 		{
@@ -305,34 +306,34 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			marshaller.setProperty( Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			marshaller.marshal( jbRack, new FileOutputStream( filename ) );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught marshalling rack into XML: " + e.toString();
+			final String msg = "Exception caught marshalling rack into XML: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
 	}
 
-	private RackXmlType rackDataModelToXmlTypes( RackDataModel rackDataModel )
+	private RackXmlType rackDataModelToXmlTypes( final RackDataModel rackDataModel )
 	{
-		RackComponent rackMasterIOComponent = rackDataModel.getContentsAtPosition( 0, 0 );
-		int yOffset = rackMasterIOComponent.getCellSpan().y;
+		final RackComponent rackMasterIOComponent = rackDataModel.getContentsAtPosition( 0, 0 );
+		final int yOffset = rackMasterIOComponent.getCellSpan().y;
 
-		RackXmlType jbRackXmlType = objectFactory.createRackXmlType();
+		final RackXmlType jbRackXmlType = objectFactory.createRackXmlType();
 		jbRackXmlType.setName( rackDataModel.getName() );
 		jbRackXmlType.setCols( rackDataModel.getNumCols() );
 		jbRackXmlType.setRows( rackDataModel.getNumRows() - yOffset );
 
-		List<RackComponentXmlType> jbRootRackComponents = jbRackXmlType.getRackComponent();
-		List<RackIOLinkXmlType> jbRootRackIOLinks = jbRackXmlType.getRackIOLink();
-		List<RackLinkXmlType> jbRootRackLinks = jbRackXmlType.getRackLink();
+		final List<RackComponentXmlType> jbRootRackComponents = jbRackXmlType.getRackComponent();
+		final List<RackIOLinkXmlType> jbRootRackIOLinks = jbRackXmlType.getRackIOLink();
+		final List<RackLinkXmlType> jbRootRackLinks = jbRackXmlType.getRackLink();
 
-		Set<RackIOLink> rackIOLinks = rackDataModel.getRackIOLinks();
-		ArrayList<RackIOLink> sortedRackIOLinks = new ArrayList<RackIOLink>( rackIOLinks );
+		final Set<RackIOLink> rackIOLinks = rackDataModel.getRackIOLinks();
+		final ArrayList<RackIOLink> sortedRackIOLinks = new ArrayList<RackIOLink>( rackIOLinks );
 		Collections.sort( sortedRackIOLinks, new Comparator<RackIOLink>(){
 
 			@Override
-			public int compare( RackIOLink o1, RackIOLink o2 )
+			public int compare( final RackIOLink o1, final RackIOLink o2 )
 			{
 				if( o1.getRackChannelInstance() == o2.getRackChannelInstance() )
 				{
@@ -351,41 +352,41 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				}
 			}
 		}
-		);
+				);
 
-		List<RackComponent> rackComponents = rackDataModel.getEntriesAsList();
-		ArrayList<RackComponent> sortedRackComponents = new ArrayList<RackComponent>( rackComponents );
+		final List<RackComponent> rackComponents = rackDataModel.getEntriesAsList();
+		final ArrayList<RackComponent> sortedRackComponents = new ArrayList<RackComponent>( rackComponents );
 		Collections.sort( sortedRackComponents, new Comparator<RackComponent>(){
 
 			@Override
-			public int compare( RackComponent o1, RackComponent o2 )
+			public int compare( final RackComponent o1, final RackComponent o2 )
 			{
 				return o1.getComponentName().compareTo( o2.getComponentName() );
 			}
 		}
-		);
+				);
 
-		Set<RackLink> rackLinks = rackDataModel.getLinks();
-		ArrayList<RackLink> sortedRackLinks = new ArrayList<RackLink>( rackLinks );
+		final Set<RackLink> rackLinks = rackDataModel.getLinks();
+		final ArrayList<RackLink> sortedRackLinks = new ArrayList<RackLink>( rackLinks );
 		Collections.sort( sortedRackLinks, new Comparator<RackLink>(){
 
 			@Override
-			public int compare( RackLink o1, RackLink o2 )
+			public int compare( final RackLink o1, final RackLink o2 )
 			{
-				RackComponent o1producerRackComponent = o1.getProducerRackComponent();
-				RackComponent o2producerRackComponent = o2.getProducerRackComponent();
-				MadChannelInstance o1producerChannelInstance = o1.getProducerChannelInstance();
-				MadChannelInstance o2producerChannelInstance = o2.getProducerChannelInstance();
+				final RackComponent o1producerRackComponent = o1.getProducerRackComponent();
+				final RackComponent o2producerRackComponent = o2.getProducerRackComponent();
+				final MadChannelInstance o1producerChannelInstance = o1.getProducerChannelInstance();
+				final MadChannelInstance o2producerChannelInstance = o2.getProducerChannelInstance();
 				if( o1producerRackComponent == o2producerRackComponent )
 				{
 					if( o1producerChannelInstance == o2producerChannelInstance )
 					{
-						RackComponent o1consumerRackComponent = o1.getConsumerRackComponent();
-						RackComponent o2consumerRackComponent = o2.getConsumerRackComponent();
+						final RackComponent o1consumerRackComponent = o1.getConsumerRackComponent();
+						final RackComponent o2consumerRackComponent = o2.getConsumerRackComponent();
 						if( o1consumerRackComponent == o2consumerRackComponent )
 						{
-							MadChannelInstance o1consumerChannelInstance = o1.getConsumerChannelInstance();
-							MadChannelInstance o2consumerChannelInstance = o2.getConsumerChannelInstance();
+							final MadChannelInstance o1consumerChannelInstance = o1.getConsumerChannelInstance();
+							final MadChannelInstance o2consumerChannelInstance = o2.getConsumerChannelInstance();
 							return o1consumerChannelInstance.definition.name.compareTo( o2consumerChannelInstance.definition.name );
 						}
 						else
@@ -404,15 +405,15 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				}
 			}
 		}
-		);
+				);
 
-		for( RackIOLink rackIOLink : sortedRackIOLinks )
+		for( final RackIOLink rackIOLink : sortedRackIOLinks )
 		{
-			MadChannelInstance rackChannelInstance = rackIOLink.getRackChannelInstance();
-			RackComponent rackComponent = rackIOLink.getRackComponent();
-			MadChannelInstance rackComponentChannelInstance = rackIOLink.getRackComponentChannelInstance();
+			final MadChannelInstance rackChannelInstance = rackIOLink.getRackChannelInstance();
+			final RackComponent rackComponent = rackIOLink.getRackComponent();
+			final MadChannelInstance rackComponentChannelInstance = rackIOLink.getRackComponentChannelInstance();
 
-			RackIOLinkXmlType jbRackIOLinkType = objectFactory.createRackIOLinkXmlType();
+			final RackIOLinkXmlType jbRackIOLinkType = objectFactory.createRackIOLinkXmlType();
 			jbRackIOLinkType.setRackChannelName( rackChannelInstance.definition.name );
 			jbRackIOLinkType.setRackComponentName( rackComponent.getComponentName() );
 			jbRackIOLinkType.setRackComponentChannelInstanceName( rackComponentChannelInstance.definition.name );
@@ -421,32 +422,32 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 
 		// Create the components
-		for( RackComponent component : sortedRackComponents )
+		for( final RackComponent component : sortedRackComponents )
 		{
 			if( component == rackMasterIOComponent )
 			{
 				continue;
 			}
 
-			MadInstance<?,?> instance = component.getInstance();
+			final MadInstance<?,?> instance = component.getInstance();
 			if( instance instanceof SubRackMadInstance )
 			{
-				SubRackXmlType jbSubRackType = objectFactory.createSubRackXmlType();
+				final SubRackXmlType jbSubRackType = objectFactory.createSubRackXmlType();
 
-				RackPositionXmlType jbRackPositionType = objectFactory.createRackPositionXmlType();
-				TablePosition contentsOrigin = rackDataModel.getContentsOriginReturnNull(component);
+				final RackPositionXmlType jbRackPositionType = objectFactory.createRackPositionXmlType();
+				final TablePosition contentsOrigin = rackDataModel.getContentsOriginReturnNull(component);
 				jbRackPositionType.setColumn( contentsOrigin.x );
 				jbRackPositionType.setRow( contentsOrigin.y - yOffset );
 
 				jbSubRackType.setRackPosition( jbRackPositionType );
 
-				SubRackMadInstance sraui = (SubRackMadInstance)instance;
+				final SubRackMadInstance sraui = (SubRackMadInstance)instance;
 
 				jbSubRackType.setName( sraui.getInstanceName() );
-				MadDefinition<?,?> aud = instance.getDefinition();
+				final MadDefinition<?,?> aud = instance.getDefinition();
 				jbSubRackType.setDefinitionId( aud.getId() );
 
-				String srp = sraui.getSubRackDataModel().getPath();
+				final String srp = sraui.getSubRackDataModel().getPath();
 				if( srp != null && !srp.equals("") && !sraui.isDirty() )
 				{
 					// Is a preset, just persist the id
@@ -459,31 +460,31 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 					jbSubRackType.setLibraryPath( "" );
 					jbSubRackType.setLocalSubRack( true );
 
-					RackXmlType localSubRack = rackDataModelToXmlTypes( sraui.getSubRackDataModel() );
+					final RackXmlType localSubRack = rackDataModelToXmlTypes( sraui.getSubRackDataModel() );
 					jbSubRackType.setRack( localSubRack );
 				}
 				jbRootRackComponents.add( jbSubRackType );
 			}
 			else
 			{
-				RackComponentXmlType jbRackComponentType = objectFactory.createRackComponentXmlType();
+				final RackComponentXmlType jbRackComponentType = objectFactory.createRackComponentXmlType();
 
-				Map<MadParameterDefinition, String> parameterValueMap = instance.getCreationParameterValues();
-				ArrayList<MadParameterDefinition> paramsByName = new ArrayList<MadParameterDefinition>();
+				final Map<MadParameterDefinition, String> parameterValueMap = instance.getCreationParameterValues();
+				final ArrayList<MadParameterDefinition> paramsByName = new ArrayList<MadParameterDefinition>();
 				paramsByName.addAll( parameterValueMap.keySet() );
 				Collections.sort( paramsByName, new Comparator<MadParameterDefinition>() {
 
 					@Override
-					public int compare( MadParameterDefinition o1, MadParameterDefinition o2 )
+					public int compare( final MadParameterDefinition o1, final MadParameterDefinition o2 )
 					{
 						return o1.getKey().compareTo( o2.getKey() );
 					}
 				} );
 
-				for( MadParameterDefinition paramDef : paramsByName )
+				for( final MadParameterDefinition paramDef : paramsByName )
 				{
-					String paramValue = parameterValueMap.get( paramDef );
-					RackComponentParameterValueXmlType jbRackParamType = objectFactory.createRackComponentParameterValueXmlType();
+					final String paramValue = parameterValueMap.get( paramDef );
+					final RackComponentParameterValueXmlType jbRackParamType = objectFactory.createRackComponentParameterValueXmlType();
 					jbRackParamType.setParameterName( paramDef.getKey() );
 					jbRackParamType.setValue( paramValue );
 					jbRackComponentType.getRackComponentParameterValue().add( jbRackParamType );
@@ -492,23 +493,23 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				jbRackComponentType.setName( component.getComponentName() );
 				jbRackComponentType.setDefinitionId( component.getInstance().getDefinition().getId() );
 
-				RackPositionXmlType jbRackPositionType = objectFactory.createRackPositionXmlType();
-				TablePosition contentsOrigin = rackDataModel.getContentsOriginReturnNull(component);
+				final RackPositionXmlType jbRackPositionType = objectFactory.createRackPositionXmlType();
+				final TablePosition contentsOrigin = rackDataModel.getContentsOriginReturnNull(component);
 				jbRackPositionType.setColumn( contentsOrigin.x );
 				jbRackPositionType.setRow( contentsOrigin.y - yOffset );
 
 				jbRackComponentType.setRackPosition( jbRackPositionType );
 
 				// Grab the controls and persist their value too
-				MadUiControlInstance<?,?,?>[] uiInstances = component.getUiControlInstances();
-				for( MadUiControlInstance<?,?,?> cui : uiInstances )
+				final MadUiControlInstance<?,?,?>[] uiInstances = component.getUiControlInstances();
+				for( final MadUiControlInstance<?,?,?> cui : uiInstances )
 				{
-//					log.debug("Found a UI instance to persist: " + cui.getClass().getName() );
-					MadUiControlDefinition<?,?,?> cud = cui.getUiControlDefinition();
-					String controlName = cud.getControlName();
-					String controlValue = cui.getControlValue();
+					//					log.debug("Found a UI instance to persist: " + cui.getClass().getName() );
+					final MadUiControlDefinition<?,?,?> cud = cui.getUiControlDefinition();
+					final String controlName = cud.getControlName();
+					final String controlValue = cui.getControlValue();
 
-					RackControlXmlType jbRackControlType = objectFactory.createRackControlXmlType();
+					final RackControlXmlType jbRackControlType = objectFactory.createRackControlXmlType();
 
 					jbRackControlType.setName( controlName );
 					jbRackControlType.setValue( controlValue );
@@ -519,20 +520,20 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 
 		// Same for the links
-		for( RackLink link : sortedRackLinks )
+		for( final RackLink link : sortedRackLinks )
 		{
-			RackLinkXmlType jbRackLinkType = objectFactory.createRackLinkXmlType();
+			final RackLinkXmlType jbRackLinkType = objectFactory.createRackLinkXmlType();
 
-			MadInstance<?,?> consumerInstance = link.getConsumerChannelInstance().instance;
-			MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
-			MadChannelDefinition consumerChannelDefinition = consumerChannelInstance.definition;
+			final MadInstance<?,?> consumerInstance = link.getConsumerChannelInstance().instance;
+			final MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
+			final MadChannelDefinition consumerChannelDefinition = consumerChannelInstance.definition;
 
 			jbRackLinkType.setConsumerRackComponentName( consumerInstance.getInstanceName() );
 			jbRackLinkType.setConsumerChannelName( consumerChannelDefinition.name );
 
-			MadInstance<?,?> producerInstance = link.getProducerChannelInstance().instance;
-			MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
-			MadChannelDefinition producerChannelDefinition = producerChannelInstance.definition;
+			final MadInstance<?,?> producerInstance = link.getProducerChannelInstance().instance;
+			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
+			final MadChannelDefinition producerChannelDefinition = producerChannelInstance.definition;
 
 			jbRackLinkType.setProducerRackComponentName( producerInstance.getInstanceName() );
 			jbRackLinkType.setProducerChannelName( producerChannelDefinition.name );
@@ -558,30 +559,20 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			unmarshaller = jbContext.createUnmarshaller();
 			marshaller =jbContext.createMarshaller();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught initialising jaxb infrastructure.";
+			final String msg = "Exception caught initialising jaxb infrastructure.";
 			log.error( msg, e );
 			throw new ComponentConfigurationException( msg, e  );
 		}
 	}
 
-	public RackService getRackService()
-	{
-		return rackService;
-	}
-
-	public void setRackService(RackService rackService)
+	public void setRackService(final RackService rackService)
 	{
 		this.rackService = rackService;
 	}
 
-	public MadComponentService getComponentService()
-	{
-		return componentService;
-	}
-
-	public void setComponentService(MadComponentService componentService)
+	public void setComponentService(final MadComponentService componentService)
 	{
 		this.componentService = componentService;
 	}

@@ -55,7 +55,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 		return userPreferencesService;
 	}
 
-	public void setUserPreferencesService(UserPreferencesService userPreferencesService)
+	public void setUserPreferencesService(final UserPreferencesService userPreferencesService)
 	{
 		this.userPreferencesService = userPreferencesService;
 	}
@@ -78,12 +78,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 		userPreferencesService.applyUserPreferencesChanges( userPreferencesMVCController );
 	}
 
-	public GuiService getGuiService()
-	{
-		return guiService;
-	}
-
-	public void setGuiService( GuiService guiService )
+	public void setGuiService( final GuiService guiService )
 	{
 		this.guiService = guiService;
 	}
@@ -113,7 +108,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	@Override
 	public void reloadUserPreferences() throws DatastoreException
 	{
-		UserPreferencesMVCModel model = userPreferencesService.createUserPreferencesModel();
+		final UserPreferencesMVCModel model = userPreferencesService.createUserPreferencesModel();
 
 		userPreferencesMVCController.setModel( model );
 		userPreferencesMVCView.setModel( model );

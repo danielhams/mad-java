@@ -42,28 +42,28 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 public class ScrollingThumbnailGeneratorListener implements AnalysisListener
 {
 	private static Log log = LogFactory.getLog( ScrollingThumbnailGeneratorListener.class.getName() );
-	
-	private int scrollingThumbnailSamplesPerPixelZoomedIn = -1;
-	private int scrollingThumbnailSamplesPerPixelZoomedOut = -1;
-	private int scrollingThumbnailHeight = -1;
-	private Color scrollingMinMaxColor = null;
-	private Color scrollingRmsColor = null;
-	private HashedStorageService hashedStorageService = null;
-	private HashedWarehouse ziScrollingThumbnailWarehouse = null;
-	private HashedWarehouse zoScrollingThumbnailWarehouse = null;
 
-	private ThumbnailGenerator thumbnailGenerator = new ThumbnailGenerator();
+	private final int scrollingThumbnailSamplesPerPixelZoomedIn;
+	private final int scrollingThumbnailSamplesPerPixelZoomedOut;
+	private final int scrollingThumbnailHeight;
+	private final Color scrollingMinMaxColor;
+	private final Color scrollingRmsColor;
+	private final HashedStorageService hashedStorageService;
+	private final HashedWarehouse ziScrollingThumbnailWarehouse;
+	private final HashedWarehouse zoScrollingThumbnailWarehouse;
+
+	private final ThumbnailGenerator thumbnailGenerator = new ThumbnailGenerator();
 	private ThumbnailGenerationRT ziRt = null;
 	private ThumbnailGenerationRT zoRt = null;
 
-	public ScrollingThumbnailGeneratorListener( int scrollingThumbnailSamplesPerPixelZoomedIn,
-			int scrollingThumbnailSamplesPerPixelZoomedOut,
-			int scrollingThumbnailHeight,
-			Color scrollingMinMaxColor,
-			Color scrollingRmsColor,
-			HashedStorageService hashedStorageService,
-			HashedWarehouse ziScrollingThumbnailWarehouse,
-			HashedWarehouse zoScrollingThumbnailWarehouse )
+	public ScrollingThumbnailGeneratorListener( final int scrollingThumbnailSamplesPerPixelZoomedIn,
+			final int scrollingThumbnailSamplesPerPixelZoomedOut,
+			final int scrollingThumbnailHeight,
+			final Color scrollingMinMaxColor,
+			final Color scrollingRmsColor,
+			final HashedStorageService hashedStorageService,
+			final HashedWarehouse ziScrollingThumbnailWarehouse,
+			final HashedWarehouse zoScrollingThumbnailWarehouse )
 	{
 		this.scrollingThumbnailSamplesPerPixelZoomedIn = scrollingThumbnailSamplesPerPixelZoomedIn;
 		this.scrollingThumbnailSamplesPerPixelZoomedOut = scrollingThumbnailSamplesPerPixelZoomedOut;
@@ -74,9 +74,9 @@ public class ScrollingThumbnailGeneratorListener implements AnalysisListener
 		this.ziScrollingThumbnailWarehouse = ziScrollingThumbnailWarehouse;
 		this.zoScrollingThumbnailWarehouse = zoScrollingThumbnailWarehouse;
 	}
-	
+
 	@Override
-	public void start( DataRate dataRate, int numChannels, long totalFloatsLength )
+	public void start( final DataRate dataRate, final int numChannels, final long totalFloatsLength )
 	{
 		// Create the two thumbnail runtimes for the image
 		ziRt = thumbnailGenerator.start( dataRate,
@@ -97,7 +97,7 @@ public class ScrollingThumbnailGeneratorListener implements AnalysisListener
 	}
 
 	@Override
-	public void receiveData(float[] data, int numRead )
+	public void receiveData(final float[] data, final int numRead )
 	{
 		thumbnailGenerator.receiveData( ziRt, data, numRead );
 		thumbnailGenerator.receiveData( zoRt, data, numRead );
@@ -111,37 +111,37 @@ public class ScrollingThumbnailGeneratorListener implements AnalysisListener
 	}
 
 	@Override
-	public void updateAnalysedData(AnalysedData analysedData, HashedRef hashedRef )
+	public void updateAnalysedData(final AnalysedData analysedData, final HashedRef hashedRef )
 	{
 		try
 		{
 			// Zoomed in
-			ByteArrayOutputStream ziOs = new ByteArrayOutputStream();
-			ImageOutputStream ziIos = ImageIO.createImageOutputStream( ziOs );
+			final ByteArrayOutputStream ziOs = new ByteArrayOutputStream();
+			final ImageOutputStream ziIos = ImageIO.createImageOutputStream( ziOs );
 
 			ImageIO.write( ziRt.getBufferedImage(), "png", ziIos );
-			InputStream ziContents = new ByteArrayInputStream( ziOs.toByteArray() );
+			final InputStream ziContents = new ByteArrayInputStream( ziOs.toByteArray() );
 			// Now save this generated thumb nail onto disk then pass the path to this in the analysed data
 			hashedStorageService.storeContentsInWarehouse( ziScrollingThumbnailWarehouse, hashedRef, ziContents );
-			
+
 			analysedData.setPathToZiScrollingThumbnail( hashedStorageService.getPathToHashedRef( ziScrollingThumbnailWarehouse,
 					hashedRef ) );
 
 			// Zoomed out
-			ByteArrayOutputStream zoOs = new ByteArrayOutputStream();
-			ImageOutputStream zoIos = ImageIO.createImageOutputStream( zoOs );
+			final ByteArrayOutputStream zoOs = new ByteArrayOutputStream();
+			final ImageOutputStream zoIos = ImageIO.createImageOutputStream( zoOs );
 
 			ImageIO.write( zoRt.getBufferedImage(), "png", zoIos );
-			InputStream zoContents = new ByteArrayInputStream( zoOs.toByteArray() );
+			final InputStream zoContents = new ByteArrayInputStream( zoOs.toByteArray() );
 			// Now save this generated thumb nail onto disk then pass the path to this in the analysed data
 			hashedStorageService.storeContentsInWarehouse( zoScrollingThumbnailWarehouse, hashedRef, zoContents );
-			
+
 			analysedData.setPathToZoScrollingThumbnail( hashedStorageService.getPathToHashedRef( zoScrollingThumbnailWarehouse,
 					hashedRef ) );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught serialising static thumb nail: " + e.toString();
+			final String msg = "Exception caught serialising static thumb nail: " + e.toString();
 			log.error( msg, e );
 		}
 	}

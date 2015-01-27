@@ -67,9 +67,9 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 
 	private static Log log = LogFactory.getLog( RackServiceImpl.class.getName() );
 
-	private MadGraphService graphService = null;
-	private MadComponentService componentService = null;
-	private MadComponentUiService componentUiService = null;
+	private MadGraphService graphService;
+	private MadComponentService componentService;
+	private MadComponentUiService componentUiService;
 
 	@Override
 	public void destroy()
@@ -121,7 +121,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			newRackDataModel.setDirty( false );
 			return newRackDataModel;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught creating rack data model: " + e.toString();
 			log.error( msg, e );
@@ -165,7 +165,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 
 			return subRackDataModel;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught creating sub rack data model: " + e.toString();
 			throw new DatastoreException( msg, e );
@@ -176,8 +176,8 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final RackComponent rackComponent,
 			final int col,
 			final int row )
-		throws DatastoreException, MAConstraintViolationException, ContentsAlreadyAddedException,
-		TableCellFullException, TableIndexOutOfBoundsException
+					throws DatastoreException, MAConstraintViolationException, ContentsAlreadyAddedException,
+					TableCellFullException, TableIndexOutOfBoundsException
 	{
 		final MadInstance<?,?> ci = rackComponent.getInstance();
 
@@ -211,8 +211,8 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final String name,
 			final int col,
 			final int row )
-		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
-		MAConstraintViolationException, RecordNotFoundException
+					throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
+					MAConstraintViolationException, RecordNotFoundException
 	{
 		// Make a new RackComponent for this component instance and add it to the rack
 		try
@@ -239,10 +239,10 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final MadDefinition<?,?> madDefinition,
 			final Map<MadParameterDefinition,String> parameterValues,
 			final String name )
-		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException,
-		DatastoreException, MAConstraintViolationException, RecordNotFoundException
+					throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException,
+					DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
-		int newCol = 0;
+		final int newCol = 0;
 		boolean canAdd = false;
 		try
 		{
@@ -260,7 +260,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 						break;
 					}
 				}
-				catch (TableIndexOutOfBoundsException e)
+				catch (final TableIndexOutOfBoundsException e)
 				{
 					final String msg = "TableIndexOutOfBoundsException caught during addNamedContents: " + e.toString();
 					log.error( msg, e );
@@ -282,7 +282,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			rack.setDirty( true );
 			return rci;
 		}
-		catch(MadProcessingException aupe)
+		catch(final MadProcessingException aupe)
 		{
 			final String msg = "MADProcessingException caught when attempting to create mad instance for rack: " + aupe.toString();
 			log.error( msg, aupe );
@@ -295,18 +295,13 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 	public void renameContents( final RackDataModel rack,
 			final RackComponent component,
 			final String newName )
-		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
+					throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 		final String oldName = component.getComponentName();
 		graphService.renameInstance( rack.getRackGraph(), oldName, newName, newName );
 		component.setComponentName( newName );
 		component.getUiInstance().receiveComponentNameChange( newName );
 		rack.setDirty( true );
-	}
-
-	public MadGraphService getGraphService()
-	{
-		return graphService;
 	}
 
 	public void setGraphService( final MadGraphService graphService)
@@ -317,7 +312,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 	@Override
 	public String getNameForNewComponentOfType( final RackDataModel rackDataModel,
 			final MadDefinition<?,?> typeToAdd)
-		throws DatastoreException
+					throws DatastoreException
 	{
 		return graphService.getNameForNewComponentOfType( rackDataModel.getRackGraph(), typeToAdd);
 	}
@@ -357,7 +352,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final MadChannelInstance producerChannelInstance,
 			final RackComponent consumerRackComponent,
 			final MadChannelInstance consumerChannelInstance  )
-		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
+					throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
 	{
 		final MadLink madLink = new MadLink( producerChannelInstance, consumerChannelInstance );
 		final MadGraphInstance<?,?> g = rack.getRackGraph();
@@ -376,7 +371,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final MadChannelInstance rackChannelInstance,
 			final RackComponent rackComponent,
 			final MadChannelInstance rackComponentChannelInstance )
-		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+					throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		final RackIOLink rackIOLink = new RackIOLink( rackChannelInstance, rackComponent, rackComponentChannelInstance );
 		final MadGraphInstance<?,?> g = rack.getRackGraph();
@@ -384,8 +379,8 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		final MadChannelInstance graphChannelInstance = mapRackIOChannelInstanceToGraphChannelInstance( rack,
 				rackIOLink, g );
 
-//		log.debug("Before exposing as graph channel - graph dump: " );
-//		graphService.dumpGraph(g);
+		//		log.debug("Before exposing as graph channel - graph dump: " );
+		//		graphService.dumpGraph(g);
 
 		// Let the graph model do the validation for us
 		graphService.exposeAudioInstanceChannelAsGraphChannel( g,  graphChannelInstance,
@@ -393,8 +388,8 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		rack.addRackIOLink( rackIOLink );
 		rack.setDirty( true );
 
-//		log.debug("After exposing as graph channel - graph dump: " );
-//		graphService.dumpGraph(g);
+		//		log.debug("After exposing as graph channel - graph dump: " );
+		//		graphService.dumpGraph(g);
 
 		return rackIOLink;
 	}
@@ -402,7 +397,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 	private MadChannelInstance mapRackIOChannelInstanceToGraphChannelInstance( final RackDataModel rack,
 			final RackIOLink rackIOLink,
 			final MadGraphInstance<?,?> graph )
-		throws RecordNotFoundException
+					throws RecordNotFoundException
 	{
 		final MadChannelInstance mici = rackIOLink.getRackChannelInstance();
 		final String rackChannelName = mici.definition.name;
@@ -417,7 +412,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			final RackComponent component,
 			final int x,
 			final int y )
-		throws DatastoreException, NoSuchContentsException, TableIndexOutOfBoundsException, TableCellFullException
+					throws DatastoreException, NoSuchContentsException, TableIndexOutOfBoundsException, TableCellFullException
 	{
 		// Graph doesn't know about positions, just do internal move
 		rack.moveContentsToPosition( component, x, y );
@@ -426,7 +421,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 
 	@Override
 	public void deleteRackLink( final RackDataModel rack, final RackLink rackLink)
-		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+			throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		final MadGraphInstance<?,?> g = rack.getRackGraph();
 		final MadLink madLink = rackLink.getLink();
@@ -438,7 +433,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 	@Override
 	public void deleteRackIOLink( final RackDataModel rack,
 			final RackIOLink rackIOLink)
-		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+					throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		final MadGraphInstance<?,?> g = rack.getRackGraph();
 		final MadChannelInstance graphChannelInstance = mapRackIOChannelInstanceToGraphChannelInstance( rack, rackIOLink, g );
@@ -459,14 +454,14 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 
 	@Override
 	public void destroyRackDataModel( final RackDataModel rack )
-		throws DatastoreException, MAConstraintViolationException
+			throws DatastoreException, MAConstraintViolationException
 	{
-//		log.debug("Destroying rack data model named: " + rack.getName() );
+		//		log.debug("Destroying rack data model named: " + rack.getName() );
 
 		// Not necessary - use the remove contents methods on individual components.
-//		rack.removeAllRackIOLinks();
-//		rack.removeAllRackLinks();
-//		rack.removeAllComponents();
+		//		rack.removeAllRackIOLinks();
+		//		rack.removeAllRackLinks();
+		//		rack.removeAllComponents();
 
 		try
 		{
@@ -508,7 +503,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			rack.dirtyFixToCleanupReferences();
 			graphService.destroyGraph( rackGraph, true, true );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			final String msg = "Exception caught destroying rack data model: " + e.toString();
 			log.error( msg, e );
@@ -516,19 +511,9 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		}
 	}
 
-	public MadComponentUiService getComponentUiService()
-	{
-		return componentUiService;
-	}
-
 	public void setComponentUiService( final MadComponentUiService componentUiService )
 	{
 		this.componentUiService = componentUiService;
-	}
-
-	public MadComponentService getComponentService()
-	{
-		return componentService;
 	}
 
 	public void setComponentService( final MadComponentService componentService )
@@ -539,7 +524,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 	@Override
 	public void removeContentsFromRack( final RackDataModel rackDataModel,
 			final RackComponent componentForAction )
-		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, NoSuchContentsException
+					throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, NoSuchContentsException
 	{
 		final MadInstance<?,?> madInstance = componentForAction.getInstance();
 
@@ -578,7 +563,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			{
 				madInstance.internalEngineStop();
 			}
-			catch (MadProcessingException e)
+			catch (final MadProcessingException e)
 			{
 				if( log.isErrorEnabled() )
 				{

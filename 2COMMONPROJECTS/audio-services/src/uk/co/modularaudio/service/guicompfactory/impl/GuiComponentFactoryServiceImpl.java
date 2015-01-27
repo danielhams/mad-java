@@ -37,13 +37,13 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 
 public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, GuiComponentFactoryService
 {
-//	private static Log log = LogFactory.getLog( GuiComponentFactoryServiceImpl.class.getName() );
+	//	private static Log log = LogFactory.getLog( GuiComponentFactoryServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService = null;
-	private BufferedImageAllocationService bufferedImageAllocationService = null;
+	private ConfigurationService configurationService;
+	private BufferedImageAllocationService bufferedImageAllocationService;
 
-	private GuiComponentImageCache frontComponentImageCache = null;
-	private GuiComponentImageCache backComponentImageCache = null;
+	private GuiComponentImageCache frontComponentImageCache;
+	private GuiComponentImageCache backComponentImageCache;
 
 	private final static boolean USE_ALLOCATOR_TO_BACK_IMAGES = true;
 
@@ -69,35 +69,25 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 		backComponentImageCache.destroy();
 	}
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
 	@Override
-	public AbstractGuiAudioComponent createBackGuiComponent(RackComponent inComponent)
+	public AbstractGuiAudioComponent createBackGuiComponent(final RackComponent inComponent)
 	{
 		return new GuiAudioComponentBack( backComponentImageCache, inComponent );
 	}
 
 	@Override
-	public AbstractGuiAudioComponent createFrontGuiComponent(RackComponent inComponent)
+	public AbstractGuiAudioComponent createFrontGuiComponent(final RackComponent inComponent)
 	{
 		return new GuiAudioComponentFront( frontComponentImageCache, inComponent );
 	}
 
-	public BufferedImageAllocationService getBufferedImageAllocationService()
-	{
-		return bufferedImageAllocationService;
-	}
-
 	public void setBufferedImageAllocationService(
-			BufferedImageAllocationService bufferedImageAllocationService )
+			final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
