@@ -30,21 +30,21 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 
 	public final static int DEFAULT_QUEUE_LENGTH = 64;
 
-	public MadLocklessIOQueue( Class<IOQueueEvent> clazz, int capacity )
+	public MadLocklessIOQueue( final Class<IOQueueEvent> clazz, final int capacity )
 	{
 		super( clazz, COPIER, capacity );
 
 	}
 
-	public int copyToTemp( IOQueueEvent[] destinationEventStorage, long queuePullingFrameTime )
+	public int copyToTemp( final IOQueueEvent[] destinationEventStorage, final long queuePullingFrameTime )
 	{
-		int curReadPosition = readPosition.get();
-		int curWritePosition = writePosition.get();
-		int numReadable = calcNumReadable( curReadPosition, curWritePosition );
+		final int curReadPosition = readPosition.get();
+		final int curWritePosition = writePosition.get();
+		final int numReadable = calcNumReadable( curReadPosition, curWritePosition );
 
 		if( numReadable > 0 )
 		{
-			boolean isTimeBased = queuePullingFrameTime != -1;
+			final boolean isTimeBased = queuePullingFrameTime != -1;
 			int numCopied = 0;
 			if( isTimeBased )
 			{

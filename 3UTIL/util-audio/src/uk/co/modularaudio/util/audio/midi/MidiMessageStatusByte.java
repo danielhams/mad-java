@@ -29,23 +29,23 @@ public enum MidiMessageStatusByte
 	PROGRAM_CHANGE( (byte)0xC0 ),
 	CHANNEL_PRESSURE( (byte)0xD0 ),
 	PITCH_BEND( (byte)0xE0 ),
-	
+
 	// SEQUENCE STARTERS
 	CHANNEL_MODE( (byte)0x70 ),
 	SYSTEM_MESSAGE( (byte)0xF0 );
-	
+
 	private final byte internalVal;
-	private MidiMessageStatusByte( byte val )
+	private MidiMessageStatusByte( final byte val )
 	{
 		this.internalVal = val;
 	}
-	
+
 	public byte getValue()
 	{
 		return this.internalVal;
 	}
-	
-	public boolean checkForMatch( byte actualByte )
+
+	public boolean checkForMatch( final byte actualByte )
 	{
 		return ( (actualByte & internalVal) != 0 );
 	}

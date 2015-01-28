@@ -24,11 +24,11 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 
 public class MadLink
 {
-	private MadChannelInstance producerChannelInstance = null;
-	private MadChannelInstance consumerChannelInstance = null;
-	
-	public MadLink( MadChannelInstance producerChannelInstance,
-			MadChannelInstance consumerChannelInstance )
+	private final MadChannelInstance producerChannelInstance;
+	private final MadChannelInstance consumerChannelInstance;
+
+	public MadLink( final MadChannelInstance producerChannelInstance,
+			final MadChannelInstance consumerChannelInstance )
 	{
 		this.producerChannelInstance = producerChannelInstance;
 		this.consumerChannelInstance = consumerChannelInstance;
@@ -44,9 +44,10 @@ public class MadLink
 		return consumerChannelInstance;
 	}
 
+	@Override
 	public String toString()
 	{
-		StringBuilder retVal = new StringBuilder();
+		final StringBuilder retVal = new StringBuilder();
 		retVal.append("ProducerInstance(");
 		retVal.append( producerChannelInstance.instance.getInstanceName() );
 		retVal.append( ", " );
@@ -59,9 +60,9 @@ public class MadLink
 		return retVal.toString();
 	}
 
-	public String toStringWithNamesInGraph( MadGraphInstance<?,?> graph )
+	public String toStringWithNamesInGraph( final MadGraphInstance<?,?> graph )
 	{
-		StringBuilder retVal = new StringBuilder();
+		final StringBuilder retVal = new StringBuilder();
 		retVal.append("ProducerInstance(");
 		retVal.append( graph.getInstanceNameInGraph( producerChannelInstance.instance ) );
 		retVal.append( ", " );

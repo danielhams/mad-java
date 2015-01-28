@@ -22,19 +22,19 @@ package uk.co.modularaudio.util.audio.mad.hardwareio;
 
 public class HardwareIOConfiguration
 {
-	private int fps = -1;
-	private AudioHardwareDevice consumerAudioDevice = null;
-	private AudioHardwareDevice producerAudioDevice = null;
-	private int channelBufferLength = -1;
-	private MidiHardwareDevice consumerMidiDevice = null;
-	private MidiHardwareDevice producerMidiDevice = null;
-	
-	public HardwareIOConfiguration( int fps,
-			AudioHardwareDevice consumerHardwareStream,
-			AudioHardwareDevice producerHardwareStream,
-			int channelBufferLength,
-			MidiHardwareDevice iConsumerMidiConfiguration,
-			MidiHardwareDevice iProducerMidiConfiguration )
+	private final int fps;
+	private final AudioHardwareDevice consumerAudioDevice;
+	private final AudioHardwareDevice producerAudioDevice;
+	private final int channelBufferLength;
+	private final MidiHardwareDevice consumerMidiDevice;
+	private final MidiHardwareDevice producerMidiDevice;
+
+	public HardwareIOConfiguration( final int fps,
+			final AudioHardwareDevice consumerHardwareStream,
+			final AudioHardwareDevice producerHardwareStream,
+			final int channelBufferLength,
+			final MidiHardwareDevice iConsumerMidiConfiguration,
+			final MidiHardwareDevice iProducerMidiConfiguration )
 	{
 		this.fps = fps;
 		this.consumerAudioDevice = consumerHardwareStream;
@@ -43,12 +43,12 @@ public class HardwareIOConfiguration
 		this.consumerMidiDevice = iConsumerMidiConfiguration;
 		this.producerMidiDevice = iProducerMidiConfiguration;
 	}
-	
+
 	public int getFps()
 	{
 		return fps;
 	}
-	
+
 	public AudioHardwareDevice getConsumerAudioDevice()
 	{
 		return consumerAudioDevice;
@@ -58,7 +58,7 @@ public class HardwareIOConfiguration
 	{
 		return producerAudioDevice;
 	}
-	
+
 	public int getChannelBufferLength()
 	{
 		return channelBufferLength;
@@ -68,7 +68,7 @@ public class HardwareIOConfiguration
 	{
 		return consumerMidiDevice;
 	}
-	
+
 	public MidiHardwareDevice getProducerMidiDevice()
 	{
 		return producerMidiDevice;

@@ -25,25 +25,25 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 {
 //	private final static Log log = LogFactory.getLog( MadLocklessQueueBridge.class.getName() );
-	
-	private int commandEventsToInstanceCapacity = -1;
-	private int temporalEventsToInstanceCapacity = -1;
-	private int commandEventsToUiCapacity = -1;
-	private int temporalEventsToUiCapacity = -1;
-	private boolean hasQueueProcessing = false;
-	
-	protected MadLocklessQueueBridge( int commandEventsToInstanceCapacity,
-			int temporalEventsToInstanceCapacity,
-			int commandEventsToUiCapacity,
-			int temporalEventsToUiCapacity )
+
+	private final int commandEventsToInstanceCapacity;
+	private final int temporalEventsToInstanceCapacity;
+	private final int commandEventsToUiCapacity;
+	private final int temporalEventsToUiCapacity;
+	private final boolean hasQueueProcessing;
+
+	protected MadLocklessQueueBridge( final int commandEventsToInstanceCapacity,
+			final int temporalEventsToInstanceCapacity,
+			final int commandEventsToUiCapacity,
+			final int temporalEventsToUiCapacity )
 	{
 		this.commandEventsToInstanceCapacity = commandEventsToInstanceCapacity;
 		this.temporalEventsToInstanceCapacity = temporalEventsToInstanceCapacity;
 		this.commandEventsToUiCapacity = commandEventsToUiCapacity;
 		this.temporalEventsToUiCapacity = temporalEventsToUiCapacity;
-		calcHasQueueProcessing();
+		hasQueueProcessing = calcHasQueueProcessing();
 	}
-	
+
 	protected MadLocklessQueueBridge()
 	{
 		this.commandEventsToInstanceCapacity = MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH;
@@ -62,7 +62,7 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 	{
 		return commandEventsToUiCapacity;
 	}
-	
+
 	public final int getTemporalToInstanceQueueCapacity()
 	{
 		return temporalEventsToInstanceCapacity;
@@ -72,52 +72,52 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 	{
 		return temporalEventsToUiCapacity;
 	}
-	
-	public final boolean sendCommandEventToInstance( I instance, IOQueueEvent entry )
+
+	public final boolean sendCommandEventToInstance( final I instance, final IOQueueEvent entry )
 	{
-		MadLocklessIOQueue commandToInstanceQueue = instance.getCommandToInstanceQueue();
+		final MadLocklessIOQueue commandToInstanceQueue = instance.getCommandToInstanceQueue();
 		return commandToInstanceQueue.writeOne( entry );
 	}
 
-	public final boolean sendTemporalEventToInstance( I instance, long guiFrameTime, IOQueueEvent entry )
+	public final boolean sendTemporalEventToInstance( final I instance, final long guiFrameTime, final IOQueueEvent entry )
 	{
-		MadLocklessIOQueue temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
+		final MadLocklessIOQueue temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
 		entry.frameTime = guiFrameTime;
 		return temporalToInstanceQueue.writeOne( entry );
 	}
 
 	public abstract void receiveQueuedEventsToInstance( I instance, ThreadSpecificTemporaryEventStorage tses,
 			long periodTimestamp, IOQueueEvent queueEntry );
-	
-	public final void queueCommandEventToUi( ThreadSpecificTemporaryEventStorage tses,
-			int command,
-			long value,
-			Object object )
+
+	public final void queueCommandEventToUi( final ThreadSpecificTemporaryEventStorage tses,
+			final int command,
+			final long value,
+			final Object object )
 	{
-		IOQueueEvent[] tempQueueEventStorage = tses.commandEventsToUi;
-		int storageOffset = tses.numCommandEventsToUi;
+		final IOQueueEvent[] tempQueueEventStorage = tses.commandEventsToUi;
+		final int storageOffset = tses.numCommandEventsToUi;
 		tempQueueEventStorage[ storageOffset ].frameTime = 0;
 		tempQueueEventStorage[ storageOffset ].command = command;
 		tempQueueEventStorage[ storageOffset ].value = value;
 		tempQueueEventStorage[ storageOffset ].object = object;
 		tses.numCommandEventsToUi++;
 	}
-	
-	public final void queueTemporalEventToUi( ThreadSpecificTemporaryEventStorage tses,
-			long frameTime,
-			int command,
-			long value,
-			Object object )
+
+	public final void queueTemporalEventToUi( final ThreadSpecificTemporaryEventStorage tses,
+			final long frameTime,
+			final int command,
+			final long value,
+			final Object object )
 	{
-		IOQueueEvent[] tempQueueEventStorage = tses.temporalEventsToUi;
-		int storageOffset = tses.numTemporalEventsToUi;
+		final IOQueueEvent[] tempQueueEventStorage = tses.temporalEventsToUi;
+		final int storageOffset = tses.numTemporalEventsToUi;
 		tempQueueEventStorage[ storageOffset ].frameTime = frameTime;
 		tempQueueEventStorage[ storageOffset ].command = command;
 		tempQueueEventStorage[ storageOffset ].value = value;
 		tempQueueEventStorage[ storageOffset ].object = object;
 		tses.numTemporalEventsToUi++;
 	}
-	
+
 //	public final void queueCommandEventToInstance( ThreadSpecificTemporaryEventStorage tses,
 //			int command,
 //			long value,
@@ -146,8 +146,8 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 //		tempQueueEventStorage[ storageOffset ].object = object;
 //		tses.numTemporalEventsToInstance++;
 //	}
-	
-	public final void receiveQueuedEventsToUi( ThreadSpecificTemporaryEventStorage tses, I instance, IOQueueEventUiConsumer<I> consumer )
+
+	public final void receiveQueuedEventsToUi( final ThreadSpecificTemporaryEventStorage tses, final I instance, final IOQueueEventUiConsumer<I> consumer )
 	{
 		for( int c = 0 ; c < tses.numCommandEventsToUi ; c++ )
 		{
@@ -158,33 +158,33 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 			consumer.consumeQueueEntry( instance, tses.temporalEventsToUi[ t ] );
 		}
 	}
-	
-	public final void cleanupOrphanedEvents( I instance, IOQueueEventUiConsumer<I> consumer )
-	{
-		IOQueueEvent lastEvent = new IOQueueEvent();
 
-		MadLocklessIOQueue ctu = instance.getCommandToUiQueue();
+	public final void cleanupOrphanedEvents( final I instance, final IOQueueEventUiConsumer<I> consumer )
+	{
+		final IOQueueEvent lastEvent = new IOQueueEvent();
+
+		final MadLocklessIOQueue ctu = instance.getCommandToUiQueue();
 		while( ctu.getNumReadable() > 0 )
 		{
 			ctu.readOneCopyToDest( lastEvent );
 			consumer.consumeQueueEntry( instance, lastEvent );
 		}
 
-		MadLocklessIOQueue ttu = instance.getTemporalToUiQueue();
+		final MadLocklessIOQueue ttu = instance.getTemporalToUiQueue();
 		while( ttu.getNumReadable() > 0 )
 		{
 			ttu.readOneCopyToDest( lastEvent );
 			consumer.consumeQueueEntry( instance, lastEvent );
 		}
 
-		MadLocklessIOQueue cti = instance.getCommandToInstanceQueue();
+		final MadLocklessIOQueue cti = instance.getCommandToInstanceQueue();
 		while( cti.getNumReadable() > 0 )
 		{
 			cti.readOneCopyToDest( lastEvent );
 			consumer.consumeQueueEntry( instance, lastEvent );
 		}
 
-		MadLocklessIOQueue tti = instance.getTemporalToInstanceQueue();
+		final MadLocklessIOQueue tti = instance.getTemporalToInstanceQueue();
 		while( tti.getNumReadable() > 0 )
 		{
 			tti.readOneCopyToDest( lastEvent );
@@ -192,19 +192,12 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 		}
 	}
 
-	private final void calcHasQueueProcessing()
+	private final boolean calcHasQueueProcessing()
 	{
-		if( commandEventsToInstanceCapacity > 0 || temporalEventsToInstanceCapacity > 0 ||
-				commandEventsToUiCapacity > 0 || temporalEventsToUiCapacity > 0 )
-		{
-			hasQueueProcessing = true;
-		}
-		else
-		{
-			hasQueueProcessing = false;
-		}
+		return ( commandEventsToInstanceCapacity > 0 || temporalEventsToInstanceCapacity > 0 ||
+				commandEventsToUiCapacity > 0 || temporalEventsToUiCapacity > 0 );
 	}
-	
+
 	public boolean hasQueueProcessing()
 	{
 		return hasQueueProcessing;

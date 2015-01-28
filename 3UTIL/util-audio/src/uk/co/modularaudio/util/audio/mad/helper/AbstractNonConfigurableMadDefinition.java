@@ -38,40 +38,39 @@ public abstract class AbstractNonConfigurableMadDefinition<MD extends MadDefinit
 	extends MadDefinition<MD,MI>
 	implements MadChannelDefinitionIndexedCreator
 {
-	
-	protected MadChannelConfiguration defaultChannelConfiguration = null;
-	
-	private int numChannels = -1;
-	private String[] channelNames = null;
-	private MadChannelType[] channelTypes = null;
-	private MadChannelPosition[] channelPositions = null;
-	private MadChannelDirection[] channelDirections = null;
 
-	public AbstractNonConfigurableMadDefinition( String definitionId,
-			String userVisibleName,
-			MadClassification classification,
-			MadLocklessQueueBridge<MI> ioQueueBridge,
-			int numChannels,
-			String[] channelNames,
-			MadChannelType[] channelTypes,
-			MadChannelDirection[] channelDirections,
-			MadChannelPosition[] channelPositions )
+	protected final MadChannelConfiguration defaultChannelConfiguration;
+
+	private final int numChannels;
+	private final String[] channelNames;
+	private final MadChannelType[] channelTypes;
+	private final MadChannelPosition[] channelPositions;
+	private final MadChannelDirection[] channelDirections;
+
+	public AbstractNonConfigurableMadDefinition( final String definitionId,
+			final String userVisibleName,
+			final MadClassification classification,
+			final MadLocklessQueueBridge<MI> ioQueueBridge,
+			final int numChannels,
+			final String[] channelNames,
+			final MadChannelType[] channelTypes,
+			final MadChannelDirection[] channelDirections,
+			final MadChannelPosition[] channelPositions )
 	{
 		super( definitionId,  userVisibleName, false, classification, new ArrayList<MadParameterDefinition>(), ioQueueBridge );
-		
+
 		this.numChannels = numChannels;
 		this.channelNames = channelNames;
 		this.channelTypes = channelTypes;
 		this.channelPositions = channelPositions;
 		this.channelDirections = channelDirections;
 
-		MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
+		final MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
 		defaultChannelConfiguration = new MadChannelConfiguration( defaultChannelDefsArray );
-		
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
 	{
 		return defaultChannelConfiguration;
 	}
@@ -83,9 +82,9 @@ public abstract class AbstractNonConfigurableMadDefinition<MD extends MadDefinit
 	}
 
 	@Override
-	public MadChannelDefinition buildChannelDefinitionForIndex( int c )
+	public MadChannelDefinition buildChannelDefinitionForIndex( final int c )
 	{
-		MadChannelDefinition retVal = new MadChannelDefinition( channelNames[ c ],
+		final MadChannelDefinition retVal = new MadChannelDefinition( channelNames[ c ],
 				channelTypes[ c ],
 				channelDirections[ c ],
 				channelPositions[ c ] );

@@ -25,11 +25,11 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 
 public class HardwareIOOneChannelSetting
 {
-	private DataRate dataRate;
-	private int channelBufferLength;
-	
-	public HardwareIOOneChannelSetting( DataRate dataRate,
-			int channelBufferLength )
+	private final DataRate dataRate;
+	private final int channelBufferLength;
+
+	public HardwareIOOneChannelSetting( final DataRate dataRate,
+			final int channelBufferLength )
 	{
 		this.dataRate = dataRate;
 		this.channelBufferLength = channelBufferLength;
@@ -44,10 +44,11 @@ public class HardwareIOOneChannelSetting
 	{
 		return channelBufferLength;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append( "DataRate: " );
 		sb.append( dataRate.toString() );
 		sb.append( " ChannelBufferLength: ");

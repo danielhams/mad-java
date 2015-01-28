@@ -26,7 +26,7 @@ public class MadChannelNoteEventCopier implements BufferObjectCopier<MadChannelN
 {
 
 	@Override
-	public void copyValues( MadChannelNoteEvent in, MadChannelNoteEvent out )
+	public void copyValues( final MadChannelNoteEvent in, final MadChannelNoteEvent out )
 	{
 		out.channel = in.channel;
 		out.eventSampleIndex = in.eventSampleIndex;
@@ -42,7 +42,7 @@ public class MadChannelNoteEventCopier implements BufferObjectCopier<MadChannelN
 		return new MadChannelNoteEvent();
 	}
 
-	public void copyArray( MadChannelNoteEvent[] inputNotes, MadChannelNoteEvent[] outputNotes )
+	public void copyArray( final MadChannelNoteEvent[] inputNotes, final MadChannelNoteEvent[] outputNotes )
 	{
 		boolean done = false;
 		for( int i = 0 ; !done && i < inputNotes.length ; i++ )

@@ -31,9 +31,9 @@ public abstract class MadDefinition<D extends MadDefinition<D,I>, I extends MadI
 	private final String name;
 	private final MadClassification classification;
 	private final boolean isParametrable;
-	private MadParameterDefinition[] parameterDefinitions = null;
+	private final MadParameterDefinition[] parameterDefinitions;
 	private final MadLocklessQueueBridge<I> ioQueueBridge;
-	
+
 	public MadDefinition( final String id,
 			final String name,
 			final boolean isParametrable,
@@ -48,7 +48,7 @@ public abstract class MadDefinition<D extends MadDefinition<D,I>, I extends MadI
 		this.parameterDefinitions = parameterDefinitions.toArray( new MadParameterDefinition[ parameterDefinitions.size()] );
 		this.ioQueueBridge = ioQueueBridge;
 	}
-	
+
 	public final String getId()
 	{
 		return id;
@@ -68,10 +68,11 @@ public abstract class MadDefinition<D extends MadDefinition<D,I>, I extends MadI
 	{
 		return parameterDefinitions;
 	}
-	
+
 	public abstract MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
 		throws MadProcessingException;
-	
+
+	@Override
 	public String toString()
 	{
 		return("MadDefinition(" + this.getClass().getSimpleName() + ", " + name + ")");

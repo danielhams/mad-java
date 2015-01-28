@@ -80,7 +80,7 @@ public class TestCircleOfFifths extends TestCase
 		{
 			String testMusicalKeyStr = testKeys[i];
 			MusicalKey musicalKey = MusicalKey.lookupKeyFromString( testMusicalKeyStr );
-			Segment cofSeg = CircleOfFifths.keyToSegmentMap.get( musicalKey );
+			Segment cofSeg = CircleOfFifths.KEY_TO_SEG_MAP.get( musicalKey );
 			log.debug( "MK: " + musicalKey.toString() + " -> " + cofSeg.toString()  + "\t\t\t" + testMusicalKeyStr);
 		}
 	}

@@ -26,9 +26,9 @@ public class MadChannelDefinition
 	public final MadChannelType type;
 	public final MadChannelDirection direction;
 	public final MadChannelPosition position;
-	
-	public MadChannelDefinition( String name, MadChannelType type, MadChannelDirection direction,
-			MadChannelPosition position )
+
+	public MadChannelDefinition( final String name, final MadChannelType type, final MadChannelDirection direction,
+			final MadChannelPosition position )
 	{
 		this.name = name;
 		this.type = type;
@@ -36,8 +36,9 @@ public class MadChannelDefinition
 		this.position = position;
 	}
 
+	@Override
 	public String toString()
 	{
-		return( "ChannelDef(" + name + ", " + type.toString() + ", " + direction.toString() + ", " + position + ")" );
+		return "ChannelDef(" + name + ", " + type.toString() + ", " + direction.toString() + ", " + position + ")";
 	}
 }

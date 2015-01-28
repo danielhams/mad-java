@@ -25,17 +25,17 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 
 public class IOBuffers
 {
-	public int numAudioBuffers = -1;
-	public int audioBufferLength = -1;
-	public int numMidiBuffers = -1;
-	public int noteBufferLength = -1;
-	public MadChannelBuffer[] audioBuffers = null;
-	public MadChannelBuffer[] noteBuffers = null;
-	
-	public IOBuffers( int numAudioBuffers,
-			int audioBufferLength,
-			int numNoteBuffers,
-			int noteBufferLength )
+	public final int numAudioBuffers;
+	public final int audioBufferLength;
+	public final int numMidiBuffers;
+	public final int noteBufferLength;
+	public final MadChannelBuffer[] audioBuffers;
+	public final MadChannelBuffer[] noteBuffers;
+
+	public IOBuffers( final int numAudioBuffers,
+			final int audioBufferLength,
+			final int numNoteBuffers,
+			final int noteBufferLength )
 	{
 		this.numAudioBuffers = numAudioBuffers;
 		this.audioBufferLength = audioBufferLength;

@@ -24,9 +24,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 
 public interface MadChannelDefinitionIndexedCreator
 {
-
 	int getNumChannelDefinitions();
 
-	MadChannelDefinition buildChannelDefinitionForIndex( int c );	
-
+	MadChannelDefinition buildChannelDefinitionForIndex( int c );
 }

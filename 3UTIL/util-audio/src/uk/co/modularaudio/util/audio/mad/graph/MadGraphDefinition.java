@@ -29,15 +29,15 @@ import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
-public class MadGraphDefinition<AUGD extends MadGraphDefinition<AUGD,AUGI>, AUGI extends MadGraphInstance<AUGD,AUGI>>
-	extends MadDefinition<AUGD,AUGI>
+public class MadGraphDefinition<D extends MadGraphDefinition<D,I>, I extends MadGraphInstance<D,I>>
+	extends MadDefinition<D,I>
 {
 	public MadGraphDefinition( String id,
 			String name,
 			boolean isParametrable,
 			MadClassification classification,
 			Collection<MadParameterDefinition> parameterDefinitions,
-			MadGraphQueueBridge<AUGI> ioQueueBridge )
+			MadGraphQueueBridge<I> ioQueueBridge )
 	{
 		super( id, name, isParametrable, classification, parameterDefinitions, ioQueueBridge );
 	}

@@ -26,17 +26,17 @@ public class UnknownMusicalKeyException extends DatastoreException
 {
 	private static final long serialVersionUID = 4395898713621477503L;
 
-	public UnknownMusicalKeyException( String msg )
+	public UnknownMusicalKeyException( final String msg )
 	{
 		super( msg );
 	}
 
-	public UnknownMusicalKeyException( String msg, Throwable cause )
+	public UnknownMusicalKeyException( final String msg, final Throwable cause )
 	{
 		super( msg, cause );
 	}
 
-	public UnknownMusicalKeyException( Throwable cause )
+	public UnknownMusicalKeyException( final Throwable cause )
 	{
 		super( cause );
 	}

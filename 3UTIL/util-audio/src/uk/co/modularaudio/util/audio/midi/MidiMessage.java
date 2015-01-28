@@ -23,8 +23,8 @@ package uk.co.modularaudio.util.audio.midi;
 public class MidiMessage
 {
 	protected byte[] messageData;
-	
-	public MidiMessage( byte[] messageData )
+
+	public MidiMessage( final byte[] messageData )
 	{
 		this.messageData = messageData;
 	}

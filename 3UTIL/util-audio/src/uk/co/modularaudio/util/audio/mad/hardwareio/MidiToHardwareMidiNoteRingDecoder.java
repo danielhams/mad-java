@@ -37,7 +37,7 @@ public class MidiToHardwareMidiNoteRingDecoder
 
 	private final HardwareMidiNoteEvent internalEvent = new HardwareMidiNoteEvent();
 
-	public MidiToHardwareMidiNoteRingDecoder( LocklessHardwareMidiNoteRingBuffer noteEventRing )
+	public MidiToHardwareMidiNoteRingDecoder( final LocklessHardwareMidiNoteRingBuffer noteEventRing )
 	{
 		this.noteEventRing = noteEventRing;
 	}

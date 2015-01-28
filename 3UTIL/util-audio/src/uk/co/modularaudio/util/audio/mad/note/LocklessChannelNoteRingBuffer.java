@@ -30,7 +30,7 @@ public class LocklessChannelNoteRingBuffer extends LocklessPreallocatingGenericR
 {
 	private final static MadChannelNoteEventCopier COPIER = new MadChannelNoteEventCopier();
 
-	public LocklessChannelNoteRingBuffer( int capacity )
+	public LocklessChannelNoteRingBuffer( final int capacity )
 	{
 		super( MadChannelNoteEvent.class, COPIER, capacity );
 		// Now initialise empty objects inside the internal array

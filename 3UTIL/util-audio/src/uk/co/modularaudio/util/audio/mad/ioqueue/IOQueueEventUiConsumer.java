@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.mad.ioqueue;
 
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 
-public interface IOQueueEventUiConsumer<MI extends MadInstance<?,?>>
+public interface IOQueueEventUiConsumer<I extends MadInstance<?,?>>
 {
-	void consumeQueueEntry( MI instance, IOQueueEvent nextOutgoingEntry );
+	void consumeQueueEntry( I instance, IOQueueEvent nextOutgoingEntry );
 }

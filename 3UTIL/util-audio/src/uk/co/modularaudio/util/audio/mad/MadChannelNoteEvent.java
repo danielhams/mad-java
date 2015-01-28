@@ -24,13 +24,13 @@ package uk.co.modularaudio.util.audio.mad;
 
 public class MadChannelNoteEvent
 {
-	protected int channel = -1;
-	protected int eventSampleIndex = -1;
-	protected MadChannelNoteEventType eventType = null;
-	protected int paramOne = 0;
-	protected int paramTwo = 0;
+	protected int channel;
+	protected int eventSampleIndex;
+	protected MadChannelNoteEventType eventType;
+	protected int paramOne;
+	protected int paramTwo;
 	// For continuations, it's the midi number of the previous note we are a continuation of
-	protected int paramThree = 0;
+	protected int paramThree;
 
 	public MadChannelNoteEvent()
 	{
@@ -47,7 +47,7 @@ public class MadChannelNoteEvent
 		paramThree = -1;
 	}
 
-	public void set( int channel, int eventSampleIndex, MadChannelNoteEventType eventType, int paramOne, int paramTwo, int paramThree )
+	public void set( final int channel, final int eventSampleIndex, final MadChannelNoteEventType eventType, final int paramOne, final int paramTwo, final int paramThree )
 	{
 		this.channel = channel;
 		this.eventSampleIndex = eventSampleIndex;
@@ -87,7 +87,7 @@ public class MadChannelNoteEvent
 		return paramThree;
 	}
 
-	public void setEventType( MadChannelNoteEventType eventType )
+	public void setEventType( final MadChannelNoteEventType eventType )
 	{
 		this.eventType = eventType;
 	}
@@ -95,7 +95,7 @@ public class MadChannelNoteEvent
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder(64);
+		final StringBuilder sb = new StringBuilder(64);
 		sb.append( "c:" );
 		sb.append( channel );
 		sb.append( " s:");

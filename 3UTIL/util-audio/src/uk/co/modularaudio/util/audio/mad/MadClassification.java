@@ -34,11 +34,11 @@ public class MadClassification
 	private final String description;
 	private final ReleaseState state;
 
-	public MadClassification( MadClassificationGroup group,
-			String id,
-			String name,
-			String description,
-			ReleaseState state )
+	public MadClassification( final MadClassificationGroup group,
+			final String id,
+			final String name,
+			final String description,
+			final ReleaseState state )
 	{
 		this.group = group;
 		this.id = id;

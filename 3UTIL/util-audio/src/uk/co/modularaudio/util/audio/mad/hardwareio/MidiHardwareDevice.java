@@ -27,32 +27,32 @@ public final class MidiHardwareDevice
 	protected final String userVisibleName;
 	protected final DeviceDirection streamType;
 
-	public MidiHardwareDevice( String providerId,
-			String id,
-			String userVisibleString,
-			DeviceDirection streamType )
+	public MidiHardwareDevice( final String providerId,
+			final String id,
+			final String userVisibleString,
+			final DeviceDirection streamType )
 	{
 		this.providerId = providerId;
 		this.id = id;
 		this.userVisibleName = userVisibleString;
 		this.streamType = streamType;
 	}
-	
+
 	public String getProviderId()
 	{
 		return providerId;
 	}
-	
+
 	public String getId()
 	{
 		return id;
 	}
-	
+
 	public String getUserVisibleName()
 	{
 		return userVisibleName;
 	}
-	
+
 	public DeviceDirection getType()
 	{
 		return streamType;

@@ -95,7 +95,10 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 		}
 		catch( final Exception e )
 		{
-			log.error( "Exception caught unregistering UI factory: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Exception caught unregistering UI factory: " + e.toString(), e );
+			}
 		}
 	}
 
@@ -140,12 +143,6 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 			log.error( msg, e );
 			throw new ComponentConfigurationException( msg, e );
 		}
-	}
-
-
-	public ComponentImageFactory getComponentImageFactory()
-	{
-		return componentImageFactory;
 	}
 
 

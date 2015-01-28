@@ -48,32 +48,32 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 //	private static Log log = LogFactory.getLog( MadInstance.class.getName() );
 
-	protected String instanceName = null;
+	protected String instanceName;
 	protected final MD definition;
 	protected final Map<MadParameterDefinition, String> creationParameterValues;
-	protected MadChannelConfiguration channelConfiguration = null;
-	protected MadChannelInstance[] channelInstances = null;
-	protected OpenObjectIntHashMap<MadChannelInstance> channelInstanceToIndexMap = new OpenObjectIntHashMap<MadChannelInstance>();
-	protected Map<String,MadChannelInstance> nameToChannelInstanceMap = new HashMap<String,MadChannelInstance>();
+	protected final MadChannelConfiguration channelConfiguration;
+	protected final MadChannelInstance[] channelInstances;
+	protected final OpenObjectIntHashMap<MadChannelInstance> channelInstanceToIndexMap = new OpenObjectIntHashMap<MadChannelInstance>();
+	protected final Map<String,MadChannelInstance> nameToChannelInstanceMap = new HashMap<String,MadChannelInstance>();
 
 	protected MadState state = MadState.STOPPED;
 
 	protected final MadLocklessQueueBridge<MI> localBridge;
 
-	protected MadLocklessIOQueue commandToInstanceQueue = null;
-	protected MadLocklessIOQueue temporalToInstanceQueue = null;
+	protected MadLocklessIOQueue commandToInstanceQueue;
+	protected MadLocklessIOQueue temporalToInstanceQueue;
 
-	protected MadLocklessIOQueue commandToUiQueue = null;
-	protected MadLocklessIOQueue temporalToUiQueue = null;
+	protected MadLocklessIOQueue commandToUiQueue;
+	protected MadLocklessIOQueue temporalToUiQueue;
 
 	protected final boolean hasQueueProcessing;
 
-	protected Vector<InstanceLifecycleListener> lifecycleListeners = new Vector<InstanceLifecycleListener>();
+	protected final Vector<InstanceLifecycleListener> lifecycleListeners = new Vector<InstanceLifecycleListener>();
 
-	public MadInstance( String instanceName,
+	public MadInstance( final String instanceName,
 			final MD definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		this.instanceName = instanceName;
 		this.definition = definition;
@@ -86,8 +86,8 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		this.channelInstances = createChannelInstances();
 		for( int c = 0 ; c < channelInstances.length ; c++ )
 		{
-			MadChannelInstance ci = channelInstances[ c ];
-			MadChannelDefinition cd = ci.definition;
+			final MadChannelInstance ci = channelInstances[ c ];
+			final MadChannelDefinition cd = ci.definition;
 			nameToChannelInstanceMap.put( cd.name, ci );
 			channelInstanceToIndexMap.put( ci, c );
 		}
@@ -105,10 +105,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	private MadChannelInstance[] createChannelInstances()
 	{
-		MadChannelDefinition[] channelDefinitionArray = channelConfiguration.getOrderedChannelDefinitions();
-		int numChannels = channelDefinitionArray.length;
+		final MadChannelDefinition[] channelDefinitionArray = channelConfiguration.getOrderedChannelDefinitions();
+		final int numChannels = channelDefinitionArray.length;
 
-		MadChannelInstance[] retVal = new MadChannelInstance[ numChannels ];
+		final MadChannelInstance[] retVal = new MadChannelInstance[ numChannels ];
 
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
@@ -125,7 +125,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	{
 		state = MadState.RUNNING;
 		startup( hardwareChannelSettings, timingParameters, frameTimeFactory );
-		for( InstanceLifecycleListener ill : lifecycleListeners )
+		for( final InstanceLifecycleListener ill : lifecycleListeners )
 		{
 			ill.receiveStartup(hardwareChannelSettings, timingParameters, frameTimeFactory );
 		}
@@ -138,11 +138,11 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	// Check the instance queues and push into the temp storage
 	@SuppressWarnings("unchecked")
-	public final RealtimeMethodReturnCodeEnum preProcess( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public final RealtimeMethodReturnCodeEnum preProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime )
 	{
-		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
+		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 //			log.debug("Doing queue preprocessing for " + instanceName );
 		// Copy incoming (to instance) events into the temporary queues
 
@@ -154,12 +154,12 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				periodStartFrameTime );
 
 		// Now get the bridge to walk them
-		int numCommands = tempQueueEntryStorage.numCommandEventsToInstance;
+		final int numCommands = tempQueueEntryStorage.numCommandEventsToInstance;
 		for( int i = 0 ; i < numCommands ; i++ )
 		{
 			localBridge.receiveQueuedEventsToInstance( (MI) this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.commandEventsToInstance[ i ] );
 		}
-		int numTemporals = tempQueueEntryStorage.numTemporalEventsToInstance;
+		final int numTemporals = tempQueueEntryStorage.numTemporalEventsToInstance;
 		for( int i = 0 ; i < numTemporals ; i++ )
 		{
 			localBridge.receiveQueuedEventsToInstance( (MI)this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.temporalEventsToInstance[ i ] );
@@ -175,21 +175,21 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		MadChannelBuffer[] channelBuffers,
 		final int numFrames );
 
-	public final RealtimeMethodReturnCodeEnum postProcess( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public final RealtimeMethodReturnCodeEnum postProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime )
 	{
-		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
+		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 //			log.debug("Doing queue postprocessing for " + instanceName );
 
 		// Push outgoing (to ui) events into their real queues.
 
-		int numCommands = tempQueueEntryStorage.numCommandEventsToUi;
+		final int numCommands = tempQueueEntryStorage.numCommandEventsToUi;
 		if( numCommands > 0 )
 		{
 			commandToUiQueue.write( tempQueueEntryStorage.commandEventsToUi, 0, numCommands );
 		}
-		int numTemporals = tempQueueEntryStorage.numTemporalEventsToUi;
+		final int numTemporals = tempQueueEntryStorage.numTemporalEventsToUi;
 		if( numTemporals > 0 )
 		{
 			temporalToUiQueue.write( tempQueueEntryStorage.temporalEventsToUi, 0, numTemporals );
@@ -206,7 +206,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	{
 		stop();
 		state = MadState.STOPPED;
-		for( InstanceLifecycleListener ill : lifecycleListeners )
+		for( final InstanceLifecycleListener ill : lifecycleListeners )
 		{
 			ill.receiveStop();
 		}
@@ -226,7 +226,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		return instanceName;
 	}
 
-	public void setInstanceName( String newName )
+	public void setInstanceName( final String newName )
 	{
 		this.instanceName = newName;
 	}
@@ -241,7 +241,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		return channelInstances;
 	}
 
-	public int getChannelInstanceIndex( MadChannelInstance channelToLookFor )
+	public int getChannelInstanceIndex( final MadChannelInstance channelToLookFor )
 		throws RecordNotFoundException
 	{
 		if( channelInstanceToIndexMap.containsKey( channelToLookFor ) )
@@ -250,19 +250,19 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		}
 		else
 		{
-			String msg = "Failed to find channel instance index for channel called " + channelToLookFor.definition.name + " in instance named " + getInstanceName();
+			final String msg = "Failed to find channel instance index for channel called " + channelToLookFor.definition.name + " in instance named " + getInstanceName();
 			throw new RecordNotFoundException( msg );
 		}
 	}
 
-	public int getChannelInstanceIndexByName( String channelInstanceName )
+	public int getChannelInstanceIndexByName( final String channelInstanceName )
 		throws RecordNotFoundException
 	{
-		MadChannelInstance ci = getChannelInstanceByName( channelInstanceName );
+		final MadChannelInstance ci = getChannelInstanceByName( channelInstanceName );
 		return getChannelInstanceIndex( ci );
 	}
 
-	public MadChannelInstance getChannelInstanceByName( String channelName )
+	public MadChannelInstance getChannelInstanceByName( final String channelName )
 		throws RecordNotFoundException
 	{
 		if( nameToChannelInstanceMap.containsKey( channelName ) )
@@ -275,13 +275,13 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		}
 	}
 
-	public MadChannelInstance getChannelInstanceByNameReturnNull( String channelName )
+	public MadChannelInstance getChannelInstanceByNameReturnNull( final String channelName )
 	{
 		try
 		{
 			return getChannelInstanceByName( channelName );
 		}
-		catch(RecordNotFoundException rnfe)
+		catch(final RecordNotFoundException rnfe)
 		{
 			return null;
 		}
@@ -333,12 +333,12 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		return false;
 	}
 
-	public void addLifecycleListener( InstanceLifecycleListener lll )
+	public void addLifecycleListener( final InstanceLifecycleListener lll )
 	{
 		lifecycleListeners.add( lll );
 	}
 
-	public void removeLifecycleListener( InstanceLifecycleListener lll )
+	public void removeLifecycleListener( final InstanceLifecycleListener lll )
 	{
 		lifecycleListeners.remove( lll );
 	}

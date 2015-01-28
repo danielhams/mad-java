@@ -24,15 +24,16 @@ public class MadChannelInstance
 {
 	public final MadChannelDefinition definition;
 	public final MadInstance<?,?> instance;
-	
-	public MadChannelInstance( MadChannelDefinition definition, MadInstance<?,?> instance )
+
+	public MadChannelInstance( final MadChannelDefinition definition, final MadInstance<?,?> instance )
 	{
 		this.definition = definition;
 		this.instance = instance;
 	}
 
+	@Override
 	public String toString()
 	{
-		return( "ChannelInstance of " + definition.toString() );
+		return "ChannelInstance of " + definition.toString();
 	}
 }

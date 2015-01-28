@@ -29,17 +29,19 @@ public class MadDefinitionListModel extends SortedItemListModel<MadDefinition<?,
 {
 	private static final long serialVersionUID = 2966287446255846584L;
 
-	public MadDefinitionListModel(Vector<MadDefinition<?, ?>> items, Comparator<MadDefinition<?, ?>> comp)
+	public MadDefinitionListModel(final Vector<MadDefinition<?, ?>> items, final Comparator<MadDefinition<?, ?>> comp)
 	{
 		super(items, comp);
 	}
-	
+
+	@Override
 	public int getSize()
 	{
 		return super.getSize();
 	}
-	
-	public MadDefinition<?,?> getElementAt( int index )
+
+	@Override
+	public MadDefinition<?,?> getElementAt( final int index )
 	{
 		return super.getElementAt(index);
 	}

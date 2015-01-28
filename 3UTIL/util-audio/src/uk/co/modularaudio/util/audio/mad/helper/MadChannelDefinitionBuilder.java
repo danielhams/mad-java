@@ -26,18 +26,17 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 
 public class MadChannelDefinitionBuilder
 {
-	public static MadChannelDefinition[] buildDefaultChannelDefinitions( MadChannelDefinitionIndexedCreator indexedCreator )
+	public static MadChannelDefinition[] buildDefaultChannelDefinitions( final MadChannelDefinitionIndexedCreator indexedCreator )
 	{
-		MadChannelDefinition[] retVal = null;
-		int numChannelDefinitions = indexedCreator.getNumChannelDefinitions();
-		ArrayList<MadChannelDefinition> defsList = new ArrayList<MadChannelDefinition>( numChannelDefinitions );
+		final int numChannelDefinitions = indexedCreator.getNumChannelDefinitions();
+		final ArrayList<MadChannelDefinition> defsList = new ArrayList<MadChannelDefinition>( numChannelDefinitions );
 
 		for( int c = 0 ; c < numChannelDefinitions ; c++ )
 		{
 			defsList.add( indexedCreator.buildChannelDefinitionForIndex( c ) );
 		}
 
-		retVal = defsList.toArray( new MadChannelDefinition[ defsList.size() ] );
+		final MadChannelDefinition[] retVal = defsList.toArray( new MadChannelDefinition[ defsList.size() ] );
 		return retVal;
 	}
 }
