@@ -21,7 +21,6 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
@@ -39,7 +38,6 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 {
 	//	private static Log log = LogFactory.getLog( GuiComponentFactoryServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService;
 	private BufferedImageAllocationService bufferedImageAllocationService;
 
 	private GuiComponentImageCache frontComponentImageCache;
@@ -67,11 +65,6 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 	{
 		frontComponentImageCache.destroy();
 		backComponentImageCache.destroy();
-	}
-
-	public void setConfigurationService(final ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
 	}
 
 	@Override

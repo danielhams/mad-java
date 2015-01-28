@@ -85,16 +85,14 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @see ConnectionTesterArbiter
 	 * @see SetLastActiveDateArbiter
 	 **/
-	public DatabaseConnectionPool( String classname, String connectionURL, String username, String password,
-			int lowTide, int highTide, int allocationStep, int minCons, int maxCons, int connectionLifetime,
-			long expiryCheckMilliSeconds, long sizingCheckSleepMillis ) throws FactoryProductionException
+	public DatabaseConnectionPool( final String classname, final String connectionURL, final String username, final String password,
+			final int lowTide, final int highTide, final int allocationStep, final int minCons, final int maxCons, final int connectionLifetime,
+			final long expiryCheckMilliSeconds, final long sizingCheckSleepMillis ) throws FactoryProductionException
 	{
 		// Call our superclass with the appropriate constructors
 		super( lowTide, highTide, allocationStep, minCons, maxCons, expiryCheckMilliSeconds, sizingCheckSleepMillis,
 		// Check every n seconds for expired connections
 				new ConnectionFactory( classname, connectionURL, username, password ) );
-
-		poolName = "DatabaseConnectionPool";
 
 		setupArbiters( connectionLifetime, true, false );
 
@@ -132,10 +130,10 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @see ConnectionTesterArbiter
 	 * @see SetLastActiveDateArbiter
 	 **/
-	public DatabaseConnectionPool( String classname, String connectionURL, String username, String password,
-			int lowTide, int highTide, int allocationStep, int minCons, int maxCons, int connectionLifetime,
-			long expiryCheckMilliSeconds, long sizingCheckSleepMillis, boolean testConnectionBeforeUse,
-			boolean testConnectionAfterUse ) throws FactoryProductionException
+	public DatabaseConnectionPool( final String classname, final String connectionURL, final String username, final String password,
+			final int lowTide, final int highTide, final int allocationStep, final int minCons, final int maxCons, final int connectionLifetime,
+			final long expiryCheckMilliSeconds, final long sizingCheckSleepMillis, final boolean testConnectionBeforeUse,
+			final boolean testConnectionAfterUse ) throws FactoryProductionException
 	{
 		// Call our superclass with the appropriate constructors
 		super( lowTide, highTide, allocationStep, minCons, maxCons, expiryCheckMilliSeconds, sizingCheckSleepMillis,
@@ -161,8 +159,8 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @param sizingCheckSleepMillis
 	 * @throws FactoryProductionException
 	 */
-	public DatabaseConnectionPool( String icString, int lowTide, int highTide, int allocationStep, int minCons,
-			int maxCons, int connectionLifetime, long expiryCheckMilliSeconds, long sizingCheckSleepMillis )
+	public DatabaseConnectionPool( final String icString, final int lowTide, final int highTide, final int allocationStep, final int minCons,
+			final int maxCons, final int connectionLifetime, final long expiryCheckMilliSeconds, final long sizingCheckSleepMillis )
 			throws FactoryProductionException
 	{
 		// Call our superclass with the appropriate constructors
@@ -177,8 +175,8 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 		super.init();
 	}
 
-	protected void setupArbiters( int connectionLifetime, boolean testConnectionBeforeUse,
-			boolean testConnectionAfterUse )
+	protected void setupArbiters( final int connectionLifetime, final boolean testConnectionBeforeUse,
+			final boolean testConnectionAfterUse )
 	{
 		// Add an arbiter that sets the last active date to now when the
 		// resource is 'used' from the pool
@@ -253,7 +251,7 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @see DatabaseConnectionResource
 	 * @throws InterruptedException
 	 */
-	public DatabaseConnectionResource getConnectionWait( long timeout ) throws InterruptedException
+	public DatabaseConnectionResource getConnectionWait( final long timeout ) throws InterruptedException
 	{
 		return ((DatabaseConnectionResource) useResourceWait( timeout ));
 	}
@@ -285,7 +283,7 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @param resource
 	 * @see DatabaseConnectionResource
 	 */
-	public void releaseConnection( DatabaseConnectionResource resource )
+	public void releaseConnection( final DatabaseConnectionResource resource )
 	{
 		releaseResource( resource );
 	}
@@ -298,11 +296,11 @@ public class DatabaseConnectionPool extends ExpiringDynamicStackPool
 	 * @see uk.co.modularaudio.util.pooling.common.Pool#addResource(uk.co.modularaudio.util.pooling.common.Resource)
 	 */
 	@Override
-	public void addResource( Resource resource )
+	public void addResource( final Resource resource )
 	{
 		if (resource instanceof DatabaseConnectionResource)
 		{
-			DatabaseConnectionResource dcr = (DatabaseConnectionResource) resource;
+			final DatabaseConnectionResource dcr = (DatabaseConnectionResource) resource;
 			dcr.setDatabaseConnectionPool( this );
 		}
 		super.addResource( resource );

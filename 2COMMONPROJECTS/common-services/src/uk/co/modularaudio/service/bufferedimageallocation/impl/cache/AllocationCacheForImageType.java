@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,37 +44,38 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class AllocationCacheForImageType
 {
 	private static Log log = LogFactory.getLog( AllocationCacheForImageType.class.getName() );
-	
+
 	private GraphicsConfiguration graphicsConfiguration = null;
 	private String cacheName = null;
 //	private AllocationCacheConfiguration cacheConfiguration = null;
 //	private AllocationLifetime allocationLifetime = null;
 	private AllocationBufferType allocationBufferType = null;
-	
-	private Integer internalLock = new Integer(0);
 
-	private int stdAllocImageWidth = -1;
-	private int stdAllocImageHeight = -1;
-	private int initialPages = -1;
-	
+	private final ReentrantLock internalLock = new ReentrantLock();
+
+	private final int stdAllocImageWidth;
+	private final int stdAllocImageHeight;
+	private final int initialPages;
+
 	private long imageAllocationRawIdCounter = 0;
 	private long imageAllocationAssignedIdCounter = 0;
-	
-	private Set<RawImage> rawImageSet = new HashSet<RawImage>();
-	private OpenLongObjectHashMap<RawImage> rawImageIdToImageMap = new OpenLongObjectHashMap<RawImage>();
-	private Set<UsedEntry> usedEntrySet = new HashSet<UsedEntry>();
-	private Map<RawImage,HashSet<UsedEntry>> rawImageToUsedEntryMap = new HashMap<RawImage, HashSet<UsedEntry>>();
-	private HashSet<FreeEntry> freeEntrySet = new HashSet<FreeEntry>();
-	private Map<RawImage,HashSet<FreeEntry>> rawImageToFreeEntryMap = new HashMap<RawImage,HashSet<FreeEntry>>();
-	
-	private Decomposition decompositionForAllocation = new Decomposition();
-	private Recomposition recompositionForFree = new Recomposition();
 
-	public AllocationCacheForImageType( GraphicsConfiguration graphicsConfiguration,
-			String name,
-			AllocationCacheConfiguration cacheConfiguration,
-			AllocationLifetime lifetime,
-			AllocationBufferType allocationBufferType )
+	private final Set<RawImage> rawImageSet = new HashSet<RawImage>();
+	private final OpenLongObjectHashMap<RawImage> rawImageIdToImageMap = new OpenLongObjectHashMap<RawImage>();
+	private final Set<UsedEntry> usedEntrySet = new HashSet<UsedEntry>();
+	private final Map<RawImage,HashSet<UsedEntry>> rawImageToUsedEntryMap = new HashMap<RawImage, HashSet<UsedEntry>>();
+	private final HashSet<FreeEntry> freeEntrySet = new HashSet<FreeEntry>();
+	private final Map<RawImage,HashSet<FreeEntry>> rawImageToFreeEntryMap = new HashMap<RawImage,HashSet<FreeEntry>>();
+
+	private final Decomposition decompositionForAllocation = new Decomposition();
+	private final Recomposition recompositionForFree = new Recomposition();
+
+	public AllocationCacheForImageType( final GraphicsConfiguration graphicsConfiguration,
+			final String name,
+			final AllocationCacheConfiguration cacheConfiguration,
+			final AllocationLifetime lifetime,
+			final AllocationBufferType allocationBufferType )
+			throws DatastoreException
 	{
 		this.graphicsConfiguration = graphicsConfiguration;
 		this.cacheName = name;
@@ -86,44 +88,49 @@ public class AllocationCacheForImageType
 		{
 			initialPages = cacheConfiguration.getInitialPagesForLifetimeAndType( lifetime, allocationBufferType );
 			log.debug("Creating image cache named " + name +" of type " + allocationBufferType + " with " + initialPages + " initial pages.");
-			
+
 			populateInitialPages();
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught during initial page population of buffered image cache: " + e.toString();
+			final String msg = "Exception caught during initial page population of buffered image cache: " + e.toString();
 			log.error( msg, e );
+			throw new DatastoreException( msg, e );
 		}
 	}
-	
+
 	private void populateInitialPages() throws DatastoreException
 	{
-		synchronized( internalLock )
-		{
+		internalLock.lock();
+		try{
 			for( int p = 0 ; p < initialPages ; p++ )
 			{
 				// Allocate raw image
-				BufferedImage bufferedImage = doRealAllocation( stdAllocImageWidth,
+				final BufferedImage bufferedImage = doRealAllocation( stdAllocImageWidth,
 						stdAllocImageHeight );
 
-				Graphics2D rawGraphics = bufferedImage.createGraphics();
-				
-				long rawImageId = imageAllocationRawIdCounter++;
-				RawImage rawImage = new RawImage( bufferedImage, rawGraphics, rawImageId );
+				final Graphics2D rawGraphics = bufferedImage.createGraphics();
+
+				final long rawImageId = imageAllocationRawIdCounter++;
+				final RawImage rawImage = new RawImage( bufferedImage, rawGraphics, rawImageId );
 				unsynchronisedAddRawImage( rawImageId, rawImage );
-				
+
 				// And create a free entry for it
-				FreeEntry initialFreeEntry = new FreeEntry( rawImage, 0, 0, stdAllocImageWidth, stdAllocImageHeight );
+				final FreeEntry initialFreeEntry = new FreeEntry( rawImage, 0, 0, stdAllocImageWidth, stdAllocImageHeight );
 				unsynchronisedAddFreeEntry( initialFreeEntry );
 			}
 		}
+		finally
+		{
+			internalLock.unlock();
+		}
 	}
 
-	private BufferedImage doRealAllocation( int desiredWidth, int desiredHeight )
+	private BufferedImage doRealAllocation( final int desiredWidth, final int desiredHeight )
 		throws DatastoreException
 	{
 		BufferedImage bufferedImage = null;
-		
+
 		switch( allocationBufferType.getJavaBufferedImageType() )
 		{
 			case BufferedImage.TYPE_INT_RGB:
@@ -138,7 +145,7 @@ public class AllocationCacheForImageType
 			}
 			default:
 			{
-				String msg = "Unknown image type during allocation: " + allocationBufferType;
+				final String msg = "Unknown image type during allocation: " + allocationBufferType;
 				throw new DatastoreException( msg );
 			}
 		}
@@ -150,36 +157,36 @@ public class AllocationCacheForImageType
 	}
 
 	public TiledBufferedImage makeSubimageFromExistingFree(
-			String allocationSource,
-			AllocationMatch allocationMatchToUse,
-			FreeEntry freeEntryToChopUp,
-			int imageWidthToUse,
-			int imageHeightToUse )
+			final String allocationSource,
+			final AllocationMatch allocationMatchToUse,
+			final FreeEntry freeEntryToChopUp,
+			final int imageWidthToUse,
+			final int imageHeightToUse )
 	{
 		// Remove the existing free entry, it'll be replaced with what's necessary
 		unsynchronisedRemoveFreeEntry( freeEntryToChopUp );
-		
-		long assignedId = imageAllocationAssignedIdCounter++;
-		RawImage rawImage = freeEntryToChopUp.getSourceRawImage();
-		
-		int freeEntryStartX = freeEntryToChopUp.getX();
-		int freeEntryWidth = freeEntryToChopUp.getWidth();
-		int freeEntryStartY = freeEntryToChopUp.getY();
-		int freeEntryHeight = freeEntryToChopUp.getHeight();
-		
-		BufferedImage rootBufferedImage = rawImage.getRootBufferedImage();
+
+		final long assignedId = imageAllocationAssignedIdCounter++;
+		final RawImage rawImage = freeEntryToChopUp.getSourceRawImage();
+
+		final int freeEntryStartX = freeEntryToChopUp.getX();
+		final int freeEntryWidth = freeEntryToChopUp.getWidth();
+		final int freeEntryStartY = freeEntryToChopUp.getY();
+		final int freeEntryHeight = freeEntryToChopUp.getHeight();
+
+		final BufferedImage rootBufferedImage = rawImage.getRootBufferedImage();
 
 		// Clear the region we'll use
 		rawImage.clearRegion( freeEntryStartX, freeEntryStartY, imageWidthToUse, imageHeightToUse );
-		
-		BufferedImage subImage = rootBufferedImage.getSubimage( freeEntryStartX,
+
+		final BufferedImage subImage = rootBufferedImage.getSubimage( freeEntryStartX,
 				freeEntryStartY,
 				imageWidthToUse,
 				imageHeightToUse );
 
-		UsedEntry usedEntry = new UsedEntry( allocationSource, rawImage, assignedId, freeEntryStartX, freeEntryStartY, imageWidthToUse, imageHeightToUse, subImage );
+		final UsedEntry usedEntry = new UsedEntry( allocationSource, rawImage, assignedId, freeEntryStartX, freeEntryStartY, imageWidthToUse, imageHeightToUse, subImage );
 		unsychronisedAddUsedEntry( usedEntry );
-		
+
 		// Create free entries for any left space
 		if( imageWidthToUse !=  freeEntryWidth || imageHeightToUse != freeEntryHeight )
 		{
@@ -187,26 +194,26 @@ public class AllocationCacheForImageType
 //			int widthLeft = freeEntryWidth - imageWidthToUse;
 //			int heightLeft = freeEntryHeight - imageHeightToUse;
 //			log.debug("Creating free entries after sub image of ( " + imageWidthToUse+", " + imageHeightToUse + " ) sizesleft ( " + widthLeft + ", " + heightLeft + " )");
-			
+
 			// One of the dimensions is probably smaller than the other - we want to create one big space and
 			// one little one.
 			BlockDecomposer.decomposeImage( decompositionForAllocation, freeEntryWidth, freeEntryHeight, imageWidthToUse, imageHeightToUse );
-			
+
 //			log.debug("Smaller block is " + decompositionForAllocation.smallBlockToString() );
 //			log.debug("Larger block is " + decompositionForAllocation.largeBlockToString() );
-			
+
 			// Need to add back on the original offsets
-			FreeEntry smallerFe = new FreeEntry( rawImage,
+			final FreeEntry smallerFe = new FreeEntry( rawImage,
 					freeEntryStartX + decompositionForAllocation.smallerBlockX,
 					freeEntryStartY + decompositionForAllocation.smallerBlockY,
 					decompositionForAllocation.smallerBlockWidth,
 					decompositionForAllocation.smallerBlockHeight );
 
 			unsynchronisedAddFreeEntry( smallerFe );
-			
+
 			if( decompositionForAllocation.hasLarger )
 			{
-				FreeEntry largerFe = new FreeEntry( rawImage,
+				final FreeEntry largerFe = new FreeEntry( rawImage,
 						freeEntryStartX + decompositionForAllocation.largerBlockX,
 						freeEntryStartY + decompositionForAllocation.largerBlockY,
 						decompositionForAllocation.largerBlockWidth,
@@ -221,22 +228,23 @@ public class AllocationCacheForImageType
 //			log.debug("Allocation matches image - no free entry creation.");
 		}
 		// Return the necessary structure
-		TiledBufferedImageImpl theImpl = new TiledBufferedImageImpl( this, usedEntry, subImage );
+		final TiledBufferedImageImpl theImpl = new TiledBufferedImageImpl( this, usedEntry, subImage );
 		allocationMatchToUse.setFoundTile( theImpl );
 
 		return allocationMatchToUse.getFoundTile();
 	}
 
 	public TiledBufferedImage allocateNewRawImageMakeSubimage(
-			String allocationSource,
-			AllocationMatch allocationMatchToUse,
-			int imageWidthToUse,
-			int imageHeightToUse )
+			final String allocationSource,
+			final AllocationMatch allocationMatchToUse,
+			final int imageWidthToUse,
+			final int imageHeightToUse )
 		throws DatastoreException
 	{
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
-			
+
 			// Check if the image falls in the bounds of what we cache.
 			int widthToAlloc = -1;
 			int heightToAlloc = -1;
@@ -252,81 +260,86 @@ public class AllocationCacheForImageType
 				widthToAlloc = imageWidthToUse;
 				heightToAlloc = imageHeightToUse;
 			}
-			
+
 			// Allocate raw image
-			BufferedImage bufferedImage = doRealAllocation( widthToAlloc, heightToAlloc );
+			final BufferedImage bufferedImage = doRealAllocation( widthToAlloc, heightToAlloc );
 
-			Graphics2D rawGraphics = bufferedImage.createGraphics();
-			
-			long rawImageId = imageAllocationRawIdCounter++;
-			RawImage rawImage = new RawImage( bufferedImage, rawGraphics, rawImageId );
+			final Graphics2D rawGraphics = bufferedImage.createGraphics();
+
+			final long rawImageId = imageAllocationRawIdCounter++;
+			final RawImage rawImage = new RawImage( bufferedImage, rawGraphics, rawImageId );
 			unsynchronisedAddRawImage( rawImageId, rawImage );
-			
-			// Create a subimage and used entry
-			long assignedId = imageAllocationAssignedIdCounter++;
-			BufferedImage subImage = bufferedImage.getSubimage( 0, 0, imageWidthToUse, imageHeightToUse );
 
-			UsedEntry usedEntry = new UsedEntry( allocationSource, rawImage, assignedId, 0, 0, imageWidthToUse, imageHeightToUse, subImage );
+			// Create a subimage and used entry
+			final long assignedId = imageAllocationAssignedIdCounter++;
+			final BufferedImage subImage = bufferedImage.getSubimage( 0, 0, imageWidthToUse, imageHeightToUse );
+
+			final UsedEntry usedEntry = new UsedEntry( allocationSource, rawImage, assignedId, 0, 0, imageWidthToUse, imageHeightToUse, subImage );
 			unsychronisedAddUsedEntry( usedEntry );
-			
+
 			// Create free entries for any left space
 			if( imageWidthToUse != widthToAlloc || imageHeightToUse != heightToAlloc )
 			{
 				// Initial assignment is always top left
-//				int widthLeft = widthToAlloc - imageWidthToUse;
-//				int heightLeft = heightToAlloc - imageHeightToUse;
-//				log.debug("Creating free entries after sub image of ( " + imageWidthToUse+", " + imageHeightToUse + " ) sizesleft ( " + widthLeft + ", " + heightLeft + " )");
-				
+	//				int widthLeft = widthToAlloc - imageWidthToUse;
+	//				int heightLeft = heightToAlloc - imageHeightToUse;
+	//				log.debug("Creating free entries after sub image of ( " + imageWidthToUse+", " + imageHeightToUse + " ) sizesleft ( " + widthLeft + ", " + heightLeft + " )");
+
 				// One of the dimensions is probably smaller than the other - we want to create one big space and
 				// one little one.
 				BlockDecomposer.decomposeImage( decompositionForAllocation, widthToAlloc, heightToAlloc, imageWidthToUse, imageHeightToUse );
-				
-//				log.debug("Smaller block is " + decompositionForAllocation.smallBlockToString() );
-//				log.debug("Larger block is " + decompositionForAllocation.largeBlockToString() );
-				
-				FreeEntry smallerFe = new FreeEntry( rawImage,
+
+	//				log.debug("Smaller block is " + decompositionForAllocation.smallBlockToString() );
+	//				log.debug("Larger block is " + decompositionForAllocation.largeBlockToString() );
+
+				final FreeEntry smallerFe = new FreeEntry( rawImage,
 						decompositionForAllocation.smallerBlockX,
 						decompositionForAllocation.smallerBlockY,
 						decompositionForAllocation.smallerBlockWidth,
 						decompositionForAllocation.smallerBlockHeight );
 
 				unsynchronisedAddFreeEntry( smallerFe );
-				
+
 				if( decompositionForAllocation.hasLarger )
 				{
-					FreeEntry largerFe = new FreeEntry( rawImage,
+					final FreeEntry largerFe = new FreeEntry( rawImage,
 							decompositionForAllocation.largerBlockX,
 							decompositionForAllocation.largerBlockY,
 							decompositionForAllocation.largerBlockWidth,
 							decompositionForAllocation.largerBlockHeight );
-	
+
 					unsynchronisedAddFreeEntry( largerFe );
 				}
 			}
 			else
 			{
 				// The allocation exactly matches the raw image, don't add any free entries for it.
-//				log.debug("Allocation matches image - no free entry creation.");
+	//				log.debug("Allocation matches image - no free entry creation.");
 			}
 
 			// Return the necessary structure
-			TiledBufferedImageImpl theImpl = new TiledBufferedImageImpl( this, usedEntry, subImage );
+			final TiledBufferedImageImpl theImpl = new TiledBufferedImageImpl( this, usedEntry, subImage );
 			allocationMatchToUse.setFoundTile( theImpl );
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return allocationMatchToUse.getFoundTile();
 	}
 
-	public void freeTiledBufferedImage( TiledBufferedImageImpl realImpl )
+	public void freeTiledBufferedImage( final TiledBufferedImageImpl realImpl )
 	{
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
-			UsedEntry usedEntry = realImpl.getUsedEntry();
+			final UsedEntry usedEntry = realImpl.getUsedEntry();
 //			long assignedUsedEntryId = usedEntry.getAssignedId();
-			RawImage usedRawImage = usedEntry.getRawImage();
-			
+			final RawImage usedRawImage = usedEntry.getRawImage();
+
 			// Remove the "used" entry
 			unsynchronisedRemoveUsedEntry( usedEntry );
-			
+
 			// Easy cases:
 			// (1) Image was larger in one dimension than the standard allocation
 			// If so, we just let it go and don't let it be re-used.
@@ -334,11 +347,11 @@ public class AllocationCacheForImageType
 			// so add it directly to the free entry set
 			// (3) Image was a subimage - need to recompose it with any existing
 			// free space for the raw image and possibly consolidate it
-			int usedX = usedEntry.getX();
-			int usedY = usedEntry.getY();
-			int usedWidth = usedEntry.getWidth();
-			int usedHeight = usedEntry.getHeight();
-			boolean wasLargerThanStandard = (usedWidth > stdAllocImageWidth || usedHeight > stdAllocImageHeight );
+			final int usedX = usedEntry.getX();
+			final int usedY = usedEntry.getY();
+			final int usedWidth = usedEntry.getWidth();
+			final int usedHeight = usedEntry.getHeight();
+			final boolean wasLargerThanStandard = (usedWidth > stdAllocImageWidth || usedHeight > stdAllocImageHeight );
 			if( wasLargerThanStandard )
 			{
 				// Do nothing.
@@ -349,7 +362,7 @@ public class AllocationCacheForImageType
 			{
 				// Directly release it
 //				log.debug("Returned tiled buffered image was an exact match for what we alloc. Creating free entry for complete image.");
-				FreeEntry fe = new FreeEntry( usedRawImage, 0, 0, stdAllocImageWidth, stdAllocImageHeight );
+				final FreeEntry fe = new FreeEntry( usedRawImage, 0, 0, stdAllocImageWidth, stdAllocImageHeight );
 				unsynchronisedAddFreeEntry( fe );
 			}
 			else
@@ -357,35 +370,44 @@ public class AllocationCacheForImageType
 				// Recompose (if possible) with existing free entries for the raw image
 //				log.debug("Returned tiled buffered image was a sub image of what we alloc. Attempting to recompose with free entries.");
 				// Get related free entries
-				Set<FreeEntry> freeEntriesForRawImage = rawImageToFreeEntryMap.get( usedRawImage );
+				final Set<FreeEntry> freeEntriesForRawImage = rawImageToFreeEntryMap.get( usedRawImage );
 				if( BlockRecomposer.canRecomposeWithFreeEntries( usedRawImage, freeEntriesForRawImage, recompositionForFree, usedEntry ) )
 				{
 //					log.debug("Able to recompose: " + recompositionForFree.toString() );
-					for( FreeEntry entryToRemove : recompositionForFree.freeEntriesToRemove )
+					for( final FreeEntry entryToRemove : recompositionForFree.freeEntriesToRemove )
 					{
 						unsynchronisedRemoveFreeEntry( entryToRemove );
 					}
 					// And add the new free entry
-					FreeEntry newFreeEntry = new FreeEntry( usedRawImage, recompositionForFree.x, recompositionForFree.y, recompositionForFree.width, recompositionForFree.height );
+					final FreeEntry newFreeEntry = new FreeEntry( usedRawImage, recompositionForFree.x, recompositionForFree.y, recompositionForFree.width, recompositionForFree.height );
 					unsynchronisedAddFreeEntry( newFreeEntry );
 				}
 				else
 				{
 					// Can't recompose, just add a free entry for the size of the released image
 //					log.debug("Unable to recompose - will add free entry for tiled image");
-					FreeEntry fe = new FreeEntry( usedRawImage, usedX, usedY, usedWidth, usedHeight );
+					final FreeEntry fe = new FreeEntry( usedRawImage, usedX, usedY, usedWidth, usedHeight );
 					unsynchronisedAddFreeEntry( fe );
 				}
 			}
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 	}
 
 	public int getNumRaw()
 	{
 		int retVal = 0;
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
 			retVal = rawImageSet.size();
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return retVal;
 	}
@@ -393,76 +415,86 @@ public class AllocationCacheForImageType
 	public int getNumUsed()
 	{
 		int retVal = 0;
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
 			retVal = usedEntrySet.size();
 		}
-		return retVal;
-	}
-	
-	public int getNumFree()
-	{
-		int retVal = 0;
-		synchronized (internalLock)
+		finally
 		{
-			retVal = freeEntrySet.size();
+			internalLock.unlock();
 		}
 		return retVal;
 	}
 
-	private void unsynchronisedAddRawImage( long rawImageId, RawImage rawImage )
+	public int getNumFree()
+	{
+		int retVal = 0;
+		internalLock.lock();
+		try
+		{
+			retVal = freeEntrySet.size();
+		}
+		finally
+		{
+			internalLock.unlock();
+		}
+		return retVal;
+	}
+
+	private void unsynchronisedAddRawImage( final long rawImageId, final RawImage rawImage )
 	{
 		rawImageSet.add( rawImage );
 		rawImageIdToImageMap.put( rawImageId, rawImage );
 		// Add free and used sets for it
-		HashSet<FreeEntry> rawToFreeSet = new HashSet<FreeEntry>();
+		final HashSet<FreeEntry> rawToFreeSet = new HashSet<FreeEntry>();
 		rawImageToFreeEntryMap.put( rawImage, rawToFreeSet );
-		HashSet<UsedEntry> ues = new HashSet<UsedEntry>();
+		final HashSet<UsedEntry> ues = new HashSet<UsedEntry>();
 		rawImageToUsedEntryMap.put( rawImage, ues );
 	}
 
-	private void unsynchronisedRemoveRawImage( RawImage rawImage )
+	private void unsynchronisedRemoveRawImage( final RawImage rawImage )
 	{
 		rawImageIdToImageMap.removeKey( rawImage.getRawImageId() );
 		rawImageSet.remove( rawImage );
-		
+
 		rawImageToFreeEntryMap.remove( rawImage );
 		rawImageToUsedEntryMap.remove( rawImage );
 	}
 
-	private void unsynchronisedAddFreeEntry( FreeEntry freeEntry )
+	private void unsynchronisedAddFreeEntry( final FreeEntry freeEntry )
 	{
 		freeEntrySet.add( freeEntry );
-		RawImage sourceRawImage = freeEntry.getSourceRawImage();
-		Set<FreeEntry> freeEntriesForRaw = rawImageToFreeEntryMap.get( sourceRawImage );
+		final RawImage sourceRawImage = freeEntry.getSourceRawImage();
+		final Set<FreeEntry> freeEntriesForRaw = rawImageToFreeEntryMap.get( sourceRawImage );
 		freeEntriesForRaw.add( freeEntry );
 	}
 
-	private void unsynchronisedRemoveFreeEntry( FreeEntry entryToRemove )
+	private void unsynchronisedRemoveFreeEntry( final FreeEntry entryToRemove )
 	{
-		RawImage sourceRawImage = entryToRemove.getSourceRawImage();
-		Set<FreeEntry> freeEntriesForRaw = rawImageToFreeEntryMap.get( sourceRawImage );
+		final RawImage sourceRawImage = entryToRemove.getSourceRawImage();
+		final Set<FreeEntry> freeEntriesForRaw = rawImageToFreeEntryMap.get( sourceRawImage );
 		if( !freeEntriesForRaw.remove( entryToRemove ) )
 		{
 			log.error("Attempted to remove a free entry but didn't find the free set entry!");
 		}
-		
+
 		freeEntrySet.remove( entryToRemove );
 	}
 
-	private void unsychronisedAddUsedEntry( UsedEntry usedEntry )
+	private void unsychronisedAddUsedEntry( final UsedEntry usedEntry )
 	{
 		usedEntrySet.add( usedEntry );
-		RawImage rawImage = usedEntry.getRawImage();
-		Set<UsedEntry> ues = rawImageToUsedEntryMap.get( rawImage );
+		final RawImage rawImage = usedEntry.getRawImage();
+		final Set<UsedEntry> ues = rawImageToUsedEntryMap.get( rawImage );
 		ues.add( usedEntry );
 	}
 
-	private void unsynchronisedRemoveUsedEntry( UsedEntry usedEntry )
+	private void unsynchronisedRemoveUsedEntry( final UsedEntry usedEntry )
 	{
 		usedEntrySet.remove( usedEntry );
-		RawImage rawImage = usedEntry.getRawImage();
-		Set<UsedEntry> ues = rawImageToUsedEntryMap.get( rawImage );
+		final RawImage rawImage = usedEntry.getRawImage();
+		final Set<UsedEntry> ues = rawImageToUsedEntryMap.get( rawImage );
 		if( !ues.remove( usedEntry ) )
 		{
 			log.error("Failed to remove used entry from raw image used entry set");
@@ -471,35 +503,50 @@ public class AllocationCacheForImageType
 
 	public Set<RawImage> getRawImages()
 	{
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
-			Set<RawImage> retSet = new HashSet<RawImage>();
+			final Set<RawImage> retSet = new HashSet<RawImage>();
 			retSet.addAll( rawImageSet );
 			return retSet;
 		}
+		finally
+		{
+			internalLock.unlock();
+		}
 	}
 
-	public RawImage getRawImageById( long rawImageId )
+	public RawImage getRawImageById( final long rawImageId )
 	{
 		RawImage imgToReturn = null;
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
 			imgToReturn = rawImageIdToImageMap.get( rawImageId );
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return imgToReturn;
 	}
 
-	public Set<FreeEntry> getRawImageFreeEntrySet( RawImage ri )
+	public Set<FreeEntry> getRawImageFreeEntrySet( final RawImage ri )
 	{
 		Set<FreeEntry> retVal = null;
-		synchronized( internalLock )
+		internalLock.lock();
+		try
 		{
 			retVal = rawImageToFreeEntryMap.get( ri );
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return retVal;
 	}
 
-	public Set<UsedEntry> getRawImageUsedEntrySet( RawImage ri )
+	public Set<UsedEntry> getRawImageUsedEntrySet( final RawImage ri )
 	{
 		Set<UsedEntry> retVal = null;
 		synchronized( internalLock )
@@ -513,10 +560,10 @@ public class AllocationCacheForImageType
 	{
 		return freeEntrySet;
 	}
-	
+
 	public void debugFreeEntries()
 	{
-		for( FreeEntry fe : freeEntrySet )
+		for( final FreeEntry fe : freeEntrySet )
 		{
 			log.debug("Have a free entry: " + fe.toString() );
 		}
@@ -524,15 +571,15 @@ public class AllocationCacheForImageType
 
 	public void debugUsedEntries()
 	{
-		for( UsedEntry ue : usedEntrySet )
+		for( final UsedEntry ue : usedEntrySet )
 		{
 			log.debug("Found a used entry: " + ue.toString() );
 		}
 	}
-	
+
 	public void errorUsedEntries()
 	{
-		for( UsedEntry ue : usedEntrySet )
+		for( final UsedEntry ue : usedEntrySet )
 		{
 			log.error("Found a used entry: " + ue.toString() );
 		}
@@ -547,17 +594,17 @@ public class AllocationCacheForImageType
 	{
 		return cacheName;
 	}
-	
+
 	public void doConsistencyChecks()
 	{
 		boolean wasError = false;
 		// Brute force consistency check:
 		// Basically loop around all of the free elements checking each one against the
 		// used elements. If we have any intersections, there's a bug somewhere....
-		
-		for( FreeEntry fe : freeEntrySet )
+
+		for( final FreeEntry fe : freeEntrySet )
 		{
-			for( FreeEntry fe2 : freeEntrySet )
+			for( final FreeEntry fe2 : freeEntrySet )
 			{
 				if( fe2 != fe )
 				{
@@ -572,7 +619,7 @@ public class AllocationCacheForImageType
 					}
 				}
 			}
-			for( UsedEntry ue : usedEntrySet )
+			for( final UsedEntry ue : usedEntrySet )
 			{
 				if( ue.getRawImage() == fe.getSourceRawImage() && intersection( fe, ue ) )
 				{
@@ -595,26 +642,26 @@ public class AllocationCacheForImageType
 			log.trace("BufferedImageCache for " + cacheName + " consistent");
 		}
 	}
-	
-	private boolean intersection( FreeEntry fe, UsedEntry ue )
+
+	private boolean intersection( final FreeEntry fe, final UsedEntry ue )
 	{
-		int fex = fe.getX();
-		int fey = fe.getY();
-		int few = fe.getWidth() - 1;
-		int feh = fe.getHeight() - 1;
-		int fex2 = fex + few;
-		int fey2 = fey + feh;
-		
-		int uex = ue.getX();
-		int uey = ue.getY();
-		int uew = ue.getWidth() - 1;
-		int ueh = ue.getHeight() - 1;
-		int uex2 = uex + uew;
-		int uey2 = uey + ueh;
-		
+		final int fex = fe.getX();
+		final int fey = fe.getY();
+		final int few = fe.getWidth() - 1;
+		final int feh = fe.getHeight() - 1;
+		final int fex2 = fex + few;
+		final int fey2 = fey + feh;
+
+		final int uex = ue.getX();
+		final int uey = ue.getY();
+		final int uew = ue.getWidth() - 1;
+		final int ueh = ue.getHeight() - 1;
+		final int uex2 = uex + uew;
+		final int uey2 = uey + ueh;
+
 //		boolean intersectsX = (Math.abs(fex - uex) * 2 < (few + uew));
 //		boolean intersectsY = (Math.abs(fey - uey) * 2 < (feh + ueh));
-//		
+//
 //		return intersectsX && intersectsY;
 		return !( fex > uex2
 				|| fex2 < uex
@@ -622,25 +669,25 @@ public class AllocationCacheForImageType
 				|| fey2 < uey );
 	}
 
-	private boolean intersection( FreeEntry fe, FreeEntry fe2 )
+	private boolean intersection( final FreeEntry fe, final FreeEntry fe2 )
 	{
-		int fex = fe.getX();
-		int fey = fe.getY();
-		int few = fe.getWidth() - 1;
-		int feh = fe.getHeight() - 1;
-		int fex2 = fex + few;
-		int fey2 = fey + feh;
-		
-		int fe2x = fe2.getX();
-		int fe2y = fe2.getY();
-		int fe2w = fe2.getWidth() - 1;
-		int fe2h = fe2.getHeight() - 1;
-		int fe2x2 = fe2x + fe2w;
-		int fe2y2 = fe2y + fe2h;
-		
+		final int fex = fe.getX();
+		final int fey = fe.getY();
+		final int few = fe.getWidth() - 1;
+		final int feh = fe.getHeight() - 1;
+		final int fex2 = fex + few;
+		final int fey2 = fey + feh;
+
+		final int fe2x = fe2.getX();
+		final int fe2y = fe2.getY();
+		final int fe2w = fe2.getWidth() - 1;
+		final int fe2h = fe2.getHeight() - 1;
+		final int fe2x2 = fe2x + fe2w;
+		final int fe2y2 = fe2y + fe2h;
+
 //		boolean intersectsX = (Math.abs(fex - uex) * 2 < (few + uew));
 //		boolean intersectsY = (Math.abs(fey - uey) * 2 < (feh + ueh));
-//		
+//
 //		return intersectsX && intersectsY;
 		return !( fex > fe2x2
 				|| fex2 < fe2x

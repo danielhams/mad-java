@@ -23,6 +23,7 @@ package uk.co.modularaudio.util.pooling.common;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,33 +34,38 @@ import org.apache.commons.logging.LogFactory;
  * 'plug in' different functionality at differing stages in the resources
  * lifetime and use.
  * @author dan
- * @version 1.0 
+ * @version 1.0
  * @see uk.co.modularaudio.util.pooling.common.Factory
  * @see uk.co.modularaudio.util.pooling.common.Arbiter
  */
 abstract public class Pool
 {
 	protected static Log log = LogFactory.getLog( Pool.class.getName() );
-	
+
 	public Resource useResource() throws ResourceNotAvailableException
 	{
 		Resource retResource = null;
 		// Do any arbitration before getting one out
 		int ar = arbitratePreUse(retResource);
 
-		synchronized (poolSemaphore)
+		poolLock.lock();
+		try
 		{
 			// Before we call use, arbirate the pool size
 			// We don't care what the return is.
 
-			if (poolStructure.freeSize() > 0)
+			if (structure.freeSize() > 0)
 			{
-				retResource = poolStructure.useFreeResource();
+				retResource = structure.useFreeResource();
 			}
-			else
-			{
-				throw new ResourceNotAvailableException();
-			}
+		}
+		finally
+		{
+			poolLock.unlock();
+		}
+		if( retResource == null )
+		{
+			throw new ResourceNotAvailableException();
 		}
 		// Do any arbitration we need before handing it back.
 		ar = arbitratePostUse(retResource);
@@ -72,16 +78,16 @@ abstract public class Pool
 			throw new ResourceNotAvailableException();
 		}
 
-		return (retResource);
+		return retResource;
 	}
 
-	public void releaseResource(Resource res)
+	public void releaseResource(final Resource res)
 	{
 		//log.debug( "releaseResource called.");
 		// Before we release it, arbitrate it
 		boolean releaseFailure = false;
 		int ar = arbitratePreRelease(res);
-		
+
 		if (ar != Arbiter.CONTINUE)
 		{
 			//log.debug( "prerelease arbiter failed.");
@@ -89,10 +95,15 @@ abstract public class Pool
 		}
 		else
 		{
-			synchronized (poolSemaphore)
+			poolLock.lock();
+			try
 			{
-				poolStructure.releaseUsedResource(res);
-				poolSemaphore.notifyAll();
+				structure.releaseUsedResource(res);
+				poolLock.notifyAll();
+			}
+			finally
+			{
+				poolLock.unlock();
 			}
 			ar = arbitratePostRelease(res);
 
@@ -107,10 +118,13 @@ abstract public class Pool
 		{
 			this.removeResource(res);
 			// If the resource failed arbitration, remove it.
-			log.warn("(Pre/Post)Release arbitration of " + res.toString() + " failed.");
+			if( log.isWarnEnabled() )
+			{
+				log.warn("(Pre/Post)Release arbitration of " + res.toString() + " failed.");
+			}
 		}
 	}
-	
+
 	public Resource useResourceWait() throws InterruptedException
 	{
 		return(useResourceWait(0));
@@ -119,21 +133,22 @@ abstract public class Pool
 	public Resource useResourceWait( long waitTime) throws InterruptedException
 	{
 	    // Need a flag to indicate we should wait forever, or take our time.
-	    boolean waitForever = (waitTime == 0 ? true : false);
-	    boolean doneWaiting = false;
-	    
+	    final boolean waitForever = (waitTime == 0 ? true : false);
+	    final boolean doneWaiting = false;
+
 		Resource retResource = null;
-		
+
 		while (retResource == null && !doneWaiting)
 		{
 			int ar = arbitratePreUse(retResource);
 
-			synchronized (poolSemaphore)
+			poolLock.lock();
+			try
 			{
 				// Before we call use, arbirate the pool size
 				// We don't care what the return is.
 
-				while (poolStructure.freeSize() < 1 && !doneWaiting)
+				while (structure.freeSize() < 1 && !doneWaiting)
 				{
 				    // If the user specified a maximum time to wait, we need to find out how long we waited for
 				    // in this wait (since we can be woken up when there are no free resources).
@@ -142,22 +157,26 @@ abstract public class Pool
 				        {
 				        	beforeWaitTime = System.currentTimeMillis();
 				        }
-				    
-					poolSemaphore.wait( waitTime );
-					
-					if (!waitForever && poolStructure.freeSize() < 1)
+
+					poolLock.wait( waitTime );
+
+					if (!waitForever && structure.freeSize() < 1)
 					{
-					    long afterWaitTime = System.currentTimeMillis();
+					    final long afterWaitTime = System.currentTimeMillis();
 					    waitTime = waitTime - (afterWaitTime - beforeWaitTime);
 					    if (waitTime <= 0)
 					    {
 					        // Its too late - the client has already waiting too long.
-					        return(null);
+					        return null;
 					    }
 					}
 				}
-				
-			    retResource = poolStructure.useFreeResource();
+
+			    retResource = structure.useFreeResource();
+			}
+			finally
+			{
+				poolLock.unlock();
 			}
 
 			// Do any arbitration we need before handing it back.
@@ -166,7 +185,7 @@ abstract public class Pool
 			if (ar != Arbiter.CONTINUE)
 			{
 				log.warn("PostUse arbiter failure inside useResourceWait");
-				
+
 				// If the resource failed arbitration, remove it
 				this.removeResource(retResource);
 				retResource = null;
@@ -175,96 +194,117 @@ abstract public class Pool
 		return (retResource);
 	}
 
-	public void addResource(Resource res)
+	public void addResource(final Resource res)
 	{
 		// Before we add it it, arbitrate its creation
-		int ar = arbitrateCreation(res);
+		final int ar = arbitrateCreation(res);
 
 		if (ar == Arbiter.CONTINUE)
 		{
 			// Now look the pool, and add it into the structure.
-			synchronized (poolSemaphore)
+			poolLock.lock();
+			try
 			{
-				poolStructure.addResource(res);
-				poolSemaphore.notifyAll();
+				structure.addResource(res);
+				poolLock.notifyAll();
+			}
+			finally
+			{
+				poolLock.unlock();
 			}
 		}
 		else
 		{
-			log.warn("Create arbitration of " + res.toString() + " failed.");
+			if( log.isWarnEnabled() )
+			{
+				log.warn("Create arbitration of " + res.toString() + " failed.");
+			}
 		}
 	}
 
 	public Resource removeAnyFreeResource() throws ResourceNotAvailableException
 	{
-        Resource retVal = null;
-		synchronized (poolSemaphore)
+		Resource retVal = null;
+		poolLock.lock();
+		try
 		{
-			if (poolStructure.freeSize() > 0)
+			if (structure.freeSize() > 0)
 			{
-				retVal = poolStructure.removeAnyFreeResource();
+				retVal = structure.removeAnyFreeResource();
 				arbitrateRemoval( retVal );
 			}
-			else
-			{
-				throw new ResourceNotAvailableException();
-			}
 		}
-        return( retVal );
+		finally
+		{
+			poolLock.unlock();
+		}
+		if( retVal == null )
+		{
+			throw new ResourceNotAvailableException();
+		}
+        return retVal;
 	}
 
-	public Resource removeResource(Resource res)
+	public Resource removeResource(final Resource res)
 	{
         Resource retVal = null;
 		//log.debug( "Remove resource called.");
 		// Before we delete it, arbitrate its deletion
-		int ar = arbitrateRemoval(res);
+		final int ar = arbitrateRemoval(res);
 		if (ar == Arbiter.CONTINUE)
 		{
 			//log.debug( "Arbitrate returned continue");
-			synchronized (poolSemaphore)
+			poolLock.lock();
+			try
 			{
-			    retVal = poolStructure.removeResource(res);
+			    retVal = structure.removeResource(res);
+			}
+			finally
+			{
+				poolLock.unlock();
 			}
 		}
 		else
 		{
-			log.warn("Removal arbitration  of " + res.toString() + " failed.");
+			if( log.isWarnEnabled() )
+			{
+				log.warn("Removal arbitration  of " + res.toString() + " failed.");
+			}
 		}
-        return( retVal );
+        return retVal;
 	}
 
-	public void addCreationArbiter(Arbiter arb)
+	public void addCreationArbiter(final Arbiter arb)
 	{
 		creationArbiters.addLast(arb);
 	}
 
-	public void addPreUseArbiter(Arbiter arb)
+	public void addPreUseArbiter(final Arbiter arb)
 	{
 		preUseArbiters.addLast(arb);
 	}
 
-	public void addPostUseArbiter(Arbiter arb)
+	public void addPostUseArbiter(final Arbiter arb)
 	{
 		postUseArbiters.addLast(arb);
 	}
 
-	public void addPreReleaseArbiter(Arbiter arb)
+	public void addPreReleaseArbiter(final Arbiter arb)
 	{
 		preReleaseArbiters.addLast(arb);
 	}
 
-	public void addPostReleaseArbiter(Arbiter arb)
+	public void addPostReleaseArbiter(final Arbiter arb)
 	{
 		postReleaseArbiters.addLast(arb);
 	}
 
-	public void addExpirationArbiter(Arbiter arb)
+	public void addExpirationArbiter(final Arbiter arb)
 	{
 		expirationArbiters.addLast(arb);
 	}
 
-	public void addRemovalArbiter(Arbiter arb)
+	public void addRemovalArbiter(final Arbiter arb)
 	{
 		removalArbiters.addLast(arb);
 	}
@@ -274,138 +314,173 @@ abstract public class Pool
         log.trace("Pool shutdown commencing.");
 
 		// First stop the threads.
-		if (poolSizingThread != null)
+		if (sizingThread != null)
 		{
 			//log.debug( "About to stop pool sizing thread.");
-			poolSizingThread.halt();
-			poolSizingThread.interrupt();
+			sizingThread.halt();
+			sizingThread.interrupt();
 			try
 			{
-				poolSizingThread.join();
+				sizingThread.join();
 			}
-			catch(InterruptedException ie)
+			catch(final InterruptedException ie)
 			{
-				log.error( "Error joining sizing thread: " + ie.toString());
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Error joining sizing thread: " + ie.toString());
+				}
 			}
 		}
 
-		if (poolExpiryThread != null)
+		if (expiryThread != null)
 		{
 			//log.debug( "About to stop pool expiry thread.");
-			poolExpiryThread.halt();
- 			poolExpiryThread.interrupt();
+			expiryThread.halt();
+ 			expiryThread.interrupt();
  			try
  			{
-	 			poolExpiryThread.join();
+	 			expiryThread.join();
 			}
-			catch(InterruptedException ie)
+			catch(final InterruptedException ie)
 			{
-				log.error( "Error joining sizing thread: " + ie.toString());
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Error joining sizing thread: " + ie.toString());
+				}
 			}
 		}
 
-		synchronized (poolSemaphore)
+		poolLock.lock();
+		try
 		{
 
 			// Get all resources in the pool structure, and
 			// call removeResource on them.
-			Collection<Resource> allRes = poolStructure.getAllResources();
-			Iterator<Resource> iter = allRes.iterator();
+			final Collection<Resource> allRes = structure.getAllResources();
+			final Iterator<Resource> iter = allRes.iterator();
 			while (iter.hasNext())
 			{
-				Resource res = (Resource) iter.next();
+				final Resource res = iter.next();
 				removeResource(res);
 			}
 			// We call a notify all on the pool semaphore to wake up any threads waiting
 			// on obtaining a resource.
-			poolSemaphore.notifyAll();
+			poolLock.notifyAll();
+		}
+		finally
+		{
+			poolLock.unlock();
 		}
 		log.info( "Pool shutdown complete.");
 	}
 
 	public abstract void init() throws FactoryProductionException;
 
-	public int arbitrateCreation(Resource res)
-	
+	public int arbitrateCreation(final Resource res)
+
 	{
 		return (doArbitration(creationArbiters, res));
 	}
 
-	public int arbitratePreUse(Resource res)
+	public int arbitratePreUse(final Resource res)
 	{
 		return (doArbitration(preUseArbiters, res));
 	}
 
-	public int arbitratePostUse(Resource res)
+	public int arbitratePostUse(final Resource res)
 	{
 		return (doArbitration(postUseArbiters, res));
 	}
 
-	public int arbitratePreRelease(Resource res)
+	public int arbitratePreRelease(final Resource res)
 	{
 		return (doArbitration(preReleaseArbiters, res));
 	}
 
-	public int arbitratePostRelease(Resource res)
+	public int arbitratePostRelease(final Resource res)
 	{
 		return (doArbitration(postReleaseArbiters, res));
 	}
 
-	public int arbitrateExpiration(Resource res)
+	public int arbitrateExpiration(final Resource res)
 	{
 		return (doArbitration(expirationArbiters, res));
 	}
 
-	public int arbitrateRemoval(Resource res)
+	public int arbitrateRemoval(final Resource res)
 	{
 		return (doArbitration(removalArbiters, res));
 	}
 
+	@Override
 	public String toString()
 	{
-		String retString = "";
-		synchronized (poolSemaphore)
+		final String retString;
+		poolLock.lock();
+		try
 		{
-			retString = poolStructure.toString();
+			retString = structure.toString();
+		}
+		finally
+		{
+			poolLock.unlock();
 		}
 		return (retString);
 	}
 
-	protected int doArbitration(LinkedList<Arbiter> arbiters, Resource res)
+	protected int doArbitration(final LinkedList<Arbiter> arbiters, final Resource res)
 	{
 		int retVal = Arbiter.CONTINUE;
-		Iterator<Arbiter> iter = arbiters.iterator();
+		final Iterator<Arbiter> iter = arbiters.iterator();
 		// Now while we have more arbiters, and the return code is CONT
 		// check em.
 		while ((retVal == Arbiter.CONTINUE) && (iter.hasNext()))
 		{
-			Arbiter arb = (Arbiter) iter.next();
-			retVal = arb.arbitrateOnResource(this, poolStructure, res);
+			final Arbiter arb = iter.next();
+			retVal = arb.arbitrateOnResource(this, structure, res);
 		}
 		return (retVal);
 	}
 
-	private LinkedList<Arbiter> creationArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> creationArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> preUseArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> preUseArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> postUseArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> postUseArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> preReleaseArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> preReleaseArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> postReleaseArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> postReleaseArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> expirationArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> expirationArbiters = new LinkedList<Arbiter>();
 
-	private LinkedList<Arbiter> removalArbiters = new LinkedList<Arbiter>();
+	private final LinkedList<Arbiter> removalArbiters = new LinkedList<Arbiter>();
 
-    protected String poolName = null;
-	protected PoolStructure poolStructure = null;
-	protected PoolSizingThread poolSizingThread = null;
-	protected Factory factory = null;
-	protected Integer poolSemaphore = new Integer(0);
-	protected PoolExpiryThread poolExpiryThread;
-    
+	protected PoolStructure structure;
+	protected PoolSizingThread sizingThread;
+	protected Factory factory;
+	protected ReentrantLock poolLock = new ReentrantLock();
+	protected PoolExpiryThread expiryThread;
+
+	protected Pool( final PoolStructure structure,
+			final long sizingCheckSleepMilliSeconds,
+			final Factory factory,
+			final long resourceCheckMilliSeconds )
+	{
+		this.structure = structure;
+		this.factory = factory;
+
+		if( sizingCheckSleepMilliSeconds > 0 )
+		{
+			sizingThread = new PoolSizingThread( factory, sizingCheckSleepMilliSeconds );
+		}
+
+		if( resourceCheckMilliSeconds > 0 )
+		{
+			expiryThread = new PoolExpiryThread( resourceCheckMilliSeconds );
+		}
+	}
+
 	/**
 	 * Returns the factory.
 	 * @return Factory
@@ -414,10 +489,4 @@ abstract public class Pool
 	{
 		return factory;
 	}
-
-    public String getName()
-    {
-        return poolName;
-    }
-
 }

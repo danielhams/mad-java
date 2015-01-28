@@ -50,8 +50,8 @@ public class AudioProviderRegistryServiceImpl
 {
 	private static Log log = LogFactory.getLog( AudioProviderRegistryServiceImpl.class.getName() );
 
-	private Set<AudioProvider> providers = new HashSet<AudioProvider>();
-	private Map<String,AudioProvider> idToProviderMap = new HashMap<String, AudioProvider>();
+	private final Set<AudioProvider> providers = new HashSet<AudioProvider>();
+	private final Map<String,AudioProvider> idToProviderMap = new HashMap<String, AudioProvider>();
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -62,16 +62,19 @@ public class AudioProviderRegistryServiceImpl
 	public void destroy()
 	{
 		// Now unregister any providers still registered
-		Collection<AudioProvider> providersToShutdown = new ArrayList<AudioProvider>( providers );
-		for( AudioProvider p : providersToShutdown )
+		final Collection<AudioProvider> providersToShutdown = new ArrayList<AudioProvider>( providers );
+		for( final AudioProvider p : providersToShutdown )
 		{
 			try
 			{
 				unregisterAudioProvider(p);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				log.error( "Unable to unregister provider: " + e, e );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Unable to unregister provider: " + e, e );
+				}
 			}
 		}
 		providers.clear();
@@ -88,7 +91,7 @@ public class AudioProviderRegistryServiceImpl
 	}
 
 	@Override
-	public void registerAudioProvider( AudioProvider provider )
+	public void registerAudioProvider( final AudioProvider provider )
 			throws DatastoreException, MAConstraintViolationException
 	{
 		if( providers.contains( provider) )
@@ -97,19 +100,25 @@ public class AudioProviderRegistryServiceImpl
 		}
 		else
 		{
-			log.info("Registering audio provider: " + provider.getId() );
+			if( log.isInfoEnabled() )
+			{
+				log.info("Registering audio provider: " + provider.getId() );
+			}
 			providers.add( provider );
 			idToProviderMap.put( provider.getId(), provider );
 		}
 	}
 
 	@Override
-	public void unregisterAudioProvider(AudioProvider provider)
+	public void unregisterAudioProvider(final AudioProvider provider)
 			throws DatastoreException, RecordNotFoundException
 	{
 		if( providers.contains( provider ) )
 		{
-			log.info("Unregistered audio provider:" + provider.getId() );
+			if( log.isInfoEnabled() )
+			{
+				log.info("Unregistered audio provider:" + provider.getId() );
+			}
 			idToProviderMap.remove( provider.getId() );
 			providers.remove( provider );
 		}
@@ -120,7 +129,7 @@ public class AudioProviderRegistryServiceImpl
 	}
 
 	@Override
-	public AudioProvider getProviderById(String providerId ) throws RecordNotFoundException
+	public AudioProvider getProviderById(final String providerId ) throws RecordNotFoundException
 	{
 		if( !idToProviderMap.containsKey( providerId ) )
 		{
@@ -133,22 +142,22 @@ public class AudioProviderRegistryServiceImpl
 	}
 
 	@Override
-	public List<MidiHardwareDevice> getAllProducerMidiDevices( MidiHardwareDeviceCriteria criteria ) throws DatastoreException
+	public List<MidiHardwareDevice> getAllProducerMidiDevices( final MidiHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return getMidiConfigurations( criteria, DeviceDirection.CONSUMER );
 	}
 
 	@Override
-	public List<MidiHardwareDevice> getAllConsumerMidiDevices( MidiHardwareDeviceCriteria criteria ) throws DatastoreException
+	public List<MidiHardwareDevice> getAllConsumerMidiDevices( final MidiHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return getMidiConfigurations( criteria, DeviceDirection.PRODUCER );
 	}
 
-	private List<MidiHardwareDevice> getMidiConfigurations( MidiHardwareDeviceCriteria criteria, DeviceDirection streamType )
+	private List<MidiHardwareDevice> getMidiConfigurations( final MidiHardwareDeviceCriteria criteria, final DeviceDirection streamType )
 					throws DatastoreException
 	{
-		List<MidiHardwareDevice> retVal = new ArrayList<MidiHardwareDevice>();
-		for( AudioProvider p : providers )
+		final List<MidiHardwareDevice> retVal = new ArrayList<MidiHardwareDevice>();
+		for( final AudioProvider p : providers )
 		{
 			switch( streamType )
 			{
@@ -164,22 +173,22 @@ public class AudioProviderRegistryServiceImpl
 	}
 
 	@Override
-	public List<AudioHardwareDevice> getAllProducerAudioDevices( AudioHardwareDeviceCriteria criteria) throws DatastoreException
+	public List<AudioHardwareDevice> getAllProducerAudioDevices( final AudioHardwareDeviceCriteria criteria) throws DatastoreException
 	{
 		return getAudioHardwareDevices( criteria, DeviceDirection.PRODUCER );
 	}
 
 	@Override
-	public List<AudioHardwareDevice> getAllConsumerAudioDevices( AudioHardwareDeviceCriteria criteria) throws DatastoreException
+	public List<AudioHardwareDevice> getAllConsumerAudioDevices( final AudioHardwareDeviceCriteria criteria) throws DatastoreException
 	{
 		return getAudioHardwareDevices( criteria, DeviceDirection.CONSUMER );
 	}
 
-	private List<AudioHardwareDevice> getAudioHardwareDevices( AudioHardwareDeviceCriteria criteria, DeviceDirection streamType )
+	private List<AudioHardwareDevice> getAudioHardwareDevices( final AudioHardwareDeviceCriteria criteria, final DeviceDirection streamType )
 		throws DatastoreException
 	{
-		List<AudioHardwareDevice> retVal = new ArrayList<AudioHardwareDevice>();
-		for( AudioProvider p : providers )
+		final List<AudioHardwareDevice> retVal = new ArrayList<AudioHardwareDevice>();
+		for( final AudioProvider p : providers )
 		{
 			switch( streamType )
 			{

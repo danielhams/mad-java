@@ -27,18 +27,16 @@ package uk.co.modularaudio.util.pooling.common;
 public interface IDynamicSizedPool
 {
     public void addSizingArbiter(Arbiter arb);
-	
+
 	public int arbitrateSize(Resource res);
-	
+
 	public void addResource(Resource res);
 
 	public Resource removeResource(Resource res);
-	
+
 	public Resource removeAnyFreeResource() throws ResourceNotAvailableException;
 
     public void addToNumNeeded( int numToAdd );
 
     public int getNumNeeded();
-    
-    public String getName();
 }

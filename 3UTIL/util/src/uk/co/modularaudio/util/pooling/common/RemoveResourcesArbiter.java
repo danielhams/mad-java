@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.pooling.common;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 
 /**
  * <P>This is a re-usable arbiter for checking the size of the pool, and if necessary removing existing free resources.</P>
@@ -31,37 +33,31 @@ package uk.co.modularaudio.util.pooling.common;
 public class RemoveResourcesArbiter implements Arbiter
 {
 //	protected static Log log = LogFactory.getLog(RemoveResourcesArbiter.class.getName());
-	
+
 	public RemoveResourcesArbiter(
-		int lowTide,
-		int highTide,
-		int allocationStep,
-		int minResources,
-		int maxResources,
-		PoolSizingThread creator,
-		Integer poolSemaphore)
+		final int lowTide,
+		final int allocationStep,
+		final int minResources,
+		final ReentrantLock poolLock )
 	{
 		this.lowTide = lowTide;
-//		this.highTide = highTide;
 		this.allocationStep = allocationStep;
 		this.minResources = minResources;
-//		this.maxResources = maxResources;
-//		this.creator = creator;
-		this.poolSemaphore = poolSemaphore;
+		this.poolLock = poolLock;
 	}
 
-	public int arbitrateOnResource(Pool pool, PoolStructure data, Resource res)
+	@Override
+	public int arbitrateOnResource(final Pool pool, final PoolStructure data, final Resource res)
 	{
-        IDynamicSizedPool dsp = (IDynamicSizedPool)pool;
-		boolean removeResources = false;
-		int freeSize = 0;
-		int busySize = 0;
+        final IDynamicSizedPool dsp = (IDynamicSizedPool)pool;
 		// Check the size of the pool
-		synchronized (poolSemaphore)
+		poolLock.lock();
+		try
 		{
-			freeSize = data.freeSize();
-			busySize = data.busySize();
-            
+			boolean removeResources = false;
+			final int freeSize = data.freeSize();
+			final int busySize = data.busySize();
+
 //            if (busySize == 10)
 //            {
 //                log.debug("Found all busy.");
@@ -72,18 +68,18 @@ public class RemoveResourcesArbiter implements Arbiter
 //    		log.debug( "RRA Free size is:" + freeSize);
 //    		log.debug( "RRA Busy size is:" + busySize);
 //    		log.debug( "RRA Total size is:" + totalSize);
-    
+
     		// See what the thread is up to too
-    		int numberChange = dsp.getNumNeeded();
+    		final int numberChange = dsp.getNumNeeded();
 //    		log.debug( "RRA SizingThread num: " + numberChange);
-    
+
     		// Check to see if we have stepped over our limits in the
     		// pool size, and add appropriately.
-    		int totalNumFree = freeSize + numberChange;
-    
+    		final int totalNumFree = freeSize + numberChange;
+
     		//log.debug( "RRA totalnumfree: " + totalNumFree);
-    		int totalWithChange = totalNumFree + busySize;
-    
+    		final int totalWithChange = totalNumFree + busySize;
+
     		// Here check to see if the num free >= hightide (i.e. too many free)
     		// If so, check that taking away allocstep still gives us our min resources
     		// Special case - if minresources = 0 and totalnumfree = allocationstep
@@ -94,7 +90,7 @@ public class RemoveResourcesArbiter implements Arbiter
     		{
     			removeResources = true;
     		}
-    
+
     		if (removeResources)
     		{
     			// Remove allocation step resources.
@@ -102,15 +98,16 @@ public class RemoveResourcesArbiter implements Arbiter
     			dsp.addToNumNeeded( -allocationStep );
     		}
         }
+		finally
+		{
+			poolLock.unlock();
+		}
 
 		return (Arbiter.CONTINUE);
 	}
 
-	private int lowTide = 0;
-//	private int highTide = 0;
-	private int allocationStep = 0;
-	private int minResources = 0;
-//	private int maxResources = 0;
-//	private PoolSizingThread creator = null;
-	private Integer poolSemaphore = null;
+	private final int lowTide;
+	private final int allocationStep;
+	private final int minResources;
+	private final ReentrantLock poolLock;
 }

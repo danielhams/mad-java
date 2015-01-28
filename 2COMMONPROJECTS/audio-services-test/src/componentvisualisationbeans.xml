@@ -4,7 +4,6 @@
 	<bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
 	<bean id="guiComponentFactoryService" class="uk.co.modularaudio.service.guicompfactory.impl.GuiComponentFactoryServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="guiService" class="uk.co.modularaudio.service.gui.impl.GuiServiceImpl" init-method="init" destroy-method="destroy">

@@ -29,7 +29,6 @@ import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -38,8 +37,6 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class ComponentImageFactoryImpl implements ComponentWithLifecycle, ComponentImageFactory
 {
 	private static Log log = LogFactory.getLog( ComponentImageFactoryImpl.class.getName() );
-
-	private ConfigurationService configurationService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -68,10 +65,4 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 
 		return retVal;
 	}
-
-	public void setConfigurationService(final ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
-
 }

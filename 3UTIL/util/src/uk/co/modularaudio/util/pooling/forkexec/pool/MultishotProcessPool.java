@@ -30,25 +30,23 @@ import uk.co.modularaudio.util.pooling.common.ResourceNotAvailableException;
  */
 public class MultishotProcessPool extends LifecycleStackPool
 {
-	public MultishotProcessPool( String[] cmdArray, String outputTerminator, int lowTide, int highTide,
-			int allocationStep, int minProcesses, int maxProcesses, int maxTimesUsed, long sizingCheckSleepTime )
+	public MultishotProcessPool( final String[] cmdArray, final String outputTerminator, final int lowTide, final int highTide,
+			final int allocationStep, final int minProcesses, final int maxProcesses, final int maxTimesUsed, final long sizingCheckSleepTime )
 			throws FactoryProductionException
 	{
 		super( lowTide, highTide, allocationStep, minProcesses, maxProcesses, maxTimesUsed, sizingCheckSleepTime,
 				new ProcessResourceFactory( cmdArray, outputTerminator ) );
 
-		poolName = "MultishotProcessPool";
-
 		// Now add our multishotprocess specific arbiters
-		UpdateTimesUsedArbiter updateTimesUsedArbiter = new UpdateTimesUsedArbiter();
+		final UpdateTimesUsedArbiter updateTimesUsedArbiter = new UpdateTimesUsedArbiter();
 		this.addPreReleaseArbiter( updateTimesUsedArbiter );
 
-		NumTimesUsedArbiter checkTimesUsedArbiter = new NumTimesUsedArbiter( maxTimesUsed );
+		final NumTimesUsedArbiter checkTimesUsedArbiter = new NumTimesUsedArbiter( maxTimesUsed );
 		this.addPreReleaseArbiter( checkTimesUsedArbiter );
 
 		// Something to make sure that the processes are terminated and closed
 		// when removed from the pool.
-		RemovalArbiter closeProcessArbiter = new RemovalArbiter();
+		final RemovalArbiter closeProcessArbiter = new RemovalArbiter();
 		this.addRemovalArbiter( closeProcessArbiter );
 		super.init();
 	}
@@ -58,7 +56,7 @@ public class MultishotProcessPool extends LifecycleStackPool
 		return ((MultishotProcessResource) super.useResource());
 	}
 
-	public void returnResource( MultishotProcessResource resource )
+	public void returnResource( final MultishotProcessResource resource )
 	{
 		super.releaseResource( resource );
 	}

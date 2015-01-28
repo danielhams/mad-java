@@ -22,6 +22,7 @@ package uk.co.modularaudio.util.pooling.common;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,48 +39,62 @@ public class PoolExpiryThread extends Thread
 {
 	protected static Log log = LogFactory.getLog(PoolExpiryThread.class.getName());
 
-	public PoolExpiryThread(
-		long milliSecondsToCheck,
-		Integer poolSemaphore,
-		Pool pool,
-		PoolStructure poolStructure)
+	public PoolExpiryThread( final long milliSecondsToCheck )
 	{
 		this.setName("PoolExpiryThread");
 		// The sleep uses thousandths of a second.
 		this.milliSecondsToCheck = milliSecondsToCheck;
-		this.poolSemaphore = poolSemaphore;
-		this.pool = pool;
-		this.poolStructure = poolStructure;
 	}
 
+	public void startExpiryThread( final Pool pool )
+	{
+		this.pool = pool;
+		this.poolStructure = pool.structure;
+		this.poolLock = pool.poolLock;
+	}
+
+	@Override
 	public void run()
 	{
-		while (!shouldHalt)
+		shouldHaltLock.lock();
+		boolean localShouldHalt = shouldHalt;
+		shouldHaltLock.unlock();
+
+		while (!localShouldHalt)
 		{
 			// Lock the pool, and get back all resources in use
 			Collection<Resource> usedResources = null;
-			synchronized (poolSemaphore)
+			poolLock.lock();
+			try
 			{
 				//Log.debug(className, "Expiry thread checking for expired resources.");
 				usedResources = poolStructure.getAllBusyResources();
 			}
-			
-			Iterator<Resource> iter = usedResources.iterator();
+			finally
+			{
+				poolLock.unlock();
+			}
+
+			final Iterator<Resource> iter = usedResources.iterator();
 			while (iter.hasNext())
 			{
-				Resource res = (Resource) iter.next();
+				final Resource res = iter.next();
 
 				// Now call all expiry arbiters - if an arbiter returns
 				// FAIL, that means the resource has expired.
-
-				synchronized(poolSemaphore)
+				poolLock.lock();
+				try
 				{
-					int whatToDo = pool.arbitrateExpiration(res);
+					final int whatToDo = pool.arbitrateExpiration(res);
 					if (whatToDo == Arbiter.FAIL)
 					{
 						log.warn("Expiring a resource.");
 						pool.removeResource(res);
 					}
+				}
+				finally
+				{
+					poolLock.unlock();
 				}
 			}
 			// Now go to sleep for a bit.
@@ -87,9 +102,13 @@ public class PoolExpiryThread extends Thread
 			{
 				Thread.sleep(milliSecondsToCheck);
 			}
-			catch (InterruptedException ie)
+			catch (final InterruptedException ie)
 			{
 			}
+
+			shouldHaltLock.lock();
+			localShouldHalt = shouldHalt;
+			shouldHaltLock.unlock();
 		}
 		log.info("PoolExpiryThread halting.");
 	}
@@ -97,16 +116,15 @@ public class PoolExpiryThread extends Thread
 	public void halt()
 	{
 		// Make sure only one person writes to it at once.
-		synchronized (accessSemaphore)
-		{
-			shouldHalt = true;
-		}
+		shouldHaltLock.lock();
+		shouldHalt = true;
+		shouldHaltLock.unlock();
 	}
 
 	private boolean shouldHalt = false;
-	private Integer accessSemaphore = new Integer(0);
-	private long milliSecondsToCheck = 0;
-	private Integer poolSemaphore = null;
-	private Pool pool = null;
-	private PoolStructure poolStructure = null;
+	private final ReentrantLock shouldHaltLock = new ReentrantLock();
+	private final long milliSecondsToCheck ;
+	private ReentrantLock poolLock;
+	private Pool pool;
+	private PoolStructure poolStructure;
 }

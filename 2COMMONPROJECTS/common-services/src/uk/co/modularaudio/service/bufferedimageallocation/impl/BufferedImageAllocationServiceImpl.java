@@ -89,19 +89,26 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 
 		cacheConfiguration = new AllocationCacheConfiguration( BufferedImageAllocationServiceImpl.class.getSimpleName(), configurationService );
 
-		for( int bic = 0 ; bic < cacheConfiguration.getNumBufferedImageTypes() ; bic++ )
+		try
 		{
-			final AllocationLifetime lifetime = cacheConfiguration.getLifetimeAt( bic );
-			final AllocationBufferType bufferedImageType = cacheConfiguration.getBufferedImageTypeAt( bic );
-			final long lifetimeAndImageType = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
+			for( int bic = 0 ; bic < cacheConfiguration.getNumBufferedImageTypes() ; bic++ )
+			{
+				final AllocationLifetime lifetime = cacheConfiguration.getLifetimeAt( bic );
+				final AllocationBufferType bufferedImageType = cacheConfiguration.getBufferedImageTypeAt( bic );
+				final long lifetimeAndImageType = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
 
-			final AllocationCacheForImageType cacheForType = new AllocationCacheForImageType( graphicsConfiguration,
-					lifetime.toString() + " " + bufferedImageType.toString(),
-					cacheConfiguration,
-					lifetime,
-					bufferedImageType );
+				final AllocationCacheForImageType cacheForType = new AllocationCacheForImageType( graphicsConfiguration,
+						lifetime.toString() + " " + bufferedImageType.toString(),
+						cacheConfiguration,
+						lifetime,
+						bufferedImageType );
 
-			lifetimeAndImageTypeToAllocationCacheMap.put( lifetimeAndImageType, cacheForType );
+				lifetimeAndImageTypeToAllocationCacheMap.put( lifetimeAndImageType, cacheForType );
+			}
+		}
+		catch( final DatastoreException de )
+		{
+			throw new ComponentConfigurationException( de );
 		}
 
 		try

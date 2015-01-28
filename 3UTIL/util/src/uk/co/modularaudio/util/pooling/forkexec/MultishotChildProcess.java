@@ -37,43 +37,49 @@ public class MultishotChildProcess
 {
 	private static Log log = LogFactory.getLog( MultishotChildProcess.class.getName() );
 
-	String lineSeparator;
-	ChildProcessExecutor cpe;
-	OutputStream toProcess;
-	InputStream fromProcess;
-	InputStream errorProcess;
-	String endOfDataMarker;
+	private final String lineSeparator;
+	private final ChildProcessExecutor cpe;
+	private final OutputStream toProcess;
+	private final InputStream fromProcess;
+//	private final InputStream errorProcess;
+	private final String endOfDataMarker;
 
-	public MultishotChildProcess( String[] cmd, String endOfDataMarker ) throws IOException
+	public MultishotChildProcess( final String[] cmd, final String endOfDataMarker ) throws IOException
 	{
 		log.debug( "Creating cpe" );
 		cpe = new ChildProcessExecutor( cmd );
 		toProcess = cpe.getOutputStream();
 		fromProcess = cpe.getInputStream();
-		errorProcess = cpe.getErrorStream();
+//		errorProcess = cpe.getErrorStream();
 		log.debug( "Done obtaining streams." );
 		this.endOfDataMarker = endOfDataMarker;
 		lineSeparator = System.getProperty( "line.separator" );
-		log.debug( "Line separator set to '" + lineSeparator + "'" );
+		if( log.isDebugEnabled() )
+		{
+			log.debug( "Line separator set to '" + lineSeparator + "'" );
+		}
 	}
 
-	public StringBuilder passAndReturn( StringBuilder dataToProcess ) throws IOException
+	public StringBuilder passAndReturn( final StringBuilder dataToProcess ) throws IOException
 	{
-		log.debug( "About to write: " + dataToProcess + " to the subprocess." );
-		StringBuilder retVal = new StringBuilder();
+		if( log.isDebugEnabled() )
+		{
+			log.debug( "About to write: " + dataToProcess + " to the subprocess." );
+		}
+		final StringBuilder retVal = new StringBuilder();
 		// Write the line and flush
 		toProcess.write( dataToProcess.toString().getBytes() );
 		toProcess.write( lineSeparator.getBytes() );
 		toProcess.flush();
 		log.debug( "Wrote input." );
 		boolean hadError = false, done = false;
-		BufferedReader reader = new BufferedReader( new InputStreamReader( fromProcess ) );
+		final BufferedReader reader = new BufferedReader( new InputStreamReader( fromProcess ) );
 		while (!hadError && !done)
 		{
 			try
 			{
 				log.debug( "Attempting to read a line" );
-				String line = reader.readLine();
+				final String line = reader.readLine();
 				if (line == null)
 				{
 					hadError = true;
@@ -88,11 +94,14 @@ public class MultishotChildProcess
 					{
 						retVal.append( line );
 						retVal.append( lineSeparator );
-						log.debug( "Read a line: " + line );
+						if( log.isDebugEnabled() )
+						{
+							log.debug( "Read a line: " + line );
+						}
 					}
 				}
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				hadError = true;
 				throw new IOException( e.toString() );

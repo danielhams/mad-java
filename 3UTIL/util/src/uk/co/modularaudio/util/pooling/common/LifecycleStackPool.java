@@ -42,34 +42,25 @@ public class LifecycleStackPool
 	extends Pool
 	implements IDynamicSizedPool
 {
-    public LifecycleStackPool(
-        int lowTide,
-        int highTide,
-        int allocationStep,
-        int minResources,
-        int maxResources,
-        int maxResourceUses,
-        long sizingCheckSleepMilliSeconds,
-        Factory factory)
+    public LifecycleStackPool( final int lowTide,
+        final int highTide,
+        final int allocationStep,
+        final int minResources,
+        final int maxResources,
+        final int maxResourceUses,
+        final long sizingCheckSleepMilliSeconds,
+        final Factory factory)
     {
-        synchronized (poolSemaphore)
+    	super( new StackPoolStructure(), sizingCheckSleepMilliSeconds, factory, 0 );
+    	poolLock.lock();
+    	try
         {
-            // Use a stack structure to store our resources. This makes recently
-            // used resources the ones that are used next.
-            poolStructure = new StackPoolStructure();
-
-//            this.lowTide = lowTide;
-//            this.highTide = highTide;
-//            this.allocationStep = allocationStep;
             this.minResources = minResources;
-//            this.maxResources = maxResources;
-//            this.maxResourceUses = maxResourceUses;
             this.factory = factory;
 
             // Pop in the resource creation thread. This thread sits waiting for
             // things to tell it to create new ones. We will use arbiters to
             // actually call the creation thread.
-            poolSizingThread = new PoolSizingThread(this, this.poolSemaphore, factory, sizingCheckSleepMilliSeconds);
 
             // This arbiter is called when we need to (maybe) add new reasources
             // into the pool. It will check the free size of the pool (+ any
@@ -77,77 +68,74 @@ public class LifecycleStackPool
             // thread to create any more that are needed.
             // Its called just before attempting to get a resource out of
             // the pool.
-            Arbiter addArbiter =
+            final Arbiter addArbiter =
                 new AddResourcesArbiter(
-                    lowTide,
                     highTide,
                     allocationStep,
-                    minResources,
                     maxResources,
-                    poolSizingThread,
-                    poolSemaphore);
+                    poolLock );
 
             this.addPreUseArbiter(addArbiter);
 
             // Now an arbiter to remove resources when there are too many.
             // This is called just after releasing a resource.
-            Arbiter removeResourcesArbiter =
+            final Arbiter removeResourcesArbiter =
                 new RemoveResourcesArbiter(
                     lowTide,
-                    highTide,
                     allocationStep,
                     minResources,
-                    maxResources,
-                    poolSizingThread,
-                    poolSemaphore);
+                    poolLock);
 
             this.addPostReleaseArbiter(removeResourcesArbiter);
 
         }
+    	finally
+    	{
+    		poolLock.unlock();
+    	}
     }
 
     @Override
 	public void init() throws FactoryProductionException
     {
-        synchronized (poolSemaphore)
+    	poolLock.lock();
+    	try
         {
             // Set the factory up.
             factory.init();
 
             // Start off the threads for creation and expiry.
-            Thread pst = new Thread(poolSizingThread);
-            pst.start();
+            sizingThread.startSizingThread( this, poolLock );
 
             if (minResources != 0)
             {
                 numNeeded = minResources;
             }
         }
+    	finally
+    	{
+    		poolLock.unlock();
+    	}
     }
 
-//    private int lowTide = 0;
-//    private int highTide = 0;
-//    private int allocationStep = 0;
     private int minResources = 0;
-//    private int maxResources = 0;
-//    private int maxResourceUses = 0;
 
     protected int numNeeded = 0;
 
     @Override
-	public void addSizingArbiter( Arbiter arb )
+	public void addSizingArbiter( final Arbiter arb )
     {
         // Do nothing.
     }
 
     @Override
-	public int arbitrateSize( Resource res )
+	public int arbitrateSize( final Resource res )
     {
         return Arbiter.FAIL;
     }
 
     @Override
-	public void addToNumNeeded(int numToAdd)
+	public void addToNumNeeded(final int numToAdd)
     {
         numNeeded += numToAdd;
     }

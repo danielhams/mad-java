@@ -28,24 +28,24 @@ import org.apache.commons.logging.LogFactory;
 public class ObjectPool<A>
 {
 	private static Log log = LogFactory.getLog( ObjectPool.class.getName() );
-	
+
 	public interface ObjectPoolLifecycleManager<A>
 	{
 		A createNewInstance();
 		void resetInstanceForReuse( A objectToBeReused );
 	}
-	
-	private ObjectPoolLifecycleManager<A> lifecycleManager = null;
-	
-	private Vector<A> freeObjects = new Vector<A>();
-	private Vector<A> usedObjects = new Vector<A>();
-	private int maxAllocated = -1;
-	
-	public ObjectPool( ObjectPoolLifecycleManager<A> lifecycleManager, int initialSize, boolean prepopulate )
+
+	private final ObjectPoolLifecycleManager<A> lifecycleManager;
+
+	private final Vector<A> freeObjects = new Vector<A>();
+	private final Vector<A> usedObjects = new Vector<A>();
+	private int maxAllocated;
+
+	public ObjectPool( final ObjectPoolLifecycleManager<A> lifecycleManager, final int initialSize, final boolean prepopulate )
 	{
 		this.lifecycleManager = lifecycleManager;
 		this.maxAllocated = initialSize;
-		
+
 		if( prepopulate )
 		{
 			for( int i = 0 ; i < initialSize ; i++ )
@@ -55,40 +55,40 @@ public class ObjectPool<A>
 		}
 //		debugPool( "init" );
 	}
-	
+
 	public A reserveObject()
 	{
 		A retVal = null;
-		
-		int numFree = freeObjects.size();
+
+		final int numFree = freeObjects.size();
 		if( numFree > 0 )
 		{
 			retVal = freeObjects.remove( 0 );
 		}
 		else
 		{
-			int numUsed = usedObjects.size();
+			final int numUsed = usedObjects.size();
 			if( numFree + numUsed < maxAllocated )
 			{
 				retVal = lifecycleManager.createNewInstance();
 			}
 		}
-		
+
 		if( retVal != null )
 		{
 			usedObjects.add( retVal );
 		}
 //		debugPool("PostUse");
-		
+
 		return retVal;
 	}
 
-	public void releaseObject( A object )
+	public void releaseObject( final A object )
 	{
 		usedObjects.remove( object );
 		lifecycleManager.resetInstanceForReuse( object );
-		int numFree = freeObjects.size();
-		int numUsed = usedObjects.size();
+		final int numFree = freeObjects.size();
+		final int numUsed = usedObjects.size();
 		if( numFree + numUsed < maxAllocated )
 		{
 			freeObjects.add( object );
@@ -112,22 +112,25 @@ public class ObjectPool<A>
 		return freeObjects.size();
 	}
 
-	public void resetMaxAllocated( int newMaxAllocated )
+	public void resetMaxAllocated( final int newMaxAllocated )
 	{
 //		log.debug("Resetting max allocated. Was " + maxAllocated + " will be " + newMaxAllocated );
 		maxAllocated = newMaxAllocated;
 	}
-	
-	public void debugPool( String op )
+
+	public void debugPool( final String op )
 	{
-		int numUsed = getNumUsed();
-		int numFree = getNumFree();
-		log.debug("POOL SIZE OP(" + op + ") : " + (numFree + numUsed) );
-		log.debug("Pool used: " + numUsed );
-		log.debug("Pool free: " + numFree );
+		final int numUsed = getNumUsed();
+		final int numFree = getNumFree();
+		if( log.isDebugEnabled() )
+		{
+			log.debug("POOL SIZE OP(" + op + ") : " + (numFree + numUsed) );
+			log.debug("Pool used: " + numUsed );
+			log.debug("Pool free: " + numFree );
+		}
 	}
 
-	public void removeObject( A objectToRemove )
+	public void removeObject( final A objectToRemove )
 	{
 		usedObjects.remove( objectToRemove );
 	}

@@ -68,12 +68,12 @@ public class ConnectionTesterArbiter implements Arbiter
 	 * @see Arbiter
 	 */
 	@Override
-	public int arbitrateOnResource( Pool pool, PoolStructure data, Resource resource )
+	public int arbitrateOnResource( final Pool pool, final PoolStructure data, final Resource resource )
 	{
 		// log.debug("Connection tester arbiter called.");
 		int retVal = Arbiter.FAIL;
 
-		DatabaseConnectionResource dbres = (DatabaseConnectionResource) resource;
+		final DatabaseConnectionResource dbres = (DatabaseConnectionResource) resource;
 		try
 		{
 			if (dbres != null && dbres.isClosed() == false)
@@ -81,9 +81,9 @@ public class ConnectionTesterArbiter implements Arbiter
 
 				// Do a select from DUAL to see if things are still up
 				// (BADUM is meant to be a heartbeat :-)
-				String testSql = "SELECT 'BADUM' FROM DUAL";
+				final String testSql = "SELECT 'BADUM' FROM DUAL";
 				// log.debug("about to run");
-				Statement stat = dbres.createStatement();
+				final Statement stat = dbres.createStatement();
 				if (stat.execute( testSql ))
 				{
 					retVal = Arbiter.CONTINUE;
@@ -96,9 +96,12 @@ public class ConnectionTesterArbiter implements Arbiter
 				retVal = Arbiter.CONTINUE;
 			}
 		}
-		catch (SQLException sqle)
+		catch (final SQLException sqle)
 		{
-			log.warn( "SQLException caught testing DB connection: " + sqle.toString() );
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "SQLException caught testing DB connection: " + sqle.toString() );
+			}
 		}
 
 		if (retVal == Arbiter.FAIL)
