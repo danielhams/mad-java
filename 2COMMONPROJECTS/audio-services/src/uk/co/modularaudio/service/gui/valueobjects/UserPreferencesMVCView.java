@@ -36,21 +36,21 @@ import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 public class UserPreferencesMVCView
 {
 //	private static Log log = LogFactory.getLog( UserPreferencesMVCView.class.getName() );
-	private UserPreferencesGuiFpsMVCView guiFpsMVCView = null;
-	private UserPreferencesInputDeviceMVCView inputDeviceMVCView = null;
-	private UserPreferencesOutputDeviceMVCView outputDeviceMVCView = null;
-	private UserPreferencesBufferSizeMVCView bufferSizeMVCView = null;
-	private UserPreferencesInputMidiDeviceMVCView inputMidiDeviceMVCView = null;
-	private UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceMVCView = null;
-	
-	public UserPreferencesMVCView( UserPreferencesMVCController userPrefsMVCController )
+	private final UserPreferencesGuiFpsMVCView guiFpsMVCView;
+	private final UserPreferencesInputDeviceMVCView inputDeviceMVCView;
+	private final UserPreferencesOutputDeviceMVCView outputDeviceMVCView;
+	private final UserPreferencesBufferSizeMVCView bufferSizeMVCView;
+	private final UserPreferencesInputMidiDeviceMVCView inputMidiDeviceMVCView;
+	private final UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceMVCView;
+
+	public UserPreferencesMVCView( final UserPreferencesMVCController userPrefsMVCController )
 	{
-		UserPreferencesMVCModel userPrefsModel = userPrefsMVCController.getModel();
-		
+		final UserPreferencesMVCModel userPrefsModel = userPrefsMVCController.getModel();
+
 		guiFpsMVCView = new UserPreferencesGuiFpsMVCView( userPrefsModel.getFpsComboModel(),
 				userPrefsMVCController.getFpsComboController(),
 				new GuiFpsViewListCellRenderer() );
-		
+
 		inputDeviceMVCView = new UserPreferencesInputDeviceMVCView( userPrefsModel.getInputDeviceComboModel(),
 				userPrefsMVCController.getInputDeviceComboController(),
 				new AudioDeviceViewListCellRenderer() );
@@ -66,7 +66,7 @@ public class UserPreferencesMVCView
 				userPrefsMVCController.getOutputMidiDeviceComboController(),
 				new MidiDeviceViewListCellRenderer() );
 	}
-	
+
 	public UserPreferencesGuiFpsMVCView getGuiFpsMVCView()
 	{
 		return guiFpsMVCView;
@@ -86,7 +86,7 @@ public class UserPreferencesMVCView
 	{
 		return bufferSizeMVCView;
 	}
-	
+
 	public UserPreferencesInputMidiDeviceMVCView getInputMidiDeviceMVCView()
 	{
 		return inputMidiDeviceMVCView;
@@ -97,7 +97,7 @@ public class UserPreferencesMVCView
 		return outputMidiDeviceMVCView;
 	}
 
-	public void setModel( UserPreferencesMVCModel model )
+	public void setModel( final UserPreferencesMVCModel model )
 	{
 		guiFpsMVCView.setModel( model.getFpsComboModel() );
 		inputDeviceMVCView.setModel( model.getInputDeviceComboModel() );
@@ -105,6 +105,6 @@ public class UserPreferencesMVCView
 		bufferSizeMVCView.setModel( model.getBufferSizeModel() );
 		inputMidiDeviceMVCView.setModel( model.getInputMidiDeviceComboModel() );
 		outputMidiDeviceMVCView.setModel( model.getOutputMidiDeviceComboModel() );
-		
+
 	}
 }

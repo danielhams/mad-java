@@ -32,18 +32,16 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndWireDragCurrentWireHint extends LayeredPaneDndTableDecorationHint
 {
 	private static Log log = LogFactory.getLog( DndWireDragCurrentWireHint.class.getName() );
-	
-//	private BufferedImageAllocationService bufferedImageAllocationService = null;
 
 	private Point sourceLocation = new Point(-1,-1);
 	private Point curMousePosition = new Point(-1,-1);
-	
+
 	private Point previousSourceLocation = new Point( -1, -1 );
 	private Point previousMouseLocation = new Point( -1, -1 );
-	
-	private DndCurrentWireImage currentWireImage = null;
-	
-	public DndWireDragCurrentWireHint( BufferedImageAllocationService bufferedImageAllocationService )
+
+	private final DndCurrentWireImage currentWireImage;
+
+	public DndWireDragCurrentWireHint( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 //		this.bufferedImageAllocationService = bufferedImageAllocationService;
 		currentWireImage = new DndCurrentWireImage( bufferedImageAllocationService );
@@ -57,18 +55,18 @@ public class DndWireDragCurrentWireHint extends LayeredPaneDndTableDecorationHin
 	}
 
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
 		curMousePosition = mousePosition;
 	}
 
-	public void setDragStartPosition( Point sourceLocation )
+	public void setDragStartPosition( final Point sourceLocation )
 	{
 		this.sourceLocation = sourceLocation;
 	}
-	
+
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 		try
 		{
@@ -90,17 +88,17 @@ public class DndWireDragCurrentWireHint extends LayeredPaneDndTableDecorationHin
 
 					table.setLayer( currentWireImage, LayeredPaneDndTable.LPT_DRAGGEDWIRE_LAYER );
 					table.add( currentWireImage );
-					
+
 					table.repaint( currentWireImage.getBounds() );
 				}
 			}
 		}
-		catch ( Exception e)
+		catch ( final Exception e)
 		{
-			String msg ="Exception caught setting wire drag hint active: " + e.toString();
+			final String msg ="Exception caught setting wire drag hint active: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 	}
 
 	@Override
@@ -122,9 +120,9 @@ public class DndWireDragCurrentWireHint extends LayeredPaneDndTableDecorationHin
 				}
 			}
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg ="Exception caught setting wire drag hint active: " + e.toString();
+			final String msg ="Exception caught setting wire drag hint active: " + e.toString();
 			log.error( msg, e );
 		}
 	}

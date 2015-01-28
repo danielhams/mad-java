@@ -26,7 +26,7 @@ public class JobDataListComparator implements Comparator<ParsedJobData>
 {
 
 	@Override
-	public int compare( ParsedJobData o1, ParsedJobData o2 )
+	public int compare( final ParsedJobData o1, final ParsedJobData o2 )
 	{
 		return ((int)o1.getJobOffsetFromStart()) - ((int)o2.getJobOffsetFromStart());
 	}

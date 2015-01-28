@@ -35,8 +35,8 @@ public class UserPreferencesBufferSizeMVCView extends BasicIntegerSliderView
 {
 	private static final long serialVersionUID = 6215602643416123463L;
 
-	public UserPreferencesBufferSizeMVCView( BasicIntegerSliderModel ism,
-			BufferSizeSliderMVCController isc )
+	public UserPreferencesBufferSizeMVCView( final BasicIntegerSliderModel ism,
+			final BufferSizeSliderMVCController isc )
 	{
 		super( ism, isc );
 		this.setMinimum( 1 );
@@ -44,26 +44,26 @@ public class UserPreferencesBufferSizeMVCView extends BasicIntegerSliderView
 //		this.setMinorTickSpacing( 256 );
 		this.setMajorTickSpacing( 1 );
 		this.setPaintTicks( true );
-		Dictionary<Integer,JLabel> bufferSizeTickLabels = new Hashtable<Integer,JLabel>();
-		
-		IntArrayList intArrayList = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.keys();
+		final Dictionary<Integer,JLabel> bufferSizeTickLabels = new Hashtable<Integer,JLabel>();
+
+		final IntArrayList intArrayList = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.keys();
 		for( int i = 0 ; i < intArrayList.size() ; i++ )
 		{
-			int bufferSize = intArrayList.get( i );
-			int modelIndex = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.get( bufferSize );
+			final int bufferSize = intArrayList.get( i );
+			final int modelIndex = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.get( bufferSize );
 
 			addOneLabel( bufferSizeTickLabels, modelIndex, bufferSize + "");
 		}
-		
+
 		this.setLabelTable( bufferSizeTickLabels );
-		
+
 		this.setPaintLabels( true );
 		this.setSnapToTicks( true );
 	}
 
-	private void addOneLabel( Dictionary<Integer, JLabel> bufferSizeTickLabels, int size, String labelStr )
+	private void addOneLabel( final Dictionary<Integer, JLabel> bufferSizeTickLabels, final int size, final String labelStr )
 	{
-		JLabel label = new JLabel( labelStr);
+		final JLabel label = new JLabel( labelStr);
 		bufferSizeTickLabels.put( size, label );
 	}
 }

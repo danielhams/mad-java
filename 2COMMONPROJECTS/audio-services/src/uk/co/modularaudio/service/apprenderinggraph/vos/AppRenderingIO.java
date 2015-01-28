@@ -75,12 +75,12 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 	protected long numPeriodsRecorded;
 	protected boolean fatalException;
 
-	protected IOBuffers masterInBuffers = null;
-	protected IOBuffers masterOutBuffers = null;
+	protected IOBuffers masterInBuffers;
+	protected IOBuffers masterOutBuffers;
 
-	protected ClockSourceJobQueueProcessing clockSourceJobQueueProcessing = null;
+	protected ClockSourceJobQueueProcessing clockSourceJobQueueProcessing;
 
-	protected volatile boolean shouldProfileRenderingJobs = false;
+	protected volatile boolean shouldProfileRenderingJobs;
 
 	public AppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
 			final TimingService timingService,
@@ -113,7 +113,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 		{
 			// Some fake values we'll use to start off discovery
 			final DataRate dataRate = DataRate.SR_44100;
-			long nanosOutputLatency = 10000;
+			final long nanosOutputLatency = 10000;
 			final int sampleFramesOutputLatency = hardwareConfiguration.getChannelBufferLength();
 
 			final HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
@@ -141,7 +141,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.POST_START );
 				rendering.set( true );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				final String msg = "Exception caught starting audio IO: " + e.toString();
 				log.error( msg, e );
@@ -167,7 +167,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			fireLifecycleSignal(hardwareChannelSettings, SignalType.PRE_STOP );
 			doProviderStop();
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			final String msg = "Exception caught stopping audio IO: " + e.toString();
 			log.error( msg, e );
@@ -178,7 +178,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			fireLifecycleSignal(hardwareChannelSettings, SignalType.POST_STOP );
 			doProviderDestroy();
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			final String msg = "Exception caught destroying audio IO: " + e.toString();
 			log.error( msg, e );
@@ -235,7 +235,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			{
 				Thread.sleep( TEST_IO_WAIT_MILLIS );
 			}
-			catch( InterruptedException ie )
+			catch( final InterruptedException ie )
 			{
 			}
 
@@ -252,13 +252,13 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				{
 					Thread.sleep( TEST_SLEEP_MILLIS );
 				}
-				catch( InterruptedException ie )
+				catch( final InterruptedException ie )
 				{
 				}
 				currentTimestampMillis = System.currentTimeMillis();
 			}
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			if( log.isErrorEnabled() )
 			{
@@ -277,7 +277,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				{
 					Thread.sleep( 5 );
 				}
-				catch( InterruptedException ie )
+				catch( final InterruptedException ie )
 				{
 				}
 				appRenderingGraph.dumpProfileResults();
@@ -287,7 +287,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 				fireLifecycleSignal(hardwareChannelSettings, SignalType.POST_STOP );
 
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				if( log.isErrorEnabled() )
 				{
@@ -301,7 +301,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			{
 				doProviderDestroy();
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				if( log.isErrorEnabled() )
 				{
@@ -353,7 +353,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 			appRenderingGraphService.destroyAppRenderingGraph( appRenderingGraph );
 
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			if( log.isErrorEnabled() )
 			{
@@ -422,7 +422,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 
 			clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing(rp, shouldProfileRenderingJobs );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			final String msg = "Exception caught during clock source processing: " + e.toString();
 			log.error( msg, e );

@@ -24,7 +24,7 @@ import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat
 
 public class StaticMetadata
 {
-	public StaticMetadata( AudioFileFormat format, int numChannels, int sampleRate, long numFrames, String path )
+	public StaticMetadata( final AudioFileFormat format, final int numChannels, final int sampleRate, final long numFrames, final String path )
 	{
 		this.format = format;
 		this.numChannels = numChannels;
@@ -32,9 +32,9 @@ public class StaticMetadata
 		this.numFrames = numFrames;
 		this.path = path;
 	}
-	public AudioFileFormat format;
-	public int numChannels;
-	public int sampleRate;
-	public long numFrames;
-	public String path;
+	public final AudioFileFormat format;
+	public final int numChannels;
+	public final int sampleRate;
+	public final long numFrames;
+	public final String path;
 }

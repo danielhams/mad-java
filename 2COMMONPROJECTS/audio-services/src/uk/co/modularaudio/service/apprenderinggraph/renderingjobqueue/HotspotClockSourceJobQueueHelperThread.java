@@ -119,7 +119,7 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 			// And cleanup the rendering plan
 			renderingService.destroyRenderingPlan( renderingPlan );
 		}
-		catch (MadProcessingException e)
+		catch (final MadProcessingException e)
 		{
 			final String msg = "MadProcessingException caught hotspot looping: " + e.toString();
 			log.error( msg, e );

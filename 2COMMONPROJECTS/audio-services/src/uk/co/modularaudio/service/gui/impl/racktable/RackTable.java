@@ -38,26 +38,26 @@ public class RackTable
 	extends LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>
 {
 	private static final long serialVersionUID = -7415174078798644069L;
-	
+
 //	private static Log log = LogFactory.getLog( NewRackTable.class.getName() );
-	
-	private RackTableDndPolicy dndPolicy = null;
+
+	private final RackTableDndPolicy dndPolicy;
 
 	public RackTable(
-			RackDataModel dataModel,
-			RackTableEmptyCellPainter emptyCellPainter,
-			RackTableGuiFactory factory,
-			RackTableDndPolicy dndPolicy,
-			LayeredPaneDndTableDecorations dndDecorations,
-			Dimension gridSize,
-			boolean showGrid,
-			Color gridColour)
+			final RackDataModel dataModel,
+			final RackTableEmptyCellPainter emptyCellPainter,
+			final RackTableGuiFactory factory,
+			final RackTableDndPolicy dndPolicy,
+			final LayeredPaneDndTableDecorations dndDecorations,
+			final Dimension gridSize,
+			final boolean showGrid,
+			final Color gridColour)
 	{
 		super(dataModel, factory, dndPolicy, dndDecorations, gridSize, showGrid, gridColour, emptyCellPainter);
 		this.dndPolicy = dndPolicy;
 	}
 
-	public void setRackDataModel(RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel)
 	{
 		super.setDataModel( rackDataModel );
 		// Reset the data model referred to in the policy, too
@@ -82,18 +82,19 @@ public class RackTable
 //		log.debug("NewRackTable not fully repainting itself...");
 //		this.validate();
 //		this.repaint();
-		MouseEvent syntheticMouseEvent = new MouseEvent( this, -1, 2323, 0, -1, -1, -1, -1, 0, false, 0 );
+		final MouseEvent syntheticMouseEvent = new MouseEvent( this, -1, 2323, 0, -1, -1, -1, -1, 0, false, 0 );
 		// Synthesise a mouse moved event too so that selection state is correct
 		dndMouseListener.mouseMoved( syntheticMouseEvent );
 	}
 
+	@Override
 	public void destroy()
 	{
 		super.destroy();
 		dndPolicy.destroy();
 	}
-	
-	public void setForceRepaints( boolean forceRepaints )
+
+	public void setForceRepaints( final boolean forceRepaints )
 	{
 		this.forcePaint = forceRepaints;
 	}

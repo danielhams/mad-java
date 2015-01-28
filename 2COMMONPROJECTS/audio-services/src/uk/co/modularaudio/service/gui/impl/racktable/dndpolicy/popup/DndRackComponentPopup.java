@@ -29,12 +29,12 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 public class DndRackComponentPopup extends JPopupMenu
 {
 	private static final long serialVersionUID = -6253775979138263009L;
-	
-	private PopupActions popupActions = null;
-	private PopupRenameItem renameItem = null;
-	private PopupDeleteItem deleteItem = null;
-	
-	public DndRackComponentPopup( PopupActions popupActions )
+
+	private final PopupActions popupActions;
+	private final PopupRenameItem renameItem;
+	private final PopupDeleteItem deleteItem;
+
+	public DndRackComponentPopup( final PopupActions popupActions )
 	{
 		this.popupActions = popupActions;
 		renameItem = new PopupRenameItem( popupActions );
@@ -43,7 +43,7 @@ public class DndRackComponentPopup extends JPopupMenu
 		this.add( deleteItem );
 	}
 
-	public void setPopupData( RackDataModel rackDataModel, RackComponent rackComponent, AbstractGuiAudioComponent guiComponent )
+	public void setPopupData( final RackDataModel rackDataModel, final RackComponent rackComponent, final AbstractGuiAudioComponent guiComponent )
 	{
 		popupActions.setPopupData( rackDataModel, rackComponent, guiComponent );
 	}

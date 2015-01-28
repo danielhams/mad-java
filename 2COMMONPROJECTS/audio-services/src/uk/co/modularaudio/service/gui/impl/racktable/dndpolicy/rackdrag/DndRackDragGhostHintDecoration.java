@@ -30,14 +30,16 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndRackDragGhostHintDecoration extends LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( NewDndRackDragGhostHintDecoration.class.getName() );
-	
+
 //	private static final float GHOST_TRANSPARENCY_MULTIPLIER = 0.95f;
 
-	
+
 //	private BufferedImage image = new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB );
 	private Point mouseOffset = new Point(0,0);
-	
-	private AbstractGuiAudioComponent ghostGuiComponent = null;
+
+	private AbstractGuiAudioComponent ghostGuiComponent;
+
+	private Point curMousePosition = new Point(0,0);
 
 	@Override
 	public boolean isMouseRelative()
@@ -45,37 +47,35 @@ public class DndRackDragGhostHintDecoration extends LayeredPaneDndTableDecoratio
 		return true;
 	}
 
-	public void setComponentAndOffset( AbstractGuiAudioComponent dragSourceGuiComponent, Point dragSourceMouseOffset)
+	public void setComponentAndOffset( final AbstractGuiAudioComponent dragSourceGuiComponent, final Point dragSourceMouseOffset)
 	{
 		boolean isUpdated = false;
-		if( mouseOffset != null && !mouseOffset.equals( this.mouseOffset ) )
+		if( dragSourceMouseOffset != null && !dragSourceMouseOffset.equals( this.mouseOffset ) )
 		{
 			isUpdated = true;
 		}
-		else if( mouseOffset == null && this.mouseOffset != null )
+		else if( dragSourceMouseOffset == null && this.mouseOffset != null )
 		{
 			isUpdated = true;
 		}
-	
+
 		this.ghostGuiComponent = dragSourceGuiComponent;
 		this.mouseOffset = dragSourceMouseOffset;
-		
+
 		if( isUpdated )
 		{
 			// Not sure I need to do anything in here...
 		}
 	}
 
-	private Point curMousePosition = new Point(0,0);
-
 	@Override
-	public void setMousePosition( Point mousePosition )
+	public void setMousePosition( final Point mousePosition )
 	{
 		curMousePosition = mousePosition;
 	}
 
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 		if( active != activeBool )
 		{
@@ -96,7 +96,7 @@ public class DndRackDragGhostHintDecoration extends LayeredPaneDndTableDecoratio
 
 		}
 	}
-	
+
 	@Override
 	public void signalAnimation()
 	{
@@ -104,15 +104,15 @@ public class DndRackDragGhostHintDecoration extends LayeredPaneDndTableDecoratio
 		{
 //			log.debug("Attempting to move it ");
 			// Work out the new position for the component and update it
-			Rectangle previousBounds = ghostGuiComponent.getBounds();
+			final Rectangle previousBounds = ghostGuiComponent.getBounds();
 			// Necessary?
 //			ghostGuiComponent.setOpaque( false );
-			int newX = curMousePosition.x + mouseOffset.x;
-			int newY = curMousePosition.y + mouseOffset.y;
+			final int newX = curMousePosition.x + mouseOffset.x;
+			final int newY = curMousePosition.y + mouseOffset.y;
 			if( previousBounds.x != newX || previousBounds.y != newY )
 			{
 				ghostGuiComponent.setLocation( newX, newY );
-				Rectangle newBounds = ghostGuiComponent.getBounds();
+				final Rectangle newBounds = ghostGuiComponent.getBounds();
 				previousBounds.width++;
 				previousBounds.height++;
 				newBounds.width++;

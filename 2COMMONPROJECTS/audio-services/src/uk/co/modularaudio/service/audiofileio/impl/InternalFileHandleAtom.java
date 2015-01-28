@@ -31,32 +31,32 @@ import uk.co.modularaudio.util.audio.fileio.IAudioDataFetcher;
 public class InternalFileHandleAtom implements AudioFileHandleAtom
 {
 	private static Log log = LogFactory.getLog( InternalFileHandleAtom.class.getName() );
-	
-	protected AudioFileDirection direction;
-	protected StaticMetadata staticMetadata;
-	
-	protected IAudioDataFetcher internalDataFetcher = null;
-	
-	public InternalFileHandleAtom( AudioFileDirection direction, StaticMetadata staticMetadata, IAudioDataFetcher dataFetcher )
+
+	protected final AudioFileDirection direction;
+	protected final StaticMetadata staticMetadata;
+
+	protected final IAudioDataFetcher internalDataFetcher;
+
+	public InternalFileHandleAtom( final AudioFileDirection direction, final StaticMetadata staticMetadata, final IAudioDataFetcher dataFetcher )
 	{
 		this.direction = direction;
 		this.staticMetadata = staticMetadata;
 		this.internalDataFetcher = dataFetcher;
 	}
-	
+
 	@Override
 	public AudioFileDirection getDirection()
 	{
 		return direction;
 	}
-	
+
 	@Override
 	public StaticMetadata getStaticMetadata()
 	{
 		return staticMetadata;
 	}
 
-	public int read( float[] destFloats, int destPosition, int numFrames, long frameReadOffset )
+	public int read( final float[] destFloats, final int destPosition, final int numFrames, final long frameReadOffset )
 	{
 		try
 		{
@@ -66,9 +66,9 @@ public class InternalFileHandleAtom implements AudioFileHandleAtom
 					numFrames * staticMetadata.numChannels )
 					/ staticMetadata.numChannels;
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught reading floats: " + e.toString();
+			final String msg = "Exception caught reading floats: " + e.toString();
 			log.error( msg, e );
 			return -1;
 		}

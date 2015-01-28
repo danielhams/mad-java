@@ -23,11 +23,11 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag;
 public class DndRackDragTargetLookupException extends Exception
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -1425833655072214560L;
 
-	public DndRackDragTargetLookupException(String msg)
+	public DndRackDragTargetLookupException(final String msg)
 	{
 		super( msg );
 	}

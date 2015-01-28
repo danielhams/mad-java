@@ -34,15 +34,15 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndWireDragPlugNameTooltipHint extends LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( NewDndWireDragPlugNameTooltipHint.class.getName() );
-	
-	private JLabel nameLabel = null;
-	
-	private Rectangle myBounds = new Rectangle();
-	
+
+	private final JLabel nameLabel;
+
+	private final Rectangle myBounds = new Rectangle();
+
 	public DndWireDragPlugNameTooltipHint()
 	{
-		Color fgColor = Color.WHITE;
-		Color bgColor = Color.BLACK;
+		final Color fgColor = Color.WHITE;
+		final Color bgColor = Color.BLACK;
 		nameLabel = new JLabel();
 		nameLabel.setOpaque( true );
 		nameLabel.setBackground( bgColor );
@@ -51,15 +51,15 @@ public class DndWireDragPlugNameTooltipHint extends LayeredPaneDndTableDecoratio
 
 		setPlugName( "Tooltip thingy" );
 	}
-	
-	public void setPlugName( String plugName )
+
+	public void setPlugName( final String plugName )
 	{
 		nameLabel.setText( plugName );
 
-		int xBefore = myBounds.x;
-		int yBefore = myBounds.y;
+		final int xBefore = myBounds.x;
+		final int yBefore = myBounds.y;
 		nameLabel.revalidate();
-		Dimension size = nameLabel.getPreferredSize();
+		final Dimension size = nameLabel.getPreferredSize();
 		nameLabel.setBounds( xBefore, yBefore, size.width, size.height );
 
 		nameLabel.getBounds( myBounds );
@@ -69,7 +69,7 @@ public class DndWireDragPlugNameTooltipHint extends LayeredPaneDndTableDecoratio
 	}
 
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 //		log.debug("SetActive called with " + activeBool );
 		active = activeBool;
@@ -94,7 +94,7 @@ public class DndWireDragPlugNameTooltipHint extends LayeredPaneDndTableDecoratio
 	}
 
 	@Override
-	public void setMousePosition( Point mousePosition )
+	public void setMousePosition( final Point mousePosition )
 	{
 //		log.debug("Received mouse position " + mousePosition.toString() );
 

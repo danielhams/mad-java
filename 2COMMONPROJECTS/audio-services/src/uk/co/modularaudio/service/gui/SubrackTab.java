@@ -26,7 +26,7 @@ public interface SubrackTab
 {
 	public interface SubrackTitleListener
 	{
-		public void receiveTitleUpdate( SubrackTab subrackTab, String newTitle );
+		void receiveTitleUpdate( SubrackTab subrackTab, String newTitle );
 	}
 
 	JComponent getJComponent();

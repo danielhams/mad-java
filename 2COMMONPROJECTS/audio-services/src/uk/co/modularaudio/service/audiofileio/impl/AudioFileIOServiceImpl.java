@@ -44,10 +44,10 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 {
 	private static Log log = LogFactory.getLog( AudioFileIOServiceImpl.class.getName() );
 
-	private Set<AudioFileFormat> encodingFormats = new HashSet<AudioFileFormat>();
-	private Set<AudioFileFormat> decodingFormats = new HashSet<AudioFileFormat>();
+	private final Set<AudioFileFormat> encodingFormats = new HashSet<AudioFileFormat>();
+	private final Set<AudioFileFormat> decodingFormats = new HashSet<AudioFileFormat>();
 
-	private AudioDataFetcherFactory audioDataFetcherFactory = new AudioDataFetcherFactory();
+	private final AudioDataFetcherFactory audioDataFetcherFactory = new AudioDataFetcherFactory();
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -72,17 +72,17 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 	}
 
 	@Override
-	public StaticMetadata sniffFileFormatOfFile( String path )
+	public StaticMetadata sniffFileFormatOfFile( final String path )
 			throws DatastoreException, RecordNotFoundException
 	{
 		AudioFileFormat format = AudioFileFormat.UNKNOWN;
 		try
 		{
-			File inputFile = new File(path );
-			IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( inputFile );
+			final File inputFile = new File(path );
+			final IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( inputFile );
 			dataFetcher.open( inputFile );
 
-			DetectedFormat dfFormat = dataFetcher.getDetectedFormat();
+			final DetectedFormat dfFormat = dataFetcher.getDetectedFormat();
 			switch( dfFormat )
 			{
 				case FLAC:
@@ -100,40 +100,40 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 					format = AudioFileFormat.UNKNOWN;
 				}
 			}
-			int numChannels = dataFetcher.getNumChannels();
-			int sampleRate = dataFetcher.getSampleRate();
-			long numFloats = dataFetcher.getNumTotalFloats();
-			long numFrames = numFloats / numChannels;
-			StaticMetadata retVal = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
+			final int numChannels = dataFetcher.getNumChannels();
+			final int sampleRate = dataFetcher.getSampleRate();
+			final long numFloats = dataFetcher.getNumTotalFloats();
+			final long numFrames = numFloats / numChannels;
+			final StaticMetadata retVal = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
 			dataFetcher.close();
 			return retVal;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught sniffing audio file format: " + e.toString();
+			final String msg = "Exception caught sniffing audio file format: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg );
 		}
 	}
 
 	@Override
-	public AudioFileHandleAtom openForWrite( String path )
+	public AudioFileHandleAtom openForWrite( final String path )
 			throws DatastoreException, IOException
 	{
 		return null;
 	}
 
 	@Override
-	public AudioFileHandleAtom openForRead( String path )
+	public AudioFileHandleAtom openForRead( final String path )
 			throws DatastoreException, IOException
 	{
 		InternalFileHandleAtom retVal = null;
 		try
 		{
-			File inputFile = new File(path );
-			IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( inputFile );
+			final File inputFile = new File(path );
+			final IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( inputFile );
 			dataFetcher.open( inputFile );
-			DetectedFormat dfFormat = dataFetcher.getDetectedFormat();
+			final DetectedFormat dfFormat = dataFetcher.getDetectedFormat();
 			AudioFileFormat format;
 			switch( dfFormat )
 			{
@@ -153,64 +153,73 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 				}
 			}
 
-			int numChannels = dataFetcher.getNumChannels();
-			int sampleRate = dataFetcher.getSampleRate();
-			long numFloats = dataFetcher.getNumTotalFloats();
-			long numFrames = numFloats / numChannels;
-			StaticMetadata sm = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
+			final int numChannels = dataFetcher.getNumChannels();
+			final int sampleRate = dataFetcher.getSampleRate();
+			final long numFloats = dataFetcher.getNumTotalFloats();
+			final long numFrames = numFloats / numChannels;
+			final StaticMetadata sm = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
 
 			retVal = new InternalFileHandleAtom( AudioFileDirection.DECODE, sm, dataFetcher );
-			log.trace( "Opened file handle " + path + " for reading");
+			if( log.isTraceEnabled() )
+			{
+				log.trace( "Opened file handle " + path + " for reading");
+			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught opening for read: " + e.toString();
+			final String msg = "Exception caught opening for read: " + e.toString();
 			log.error( msg, e );
 		}
 		return retVal;
 	}
 
 	@Override
-	public void closeHandle( AudioFileHandleAtom handle )
+	public void closeHandle( final AudioFileHandleAtom handle )
 			throws DatastoreException, IOException
 	{
-		InternalFileHandleAtom ifh = (InternalFileHandleAtom)handle;
+		final InternalFileHandleAtom ifh = (InternalFileHandleAtom)handle;
 		ifh.close();
-		log.trace( "Closed file handle " + ifh.getStaticMetadata().path );
-	}
-
-	@Override
-	public void readFloats( AudioFileHandleAtom handle, float[] destFloats,
-			int destPosition, int numFrames, long frameReadOffset )
-			throws DatastoreException, IOException
-	{
-		InternalFileHandleAtom ifh = (InternalFileHandleAtom)handle;
-		int numRead = ifh.read( destFloats, destPosition, numFrames, frameReadOffset );
-		if( numRead != numFrames )
+		if( log.isTraceEnabled() )
 		{
-			log.error("Oops - asked for " + numFrames + " received " + numRead);
+			log.trace( "Closed file handle " + ifh.getStaticMetadata().path );
 		}
 	}
 
 	@Override
-	public void writeFloats( AudioFileHandleAtom handle, float[] srcFloats,
-			long writePosition, int numFrames )
+	public void readFloats( final AudioFileHandleAtom handle, final float[] destFloats,
+			final int destPosition, final int numFrames, final long frameReadOffset )
+			throws DatastoreException, IOException
+	{
+		final InternalFileHandleAtom ifh = (InternalFileHandleAtom)handle;
+		final int numRead = ifh.read( destFloats, destPosition, numFrames, frameReadOffset );
+		if( numRead != numFrames )
+		{
+			if( log.isErrorEnabled() )
+			{
+				log.error("Oops - asked for " + numFrames + " received " + numRead);
+			}
+		}
+	}
+
+	@Override
+	public void writeFloats( final AudioFileHandleAtom handle, final float[] srcFloats,
+			final long writePosition, final int numFrames )
 			throws DatastoreException, IOException
 	{
 	}
 
 	@Override
-	public DynamicMetadata readMetadata( AudioFileHandleAtom handle )
+	public DynamicMetadata readMetadata( final AudioFileHandleAtom handle )
 			throws DatastoreException, IOException
 	{
-		DynamicMetadata retVal = new DynamicMetadata();
+		final DynamicMetadata retVal = new DynamicMetadata();
 
 		return retVal;
 	}
 
 	@Override
-	public void writeMetadata( AudioFileHandleAtom handle,
-			DynamicMetadata outDynamicMetadata )
+	public void writeMetadata( final AudioFileHandleAtom handle,
+			final DynamicMetadata outDynamicMetadata )
 			throws DatastoreException, IOException
 	{
 	}

@@ -34,9 +34,9 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
 public interface GuiService
 {
 	UserPreferencesMVCView getUserPreferencesMVCView( UserPreferencesMVCController userPrefsMVCController ) throws DatastoreException;
-	
+
 	RackModelRenderingComponent createGuiForRackDataModel( RackDataModel rackDataModel ) throws DatastoreException;
-	
+
 	MadDefinitionListModel getComponentTypesModel() throws DatastoreException;
 
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
@@ -59,7 +59,7 @@ public interface GuiService
 			int messageType,
 			String initialValue,
 			TextInputDialogCallback callback );
-	
+
 	void showMessageDialog( Component parentComponent,
 			String message,
 			String title,

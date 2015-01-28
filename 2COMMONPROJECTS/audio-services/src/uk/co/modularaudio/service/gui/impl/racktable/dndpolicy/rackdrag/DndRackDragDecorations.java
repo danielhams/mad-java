@@ -28,8 +28,8 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndRackDragDecorations extends LayeredPaneDndTableDecorations
 {
 	// Something to draw the "red" or "green" box around the accepted region
-	private DndRackDragGhostHintDecoration ghostHintDecorator = new DndRackDragGhostHintDecoration();
-	private DndRackDragRegionHintDecoration regionHintDecorator = new DndRackDragRegionHintDecoration();
+	private final DndRackDragGhostHintDecoration ghostHintDecorator = new DndRackDragGhostHintDecoration();
+	private final DndRackDragRegionHintDecoration regionHintDecorator = new DndRackDragRegionHintDecoration();
 
 	public DndRackDragDecorations()
 	{

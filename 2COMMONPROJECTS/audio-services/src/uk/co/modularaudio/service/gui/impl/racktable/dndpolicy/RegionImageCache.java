@@ -27,19 +27,19 @@ import java.util.Map;
 public class RegionImageCache
 {
 //	private static Log log = LogFactory.getLog( RegionImageCache.class.getName() );
-	
-	private Map<String, BufferedImage> imageIdToBufferedImage = new HashMap<String, BufferedImage>();
-	
+
+	private final Map<String, BufferedImage> imageIdToBufferedImage = new HashMap<String, BufferedImage>();
+
 	public RegionImageCache()
 	{
 	}
-	
-	public BufferedImage getImageFromId( String id )
+
+	public BufferedImage getImageFromId( final String id )
 	{
 		return imageIdToBufferedImage.get( id );
 	}
-	
-	public void putImageForId( String id, BufferedImage bi )
+
+	public void putImageForId( final String id, final BufferedImage bi )
 	{
 		imageIdToBufferedImage.put( id, bi );
 	}

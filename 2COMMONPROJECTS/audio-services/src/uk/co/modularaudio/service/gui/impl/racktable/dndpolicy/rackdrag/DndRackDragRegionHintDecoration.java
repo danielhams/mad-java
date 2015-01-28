@@ -34,9 +34,9 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 
 	private RegionHintType hintType = RegionHintType.INVALID;
 	private Rectangle hintRectangle = new Rectangle( 0, 0, 0, 0 );
-	private Rectangle previousRenderRectangle = null;
+	private Rectangle previousRenderRectangle;
 
-	private DndTargetRegionImageGenerator targetRegionGenerator = new DndTargetRegionImageGenerator();
+	private final DndTargetRegionImageGenerator targetRegionGenerator = new DndTargetRegionImageGenerator();
 
 	public final static boolean DO_HINTING = false;
 
@@ -44,7 +44,8 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 	{
 	}
 
-	public void setRegionHintRectangle( RegionHintType hintType, Rectangle newHintRectangle, Rectangle renderRectangle )
+	@SuppressWarnings("unused")
+	public void setRegionHintRectangle( final RegionHintType hintType, final Rectangle newHintRectangle, final Rectangle renderRectangle )
 	{
 		boolean isUpdated = false;
 
@@ -88,12 +89,12 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 	}
 
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
 	}
 
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 		if( active != activeBool )
 		{

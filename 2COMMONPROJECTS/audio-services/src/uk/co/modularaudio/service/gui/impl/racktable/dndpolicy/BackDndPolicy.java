@@ -40,17 +40,17 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTablePol
 public class BackDndPolicy extends LayeredPaneDndTableCompoundPolicy<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>
 	implements RackTableDndPolicy
 {
-	private ArrayList<LayeredPaneDndTablePolicy<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>> policyList = null;
-	
-	public BackDndPolicy( RackService rackService,
-			GuiService guiService,
-			RackDataModel dataModel,
-			DndRackDragDecorations rackDecorations,
-			DndWireDragDecorations wireDecorations,
-			GuiRackBackActionListener backActionListener )
+	private final ArrayList<LayeredPaneDndTablePolicy<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>> policyList;
+
+	public BackDndPolicy( final RackService rackService,
+			final GuiService guiService,
+			final RackDataModel dataModel,
+			final DndRackDragDecorations rackDecorations,
+			final DndWireDragDecorations wireDecorations,
+			final GuiRackBackActionListener backActionListener )
 	{
 		policyList = new ArrayList<LayeredPaneDndTablePolicy<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>>();
-		
+
 		policyList.add( new DndWireDragPolicy( rackService, dataModel, wireDecorations, backActionListener ) );
 		policyList.add( new DndRackDragPolicy( rackService, guiService, dataModel, rackDecorations ) );
 	}
@@ -62,11 +62,11 @@ public class BackDndPolicy extends LayeredPaneDndTableCompoundPolicy<RackCompone
 	}
 
 	@Override
-	public void setRackDataModel(RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel)
 	{
-		for( LayeredPaneDndTablePolicy<RackComponent,RackComponentProperties,AbstractGuiAudioComponent> policy : policyList )
+		for( final LayeredPaneDndTablePolicy<RackComponent,RackComponentProperties,AbstractGuiAudioComponent> policy : policyList )
 		{
-			RackTableDndPolicy realPolicy = (RackTableDndPolicy)policy;
+			final RackTableDndPolicy realPolicy = (RackTableDndPolicy)policy;
 			realPolicy.setRackDataModel( rackDataModel );
 		}
 	}
@@ -74,10 +74,10 @@ public class BackDndPolicy extends LayeredPaneDndTableCompoundPolicy<RackCompone
 	@Override
 	public void destroy()
 	{
-		for( LayeredPaneDndTablePolicy<RackComponent,RackComponentProperties,AbstractGuiAudioComponent> policy : policyList )
+		for( final LayeredPaneDndTablePolicy<RackComponent,RackComponentProperties,AbstractGuiAudioComponent> policy : policyList )
 		{
-			RackTableDndPolicy realPolicy = (RackTableDndPolicy)policy;
+			final RackTableDndPolicy realPolicy = (RackTableDndPolicy)policy;
 			realPolicy.destroy();
-		}		
+		}
 	}
 }

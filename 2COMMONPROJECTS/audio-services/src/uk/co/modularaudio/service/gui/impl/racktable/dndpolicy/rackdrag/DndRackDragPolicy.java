@@ -46,43 +46,43 @@ import uk.co.modularaudio.util.table.TablePosition;
 public class DndRackDragPolicy implements RackTableDndPolicy
 {
 	private static Log log = LogFactory.getLog( DndRackDragPolicy.class.getName() );
-	
-	private RackService rackService = null;
-	
-	private RackDataModel dataModel = null;
-	
+
+	private final RackService rackService;
+	private RackDataModel dataModel;
+
 	// SCROLL
-	private AutoScrollingMouseListener scrollingMouseListener = new AutoScrollingMouseListener();
-	
-	private DndRackComponentPopup popup = null;
+	private final AutoScrollingMouseListener scrollingMouseListener = new AutoScrollingMouseListener();
+
+	private final DndRackComponentPopup popup;
 
 //	private NewDndRackDragDecorations decorations = null;
-	private DndRackDragRegionHintDecoration regionHintDecorator = null;
-	private DndRackDragGhostHintDecoration ghostHintDecorator = null;
-	public DndRackDragPolicy( RackService rackService, GuiService guiService, RackDataModel dataModel, DndRackDragDecorations decorations )
+	private final DndRackDragRegionHintDecoration regionHintDecorator;
+	private final DndRackDragGhostHintDecoration ghostHintDecorator;
+
+	public DndRackDragPolicy( final RackService rackService, final GuiService guiService, final RackDataModel dataModel, final DndRackDragDecorations decorations )
 	{
 		this.rackService = rackService;
 		this.dataModel = dataModel;
 //		this.decorations = decorations;
 		regionHintDecorator = decorations.getRegionHintDecorator();
 		ghostHintDecorator = decorations.getGhostHintDecorator();
-		
-		PopupActions popupActions = new PopupActions( rackService, guiService );
-		
+
+		final PopupActions popupActions = new PopupActions( rackService, guiService );
+
 		popup = new DndRackComponentPopup( popupActions );
 	}
-	
+
 	@Override
-	public boolean isMouseOverDndSource( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point localPoint,
-			Point tablePoint)
+	public boolean isMouseOverDndSource( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point localPoint,
+			final Point tablePoint)
 	{
-		boolean haveComponent = component != null;
-		boolean inComponentDragRegion = ( haveComponent ? component.isPointLocalDragRegion( localPoint ) : false );
-		boolean havePreviousComponent = regionHintSourceAreaImageComponent != null;
-		boolean wasInPreviousComponentDragRegion = (regionHintDecorator.isActive() );
-		boolean isSameComponent = (haveComponent && havePreviousComponent ? component == regionHintSourceAreaImageComponent : false );
+		final boolean haveComponent = component != null;
+		final boolean inComponentDragRegion = ( haveComponent ? component.isPointLocalDragRegion( localPoint ) : false );
+		final boolean havePreviousComponent = regionHintSourceAreaImageComponent != null;
+		final boolean wasInPreviousComponentDragRegion = (regionHintDecorator.isActive() );
+		final boolean isSameComponent = (haveComponent && havePreviousComponent ? component == regionHintSourceAreaImageComponent : false );
 
 		// Setup the state variables we will use to decide what to update
 		if( !haveComponent )
@@ -156,29 +156,29 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 				}
 //				log.debug("Moved from no component to new component with isDraggable=" + inComponentDragRegion );
 			}
-			
+
 		}
-		
+
 		dragSourceMouseOffset = tablePoint;
 		return inComponentDragRegion;
 	}
 
-	private void setupRegionHintForComponent( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component )
+	private void setupRegionHintForComponent( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component )
 	{
-		Rectangle currentRegionHintRectangle = regionHintDecorator.getRegionHintRectangle();
-		RegionHintType currentRegionHintType = regionHintDecorator.getRegionHintType();
-		RackComponent tableComponent = table.getTableModelComponentFromGui( component );
-		Rectangle rr = component.getRenderedRectangle();
-		TablePosition tp = dataModel.getContentsOriginReturnNull( tableComponent );
-		Dimension gridSize = table.getGridSize();
-		int hintXOffset = tp.x * gridSize.width;
-		int hintYOffset = tp.y * gridSize.height;
-		Span componentSpan = tableComponent.getCellSpan();
-		int hintWidth = componentSpan.x * gridSize.width;
-		int hintHeight = componentSpan.y * gridSize.height;
+		final Rectangle currentRegionHintRectangle = regionHintDecorator.getRegionHintRectangle();
+		final RegionHintType currentRegionHintType = regionHintDecorator.getRegionHintType();
+		final RackComponent tableComponent = table.getTableModelComponentFromGui( component );
+		final Rectangle rr = component.getRenderedRectangle();
+		final TablePosition tp = dataModel.getContentsOriginReturnNull( tableComponent );
+		final Dimension gridSize = table.getGridSize();
+		final int hintXOffset = tp.x * gridSize.width;
+		final int hintYOffset = tp.y * gridSize.height;
+		final Span componentSpan = tableComponent.getCellSpan();
+		final int hintWidth = componentSpan.x * gridSize.width;
+		final int hintHeight = componentSpan.y * gridSize.height;
 		newRegionHintRectangle.setBounds( hintXOffset, hintYOffset, hintWidth, hintHeight );
-		
+
 		if( component != regionHintSourceAreaImageComponent || !newRegionHintRectangle.equals( currentRegionHintRectangle ) ||
 				currentRegionHintType != RegionHintType.SOURCE )
 		{
@@ -191,27 +191,27 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 //			log.debug("Over same component, but moved into draggable region from non-drag, no new rectangle required");
 		}
 	}
-	
+
 	// Stuff used to highlight the possible source of a drag region
-	private Rectangle newRegionHintRectangle = new Rectangle(-1, -1);
+	private final Rectangle newRegionHintRectangle = new Rectangle(-1, -1);
 	private AbstractGuiAudioComponent regionHintSourceAreaImageComponent = null;
-	
+
 	// Copies of data the policy hangs on to to help with tests, or with the move itself.
 	private AbstractGuiAudioComponent dragSourceGuiComponent = null;
 	private RackComponent dragSourceTableComponent = null;
 	private Span dragSourceCellSpan = null;
 	private Point dragSourceMouseOffset = null;
 	private Point dragSourceOriginalOffset = null;
-	
+
 	// Setup by start drag
 	private DndRackDragPolicyDragTargetHelper dragTargetHelper = null;
 	private DndRackDragMatch dragMatch = null;
 
 	@Override
-	public void startDrag( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point dragLocalPoint,
-			Point dragTablePoint)
+	public void startDrag( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point dragLocalPoint,
+			final Point dragTablePoint)
 	{
 //		log.debug("Drag begun.");
 		this.dragSourceGuiComponent = component;
@@ -222,72 +222,72 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 		dragSourceMouseOffset = new Point( -dragLocalPoint.x, -dragLocalPoint.y );
 		ghostHintDecorator.setComponentAndOffset( dragSourceGuiComponent, dragSourceMouseOffset );
 		ghostHintDecorator.setActive( true );
-		
+
 		// Make sure no position is currently hinted (from a previous failed drag)
 		regionHintDecorator.setActive( true );
-		
+
 		dragTargetHelper = new DndRackDragPolicyDragTargetHelper( table,
 				dataModel,
 				dragSourceTableComponent,
-				dragSourceCellSpan, 
+				dragSourceCellSpan,
 				dragSourceMouseOffset);
 
 		// SCROLL
 		table.addMouseMotionListener( scrollingMouseListener );
 	}
-	
+
 	@Override
-	public boolean isValidDragTarget( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point dragLocalPoint,
-			Point mouseDragTargetPoint)
+	public boolean isValidDragTarget( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point dragLocalPoint,
+			final Point mouseDragTargetPoint)
 	{
 		boolean isValid = false;
 		try
 		{
-			dragMatch = dragTargetHelper.lookupDragMatchUseCache( dragLocalPoint, 
+			dragMatch = dragTargetHelper.lookupDragMatchUseCache( dragLocalPoint,
 					mouseDragTargetPoint );
 			isValid = dragMatch.canMoveHere;
 		}
-		catch(DndRackDragTargetLookupException e )
+		catch(final DndRackDragTargetLookupException e )
 		{
 			log.error( e );
 			return false;
 		}
-		catch (NoSuchContentsException e)
+		catch (final NoSuchContentsException e)
 		{
 			// The table is telling is that the drag source component isn't in the table anymore - perhaps removed by a different thread?
 			log.error( e );
 			return false;
 		}
 		// Drag match is setup and valid - now setup the target hint to show if we can drop or not
-		int gridSizeWidth = table.getGridSize().width;
-		int gridSizeHeight = table.getGridSize().height;
-		int regionHintX = gridSizeWidth * dragMatch.colsOffset;
-		int regionHintY = gridSizeHeight * dragMatch.rowsOffset;
-		int regionHintWidth = dragSourceGuiComponent.getWidth();
-		int regionHintHeight = dragSourceGuiComponent.getHeight();
-		Rectangle regionHintRectangle = new Rectangle( regionHintX, regionHintY, regionHintWidth, regionHintHeight );
-		Rectangle rr = dragSourceGuiComponent.getRenderedRectangle();
+		final int gridSizeWidth = table.getGridSize().width;
+		final int gridSizeHeight = table.getGridSize().height;
+		final int regionHintX = gridSizeWidth * dragMatch.colsOffset;
+		final int regionHintY = gridSizeHeight * dragMatch.rowsOffset;
+		final int regionHintWidth = dragSourceGuiComponent.getWidth();
+		final int regionHintHeight = dragSourceGuiComponent.getHeight();
+		final Rectangle regionHintRectangle = new Rectangle( regionHintX, regionHintY, regionHintWidth, regionHintHeight );
+		final Rectangle rr = dragSourceGuiComponent.getRenderedRectangle();
 		regionHintDecorator.setRegionHintRectangle( (isValid ? RegionHintType.VALID : RegionHintType.INVALID), regionHintRectangle, rr );
 		regionHintDecorator.setActive( true );
-		
+
 		return isValid;
 	}
 
 	@Override
-	public void endDrag( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point dragLocalPoint,
-			Point dragEndPoint)
+	public void endDrag( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point dragLocalPoint,
+			final Point dragEndPoint)
 	{
 //		log.debug("Drag ended.");
-		
+
 		// SCROLL
 		// Remove the auto scroll behaviour
 		scrollingMouseListener.stop();
 		table.removeMouseMotionListener( scrollingMouseListener );
-		
+
 		// Now do the move in the underlying model - the gui should already be good enough :-)
 		try
 		{
@@ -296,20 +296,20 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 //			dataModel.removeContents( dragSourceTableComponent );
 //			dataModel.addContentsAtPosition( dragSourceTableComponent, dragMatch.colsOffset, dragMatch.rowsOffset );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught finishing the drag: " + e.toString();
+			final String msg = "Exception caught finishing the drag: " + e.toString();
 			log.error( msg, e);
 		}
 
 		cleanupAfterDrag();
 	}
-	
+
 	@Override
-	public void endInvalidDrag( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point dragLocalPoint,
-			Point dragEndPoint)
+	public void endInvalidDrag( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point dragLocalPoint,
+			final Point dragEndPoint)
 	{
 //		log.debug("Invalid drag ended.");
 		// Put the dragged component back to it's original position
@@ -317,7 +317,7 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 
 		cleanupAfterDrag();
 	}
-	
+
 	private void deactivateDecorators()
 	{
 		// Clean up GUI drag hint stuff before we do the actual move
@@ -325,11 +325,11 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 
 		// Clear the region hint too
 		regionHintDecorator.setActive( false );
-		
+
 		regionHintSourceAreaImageComponent = null;
 
 	}
-	
+
 	private void cleanupAfterDrag()
 	{
 		// Finally clear up the internal variables we used during the move.
@@ -337,22 +337,22 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 		dragSourceTableComponent = null;
 		dragSourceCellSpan = null;
 		dragSourceMouseOffset = null;
-		
+
 		deactivateDecorators();
 	}
 
 	@Override
-	public void setRackDataModel(RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel)
 	{
 		this.dataModel = rackDataModel;
-		
+
 	}
 
 	@Override
 	public boolean isMouseOverPopupSource(
-			LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point localPoint,
-			Point tablePoint )
+			final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point localPoint,
+			final Point tablePoint )
 	{
 		boolean isPopupSource = false;
 		if( component != null )
@@ -366,13 +366,13 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 	}
 
 	@Override
-	public void doPopup( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent guiComponent,
-			Point localPoint,
-			Point tablePoint )
+	public void doPopup( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent guiComponent,
+			final Point localPoint,
+			final Point tablePoint )
 	{
 		log.debug("Would do a rack drag style popup");
-		RackComponent rackComponent = table.getTableModelComponentFromGui( guiComponent );
+		final RackComponent rackComponent = table.getTableModelComponentFromGui( guiComponent );
 		popup.setPopupData( dataModel, rackComponent, guiComponent );
 		popup.show( guiComponent, localPoint.x, localPoint.y );
 	}

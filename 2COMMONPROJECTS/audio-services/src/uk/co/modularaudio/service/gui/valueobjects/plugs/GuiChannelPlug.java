@@ -38,28 +38,28 @@ public abstract class GuiChannelPlug extends JPanel implements GuiPlugImageCreat
 
 	protected final static boolean DRAWN_PLUGS = true;
 
-	protected MadUiChannelInstance uiChannelInstance = null;
+	protected MadUiChannelInstance uiChannelInstance;
 
-	protected Point center = null;
+	protected Point center;
 
 	protected static final int PLUG_DIAMETER = 10;
 	protected static final int SOCKET_DIAMETER = 10;
 
-	protected final Color PLUG_INSIDE_COLOR = Color.DARK_GRAY;
-	protected final Color PLUG_OUTLINE_COLOR = Color.LIGHT_GRAY;
+	protected static final Color PLUG_INSIDE_COLOR = Color.DARK_GRAY;
+	protected static final Color PLUG_OUTLINE_COLOR = Color.LIGHT_GRAY;
 
-	protected Rectangle plugBounds = null;
-	protected BufferedImage plugImage = null;
+	protected Rectangle plugBounds;
+	protected BufferedImage plugImage;
 
 	protected static GuiPlugImageCache plugImageCache = new GuiPlugImageCache();
 
-	public GuiChannelPlug( MadUiChannelInstance sacd )
+	public GuiChannelPlug( final MadUiChannelInstance sacd )
 	{
 		this.setOpaque( false );
 		this.uiChannelInstance = sacd;
 		center = sacd.getCenter();
-		int startX = center.x - SOCKET_DIAMETER / 2;
-		int startY = center.y - SOCKET_DIAMETER / 2;
+		final int startX = center.x - SOCKET_DIAMETER / 2;
+		final int startY = center.y - SOCKET_DIAMETER / 2;
 		plugBounds = new Rectangle( startX, startY, SOCKET_DIAMETER + 3, SOCKET_DIAMETER + 3);
 		this.setBounds( plugBounds );
 	}

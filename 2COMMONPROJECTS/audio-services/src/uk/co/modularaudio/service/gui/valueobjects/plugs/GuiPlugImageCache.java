@@ -26,12 +26,12 @@ import java.util.Map;
 
 public class GuiPlugImageCache
 {
-	private Map<String, BufferedImage> idToPlugImage = new HashMap<String, BufferedImage>();
+	private final Map<String, BufferedImage> idToPlugImage = new HashMap<String, BufferedImage>();
 
-	public BufferedImage fetchOrCreatePlugImage( String id, int width, int height, GuiPlugImageCreator plugImageCreator )
+	public BufferedImage fetchOrCreatePlugImage( final String id, final int width, final int height, final GuiPlugImageCreator plugImageCreator )
 	{
 		BufferedImage retVal = idToPlugImage.get( id );
-		
+
 		if( retVal == null )
 		{
 			retVal = plugImageCreator.createPlugImage( width, height );
@@ -40,5 +40,5 @@ public class GuiPlugImageCache
 
 		return retVal;
 	}
-	
+
 }

@@ -32,12 +32,12 @@ import uk.co.modularaudio.util.swing.mvc.combo.ComboViewListCellRenderer;
 public class UserPreferencesOutputMidiDeviceMVCView extends ComboView<AudioSystemMidiDeviceComboItem>
 {
 	private static final long serialVersionUID = 4761930364824619693L;
-	
+
 	protected static Log log = LogFactory.getLog( UserPreferencesOutputMidiDeviceMVCView.class.getName() );
-	
-	public UserPreferencesOutputMidiDeviceMVCView( AudioSystemMidiDeviceMVCModel cm,
-			OutputMidiDeviceComboMVCController cc,
-			ComboViewListCellRenderer<AudioSystemMidiDeviceComboItem> cr)
+
+	public UserPreferencesOutputMidiDeviceMVCView( final AudioSystemMidiDeviceMVCModel cm,
+			final OutputMidiDeviceComboMVCController cc,
+			final ComboViewListCellRenderer<AudioSystemMidiDeviceComboItem> cr)
 	{
 		super(cm, cc, cr);
 	}

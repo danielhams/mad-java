@@ -54,30 +54,42 @@ import uk.co.modularaudio.util.table.TablePosition;
 public class DndWireDragPolicy implements RackTableDndPolicy
 {
 	private static Log log = LogFactory.getLog( DndWireDragPolicy.class.getName() );
-	
-	private RackDataModel dataModel = null;
-//	private RackService rackService = null;
-	private GuiRackBackActionListener actionListener = null;
-	
-	// SCROLL
-	private AutoScrollingMouseListener scrollingMouseListener = new AutoScrollingMouseListener();
 
-	private DndWireDragStaticRegionDecorationHint regionHintDecorator = null;
-	private DndWireDragCurrentWireHint currentWireDecorationHint = null;
-	private DndWireDragPlugNameTooltipHint plugNameTooltipHint = null;
-	
+	private RackDataModel dataModel;
+	private final GuiRackBackActionListener actionListener;
+
+	// SCROLL
+	private final AutoScrollingMouseListener scrollingMouseListener = new AutoScrollingMouseListener();
+
+	private final DndWireDragStaticRegionDecorationHint regionHintDecorator;
+	private final DndWireDragCurrentWireHint currentWireDecorationHint;
+	private final DndWireDragPlugNameTooltipHint plugNameTooltipHint;
+
 	// State concerning currently being dragged
-//	private Rectangle dragSourceRenderedRectangle = null;
+//	private Rectangle dragSourceRenderedRectangle;
 
 	// Used to highlight the possible source of a drag
-	private GuiChannelPlug regionHintSourceGuiChannelPlug = null;
+	private GuiChannelPlug regionHintSourceGuiChannelPlug;
 
 	private Rectangle currentPlugHintRectangle = new Rectangle( 0, 0, 0, 0 );
-	
-	public DndWireDragPolicy( RackService rackService,
-			RackDataModel dataModel,
-			DndWireDragDecorations decorations,
-			GuiRackBackActionListener actionListener )
+
+	private RackComponent dragStartRackComponent;
+	private GuiChannelPlug dragStartChannelPlug;
+	private Point dragStartPosition;
+	private MadChannelInstance dragStartChannelIsSink;
+	private MadChannelInstance dragStartChannelIsSource;
+
+	private RackComponent dragEndRackComponent;
+	private GuiChannelPlug dragEndChannelPlug;
+	@SuppressWarnings("unused")
+	private Point targetPosition;
+	private MadChannelInstance dragEndChannelIsSink;
+	private MadChannelInstance dragEndChannelIsSource;
+
+	public DndWireDragPolicy( final RackService rackService,
+			final RackDataModel dataModel,
+			final DndWireDragDecorations decorations,
+			final GuiRackBackActionListener actionListener )
 	{
 //		this.rackService = rackService;
 		this.dataModel = dataModel;
@@ -88,47 +100,47 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 	}
 
 	@Override
-	public boolean isMouseOverDndSource( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			Point localPoint,
-			Point tablePoint )
+	public boolean isMouseOverDndSource( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final Point localPoint,
+			final Point tablePoint )
 	{
 		boolean changed = false;
 		boolean isPlug = false;
 		boolean canDrag = false;
-		
+
 		if( component != null )
 		{
 			// Find if the mouse is over a component. If it is, and the mouse is over one of the
 			// locations of the "plugs", then it is over a DnD source
-			GuiChannelPlug channelPlug = component.getPlugFromPosition( localPoint );
-			
+			final GuiChannelPlug channelPlug = component.getPlugFromPosition( localPoint );
+
 			if( channelPlug != null )
 			{
 				isPlug = true;
 				plugNameTooltipHint.setPlugName( channelPlug.getUiChannelInstance().getChannelInstance().definition.name );
-				Rectangle newDragSourcerenderedRectangle = component.getRenderedRectangle();
+				final Rectangle newDragSourcerenderedRectangle = component.getRenderedRectangle();
 				if( newDragSourcerenderedRectangle == null )
 				{
 					log.error( "Oops" );
 				}
-				RackComponent tableComponent = table.getTableModelComponentFromGui( component );
-				TablePosition tp = dataModel.getContentsOriginReturnNull( tableComponent );
-				Dimension gridSize = table.getGridSize();
-				Rectangle plugBounds = channelPlug.getBounds();
-				int hintXOffset = tp.x * gridSize.width + newDragSourcerenderedRectangle.x + plugBounds.x;
-				int hintYOffset = tp.y * gridSize.height + newDragSourcerenderedRectangle.y + plugBounds.y;
-				int hintWidth = plugBounds.width;
-				int hintHeight = plugBounds.height;
-				Rectangle hintRectangle = new Rectangle( hintXOffset, hintYOffset, hintWidth, hintHeight );
-				
+				final RackComponent tableComponent = table.getTableModelComponentFromGui( component );
+				final TablePosition tp = dataModel.getContentsOriginReturnNull( tableComponent );
+				final Dimension gridSize = table.getGridSize();
+				final Rectangle plugBounds = channelPlug.getBounds();
+				final int hintXOffset = tp.x * gridSize.width + newDragSourcerenderedRectangle.x + plugBounds.x;
+				final int hintYOffset = tp.y * gridSize.height + newDragSourcerenderedRectangle.y + plugBounds.y;
+				final int hintWidth = plugBounds.width;
+				final int hintHeight = plugBounds.height;
+				final Rectangle hintRectangle = new Rectangle( hintXOffset, hintYOffset, hintWidth, hintHeight );
+
 				if( channelPlug != regionHintSourceGuiChannelPlug || !currentPlugHintRectangle .equals( hintRectangle ) )
 				{
 					regionHintSourceGuiChannelPlug = channelPlug;
 					// It's a different plug from the previous one - reset the decoration hint with the appropriate data
 //					dragSourceRenderedRectangle = newDragSourcerenderedRectangle;
-					
-					Rectangle rr = new Rectangle( hintWidth, hintHeight );
+
+					final Rectangle rr = new Rectangle( hintWidth, hintHeight );
 					regionHintDecorator.setRegionHint( RegionHintType.SOURCE, hintRectangle, rr );
 					currentPlugHintRectangle = hintRectangle;
 					changed = true;
@@ -147,7 +159,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				changed = true;
 			}
 		}
-		
+
 		if( changed )
 		{
 			if( !canDrag )
@@ -155,29 +167,16 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 //				log.debug("Setting region hint to false");
 				regionHintDecorator.setActive( false );
 			}
-			
+
 			plugNameTooltipHint.setActive( isPlug );
 		}
-		
+
 		return canDrag;
 	}
-	
-	private RackComponent dragStartRackComponent = null;
-	private GuiChannelPlug dragStartChannelPlug = null;
-	private Point dragStartPosition = null;
-	private MadChannelInstance dragStartChannelIsSink = null;
-	private MadChannelInstance dragStartChannelIsSource = null;
-	
-	private RackComponent dragEndRackComponent = null;
-	private GuiChannelPlug dragEndChannelPlug = null;
-	@SuppressWarnings("unused")
-	private Point targetPosition = null;
-	private MadChannelInstance dragEndChannelIsSink = null;
-	private MadChannelInstance dragEndChannelIsSource = null;
-		
+
 	@Override
-	public void startDrag(LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point dragLocalPoint, Point dragStartPoint)
+	public void startDrag(final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragStartPoint)
 		throws RecordNotFoundException, DatastoreException
 	{
 //		log.debug("Drag beginning.");
@@ -190,19 +189,19 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			// Find if the mouse is over a component. If it is, and the mouse is over one of the
 			// locations of the "plugs", then it is over a DnD source
 			dragStartChannelPlug = component.getPlugFromPosition( dragLocalPoint );
-			
+
 			// Calculate the start position for the wire we are dragging
 			dragStartRackComponent = table.getTableModelComponentFromGui( component );
 			AbstractGuiAudioComponent dragStartGuiComponent = table.getGuiComponentFromTableModel( dragStartRackComponent );
-			MadUiChannelInstance dragStartUiChannelInstance = dragStartChannelPlug.getUiChannelInstance();
-			MadInstance<?,?> dragStartRackComponentInstance = dragStartRackComponent.getInstance();
-			MadChannelInstance dragStartChannelInstance = dragStartUiChannelInstance.getChannelInstance();
+			final MadUiChannelInstance dragStartUiChannelInstance = dragStartChannelPlug.getUiChannelInstance();
+			final MadInstance<?,?> dragStartRackComponentInstance = dragStartRackComponent.getInstance();
+			final MadChannelInstance dragStartChannelInstance = dragStartUiChannelInstance.getChannelInstance();
 
-			RackLink existingLink = checkForExistingChannelLink( dragStartChannelPlug, dragStartRackComponentInstance );
+			final RackLink existingLink = checkForExistingChannelLink( dragStartChannelPlug, dragStartRackComponentInstance );
 			if( existingLink != null )
 			{
 				// Is involved in a link already
-				MadChannelInstance linkProducerChannelInstance = existingLink.getProducerChannelInstance();
+				final MadChannelInstance linkProducerChannelInstance = existingLink.getProducerChannelInstance();
 				if( linkProducerChannelInstance == dragStartChannelInstance )
 				{
 					dragStartChannelIsSink = existingLink.getConsumerChannelInstance();
@@ -226,22 +225,22 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				{
 					actionListener.guiRemoveRackLink( existingLink );
 				}
-				catch( Exception e )
+				catch( final Exception e )
 				{
-					String msg = "Exception caught removing rack link: " + e.toString();
+					final String msg = "Exception caught removing rack link: " + e.toString();
 					throw new DatastoreException( msg, e );
 				}
 			}
 			else
 			{
-				RackComponent mici = dataModel.getContentsAtPosition( 0, 0 );
+				final RackComponent mici = dataModel.getContentsAtPosition( 0, 0 );
 				// Check for existing IOLink
-				RackIOLink existingIOLink = checkForExistingChannelIOLink( dragStartChannelPlug, dragStartRackComponentInstance );
+				final RackIOLink existingIOLink = checkForExistingChannelIOLink( dragStartChannelPlug, dragStartRackComponentInstance );
 				if( existingIOLink != null )
 				{
 					// Is involved in a link already
-					MadChannelInstance rackChannelInstance = existingIOLink.getRackChannelInstance();
-					boolean ioLinkIsConsumer = (rackChannelInstance.definition.direction == MadChannelDirection.CONSUMER );
+					final MadChannelInstance rackChannelInstance = existingIOLink.getRackChannelInstance();
+					final boolean ioLinkIsConsumer = (rackChannelInstance.definition.direction == MadChannelDirection.CONSUMER );
 					if( rackChannelInstance == dragStartChannelInstance )
 					{
 						// Drag point is the masterIO
@@ -289,16 +288,16 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 					{
 						actionListener.guiRemoveRackIOLink( existingIOLink );
 					}
-					catch(Exception e)
+					catch(final Exception e)
 					{
-						String msg = "Exception caught removing rack IO link: " + e.toString();
+						final String msg = "Exception caught removing rack IO link: " + e.toString();
 						throw new DatastoreException( msg, e );
 					}
 				}
 				else
 				{
 					// Plug is currently empty, start a new drag from here.
-					MadChannelDirection dragStartChannelDirection = dragStartChannelInstance.definition.direction;
+					final MadChannelDirection dragStartChannelDirection = dragStartChannelInstance.definition.direction;
 					if( dragStartChannelDirection == MadChannelDirection.CONSUMER )
 					{
 						dragStartChannelIsSink = dragStartChannelInstance;
@@ -327,62 +326,62 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 					}
 				}
 			}
-			
+
 			// Start the mouse relative decoration hint up
 			currentWireDecorationHint.setDragStartPosition( dragStartPosition );
 			currentWireDecorationHint.setMousePosition( dragStartPoint );
 			currentWireDecorationHint.signalAnimation();
 			currentWireDecorationHint.setActive( true );
 		}
-		
+
 		// SCROLL
 		table.addMouseMotionListener( scrollingMouseListener );
 	}
 
-	private RackLink checkForExistingChannelLink( GuiChannelPlug channelPlug, MadInstance<?,?> componentInstance )
+	private RackLink checkForExistingChannelLink( final GuiChannelPlug channelPlug, final MadInstance<?,?> componentInstance )
 	{
-		MadUiChannelInstance uiChannelInstance = channelPlug.getUiChannelInstance();
-		MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
+		final MadUiChannelInstance uiChannelInstance = channelPlug.getUiChannelInstance();
+		final MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
 		RackLink foundLink = null;
 		for( int i = 0 ; foundLink == null && i < dataModel.getNumLinks() ; i++ )
 		{
-			RackLink testLink = dataModel.getLinkAt( i );
+			final RackLink testLink = dataModel.getLinkAt( i );
 			if( testLink.getProducerChannelInstance() == channelInstance ||
 					testLink.getConsumerChannelInstance() == channelInstance )
 			{
 				foundLink = testLink;
 			}
 		}
-		
+
 		return foundLink;
 	}
 
 	@Override
 	public boolean isValidDragTarget(
-			LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point dragLocalPoint, Point dragTablePoint)
+			final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragTablePoint)
 	{
 //		log.debug("Wire Drag policy checking if valid drag target with local point: " + dragLocalPoint );
 		boolean isTarget = false;
 		boolean changed = false;
-		
+
 		if( component != null )
 		{
 			// Find if the mouse is over a component. If it is, and the mouse is over one of the
 			// locations of the "plugs", then it is over a DnD target
-			GuiChannelPlug testDragEndChannelPlug = component.getPlugFromPosition( dragLocalPoint );
-			
+			final GuiChannelPlug testDragEndChannelPlug = component.getPlugFromPosition( dragLocalPoint );
+
 			if( testDragEndChannelPlug != dragEndChannelPlug )
 			{
 				changed = true;
 			}
-			
+
 			if( testDragEndChannelPlug != null )
 			{
 				dragEndChannelPlug = testDragEndChannelPlug;
 				plugNameTooltipHint.setPlugName( dragEndChannelPlug.getUiChannelInstance().getChannelInstance().definition.name );
 				dragEndRackComponent = table.getTableModelComponentFromGui( component );
-				
+
 				// Don't allow local links or links between channels that aren't of the same type
 				if( dragEndRackComponent == dragStartRackComponent ||
 						testDragEndChannelPlug.getClass() != dragStartChannelPlug.getClass() )
@@ -392,14 +391,14 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				else
 				{
 					// Calculate the start position for the wire we are dragging
-					RackComponent mic = dataModel.getContentsAtPosition( 0, 0 );
-					
-					boolean targetIsMic = ( dragEndRackComponent == mic );
-					boolean sourceIsMic = ( dragStartRackComponent == mic );
-					MadUiChannelInstance uiChannelInstance = testDragEndChannelPlug.getUiChannelInstance();
-					MadInstance<?,?> targetRackComponentInstance = dragEndRackComponent.getInstance();
-					MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
-					
+					final RackComponent mic = dataModel.getContentsAtPosition( 0, 0 );
+
+					final boolean targetIsMic = ( dragEndRackComponent == mic );
+					final boolean sourceIsMic = ( dragStartRackComponent == mic );
+					final MadUiChannelInstance uiChannelInstance = testDragEndChannelPlug.getUiChannelInstance();
+					final MadInstance<?,?> targetRackComponentInstance = dragEndRackComponent.getInstance();
+					final MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
+
 					if( targetIsMic )
 					{
 						isTarget = isValidIOLinkTarget( table,
@@ -429,7 +428,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				dragEndChannelPlug = null;
 			}
 		}
-		
+
 		if( changed )
 		{
 			plugNameTooltipHint.setActive( isTarget );
@@ -438,16 +437,16 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		return isTarget;
 	}
 
-	private boolean isValidIOLinkTarget( LayeredPaneDndTable<RackComponent, RackComponentProperties,
+	private boolean isValidIOLinkTarget( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
 			AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			MadInstance<?,?> targetRackComponentInstance,
-			MadChannelInstance channelInstance )
+			final AbstractGuiAudioComponent component,
+			final MadInstance<?,?> targetRackComponentInstance,
+			final MadChannelInstance channelInstance )
 	{
 		boolean retVal = false;
-		
-		MadChannelDirection channelDirection = channelInstance.definition.direction;
-		
+
+		final MadChannelDirection channelDirection = channelInstance.definition.direction;
+
 		if( channelDirection == MadChannelDirection.CONSUMER )
 		{
 			if( dragStartChannelIsSink != null )
@@ -466,9 +465,9 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			}
 		}
 		else
-		{		
-			RackIOLink existingLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
-	
+		{
+			final RackIOLink existingLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
+
 			if( existingLink != null )
 			{
 	//			log.debug("Found existing IO link, not valid IO link target");
@@ -521,33 +520,33 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		}
 		return retVal;
 	}
-	
-	private RackIOLink checkForExistingChannelIOLink( GuiChannelPlug channelPlug, MadInstance<?,?> componentInstance )
+
+	private RackIOLink checkForExistingChannelIOLink( final GuiChannelPlug channelPlug, final MadInstance<?,?> componentInstance )
 	{
-		MadUiChannelInstance uiChannelInstance = channelPlug.getUiChannelInstance();
-		MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
+		final MadUiChannelInstance uiChannelInstance = channelPlug.getUiChannelInstance();
+		final MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
 		RackIOLink foundLink = null;
 		for( int i = 0 ; foundLink == null && i < dataModel.getNumIOLinks() ; i++ )
 		{
-			RackIOLink testLink = dataModel.getIOLinkAt( i );
+			final RackIOLink testLink = dataModel.getIOLinkAt( i );
 			if( testLink.getRackChannelInstance() == channelInstance || testLink.getRackComponentChannelInstance() == channelInstance )
 			{
 				foundLink = testLink;
 			}
 		}
-		
+
 		return foundLink;
 	}
-	
-	private boolean isValidLinkTarget( LayeredPaneDndTable<RackComponent, RackComponentProperties,
+
+	private boolean isValidLinkTarget( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
 			AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component,
-			MadInstance<?,?>targetRackComponentInstance,
-			MadChannelInstance channelInstance )
+			final AbstractGuiAudioComponent component,
+			final MadInstance<?,?>targetRackComponentInstance,
+			final MadChannelInstance channelInstance )
 	{
 		boolean retVal = false;
-		
-		MadChannelDirection channelDirection = channelInstance.definition.direction;
+
+		final MadChannelDirection channelDirection = channelInstance.definition.direction;
 		if( channelDirection == MadChannelDirection.PRODUCER )
 		{
 			if( dragStartChannelIsSink != null )
@@ -567,7 +566,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		}
 		else
 		{
-			RackLink existingLink = checkForExistingChannelLink( dragEndChannelPlug, targetRackComponentInstance );
+			final RackLink existingLink = checkForExistingChannelLink( dragEndChannelPlug, targetRackComponentInstance );
 			if( existingLink != null )
 			{
 				// Is involved in a link already
@@ -624,17 +623,17 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 	}
 
 	@Override
-	public void endDrag(LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point dragLocalPoint, Point dragEndPoint)
+	public void endDrag(final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragEndPoint)
 		throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
 	{
-		MadChannelInstance sourceChannel = ( dragStartChannelIsSource != null ? dragStartChannelIsSource : dragEndChannelIsSource );
-		RackComponent source = (dragStartChannelIsSource != null ? dragStartRackComponent : dragEndRackComponent );
-		MadChannelInstance sinkChannel = ( dragStartChannelIsSink != null ? dragStartChannelIsSink : dragEndChannelIsSink );
-		RackComponent sink = ( dragStartChannelIsSink != null ? dragStartRackComponent : dragEndRackComponent );
-		
+		final MadChannelInstance sourceChannel = ( dragStartChannelIsSource != null ? dragStartChannelIsSource : dragEndChannelIsSource );
+		final RackComponent source = (dragStartChannelIsSource != null ? dragStartRackComponent : dragEndRackComponent );
+		final MadChannelInstance sinkChannel = ( dragStartChannelIsSink != null ? dragStartChannelIsSink : dragEndChannelIsSink );
+		final RackComponent sink = ( dragStartChannelIsSink != null ? dragStartRackComponent : dragEndRackComponent );
+
 		// Now if either the source or destination component is the master IO component, we should add an IO link
-		RackComponent mic = dataModel.getContentsAtPosition( 0, 0 );
+		final RackComponent mic = dataModel.getContentsAtPosition( 0, 0 );
 		if( source == mic )
 		{
 			actionListener.guiAddRackIOLink( sourceChannel, sink, sinkChannel );
@@ -647,26 +646,26 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		{
 			actionListener.guiAddRackLink( source, sourceChannel, sink, sinkChannel );
 		}
-		
+
 		cleanupAfterDrag( table );
 	}
 
 	@Override
-	public void endInvalidDrag(LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point dragLocalPoint, Point dragEndPoint)
+	public void endInvalidDrag(final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragEndPoint)
 	{
 		cleanupAfterDrag( table );
 	}
-	
-	private void cleanupAfterDrag( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table )
+
+	private void cleanupAfterDrag( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table )
 	{
 		// SCROLL
 		// Remove the auto scroll behaviour
 		scrollingMouseListener.stop();
 		table.removeMouseMotionListener( scrollingMouseListener );
-		
+
 		currentWireDecorationHint.setActive( false );
-		
+
 		// Clear the region hint too
 		regionHintDecorator.setActive( false );
 
@@ -685,25 +684,25 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 	}
 
 	@Override
-	public void setRackDataModel(RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel)
 	{
 		this.dataModel = rackDataModel;
 	}
 
 	@Override
 	public boolean isMouseOverPopupSource(
-			LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point localPoint,
-			Point tablePoint )
+			final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point localPoint,
+			final Point tablePoint )
 	{
 		// No popups for wire drag for the moment
 		return false;
 	}
 
 	@Override
-	public void doPopup( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			AbstractGuiAudioComponent component, Point localPoint,
-			Point tablePoint )
+	public void doPopup( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component, final Point localPoint,
+			final Point tablePoint )
 	{
 	}
 

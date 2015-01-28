@@ -33,17 +33,17 @@ public class UserPreferencesInputDeviceMVCView extends ComboView<AudioSystemDevi
 {
 	private static final long serialVersionUID = 4200552876557361424L;
 	protected static Log log = LogFactory.getLog( UserPreferencesInputDeviceMVCView.class.getName() );
-	
-	public UserPreferencesInputDeviceMVCView( AudioSystemDeviceMVCModel cm,
-			InputDeviceComboMVCController cc,
-			ComboViewListCellRenderer<AudioSystemDeviceComboItem> cr)
+
+	public UserPreferencesInputDeviceMVCView( final AudioSystemDeviceMVCModel cm,
+			final InputDeviceComboMVCController cc,
+			final ComboViewListCellRenderer<AudioSystemDeviceComboItem> cr)
 	{
 		super(cm, cc, cr);
 	}
 
-	public void setModel( AudioSystemDeviceMVCModel inputDeviceComboModel )
+	public void setModel( final AudioSystemDeviceMVCModel inputDeviceComboModel )
 	{
-		super.setModel( inputDeviceComboModel );		
+		super.setModel( inputDeviceComboModel );
 	}
 
 }
