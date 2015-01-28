@@ -29,34 +29,39 @@ import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.SubrackTab;
+import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 
 public class SubRackPatchPanel extends JPanel implements SubrackTab
 {
 	private static final long serialVersionUID = 637534081127536206L;
-	
-	private String title = "*empty*";
-	private SubRackMadUiInstance uiInstance = null;
-	private RackModelRenderingComponent rmrc = null;
 
-	private HashSet<SubrackTitleListener> titleListeners = new HashSet<SubrackTitleListener>();
-	
-	public SubRackPatchPanel( SubRackMadUiInstance uiInstance, RackModelRenderingComponent rmrc )
+	private String title = "*empty*";
+	private final SubRackMadUiInstance uiInstance;
+	private final RackModelRenderingComponent rmrc;
+
+	private final RackService rackService;
+
+	private final HashSet<SubrackTitleListener> titleListeners = new HashSet<SubrackTitleListener>();
+
+	public SubRackPatchPanel( final SubRackMadUiInstance uiInstance, final RackModelRenderingComponent rmrc,
+			final RackService rackService )
 	{
 		this.uiInstance = uiInstance;
 		this.rmrc = rmrc;
-		MigLayout migLayout = new MigLayout( "insets 0, gap 0, fill");
+		this.rackService = rackService;
+		final MigLayout migLayout = new MigLayout( "insets 0, gap 0, fill");
 		this.setLayout( migLayout );
 		add( rmrc.getJComponent(), "");
-		
+
 		this.setSize( GuiConstants.GUI_DEFAULT_DIMENSIONS );
 		this.setMinimumSize( GuiConstants.GUI_MINIMUM_DIMENSIONS );
 	}
 
-	public void setRackDataModel( RackDataModel subRackDataModel )
+	public void setRackDataModel( final RackDataModel subRackDataModel )
 	{
-		this.title = subRackDataModel.getName();
+		this.title = rackService.getRackName( subRackDataModel );
 		rmrc.setRackDataModel( subRackDataModel );
 	}
 
@@ -72,23 +77,23 @@ public class SubRackPatchPanel extends JPanel implements SubrackTab
 		return( title );
 	}
 
-	public void setTitle( String newTitle )
+	public void setTitle( final String newTitle )
 	{
 		this.title = newTitle;
-		for( SubrackTitleListener l : titleListeners )
+		for( final SubrackTitleListener l : titleListeners )
 		{
 			l.receiveTitleUpdate( this, newTitle );
 		}
 	}
 
 	@Override
-	public void addTitleListener( SubrackTitleListener listener )
+	public void addTitleListener( final SubrackTitleListener listener )
 	{
 		this.titleListeners.add( listener );
 	}
 
 	@Override
-	public void removeTitleListener( SubrackTitleListener listener )
+	public void removeTitleListener( final SubrackTitleListener listener )
 	{
 		this.titleListeners.remove( listener );
 	}
@@ -98,6 +103,6 @@ public class SubRackPatchPanel extends JPanel implements SubrackTab
 	{
 		uiInstance.makeSubRackFrameVisible( false );
 	}
-			
+
 
 }

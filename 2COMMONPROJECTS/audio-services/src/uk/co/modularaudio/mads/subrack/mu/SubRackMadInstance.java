@@ -65,7 +65,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 
 	private RackDataModel subRackDataModel;
 
-	private List<RackDirtyListener> dirtyListeners = new ArrayList<RackDirtyListener>();
+	private final List<RackDirtyListener> dirtyListeners = new ArrayList<RackDirtyListener>();
 
 	public SubRackMadInstance( final SubRackCreationContext creationContext,
 			final String instanceName,
@@ -98,7 +98,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		// Need to push this down into graph service so all links are faded
 		// Now expose all the sub rack channels as our channels
 		graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( this, subRackGraph,
-				subRackDataModel.getName(), true );
+				rackService.getRackName( subRackDataModel ), true );
 	}
 
 	private void unmapSubRackFromGraph() throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
@@ -128,7 +128,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, int numFrames )
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
 		log.error( "Subracks should never be scheduled!" );
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
@@ -136,12 +136,12 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 
 	public String getCurrentPatchName()
 	{
-		return subRackDataModel.getName();
+		return rackService.getRackName( subRackDataModel );
 	}
 
 	public void setCurrentPatchName( final String currentPatchName )
 	{
-		subRackDataModel.setName( currentPatchName );
+		rackService.setRackName( subRackDataModel, currentPatchName );
 		if( log.isDebugEnabled() )
 		{
 			log.debug("SubRackMI setCurrentPatchName(" + currentPatchName + ")");
@@ -159,7 +159,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 //		log.debug("SetSubRackDataModel called on " + subRackDataModel.getName() );
 		final RackDataModel previousModel = subRackDataModel;
 		// Remove listeners
-		for( RackDirtyListener rdl : dirtyListeners )
+		for( final RackDirtyListener rdl : dirtyListeners )
 		{
 			subRackDataModel.removeRackDirtyListener( rdl );
 		}
@@ -167,12 +167,12 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 
 		this.subRackDataModel = newSubRackDataModel;
 		mapSubRackIntoGraph();
-		for( RackDirtyListener rdl : dirtyListeners )
+		for( final RackDirtyListener rdl : dirtyListeners )
 		{
 			subRackDataModel.addRackDirtyListener( rdl );
 		}
 		// Mark us as dirty since the sub rack has changed
-		for( RackDirtyListener rdl : dirtyListeners )
+		for( final RackDirtyListener rdl : dirtyListeners )
 		{
 			rdl.receiveRackDirty();
 		}
@@ -185,7 +185,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 
 	public boolean isDirty()
 	{
-		return subRackDataModel.isDirty();
+		return rackService.isRackDirty( subRackDataModel );
 	}
 
 	@Override
@@ -211,9 +211,9 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		{
 			this.dirtyListeners.clear();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
+			final String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
 			log.error( msg, e );
 		}
 		super.destroy();
@@ -225,7 +225,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		{
 			if( subRackDataModel != null )
 			{
-				for( RackDirtyListener rdl : dirtyListeners )
+				for( final RackDirtyListener rdl : dirtyListeners )
 				{
 					subRackDataModel.removeRackDirtyListener( rdl );
 				}
@@ -234,9 +234,9 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 				subRackDataModel = null;
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
+			final String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
 			log.error( msg, e );
 		}
 	}

@@ -132,6 +132,8 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private TimingService timingService;
 
+	private RackService rackService;
+
 	private AppRenderingIO appRenderingIO;
 
 	private RackDataModel userVisibleRack;
@@ -220,6 +222,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
+	}
+
+	public void setRackService( final RackService rackService )
+	{
+		this.rackService = rackService;
 	}
 
 	@Override
@@ -411,21 +418,21 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public String getRackDataModelName()
 	{
-		return userVisibleRack.getName();
+		return rackService.getRackName( userVisibleRack );
 	}
 
 	@Override
 	public void saveRackToFile( final String filename, final String rackName ) throws DatastoreException, IOException
 	{
 		absolutePathToFilename = filename;
-		userVisibleRack.setName( rackName );
+		rackService.setRackName( userVisibleRack, rackName );
 		rackController.saveRackToFile( userVisibleRack, filename );
 	}
 
 	@Override
 	public boolean isRackDirty()
 	{
-		return userVisibleRack.isDirty();
+		return rackService.isRackDirty( userVisibleRack );
 	}
 
 	@Override
@@ -438,7 +445,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		else
 		{
 			rackController.saveRackToFile( userVisibleRack, absolutePathToFilename );
-			userVisibleRack.setDirty( false );
+			rackService.setRackDirty( userVisibleRack, false );
 		}
 	}
 
@@ -503,15 +510,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			log.error("Unable to start display tick!");
 		}
-//		if( guiPeriodThreadedTimer != null )
-//		{
-//			log.error("Unable to start display tick as already started!");
-//		}
-//		else
-//		{
-//			guiPeriodThreadedTimer = new NanosecondPeriodicThreadedTimer( timingParameters.getNanosPerFrontEndPeriod(), MAThreadPriority.GUI, guiPeriodJob );
-//			guiPeriodThreadedTimer.start();
-//		}
 	}
 
 	protected void stopDisplayTick()
@@ -526,15 +524,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			log.error("Unable to stop display tick!");
 		}
-//		if( guiPeriodThreadedTimer == null )
-//		{
-//			log.error("Unable to stop display tick as none started!");
-//		}
-//		else
-//		{
-//			guiPeriodThreadedTimer.stop();
-//			guiPeriodThreadedTimer = null;
-//		}
 	}
 
 	private boolean frontPreviouslyShowing = true;
@@ -916,7 +905,8 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				{
 					appRenderingGraph.deactivateApplicationGraph();
 				}
-				appRenderingGraph.unsetApplicationGraph( userVisibleRack.getRackGraph() );
+				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
+				appRenderingGraph.unsetApplicationGraph( rgi );
 				appRenderingIO.stopRendering();
 				appRenderingIO.destroy();
 				appRenderingIO = null;
@@ -977,7 +967,8 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					throw new DatastoreException( "Attempting to replace magical audio IO when one already exists!");
 				}
 				appRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
-				appRenderingIO.getAppRenderingGraph().setApplicationGraph( userVisibleRack.getRackGraph() );
+				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
+				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rgi );
 
 				appRenderingIO.startRendering();
 				retVal = true;

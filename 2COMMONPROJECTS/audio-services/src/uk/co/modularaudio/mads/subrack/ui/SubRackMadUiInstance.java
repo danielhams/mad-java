@@ -69,9 +69,9 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 
 	private String currentPatchDir = null;
 
-	private HashSet<PatchTabCloseListener> patchTabCloseListeners = new HashSet<PatchTabCloseListener>();
+	private final HashSet<PatchTabCloseListener> patchTabCloseListeners = new HashSet<PatchTabCloseListener>();
 
-	public SubRackMadUiInstance( SubRackMadInstance instance, SubRackMadUiDefinition uiDefinition )
+	public SubRackMadUiInstance( final SubRackMadInstance instance, final SubRackMadUiDefinition uiDefinition )
 	{
 		super( instance, uiDefinition );
 		this.srUiDefinition = uiDefinition;
@@ -87,24 +87,24 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 			subRackDataModel = instance.getSubRackDataModel();
 
 			guiRackPanel = guiService.createGuiForRackDataModel( subRackDataModel );
-			patchPanel = new SubRackPatchPanel( this, guiRackPanel );
+			patchPanel = new SubRackPatchPanel( this, guiRackPanel, rackService );
 			patchPanel.setRackDataModel( subRackDataModel );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught creating sub rack ui instance: " + e.toString();
+			final String msg = "Exception caught creating sub rack ui instance: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
 		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
 //		super.receiveDisplayTick( tempEventStorage, currentGuiTime );
-		boolean showing = isSubrackShown();
+		final boolean showing = isSubrackShown();
 		if( !showing && !havePassedNoshowTick )
 		{
 			// Force a receive display tick to all components to allow them to emit "inactive"
@@ -121,10 +121,10 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 		}
 	}
 
-	private void passDisplayTickToSubRack( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	private void passDisplayTickToSubRack( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime,
-			boolean forceTick )
+			final boolean forceTick )
 	{
 		// We need to call receive display tick on child if they are a subrack
 		// or if we are "showing" then we call it on everyone
@@ -140,11 +140,11 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 			doAll = true;
 		}
 
-		List<RackComponent> subRackComponents = subRackDataModel.getEntriesAsList();
+		final List<RackComponent> subRackComponents = subRackDataModel.getEntriesAsList();
 		for( int i  =0 ; i < subRackComponents.size() ; i++ )
 		{
-			RackComponent rackComponent = subRackComponents.get( i );
-			MadUiInstance<?, ?> uiInstance = rackComponent.getUiInstance();
+			final RackComponent rackComponent = subRackComponents.get( i );
+			final MadUiInstance<?, ?> uiInstance = rackComponent.getUiInstance();
 
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{
@@ -160,14 +160,14 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 	}
 
 	@Override
-	public void receiveComponentNameChange( String newName )
+	public void receiveComponentNameChange( final String newName )
 	{
 		// Update the tab with the new name
 		instance.setCurrentPatchName( newName );
 		patchPanel.setTitle( newName );
 	}
 
-	public void makeSubRackFrameVisible( boolean setVisible )
+	public void makeSubRackFrameVisible( final boolean setVisible )
 	{
 		// Either show or hide a rack gui for our data model
 //		patchPanel.setVisible( setVisible );
@@ -180,7 +180,7 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 		{
 			guiService.removeSubrackTab( patchPanel );
 //			log.debug("Would detach listeners..");
-			for( PatchTabCloseListener l : patchTabCloseListeners )
+			for( final PatchTabCloseListener l : patchTabCloseListeners )
 			{
 				l.receivePatchTabClose();
 			}
@@ -192,49 +192,48 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 		return ( patchPanel == null ? false : patchPanel.isShowing() );
 	}
 
-	public void saveSubRack( Component parent ) throws DatastoreException, IOException, RecordNotFoundException, MAConstraintViolationException
+	public void saveSubRack( final Component parent ) throws DatastoreException, IOException, RecordNotFoundException, MAConstraintViolationException
 	{
-		JFileChooser saveFileChooser = new JFileChooser();
-		CDFileSaveAccessory cdSaveFileNameAccessory = new CDFileSaveAccessory( subRackDataModel.getName() );
+		final JFileChooser saveFileChooser = new JFileChooser();
+		final CDFileSaveAccessory cdSaveFileNameAccessory = new CDFileSaveAccessory( rackService.getRackName( subRackDataModel ) );
 		saveFileChooser.setAccessory( cdSaveFileNameAccessory );
 		saveFileChooser.setCurrentDirectory( new File( currentPatchDir ) );
-		int retVal = saveFileChooser.showSaveDialog( parent );
+		final int retVal = saveFileChooser.showSaveDialog( parent );
 		if( retVal == JFileChooser.APPROVE_OPTION )
 		{
-			File f = saveFileChooser.getSelectedFile();
-			File d = saveFileChooser.getCurrentDirectory();
+			final File f = saveFileChooser.getSelectedFile();
+			final File d = saveFileChooser.getCurrentDirectory();
 			currentPatchDir = d.getAbsolutePath();
 			if( f != null )
 			{
 				if( log.isDebugEnabled() )
 				{
-					log.debug("Attempting to save patch to file " + f.getAbsolutePath() + " with name " + cdSaveFileNameAccessory.getName() );
+					log.debug("Attempting to save patch to file " + f.getAbsolutePath() + " with name " + cdSaveFileNameAccessory.getFileName() );
 				}
-				subRackDataModel.setName( cdSaveFileNameAccessory.getFileName() );
-				subRackDataModel.setPath( f.getAbsolutePath() );
+				rackService.setRackName( subRackDataModel, cdSaveFileNameAccessory.getFileName() );
 				rackMarshallingService.saveRackToFile( subRackDataModel, f.getAbsolutePath() );
 				// Only set dirty to false after successful save
-				subRackDataModel.setDirty( false );
+				rackService.setRackDirty( subRackDataModel, false );
 			}
 		}
 	}
 
-	public void choosePatch( Component parent ) throws DatastoreException, IOException, RecordNotFoundException, MAConstraintViolationException
+	public void choosePatch( final Component parent ) throws DatastoreException, IOException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// Open a choose file dialog and then attempt to load
 		// the rack from there.
 		// if successfull, pass it to the MI
-		JFileChooser openFileChooser = new JFileChooser();
+		final JFileChooser openFileChooser = new JFileChooser();
 		openFileChooser.setCurrentDirectory( new File( currentPatchDir ) );
-		int retVal = openFileChooser.showOpenDialog( parent );
+		final int retVal = openFileChooser.showOpenDialog( parent );
 		if( retVal == JFileChooser.APPROVE_OPTION )
 		{
-			File f = openFileChooser.getSelectedFile();
-			File d = openFileChooser.getCurrentDirectory();
+			final File f = openFileChooser.getSelectedFile();
+			final File d = openFileChooser.getCurrentDirectory();
 			currentPatchDir = d.getAbsolutePath();
 			if( f != null )
 			{
-				RackDataModel oldPatch = subRackDataModel;
+				final RackDataModel oldPatch = subRackDataModel;
 				if( log.isDebugEnabled() )
 				{
 					log.debug("Attempting to load patch from file " + f.getAbsolutePath() );
@@ -267,9 +266,9 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 
 			instance.destroySubRackDataModel();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
+			final String msg = "Exception caught cleaning up sub rack instance: " + e.toString();
 			log.error( msg, e );
 		}
 		subRackDataModel = null;
@@ -277,17 +276,17 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 		patchTabCloseListeners.clear();
 	}
 
-	public void addPatchTabCloseListener( PatchTabCloseListener l )
+	public void addPatchTabCloseListener( final PatchTabCloseListener l )
 	{
 		patchTabCloseListeners.add( l );
 	}
 
-	public void removePatchTabCloseListener( PatchTabCloseListener l )
+	public void removePatchTabCloseListener( final PatchTabCloseListener l )
 	{
 		patchTabCloseListeners.remove( l );
 	}
 
-	public void setSubRackDataModel( RackDataModel newModel, boolean destroyPrevious ) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+	public void setSubRackDataModel( final RackDataModel newModel, final boolean destroyPrevious ) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// The mad subrack instance does the actual cleanup of the old data model when it gets reset.
 		this.subRackDataModel = newModel;
@@ -296,7 +295,12 @@ public class SubRackMadUiInstance extends MadUiInstance<SubRackMadDefinition, Su
 	}
 
 	@Override
-	public void consumeQueueEntry( SubRackMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final SubRackMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
+	}
+
+	public RackService getRackService()
+	{
+		return rackService;
 	}
 }

@@ -14,7 +14,8 @@
 		<property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
-		<property name="timingService"><ref bean="timingService"></ref></property>
+        <property name="timingService"><ref bean="timingService"></ref></property>
+        <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>
 	<bean id="advancedComponentsFrontController" class="uk.co.modularaudio.controller.advancedcomponents.impl.AdvancedComponentsFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionController"><ref bean="hibernateSessionController"></ref></property>

@@ -172,6 +172,30 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		}
 	}
 
+	@Override
+	public String getRackName( final RackDataModel rack )
+	{
+		return rack.getName();
+	}
+
+	@Override
+	public void setRackName( final RackDataModel rack, final String newRackName )
+	{
+		rack.setName( newRackName );
+	}
+
+	@Override
+	public void setRackDirty( final RackDataModel rack, final boolean dirtyFlag )
+	{
+		rack.setDirty( dirtyFlag );
+	}
+
+	@Override
+	public boolean isRackDirty( final RackDataModel rack )
+	{
+		return rack.isDirty();
+	}
+
 	protected void internalAddRackComponentAtPosition( final RackDataModel rack,
 			final RackComponent rackComponent,
 			final int col,
