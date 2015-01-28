@@ -39,7 +39,7 @@ public class PvocPeakFinder
 
 //	public static final float LOCK_THRESHOLD = ( 0.1f * 0.1f );
 
-	public static boolean DEBUG_PEAKS = false;
+	public final static boolean DEBUG_PEAKS = false;
 
 	private static final int LOWER_BIN_INDEX_THRESHOLD = 2;
 
