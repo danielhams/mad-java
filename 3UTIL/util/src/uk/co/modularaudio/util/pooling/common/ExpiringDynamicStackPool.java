@@ -148,7 +148,7 @@ public class ExpiringDynamicStackPool
         poolLock.lock();
         try
 		{
-			poolLock.notifyAll();
+        	notEmpty.notifyAll();
 		}
         finally
         {
@@ -158,7 +158,7 @@ public class ExpiringDynamicStackPool
 		poolLock.lock();
 		try
 		{
-			poolLock.notifyAll();
+			notEmpty.notifyAll();
 		}
 		finally
 		{

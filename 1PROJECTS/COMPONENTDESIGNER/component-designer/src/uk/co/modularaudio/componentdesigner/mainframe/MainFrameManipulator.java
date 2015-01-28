@@ -25,7 +25,6 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
@@ -38,99 +37,60 @@ public class MainFrameManipulator
 {
 //	private static Log log = LogFactory.getLog( MainFrameManipulator.class.getName() );
 
-	private static String MAINFRAME_TITLE = "Component Designer";
-
-	private ComponentDesignerFrontController fc = null;
-//	private ComponentImageFactory cif = null;
-//	private ConfigurationService cs = null;
-
-	private MainFrameActions actions = null;
+	private final static String MAINFRAME_TITLE = "Component Designer";
 
 	// Menubar
-	private JMenuBar menubar = null;
+	private final JMenuBar menubar;
 
 	// Content panel
-	private JPanel contentFrame = null;
+	private final JPanel contentFrame;
 
 	// App Toolbar
-	private ComponentDesignerToolbar componentDesignerToolbar = null;
+	private final ComponentDesignerToolbar componentDesignerToolbar;
 
 	// Tabbed Pane area for racks
-	private MainFrameTabbedPane rackTabbedPane = null;
+	private final MainFrameTabbedPane rackTabbedPane;
 
 	// Rack area
-	private RackModelRenderingComponent rackModelRenderingComponent = null;
+	private final RackModelRenderingComponent rackModelRenderingComponent;
 
-	public MainFrameManipulator( ComponentDesignerFrontController fc,
-			ComponentImageFactory pcif,
-			ConfigurationService cs,
-			MainFrame mainFrame,
-			MainFrameActions actions )
+	public MainFrameManipulator( final ComponentDesignerFrontController fc,
+			final ComponentImageFactory pcif,
+			final ConfigurationService cs,
+			final MainFrame mainFrame,
+			final MainFrameActions actions )
 	{
-		this.fc = fc;
-//		this.cif = pcif;
-//		this.cs = cs;
-		this.actions = actions;
+		menubar = new Menubar( fc, actions );
+
+		contentFrame = new JPanel();
+		contentFrame.setLayout( new MigLayout("insets 0, fill, flowy", "grow, fill", "[] [grow 100, fill]") );
+
+		componentDesignerToolbar = new ComponentDesignerToolbar( fc, actions );
+
+		contentFrame.add( componentDesignerToolbar );
+
+		rackTabbedPane = new MainFrameTabbedPane();
+		fc.registerRackTabbedPane( rackTabbedPane );
+		rackModelRenderingComponent = fc.getGuiRack();
+		rackTabbedPane.addTab( "Main Rack", rackModelRenderingComponent.getJComponent() );
+
+		contentFrame.add( rackTabbedPane );
+
 
 		mainFrame.setTitle( MAINFRAME_TITLE );
 		mainFrame.setSize( GuiConstants.GUI_DEFAULT_DIMENSIONS );
 		mainFrame.setMinimumSize( GuiConstants.GUI_MINIMUM_DIMENSIONS );
 		mainFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
 
-		menubar = new Menubar( fc, actions );
 		mainFrame.setJMenuBar( menubar );
 
-		componentDesignerToolbar = getComponentDesignerToolbar();
 		mainFrame.setToolbar( componentDesignerToolbar );
 
-		Container cp = mainFrame.getContentPane();
-		cp.add( getContentFrame() );
+		final Container cp = mainFrame.getContentPane();
+		cp.add( contentFrame );
 
 		// Register our global keys
 		GlobalKeyHelper.setupKeys( menubar, actions );
 		GlobalKeyHelper.setupKeys( contentFrame, actions );
-	}
-
-	private JPanel getContentFrame()
-	{
-		if( contentFrame == null )
-		{
-			contentFrame = new JPanel();
-			contentFrame.setLayout( new MigLayout("insets 0, fill, flowy", "grow, fill", "[] [grow 100, fill]") );
-			contentFrame.add( getComponentDesignerToolbar() );
-
-			contentFrame.add( getRackTabbedPane() );
-		}
-		return contentFrame;
-	}
-
-	private JTabbedPane getRackTabbedPane()
-	{
-		if( rackTabbedPane == null )
-		{
-			rackTabbedPane = new MainFrameTabbedPane();
-			fc.registerRackTabbedPane( rackTabbedPane );
-			rackTabbedPane.addTab( "Main Rack", getRackModelRenderingComponent().getJComponent() );
-		}
-		return rackTabbedPane;
-
-	}
-
-	private ComponentDesignerToolbar getComponentDesignerToolbar()
-	{
-		if( componentDesignerToolbar == null )
-		{
-			componentDesignerToolbar = new ComponentDesignerToolbar( fc, actions );
-		}
-		return componentDesignerToolbar;
-	}
-
-	private RackModelRenderingComponent getRackModelRenderingComponent()
-	{
-		if( rackModelRenderingComponent == null )
-		{
-			rackModelRenderingComponent = fc.getGuiRack();
-		}
-		return rackModelRenderingComponent;
 	}
 }

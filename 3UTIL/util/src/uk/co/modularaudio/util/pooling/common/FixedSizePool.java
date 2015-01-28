@@ -50,7 +50,6 @@ public class FixedSizePool extends Pool
 				final Resource res = factory.createResource();
 				this.addResource( res );
 			}
-
         }
     	finally
     	{

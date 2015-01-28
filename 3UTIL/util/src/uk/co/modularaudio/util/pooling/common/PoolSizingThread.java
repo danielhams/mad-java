@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.pooling.common;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
@@ -92,7 +94,7 @@ public class PoolSizingThread extends Thread
 					try
 					{
 					    //log.debug("Waiting for notification of jobs");
-						shouldHaltLock.wait( sizingCheckSleepMilliSeconds );
+						shouldHaltCondition.await( sizingCheckSleepMilliSeconds, TimeUnit.MILLISECONDS );
 					}
 					catch (final InterruptedException ie)
 					{
@@ -170,7 +172,7 @@ public class PoolSizingThread extends Thread
                     try
 					{
 						pool.addResource(res);
-						poolLock.notifyAll();
+						notEmpty.signalAll();
                         pool.addToNumNeeded(-1);
                         numThisRound = pool.getNumNeeded();
                         log.debug("ST added resource to pool.");
@@ -266,22 +268,26 @@ public class PoolSizingThread extends Thread
 	{
     	shouldHaltLock.lock();
     	shouldHalt = true;
-    	shouldHaltLock.notifyAll();
+    	shouldHaltCondition.notifyAll();
     	shouldHaltLock.unlock();
 	}
 
 	private IDynamicSizedPool pool;
 	private ReentrantLock poolLock;
+	private Condition notEmpty;
 
 	private final Factory factory;
 	private boolean shouldHalt;
 	private final ReentrantLock shouldHaltLock = new ReentrantLock();
+	private final Condition shouldHaltCondition = shouldHaltLock.newCondition();
 
 	public synchronized void startSizingThread( final IDynamicSizedPool sizedPool,
-			final ReentrantLock poolLock )
+			final ReentrantLock poolLock,
+			final Condition notEmpty )
 	{
 		this.pool = sizedPool;
 		this.poolLock = poolLock;
+		this.notEmpty = notEmpty;
 		super.start();
 	}
 }

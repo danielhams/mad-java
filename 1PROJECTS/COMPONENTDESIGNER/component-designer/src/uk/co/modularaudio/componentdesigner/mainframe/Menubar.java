@@ -28,136 +28,53 @@ import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFr
 
 public class Menubar extends JMenuBar
 {
-	
-	private JMenu fileMenu = null;
-	private JMenu editMenu = null;
-	private JMenu windowMenu = null;
-	
-	private JMenuItem editShowPreferencesItem = null;
-	
-	private JMenuItem fileNewItem = null;
-	private JMenuItem fileOpenItem = null;
-	private JMenuItem fileRevertItem = null;
-	private JMenuItem fileSaveItem = null;
-	private JMenuItem fileSaveAsItem = null;
-	private JMenuItem fileExitItem = null;
+
+	private final JMenu fileMenu;
+	private final JMenu editMenu;
+	private final JMenu windowMenu;
+
+	private final JMenuItem editShowPreferencesItem;
+
+	private final JMenuItem fileNewItem;
+	private final JMenuItem fileOpenItem;
+	private final JMenuItem fileRevertItem;
+	private final JMenuItem fileSaveItem;
+	private final JMenuItem fileSaveAsItem;
+	private final JMenuItem fileExitItem;
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2889045004230755253L;
-	
-	private ComponentDesignerFrontController fc = null;
-	private MainFrameActions actions = null;
-	
-	public Menubar( ComponentDesignerFrontController fc, MainFrameActions actions )
-	{
-		this.fc = fc;
-		this.actions = actions;
-		this.add( getFileMenu() );
-		this.add( getEditMenu() );
-		this.add( getWindowMenu() );
-	}
-	
-	public JMenu getFileMenu()
-	{
-		if( fileMenu == null )
-		{
-			fileMenu = new JMenu();
-			fileMenu.setText( "File" );
-			fileMenu.add( getFileNewItem() );
-			fileMenu.add( getFileOpenItem() );
-			fileMenu.add( getFileRevertItem() );
-			fileMenu.add( getFileSaveItem() );
-			fileMenu.add( getFileSaveAsItem() );
-			fileMenu.add( getFileExitItem() );
-		}
-		return fileMenu;
-	}
-	
-	public JMenuItem getFileNewItem()
-	{
-		if( fileNewItem == null )
-		{
-			fileNewItem = new JMenuItem( actions.getNewFileAction() );
-		}
-		return fileNewItem;
-	}
-	
-	public JMenuItem getFileOpenItem()
-	{
-		if( fileOpenItem == null )
-		{
-			fileOpenItem = new JMenuItem( actions.getOpenFileAction() );
-		}
-		return fileOpenItem;
-	}
-	
-	public JMenuItem getFileRevertItem()
-	{
-		if( fileRevertItem == null )
-		{
-			fileRevertItem = new JMenuItem( actions.getRevertFileAction() );
-		}
-		return fileRevertItem;
-	}
-	
-	public JMenuItem getFileSaveItem()
-	{
-		if( fileSaveItem == null )
-		{
-			fileSaveItem = new JMenuItem( actions.getSaveFileAction() );
-		}
-		return fileSaveItem;
-	}
-	
-	public JMenuItem getFileSaveAsItem()
-	{
-		if( fileSaveAsItem == null )
-		{
-			fileSaveAsItem = new JMenuItem( actions.getSaveAsFileAction() );
-		}
-		return fileSaveAsItem;
-	}
-	
-	public JMenuItem getFileExitItem()
-	{
-		if( fileExitItem == null )
-		{
-			fileExitItem = new JMenuItem( actions.getExitAction() );
-		}
-		return fileExitItem;
-	}
-	
-	public JMenu getEditMenu()
-	{
-		if( editMenu == null )
-		{
-			editMenu = new JMenu();
-			editMenu.setText( "Edit" );
-			editMenu.add( getEditShowPreferencesItem( fc ) );
-		}
-		return editMenu;
-	}
-	
-	public JMenuItem getEditShowPreferencesItem( ComponentDesignerFrontController fc )
-	{
-		if( editShowPreferencesItem == null )
-		{
-			editShowPreferencesItem = new JMenuItem( actions.getShowPreferencesAction() );
-		}
-		return editShowPreferencesItem;
-	}
-	
-	public JMenu getWindowMenu()
-	{
-		if( windowMenu == null )
-		{
-			windowMenu = new JMenu();
-			windowMenu.setText( "Window" );
-			windowMenu.add( new JMenuItem( "About" ) );
-		}
-		return windowMenu;
-	}
 
+	public Menubar( final ComponentDesignerFrontController fc, final MainFrameActions actions )
+	{
+		fileMenu = new JMenu();
+		fileMenu.setText( "File" );
+		fileNewItem = new JMenuItem( actions.getNewFileAction() );
+		fileMenu.add( fileNewItem );
+		fileOpenItem = new JMenuItem( actions.getOpenFileAction() );
+		fileMenu.add( fileOpenItem );
+		fileRevertItem = new JMenuItem( actions.getRevertFileAction() );
+		fileMenu.add( fileRevertItem );
+		fileSaveItem = new JMenuItem( actions.getSaveFileAction() );
+		fileMenu.add( fileSaveItem );
+		fileSaveAsItem = new JMenuItem( actions.getSaveAsFileAction() );
+		fileMenu.add( fileSaveAsItem );
+		fileExitItem = new JMenuItem( actions.getExitAction() );
+		fileMenu.add( fileExitItem );
+		this.add( fileMenu );
+
+		editMenu = new JMenu();
+		editMenu.setText( "Edit" );
+		editShowPreferencesItem = new JMenuItem( actions.getShowPreferencesAction() );
+		editMenu.add( editShowPreferencesItem );
+
+		this.add( editMenu );
+
+		windowMenu = new JMenu();
+		windowMenu.setText( "Window" );
+		windowMenu.add( new JMenuItem( "About" ) );
+		this.add( windowMenu );
+	}
 }

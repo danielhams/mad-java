@@ -105,7 +105,7 @@ public class LifecycleStackPool
             factory.init();
 
             // Start off the threads for creation and expiry.
-            sizingThread.startSizingThread( this, poolLock );
+            sizingThread.startSizingThread( this, poolLock, notEmpty );
 
             if (minResources != 0)
             {

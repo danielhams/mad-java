@@ -21,12 +21,14 @@
 package uk.co.modularaudio.util.audio.buffer;
 
 import java.nio.BufferUnderflowException;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 
 public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer implements BlockingRingBufferInterface
 {
 	private final ReentrantLock internalLock = new ReentrantLock();
+	private final Condition notEmpty = internalLock.newCondition();
 
 	public BlockingWriteRingBuffer(final int capacity)
 	{
@@ -46,7 +48,7 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 			if( numReadable >= length )
 			{
 				super.internalRead( rp, wp, target, pos, length, true, false );
-				internalLock.notify();
+				notEmpty.notifyAll();
 			}
 		}
 		finally
@@ -69,10 +71,14 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 			while( numWriteable < length )
 			{
 				didBlock = true;
-				internalLock.wait();
 				rp = readPosition.get();
 				wp = writePosition.get();
 				numWriteable = calcNumWriteable( rp, wp );
+
+				if( numWriteable <= 0 )
+				{
+					notEmpty.await();
+				}
 			}
 			super.internalWrite( rp, wp, source, pos, length, true );
 		}

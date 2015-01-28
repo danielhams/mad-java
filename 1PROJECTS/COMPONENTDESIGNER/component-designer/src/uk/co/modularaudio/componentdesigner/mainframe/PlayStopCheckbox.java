@@ -28,15 +28,15 @@ import uk.co.modularaudio.componentdesigner.controller.front.RenderingStateListe
 public class PlayStopCheckbox extends JCheckBox implements RenderingStateListener
 {
 	private static final long serialVersionUID = -5637907168844192282L;
-	
-	public PlayStopCheckbox( ComponentDesignerFrontController fc, MainFrameActions actions )
+
+	public PlayStopCheckbox( final ComponentDesignerFrontController fc, final MainFrameActions actions )
 	{
 		this.setAction( actions.getPlayStopAction() );
 		fc.addRenderingStateListener( this );
 	}
 
 	@Override
-	public void receiveRenderingStateChange(boolean newState)
+	public void receiveRenderingStateChange(final boolean newState)
 	{
 		this.setSelected( newState );
 	}

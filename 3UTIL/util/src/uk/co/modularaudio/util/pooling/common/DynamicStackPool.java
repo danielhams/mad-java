@@ -98,7 +98,7 @@ public class DynamicStackPool
 
 			// Start off the threads for creation and expiry.
 			//log.debug( "EDSP starting creation thread.");
-			sizingThread.startSizingThread( this, poolLock );
+			sizingThread.startSizingThread( this, poolLock, notEmpty );
 
 			if (minResources != 0)
 			{
@@ -137,7 +137,7 @@ public class DynamicStackPool
         poolLock.lock();
         try
 		{
-			this.poolLock.notifyAll();
+			notEmpty.notifyAll();
 		}
         finally
         {
@@ -147,7 +147,7 @@ public class DynamicStackPool
 		poolLock.lock();
 		try
 		{
-			this.poolLock.notifyAll();
+			notEmpty.notifyAll();
 		}
 		finally
 		{

@@ -23,6 +23,8 @@ package uk.co.modularaudio.util.pooling.common;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
@@ -99,7 +101,7 @@ abstract public class Pool
 			try
 			{
 				structure.releaseUsedResource(res);
-				poolLock.notifyAll();
+				notEmpty.signal();
 			}
 			finally
 			{
@@ -154,11 +156,11 @@ abstract public class Pool
 				    // in this wait (since we can be woken up when there are no free resources).
 				    long beforeWaitTime = 0;
 				    if (!waitForever)
-				        {
-				        	beforeWaitTime = System.currentTimeMillis();
-				        }
+				    {
+				    	beforeWaitTime = System.currentTimeMillis();
+				    }
 
-					poolLock.wait( waitTime );
+				    notEmpty.await( waitTime, TimeUnit.MILLISECONDS );
 
 					if (!waitForever && structure.freeSize() < 1)
 					{
@@ -206,7 +208,7 @@ abstract public class Pool
 			try
 			{
 				structure.addResource(res);
-				poolLock.notifyAll();
+				notEmpty.signal();
 			}
 			finally
 			{
@@ -365,7 +367,7 @@ abstract public class Pool
 			}
 			// We call a notify all on the pool semaphore to wake up any threads waiting
 			// on obtaining a resource.
-			poolLock.notifyAll();
+			notEmpty.signal();
 		}
 		finally
 		{
@@ -460,6 +462,7 @@ abstract public class Pool
 	protected PoolSizingThread sizingThread;
 	protected Factory factory;
 	protected ReentrantLock poolLock = new ReentrantLock();
+	protected Condition notEmpty = poolLock.newCondition();
 	protected PoolExpiryThread expiryThread;
 
 	protected Pool( final PoolStructure structure,

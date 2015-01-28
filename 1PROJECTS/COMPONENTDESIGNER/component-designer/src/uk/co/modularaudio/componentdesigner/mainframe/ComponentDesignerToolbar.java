@@ -31,61 +31,28 @@ public class ComponentDesignerToolbar extends JToolBar
 	private static final long serialVersionUID = -387065135870575057L;
 
 //	private static Log log = LogFactory.getLog( ComponentDesignerToolbar.class.getName() );
-	
-	private JButton dumpGraphButton = null;
-	private JButton dumpProfileButton = null;
-	private JToggleButton enableLoggingCheckbox = null;
-	private JToggleButton playStopCheckbox = null;
-	
-	private ComponentDesignerFrontController fc = null;
-	private MainFrameActions actions = null;
 
-	public ComponentDesignerToolbar( ComponentDesignerFrontController fc,
-			MainFrameActions actions )
+	private final JButton dumpGraphButton;
+	private final JButton dumpProfileButton;
+	private final JToggleButton enableLoggingCheckbox;
+	private final JToggleButton playStopCheckbox;
+
+	public ComponentDesignerToolbar( final ComponentDesignerFrontController fc,
+			final MainFrameActions actions )
 	{
-		this.fc = fc;
-		this.actions = actions;
-		this.add( getDumpGraphButton() );
-		this.add( getDumpProfileButton() );
-		this.add( getEnableLoggingCheckbox() );
-		this.add( getPlayStopToggleButton() );
+		dumpGraphButton = new DumpGraphButton( actions );
+		dumpProfileButton = new DumpProfileButton( actions );
+		enableLoggingCheckbox = new EnableLoggingCheckbox( actions );
+		playStopCheckbox = new PlayStopCheckbox( fc, actions );
+		this.add( dumpGraphButton );
+		this.add( dumpProfileButton );
+		this.add( enableLoggingCheckbox );
+		this.add( playStopCheckbox );
 		this.setFloatable( false );
 	}
 
-	public JToggleButton getEnableLoggingCheckbox()
-	{
-		if( enableLoggingCheckbox == null )
-		{
-			enableLoggingCheckbox = new EnableLoggingCheckbox( actions );
-		}
-		return enableLoggingCheckbox;
-	}
-	
 	public JToggleButton getPlayStopToggleButton()
 	{
-		if( playStopCheckbox == null )
-		{
-			playStopCheckbox = new PlayStopCheckbox( fc, actions );
-		}
 		return playStopCheckbox;
 	}
-	
-	public JButton getDumpGraphButton()
-	{
-		if( dumpGraphButton == null )
-		{
-			dumpGraphButton = new DumpGraphButton( actions );
-		}
-		return dumpGraphButton;
-	}
-
-	public JButton getDumpProfileButton()
-	{
-		if( dumpProfileButton == null )
-		{
-			dumpProfileButton = new DumpProfileButton( actions );
-		}
-		return dumpProfileButton;
-	}
-
 }

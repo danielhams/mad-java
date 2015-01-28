@@ -28,9 +28,9 @@ import javax.swing.KeyStroke;
 
 public class GlobalKeyHelper
 {
-	public static void setupKeys( JComponent component, MainFrameActions actions )
+	public static void setupKeys( final JComponent component, final MainFrameActions actions )
 	{
-		KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK);
+		final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK);
 		component.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put( keyStroke, "RackRotateToggle");
 	}
 }

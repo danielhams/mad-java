@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
@@ -35,6 +37,7 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 //	private AtomicBoolean internalShouldBlock = new AtomicBoolean(true);
 	private volatile boolean internalShouldBlock = true; // NOPMD by dan on 22/01/15 07:40
 	private final ReentrantLock internalLock = new ReentrantLock( true );
+	private final Condition notEmpty = internalLock.newCondition();
 
 	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
 
@@ -60,7 +63,7 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 			{
 				try
 				{
-					internalLock.wait( JOB_FETCH_TIMEOUT_MILLIS );
+					notEmpty.await( JOB_FETCH_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS );
 				}
 				catch( final InterruptedException ie )
 				{
@@ -87,7 +90,7 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 		if( !shouldBlock )
 		{
 			internalLock.lock();
-			internalLock.notifyAll();
+			notEmpty.notifyAll();
 			internalLock.unlock();
 		}
 	}

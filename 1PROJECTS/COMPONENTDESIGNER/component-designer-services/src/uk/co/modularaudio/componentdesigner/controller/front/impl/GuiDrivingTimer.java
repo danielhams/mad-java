@@ -27,8 +27,8 @@ import javax.swing.Timer;
 public class GuiDrivingTimer extends Timer
 {
 	private static final long serialVersionUID = -4612344957963001704L;
-	
-	public GuiDrivingTimer(int delay, ActionListener listener )
+
+	public GuiDrivingTimer(final int delay, final ActionListener listener )
 	{
 		super(delay, listener);
 	}

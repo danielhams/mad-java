@@ -39,15 +39,18 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
 
 public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelperController
 {
-	private GuiService guiService = null;
+	private GuiService guiService;
+
 	@Override
 	public void destroy()
 	{
+		// Nothing to do
 	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		// Nothing to do
 	}
 
 	public void setGuiService(final GuiService guiService)
