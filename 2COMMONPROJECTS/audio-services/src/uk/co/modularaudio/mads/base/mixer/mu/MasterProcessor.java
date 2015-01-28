@@ -29,52 +29,52 @@ import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 public class MasterProcessor
 {
 //	private static final Log log = LogFactory.getLog( MasterProcessor.class.getName() );
-	
-	private MixerMadInstance instance = null;
-	
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 0.0f;
-	
-	private int numChannelsPerLane = -1;
-	
-	private int[] outputChannelIndexes = null;
-	
+
+	private final MixerMadInstance instance;
+
+	private float curValueRatio;
+	private float newValueRatio;
+
+	private final int numChannelsPerLane;
+
+	private final int[] outputChannelIndexes;
+
 	private float desiredAmpMultiplier = 0.5f;
-	
+
 	private float desiredLeftAmpMultiplier = 0.5f;
 	private float currentLeftAmpMultiplier = 0.5f;
 	private float desiredRightAmpMultiplier = 0.5f;
 	private float currentRightAmpMultiplier = 0.5f;
-	
-	private float desiredPanValue = 0.0f;
-	
-	private float leftMeterLevel = 0.0f;
-	private float rightMeterLevel = 0.0f;
-	
-	public MasterProcessor( MixerMadInstance instance,
-			MixerMadInstanceConfiguration channelConfiguration,
-			float curValueRatio,
-			float newValueRatio )
+
+	private float desiredPanValue;
+
+	private float leftMeterLevel;
+	private float rightMeterLevel;
+
+	public MasterProcessor( final MixerMadInstance instance,
+			final MixerMadInstanceConfiguration channelConfiguration,
+			final float curValueRatio,
+			final float newValueRatio )
 	{
 		this.instance = instance;
 
 		this.curValueRatio = curValueRatio;
 		this.newValueRatio = newValueRatio;
-		
+
 		numChannelsPerLane = channelConfiguration.getNumChannelsPerLane();
 		outputChannelIndexes = new int[ numChannelsPerLane ];
-		
+
 		for( int cn = 0 ; cn < numChannelsPerLane ; cn++ )
 		{
 			outputChannelIndexes[ cn ] = channelConfiguration.getIndexForOutputChannel( cn );
 		}
 	}
 
-	public void processMasterOutput( ThreadSpecificTemporaryEventStorage tses,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
-			int position,
-			int length )
+	public void processMasterOutput( final ThreadSpecificTemporaryEventStorage tses,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int position,
+			final int length )
 	{
 		for( int s = position ; s < position + length ; s++ )
 		{
@@ -88,10 +88,10 @@ public class MasterProcessor
 				{
 					currentRightAmpMultiplier = (currentRightAmpMultiplier * curValueRatio ) + (desiredRightAmpMultiplier * newValueRatio );
 				}
-				int outputChannelIndex = outputChannelIndexes[ cn ];
-				float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
+				final int outputChannelIndex = outputChannelIndexes[ cn ];
+				final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
 				float outputFloat = outputFloats[ s ] * ( cn == 0 ? currentLeftAmpMultiplier : currentRightAmpMultiplier );
-				float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
+				final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
 
 				if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 				{
@@ -116,8 +116,8 @@ public class MasterProcessor
 			}
 		}
 	}
-	
-	public void emitMasterMeterReadings( ThreadSpecificTemporaryEventStorage tses, long emitTimestamp )
+
+	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
 	{
 //			log.debug("Emitting one at " + emitTimestamp);
 		instance.emitMasterMeterReading( tses, emitTimestamp, leftMeterLevel, rightMeterLevel );
@@ -125,24 +125,24 @@ public class MasterProcessor
 		rightMeterLevel = 0.0f;
 	}
 
-	public void setMasterAmp( float ampValue )
+	public void setMasterAmp( final float ampValue )
 	{
 		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
 	}
 
-	public void resetCurNewValues( float curValueRatio2, float newValueRatio2 )
+	public void resetCurNewValues( final float curValueRatio2, final float newValueRatio2 )
 	{
 		this.curValueRatio = curValueRatio2;
 		this.newValueRatio = newValueRatio2;
 	}
 
-	public void setMasterPan( float panValue )
+	public void setMasterPan( final float panValue )
 	{
 		desiredPanValue = panValue;
-		recomputeDesiredChannelAmps();		
+		recomputeDesiredChannelAmps();
 	}
-	
+
 	private void recomputeDesiredChannelAmps()
 	{
 		float leftAmp = (desiredPanValue < 0.0f ? 1.0f : (1.0f - desiredPanValue ) );

@@ -30,25 +30,25 @@ public abstract class MuteSoloToggleButton extends PacToggleButton
 {
 	private static final long serialVersionUID = -576319205878844394L;
 
-	public MuteSoloToggleButton( String label )
+	public MuteSoloToggleButton( final String label )
 	{
 		super( false );
 		setOpaque( true );
 		this.setText( label );
-		Dimension tinySize = new Dimension( 36, 15 );
+		final Dimension tinySize = new Dimension( 36, 15 );
 		this.setPreferredSize( tinySize );
 		this.setMinimumSize( tinySize );
 		this.setMaximumSize( tinySize );
 
 //		Font f = this.getFont().deriveFont( 8f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		this.setFont( f );
-		
+
 		this.setMargin( new Insets( 0, 0, 0, 0 ) );
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 		receiveToggleEvent( newValue );
 	}

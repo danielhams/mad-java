@@ -37,20 +37,20 @@ public class PanSlider extends PacSlider implements SliderDoubleClickReceiver
 	public final static int PAN_SLIDER_NUM_STEPS = 100;
 
 //	private static Log log = LogFactory.getLog( PanSlider.class.getName() );
-	
-	private PanSliderChangeReceiver changeReceiver = null;
-	
-	private SliderDoubleClickMouseListener sliderDoubleClickMouseListener = null;
-	
-	private Hashtable<Integer, JLabel> panLabels = null;
-	
-	public PanSlider( PanSliderChangeReceiver changeReceiver, Color foregroundColour )
+
+	private final PanSliderChangeReceiver changeReceiver;
+
+	private final SliderDoubleClickMouseListener sliderDoubleClickMouseListener;
+
+	private final Hashtable<Integer, JLabel> panLabels;
+
+	public PanSlider( final PanSliderChangeReceiver changeReceiver, final Color foregroundColour )
 	{
 		this.setOpaque( false );
 		this.setOrientation( HORIZONTAL );
 
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 
 		setFont( f );
 		setForeground( foregroundColour );
@@ -79,20 +79,20 @@ public class PanSlider extends PacSlider implements SliderDoubleClickReceiver
 		this.addMouseListener( sliderDoubleClickMouseListener );
 	}
 
-	private JLabel buildLabel( Font f, String label, Color foregroundColour )
+	private JLabel buildLabel( final Font f, final String label, final Color foregroundColour )
 	{
-		JLabel retVal = new JLabel( label );
+		final JLabel retVal = new JLabel( label );
 		retVal.setFont( f );
 		retVal.setForeground( foregroundColour );
 		return retVal;
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
-		float floatVal = (float)newValue / PAN_SLIDER_NUM_STEPS;
+		final float floatVal = (float)newValue / PAN_SLIDER_NUM_STEPS;
 		// Now spread between -1 and 1
-		float normVal = (floatVal - 0.5f) * 2;
+		final float normVal = (floatVal - 0.5f) * 2;
 		if( changeReceiver != null )
 		{
 			changeReceiver.receivePanChange( normVal );

@@ -30,8 +30,8 @@ import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstanceConfiguration;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -54,22 +54,22 @@ public class MixerMadUiDefinition
 	public static final Color LANE_BG_COLOR = new Color( 57, 63, 63 );
 	public static final Color MASTER_BG_COLOR = new Color( 0.6f, 0.6f, 0.6f );
 
-	private final Span defaultSpan = new Span(1,1);
+	private static final Span DEFAULT_SPAN = new Span(1,1);
 
-	public MixerMadUiDefinition( BufferedImageAllocator bia,
-			MixerMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public MixerMadUiDefinition( final BufferedImageAllocator bia,
+			final MixerMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
 	}
 
-	protected Point[] getUiChannelPositionsForAui( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	protected Point[] getUiChannelPositionsForAui( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
 		Point[] retVal;
 
@@ -85,7 +85,7 @@ public class MixerMadUiDefinition
 			}
 		}
 
-		Point lastInputChannelPoint = retVal[ curChannelIndex - 1 ];
+		final Point lastInputChannelPoint = retVal[ curChannelIndex - 1 ];
 		for( int oc = 0 ; oc < numOutputChannels ; oc++ )
 		{
 			retVal[ curChannelIndex++ ] = new Point( lastInputChannelPoint.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
@@ -97,11 +97,11 @@ public class MixerMadUiDefinition
 		return retVal;
 	}
 
-	private int[] getUiChannelInstanceIndexesForAui( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	private int[] getUiChannelInstanceIndexesForAui( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
 		int[] retVal;
 
@@ -124,23 +124,23 @@ public class MixerMadUiDefinition
 	}
 
 	@Override
-	protected MadUiInstanceConfiguration getUiInstanceConfiguration( MixerMadInstance instance )
+	protected MadUiInstanceConfiguration getUiInstanceConfiguration( final MixerMadInstance instance )
 	{
-		MixerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
+		final MixerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
 
-		int numInputLanes = instanceConfiguration.getNumInputLanes();
-		int numChannelsPerLane = instanceConfiguration.getNumChannelsPerLane();
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
+		final int numInputLanes = instanceConfiguration.getNumInputLanes();
+		final int numChannelsPerLane = instanceConfiguration.getNumChannelsPerLane();
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+		final int numTotalChannels = instanceConfiguration.getNumTotalChannels();
 
-		int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
 
-		Point[] uiChannelPositions = getUiChannelPositionsForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final Point[] uiChannelPositions = getUiChannelPositionsForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
 
-		Rectangle[] uiComponentPositions = getUiComponentPositionsForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
-		Class<?>[] uiComponentClasses = getUiComponentClassesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
-		ControlType[] uiComponentControlTypes = getUiComponentControlTypes( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
-		String[] uiComponentNames = getUiComponentNamesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final Rectangle[] uiComponentPositions = getUiComponentPositionsForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final Class<?>[] uiComponentClasses = getUiComponentClassesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final ControlType[] uiComponentControlTypes = getUiComponentControlTypes( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
+		final String[] uiComponentNames = getUiComponentNamesForAui( instanceConfiguration, numInputLanes, numChannelsPerLane, numOutputChannels, numTotalChannels );
 
 		return new MadUiInstanceConfiguration( uiChannelPositions,
 				uiChannelInstanceIndexes,
@@ -150,13 +150,13 @@ public class MixerMadUiDefinition
 				uiComponentNames );
 	}
 
-	private String[] getUiComponentNamesForAui( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	private String[] getUiComponentNamesForAui( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		List<String> retVal = new ArrayList<String>();
+		final List<String> retVal = new ArrayList<String>();
 
 		retVal.add( "MasterMixer" );
 
@@ -168,13 +168,13 @@ public class MixerMadUiDefinition
 		return retVal.toArray( new String[ retVal.size() ] );
 	}
 
-	private ControlType[] getUiComponentControlTypes( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	private ControlType[] getUiComponentControlTypes( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		List<ControlType> retVal = new ArrayList<ControlType>();
+		final List<ControlType> retVal = new ArrayList<ControlType>();
 
 		retVal.add( ControlType.CUSTOM );
 
@@ -186,13 +186,13 @@ public class MixerMadUiDefinition
 		return retVal.toArray( new ControlType[ retVal.size() ] );
 	}
 
-	private Class<?>[] getUiComponentClassesForAui( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	private Class<?>[] getUiComponentClassesForAui( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		List<Class<?>> retVal = new ArrayList<Class<?>>();
+		final List<Class<?>> retVal = new ArrayList<Class<?>>();
 
 		retVal.add( ChannelMasterMixerPanelUiInstance.class );
 
@@ -204,28 +204,28 @@ public class MixerMadUiDefinition
 		return retVal.toArray( new Class<?>[ retVal.size() ] );
 	}
 
-	private Rectangle[] getUiComponentPositionsForAui( MixerMadInstanceConfiguration instanceConfiguration,
-			int numInputLanes,
-			int numChannelsPerLane,
-			int numOutputChannels,
-			int numTotalChannels )
+	private Rectangle[] getUiComponentPositionsForAui( final MixerMadInstanceConfiguration instanceConfiguration,
+			final int numInputLanes,
+			final int numChannelsPerLane,
+			final int numOutputChannels,
+			final int numTotalChannels )
 	{
-		List<Rectangle> retVal = new ArrayList<Rectangle>();
+		final List<Rectangle> retVal = new ArrayList<Rectangle>();
 
-		int masterStartX = INPUT_LANES_START.x + ((LANE_TO_LANE_INCREMENT) * (numInputLanes-1) ) +
+		final int masterStartX = INPUT_LANES_START.x + ((LANE_TO_LANE_INCREMENT) * (numInputLanes-1) ) +
 				(INPUT_TO_OUTPUT_CHANNEL_INCREMENT + CHANNEL_TO_CHANNEL_INCREMENT + 10);
-		int masterWidth = LANE_TO_LANE_INCREMENT - 4;
-		int masterStartY = 20;
-		int masterHeight = INPUT_LANES_START.y;
+		final int masterWidth = LANE_TO_LANE_INCREMENT - 4;
+		final int masterStartY = 20;
+		final int masterHeight = INPUT_LANES_START.y;
 
 		retVal.add( new Rectangle( masterStartX, masterStartY, masterWidth, masterHeight ) );
 
-		int laneStartX = 8;
-		int laneStartY = 30;
+		final int laneStartX = 8;
+		final int laneStartY = 30;
 
 		for( int i = 0 ; i < numInputLanes ; i++ )
 		{
-			Rectangle r = new Rectangle( laneStartX + (LANE_TO_LANE_INCREMENT * i ),
+			final Rectangle r = new Rectangle( laneStartX + (LANE_TO_LANE_INCREMENT * i ),
 					laneStartY,
 					LANE_TO_LANE_INCREMENT - 4,
 					INPUT_LANES_START.y -10 );
@@ -238,6 +238,6 @@ public class MixerMadUiDefinition
 	@Override
 	public Span getCellSpan()
 	{
-		return defaultSpan;
+		return DEFAULT_SPAN;
 	}
 }

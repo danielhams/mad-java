@@ -43,20 +43,20 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 
 	private static final long serialVersionUID = -3862457210177904367L;
 
-	private int laneNumber = -1;
+	private final int laneNumber;
 
-	private AmpSliderAndMeter ampSliderAndMeter = null;
-	private PanSlider panSlider = null;
-	private AmpMuteSolo ampMuteSolo = null;
+	private final AmpSliderAndMeter ampSliderAndMeter;
+	private final PanSlider panSlider;
+	private final AmpMuteSolo ampMuteSolo;
 
-	private DbToLevelComputer dBToLevelComputer = null;
+	private final DbToLevelComputer dBToLevelComputer;
 
-	private MixerMadUiInstance uiInstance = null;
+	private final MixerMadUiInstance uiInstance;
 
-	public ChannelLaneMixerPanelUiInstance( MixerMadDefinition definition,
-			MixerMadInstance instance,
-			MixerMadUiInstance uiInstance,
-			int controlIndex )
+	public ChannelLaneMixerPanelUiInstance( final MixerMadDefinition definition,
+			final MixerMadInstance instance,
+			final MixerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( true );
 		this.setBackground( MixerMadUiDefinition.LANE_BG_COLOR );
@@ -64,13 +64,13 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 
 		laneNumber = controlIndex - 1;
 
-		MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addRowConstraint( "[grow 0][fill][grow 0]" );
 		msh.addLayoutConstraint( "insets 0" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
 //		msh.addLayoutConstraint( "debug" );
-		MigLayout compLayout = msh.createMigLayout();
+		final MigLayout compLayout = msh.createMigLayout();
 		this.setLayout( compLayout );
 
 		panSlider = new PanSlider( this, Color.WHITE );
@@ -92,7 +92,7 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -106,12 +106,12 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveAmpSliderChange( float newValue )
+	public void receiveAmpSliderChange( final float newValue )
 	{
 		// Now translate this into dB and then into amplitude
-		float dbForValue = dBToLevelComputer.toDbFromNormalisedLevel( newValue );
+		final float dbForValue = dBToLevelComputer.toDbFromNormalisedLevel( newValue );
 //		log.debug("Using db " + dbForValue );
-		float ampForDb = (float)AudioMath.dbToLevel( dbForValue );
+		final float ampForDb = (float)AudioMath.dbToLevel( dbForValue );
 		uiInstance.sendLaneAmp( laneNumber, ampForDb );
 	}
 
@@ -122,9 +122,9 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
-		String[] vals = value.split( ":" );
+		final String[] vals = value.split( ":" );
 		if( vals.length > 0 )
 		{
 			ampSliderAndMeter.receiveControlValue( vals[0] );
@@ -140,32 +140,32 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentTimestamp, int channelNum, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
 		ampSliderAndMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
-	public void setMuteValue( boolean muteValue )
+	public void setMuteValue( final boolean muteValue )
 	{
 //		log.debug("Lane " + laneNumber + " setting mute (" + muteValue + ")");
 		uiInstance.sendLaneMute( laneNumber, muteValue );
 	}
 
-	public void setSoloValue( boolean soloValue )
+	public void setSoloValue( final boolean soloValue )
 	{
 		uiInstance.sendSoloValue( laneNumber, soloValue );
 	}
 
 	@Override
-	public void receiveMuteSet( long currentTimestamp, boolean muted )
+	public void receiveMuteSet( final long currentTimestamp, final boolean muted )
 	{
 //		log.debug("Lane " + laneNumber + " received mute set(" + muted + ")");
 		ampMuteSolo.receiveMuteSet( muted );
 	}
 
 	@Override
-	public void receiveSoloSet( long currentTimestamp, boolean solod )
+	public void receiveSoloSet( final long currentTimestamp, final boolean solod )
 	{
 		ampMuteSolo.receiveSoloSet( solod );
 	}
@@ -177,7 +177,7 @@ public class ChannelLaneMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receivePanChange( float panValue )
+	public void receivePanChange( final float panValue )
 	{
 		uiInstance.sendLanePan( laneNumber, panValue );
 	}

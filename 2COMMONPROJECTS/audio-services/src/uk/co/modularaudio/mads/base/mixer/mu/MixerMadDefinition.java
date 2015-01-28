@@ -39,42 +39,39 @@ public class MixerMadDefinition extends MadDefinition<MixerMadDefinition, MixerM
 {
 	public static final String DEFINITION_ID = "mixer";
 
-	protected static Set<MadParameterDefinition> parameterDefinitions;
+	protected final static Set<MadParameterDefinition> PARAM_DEFS;
 
-	protected static MadParameterDefinition numLanesParameterDefinition = new MadParameterDefinition( "NumLanes", "Number Of Mixer Lanes" );
+	protected final static MadParameterDefinition NUM_LANES_DEF = new MadParameterDefinition( "NumLanes", "Number Of Mixer Lanes" );
 
 	static
 	{
-		parameterDefinitions = new HashSet<MadParameterDefinition>();
-		parameterDefinitions.add( numLanesParameterDefinition );
+		PARAM_DEFS = new HashSet<MadParameterDefinition>();
+		PARAM_DEFS.add( NUM_LANES_DEF );
 	}
 
-	private static String name = "Mixer";
-	private static String description = "Mixer for up to 8 lanes of mono/stereo input into one stereo output";
-	private static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private static String classificationId = DEFINITION_ID;
-	private static String classificationName = description;
-	private static String classificationDescription = description;
+	private final static String USER_VISIBLE_NAME = "Mixer";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_DESC = "Mixer for up to 8 lanes of mono/stereo input into one stereo output";
 
-	public MixerMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws DatastoreException, RecordNotFoundException
+	public MixerMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws DatastoreException, RecordNotFoundException
 	{
 		// Default super constructor is
 		// super( name, isParametrable, parameterDefinitions );
-		super( DEFINITION_ID, name, true,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME, true,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						USER_VISIBLE_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				parameterDefinitions,
+				PARAM_DEFS,
 				new MixerIOQueueBridge() );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
 		throws MadProcessingException
 	{
-		MixerMadInstanceConfiguration ic = new MixerMadInstanceConfiguration( parameterValues );
+		final MixerMadInstanceConfiguration ic = new MixerMadInstanceConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
 	}}

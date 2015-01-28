@@ -35,24 +35,21 @@ public class AmpSliderAndMeter extends JPanel
 
 //	private static Log log = LogFactory.getLog( AmpSliderAndMeter.class.getName() );
 
-	private AmpSlider ampSlider = null;
-	private StereoAmpMeter stereoAmpMeter = null;
-//	private AmpMeter leftAmpMeter = null;
-//	private AmpMeterLevelMarks ampMeterLabels = null;
-//	private AmpMeter rightAmpMeter = null;
+	private final AmpSlider ampSlider;
+	private final StereoAmpMeter stereoAmpMeter;
 
-	public AmpSliderAndMeter( MixerMadUiInstance uiInstance,
-			BufferedImageAllocator bia,
-			boolean showClipBox,
-			Color foregroundColour )
+	public AmpSliderAndMeter( final MixerMadUiInstance uiInstance,
+			final BufferedImageAllocator bia,
+			final boolean showClipBox,
+			final Color foregroundColour )
 	{
 		this.setOpaque( false );
-		MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint( "insets 1" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
 //		msh.addLayoutConstraint( "debug" );
-		MigLayout compLayout = msh.createMigLayout();
+		final MigLayout compLayout = msh.createMigLayout();
 		this.setLayout( compLayout );
 
 		ampSlider = new AmpSlider( foregroundColour );
@@ -69,45 +66,23 @@ public class AmpSliderAndMeter extends JPanel
 		return ampSlider.getControlValue();
 	}
 
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		ampSlider.receiveControlValue( value );
 	}
 
-	public void receiveMeterReadingInDb( long currentTimestamp, int channelNum, float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentTimestamp, final int channelNum, final float meterReadingDb )
 	{
-//		switch( channelNum )
-//		{
-//			case 0:
-//			{
-//				leftAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
-//				break;
-//			}
-//			case 1:
-//			{
-//				rightAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
-//				break;
-//			}
-//			default:
-//			{
-//				log.error("Oops. Which channel was this for?");
-//				break;
-//			}
-//		}
 		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
-	public void receiveDisplayTick( long currentGuiTime )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
-//		leftAmpMeter.receiveDisplayTick( currentGuiTime );
-//		rightAmpMeter.receiveDisplayTick( currentGuiTime );
 		stereoAmpMeter.receiveDisplayTick( currentGuiTime );
 	}
 
 	public void destroy()
 	{
-//		leftAmpMeter.destroy();
-//		rightAmpMeter.destroy();
 		stereoAmpMeter.destroy();
 	}
 
@@ -116,7 +91,7 @@ public class AmpSliderAndMeter extends JPanel
 		return ampSlider.getSliderLevelsAndLabels().getDbToLevelComputer();
 	}
 
-	public void setChangeReceiver( AmpSliderChangeReceiver changeReceiver )
+	public void setChangeReceiver( final AmpSliderChangeReceiver changeReceiver )
 	{
 		ampSlider.setChangeReceiver( changeReceiver );
 	}

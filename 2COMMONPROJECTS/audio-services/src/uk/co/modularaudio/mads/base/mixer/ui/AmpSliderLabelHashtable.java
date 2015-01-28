@@ -30,7 +30,7 @@ import javax.swing.JLabel;
 public class AmpSliderLabelHashtable extends Hashtable<Integer,JLabel>
 {
 	private static final long serialVersionUID = -317936996704989571L;
-	
+
 //	private static Log log = LogFactory.getLog( AmpSliderLabelHashtable.class.getName() );
 
 	public AmpSliderLabelHashtable()
@@ -38,7 +38,7 @@ public class AmpSliderLabelHashtable extends Hashtable<Integer,JLabel>
 	}
 
 	@Override
-	public synchronized JLabel get( Object key )
+	public synchronized JLabel get( final Object key )
 	{
 //		Integer i = (Integer)key;
 //		log.debug("Attempted to fetch " + key + " which as int is " + i.intValue() );
@@ -53,7 +53,7 @@ public class AmpSliderLabelHashtable extends Hashtable<Integer,JLabel>
 	}
 
 	@Override
-	public synchronized boolean containsKey( Object key )
+	public synchronized boolean containsKey( final Object key )
 	{
 //		log.debug("Containskey called with " + key );
 		return super.containsKey( key );

@@ -43,34 +43,34 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 
 	private static final long serialVersionUID = 24665241385474657L;
 
-	private MixerMadUiInstance uiInstance = null;
+	private final MixerMadUiInstance uiInstance;
 
-	private PanSlider panSlider = null;
+	private final PanSlider panSlider;
 
-	private AmpSliderAndMeter ampSliderAndMeter = null;
+	private final AmpSliderAndMeter ampSliderAndMeter;
 
-	private DbToLevelComputer dBToLevelComputer = null;
+	private final DbToLevelComputer dBToLevelComputer;
 
-	private boolean previouslyShowing = false;
+	private boolean previouslyShowing;
 
-	public ChannelMasterMixerPanelUiInstance( MixerMadDefinition definition,
-			MixerMadInstance instance,
-			MixerMadUiInstance uiInstance,
-			int controlIndex )
+	public ChannelMasterMixerPanelUiInstance( final MixerMadDefinition definition,
+			final MixerMadInstance instance,
+			final MixerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( true );
 		this.setBackground( MixerMadUiDefinition.MASTER_BG_COLOR );
 
-		MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addRowConstraint( "[grow 0][fill][grow 0]" );
 		msh.addLayoutConstraint( "insets 0" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
 //		msh.addLayoutConstraint( "debug" );
 
-		MigLayout compLayout = msh.createMigLayout();
+		final MigLayout compLayout = msh.createMigLayout();
 		this.setLayout( compLayout );
 
 		panSlider = new PanSlider( this, Color.BLACK );
@@ -91,11 +91,11 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
 		{
@@ -113,12 +113,12 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveAmpSliderChange( float newValue )
+	public void receiveAmpSliderChange( final float newValue )
 	{
 		// Now translate this into dB and then into amplitude
-		float dbForValue = dBToLevelComputer.toDbFromNormalisedLevel( newValue );
+		final float dbForValue = dBToLevelComputer.toDbFromNormalisedLevel( newValue );
 //		log.debug("Using db " + dbForValue );
-		float ampForDb = (float)AudioMath.dbToLevel( dbForValue );
+		final float ampForDb = (float)AudioMath.dbToLevel( dbForValue );
 		uiInstance.sendMasterAmp( ampForDb );
 	}
 
@@ -129,9 +129,9 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
-		String[] vals = value.split( ":" );
+		final String[] vals = value.split( ":" );
 		if( vals.length == 2 )
 		{
 			ampSliderAndMeter.receiveControlValue( vals[0] );
@@ -140,20 +140,20 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentTimestamp, int channelNum, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
 		ampSliderAndMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
 	@Override
-	public void receiveMuteSet( long currentTimestamp, boolean muted )
+	public void receiveMuteSet( final long currentTimestamp, final boolean muted )
 	{
 		// Ignore
 	}
 
 	@Override
-	public void receiveSoloSet( long currentTimestamp, boolean muted )
+	public void receiveSoloSet( final long currentTimestamp, final boolean muted )
 	{
 		// Ignore
 	}
@@ -165,7 +165,7 @@ public class ChannelMasterMixerPanelUiInstance extends PacPanel
 	}
 
 	@Override
-	public void receivePanChange( float panValue )
+	public void receivePanChange( final float panValue )
 	{
 		uiInstance.sendMasterPan( panValue );
 	}

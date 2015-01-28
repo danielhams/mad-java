@@ -32,15 +32,15 @@ public class MixerIOQueueBridge extends
 		MadLocklessQueueBridge<MixerMadInstance>
 {
 	private static Log log = LogFactory.getLog( MixerIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_ACTIVE = 0;
-	
+
 	// Channel amp - lower 32 bits are channel num, top 32 is float amp
 	public final static int COMMAND_IN_LANE_AMP = 1;
 	public static final int COMMAND_IN_LANE_PAN = 2;
 	public static final int COMMAND_IN_LANE_MUTE = 3;
 	public static final int COMMAND_IN_LANE_SOLO = 4;
-	
+
 	// Just lower 32 bits float amp
 	public final static int COMMAND_IN_MASTER_AMP = 5;
 	public final static int COMMAND_IN_MASTER_PAN = 6;
@@ -64,26 +64,26 @@ public class MixerIOQueueBridge extends
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( MixerMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long currentTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final MixerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long currentTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean isActive = (queueEntry.value == 1 );
+				final boolean isActive = (queueEntry.value == 1 );
 				instance.setActive( isActive );
 				break;
 			}
 			case COMMAND_IN_LANE_AMP:
 			{
 				// float
-				long value = queueEntry.value;
-				int lower32Bits = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
+				final long value = queueEntry.value;
+				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 //				log.debug("Received lane amp change " + lower32Bits + ", " + ampValue );
 				instance.setLaneAmp( lower32Bits, ampValue );
 				break;
@@ -91,38 +91,38 @@ public class MixerIOQueueBridge extends
 			case COMMAND_IN_LANE_PAN:
 			{
 				// float
-				long value = queueEntry.value;
-				int lower32Bits = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float panValue = Float.intBitsToFloat( upper32Bits );
+				final long value = queueEntry.value;
+				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float panValue = Float.intBitsToFloat( upper32Bits );
 //				log.debug("Received lane amp change " + lower32Bits + ", " + ampValue );
 				instance.setLanePan( lower32Bits, panValue );
 				break;
 			}
 			case COMMAND_IN_LANE_MUTE:
 			{
-				long value = queueEntry.value;
-				int laneNumber = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				boolean muteValue = ( upper32Bits != 0);
+				final long value = queueEntry.value;
+				final int laneNumber = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final boolean muteValue = ( upper32Bits != 0);
 				instance.setLaneMute( tses, currentTimestamp, laneNumber, muteValue );
 				break;
 			}
 			case COMMAND_IN_LANE_SOLO:
 			{
-				long value = queueEntry.value;
-				int laneNumber = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				boolean soloValue = ( upper32Bits != 0);
+				final long value = queueEntry.value;
+				final int laneNumber = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final boolean soloValue = ( upper32Bits != 0);
 				instance.setLaneSolo( tses, currentTimestamp, laneNumber, soloValue );
 				break;
 			}
 			case COMMAND_IN_MASTER_AMP:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float masterAmp = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float masterAmp = Float.intBitsToFloat( truncVal );
 				instance.setMasterAmp( masterAmp );
 //				log.debug("Received master amp change at " + currentTimestamp );
 //				debugTimestamp("RecAm", currentTimestamp );
@@ -131,15 +131,15 @@ public class MixerIOQueueBridge extends
 			case COMMAND_IN_MASTER_PAN:
 			{
 				// float
-				long value = queueEntry.value;
-				float panValue = Float.intBitsToFloat( (int)value );
+				final long value = queueEntry.value;
+				final float panValue = Float.intBitsToFloat( (int)value );
 //				log.debug("Received lane amp change " + lower32Bits + ", " + ampValue );
 				instance.setMasterPan( panValue );
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

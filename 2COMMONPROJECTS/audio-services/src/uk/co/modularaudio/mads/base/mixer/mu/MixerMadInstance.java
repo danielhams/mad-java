@@ -48,9 +48,9 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
 
-	private long sampleRate = -1;
+	private long sampleRate;
 
-	private MixerMadInstanceConfiguration instanceConfiguration = null;
+	private final MixerMadInstanceConfiguration instanceConfiguration;
 
 	//	private static Log log = LogFactory.getLog( OscillatorMadInstance.class.getName() );
 
@@ -58,17 +58,17 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 	private int numSamplesProcessed = 0;
 	private long framesBetweenPeakReset = 44100;
 
-	private int numInputLanes = -1;
-	private LaneProcessor[] channelLaneProcessors = null;
-	private MasterProcessor masterProcessor = null;
-	private MixerMuteAndSoloMachine muteAndSoloMachine = null;
+	private final int numInputLanes;
+	private final LaneProcessor[] channelLaneProcessors;
+	private final MasterProcessor masterProcessor;
+	private final MixerMuteAndSoloMachine muteAndSoloMachine;
 
 	private int leftOutputChannelIndex = -1;
 	private int rightOutputChannelIndex = -1;
 
-	private LimiterRT limiterRt = new LimiterRT( 0.99, 5 );
+	private final LimiterRT limiterRt = new LimiterRT( 0.99, 5 );
 
-	public boolean active = false;
+	public boolean active;
 
 	public MixerMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -92,7 +92,7 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
-			final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -116,9 +116,9 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 			// Once a second reset it.
 			framesBetweenPeakReset = sampleRate;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught starting up channel 8 mixer: " + e.toString();
+			final String msg = "Exception caught starting up channel 8 mixer: " + e.toString();
 			throw new MadProcessingException( msg, e );
 		}
 	}
