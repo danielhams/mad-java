@@ -42,11 +42,11 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 	// Maximum to buffer in entirety is five seconds
 	public static final float MAX_CAPTURE_MILLIS = 5000.0f;
 
-	private WaveRollerCaptureTimeProducer captureTimeProducer = null;
-	private WaveRollerDataListener scopeDataListener = null;
+	private WaveRollerCaptureTimeProducer captureTimeProducer;
+	private WaveRollerDataListener scopeDataListener;
 
-	public WaveRollerMadUiInstance( WaveRollerMadInstance instance,
-			WaveRollerMadUiDefinition uiDefinition )
+	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
+			final WaveRollerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
@@ -68,7 +68,7 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -79,16 +79,16 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 	}
 
 	@Override
-	public void consumeQueueEntry( WaveRollerMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final WaveRollerMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case WaveRollerIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
-				long value = nextOutgoingEntry.value;
-				int bufferNum = (int)((value ) & 0xFFFFFFFF);
-				int ringBufferIndex = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final long value = nextOutgoingEntry.value;
+				final int bufferNum = (int)((value ) & 0xFFFFFFFF);
+				final int ringBufferIndex = (int)((value >> 32 ) & 0xFFFFFFFF);
 
 				if( bufferNum == 0 )
 				{
@@ -98,13 +98,16 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 			}
 			default:
 			{
-				log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
 	}
 
-	public void setScopeDataListener( WaveRollerDataListener scopeDataListener )
+	public void setScopeDataListener( final WaveRollerDataListener scopeDataListener )
 	{
 		this.scopeDataListener = scopeDataListener;
 		if( scopeDataListener != null && captureTimeProducer != null )
@@ -113,7 +116,7 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 		}
 	}
 
-	public void setCaptureTimeProducer( WaveRollerCaptureTimeProducer captureTimeProducer )
+	public void setCaptureTimeProducer( final WaveRollerCaptureTimeProducer captureTimeProducer )
 	{
 		this.captureTimeProducer = captureTimeProducer;
 		if( scopeDataListener != null && captureTimeProducer != null )
@@ -122,7 +125,7 @@ public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 		}
 	}
 
-	public void sendUiActive( boolean active )
+	public void sendUiActive( final boolean active )
 	{
 		sendTemporalValueToInstance( WaveRollerIOQueueBridge.COMMAND_IN_ACTIVE, ( active ? 1 : 0 ) );
 	}

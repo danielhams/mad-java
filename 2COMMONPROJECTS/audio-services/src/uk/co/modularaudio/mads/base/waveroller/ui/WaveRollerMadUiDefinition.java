@@ -35,59 +35,59 @@ import uk.co.modularaudio.util.table.Span;
 public class WaveRollerMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>
 {
-	private static final Span span = new Span(2,2);
+	private static final Span SPAN = new Span(2,2);
 
 	protected static final int SCALE_WIDTH = 40;
 
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0
 	};
 
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 120, 70 )
 	};
 
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"CaptureTime",
 		"Left Scale",
 		"Display",
 		"Right Scale"
 	};
 
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY
 	};
 
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		WaveRollerCaptureLengthSliderUiJComponent.class,
 		WaveRollerScaleDisplay.class,
 		WaveRollerDisplayUiJComponent.class,
 		WaveRollerScaleDisplay.class,
 	};
 
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 116,  3, 434,  30 ),		// Capture Time
 		new Rectangle(   6, 36,  40, 110 ),		// Scale Display
 		new Rectangle(  46, 36, 464, 110 ),		// Display
 		new Rectangle( 510, 36,  40, 110 ),		// Scale Display
 	};
 
-	private static final Class<WaveRollerMadUiInstance> instanceClass = WaveRollerMadUiInstance.class;
+	private static final Class<WaveRollerMadUiInstance> INSTANCE_CLASS = WaveRollerMadUiInstance.class;
 
 	public WaveRollerMadUiDefinition( BufferedImageAllocator bia, WaveRollerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

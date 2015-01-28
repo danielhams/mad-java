@@ -31,18 +31,18 @@ import uk.co.modularaudio.util.swing.dndtable.jpanel.JPanelDndTableDecorationHin
 
 public class TestDndRackDragTargetPositionHintDecorator extends JPanelDndTableDecorationHint
 {
-	private Point targetPosition = null;
-	
+	private Point targetPosition;
+
 	private static int hintRadius = 10;
-	
+
 	private Rectangle currentDamageRectangle = new Rectangle(0,0,-1,-1);
-	
+
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		if( targetPosition != null )
 		{
-			Graphics2D g2d = (Graphics2D)g;
+			final Graphics2D g2d = (Graphics2D)g;
 			g2d.setComposite( AlphaComposite.getInstance(AlphaComposite.SRC) );
 
 			g2d.setColor( Color.BLUE );
@@ -50,7 +50,7 @@ public class TestDndRackDragTargetPositionHintDecorator extends JPanelDndTableDe
 		}
 	}
 
-	public void setTargetPosition(Point targetPosition)
+	public void setTargetPosition(final Point targetPosition)
 	{
 		boolean isUpdated = false;
 		if( targetPosition != null && !targetPosition.equals( this.targetPosition ) )
@@ -63,14 +63,14 @@ public class TestDndRackDragTargetPositionHintDecorator extends JPanelDndTableDe
 			this.targetPosition = targetPosition;
 			isUpdated = true;
 		}
-		
+
 		if( isUpdated )
 		{
-			Rectangle newDamageRectangle = new Rectangle( targetPosition.x - hintRadius,
+			final Rectangle newDamageRectangle = new Rectangle( targetPosition.x - hintRadius,
 					targetPosition.y - hintRadius,
 					hintRadius,
 					hintRadius );
-			Rectangle emitDamageRectangle = ( currentDamageRectangle == null ?
+			final Rectangle emitDamageRectangle = ( currentDamageRectangle == null ?
 					newDamageRectangle : newDamageRectangle.union( currentDamageRectangle ) );
 			currentDamageRectangle = newDamageRectangle;
 			this.emitForceRepaintEvent( this, emitDamageRectangle );
@@ -90,7 +90,13 @@ public class TestDndRackDragTargetPositionHintDecorator extends JPanelDndTableDe
 	}
 
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
+	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// Not animated
 	}
 }

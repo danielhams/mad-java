@@ -28,31 +28,24 @@ import uk.co.modularaudio.util.swing.dndtable.GuiDndTableState;
 public class LayeredPaneDndTableDecorator
 {
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableDecorator.class.getName() );
-	
-//	private Point mousePosition = new Point();
-	
-//	private LayeredPaneDndTable<?,?,?> table = null;
-//	private GuiDndTableState state = null;
-	
-	private LayeredPaneDndTableDecorations decorations = null;
-	
-	public LayeredPaneDndTableDecorator( LayeredPaneDndTable<?,?,?> table,
-			GuiDndTableState state,
-			LayeredPaneDndTableDecorations decorations )
+
+	private final LayeredPaneDndTableDecorations decorations;
+
+	public LayeredPaneDndTableDecorator( final LayeredPaneDndTable<?,?,?> table,
+			final GuiDndTableState state,
+			final LayeredPaneDndTableDecorations decorations )
 	{
-//		this.table = table;
-//		this.state = state;
 		this.decorations = decorations;
-		for( LayeredPaneDndTableDecorationHint hint : decorations.hints )
+		for( final LayeredPaneDndTableDecorationHint hint : decorations.hints )
 		{
 			hint.setTable( table );
 		}
 	}
 
-	public void setMousePosition( Point mousePosition )
+	public void setMousePosition( final Point mousePosition )
 	{
-		ArrayList<LayeredPaneDndTableDecorationHint> hints = decorations.getHints();
-		for( LayeredPaneDndTableDecorationHint hint : hints )
+		final ArrayList<LayeredPaneDndTableDecorationHint> hints = decorations.getHints();
+		for( final LayeredPaneDndTableDecorationHint hint : hints )
 		{
 			hint.setMousePosition( mousePosition );
 		}
@@ -60,11 +53,11 @@ public class LayeredPaneDndTableDecorator
 
 	public void signalAnimation()
 	{
-		ArrayList<LayeredPaneDndTableDecorationHint> hints = decorations.getHints();
-		for( LayeredPaneDndTableDecorationHint hint : hints )
+		final ArrayList<LayeredPaneDndTableDecorationHint> hints = decorations.getHints();
+		for( final LayeredPaneDndTableDecorationHint hint : hints )
 		{
 			hint.signalAnimation();
 		}
 	}
-	
+
 }

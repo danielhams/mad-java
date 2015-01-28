@@ -30,31 +30,31 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class WaveRollerIOQueueBridge extends MadLocklessQueueBridge<WaveRollerMadInstance>
 {
 	private static Log log = LogFactory.getLog( WaveRollerIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_OUT_RINGBUFFER_WRITE_INDEX = 0;
 	public static final int COMMAND_IN_ACTIVE = 1;
-	
+
 	public WaveRollerIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( WaveRollerMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final WaveRollerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean active = ( queueEntry.value == 1 );
+				final boolean active = ( queueEntry.value == 1 );
 				instance.active = active;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

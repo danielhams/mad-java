@@ -25,29 +25,27 @@ import java.awt.Point;
 public abstract class LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableDecorationHint.class.getName() );
-	
-	protected boolean active = false;
-	
-	protected LayeredPaneDndTable<?, ?, ?> table = null;
-	
+
+	protected boolean active;
+
+	protected LayeredPaneDndTable<?, ?, ?> table;
+
 	public boolean isActive()
 	{
 		return active;
 	}
-	
-	public void setTable( LayeredPaneDndTable<?, ?, ?> table )
+
+	public void setTable( final LayeredPaneDndTable<?, ?, ?> table )
 	{
 		this.table = table;
 	}
-	
+
 	public abstract void setActive( boolean activeBool);
-	
+
 	public abstract boolean isMouseRelative();
 
 	public abstract void setMousePosition(Point mousePosition);
 
-	public void signalAnimation()
-	{
-	}
-	
+	public abstract void signalAnimation();
+
 }

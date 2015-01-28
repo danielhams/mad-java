@@ -51,54 +51,54 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	private static final long serialVersionUID = -1183011558795174539L;
 
 	private static Log log = LogFactory.getLog(  WaveRollerDisplayUiJComponent.class.getName( ) );
-	
-	private WaveRollerMadInstance instance;
-	private WaveRollerMadUiInstance uiInstance;
-	
-	private DataRate knownDataRate = null;
-	
-	private int maxCaptureBufferLength = -1;
+
+	private final WaveRollerMadInstance instance;
+	private final WaveRollerMadUiInstance uiInstance;
+
+	private DataRate knownDataRate;
+
+	private int maxCaptureBufferLength;
 	private float currentCaptureMillis = 1.0f;
-	private int captureRenderLength = 1;
-	
+	private int captureRenderLength;
+
 	private UnsafeFloatRingBuffer displayRingBuffer;
 	private BackendToFrontendDataRingBuffer instanceRingBuffer;
-	
+
 	// Ui display bits
-	private boolean previouslyShowing = false;
-	
-	private BufferedImageAllocator bufferImageAllocator = null;
-	
-	boolean needsRepaint = false;
-	
-	private Rectangle bounds = null;
+	private boolean previouslyShowing;
+
+	private final BufferedImageAllocator bufferImageAllocator;
+
+	boolean needsRepaint;
+
+	private Rectangle bounds;
 	private int imageWidth, imageHeight;
-	
-	private WaveRollerBufferSampleFactory bufferSampleFactory = null;
-	private RollPainter<WaveRollerBuffer, WaveRollerBufferCleaner> rollPainter = null;
-	
+
+	private WaveRollerBufferSampleFactory bufferSampleFactory;
+	private RollPainter<WaveRollerBuffer, WaveRollerBufferCleaner> rollPainter;
+
 	public WaveRollerDisplayUiJComponent(
-			WaveRollerMadDefinition definition,
-			WaveRollerMadInstance instance,
-			WaveRollerMadUiInstance uiInstance,
-			int controlIndex )
+			final WaveRollerMadDefinition definition,
+			final WaveRollerMadInstance instance,
+			final WaveRollerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( true );
 		this.instance = instance;
 		this.uiInstance = uiInstance;
-		
+
 		uiInstance.setScopeDataListener( this );
-		
+
 		this.bufferImageAllocator = uiInstance.getUiDefinition().getBufferedImageAllocator();
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		boolean showing = isShowing();
-		
+		final boolean showing = isShowing();
+
 		if( previouslyShowing != showing )
 		{
 			uiInstance.sendUiActive( showing );
@@ -109,7 +109,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 			}
 		}
 
-		
+
 		if( rollPainter != null )
 		{
 			if( rollPainter.checkAndUpdate() )
@@ -118,15 +118,15 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 			}
 		}
 	}
-	
+
 	@Override
 	public Component getControl()
 	{
 		return this;
 	}
-	
+
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		if( rollPainter != null )
 		{
@@ -142,9 +142,9 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 		else
 		{
 			g.setColor( Color.black );
-			Rectangle b = getBounds();
+			final Rectangle b = getBounds();
 			g.fillRect( 0,  0, b.width, b.height );
-		}		
+		}
 	}
 
 	@Override
@@ -162,15 +162,15 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 				bufferSampleFactory = null;
 			}
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Unable to free tiled images: " + e.toString();
+			final String msg = "Unable to free tiled images: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void setBounds(Rectangle r)
+	public void setBounds(final Rectangle r)
 	{
 		super.setBounds(r);
 		this.bounds = r;
@@ -181,19 +181,19 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveStartup( HardwareIOChannelSettings ratesAndLatency, MadTimingParameters timingParameters )
+	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency, final MadTimingParameters timingParameters )
 	{
 		knownDataRate = ratesAndLatency.getAudioChannelSetting().getDataRate();
-		
+
 		maxCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( knownDataRate.getValue(),
 				WaveRollerMadUiInstance.MAX_CAPTURE_MILLIS + 100 );
-		
+
 		captureRenderLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( knownDataRate.getValue(), currentCaptureMillis );
-	
+
 		displayRingBuffer = new UnsafeFloatRingBuffer( maxCaptureBufferLength, true );
-		
+
 		instanceRingBuffer = instance.getDataRingBuffer();
-		
+
 		if( imageWidth > 0 && imageHeight > 0 )
 		{
 			bufferSampleFactory = new WaveRollerBufferSampleFactory( bufferImageAllocator, displayRingBuffer, bounds );
@@ -202,13 +202,16 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 			{
 				rollPainter = new RollPainter<WaveRollerBuffer, WaveRollerBufferCleaner>( imageWidth, bufferSampleFactory );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				log.error( "Exception caught setting up roll painter: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Exception caught setting up roll painter: " + e.toString(), e );
+				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void receiveStop()
 	{
@@ -218,9 +221,12 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 			{
 				rollPainter.cleanup();
 			}
-			catch (DatastoreException e)
+			catch (final DatastoreException e)
 			{
-				log.error("DatastoreException caught cleaning up roll painter on stop: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("DatastoreException caught cleaning up roll painter on stop: " + e.toString(), e );
+				}
 			}
 			rollPainter = null;
 			bufferSampleFactory = null;
@@ -228,40 +234,43 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveBufferIndexUpdate( long indexUpdateTimestamp, int writeIndex )
+	public void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		int numReadable = instanceRingBuffer.getNumReadableWithWriteIndex( writeIndex );
-		
-		int spaceAvailable = displayRingBuffer.getNumWriteable();
+		final int numReadable = instanceRingBuffer.getNumReadableWithWriteIndex( writeIndex );
+
+		final int spaceAvailable = displayRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
 		{
-			int spaceToFree = numReadable - spaceAvailable;
+			final int spaceToFree = numReadable - spaceAvailable;
 			displayRingBuffer.moveForward( spaceToFree );
 		}
 
 		// Add on the new data
-		int numRead = instanceRingBuffer.readToRingWithWriteIndex( writeIndex, displayRingBuffer,  numReadable );
+		final int numRead = instanceRingBuffer.readToRingWithWriteIndex( writeIndex, displayRingBuffer,  numReadable );
 		if( numRead != numReadable )
 		{
-			log.error("Failed reading from data ring buffer - expected " + numReadable + " and received " + numRead);
+			if( log.isErrorEnabled() )
+			{
+				log.error("Failed reading from data ring buffer - expected " + numReadable + " and received " + numRead);
+			}
 			// Zero buffer and set to full
 			Arrays.fill( displayRingBuffer.buffer, 0.0f );
 			displayRingBuffer.readPosition = 0;
 			displayRingBuffer.writePosition = displayRingBuffer.bufferLength - 1;
 		}
 //		log.debug("SCS GUI Added " + numRead + " samples to display ring - writePosition is now "  +displayRingBuffer.writePosition );
-		
+
 		needsRepaint = true;
 	}
-	
+
 	@Override
-	public void setCaptureTimeProducer( WaveRollerCaptureTimeProducer captureTimeProducer)
+	public void setCaptureTimeProducer( final WaveRollerCaptureTimeProducer captureTimeProducer)
 	{
 		captureTimeProducer.setScopeDataListener( this );
 	}
 
 	@Override
-	public void setCaptureTimeMillis( float captureMillis )
+	public void setCaptureTimeMillis( final float captureMillis )
 	{
 		currentCaptureMillis = captureMillis;
 		if( knownDataRate != null && bufferSampleFactory != null )

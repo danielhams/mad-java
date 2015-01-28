@@ -38,13 +38,13 @@ import javax.swing.event.EventListenerList;
  * @author Peter W. Draper
  * @version $Id: FloatJSliderModel.java,v 1.1 2012/01/07 10:42:22 dan Exp $
  */
-public class FloatJSliderModel 
+public class FloatJSliderModel
     implements BoundedRangeModel
 {
     /**
      * Reference to ChangeEvent, set when fireStateChanged invoked.
      */
-    protected ChangeEvent changeEvent = null;
+    protected ChangeEvent changeEvent;
 
     /**
      * List of listeners for our change events.
@@ -109,8 +109,8 @@ public class FloatJSliderModel
      * @param maxValue the maximum value
      * @param resolution the resolution between discrete values.
      */
-    public FloatJSliderModel( double value, double minValue,
-                              double maxValue, double resolution )
+    public FloatJSliderModel( final double value, final double minValue,
+                              final double maxValue, final double resolution )
     {
         setApparentValues( value, minValue, maxValue, resolution );
     }
@@ -126,7 +126,7 @@ public class FloatJSliderModel
     /**
      * Set the current resolution.
      */
-    public void setResolution( double value )
+    public void setResolution( final double value )
     {
         this.resolution = value;
         configureRealValues();
@@ -141,8 +141,8 @@ public class FloatJSliderModel
      * @param maxValue the maximum value
      * @param resolution the resolution between discrete values.
      */
-    public void setApparentValues( double value, double minValue,
-                                   double maxValue, double resolution )
+    public void setApparentValues( final double value, final double minValue,
+                                   final double maxValue, final double resolution )
     {
         apparentMinimum = minValue;
         apparentMaximum = maxValue;
@@ -154,7 +154,8 @@ public class FloatJSliderModel
     /**
      * Get the real maximum value used by the slider.
      */
-    public int getMaximum()
+    @Override
+	public int getMaximum()
     {
         return realMaximum;
     }
@@ -162,7 +163,8 @@ public class FloatJSliderModel
     /**
      * Set the real maximum value used by the slider. Does nothing.
      */
-    public void setMaximum( int newMaximum )
+    @Override
+	public void setMaximum( final int newMaximum )
     {
         //  Do nothing.
     }
@@ -170,7 +172,8 @@ public class FloatJSliderModel
     /**
      * Get the real minimum value used by the slider.
      */
-    public int getMinimum()
+    @Override
+	public int getMinimum()
     {
         return realMinimum;
     }
@@ -178,7 +181,8 @@ public class FloatJSliderModel
     /**
      * Set the real minimum value used by the slider. Does nothing.
      */
-    public void setMinimum( int newMinimum )
+    @Override
+	public void setMinimum( final int newMinimum )
     {
         // Do nothing.
     }
@@ -187,7 +191,8 @@ public class FloatJSliderModel
      * Get the real value as represented by the slider. Use
      * getDoubleValue instead.
      */
-    public int getValue()
+    @Override
+	public int getValue()
     {
         return realValue;
     }
@@ -196,7 +201,8 @@ public class FloatJSliderModel
      * Set the real value as shown by the slider. Use getDoubleValue
      * instead.
      */
-    public void setValue( int newValue )
+    @Override
+	public void setValue( final int newValue )
     {
         setRangeProperties( newValue, realExtent, realMinimum,
                             realMaximum, isAdjusting );
@@ -213,9 +219,9 @@ public class FloatJSliderModel
     /**
      * Set the current value.
      */
-    public void setDoubleValue( double newValue )
+    public void setDoubleValue( final double newValue )
     {
-        int newRealValue = convertToReal( newValue );
+        final int newRealValue = convertToReal( newValue );
         setRangeProperties( newRealValue, realExtent, realMinimum,
                             realMaximum, isAdjusting );
     }
@@ -223,7 +229,8 @@ public class FloatJSliderModel
     /**
      * Get the real extent of the "knob" (always 0).
      */
-    public int getExtent()
+    @Override
+	public int getExtent()
     {
         return realExtent;
     }
@@ -231,7 +238,8 @@ public class FloatJSliderModel
     /**
      * Set the real extent of the "knob". Does nothing.
      */
-    public void setExtent( int newExtent )
+    @Override
+	public void setExtent( final int newExtent )
     {
         // Do nothing.
     }
@@ -239,7 +247,8 @@ public class FloatJSliderModel
     /**
      * Return if the value is constantly adjusting.
      */
-    public boolean getValueIsAdjusting()
+    @Override
+	public boolean getValueIsAdjusting()
     {
         return isAdjusting;
     }
@@ -247,7 +256,8 @@ public class FloatJSliderModel
     /**
      * Set if the value is constantly adjusting.
      */
-    public void setValueIsAdjusting( boolean b )
+    @Override
+	public void setValueIsAdjusting( final boolean b )
     {
         setRangeProperties( realValue, realExtent, realMinimum,
                             realMaximum, b );
@@ -257,11 +267,12 @@ public class FloatJSliderModel
      * Set the state of the model using the given "real" values. After
      * this method is invoked the apparent values may be adjusted.
      */
-    public void setRangeProperties( int newValue,
-                                    int newExtent,
-                                    int newMin,
+    @Override
+	public void setRangeProperties( final int newValue,
+                                    final int newExtent,
+                                    final int newMin,
                                     int newMax,
-                                    boolean newAdjusting )
+                                    final boolean newAdjusting )
     {
         if ( newMax < realMaximum ) {
             newMax = realMaximum;
@@ -295,7 +306,7 @@ public class FloatJSliderModel
     /**
      *  Convert an apparent value into a real (slider) value.
      */
-    protected double convertToApparent( int rValue )
+    protected double convertToApparent( final int rValue )
     {
         return (rValue - realMinimum) * resolution + apparentMinimum;
     }
@@ -303,7 +314,7 @@ public class FloatJSliderModel
     /**
      *  Convert a real (slider) value into an apparent value.
      */
-    protected int convertToReal( double aValue )
+    protected int convertToReal( final double aValue )
     {
         return (int) ( (aValue - apparentMinimum) / resolution ) + realMinimum;
     }
@@ -316,7 +327,7 @@ public class FloatJSliderModel
     {
         // The important fact here is that the resolution must equate
         // to a real value of 1 (the real resolution of a slider).
-        int range = (int) ((apparentMaximum - apparentMinimum) / resolution);
+        final int range = (int) ((apparentMaximum - apparentMinimum) / resolution);
         realMaximum = realMinimum + range;
     }
 
@@ -324,19 +335,21 @@ public class FloatJSliderModel
      * The rest of this is event handling code copied from
      * DefaultBoundedRangeModel.
      */
-    public void addChangeListener(ChangeListener l) 
+    @Override
+	public void addChangeListener(final ChangeListener l)
     {
         listenerList.add(ChangeListener.class, l);
     }
 
-    public void removeChangeListener(ChangeListener l) 
+    @Override
+	public void removeChangeListener(final ChangeListener l)
     {
         listenerList.remove(ChangeListener.class, l);
     }
 
-    protected void fireStateChanged() 
+    protected void fireStateChanged()
     {
-        Object[] listeners = listenerList.getListenerList();
+        final Object[] listeners = listenerList.getListenerList();
         for (int i = listeners.length - 2; i >= 0; i -=2 ) {
             if (listeners[i] == ChangeListener.class) {
                 if (changeEvent == null) {

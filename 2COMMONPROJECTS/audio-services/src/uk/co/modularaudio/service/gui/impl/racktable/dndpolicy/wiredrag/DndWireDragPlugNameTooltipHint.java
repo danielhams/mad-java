@@ -108,4 +108,10 @@ public class DndWireDragPlugNameTooltipHint extends LayeredPaneDndTableDecoratio
 //		myBounds.y = 300;
 	}
 
+	@Override
+	public void signalAnimation()
+	{
+		// No animation
+	}
+
 }

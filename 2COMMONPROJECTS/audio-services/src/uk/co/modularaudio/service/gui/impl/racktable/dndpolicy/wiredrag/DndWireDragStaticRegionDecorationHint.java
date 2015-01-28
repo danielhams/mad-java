@@ -112,4 +112,10 @@ public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDe
 		}
 
 	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// No animation
+	}
 }

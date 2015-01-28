@@ -28,18 +28,18 @@ import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPainterBufferCleare
 
 public class WaveRollerBufferCleaner implements RollPainterBufferClearer<WaveRollerBuffer>
 {
-	private final static Color backgroundColor = Color.BLACK;
+	private final static Color BACKGROUND_COLOR = Color.BLACK;
 	private final Rectangle bounds;
-	
-	public WaveRollerBufferCleaner( Rectangle bounds )
+
+	public WaveRollerBufferCleaner( final Rectangle bounds )
 	{
 		this.bounds = bounds;
 	}
 
 	@Override
-	public void clearBuffer( int bufNum, WaveRollerBuffer bufferToClear )
+	public void clearBuffer( final int bufNum, final WaveRollerBuffer bufferToClear )
 	{
-		Graphics2D g = bufferToClear.graphics;
+		final Graphics2D g = bufferToClear.graphics;
 //		if( bufNum == 0 )
 //		{
 //			g.setColor( Color.YELLOW );
@@ -48,7 +48,7 @@ public class WaveRollerBufferCleaner implements RollPainterBufferClearer<WaveRol
 //		{
 //			g.setColor( Color.GREEN );
 //		}
-		g.setColor( backgroundColor );
+		g.setColor( BACKGROUND_COLOR );
 		g.fillRect( 0, 0, bounds.width, bounds.height );
 	}
 

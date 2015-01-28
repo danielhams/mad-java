@@ -140,4 +140,10 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 	{
 		return hintType;
 	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// No animation
+	}
 }

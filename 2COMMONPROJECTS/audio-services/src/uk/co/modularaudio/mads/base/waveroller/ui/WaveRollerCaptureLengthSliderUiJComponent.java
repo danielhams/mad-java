@@ -40,17 +40,15 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 		WaveRollerCaptureTimeProducer
 {
 	private static Log log = LogFactory.getLog( WaveRollerCaptureLengthSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-//	private RPOscilloscopeMadUiInstance uiInstance = null;
-	
-	private WaveRollerDataListener dataListener = null;
 
-	public WaveRollerCaptureLengthSliderUiJComponent( WaveRollerMadDefinition definition,
-			WaveRollerMadInstance instance,
-			WaveRollerMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private WaveRollerDataListener dataListener;
+
+	public WaveRollerCaptureLengthSliderUiJComponent( final WaveRollerMadDefinition definition,
+			final WaveRollerMadInstance instance,
+			final WaveRollerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 1.0f, 5000.0f, 1500.0f,
 				"ms",
@@ -62,16 +60,17 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 				Color.WHITE,
 				false );
 //		this.uiInstance = uiInstance;
-		
+
 		uiInstance.setCaptureTimeProducer( this );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		if( dataListener != null )
 		{
@@ -80,7 +79,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -91,7 +90,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -99,24 +98,24 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}
@@ -128,7 +127,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 	}
 
 	@Override
-	public void setScopeDataListener( WaveRollerDataListener dataListener )
+	public void setScopeDataListener( final WaveRollerDataListener dataListener )
 	{
 		this.dataListener = dataListener;
 		dataListener.setCaptureTimeMillis( model.getValue() );

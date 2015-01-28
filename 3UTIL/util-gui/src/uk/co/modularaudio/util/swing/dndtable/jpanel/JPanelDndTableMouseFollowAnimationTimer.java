@@ -31,13 +31,13 @@ public class JPanelDndTableMouseFollowAnimationTimer
 	private static final int REPAINT_MILLIS = 1000 / 20;
 
 //	private static Log log = LogFactory.getLog( AutoScrollingMouseListener.class.getName() );
-	
-	private RepaintingTimerTask timerTask = null;
-	private Timer repainterTimer = null;
-	
-	private JPanelDndTableDecorator tableDecorator = null;
-	
-	public JPanelDndTableMouseFollowAnimationTimer(JPanelDndTableDecorator tableDecorator)
+
+	private RepaintingTimerTask timerTask;
+	private Timer repainterTimer;
+
+	private final JPanelDndTableDecorator tableDecorator;
+
+	public JPanelDndTableMouseFollowAnimationTimer(final JPanelDndTableDecorator tableDecorator)
 	{
 		this.tableDecorator = tableDecorator;
 	}
@@ -52,7 +52,7 @@ public class JPanelDndTableMouseFollowAnimationTimer
 //			log.debug("Starting repaining timer.");
 		}
 	}
-	
+
 	public void stop()
 	{
 		if( repainterTimer != null )
@@ -67,18 +67,16 @@ public class JPanelDndTableMouseFollowAnimationTimer
 
 	public class RepaintingTimerTask implements ActionListener
 	{
-//		private SwingDndTableMouseFollowAnimationTimer mouseFollowThread = null;
-		private JPanelDndTableDecorator tableDecorator = null;
-	
-		public RepaintingTimerTask( JPanelDndTableMouseFollowAnimationTimer mouseFollowThread,
-				JPanelDndTableDecorator tableDecorator)
+		private final JPanelDndTableDecorator tableDecorator;
+
+		public RepaintingTimerTask( final JPanelDndTableMouseFollowAnimationTimer mouseFollowThread,
+				final JPanelDndTableDecorator tableDecorator)
 		{
-//			this.mouseFollowThread = mouseFollowThread;
 			this.tableDecorator = tableDecorator;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			tableDecorator.signalAnimation();
 			tableDecorator.doRepaintIfNecessary();

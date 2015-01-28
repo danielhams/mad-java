@@ -40,27 +40,27 @@ public class EditableJLabel extends JPanel
 	private boolean editing;
 
 	/** The confirm edition key is Return */
-	private static final int confirmKeyCode = KeyEvent.VK_ENTER;
+	private static final int CONFIRM_KEY_CODE = KeyEvent.VK_ENTER;
 
 	/** The cancel edition key is Return */
-	private static final int cancelKeyCode = KeyEvent.VK_ESCAPE;
+	private static final int CANCEL_KEY_CODE = KeyEvent.VK_ESCAPE;
 
 	/** The value which holds this component */
 	private String value;
 
 	// graphical components
 
-	private CardLayout cl;
+	private final CardLayout cl;
 
-	private JPanel pnlCards;
+	private final JPanel pnlCards;
 
 	private static final String TEXT_FIELD = "text field";
 
-	private JTextField textField;
+	private final JTextField textField;
 
 	private static final String LABEL = "label";
 
-	private JLabel label;
+	private final JLabel label;
 
 	public EditableJLabel()
 	{
@@ -78,7 +78,7 @@ public class EditableJLabel extends JPanel
 		label.addMouseListener(new MouseAdapter()
 		{
 			@Override
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
 				// if double click, set edition mode
 				if (e.getClickCount() == 2)
@@ -91,9 +91,9 @@ public class EditableJLabel extends JPanel
 		textField.addKeyListener(new KeyAdapter()
 		{
 			@Override
-			public void keyReleased(KeyEvent e)
+			public void keyReleased(final KeyEvent e)
 			{
-				if (e.getKeyCode() == confirmKeyCode)
+				if (e.getKeyCode() == CONFIRM_KEY_CODE)
 				{
 					/*
 					 * confirmation key pressed, so changing to non-edition and
@@ -101,7 +101,7 @@ public class EditableJLabel extends JPanel
 					 */
 					confirmEdition();
 				}
-				else if (e.getKeyCode() == cancelKeyCode)
+				else if (e.getKeyCode() == CANCEL_KEY_CODE)
 				{
 					/*
 					 * cancel key pressed, so changing to non edition and cancel
@@ -146,7 +146,7 @@ public class EditableJLabel extends JPanel
 	 * @param value
 	 *            the value to set
 	 */
-	public void setValue(String value)
+	public void setValue(final String value)
 	{
 		this.value = value;
 	}
@@ -159,16 +159,16 @@ public class EditableJLabel extends JPanel
 	{
 		return editing;
 	}
-	
-	public void setText( String text )
+
+	public void setText( final String text )
 	{
 		value = text;
 		textField.setText( text );
 		label.setText( text );
 	}
-	
+
 	@Override
-	public void setFont( Font font )
+	public void setFont( final Font font )
 	{
 		super.setFont( font );
 		if( textField != null )
@@ -180,7 +180,8 @@ public class EditableJLabel extends JPanel
 			label.setFont( font );
 		}
 	}
-	
+
+	@Override
 	public Font getFont()
 	{
 		if( label != null )

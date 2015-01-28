@@ -100,7 +100,7 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		this.showGrid = showGrid;
 		this.gridColour = gridColour;
 		this.factory = factory;
-		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this, factory );
+		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this );
 		dataModel.addListener( listener );
 		// Use an absolute layout
 		setLayout( null );
@@ -109,7 +109,7 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		fullRefreshFromModel();
 	}
 
-	public void fullRefreshFromModel()
+	public final void fullRefreshFromModel()
 	{
 		// Remove swing components
 		this.removeAll();

@@ -36,21 +36,21 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 	implements IMadUiControlInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
 	private static final long serialVersionUID = 28004477652791854L;
-	
-	private FrequencyFilterMadUiInstance uiInstance = null;
+
+	private final FrequencyFilterMadUiInstance uiInstance;
 
 	public FrequencyFilterDbToggleUiJComponent(
-			FrequencyFilterMadDefinition definition,
-			FrequencyFilterMadInstance instance,
-			FrequencyFilterMadUiInstance uiInstance,
-			int controlIndex )
+			final FrequencyFilterMadDefinition definition,
+			final FrequencyFilterMadInstance instance,
+			final FrequencyFilterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Default value
 		super( false );
 		this.uiInstance = uiInstance;
 		this.setOpaque( true );
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
 		this.setText( "Toggle 24db" );
 		this.setMargin( new Insets( 0, 0, 0, 0 ) );
@@ -63,7 +63,7 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -71,7 +71,7 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 		if( previousValue != newValue )
 		{

@@ -28,22 +28,22 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class TestDndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( TestDndRackDragRegionHintDecoration.class.getName() );
-	
+
 	private RegionHintType hintType = null;
 	private int x = 0;
 	private int y = 0;
 	private int width = 0;
 	private int height = 0;
-	
+
 	private boolean isActive = false;
-	
-	private TestDndRackTargetRegion targetRegionComponent = new TestDndRackTargetRegion();
-	
+
+	private final TestDndRackTargetRegion targetRegionComponent = new TestDndRackTargetRegion();
+
 	public TestDndRackDragRegionHintDecoration()
 	{
 	}
 
-	public void setRegionHint( RegionHintType hintType, int x, int y, int width, int height )
+	public void setRegionHint( final RegionHintType hintType, final int x, final int y, final int width, final int height )
 	{
 		boolean isUpdated = false;
 
@@ -55,7 +55,7 @@ public class TestDndRackDragRegionHintDecoration extends LayeredPaneDndTableDeco
 			this.height = height;
 			isUpdated = true;
 		}
-		
+
 		if( this.hintType != hintType )
 		{
 			this.hintType = hintType;
@@ -77,19 +77,19 @@ public class TestDndRackDragRegionHintDecoration extends LayeredPaneDndTableDeco
 	{
 		return false;
 	}
-	
+
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
 	}
-	
+
 	public enum RegionHintType
 	{
 		SOURCE, VALID, INVALID
 	}
 
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 		if( isActive != activeBool )
 		{
@@ -107,6 +107,12 @@ public class TestDndRackDragRegionHintDecoration extends LayeredPaneDndTableDeco
 				table.repaint( targetRegionComponent.getBounds() );
 			}
 		}
-		
+
+	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// No animation
 	}
 }

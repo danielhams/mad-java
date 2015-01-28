@@ -43,35 +43,30 @@ import uk.co.modularaudio.util.math.MinMaxComputer;
 public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<WaveRollerBuffer,WaveRollerBufferCleaner>
 {
 	private static Log log = LogFactory.getLog( WaveRollerBufferSampleFactory.class.getName() );
-	
+
 	private final BufferedImageAllocator bufferImageAllocator;
 	private final AllocationMatch localAllocationMatch = new AllocationMatch();
 	private final RollPaintDefaultUpdateStructure rpUpdateType = new RollPaintDefaultUpdateStructure();
 	private final WaveRollerBufferCleaner bufferClearer;
-	
+
 	private final UnsafeFloatRingBuffer displayRingBuffer;
-	
+
 	private final Rectangle displayBounds;
-	
-//	private final Color valueColor = new Color( 43, 68, 98 );
+
 	private final Color valueColor = new Color( 75, 131, 155 );
-	
+
 	private int lastBufferPos;
 	private int numSamplesPerPixel;
-	
+
 	private int captureRenderLength;
 	private boolean needsFullUpdate;
-	
-//	private float minValue;
-//	private float maxValue;
-//	private float previousMinValue;
-//	private float previousMaxValue;
-	private float[] minMaxValues = new float[2];
-	private float[] previousMinMaxValues = new float[2];
-	
-	public WaveRollerBufferSampleFactory( BufferedImageAllocator bufferImageAllocator,
-			UnsafeFloatRingBuffer displayRingBuffer,
-			Rectangle displayBounds )
+
+	private final float[] minMaxValues = new float[2];
+	private final float[] previousMinMaxValues = new float[2];
+
+	public WaveRollerBufferSampleFactory( final BufferedImageAllocator bufferImageAllocator,
+			final UnsafeFloatRingBuffer displayRingBuffer,
+			final Rectangle displayBounds )
 	{
 		this.bufferImageAllocator = bufferImageAllocator;
 		bufferClearer = new WaveRollerBufferCleaner( displayBounds );
@@ -81,11 +76,11 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 
 		// Not perfect, but needs a value
 		numSamplesPerPixel = 1;
-		
+
 		captureRenderLength = 1;
 		needsFullUpdate = true;
 	}
-	
+
 	public void resetForFullRepaint()
 	{
 		// And reset to perform a full render next time around
@@ -96,8 +91,8 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 		}
 		needsFullUpdate = true;
 	}
-	
-	public void setCaptureRenderLength( int captureRenderLength )
+
+	public void setCaptureRenderLength( final int captureRenderLength )
 	{
 		this.captureRenderLength = captureRenderLength;
 		this.numSamplesPerPixel = (int)(captureRenderLength / (float)displayBounds.width);
@@ -117,67 +112,43 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 	}
 
 	@Override
-	public WaveRollerBuffer createBuffer( int bufNum ) throws DatastoreException
+	public WaveRollerBuffer createBuffer( final int bufNum ) throws DatastoreException
 	{
-		TiledBufferedImage tbi = bufferImageAllocator.allocateBufferedImage( this.getClass().getSimpleName(),
+		final TiledBufferedImage tbi = bufferImageAllocator.allocateBufferedImage( this.getClass().getSimpleName(),
 				localAllocationMatch, AllocationLifetime.SHORT, AllocationBufferType.TYPE_INT_RGB, displayBounds.width, displayBounds.height );
 		return new WaveRollerBuffer( tbi );
 	}
 
 	@Override
-	public void freeBuffer( WaveRollerBuffer bufferToFree ) throws DatastoreException
+	public void freeBuffer( final WaveRollerBuffer bufferToFree ) throws DatastoreException
 	{
 		bufferImageAllocator.freeBufferedImage( bufferToFree.tbi );
 	}
 
 	private int getNumReadable()
 	{
-		int curWritePos = displayRingBuffer.writePosition;
-		int numReadable = ( lastBufferPos > curWritePos ? (displayRingBuffer.bufferLength - lastBufferPos) + curWritePos : curWritePos - lastBufferPos );
+		final int curWritePos = displayRingBuffer.writePosition;
+		final int numReadable = ( lastBufferPos > curWritePos ? (displayRingBuffer.bufferLength - lastBufferPos) + curWritePos : curWritePos - lastBufferPos );
 		return numReadable;
 	}
 
-	private void calcMinMaxForSamples( int sampleStartIndex )
+	private void calcMinMaxForSamples( final int sampleStartIndex )
 	{
 		minMaxValues[0] = Float.MAX_VALUE;
 		minMaxValues[1] = -minMaxValues[0];
-		
+
 		if( numSamplesPerPixel < 1.0f )
 		{
 			minMaxValues[0] = displayRingBuffer.buffer[sampleStartIndex];
 			minMaxValues[1] = displayRingBuffer.buffer[sampleStartIndex];
 			return;
 		}
-		
-		int linearEndIndex = (int)(sampleStartIndex + numSamplesPerPixel);
-		int endIndex = ( linearEndIndex >= displayRingBuffer.bufferLength ? displayRingBuffer.bufferLength : linearEndIndex );
-		
-		int wrappedEndIndex = linearEndIndex - endIndex;
-		
-//		for( int s = sampleStartIndex ; s < endIndex ; ++s )
-//		{
-//			float val = displayRingBuffer.buffer[ s ];
-//			if( val < minMaxValues[0] )
-//			{
-//				minMaxValues[0] = val;
-//			}
-//			if( val > minMaxValues[1] )
-//			{
-//				minMaxValues[1] = val;
-//			}
-//		}
-//		for( int s = 0 ; s < wrappedEndIndex ; ++s )
-//		{
-//			float val = displayRingBuffer.buffer[ s ];
-//			if( val < minMaxValues[0] )
-//			{
-//				minMaxValues[0] = val;
-//			}
-//			if( val > minMaxValues[1] )
-//			{
-//				minMaxValues[1] = val;
-//			}
-//		}
+
+		final int linearEndIndex = sampleStartIndex + numSamplesPerPixel;
+		final int endIndex = ( linearEndIndex >= displayRingBuffer.bufferLength ? displayRingBuffer.bufferLength : linearEndIndex );
+
+		final int wrappedEndIndex = linearEndIndex - endIndex;
+
 		MinMaxComputer.calcMinMaxForFloats( displayRingBuffer.buffer, sampleStartIndex, endIndex - sampleStartIndex, minMaxValues );
 		if( wrappedEndIndex > 0 )
 		{
@@ -198,25 +169,25 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 		}
 	}
 
-	private void fillInMinMaxLine( Graphics2D g, int pixelX, float minValue, float maxValue )
+	private void fillInMinMaxLine( final Graphics2D g, final int pixelX, final float minValue, final float maxValue )
 	{
-		float multiplier = (displayBounds.height / 2.0f);
-		
+		final float multiplier = (displayBounds.height / 2.0f);
+
 		g.setColor( valueColor );
-		int yMinVal =  (int)((-minValue * multiplier) + multiplier);
-		int yMaxVal = (int)((-maxValue * multiplier ) + multiplier);
+		final int yMinVal =  (int)((-minValue * multiplier) + multiplier);
+		final int yMaxVal = (int)((-maxValue * multiplier ) + multiplier);
 		g.drawLine(pixelX,  yMinVal,  pixelX,  yMaxVal );
 	}
 
 	private int getNumSamplesAvailable()
 	{
-		int numReadable = getNumReadable();
-		
+		final int numReadable = getNumReadable();
+
 		int numPixelsCanOutput = numReadable / numSamplesPerPixel;
 		numPixelsCanOutput = (numPixelsCanOutput > displayBounds.width ? displayBounds.width : numPixelsCanOutput );
 
 //		log.debug("Return num pixels as " + numPixelsCanOutput );
-		
+
 		return numPixelsCanOutput;
 	}
 
@@ -237,7 +208,7 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 		{
 			if( displayRingBuffer.writePosition != lastBufferPos )
 			{
-				int numSamplesAvailable = getNumSamplesAvailable();
+				final int numSamplesAvailable = getNumSamplesAvailable();
 				if( numSamplesAvailable != 0 )
 				{
 //					log.debug("Is delta update");
@@ -258,28 +229,31 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 	}
 
 	@Override
-	public void fullFillSamples( RollPaintUpdate update, WaveRollerBuffer buffer )
+	public void fullFillSamples( final RollPaintUpdate update, final WaveRollerBuffer buffer )
 	{
-		Graphics2D g = buffer.graphics;
+		final Graphics2D g = buffer.graphics;
 		previousMinMaxValues[0] = 0.0f;
 		previousMinMaxValues[1] = 0.0f;
-		
+
 //		log.debug( "Full repaint " + displayBounds );
 		g.setColor( Color.red );
-		
+
 		lastBufferPos = displayRingBuffer.writePosition;
-		int numReadable = displayRingBuffer.getNumReadable();
+		final int numReadable = displayRingBuffer.getNumReadable();
 		int numPixelsFromRing = numReadable / numSamplesPerPixel;
 		numPixelsFromRing = (numPixelsFromRing > displayBounds.width ? displayBounds.width : numPixelsFromRing );
 		int numZeros = 0;
 		if( numPixelsFromRing < displayBounds.width )
 		{
 			numZeros = displayBounds.width - numPixelsFromRing;
-			log.debug("Using " + numZeros + " zeros");
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Using " + numZeros + " zeros");
+			}
 		}
-		
+
 		int numPixelsDone = 0;
-		
+
 		int bufferIndex;
 
 		if( numZeros > 0 )
@@ -317,14 +291,14 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 
 		for( ; bufferIndex < displayRingBuffer.bufferLength && numPixelsDone < displayBounds.width ; bufferIndex += numSamplesPerPixel, ++numPixelsDone )
 		{
-			int indexInt = (int)bufferIndex;
-			
+			final int indexInt = bufferIndex;
+
 //			log.debug("Pixel " + numPixelsDone + " reading from index " + indexInt );
 			calcMinMaxForSamples( indexInt );
 			extendMinMaxWithPrevious();
-			
+
 			fillInMinMaxLine( g, numPixelsDone, minMaxValues[0], minMaxValues[1] );
-			
+
 			previousMinMaxValues[0] = minMaxValues[0];
 			previousMinMaxValues[1] = minMaxValues[1];
 		}
@@ -334,51 +308,51 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 			bufferIndex = bufferIndex - displayRingBuffer.bufferLength;
 			for( ; bufferIndex < displayRingBuffer.writePosition && numPixelsDone < displayBounds.width ; bufferIndex += numSamplesPerPixel, ++numPixelsDone )
 			{
-				int indexInt = (int)bufferIndex;
+				final int indexInt = bufferIndex;
 //				log.debug("Pixel " + numPixelsDone + " reading from index " + indexInt );
 				calcMinMaxForSamples( indexInt );
-				
+
 				fillInMinMaxLine( g, numPixelsDone, minMaxValues[0], minMaxValues[1] );
 
 				previousMinMaxValues[0] = minMaxValues[0];
 				previousMinMaxValues[1] = minMaxValues[1];
 			}
 		}
-		
+
 		lastBufferPos = bufferIndex;
 	}
 
 	@Override
-	public void deltaFillSamples( RollPaintUpdate update, int displayOffset, WaveRollerBuffer buffer,
-			int bufferSampleOffset, int numSamples, WaveRollerBuffer otherBuffer )
+	public void deltaFillSamples( final RollPaintUpdate update, final int displayOffset, final WaveRollerBuffer buffer,
+			final int bufferSampleOffset, final int numSamples, final WaveRollerBuffer otherBuffer )
 	{
-		Graphics2D g = buffer.graphics;
+		final Graphics2D g = buffer.graphics;
 		// Nasty assumptions:
 		// (1) the previous min/max values are correct.
 		// (2) we are going forwards
 //			log.debug( "Delta paint " + numToPaint + " pixels at offset " + paintOffset );
 
-		int numReadable = getNumReadable();
+		final int numReadable = getNumReadable();
 
 		int numPixelsCanOutput = numReadable / numSamplesPerPixel;
 		numPixelsCanOutput = (numPixelsCanOutput > numSamples ? numSamples : numPixelsCanOutput );
 
 //			log.debug("NumPixelsCanOutputInt is " + numPixelsCanOutputInt);
-		
+
 		int bufferIndex = lastBufferPos;
 		int numPixelsDone = 0;
-		
+
 		for( ; bufferIndex < displayRingBuffer.bufferLength && numPixelsDone < numPixelsCanOutput ; bufferIndex += numSamplesPerPixel, ++numPixelsDone )
 		{
-			int indexInt = (int)bufferIndex;
-			
+			final int indexInt = bufferIndex;
+
 			calcMinMaxForSamples( indexInt );
 			extendMinMaxWithPrevious();
-			
-			int xOffset = bufferSampleOffset + numPixelsDone;
+
+			final int xOffset = bufferSampleOffset + numPixelsDone;
 			fillInMinMaxLine( g,  xOffset, minMaxValues[0], minMaxValues[1] );
 //				log.debug("Filled in line at " + xOffset + " from " + minValue + " to " + maxValue );
-			
+
 			previousMinMaxValues[0] = minMaxValues[0];
 			previousMinMaxValues[1] = minMaxValues[1];
 		}
@@ -387,14 +361,14 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 			bufferIndex = bufferIndex - displayRingBuffer.bufferLength;
 			for( ; bufferIndex < displayRingBuffer.writePosition && numPixelsDone < numPixelsCanOutput ; bufferIndex += numSamplesPerPixel, ++numPixelsDone )
 			{
-				int indexInt = (int)bufferIndex;
+				final int indexInt = bufferIndex;
 				calcMinMaxForSamples( indexInt );
 				extendMinMaxWithPrevious();
-				
-				int xOffset = bufferSampleOffset + numPixelsDone;
+
+				final int xOffset = bufferSampleOffset + numPixelsDone;
 				fillInMinMaxLine( g,  xOffset, minMaxValues[0], minMaxValues[1] );
 //					log.debug("Filled in line at " + xOffset + " from " + minValue + " to " + maxValue );
-				
+
 				previousMinMaxValues[0] = minMaxValues[0];
 				previousMinMaxValues[1] = minMaxValues[1];
 			}

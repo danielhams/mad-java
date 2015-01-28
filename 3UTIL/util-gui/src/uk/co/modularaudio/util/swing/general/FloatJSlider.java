@@ -51,9 +51,9 @@ import uk.co.modularaudio.util.swing.general.astgui.ScientificFormat;
  * @author Peter W. Draper
  * @since $Date: 2012/02/09 13:05:27 $
  * @since 17-OCT-2000
- * @version $Id: FloatJSlider.java,v 1.2 2012/02/09 13:05:27 dan Exp $ 
+ * @version $Id: FloatJSlider.java,v 1.2 2012/02/09 13:05:27 dan Exp $
  */
-public class FloatJSlider extends JPanel 
+public class FloatJSlider extends JPanel
 {
 	private static final long serialVersionUID = -3688476499585348267L;
 
@@ -75,19 +75,19 @@ public class FloatJSlider extends JPanel
     /**
      * Slider model that supports floating point.
      */
-    private FloatJSliderModel model;
+    private final FloatJSliderModel model;
 
     /**
      *  Create an instance of FloatJSlider with text entry field.
      */
-    public FloatJSlider( FloatJSliderModel model ) {
+    public FloatJSlider( final FloatJSliderModel model ) {
         this( model, true );
     }
 
     /**
      *  Create an instance of FloatJSlider, with optional text entry field.
      */
-    public FloatJSlider( FloatJSliderModel model, boolean showTextField ) 
+    public FloatJSlider( final FloatJSliderModel model, final boolean showTextField )
     {
         this.model = model;
         this.showTextField = showTextField;
@@ -98,21 +98,23 @@ public class FloatJSlider extends JPanel
         if ( showTextField ) {
             // Add the text field.  It initially displays "0" and needs
             // to be at least 10 columns wide.
-            ScientificFormat scientificFormat = new ScientificFormat();
+            final ScientificFormat scientificFormat = new ScientificFormat();
             valueField = new DecimalField( 0, 10, scientificFormat );
             valueField.setDoubleValue( model.getDoubleValue() );
             valueField.addActionListener( new ActionListener() {
-                    public void actionPerformed( ActionEvent e ) {
+                    @Override
+					public void actionPerformed( final ActionEvent e ) {
                         syncModel();
                         fireStateChanged( new ChangeEvent( this ) );
                     }
                 });
         }
-            
+
         // Add the slider.
         slider = new JSlider( model );
         model.addChangeListener( new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
+            @Override
+			public void stateChanged(final ChangeEvent e) {
                 syncText();
                 fireStateChanged( e );
             }
@@ -149,8 +151,8 @@ public class FloatJSlider extends JPanel
     public double getValue() {
         return model.getDoubleValue();
     }
-    
-    public void setValue( double iValue )
+
+    public void setValue( final double iValue )
     {
     	valueField.setDoubleValue( iValue );
     	syncModel();
@@ -159,7 +161,8 @@ public class FloatJSlider extends JPanel
     /**
      * Set the tooltip for the text and slider.
      */
-    public void setToolTipText( String tip ) {
+    @Override
+	public void setToolTipText( final String tip ) {
         if ( showTextField ) {
             valueField.setToolTipText( tip );
         }
@@ -170,7 +173,8 @@ public class FloatJSlider extends JPanel
     /**
      * Enable both components.
      */
-    public void enable()
+    @Override
+	public void enable()
     {
         slider.setEnabled( true );
         if ( showTextField ) {
@@ -181,7 +185,8 @@ public class FloatJSlider extends JPanel
     /**
      * Disable both components.
      */
-    public void disable()
+    @Override
+	public void disable()
     {
         slider.setEnabled( false );
         if ( showTextField ) {
@@ -198,15 +203,15 @@ public class FloatJSlider extends JPanel
     /**
      * Adds a ChangeListener.
      */
-    public void addChangeListener( ChangeListener l ) {
+    public void addChangeListener( final ChangeListener l ) {
         listeners.add( ChangeListener.class, l );
     }
 
     /**
      * Forward a ChangeEvent from the slider.
      */
-    protected void fireStateChanged( ChangeEvent e ) {
-        Object[] la = listeners.getListenerList();
+    protected void fireStateChanged( final ChangeEvent e ) {
+        final Object[] la = listeners.getListenerList();
         for (int i = la.length - 2; i >= 0; i -= 2) {
             if (la[i]==ChangeListener.class) {
                 ((ChangeListener)la[i+1]).stateChanged( e );
@@ -217,22 +222,22 @@ public class FloatJSlider extends JPanel
     /**
      *  Test method.
      */
-    public static void main( String args[] ) {
+    public static void main( final String args[] ) {
 
-        FloatJSliderModel model = new
+        final FloatJSliderModel model = new
             FloatJSliderModel( 1.0, 1.0, 100.0, 0.01 );
-        FloatJSlider fslider = new FloatJSlider( model );
+        final FloatJSlider fslider = new FloatJSlider( model );
 
         //  Create a frame to hold graphics.
-        JFrame frame = new JFrame();
+        final JFrame frame = new JFrame();
         frame.getContentPane().add( fslider );
 
         //  Make all components of window decide their sizes.
         frame.pack();
 
         //  Center the window on the screen.
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = frame.getSize();
+        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        final Dimension frameSize = frame.getSize();
         if ( frameSize.height > screenSize.height ) {
             frameSize.height = screenSize.height;
         }
@@ -247,7 +252,8 @@ public class FloatJSlider extends JPanel
 
         //  Application exits when this window is closed.
         frame.addWindowListener( new WindowAdapter() {
-            public void windowClosing( WindowEvent evt ) {
+            @Override
+			public void windowClosing( final WindowEvent evt ) {
                 System.exit( 1 );
             }
         });

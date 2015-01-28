@@ -24,7 +24,7 @@ import java.awt.Rectangle;
 
 public interface JPanelDndTableDecorationHintListener
 {
-	public void receiveNeedsRepaintSignal( Object source, Rectangle damageRegion );
+	void receiveNeedsRepaintSignal( Object source, Rectangle damageRegion );
 
-	public void receiveForceRepaintSignal( Object source, Rectangle damageRegion );
+	void receiveForceRepaintSignal( Object source, Rectangle damageRegion );
 }

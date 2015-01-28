@@ -26,21 +26,21 @@ import java.util.List;
 public class JPanelDndTableDecorations
 {
 //	private static Log log = LogFactory.getLog( SwingDndTableDecorations.class.getName() );
-	
+
 	protected List<JPanelDndTableDecorationHint> hints = new ArrayList<JPanelDndTableDecorationHint>();
-	
+
 	protected JPanelDndTableDecorations()
 	{
 	}
-	
-	public JPanelDndTableDecorations( List<JPanelDndTableDecorationHint> hints )
+
+	public JPanelDndTableDecorations( final List<JPanelDndTableDecorationHint> hints )
 	{
 		if( hints != null )
 		{
 			this.hints = hints;
 		}
 	}
-	
+
 	public List<JPanelDndTableDecorationHint> getHints()
 	{
 		return hints;

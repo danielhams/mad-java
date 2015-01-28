@@ -45,14 +45,14 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 
 	public static final String DEFINITION_ID = "frequency_filter";
 
-	private final static String userVisibleName = "Frequency Filter";
+	private final static String USER_VISIBLE_NAME = "Frequency Filter";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationName = "Frequency Filter";
-	private final static String classificationDescription = "A filter to remove or allow frequencies";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Frequency Filter";
+	private final static String CLASS_DESC = "A filter to remove or allow frequencies";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
 		"Input CV Frequency",
 		"Output Wave Left",
@@ -60,7 +60,7 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		"Complement Wave Left",
 		"Complement Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
 		MadChannelType.AUDIO,
@@ -68,7 +68,7 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
@@ -76,7 +76,7 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.MONO,
 		MadChannelPosition.STEREO_LEFT,
@@ -87,18 +87,18 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 	public FrequencyFilterMadDefinition( BaseComponentsCreationContext creationContext,
 			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.BETA ),
 				new FrequencyFilterIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

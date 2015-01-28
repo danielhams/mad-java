@@ -35,13 +35,13 @@ public class LayeredPaneDndTableMouseFollowAnimationTimer
 //	private static final int REPAINT_MILLIS = 1000 / 60;
 
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableMouseFollowAnimationTimer.class.getName() );
-	
-	private RepaintingTimerTask timerTask = null;
-	private Timer repainterTimer = null;
-	
-	private LayeredPaneDndTableDecorator tableDecorator = null;
-	
-	public LayeredPaneDndTableMouseFollowAnimationTimer( LayeredPaneDndTableDecorator tableDecorator)
+
+	private RepaintingTimerTask timerTask;
+	private Timer repainterTimer;
+
+	private final LayeredPaneDndTableDecorator tableDecorator;
+
+	public LayeredPaneDndTableMouseFollowAnimationTimer( final LayeredPaneDndTableDecorator tableDecorator)
 	{
 		this.tableDecorator = tableDecorator;
 	}
@@ -56,7 +56,7 @@ public class LayeredPaneDndTableMouseFollowAnimationTimer
 //			log.debug("Starting repainting timer.");
 		}
 	}
-	
+
 	public void stop()
 	{
 		if( repainterTimer != null )
@@ -71,16 +71,16 @@ public class LayeredPaneDndTableMouseFollowAnimationTimer
 	{
 //		private LayeredPaneDndTableMouseFollowAnimationTimer mouseFollowThread = null;
 		private LayeredPaneDndTableDecorator tableDecorator = null;
-	
-		public RepaintingTimerTask( LayeredPaneDndTableMouseFollowAnimationTimer mouseFollowThread,
-				LayeredPaneDndTableDecorator tableDecorator)
+
+		public RepaintingTimerTask( final LayeredPaneDndTableMouseFollowAnimationTimer mouseFollowThread,
+				final LayeredPaneDndTableDecorator tableDecorator)
 		{
 //			this.mouseFollowThread = mouseFollowThread;
 			this.tableDecorator = tableDecorator;
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 //			log.debug("Got a ping");
 			tableDecorator.signalAnimation();

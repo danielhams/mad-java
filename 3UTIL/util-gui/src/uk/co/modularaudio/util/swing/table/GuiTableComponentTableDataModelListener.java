@@ -33,28 +33,25 @@ public class GuiTableComponentTableDataModelListener<A extends RackModelTableSpa
 	implements TableModelListener<A, B>
 {
 //	private static Log log = LogFactory.getLog( GuiTableComponentTableDataModelListener.class.getName() );
-	
-	private GuiTable<A, B, C> table = null;
-//	private GuiTableComponentToGuiFactory<A, C> factory = null;
 
-	public GuiTableComponentTableDataModelListener(GuiTable<A, B, C> table,
-			GuiTableComponentToGuiFactory<A, C> factory)
+	private final GuiTable<A, B, C> table;
+
+	public GuiTableComponentTableDataModelListener( final GuiTable<A, B, C> table )
 	{
 		this.table = table;
-//		this.factory = factory;
 	}
 
 	@Override
-	public void tableChanged(TableModelEvent<A, B> event)
+	public void tableChanged(final TableModelEvent<A, B> event)
 	{
 //		log.debug("Event received: " + event.toString());
-		
+
 		table.contentsChangeBegin();
-		
-		int eventType = event.getType();
-		int startRow = event.getFirstRow();
-		int endRow = event.getLastRow();
-		
+
+		final int eventType = event.getType();
+		final int startRow = event.getFirstRow();
+		final int endRow = event.getLastRow();
+
 		if( startRow == 0 && endRow == Integer.MAX_VALUE )
 		{
 			// Complete table action
@@ -84,7 +81,7 @@ public class GuiTableComponentTableDataModelListener<A extends RackModelTableSpa
 					table.updateGuiComponentFromModelIndex( uCounter );
 					uCounter++;
 				}
-				while( uCounter < endRow );				
+				while( uCounter < endRow );
 				break;
 			case TableModelEvent.DELETE:
 				// Entries removed from the table

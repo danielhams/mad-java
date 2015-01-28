@@ -48,27 +48,26 @@ public class RackTableWithLinks extends RackTable
 
 //	private static Log log = LogFactory.getLog( NewRackTableWithLinks.class.getName() );
 
-	private RackDataModel dataModel = null;
-//	private Dimension gridSize = null;
-	private RackTableWithLinksRackModelListener rackModelListener = null;
-	private RackTableWithLinksRackLinkListener rackLinkListener = null;
+	private RackDataModel dataModel;
 
-	private RackLinkPainter linkPainter = null;
+	private final RackTableWithLinksRackModelListener rackModelListener;
+	private final RackTableWithLinksRackLinkListener rackLinkListener;
 
-	public RackTableWithLinks( BufferedImageAllocationService bufferedImageAllocationService,
-			RackDataModel dataModel,
-			RackTableEmptyCellPainter emptyCellPainter,
-			RackTableGuiFactory factory,
-			RackTableDndPolicy dndPolicy,
-			DndRackDragDecorations rackDecorations,
-			DndWireDragDecorations wireDecorations,
-			Dimension gridSize,
-			boolean showGrid, Color gridColour)
+	private final RackLinkPainter linkPainter;
+
+	public RackTableWithLinks( final BufferedImageAllocationService bufferedImageAllocationService,
+			final RackDataModel dataModel,
+			final RackTableEmptyCellPainter emptyCellPainter,
+			final RackTableGuiFactory factory,
+			final RackTableDndPolicy dndPolicy,
+			final DndRackDragDecorations rackDecorations,
+			final DndWireDragDecorations wireDecorations,
+			final Dimension gridSize,
+			final boolean showGrid, final Color gridColour)
 	{
 		super( dataModel, emptyCellPainter, factory, dndPolicy, new LinksDecorations(rackDecorations, wireDecorations), gridSize, showGrid, gridColour );
 
 		this.dataModel = dataModel;
-		this.gridSize = gridSize;
 
 		this.linkPainter = new RackLinkPainter( bufferedImageAllocationService, dataModel, this );
 
@@ -85,14 +84,14 @@ public class RackTableWithLinks extends RackTable
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		layeredTablePaint( g );
 //		swingTablePaint( g );
 		if( compositeRackLinksImage != null )
 		{
-			Graphics2D g2d = (Graphics2D) g.create();
-			Composite alphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.65f );
+			final Graphics2D g2d = (Graphics2D) g.create();
+			final Composite alphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.65f );
 			g2d.setComposite( alphaComposite );
 			g2d.drawImage( compositeRackLinksImage, compositeImageRectangle.x, compositeImageRectangle.y, null );
 		}
@@ -118,43 +117,43 @@ public class RackTableWithLinks extends RackTable
 		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
 
-	public void createRackLinkImageForNewLink( RackLink rackLink )
+	public void createRackLinkImageForNewLink( final RackLink rackLink )
 	{
 		linkPainter.drawOneRackLinkImageAndAdd( rackLink );
 	}
 
-	public void updateRackLinkImageForLink( RackLink rl )
+	public void updateRackLinkImageForLink( final RackLink rl )
 	{
 		linkPainter.updateRackLinkImageForLink( rl );
 	}
 
-	public void removeRackLinkImageAt( int modelIndex )
+	public void removeRackLinkImageAt( final int modelIndex )
 	{
 		linkPainter.removeRackLinkImageAt( modelIndex );
 	}
 
-	public List<RackLink> getLinksForComponent(RackComponent componentToFindLinksFor)
+	public List<RackLink> getLinksForComponent(final RackComponent componentToFindLinksFor)
 	{
 		return linkPainter.getLinksForComponent( componentToFindLinksFor );
 	}
 
-	public List<RackIOLink> getIOLinksForComponent( RackComponent componentToFindLinksFor )
+	public List<RackIOLink> getIOLinksForComponent( final RackComponent componentToFindLinksFor )
 	{
 		return linkPainter.getIOLinksForComponent( componentToFindLinksFor );
 	}
 
-	public void updateLink( RackLink oneLink )
+	public void updateLink( final RackLink oneLink )
 	{
 		linkPainter.updateLink(oneLink);
 	}
 
-	public void updateIOLink( RackIOLink oneLink )
+	public void updateIOLink( final RackIOLink oneLink )
 	{
 		linkPainter.updateIOLink(oneLink);
 	}
 
 	@Override
-	public void setRackDataModel(RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel)
 	{
 		removeListenersFromModel();
 		linkPainter.clear();
@@ -181,12 +180,12 @@ public class RackTableWithLinks extends RackTable
 		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
 
-	public void createRackIOLinkImageForNewLink( RackIOLink rackIOLink )
+	public void createRackIOLinkImageForNewLink( final RackIOLink rackIOLink )
 	{
 		linkPainter.drawOneRackIOLinkImageAndAdd( rackIOLink );
 	}
 
-	public void removeRackIOLinkImageAt( int modelIndex )
+	public void removeRackIOLinkImageAt( final int modelIndex )
 	{
 		linkPainter.removeRackIOLinkImageAt( modelIndex );
 	}

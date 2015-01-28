@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.swing.dndtable.jpanel.JPanelDndTableDecorationHin
 public class TestDndRackDragRegionHintDecoration extends JPanelDndTableDecorationHint
 {
 	private static Log log = LogFactory.getLog( TestDndRackDragRegionHintDecoration.class.getName() );
-	
+
 	private int x = 0;
 	private int y = 0;
 	private BufferedImage regionHintImage = new BufferedImage(1,1,BufferedImage.TYPE_INT_ARGB);
@@ -44,15 +44,15 @@ public class TestDndRackDragRegionHintDecoration extends JPanelDndTableDecoratio
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		if( regionHintImage != null )
 		{
 			g.drawImage( regionHintImage, x, y, null );
 		}
 	}
-	
-	public void setRegionHint( BufferedImage regionHintImage, int x, int y )
+
+	public void setRegionHint( final BufferedImage regionHintImage, final int x, final int y )
 	{
 		if( regionHintImage == null )
 		{
@@ -79,8 +79,8 @@ public class TestDndRackDragRegionHintDecoration extends JPanelDndTableDecoratio
 		if( isUpdated )
 		{
 //			log.debug("Will ask for a repaint due to hint image change");
-			Rectangle newDamageRectangle = new Rectangle( x, y, regionHintImage.getWidth(), regionHintImage.getHeight() );
-			Rectangle emitDamageRectangle = (currentDamageRectangle == null ? newDamageRectangle :
+			final Rectangle newDamageRectangle = new Rectangle( x, y, regionHintImage.getWidth(), regionHintImage.getHeight() );
+			final Rectangle emitDamageRectangle = (currentDamageRectangle == null ? newDamageRectangle :
 					newDamageRectangle.union( currentDamageRectangle ));
 			currentDamageRectangle = newDamageRectangle;
 			this.emitNeedsRepaintEvent( this, emitDamageRectangle );
@@ -92,7 +92,7 @@ public class TestDndRackDragRegionHintDecoration extends JPanelDndTableDecoratio
 	{
 		return false;
 	}
-	
+
 	@Override
 	public Rectangle getCurrentDamageRectangle()
 	{
@@ -100,7 +100,13 @@ public class TestDndRackDragRegionHintDecoration extends JPanelDndTableDecoratio
 	}
 
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
+	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// Not animated
 	}
 }
