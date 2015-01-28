@@ -94,9 +94,9 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 
 			graphService.destroyGraph( zeroDepthGraph, true, false );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught creating render plan from graph: " + e.toString();
+			final String msg = "Exception caught creating render plan from graph: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
@@ -119,7 +119,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
-		final Set<MadLink> producerLinks = graph.findAllLinksFromInstance( madInstance );
+		final Set<MadLink> producerLinks = graphService.findAllLinksFromInstance( graph, madInstance );
 		for( final MadLink link : producerLinks )
 		{
 			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
@@ -144,7 +144,8 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 //			log.debug("Created buffer for " + producerInstance.toString() + " channel instance: " + producerChannelInstance.toString());
 		}
 
-		final Set<MadLink> consumerLinks = graph.findAllLinksToInstance( madInstance );
+		final Set<MadLink> consumerLinks = graphService.findAllLinksToInstance( graph, madInstance );
+
 		for( final MadLink link : consumerLinks )
 		{
 			final MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();

@@ -122,7 +122,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				16, 16,
 				16, 16,
 				16, 16 );
-		internalRootGraph.addInstanceWithName( internalHostingGraph, internalHostingGraph.getInstanceName() );
+		graphService.addInstanceToGraphWithName( internalRootGraph, internalHostingGraph, internalHostingGraph.getInstanceName() );
 		addIOComponentsToRootGraph();
 
 		// Temporary empty graph to render
@@ -554,7 +554,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		else if( previousPlan != null && newRenderingPlan == null )
 		{
-			needWaitForUse = internalRootGraph.hasListeners();
+			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
 			final HardwareIOChannelSettings previousPlanChannelSettings = previousPlan.getPlanChannelSettings();
 			final long nanosOutputLatency = previousPlanChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
@@ -575,7 +575,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 					newAui.internalEngineStartup( planChannelSettings, planTimingParameters, planFrameTimeFactory );
 				}
 			}
-			needWaitForUse = internalRootGraph.hasListeners();
+			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
 			final long nanosOutputLatency = planChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
 		}
@@ -645,7 +645,8 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				(MasterInMadInstance) componentService.createInstanceFromDefinition( masterInDef,
 						null,
 						"Master In" );
-		internalRootGraph.addInstanceWithName( masterInInstance, masterInInstance.getInstanceName() );
+
+		graphService.addInstanceToGraphWithName( internalRootGraph, masterInInstance,  masterInInstance.getInstanceName() );
 
 		final MadChannelInstance[] micis = masterInInstance.getChannelInstances();
 		for (int i = 0; i < micis.length; i++)
@@ -655,7 +656,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			final String findChannelName = channelName.replaceAll( "Output", "Input" );
 			final MadChannelInstance subGraphInputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
 			final MadLink masterInLink = new MadLink( masterInputChannel, subGraphInputChannel );
-			internalRootGraph.addLink( masterInLink );
+			graphService.addLink( internalRootGraph, masterInLink );
 		}
 
 		final MadDefinition<?, ?> masterOutDef = componentService.findDefinitionById( MasterOutMadDefinition.DEFINITION_ID );
@@ -664,8 +665,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 						null,
 						"Master Out" );
 
-		internalRootGraph.addInstanceWithName( masterOutInstance,
-				masterOutInstance.getInstanceName() );
+		graphService.addInstanceToGraphWithName( internalRootGraph, masterOutInstance, masterOutInstance.getInstanceName() );
 
 		final MadChannelInstance[] mocis = masterOutInstance.getChannelInstances();
 		for (int o = 0; o < mocis.length; o++)
@@ -675,7 +675,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			final String findChannelName = channelName.replaceAll( "Input", "Output" );
 			final MadChannelInstance subGraphOutputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
 			final MadLink masterOutLink = new MadLink( subGraphOutputChannel, masterOutputChannel );
-			internalRootGraph.addLink( masterOutLink );
+			graphService.addLink( internalRootGraph, masterOutLink );
 		}
 	}
 

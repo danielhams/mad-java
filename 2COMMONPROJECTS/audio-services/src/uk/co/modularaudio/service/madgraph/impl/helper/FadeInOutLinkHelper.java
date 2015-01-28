@@ -98,7 +98,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -106,7 +106,7 @@ public class FadeInOutLinkHelper
 		}
 
 		graph.removeInstance( fadeInInstance );
-
+		
 		graph.addLink( link );
 	}
 
@@ -131,7 +131,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -166,7 +166,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -205,7 +205,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -272,7 +272,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -339,7 +339,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -386,7 +386,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
