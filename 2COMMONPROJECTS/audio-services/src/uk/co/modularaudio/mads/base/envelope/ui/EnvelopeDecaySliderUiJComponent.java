@@ -38,21 +38,21 @@ import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.Display
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
 public class EnvelopeDecaySliderUiJComponent extends PacADSRSlider
-	implements IMadUiControlInstance<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>, 
+	implements IMadUiControlInstance<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>,
 	TimescaleChangeListener, EnvelopeValueProducer
 {
 	private static Log log = LogFactory.getLog( EnvelopeDecaySliderUiJComponent.class.getName() );
-	
+
 	private static final long serialVersionUID = -5433896981432870841L;
-	
-	private EnvelopeMadUiInstance uiInstance = null;
-	
+
+	private final EnvelopeMadUiInstance uiInstance;
+
 	private float lastDisplayValue = -1.0f;
 
-	public EnvelopeDecaySliderUiJComponent( EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+	public EnvelopeDecaySliderUiJComponent( final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 0.0f, 10.0f, 8.0f,
 				"ms",
@@ -67,22 +67,23 @@ public class EnvelopeDecaySliderUiJComponent extends PacADSRSlider
 		this.uiInstance = uiInstance;
 		uiInstance.addTimescaleChangeListener( this );
 		uiInstance.addEnvelopeProducer( this );
-		
+
 		model.setValue( EnvelopeDefaults.class, EnvelopeDefaults.DECAY_MILLIS );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue)
+	private void passChangeToInstanceData( final float newValue)
 	{
 		uiInstance.setDecayMillis( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -103,24 +104,24 @@ public class EnvelopeDecaySliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		if( newValue != lastDisplayValue )
 		{
@@ -130,7 +131,7 @@ public class EnvelopeDecaySliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveTimescaleChange( float newTimescaleUpperLimit )
+	public void receiveTimescaleChange( final float newTimescaleUpperLimit )
 	{
 		model.setMaxValue( newTimescaleUpperLimit );
 	}

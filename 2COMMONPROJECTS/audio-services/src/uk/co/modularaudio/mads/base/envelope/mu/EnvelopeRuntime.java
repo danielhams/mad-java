@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.audio.wavetable.valuemapping.ValueMappingWaveTabl
 public class EnvelopeRuntime
 {
 //	private static Log log = LogFactory.getLog( EnvelopeRuntime.class.getName() );
-	
+
 	enum EnvelopeSegment
 	{
 		ATTACK,
@@ -36,28 +36,28 @@ public class EnvelopeRuntime
 		RELEASE,
 		OFF
 	};
-	
-	private EnvelopeSegment currentSegment = EnvelopeSegment.OFF;
-	private int indexInCurrentSegment = -1;
-	
-	private float startAttackAmp = 0.0f;
-	private float startReleaseAmp = 0.0f;
 
-	private float lastOutputAttackAmp = 0.0f;
-	private float lastOutputDecayAmp = 0.0f;
-	private float lastOutputSustainAmp = 0.0f;
-	private float lastOutputReleaseAmp = 0.0f;
-	
+	private EnvelopeSegment currentSegment = EnvelopeSegment.OFF;
+	private int indexInCurrentSegment;
+
+	private float startAttackAmp;
+	private float startReleaseAmp;
+
+	private float lastOutputAttackAmp;
+	private float lastOutputDecayAmp;
+	private float lastOutputSustainAmp;
+	private float lastOutputReleaseAmp;
+
 	public EnvelopeRuntime()
 	{
 	}
-	
+
 	public EnvelopeSegment getCurrentSegment()
 	{
 		return currentSegment;
 	}
-	
-	public void trigger( Envelope envelope )
+
+	public void trigger( final Envelope envelope )
 	{
 //		log.debug("Trigger");
 		if( envelope.getAttackFromZero() )
@@ -98,8 +98,8 @@ public class EnvelopeRuntime
 		indexInCurrentSegment = 0;
 		currentSegment = EnvelopeSegment.ATTACK;
 	}
-	
-	public void release( Envelope envelope )
+
+	public void release( final Envelope envelope )
 	{
 //		log.debug("Release");
 		if( envelope.getReleaseSamples() == 0 )
@@ -139,12 +139,12 @@ public class EnvelopeRuntime
 		indexInCurrentSegment = 0;
 	}
 
-	public void outputEnvelope( Envelope envelope,
-			float[] outputGate,
-			float[] outputAmps,
+	public void outputEnvelope( final Envelope envelope,
+			final float[] outputGate,
+			final float[] outputAmps,
 			int outputOffset,
-			int lastOutputOffset,
-			int length )
+			final int lastOutputOffset,
+			final int length )
 	{
 		// Output amps
 		if( currentSegment == EnvelopeSegment.OFF )
@@ -154,7 +154,7 @@ public class EnvelopeRuntime
 		}
 		else if( currentSegment == EnvelopeSegment.SUSTAIN )
 		{
-			float sustainLevel = envelope.getSustainLevel();
+			final float sustainLevel = envelope.getSustainLevel();
 			Arrays.fill( outputAmps, outputOffset, lastOutputOffset, sustainLevel );
 			Arrays.fill( outputGate, outputOffset, lastOutputOffset, 1.0f );
 			lastOutputSustainAmp = sustainLevel;
@@ -163,7 +163,7 @@ public class EnvelopeRuntime
 		{
 			// For the amps, we have to loop around draining the values out of the envelope wavetables
 			int samplesLeft = length;
-			
+
 			do
 			{
 //				log.debug( "Looping around outputting envelope with " + samplesLeft + " samples left at output index " + outputOffset + " in state " + currentSegment.toString() );
@@ -172,31 +172,31 @@ public class EnvelopeRuntime
 					case ATTACK:
 					{
 						// Find out how many samples the envelope should output for the current segment
-						int samplesForSegment = envelope.getAttackSamples();
-						
+						final int samplesForSegment = envelope.getAttackSamples();
+
 						// Work out if we have any left
-						int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
+						final int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
 //						log.debug("Num attack samples left " + samplesLeftInSegment );
-						
+
 						// Now work out how many we can output
 						if( samplesLeftInSegment > 0 )
 						{
-							ValueMappingWaveTable waveTableForSegment = envelope.getAttackWaveTable();
-							
-							int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
+							final ValueMappingWaveTable waveTableForSegment = envelope.getAttackWaveTable();
+
+							final int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
 //							log.debug("Doing " + samplesThisRound + " attack samples this round");
-							float progressPerSample = 1.0f / samplesForSegment;
+							final float progressPerSample = 1.0f / samplesForSegment;
 							float curPosition = progressPerSample * indexInCurrentSegment;
 							for( int i = 0 ; i < samplesThisRound ; i++, curPosition += progressPerSample )
 							{
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition);
-								float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
-								float nonWtVaue = (1.0f - wtValue );
+								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
+								final float nonWtVaue = (1.0f - wtValue );
 								outputAmps[ outputOffset + i ] = startAttackAmp * nonWtVaue + wtValue;
 							}
-							int lastOutputIndex = outputOffset + samplesThisRound;
+							final int lastOutputIndex = outputOffset + samplesThisRound;
 							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
-							
+
 							indexInCurrentSegment += samplesThisRound;
 							outputOffset += samplesThisRound;
 							samplesLeft -= samplesThisRound;
@@ -214,7 +214,7 @@ public class EnvelopeRuntime
 							{
 								lastOutputAttackAmp =1.0f;
 							}
-							
+
 							if( envelope.getDecaySamples() > 0 )
 							{
 								currentSegment = EnvelopeSegment.DECAY;
@@ -231,36 +231,36 @@ public class EnvelopeRuntime
 								indexInCurrentSegment = 0;
 							}
 						}
-						
+
 						break;
 					}
 					case DECAY:
 					{
 						// Find out how many samples the envelope should output for the current segment
-						int samplesForSegment = envelope.getDecaySamples();
-						
+						final int samplesForSegment = envelope.getDecaySamples();
+
 						// Work out if we have any left
-						int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
-						
+						final int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
+
 						// Now work out how many we can output
 						if( samplesLeftInSegment > 0 )
 						{
-							ValueMappingWaveTable waveTableForSegment = envelope.getDecayWaveTable();
-							float sustainLevel = envelope.getSustainLevel();
-							
-							int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
-							float progressPerSample = 1.0f / samplesForSegment;
+							final ValueMappingWaveTable waveTableForSegment = envelope.getDecayWaveTable();
+							final float sustainLevel = envelope.getSustainLevel();
+
+							final int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
+							final float progressPerSample = 1.0f / samplesForSegment;
 							float curPosition = progressPerSample * indexInCurrentSegment;
 							for( int i = 0 ; i < samplesThisRound ; i++, curPosition += progressPerSample )
 							{
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition );
-								float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
-								float nonWtValue = (1.0f - wtValue);
+								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
+								final float nonWtValue = (1.0f - wtValue);
 								outputAmps[ outputOffset + i ] = lastOutputAttackAmp * nonWtValue + (sustainLevel * wtValue);
 							}
-							int lastOutputIndex = outputOffset + samplesThisRound;
+							final int lastOutputIndex = outputOffset + samplesThisRound;
 							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
-							
+
 							lastOutputDecayAmp = outputAmps[ lastOutputIndex - 1];
 							indexInCurrentSegment += samplesThisRound;
 							outputOffset += samplesThisRound;
@@ -280,13 +280,13 @@ public class EnvelopeRuntime
 								indexInCurrentSegment = 0;
 							}
 						}
-						
+
 						break;
 					}
 					case SUSTAIN:
 					{
-						float sustainLevel = envelope.getSustainLevel();
-						int lastOutputIndex = outputOffset + samplesLeft;
+						final float sustainLevel = envelope.getSustainLevel();
+						final int lastOutputIndex = outputOffset + samplesLeft;
 						Arrays.fill( outputAmps, outputOffset, lastOutputIndex, sustainLevel );
 						Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
 						lastOutputSustainAmp = sustainLevel;
@@ -296,28 +296,28 @@ public class EnvelopeRuntime
 					}
 					case RELEASE:
 					{
-						int samplesForSegment = envelope.getReleaseSamples();
-						
+						final int samplesForSegment = envelope.getReleaseSamples();
+
 						// Work out if we have any left
-						int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
-						
+						final int samplesLeftInSegment = samplesForSegment - indexInCurrentSegment;
+
 						// Now work out how many we can output
 						if( samplesLeftInSegment > 0 )
 						{
-							ValueMappingWaveTable waveTableForSegment = envelope.getReleaseWaveTable();
-							
-							int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
-							float progressPerSample = 1.0f / samplesForSegment;
+							final ValueMappingWaveTable waveTableForSegment = envelope.getReleaseWaveTable();
+
+							final int samplesThisRound = (samplesLeftInSegment < samplesLeft ? samplesLeftInSegment : samplesLeft );
+							final float progressPerSample = 1.0f / samplesForSegment;
 							float curPosition = progressPerSample * indexInCurrentSegment;
 
 							for( int i = 0 ; i < samplesThisRound ; i++, curPosition += progressPerSample )
 							{
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition );
-								float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
-								float nonWtValue = (1.0f - wtValue);
+								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
+								final float nonWtValue = (1.0f - wtValue);
 								outputAmps[ outputOffset + i ] = startReleaseAmp * nonWtValue;
 							}
-							int lastOutputIndex = outputOffset + samplesThisRound;
+							final int lastOutputIndex = outputOffset + samplesThisRound;
 							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
 							lastOutputReleaseAmp = outputAmps[ lastOutputIndex - 1];
 							indexInCurrentSegment += samplesThisRound;
@@ -333,7 +333,7 @@ public class EnvelopeRuntime
 					}
 					case OFF:
 					{
-						int lastOutputIndex = outputOffset + samplesLeft;
+						final int lastOutputIndex = outputOffset + samplesLeft;
 						Arrays.fill( outputAmps, outputOffset, lastOutputIndex, 0.0f );
 						Arrays.fill( outputGate, outputOffset, lastOutputIndex, 0.0f );
 						outputOffset += samplesLeft;
@@ -352,6 +352,6 @@ public class EnvelopeRuntime
 		indexInCurrentSegment = 0;
 		startAttackAmp = 0.0f;
 	}
-	
-	
+
+
 }

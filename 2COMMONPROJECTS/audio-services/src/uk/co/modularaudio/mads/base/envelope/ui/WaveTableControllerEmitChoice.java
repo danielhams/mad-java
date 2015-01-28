@@ -29,14 +29,14 @@ public class WaveTableControllerEmitChoice extends WaveTableComboController
 {
 	private WaveTableChoiceChangeReceiver changeReceiver = null;
 
-	public WaveTableControllerEmitChoice( WaveTableComboModel model, WaveTableChoiceChangeReceiver changeReceiver )
+	public WaveTableControllerEmitChoice( final WaveTableComboModel model, final WaveTableChoiceChangeReceiver changeReceiver )
 	{
 		super( model );
 		this.changeReceiver = changeReceiver;
 	}
 
 	@Override
-	public void setSelectedElement( WaveTableComboItem selectedElement )
+	public void setSelectedElement( final WaveTableComboItem selectedElement )
 			throws RecordNotFoundException
 	{
 		super.setSelectedElement( selectedElement );
@@ -44,11 +44,11 @@ public class WaveTableControllerEmitChoice extends WaveTableComboController
 	}
 
 	@Override
-	public void setSelectedElementById( String selectedElementId )
+	public void setSelectedElementById( final String selectedElementId )
 			throws RecordNotFoundException
 	{
 		super.setSelectedElementById( selectedElementId );
-		WaveTableComboItem ci = model.getSelectedElement();
+		final WaveTableComboItem ci = model.getSelectedElement();
 		changeReceiver.receiveChangedWaveTable( ci.getValue() );
 	}
 

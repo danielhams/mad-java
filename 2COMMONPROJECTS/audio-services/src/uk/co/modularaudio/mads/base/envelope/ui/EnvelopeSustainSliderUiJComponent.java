@@ -41,15 +41,15 @@ public class EnvelopeSustainSliderUiJComponent extends PacSustainSlider
 	EnvelopeValueProducer
 {
 	private static Log log = LogFactory.getLog( EnvelopeSustainSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-	private EnvelopeMadUiInstance uiInstance = null;
 
-	public EnvelopeSustainSliderUiJComponent( EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final EnvelopeMadUiInstance uiInstance;
+
+	public EnvelopeSustainSliderUiJComponent( final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 0.0f, 1.0f, -1.0f,
 				"",
@@ -62,24 +62,25 @@ public class EnvelopeSustainSliderUiJComponent extends PacSustainSlider
 				false );
 //		this.setBackground( Color.ORANGE );
 		this.uiInstance = uiInstance;
-		
+
 		uiInstance.addEnvelopeProducer( this );
 
 		model.setValue( EnvelopeDefaults.class, EnvelopeDefaults.SUSTAIN_LEVEL );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.setSustainLevel( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -91,7 +92,7 @@ public class EnvelopeSustainSliderUiJComponent extends PacSustainSlider
 	{
 		uiInstance.removeEnvelopeProducer( this );
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -99,24 +100,24 @@ public class EnvelopeSustainSliderUiJComponent extends PacSustainSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

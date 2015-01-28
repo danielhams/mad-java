@@ -36,21 +36,21 @@ public class EnvelopeAttackFromZeroCheckboxUiJComponent extends PacCheckBox
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private EnvelopeMadUiInstance uiInstance = null;
+	private final EnvelopeMadUiInstance uiInstance;
 
-	public EnvelopeAttackFromZeroCheckboxUiJComponent(  EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+	public EnvelopeAttackFromZeroCheckboxUiJComponent(  final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super();
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
 		setFont( this.getFont().deriveFont( 9f ) );
 		this.setText( "Reinit" );
-		
+
 		uiInstance.addEnvelopeProducer( this );
-		boolean isSelected = model.isSelected();
+		final boolean isSelected = model.isSelected();
 		if( isSelected == EnvelopeDefaults.ATTACK_FROM_ZERO )
 		{
 			receiveUpdate( !EnvelopeDefaults.ATTACK_FROM_ZERO, EnvelopeDefaults.ATTACK_FROM_ZERO );
@@ -61,18 +61,19 @@ public class EnvelopeAttackFromZeroCheckboxUiJComponent extends PacCheckBox
 		}
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
 		uiInstance.setAttackFromZero( selected );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -80,7 +81,7 @@ public class EnvelopeAttackFromZeroCheckboxUiJComponent extends PacCheckBox
 	}
 
 	@Override
-	public void receiveUpdate( boolean statusBefore, boolean newStatus )
+	public void receiveUpdate( final boolean statusBefore, final boolean newStatus )
 	{
 		if( statusBefore != newStatus )
 		{

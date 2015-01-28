@@ -42,49 +42,49 @@ public class EnvelopeMadDefinition extends AbstractNonConfigurableMadDefinition<
 
 	public static final String DEFINITION_ID = "envelope";
 
-	private final static String userVisibleName = "Envelope";
+	private final static String USER_VISIBLE_NAME = "Envelope";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationName = "Envelope";
-	private final static String classificationDescription = "A triggered envelope amplitude processor with a visual display and configurable curves";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Envelope";
+	private final static String CLASS_DESC = "A triggered envelope amplitude processor with a visual display and configurable curves";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Gate",
+	private final static String[] CHAN_NAMES = new String[] { "Input Gate",
 		"Input Retrigger",
 		"Output Gate",
 		"Output Amp"
 		};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public EnvelopeMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public EnvelopeMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new EnvelopeIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

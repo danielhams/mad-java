@@ -41,28 +41,28 @@ public class EnvelopeReleaseWaveComboUiJComponent extends PacPanel
 	implements IMadUiControlInstance<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>, WaveTableChoiceChangeReceiver
 {
 	private static Log log = LogFactory.getLog( EnvelopeReleaseWaveComboUiJComponent.class.getName() );
-	
+
 	private static final long serialVersionUID = 9155384260643536860L;
 
-	private EnvelopeMadUiInstance uiInstance = null;
-	
-	private WaveTableChoiceDecayCombo choiceCombo = null;
-	private WaveTableComboModel choiceModel = null;
-	private WaveTableComboController choiceController = null;
+	private final EnvelopeMadUiInstance uiInstance;
 
-	public EnvelopeReleaseWaveComboUiJComponent( EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+	private final WaveTableChoiceDecayCombo choiceCombo;
+	private final WaveTableComboModel choiceModel;
+	private final WaveTableComboController choiceController;
+
+	public EnvelopeReleaseWaveComboUiJComponent( final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( false );
-		MigLayoutStringHelper lh = new MigLayoutStringHelper();
+		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 //		lh.addLayoutConstraint( "debug" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "fill" );
 		this.setLayout( lh.createMigLayout() );
 		this.uiInstance = uiInstance;
-		
+
 		choiceCombo = new WaveTableChoiceDecayCombo( this );
 		choiceModel = choiceCombo.getWTModel();
 		choiceController = choiceCombo.getWTController();
@@ -70,10 +70,10 @@ public class EnvelopeReleaseWaveComboUiJComponent extends PacPanel
 		{
 			choiceController.setSelectedElementById( WaveTableChoiceDecayCombo.WaveTableChoiceEnum.LINEAR.toString() );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 		}
-		
+
 		this.add( choiceCombo, "grow" );
 	}
 
@@ -84,21 +84,21 @@ public class EnvelopeReleaseWaveComboUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		try
 		{
 			choiceController.setSelectedElementById( value );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Unable to set desired wave type " + value + ": " + e.toString();
+			final String msg = "Unable to set desired wave type " + value + ": " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -116,12 +116,12 @@ public class EnvelopeReleaseWaveComboUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveChangedWaveTable( WaveTable waveTable )
+	public void receiveChangedWaveTable( final WaveTable waveTable )
 	{
 //		log.debug("Received combo choice change: " + waveTable.toString() );
-		String selectedWaveTableId = choiceModel.getSelectedElement().getId();
-		WaveTableChoiceAttackCombo.WaveTableChoiceEnum enumValue = WaveTableChoiceEnum.valueOf( selectedWaveTableId );
-		
+		final String selectedWaveTableId = choiceModel.getSelectedElement().getId();
+		final WaveTableChoiceAttackCombo.WaveTableChoiceEnum enumValue = WaveTableChoiceEnum.valueOf( selectedWaveTableId );
+
 		uiInstance.setReleaseWaveChoice( enumValue );
 	}
 
