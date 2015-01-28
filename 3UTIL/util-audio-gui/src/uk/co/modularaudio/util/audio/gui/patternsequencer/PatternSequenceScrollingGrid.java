@@ -35,16 +35,16 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceM
 public class PatternSequenceScrollingGrid extends JScrollPane
 {
 	private static final long serialVersionUID = 7217501052393673261L;
-	
-	private JPanel compositeKeyboardAndGrid = null;
-	private PatternSequenceKeyboard keyboard = null;
-	private PatternSequenceNoteGrid grid = null;
-	
-	public PatternSequenceScrollingGrid( PatternSequenceModel dataModel,
-			Dimension blockDimensions,
-			Color backgroundColour,
-			Color gridColour,
-			Color blockColour )
+
+	private final JPanel compositeKeyboardAndGrid;
+	private final PatternSequenceKeyboard keyboard;
+	private final PatternSequenceNoteGrid grid;
+
+	public PatternSequenceScrollingGrid( final PatternSequenceModel dataModel,
+			final Dimension blockDimensions,
+			final Color backgroundColour,
+			final Color gridColour,
+			final Color blockColour )
 	{
 		this.setOpaque( true );
 		this.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
@@ -53,14 +53,14 @@ public class PatternSequenceScrollingGrid extends JScrollPane
 		this.getHorizontalScrollBar().setUnitIncrement( 16 );
 		this.setAutoscrolls( true );
 		this.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
-		
+
 		compositeKeyboardAndGrid = new JPanel();
-		MigLayout compLayout = new MigLayout("insets 0, gap 0");
+		final MigLayout compLayout = new MigLayout("insets 0, gap 0");
 		compositeKeyboardAndGrid.setLayout( compLayout );
-		
+
 		keyboard = new PatternSequenceKeyboard( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 		compositeKeyboardAndGrid.add(  keyboard, "" );
-		
+
 		grid = new PatternSequenceNoteGrid( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 		compositeKeyboardAndGrid.add( grid, "" );
 		this.getViewport().add( compositeKeyboardAndGrid );

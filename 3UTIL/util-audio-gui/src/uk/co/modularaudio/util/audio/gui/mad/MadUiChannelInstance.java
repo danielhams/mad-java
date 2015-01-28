@@ -27,10 +27,10 @@ import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 
 public class MadUiChannelInstance
 {
-	protected Point center = null;
-	protected MadChannelInstance channel = null;
+	protected final Point center;
+	protected final MadChannelInstance channel;
 
-	public MadUiChannelInstance(Point center, MadChannelInstance channel)
+	public MadUiChannelInstance(final Point center, final MadChannelInstance channel)
 	{
 		this.center = center;
 		this.channel = channel;

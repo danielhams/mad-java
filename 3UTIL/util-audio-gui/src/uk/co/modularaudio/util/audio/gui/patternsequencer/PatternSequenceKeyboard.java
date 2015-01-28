@@ -36,67 +36,67 @@ import uk.co.modularaudio.util.audio.midi.MidiUtils;
 public class PatternSequenceKeyboard extends JPanel
 {
 	private static final long serialVersionUID = -1573972550711034355L;
-	
-//	private static Log log = LogFactory.getLog( PatternSequenceKeyboard.class.getName() );
-	
-	private Dimension blockDimensions = null;
-	
-	public final static int KEYBOARD_WIDTH = 42;
-	
-	private int numMidiNotes = -1;
-	private Dimension size = null;
-	
-	private Color blockColour = null;
-	
-	private Rectangle curClipBounds = new Rectangle( -1, -1, -1, -1);
 
-	public PatternSequenceKeyboard( PatternSequenceModel dataModel,
-			Dimension blockDimensions,
-			Color backgroundColour,
-			Color gridColour,
-			Color blockColour )
+//	private static Log log = LogFactory.getLog( PatternSequenceKeyboard.class.getName() );
+
+	private final Dimension blockDimensions;
+
+	public final static int KEYBOARD_WIDTH = 42;
+
+	private final int numMidiNotes;
+	private final Dimension size;
+
+	private final Color blockColour;
+
+	private final Rectangle curClipBounds = new Rectangle( -1, -1, -1, -1);
+
+	public PatternSequenceKeyboard( final PatternSequenceModel dataModel,
+			final Dimension blockDimensions,
+			final Color backgroundColour,
+			final Color gridColour,
+			final Color blockColour )
 	{
 		this.setOpaque( true );
-		
+
 		this.blockDimensions = blockDimensions;
 		this.blockColour = blockColour;
-		
+
 		numMidiNotes = MidiUtils.getNumMidiNotes();
-		
+
 		size = new Dimension( KEYBOARD_WIDTH, (numMidiNotes * blockDimensions.height) + 1 );
 		this.setMinimumSize( size );
 		this.setSize( size );
 		this.setPreferredSize( size );
 		this.setMaximumSize( size );
-		
+
 		this.setBackground( backgroundColour );
 	}
 
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		super.paint( g );
 		getBounds( curClipBounds );
 		g.getClipBounds( curClipBounds );
 //		log.debug("Cur clip bounds are " + curClipBounds.toString() );
 
-		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-		float fontSize = Math.round( 8.0 * screenRes / 72.0 );
-		
-		Font origFont = g.getFont();
-		Font replacementFont = origFont.deriveFont( fontSize );
+		final int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+		final float fontSize = Math.round( 8.0 * screenRes / 72.0 );
+
+		final Font origFont = g.getFont();
+		final Font replacementFont = origFont.deriveFont( fontSize );
 		g.setFont( replacementFont );
-		
+
 		paintKeys( g );
 	}
-	
-	private void paintKeys( Graphics g )
+
+	private void paintKeys( final Graphics g )
 	{
-		int pixelsPerKey = blockDimensions.height;
-		int startKey = curClipBounds.y / pixelsPerKey;
-		int endKey = (curClipBounds.y + curClipBounds.height) / pixelsPerKey;
+		final int pixelsPerKey = blockDimensions.height;
+		final int startKey = curClipBounds.y / pixelsPerKey;
+		final int endKey = (curClipBounds.y + curClipBounds.height) / pixelsPerKey;
 //		log.debug("So will paint from key " + startKey + " to " + endKey );
-		
+
 		// First pass, white keys
 		for( int curKey = startKey -1 ; curKey <= endKey + 1 ; curKey++ )
 		{
@@ -104,38 +104,38 @@ public class PatternSequenceKeyboard extends JPanel
 			{
 				continue;
 			}
-			int graphicsYCorrectedKey = (numMidiNotes - 1) - curKey;
+			final int graphicsYCorrectedKey = (numMidiNotes - 1) - curKey;
 
-			MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( graphicsYCorrectedKey );
+			final MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( graphicsYCorrectedKey );
 			if( mn == null )
 			{
 				break;
 			}
-			boolean isWhite = mn.isWhiteKey();
-			
-			int previousKey = graphicsYCorrectedKey - 1;
+			final boolean isWhite = mn.isWhiteKey();
+
+			final int previousKey = graphicsYCorrectedKey - 1;
 			boolean previousIsWhite = true;
 			if( previousKey >= 0 )
 			{
-				MidiNote pmn = MidiUtils.getMidiNoteFromNumberReturnNull( previousKey );
+				final MidiNote pmn = MidiUtils.getMidiNoteFromNumberReturnNull( previousKey );
 				if( pmn == null )
 				{
 					break;
 				}
 				previousIsWhite = pmn.isWhiteKey();
 			}
-			int nextKey = graphicsYCorrectedKey + 1;
+			final int nextKey = graphicsYCorrectedKey + 1;
 			boolean nextIsWhite = true;
 			if( nextKey < numMidiNotes )
 			{
-				MidiNote nmn = MidiUtils.getMidiNoteFromNumberReturnNull( nextKey );
+				final MidiNote nmn = MidiUtils.getMidiNoteFromNumberReturnNull( nextKey );
 				if( nmn == null )
 				{
 					break;
 				}
 				nextIsWhite = nmn.isWhiteKey();
 			}
-			
+
 			if( isWhite )
 			{
 				paintPianoKey( g, mn, curKey, isWhite, previousIsWhite, nextIsWhite );
@@ -150,38 +150,38 @@ public class PatternSequenceKeyboard extends JPanel
 				continue;
 			}
 
-			int graphicsYCorrectedKey = (numMidiNotes - 1) - curKey;
+			final int graphicsYCorrectedKey = (numMidiNotes - 1) - curKey;
 
-			MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( graphicsYCorrectedKey );
+			final MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( graphicsYCorrectedKey );
 			if( mn == null )
 			{
 				break;
 			}
-			boolean isWhite = mn.isWhiteKey();
-			
-			int previousKey = graphicsYCorrectedKey - 1;
+			final boolean isWhite = mn.isWhiteKey();
+
+			final int previousKey = graphicsYCorrectedKey - 1;
 			boolean previousIsWhite = true;
 			if( previousKey >= 0 )
 			{
-				MidiNote pmn = MidiUtils.getMidiNoteFromNumberReturnNull( previousKey );
+				final MidiNote pmn = MidiUtils.getMidiNoteFromNumberReturnNull( previousKey );
 				if( pmn == null )
 				{
 					break;
 				}
 				previousIsWhite = pmn.isWhiteKey();
 			}
-			int nextKey = graphicsYCorrectedKey + 1;
+			final int nextKey = graphicsYCorrectedKey + 1;
 			boolean nextIsWhite = true;
 			if( nextKey < numMidiNotes )
 			{
-				MidiNote nmn = MidiUtils.getMidiNoteFromNumberReturnNull( nextKey );
+				final MidiNote nmn = MidiUtils.getMidiNoteFromNumberReturnNull( nextKey );
 				if( nmn == null )
 				{
 					break;
 				}
 				nextIsWhite = nmn.isWhiteKey();
 			}
-			
+
 			if( !isWhite )
 			{
 				paintPianoKey( g, mn, curKey, isWhite, previousIsWhite, nextIsWhite );
@@ -189,22 +189,22 @@ public class PatternSequenceKeyboard extends JPanel
 		}
 	}
 
-	private void paintPianoKey( Graphics g,
-			MidiNote mn,
-			int curKey,
-			boolean isWhite,
-			boolean previousIsWhite,
-			boolean nextIsWhite )
+	private void paintPianoKey( final Graphics g,
+			final MidiNote mn,
+			final int curKey,
+			final boolean isWhite,
+			final boolean previousIsWhite,
+			final boolean nextIsWhite )
 	{
-		int startX = 1;
+		final int startX = 1;
 		int endX = size.width - 1;
-		
+
 		int startY = (curKey * blockDimensions.height) + 1;
 		int endY = ((curKey + 1) * blockDimensions.height) - 1;
 
-		char noteChar = mn.getNoteChar();
-		boolean shouldPaintKeyNum = (noteChar == 'C');
-		
+		final char noteChar = mn.getNoteChar();
+		final boolean shouldPaintKeyNum = (noteChar == 'C');
+
 		if( isWhite )
 		{
 			g.setColor( Color.WHITE );
@@ -224,18 +224,18 @@ public class PatternSequenceKeyboard extends JPanel
 //			startY -= 2;
 //			endY += 2;
 		}
-		
+
 		g.fillRect( startX,  startY, endX - startX, endY - startY );
-		
+
 		if( shouldPaintKeyNum )
 		{
 			g.setColor( blockColour );
-			String noteName = mn.getNoteName();
+			final String noteName = mn.getNoteName();
 //			FontMetrics fm = g.getFontMetrics();
 			// Do zero, and plus and minus maximum
 //			int fontAscent = fm.getAscent();
 			g.drawString( noteName, endX - 18, endY - 1 );
 		}
-		
+
 	}
 }

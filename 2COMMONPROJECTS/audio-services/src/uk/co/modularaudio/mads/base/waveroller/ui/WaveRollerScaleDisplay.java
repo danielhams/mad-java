@@ -37,23 +37,24 @@ public class WaveRollerScaleDisplay extends PacComponent
 	private static final long serialVersionUID = 1L;
 
 //	private static Log log = LogFactory.getLog( RollPainterScaleDisplay.class.getName() );
-		
-	public WaveRollerScaleDisplay( WaveRollerMadDefinition definition,
-			WaveRollerMadInstance instance,
-			WaveRollerMadUiInstance uiInstance,
-			int controlIndex )
+
+	public WaveRollerScaleDisplay( final WaveRollerMadDefinition definition,
+			final WaveRollerMadInstance instance,
+			final WaveRollerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		g.setColor(  Color.BLACK  );
 		g.fillRect( 0, 0, getWidth(), getHeight() );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			MadTimingParameters timingParameters, long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTime )
 	{
 	}
 
@@ -72,5 +73,11 @@ public class WaveRollerScaleDisplay extends PacComponent
 	public boolean needsDisplayProcessing()
 	{
 		return true;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
 	}
 }

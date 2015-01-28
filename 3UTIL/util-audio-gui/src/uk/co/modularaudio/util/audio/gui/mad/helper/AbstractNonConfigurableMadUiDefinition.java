@@ -40,89 +40,85 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
-public abstract class AbstractNonConfigurableMadUiDefinition<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD, MI>, 
-	MUI extends MadUiInstance<MD, MI>>
- 	extends MadUiDefinition<MD, MI>
+public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefinition<D,I>,
+	I extends MadInstance<D, I>,
+	U extends MadUiInstance<D, I>>
+ 	extends MadUiDefinition<D, I>
 {
-	private Span span = null;
-	
-	protected MadUiControlDefinition<?,?,?>[] controls = null;
-	
-	private Class<MUI> instanceClass = null;
-	private int[] uiChannelInstanceIndexes = null;
-	private Point[] uiChannelPositions = null;
-	
-//	private String[] uiControlNames = null;
-//	private ControlType[] uiControlTypes = null;
-//	private Class<?>[] uiControlClasses = null;
-//	private Rectangle[] uiControlBounds = null;
+	private final Span span;
 
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public AbstractNonConfigurableMadUiDefinition( BufferedImageAllocator bia,
-			MD definition,
-			ImageFactory cif,
-			String imageRoot,
-			Span span,
-			Class<MUI> instanceClass,
-			int[] uiChannelInstanceIndexes,
-			Point[] uiChannelPositions,
-			String[] uiControlNames,
-			ControlType[] uiControlTypes,
-			Class<?>[] uiControlClasses,
-			Rectangle[] uiControlBounds )
+	protected final MadUiControlDefinition<?,?,?>[] controls;
+
+	private final Class<U> instanceClass;
+	private final int[] uiChannelInstanceIndexes;
+	private final Point[] uiChannelPositions;
+
+	public AbstractNonConfigurableMadUiDefinition( final BufferedImageAllocator bia,
+			final D definition,
+			final ImageFactory cif,
+			final String imageRoot,
+			final Span span,
+			final Class<U> instanceClass,
+			final int[] uiChannelInstanceIndexes,
+			final Point[] uiChannelPositions,
+			final String[] uiControlNames,
+			final ControlType[] uiControlTypes,
+			final Class<?>[] uiControlClasses,
+			final Rectangle[] uiControlBounds )
 		throws DatastoreException
 	{
 		// Use default (is draggable, is not configurable)
 		super( bia, definition );
 
 		this.span = span;
-		
+
 		frontBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_front.png" );
-		
+
 		backBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_back.png");
-		
+
 		this.instanceClass = instanceClass;
 		this.uiChannelInstanceIndexes = uiChannelInstanceIndexes;
 		this.uiChannelPositions = uiChannelPositions;
-		
+
 //		this.uiControlNames = uiControlNames;
 //		this.uiControlTypes = uiControlTypes;
 //		this.uiControlClasses = uiControlClasses;
 //		this.uiControlBounds = uiControlBounds;
-		
+
 		// Now add the control definitions into the list
 		try
 		{
 			controls = new MadUiControlDefinition<?,?,?>[ uiControlClasses.length ];
 			for( int i = 0 ; i < uiControlClasses.length ; i++ )
 			{
-				String controlName = uiControlNames[ i ];
-				ControlType controlType = uiControlTypes[ i ];
-				Rectangle controlBounds = uiControlBounds[ i ];
-				Class<?> actualUiControlClass = uiControlClasses[ i ];
+				final String controlName = uiControlNames[ i ];
+				final ControlType controlType = uiControlTypes[ i ];
+				final Rectangle controlBounds = uiControlBounds[ i ];
+				final Class<?> actualUiControlClass = uiControlClasses[ i ];
 
-				InternalMadUiControlDefinition controlDef = new InternalMadUiControlDefinition( i, controlName,
+				final InternalMadUiControlDefinition controlDef = new InternalMadUiControlDefinition( i, controlName,
 						controlType,
 						controlBounds,
 						actualUiControlClass );
 				controls[ i ] = controlDef;
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught instantiating control defs: " + e.toString();
+			final String msg = "Exception caught instantiating control defs: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 	}
 
+	@Override
 	public BufferedImage getFrontBufferedImage()
 	{
 		return frontBufferedImage;
 	}
 
+	@Override
 	public BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
@@ -130,65 +126,66 @@ public abstract class AbstractNonConfigurableMadUiDefinition<MD extends MadDefin
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadUiInstance<MD, MI> createNewUiInstance( MI instance )
+	public MadUiInstance<D, I> createNewUiInstance( final I instance )
 		throws DatastoreException
 	{
-		MadUiInstance<MD, MI> retVal = null;
+		MadUiInstance<D, I> retVal = null;
 		try
 		{
 			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = instance.getChannelInstances();
+			final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+			final MadChannelInstance[] channelInstances = instance.getChannelInstances();
 
 			for( int i = 0 ; i < uiChannelInstanceIndexes.length ; i++ )
 			{
-				int uiChannelInstanceIndex = uiChannelInstanceIndexes[ i ];
-				Point uiChannelPosition = uiChannelPositions[ i ];
-				MadChannelInstance chanIns = channelInstances[ uiChannelInstanceIndex ];
+				final int uiChannelInstanceIndex = uiChannelInstanceIndexes[ i ];
+				final Point uiChannelPosition = uiChannelPositions[ i ];
+				final MadChannelInstance chanIns = channelInstances[ uiChannelInstanceIndex ];
 				uiChannelInstances.add( new MadUiChannelInstance( uiChannelPosition, chanIns ) );
 			}
-			
+
 			// Now create the instance, as we will add the controls in afterwards (the controls need
 			// a reference to the ui instance they live in)
-			Class[] insConParamTypes = new Class[] {
+			final Class[] insConParamTypes = new Class[] {
 					instance.getClass(),
 					this.getClass()
 			};
-			Constructor uiInsCons = instanceClass.getConstructor( insConParamTypes );
-			Object[] insComParams = new Object[] {
+			final Constructor uiInsCons = instanceClass.getConstructor( insConParamTypes );
+			final Object[] insComParams = new Object[] {
 					instance,
 					this
 			};
-			Object oic = uiInsCons.newInstance( insComParams );
-			retVal = (MadUiInstance<MD, MI>)oic;
-			
+			final Object oic = uiInsCons.newInstance( insComParams );
+			retVal = (MadUiInstance<D, I>)oic;
+
 			// And setup the controls
-			ArrayList<MadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
-			ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
-	
+			final ArrayList<MadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
+			final ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
+
 			// Controls
-			for( MadUiControlDefinition controlDef : controls )
+			for( final MadUiControlDefinition controlDef : controls )
 			{
-				MadUiControlInstance<?,?,?> uici = controlDef.createInstance( instance, retVal );
+				final MadUiControlInstance<?,?,?> uici = controlDef.createInstance( instance, retVal );
 				uiControlInstances.add( uici );
 				if( uici.needsDisplayProcessing() )
 				{
 					uiDisplayProcessingControlInstances.add( uici );
 				}
 			}
-			
+
 			retVal.setUiControlsAndChannels( uiControlInstances.toArray( new MadUiControlInstance<?,?,?>[ uiControlInstances.size() ] ),
 					uiDisplayProcessingControlInstances.toArray( new MadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstances.size() ] ),
 					uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught creating new instance: " + e.toString();
+			final String msg = "Exception caught creating new instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 		return retVal;
 	}
-	
+
+	@Override
 	public Span getCellSpan()
 	{
 		return span;

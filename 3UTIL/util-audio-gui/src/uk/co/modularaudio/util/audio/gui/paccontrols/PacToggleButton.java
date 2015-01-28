@@ -32,9 +32,9 @@ public abstract class PacToggleButton extends JToggleButton
 
 //	private static final Log log = LogFactory.getLog( PacToggleButton.class.getName() );
 
-	protected boolean previousValue = false;
+	protected boolean previousValue;
 
-	public PacToggleButton( boolean defaultValue )
+	public PacToggleButton( final boolean defaultValue )
 	{
 		previousValue = defaultValue;
 		model.setSelected( defaultValue );
@@ -46,9 +46,9 @@ public abstract class PacToggleButton extends JToggleButton
 		{
 
 			@Override
-			public void itemStateChanged(ItemEvent e)
+			public void itemStateChanged(final ItemEvent e)
 			{
-				boolean newValue = isSelected();
+				final boolean newValue = isSelected();
 				receiveUpdateEvent( previousValue, newValue );
 				previousValue = newValue;
 				updateColours();
@@ -60,13 +60,13 @@ public abstract class PacToggleButton extends JToggleButton
 
 	public String getControlValue()
 	{
-		boolean isSelected = isSelected();
+		final boolean isSelected = isSelected();
 		return Boolean.toString( isSelected );
 	}
 
-	public void receiveControlValue( String strValue )
+	public void receiveControlValue( final String strValue )
 	{
-		boolean isSelected = Boolean.parseBoolean( strValue );
+		final boolean isSelected = Boolean.parseBoolean( strValue );
 		if( isSelected )
 		{
 			doClick();
@@ -77,7 +77,7 @@ public abstract class PacToggleButton extends JToggleButton
 
 	protected final void updateColours()
 	{
-		boolean newValue = isSelected();
+		final boolean newValue = isSelected();
 		if( newValue )
 		{
 			setForeground( Color.RED );
@@ -88,7 +88,7 @@ public abstract class PacToggleButton extends JToggleButton
 		}
 	}
 
-	public void setButtonSelected( boolean selected )
+	public void setButtonSelected( final boolean selected )
 	{
 		setSelected( selected );
 		previousValue = selected;

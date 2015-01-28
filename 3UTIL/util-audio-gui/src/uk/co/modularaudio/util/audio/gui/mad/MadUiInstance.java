@@ -49,28 +49,28 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 
 	protected final boolean eventsPassedBetweenInstanceAndUi;
 
-	protected MadLocklessIOQueue commandToUiQueue = null;
-	protected MadLocklessIOQueue temporalToUiQueue = null;
-	protected MadLocklessIOQueue commandToInstanceQueue = null;
-	protected MadLocklessIOQueue temporalToInstanceQueue = null;
+	protected MadLocklessIOQueue commandToUiQueue;
+	protected MadLocklessIOQueue temporalToUiQueue;
+	protected MadLocklessIOQueue commandToInstanceQueue;
+	protected MadLocklessIOQueue temporalToInstanceQueue;
 
 	protected final MadLocklessQueueBridge<I> localQueueBridge;
 
-	private IOQueueEvent outEvent = new IOQueueEvent();
+	private final IOQueueEvent outEvent = new IOQueueEvent();
 
 	// Set during startup and cleared during stop
 	protected MadFrameTimeFactory frameTimeFactory = null;
 	protected long temporalValueFixedLatencyFrames = 0;
 
-	public MadUiInstance( I instance, MadUiDefinition<D, I> uiDefinition )
+	public MadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition )
 	{
 		this.instance = instance;
 		this.uiDefinition = uiDefinition;
 
-		D definition = instance.getDefinition();
+		final D definition = instance.getDefinition();
 		this.localQueueBridge = definition.getIoQueueBridge();
 
-		MadLocklessQueueBridge<I> bridge = definition.getIoQueueBridge();
+		final MadLocklessQueueBridge<I> bridge = definition.getIoQueueBridge();
 		eventsPassedBetweenInstanceAndUi = bridge.hasQueueProcessing();
 
 		if( eventsPassedBetweenInstanceAndUi )
@@ -91,7 +91,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		// Call destroy on all our child controls
 		for( int i =0 ; i < controlInstances.length ; i++)
 		{
-			MadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
+			final MadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
 			ci.destroy();
 		}
 		controlInstances = null;
@@ -152,7 +152,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	}
 
 	@Override
-	public final void receiveDisplayTick( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+	public final void receiveDisplayTick( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiFrameTime)
 	{
@@ -175,45 +175,45 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 			if( eventsPassedBetweenInstanceAndUi )
 			{
 				// Copy any out events from the temporary area into the instance queues
-				int numCommands = guiTemporaryEventStorage.numCommandEventsToInstance;
+				final int numCommands = guiTemporaryEventStorage.numCommandEventsToInstance;
 				if( numCommands > 0 )
 				{
 					commandToInstanceQueue.write( guiTemporaryEventStorage.commandEventsToInstance, 0, numCommands );
 				}
-				int numTemporals = guiTemporaryEventStorage.numTemporalEventsToInstance;
+				final int numTemporals = guiTemporaryEventStorage.numTemporalEventsToInstance;
 				if( numTemporals > 0 )
 				{
 					temporalToInstanceQueue.write( guiTemporaryEventStorage.temporalEventsToInstance, 0, numTemporals );
 				}
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught during display tick processing: " + e.toString();
+			final String msg = "Exception caught during display tick processing: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
 		for( int i =0 ; i < displayProcessingControlInstances.length ; i++)
 		{
-			MadUiControlInstance<?, ?, ?> ci = displayProcessingControlInstances[ i ];
+			final MadUiControlInstance<?, ?, ?> ci = displayProcessingControlInstances[ i ];
 			ci.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
 		}
 	}
 
 	@Override
-	public void receiveComponentNameChange( String newName )
+	public void receiveComponentNameChange( final String newName )
 	{
 		// Do nothing by default.
 	}
 
-	public void setUiControlsAndChannels( MadUiControlInstance<?, ?, ?>[] controlsIn,
-			MadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,
-			MadUiChannelInstance[] channelsIn )
+	public void setUiControlsAndChannels( final MadUiControlInstance<?, ?, ?>[] controlsIn,
+			final MadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,
+			final MadUiChannelInstance[] channelsIn )
 	{
 		this.controlInstances = controlsIn;
 		this.displayProcessingControlInstances = displayProcessingControlsIn;
@@ -222,13 +222,13 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 
 	// Useful command senders for the UI
 	// These use the immediate versions of send (i.e. not via TSES)
-	protected void sendTemporalValueToInstance(int command, long value)
+	protected void sendTemporalValueToInstance(final int command, final long value)
 	{
 		outEvent.command = command;
 		outEvent.value = value;
 		if( frameTimeFactory != null )
 		{
-			long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+			final long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
 			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 		}
 		else
@@ -238,13 +238,13 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		}
 	}
 
-	protected void sendTemporalObjectToInstance(int command, Object obj)
+	protected void sendTemporalObjectToInstance(final int command, final Object obj)
 	{
 		outEvent.command = command;
 		outEvent.object = obj;
 		if( frameTimeFactory != null )
 		{
-			long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+			final long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
 			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 		}
 		else
@@ -254,14 +254,14 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		}
 	}
 
-	protected void sendCommandValueToInstance( int command, long value )
+	protected void sendCommandValueToInstance( final int command, final long value )
 	{
 		outEvent.command = command;
 		outEvent.value = value;
 		localQueueBridge.sendCommandEventToInstance( instance, outEvent );
 	}
 
-	protected void sendCommandObjectToInstance( int command, Object obj )
+	protected void sendCommandObjectToInstance( final int command, final Object obj )
 	{
 		outEvent.command = command;
 		outEvent.object = obj;

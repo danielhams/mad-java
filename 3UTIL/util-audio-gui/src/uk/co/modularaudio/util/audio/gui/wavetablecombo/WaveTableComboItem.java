@@ -25,9 +25,9 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboI
 
 public class WaveTableComboItem extends IdStringAndValueComboItem<WaveTable>
 {
-	private boolean isBipolar = false;
+	private final boolean isBipolar;
 
-	public WaveTableComboItem( String id, String displayString, WaveTable value, boolean isBipolar )
+	public WaveTableComboItem( final String id, final String displayString, final WaveTable value, final boolean isBipolar )
 	{
 		super( id, displayString, value );
 		this.isBipolar = isBipolar;

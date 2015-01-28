@@ -69,34 +69,34 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 
 //	private JackLatencyRange latencyRange = new JackLatencyRange();
 
-	private int numProducerAudioPorts  = -1;
-	private JackPort[] producerAudioPorts = null;
-	private int numConsumerAudioPorts  = -1;
-	private JackPort[] consumerAudioPorts = null;
-	private int numProducerMidiPorts  = -1;
-	private JackPort[] producerMidiPorts = null;
-	private int numConsumerMidiPorts  = -1;
-	private JackPort[] consumerMidiPorts = null;
+	private int numProducerAudioPorts;
+	private JackPort[] producerAudioPorts;
+	private int numConsumerAudioPorts;
+	private JackPort[] consumerAudioPorts;
+	private int numProducerMidiPorts;
+	private JackPort[] producerMidiPorts;
+	private int numConsumerMidiPorts;
+	private JackPort[] consumerMidiPorts;
 
 	private MadChannelBuffer emptyFloatBuffer;
 //	private MadChannelBuffer emptyNoteBuffer;
 
-	private JNAJackMIDIMessage jnaJackMidiMessage = new JNAJackMIDIMessage();
-	private JackMidi.Event jme = new JackMidi.Event();
+	private final JNAJackMIDIMessage jnaJackMidiMessage = new JNAJackMIDIMessage();
+	private final JackMidi.Event jme = new JackMidi.Event();
 
-	private MidiToHardwareMidiNoteRingDecoder midiToEventRingDecoder = null;
-	private LocklessHardwareMidiNoteRingBuffer noteEventRing = null;
+	private MidiToHardwareMidiNoteRingDecoder midiToEventRingDecoder;
+	private LocklessHardwareMidiNoteRingBuffer noteEventRing;
 
 	private HardwareMidiNoteEvent[] tmpNoteEventArray;
-	private int tmpNoteEventArrayLength = -1;
+	private int tmpNoteEventArrayLength;
 
-	public JNAJackAppRenderingIO( AppRenderingGraphService appRenderingGraphService,
-			TimingService timingService,
-			HardwareIOConfiguration hardwareConfiguration,
-			AppRenderingErrorQueue errorQueue,
-			AppRenderingErrorCallback errorCallback,
-			Jack jack,
-			JackClient client ) throws DatastoreException
+	public JNAJackAppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
+			final TimingService timingService,
+			final HardwareIOConfiguration hardwareConfiguration,
+			final AppRenderingErrorQueue errorQueue,
+			final AppRenderingErrorCallback errorCallback,
+			final Jack jack,
+			final JackClient client ) throws DatastoreException
 	{
 		super( appRenderingGraphService, timingService, hardwareConfiguration, errorQueue, errorCallback );
 //		this.jack = jack;
@@ -104,79 +104,82 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 	}
 
 	@Override
-	protected TwoTuple<HardwareIOChannelSettings, MadTimingParameters> doProviderInit( HardwareIOConfiguration hardwareConfiguration )
+	protected TwoTuple<HardwareIOChannelSettings, MadTimingParameters> doProviderInit( final HardwareIOConfiguration hardwareConfiguration )
 		throws DatastoreException
 	{
 		try
 		{
-			int bufferSize = client.getBufferSize();
-			int sampleRate = client.getSampleRate();
-			log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")");
-			DataRate dataRate = DataRate.fromFrequency(sampleRate);
+			final int bufferSize = client.getBufferSize();
+			final int sampleRate = client.getSampleRate();
+			if( log.isInfoEnabled() )
+			{
+				log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")");
+			}
+			final DataRate dataRate = DataRate.fromFrequency(sampleRate);
 
 			client.setProcessCallback( this );
 			client.setXrunCallback(this);
 			client.onShutdown( this );
 
 			// Need to register the various ports for audio/midi channels
-			AudioHardwareDevice phs = hardwareConfiguration.getProducerAudioDevice();
+			final AudioHardwareDevice phs = hardwareConfiguration.getProducerAudioDevice();
 			if( phs != null )
 			{
 				numProducerAudioPorts = phs.getNumChannels();
 				producerAudioPorts = new JackPort[ numProducerAudioPorts ];
 				for( int c = 0 ; c < numProducerAudioPorts ; ++c )
 				{
-					String portName = "In " + (c+1);
-					JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
+					final String portName = "In " + (c+1);
+					final JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
 					producerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
 				}
 			}
 
-			MidiHardwareDevice pmd = hardwareConfiguration.getProducerMidiDevice();
+			final MidiHardwareDevice pmd = hardwareConfiguration.getProducerMidiDevice();
 			if( pmd != null )
 			{
 				numProducerMidiPorts = 1;
 				producerMidiPorts = new JackPort[1];
-				String portName = "In";
-				JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
+				final String portName = "In";
+				final JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
 				producerMidiPorts[0] = client.registerPort( portName, JackPortType.MIDI, portFlags );
 			}
 
-			AudioHardwareDevice chs = hardwareConfiguration.getConsumerAudioDevice();
+			final AudioHardwareDevice chs = hardwareConfiguration.getConsumerAudioDevice();
 			if( chs != null )
 			{
 				numConsumerAudioPorts = chs.getNumChannels();
 				consumerAudioPorts = new JackPort[ numConsumerAudioPorts ];
 				for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
 				{
-					String portName = "Out " + (c+1);
-					JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
+					final String portName = "Out " + (c+1);
+					final JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
 					consumerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
 				}
 			}
 
-			MidiHardwareDevice cmd = hardwareConfiguration.getConsumerMidiDevice();
+			final MidiHardwareDevice cmd = hardwareConfiguration.getConsumerMidiDevice();
 			if( cmd != null )
 			{
 				numConsumerMidiPorts = 1;
 				consumerMidiPorts = new JackPort[1];
-				String portName = "Out";
-				JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
+				final String portName = "Out";
+				final JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
 				consumerMidiPorts[0] = client.registerPort( portName, JackPortType.MIDI, portFlags );
 			}
 
 			// Assume 2 periods of buffer length in jack
-			int sampleFramesOutputLatency = bufferSize * 2;
-			long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength(sampleRate, sampleFramesOutputLatency );
+			final int sampleFramesOutputLatency = bufferSize * 2;
+			final long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength(sampleRate, sampleFramesOutputLatency );
 
-			MadTimingParameters dtp = new MadTimingParameters(
+			final MadTimingParameters dtp = new MadTimingParameters(
 					dataRate,
 					bufferSize,
 					hardwareConfiguration.getFps(),
 					nanosOutputLatency );
 
-			HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(dataRate, bufferSize);
-			HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(oneChannelSetting, nanosOutputLatency, sampleFramesOutputLatency);
+			final HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(dataRate, bufferSize);
+			final HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(oneChannelSetting, nanosOutputLatency, sampleFramesOutputLatency);
 
 			emptyFloatBuffer = new MadChannelBuffer( MadChannelType.AUDIO,  bufferSize );
 //			emptyNoteBuffer = new MadChannelBuffer( MadChannelType.NOTE, dcs.getNoteChannelSetting().getChannelBufferLength() );
@@ -194,9 +197,12 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 
 			return new TwoTuple<HardwareIOChannelSettings, MadTimingParameters>( dcs,  dtp );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			log.error( "Exception caught during provider init:" + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Exception caught during provider init:" + e.toString(), e );
+			}
 			errorQueue.queueError( this, ErrorSeverity.FATAL, "Exception caught during provider init" );
 			throw new DatastoreException( "Exception  caught during provider init: " + e.toString(), e );
 		}
@@ -210,9 +216,12 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		{
 			client.activate();
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			log.error( "Exception caught during provider start:" + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Exception caught during provider start:" + e.toString(), e );
+			}
 			errorQueue.queueError( this, ErrorSeverity.FATAL, "Exception caught during provider start" );
 		}
 	}
@@ -232,35 +241,35 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		{
 			for( int pac = 0 ; pac < numProducerAudioPorts ; ++pac )
 			{
-				JackPort pp = producerAudioPorts[ pac ];
+				final JackPort pp = producerAudioPorts[ pac ];
 				client.unregisterPort( pp );
 			}
 			for( int pmc = 0 ; pmc < numProducerMidiPorts ; ++pmc )
 			{
-				JackPort pp = producerMidiPorts[ pmc ];
+				final JackPort pp = producerMidiPorts[ pmc ];
 				client.unregisterPort( pp );
 			}
 			for( int cac = 0 ; cac < numConsumerAudioPorts ; ++cac )
 			{
-				JackPort pp = consumerAudioPorts[ cac ];
+				final JackPort pp = consumerAudioPorts[ cac ];
 				client.unregisterPort( pp );
 			}
 			for( int cmc = 0 ; cmc < numConsumerMidiPorts ; ++cmc )
 			{
-				JackPort pp = consumerMidiPorts[ cmc ];
+				final JackPort pp = consumerMidiPorts[ cmc ];
 				client.unregisterPort( pp );
 			}
 			client.setProcessCallback( null );
 			client.onShutdown( null );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
 			throw new DatastoreException( "Exception caught during provider destroy: " + e.toString(), e );
 		}
 	}
 
 	@Override
-	public void clientShutdown(JackClient client)
+	public void clientShutdown(final JackClient client)
 	{
 		log.error("ClientShutdown called");
 		errorQueue.queueError( this, ErrorSeverity.FATAL, "JNAJack client shutdown occured" );
@@ -277,7 +286,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 //	}
 
 	@Override
-	public boolean process( JackClient client, int numFrames )
+	public boolean process( final JackClient client, final int numFrames )
 	{
 		long periodStartFrameTime;
 		try
@@ -291,12 +300,12 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 			periodStartFrameTime = client.getLastFrameTime();
 //			log.debug("Period start frame time is " + periodStartFrameTime );
 		}
-		catch (JackException e)
+		catch (final JackException e)
 		{
 			log.error( e );
 			return false;
 		}
-		boolean localShouldRecordPeriods = shouldRecordPeriods;
+		final boolean localShouldRecordPeriods = shouldRecordPeriods;
 
 		if( localShouldRecordPeriods )
 		{
@@ -306,11 +315,11 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 
 		masterInBuffersResetOrCopy( numFrames, periodStartFrameTime );
 
-		int numConsumersUsed = (masterOutBuffers.numAudioBuffers < numConsumerAudioPorts ? masterOutBuffers.numAudioBuffers : numConsumerAudioPorts );
+		final int numConsumersUsed = (masterOutBuffers.numAudioBuffers < numConsumerAudioPorts ? masterOutBuffers.numAudioBuffers : numConsumerAudioPorts );
 //		boolean setDestinationBuffers = masterOutBuffersTryPointerMoves(numConsumersUsed);
 
 		// Now call the graph processing on all of that
-		RealtimeMethodReturnCodeEnum rc = doClockSourceProcessing( numFrames, periodStartFrameTime );
+		final RealtimeMethodReturnCodeEnum rc = doClockSourceProcessing( numFrames, periodStartFrameTime );
 
 		if( rc != RealtimeMethodReturnCodeEnum.SUCCESS )
 		{
@@ -327,16 +336,16 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		return true;
 	}
 
-	private void masterInBuffersResetOrCopy( int numFrames, long periodStartFrameTime )
+	private void masterInBuffersResetOrCopy( final int numFrames, final long periodStartFrameTime )
 	{
-		int numProducersUsed = (masterInBuffers.numAudioBuffers < numProducerAudioPorts ? masterInBuffers.numAudioBuffers : numProducerAudioPorts );
+		final int numProducersUsed = (masterInBuffers.numAudioBuffers < numProducerAudioPorts ? masterInBuffers.numAudioBuffers : numProducerAudioPorts );
 		int pac = 0;
 		for( ; pac < numProducersUsed ; ++pac )
 		{
-			JackPort pp = producerAudioPorts[ pac ];
-			FloatBuffer fb = pp.getFloatBuffer();
-			MadChannelBuffer aucb = masterInBuffers.audioBuffers[pac];
-			float[] mifb = aucb.floatBuffer;
+			final JackPort pp = producerAudioPorts[ pac ];
+			final FloatBuffer fb = pp.getFloatBuffer();
+			final MadChannelBuffer aucb = masterInBuffers.audioBuffers[pac];
+			final float[] mifb = aucb.floatBuffer;
 //			if( fb.hasArray() )
 //			{
 //				aucb.floatBuffer = fb.array();
@@ -357,8 +366,8 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		{
 			try
 			{
-				JackPort mp = producerMidiPorts[ pmc ];
-				int numMidiEvents = JackMidi.getEventCount(mp);
+				final JackPort mp = producerMidiPorts[ pmc ];
+				final int numMidiEvents = JackMidi.getEventCount(mp);
 				if( numMidiEvents > 0 )
 				{
 //					log.debug("Processing " + numMidiEvents + " midi events");
@@ -366,8 +375,8 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 				for( int i = 0 ; i < numMidiEvents ; ++i )
 				{
 					JackMidi.eventGet( jme, mp,  i );
-					int bufferSize = jme.size();
-					byte[] jjmmb = jnaJackMidiMessage.getBuffer();
+					final int bufferSize = jme.size();
+					final byte[] jjmmb = jnaJackMidiMessage.getBuffer();
 					if( bufferSize > jjmmb.length )
 					{
 					    log.error("Failed midi event byte size during get :-(");
@@ -376,10 +385,10 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					{
 						jme.read( jjmmb );
 
-						long jackMidiEventTime = jme.time();
+						final long jackMidiEventTime = jme.time();
 //						log.debug("Within process() call at time " + periodStartFrameTime + " midi event with time " + jackMidiEventTime );
 
-						long timestamp = periodStartFrameTime + jackMidiEventTime;
+						final long timestamp = periodStartFrameTime + jackMidiEventTime;
 
 						midiToEventRingDecoder.decodeMessage( jnaJackMidiMessage.getCommand(),
 								jnaJackMidiMessage.getChannel(),
@@ -396,24 +405,24 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 				}
 //				MadChannelNoteEvent[] noteBuf = masterInBuffers.noteBuffers[0].noteBuffer;
 //				noteEventRing.readUpToMaxNum(target, pos, maxNum)
-				long startCandidateFrameTime = periodStartFrameTime;
-				long endCandidateFrameTime = startCandidateFrameTime + numFrames;
-				int numRead = noteEventRing.readUpToMaxNumAndFrameTime( tmpNoteEventArray,
+				final long startCandidateFrameTime = periodStartFrameTime;
+				final long endCandidateFrameTime = startCandidateFrameTime + numFrames;
+				final int numRead = noteEventRing.readUpToMaxNumAndFrameTime( tmpNoteEventArray,
 						0,
 						tmpNoteEventArrayLength,
 						endCandidateFrameTime );
 
 				for( int n = 0 ; n < numRead ; ++n )
 				{
-					HardwareMidiNoteEvent midiEvent = tmpNoteEventArray[n];
-					int eventMidiChannel = midiEvent.channel;
-					long eventFrameTime = midiEvent.eventFrameTime;
+					final HardwareMidiNoteEvent midiEvent = tmpNoteEventArray[n];
+					final int eventMidiChannel = midiEvent.channel;
+					final long eventFrameTime = midiEvent.eventFrameTime;
 
 					if( eventMidiChannel <= masterInBuffers.numMidiBuffers )
 					{
-						MadChannelBuffer midiChannelBuffer = masterInBuffers.noteBuffers[ eventMidiChannel ];
-						MadChannelNoteEvent noteEvent = midiChannelBuffer.noteBuffer[ midiChannelBuffer.numElementsInBuffer++ ];
-						int sampleIndex = frameTimeToIndex( startCandidateFrameTime,
+						final MadChannelBuffer midiChannelBuffer = masterInBuffers.noteBuffers[ eventMidiChannel ];
+						final MadChannelNoteEvent noteEvent = midiChannelBuffer.noteBuffer[ midiChannelBuffer.numElementsInBuffer++ ];
+						final int sampleIndex = frameTimeToIndex( startCandidateFrameTime,
 								endCandidateFrameTime,
 								eventFrameTime );
 
@@ -426,7 +435,7 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 					}
 				}
 			}
-			catch( JackException je )
+			catch( final JackException je )
 			{
 				log.error( "JackException caught in midi process ports: " + je.toString(), je );
 			}
@@ -455,31 +464,31 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 //		return setDestinationBuffers;
 //	}
 
-	private void masterOutBuffersCopyOver(int numFrames, int numConsumersUsed)
+	private void masterOutBuffersCopyOver(final int numFrames, final int numConsumersUsed)
 	{
 		int cac = 0;
 		for( ; cac < numConsumersUsed ; ++cac )
 		{
-			JackPort pp = consumerAudioPorts[ cac ];
-			FloatBuffer fb = pp.getFloatBuffer();
-			MadChannelBuffer aucb = masterOutBuffers.audioBuffers[ cac ];
+			final JackPort pp = consumerAudioPorts[ cac ];
+			final FloatBuffer fb = pp.getFloatBuffer();
+			final MadChannelBuffer aucb = masterOutBuffers.audioBuffers[ cac ];
 			fb.put( aucb.floatBuffer,  0,  numFrames );
 		}
 		// Make sure any remaining output channels are silenced
 		for( int r = cac ; r < numConsumerAudioPorts ; ++r )
 		{
-			JackPort pp = consumerAudioPorts[ r ];
-			FloatBuffer fb = pp.getFloatBuffer();
+			final JackPort pp = consumerAudioPorts[ r ];
+			final FloatBuffer fb = pp.getFloatBuffer();
 			fb.put( emptyFloatBuffer.floatBuffer, 0, numFrames );
 		}
 	}
 
-	private int frameTimeToIndex( long sft, long eft, long eventFrameTime )
+	private int frameTimeToIndex( final long sft, final long eft, final long eventFrameTime )
 	{
-		long startDiff = eventFrameTime - sft;
-		boolean eventBefore = startDiff < 0;
-		long endDiff = eventFrameTime - eft;
-		boolean eventAfter = endDiff > 0;
+		final long startDiff = eventFrameTime - sft;
+		final boolean eventBefore = startDiff < 0;
+		final long endDiff = eventFrameTime - eft;
+		final boolean eventAfter = endDiff > 0;
 
 		if( eventBefore )
 		{
@@ -500,16 +509,19 @@ public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcess
 		{
 			return client.getFrameTime();
 		}
-		catch (JackException e)
+		catch (final JackException e)
 		{
-			log.error("Failed fetching frame time from jack: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Failed fetching frame time from jack: " + e.toString(), e );
+			}
 			// Fall back to current sytem nanos;
 			return System.nanoTime();
 		}
 	}
 
 	@Override
-	public void xrunOccured(JackClient client)
+	public void xrunOccured(final JackClient client)
 	{
 		errorQueue.queueError( this, ErrorSeverity.WARNING, "XRun" );
 //		errorQueue.queueError( this, ErrorSeverity.FATAL, "XRun" );

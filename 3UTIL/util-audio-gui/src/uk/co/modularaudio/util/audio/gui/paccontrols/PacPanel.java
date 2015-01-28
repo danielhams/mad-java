@@ -30,9 +30,9 @@ public class PacPanel extends JPanel
 	{
 		return "";
 	}
-	
-	public void receiveControlValue( String value )
+
+	public void receiveControlValue( final String value )
 	{
 	}
-	
+
 }

@@ -28,20 +28,20 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 
 public class MadUiInstanceConfiguration
 {
-	private Point[] uiChannelPositions;
-	private  int[] uiChannelInstanceIndexes;
-	
-	private Rectangle[] uiControlBounds;
-	private Class<?>[] uiControlClasses;
-	private ControlType[] uiControlTypes;
-	private String[] uiControlNames;
+	private final Point[] uiChannelPositions;
+	private final int[] uiChannelInstanceIndexes;
 
-	public MadUiInstanceConfiguration( Point[] uiChannelPositions,
-			int[] uiChannelInstanceIndexes,
-			Rectangle[] uiControlBounds,
-			Class<?>[] uiControlClasses,
-			ControlType[] getUiControlTypes,
-			String[] uiControlNames )
+	private final Rectangle[] uiControlBounds;
+	private final Class<?>[] uiControlClasses;
+	private final ControlType[] uiControlTypes;
+	private final String[] uiControlNames;
+
+	public MadUiInstanceConfiguration( final Point[] uiChannelPositions,
+			final int[] uiChannelInstanceIndexes,
+			final Rectangle[] uiControlBounds,
+			final Class<?>[] uiControlClasses,
+			final ControlType[] getUiControlTypes,
+			final String[] uiControlNames )
 	{
 		this.uiChannelPositions = uiChannelPositions;
 		this.uiChannelInstanceIndexes = uiChannelInstanceIndexes;

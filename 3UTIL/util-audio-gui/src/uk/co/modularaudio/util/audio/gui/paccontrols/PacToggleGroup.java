@@ -25,19 +25,19 @@ import javax.swing.ButtonGroup;
 public abstract class PacToggleGroup
 {
 //	private static Log log = LogFactory.getLog( PacToggleGroup.class.getName() );
-	
-	private PacToggleButton[] toggleButtons;
-	private ButtonGroup toggleButtonGroup;
-	
+
+	private final PacToggleButton[] toggleButtons;
+	private final ButtonGroup toggleButtonGroup;
+
 	private int currentlySelectedIndex;
 
 	private class PacToggleGroupToggleButton extends PacToggleButton
 	{
 		private static final long serialVersionUID = -5969130109396285751L;
-		
+
 		private final int myIndex;
-		
-		public PacToggleGroupToggleButton( String optionLabel, boolean defaultValue, int myIndex)
+
+		public PacToggleGroupToggleButton( final String optionLabel, final boolean defaultValue, final int myIndex)
 		{
 			super(defaultValue);
 			this.setText(optionLabel);
@@ -45,7 +45,7 @@ public abstract class PacToggleGroup
 		}
 
 		@Override
-		public void receiveUpdateEvent(boolean previousValue, boolean newValue)
+		public void receiveUpdateEvent(final boolean previousValue, final boolean newValue)
 		{
 //			log.debug("Received toggle button update event: " + previousValue + " and " + newValue);
 			if( newValue )
@@ -54,22 +54,22 @@ public abstract class PacToggleGroup
 			}
 		}
 	};
-	
-	public PacToggleGroup( String[] optionLabels, int defaultOption )
+
+	public PacToggleGroup( final String[] optionLabels, final int defaultOption )
 	{
-		int numOptions = optionLabels.length;
+		final int numOptions = optionLabels.length;
 		toggleButtonGroup = new ButtonGroup();
 		toggleButtons = new PacToggleButton[ numOptions ];
 		for( int i = 0; i < numOptions ; ++i )
 		{
-			boolean isActive = (i == defaultOption);
+			final boolean isActive = (i == defaultOption);
 			toggleButtons[i] = new PacToggleGroupToggleButton( optionLabels[i], isActive, i );
 			toggleButtonGroup.add( toggleButtons[i] );
 		}
 		currentlySelectedIndex = defaultOption;
 	}
-	
-	protected void receiveButtonSelection( int newIndex )
+
+	protected void receiveButtonSelection( final int newIndex )
 	{
 		if( newIndex != currentlySelectedIndex )
 		{
@@ -79,17 +79,17 @@ public abstract class PacToggleGroup
 	}
 
 	public abstract void receiveUpdateEvent( int previousSelection, int newSelection );
-	
+
 	public PacToggleButton[] getToggleButtons()
 	{
 		return toggleButtons;
 	}
-	
-	public void setSelectedItemIndex( int index )
+
+	public void setSelectedItemIndex( final int index )
 	{
 		toggleButtons[ index ].setSelected( true );
 	}
-	
+
 	public int getSelectedItemIndex()
 	{
 		return currentlySelectedIndex;

@@ -25,15 +25,15 @@ import uk.co.modularaudio.util.audio.mad.MadLink;
 
 public class RackLink
 {
-	private RackComponent producerRackComponent = null;
-	private RackComponent consumerRackComponent = null;
-	private MadLink link = null;
-	
-	public RackLink( RackComponent producerRackComponent,
-			MadChannelInstance producerChannelInstance,
-			RackComponent consumerRackComponent,
-			MadChannelInstance consumerChannelInstance,
-			MadLink link )
+	private final RackComponent producerRackComponent;
+	private final RackComponent consumerRackComponent;
+	private final MadLink link;
+
+	public RackLink( final RackComponent producerRackComponent,
+			final MadChannelInstance producerChannelInstance,
+			final RackComponent consumerRackComponent,
+			final MadChannelInstance consumerChannelInstance,
+			final MadLink link )
 	{
 		this.producerRackComponent = producerRackComponent;
 		this.consumerRackComponent = consumerRackComponent;
@@ -49,25 +49,26 @@ public class RackLink
 	{
 		return consumerRackComponent;
 	}
-	
+
 	public MadLink getLink()
 	{
 		return link;
 	}
-	
+
 	public MadChannelInstance getProducerChannelInstance()
 	{
 		return link.getProducerChannelInstance();
 	}
-	
+
 	public MadChannelInstance getConsumerChannelInstance()
 	{
 		return link.getConsumerChannelInstance();
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder retVal = new StringBuilder();
+		final StringBuilder retVal = new StringBuilder();
 		retVal.append("ProducerComponent(");
 		retVal.append( producerRackComponent.getComponentName() );
 		retVal.append( ", " );

@@ -23,10 +23,10 @@ package uk.co.modularaudio.util.audio.gui.mad.helper;
 import java.awt.Rectangle;
 import java.lang.reflect.Constructor;
 
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
-import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -35,11 +35,11 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class InternalMadUiControlDefinition extends MadUiControlDefinition
 {
 //	private static Log log = LogFactory.getLog( InternalMadUiControlDefinition.class.getName() );
-	
-	private Class actualUiControlClass = null;
 
-	public InternalMadUiControlDefinition( int controlIndex, String controlName, ControlType controlType, Rectangle controlBounds,
-			Class actualUiControlClass )
+	private final Class actualUiControlClass;
+
+	public InternalMadUiControlDefinition( final int controlIndex, final String controlName, final ControlType controlType, final Rectangle controlBounds,
+			final Class actualUiControlClass )
 	{
 		super( controlIndex, controlName, controlType, controlBounds );
 		this.actualUiControlClass = actualUiControlClass;
@@ -47,41 +47,39 @@ public class InternalMadUiControlDefinition extends MadUiControlDefinition
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public MadUiControlInstance createInstance( MadInstance instance,
-			MadUiInstance uiInstance )
+	public MadUiControlInstance createInstance( final MadInstance instance,
+			final MadUiInstance uiInstance )
 		throws DatastoreException
 	{
-		MadUiControlInstance retVal = null;
 		try
 		{
 			// Reflection to fetch the new instance class and instantiate it
-			MadDefinition definition = instance.getDefinition();
-			Class[] consParamTypes = new Class[] {
+			final MadDefinition definition = instance.getDefinition();
+			final Class[] consParamTypes = new Class[] {
 					definition.getClass(),
 					instance.getClass(),
 					uiInstance.getClass(),
 					int.class
 			};
-			Constructor cons = actualUiControlClass.getConstructor( consParamTypes );
-			Object[] consParams = new Object[] {
+			final Constructor cons = actualUiControlClass.getConstructor( consParamTypes );
+			final Object[] consParams = new Object[] {
 					definition,
 					instance,
 					uiInstance,
 					controlIndex
 			};
-			
-			Object realControlObject = cons.newInstance( consParams );
-			
-			IMadUiControlInstance realUiControlInstance = (IMadUiControlInstance)realControlObject;
-			retVal = new InternalMadUiControlInstance( uiInstance, this, realUiControlInstance );
+
+			final Object realControlObject = cons.newInstance( consParams );
+
+			final IMadUiControlInstance realUiControlInstance = (IMadUiControlInstance)realControlObject;
+			final MadUiControlInstance retVal = new InternalMadUiControlInstance( uiInstance, this, realUiControlInstance );
+			return retVal;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught instantiating real control: " + e.toString();
+			final String msg = "Exception caught instantiating real control: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
-		
-		return retVal;
 	}
 
 }

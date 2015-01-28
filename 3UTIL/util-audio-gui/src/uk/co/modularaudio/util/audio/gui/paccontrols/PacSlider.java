@@ -27,9 +27,9 @@ import javax.swing.event.ChangeListener;
 public abstract class PacSlider extends JSlider implements ChangeListener
 {
 	private static final long serialVersionUID = 5049377386963678868L;
-	
+
 	private int previousValue = -1;
-	
+
 	public PacSlider()
 	{
 		this.addChangeListener( this );
@@ -37,37 +37,37 @@ public abstract class PacSlider extends JSlider implements ChangeListener
 
 	public String getControlValue()
 	{
-		int valueAsInt = getValue();
+		final int valueAsInt = getValue();
 		return Integer.toString( valueAsInt ) + "";
 	}
-	
-	public void receiveControlValue( String strValue )
+
+	public void receiveControlValue( final String strValue )
 	{
 		if( strValue != null && !strValue.equals(""))
 		{
 			try
 			{
-				int value = Integer.parseInt( strValue );
+				final int value = Integer.parseInt( strValue );
 				this.setValue( value );
 			}
-			catch (NumberFormatException e)
+			catch (final NumberFormatException e)
 			{
-				// Ignore it... Probably 
+				// Ignore it... Probably
 			}
 		}
 	}
 
 	@Override
-	public void stateChanged( ChangeEvent e )
+	public void stateChanged( final ChangeEvent e )
 	{
-		int newValue = getValue();
+		final int newValue = getValue();
 		if( e.getSource() == this )
 		{
 			processValueChange( previousValue, newValue );
 			previousValue = newValue;
 		}
 	}
-	
+
 	public abstract void processValueChange( int previousValue, int newValue );
 
 }

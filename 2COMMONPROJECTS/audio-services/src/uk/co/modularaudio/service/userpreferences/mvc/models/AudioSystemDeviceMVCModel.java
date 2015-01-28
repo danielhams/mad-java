@@ -35,14 +35,14 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 {
 	private static Log log = LogFactory.getLog( AudioSystemDeviceMVCModel.class.getName() );
 
-	public AudioSystemDeviceMVCModel(Collection<AudioSystemDeviceComboItem> startupItems)
+	public AudioSystemDeviceMVCModel(final Collection<AudioSystemDeviceComboItem> startupItems)
 	{
 		super(startupItems);
 	}
 
-	public void setSelectedItemById(String deviceId)
+	public void setSelectedItemById(final String deviceId)
 	{
-		AudioSystemDeviceComboItem item = this.idToElementMap.get( deviceId );
+		final AudioSystemDeviceComboItem item = this.idToElementMap.get( deviceId );
 
 		if( item != null )
 		{
@@ -55,52 +55,61 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 		return this.theList;
 	}
 
-	public void removeElements(Set<AudioSystemDeviceComboItem> clocksToRemove)
+	public void removeElements(final Set<AudioSystemDeviceComboItem> clocksToRemove)
 	{
-		int currentlySelectedItemIndex = getSelectedItemIndex();
+		final int currentlySelectedItemIndex = getSelectedItemIndex();
 		AudioSystemDeviceComboItem currentlySelectedItem = null;
-		log.debug("In clock remove elements CSII is " + currentlySelectedItemIndex );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("In clock remove elements CSII is " + currentlySelectedItemIndex );
+		}
 		if( currentlySelectedItemIndex != -1 )
 		{
 			currentlySelectedItem = getElementAt( currentlySelectedItemIndex );
 			log.debug("This maps to device " + currentlySelectedItem.getDisplayString() );
 			if( clocksToRemove.contains( currentlySelectedItem ) )
 			{
-				log.debug("Setting currently selected item to -1");
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Setting currently selected item to -1");
+				}
 				currentlySelectedItem = null;
 				this.setSelectedItemByIndex( -1 );
 			}
 		}
-		for( AudioSystemDeviceComboItem ci : clocksToRemove )
+		for( final AudioSystemDeviceComboItem ci : clocksToRemove )
 		{
-			log.debug("Removing clock " + ci.getDisplayString() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Removing clock " + ci.getDisplayString() );
+			}
 			this.theList.remove( ci );
 			this.idToElementMap.remove( ci.getId() );
 		}
-		
+
 		// Now make sure we still have the previously selected element selected
 		if( currentlySelectedItem != null )
 		{
-			int newSelectedIndex = this.theList.indexOf( currentlySelectedItem );
+			final int newSelectedIndex = this.theList.indexOf( currentlySelectedItem );
 			this.currentlySelectedItemIndex = newSelectedIndex;
 		}
-		
+
 	}
 
-	public boolean containsDevice( AudioSystemDeviceComboItem deviceComboItem )
+	public boolean containsDevice( final AudioSystemDeviceComboItem deviceComboItem )
 	{
 		return this.theList.contains( deviceComboItem );
 	}
 
-	public void addNewElements(Set<AudioSystemDeviceComboItem> clocksToAdd)
+	public void addNewElements(final Set<AudioSystemDeviceComboItem> clocksToAdd)
 	{
-		for( AudioSystemDeviceComboItem cdci : clocksToAdd )
+		for( final AudioSystemDeviceComboItem cdci : clocksToAdd )
 		{
 			this.theList.add( cdci );
 			this.idToElementMap.put( cdci.getId(), cdci );
 		}
 	}
-	
-	
+
+
 
 }

@@ -28,9 +28,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 
 public abstract class MadUiControlDefinition
-	<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD,MI>,
-	MUI extends MadUiInstance<MD, MI>> implements IMadUiControlDefinition<MD, MI, MUI>
+	<D extends MadDefinition<D,I>,
+	I extends MadInstance<D,I>,
+	U extends MadUiInstance<D, I>> implements IMadUiControlDefinition<D, I, U>
 {
 	public enum ControlType
 	{
@@ -40,40 +40,44 @@ public abstract class MadUiControlDefinition
 		ROTARY_LINEAR,
 		ROTARY_BIPOLAR,
 		ROTARY_ORBITAL,
-		COMBO, 
+		COMBO,
 		DOUBLE_VALUE,
 		CHECKBOX,
 		CUSTOM
 	}
-	
-	protected int controlIndex = -1;
-	protected ControlType controlType = null;
-	protected Rectangle controlBounds = null;
-	protected String controlName = null;
-	
-	public MadUiControlDefinition( int controlIndex, String controlName, ControlType controlType, Rectangle controlBounds )
+
+	protected int controlIndex;
+	protected ControlType controlType;
+	protected Rectangle controlBounds;
+	protected String controlName;
+
+	public MadUiControlDefinition( final int controlIndex, final String controlName, final ControlType controlType, final Rectangle controlBounds )
 	{
 		this.controlIndex = controlIndex;
 		this.controlName = controlName;
 		this.controlType = controlType;
 		this.controlBounds = controlBounds;
 	}
-	
+
+	@Override
 	public int getControlIndex()
 	{
 		return controlIndex;
 	}
-	
+
+	@Override
 	public String getControlName()
 	{
 		return controlName;
 	}
-	
+
+	@Override
 	public Rectangle getControlBounds()
 	{
 		return controlBounds;
 	}
 
-	public abstract MadUiControlInstance<MD, MI, MUI> createInstance( MI instance, MUI uiInstance )
+	@Override
+	public abstract MadUiControlInstance<D, I, U> createInstance( I instance, U uiInstance )
 		throws DatastoreException;
 }

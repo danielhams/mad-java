@@ -28,8 +28,7 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboM
 
 public class WaveTableComboModel extends IdStringAndValueComboModel<WaveTableComboItem, WaveTable>
 {
-
-	public WaveTableComboModel( Collection<WaveTableComboItem> startupItems )
+	public WaveTableComboModel( final Collection<WaveTableComboItem> startupItems )
 	{
 		super( startupItems );
 	}

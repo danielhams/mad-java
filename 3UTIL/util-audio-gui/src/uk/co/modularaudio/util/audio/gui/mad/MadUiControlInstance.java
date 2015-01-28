@@ -33,10 +33,10 @@ public abstract class MadUiControlInstance
 	U extends MadUiInstance<D, I>>
 	implements IMadUiControlInstance<D, I, U>
 {
-	protected U componentUiInstance = null;
-	protected MadUiControlDefinition<D, I, U> definition = null;
+	protected final U componentUiInstance;
+	protected final MadUiControlDefinition<D, I, U> definition;
 
-	public MadUiControlInstance( U uiInstance, MadUiControlDefinition<D, I, U> definition )
+	public MadUiControlInstance( final U uiInstance, final MadUiControlDefinition<D, I, U> definition )
 	{
 		this.componentUiInstance = uiInstance;
 		this.definition = definition;

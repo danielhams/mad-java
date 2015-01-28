@@ -35,16 +35,16 @@ I extends MadInstance<D, I>>
 {
 	private static Log log = LogFactory.getLog( AbstractNonConfigurableNoEventsMadUiInstance.class.getName() );
 
-	public AbstractNonConfigurableNoEventsMadUiInstance(Span span,
-			I instance,
-			MadUiDefinition<D, I> componentUiDefinition)
+	public AbstractNonConfigurableNoEventsMadUiInstance(final Span span,
+			final I instance,
+			final MadUiDefinition<D, I> componentUiDefinition)
 	{
 		super(span, instance, componentUiDefinition);
 	}
 
 	@Override
-	public void consumeQueueEntry(I instance,
-			IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry(final I instance,
+			final IOQueueEvent nextOutgoingEntry)
 	{
 		log.error("MadUiInstance subclasses no events - yet queue entry consumer called!");
 	}

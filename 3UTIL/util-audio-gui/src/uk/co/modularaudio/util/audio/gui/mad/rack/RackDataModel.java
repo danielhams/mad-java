@@ -39,126 +39,126 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 	implements RackDirtyListener
 {
 	private static Log log = LogFactory.getLog( RackDataModel.class.getName() );
-	
-	private MadGraphInstance<?,?> rackGraph = null;
-	
-	private String name = null;
-	private String path = null;
-	
-	private boolean isDirty = false;
-	
-	private List<RackLink> rackLinks = new ArrayList<RackLink>();
-	private List<RackIOLink> rackIOLinks = new ArrayList<RackIOLink>();
-	
-	private List<RackLinkListener> linkListeners = new ArrayList<RackLinkListener>();
-	private List<RackIOLinkListener> rackIOLinkListeners = new ArrayList<RackIOLinkListener>();
-	
-	private List<RackDirtyListener> rackDirtyListeners = new ArrayList<RackDirtyListener>();
-	
-	private RackLinkEvent rackLinkEvent = new RackLinkEvent( this, 0, 0, 0 );
 
-	public RackDataModel( MadGraphInstance<?,?> rackGraph, String name,  String path, int numCols, int numRows)
+	private MadGraphInstance<?,?> rackGraph;
+
+	private String name;
+	private String path;
+
+	private boolean isDirty;
+
+	private final List<RackLink> rackLinks = new ArrayList<RackLink>();
+	private final List<RackIOLink> rackIOLinks = new ArrayList<RackIOLink>();
+
+	private final List<RackLinkListener> linkListeners = new ArrayList<RackLinkListener>();
+	private final List<RackIOLinkListener> rackIOLinkListeners = new ArrayList<RackIOLinkListener>();
+
+	private final List<RackDirtyListener> rackDirtyListeners = new ArrayList<RackDirtyListener>();
+
+	private final RackLinkEvent rackLinkEvent = new RackLinkEvent( this, 0, 0, 0 );
+
+	public RackDataModel( final MadGraphInstance<?,?> rackGraph, final String name,  final String path, final int numCols, final int numRows)
 	{
 		super(numCols, numRows);
 		this.rackGraph = rackGraph;
 		this.name = name;
 		this.path = path;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public String getPath()
 	{
 		return path;
 	}
-	
-	public void setPath( String path )
+
+	public void setPath( final String path )
 	{
 		this.path = path;
 	}
-	
+
 	public MadGraphInstance<?,?> getRackGraph()
 	{
 		return rackGraph;
 	}
 
-	public void addRackLinksListener(RackLinkListener listener)
+	public void addRackLinksListener(final RackLinkListener listener)
 	{
-		linkListeners.add( listener );		
+		linkListeners.add( listener );
 	}
 
-	public void removeRackLinksListener(RackLinkListener listener)
+	public void removeRackLinksListener(final RackLinkListener listener)
 	{
 		linkListeners.remove( listener );
 	}
-	
-	public void addRackLink( RackLink link )
+
+	public void addRackLink( final RackLink link )
 	{
 		rackLinks.add( link );
-		int newIndex = rackLinks.indexOf( link );
+		final int newIndex = rackLinks.indexOf( link );
 		// Notify listeners that a row has been added
 		rackLinkEvent.setValues( this, newIndex, newIndex, RackLinkEvent.INSERT );
 		fireRackLinkEvent( rackLinkEvent );
 	}
-	
-	public void removeRackLink( RackLink link )
+
+	public void removeRackLink( final RackLink link )
 	{
-		int index = rackLinks.indexOf( link );
+		final int index = rackLinks.indexOf( link );
 		rackLinks.remove( link );
 		rackLinkEvent.setValues( this, index, index, RackLinkEvent.DELETE );
 		fireRackLinkEvent( rackLinkEvent );
 	}
-	
+
 	public void removeAllRackLinks()
 	{
-		int numRackLinks = rackLinks.size();
+		final int numRackLinks = rackLinks.size();
 		if(  numRackLinks > 0 )
 		{
-			int lastLinkIndex = numRackLinks - 1;
+			final int lastLinkIndex = numRackLinks - 1;
 			rackLinks.clear();
 			rackLinkEvent.setValues( this,  0, lastLinkIndex, RackLinkEvent.DELETE );
 			fireRackLinkEvent( rackLinkEvent );
 		}
 	}
 
-	public void addRackIOLinksListener(RackIOLinkListener listener)
+	public void addRackIOLinksListener(final RackIOLinkListener listener)
 	{
 		rackIOLinkListeners.add( listener );
 	}
 
-	public void removeRackIOLinksListener(RackIOLinkListener listener)
+	public void removeRackIOLinksListener(final RackIOLinkListener listener)
 	{
 		rackIOLinkListeners.remove( listener );
 	}
-	
-	public void addRackIOLink( RackIOLink rackIOLink )
+
+	public void addRackIOLink( final RackIOLink rackIOLink )
 	{
 		rackIOLinks.add( rackIOLink );
-		int newIndex = rackIOLinks.indexOf( rackIOLink );
+		final int newIndex = rackIOLinks.indexOf( rackIOLink );
 		// Notify listeners that a row has been added
-		RackIOLinkEvent outEvent = new RackIOLinkEvent( this, newIndex, newIndex, RackIOLinkEvent.INSERT );
+		final RackIOLinkEvent outEvent = new RackIOLinkEvent( this, newIndex, newIndex, RackIOLinkEvent.INSERT );
 		fireRackIOLinkEvent( outEvent );
 	}
-	
-	public void removeRackIOLink( RackIOLink rackIOLink )
+
+	public void removeRackIOLink( final RackIOLink rackIOLink )
 	{
-		int index = rackIOLinks.indexOf( rackIOLink );
+		final int index = rackIOLinks.indexOf( rackIOLink );
 		rackIOLinks.remove( rackIOLink );
-		RackIOLinkEvent outEvent = new RackIOLinkEvent( this, index, index, RackLinkEvent.DELETE );
+		final RackIOLinkEvent outEvent = new RackIOLinkEvent( this, index, index, RackLinkEvent.DELETE );
 		fireRackIOLinkEvent( outEvent );
 	}
 
 	public void removeAllRackIOLinks()
 	{
-		int numRackIOLinks = rackIOLinks.size();
+		final int numRackIOLinks = rackIOLinks.size();
 		if(  numRackIOLinks > 0 )
 		{
-			int lastIOLinkIndex = numRackIOLinks - 1;
+			final int lastIOLinkIndex = numRackIOLinks - 1;
 			rackIOLinks.clear();
-			RackIOLinkEvent outEvent = new RackIOLinkEvent( this, 0, lastIOLinkIndex, RackIOLinkEvent.DELETE );
+			final RackIOLinkEvent outEvent = new RackIOLinkEvent( this, 0, lastIOLinkIndex, RackIOLinkEvent.DELETE );
 			fireRackIOLinkEvent( outEvent );
 		}
 	}
@@ -167,24 +167,24 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 	{
 		try
 		{
-			ArrayList<RackComponent> componentsToRemove = new ArrayList<RackComponent>( getEntriesAsList() );
-			int lastComponentIndex = componentsToRemove.size() - 1;
-			
-			for( RackComponent rc : componentsToRemove )
+			final ArrayList<RackComponent> componentsToRemove = new ArrayList<RackComponent>( getEntriesAsList() );
+			final int lastComponentIndex = componentsToRemove.size() - 1;
+
+			for( final RackComponent rc : componentsToRemove )
 			{
 				noEventFireRemoveContents( rc );
 			}
 			outEvent.setValues( this, 0, lastComponentIndex, TableModelEvent.DELETE );
 			fireTableChangedEvent( outEvent );
 		}
-		catch( NoSuchContentsException nsce )
+		catch( final NoSuchContentsException nsce )
 		{
-			String msg = "Exception caught clearing all components: " + nsce.toString();
+			final String msg = "Exception caught clearing all components: " + nsce.toString();
 			log.error( msg, nsce );
 		}
 	}
 
-	public RackLink getLinkAt(int elementNum)
+	public RackLink getLinkAt(final int elementNum)
 	{
 		return rackLinks.get( elementNum );
 	}
@@ -199,7 +199,7 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 		return new HashSet<RackLink>(rackLinks);
 	}
 
-	public MadChannelInstance getRackIOChannelInstanceByName( String channelName ) throws RecordNotFoundException
+	public MadChannelInstance getRackIOChannelInstanceByName( final String channelName ) throws RecordNotFoundException
 	{
 		return rackGraph.getChannelInstanceByName( channelName );
 	}
@@ -209,7 +209,7 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 		return new HashSet<RackIOLink>( rackIOLinks );
 	}
 
-	public RackIOLink getIOLinkAt(int elementNum)
+	public RackIOLink getIOLinkAt(final int elementNum)
 	{
 		return rackIOLinks.get( elementNum );
 	}
@@ -219,45 +219,45 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 		return rackIOLinks.size();
 	}
 
-	private void fireRackLinkEvent(RackLinkEvent event)
+	private void fireRackLinkEvent(final RackLinkEvent event)
 	{
-		for( RackLinkListener listener : linkListeners )
+		for( final RackLinkListener listener : linkListeners )
 		{
 			listener.linksChanged( event );
-		}		
+		}
 	}
 
-	private void fireRackIOLinkEvent( RackIOLinkEvent outEvent )
+	private void fireRackIOLinkEvent( final RackIOLinkEvent outEvent )
 	{
-		for( RackIOLinkListener listener : rackIOLinkListeners )
+		for( final RackIOLinkListener listener : rackIOLinkListeners )
 		{
 			listener.ioLinksChanged( outEvent );
 		}
 	}
 
-	public void setDirty( boolean isDirty )
+	public void setDirty( final boolean isDirty )
 	{
 		this.isDirty = isDirty;
 		if( isDirty )
 		{
-			for( RackDirtyListener l : rackDirtyListeners )
+			for( final RackDirtyListener l : rackDirtyListeners )
 			{
 				l.receiveRackDirty();
 			}
 		}
 	}
-	
+
 	public boolean isDirty()
 	{
 		return isDirty;
 	}
-	
-	public void addRackDirtyListener( RackDirtyListener listener )
+
+	public void addRackDirtyListener( final RackDirtyListener listener )
 	{
 		rackDirtyListeners.add( listener );
 	}
-	
-	public void removeRackDirtyListener( RackDirtyListener listener )
+
+	public void removeRackDirtyListener( final RackDirtyListener listener )
 	{
 		rackDirtyListeners.remove( listener );
 	}
@@ -267,9 +267,9 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 		rackDirtyListeners.clear();
 	}
 
-	public void setName( String rackName )
+	public void setName( final String rackName )
 	{
-		this.name = rackName;		
+		this.name = rackName;
 	}
 
 	@Override

@@ -27,14 +27,14 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface IMadUiControlDefinition
-	<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD,MI>,
-	MUI extends MadUiInstance<MD,MI>>
+	<D extends MadDefinition<D,I>,
+	I extends MadInstance<D,I>,
+	U extends MadUiInstance<D,I>>
 {
 
 	int getControlIndex();
 	String getControlName();
 	Rectangle getControlBounds();
-	IMadUiControlInstance<MD, MI, MUI> createInstance( MI instance, MUI uiInstance ) throws DatastoreException;
+	IMadUiControlInstance<D, I, U> createInstance( I instance, U uiInstance ) throws DatastoreException;
 
 }

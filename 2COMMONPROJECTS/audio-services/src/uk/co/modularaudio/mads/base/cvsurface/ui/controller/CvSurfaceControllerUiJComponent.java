@@ -155,4 +155,10 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 	{
 		return true;
 	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
 }

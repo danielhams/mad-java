@@ -26,26 +26,26 @@ import java.awt.image.BufferedImage;
 
 public class SpectrumAndPeaksGenerator extends SpectrumGenerator
 {
-	
+
 	public BufferedImage generateSpectrumAndPeaks(
-			float[] inputAmps,
-			float[] inputPhases,
-			int[] peaks,
-			int[] binToPeak,
-			int width,
-			int height )
+			final float[] inputAmps,
+			final float[] inputPhases,
+			final int[] peaks,
+			final int[] binToPeak,
+			final int width,
+			final int height )
 	{
 		return generateSpectrumAndPeaksUsingColours(inputAmps, inputPhases, peaks, binToPeak, width, height, null );
 	}
-	
+
 	public BufferedImage generateSpectrumAndPeaksUsingColours(
-			float[] inputAmps,
-			float[] inputPhases,
-			int[] peaks,
-			int[] binToPeak,
-			int width,
-			int height,
-			Color[] peakColors )
+			final float[] inputAmps,
+			final float[] inputPhases,
+			final int[] peaks,
+			final int[] binToPeak,
+			final int width,
+			final int height,
+			final Color[] peakColors )
 	{
 		// Lose 5 pixels in height so we can draw the region indicators
 		int specHeight = height - 5;
@@ -53,8 +53,8 @@ public class SpectrumAndPeaksGenerator extends SpectrumGenerator
 		{
 			specHeight = 1;
 		}
-		int indHeight = height - specHeight;
-		BufferedImage bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+		final int indHeight = height - specHeight;
+		final BufferedImage bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
 		paintMagsIntoBufferedImageUsingColours( inputAmps, inputPhases, bi, 0, indHeight, width, specHeight, binToPeak, peakColors );
 
 		if( indHeight > 0 )
@@ -64,35 +64,35 @@ public class SpectrumAndPeaksGenerator extends SpectrumGenerator
 
 		return bi;
 	}
-	
-	private void paintPeakIndicatorsIntoBufferedImage( int[] peaks, int[] binToPeak, BufferedImage outputImage, int width, int height )
+
+	private void paintPeakIndicatorsIntoBufferedImage( final int[] peaks, final int[] binToPeak, final BufferedImage outputImage, final int width, final int height )
 	{
-		Graphics2D g2d = outputImage.createGraphics();
-		
+		final Graphics2D g2d = outputImage.createGraphics();
+
 		int numValuesToDraw = getNumValuesToDraw();
 		numValuesToDraw = (numValuesToDraw > binToPeak.length ? binToPeak.length : numValuesToDraw );
 
-		int outputImageWidth = outputImage.getWidth();
-		int outputImageHeight = outputImage.getHeight();
+		final int outputImageWidth = outputImage.getWidth();
+		final int outputImageHeight = outputImage.getHeight();
 
 		int currentPeakNum = -1;
-		
+
 		for( int i = 0 ; i < outputImageWidth; i++ )
 		{
-			int actualVal = (outputImageWidth - 1) - i;
+			final int actualVal = (outputImageWidth - 1) - i;
 
-			int logBinIndex = freqScaleComputer.displayBinToSpectraBin( numValuesToDraw, outputImageWidth, actualVal );
+			final int logBinIndex = freqScaleComputer.displayBinToSpectraBin( numValuesToDraw, outputImageWidth, actualVal );
 
-			int pixelXStartIndex = i;
+			final int pixelXStartIndex = i;
 
 			int curVal = -1;
 			if( logBinIndex < peaks.length )
 			{
 				curVal = binToPeak[ logBinIndex ];
 			}
-			
+
 			int halfLineHeight = -1;
-			
+
 			if( curVal != currentPeakNum )
 			{
 				// We've hit a boundary, draw a half height line
@@ -108,7 +108,7 @@ public class SpectrumAndPeaksGenerator extends SpectrumGenerator
 			}
 			else if( curVal != -1 )
 			{
-				// Just draw a dot 
+				// Just draw a dot
 				halfLineHeight = 1;
 				g2d.setColor( Color.white );
 			}
@@ -117,19 +117,19 @@ public class SpectrumAndPeaksGenerator extends SpectrumGenerator
 				// Leave empty, not marked as a peak
 				halfLineHeight = -1;
 			}
-			
+
 			if( halfLineHeight > 0 )
 			{
-				
-				int xIndex = pixelXStartIndex;
+
+				final int xIndex = pixelXStartIndex;
 //				int yMiddle = height - 2;
-				int yStart = 0;
-				int yEnd = yStart + (halfLineHeight * 2);
-			
-				int x1 = outputImageWidth - xIndex;
+				final int yStart = 0;
+				final int yEnd = yStart + (halfLineHeight * 2);
+
+				final int x1 = outputImageWidth - xIndex;
 				g2d.drawLine( x1, outputImageHeight - yStart, x1, outputImageHeight - yEnd );
 			}
-		}	
+		}
 	}
 
 

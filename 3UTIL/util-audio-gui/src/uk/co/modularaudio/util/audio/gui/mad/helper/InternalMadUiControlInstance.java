@@ -32,12 +32,12 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 @SuppressWarnings("rawtypes")
 public class InternalMadUiControlInstance extends MadUiControlInstance
 {
-	private IMadUiControlInstance realUiControlInstance = null;
+	private final IMadUiControlInstance realUiControlInstance;
 
 	@SuppressWarnings("unchecked")
-	public InternalMadUiControlInstance( MadUiInstance uiInstance,
-			MadUiControlDefinition definition,
-			IMadUiControlInstance realUiControlInstance )
+	public InternalMadUiControlInstance( final MadUiInstance uiInstance,
+			final MadUiControlDefinition definition,
+			final IMadUiControlInstance realUiControlInstance )
 	{
 		super( uiInstance, definition );
 		this.realUiControlInstance = realUiControlInstance;
@@ -50,13 +50,13 @@ public class InternalMadUiControlInstance extends MadUiControlInstance
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		realUiControlInstance.receiveControlValue( value );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{

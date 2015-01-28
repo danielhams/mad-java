@@ -27,31 +27,31 @@ public class WaveTableComboController implements
 		ComboController<WaveTableComboItem>
 {
 //	private static Log log = LogFactory.getLog( WaveTableComboController.class.getName() );
-	
-	protected WaveTableComboModel model = null;
 
-	public WaveTableComboController( WaveTableComboModel model )
+	protected final WaveTableComboModel model;
+
+	public WaveTableComboController( final WaveTableComboModel model )
 	{
 		this.model = model;
 	}
 
 	@Override
-	public void setSelectedElement( WaveTableComboItem selectedElement )
+	public void setSelectedElement( final WaveTableComboItem selectedElement )
 			throws RecordNotFoundException
 	{
 //		log.debug("SetSelectedElement with " + selectedElement.getDisplayString() );
 //		log.debug("Model says it is " + model.getSelectedElement() );
-		int index = model.getItemIndex( selectedElement );
+		final int index = model.getItemIndex( selectedElement );
 		model.setSelectedItemByIndex( index );
 	}
 
 	@Override
-	public void setSelectedElementById( String selectedElementId )
+	public void setSelectedElementById( final String selectedElementId )
 			throws RecordNotFoundException
 	{
 //		log.debug("SetSelectedElementById with " + selectedElementId );
-		WaveTableComboItem ci = model.getElementById( selectedElementId );
-		int ciIndex = model.getItemIndex( ci );
+		final WaveTableComboItem ci = model.getElementById( selectedElementId );
+		final int ciIndex = model.getItemIndex( ci );
 		model.setSelectedItemByIndex( ciIndex );
 	}
 

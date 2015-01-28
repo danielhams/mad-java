@@ -29,38 +29,38 @@ import uk.co.modularaudio.util.swing.general.FloatJSliderModel;
 public abstract class PacFloatSlider extends FloatJSlider implements ChangeListener
 {
 	private static final long serialVersionUID = -7086322527151036644L;
-	
+
 	private double previousValue = 0.0;
 
-	public PacFloatSlider(FloatJSliderModel model)
+	public PacFloatSlider(final FloatJSliderModel model)
 	{
 		super(model);
 		this.addChangeListener( this );
 	}
-	
+
 	public String getControlValue()
 	{
-		double valueAsDouble = getValue();
+		final double valueAsDouble = getValue();
 		return Double.toString( valueAsDouble );
 	}
-	
-	public void receiveControlValue( String strValue )
+
+	public void receiveControlValue( final String strValue )
 	{
-		double value = Double.parseDouble( strValue );
+		final double value = Double.parseDouble( strValue );
 		setValue( value );
 	}
 
 	@Override
-	public void stateChanged( ChangeEvent e )
+	public void stateChanged( final ChangeEvent e )
 	{
 		if( e.getSource() == this )
 		{
-			double newValue = getValue();
+			final double newValue = getValue();
 			receiveValueUpdate( previousValue, newValue );
 			previousValue = newValue;
 		}
 	}
-	
+
 	public abstract void receiveValueUpdate( double previousValue, double newValue );
 
 }

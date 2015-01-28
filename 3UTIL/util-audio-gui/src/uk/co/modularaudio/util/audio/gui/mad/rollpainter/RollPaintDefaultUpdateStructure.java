@@ -24,8 +24,8 @@ public class RollPaintDefaultUpdateStructure implements RollPaintUpdate
 {
 	private RollPaintDirection direction = RollPaintDirection.FORWARDS;
 	private RollPaintUpdateType updateType = RollPaintUpdateType.NONE;
-	private int numSamplesInUpdate = 0;
-	
+	private int numSamplesInUpdate;
+
 	public RollPaintDefaultUpdateStructure()
 	{
 	}
@@ -48,33 +48,34 @@ public class RollPaintDefaultUpdateStructure implements RollPaintUpdate
 		return numSamplesInUpdate;
 	}
 
-	public void setDirection( RollPaintDirection direction )
+	public void setDirection( final RollPaintDirection direction )
 	{
 		this.direction = direction;
 	}
 
-	public void setUpdateType( RollPaintUpdateType updateType )
+	public void setUpdateType( final RollPaintUpdateType updateType )
 	{
 		this.updateType = updateType;
 	}
 
-	public void setNumSamplesInUpdate( int numSamplesInUpdate )
+	public void setNumSamplesInUpdate( final int numSamplesInUpdate )
 	{
 		this.numSamplesInUpdate = numSamplesInUpdate;
 	}
 
-	public void setUpdateValues( RollPaintUpdateType updateType,
-			RollPaintDirection direction,
-			int numSamplesInUpdate )
+	public void setUpdateValues( final RollPaintUpdateType updateType,
+			final RollPaintDirection direction,
+			final int numSamplesInUpdate )
 	{
 		this.updateType = updateType;
 		this.direction = direction;
 		this.numSamplesInUpdate = numSamplesInUpdate;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("UpdateType(");
 		sb.append( updateType.toString() );
 		sb.append( ") Direction(" );

@@ -25,20 +25,20 @@ import java.util.EventObject;
 /**
  * Shameless stolen from TableModelEvent which I can't subclass as HamTable
  * isn't a subclass of table model....
- * 
+ *
  * @author dan
- * 
+ *
  * @param <A>
  * @param <B>
  */
 public class RackIOLinkEvent extends EventObject
 {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6214316660381045148L;
 
-	public RackDataModel mySource = null;
+	public RackDataModel mySource;
 
 	/** Identifies the addtion of new rows or columns. */
 	public static final int INSERT = 1;
@@ -74,7 +74,7 @@ public class RackIOLinkEvent extends EventObject
 	 * the model for the cell values that are visible. The structure of the
 	 * table ie, the column names, types and order have not changed.
 	 */
-	public RackIOLinkEvent( RackDataModel source )
+	public RackIOLinkEvent( final RackDataModel source )
 	{
 		// Use Integer.MAX_VALUE instead of getRowCount() in case rows were
 		// deleted.
@@ -90,7 +90,7 @@ public class RackIOLinkEvent extends EventObject
 	 * order they appear in the model. This is the same as calling
 	 * <code>setModel(TableModel)</code> on the <code>JTable</code>.
 	 */
-	public RackIOLinkEvent( RackDataModel source, int row)
+	public RackIOLinkEvent( final RackDataModel source, final int row)
 	{
 		this(source, row, row, UPDATE );
 	}
@@ -98,7 +98,7 @@ public class RackIOLinkEvent extends EventObject
 	/**
 	 * The data in rows [<I>firstRow</I>, <I>lastRow</I>] have been updated.
 	 */
-	public RackIOLinkEvent(RackDataModel source, int firstRow, int lastRow)
+	public RackIOLinkEvent(final RackDataModel source, final int firstRow, final int lastRow)
 	{
 		this(source, firstRow, lastRow, UPDATE);
 	}
@@ -111,7 +111,7 @@ public class RackIOLinkEvent extends EventObject
 	 * <p>
 	 * The <I>type</I> should be one of: INSERT, UPDATE and DELETE.
 	 */
-	public RackIOLinkEvent(RackDataModel source, int firstRow, int lastRow, int type)
+	public RackIOLinkEvent(final RackDataModel source, final int firstRow, final int lastRow, final int type)
 	{
 		super(source);
 		this.mySource = source;
@@ -146,8 +146,8 @@ public class RackIOLinkEvent extends EventObject
 	{
 		return type;
 	}
-	
-	public void setValues( RackDataModel source, int firstRow, int lastRow, int type )
+
+	public void setValues( final RackDataModel source, final int firstRow, final int lastRow, final int type )
 	{
 		this.source = source;
 		this.mySource = source;

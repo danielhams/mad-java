@@ -28,14 +28,14 @@ import javax.swing.border.LineBorder;
 public class PacLabel extends JLabel
 {
 	private static final long serialVersionUID = -7825874273873291912L;
-	
+
 	public PacLabel()
 	{
 		super();
 		setBorder( new LineBorder( Color.BLACK, 1 ) );
 	}
 
-	public PacLabel( String label )
+	public PacLabel( final String label )
 	{
 		super( label );
 	}
@@ -44,8 +44,8 @@ public class PacLabel extends JLabel
 	{
 		return "";
 	}
-	
-	public void receiveControlValue( String value )
+
+	public void receiveControlValue( final String value )
 	{
 	}
 }

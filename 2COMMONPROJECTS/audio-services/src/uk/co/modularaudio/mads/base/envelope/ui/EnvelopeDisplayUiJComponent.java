@@ -336,4 +336,10 @@ public class EnvelopeDisplayUiJComponent extends PacComponent
 	{
 		return false;
 	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
 }

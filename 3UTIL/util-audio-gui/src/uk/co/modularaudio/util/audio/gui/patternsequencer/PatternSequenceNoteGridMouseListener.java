@@ -37,20 +37,20 @@ import uk.co.modularaudio.util.audio.midi.MidiUtils;
 public class PatternSequenceNoteGridMouseListener implements MouseListener, MouseMotionListener
 {
 	private static Log log = LogFactory.getLog( PatternSequenceNoteGridMouseListener.class.getName() );
-	
-	private PatternSequenceNoteGrid table = null;
-	private PatternSequenceModel dataModel = null;
-	
-	private Dimension tableCellDimensions = null;
-	private Dimension tableSize = null;
-	private int numMidiNotes = -1;
-	
-	private boolean lastNoteChangeWasSet = true;
-	
-	private Point cellPoint = new Point();
-	private Point previouslySetCellPoint = new Point(-1,-1);
 
-	public PatternSequenceNoteGridMouseListener( PatternSequenceNoteGrid patternSequencerTable, PatternSequenceModel dataModel )
+	private final PatternSequenceNoteGrid table;
+	private final PatternSequenceModel dataModel;
+
+	private final Dimension tableCellDimensions;
+	private final Dimension tableSize;
+	private final int numMidiNotes;
+
+	private boolean lastNoteChangeWasSet = true;
+
+	private final Point cellPoint = new Point();
+	private final Point previouslySetCellPoint = new Point(-1,-1);
+
+	public PatternSequenceNoteGridMouseListener( final PatternSequenceNoteGrid patternSequencerTable, final PatternSequenceModel dataModel )
 	{
 		this.table = patternSequencerTable;
 		this.dataModel = dataModel;
@@ -60,10 +60,10 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseDragged( MouseEvent e )
+	public void mouseDragged( final MouseEvent e )
 	{
 //		log.debug("Got a drag event " + e.toString() );
-		Point dragPoint = e.getPoint();
+		final Point dragPoint = e.getPoint();
 		calculateCellIndexesFromPoint( dragPoint, cellPoint );
 		if( !cellPoint.equals( previouslySetCellPoint ) )
 		{
@@ -75,20 +75,20 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseMoved( MouseEvent e )
+	public void mouseMoved( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent e )
+	public void mouseClicked( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mousePressed( MouseEvent e )
+	public void mousePressed( final MouseEvent e )
 	{
 //		log.debug("Mouse pressed");
-		Point clickPoint = e.getPoint();
+		final Point clickPoint = e.getPoint();
 		calculateCellIndexesFromPoint( clickPoint, cellPoint );
 		if( !cellPoint.equals( previouslySetCellPoint ) )
 		{
@@ -98,22 +98,22 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 		}
 	}
 
-	private void calculateCellIndexesFromPoint( Point clickPoint, Point outputPoint )
+	private void calculateCellIndexesFromPoint( final Point clickPoint, final Point outputPoint )
 	{
 		outputPoint.x = (clickPoint.x / tableCellDimensions.width);
 		outputPoint.y = (clickPoint.y / tableCellDimensions.height);
 	}
-	private boolean setNoteForPoint( Point clickPoint, boolean isDrag )
+	private boolean setNoteForPoint( final Point clickPoint, final boolean isDrag )
 	{
 		boolean wasASet = false;
 		if( clickPoint.x >= 0 && clickPoint.x <= (tableSize.width - 1) &&
 				clickPoint.y >= 0 && clickPoint.y <= (tableSize.height - 1) )
 		{
 //			log.debug("Within bounds. Will calculate which cell");
-			Point cellPoint = new Point();
+			final Point cellPoint = new Point();
 			calculateCellIndexesFromPoint( clickPoint, cellPoint );
-			int cellCol = cellPoint.x;
-			int cellRow = cellPoint.y;
+			final int cellCol = cellPoint.x;
+			final int cellRow = cellPoint.y;
 //			log.debug("Is (" + cellCol + ", " + cellRow + ")");
 			if( cellCol < 0 || cellRow < 0 || cellCol > (dataModel.getNumSteps() - 1) || cellRow > (numMidiNotes - 1) )
 			{
@@ -122,20 +122,20 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 
 			try
 			{
-				MidiNote relatedNote = MidiUtils.getMidiNoteFromNumberReturnNull( (numMidiNotes - 1) - cellRow );
+				final MidiNote relatedNote = MidiUtils.getMidiNoteFromNumberReturnNull( (numMidiNotes - 1) - cellRow );
 				if( relatedNote == null )
 				{
 					return false;
 				}
 //				log.debug("Toggling note " + relatedNote.toString() );
-				
-				// If it's already set, unset it
-				PatternSequenceStep psn = dataModel.getNoteAtStep( cellCol );
-				MidiNote noteFound = psn.note;
 
-				boolean continuation = ( psn.note == null ? dataModel.getContinuationState() : psn.isContinuation );
-				float amp = ( psn.note == null ? dataModel.getDefaultAmplitude() : psn.amp );
-				
+				// If it's already set, unset it
+				final PatternSequenceStep psn = dataModel.getNoteAtStep( cellCol );
+				final MidiNote noteFound = psn.note;
+
+				final boolean continuation = ( psn.note == null ? dataModel.getContinuationState() : psn.isContinuation );
+				final float amp = ( psn.note == null ? dataModel.getDefaultAmplitude() : psn.amp );
+
 				if( (!isDrag && noteFound == relatedNote ) ||
 						(isDrag && lastNoteChangeWasSet == false && noteFound == relatedNote ) )
 				{
@@ -159,17 +159,17 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 					}
 				}
 			}
-			catch (Exception e1)
+			catch (final Exception e1)
 			{
-				String msg = "Exception caught adding contents to table: " + e1.toString();
+				final String msg = "Exception caught adding contents to table: " + e1.toString();
 				log.error( msg, e1 );
 			}
 		}
 		return wasASet;
 	}
-	
+
 	@Override
-	public void mouseReleased( MouseEvent e )
+	public void mouseReleased( final MouseEvent e )
 	{
 //		log.debug("Received release event.");
 		previouslySetCellPoint.x = -1;
@@ -177,12 +177,12 @@ public class PatternSequenceNoteGridMouseListener implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseEntered( MouseEvent e )
+	public void mouseEntered( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseExited( MouseEvent e )
+	public void mouseExited( final MouseEvent e )
 	{
 	}
 
