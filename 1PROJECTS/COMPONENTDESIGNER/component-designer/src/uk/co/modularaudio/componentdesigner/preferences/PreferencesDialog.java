@@ -42,23 +42,23 @@ public class PreferencesDialog extends JDialog implements WindowListener
 {
 	private static final long serialVersionUID = 6978499345998012496L;
 //	private final static Log log = LogFactory.getLog( PreferencesDialog.class.getName() );
-	static final String AUDIO_PREFS_INVALID_MESSAGE = "Your audio sytem configuration must be valid to continue";
-	
-	private ComponentDesignerFrontController fc = null;
-	
-	private JTabbedPane tabbedPane = null;
-	private Map<PreferencesDialogPageEnum, Component> pageToComponentMap = null;
-	
-	private JPanel basePanel = null;
-	private JPanel tabsPanel = null;
-	private JPanel buttonsPanel = null;
-	
-	private JButton cancelChangesButton = null;
-	private JButton applyChangesButton = null;
-	
-	private UserPreferencesMVCView userPreferencesView = null;
-	
-	public PreferencesDialog( ComponentDesignerFrontController fc, Frame parentFrame ) throws DatastoreException
+	public static final String AUDIO_PREFS_INVALID_MESSAGE = "Your audio sytem configuration must be valid to continue";
+
+	private final ComponentDesignerFrontController fc;
+
+	private JTabbedPane tabbedPane;
+	private Map<PreferencesDialogPageEnum, Component> pageToComponentMap;
+
+	private final JPanel basePanel;
+	private final JPanel tabsPanel;
+	private final JPanel buttonsPanel;
+
+	private final JButton cancelChangesButton;
+	private final JButton applyChangesButton;
+
+	private final UserPreferencesMVCView userPreferencesView;
+
+	public PreferencesDialog( final ComponentDesignerFrontController fc, final Frame parentFrame ) throws DatastoreException
 	{
 		// Make it model based on parent frame
 		super( (Frame)null, false );
@@ -66,52 +66,44 @@ public class PreferencesDialog extends JDialog implements WindowListener
 		this.fc = fc;
 
 		this.userPreferencesView = fc.getUserPreferencesMVCView();
-		
+
 		basePanel = new JPanel();
 		basePanel.setLayout( new MigLayout( "fill, flowy" ) );
 		this.add( basePanel );
-		
+
 		tabsPanel = new JPanel();
 		tabsPanel.setLayout( new MigLayout( "fill" ) );
 		basePanel.add( tabsPanel, "growx, shrink" );
-		
-		getButtonsPanel();
+
+		buttonsPanel = new JPanel();
+		buttonsPanel.setLayout( new MigLayout( "fill" ) );
+		cancelChangesButton = new JButton( "Cancel Changes" );
+		buttonsPanel.add( cancelChangesButton, "align left, aligny bottom" );
+		applyChangesButton = new JButton( "Apply Changes" );
+		buttonsPanel.add( applyChangesButton, "align right, aligny bottom" );
+
 		basePanel.add( buttonsPanel, "grow, shrink" );
-		
+
 		this.pack();
-		
+
 		this.addWindowListener( this );
 	}
-	
+
 	public UserPreferencesMVCView getUserPreferencesView()
 	{
 		return userPreferencesView;
 	}
 
-	public JPanel getButtonsPanel()
-	{
-		if( buttonsPanel == null )
-		{
-			buttonsPanel = new JPanel();
-			buttonsPanel.setLayout( new MigLayout( "fill" ) );
-			cancelChangesButton = new JButton( "Cancel Changes" );
-			buttonsPanel.add( cancelChangesButton, "align left, aligny bottom" );
-			applyChangesButton = new JButton( "Apply Changes" );
-			buttonsPanel.add( applyChangesButton, "align right, aligny bottom" );
-		}
-		return buttonsPanel;
-	}
-
-	public void choosePage( PreferencesDialogPageEnum page )
+	public void choosePage( final PreferencesDialogPageEnum page )
 	{
 		this.validate();
 		this.pack();
-		Component c = pageToComponentMap.get( page );
+		final Component c = pageToComponentMap.get( page );
 		c.setVisible( true );
 		tabbedPane.setSelectedComponent( c );
 	}
 
-	public void setPreferencesTabbedFrame( JTabbedPane tabbedPane, Map<PreferencesDialogPageEnum, Component> pageToComponentMap )
+	public void setPreferencesTabbedFrame( final JTabbedPane tabbedPane, final Map<PreferencesDialogPageEnum, Component> pageToComponentMap )
 	{
 		this.pageToComponentMap = pageToComponentMap;
 		this.tabbedPane = tabbedPane;
@@ -123,48 +115,48 @@ public class PreferencesDialog extends JDialog implements WindowListener
 		this.setVisible( false );
 	}
 
-	public void registerCancelAction(CancelPreferencesChangesAction cancelAction)
+	public void registerCancelAction(final CancelPreferencesChangesAction cancelAction)
 	{
 		cancelChangesButton.setAction( cancelAction );
 	}
 
 	@Override
-	public void windowOpened(WindowEvent e)
+	public void windowOpened(final WindowEvent e)
 	{
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e)
+	public void windowClosing(final WindowEvent e)
 	{
 		this.close();
 	}
 
 	@Override
-	public void windowClosed(WindowEvent e)
+	public void windowClosed(final WindowEvent e)
 	{
 	}
 
 	@Override
-	public void windowIconified(WindowEvent e)
+	public void windowIconified(final WindowEvent e)
 	{
 	}
 
 	@Override
-	public void windowDeiconified(WindowEvent e)
+	public void windowDeiconified(final WindowEvent e)
 	{
 	}
 
 	@Override
-	public void windowActivated(WindowEvent e)
+	public void windowActivated(final WindowEvent e)
 	{
 	}
 
 	@Override
-	public void windowDeactivated(WindowEvent e)
+	public void windowDeactivated(final WindowEvent e)
 	{
 	}
 
-	public void registerApplyAction( ApplyPreferencesChangesAction applyAction )
+	public void registerApplyAction( final ApplyPreferencesChangesAction applyAction )
 	{
 		applyChangesButton.setAction( applyAction );
 	}

@@ -86,9 +86,9 @@ public class MainFrameActions
 		}
 		catch (final RecordNotFoundException e)
 		{
-			if( log.isInfoEnabled() )
+			if(log.isInfoEnabled())
 			{
-				log.info("Unable to fetch default directory from configuration - if needed set " + CONFIG_KEY_DEFAULT_DIR);
+				log.info("Unable to fetch default directory from configuration - if needed set " + CONFIG_KEY_DEFAULT_DIR );
 			}
 			defaultDirectory = "";
 		}
