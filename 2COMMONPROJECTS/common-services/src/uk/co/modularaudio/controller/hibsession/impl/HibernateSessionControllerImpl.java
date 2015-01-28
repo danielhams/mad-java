@@ -25,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
@@ -41,13 +40,6 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 	private static Log log = LogFactory.getLog( HibernateSessionControllerImpl.class.getName() );
 
 	private HibernateSessionService hibernateSessionService;
-
-	private ConfigurationService configurationService;
-
-	public void setConfigurationService(final ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
 
 	public void setHibernateSessionService(final HibernateSessionService sessionService)
 	{
@@ -83,7 +75,10 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 		}
 		catch( final Throwable t )
 		{
-			log.error("Throwable caught releasing thread session: " + t.toString(), t );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Throwable caught releasing thread session: " + t.toString(), t );
+			}
 		}
 	}
 

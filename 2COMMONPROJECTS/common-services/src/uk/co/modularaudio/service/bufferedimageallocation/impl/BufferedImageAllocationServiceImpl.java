@@ -139,7 +139,10 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 		{
 			if( cache.getNumUsed() > 0 )
 			{
-				log.error( "Shutting down but some buffers still allocated in " + cache.getCacheName() );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Shutting down but some buffers still allocated in " + cache.getCacheName() );
+				}
 				cache.errorUsedEntries();
 			}
 		}

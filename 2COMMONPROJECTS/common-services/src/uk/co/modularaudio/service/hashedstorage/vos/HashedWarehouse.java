@@ -22,13 +22,13 @@ package uk.co.modularaudio.service.hashedstorage.vos;
 
 public class HashedWarehouse
 {
-	private String storageRootPath = null;
+	private final String storageRootPath;
 
-	public HashedWarehouse( String rootPathOfStorage )
+	public HashedWarehouse( final String rootPathOfStorage )
 	{
 		storageRootPath = rootPathOfStorage;
 	}
-	
+
 	public String getStorageRootPath()
 	{
 		return storageRootPath;

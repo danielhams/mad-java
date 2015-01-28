@@ -40,34 +40,34 @@ public class FeedbackDelayIOQueueBridge extends MadLocklessQueueBridge<FeedbackD
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( FeedbackDelayMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final FeedbackDelayMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_DELAY:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				float desiredDelayMillis = Float.intBitsToFloat( (int)value );
-				int numFramesDelay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate, desiredDelayMillis );
+				final long value = queueEntry.value;
+				final float desiredDelayMillis = Float.intBitsToFloat( (int)value );
+				final int numFramesDelay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate, desiredDelayMillis );
 				instance.desiredDelayFrames = (numFramesDelay > 0 ? numFramesDelay : 0 );
 				break;
 			}
 			case COMMAND_FEEDBACK:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float f = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float f = Float.intBitsToFloat( truncVal );
 				instance.desiredFeedback = f;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

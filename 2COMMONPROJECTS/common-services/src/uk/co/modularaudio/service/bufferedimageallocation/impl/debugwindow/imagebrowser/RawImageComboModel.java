@@ -32,25 +32,23 @@ import uk.co.modularaudio.service.bufferedimageallocation.impl.cache.RawImage;
 
 public class RawImageComboModel implements ComboBoxModel<String>
 {
-//	private AllocationCacheForImageType cache = null;
-	
-	private int numImages = -1;
-	private long[] imageIndexToId = null;
-	private OpenLongObjectHashMap<RawImage> indexToRawImageMap = new OpenLongObjectHashMap<RawImage>();
-	
-	private String selectedItem = "";
-	
-	public RawImageComboModel( AllocationCacheForImageType cache )
+	private final int numImages;
+	private final long[] imageIndexToId;
+	private final OpenLongObjectHashMap<RawImage> indexToRawImageMap = new OpenLongObjectHashMap<RawImage>();
+
+	private String selectedItem;
+
+	public RawImageComboModel( final AllocationCacheForImageType cache )
 	{
 //		this.cache = cache;
-		Set<RawImage> rawImages = cache.getRawImages();
+		final Set<RawImage> rawImages = cache.getRawImages();
 		numImages = rawImages.size();
 		imageIndexToId = new long[ numImages ];
-		
+
 		int curIndex = 0;
-		for( RawImage ri : rawImages )
+		for( final RawImage ri : rawImages )
 		{
-			long rawImageId = ri.getRawImageId();
+			final long rawImageId = ri.getRawImageId();
 			indexToRawImageMap.put( rawImageId, ri );
 			imageIndexToId[ curIndex++ ] = rawImageId;
 		}
@@ -63,19 +61,19 @@ public class RawImageComboModel implements ComboBoxModel<String>
 	}
 
 	@Override
-	public String getElementAt( int index )
+	public String getElementAt( final int index )
 	{
-		long imageId = imageIndexToId[ index ];
+		final long imageId = imageIndexToId[ index ];
 		return imageId + "";
 	}
 
 	@Override
-	public void addListDataListener( ListDataListener l )
+	public void addListDataListener( final ListDataListener l )
 	{
 	}
 
 	@Override
-	public void removeListDataListener( ListDataListener l )
+	public void removeListDataListener( final ListDataListener l )
 	{
 	}
 
@@ -86,9 +84,9 @@ public class RawImageComboModel implements ComboBoxModel<String>
 	}
 
 	@Override
-	public void setSelectedItem( Object anItem )
+	public void setSelectedItem( final Object anItem )
 	{
-		String itemStr = (String)anItem;
+		final String itemStr = (String)anItem;
 		selectedItem = itemStr;
 	}
 

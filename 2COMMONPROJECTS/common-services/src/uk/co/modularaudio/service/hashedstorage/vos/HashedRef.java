@@ -22,9 +22,9 @@ package uk.co.modularaudio.service.hashedstorage.vos;
 
 public class HashedRef
 {
-	private String sha1OfId = null;
-	
-	public HashedRef( String sha1OfId )
+	private final String sha1OfId;
+
+	public HashedRef( final String sha1OfId )
 	{
 		this.sha1OfId = sha1OfId;
 	}

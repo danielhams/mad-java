@@ -38,25 +38,20 @@ import uk.co.modularaudio.service.bufferedimageallocation.impl.cache.UsedEntry;
 public class RawImageDisplay extends JPanel
 {
 	private static Log log = LogFactory.getLog( RawImageDisplay.class.getName() );
-	
+
 	private static final long serialVersionUID = -6045916326255358082L;
-	
-	private JScrollPane scrollPane = null;
-	private RawImageCanvas canvas = null;
-	
-	private AllocationCacheForImageType cache = null;
-	
-	public RawImageDisplay( AllocationCacheForImageType cache )
+
+	private final JScrollPane scrollPane;
+	private final RawImageCanvas canvas;
+
+	private final AllocationCacheForImageType cache;
+
+	public RawImageDisplay( final AllocationCacheForImageType cache )
 	{
 		this.cache = cache;
-		
-		MigLayout layout = new MigLayout("fill");
+
+		final MigLayout layout = new MigLayout("fill");
 		this.setLayout( layout );
-		this.addComponents();
-	}
-	
-	private void addComponents()
-	{
 		canvas = new RawImageCanvas();
 //		scrollPane.getViewport().add( canvas );
 		scrollPane = new JScrollPane( canvas );
@@ -73,12 +68,12 @@ public class RawImageDisplay extends JPanel
 		scrollPane.getViewport().add( canvas );
 	}
 
-	public void displayRawImage( long rawImageId )
+	public void displayRawImage( final long rawImageId )
 	{
 		scrollPane.getViewport().remove( canvas );
-		RawImage ri = cache.getRawImageById( rawImageId );
-		Set<FreeEntry> freeEntrySet = cache.getRawImageFreeEntrySet( ri );
-		Set<UsedEntry> usedEntrySet = cache.getRawImageUsedEntrySet( ri );
+		final RawImage ri = cache.getRawImageById( rawImageId );
+		final Set<FreeEntry> freeEntrySet = cache.getRawImageFreeEntrySet( ri );
+		final Set<UsedEntry> usedEntrySet = cache.getRawImageUsedEntrySet( ri );
 		if( freeEntrySet == null || usedEntrySet == null )
 		{
 			log.error("Oops. Not sure how we got here.");

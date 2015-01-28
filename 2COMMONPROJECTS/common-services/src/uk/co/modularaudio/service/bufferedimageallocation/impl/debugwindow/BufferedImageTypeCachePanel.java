@@ -34,65 +34,57 @@ import uk.co.modularaudio.service.bufferedimageallocation.impl.debugwindow.image
 public class BufferedImageTypeCachePanel extends JPanel implements ActionListener
 {
 //	private static Log log = LogFactory.getLog( BufferedImageTypeCachePanel.class.getName() );
-	
+
 	private static final long serialVersionUID = -5170152282173740254L;
-	
-	private AllocationCacheForImageType cache = null;
-	
-	private JButton refreshButton = null;
-	private JLabel numRawDisplay = null;
-	private JLabel numFreeDisplay = null;
-	private JLabel numUsedDisplay = null;
-	
-	private RawImageBrowser rawImageBrowser = null;
-	
-	public BufferedImageTypeCachePanel( AllocationCacheForImageType cache )
+
+	private final AllocationCacheForImageType cache;
+
+	private final JButton refreshButton;
+	private final JLabel numRawDisplay;
+	private final JLabel numFreeDisplay;
+	private final JLabel numUsedDisplay;
+
+	private final RawImageBrowser rawImageBrowser;
+
+	public BufferedImageTypeCachePanel( final AllocationCacheForImageType cache )
 	{
 		this.cache = cache;
-		
-		MigLayout migLayout = new MigLayout("fillx", "[][grow]", "[][][][][fill,grow]");
+
+		final MigLayout migLayout = new MigLayout("fillx", "[][grow]", "[][][][][fill,grow]");
 		setLayout( migLayout );
-		addComponents();
-		connectRefreshButton();
-	}
-	
-	private void connectRefreshButton()
-	{
-		refreshButton.addActionListener( this );
-	}
-	
-	private void addComponents()
-	{
+
 		refreshButton = new JButton("Refresh");
 		this.add( refreshButton, "wrap");
-		JLabel numRawLabel = new JLabel("NumRaw:");
+		final JLabel numRawLabel = new JLabel("NumRaw:");
 		this.add( numRawLabel, "" );
 		numRawDisplay = new JLabel();
 		this.add( numRawDisplay, "wrap");
 
-		JLabel numFreeLabel = new JLabel("NumFree:");
+		final JLabel numFreeLabel = new JLabel("NumFree:");
 		this.add( numFreeLabel, "" );
 		numFreeDisplay = new JLabel();
 		this.add( numFreeDisplay, "wrap");
 
-		JLabel numUsedLabel = new JLabel("NumUsed:");
+		final JLabel numUsedLabel = new JLabel("NumUsed:");
 		this.add( numUsedLabel, "" );
 		numUsedDisplay = new JLabel();
 		this.add( numUsedDisplay, "wrap" );
-		
+
 		rawImageBrowser = new RawImageBrowser( cache );
 		this.add( rawImageBrowser, "spanx 2, grow");
+
+		refreshButton.addActionListener( this );
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 		// Refresh button click.
-		int numRaw = cache.getNumRaw();
+		final int numRaw = cache.getNumRaw();
 		numRawDisplay.setText( numRaw + "" );
-		int numFree = cache.getNumFree();
+		final int numFree = cache.getNumFree();
 		numFreeDisplay.setText( numFree + "" );
-		int numUsed = cache.getNumUsed();
+		final int numUsed = cache.getNumUsed();
 		numUsedDisplay.setText( numUsed + "" );
 		rawImageBrowser.refreshFromCache();
 	}

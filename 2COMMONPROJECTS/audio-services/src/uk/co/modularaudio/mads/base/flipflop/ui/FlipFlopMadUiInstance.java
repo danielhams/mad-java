@@ -26,8 +26,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEve
 
 public class FlipFlopMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<FlipFlopMadDefinition, FlipFlopMadInstance>
 {
-	public FlipFlopMadUiInstance( FlipFlopMadInstance instance,
-			FlipFlopMadUiDefinition uiDefinition )
+	public FlipFlopMadUiInstance( final FlipFlopMadInstance instance,
+			final FlipFlopMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

@@ -48,9 +48,9 @@ public class AllocationCacheConfiguration
 	private final int stdAllocImageWidth;
 	private final int stdAllocImageHeight;
 
-	private int numBufferedImageTypes;
-	private AllocationBufferType[] bufferedImageTypes;
-	private AllocationLifetime[] bufferedImageLifetimes;
+	private final int numBufferedImageTypes;
+	private final AllocationBufferType[] bufferedImageTypes;
+	private final AllocationLifetime[] bufferedImageLifetimes;
 	private final OpenLongIntHashMap lifetimeAndTypeInitialPages = new OpenLongIntHashMap();
 
 	public AllocationCacheConfiguration( final String configKeyPrefix, final ConfigurationService configurationService ) throws ComponentConfigurationException
@@ -63,14 +63,6 @@ public class AllocationCacheConfiguration
 				configKeyPrefix + CONFIG_KEY_CACHE_TYPES_AND_PAGES, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
 
-		extractInitialPagesFromConfigPairs( typesAndPages );
-
-		log.debug("Configured with standard allocation sizes of ( " + stdAllocImageWidth + ", " + stdAllocImageHeight + " )");
-	}
-
-	private void extractInitialPagesFromConfigPairs( final String[] typesAndPages )
-			throws ComponentConfigurationException
-	{
 		final List<AllocationBufferType> typesFound = new ArrayList<AllocationBufferType>();
 		final List<Integer> numInitialPagesForType = new ArrayList<Integer>();
 		final List<AllocationLifetime> allocLifetimes = new ArrayList<AllocationLifetime>();
@@ -123,6 +115,10 @@ public class AllocationCacheConfiguration
 				bufferedImageLifetimes[ bic ] = lifetime;
 				final long compoundKey = calculateCompoundKey( lifetime, bufferedImageType );
 				lifetimeAndTypeInitialPages.put( compoundKey, numInitialPagesForType.get( bic ) );
+			}
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Configured with standard allocation sizes of ( " + stdAllocImageWidth + ", " + stdAllocImageHeight + " )");
 			}
 		}
 		catch ( final Exception e )

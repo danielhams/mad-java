@@ -31,40 +31,30 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
  */
 public interface ConfigurationService
 {
-	public String getSingleStringValue( String key )
-			throws RecordNotFoundException;
+	String getSingleStringValue( String key ) throws RecordNotFoundException;
 
-	public String getSingleStringValue( String key, String defaultValue );
+	String getSingleStringValue( String key, String defaultValue );
 
-	public int getSingleIntValue( String key )
-			throws RecordNotFoundException;
+	int getSingleIntValue( String key ) throws RecordNotFoundException;
 
-	public long getSingleLongValue( String key )
-			throws RecordNotFoundException;
-	
-	public float getSingleFloatValue( String key )
-		throws RecordNotFoundException;
+	long getSingleLongValue( String key ) throws RecordNotFoundException;
 
-	public String getSingleEncryptedStringValue( String key )
-			throws RecordNotFoundException;
+	float getSingleFloatValue( String key ) throws RecordNotFoundException;
 
-	public String[] getCommaSeparatedStringValues( String key )
-			throws RecordNotFoundException;
+	String getSingleEncryptedStringValue( String key ) throws RecordNotFoundException;
 
-	public boolean getSingleBooleanValue( String key )
-			throws RecordNotFoundException;
+	String[] getCommaSeparatedStringValues( String key ) throws RecordNotFoundException;
 
-	public boolean getSingleBooleanValue( String key, boolean defaultValue );
+	boolean getSingleBooleanValue( String key ) throws RecordNotFoundException;
 
-	public double getSingleDoubleValue( String key )
-			throws RecordNotFoundException;
+	boolean getSingleBooleanValue( String key, boolean defaultValue );
 
-	public String[] getKeysBeginningWith( String keyStart );
-	
-	public Date getSingleDateValue( String key )
-		throws RecordNotFoundException;
+	double getSingleDoubleValue( String key ) throws RecordNotFoundException;
 
-	public Color getSingleColorValue( String string )
-		throws RecordNotFoundException;
-	
+	String[] getKeysBeginningWith( String keyStart );
+
+	Date getSingleDateValue( String key ) throws RecordNotFoundException;
+
+	Color getSingleColorValue( String string ) throws RecordNotFoundException;
+
 }

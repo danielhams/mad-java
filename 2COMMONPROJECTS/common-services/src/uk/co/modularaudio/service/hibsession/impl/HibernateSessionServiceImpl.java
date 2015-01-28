@@ -81,7 +81,10 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 		for (final HibernatePersistedBeanDefinition beanDefinition : listHibernateFiles)
 		{
 			final String originalHbmResourceName = beanDefinition.getHbmResourceName();
-			log.trace("Looking for " + originalHbmResourceName );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Looking for " + originalHbmResourceName );
+			}
 			final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
 
 			final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
@@ -113,7 +116,10 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 			value = configurationService.getSingleStringValue(key);
 			prop.setProperty(key, value);
 			configuration.addProperties(prop);
-			log.trace("HibernateProperty " + key + " : " + value);
+			if( log.isTraceEnabled() )
+			{
+				log.trace("HibernateProperty " + key + " : " + value);
+			}
 		}
 		log.trace("configureProperties end");
 	}

@@ -30,15 +30,12 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class ChooseBufferTypeCombo extends JComboBox<String>
 {
 	private static final long serialVersionUID = 4839026259124767686L;
-	
-//	private OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap = null;
-	private TypeToCacheComboBoxModel stringModel = null;
-	
-	public ChooseBufferTypeCombo( OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap )
+
+	private final TypeToCacheComboBoxModel stringModel;
+
+	public ChooseBufferTypeCombo( final OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap )
 		throws DatastoreException
 	{
-//		this.typeToCacheMap = typeToCacheMap;
-
 		stringModel = new TypeToCacheComboBoxModel( typeToCacheMap );
 
 		this.setModel( stringModel );

@@ -29,25 +29,25 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 public class FeedbackDelayMadUiInstance extends AbstractNonConfigurableMadUiInstance<FeedbackDelayMadDefinition, FeedbackDelayMadInstance>
 {
 //	private static Log log = LogFactory.getLog( FeedbackDelayMadUiInstance.class.getName() );
-	
-	public FeedbackDelayMadUiInstance( FeedbackDelayMadInstance instance,
-			FeedbackDelayMadUiDefinition uiDefinition )
+
+	public FeedbackDelayMadUiInstance( final FeedbackDelayMadInstance instance,
+			final FeedbackDelayMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendDelayMillisChange( float incomingDelayMillis )
+
+	public void sendDelayMillisChange( final float incomingDelayMillis )
 	{
 		sendTemporalValueToInstance( FeedbackDelayIOQueueBridge.COMMAND_DELAY, Float.floatToIntBits(incomingDelayMillis) );
 	}
-	
-	public void sendFeedbackChange( float incomingFeedback )
+
+	public void sendFeedbackChange( final float incomingFeedback )
 	{
 		sendTemporalValueToInstance( FeedbackDelayIOQueueBridge.COMMAND_FEEDBACK, Float.floatToIntBits( incomingFeedback ) );
 	}
 
 	@Override
-	public void consumeQueueEntry( FeedbackDelayMadInstance instance, IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final FeedbackDelayMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 	}
 }

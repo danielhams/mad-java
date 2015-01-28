@@ -45,11 +45,9 @@ public class AllocationCacheForImageType
 {
 	private static Log log = LogFactory.getLog( AllocationCacheForImageType.class.getName() );
 
-	private GraphicsConfiguration graphicsConfiguration = null;
-	private String cacheName = null;
-//	private AllocationCacheConfiguration cacheConfiguration = null;
-//	private AllocationLifetime allocationLifetime = null;
-	private AllocationBufferType allocationBufferType = null;
+	private final GraphicsConfiguration graphicsConfiguration;
+	private final String cacheName;
+	private final AllocationBufferType allocationBufferType;
 
 	private final ReentrantLock internalLock = new ReentrantLock();
 
@@ -79,15 +77,16 @@ public class AllocationCacheForImageType
 	{
 		this.graphicsConfiguration = graphicsConfiguration;
 		this.cacheName = name;
-//		this.cacheConfiguration = cacheConfiguration;
-//		this.allocationLifetime = lifetime;
 		this.allocationBufferType = allocationBufferType;
 		stdAllocImageWidth = cacheConfiguration.getStdAllocImageWidth();
 		stdAllocImageHeight = cacheConfiguration.getStdAllocImageHeight();
 		try
 		{
 			initialPages = cacheConfiguration.getInitialPagesForLifetimeAndType( lifetime, allocationBufferType );
-			log.debug("Creating image cache named " + name +" of type " + allocationBufferType + " with " + initialPages + " initial pages.");
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Creating image cache named " + name +" of type " + allocationBufferType + " with " + initialPages + " initial pages.");
+			}
 
 			populateInitialPages();
 		}
@@ -563,25 +562,34 @@ public class AllocationCacheForImageType
 
 	public void debugFreeEntries()
 	{
-		for( final FreeEntry fe : freeEntrySet )
+		if( log.isDebugEnabled() )
 		{
-			log.debug("Have a free entry: " + fe.toString() );
+			for( final FreeEntry fe : freeEntrySet )
+			{
+				log.debug("Have a free entry: " + fe.toString() );
+			}
 		}
 	}
 
 	public void debugUsedEntries()
 	{
-		for( final UsedEntry ue : usedEntrySet )
+		if( log.isDebugEnabled() )
 		{
-			log.debug("Found a used entry: " + ue.toString() );
+			for( final UsedEntry ue : usedEntrySet )
+			{
+				log.debug("Found a used entry: " + ue.toString() );
+			}
 		}
 	}
 
 	public void errorUsedEntries()
 	{
-		for( final UsedEntry ue : usedEntrySet )
+		if( log.isErrorEnabled() )
 		{
-			log.error("Found a used entry: " + ue.toString() );
+			for( final UsedEntry ue : usedEntrySet )
+			{
+				log.error("Found a used entry: " + ue.toString() );
+			}
 		}
 	}
 
@@ -610,9 +618,12 @@ public class AllocationCacheForImageType
 				{
 					if( fe2.getSourceRawImage() == fe.getSourceRawImage() && intersection( fe, fe2 ) )
 					{
-						log.error("Found an inconsistency during allocation cache checks");
-						log.error("FreeEntry(" + fe.toString() + ")");
-						log.error("FreeEntry2(" + fe2.toString() + ")");
+						if( log.isErrorEnabled() )
+						{
+							log.error("Found an inconsistency during allocation cache checks");
+							log.error("FreeEntry(" + fe.toString() + ")");
+							log.error("FreeEntry2(" + fe2.toString() + ")");
+						}
 
 						debugFreeEntries();
 						wasError = true;
@@ -623,9 +634,12 @@ public class AllocationCacheForImageType
 			{
 				if( ue.getRawImage() == fe.getSourceRawImage() && intersection( fe, ue ) )
 				{
-					log.error("Found an inconsistency during allocation cache checks");
-					log.error("FreeEntry(" + fe.getX() + "," + fe.getY() + ":" + fe.getWidth() + "," + fe.getHeight() + ")");
-					log.error("UsedEntry(" + ue.getX() + "," + ue.getY() + ":" + ue.getWidth() + "," + ue.getHeight() + ")");
+					if( log.isErrorEnabled() )
+					{
+						log.error("Found an inconsistency during allocation cache checks");
+						log.error("FreeEntry(" + fe.getX() + "," + fe.getY() + ":" + fe.getWidth() + "," + fe.getHeight() + ")");
+						log.error("UsedEntry(" + ue.getX() + "," + ue.getY() + ":" + ue.getWidth() + "," + ue.getHeight() + ")");
+					}
 
 					debugFreeEntries();
 					debugUsedEntries();
@@ -635,11 +649,17 @@ public class AllocationCacheForImageType
 		}
 		if( wasError )
 		{
-			log.error("BufferedImageCache for " + cacheName + " inconsistent!");
+			if( log.isErrorEnabled() )
+			{
+				log.error("BufferedImageCache for " + cacheName + " inconsistent!");
+			}
 		}
 		else
 		{
-			log.trace("BufferedImageCache for " + cacheName + " consistent");
+			if( log.isTraceEnabled() )
+			{
+				log.trace("BufferedImageCache for " + cacheName + " consistent");
+			}
 		}
 	}
 

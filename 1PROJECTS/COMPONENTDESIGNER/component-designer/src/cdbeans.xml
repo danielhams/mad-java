@@ -180,6 +180,5 @@
 	</bean>
 	<bean id="hibernateSessionController" class="uk.co.modularaudio.controller.hibsession.impl.HibernateSessionControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"/></property>
-		<property name="configurationService"><ref bean="configurationService"/></property>
 	</bean>
 </beans>

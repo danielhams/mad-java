@@ -43,24 +43,24 @@ import uk.co.modularaudio.service.bufferedimageallocation.impl.cache.UsedEntry;
 public class RawImageCanvas extends JComponent
 {
 	private static Log log = LogFactory.getLog( RawImageCanvas.class.getName() );
-	
+
 	private static final long serialVersionUID = 9129489845103805746L;
-	
-	private BufferedImage curBufferedImage = null;
-	
-	private ArrayList<Rectangle> freeBlockRectangles = new ArrayList<Rectangle>();
-	private ArrayList<Rectangle> usedBlockRectangles = new ArrayList<Rectangle>();
-	
+
+	private BufferedImage curBufferedImage;
+
+	private final ArrayList<Rectangle> freeBlockRectangles = new ArrayList<Rectangle>();
+	private final ArrayList<Rectangle> usedBlockRectangles = new ArrayList<Rectangle>();
+
 	private int width = 0;
 	private int height = 0;
-	
-	private Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
-	private Composite ninetyPercentAlphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.9f );
+
+	private final Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
+	private final Composite ninetyPercentAlphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.9f );
 //	private Composite fiftyPercentAlphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f );
 //	private Composite tenPercentAlphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.1f );
 
-	private static final Color darkBlue = Color.blue.darker().darker();
-	
+	private static final Color DARK_BLUE = Color.blue.darker().darker();
+
 	public RawImageCanvas()
 	{
 	}
@@ -72,20 +72,23 @@ public class RawImageCanvas extends JComponent
 		revalidate();
 	}
 
-	public void setDisplayedImage( RawImage ri, Set<FreeEntry> freeEntrySet, Set<UsedEntry> usedEntrySet )
+	public void setDisplayedImage( final RawImage ri, final Set<FreeEntry> freeEntrySet, final Set<UsedEntry> usedEntrySet )
 	{
-		log.debug("Selected image has " + freeEntrySet.size() + " free entries");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Selected image has " + freeEntrySet.size() + " free entries");
+		}
 		curBufferedImage = ri.getRootBufferedImage();
 		freeBlockRectangles.clear();
-		for( FreeEntry fe : freeEntrySet )
+		for( final FreeEntry fe : freeEntrySet )
 		{
-			Rectangle freeBlockRectangle = new Rectangle( fe.getX(), fe.getY(), fe.getWidth(), fe.getHeight() );
+			final Rectangle freeBlockRectangle = new Rectangle( fe.getX(), fe.getY(), fe.getWidth(), fe.getHeight() );
 			freeBlockRectangles.add( freeBlockRectangle );
 		}
 		usedBlockRectangles.clear();
-		for( UsedEntry ue : usedEntrySet )
+		for( final UsedEntry ue : usedEntrySet )
 		{
-			Rectangle usedBlockRectangle = new Rectangle( ue.getX(), ue.getY(), ue.getWidth(), ue.getHeight() );
+			final Rectangle usedBlockRectangle = new Rectangle( ue.getX(), ue.getY(), ue.getWidth(), ue.getHeight() );
 			usedBlockRectangles.add( usedBlockRectangle );
 		}
 		width = curBufferedImage.getWidth();
@@ -94,23 +97,23 @@ public class RawImageCanvas extends JComponent
 		revalidate();
 	}
 
-	private void doSizeThingy( int width, int height )
+	private void doSizeThingy( final int width, final int height )
 	{
-		Dimension size = new Dimension( width + 1, height + 1);
+		final Dimension size = new Dimension( width + 1, height + 1);
 		this.setMinimumSize( size );
 		this.setSize( size );
 		this.setMaximumSize( size );
 		this.setPreferredSize( size );
 	}
 
-	private Rectangle clipBounds = new Rectangle();
-	
+	private final Rectangle clipBounds = new Rectangle();
+
 	@Override
-	public void paint( Graphics rawG )
+	public void paint( final Graphics rawG )
 	{
-		Graphics2D g = (Graphics2D)rawG;
+		final Graphics2D g = (Graphics2D)rawG;
 		g.getClipBounds( clipBounds );
-		
+
 		if( curBufferedImage != null )
 		{
 			g.setComposite( opaqueComposite );
@@ -120,25 +123,25 @@ public class RawImageCanvas extends JComponent
 
 			// Draw the free blocks over the top
 			// We draw 50 transparent fill then outline with full yellow
-			g.setColor( darkBlue );
+			g.setColor( DARK_BLUE );
 			g.setComposite( ninetyPercentAlphaComposite );
 //			g.setComposite( fiftyPercentAlphaComposite );
 //			g.setComposite( tenPercentAlphaComposite );
-			for( Rectangle freeBlockRectangle : freeBlockRectangles )
+			for( final Rectangle freeBlockRectangle : freeBlockRectangles )
 			{
 				g.fillRect( freeBlockRectangle.x, freeBlockRectangle.y, freeBlockRectangle.width, freeBlockRectangle.height );
 			}
-			
+
 			g.setColor( Color.yellow );
 			g.setComposite( opaqueComposite );
-			for( Rectangle freeBlockRectangle : freeBlockRectangles )
+			for( final Rectangle freeBlockRectangle : freeBlockRectangles )
 			{
 				g.drawRect( freeBlockRectangle.x, freeBlockRectangle.y, freeBlockRectangle.width, freeBlockRectangle.height );
 			}
-			
+
 			g.setComposite( opaqueComposite );
 			g.setColor( Color.RED );
-			for( Rectangle usedBlockRectangle : usedBlockRectangles )
+			for( final Rectangle usedBlockRectangle : usedBlockRectangles )
 			{
 				g.drawRect( usedBlockRectangle.x, usedBlockRectangle.y, usedBlockRectangle.width, usedBlockRectangle.height );
 			}

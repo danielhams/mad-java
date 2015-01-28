@@ -69,11 +69,11 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	private final HashMap<String,String> keyToValueMap = new HashMap<String,String>();
 	private final HashSet<String> usedKeys = new HashSet<String>();
 
-	private final static String b64EncryptionKey = "eUg0lWOSVA2vSgN/OcDz8Q==";
+	private final static String B64_ENCRYPTION_KEY = "eUg0lWOSVA2vSgN/OcDz8Q==";
 
-	private SecretKeySpec keySpec = null;
+	private SecretKeySpec keySpec;
 
-	private Cipher cipher = null;
+	private Cipher cipher;
 
 	private final boolean logFileUsed;
 
@@ -93,12 +93,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 		if( configFilePath != null )
 		{
-			if( logFileUsed )
+			if( logFileUsed && log.isInfoEnabled() )
 			{
-				if( log.isInfoEnabled() )
-				{
-					log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
-				}
+				log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
 			}
 			parseOneFilePath( configFilePath );
 
@@ -112,7 +109,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 		else if( configResourcePath != null )
 		{
-			if( logFileUsed )
+			if( logFileUsed && log.isInfoEnabled() )
 			{
 				log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
 			}
@@ -134,7 +131,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		try
 		{
 			// Initialise the secret key with our pepper (its not salt, since salt should be added to taste i.e. random).
-			final byte keyAsBytes[] = Base64.decodeBase64( b64EncryptionKey );
+			final byte keyAsBytes[] = Base64.decodeBase64( B64_ENCRYPTION_KEY );
 
 			keySpec = new SecretKeySpec(keyAsBytes, "Blowfish");
 			cipher = Cipher.getInstance("Blowfish");
@@ -264,7 +261,10 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		{
 			if( !usedKeys.contains( key ) )
 			{
-				log.warn("Configuration key: " + key + " never read!");
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Configuration key: " + key + " never read!");
+				}
 			}
 		}
 	}

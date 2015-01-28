@@ -27,102 +27,102 @@ import java.util.Map;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class ConfigurationServiceHelper
+public final class ConfigurationServiceHelper
 {
 	private ConfigurationServiceHelper()
 	{
 	}
-	
-	public static String checkForSingleStringKey( ConfigurationService configurationService, String key, Map<String,String> errors )
+
+	public static String checkForSingleStringKey( final ConfigurationService configurationService, final String key, final Map<String,String> errors )
 	{
 		try
 		{
-			String value = configurationService.getSingleStringValue( key );
+			final String value = configurationService.getSingleStringValue( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return null;
 		}
 	}
 
-	public static boolean checkForBooleanKey( ConfigurationService configurationService, String key, Map<String,String> errors )
+	public static boolean checkForBooleanKey( final ConfigurationService configurationService, final String key, final Map<String,String> errors )
 	{
 		try
 		{
-			boolean value = configurationService.getSingleBooleanValue( key );
+			final boolean value = configurationService.getSingleBooleanValue( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return false;
 		}
 	}
 
-	public static long checkForLongKey( ConfigurationService configurationService,
-			String key, HashMap<String, String> errors)
+	public static long checkForLongKey( final ConfigurationService configurationService,
+			final String key, final HashMap<String, String> errors)
 	{
 		try
 		{
-			long value = configurationService.getSingleLongValue( key );
+			final long value = configurationService.getSingleLongValue( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return -1;
 		}
 	}
 
-	public static String[] checkForCommaSeparatedStringValues( ConfigurationService configurationService,
-			String key,
-			Map<String, String> errors )
+	public static String[] checkForCommaSeparatedStringValues( final ConfigurationService configurationService,
+			final String key,
+			final Map<String, String> errors )
 	{
 		try
 		{
-			String[] value = configurationService.getCommaSeparatedStringValues( key );
+			final String[] value = configurationService.getCommaSeparatedStringValues( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return null;
 		}
 	}
-	
-	public static void errorCheck( Map<String, String> errors ) throws ComponentConfigurationException
+
+	public static void errorCheck( final Map<String, String> errors ) throws ComponentConfigurationException
 	{
 		if( errors.size() > 0 )
 		{
-			String msg = "Configuration errors: " + Arrays.toString( errors.values().toArray( new String[]{} ) );
+			final String msg = "Configuration errors: " + Arrays.toString( errors.values().toArray( new String[]{} ) );
 			throw new ComponentConfigurationException( msg );
 		}
 	}
 
-	public static int checkForIntKey( ConfigurationService configurationService, String key, Map<String, String> errors )
+	public static int checkForIntKey( final ConfigurationService configurationService, final String key, final Map<String, String> errors )
 	{
 		try
 		{
-			int value = configurationService.getSingleIntValue( key );
+			final int value = configurationService.getSingleIntValue( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return -1;
 		}
 	}
-	
-	public static float checkForFloatKey( ConfigurationService configurationService, String key, Map<String, String> errors )
+
+	public static float checkForFloatKey( final ConfigurationService configurationService, final String key, final Map<String, String> errors )
 	{
 		try
 		{
-			float value = configurationService.getSingleFloatValue( key );
+			final float value = configurationService.getSingleFloatValue( key );
 			return value;
 		}
-		catch(RecordNotFoundException rnfe )
+		catch(final RecordNotFoundException rnfe )
 		{
 			errors.put(key, rnfe.toString() );
 			return -1;

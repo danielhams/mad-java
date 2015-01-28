@@ -28,11 +28,11 @@ public class RawImageCombo extends JComboBox<String>
 {
 	private static final long serialVersionUID = 8860825475817063033L;
 //	private static Log log = LogFactory.getLog( RawImageCombo.class.getName() );
-	
-	private RawImageBrowser rawImageBrowser = null;
-	private AllocationCacheForImageType cache = null;
-	
-	public RawImageCombo( RawImageBrowser rawImageBrowser, AllocationCacheForImageType cache )
+
+	private final RawImageBrowser rawImageBrowser;
+	private final AllocationCacheForImageType cache;
+
+	public RawImageCombo( final RawImageBrowser rawImageBrowser, final AllocationCacheForImageType cache )
 	{
 		this.rawImageBrowser = rawImageBrowser;
 		this.cache = cache;

@@ -41,36 +41,36 @@ public class FlipFlopMadInstance extends MadInstance<FlipFlopMadDefinition,FlipF
 	private static final int VALUE_CHASE_MILLIS = 20;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	private long sampleRate = -1;
-	
+
 	private boolean inputHigh = false;
-	private int numDesiredCyclesPerFlipFlop = 4;
+	private final int numDesiredCyclesPerFlipFlop = 4;
 	private int numCyclesSeen = 0;
-	
+
 	private boolean outputHigh = false;
 
-	public FlipFlopMadInstance(  BaseComponentsCreationContext creationContext,
-			String instanceName,
-			FlipFlopMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public FlipFlopMadInstance(  final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final FlipFlopMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -82,27 +82,27 @@ public class FlipFlopMadInstance extends MadInstance<FlipFlopMadDefinition,FlipF
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inWaveConnected = channelConnectedFlags.get( FlipFlopMadDefinition.CONSUMER_IN_WAVE );
-		MadChannelBuffer inWaveCb = channelBuffers[ FlipFlopMadDefinition.CONSUMER_IN_WAVE ];
-		float[] inWaveFloats = (inWaveConnected ? inWaveCb.floatBuffer : null );
-		
-		boolean outCvConnected = channelConnectedFlags.get( FlipFlopMadDefinition.PRODUCER_OUT_CV );
-		MadChannelBuffer outCvCb = channelBuffers[ FlipFlopMadDefinition.PRODUCER_OUT_CV ];
-		float[] outCvFloats = (outCvConnected ? outCvCb.floatBuffer : null );
+		final boolean inWaveConnected = channelConnectedFlags.get( FlipFlopMadDefinition.CONSUMER_IN_WAVE );
+		final MadChannelBuffer inWaveCb = channelBuffers[ FlipFlopMadDefinition.CONSUMER_IN_WAVE ];
+		final float[] inWaveFloats = (inWaveConnected ? inWaveCb.floatBuffer : null );
+
+		final boolean outCvConnected = channelConnectedFlags.get( FlipFlopMadDefinition.PRODUCER_OUT_CV );
+		final MadChannelBuffer outCvCb = channelBuffers[ FlipFlopMadDefinition.PRODUCER_OUT_CV ];
+		final float[] outCvFloats = (outCvConnected ? outCvCb.floatBuffer : null );
 
 		// Now mix them together with the precomputed amps
 		if( outCvConnected && inWaveConnected )
 		{
 			for( int i = 0 ; i < numFrames ; i++ )
 			{
-				float inFloat = inWaveFloats[ i ];
-				
+				final float inFloat = inWaveFloats[ i ];
+
 				if( inputHigh )
 				{
 					if( inFloat < 0.0f )
@@ -119,7 +119,7 @@ public class FlipFlopMadInstance extends MadInstance<FlipFlopMadDefinition,FlipF
 						numCyclesSeen++;
 					}
 				}
-				
+
 				if( numCyclesSeen >= numDesiredCyclesPerFlipFlop )
 				{
 					outputHigh = !outputHigh;
@@ -128,7 +128,7 @@ public class FlipFlopMadInstance extends MadInstance<FlipFlopMadDefinition,FlipF
 
 				// output value - running offset
 				outCvFloats[ i ] = ( outputHigh ? 1.0f : 0.0f );
-				
+
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
