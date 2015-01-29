@@ -44,39 +44,39 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 	private static final int VALUE_CHASE_MILLIS = 1;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	private long sampleRate = -1;
-	
+
 	public int desiredMaxFoldovers = 0;
 	public float desiredThreshold = 0.0f;
-	
+
 	private int currentMaxFoldovers = 0;
 	private float currentThreshold = 0.0f;
 
-	private FoldbackDistortionRT leftDistortionRt = new FoldbackDistortionRT();
-	private FoldbackDistortionRT rightDistortionRt = new FoldbackDistortionRT();
-	
-	public FoldbackDistortionMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			FoldbackDistortionMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private final FoldbackDistortionRT leftDistortionRt = new FoldbackDistortionRT();
+	private final FoldbackDistortionRT rightDistortionRt = new FoldbackDistortionRT();
+
+	public FoldbackDistortionMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final FoldbackDistortionMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -88,27 +88,27 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inLConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT );
-		MadChannelBuffer inLcb = channelBuffers[ FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT ];
-		float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
-		boolean inRConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.CONSUMER_IN_RIGHT );
-		MadChannelBuffer inRcb = channelBuffers[ FoldbackDistortionMadDefinition.CONSUMER_IN_RIGHT ];
-		float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
-		
-		boolean outLConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.PRODUCER_OUT_LEFT );
-		MadChannelBuffer outLcb = channelBuffers[ FoldbackDistortionMadDefinition.PRODUCER_OUT_LEFT ];
-		float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
-		boolean outRConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.PRODUCER_OUT_RIGHT );
-		MadChannelBuffer outRcb = channelBuffers[ FoldbackDistortionMadDefinition.PRODUCER_OUT_RIGHT ];
-		float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
-		
-		
+		final boolean inLConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT );
+		final MadChannelBuffer inLcb = channelBuffers[ FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT ];
+		final float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
+		final boolean inRConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.CONSUMER_IN_RIGHT );
+		final MadChannelBuffer inRcb = channelBuffers[ FoldbackDistortionMadDefinition.CONSUMER_IN_RIGHT ];
+		final float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
+
+		final boolean outLConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.PRODUCER_OUT_LEFT );
+		final MadChannelBuffer outLcb = channelBuffers[ FoldbackDistortionMadDefinition.PRODUCER_OUT_LEFT ];
+		final float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
+		final boolean outRConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.PRODUCER_OUT_RIGHT );
+		final MadChannelBuffer outRcb = channelBuffers[ FoldbackDistortionMadDefinition.PRODUCER_OUT_RIGHT ];
+		final float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
+
+
 		currentThreshold = desiredThreshold;
 		currentMaxFoldovers = desiredMaxFoldovers;
 
@@ -123,7 +123,7 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
 			FoldbackDistortion.filter( leftDistortionRt , outLfloats );
 		}
-		
+
 		if( !inRConnected && outRConnected )
 		{
 			Arrays.fill( outRfloats, 0.0f );
@@ -139,6 +139,6 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 		currentThreshold = (currentThreshold * curValueRatio ) + (desiredThreshold * newValueRatio );
 
 		// Do the folder over here...
-		return RealtimeMethodReturnCodeEnum.SUCCESS;				
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 }

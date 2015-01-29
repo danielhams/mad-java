@@ -38,13 +38,13 @@ public class MikeCleanerThresholdSliderUiJComponent extends PacSlider
 
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private MikeCleanerMadUiInstance uiInstance = null;
+	private final MikeCleanerMadUiInstance uiInstance;
 
 	public MikeCleanerThresholdSliderUiJComponent(
-			MikeCleanerMadDefinition definition,
-			MikeCleanerMadInstance instance,
-			MikeCleanerMadUiInstance uiInstance,
-			int controlIndex )
+			final MikeCleanerMadDefinition definition,
+			final MikeCleanerMadInstance instance,
+			final MikeCleanerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -56,21 +56,22 @@ public class MikeCleanerThresholdSliderUiJComponent extends PacSlider
 		this.setValue( -2 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
 		// Convert it into a float
-		float calculatedDb = ((float)value)/1000.0f * MAX_FLOOR_DB;
-		float valueToPass = (float)AudioMath.dbToLevel( calculatedDb );
+		final float calculatedDb = (value)/1000.0f * MAX_FLOOR_DB;
+		final float valueToPass = (float)AudioMath.dbToLevel( calculatedDb );
 		uiInstance.sendThresholdChange( valueToPass );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -78,15 +79,15 @@ public class MikeCleanerThresholdSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void receiveControlValue( String strValue )
+	public void receiveControlValue( final String strValue )
 	{
 		super.receiveControlValue( strValue );
-		float initialValue = (float) this.getValue();
+		final float initialValue = this.getValue();
 		uiInstance.sendThresholdChange( initialValue );
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

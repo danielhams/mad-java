@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -38,43 +39,42 @@ public class InverterMadDefinition extends AbstractNonConfigurableMadDefinition<
 	public final static int PRODUCER_AUDIO_OUT = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	private final static String definitionId = "inverter";
+	private final static String DEFINITION_ID = "inverter";
 
-	private final static String userVisibleName = "Inverter";
+	private final static String USER_VISIBLE_NAME = "Inverter";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "inverter";
-	private final static String classificationName = "Inverter";
-	private final static String classificationDescription = "Inverter a signal about DC=0";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Inverter";
+	private final static String CLASS_DESC = "Inverter a signal about DC=0";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave",
 		"Output Wave" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		 MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO};
 
-	public InverterMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public InverterMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new InverterIOQueueBridge(),
+				new MadNullLocklessQueueBridge<InverterMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

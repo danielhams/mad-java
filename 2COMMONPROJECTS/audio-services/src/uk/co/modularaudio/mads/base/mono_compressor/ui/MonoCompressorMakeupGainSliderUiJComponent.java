@@ -40,15 +40,15 @@ public class MonoCompressorMakeupGainSliderUiJComponent extends PacCompressionRa
 	implements IMadUiControlInstance<MonoCompressorMadDefinition, MonoCompressorMadInstance, MonoCompressorMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( MonoCompressorMakeupGainSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-	private MonoCompressorMadUiInstance uiInstance = null;
 
-	public MonoCompressorMakeupGainSliderUiJComponent( MonoCompressorMadDefinition definition,
-			MonoCompressorMadInstance instance,
-			MonoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final MonoCompressorMadUiInstance uiInstance;
+
+	public MonoCompressorMakeupGainSliderUiJComponent( final MonoCompressorMadDefinition definition,
+			final MonoCompressorMadInstance instance,
+			final MonoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( -12.0f, 12.0f, 0.0f,
 				"dB",
@@ -63,18 +63,19 @@ public class MonoCompressorMakeupGainSliderUiJComponent extends PacCompressionRa
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendOneCurveAsFloat( MonoCompressorIOQueueBridge.COMMAND_IN_MAKEUP_GAIN, newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,7 +86,7 @@ public class MonoCompressorMakeupGainSliderUiJComponent extends PacCompressionRa
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -93,24 +94,24 @@ public class MonoCompressorMakeupGainSliderUiJComponent extends PacCompressionRa
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

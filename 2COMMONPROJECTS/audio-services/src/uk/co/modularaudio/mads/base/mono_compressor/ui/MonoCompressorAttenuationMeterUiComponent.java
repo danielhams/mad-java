@@ -37,37 +37,37 @@ public class MonoCompressorAttenuationMeterUiComponent extends PacPanel
 {
 	private static final long serialVersionUID = 4901900175673258302L;
 
-	private AttenuationMeterAndLabels attenuationMeter = null;
+	private final AttenuationMeterAndLabels attenuationMeter;
 
-	private MonoCompressorMadUiInstance uiInstance = null;
+	private final MonoCompressorMadUiInstance uiInstance;
 
 	private boolean previouslyShowing;
-	
-	public MonoCompressorAttenuationMeterUiComponent( MonoCompressorMadDefinition definition,
-			MonoCompressorMadInstance instance,
-			MonoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+
+	public MonoCompressorAttenuationMeterUiComponent( final MonoCompressorMadDefinition definition,
+			final MonoCompressorMadInstance instance,
+			final MonoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( false );
 //		this.setBackground( Color.GREEN );
 
 		this.uiInstance = uiInstance;
-		
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
+
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
-		
+
 		attenuationMeter = new AttenuationMeterAndLabels( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator() );
 		this.add( attenuationMeter, "grow, wrap" );
-		
+
 		uiInstance.registerAttenuationSignalMeterValueReceiver( this );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
 		{
@@ -91,14 +91,14 @@ public class MonoCompressorAttenuationMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentTimestamp, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentTimestamp, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
 		attenuationMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
 	}
 

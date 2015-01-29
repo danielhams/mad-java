@@ -33,17 +33,17 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 		implements IMadUiControlInstance<LimiterMadDefinition, LimiterMadInstance, LimiterMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
-	
-	private LimiterMadUiInstance uiInstance = null;
+
+	private final LimiterMadUiInstance uiInstance;
 
 	public LimiterFalloffSliderUiJComponent(
-			LimiterMadDefinition definition,
-			LimiterMadInstance instance,
-			LimiterMadUiInstance uiInstance,
-			int controlIndex )
+			final LimiterMadDefinition definition,
+			final LimiterMadInstance instance,
+			final LimiterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
-		
+
 		this.setOpaque( false );
 		setFont( this.getFont().deriveFont( 9f ) );
 		this.setPaintLabels( true );
@@ -53,20 +53,21 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 		this.setValue( 500 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
 		// Convert it into a float
-		float valToSend = ((float) value) / 1000.0f;
+		final float valToSend = (value) / 1000.0f;
 		uiInstance.sendFalloffChange( valToSend );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,15 +75,15 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void receiveControlValue( String strValue )
+	public void receiveControlValue( final String strValue )
 	{
 		super.receiveControlValue( strValue );
-		float initialValue = (float)this.getValue() / 1000.0f;
+		final float initialValue = this.getValue() / 1000.0f;
 		uiInstance.sendFalloffChange( initialValue );
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

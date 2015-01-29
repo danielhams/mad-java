@@ -40,51 +40,50 @@ public class LimiterMadDefinition extends AbstractNonConfigurableMadDefinition<L
 	public final static int PRODUCER_OUT_RIGHT = 3;
 	public final static int NUM_CHANNELS = 4;
 
-	private final static String definitionId = "limiter";
+	private final static String DEFINITION_ID = "limiter";
 
-	private final static String userVisibleName = "Limiter";
+	private final static String USER_VISIBLE_NAME = "Limiter";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "limiter";
-	private final static String classificationName = "Sound Limiter";
-	private final static String classificationDescription = "A hard limiter of audio data";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Sound Limiter";
+	private final static String CLASS_DESC = "A hard limiter of audio data";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
 		"Output Wave Left",
 		"Output Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public LimiterMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public LimiterMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new LimiterIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

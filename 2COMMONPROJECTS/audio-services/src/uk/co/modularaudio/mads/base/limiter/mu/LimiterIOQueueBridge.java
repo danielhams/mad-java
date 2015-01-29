@@ -39,34 +39,34 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( LimiterMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final LimiterMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_KNEE:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float kn = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float kn = Float.intBitsToFloat( truncVal );
 				instance.desiredKnee = kn;
 				break;
 			}
 			case COMMAND_FALLOFF:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float f = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float f = Float.intBitsToFloat( truncVal );
 				instance.desiredFalloff = f;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

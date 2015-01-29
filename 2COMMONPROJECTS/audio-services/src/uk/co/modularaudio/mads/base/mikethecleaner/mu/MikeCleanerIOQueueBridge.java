@@ -38,25 +38,25 @@ public class MikeCleanerIOQueueBridge extends MadLocklessQueueBridge<MikeCleaner
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( MikeCleanerMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final MikeCleanerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_THRESHOLD:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float threshold = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float threshold = Float.intBitsToFloat( truncVal );
 				instance.threshold = threshold;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

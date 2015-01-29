@@ -32,26 +32,26 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 public class OutSignalStereoAmpMeter extends JPanel
 {
 	private static final long serialVersionUID = 1358562457507980606L;
-	
+
 //	private static Log log = LogFactory.getLog( OutSignalStereoAmpMeter.class.getName() );
-	
-	private static int METER_NUM_STEPS = 1000;
-		
-	private OutSignalAmpMeter leftAmpMeter = null;
-	private OutSignalAmpMeterLevelMarks ampMeterLabels = null;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	public OutSignalStereoAmpMeter( MonoCompressorMadUiInstance uiInstance, BufferedImageAllocator bia, boolean showClipBox )
+
+	private final static int METER_NUM_STEPS = 1000;
+
+	private final OutSignalAmpMeter leftAmpMeter;
+	private final OutSignalAmpMeterLevelMarks ampMeterLabels;
+
+	private final DbToLevelComputer dbToLevelComputer;
+
+	public OutSignalStereoAmpMeter( final MonoCompressorMadUiInstance uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
 		setOpaque( false );
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
 		this.setLayout( compLayout );
-		
-		Font f = getFont().deriveFont( 9.0f );
-		
+
+		final Font f = getFont().deriveFont( 9.0f );
+
 		dbToLevelComputer = new AmpMeterDbToLevelComputer( METER_NUM_STEPS );
-		
+
 		leftAmpMeter = new OutSignalAmpMeter( uiInstance, dbToLevelComputer, bia, showClipBox );
 		this.add( leftAmpMeter, "gaptop " +
 				OutSignalAmpMeterLevelMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", gapbottom " +
@@ -60,13 +60,13 @@ public class OutSignalStereoAmpMeter extends JPanel
 		this.add( ampMeterLabels, "growy, growx 0");
 	}
 
-	public void receiveMeterReadingInDb( long currentTimestamp,
-			float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentTimestamp,
+			final float meterReadingDb )
 	{
-		leftAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );		
+		leftAmpMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
 	}
 
-	public void receiveDisplayTick( long currentGuiTime )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
 		leftAmpMeter.receiveDisplayTick( currentGuiTime );
 	}

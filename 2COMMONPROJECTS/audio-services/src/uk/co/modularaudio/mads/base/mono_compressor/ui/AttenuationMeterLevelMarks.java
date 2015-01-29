@@ -34,20 +34,20 @@ import uk.co.modularaudio.util.math.MathFormatter;
 public class AttenuationMeterLevelMarks extends JComponent
 {
 	private static final long serialVersionUID = -1692780518068920924L;
-	
+
 	public final static int METER_LABEL_WIDTH = 16;
 
-	private Dimension preferredSize = new Dimension( METER_LABEL_WIDTH, 50 );
-	
-	public final static int METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS = 4;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	private static float[] levelsToMark = new float[] { 0.0f, -5.0f, -10.0f, -15.0f, -20.0f, -60.0f, Float.NEGATIVE_INFINITY };
-	
-	private FontMetrics fm = null;
+	private final Dimension preferredSize = new Dimension( METER_LABEL_WIDTH, 50 );
 
-	public AttenuationMeterLevelMarks( DbToLevelComputer dbToLevelComputer, Font f )
+	public final static int METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS = 4;
+
+	private final DbToLevelComputer dbToLevelComputer;
+
+	private static float[] levelsToMark = new float[] { 0.0f, -5.0f, -10.0f, -15.0f, -20.0f, -60.0f, Float.NEGATIVE_INFINITY };
+
+	private final FontMetrics fm;
+
+	public AttenuationMeterLevelMarks( final DbToLevelComputer dbToLevelComputer, final Font f )
 	{
 		this.dbToLevelComputer = dbToLevelComputer;
 
@@ -55,32 +55,33 @@ public class AttenuationMeterLevelMarks extends JComponent
 		setFont( f );
 		fm = getFontMetrics( f );
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
-		int width = getWidth();
-		int height = getHeight();
+		final int width = getWidth();
+		final int height = getHeight();
 //		g.setColor( Color.GREEN );
 //		g.fillRect( 0, 0, width, height );
-		
-		g.setColor( Color.BLACK );
-		
-		// If show clip box is set, we need to subtract that from the height too
-		int heightForMarks = height - (2 * METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS) - 2;
 
-		int fontHeight = fm.getAscent();
-		
+		g.setColor( Color.BLACK );
+
+		// If show clip box is set, we need to subtract that from the height too
+		final int heightForMarks = height - (2 * METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS) - 2;
+
+		final int fontHeight = fm.getAscent();
+
 		for( int i = 0 ; i < levelsToMark.length ; i++ )
 		{
-			float levelToMark = levelsToMark[ i ];
-			float normalisedLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( levelToMark );
-			float yValForMark = normalisedLevel * heightForMarks;
-			
-			int offsetY = (height - 2) - ( ((int)yValForMark) + METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS );
+			final float levelToMark = levelsToMark[ i ];
+			final float normalisedLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( levelToMark );
+			final float yValForMark = normalisedLevel * heightForMarks;
+
+			final int offsetY = (height - 2) - ( ((int)yValForMark) + METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS );
 			// Draw a black line at the appropriate height
 			g.drawLine( 0, offsetY, 1, offsetY );
 //			g.drawLine( width - 2, offsetY, width - 1, offsetY );
-			
+
 			String labelStr = null;
 			if( levelToMark == Float.NEGATIVE_INFINITY )
 			{
@@ -90,7 +91,7 @@ public class AttenuationMeterLevelMarks extends JComponent
 			{
 				labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
 			}
-			int stringWidth = fm.stringWidth( labelStr );
+			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 		}
 	}

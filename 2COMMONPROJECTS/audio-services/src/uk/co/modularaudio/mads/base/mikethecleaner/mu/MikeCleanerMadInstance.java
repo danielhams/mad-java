@@ -40,23 +40,23 @@ public class MikeCleanerMadInstance extends MadInstance<MikeCleanerMadDefinition
 {
 	private static final int VALUE_CHASE_MILLIS = 1;
 	private long sampleRate = 0;
-	
+
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	public float threshold = 0.0f;
-	
-	public MikeCleanerMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			MikeCleanerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public MikeCleanerMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final MikeCleanerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -65,7 +65,7 @@ public class MikeCleanerMadInstance extends MadInstance<MikeCleanerMadDefinition
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -77,20 +77,20 @@ public class MikeCleanerMadInstance extends MadInstance<MikeCleanerMadDefinition
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( MikeCleanerMadDefinition.CONSUMER_AUDIO_IN );
-		MadChannelBuffer inCb = channelBuffers[ MikeCleanerMadDefinition.CONSUMER_AUDIO_IN ];
-		float[] inFloats = (inConnected ? inCb.floatBuffer : null );
-		
-		boolean outConnected = channelConnectedFlags.get( MikeCleanerMadDefinition.PRODUCER_AUDIO_OUT );
-		MadChannelBuffer outCb = channelBuffers[ MikeCleanerMadDefinition.PRODUCER_AUDIO_OUT ];
-		float[] outFloats = (outConnected ? outCb.floatBuffer : null );
-		
+		final boolean inConnected = channelConnectedFlags.get( MikeCleanerMadDefinition.CONSUMER_AUDIO_IN );
+		final MadChannelBuffer inCb = channelBuffers[ MikeCleanerMadDefinition.CONSUMER_AUDIO_IN ];
+		final float[] inFloats = (inConnected ? inCb.floatBuffer : null );
+
+		final boolean outConnected = channelConnectedFlags.get( MikeCleanerMadDefinition.PRODUCER_AUDIO_OUT );
+		final MadChannelBuffer outCb = channelBuffers[ MikeCleanerMadDefinition.PRODUCER_AUDIO_OUT ];
+		final float[] outFloats = (outConnected ? outCb.floatBuffer : null );
+
 		if( inConnected && outConnected )
 		{
 			for( int i = 0 ; i < numFrames ; i++ )

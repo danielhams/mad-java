@@ -41,20 +41,20 @@ public class SourceSignalAmpMeter extends PacPanel
 {
 	public static final int PREFERRED_WIDTH = 10;
 	public static final int PREFERRED_METER_WIDTH = PREFERRED_WIDTH - 2;
-	
+
 	private static final Color UNDER_THRESHOLD_COLOR = new Color( 0.4f, 0.4f, 0.4f );
 	private static final Color OVER_THRESHOLD_COLOR = new Color( 0.8f, 0.8f, 0.8f );
-	
+
 	private static final Color MARK_THRESHOLD_COLOR = new Color( 0.8f, 0.4f, 0.4f );
-	
+
 	private float underThresholdLevel = 0.0f;
 
 	private static final long serialVersionUID = -7723883774839586874L;
 
 	private static Log log = LogFactory.getLog( SourceSignalAmpMeter.class.getName() );
-	
-	private boolean showClipBox = false;
-	
+
+	private final boolean showClipBox;
+
 	private float currentThresholdValueDb = Float.NEGATIVE_INFINITY;
 	private float currentMeterValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMeterValueDb = Float.NEGATIVE_INFINITY;
@@ -62,34 +62,35 @@ public class SourceSignalAmpMeter extends PacPanel
 	private long maxValueTimestamp = 0;
 	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMaxValueDb = Float.NEGATIVE_INFINITY;
-	
+
 	private final MonoCompressorMadUiInstance uiInstance;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	private BufferedImageAllocator bufferedImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;	
-	
+
+	private final DbToLevelComputer dbToLevelComputer;
+
+	private final BufferedImageAllocator bufferedImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage outBufferedImage;
+	private Graphics outBufferedImageGraphics;
+
 	private int componentWidth = -1;
 	private int componentHeight = -1;
-	public SourceSignalAmpMeter( MonoCompressorMadUiInstance uiInstance,
-			DbToLevelComputer dbToLevelComputer, BufferedImageAllocator bia, boolean showClipBox )
+
+	public SourceSignalAmpMeter( final MonoCompressorMadUiInstance uiInstance,
+			final DbToLevelComputer dbToLevelComputer, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
 		setOpaque( true );
 		this.uiInstance = uiInstance;
 		this.dbToLevelComputer = dbToLevelComputer;
 		this.bufferedImageAllocator = bia;
-		
+
 		setBackground( Color.black );
-		Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
+		final Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
 		this.setPreferredSize( myPreferredSize );
-		
+
 		this.showClipBox = showClipBox;
 	}
-	
-	private Color getColorForDb( float dbValue )
+
+	private Color getColorForDb( final float dbValue )
 	{
 		if( dbValue == Float.NEGATIVE_INFINITY )
 		{
@@ -108,8 +109,9 @@ public class SourceSignalAmpMeter extends PacPanel
 			return Color.ORANGE;
 		}
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		checkBufferedImage();
 		if( outBufferedImage != null )
@@ -122,66 +124,66 @@ public class SourceSignalAmpMeter extends PacPanel
 	{
 //		log.debug("Repainting it.");
 		checkBufferedImage();
-		
+
 		if( outBufferedImageGraphics != null )
 		{
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
-			
-			int meterWidth = PREFERRED_METER_WIDTH;
-			int totalMeterHeight = componentHeight - 2;
-			
-			int meterHeight = (showClipBox ? totalMeterHeight - meterWidth : totalMeterHeight );
-			int meterHeightOffset = ( showClipBox ? meterWidth : 0 );
-	
+
+			final int meterWidth = PREFERRED_METER_WIDTH;
+			final int totalMeterHeight = componentHeight - 2;
+
+			final int meterHeight = (showClipBox ? totalMeterHeight - meterWidth : totalMeterHeight );
+			final int meterHeightOffset = ( showClipBox ? meterWidth : 0 );
+
 			underThresholdLevel = calcLevelValueFromDb( currentThresholdValueDb );
-			
-			int yReverser = meterHeight + 1;
-			
+
+			final int yReverser = meterHeight + 1;
+
 			// Draw the two little marks indicating where the current threshold is
 			int thresholdHeightInPixels = (int)(underThresholdLevel * meterHeight);
 			thresholdHeightInPixels = (thresholdHeightInPixels > (meterHeight) ? (meterHeight) : (thresholdHeightInPixels < 0 ? 0 : thresholdHeightInPixels ));
-			int thresholdStartY = yReverser - thresholdHeightInPixels + meterHeightOffset;
+			final int thresholdStartY = yReverser - thresholdHeightInPixels + meterHeightOffset;
 			outBufferedImageGraphics.setColor( MARK_THRESHOLD_COLOR );
 			outBufferedImageGraphics.drawLine( 0, thresholdStartY, meterWidth + 2, thresholdStartY );
-			
+
 			float levelValue = 0.0f;
 			if( currentMeterValueDb != Float.NEGATIVE_INFINITY )
 			{
 				levelValue = calcLevelValueFromDb( currentMeterValueDb );
 			}
-	
+
 			outBufferedImageGraphics.setColor( UNDER_THRESHOLD_COLOR );
-			float underVal = (levelValue >= underThresholdLevel ? underThresholdLevel : levelValue );
+			final float underVal = (levelValue >= underThresholdLevel ? underThresholdLevel : levelValue );
 			int underBarHeightInPixels = (int)(underVal * meterHeight );
 			underBarHeightInPixels = (underBarHeightInPixels > (meterHeight) ? (meterHeight) : (underBarHeightInPixels < 0 ? 0 : underBarHeightInPixels ));
-			int underStartY = meterHeight - underBarHeightInPixels + 1 + meterHeightOffset;
+			final int underStartY = meterHeight - underBarHeightInPixels + 1 + meterHeightOffset;
 			outBufferedImageGraphics.fillRect( 3, underStartY, meterWidth - 4, underBarHeightInPixels );
-			
+
 			if( currentMeterValueDb > currentThresholdValueDb )
 			{
 				outBufferedImageGraphics.setColor( OVER_THRESHOLD_COLOR );
-				float overVal = levelValue;
+				final float overVal = levelValue;
 				int overBarHeightInPixels = (int)(overVal * meterHeight );
 				overBarHeightInPixels = (overBarHeightInPixels > (meterHeight) ? (meterHeight) : (overBarHeightInPixels < 0 ? 0 : overBarHeightInPixels ));
 				overBarHeightInPixels = overBarHeightInPixels - underBarHeightInPixels;
-				int overStartY = underStartY - overBarHeightInPixels;
-				outBufferedImageGraphics.fillRect( 3, overStartY, meterWidth - 4, overBarHeightInPixels );			
+				final int overStartY = underStartY - overBarHeightInPixels;
+				outBufferedImageGraphics.fillRect( 3, overStartY, meterWidth - 4, overBarHeightInPixels );
 			}
-			
+
 			float maxLevelValue = 0.0f;
-			Color maxDbColor = getColorForDb( currentMaxValueDb );
+			final Color maxDbColor = getColorForDb( currentMaxValueDb );
 			if( currentMaxValueDb != Float.NEGATIVE_INFINITY )
 			{
 				maxLevelValue = calcLevelValueFromDb( currentMaxValueDb );
 			}
 			outBufferedImageGraphics.setColor( maxDbColor );
-			
+
 			int maxValueHeightInPixels = (int)(maxLevelValue * meterHeight);
 			maxValueHeightInPixels = (maxValueHeightInPixels > (meterHeight) ? (meterHeight) : (maxValueHeightInPixels < 0 ? 0 : maxValueHeightInPixels ));
-			int maxStartY = yReverser - maxValueHeightInPixels + meterHeightOffset;
+			final int maxStartY = yReverser - maxValueHeightInPixels + meterHeightOffset;
 			outBufferedImageGraphics.drawLine( 1, maxStartY, meterWidth, maxStartY );
-			
+
 			if( showClipBox )
 			{
 				if( currentMaxValueDb >= 1.0f )
@@ -194,7 +196,7 @@ public class SourceSignalAmpMeter extends PacPanel
 			else
 			{
 			}
-			
+
 	//		outBufferedImage.flush();
 		}
 	}
@@ -209,7 +211,7 @@ public class SourceSignalAmpMeter extends PacPanel
 			{
 				try
 				{
-					AllocationMatch myAllocationMatch = new AllocationMatch();
+					final AllocationMatch myAllocationMatch = new AllocationMatch();
 					tiledBufferedImage = bufferedImageAllocator.allocateBufferedImage( "AmpMeter",
 							myAllocationMatch,
 							AllocationLifetime.SHORT,
@@ -221,18 +223,18 @@ public class SourceSignalAmpMeter extends PacPanel
 					outBufferedImageGraphics.setColor( Color.BLACK );
 					outBufferedImageGraphics.fillRect( 0, 0, componentWidth, componentHeight );
 				}
-				catch( DatastoreException e)
+				catch( final DatastoreException e)
 				{
-					String msg = "Unable to allocation image for meter: " + e.toString();
+					final String msg = "Unable to allocation image for meter: " + e.toString();
 					log.error( msg, e );
 				}
 			}
 		}
 	}
-	
-	public void receiveDisplayTick( long currentTime )
+
+	public void receiveDisplayTick( final long currentTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 		if( currentMeterValueDb > currentMaxValueDb )
 		{
 			currentMaxValueDb = currentMeterValueDb;
@@ -243,7 +245,7 @@ public class SourceSignalAmpMeter extends PacPanel
 			currentMaxValueDb = currentMeterValueDb;
 			maxValueTimestamp = currentTime;
 		}
-		
+
 		if( showing )
 		{
 			if( currentMeterValueDb != previouslyPaintedMeterValueDb ||
@@ -257,18 +259,18 @@ public class SourceSignalAmpMeter extends PacPanel
 		}
 	}
 
-	public void receiveMeterReadingInDb( long currentFrameTime, float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentFrameTime, final float meterReadingDb )
 	{
 		currentMeterValueDb = meterReadingDb;
 	}
 
-	public float calcLevelValueFromDb( float dbIn )
+	public float calcLevelValueFromDb( final float dbIn )
 	{
 //		return (dbIn + FirstDbToLevelComputer.LOWEST_NEGATIVE_DB ) / FirstDbToLevelComputer.LOWEST_NEGATIVE_DB;
 //		return (dbIn + -DbToLevelComputer.LOWEST_DIGITAL_DB_RATING ) / -DbToLevelComputer.LOWEST_DIGITAL_DB_RATING;
 		return dbToLevelComputer.toNormalisedSliderLevelFromDb( dbIn );
 	}
-	
+
 	public void destroy()
 	{
 		if( tiledBufferedImage != null )
@@ -277,9 +279,9 @@ public class SourceSignalAmpMeter extends PacPanel
 			{
 				bufferedImageAllocator.freeBufferedImage( tiledBufferedImage );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Failed to free up allocated image: " + e.toString();
+				final String msg = "Failed to free up allocated image: " + e.toString();
 				log.error( msg );
 			}
 			tiledBufferedImage = null;
@@ -288,7 +290,7 @@ public class SourceSignalAmpMeter extends PacPanel
 		}
 	}
 
-	public void setThresholdDb( float newThresholdDb )
+	public void setThresholdDb( final float newThresholdDb )
 	{
 //		log.debug("Amp meter received new threshold db: " + newThresholdDb );
 		this.currentThresholdValueDb = newThresholdDb;

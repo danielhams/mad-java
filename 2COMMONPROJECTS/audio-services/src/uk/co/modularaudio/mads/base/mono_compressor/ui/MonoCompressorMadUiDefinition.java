@@ -35,21 +35,21 @@ import uk.co.modularaudio.util.table.Span;
 public class MonoCompressorMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<MonoCompressorMadDefinition, MonoCompressorMadInstance, MonoCompressorMadUiInstance>
 {
-	private static final Span span = new Span(2,4);
+	private static final Span SPAN = new Span(2,4);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		MonoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT,
 		MonoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT,
 		MonoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 45, 100 ),
 		new Point( 100, 100 ),
 		new Point( 175, 100 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"ThresholdType",
 		"Lookahead",
 		"InMeter",
@@ -62,7 +62,7 @@ public class MonoCompressorMadUiDefinition
 		"OutMeter"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.CHECKBOX,
 		ControlType.DISPLAY,
@@ -75,7 +75,7 @@ public class MonoCompressorMadUiDefinition
 		ControlType.DISPLAY
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		MonoCompressorThresholdTypeComboUiJComponent.class,
 		MonoCompressorLookaheadCheckboxUiJComponent.class,
 		MonoCompressorSourceSignalMeterUiComponent.class,
@@ -89,7 +89,7 @@ public class MonoCompressorMadUiDefinition
 	};
 	
 	// 6 Between sliders
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 16, 35, 80, 20 ),			// Threshold Type
 		new Rectangle( 100, 35, 120, 20 ),	// Lookahead Checkbox
 		new Rectangle( 6, 72, 44, 110 ),			// In Signal Meter
@@ -102,7 +102,7 @@ public class MonoCompressorMadUiDefinition
 		new Rectangle( 361, 72, 44, 110 )	// Out Signal Meter
 	};
 	
-	private static final Class<MonoCompressorMadUiInstance> instanceClass = MonoCompressorMadUiInstance.class;
+	private static final Class<MonoCompressorMadUiInstance> INSTANCE_CLASS = MonoCompressorMadUiInstance.class;
 	
 	public MonoCompressorMadUiDefinition( BufferedImageAllocator bia,
 			MonoCompressorMadDefinition definition,
@@ -111,13 +111,13 @@ public class MonoCompressorMadUiDefinition
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

@@ -34,13 +34,13 @@ public class FoldbackDistortionMaxFoldoversSliderUiJComponent extends PacSlider
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private FoldbackDistortionMadUiInstance uiInstance = null;
+	private final FoldbackDistortionMadUiInstance uiInstance;
 
 	public FoldbackDistortionMaxFoldoversSliderUiJComponent(
-			FoldbackDistortionMadDefinition definition,
-			FoldbackDistortionMadInstance instance,
-			FoldbackDistortionMadUiInstance uiInstance,
-			int controlIndex )
+			final FoldbackDistortionMadDefinition definition,
+			final FoldbackDistortionMadInstance instance,
+			final FoldbackDistortionMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -52,18 +52,19 @@ public class FoldbackDistortionMaxFoldoversSliderUiJComponent extends PacSlider
 		this.setValue( 1 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
 		uiInstance.sendMaxFoldoversChange( value );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -71,7 +72,7 @@ public class FoldbackDistortionMaxFoldoversSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{
