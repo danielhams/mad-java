@@ -40,30 +40,30 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class SingleSampleRuntime
 {
 	private static Log log = LogFactory.getLog( SingleSampleRuntime.class.getName() );
-	
+
 //	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final BlockResamplerService blockResamplerService;
-	
+
 	private float curValueRatio = 0.0f;
 //	private float newValueRatio = 0.0f;
-	
-	private BlockResamplingClient playingSample = null;
+
+	private final BlockResamplingClient playingSample;
 	private SingleSampleState playingSampleState = SingleSampleState.STOPPED;
 	private float playingSampleSpeed = 0.0f;
 	private float playingSampleLastAmp = 0.0f;
 
-	private BlockResamplingClient fadeOutSample = null;
+	private final BlockResamplingClient fadeOutSample;
 	private float fadeOutSampleSpeed = 0.0f;
 	private float fadeOutSampleLastAmp = 0.0f;
 	private int curFadeOutFrameCount = 0;
-	
+
 	private int playingStartOffset = 0;
 	private int numFadeOutFrames = 0;
 
-	private AtomicBoolean used = new AtomicBoolean(false);
-	
-	public SingleSampleRuntime( AdvancedComponentsFrontController advancedComponentsFrontController,
-			String filename )
+	private final AtomicBoolean used = new AtomicBoolean(false);
+
+	public SingleSampleRuntime( final AdvancedComponentsFrontController advancedComponentsFrontController,
+			final String filename )
 			throws DatastoreException, UnsupportedAudioFileException
 	{
 //		this.advancedComponentsFrontController = advancedComponentsFrontController;
@@ -77,8 +77,8 @@ public class SingleSampleRuntime
 //		fadeOutSample = new BlockResamplerSampleClient( fadeOutSampleCacheClient, BlockResamplingMethod.LINEAR, 0, 0.0f );
 		fadeOutSample = blockResamplerService.createResamplingClient( filename, BlockResamplingMethod.LINEAR );
 	}
-	
-	public void setRuntimeData( int playingStartOffset, int numFramesFadeOut, float curValueRatio, float newValueRatio )
+
+	public void setRuntimeData( final int playingStartOffset, final int numFramesFadeOut, final float curValueRatio, final float newValueRatio )
 	{
 		this.playingStartOffset = playingStartOffset;
 		this.numFadeOutFrames = numFramesFadeOut;
@@ -94,11 +94,11 @@ public class SingleSampleRuntime
 		return used.get();
 	}
 
-	public void setUsed( boolean newUsed )
+	public void setUsed( final boolean newUsed )
 	{
 		used.set( newUsed );
 	}
-	
+
 	public void destroy()
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
@@ -110,17 +110,17 @@ public class SingleSampleRuntime
 
 	private void movePlayingToFadeOut()
 	{
-		long framePosition = playingSample.getFramePosition();
+		final long framePosition = playingSample.getFramePosition();
 		fadeOutSample.setFramePosition( framePosition );
 		fadeOutSample.setFpOffset( playingSample.getFpOffset() );
 //		fadeOutSample.getSampleCacheClient().setCurrentFramePosition( framePosition );
 		fadeOutSampleSpeed = playingSampleSpeed;
 		fadeOutSampleLastAmp = playingSampleLastAmp;
-		
+
 		curFadeOutFrameCount = 0;
 	}
 
-	public void receiveStateEvent( Event stateEvent )
+	public void receiveStateEvent( final Event stateEvent )
 	{
 //		log.debug("Received state event: " + stateEvent );
 		switch( stateEvent )
@@ -152,7 +152,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled state event: " + stateEvent );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled state event: " + stateEvent );
+				}
 			}
 		}
 	}
@@ -178,7 +181,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled event soft finish in state " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled event soft finish in state " + playingSampleState );
+				}
 			}
 		}
 		playingSampleMoveToStart();
@@ -200,7 +206,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled event hard finish in state " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled event hard finish in state " + playingSampleState );
+				}
 			}
 		}
 		hardFadeOutSampleMoveToStart();
@@ -229,7 +238,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled event note retrigger in state " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled event note retrigger in state " + playingSampleState );
+				}
 			}
 		}
 	}
@@ -254,7 +266,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled event note off in state " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled event note off in state " + playingSampleState );
+				}
 			}
 		}
 	}
@@ -289,7 +304,10 @@ public class SingleSampleRuntime
 			}
 			default:
 			{
-				log.error("Unhandled note on event for state: " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unhandled note on event for state: " + playingSampleState );
+				}
 			}
 		}
 	}
@@ -308,15 +326,15 @@ public class SingleSampleRuntime
 //		fadeOutSample.getSampleCacheClient().setCurrentFramePosition( playingStartOffset );
 	}
 
-	public void outputPeriod( float[] tmpBuffer,
-			int outputSampleRate,
-			float[] audioOutLeftFloats,
-			float[] audioOutRightFloats,
-			int periodStartIndex,
-			int periodEndIndex,
-			int length,
-			float playbackSpeed,
-			float[] ampFloats )
+	public void outputPeriod( final float[] tmpBuffer,
+			final int outputSampleRate,
+			final float[] audioOutLeftFloats,
+			final float[] audioOutRightFloats,
+			final int periodStartIndex,
+			final int periodEndIndex,
+			final int length,
+			final float playbackSpeed,
+			final float[] ampFloats )
 	{
 		if( periodStartIndex + length > audioOutLeftFloats.length )
 		{
@@ -347,7 +365,7 @@ public class SingleSampleRuntime
 						ampFloats,
 						false );
 
-				playingSampleSpeed = (float) playbackSpeed;
+				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
 				break;
 			}
@@ -363,7 +381,7 @@ public class SingleSampleRuntime
 						length,
 						ampFloats,
 						false );
-				playingSampleSpeed = (float) playbackSpeed;
+				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
 				if( playingSampleLastAmp == 0.0f )
 				{
@@ -374,10 +392,10 @@ public class SingleSampleRuntime
 			case PLAYING_HARD_FADE:
 			case SOFT_AND_HARD_FADE:
 			{
-				int numFramesLeftToOutput = (numFadeOutFrames - curFadeOutFrameCount);
+				final int numFramesLeftToOutput = (numFadeOutFrames - curFadeOutFrameCount);
 //				log.debug("Still " + numFramesLeftToOutput + " frames of fade out left");
-				int numFramesToOutput = (numFramesLeftToOutput < length ? numFramesLeftToOutput : length );
-		
+				final int numFramesToOutput = (numFramesLeftToOutput < length ? numFramesLeftToOutput : length );
+
 				if( numFramesLeftToOutput > 0 )
 				{
 					blockResamplerService.sampleClientFetchFramesResample( tmpBuffer,
@@ -389,7 +407,7 @@ public class SingleSampleRuntime
 							periodStartIndex,
 							numFramesToOutput,
 							false );
-					
+
 					// Apply hard fade out amps
 					for( int s = 0 ; s < numFramesToOutput ; s++ )
 					{
@@ -398,7 +416,7 @@ public class SingleSampleRuntime
 						fadeOutSampleLastAmp = (fadeOutSampleLastAmp * curValueRatio );
 //						log.debug("Faded out using fosla(" + MathFormatter.floatPrint( fadeOutSampleLastAmp, 3 ) + ")");
 					}
-					
+
 					curFadeOutFrameCount += numFramesToOutput;
 
 					// And zero any output that's left
@@ -432,15 +450,18 @@ public class SingleSampleRuntime
 						length,
 						ampFloats,
 						true );
-				playingSampleSpeed = (float) playbackSpeed;
+				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
 				break;
 			}
 			default:
 			{
-				log.error("Unknown state in output period: " + playingSampleState );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown state in output period: " + playingSampleState );
+				}
 			}
 		}
 	}
-	
+
 }

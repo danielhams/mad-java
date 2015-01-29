@@ -33,14 +33,14 @@ public class SingleSamplePlayerStartPosSliderUiJComponent extends PacSlider
 	implements IMadUiControlInstance<SingleSamplePlayerMadDefinition, SingleSamplePlayerMadInstance, SingleSamplePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = -769878766937338498L;
-	
-	private SingleSamplePlayerMadUiInstance uiInstance = null;
+
+	private final SingleSamplePlayerMadUiInstance uiInstance;
 
 	public SingleSamplePlayerStartPosSliderUiJComponent(
-			SingleSamplePlayerMadDefinition definition,
-			SingleSamplePlayerMadInstance instance,
-			SingleSamplePlayerMadUiInstance uiInstance,
-			int controlIndex )
+			final SingleSamplePlayerMadDefinition definition,
+			final SingleSamplePlayerMadInstance instance,
+			final SingleSamplePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -53,19 +53,20 @@ public class SingleSamplePlayerStartPosSliderUiJComponent extends PacSlider
 		this.setValue( 0 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float startPosMillis = ((float) value);
+		final float startPosMillis = (value);
 		uiInstance.sendDesiredStartPosition( startPosMillis );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -73,7 +74,7 @@ public class SingleSamplePlayerStartPosSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

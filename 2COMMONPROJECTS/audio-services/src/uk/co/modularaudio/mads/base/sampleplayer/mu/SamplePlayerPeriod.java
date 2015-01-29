@@ -23,9 +23,9 @@ package uk.co.modularaudio.mads.base.sampleplayer.mu;
 public class SamplePlayerPeriod
 {
 
-	public int periodStartIndex = -1;
-	public int periodEndIndex = -1;
-	public int periodLength = -1;
+	public int periodStartIndex;
+	public int periodEndIndex;
+	public int periodLength;
 	public SamplePlayerPeriodType periodType = SamplePlayerPeriodType.OFF;
 
 }

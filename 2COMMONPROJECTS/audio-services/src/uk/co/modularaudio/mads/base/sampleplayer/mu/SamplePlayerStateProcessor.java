@@ -31,40 +31,41 @@ import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 public class SamplePlayerStateProcessor
 {
 	private static final int MAX_SPEED = 4;
-	
+
 	private static Log log = LogFactory.getLog( SamplePlayerStateProcessor.class.getName() );
-	
-	private int numPeriodEntries = 0;
-	private SamplePlayerPeriod[] periodEntries = null;
-	
-	private float[] emptyPeriodFloats = null;
-	
+
+	private int numPeriodEntries;
+	private final SamplePlayerPeriod[] periodEntries;
+
+	private final float[] emptyPeriodFloats;
+
 	private SamplePlayerPeriodType previousPeriodType = SamplePlayerPeriodType.OFF;
-	
+
 	private SamplePlayerPeriodType lastOutputSamplesPeriodType = SamplePlayerPeriodType.OFF;
 
-	public SamplePlayerStateProcessor( SingleSamplePlayerMadInstance instance,
-			AdvancedComponentsFrontController advancedComponentsFrontController,
-			long sampleRate, int periodLength )
+	public SamplePlayerStateProcessor( final SingleSamplePlayerMadInstance instance,
+			final AdvancedComponentsFrontController advancedComponentsFrontController,
+			final long sampleRate,
+			final int periodLength )
 	{
 
-		int maxNumEntries = periodLength * 2 + 1;
+		final int maxNumEntries = periodLength * 2 + 1;
 		periodEntries = new SamplePlayerPeriod[ maxNumEntries ];
 		for( int i = 0 ; i < maxNumEntries ; i++ )
 		{
 			periodEntries[ i ] = new SamplePlayerPeriod();
 		}
-		
+
 		emptyPeriodFloats = new float[ periodLength ];
 		Arrays.fill( emptyPeriodFloats, 0.0f );
 	}
-	
+
 	public void processIncomingData(
-			int numFrames,
-			boolean gateConnected, MadChannelBuffer inGateBuffer,
-			boolean inRetriggerConnected, MadChannelBuffer inRetriggerBuffer,
-			boolean freqConnected, MadChannelBuffer inFreqBuffer,
-			boolean ampConnected, MadChannelBuffer inAmpBuffer )
+			final int numFrames,
+			final boolean gateConnected, final MadChannelBuffer inGateBuffer,
+			final boolean inRetriggerConnected, final MadChannelBuffer inRetriggerBuffer,
+			final boolean freqConnected, final MadChannelBuffer inFreqBuffer,
+			final boolean ampConnected, final MadChannelBuffer inAmpBuffer )
 	{
 
 		if( !gateConnected )
@@ -77,20 +78,20 @@ public class SamplePlayerStateProcessor
 			periodEntries[ 0 ].periodType = previousPeriodType;
 			return;
 		}
-		
+
 		numPeriodEntries  = 0;
-		float[] inGateFloats = inGateBuffer.floatBuffer;
-		float[] inRetriggerFloats = ( inRetriggerConnected ? inRetriggerBuffer.floatBuffer : emptyPeriodFloats );
+		final float[] inGateFloats = inGateBuffer.floatBuffer;
+		final float[] inRetriggerFloats = ( inRetriggerConnected ? inRetriggerBuffer.floatBuffer : emptyPeriodFloats );
 //		float[] inFrequencyFloats = ( freqConnected ? inFreqBuffer.floatBuffer : emptyPeriodFloats );
 //		float[] inAmpFloats = ( ampConnected ? inAmpBuffer.floatBuffer : emptyPeriodFloats );
-		
+
 		int periodStartIndex = 0;
 		SamplePlayerPeriodType periodType = previousPeriodType;
-		
+
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
-			float gateFloat = inGateFloats[ s ];
-			float retriggerFloat = inRetriggerFloats[ s ];
+			final float gateFloat = inGateFloats[ s ];
+			final float retriggerFloat = inRetriggerFloats[ s ];
 
 			switch( periodType )
 			{
@@ -102,7 +103,7 @@ public class SamplePlayerStateProcessor
 						{
 							addPeriodEntry( periodStartIndex, s, s - periodStartIndex, periodType );
 						}
-						
+
 						periodStartIndex = s;
 						periodType = SamplePlayerPeriodType.PLAYING;
 					}
@@ -116,7 +117,7 @@ public class SamplePlayerStateProcessor
 						{
 							addPeriodEntry( periodStartIndex, s, s - periodStartIndex, periodType );
 						}
-						
+
 						periodStartIndex = s;
 						periodType = SamplePlayerPeriodType.OFF;
 					}
@@ -126,11 +127,11 @@ public class SamplePlayerStateProcessor
 						{
 							addPeriodEntry( periodStartIndex, s, s - periodStartIndex, periodType );
 						}
-						
+
 						addPeriodEntry( s, s+1, 1, SamplePlayerPeriodType.TRIGGER );
-						
+
 						assert( s + 1 < numFrames );
-						
+
 						periodStartIndex = s + 1;
 						periodType = SamplePlayerPeriodType.PLAYING;
 					}
@@ -141,17 +142,17 @@ public class SamplePlayerStateProcessor
 				}
 			}
 		}
-		
+
 		// Catch final period that isn't closed (when retrigger on last index)
 		if( periodStartIndex != numFrames )
 		{
 			addPeriodEntry( periodStartIndex, numFrames, numFrames - periodStartIndex, periodType );
 		}
-		
+
 		previousPeriodType = periodType;
 	}
 
-	private void addPeriodEntry( int startIndex, int endIndex, int length, SamplePlayerPeriodType periodType )
+	private void addPeriodEntry( final int startIndex, final int endIndex, final int length, final SamplePlayerPeriodType periodType )
 	{
 		switch( periodType )
 		{
@@ -174,29 +175,29 @@ public class SamplePlayerStateProcessor
 				numPeriodEntries++;
 				break;
 			}
-		}	
+		}
 	}
-	
-	public void outputPeriodSamples( float[] tmpBuffer,
-			int outputSampleRate,
-			int numFrames,
-			SingleSampleRuntime sampleRuntime,
-			float currentRootNoteFrequency,
-			boolean freqConnected, MadChannelBuffer freqBuf,
-			boolean ampConnected, MadChannelBuffer ampBuf,
-			boolean audioOutLeftConnected, MadChannelBuffer audioOutLeftBuf,
-			boolean audioOutRightConnected, MadChannelBuffer audioOutRightBuf )
+
+	public void outputPeriodSamples( final float[] tmpBuffer,
+			final int outputSampleRate,
+			final int numFrames,
+			final SingleSampleRuntime sampleRuntime,
+			final float currentRootNoteFrequency,
+			final boolean freqConnected, final MadChannelBuffer freqBuf,
+			final boolean ampConnected, final MadChannelBuffer ampBuf,
+			final boolean audioOutLeftConnected, final MadChannelBuffer audioOutLeftBuf,
+			final boolean audioOutRightConnected, final MadChannelBuffer audioOutRightBuf )
 	{
-		float[] audioOutLeftFloats = audioOutLeftBuf.floatBuffer;
-		float[] audioOutRightFloats = audioOutRightBuf.floatBuffer;
-		
+		final float[] audioOutLeftFloats = audioOutLeftBuf.floatBuffer;
+		final float[] audioOutRightFloats = audioOutRightBuf.floatBuffer;
+
 		if( sampleRuntime != null )
 		{
-			float[] freqFloats = ( freqConnected ? freqBuf.floatBuffer : emptyPeriodFloats );
-			float[] ampFloats = ( ampConnected ? ampBuf.floatBuffer : emptyPeriodFloats );
+			final float[] freqFloats = ( freqConnected ? freqBuf.floatBuffer : emptyPeriodFloats );
+			final float[] ampFloats = ( ampConnected ? ampBuf.floatBuffer : emptyPeriodFloats );
 			for( int p = 0 ; p < numPeriodEntries ; p++ )
 			{
-				SamplePlayerPeriod spp = periodEntries[ p ];
+				final SamplePlayerPeriod spp = periodEntries[ p ];
 
 				doOnePeriodOfType( tmpBuffer,
 						outputSampleRate,
@@ -209,7 +210,7 @@ public class SamplePlayerStateProcessor
 						freqFloats,
 						ampFloats,
 						spp );
-				
+
 				lastOutputSamplesPeriodType = spp.periodType;
 			}
 		}
@@ -224,30 +225,30 @@ public class SamplePlayerStateProcessor
 				Arrays.fill( audioOutRightFloats, 0.0f );
 			}
 		}
-			
+
 	}
 
-	private void doOnePeriodOfType( float[] tmpBuffer,
-			int outputSampleRate,
-			int numFrames,
-			SingleSampleRuntime sampleRuntime,
-			float currentRootNoteFrequency,
-			boolean freqConnected,
-			float[] audioOutLeftFloats,
-			float[] audioOutRightFloats,
-			float[] freqFloats,
-			float[] ampFloats,
-			SamplePlayerPeriod spp )
+	private void doOnePeriodOfType( final float[] tmpBuffer,
+			final int outputSampleRate,
+			final int numFrames,
+			final SingleSampleRuntime sampleRuntime,
+			final float currentRootNoteFrequency,
+			final boolean freqConnected,
+			final float[] audioOutLeftFloats,
+			final float[] audioOutRightFloats,
+			final float[] freqFloats,
+			final float[] ampFloats,
+			final SamplePlayerPeriod spp )
 	{
-		int periodStartIndex = spp.periodStartIndex;
-		int periodEndIndex = spp.periodEndIndex;
-		int length = spp.periodLength;
-		SamplePlayerPeriodType periodType = spp.periodType;
+		final int periodStartIndex = spp.periodStartIndex;
+		final int periodEndIndex = spp.periodEndIndex;
+		final int length = spp.periodLength;
+		final SamplePlayerPeriodType periodType = spp.periodType;
 		if( periodStartIndex > numFrames - 1 || periodEndIndex > numFrames )
 		{
 			log.error("Dodgy indexes again!");
 		}
-		
+
 		if( periodType != lastOutputSamplesPeriodType )
 		{
 			switch( periodType )
@@ -270,19 +271,25 @@ public class SamplePlayerStateProcessor
 				}
 				default:
 				{
-					log.error("Unhandled transition periodType: " + periodType );
+					if( log.isErrorEnabled() )
+					{
+						log.error("Unhandled transition periodType: " + periodType );
+					}
 					break;
 				}
 			}
 		}
-		
-		float freq = ( freqConnected ? freqFloats[ periodStartIndex ] : currentRootNoteFrequency );
+
+		final float freq = ( freqConnected ? freqFloats[ periodStartIndex ] : currentRootNoteFrequency );
 		float playbackSpeed = freq;
 		// Normalise assuming 44k is playback at C3
 		playbackSpeed = (playbackSpeed / currentRootNoteFrequency );
 		if( playbackSpeed > MAX_SPEED )
 		{
-			log.warn( "Speed reduced from " + playbackSpeed + " to " + MAX_SPEED  + " freq " + freq + " curRn " + currentRootNoteFrequency );
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Speed reduced from " + playbackSpeed + " to " + MAX_SPEED  + " freq " + freq + " curRn " + currentRootNoteFrequency );
+			}
 			playbackSpeed = MAX_SPEED;
 		}
 		else

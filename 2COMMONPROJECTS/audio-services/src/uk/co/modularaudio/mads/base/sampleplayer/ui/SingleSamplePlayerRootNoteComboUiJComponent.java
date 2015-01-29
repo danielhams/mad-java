@@ -42,26 +42,26 @@ public class SingleSamplePlayerRootNoteComboUiJComponent extends PacComboBox<Str
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private SingleSamplePlayerMadUiInstance uiInstance = null;
+	private final SingleSamplePlayerMadUiInstance uiInstance;
 
-	private Map<String, MidiNote> noteNameToMidiNoteMap = new HashMap<String, MidiNote>();
+	private final Map<String, MidiNote> noteNameToMidiNoteMap = new HashMap<String, MidiNote>();
 
 	public SingleSamplePlayerRootNoteComboUiJComponent(
-			SingleSamplePlayerMadDefinition definition,
-			SingleSamplePlayerMadInstance instance,
-			SingleSamplePlayerMadUiInstance uiInstance,
-			int controlIndex )
+			final SingleSamplePlayerMadDefinition definition,
+			final SingleSamplePlayerMadInstance instance,
+			final SingleSamplePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( false );
-		
-		List<MidiNote> allMidiNotes = MidiUtils.getOrderedMidiNotes();
-		
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+
+		final List<MidiNote> allMidiNotes = MidiUtils.getOrderedMidiNotes();
+
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 		for( int i =0 ; i < allMidiNotes.size() ; i++ )
 		{
-			MidiNote mn = allMidiNotes.get( i );
+			final MidiNote mn = allMidiNotes.get( i );
 			noteNameToMidiNoteMap.put( mn.getNoteName(), mn );
 			cbm.addElement( mn.getNoteName() );
 		}
@@ -81,7 +81,7 @@ public class SingleSamplePlayerRootNoteComboUiJComponent extends PacComboBox<Str
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -89,12 +89,12 @@ public class SingleSamplePlayerRootNoteComboUiJComponent extends PacComboBox<Str
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			MidiNote mn = noteNameToMidiNoteMap.get( name );
+			final String name = (String) getSelectedItem();
+			final MidiNote mn = noteNameToMidiNoteMap.get( name );
 			uiInstance.sendRootNoteChoice( mn );
 		}
 	}

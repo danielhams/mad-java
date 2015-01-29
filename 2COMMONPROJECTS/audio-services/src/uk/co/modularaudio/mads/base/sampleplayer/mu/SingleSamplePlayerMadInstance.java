@@ -50,45 +50,45 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 		PLAYING
 	};
 	private static Log log = LogFactory.getLog( SingleSamplePlayerMadInstance.class.getName() );
-	
+
 	private static final int SAMPLE_HARD_FADE_OUT_MILLIS = 10;
 	protected int sampleRate = 0;
 	private int periodLength = -1;
-	
+
 	protected float currentRootNoteFreq = 0.0f;
-	
+
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
 	private int numFramesFadeOut = -1;
-	
+
 	public final AdvancedComponentsFrontController advancedComponentsFrontController;
 	public final String musicRoot;
-	
+
 	public AtomicReference<SingleSampleRuntime> desiredSampleRuntime = new AtomicReference<SingleSampleRuntime>();
-	public SingleSampleRuntime usedSampleRuntime = null;
-	
+	public SingleSampleRuntime usedSampleRuntime;
+
 	public final static int RESAMPLED_ARRAY_LENGTH = 4096;
 	public final static int INTERLEAVED_ARRAY_LENGTH = RESAMPLED_ARRAY_LENGTH / 2;
-	
-	private SamplePlayerStateProcessor stateProcessor = null;
 
-	protected int currentStartPosFrameNum = 0;
-	
-	public SingleSamplePlayerMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			SingleSamplePlayerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private SamplePlayerStateProcessor stateProcessor;
+
+	protected int currentStartPosFrameNum;
+
+	public SingleSamplePlayerMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final SingleSamplePlayerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		
+
 		this.advancedComponentsFrontController = creationContext.getAdvancedComponentsFrontController();
-				
+
 		this.musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -98,10 +98,10 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, SAMPLE_HARD_FADE_OUT_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 			numFramesFadeOut = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, SAMPLE_HARD_FADE_OUT_MILLIS );
-			
+
 			stateProcessor = new SamplePlayerStateProcessor( this, advancedComponentsFrontController, sampleRate, periodLength );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -113,21 +113,21 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		
-		boolean inGateConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV );
-		boolean inRetriggerConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_RETRIGGER_CV );
-		boolean inFreqConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_FREQ_CV);
-		boolean inAmpConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_AMP_CV);
-		boolean audioOutLeftConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L );
-		boolean audioOutRightConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R );
-		
-		SingleSampleRuntime inSampleRuntime = desiredSampleRuntime.get();
+
+		final boolean inGateConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV );
+		final boolean inRetriggerConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_RETRIGGER_CV );
+		final boolean inFreqConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_FREQ_CV);
+		final boolean inAmpConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_AMP_CV);
+		final boolean audioOutLeftConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L );
+		final boolean audioOutRightConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R );
+
+		final SingleSampleRuntime inSampleRuntime = desiredSampleRuntime.get();
 		if( inSampleRuntime != null )
 		{
 			if( inSampleRuntime != usedSampleRuntime )
@@ -142,34 +142,34 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 			// Output silence
 			if( audioOutLeftConnected )
 			{
-				MadChannelBuffer audioOutLeftBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L ];
+				final MadChannelBuffer audioOutLeftBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L ];
 				Arrays.fill( audioOutLeftBuf.floatBuffer, 0.0f );
 			}
 			if( audioOutRightConnected )
 			{
-				MadChannelBuffer audioOutRightBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R ];
+				final MadChannelBuffer audioOutRightBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R ];
 				Arrays.fill( audioOutRightBuf.floatBuffer, 0.0f );
 			}
 		}
 		else
 		{
 			usedSampleRuntime.setRuntimeData( currentStartPosFrameNum, numFramesFadeOut, curValueRatio, newValueRatio );
-			
-			MadChannelBuffer inGateBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV ];
-			MadChannelBuffer inRetriggerBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_RETRIGGER_CV ];
-			MadChannelBuffer inFreqBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_FREQ_CV ];
-			MadChannelBuffer inAmpBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_AMP_CV ];
-			
-			MadChannelBuffer audioOutLeftBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L ];
-			MadChannelBuffer audioOutRightBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R ];
-			
+
+			final MadChannelBuffer inGateBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV ];
+			final MadChannelBuffer inRetriggerBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_RETRIGGER_CV ];
+			final MadChannelBuffer inFreqBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_FREQ_CV ];
+			final MadChannelBuffer inAmpBuf = channelBuffers[ SingleSamplePlayerMadDefinition.CONSUMER_AMP_CV ];
+
+			final MadChannelBuffer audioOutLeftBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L ];
+			final MadChannelBuffer audioOutRightBuf = channelBuffers[ SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R ];
+
 			stateProcessor.processIncomingData(
 					numFrames,
-					inGateConnected, inGateBuf, 
+					inGateConnected, inGateBuf,
 					inRetriggerConnected, inRetriggerBuf,
 					inFreqConnected, inFreqBuf,
 					inAmpConnected, inAmpBuf );
-			
+
 			stateProcessor.outputPeriodSamples( tempQueueEntryStorage.temporaryFloatArray,
 					sampleRate,
 					numFrames,
@@ -178,24 +178,27 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 					inFreqConnected, inFreqBuf,
 					inAmpConnected, inAmpBuf,
 					audioOutLeftConnected, audioOutLeftBuf, audioOutRightConnected, audioOutRightBuf );
-			
+
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
 	public void releaseSampleCacheAtoms()
 	{
-		SingleSampleRuntime curDesSamRun = desiredSampleRuntime.get();
-		boolean wasSame = ( usedSampleRuntime == curDesSamRun );
+		final SingleSampleRuntime curDesSamRun = desiredSampleRuntime.get();
+		final boolean wasSame = ( usedSampleRuntime == curDesSamRun );
 		if( usedSampleRuntime != null )
 		{
 			try
 			{
 				usedSampleRuntime.destroy();
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				log.error("Exception caught attempting to release sample cache atom: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Exception caught attempting to release sample cache atom: " + e.toString(), e );
+				}
 			}
 		}
 		if( !wasSame )
@@ -204,9 +207,12 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 			{
 				curDesSamRun.destroy();
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				log.error("Exception caught attempting to release sample cache atom: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Exception caught attempting to release sample cache atom: " + e.toString(), e );
+				}
 			}
 		}
 	}

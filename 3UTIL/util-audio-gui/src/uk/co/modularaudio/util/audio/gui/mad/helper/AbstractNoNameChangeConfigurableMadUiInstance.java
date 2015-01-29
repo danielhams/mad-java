@@ -43,7 +43,7 @@ public abstract class AbstractNoNameChangeConfigurableMadUiInstance<D extends Ma
 	}
 
 	@Override
-	public final void receiveComponentNameChange( final String newName )
+	public final void receiveComponentNameChange( final String newName ) // NOPMD by dan on 29/01/15 11:54
 	{
 		// Do nothing
 	}
