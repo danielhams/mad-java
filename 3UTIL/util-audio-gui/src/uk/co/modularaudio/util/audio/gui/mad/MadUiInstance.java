@@ -44,8 +44,8 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	protected final MadUiDefinition<D,  I> uiDefinition;
 
 	protected MadUiChannelInstance[] channelInstances = new MadUiChannelInstance[0];
-	protected MadUiControlInstance<?,?,?>[] controlInstances = new MadUiControlInstance[0];
-	protected MadUiControlInstance<?,?,?>[] displayProcessingControlInstances = new MadUiControlInstance[0];
+	protected AbstractMadUiControlInstance<?,?,?>[] controlInstances = new AbstractMadUiControlInstance[0];
+	protected AbstractMadUiControlInstance<?,?,?>[] displayProcessingControlInstances = new AbstractMadUiControlInstance[0];
 
 	protected final boolean eventsPassedBetweenInstanceAndUi;
 
@@ -91,7 +91,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		// Call destroy on all our child controls
 		for( int i =0 ; i < controlInstances.length ; i++)
 		{
-			final MadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
+			final AbstractMadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
 			ci.destroy();
 		}
 		controlInstances = null;
@@ -140,7 +140,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	}
 
 	@Override
-	public MadUiControlInstance<?, ?, ?>[] getUiControlInstances()
+	public AbstractMadUiControlInstance<?, ?, ?>[] getUiControlInstances()
 	{
 		return controlInstances;
 	}
@@ -200,7 +200,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	{
 		for( int i =0 ; i < displayProcessingControlInstances.length ; i++)
 		{
-			final MadUiControlInstance<?, ?, ?> ci = displayProcessingControlInstances[ i ];
+			final AbstractMadUiControlInstance<?, ?, ?> ci = displayProcessingControlInstances[ i ];
 			ci.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
 		}
 	}
@@ -211,8 +211,8 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 		// Do nothing by default.
 	}
 
-	public void setUiControlsAndChannels( final MadUiControlInstance<?, ?, ?>[] controlsIn,
-			final MadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,
+	public void setUiControlsAndChannels( final AbstractMadUiControlInstance<?, ?, ?>[] controlsIn,
+			final AbstractMadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,
 			final MadUiChannelInstance[] channelsIn )
 	{
 		this.controlInstances = controlsIn;

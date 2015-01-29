@@ -24,20 +24,15 @@ import java.awt.Canvas;
 import java.awt.Rectangle;
 
 
-public class PacCanvas extends Canvas
+public abstract class PacCanvas extends Canvas
 {
 	private static final long serialVersionUID = -437811233199546479L;
 
 	protected Rectangle realBounds = new Rectangle();
 
-	public String getControlValue()
-	{
-		return "";
-	}
+	public abstract String getControlValue();
 
-	public void receiveControlValue( final String value )
-	{
-	}
+	public abstract void receiveControlValue( final String value );
 
 	@Override
 	public void setBounds( final int x, final int y, final int width, final int height )

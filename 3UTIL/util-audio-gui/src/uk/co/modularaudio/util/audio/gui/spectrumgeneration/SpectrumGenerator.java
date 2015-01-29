@@ -37,8 +37,8 @@ public class SpectrumGenerator
 	private static final int NUM_VALUES_TO_DRAW = 2048;
 	private static Log log = LogFactory.getLog( SpectrumGenerator.class.getName() );
 
-	protected FrequencyScaleComputer freqScaleComputer;
-	protected AmpScaleComputer ampScaleComputer;
+	protected final FrequencyScaleComputer freqScaleComputer;
+	protected final AmpScaleComputer ampScaleComputer;
 
 	public SpectrumGenerator()
 	{

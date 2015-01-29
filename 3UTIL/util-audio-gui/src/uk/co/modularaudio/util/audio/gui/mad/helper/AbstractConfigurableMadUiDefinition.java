@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
@@ -125,9 +125,9 @@ public abstract class AbstractConfigurableMadUiDefinition
 
 			// And setup the controls
 			final MadUiControlDefinition<?,?,?>[] uiControlDefinitions = new MadUiControlDefinition<?,?,?>[ uiControlClasses.length ];
-			final MadUiControlInstance<?,?,?>[] uiControlInstances = new MadUiControlInstance<?,?,?>[ uiControlClasses.length ];
-			final ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstancesArray =
-					new ArrayList<MadUiControlInstance<?,?,?>>();
+			final AbstractMadUiControlInstance<?,?,?>[] uiControlInstances = new AbstractMadUiControlInstance<?,?,?>[ uiControlClasses.length ];
+			final ArrayList<AbstractMadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstancesArray =
+					new ArrayList<AbstractMadUiControlInstance<?,?,?>>();
 			for( int i = 0 ; i < uiControlClasses.length ; i++ )
 			{
 				final String controlName = uiControlNames[ i ];
@@ -143,8 +143,8 @@ public abstract class AbstractConfigurableMadUiDefinition
 					uiDisplayProcessingControlInstancesArray.add( uiControlInstances[ i ] );
 				}
 			}
-			final MadUiControlInstance<?,?,?>[] uiDisplayProcessingControlInstances = uiDisplayProcessingControlInstancesArray.toArray(
-				new MadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstancesArray.size() ] );
+			final AbstractMadUiControlInstance<?,?,?>[] uiDisplayProcessingControlInstances = uiDisplayProcessingControlInstancesArray.toArray(
+				new AbstractMadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstancesArray.size() ] );
 
 			retVal.setUiControlsAndChannels( uiControlInstances, uiDisplayProcessingControlInstances, uiChannelInstances );
 		}

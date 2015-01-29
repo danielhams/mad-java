@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
@@ -159,13 +159,13 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 			retVal = (MadUiInstance<D, I>)oic;
 
 			// And setup the controls
-			final ArrayList<MadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
-			final ArrayList<MadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<MadUiControlInstance<?,?,?>>();
+			final ArrayList<AbstractMadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<AbstractMadUiControlInstance<?,?,?>>();
+			final ArrayList<AbstractMadUiControlInstance<?,?,?>> uiDisplayProcessingControlInstances = new ArrayList<AbstractMadUiControlInstance<?,?,?>>();
 
 			// Controls
 			for( final MadUiControlDefinition controlDef : controls )
 			{
-				final MadUiControlInstance<?,?,?> uici = controlDef.createInstance( instance, retVal );
+				final AbstractMadUiControlInstance<?,?,?> uici = controlDef.createInstance( instance, retVal );
 				uiControlInstances.add( uici );
 				if( uici.needsDisplayProcessing() )
 				{
@@ -173,8 +173,8 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 				}
 			}
 
-			retVal.setUiControlsAndChannels( uiControlInstances.toArray( new MadUiControlInstance<?,?,?>[ uiControlInstances.size() ] ),
-					uiDisplayProcessingControlInstances.toArray( new MadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstances.size() ] ),
+			retVal.setUiControlsAndChannels( uiControlInstances.toArray( new AbstractMadUiControlInstance<?,?,?>[ uiControlInstances.size() ] ),
+					uiDisplayProcessingControlInstances.toArray( new AbstractMadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstances.size() ] ),
 					uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 		}
 		catch(final Exception e)

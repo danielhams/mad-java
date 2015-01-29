@@ -25,7 +25,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
 public class GuiJPanelFront extends JPanel
@@ -41,8 +41,8 @@ public class GuiJPanelFront extends JPanel
 		this.setLayout( null );
 		componentNameLabel = new ComponentNameLabel( inComponent );
 		this.add( componentNameLabel );
-		MadUiControlInstance<?,?,?>[] uiControls = inComponent.getUiControlInstances();
-		for( MadUiControlInstance<?,?,?> uic : uiControls )
+		AbstractMadUiControlInstance<?,?,?>[] uiControls = inComponent.getUiControlInstances();
+		for( AbstractMadUiControlInstance<?,?,?> uic : uiControls )
 		{
 			Component swingComponent = uic.getControl();
 			this.add(swingComponent );

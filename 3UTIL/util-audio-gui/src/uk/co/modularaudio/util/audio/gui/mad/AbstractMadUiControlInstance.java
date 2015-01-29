@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public abstract class MadUiControlInstance
+public abstract class AbstractMadUiControlInstance
 	<D extends MadDefinition<D,I>,
 	I extends MadInstance<D,I>,
 	U extends MadUiInstance<D, I>>
@@ -36,7 +36,7 @@ public abstract class MadUiControlInstance
 	protected final U componentUiInstance;
 	protected final MadUiControlDefinition<D, I, U> definition;
 
-	public MadUiControlInstance( final U uiInstance, final MadUiControlDefinition<D, I, U> definition )
+	public AbstractMadUiControlInstance( final U uiInstance, final MadUiControlDefinition<D, I, U> definition )
 	{
 		this.componentUiInstance = uiInstance;
 		this.definition = definition;
@@ -65,8 +65,5 @@ public abstract class MadUiControlInstance
 	}
 
 	@Override
-	public void destroy()
-	{
-		// Do nothing by default
-	}
+	public abstract void destroy();
 }

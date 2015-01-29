@@ -54,7 +54,7 @@ import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.RackPo
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.RackXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.SubRackXmlType;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLink;
@@ -179,13 +179,13 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 			final List<RackControlXmlType> jbRackControlXmls = jbRackComponentXml.getRackControl();
 			//			RackComponent uiComponent = slowLookupByName( retVal, componentName );
-			final MadUiControlInstance<?,?,?>[] uiControlInstances = rackComponent.getUiControlInstances();
+			final AbstractMadUiControlInstance<?,?,?>[] uiControlInstances = rackComponent.getUiControlInstances();
 			for( final RackControlXmlType jbControlType : jbRackControlXmls )
 			{
 				final String name = jbControlType.getName();
 				final String value = jbControlType.getValue();
 				// Find the control
-				final MadUiControlInstance<?,?,?> uiControlInstance = lookupUiControlInstanceByName( uiControlInstances, name );
+				final AbstractMadUiControlInstance<?,?,?> uiControlInstance = lookupUiControlInstanceByName( uiControlInstances, name );
 				if( uiControlInstance != null )
 				{
 					uiControlInstance.receiveControlValue( value );
@@ -251,15 +251,15 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 	}
 
-	private MadUiControlInstance<?,?,?> lookupUiControlInstanceByName( final MadUiControlInstance<?,?,?>[] uiControlInstances,
+	private AbstractMadUiControlInstance<?,?,?> lookupUiControlInstanceByName( final AbstractMadUiControlInstance<?,?,?>[] uiControlInstances,
 			final String name)
 					throws RecordNotFoundException
 					{
-		MadUiControlInstance<?,?,?> retVal = null;
+		AbstractMadUiControlInstance<?,?,?> retVal = null;
 		boolean foundIt = false;
 		for( int i = 0 ; !foundIt && i < uiControlInstances.length ; i++ )
 		{
-			final MadUiControlInstance<?,?,?> uci = uiControlInstances[ i ];
+			final AbstractMadUiControlInstance<?,?,?> uci = uiControlInstances[ i ];
 			if( uci.getUiControlDefinition().getControlName().equals( name ) )
 			{
 				foundIt = true;
@@ -501,8 +501,8 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				jbRackComponentType.setRackPosition( jbRackPositionType );
 
 				// Grab the controls and persist their value too
-				final MadUiControlInstance<?,?,?>[] uiInstances = component.getUiControlInstances();
-				for( final MadUiControlInstance<?,?,?> cui : uiInstances )
+				final AbstractMadUiControlInstance<?,?,?>[] uiInstances = component.getUiControlInstances();
+				for( final AbstractMadUiControlInstance<?,?,?> cui : uiInstances )
 				{
 					//					log.debug("Found a UI instance to persist: " + cui.getClass().getName() );
 					final MadUiControlDefinition<?,?,?> cud = cui.getUiControlDefinition();

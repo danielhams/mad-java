@@ -46,10 +46,10 @@ public abstract class MadUiControlDefinition
 		CUSTOM
 	}
 
-	protected int controlIndex;
-	protected ControlType controlType;
-	protected Rectangle controlBounds;
-	protected String controlName;
+	protected final int controlIndex;
+	protected final ControlType controlType;
+	protected final Rectangle controlBounds;
+	protected final String controlName;
 
 	public MadUiControlDefinition( final int controlIndex, final String controlName, final ControlType controlType, final Rectangle controlBounds )
 	{
@@ -78,6 +78,6 @@ public abstract class MadUiControlDefinition
 	}
 
 	@Override
-	public abstract MadUiControlInstance<D, I, U> createInstance( I instance, U uiInstance )
+	public abstract AbstractMadUiControlInstance<D, I, U> createInstance( I instance, U uiInstance )
 		throws DatastoreException;
 }

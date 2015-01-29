@@ -24,20 +24,20 @@ import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SubRackShowPatchNameUiControlInstance 
-	extends MadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
+public class SubRackShowPatchNameUiControlInstance
+	extends AbstractMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private SubRackMadInstance instance = null;
-	
+
 	private SubRackShowPatchNameUiJComponent jComponent = null;
-	
-	public SubRackShowPatchNameUiControlInstance( SubRackMadInstance instance,
-			SubRackMadUiInstance uiInstance,
-			SubRackShowPatchNameUiControlDefinition showPatchNameControlDefinition )
+
+	public SubRackShowPatchNameUiControlInstance( final SubRackMadInstance instance,
+			final SubRackMadUiInstance uiInstance,
+			final SubRackShowPatchNameUiControlDefinition showPatchNameControlDefinition )
 	{
 		super( uiInstance, showPatchNameControlDefinition );
 		this.instance = instance;
@@ -51,13 +51,13 @@ public class SubRackShowPatchNameUiControlInstance
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		jComponent.receiveControlValue( value );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,5 +74,11 @@ public class SubRackShowPatchNameUiControlInstance
 	public boolean needsDisplayProcessing()
 	{
 		return true;
+	}
+
+	@Override
+	public void destroy()
+	{
+		// Do nothing
 	}
 }

@@ -28,7 +28,7 @@ import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMa
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -92,8 +92,8 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 			final MadUiInstance<?,?> retVal = new BlockingWriteRingMadUiInstance( instance,
 					this );
 
-			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
-					 new MadUiControlInstance<?,?,?>[ 0 ],
+			retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],
+					 new AbstractMadUiControlInstance<?,?,?>[ 0 ],
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 			return retVal;
 		}

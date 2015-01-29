@@ -36,7 +36,7 @@ public interface IMadUiInstance
 	
 	MadUiDefinition<D, I> getUiDefinition();
 	
-	MadUiControlInstance<?,?,?>[] getUiControlInstances();
+	AbstractMadUiControlInstance<?,?,?>[] getUiControlInstances();
 	
 	MadUiChannelInstance[] getUiChannelInstances();
 	

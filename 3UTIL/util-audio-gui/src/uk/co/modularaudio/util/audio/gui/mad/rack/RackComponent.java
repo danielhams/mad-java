@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -59,7 +59,7 @@ public class RackComponent implements RackModelTableSpanningContents
 		return cui;
 	}
 
-	public MadUiControlInstance<?,?,?>[] getUiControlInstances()
+	public AbstractMadUiControlInstance<?,?,?>[] getUiControlInstances()
 	{
 		return cui.getUiControlInstances();
 	}

@@ -29,8 +29,6 @@ public abstract class PacComponent extends Component
 
 	public abstract String getControlValue();
 
-	public void receiveControlValue( final String value )
-	{
-	}
+	public abstract void receiveControlValue( final String value );
 
 }
