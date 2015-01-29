@@ -40,7 +40,7 @@ public class PeakFinder
 //	public static final float LOCK_THRESHOLD = 2.0f;
 	public static final float LOCK_THRESHOLD = 0.1f;
 
-	public static boolean DEBUG_PEAKS = false;
+	public final static boolean DEBUG_PEAKS = false;
 
 //	private static final int LOWER_BIN_INDEX_THRESHOLD = 20;
 //	private static final int LOWER_BIN_INDEX_THRESHOLD = 1;

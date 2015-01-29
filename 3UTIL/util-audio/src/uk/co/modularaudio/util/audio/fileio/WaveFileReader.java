@@ -47,13 +47,13 @@ public class WaveFileReader
 	private int fileSize;
 
 	private int formatChunkSize;
-	private short formatType;
+	private short formatType; // NOPMD by dan on 29/01/15 16:24
 	private int byteRate;
-	private short blockAlign;
+	private short blockAlign; // NOPMD by dan on 29/01/15 16:25
 	private int dataChunkSize;
 	private long dataChunkOffset;
 	private int sampleRate;
-	private short bitsPerSample;
+	private short bitsPerSample; // NOPMD by dan on 29/01/15 16:25
 
 	public WaveFileReader( final String inputFilePath )
 			throws IOException
@@ -128,7 +128,10 @@ public class WaveFileReader
 //			sb.append( c2 );
 //			sb.append( c3 );
 //			log.debug("Found chunk to skip: " + sb.toString() );
-			log.debug("Found chunk to skip: '" + c0 + "' '" + c1 + "' '" + c2 + "' '" + c3 + "'" );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Found chunk to skip: '" + c0 + "' '" + c1 + "' '" + c2 + "' '" + c3 + "'" );
+			}
 			final int sizeToSkip = readInt();
 			if( sizeToSkip < 0 )
 			{
@@ -223,11 +226,11 @@ public class WaveFileReader
 		return retVal;
 	}
 
-	private short readShort() throws IOException
+	private short readShort() throws IOException // NOPMD by dan on 29/01/15 16:25
 	{
 		final int b1 = raf.read();
 		final int b2 = raf.read();
 		final int retVal  = (b1) | ((b2) << 8);
-		return (short)retVal;
+		return (short)retVal; // NOPMD by dan on 29/01/15 16:24
 	}
 }

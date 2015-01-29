@@ -24,31 +24,31 @@ import uk.co.modularaudio.util.math.MathDefines;
 
 public class ListenableWaveTableFourierGenerator
 {
-	public static void fillTable( ListenableWaveTable destTable, int harms, ListenableWaveTable amps, float phase )
+	public static void fillTable( final ListenableWaveTable destTable, final int harms, final ListenableWaveTable amps, float phase )
 	{
 		float a;
 		double w;
 		phase *= MathDefines.TWO_PI_F;
-		int destTableLength = destTable.getLength();
+		final int destTableLength = destTable.getLength();
 		/*
 		for( int i = 0 ; i < destTable.getLength() ; i++ )
 		{
 			destTable.setValueAt(i, 0.0f );
 		}
 		*/
-		
+
 		for( int i = 0 ; i < harms ; i++ )
 		{
 			a = ( amps == null ? 1.0f : amps.getValueAt(i) );
 			for( int n = 0 ; n < destTableLength ; n++ )
 			{
 				w = ( i + 1 ) * ( n * MathDefines.TWO_PI_F / destTableLength - 2 );
-				double valueToAdd = (a * Math.cos( w + phase ) );
-				float curValue = destTable.getValueAt( n );
+				final double valueToAdd = (a * Math.cos( w + phase ) );
+				final float curValue = destTable.getValueAt( n );
 				destTable.setValueAt( n , (float)(curValue + valueToAdd ));
 			}
 		}
-		ListenableWaveTableUtils.normalise_table( destTable, 1.0f );
+		ListenableWaveTableUtils.normaliseTable( destTable, 1.0f );
 	}
-	
+
 }

@@ -40,7 +40,7 @@ public abstract class RawWaveTableGenerator
 	{
 		final int sampleRate = 44100;
 		final int numChannels = 1;
-		final short numBitsPerSample = 16;
+		final short numBitsPerSample = 16; // NOPMD by dan on 29/01/15 16:30
 		final String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
 
 		CubicPaddedRawWaveTable retVal = null;

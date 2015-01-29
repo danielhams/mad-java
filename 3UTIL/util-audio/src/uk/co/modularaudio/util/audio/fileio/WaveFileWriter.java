@@ -49,15 +49,15 @@ public class WaveFileWriter
 	private long chunksize2;
 
 	private final int sampleRate;
-	private short bitsPerSample = 16;
+	private short bitsPerSample = 16; // NOPMD by dan on 29/01/15 16:25
 
-	public WaveFileWriter( final String outputFilePath, final int numChannels, final int sampleRate, final short bitsPerSample  )
+	public WaveFileWriter( final String outputFilePath, final int numChannels, final int sampleRate, final short bitsPerSample  ) // NOPMD by dan on 29/01/15 16:25
 			throws IOException
 	{
 		this( outputFilePath, numChannels, sampleRate, bitsPerSample, WaveFileDefines.FLOAT_BUFFER_LENGTH );
 	}
 
-	public WaveFileWriter( final String outputFilePath, final int numChannels, final int sampleRate, final short bitsPerSample, final int internalFloatBufferLength  )
+	public WaveFileWriter( final String outputFilePath, final int numChannels, final int sampleRate, final short bitsPerSample, final int internalFloatBufferLength  ) // NOPMD by dan on 29/01/15 16:25
 			throws IOException
 	{
 		this.internalFloatBufferLength = internalFloatBufferLength;
@@ -77,9 +77,9 @@ public class WaveFileWriter
 	{
 		final int formatChunkSize = 16;
 		// int headerSize = 8;
-		final short formatType = 1;
+		final short formatType = 1; // NOPMD by dan on 29/01/15 16:25
 		final int byteRate = sampleRate * numChannels * ((bitsPerSample + 7)/ 8);
-		final short blockAlign = (short) (numChannels * ((bitsPerSample + 7) / 8));
+		final short blockAlign = (short) (numChannels * ((bitsPerSample + 7) / 8)); // NOPMD by dan on 29/01/15 16:25
 		// int waveSize = 2;
 		// int data = 0x61746164;
 		// Will seek back to here and write after we are done.
@@ -91,7 +91,7 @@ public class WaveFileWriter
 		writeInt( WaveFileDefines.FMT_CHUNK_ID );
 		writeInt( formatChunkSize );
 		writeShort( formatType );
-		writeShort( (short) numChannels );
+		writeShort( (short) numChannels ); // NOPMD by dan on 29/01/15 16:25
 		writeInt( sampleRate );
 		writeInt( byteRate );
 		writeShort( blockAlign );
@@ -114,7 +114,7 @@ public class WaveFileWriter
 		fos.write( b4 );
 	}
 
-	private void writeShort( final short val ) throws IOException
+	private void writeShort( final short val ) throws IOException // NOPMD by dan on 29/01/15 16:25
 	{
 		// A short is 16 bits
 		final byte b1 = (byte) (val & 0xFF);

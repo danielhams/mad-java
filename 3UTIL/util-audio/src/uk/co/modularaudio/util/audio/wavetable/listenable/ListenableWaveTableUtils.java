@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.wavetable.listenable;
 
 public class ListenableWaveTableUtils
 {
-	public static void normalise_table( final ListenableWaveTable table, final float scale )
+	public static void normaliseTable( final ListenableWaveTable table, final float scale )
 	{
 		int n;
 		float max = 0.f;
