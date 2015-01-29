@@ -75,13 +75,14 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	private MadComponentService componentService;
 
 	private final static MadClassificationGroup CODE_GROUP = new MadClassificationGroup( Visibility.CODE, "Code" );
-	private final static MadClassificationGroup CUSTOM_GROUP = new MadClassificationGroup( Visibility.PUBLIC,
-			"Customisable Units" );
+	private final static MadClassificationGroup CUSTOM_GROUP = new MadClassificationGroup( Visibility.PUBLIC, "Customisable Units" );
 	private MadRootGraphDefinition<?, ?> rootGraphDefinition;
 	private MadAppGraphDefinition<?, ?> appGraphDefinition;
 	private MadSubGraphDefinition<?, ?> subGraphDefinition;
 
 	private FadeInOutLinkHelper fadeInOutLinkHelper;
+
+	private final static Map<MadParameterDefinition, String> EMPTY_PARAM_VALUES = new HashMap<MadParameterDefinition, String>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -155,16 +156,12 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			final int numOutputCvChannels, final int numInputNoteChannels, final int numOutputNoteChannels )
 			throws DatastoreException
 	{
-		MadGraphInstance<?, ?> retVal = null;
-		final Map<MadParameterDefinition, String> emptyParamValues = new HashMap<MadParameterDefinition, String>();
 		switch (graphType)
 		{
 			case ROOT_GRAPH:
 			{
-				final MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration
-						.getEmptyChannelConfiguration();
-				retVal = new MadGraphInstance( name, rootGraphDefinition, emptyParamValues, emptyChannelConfiguration );
-				break;
+				final MadChannelConfiguration emptyChannelConfiguration = MadChannelConfiguration.getEmptyChannelConfiguration();
+				return new MadGraphInstance( name, rootGraphDefinition, EMPTY_PARAM_VALUES, emptyChannelConfiguration );
 			}
 			case APP_GRAPH:
 			{
@@ -172,16 +169,14 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 						numInputAudioChannels, numOutputAudioChannels, numInputCvChannels, numOutputCvChannels,
 						numInputNoteChannels, numOutputNoteChannels );
 
-				retVal = new MadGraphInstance( name, appGraphDefinition, emptyParamValues, userChannelConfiguration );
-				break;
+				return new MadGraphInstance( name, appGraphDefinition, EMPTY_PARAM_VALUES, userChannelConfiguration );
 			}
 			case SUB_GRAPH:
 			{
 				final MadChannelConfiguration userChannelConfiguration = buildUserGraphChannelConfiguration(
 						numInputAudioChannels, numOutputAudioChannels, numInputCvChannels, numOutputCvChannels,
 						numInputNoteChannels, numOutputNoteChannels );
-				retVal = new MadGraphInstance( name, subGraphDefinition, emptyParamValues, userChannelConfiguration );
-				break;
+				return new MadGraphInstance( name, subGraphDefinition, EMPTY_PARAM_VALUES, userChannelConfiguration );
 			}
 			default:
 			{
@@ -189,8 +184,6 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				throw new DatastoreException( msg );
 			}
 		}
-
-		return retVal;
 	}
 
 	@Override

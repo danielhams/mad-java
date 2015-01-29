@@ -53,7 +53,7 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 {
 	private static Log log = LogFactory.getLog( MadComponentServiceImpl.class.getName() );
 
-	private final MadDefinitionComparator auDefComparator = new MadDefinitionComparator();
+	private final static MadDefinitionComparator DEF_COMPARATOR = new MadDefinitionComparator();
 
 	private final Map<String, MadDefinition<?,?>> idToDefinitionMap = new HashMap<String, MadDefinition<?,?>>();
 	private final Set<String> displayNameSet = new HashSet<String>();
@@ -113,9 +113,9 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 			}
 		}
 
-		Collections.sort( defsForSorting, auDefComparator );
+		Collections.sort( defsForSorting, DEF_COMPARATOR );
 
-		final MadDefinitionListModel knownDefinitions = new MadDefinitionListModel( defsForSorting, auDefComparator );
+		final MadDefinitionListModel knownDefinitions = new MadDefinitionListModel( defsForSorting, DEF_COMPARATOR );
 		return knownDefinitions;
 	}
 

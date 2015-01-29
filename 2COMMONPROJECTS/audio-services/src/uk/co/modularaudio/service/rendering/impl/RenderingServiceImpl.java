@@ -59,8 +59,8 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 {
 	private static Log log = LogFactory.getLog( RenderingServiceImpl.class.getName());
 
-	private MadGraphService graphService = null;
-	private TimingService timingService = null;
+	private MadGraphService graphService;
+	private TimingService timingService;
 
 	@Override
 	public RenderingPlanWithFanAndSync createRenderingPlan( final MadGraphInstance<?,?> graph,

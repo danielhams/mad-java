@@ -33,12 +33,12 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class UserPreferencesControllerImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, UserPreferencesController
 {
-	private UserPreferencesService userPreferencesService = null;
-	private GuiService guiService = null;
+	private UserPreferencesService userPreferencesService;
+	private GuiService guiService;
 
 	// Where we stored the user preferences model whilst it is being edited
-	private UserPreferencesMVCController userPreferencesMVCController = null;
-	private UserPreferencesMVCView userPreferencesMVCView = null;
+	private UserPreferencesMVCController userPreferencesMVCController;
+	private UserPreferencesMVCView userPreferencesMVCView;
 
 	@Override
 	public void init() throws ComponentConfigurationException

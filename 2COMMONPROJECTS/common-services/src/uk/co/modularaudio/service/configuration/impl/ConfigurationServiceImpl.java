@@ -93,9 +93,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 		if( configFilePath != null )
 		{
-			if( logFileUsed && log.isInfoEnabled() )
+			if( logFileUsed )
 			{
-				log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+				if( log.isInfoEnabled() )
+				{
+					log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+				}
 			}
 			parseOneFilePath( configFilePath );
 
@@ -109,9 +112,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 		else if( configResourcePath != null )
 		{
-			if( logFileUsed && log.isInfoEnabled() )
+			if( logFileUsed )
 			{
-				log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+				if( log.isInfoEnabled() )
+				{
+					log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+				}
 			}
 			parseOneResourcePath( configResourcePath );
 

@@ -34,8 +34,8 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RenderingControllerImpl implements ComponentWithLifecycle, RenderingController
 {
-	private AppRenderingGraphService appRenderingGraphService = null;
-	private RenderingService renderingService = null;
+	private AppRenderingGraphService appRenderingGraphService;
+	private RenderingService renderingService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -47,12 +47,12 @@ public class RenderingControllerImpl implements ComponentWithLifecycle, Renderin
 	{
 	}
 
-	public void setRenderingService(RenderingService renderingService)
+	public void setRenderingService(final RenderingService renderingService)
 	{
 		this.renderingService = renderingService;
 	}
 
-	public void setAppRenderingGraphService( AppRenderingGraphService appRenderingGraphService )
+	public void setAppRenderingGraphService( final AppRenderingGraphService appRenderingGraphService )
 	{
 		this.appRenderingGraphService = appRenderingGraphService;
 	}
@@ -64,9 +64,9 @@ public class RenderingControllerImpl implements ComponentWithLifecycle, Renderin
 	}
 
 	@Override
-	public RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graphInstance,
-			HardwareIOChannelSettings hardwareChannelSettings,
-			MadFrameTimeFactory frameTimeFactory )
+	public RenderingPlan createRenderingPlan( final MadGraphInstance<?,?> graphInstance,
+			final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadFrameTimeFactory frameTimeFactory )
 		throws DatastoreException
 	{
 		return renderingService.createRenderingPlan(graphInstance, hardwareChannelSettings, frameTimeFactory );

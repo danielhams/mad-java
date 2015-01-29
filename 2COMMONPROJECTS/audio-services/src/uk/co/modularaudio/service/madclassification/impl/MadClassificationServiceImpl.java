@@ -34,25 +34,25 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class MadClassificationServiceImpl
 	implements ComponentWithLifecycle, MadClassificationService
 {
-	private Map<String, MadClassificationGroup> idToGroupMap = new HashMap<String, MadClassificationGroup>();
+	private final static Map<String, MadClassificationGroup> ID_TO_GROUP_MAP = new HashMap<String, MadClassificationGroup>();
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		MadClassificationGroup internalGroup = new MadClassificationGroup(  Visibility.CODE, "Internal Units" );
-		idToGroupMap.put( MadClassificationService.INTERNAL_GROUP_ID, internalGroup );
-		MadClassificationGroup soundSourceGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Sources");
-		idToGroupMap.put( MadClassificationService.SOUND_SOURCE_GROUP_ID, soundSourceGroup );
-		MadClassificationGroup soundRoutingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Routing");
-		idToGroupMap.put( MadClassificationService.SOUND_ROUTING_GROUP_ID, soundRoutingGroup );
-		MadClassificationGroup controlProcessingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Control Processing");
-		idToGroupMap.put( MadClassificationService.CONTROL_PROCESSING_GROUP_ID, controlProcessingGroup );
-		MadClassificationGroup userRackGroup = new MadClassificationGroup( Visibility.PUBLIC, "User Rack");
-		idToGroupMap.put( MadClassificationService.USER_RACK_GROUP_ID, userRackGroup );
-		MadClassificationGroup soundAnalysisGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Analysis");
-		idToGroupMap.put( MadClassificationService.SOUND_ANALYSIS_GROUP_ID, soundAnalysisGroup );
-		MadClassificationGroup soundProcessingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Processing" );
-		idToGroupMap.put( MadClassificationService.SOUND_PROCESSING_GROUP_ID, soundProcessingGroup );
+		final MadClassificationGroup internalGroup = new MadClassificationGroup(  Visibility.CODE, "Internal Units" );
+		ID_TO_GROUP_MAP.put( MadClassificationService.INTERNAL_GROUP_ID, internalGroup );
+		final MadClassificationGroup soundSourceGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Sources");
+		ID_TO_GROUP_MAP.put( MadClassificationService.SOUND_SOURCE_GROUP_ID, soundSourceGroup );
+		final MadClassificationGroup soundRoutingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Routing");
+		ID_TO_GROUP_MAP.put( MadClassificationService.SOUND_ROUTING_GROUP_ID, soundRoutingGroup );
+		final MadClassificationGroup controlProcessingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Control Processing");
+		ID_TO_GROUP_MAP.put( MadClassificationService.CONTROL_PROCESSING_GROUP_ID, controlProcessingGroup );
+		final MadClassificationGroup userRackGroup = new MadClassificationGroup( Visibility.PUBLIC, "User Rack");
+		ID_TO_GROUP_MAP.put( MadClassificationService.USER_RACK_GROUP_ID, userRackGroup );
+		final MadClassificationGroup soundAnalysisGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Analysis");
+		ID_TO_GROUP_MAP.put( MadClassificationService.SOUND_ANALYSIS_GROUP_ID, soundAnalysisGroup );
+		final MadClassificationGroup soundProcessingGroup = new MadClassificationGroup( Visibility.PUBLIC, "Sound Processing" );
+		ID_TO_GROUP_MAP.put( MadClassificationService.SOUND_PROCESSING_GROUP_ID, soundProcessingGroup );
 	}
 
 	@Override
@@ -61,13 +61,13 @@ public class MadClassificationServiceImpl
 	}
 
 	@Override
-	public MadClassificationGroup findGroupById( String groupId )
+	public MadClassificationGroup findGroupById( final String groupId )
 			throws DatastoreException, RecordNotFoundException
 	{
-		MadClassificationGroup nadClassificationGroup = idToGroupMap.get( groupId );
-		if( nadClassificationGroup != null )
+		final MadClassificationGroup madClassificationGroup = ID_TO_GROUP_MAP.get( groupId );
+		if( madClassificationGroup != null )
 		{
-			return nadClassificationGroup;
+			return madClassificationGroup;
 		}
 		else
 		{

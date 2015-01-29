@@ -32,7 +32,6 @@ public class MadRootGraphDefinition<D extends MadGraphDefinition<D,I>,
 	I extends MadGraphInstance<D,I> >
 	extends MadGraphDefinition<D,I>
 {
-
 	public MadRootGraphDefinition( final String id, final String name, final MadClassification classification, final MadGraphQueueBridge<I> ioQueueBridge )
 	{
 		super( id, name, false, classification, new ArrayList<MadParameterDefinition>(), ioQueueBridge );

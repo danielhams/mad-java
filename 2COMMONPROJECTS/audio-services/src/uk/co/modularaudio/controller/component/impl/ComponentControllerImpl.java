@@ -38,9 +38,9 @@ import uk.co.modularaudio.util.table.Span;
 
 public class ComponentControllerImpl implements ComponentWithLifecycle, ComponentController
 {
-	
-	private MadComponentService componentService = null;
-	private MadComponentUiService componentUiService = null;
+
+	private MadComponentService componentService;
+	private MadComponentUiService componentUiService;
 
 	@Override
 	public void destroy()
@@ -52,12 +52,12 @@ public class ComponentControllerImpl implements ComponentWithLifecycle, Componen
 	{
 	}
 
-	public void setComponentService(MadComponentService componentService)
+	public void setComponentService(final MadComponentService componentService)
 	{
 		this.componentService = componentService;
 	}
 
-	public void setComponentUiService( MadComponentUiService componentUiService )
+	public void setComponentUiService( final MadComponentUiService componentUiService )
 	{
 		this.componentUiService = componentUiService;
 	}
@@ -69,7 +69,7 @@ public class ComponentControllerImpl implements ComponentWithLifecycle, Componen
 	}
 
 	@Override
-	public MadDefinition<?,?> findDefinitionById( String definitionId )
+	public MadDefinition<?,?> findDefinitionById( final String definitionId )
 			throws DatastoreException, RecordNotFoundException
 	{
 		return componentService.findDefinitionById( definitionId );
@@ -77,15 +77,15 @@ public class ComponentControllerImpl implements ComponentWithLifecycle, Componen
 
 	@Override
 	public MadInstance<?,?> createInstanceFromDefinition(
-			MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			String name ) throws MadProcessingException, DatastoreException, RecordNotFoundException
+			final MadDefinition<?,?> definition,
+			final Map<MadParameterDefinition, String> parameterValues,
+			final String name ) throws MadProcessingException, DatastoreException, RecordNotFoundException
 	{
 		return componentService.createInstanceFromDefinition( definition, parameterValues, name );
 	}
 
 	@Override
-	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
 			throws DatastoreException, RecordNotFoundException
 	{
 		return componentUiService.getUiSpanForDefinition( definition );

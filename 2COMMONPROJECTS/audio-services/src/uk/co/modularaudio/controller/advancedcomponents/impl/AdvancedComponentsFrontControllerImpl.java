@@ -55,24 +55,24 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	private static final String CONFIG_KEY_SAMPLER_MUSIC_ROOT = "AdvancedComponents.SamplerMusicRoot";
 	private static final String CONFIG_KEY_WAVETABLES_CACHE_ROOT = "AdvancedComponents.WavetablesCacheRoot";
 
-	private ConfigurationService configurationService = null;
-	private HibernateSessionController hibernateSessionController = null;
-	private SampleCachingController sampleCachingController = null;
-	private String samplePlayerSelectionRoot = null;
+	private ConfigurationService configurationService;
+	private HibernateSessionController hibernateSessionController;
+	private SampleCachingController sampleCachingController;
+	private String samplePlayerSelectionRoot;
 
-	private String wavetablesCachingRoot = null;
+	private String wavetablesCachingRoot;
 
-	private OscillatorFactory oscillatorFactory = null;
+	private OscillatorFactory oscillatorFactory;
 
-	private BlockResamplerService blockResamplerService = null;
-	private SampleCachingService sampleCachingService = null;
+	private BlockResamplerService blockResamplerService;
+	private SampleCachingService sampleCachingService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 		// Now fetch our music root
 		// Grab the music root from the config file
-		Map<String,String> errors = new HashMap<String,String>();
+		final Map<String,String> errors = new HashMap<String,String>();
 		samplePlayerSelectionRoot = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_SAMPLER_MUSIC_ROOT, errors );
 		wavetablesCachingRoot = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_WAVETABLES_CACHE_ROOT, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
@@ -81,9 +81,9 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		{
 			oscillatorFactory = OscillatorFactory.getInstance( wavetablesCachingRoot );
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
-			String msg = "IOException caught obtaining reference to oscillator factory: " + e.toString();
+			final String msg = "IOException caught obtaining reference to oscillator factory: " + e.toString();
 			log.error( msg );
 			throw new ComponentConfigurationException( msg );
 		}
@@ -94,30 +94,29 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	{
 	}
 
-	public void setSampleCachingController( SampleCachingController sampleCachingController )
+	public void setSampleCachingController( final SampleCachingController sampleCachingController )
 	{
 		this.sampleCachingController = sampleCachingController;
 	}
 
-	public void setHibernateSessionController( HibernateSessionController hibernateSessionController )
+	public void setHibernateSessionController( final HibernateSessionController hibernateSessionController )
 	{
 		this.hibernateSessionController = hibernateSessionController;
 	}
 
-	public void setBlockResamplerService(BlockResamplerService blockResamplerService)
+	public void setBlockResamplerService(final BlockResamplerService blockResamplerService)
 	{
 		this.blockResamplerService = blockResamplerService;
 	}
 
-	public void setSampleCachingService(SampleCachingService sampleCachingService)
+	public void setSampleCachingService(final SampleCachingService sampleCachingService)
 	{
 		this.sampleCachingService = sampleCachingService;
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile( String path ) throws DatastoreException, UnsupportedAudioFileException
+	public SampleCacheClient registerCacheClientForFile( final String path ) throws DatastoreException, UnsupportedAudioFileException
 	{
-		SampleCacheClient retVal = null;
 		Session sessionResource = null;
 		Transaction t = null;
 		try
@@ -125,14 +124,14 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 			hibernateSessionController.getThreadSession();
 			sessionResource = ThreadLocalSessionResource.getSessionResource();
 			t = sessionResource.beginTransaction();
-			retVal = sampleCachingController.registerCacheClientForFile( path );
+			final SampleCacheClient retVal = sampleCachingController.registerCacheClientForFile( path );
 			t.commit();
 			t = null;
 			return retVal;
 		}
-		catch (NoSuchHibernateSessionException e)
+		catch (final NoSuchHibernateSessionException e)
 		{
-			String msg = "Error in using hibernate session: " + e.toString();
+			final String msg = "Error in using hibernate session: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 		finally
@@ -148,7 +147,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 					hibernateSessionController.releaseThreadSession();
 				}
 			}
-			catch (NoSuchHibernateSessionException e)
+			catch (final NoSuchHibernateSessionException e)
 			{
 				// Nothing to clean up
 			}
@@ -156,65 +155,11 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
-	public void unregisterCacheClientForFile( SampleCacheClient client )
+	public void unregisterCacheClientForFile( final SampleCacheClient client )
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
 		sampleCachingController.unregisterCacheClientForFile( client );
 	}
-
-//	@Override
-//	public RealtimeMethodReturnCodeEnum sampleClientFetchFrames( SampleCacheClient client,
-//			float[] outputInterleavedFloats,
-//			int outputPosition,
-//			int lengthInFrames )
-//	{
-//		return sampleCachingController.readSamplesForCacheClient( client,
-//				outputInterleavedFloats,
-//				outputPosition,
-//				lengthInFrames );
-//	}
-//
-//	@Override
-//	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( ResampledSamplePlaybackDetails resampledSamplePlaybackDetails,
-//			BlockResamplingMethod resamplingMethod,
-//			double playbackSpeed,
-//			float[] outputLeftFloats,
-//			float[] outputRightFloats,
-//			int outputPos,
-//			int numRequired,
-//			boolean addToOutput )
-//	{
-//		return sampleCachingController.sampleClientFetchFramesResample( resampledSamplePlaybackDetails,
-//				resamplingMethod,
-//				playbackSpeed,
-//				outputLeftFloats,
-//				outputRightFloats,
-//				outputPos,
-//				numRequired,
-//				addToOutput );
-//	}
-//
-//	@Override
-//	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( ResampledSamplePlaybackDetails resampledSamplePlaybackDetails,
-//			BlockResamplingMethod resamplingMethod,
-//			double playbackSpeed,
-//			float[] outputLeftFloats,
-//			float[] outputRightFloats,
-//			int outputPos,
-//			int numRequired,
-//			float[] requiredAmps,
-//			boolean addToOutput )
-//	{
-//		return sampleCachingController.sampleClientFetchFramesResample( resampledSamplePlaybackDetails,
-//				resamplingMethod,
-//				playbackSpeed,
-//				outputLeftFloats,
-//				outputRightFloats,
-//				outputPos,
-//				numRequired,
-//				requiredAmps,
-//				addToOutput );
-//	}
 
 	@Override
 	public String getSampleSelectionMusicRoot()
@@ -227,7 +172,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		return configurationService;
 	}
 
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}

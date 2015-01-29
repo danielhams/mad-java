@@ -45,11 +45,11 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 {
 	private static Log log = LogFactory.getLog( AbstractMadComponentFactory.class.getName());
 
-	protected MadComponentService componentService = null;
-	protected MadClassificationService classificationService = null;
+	protected MadComponentService componentService;
+	protected MadClassificationService classificationService;
 
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap = null;
-	private List<MadDefinition<?,?>> definitions = new ArrayList<MadDefinition<?,?>>();
+	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap;
+	private final List<MadDefinition<?,?>> definitions = new ArrayList<MadDefinition<?,?>>();
 
 	@Override
 	public Collection<MadDefinition<?,?>> listDefinitions()
@@ -67,34 +67,34 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 		if( componentService == null ||
 				classificationService == null )
 		{
-			String msg = "ComponentFactory(" + this.getClass().getSimpleName() + ") has missing service dependencies. Check configuration.";
+			final String msg = "ComponentFactory(" + this.getClass().getSimpleName() + ") has missing service dependencies. Check configuration.";
 			log.error( msg );
 			throw new ComponentConfigurationException( msg );
 		}
 
 		try
 		{
-			MadCreationContext creationContext = getCreationContext();
+			final MadCreationContext creationContext = getCreationContext();
 
 			defClassToInsClassMap = provideDefClassToInsClassMap();
-			for( Class<? extends MadDefinition<?,?>> definitionClass : defClassToInsClassMap.keySet() )
+			for( final Class<? extends MadDefinition<?,?>> definitionClass : defClassToInsClassMap.keySet() )
 			{
 				// Create an instance of it
-				Class[] consParamTypes = new Class[] { creationContext.getClass(),
+				final Class[] consParamTypes = new Class[] { creationContext.getClass(),
 						MadClassificationService.class };
-				Constructor cons = definitionClass.getConstructor( consParamTypes );
-				Object[] consParams = new Object[] { creationContext,
+				final Constructor cons = definitionClass.getConstructor( consParamTypes );
+				final Object[] consParams = new Object[] { creationContext,
 						classificationService };
-				Object oDef = cons.newInstance( consParams );
-				MadDefinition<?,?> newDef = (MadDefinition<?,?>)oDef;
+				final Object oDef = cons.newInstance( consParams );
+				final MadDefinition<?,?> newDef = (MadDefinition<?,?>)oDef;
 				definitions.add( newDef );
 			}
 
 			componentService.registerComponentFactory( this );
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught registering component factory: " + e.toString();
+			final String msg = "Exception caught registering component factory: " + e.toString();
 			log.error( msg, e );
 			throw new ComponentConfigurationException( msg, e );
 		}
@@ -107,42 +107,42 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 		{
 			componentService.unregisterComponentFactory( this );
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught registering component factory: " + e.toString();
+			final String msg = "Exception caught registering component factory: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
-	public void setComponentService( MadComponentService componentService )
+	public void setComponentService( final MadComponentService componentService )
 	{
 		this.componentService = componentService;
 	}
 
-	public void setClassificationService( MadClassificationService classificationService )
+	public void setClassificationService( final MadClassificationService classificationService )
 	{
 		this.classificationService = classificationService;
 	}
 
 	@Override
-	public MadInstance<?, ?> createInstanceForDefinition( MadDefinition<?, ?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			String instanceName )
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues,
+			final String instanceName )
 		throws DatastoreException
 	{
 		MadInstance<?,?> retVal = null;
-		Class<? extends MadInstance<?,?>> instanceClassToCreate = defClassToInsClassMap.get( definition.getClass() );
+		final Class<? extends MadInstance<?,?>> instanceClassToCreate = defClassToInsClassMap.get( definition.getClass() );
 		if( instanceClassToCreate == null )
 		{
-			String msg = "Asked to create unknown mad: " + definition.getId() + " of class " + definition.getClass();
+			final String msg = "Asked to create unknown mad: " + definition.getId() + " of class " + definition.getClass();
 			throw new DatastoreException( msg );
 		}
 
 		try
 		{
-			MadChannelConfiguration channelConfiguration = definition.getChannelConfigurationForParameters( parameterValues );
+			final MadChannelConfiguration channelConfiguration = definition.getChannelConfigurationForParameters( parameterValues );
 
-			MadCreationContext creationContext = getCreationContext();
+			final MadCreationContext creationContext = getCreationContext();
 
 			@SuppressWarnings("rawtypes")
 			Class[] constructorParams = null;
@@ -162,15 +162,15 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 					parameterValues,
 					channelConfiguration };
 
-			Constructor<?> constructor = instanceClassToCreate.getConstructor(  constructorParams );
+			final Constructor<?> constructor = instanceClassToCreate.getConstructor(  constructorParams );
 //			log.debug("Creating new instance of " + definition.getName() );
 			retVal = (MadInstance<?,?>)constructor.newInstance( constructorParamValues );
 //			log.debug("Created new instance of " + definition.getName() );
 
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Error on fetching constructor: " + e.toString();
+			final String msg = "Error on fetching constructor: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 
@@ -178,7 +178,7 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 	}
 
 	@Override
-	public void destroyInstance( MadInstance<?, ?> instanceToDestroy )
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy )
 		throws DatastoreException
 	{
 //		MadDefinition<?,?> definition = instanceToDestroy.getDefinition();

@@ -120,6 +120,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private final static String CONFIG_KEY_FORCE_HOTSPOT_COMPILE = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".ForceHotspotCompile";
 	private final static String CONFIG_KEY_RENDER_COMPONENT_IMAGES = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".RenderComponentImages";
+
+	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 10000;
+	private static final int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 512;
+
 	private GuiHelperController guiHelperController;
 	private RackController rackController;
 	private ComponentController componentController;
@@ -140,9 +144,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private RackModelRenderingComponent guiRack;
 
-	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 10000;
-	private static final int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 512;
-
 	private boolean forceHotspotCompile;
 	private boolean renderComponentImages;
 
@@ -152,11 +153,12 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private boolean loggingEnabled = true;
 
-	private boolean currentlyRendering = false;
+	private boolean currentlyRendering;
 
 	private String absolutePathToFilename;
 
 	private final List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
+
 	private Priority previousLoggingThreshold;
 
 	@Override

@@ -65,19 +65,18 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 	public abstract void setupTypeToDefinitionClasses() throws DatastoreException;
 
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public AbstractMadUiInstance<?,?> createNewComponentUiInstanceForComponent( final MadInstance<?,?> instance )
+	public AbstractMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> instance )
 			throws DatastoreException, RecordNotFoundException
-			{
-		final MadDefinition<?,?> definition = instance.getDefinition();
-		//		log.debug("Creating new ui instance of " + definition.getName() );
+	{
+		final MadDefinition<?, ?> definition = instance.getDefinition();
+		// log.debug("Creating new ui instance of " + definition.getName() );
 		final MadUiDefinition cud = componentDefinitionToUiDefinitionMap.get( definition );
 		final AbstractMadUiInstance<?, ?> retVal = cud.createNewUiInstance( instance );
-		//		log.debug("Created new ui instance of " + definition.getName() );
+		// log.debug("Created new ui instance of " + definition.getName() );
 		return retVal;
-			}
+	}
 
 	@Override
 	public void destroyUiInstance( final AbstractMadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22

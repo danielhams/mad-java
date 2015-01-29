@@ -35,7 +35,7 @@ import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 
 public class SampleCachingControllerImpl implements ComponentWithLifecycle, SampleCachingController
 {
-	private SampleCachingService sampleCachingService = null;
+	private SampleCachingService sampleCachingService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
