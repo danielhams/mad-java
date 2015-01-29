@@ -61,7 +61,7 @@ import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallbac
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -134,7 +134,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private RackService rackService;
 
-	private AppRenderingIO appRenderingIO;
+	private AbstractAppRenderingIO appRenderingIO;
 
 	private RackDataModel userVisibleRack;
 
@@ -994,7 +994,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					}
 				}
 
-				final AppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
+				final AbstractAppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
 				retVal = testAppRenderingIO.testRendering( AUDIO_TEST_RUN_MILLIS );
 
 				if( wasRunningBeforeTest && !retVal)

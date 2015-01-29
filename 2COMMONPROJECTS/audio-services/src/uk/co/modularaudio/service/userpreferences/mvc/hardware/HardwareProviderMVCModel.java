@@ -40,22 +40,22 @@ public class HardwareProviderMVCModel extends IdStringAndValueComboModel<Hardwar
 
 	public void setSelectedItemById(final String deviceId)
 	{
-		final HardwareProviderComboItem item = this.idToElementMap.get( deviceId );
+		final HardwareProviderComboItem item = idToElementMap.get( deviceId );
 
 		if( item != null )
 		{
-			this.setSelectedItemByIndex( this.getItemIndex( item ) );
+			setSelectedItemByIndex( getItemIndex( item ) );
 		}
 	}
 
 	public List<HardwareProviderComboItem> getElements()
 	{
-		return this.theList;
+		return theList;
 	}
 
 	public void removeElements(final Set<HardwareProviderComboItem> providersToRemove)
 	{
-		final int currentlySelectedItemIndex = getSelectedItemIndex();
+		int currentlySelectedItemIndex = getSelectedItemIndex();
 		HardwareProviderComboItem currentlySelectedItem = null;
 		if( log.isDebugEnabled() )
 		{
@@ -64,7 +64,10 @@ public class HardwareProviderMVCModel extends IdStringAndValueComboModel<Hardwar
 		if( currentlySelectedItemIndex != -1 )
 		{
 			currentlySelectedItem = getElementAt( currentlySelectedItemIndex );
-			log.debug("This maps to provider " + currentlySelectedItem.getDisplayString() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("This maps to provider " + currentlySelectedItem.getDisplayString() );
+			}
 			if( providersToRemove.contains( currentlySelectedItem ) )
 			{
 				log.debug("Setting currently selected item to -1");
@@ -74,30 +77,33 @@ public class HardwareProviderMVCModel extends IdStringAndValueComboModel<Hardwar
 		}
 		for( final HardwareProviderComboItem ci : providersToRemove )
 		{
-			log.debug("Removing provider " + ci.getDisplayString() );
-			this.theList.remove( ci );
-			this.idToElementMap.remove( ci.getId() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Removing provider " + ci.getDisplayString() );
+			}
+			theList.remove( ci );
+			idToElementMap.remove( ci.getId() );
 		}
 
 		// Now make sure we still have the previously selected element selected
 		if( currentlySelectedItem != null )
 		{
-			final int newSelectedIndex = this.theList.indexOf( currentlySelectedItem );
-			this.currentlySelectedItemIndex = newSelectedIndex;
+			final int newSelectedIndex = theList.indexOf( currentlySelectedItem );
+			currentlySelectedItemIndex = newSelectedIndex;
 		}
 	}
 
 	public boolean containsProvider( final HardwareProviderComboItem deviceComboItem )
 	{
-		return this.theList.contains( deviceComboItem );
+		return theList.contains( deviceComboItem );
 	}
 
 	public void addNewElements(final Set<HardwareProviderComboItem> providersToAdd)
 	{
 		for( final HardwareProviderComboItem cdci : providersToAdd )
 		{
-			this.theList.add( cdci );
-			this.idToElementMap.put( cdci.getId(), cdci );
+			theList.add( cdci );
+			idToElementMap.put( cdci.getId(), cdci );
 		}
 	}
 }

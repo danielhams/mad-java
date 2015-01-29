@@ -40,17 +40,17 @@ public class UserPreferencesBufferSizeMVCView extends BasicIntegerSliderView
 	{
 		super( ism, isc );
 		this.setMinimum( 1 );
-		this.setMaximum( BufferSizeSliderMVCController.bufferSizeToModelIndexMap.size() );
+		this.setMaximum( BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.size() );
 //		this.setMinorTickSpacing( 256 );
 		this.setMajorTickSpacing( 1 );
 		this.setPaintTicks( true );
 		final Dictionary<Integer,JLabel> bufferSizeTickLabels = new Hashtable<Integer,JLabel>();
 
-		final IntArrayList intArrayList = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.keys();
+		final IntArrayList intArrayList = BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.keys();
 		for( int i = 0 ; i < intArrayList.size() ; i++ )
 		{
 			final int bufferSize = intArrayList.get( i );
-			final int modelIndex = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.get( bufferSize );
+			final int modelIndex = BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.get( bufferSize );
 
 			addOneLabel( bufferSizeTickLabels, modelIndex, bufferSize + "");
 		}

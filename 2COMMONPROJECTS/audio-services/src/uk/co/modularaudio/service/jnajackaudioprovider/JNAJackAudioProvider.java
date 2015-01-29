@@ -38,7 +38,7 @@ import org.jaudiolibs.jnajack.JackStatus;
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
@@ -261,7 +261,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	}
 
 	@Override
-	public AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	public AbstractAppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorQueue errorQueue,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException

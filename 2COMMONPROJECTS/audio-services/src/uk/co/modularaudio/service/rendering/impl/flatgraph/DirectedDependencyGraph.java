@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class DirectedDependencyGraph
 {
-	private List<FlattenedRenderJob> jobs = new ArrayList<FlattenedRenderJob>();
+	private final List<FlattenedRenderJob> jobs = new ArrayList<FlattenedRenderJob>();
 
 	public DirectedDependencyGraph()
 	{
@@ -48,14 +48,14 @@ public class DirectedDependencyGraph
 	public FlattenedRenderJob findJobByMadInstance( final MadInstance<?,?> madInstance )
 		throws RecordNotFoundException
 	{
-		FlattenedRenderJob retVal = madInstanceToRenderJobMap.get( madInstance );
+		final FlattenedRenderJob retVal = madInstanceToRenderJobMap.get( madInstance );
 		if( retVal != null )
 		{
 			return retVal;
 		}
 		else
 		{
-			String msg = "Unable to find a render job for mad instance: " + madInstance.getInstanceName();
+			final String msg = "Unable to find a render job for mad instance: " + madInstance.getInstanceName();
 			throw new RecordNotFoundException( msg );
 		}
 	}

@@ -53,8 +53,8 @@ import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.RackLi
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.RackPositionXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.RackXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1.SubRackXmlType;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLink;
@@ -90,15 +90,19 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	@Override
 	public RackDataModel loadRackFromFile(final String filename) throws DatastoreException, IOException
 	{
-		log.debug("Load rack from file (" + filename + ")");
-		RackDataModel retVal = null;
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Load rack from file (" + filename + ")");
+		}
 		try
 		{
 			@SuppressWarnings("unchecked")
 			final
 			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( filename ) );
 			final RackXmlType jbRackXml = jbRackElement.getValue();
-			retVal = loadRackFromStructure( filename, jbRackXml );
+			final RackDataModel retVal = loadRackFromStructure( filename, jbRackXml );
+			retVal.setDirty( false );
+			return retVal;
 		}
 		catch (final Exception e)
 		{
@@ -106,16 +110,15 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
-		retVal.setDirty( false );
-		return retVal;
 	}
 
 	private RackDataModel loadRackFromStructure( final String filename, final RackXmlType jbRackXml )
 			throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException, IOException, ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
 	{
-		log.debug("Load rack from structure (" + filename + ")");
-		RackDataModel retVal = null;
-
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Load rack from structure (" + filename + ")");
+		}
 		final String rackName = jbRackXml.getName();
 		final int numCols = jbRackXml.getCols();
 		final int numRows = jbRackXml.getRows();
@@ -128,7 +131,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 		final int masterIOYOffset = tmpmirc.getCellSpan().y;
 
-		retVal = rackService.createNewRackDataModel( rackName, filename, numCols, numRows + masterIOYOffset, true );
+		final RackDataModel retVal = rackService.createNewRackDataModel( rackName, filename, numCols, numRows + masterIOYOffset, true );
 
 		final RackComponent mirc = retVal.getContentsAtPosition( 0, 0 );
 
@@ -192,7 +195,10 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				}
 				else
 				{
-					log.warn("File contains control value for " + name + " but I couldn't find a control with that name");
+					if( log.isWarnEnabled() )
+					{
+						log.warn("File contains control value for " + name + " but I couldn't find a control with that name");
+					}
 				}
 			}
 		}
@@ -272,23 +278,16 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 	private RackComponent slowLookupByName( final RackDataModel rackDataModel, final String componentName ) throws RecordNotFoundException
 	{
-		RackComponent retVal = null;
-		boolean foundIt = false;
 		final List<RackComponent> entries = rackDataModel.getEntriesAsList();
-		for( int i = 0 ; !foundIt && i < entries.size() ; i++ )
+		for( int i = 0 ; i < entries.size() ; i++ )
 		{
 			final RackComponent test = entries.get( i );
 			if( test.getComponentName().equals( componentName ) )
 			{
-				foundIt = true;
-				retVal = test;
+				return test;
 			}
 		}
-		if( !foundIt )
-		{
-			throw new RecordNotFoundException();
-		}
-		return retVal;
+		throw new RecordNotFoundException();
 	}
 
 	@Override

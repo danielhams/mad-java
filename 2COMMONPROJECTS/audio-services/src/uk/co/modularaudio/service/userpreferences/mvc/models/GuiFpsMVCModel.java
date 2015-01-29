@@ -48,7 +48,7 @@ public class GuiFpsMVCModel extends IdStringComboModel<GuiFpsComboItem>
 			{
 				log.error("Attempting to get index of " + item.getDisplayString() + " failed!");
 			}
-			for( final GuiFpsComboItem i : this.idToElementMap.values() )
+			for( final GuiFpsComboItem i : idToElementMap.values() )
 			{
 				if( log.isErrorEnabled() )
 				{

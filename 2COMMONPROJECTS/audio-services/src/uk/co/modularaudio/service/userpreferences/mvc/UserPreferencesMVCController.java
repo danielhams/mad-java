@@ -30,35 +30,35 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputMidiDevi
 public class UserPreferencesMVCController
 {
 //	private static Log log = LogFactory.getLog( UserPreferencesMVCController.class.getName() );
-	
-	private UserPreferencesMVCModel model = null;
-	
-	private GuiFpsComboMVCController fpsComboController = null;
-	
-	private InputDeviceComboMVCController inputDeviceComboController = null;
-	private OutputDeviceComboMVCController outputDeviceComboController = null;
-	private BufferSizeSliderMVCController bufferSizeSliderController = null;
-	private InputMidiDeviceComboMVCController inputMidiDeviceComboController = null;
-	private OutputMidiDeviceComboMVCController outputMidiDeviceComboController = null;
-	
-	public UserPreferencesMVCController( UserPreferencesMVCModel model )
+
+	private UserPreferencesMVCModel model;
+
+	private final GuiFpsComboMVCController fpsComboController;
+
+	private final InputDeviceComboMVCController inputDeviceComboController;
+	private final OutputDeviceComboMVCController outputDeviceComboController;
+	private final BufferSizeSliderMVCController bufferSizeSliderController;
+	private final InputMidiDeviceComboMVCController inputMidiDeviceComboController;
+	private final OutputMidiDeviceComboMVCController outputMidiDeviceComboController;
+
+	public UserPreferencesMVCController( final UserPreferencesMVCModel model )
 	{
 		this.model = model;
-		
+
 		fpsComboController = new GuiFpsComboMVCController( model.getFpsComboModel(), this );
-		
+
 		inputDeviceComboController = new InputDeviceComboMVCController( model.getInputDeviceComboModel(), this );
 		outputDeviceComboController = new OutputDeviceComboMVCController( model.getOutputDeviceComboModel(), this );
 		bufferSizeSliderController = new BufferSizeSliderMVCController( model.getBufferSizeModel(), this );
 		inputMidiDeviceComboController = new InputMidiDeviceComboMVCController( model.getInputMidiDeviceComboModel(), this );
 		outputMidiDeviceComboController = new OutputMidiDeviceComboMVCController( model.getOutputMidiDeviceComboModel(), this );
 	}
-	
+
 	public UserPreferencesMVCModel getModel()
 	{
 		return model;
 	}
-	
+
 	public GuiFpsComboMVCController getFpsComboController()
 	{
 		return fpsComboController;
@@ -78,7 +78,7 @@ public class UserPreferencesMVCController
 	{
 		return bufferSizeSliderController;
 	}
-	
+
 	public InputMidiDeviceComboMVCController getInputMidiDeviceComboController()
 	{
 		return inputMidiDeviceComboController;
@@ -89,12 +89,12 @@ public class UserPreferencesMVCController
 		return outputMidiDeviceComboController;
 	}
 
-	public void setModel( UserPreferencesMVCModel newModel )
+	public void setModel( final UserPreferencesMVCModel newModel )
 	{
 		this.model = newModel;
-		
+
 		fpsComboController.setModel( model.getFpsComboModel() );
-		
+
 		inputDeviceComboController.setModel( model.getInputDeviceComboModel() );
 		outputDeviceComboController.setModel( model.getOutputDeviceComboModel() );
 		bufferSizeSliderController.setModel( model.getBufferSizeModel() );

@@ -24,8 +24,7 @@ import uk.co.modularaudio.util.mvc.combo.idstring.IdStringComboItem;
 
 public class GuiFpsComboItem extends IdStringComboItem
 {
-
-	public GuiFpsComboItem(String id, String displayString)
+	public GuiFpsComboItem(final String id, final String displayString)
 	{
 		super(id, displayString);
 	}

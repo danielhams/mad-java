@@ -90,7 +90,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			final int fps = fpsModel.getFpsValue();
 			AudioHardwareDevice consumerChannelConfig = null;
 			AudioHardwareDevice producerChannelConfig = null;
-			final int bufferSizeFrames = BufferSizeSliderMVCController.modelIndexToBufferSizeMap.get( bufferSizeModel.getBufferSizeFramesValue() );
+			final int bufferSizeFrames = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModel.getBufferSizeFramesValue() );
 			MidiHardwareDevice consumerMidiConfig = null;
 			MidiHardwareDevice producerMidiConfig = null;
 

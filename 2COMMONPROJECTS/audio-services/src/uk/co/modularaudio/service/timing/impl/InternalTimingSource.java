@@ -26,21 +26,19 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 
 public class InternalTimingSource implements MadTimingSource
 {
-//	private static Log log = LogFactory.getLog( InternalTimingSource.class.getName() );
-	
-	private MadChannelPeriodData periodData = new MadChannelPeriodData();
-	private MadTimingParameters timingParameters = new MadTimingParameters( 0, 0, 0, 0, 0 );
-	
+	private final MadChannelPeriodData periodData = new MadChannelPeriodData();
+	private final MadTimingParameters timingParameters = new MadTimingParameters( 0, 0, 0, 0, 0 );
+
 	public InternalTimingSource()
 	{
 	}
-	
+
 	@Override
 	public MadChannelPeriodData getTimingPeriodData()
 	{
 		return periodData;
 	}
-	
+
 	@Override
 	public MadTimingParameters getTimingParameters()
 	{

@@ -42,11 +42,11 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 
 	public void setSelectedItemById(final String deviceId)
 	{
-		final AudioSystemDeviceComboItem item = this.idToElementMap.get( deviceId );
+		final AudioSystemDeviceComboItem item = idToElementMap.get( deviceId );
 
 		if( item != null )
 		{
-			this.setSelectedItemByIndex( this.getItemIndex( item ) );
+			setSelectedItemByIndex( getItemIndex( item ) );
 		}
 	}
 
@@ -57,7 +57,7 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 
 	public void removeElements(final Set<AudioSystemDeviceComboItem> clocksToRemove)
 	{
-		final int currentlySelectedItemIndex = getSelectedItemIndex();
+		int currentlySelectedItemIndex = getSelectedItemIndex();
 		AudioSystemDeviceComboItem currentlySelectedItem = null;
 		if( log.isDebugEnabled() )
 		{
@@ -66,7 +66,10 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 		if( currentlySelectedItemIndex != -1 )
 		{
 			currentlySelectedItem = getElementAt( currentlySelectedItemIndex );
-			log.debug("This maps to device " + currentlySelectedItem.getDisplayString() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("This maps to device " + currentlySelectedItem.getDisplayString() );
+			}
 			if( clocksToRemove.contains( currentlySelectedItem ) )
 			{
 				if( log.isDebugEnabled() )
@@ -74,7 +77,7 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 					log.debug("Setting currently selected item to -1");
 				}
 				currentlySelectedItem = null;
-				this.setSelectedItemByIndex( -1 );
+				setSelectedItemByIndex( -1 );
 			}
 		}
 		for( final AudioSystemDeviceComboItem ci : clocksToRemove )
@@ -83,30 +86,30 @@ public class AudioSystemDeviceMVCModel extends IdStringAndValueComboModel<AudioS
 			{
 				log.debug("Removing clock " + ci.getDisplayString() );
 			}
-			this.theList.remove( ci );
-			this.idToElementMap.remove( ci.getId() );
+			theList.remove( ci );
+			idToElementMap.remove( ci.getId() );
 		}
 
 		// Now make sure we still have the previously selected element selected
 		if( currentlySelectedItem != null )
 		{
-			final int newSelectedIndex = this.theList.indexOf( currentlySelectedItem );
-			this.currentlySelectedItemIndex = newSelectedIndex;
+			final int newSelectedIndex = theList.indexOf( currentlySelectedItem );
+			currentlySelectedItemIndex = newSelectedIndex;
 		}
 
 	}
 
 	public boolean containsDevice( final AudioSystemDeviceComboItem deviceComboItem )
 	{
-		return this.theList.contains( deviceComboItem );
+		return theList.contains( deviceComboItem );
 	}
 
 	public void addNewElements(final Set<AudioSystemDeviceComboItem> clocksToAdd)
 	{
 		for( final AudioSystemDeviceComboItem cdci : clocksToAdd )
 		{
-			this.theList.add( cdci );
-			this.idToElementMap.put( cdci.getId(), cdci );
+			theList.add( cdci );
+			idToElementMap.put( cdci.getId(), cdci );
 		}
 	}
 

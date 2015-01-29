@@ -23,7 +23,7 @@ package uk.co.modularaudio.controller.audioprovider.impl;
 import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
@@ -69,7 +69,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 	}
 
 	@Override
-	public AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	public AbstractAppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorCallback errorCallback )
 			throws DatastoreException, RecordNotFoundException
 	{

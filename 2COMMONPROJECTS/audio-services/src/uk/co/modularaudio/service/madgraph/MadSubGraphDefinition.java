@@ -28,11 +28,11 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphQueueBridge;
 
-public class MadSubGraphDefinition<AUGD extends MadGraphDefinition<AUGD,AUGI>,
-	AUGI extends MadGraphInstance<AUGD,AUGI> >
-	extends MadGraphDefinition<AUGD, AUGI>
+public class MadSubGraphDefinition<D extends MadGraphDefinition<D,I>,
+	I extends MadGraphInstance<D,I> >
+	extends MadGraphDefinition<D,I>
 {
-	public MadSubGraphDefinition( String id, String name, MadClassification classification, MadGraphQueueBridge<AUGI> ioQueueBridge  )
+	public MadSubGraphDefinition( final String id, final String name, final MadClassification classification, final MadGraphQueueBridge<I> ioQueueBridge  )
 	{
 		super( id, name, false, classification, new ArrayList<MadParameterDefinition>(), ioQueueBridge );
 	}

@@ -27,8 +27,6 @@ import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 
 public class InternalSampleCacheClient implements SampleCacheClient
 {
-//	private static Log log = LogFactory.getLog( InternalSampleCacheClient.class.getName() );
-
 	private final LibraryEntry libraryEntry;
 	private final AtomicLong currentFramePosition = new AtomicLong(0);
 	private final AtomicLong intendedFramePosition = new AtomicLong(0);

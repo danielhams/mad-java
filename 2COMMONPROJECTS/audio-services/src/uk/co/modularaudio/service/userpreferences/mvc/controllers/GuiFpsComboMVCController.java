@@ -27,16 +27,12 @@ import uk.co.modularaudio.util.mvc.combo.idstring.BasicIdStringComboController;
 
 public class GuiFpsComboMVCController extends BasicIdStringComboController<GuiFpsComboItem>
 {
-
-//	private UserPreferencesMVCController userPreferencesMVController;
-
-	public GuiFpsComboMVCController(GuiFpsMVCModel model, UserPreferencesMVCController userPreferencesMVCController)
+	public GuiFpsComboMVCController(final GuiFpsMVCModel model, final UserPreferencesMVCController userPreferencesMVCController)
 	{
 		super(model);
-//		this.userPreferencesMVController = userPreferencesMVCController;
 	}
 
-	public void setModel(GuiFpsMVCModel fpsComboModel)
+	public void setModel(final GuiFpsMVCModel fpsComboModel)
 	{
 		super.setModel(fpsComboModel);
 	}

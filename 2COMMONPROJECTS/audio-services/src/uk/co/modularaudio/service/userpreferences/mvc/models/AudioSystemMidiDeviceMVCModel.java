@@ -32,37 +32,37 @@ public class AudioSystemMidiDeviceMVCModel extends IdStringAndValueComboModel<Au
 {
 //	private static Log log = LogFactory.getLog( AudioSystemMidiDeviceMVCModel.class.getName() );
 
-	public AudioSystemMidiDeviceMVCModel(Collection<AudioSystemMidiDeviceComboItem> startupItems)
+	public AudioSystemMidiDeviceMVCModel(final Collection<AudioSystemMidiDeviceComboItem> startupItems)
 	{
 		super(startupItems);
 	}
 
-	public boolean containsDevice( AudioSystemMidiDeviceComboItem deviceComboItem )
+	public boolean containsDevice( final AudioSystemMidiDeviceComboItem deviceComboItem )
 	{
-		return this.theList.contains( deviceComboItem );
+		return theList.contains( deviceComboItem );
 	}
 
-	public void addNewElements(Set<AudioSystemMidiDeviceComboItem> devicesToAdd)
+	public void addNewElements(final Set<AudioSystemMidiDeviceComboItem> devicesToAdd)
 	{
-		for( AudioSystemMidiDeviceComboItem cdci : devicesToAdd )
+		for( final AudioSystemMidiDeviceComboItem cdci : devicesToAdd )
 		{
-			this.theList.add( cdci );
-			this.idToElementMap.remove( cdci.getId() );
+			theList.add( cdci );
+			idToElementMap.remove( cdci.getId() );
 		}
 	}
 
 	public List<AudioSystemMidiDeviceComboItem> getElements()
 	{
-		return this.theList;
+		return theList;
 	}
 
-	public void setSelectedItemById(String deviceId)
+	public void setSelectedItemById(final String deviceId)
 	{
-		AudioSystemMidiDeviceComboItem item = this.idToElementMap.get( deviceId );
+		final AudioSystemMidiDeviceComboItem item = idToElementMap.get( deviceId );
 
 		if( item != null )
 		{
-			this.setSelectedItemByIndex( this.getItemIndex( item ) );
+			setSelectedItemByIndex( getItemIndex( item ) );
 		}
 	}
 

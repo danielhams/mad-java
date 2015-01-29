@@ -43,11 +43,11 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 
 	public class AppRenderingErrorStruct
 	{
-		public final AppRenderingIO sourceRenderingIO;
+		public final AbstractAppRenderingIO sourceRenderingIO;
 		public final ErrorSeverity severity;
 		public final String msg;
 
-		public AppRenderingErrorStruct( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+		public AppRenderingErrorStruct( final AbstractAppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
 		{
 			this.sourceRenderingIO = sourceRenderingIO;
 			this.severity = severity;
@@ -70,7 +70,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 
 	private final BlockingDeque<AppRenderingErrorStruct> errorQueue = new LinkedBlockingDeque<AppRenderingErrorQueue.AppRenderingErrorStruct>();
 
-	private final Map<AppRenderingIO, AppRenderingErrorCallback> appRenderingToCallbackMap = new HashMap<AppRenderingIO, AppRenderingErrorCallback>();
+	private final Map<AbstractAppRenderingIO, AppRenderingErrorCallback> appRenderingToCallbackMap = new HashMap<AbstractAppRenderingIO, AppRenderingErrorCallback>();
 
 	public AppRenderingErrorQueue()
 	{
@@ -104,7 +104,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void addCallbackForRenderingIO( final AppRenderingIO sourceRenderingIO, final AppRenderingErrorCallback callback )
+	public void addCallbackForRenderingIO( final AbstractAppRenderingIO sourceRenderingIO, final AppRenderingErrorCallback callback )
 	{
 		appRenderingToCallbackMap.put( sourceRenderingIO,  callback );
 		if( log.isDebugEnabled() )
@@ -113,7 +113,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void removeCallbackForRenderingIO( final AppRenderingIO sourceRenderingIO )
+	public void removeCallbackForRenderingIO( final AbstractAppRenderingIO sourceRenderingIO )
 	{
 		final AppRenderingErrorCallback callback = appRenderingToCallbackMap.get( sourceRenderingIO );
 		if( callback == null )
@@ -133,7 +133,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void queueError( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+	public void queueError( final AbstractAppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
 	{
 		final AppRenderingErrorStruct es = new AppRenderingErrorStruct( sourceRenderingIO, severity, msg );
 		errorQueue.add( es );

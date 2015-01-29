@@ -47,9 +47,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
-public abstract class AppRenderingIO implements MadFrameTimeFactory
+public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 {
-	private static Log log = LogFactory.getLog( AppRenderingIO.class.getName() );
+	private static Log log = LogFactory.getLog( AbstractAppRenderingIO.class.getName() );
 
 	private final static long TEST_IO_WAIT_MILLIS = 200;
 	private final static long TEST_SLEEP_MILLIS = 100;
@@ -82,7 +82,7 @@ public abstract class AppRenderingIO implements MadFrameTimeFactory
 
 	protected volatile boolean shouldProfileRenderingJobs;
 
-	public AppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
+	public AbstractAppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,

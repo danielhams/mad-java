@@ -263,7 +263,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		try
 		{
 			// Translate to model index
-			final int modelIndex = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.get( bufferSize );
+			final int modelIndex = BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.get( bufferSize );
 			bsdc.setValue( modelIndex );
 		}
 		catch (final ValueOutOfRangeException e)
@@ -410,7 +410,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			final AudioSystemBufferSizeMVCModel bufferSizeModel = userPrefsMVCModel.getBufferSizeModel();
 
 			final int bufferSizeModelIndex = bufferSizeModel.getValue();
-			final int bufferSize = BufferSizeSliderMVCController.modelIndexToBufferSizeMap.get( bufferSizeModelIndex );
+			final int bufferSize = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModelIndex );
 			userPreferencesProperties.put( PREFS_FILE_KEY_BUFFER_SIZE,
 					bufferSize + "" );
 			os = new FileOutputStream( userPreferencesFile );

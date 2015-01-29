@@ -39,7 +39,7 @@ import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -60,7 +60,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
-public class JNAJackAppRenderingIO extends AppRenderingIO implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
+public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
 {
 	private static Log log = LogFactory.getLog( JNAJackAppRenderingIO.class.getName() );
 
