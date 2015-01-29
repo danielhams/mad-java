@@ -23,42 +23,34 @@ package uk.co.modularaudio.mads.base.pattern_sequencer.ui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerIOQueueBridge;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
-import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.general.FloatJSliderModel;
 
 public class PatternSequencerMadUiInstance extends AbstractNonConfigurableMadUiInstance<PatternSequencerMadDefinition, PatternSequencerMadInstance>
 	implements IOQueueEventUiConsumer<PatternSequencerMadInstance>
 {
-	private final static Log log = LogFactory.getLog( PatternSequencerMadUiInstance.class.getName() );
-	
-	public final static double START_VAL = 128.0;
-	public final static double MIN_VAL = 100.0;
-	public final static double MAX_VAL = 200.0;
-	public final static double VAL_RES = 1.0;
-	
-	protected FloatJSliderModel valueFloatSliderModel = new FloatJSliderModel( START_VAL, MIN_VAL, MAX_VAL, VAL_RES );
-	
-	protected long knownAudioIOLatencyNanos = 0;
-	
-	public PatternSequencerMadUiInstance( PatternSequencerMadInstance instance,
-			PatternSequencerMadUiDefinition uiDefinition )
+	private static Log log = LogFactory.getLog( PatternSequencerMadUiInstance.class.getName() );
+
+	protected long knownAudioIOLatencyNanos;
+
+	public PatternSequencerMadUiInstance( final PatternSequencerMadInstance instance,
+			final PatternSequencerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
-		long newAln = timingParameters.getNanosOutputLatency();
+		final long newAln = timingParameters.getNanosOutputLatency();
 		if( newAln != knownAudioIOLatencyNanos )
 		{
 			knownAudioIOLatencyNanos = newAln;
@@ -68,24 +60,27 @@ public class PatternSequencerMadUiInstance extends AbstractNonConfigurableMadUiI
 	}
 
 	@Override
-	public void consumeQueueEntry( PatternSequencerMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final PatternSequencerMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			default:
 			{
-				log.warn("Unhandled outgoing queue command: " + nextOutgoingEntry.command);
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Unhandled outgoing queue command: " + nextOutgoingEntry.command);
+				}
 			}
 		}
 	}
-	
-	public void sendToggleRun( boolean desiredRunValue )
+
+	public void sendToggleRun( final boolean desiredRunValue )
 	{
 		sendTemporalValueToInstance( PatternSequencerIOQueueBridge.COMMAND_IN_TOGGLE_RUN,  (desiredRunValue ? 1 : 0 ) );
 	}
 
-	public void sendBpmChange( float floatValue )
+	public void sendBpmChange( final float floatValue )
 	{
 		sendTemporalValueToInstance( PatternSequencerIOQueueBridge.COMMAND_IN_BPM, Float.floatToIntBits( floatValue ) );
 	}

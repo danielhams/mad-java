@@ -35,45 +35,45 @@ import uk.co.modularaudio.util.table.Span;
 public class StaticValueMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<StaticValueMadDefinition, StaticValueMadInstance, StaticValueMadUiInstance>
 {
-	private static final Span span = new Span(2,1);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,1);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		StaticValueMadDefinition.PRODUCER_CV_OUT_IDX
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 140, 30 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Value"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		StaticValueSliderUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
-		new Rectangle( 6, 18, 250, 25 )
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle( 20, 15, 520, 48 )
 	};
-	
-	private static final Class<StaticValueMadUiInstance> instanceClass = StaticValueMadUiInstance.class;
-	
-	public StaticValueMadUiDefinition( BufferedImageAllocator bia, StaticValueMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<StaticValueMadUiInstance> INSTANCE_CLASS = StaticValueMadUiInstance.class;
+
+	public StaticValueMadUiDefinition( final BufferedImageAllocator bia, final StaticValueMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

@@ -20,37 +20,29 @@
 
 package uk.co.modularaudio.mads.base.staticvalue.ui;
 
+import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueIOQueueBridge;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
-import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
-import uk.co.modularaudio.util.swing.general.FloatJSliderModel;
 
 public class StaticValueMadUiInstance extends AbstractNonConfigurableMadUiInstance<StaticValueMadDefinition, StaticValueMadInstance>
 {
 //	private static Log log = LogFactory.getLog( StaticValueMadUiInstance.class.getName() );
-	
-	public final static double START_VAL = 50.0;
-	public final static double MIN_VAL = 0.0;
-	public final static double MAX_VAL = 500.0;
-	public final static double VAL_RES = 0.001;
-	
-	protected FloatJSliderModel valueFloatSliderModel = new FloatJSliderModel( START_VAL, MIN_VAL, MAX_VAL, VAL_RES );
-	
-	public StaticValueMadUiInstance( StaticValueMadInstance instance,
-			StaticValueMadUiDefinition uiDefinition )
+
+	public StaticValueMadUiInstance( final StaticValueMadInstance instance,
+			final StaticValueMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendValueChange( float newValue )
+	public void sendValueChange( final float newValue )
 	{
 		sendTemporalValueToInstance( StaticValueIOQueueBridge.COMMAND_VALUE, Float.floatToIntBits( newValue ) );
 	}
 
 	@Override
-	public void consumeQueueEntry( StaticValueMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final StaticValueMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }

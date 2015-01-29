@@ -39,17 +39,17 @@ public class StaticValueSliderUiJComponent extends ValueSlider
 	implements IMadUiControlInstance<StaticValueMadDefinition, StaticValueMadInstance, StaticValueMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( StaticValueSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-	private StaticValueMadUiInstance uiInstance = null;
 
-	public StaticValueSliderUiJComponent( StaticValueMadDefinition definition,
-			StaticValueMadInstance instance,
-			StaticValueMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final StaticValueMadUiInstance uiInstance;
+
+	public StaticValueSliderUiJComponent( final StaticValueMadDefinition definition,
+			final StaticValueMadInstance instance,
+			final StaticValueMadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		super( -500.0f, 500.0f, 0.1f,
+		super( -500.0f, 500.0f, 1.0f,
 				"",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
@@ -62,18 +62,19 @@ public class StaticValueSliderUiJComponent extends ValueSlider
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendValueChange( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -84,7 +85,7 @@ public class StaticValueSliderUiJComponent extends ValueSlider
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -92,24 +93,24 @@ public class StaticValueSliderUiJComponent extends ValueSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

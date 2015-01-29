@@ -40,7 +40,7 @@ public class PatternSequencerIOQueueBridge extends MadLocklessQueueBridge<Patter
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( PatternSequencerMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final PatternSequencerMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
@@ -51,20 +51,20 @@ public class PatternSequencerIOQueueBridge extends MadLocklessQueueBridge<Patter
 			case COMMAND_IN_TOGGLE_RUN:
 			{
 				// bool (integer)
-				long value = queueEntry.value;
-				int truncVal = (int)value;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
 				instance.desiredRun = truncVal != 0;
 				break;
 			}
 			case COMMAND_IN_BPM:
 			{
-				float fval = Float.intBitsToFloat( (int)queueEntry.value );
+				final float fval = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.desiredBpm = fval;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

@@ -38,21 +38,21 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefinition,ScaleAndOffsetMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ScaleAndOffsetMadInstance.class.getName() );
-	
+
 	protected float desiredScaleValue = 1.0f;
 	protected float desiredOffsetValue = 0.0f;
 
-	public ScaleAndOffsetMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			ScaleAndOffsetMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public ScaleAndOffsetMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final ScaleAndOffsetMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 	}
@@ -63,24 +63,24 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inScaleConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX );
-		float[] inScaleFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX ].floatBuffer;
-		
-		boolean inOffsetConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_OFFSET_IDX );
-		float[] inOffsetFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_OFFSET_IDX ].floatBuffer;
-		
-		boolean inValueConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_IN_IDX );
-		float[] inValueFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_IN_IDX ].floatBuffer;
-		
-		boolean outValueConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.PRODUCER_CV_OUT_IDX );
-		float[] outValueFloats = channelBuffers[ ScaleAndOffsetMadDefinition.PRODUCER_CV_OUT_IDX ].floatBuffer;
-		
+		final boolean inScaleConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX );
+		final float[] inScaleFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX ].floatBuffer;
+
+		final boolean inOffsetConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_OFFSET_IDX );
+		final float[] inOffsetFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_OFFSET_IDX ].floatBuffer;
+
+		final boolean inValueConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_IN_IDX );
+		final float[] inValueFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_IN_IDX ].floatBuffer;
+
+		final boolean outValueConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.PRODUCER_CV_OUT_IDX );
+		final float[] outValueFloats = channelBuffers[ ScaleAndOffsetMadDefinition.PRODUCER_CV_OUT_IDX ].floatBuffer;
+
 		if( outValueConnected )
 		{
 			if( inValueConnected )
@@ -122,7 +122,7 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 				for( int i = 0 ; i < numFrames ; i++ )
 				{
 					outValueFloats[ i ] = inOffsetFloats[i];
-				}	
+				}
 			}
 		}
 //		log.debug("It is " + Arrays.toString( outValueFloats ) );

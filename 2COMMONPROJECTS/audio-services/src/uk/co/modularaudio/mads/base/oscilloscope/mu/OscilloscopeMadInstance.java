@@ -39,33 +39,33 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefinition,OscilloscopeMadInstance>
 {
 //	private static Log log = LogFactory.getLog( OscilloscopeMadInstance.class.getName() );
-	
-	protected int sampleRate = 0;
-	
-	protected OscilloscopeWriteableScopeData scopeData = null;
-	
-	protected boolean active = false;
-	
+
+	protected int sampleRate;
+
+	protected OscilloscopeWriteableScopeData scopeData;
+
+	protected boolean active;
+
 	protected ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData = new ArrayList<OscilloscopeWriteableScopeData>();
 
 	protected OscilloscopeCaptureTriggerEnum captureTrigger = OscilloscopeCaptureTriggerEnum.NONE;
 	protected OscilloscopeCaptureRepetitionsEnum captureRepetitions = OscilloscopeCaptureRepetitionsEnum.CONTINOUS;
-	
-	protected OscilloscopeProcessor oscProc = null;
+
+	protected OscilloscopeProcessor oscProc;
 
 	public int desiredCaptureSamples = 1;
 
-	public OscilloscopeMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			OscilloscopeMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public OscilloscopeMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final OscilloscopeMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -74,7 +74,7 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 			scopeData = null;
 			oscProc = new OscilloscopeProcessor( this, bufferedScopeData );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -86,30 +86,30 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inTriggerConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER );
-		MadChannelBuffer inTriggerChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER ];
-		float[] inTriggerFloats = (inTriggerConnected ? inTriggerChannelBuffer.floatBuffer : null );
-		
-		boolean in0Connected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
-		MadChannelBuffer in0ChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
-		float[] in0Floats = (in0Connected ? in0ChannelBuffer.floatBuffer : null );
-		boolean in0CvConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL0 );
-		MadChannelBuffer in0CvChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL0 ];
-		float[] in0CvFloats = (in0CvConnected ? in0CvChannelBuffer.floatBuffer : null );
+		final boolean inTriggerConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER );
+		final MadChannelBuffer inTriggerChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER ];
+		final float[] inTriggerFloats = (inTriggerConnected ? inTriggerChannelBuffer.floatBuffer : null );
 
-		boolean in1Connected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL1 );
-		MadChannelBuffer in1ChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL1 ];
-		float[] in1Floats = (in1Connected ? in1ChannelBuffer.floatBuffer : null );
-		boolean in1CvConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL1 );
-		MadChannelBuffer in1CvChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL1 ];
-		float[] in1CvFloats = (in1CvConnected ? in1CvChannelBuffer.floatBuffer : null );
-		
+		final boolean in0Connected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
+		final MadChannelBuffer in0ChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
+		final float[] in0Floats = (in0Connected ? in0ChannelBuffer.floatBuffer : null );
+		final boolean in0CvConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL0 );
+		final MadChannelBuffer in0CvChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL0 ];
+		final float[] in0CvFloats = (in0CvConnected ? in0CvChannelBuffer.floatBuffer : null );
+
+		final boolean in1Connected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL1 );
+		final MadChannelBuffer in1ChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_AUDIO_SIGNAL1 ];
+		final float[] in1Floats = (in1Connected ? in1ChannelBuffer.floatBuffer : null );
+		final boolean in1CvConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL1 );
+		final MadChannelBuffer in1CvChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_SIGNAL1 ];
+		final float[] in1CvFloats = (in1CvConnected ? in1CvChannelBuffer.floatBuffer : null );
+
 		if( active )
 		{
 			oscProc.setPeriodData( captureTrigger, desiredCaptureSamples, numFrames );
@@ -123,8 +123,8 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
-	protected void emitScopeDataToUi( ThreadSpecificTemporaryEventStorage tstes, long frameTime, OscilloscopeWriteableScopeData scopeData )
+
+	protected void emitScopeDataToUi( final ThreadSpecificTemporaryEventStorage tstes, final long frameTime, final OscilloscopeWriteableScopeData scopeData )
 	{
 		localBridge.queueTemporalEventToUi( tstes, frameTime, OscilloscopeIOQueueBridge.COMMAND_OUT_SCOPE_DATA, -1, scopeData );
 	}

@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,15 +41,15 @@ public class OscilloscopeRepetitionsComboUiJComponent extends PacComboBox<String
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private OscilloscopeMadUiInstance uiInstance = null;
+	private final OscilloscopeMadUiInstance uiInstance;
 
-	private Map<String, OscilloscopeCaptureRepetitionsEnum> repetitionsNameToEnumMap = new HashMap<String, OscilloscopeCaptureRepetitionsEnum>();
+	private final Map<String, OscilloscopeCaptureRepetitionsEnum> repetitionsNameToEnumMap = new HashMap<String, OscilloscopeCaptureRepetitionsEnum>();
 
 	public OscilloscopeRepetitionsComboUiJComponent(
-			OscilloscopeMadDefinition definition,
-			OscilloscopeMadInstance instance,
-			OscilloscopeMadUiInstance uiInstance,
-			int controlIndex )
+			final OscilloscopeMadDefinition definition,
+			final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
@@ -57,14 +58,15 @@ public class OscilloscopeRepetitionsComboUiJComponent extends PacComboBox<String
 		repetitionsNameToEnumMap.put( "Continous", OscilloscopeCaptureRepetitionsEnum.CONTINOUS );
 		repetitionsNameToEnumMap.put( "Once", OscilloscopeCaptureRepetitionsEnum.ONCE );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for (String repetitionName : repetitionsNameToEnumMap.keySet())
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for (final String repetitionName : repetitionsNameToEnumMap.keySet())
 		{
 			cbm.addElement( repetitionName );
 		}
 		this.setModel( cbm );
 
-		setFont( this.getFont().deriveFont( 9f ) );
+		final Font f = this.getFont();
+		setFont( f );
 
 		this.setSelectedItem( "Continous" );
 		this.setSelectedItem( "Once" );
@@ -77,7 +79,7 @@ public class OscilloscopeRepetitionsComboUiJComponent extends PacComboBox<String
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,19 +87,19 @@ public class OscilloscopeRepetitionsComboUiJComponent extends PacComboBox<String
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			OscilloscopeCaptureRepetitionsEnum rv = repetitionsNameToEnumMap.get( name );
+			final String name = (String) getSelectedItem();
+			final OscilloscopeCaptureRepetitionsEnum rv = repetitionsNameToEnumMap.get( name );
 			uiInstance.sendRepetitionChoice( rv );
-			
+
 			if( rv == OscilloscopeCaptureRepetitionsEnum.CONTINOUS )
 			{
 				uiInstance.doRecapture();
 			}
-		}		
+		}
 	}
 
 	@Override

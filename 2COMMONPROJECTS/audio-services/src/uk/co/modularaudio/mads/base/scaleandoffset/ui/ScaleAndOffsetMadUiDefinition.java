@@ -35,56 +35,56 @@ import uk.co.modularaudio.util.table.Span;
 public class ScaleAndOffsetMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance, ScaleAndOffsetMadUiInstance>
 {
-	
-	private static final Span span = new Span(2,1);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+
+	private static final Span SPAN = new Span(2,1);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		ScaleAndOffsetMadDefinition.CONSUMER_CV_IN_IDX,
 		ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX,
 		ScaleAndOffsetMadDefinition.CONSUMER_CV_OFFSET_IDX,
 		ScaleAndOffsetMadDefinition.PRODUCER_CV_OUT_IDX
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
-		new Point( 40, 30 ),
-		new Point( 70, 30 ),
-		new Point( 100, 30 ),
-		new Point( 140, 30 )
+
+	private static final Point[] CHAN_POSIS = new Point[] {
+		new Point(  40, 40 ),
+		new Point( 140, 40 ),
+		new Point( 400, 40 ),
+		new Point( 490, 40 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Scale",
 		"Offset"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		ScaleAndOffsetScaleUiJComponent.class,
 		ScaleAndOffsetOffsetUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
-		new Rectangle(20, 15, 100, 30 ),
-		new Rectangle(130, 15, 100, 30 )
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle(  20,  15, 250,  48 ),		// Scale
+		new Rectangle( 290,  15, 250,  48 )			// Offset
 	};
-	
-	private static final Class<ScaleAndOffsetMadUiInstance> instanceClass = ScaleAndOffsetMadUiInstance.class;
-	
-	public ScaleAndOffsetMadUiDefinition( BufferedImageAllocator bia, ScaleAndOffsetMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<ScaleAndOffsetMadUiInstance> INSTANCE_CLASS = ScaleAndOffsetMadUiInstance.class;
+
+	public ScaleAndOffsetMadUiDefinition( final BufferedImageAllocator bia, final ScaleAndOffsetMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

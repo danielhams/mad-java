@@ -40,51 +40,50 @@ public class ScaleAndOffsetMadDefinition extends AbstractNonConfigurableMadDefin
 	public final static int PRODUCER_CV_OUT_IDX = 3;
 	public final static int NUM_CHANNELS = 4;
 
-	private final static String definitionId = "scale_and_offset";
+	public final static String DEFINITION_ID = "scale_and_offset";
 
-	private final static String userVisibleName = "Scale And Offset";
+	private final static String USER_VISIBLE_NAME = "Scale And Offset";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationId = "scale_and_offset";
-	private final static String classificationName = "Scale And Offset";
-	private final static String classificationDescription = "Modulates a given value by a given value.";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Scale And Offset";
+	private final static String CLASS_DESC = "Modulates a given value by a given value.";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Scale",
+	private final static String[] CHAN_NAMES = new String[] { "Input Scale",
 		"Input Offset",
 		"Input CV",
 		"Output CV" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		 MadChannelDirection.CONSUMER,
 		 MadChannelDirection.CONSUMER,
 		 MadChannelDirection.PRODUCER};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO};
 
-	public ScaleAndOffsetMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public ScaleAndOffsetMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
-						ReleaseState.ALPHA ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
+						ReleaseState.RELEASED ),
 				new ScaleAndOffsetIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

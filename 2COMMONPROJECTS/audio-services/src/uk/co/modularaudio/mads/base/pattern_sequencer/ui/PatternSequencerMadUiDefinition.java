@@ -35,75 +35,75 @@ import uk.co.modularaudio.util.table.Span;
 public class PatternSequencerMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<PatternSequencerMadDefinition, PatternSequencerMadInstance, PatternSequencerMadUiInstance>
 {
-	private static final Span span = new Span(4,4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(4,4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		PatternSequencerMadDefinition.PRODUCER_NOTE_OUT,
 		PatternSequencerMadDefinition.PRODUCER_CV_OUT
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 50, 45 ),
 		new Point( 70, 45 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
+		"Bpm",
+		"Run",
 		"Clear",
 		"Octave Up",
 		"Octave Down",
 		"Semitone Up",
 		"Semitone Down",
-		"Run",
-		"PatternSequencer",
-		"Bpm"
+		"PatternSequencer"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
-		ControlType.BUTTON,
-		ControlType.BUTTON,
-		ControlType.BUTTON,
-		ControlType.BUTTON,
-		ControlType.BUTTON,
-		ControlType.BUTTON,
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.CUSTOM,
+		ControlType.BUTTON,
+		ControlType.BUTTON,
+		ControlType.BUTTON,
+		ControlType.BUTTON,
+		ControlType.BUTTON,
+		ControlType.BUTTON,
 		ControlType.CUSTOM
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		PatternSequencerBpmUiJComponent.class,
+		PatternSequencerRunToggleUiJComponent.class,
 		PatternSequencerClearUiJComponent.class,
 		PatternSequencerOctaveUpUiJComponent.class,
 		PatternSequencerOctaveDownUiJComponent.class,
 		PatternSequencerSemitoneUpUiJComponent.class,
 		PatternSequencerSemitoneDownUiJComponent.class,
-		PatternSequencerRunToggleUiJComponent.class,
-		PatternSequencerDisplayUiJComponent.class,
-		PatternSequencerBpmInputValueUiJComponent.class
+		PatternSequencerDisplayUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
-		new Rectangle( 20, 80, 90, 20 ),
-		new Rectangle( 20, 110, 90, 20 ),
-		new Rectangle( 20, 130, 90, 20 ),
-		new Rectangle( 20, 160, 90, 20 ),
-		new Rectangle( 20, 180, 90, 20 ),
-		new Rectangle( 20, 210, 90, 20 ),
-		new Rectangle( 200, 30, 310, 200 ),
-		new Rectangle( 20, 30, 120, 43 )
-	};
-	
-	private static final Class<PatternSequencerMadUiInstance> instanceClass = PatternSequencerMadUiInstance.class;
 
-	public PatternSequencerMadUiDefinition( BufferedImageAllocator bia, PatternSequencerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle(  116,   3,  920,  48 ),		// BPM
+		new Rectangle( 1050,  12,   90,  30 ),		// Run
+		new Rectangle(   14,  50,   90,  30 ),		// Clear
+		new Rectangle(   14, 120,   90,  30 ),		// OUP
+		new Rectangle(   14, 160,   90,  30 ),		// ODOWN
+		new Rectangle(   14, 230,   90,  30 ),		// SUP
+		new Rectangle(   14, 270,   90,  30 ),		// SDOWN
+		new Rectangle(  116,  50, 1024, 250 )		// Display
+	};
+
+	private static final Class<PatternSequencerMadUiInstance> INSTANCE_CLASS = PatternSequencerMadUiInstance.class;
+
+	public PatternSequencerMadUiDefinition( final BufferedImageAllocator bia, final PatternSequencerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 		{
 			super( bia, definition, cif, imageRoot,
-					span,
-					instanceClass,
-					uiChannelInstanceIndexes,
-					uiChannelPositions,
-					uiControlNames,
-					uiControlTypes,
-					uiControlClasses,
-					uiControlBounds );
+					SPAN,
+					INSTANCE_CLASS,
+					CHAN_INDEXES,
+					CHAN_POSIS,
+					CONTROL_NAMES,
+					CONTROL_TYPES,
+					CONTROL_CLASSES,
+					CONTROL_BOUNDS );
 		}
 }

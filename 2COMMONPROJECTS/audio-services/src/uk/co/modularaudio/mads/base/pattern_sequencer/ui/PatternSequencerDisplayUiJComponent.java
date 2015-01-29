@@ -52,51 +52,51 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 
 
 	private static Log log = LogFactory.getLog(  PatternSequencerDisplayUiJComponent.class.getName( ) );
-	
-	
-	private PatternSequencerMadInstance instance = null;
-	private PatternSequencerMadUiInstance uiInstance = null;
+
+
+	private final PatternSequencerMadInstance instance;
+	private PatternSequencerMadUiInstance uiInstance;
 
 	// Stuff for our processing
-	private PatternSequencer patternSequencer = null;
-	private PatternSequenceModel dataModel = null;
-	
-	private int curPattern = 0;
-	private PatternSequencerRuntimePattern[] runtimePatterns = new PatternSequencerRuntimePattern[2];
-	
+	private final PatternSequencer patternSequencer;
+	private final PatternSequenceModel dataModel;
+
+	private int curPattern;
+	private final PatternSequencerRuntimePattern[] runtimePatterns = new PatternSequencerRuntimePattern[2];
+
 	public PatternSequencerDisplayUiJComponent(
-			PatternSequencerMadDefinition definition,
-			PatternSequencerMadInstance instance,
-			PatternSequencerMadUiInstance uiInstance,
-			int controlIndex )
+			final PatternSequencerMadDefinition definition,
+			final PatternSequencerMadInstance instance,
+			final PatternSequencerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
-		MigLayout migLayout = new MigLayout("insets 0, fill");
+		final MigLayout migLayout = new MigLayout("insets 0, fill");
 		this.setLayout( migLayout );
 		this.setOpaque( true );
 		this.instance = instance;
 		this.uiInstance = uiInstance;
-		
-		dataModel = instance.getPatternDataModel();
-		
-		dataModel.addListener( this );
-		Dimension blockDimensions = new Dimension( 15, 8 );
 
-		float backLevel = 0.3f;
-		Color backgroundColour = new Color( backLevel, backLevel, backLevel );
-		Color gridColour = new Color( 0.5f, backLevel, backLevel );
-		Color blockColour = new Color( 0.95f, 0.2f, 0.2f );
-		
+		dataModel = instance.getPatternDataModel();
+
+		dataModel.addListener( this );
+		final Dimension blockDimensions = new Dimension( 15, 8 );
+
+		final float backLevel = 0.3f;
+		final Color backgroundColour = new Color( backLevel, backLevel, backLevel );
+		final Color gridColour = new Color( 0.5f, backLevel, backLevel );
+		final Color blockColour = new Color( 0.95f, 0.2f, 0.2f );
+
 		patternSequencer = new PatternSequencer( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 		this.add( patternSequencer, "grow" );
-		
+
 		runtimePatterns[ 0 ] = new PatternSequencerRuntimePattern( dataModel.getNumSteps() );
 		runtimePatterns[ 1 ] = new PatternSequencerRuntimePattern( dataModel.getNumSteps() );
 		log.debug("Done with pattern sequencer display component creation");
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -119,7 +119,7 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		// Pass the string to the pattern for use.
 		dataModel.initFromPersistenceString( value );
@@ -139,8 +139,8 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 	private void sendPatternUpdate()
 	{
 //		log.debug( "Received update to pattern" );
-		AtomicReference<PatternSequencerRuntimePattern> atomicRuntimePattern = instance.getAtomicRuntimePattern();
-		PatternSequencerRuntimePattern curInstancePattern = atomicRuntimePattern.get();
+		final AtomicReference<PatternSequencerRuntimePattern> atomicRuntimePattern = instance.getAtomicRuntimePattern();
+		final PatternSequencerRuntimePattern curInstancePattern = atomicRuntimePattern.get();
 		if( curInstancePattern != null )
 		{
 //			log.debug("Atomic is " + curInstancePattern.toString() );
@@ -150,7 +150,7 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 //			log.debug("Atomic is currently null");
 		}
 		// Wait for the current pattern to become used
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		boolean done = false;
 		while( !done )
 		{
@@ -163,15 +163,15 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 				try
 				{
 //					log.debug("Waiting for pattern to become used");
-					NanoTuple nt = new NanoTuple( "PatternUpdateNanoTuple" );
+					final NanoTuple nt = new NanoTuple( "PatternUpdateNanoTuple" );
 					nt.resetToCurrent();
 					nt.addNanos( uiInstance.knownAudioIOLatencyNanos );
 					nt.nanoSleepIfNotPassed();
 				}
-				catch (InterruptedException e)
+				catch (final InterruptedException e)
 				{
 				}
-				long curTime = System.currentTimeMillis();
+				final long curTime = System.currentTimeMillis();
 				if( curTime >= startTime + 20)
 				{
 					done = true;
@@ -181,10 +181,10 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 		if( curInstancePattern == null || curInstancePattern.used == true )
 		{
 			// It's already been used copy in a new one
-			PatternSequencerRuntimePattern patternToPush = runtimePatterns[ curPattern ];
+			final PatternSequencerRuntimePattern patternToPush = runtimePatterns[ curPattern ];
 //			log.debug("Will push " + curPattern + " " + patternToPush.toString());
 			patternToPush.used = false;
-			int numSteps = dataModel.getNumSteps();
+			final int numSteps = dataModel.getNumSteps();
 			if( patternToPush.numSteps != numSteps )
 			{
 				patternToPush.stepNotes = new PatternSequenceStep[ numSteps ];
@@ -192,28 +192,28 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 			}
 
 			patternToPush.copyFrom( dataModel );
-			
+
 			atomicRuntimePattern.set( patternToPush );
-			
+
 			curPattern = ( curPattern == 0 ? 1 : 0 );
 //			log.debug("Now set curPattern to " + curPattern );
 		}
 	}
 
 	@Override
-	public void receiveStepNoteAndAmpChange( int firstStep, int lastStep )
+	public void receiveStepNoteAndAmpChange( final int firstStep, final int lastStep )
 	{
 		sendPatternUpdate();
 	}
 
 	@Override
-	public void receiveStepnoteChange( int firstStep, int lastStep )
+	public void receiveStepnoteChange( final int firstStep, final int lastStep )
 	{
 		sendPatternUpdate();
 	}
 
 	@Override
-	public void receiveStepAmpChange( int firstStep, int lastStep )
+	public void receiveStepAmpChange( final int firstStep, final int lastStep )
 	{
 		sendPatternUpdate();
 	}

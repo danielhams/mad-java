@@ -52,46 +52,46 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 	private static final long serialVersionUID = -1183011558795174539L;
 
 	private static Log log = LogFactory.getLog(  OscilloscopeDisplayUiJComponent.class.getName( ) );
-	
+
 	private static final int SCALE_WIDTH = 40;
-	
-	private OscilloscopeMadUiInstance uiInstance = null;
+
+	private final OscilloscopeMadUiInstance uiInstance;
 
 	private float maxMag0 = 0.5f;
 	private float maxMag1 = 0.5f;
-	
+
 	private float newMaxMag0 = 0.5f;
 	private float newMaxMag1 = 0.5f;
-	
-	private boolean previouslyShowing = false;
-	
-	private BufferedImageAllocator bufferImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;
-	
+
+	private boolean previouslyShowing;
+
+	private final BufferedImageAllocator bufferImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage outBufferedImage;
+	private Graphics outBufferedImageGraphics;
+
 	public OscilloscopeDisplayUiJComponent(
-			OscilloscopeMadDefinition definition,
-			OscilloscopeMadInstance instance,
-			OscilloscopeMadUiInstance uiInstance,
-			int controlIndex )
+			final OscilloscopeMadDefinition definition,
+			final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		setOpaque( true );
 
 		this.uiInstance = uiInstance;
 		uiInstance.registerScopeDataListener( this );
-		
+
 		this.bufferImageAllocator = uiInstance.getUiDefinition().getBufferedImageAllocator();
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
 //		log.debug("Receiving display tick");
-		boolean showing = isShowing();
-		
+		final boolean showing = isShowing();
+
 		if( previouslyShowing != showing )
 		{
 //			log.debug("Display sending active of " + showing );
@@ -99,11 +99,11 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 			previouslyShowing = showing;
 		}
 	}
-	
-	public void paintNewWave( OscilloscopeWriteableScopeData currentScopeData )
+
+	public void paintNewWave( final OscilloscopeWriteableScopeData currentScopeData )
 	{
 		checkImage();
-		
+
 		paintIntoImage( outBufferedImageGraphics, currentScopeData );
 	}
 
@@ -112,9 +112,9 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 	{
 		return this;
 	}
-	
+
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		checkImage();
 
@@ -125,11 +125,11 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 	{
 		if( outBufferedImage == null )
 		{
-			int myWidth = getWidth();
-			int myHeight = getHeight();
+			final int myWidth = getWidth();
+			final int myHeight = getHeight();
 			try
 			{
-				AllocationMatch localAllocationMatch = new AllocationMatch();
+				final AllocationMatch localAllocationMatch = new AllocationMatch();
 				tiledBufferedImage = bufferImageAllocator.allocateBufferedImage( this.getClass().getSimpleName(),
 						localAllocationMatch,
 						AllocationLifetime.SHORT,
@@ -139,49 +139,49 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				outBufferedImage = tiledBufferedImage.getUnderlyingBufferedImage();
 				outBufferedImageGraphics = outBufferedImage.createGraphics();
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Unable to allocate tiled image: " + e.toString();
+				final String msg = "Unable to allocate tiled image: " + e.toString();
 				log.error( msg, e );
 			}
 
 		}
 	}
-	
+
 	private int previousX = -1;
 	private int previousY = -1;
-	
-	private void paintIntoImage( Graphics g, OscilloscopeWriteableScopeData scopeData )
+
+	private void paintIntoImage( final Graphics g, final OscilloscopeWriteableScopeData scopeData )
 	{
 //		Graphics2D g2d = (Graphics2D)g;
 //		Rectangle clipBounds = g.getClipBounds();
-		Font f = g.getFont();
-		Font newFont = f.deriveFont( 12 );
+		final Font f = g.getFont();
+		final Font newFont = f.deriveFont( 12 );
 		g.setFont( newFont );
-		int x = 0;
-		int y = 0;
-		
+		final int x = 0;
+		final int y = 0;
+
 		newMaxMag0 = 0.5f;
 		newMaxMag1 = 0.5f;
-		
-		int width = getWidth();
-		int height = getHeight();
-		
-		int plotWidth = width - (SCALE_WIDTH * 2);
-		int plotStart = SCALE_WIDTH;
-		int plotHeight = getHeight();
+
+		final int width = getWidth();
+		final int height = getHeight();
+
+		final int plotWidth = width - (SCALE_WIDTH * 2);
+		final int plotStart = SCALE_WIDTH;
+		final int plotHeight = getHeight();
 
 //		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		g.setColor( Color.BLACK );
 		g.fillRect( x, y, width, height );
-		
+
 		if( scopeData != null )
 		{
-			
-			int numSamplesInBuffer = scopeData.desiredDataLength;
-			
-			float[] float0Data = scopeData.floatBuffer0;
-			FloatType float0Type = scopeData.floatBuffer0Type;
+
+			final int numSamplesInBuffer = scopeData.desiredDataLength;
+
+			final float[] float0Data = scopeData.floatBuffer0;
+			final FloatType float0Type = scopeData.floatBuffer0Type;
 			switch( float0Type )
 			{
 				case AUDIO:
@@ -190,10 +190,10 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				case CV:
 					break;
 			}
-			boolean displayFloat0 = scopeData.float0Written;
-			
-			float[] float1Data = scopeData.floatBuffer1;
-			FloatType float1Type = scopeData.floatBuffer1Type;
+			final boolean displayFloat0 = scopeData.float0Written;
+
+			final float[] float1Data = scopeData.floatBuffer1;
+			final FloatType float1Type = scopeData.floatBuffer1Type;
 			switch( float1Type )
 			{
 				case AUDIO:
@@ -202,9 +202,9 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				case CV:
 					break;
 			}
-			boolean displayFloat1 = scopeData.float1Written;
-			
-			
+			final boolean displayFloat1 = scopeData.float1Written;
+
+
 			if( displayFloat0 )
 			{
 				// Float data draw
@@ -212,7 +212,7 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				drawScale( g, height, maxMag0, 0 );
 				plotAllDataValues( g, plotWidth, plotStart, plotHeight, numSamplesInBuffer, float0Data, true );
 			}
-			
+
 			if( displayFloat1 )
 			{
 				// CV data draw
@@ -225,29 +225,29 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 		}
 	}
 
-	private void plotAllDataValues( Graphics g,
-			int plotWidth,
-			int plotStart,
-			int plotHeight,
-			int numSamplesInBuffer,
-			float[] dataToPlot,
-			boolean firstMags )
+	private void plotAllDataValues( final Graphics g,
+			final int plotWidth,
+			final int plotStart,
+			final int plotHeight,
+			final int numSamplesInBuffer,
+			final float[] dataToPlot,
+			final boolean firstMags )
 	{
 		previousX = -1;
 		previousY = -1;
 		for( int i = 0 ; i < numSamplesInBuffer ; i++ )
 		{
-			double pixelIndex = ((float)i / numSamplesInBuffer) * plotWidth;
-			int intPixelIndex = (int)pixelIndex;
-			float origVal = dataToPlot[ i ];
-			float scaledVal = origVal / (firstMags ? maxMag0 : maxMag1 );
+			final double pixelIndex = ((float)i / numSamplesInBuffer) * plotWidth;
+			final int intPixelIndex = (int)pixelIndex;
+			final float origVal = dataToPlot[ i ];
+			final float scaledVal = origVal / (firstMags ? maxMag0 : maxMag1 );
 //				log.debug("MaxMag0 is " + maxMag0);
 			// Curval goes from +1.0 to -1.0
 			// We need it to go from 0 to height
 
-			int actualY = (int)( ((scaledVal + 1.0)  / 2.0) * (double)(plotHeight - 1));
-			int curX = SCALE_WIDTH + intPixelIndex;
-			int curY = (plotHeight - 1) - actualY;
+			final int actualY = (int)( ((scaledVal + 1.0)  / 2.0) * (plotHeight - 1));
+			final int curX = SCALE_WIDTH + intPixelIndex;
+			final int curY = (plotHeight - 1) - actualY;
 			if( curX != previousX || curY != previousY )
 			{
 				if( previousX != -1 )
@@ -257,7 +257,7 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				previousX = curX;
 				previousY = curY;
 			}
-			float absY = (float)Math.abs( origVal );
+			final float absY = Math.abs( origVal );
 			if( firstMags )
 			{
 				if( absY > newMaxMag0 )
@@ -274,20 +274,20 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 			}
 		}
 	}
-	
+
 	private String previousPositiveMagStr = null;
 	private float previousPositiveMag = Float.MAX_VALUE;
 	private String previousNegativeMagStr = null;
 	private float previousNegativeMag = Float.MAX_VALUE;
 
-	private void drawScale( Graphics g, int height, float maxMag, int xOffset )
+	private void drawScale( final Graphics g, final int height, final float maxMag, final int xOffset )
 	{
-		FontMetrics fm = g.getFontMetrics();
+		final FontMetrics fm = g.getFontMetrics();
 		// Do zero, and plus and minus maximum
-		int middle = height / 2;
-		int halfFontHeight = fm.getAscent() / 2;
+		final int middle = height / 2;
+		final int halfFontHeight = fm.getAscent() / 2;
 		g.drawString( "0.0", xOffset, middle + halfFontHeight );
-		int top = 0 + fm.getHeight();
+		final int top = 0 + fm.getHeight();
 		// Only re-create the string when we need to
 		if( previousPositiveMagStr == null || previousPositiveMag != maxMag )
 		{
@@ -303,12 +303,12 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 			previousNegativeMagStr = MathFormatter.fastFloatPrint( -maxMag, 2, true );
 			previousNegativeMag = -maxMag;
 		}
-		int bottom = height - halfFontHeight;
+		final int bottom = height - halfFontHeight;
 		g.drawString( previousNegativeMagStr, xOffset, bottom );
 	}
 
 	@Override
-	public void processScopeData( OscilloscopeWriteableScopeData scopeData )
+	public void processScopeData( final OscilloscopeWriteableScopeData scopeData )
 	{
 //		log.debug("Painting new wave");
 		paintNewWave( scopeData );
@@ -327,18 +327,28 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 				bufferImageAllocator.freeBufferedImage( tiledBufferedImage );
 				tiledBufferedImage = null;
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Exception caught freeing tiled image: " + e.toString();
+				final String msg = "Exception caught freeing tiled image: " + e.toString();
 				log.error( msg, e );
 			}
 		}
-		
+
 	}
 
 	@Override
 	public boolean needsDisplayProcessing()
 	{
 		return true;
+	}
+
+	@Override
+	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeProducer captureTimeProducer )
+	{
+	}
+
+	@Override
+	public void setCaptureTimeMillis( final float captureMillis )
+	{
 	}
 }

@@ -30,33 +30,33 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class ScaleAndOffsetIOQueueBridge extends MadLocklessQueueBridge<ScaleAndOffsetMadInstance>
 {
 	private static Log log = LogFactory.getLog( ScaleAndOffsetIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_SCALE = 0;
 	public static final int COMMAND_IN_OFFSET = 1;
 
 	@Override
-	public void receiveQueuedEventsToInstance( ScaleAndOffsetMadInstance instance, ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final ScaleAndOffsetMadInstance instance, final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_SCALE:
 			{
-				long val = queueEntry.value;
-				float f = Float.intBitsToFloat( (int)val );
+				final long val = queueEntry.value;
+				final float f = Float.intBitsToFloat( (int)val );
 				instance.desiredScaleValue = f;
 				break;
 			}
 			case COMMAND_IN_OFFSET:
 			{
-				long val = queueEntry.value;
-				float f = Float.intBitsToFloat( (int)val );
+				final long val = queueEntry.value;
+				final float f = Float.intBitsToFloat( (int)val );
 				instance.desiredOffsetValue = f;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command: " + queueEntry.command;
+				final String msg = "Unknown command: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

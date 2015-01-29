@@ -74,8 +74,6 @@ import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
-import uk.co.modularaudio.mads.base.oscilloscopev2.mu.OscilloscopeV2MadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscopev2.mu.OscilloscopeV2MadInstance;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
@@ -119,13 +117,13 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 //	private static Log log = LogFactory.getLog( BaseComponentsFactory.class.getName() );
 
 	// Definitions to instances
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
+	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
 		new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
-	
+
 	private BaseComponentsCreationContext creationContext = null;
-	
+
 	private AdvancedComponentsFrontController advancedComponentsFrontController = null;
-	
+
 	public BaseComponentsFactory()
 	{
 		defClassToInsClassMap.put( ScaleAndOffsetMadDefinition.class, ScaleAndOffsetMadInstance.class );
@@ -144,29 +142,27 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( WaveShaperMadDefinition.class, WaveShaperMadInstance.class );
 
 		defClassToInsClassMap.put( PatternSequencerMadDefinition.class, PatternSequencerMadInstance.class );
-		
+
 		defClassToInsClassMap.put( NoteToCvMadDefinition.class, NoteToCvMadInstance.class );
-		
+
 		defClassToInsClassMap.put( ControllerToCvMadDefinition.class, ControllerToCvMadInstance.class );
-		
+
 		defClassToInsClassMap.put( CvSurfaceMadDefinition.class, CvSurfaceMadInstance.class );
-		
+
 		defClassToInsClassMap.put( LinearCVAMadDefinition.class, LinearCVAMadInstance.class );
-		
-		defClassToInsClassMap.put( OscilloscopeV2MadDefinition.class, OscilloscopeV2MadInstance.class );
-		
+
 		defClassToInsClassMap.put( PrngMadDefinition.class, PrngMadInstance.class );
-		
+
 		defClassToInsClassMap.put( DCTrapMadDefinition.class, DCTrapMadInstance.class );
 
 		defClassToInsClassMap.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadInstance.class );
-		
+
 		defClassToInsClassMap.put( FlipFlopMadDefinition.class, FlipFlopMadInstance.class );
-		
+
 		defClassToInsClassMap.put( StereoGateMadDefinition.class, StereoGateMadInstance.class );
 		defClassToInsClassMap.put( MonoCompressorMadDefinition.class, MonoCompressorMadInstance.class );
 		defClassToInsClassMap.put( StereoCompressorMadDefinition.class, StereoCompressorMadInstance.class );
-		
+
 		// Parameterised instances
 		defClassToInsClassMap.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadInstance.class );
 		defClassToInsClassMap.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadInstance.class );
@@ -175,25 +171,25 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadInstance.class );
 
 		defClassToInsClassMap.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadInstance.class );
-		
+
 		defClassToInsClassMap.put( OscillatorMadDefinition.class, OscillatorMadInstance.class );
 
 		defClassToInsClassMap.put( EnvelopeMadDefinition.class, EnvelopeMadInstance.class );
-		
+
 		defClassToInsClassMap.put( SuperSawModuleMadDefinition.class, SuperSawModuleMadInstance.class );
 
 		defClassToInsClassMap.put( WaveRollerMadDefinition.class, WaveRollerMadInstance.class );
-		
+
 		defClassToInsClassMap.put( SoundfilePlayerMadDefinition.class, SoundfilePlayerMadInstance.class );
-		
+
 		defClassToInsClassMap.put( RBJFilterMadDefinition.class, RBJFilterMadInstance.class );
-		
+
 		defClassToInsClassMap.put( MoogFilterMadDefinition.class, MoogFilterMadInstance.class );
 
 		defClassToInsClassMap.put( NoteDebugMadDefinition.class, NoteDebugMadInstance.class );
-		
+
 		defClassToInsClassMap.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadInstance.class );
-		
+
 		defClassToInsClassMap.put( XRunnerMadDefinition.class, XRunnerMadInstance.class );
 	}
 
@@ -211,7 +207,7 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 	}
 
 	public void setAdvancedComponentsFrontController(
-			AdvancedComponentsFrontController advancedComponentsFrontController )
+			final AdvancedComponentsFrontController advancedComponentsFrontController )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
 	}
@@ -221,7 +217,7 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 	{
 		if( advancedComponentsFrontController == null )
 		{
-			String msg = "BaseComponentsFactory has missing service dependencies. Check configuration";
+			final String msg = "BaseComponentsFactory has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );
 		}
 

@@ -25,38 +25,29 @@ import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
-import uk.co.modularaudio.util.swing.general.FloatJSliderModel;
 
 public class ScaleAndOffsetMadUiInstance extends AbstractNonConfigurableMadUiInstance<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ScaleAndOffsetMadUiInstance.class.getName() );
-	
-	public final static double START_VAL = 1.0;
-	public final static double MIN_VAL = 0.0;
-	public final static double MAX_VAL = 500.0;
-	public final static double VAL_RES = 0.1;
-	
-	public FloatJSliderModel valueFloatSliderModel = new FloatJSliderModel( START_VAL, MIN_VAL, MAX_VAL, VAL_RES );
-	public FloatJSliderModel scaleFloatSliderModel = new FloatJSliderModel( START_VAL, MIN_VAL, MAX_VAL, VAL_RES );
-	
-	public ScaleAndOffsetMadUiInstance( ScaleAndOffsetMadInstance instance,
-			ScaleAndOffsetMadUiDefinition uiDefinition )
+
+	public ScaleAndOffsetMadUiInstance( final ScaleAndOffsetMadInstance instance,
+			final ScaleAndOffsetMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendScaleChange( float floatValue )
+	public void sendScaleChange( final float floatValue )
 	{
 		sendTemporalValueToInstance( ScaleAndOffsetIOQueueBridge.COMMAND_IN_SCALE, Float.floatToIntBits( floatValue ) );
 	}
 
-	public void sendOffsetChange( float floatValue )
+	public void sendOffsetChange( final float floatValue )
 	{
 		sendTemporalValueToInstance( ScaleAndOffsetIOQueueBridge.COMMAND_IN_OFFSET, Float.floatToIntBits( floatValue ) );
 	}
 
 	@Override
-	public void consumeQueueEntry( ScaleAndOffsetMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final ScaleAndOffsetMadInstance instance, final IOQueueEvent nextOutgoingEntry)
 	{
 	}
 }
