@@ -107,7 +107,7 @@ public class GuiRackActions
 //			log.debug("ActionPerformed on add component action");
 			try
 			{
-				MadDefinitionListModel pctcm = guiService.getComponentTypesModel();
+				MadDefinitionListModel pctcm = guiService.getMadDefinitionsModel();
 				MadDefinition<?,?> typeToAdd = (MadDefinition<?,?>) pctcm.getSelectedItem();
 //				log.debug("Would attempt to add: " + typeToAdd.getId() );
 				// Pop up a dialog allowing the use to enter a new name

@@ -61,7 +61,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	private RackService rackService;
 	private BufferedImageAllocationService bufferedImageAllocationService;
 
-	private MadDefinitionListModel typesComboModel;
+	private MadDefinitionListModel madDefinitionsModel;
 
 	private GuiTabbedPane tabbedPane;
 
@@ -131,25 +131,25 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public MadDefinitionListModel getComponentTypesModel() throws DatastoreException
+	public MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException
 	{
-		if( typesComboModel == null )
+		if( madDefinitionsModel == null )
 		{
 			// Obtain the list of available component types from the component service
 			try
 			{
-				typesComboModel = componentService.listDefinitionsAvailable();
+				madDefinitionsModel = componentService.listDefinitionsAvailable();
 			}
 			catch (final DatastoreException e)
 			{
-				final String msg = "Exception caught creating the component type list model: " + e.toString();
+				final String msg = "Exception caught creating the mad definition list model: " + e.toString();
 				log.error( msg, e );
 				// Fill in a "blank" model
-				typesComboModel = new MadDefinitionListModel( new Vector<MadDefinition<?,?>>(), new MadDefinitionComparator());
+				madDefinitionsModel = new MadDefinitionListModel( new Vector<MadDefinition<?,?>>(), new MadDefinitionComparator());
 			}
 		}
 
-		return typesComboModel;
+		return madDefinitionsModel;
 	}
 
 	@Override

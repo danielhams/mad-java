@@ -51,7 +51,7 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 	private final GuiComponentPainter painter;
 
 	private HashMap<MadDefinition<?,?>, 
-		OpenLongObjectHashMap<TiledBufferedImage>> componentTypeToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
+		OpenLongObjectHashMap<TiledBufferedImage>> madDefinitionToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
 			OpenLongObjectHashMap<TiledBufferedImage>>();
 	
 	private AllocationMatch allocationMatchToUse = new AllocationMatch();
@@ -76,7 +76,7 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 		MadDefinition<?,?> madDefinition = madInstance.getDefinition();
 		long compoundKey = buildCompoundKey( width, height );
 
-		OpenLongObjectHashMap<TiledBufferedImage> dimensionsToImageMap = componentTypeToMapOfDimToImage.get( madDefinition );
+		OpenLongObjectHashMap<TiledBufferedImage> dimensionsToImageMap = madDefinitionToMapOfDimToImage.get( madDefinition );
 		
 		TiledBufferedImage tiledImage = null;
 		if( dimensionsToImageMap != null && dimensionsToImageMap.containsKey( compoundKey ) )
@@ -114,7 +114,7 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 				if( dimensionsToImageMap == null )
 				{
 					dimensionsToImageMap = new OpenLongObjectHashMap<TiledBufferedImage>();
-					componentTypeToMapOfDimToImage.put( madDefinition, dimensionsToImageMap );
+					madDefinitionToMapOfDimToImage.put( madDefinition, dimensionsToImageMap );
 				}
 				dimensionsToImageMap.put( compoundKey, tiledImage );
 			}
@@ -134,7 +134,7 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 
 	public void destroy()
 	{
-		Collection<OpenLongObjectHashMap<TiledBufferedImage>> typeToBufs = componentTypeToMapOfDimToImage.values();
+		Collection<OpenLongObjectHashMap<TiledBufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
 		for( OpenLongObjectHashMap<TiledBufferedImage> imsForType : typeToBufs )
 		{
 			Collection<TiledBufferedImage> bufsStillRemaining = imsForType.values();
@@ -152,6 +152,6 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 			}
 			imsForType.clear();
 		}
-		componentTypeToMapOfDimToImage.clear();
+		madDefinitionToMapOfDimToImage.clear();
 	}
 }

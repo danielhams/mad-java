@@ -66,10 +66,10 @@ public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelpe
 	}
 
 	@Override
-	public MadDefinitionListModel getComponentTypesModel()
+	public MadDefinitionListModel getMadDefinitionsModel()
 			throws DatastoreException
 	{
-		return guiService.getComponentTypesModel();
+		return guiService.getMadDefinitionsModel();
 	}
 
 	@Override

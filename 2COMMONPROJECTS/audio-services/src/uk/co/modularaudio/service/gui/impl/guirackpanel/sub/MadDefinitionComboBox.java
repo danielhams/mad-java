@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 
-public class ComponentTypeComboBox extends JComboBox<MadDefinition<?,?>>
+public class MadDefinitionComboBox extends JComboBox<MadDefinition<?,?>>
 {
 
 	public class ComboBoxCellRenderer extends DefaultListCellRenderer
@@ -83,9 +83,9 @@ public class ComponentTypeComboBox extends JComboBox<MadDefinition<?,?>>
 	 */
 	private static final long serialVersionUID = -1465726065333593273L;
 
-	public ComponentTypeComboBox( MadDefinitionListModel componentTypes )
+	public MadDefinitionComboBox( MadDefinitionListModel madDefinitions )
 	{
-		super( componentTypes );
+		super( madDefinitions );
 		// Now register our custom cell renderer which just uses the name from inside the type
 		this.setRenderer( new ComboBoxCellRenderer() );
 	}

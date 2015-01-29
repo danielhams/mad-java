@@ -594,37 +594,37 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				{
 					// Now hotspot compile them in one big rack
 
-					final MadDefinitionListModel allComponentTypes = componentController.listDefinitionsAvailable();
+					final MadDefinitionListModel allMadDefinitions = componentController.listDefinitionsAvailable();
 
 					// Create a new rack with at least four rows per component type
-					final int numComponentTypes = allComponentTypes.getSize();
+					final int numDefinitions = allMadDefinitions.getSize();
 					final RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
 							"",
 							RackService.DEFAULT_RACK_COLS,
-							RackService.DEFAULT_RACK_ROWS * numComponentTypes,
+							RackService.DEFAULT_RACK_ROWS * numDefinitions,
 							false );
 
 					final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
 
-					for( int i = 0 ; i < numComponentTypes ; i++ )
+					for( int i = 0 ; i < numDefinitions ; i++ )
 					{
-						final Object o = allComponentTypes.getElementAt( i );
-						final MadDefinition<?,?> ct = (MadDefinition<?,?>)o;
-						if( isDefinitionPublic( ct ) )
+						final Object o = allMadDefinitions.getElementAt( i );
+						final MadDefinition<?,?> md = (MadDefinition<?,?>)o;
+						if( isDefinitionPublic( md ) )
 						{
-							if( ct.isParametrable() )
+							if( md.isParametrable() )
 							{
 								// Attempt empty parameters creation
 								try
 								{
-									final String name = ct.getId() + i;
-									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+									final String name = md.getId() + i;
+									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
 								}
 								catch(final Exception e )
 								{
 									if( log.isInfoEnabled() )
 									{
-										log.info("Skipping hotspot of " + ct.getId() + " as it needs parameters and no default didn't work." );
+										log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." );
 									}
 								}
 							}
@@ -632,14 +632,14 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 							{
 								try
 								{
-									final String name = ct.getId() + i;
-									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+									final String name = md.getId() + i;
+									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
 								}
 								catch(final RecordNotFoundException rnfe )
 								{
 									if( log.isInfoEnabled() )
 									{
-										log.info( "Skipping hotspot of " + ct.getId() + " - probably missing UI for it" );
+										log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" );
 									}
 								}
 							}

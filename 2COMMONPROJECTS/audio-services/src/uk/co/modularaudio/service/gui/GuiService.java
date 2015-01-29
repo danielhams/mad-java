@@ -37,7 +37,7 @@ public interface GuiService
 
 	RackModelRenderingComponent createGuiForRackDataModel( RackDataModel rackDataModel ) throws DatastoreException;
 
-	MadDefinitionListModel getComponentTypesModel() throws DatastoreException;
+	MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException;
 
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
 

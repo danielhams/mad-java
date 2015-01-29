@@ -33,7 +33,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -89,7 +88,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private Properties userPreferencesProperties;
 
 	private AudioProviderRegistryService audioProviderRegistryService;
-	private AppRenderingGraphService appRenderingGraphService;
 
 	private UserPreferencesMVCController userPreferences;
 
@@ -104,8 +102,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( audioProviderRegistryService == null ||
-				appRenderingGraphService == null )
+		if( audioProviderRegistryService == null )
 		{
 			final String msg = "UserPreferencesServiceImpl has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );
@@ -440,11 +437,4 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			}
 		}
 	}
-
-	public void setAppRenderingGraphService(
-			final AppRenderingGraphService appRenderingGraphService )
-	{
-		this.appRenderingGraphService = appRenderingGraphService;
-	}
-
 }
