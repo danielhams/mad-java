@@ -31,30 +31,30 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class WaveShaperIOQueueBridge extends MadLocklessQueueBridge<WaveShaperMadInstance>
 {
 	private static Log log = LogFactory.getLog( WaveShaperIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_WAVE = 0;
-	
+
 	public WaveShaperIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( WaveShaperMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final WaveShaperMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_WAVE:
 			{
 				// Is just the integer index of the enum
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				WaveShaperWaveTables.WaveType waveType = WaveType.values()[ truncVal ];
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final WaveShaperWaveTables.WaveType waveType = WaveType.values()[ truncVal ];
 				instance.curWaveType = waveType;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

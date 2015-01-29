@@ -63,13 +63,13 @@ public class SpectralAmpMadUiInstance extends
 	private BackendToFrontendDataRingBuffer backendRingBuffer;
 
 	// Things the UI sets
-	private int desiredFftSize = 0;
-	private FrequencyScaleComputer desiredFreqScaleComputer = null;
-	private AmpScaleComputer desiredAmpScaleComputer = null;
-	private RunningAverageComputer desiredRunningAverageComputer = null;
+	private int desiredFftSize;
+	private FrequencyScaleComputer desiredFreqScaleComputer;
+	private AmpScaleComputer desiredAmpScaleComputer;
+	private RunningAverageComputer desiredRunningAverageComputer;
 
-	private StreamingWolaProcessor wolaProcessor = null;
-	private SpecDataListener specDataListener = null;
+	private StreamingWolaProcessor wolaProcessor;
+	private SpecDataListener specDataListener;
 	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 
@@ -161,7 +161,10 @@ public class SpectralAmpMadUiInstance extends
 			}
 			default:
 			{
-				log.error( "Unknown output command: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Unknown output command: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
@@ -182,7 +185,10 @@ public class SpectralAmpMadUiInstance extends
 		final int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
 		if( numRead != numReadable )
 		{
-			log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			}
 			Arrays.fill( frontendRingBuffer.buffer, 0.0f );
 			frontendRingBuffer.readPosition = 0;
 			frontendRingBuffer.writePosition = frontendRingBuffer.bufferLength - 1;
@@ -232,7 +238,10 @@ public class SpectralAmpMadUiInstance extends
 			}
 			else if( numWrappedRead > 0 )
 			{
-				log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+//				if( log.isDebugEnabled() )
+//				{
+//					log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+//				}
 				wolaProcessor.write(  wolaArray, 0, numWrappedRead, 1.0, 1.0 );
 			}
 		}

@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class RBJFilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<RBJFilterMadDefinition, RBJFilterMadInstance, RBJFilterMadUiInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		RBJFilterMadDefinition.CONSUMER_IN_LEFT,
 		RBJFilterMadDefinition.CONSUMER_IN_RIGHT,
 		RBJFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
@@ -45,7 +45,7 @@ public class RBJFilterMadUiDefinition
 		RBJFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
 		new Point( 200, 40 ),
@@ -53,44 +53,44 @@ public class RBJFilterMadUiDefinition
 		new Point( 170, 70 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Frequency",
 		"Q"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		RBJFilterTypeComboUiJComponent.class,
 		RBJFilterFrequencySliderUiControlInstance.class,
 		RBJFilterQSliderUiControlInstance.class
 //		OldFrequencyFilterBandwidthSliderUiJComponent.class
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 30, 90, 20 ),
 		new Rectangle( 113, 3, 280, 43 ),
 		new Rectangle( 113, 53, 280, 43 )
 	};
 	
-	private static final Class<RBJFilterMadUiInstance> instanceClass = RBJFilterMadUiInstance.class;
+	private static final Class<RBJFilterMadUiInstance> INSTANCE_CLASS = RBJFilterMadUiInstance.class;
 	
 	public RBJFilterMadUiDefinition( BufferedImageAllocator bia, RBJFilterMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

@@ -41,33 +41,33 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 	implements IMadUiControlInstance<SpectralRollMadDefinition, SpectralRollMadInstance, SpectralRollMadUiInstance>
 {
 	private static final long serialVersionUID = 2440031777978859794L;
-	
-	private SpectralRollMadUiInstance uiInstance = null;
-	
-	private Map<String, FrequencyScaleComputer> freqScaleToCalculatorMap = new HashMap<String, FrequencyScaleComputer> ();
 
-	public SpectralRollFrequencyScaleComboUiJComponent( SpectralRollMadDefinition definition,
-			SpectralRollMadInstance instance,
-			SpectralRollMadUiInstance uiInstance,
-			int controlIndex )
+	private final SpectralRollMadUiInstance uiInstance;
+
+	private final Map<String, FrequencyScaleComputer> freqScaleToCalculatorMap = new HashMap<String, FrequencyScaleComputer> ();
+
+	public SpectralRollFrequencyScaleComboUiJComponent( final SpectralRollMadDefinition definition,
+			final SpectralRollMadInstance instance,
+			final SpectralRollMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
+
 		freqScaleToCalculatorMap.put( "Lin", new LinearFreqScaleComputer() );
 		freqScaleToCalculatorMap.put( "Log", new LogarithmicFreqScaleComputer() );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( String waveName : freqScaleToCalculatorMap.keySet() )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final String waveName : freqScaleToCalculatorMap.keySet() )
 		{
 			cbm.addElement( waveName );
 		}
 		this.setModel( cbm );
-		
+
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
-		
+
 		this.setSelectedIndex( -1 );
 		this.setSelectedItem( "Log" );
 	}
@@ -79,7 +79,7 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -87,14 +87,14 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String)getSelectedItem();
+			final String name = (String)getSelectedItem();
 			if( name != null )
 			{
-				FrequencyScaleComputer freqScaleComputer = freqScaleToCalculatorMap.get( name );
+				final FrequencyScaleComputer freqScaleComputer = freqScaleToCalculatorMap.get( name );
 				uiInstance.setDesiredFreqScaleComputer( freqScaleComputer );
 			}
 		}

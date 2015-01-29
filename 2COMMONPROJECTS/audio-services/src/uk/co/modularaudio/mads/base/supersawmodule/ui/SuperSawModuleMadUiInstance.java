@@ -26,9 +26,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUi
 
 public class SuperSawModuleMadUiInstance extends NoEventsNonConfigurableMadUiInstance<SuperSawModuleMadDefinition, SuperSawModuleMadInstance>
 {
-
-	public SuperSawModuleMadUiInstance( SuperSawModuleMadInstance instance,
-			SuperSawModuleMadUiDefinition uiDefinition )
+	public SuperSawModuleMadUiInstance( final SuperSawModuleMadInstance instance,
+			final SuperSawModuleMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

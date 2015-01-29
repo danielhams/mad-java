@@ -36,13 +36,13 @@ public class DoXRunButtonUiJComponent extends PacButton
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private XRunnerMadUiInstance uiInstance = null;
+	private final XRunnerMadUiInstance uiInstance;
 
 	public DoXRunButtonUiJComponent(
-			XRunnerMadDefinition definition,
-			XRunnerMadInstance instance,
-			XRunnerMadUiInstance uiInstance,
-			int controlIndex )
+			final XRunnerMadDefinition definition,
+			final XRunnerMadInstance instance,
+			final XRunnerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -50,13 +50,14 @@ public class DoXRunButtonUiJComponent extends PacButton
 		this.setText( "XRun" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -75,7 +76,7 @@ public class DoXRunButtonUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveEvent(ActionEvent e)
+	public void receiveEvent(final ActionEvent e)
 	{
 		uiInstance.sendDoXrun();
 	}

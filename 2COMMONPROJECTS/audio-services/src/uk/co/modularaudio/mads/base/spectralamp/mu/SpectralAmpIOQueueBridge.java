@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class SpectralAmpIOQueueBridge extends MadLocklessQueueBridge<SpectralAmpMadInstance>
 {
 	private static Log log = LogFactory.getLog( SpectralAmpIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_ACTIVE = 0;
 	public static final int COMMAND_OUT_RINGBUFFER_WRITE_INDEX = 1;
 
@@ -39,19 +39,19 @@ public class SpectralAmpIOQueueBridge extends MadLocklessQueueBridge<SpectralAmp
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( SpectralAmpMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SpectralAmpMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean isActive = (queueEntry.value == 1 );
+				final boolean isActive = (queueEntry.value == 1 );
 				instance.active = isActive;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

@@ -29,10 +29,10 @@ public class XRunnerIOQueueBridge extends MadLocklessQueueBridge<XRunnerMadInsta
 	public static final int COMMAND_DO_XRUN = 0;
 
 	@Override
-	public void receiveQueuedEventsToInstance( XRunnerMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry)
+	public void receiveQueuedEventsToInstance( final XRunnerMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry)
 	{
 		switch( queueEntry.command )
 		{
@@ -46,6 +46,6 @@ public class XRunnerIOQueueBridge extends MadLocklessQueueBridge<XRunnerMadInsta
 				break;
 			}
 		}
-		
+
 	}
 }

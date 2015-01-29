@@ -35,55 +35,55 @@ import uk.co.modularaudio.util.table.Span;
 public class StereoGateMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<StereoGateMadDefinition, StereoGateMadInstance, StereoGateMadUiInstance>
 {
-	private static final Span span = new Span(2,4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT,
 		StereoGateMadDefinition.CONSUMER_IN_WAVE_RIGHT,
 		StereoGateMadDefinition.PRODUCER_OUT_CV_GATE,
 		StereoGateMadDefinition.PRODUCER_OUT_CV_OVERDRIVE
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 45, 80 ),
 		new Point( 65, 80 ),
 		new Point( 45, 120 ),
 		new Point( 65, 120 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"ThresholdType",
 		"Threshold"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		StereoGateThresholdTypeComboUiJComponent.class,
 		StereoGateThresholdSliderUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 16, 35, 80, 20 ),
 		new Rectangle( 6, 72, 60, 110 )
 	};
-	
-	private static final Class<StereoGateMadUiInstance> instanceClass = StereoGateMadUiInstance.class;
-	
-	public StereoGateMadUiDefinition( BufferedImageAllocator bia, StereoGateMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<StereoGateMadUiInstance> INSTANCE_CLASS = StereoGateMadUiInstance.class;
+
+	public StereoGateMadUiDefinition( final BufferedImageAllocator bia, final StereoGateMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

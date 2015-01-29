@@ -40,37 +40,37 @@ public class SpectralAmpResolutionComboUiJComponent extends PacComboBox<String>
 	private static final long serialVersionUID = -1751151942321586686L;
 
 //	private static Log log = LogFactory.getLog( SpectralAmpResolutionComboUiJComponent.class.getName());
-	
-	private SpectralAmpMadUiInstance uiInstance = null;
-	
-	private int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
-	
-	private Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
 
-	public SpectralAmpResolutionComboUiJComponent( SpectralAmpMadDefinition definition,
-			SpectralAmpMadInstance instance,
-			SpectralAmpMadUiInstance uiInstance,
-			int controlIndex )
+	private final SpectralAmpMadUiInstance uiInstance;
+
+	private static final int[] RESOLUTION_CHOICES = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
+
+	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
+
+	public SpectralAmpResolutionComboUiJComponent( final SpectralAmpMadDefinition definition,
+			final SpectralAmpMadInstance instance,
+			final SpectralAmpMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
-		for( int res : resolutionChoices )
+
+		for( final int res : RESOLUTION_CHOICES )
 		{
 			runAvToCalculatorMap.put( res + "", res );
 		}
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( int res : resolutionChoices )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final int res : RESOLUTION_CHOICES )
 		{
 			cbm.addElement( res + "" );
 		}
 		this.setModel( cbm );
-		
+
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
-		
+
 		this.setSelectedIndex( -1 );
 		this.setSelectedItem( "4096" );
 	}
@@ -82,7 +82,7 @@ public class SpectralAmpResolutionComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -90,14 +90,14 @@ public class SpectralAmpResolutionComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String)getSelectedItem();
+			final String name = (String)getSelectedItem();
 			if( name != null )
 			{
-				Integer resolution = runAvToCalculatorMap.get( name );
+				final Integer resolution = runAvToCalculatorMap.get( name );
 				uiInstance.setDesiredFftSize( resolution );
 			}
 		}

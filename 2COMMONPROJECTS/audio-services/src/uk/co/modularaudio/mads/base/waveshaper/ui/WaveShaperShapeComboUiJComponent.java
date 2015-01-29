@@ -40,15 +40,15 @@ public class WaveShaperShapeComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private WaveShaperMadUiInstance uiInstance = null;
+	private final WaveShaperMadUiInstance uiInstance;
 
-	private Map<String, WaveShaperWaveTables.WaveType> waveNameToTypeMap = new HashMap<String, WaveShaperWaveTables.WaveType>();
+	private final Map<String, WaveShaperWaveTables.WaveType> waveNameToTypeMap = new HashMap<String, WaveShaperWaveTables.WaveType>();
 
 	public WaveShaperShapeComboUiJComponent(
-			WaveShaperMadDefinition definition,
-			WaveShaperMadInstance instance,
-			WaveShaperMadUiInstance uiInstance,
-			int controlIndex )
+			final WaveShaperMadDefinition definition,
+			final WaveShaperMadInstance instance,
+			final WaveShaperMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
@@ -58,8 +58,8 @@ public class WaveShaperShapeComboUiJComponent extends PacComboBox<String>
 		waveNameToTypeMap.put( "Triangle", WaveShaperWaveTables.WaveType.TRIANGLE );
 		waveNameToTypeMap.put( "Square", WaveShaperWaveTables.WaveType.SQUARE );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for (String waveName : waveNameToTypeMap.keySet())
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for (final String waveName : waveNameToTypeMap.keySet())
 		{
 			cbm.addElement( waveName );
 		}
@@ -77,7 +77,7 @@ public class WaveShaperShapeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,14 +85,14 @@ public class WaveShaperShapeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			WaveShaperWaveTables.WaveType waveType = waveNameToTypeMap.get( name );
+			final String name = (String) getSelectedItem();
+			final WaveShaperWaveTables.WaveType waveType = waveNameToTypeMap.get( name );
 			uiInstance.sendWaveChoice( waveType );
-		}		
+		}
 	}
 
 	@Override

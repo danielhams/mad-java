@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -39,55 +40,54 @@ public class SampleAndHoldMadDefinition extends AbstractNonConfigurableMadDefini
 	public final static int PRODUCER_CV_OUT = 2;
 	public final static int NUM_CHANNELS = 3;
 
-	private final static String definitionId = "sample_and_hold";
+	public final static String DEFINITION_ID = "sample_and_hold";
 
-	private final static String userVisibleName = "Sample And Hold";
+	private final static String USER_VISIBLE_NAME = "Sample And Hold";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationId = "sample_and_hold";
-	private final static String classificationName = "Sample And Hold";
-	private final static String classificationDescription = "Upon trigger, take the current input value and hold it until next triggered";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Sample And Hold";
+	private final static String CLASS_DESC = "Upon trigger, take the current input value and hold it until next triggered";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Input CV",
 		"Trigger CV",
 		"Output CV"
 		};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV
 		};
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] {
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER
 		};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] {
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] {
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO
 		};
 
-	public SampleAndHoldMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public SampleAndHoldMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new SampleAndHoldIOQueueBridge(),
+				new MadNullLocklessQueueBridge<SampleAndHoldMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

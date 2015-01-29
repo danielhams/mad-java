@@ -42,16 +42,16 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 	implements IMadUiControlInstance<RBJFilterMadDefinition, RBJFilterMadInstance, RBJFilterMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( RBJFilterQSliderUiControlInstance.class.getName() );
-	
+
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private RBJFilterMadUiInstance uiInstance = null;
+	private final RBJFilterMadUiInstance uiInstance;
 
 	public RBJFilterQSliderUiControlInstance(
-			RBJFilterMadDefinition definition,
-			RBJFilterMadInstance instance,
-			RBJFilterMadUiInstance uiInstance,
-			int controlIndex )
+			final RBJFilterMadDefinition definition,
+			final RBJFilterMadInstance instance,
+			final RBJFilterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 0.1f, 10.0f, RBJFilterRT.ZERO_RESONANCE, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
 				Color.BLACK,
@@ -62,22 +62,23 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 		this.setOpaque( false );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float value )
+	private void passChangeToInstanceData( final float value )
 	{
 //		log.debug("Passing change to instance data: " + value );
 		// float valueToPass = value / 1000.0f;
 		// float valueToPass = value / 10.0f;
-		float valueToPass = value;
+		final float valueToPass = value;
 		uiInstance.sendBandwidthChange( valueToPass );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -96,26 +97,26 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( value );
+			final float asFloat = Float.parseFloat( value );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + value;
+			final String msg = "Failed to parse control value: " + value;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
-		passChangeToInstanceData( newValue );		
+		passChangeToInstanceData( newValue );
 	}
 
 	@Override

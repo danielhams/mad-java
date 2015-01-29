@@ -32,7 +32,6 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -42,24 +41,21 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class WaveShaperMadInstance extends MadInstance<WaveShaperMadDefinition, WaveShaperMadInstance>
 {
-	private WaveShaperWaveTables waveShaperWaveTables = new WaveShaperWaveTables();
+	private final WaveShaperWaveTables waveShaperWaveTables = new WaveShaperWaveTables();
 
 	public WaveType curWaveType = WaveType.COMPRESSOR;
-	
-	protected IOQueueEvent inEntry = new IOQueueEvent();
-	protected IOQueueEvent outEntry=  new IOQueueEvent();
 
-	public WaveShaperMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			WaveShaperMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public WaveShaperMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final WaveShaperMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 	}
@@ -70,20 +66,20 @@ public class WaveShaperMadInstance extends MadInstance<WaveShaperMadDefinition, 
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( WaveShaperMadDefinition.CONSUMER_AUDIO_IN );
-		float[] inFloats = channelBuffers[ WaveShaperMadDefinition.CONSUMER_AUDIO_IN ].floatBuffer;
-		
-		boolean outConnected = channelConnectedFlags.get( WaveShaperMadDefinition.PRODUCER_AUDIO_OUT );
-		float[] outFloats = channelBuffers[ WaveShaperMadDefinition.PRODUCER_AUDIO_OUT ].floatBuffer;
-		
-		RawWaveTable shaperTable = waveShaperWaveTables.getTable( curWaveType );
-		
+		final boolean inConnected = channelConnectedFlags.get( WaveShaperMadDefinition.CONSUMER_AUDIO_IN );
+		final float[] inFloats = channelBuffers[ WaveShaperMadDefinition.CONSUMER_AUDIO_IN ].floatBuffer;
+
+		final boolean outConnected = channelConnectedFlags.get( WaveShaperMadDefinition.PRODUCER_AUDIO_OUT );
+		final float[] outFloats = channelBuffers[ WaveShaperMadDefinition.PRODUCER_AUDIO_OUT ].floatBuffer;
+
+		final RawWaveTable shaperTable = waveShaperWaveTables.getTable( curWaveType );
+
 		if( outConnected )
 		{
 			if( inConnected )

@@ -34,17 +34,17 @@ public class WaveShaperWaveTables
 		TRIANGLE,
 		SQUARE
 	}
-	
-	private Map<WaveType, RawWaveTable> typeToTableMap = new HashMap<WaveType, RawWaveTable>();
-	
+
+	private final Map<WaveType, RawWaveTable> typeToTableMap = new HashMap<WaveType, RawWaveTable>();
+
 	public WaveShaperWaveTables()
 	{
 		typeToTableMap.put( WaveType.COMPRESSOR, StandardShaperTables.getCompressorWaveTable() );
 		typeToTableMap.put( WaveType.TRIANGLE, StandardShaperTables.getTriangleShaperTable() );
 		typeToTableMap.put( WaveType.SQUARE, StandardShaperTables.getSquareShaperWaveTable() );
 	}
-	
-	public RawWaveTable getTable( WaveType type )
+
+	public RawWaveTable getTable( final WaveType type )
 	{
 		return typeToTableMap.get( type );
 	}

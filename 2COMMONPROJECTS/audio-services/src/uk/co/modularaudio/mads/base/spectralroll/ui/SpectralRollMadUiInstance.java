@@ -172,7 +172,10 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 			}
 			default:
 			{
-				log.error("Unknown output command: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown output command: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
@@ -193,7 +196,10 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		final int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
 		if( numRead != numReadable )
 		{
-			log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			}
 			Arrays.fill( frontendRingBuffer.buffer, 0.0f );
 			frontendRingBuffer.readPosition = 0;
 			frontendRingBuffer.writePosition = frontendRingBuffer.bufferLength - 1;
@@ -243,7 +249,10 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 			}
 			else if( numWrappedRead > 0 )
 			{
-				log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+				if( log.isDebugEnabled() )
+				{
+					log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+				}
 				wolaProcessor.write(  wolaArray, 0, numWrappedRead, 1.0, 1.0 );
 			}
 		}

@@ -40,28 +40,28 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 
 	private static final long serialVersionUID = -4063236010563819354L;
 
-	private PeakDisplay peakDisplay = null;
+	private PeakDisplay peakDisplay;
 
-	private SpectralAmpMadUiInstance uiInstance = null;
+	private final SpectralAmpMadUiInstance uiInstance;
 
-	private boolean previouslyShowing = false;
-	
-	public SpectralAmpDisplayUiJComponent( SpectralAmpMadDefinition definition,
-			SpectralAmpMadInstance instance,
-			SpectralAmpMadUiInstance uiInstance,
-			int controlIndex )
+	private boolean previouslyShowing;
+
+	public SpectralAmpDisplayUiJComponent( final SpectralAmpMadDefinition definition,
+			final SpectralAmpMadInstance instance,
+			final SpectralAmpMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		setOpaque( true );
 
 		this.uiInstance = uiInstance;
 		uiInstance.setSpecDataListener( this );
 	}
-	
+
 	@Override
-	public void setBounds( Rectangle bounds )
+	public void setBounds( final Rectangle bounds )
 	{
 		super.setBounds( bounds );
-		
+
 		peakDisplay = new PeakDisplay( this, bounds.width, bounds.height, uiInstance );
 	}
 
@@ -72,11 +72,11 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
 		{
@@ -89,28 +89,28 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 			// Clear the display when we return to active
 		}
 	}
-	
+
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 //		long paintTime = System.nanoTime();
 //		log.debug( "ScAPeakDisplay paint at ts:" + paintTime );
 
 		if( isVisible() && peakDisplay != null )
 		{
-			Graphics2D g2d = (Graphics2D)g;
+			final Graphics2D g2d = (Graphics2D)g;
 			peakDisplay.paint( g2d );
 		}
 	}
 
 	@Override
-	public void processScopeData( float[] processedAmpsData )
+	public void processScopeData( final float[] processedAmpsData )
 	{
 		peakDisplay.processNewAmps( processedAmpsData );
 		// Now repaint
 		repaint();
 	}
-	
+
 	private void clearDisplay()
 	{
 		peakDisplay.clear();

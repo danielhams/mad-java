@@ -27,8 +27,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUi
 
 public class XRunnerMadUiInstance extends NoEventsNonConfigurableMadUiInstance<XRunnerMadDefinition, XRunnerMadInstance>
 {
-	public XRunnerMadUiInstance( XRunnerMadInstance instance,
-			XRunnerMadUiDefinition uiDefinition )
+	public XRunnerMadUiInstance( final XRunnerMadInstance instance,
+			final XRunnerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

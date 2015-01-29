@@ -41,15 +41,15 @@ public class RBJFilterIOQueueBridge extends MadLocklessQueueBridge<RBJFilterMadI
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( RBJFilterMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final RBJFilterMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_FILTER_MODE:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
 				instance.desiredFilterMode = FrequencyFilterMode.values()[ truncVal ];
 
 				instance.recomputeFilterParameters();
@@ -58,9 +58,9 @@ public class RBJFilterIOQueueBridge extends MadLocklessQueueBridge<RBJFilterMadI
 			case COMMAND_FREQUENCY:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
 				instance.desiredFrequency = floatVal;
 
 				instance.recomputeFilterParameters();
@@ -69,9 +69,9 @@ public class RBJFilterIOQueueBridge extends MadLocklessQueueBridge<RBJFilterMadI
 			case COMMAND_Q:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
 				instance.desiredQ = floatVal;
 
 				instance.recomputeFilterParameters();
@@ -79,7 +79,7 @@ public class RBJFilterIOQueueBridge extends MadLocklessQueueBridge<RBJFilterMadI
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

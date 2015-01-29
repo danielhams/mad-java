@@ -43,46 +43,46 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition,SpectralAmpMadInstance>
 {
 	private static Log log = LogFactory.getLog( SpectralAmpMadInstance.class.getName() );
-	
-	protected boolean active = false;
-	
-	protected int maxRingBufferingInSamples = -1;
-	
-	private BackendToFrontendDataRingBuffer dataRingBuffer = null;
-	
-	private int numSamplePerFrontEndPeriod = -1;
 
-	public SpectralAmpMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			SpectralAmpMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	protected boolean active;
+
+	protected int maxRingBufferingInSamples;
+
+	private BackendToFrontendDataRingBuffer dataRingBuffer;
+
+	private int numSamplePerFrontEndPeriod;
+
+	public SpectralAmpMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final SpectralAmpMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		dataRingBuffer = new BackendToFrontendDataRingBuffer( 1 );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
-			int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
-			long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
-			long nanosBeBuffering = timingParameters.getNanosPerBackEndPeriod() * 2;
-			long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
-			
+			final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+
+			final long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
+			final long nanosBeBuffering = timingParameters.getNanosPerBackEndPeriod() * 2;
+			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
+
 			maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 16 ) +
 				AudioTimingUtils.getNumSamplesForNanosAtSampleRate( sampleRate, nanosForBuffering );
-			
+
 			dataRingBuffer = new BackendToFrontendDataRingBuffer( maxRingBufferingInSamples );
 			dataRingBuffer.setNumSamplesQueued( 0 );
-			
+
 			numSamplePerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -94,17 +94,17 @@ public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartTimestamp,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
-			int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartTimestamp,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( SpectralAmpMadDefinition.CONSUMER_IN);
-		MadChannelBuffer inCb = channelBuffers[ SpectralAmpMadDefinition.CONSUMER_IN ];
-		float[] inFloats = (inConnected ? inCb.floatBuffer : null );
-		
+		final boolean inConnected = channelConnectedFlags.get( SpectralAmpMadDefinition.CONSUMER_IN);
+		final MadChannelBuffer inCb = channelBuffers[ SpectralAmpMadDefinition.CONSUMER_IN ];
+		final float[] inFloats = (inConnected ? inCb.floatBuffer : null );
+
 		if( active )
 		{
 			try
@@ -114,8 +114,8 @@ public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{
-						long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
-						
+						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
+
 						if( dataRingBuffer.getNumSamplesQueued() >= numSamplePerFrontEndPeriod )
 						{
 							queueWriteIndexUpdate( tempQueueEntryStorage,
@@ -123,20 +123,20 @@ public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition
 								dataRingBuffer.getWritePosition(),
 								timestampForIndexUpdate );
 							dataRingBuffer.setNumSamplesQueued( 0 );
-							
+
 							postProcess( tempQueueEntryStorage, timingParameters, timestampForIndexUpdate );
 							preProcess( tempQueueEntryStorage, timingParameters, timestampForIndexUpdate );
 						}
-						
-						int numLeft = numSamplePerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
-						
-						int numAvailable = numFrames - curSampleIndex;
-						int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
-						
-						int spaceAvailable = dataRingBuffer.getNumWriteable();
-						
-						int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
-						
+
+						final int numLeft = numSamplePerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
+
+						final int numAvailable = numFrames - curSampleIndex;
+						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
+
+						final int spaceAvailable = dataRingBuffer.getNumWriteable();
+
+						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
+
 						if( numToWrite > 0 )
 						{
 							dataRingBuffer.write( inFloats, curSampleIndex, numToWrite );
@@ -151,30 +151,30 @@ public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition
 				}
 
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Exception caught processing into ring buffer: " + e.toString();
+				final String msg = "Exception caught processing into ring buffer: " + e.toString();
 				log.error( msg, e );
 			}
 		}
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
-	protected void queueWriteIndexUpdate( ThreadSpecificTemporaryEventStorage tses,
-			int dataChannelNum,
-			int writePosition,
-			long frameTime )
+
+	protected void queueWriteIndexUpdate( final ThreadSpecificTemporaryEventStorage tses,
+			final int dataChannelNum,
+			final int writePosition,
+			final long frameTime )
 	{
-		long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum );
-		
+		final long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum );
+
 		localBridge.queueTemporalEventToUi( tses,
 			frameTime,
 			SpectralAmpIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
-			joinedParts, 
+			joinedParts,
 			null );
 	}
-	
+
 	public BackendToFrontendDataRingBuffer getDataRingBuffer()
 	{
 		return dataRingBuffer;

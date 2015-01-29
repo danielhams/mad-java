@@ -41,55 +41,54 @@ public class RBJFilterMadDefinition extends AbstractNonConfigurableMadDefinition
 	public final static int PRODUCER_OUT_RIGHT = 4;
 	public final static int NUM_CHANNELS = 5;
 
-	private final static String definitionId = "rbj_filter";
+	public final static String DEFINITION_ID = "rbj_filter";
 
-	private final static String userVisibleName = "RBJ Filter";
+	private final static String USER_VISIBLE_NAME = "RBJ Filter";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "rbj_filter";
-	private final static String classificationName = "RBJ Filter";
-	private final static String classificationDescription = "A filter to remove or allow frequencies based on RBJ Audio EQ Cookbook";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "RBJ Filter";
+	private final static String CLASS_DESC = "A filter to remove or allow frequencies based on RBJ Audio EQ Cookbook";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
 		"Input CV Frequency",
 		"Output Wave Left",
 		"Output Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.MONO,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public RBJFilterMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public RBJFilterMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new RBJFilterIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

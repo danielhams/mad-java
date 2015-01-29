@@ -26,9 +26,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUi
 
 public class SampleAndHoldMadUiInstance extends NoEventsNonConfigurableMadUiInstance<SampleAndHoldMadDefinition, SampleAndHoldMadInstance>
 {
-
-	public SampleAndHoldMadUiInstance( SampleAndHoldMadInstance instance,
-			SampleAndHoldMadUiDefinition uiDefinition )
+	public SampleAndHoldMadUiInstance( final SampleAndHoldMadInstance instance,
+			final SampleAndHoldMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
