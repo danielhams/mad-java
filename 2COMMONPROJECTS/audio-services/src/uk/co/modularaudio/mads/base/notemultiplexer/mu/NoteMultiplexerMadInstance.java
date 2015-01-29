@@ -42,27 +42,27 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDefinition,NoteMultiplexerMadInstance>
 {
 	private static Log log = LogFactory.getLog( NoteMultiplexerMadInstance.class.getName() );
-	
-	private int notePeriodLength = -1;
-	
-	private NoteMultiplexerMadInstanceConfiguration instanceConfiguration = null;
-	
-	private NoteStateManager noteStateManager = null;
 
-	private int noteInChannelIndex = -1;
-	private int noteOutStartIndex =  -1;
-	private int numChannelsPolyphony = -1;
-	
-	private MadChannelBuffer[] outgoingNoteBuffers = null;
-	
-	public NoteMultiplexerMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			NoteMultiplexerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration ) throws MadProcessingException
+	private int notePeriodLength;
+
+	private final NoteMultiplexerMadInstanceConfiguration instanceConfiguration;
+
+	private NoteStateManager noteStateManager;
+
+	private final int noteInChannelIndex;
+	private final int noteOutStartIndex;
+	private final int numChannelsPolyphony;
+
+	private MadChannelBuffer[] outgoingNoteBuffers;
+
+	public NoteMultiplexerMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final NoteMultiplexerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration ) throws MadProcessingException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		
+
 		instanceConfiguration = new NoteMultiplexerMadInstanceConfiguration( creationParameterValues );
 		noteInChannelIndex = 0;
 		noteOutStartIndex = 1;
@@ -70,7 +70,7 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -79,7 +79,7 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 			noteStateManager = new NoteStateManager( numChannelsPolyphony, notePeriodLength );
 			outgoingNoteBuffers = new MadChannelBuffer[ numChannelsPolyphony ];
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -91,21 +91,21 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean noteConnected = channelConnectedFlags.get( noteInChannelIndex );
-		
+		final boolean noteConnected = channelConnectedFlags.get( noteInChannelIndex );
+
 		if( noteConnected )
 		{
-			MadChannelBuffer noteBuffer = channelBuffers[ noteInChannelIndex ];
-			
+			final MadChannelBuffer noteBuffer = channelBuffers[ noteInChannelIndex ];
+
 			for( int i = 0 ; i < numChannelsPolyphony ; i++ )
 			{
-				MadChannelBuffer onb = channelBuffers[ noteOutStartIndex + i ];
+				final MadChannelBuffer onb = channelBuffers[ noteOutStartIndex + i ];
 				if( onb != null )
 				{
 					outgoingNoteBuffers[ i ] = onb;
@@ -116,9 +116,9 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 			{
 				noteStateManager.processNotes( noteBuffer, outgoingNoteBuffers );
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				String msg = "Exception caught processing notes: " + e.toString();
+				final String msg = "Exception caught processing notes: " + e.toString();
 				log.error( msg, e );
 			}
 		}

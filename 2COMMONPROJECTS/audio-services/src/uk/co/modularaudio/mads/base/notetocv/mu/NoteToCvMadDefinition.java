@@ -42,17 +42,16 @@ public class NoteToCvMadDefinition extends AbstractNonConfigurableMadDefinition<
 	public final static int PRODUCER_VEL_AMP_MULT_OUT=5;
 	public final static int NUM_CHANNELS = 6;
 
-	private final static String definitionId = "note_to_cv";
+	public final static String DEFINITION_ID = "note_to_cv";
 
-	private final static String userVisibleName = "Note To CV";
+	private final static String USER_VISIBLE_NAME = "Note To CV";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationId = "note_to_cv";
-	private final static String classificationName = "Note To CV";
-	private final static String classificationDescription = "Convert notes into appropriate frequency, trigger and amp CV values";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Note To CV";
+	private final static String CLASS_DESC = "Convert notes into appropriate frequency, trigger and amp CV values";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Note",
+	private final static String[] CHAN_NAMES = new String[] { "Input Note",
 		"Output Gate",
 		"Output Frequency",
 		"Output Trigger",
@@ -60,7 +59,7 @@ public class NoteToCvMadDefinition extends AbstractNonConfigurableMadDefinition<
 		"Output Velocity Amp Multiplier"
 		};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.NOTE,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.NOTE,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -68,35 +67,35 @@ public class NoteToCvMadDefinition extends AbstractNonConfigurableMadDefinition<
 		MadChannelType.CV
 		};
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public NoteToCvMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public NoteToCvMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new NoteToCvIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

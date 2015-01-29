@@ -26,8 +26,7 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUi
 
 public class PrngMadUiInstance extends NoEventsNonConfigurableMadUiInstance<PrngMadDefinition, PrngMadInstance>
 {
-
-	public PrngMadUiInstance( PrngMadInstance instance, PrngMadUiDefinition uiDefinition )
+	public PrngMadUiInstance( final PrngMadInstance instance, final PrngMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

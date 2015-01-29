@@ -39,42 +39,42 @@ import uk.co.modularaudio.util.audio.midi.MidiUtils;
 public class NoteStateManager
 {
 	private static Log log = LogFactory.getLog( NoteStateManager.class.getName() );
-	
-	private int polyphony = -1;
-	
-	private OpenObjectIntHashMap<MidiNote> noteToChannelMap = new OpenObjectIntHashMap<MidiNote>();
-	private Queue<Integer> freeChannelStack = new ArrayDeque<Integer>();
-	
-	private LocklessChannelNoteRingBuffer[] outputChannelNoteRings = null;
-	
-	private MadChannelNoteEventCopier noteCopier = new MadChannelNoteEventCopier();
-	
-	public NoteStateManager( int polyphony, int noteChannelBufferLength )
+
+	private final int polyphony;
+
+	private final OpenObjectIntHashMap<MidiNote> noteToChannelMap = new OpenObjectIntHashMap<MidiNote>();
+	private final Queue<Integer> freeChannelStack = new ArrayDeque<Integer>();
+
+	private final LocklessChannelNoteRingBuffer[] outputChannelNoteRings;
+
+	private final MadChannelNoteEventCopier noteCopier = new MadChannelNoteEventCopier();
+
+	public NoteStateManager( final int polyphony, final int noteChannelBufferLength )
 	{
 		this.polyphony = polyphony;
 		outputChannelNoteRings = new LocklessChannelNoteRingBuffer[ polyphony ];
 		for( int i = 0 ; i < polyphony ; i++ )
 		{
 			freeChannelStack.add( i );
-			
+
 			outputChannelNoteRings[ i ] = new LocklessChannelNoteRingBuffer( noteChannelBufferLength );
 		}
 	}
-	
-	public void processNotes( MadChannelBuffer incomingNoteBuffer, MadChannelBuffer[] outgoingNoteBuffers )
+
+	public void processNotes( final MadChannelBuffer incomingNoteBuffer, final MadChannelBuffer[] outgoingNoteBuffers )
 			throws BufferOverflowException, InterruptedException
 	{
-		int numNotes = incomingNoteBuffer.numElementsInBuffer;
+		final int numNotes = incomingNoteBuffer.numElementsInBuffer;
 //		if( numNotes > 0 )
 //		{
 //			log.debug("Processing " + numNotes + " incoming notes");
 //		}
-		MadChannelNoteEvent[] incomingNotes = incomingNoteBuffer.noteBuffer;
+		final MadChannelNoteEvent[] incomingNotes = incomingNoteBuffer.noteBuffer;
 
 		// Now process note on and continuations
 		for( int i = 0 ; i < numNotes ; i++ )
 		{
-			MadChannelNoteEvent ne = incomingNotes[ i ];
+			final MadChannelNoteEvent ne = incomingNotes[ i ];
 			switch( ne.getEventType() )
 			{
 				case NOTE_OFF:
@@ -101,15 +101,15 @@ public class NoteStateManager
 				}
 			}
 		}
-		
+
 		// Now for each channel spit out the entries in the associated ring onto the output buffers
 		for( int i =0 ; i < polyphony ; i++ )
 		{
-			LocklessChannelNoteRingBuffer channelNoteRing = outputChannelNoteRings[ i ];
-			int numReadable = channelNoteRing.getNumReadable();
+			final LocklessChannelNoteRingBuffer channelNoteRing = outputChannelNoteRings[ i ];
+			final int numReadable = channelNoteRing.getNumReadable();
 
-			MadChannelBuffer outgoingBuffer = outgoingNoteBuffers[ i ];
-			MadChannelNoteEvent[] outgoingNotes = outgoingBuffer.noteBuffer;
+			final MadChannelBuffer outgoingBuffer = outgoingNoteBuffers[ i ];
+			final MadChannelNoteEvent[] outgoingNotes = outgoingBuffer.noteBuffer;
 			if( numReadable > 0 )
 			{
 				channelNoteRing.read( outgoingNotes, 0, numReadable );
@@ -118,75 +118,81 @@ public class NoteStateManager
 		}
 	}
 
-	private void doNoteOff( MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
+	private void doNoteOff( final MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
 	{
 		// Find if one of the current channels is outputting this note
-		MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
+		final MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
 		if( mn != null )
 		{
 			if( noteToChannelMap.containsKey( mn ) )
 			{
-				int channelNum = noteToChannelMap.get( mn );
-				MadChannelNoteEvent offEvent = new MadChannelNoteEvent();
+				final int channelNum = noteToChannelMap.get( mn );
+				final MadChannelNoteEvent offEvent = new MadChannelNoteEvent();
 				noteCopier.copyValues( ne, offEvent );
-				
+
 				outputChannelNoteRings[ channelNum ].writeOne( offEvent );
-	
+
 				noteToChannelMap.removeKey( mn );
 				freeChannelStack.add( channelNum );
 //				log.debug( "Stopped note at index " + offEvent.eventSampleIndex + " " + mn.toString() + " on channel " + channelNum );
 			}
 			else
 			{
-				log.warn("Received stop for note we aren't playing: " + mn.toString() );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Received stop for note we aren't playing: " + mn.toString() );
+				}
 			}
 		}
 	}
 
-	private void doNoteOn( MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
+	private void doNoteOn( final MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
 	{
 		// Try and find a free channel
 		try
 		{
-			int freeChannelNumber = freeChannelStack.remove();
-			MadChannelNoteEvent onEvent = new MadChannelNoteEvent();
+			final int freeChannelNumber = freeChannelStack.remove();
+			final MadChannelNoteEvent onEvent = new MadChannelNoteEvent();
 			noteCopier.copyValues( ne, onEvent );
-			
+
 			outputChannelNoteRings[ freeChannelNumber ].writeOne( onEvent );
-			
-			MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
-			
+
+			final MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
+
 			if( mn != null )
 			{
 				noteToChannelMap.put( mn, freeChannelNumber );
 //				log.debug( "Started note at index " + onEvent.eventSampleIndex + " " + mn.toString() + " on channel " + freeChannelNumber );
 			}
 		}
-		catch(NoSuchElementException ese)
+		catch(final NoSuchElementException ese)
 		{
-			log.warn( "Out of channels for note on");
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Out of channels for note on");
+			}
 			debugChannelAssignments();
 		}
 	}
-	
-	private void doNoteContinuation( MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
+
+	private void doNoteContinuation( final MadChannelNoteEvent ne ) throws BufferOverflowException, InterruptedException
 	{
 		// Find the channel it's already on
 		try
 		{
-			MidiNote oldNote = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamThree() );
+			final MidiNote oldNote = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamThree() );
 			if( oldNote != null )
 			{
 				if( noteToChannelMap.containsKey( oldNote ) )
 				{
-					int oldChannelNum = noteToChannelMap.get( oldNote );
-					MadChannelNoteEvent continuationEvent = new MadChannelNoteEvent();
+					final int oldChannelNum = noteToChannelMap.get( oldNote );
+					final MadChannelNoteEvent continuationEvent = new MadChannelNoteEvent();
 					noteCopier.copyValues( ne, continuationEvent );
-					
+
 					outputChannelNoteRings[ oldChannelNum ].writeOne( continuationEvent );
-		
+
 					noteToChannelMap.removeKey( oldNote );
-					MidiNote newNote = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
+					final MidiNote newNote = MidiUtils.getMidiNoteFromNumberReturnNull( ne.getParamOne() );
 					if( newNote != null )
 					{
 						noteToChannelMap.put( newNote, oldChannelNum );
@@ -195,21 +201,26 @@ public class NoteStateManager
 				}
 			}
 		}
-		catch(NoSuchElementException ese)
+		catch(final NoSuchElementException ese)
 		{
-			log.warn( "Out of channels for continuation");
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Out of channels for continuation");
+			}
 			debugChannelAssignments();
 		}
 	}
 
 	private void debugChannelAssignments()
 	{
-		log.debug("Currently assigned notes and channels: ");
-		for( MidiNote mn : noteToChannelMap.keys() )
+		if( log.isDebugEnabled() )
 		{
-			int channel = noteToChannelMap.get( mn );
-			log.debug( mn.toString() + " - channel " + channel );
+			log.debug("Currently assigned notes and channels: ");
+			for( final MidiNote mn : noteToChannelMap.keys() )
+			{
+				final int channel = noteToChannelMap.get( mn );
+				log.debug( mn.toString() + " - channel " + channel );
+			}
 		}
-		
 	}
 }

@@ -41,15 +41,15 @@ public class OscillatorShapeComboUiJComponent extends PacComboBox<String>
 	private static final long serialVersionUID = 28004477652791854L;
 //	private static Log log = LogFactory.getLog( OscillatorShapeComboUiJComponent.class.getName() );
 
-	private OscillatorMadUiInstance uiInstance = null;
+	private final OscillatorMadUiInstance uiInstance;
 
-	private Map<OscillatorWaveShape, String> waveShapeToNameMap = new HashMap<OscillatorWaveShape, String>();
-	private Map<String, OscillatorWaveShape> waveNameToShapeMap = new HashMap<String, OscillatorWaveShape>();
+	private final Map<OscillatorWaveShape, String> waveShapeToNameMap = new HashMap<OscillatorWaveShape, String>();
+	private final Map<String, OscillatorWaveShape> waveNameToShapeMap = new HashMap<String, OscillatorWaveShape>();
 
-	public OscillatorShapeComboUiJComponent( OscillatorMadDefinition definition,
-			OscillatorMadInstance instance,
-			OscillatorMadUiInstance uiInstance,
-			int controlIndex )
+	public OscillatorShapeComboUiJComponent( final OscillatorMadDefinition definition,
+			final OscillatorMadInstance instance,
+			final OscillatorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 
 		this.uiInstance = uiInstance;
@@ -61,17 +61,17 @@ public class OscillatorShapeComboUiJComponent extends PacComboBox<String>
 		waveNameToShapeMap.put( "Square", OscillatorWaveShape.SQUARE );
 		waveNameToShapeMap.put( "Triangle", OscillatorWaveShape.TRIANGLE );
 		waveNameToShapeMap.put( "Test1", OscillatorWaveShape.TEST1 );
-		for( String waveName : waveNameToShapeMap.keySet() )
+		for( final String waveName : waveNameToShapeMap.keySet() )
 		{
 //			log.debug("Adding " + waveName + " to the map");
 			waveShapeToNameMap.put( waveNameToShapeMap.get( waveName ), waveName );
 		}
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		OscillatorWaveShape[] waveShapes = OscillatorWaveShape.values();
-		for( OscillatorWaveShape waveShape : waveShapes )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		final OscillatorWaveShape[] waveShapes = OscillatorWaveShape.values();
+		for( final OscillatorWaveShape waveShape : waveShapes )
 		{
-			String waveName = waveShapeToNameMap.get( waveShape );
+			final String waveName = waveShapeToNameMap.get( waveShape );
 			if( waveName != null )
 			{
 				cbm.addElement( waveName );
@@ -91,7 +91,7 @@ public class OscillatorShapeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -99,12 +99,12 @@ public class OscillatorShapeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			OscillatorWaveShape waveShape = waveNameToShapeMap.get( name );
+			final String name = (String) getSelectedItem();
+			final OscillatorWaveShape waveShape = waveNameToShapeMap.get( name );
 			uiInstance.sendWaveShape( waveShape );
 		}
 	}

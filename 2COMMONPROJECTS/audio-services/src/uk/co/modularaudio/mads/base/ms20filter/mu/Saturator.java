@@ -24,22 +24,22 @@ package uk.co.modularaudio.mads.base.ms20filter.mu;
 public class Saturator
 {
 //	private static Log log = LogFactory.getLog( Saturator.class.getName() );
-	
+
 //	private Limiter limiter = new Limiter();
 //	private LimiterRT limiterRt = new LimiterRT( 0.98f, 5.0f );
-	
+
 	public Saturator()
 	{
 	}
-	
-	public float processValue( float filterThreshold, float value )
+
+	public float processValue( final float filterThreshold, final float value )
 	{
 //		limiterRt.setFalloff( 0.0 );
 //		limiterRt.setKnee( saturationThreshold );
 //		return limiterRt.limitIt( value );
 
-		int sign = ( value < 0.0f ? -1 : 1 );
-		float absValue = sign * value;
+		final int sign = ( value < 0.0f ? -1 : 1 );
+		final float absValue = sign * value;
 		if( absValue > filterThreshold )
 		{
 //			log.debug("Saturator throttling value: " + absValue );
@@ -47,7 +47,7 @@ public class Saturator
 			amountOver = (amountOver > filterThreshold ? filterThreshold : amountOver );
 			float haveWe = filterThreshold - amountOver;
 			haveWe = (haveWe < 0.0f ? 0.0f : haveWe );
-			float retVal = sign * haveWe;
+			final float retVal = sign * haveWe;
 //			float retVal = sign * (saturationThreshold - ( amountOver ) );
 			return retVal;
 //			return 0.0f;

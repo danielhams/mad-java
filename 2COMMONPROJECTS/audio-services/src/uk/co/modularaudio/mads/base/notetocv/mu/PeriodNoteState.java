@@ -35,46 +35,46 @@ public class PeriodNoteState
 	private static final float GATE_ON_VALUE = 1.0f;
 
 	private static Log log = LogFactory.getLog( PeriodNoteState.class.getName() );
-	
-	private NoteOnType noteOnType = NoteOnType.FOLLOW_FIRST;
-	
-	private MadChannelNoteEventCopier copier = new MadChannelNoteEventCopier();
-	
-	private MadChannelNoteEvent lastEvent = new MadChannelNoteEvent();
-	
-	private int audioChannelBufferLength = -1;
-	private int[] segmentBounds = null;
-	private MadChannelNoteEvent[] segmentEvents = null;
-	
-	private int numSegmentsReady = 0;
-	
-	private int curOutputCounter = 0;
-	
-	private float freqGlideCurValueRatio = 0.0f;
-	private float freqGlideNewValueRatio = 0.0f;
 
-	private float ampGlideCurValueRatio = 0.0f;
-	private float ampGlideNewValueRatio = 0.0f;
-	
-	private float lastFreqVal = 0.0f;
-	
-	private float lastVelAmpMultiplierVal = 0.0f;
+	private NoteOnType noteOnType = NoteOnType.FOLLOW_FIRST;
+
+	private final MadChannelNoteEventCopier copier = new MadChannelNoteEventCopier();
+
+	private final MadChannelNoteEvent lastEvent = new MadChannelNoteEvent();
+
+	private int audioChannelBufferLength;
+	private int[] segmentBounds;
+	private MadChannelNoteEvent[] segmentEvents;
+
+	private int numSegmentsReady;
+
+	private int curOutputCounter;
+
+	private float freqGlideCurValueRatio;
+	private float freqGlideNewValueRatio;
+
+	private float ampGlideCurValueRatio;
+	private float ampGlideNewValueRatio;
+
+	private float lastFreqVal;
+
+	private float lastVelAmpMultiplierVal;
 	private float targetVelAmpMultiplierVal = 1.0f;
-	
+
 	public PeriodNoteState()
 	{
 	}
-	
-	public void setGlideRatios( float freqGlideCurValueRatio, float freqGlideNewValueRatio,
-			float ampGlideCurValueRatio, float ampGlideNewValueRatio )
+
+	public void setGlideRatios( final float freqGlideCurValueRatio, final float freqGlideNewValueRatio,
+			final float ampGlideCurValueRatio, final float ampGlideNewValueRatio )
 	{
 		this.freqGlideCurValueRatio = freqGlideCurValueRatio;
 		this.freqGlideNewValueRatio = freqGlideNewValueRatio;
 		this.ampGlideCurValueRatio = ampGlideCurValueRatio;
 		this.ampGlideNewValueRatio = ampGlideNewValueRatio;
 	}
-	
-	public void resize( int audioChannelBufferLength, int noteChannelBufferLength )
+
+	public void resize( final int audioChannelBufferLength, final int noteChannelBufferLength )
 	{
 		this.audioChannelBufferLength = audioChannelBufferLength;
 
@@ -84,25 +84,25 @@ public class PeriodNoteState
 		{
 			segmentBounds[ i * 2 ] = 0;
 			segmentBounds[ ( i * 2 ) + 1 ] = 0;
-			MadChannelNoteEvent tmpEvent = new MadChannelNoteEvent();
+			final MadChannelNoteEvent tmpEvent = new MadChannelNoteEvent();
 			tmpEvent.reset();
 			segmentEvents[ i ] = tmpEvent;
 		}
 	}
-	
-	public void startNewPeriod( NoteOnType noteOnType )
+
+	public void startNewPeriod( final NoteOnType noteOnType )
 	{
 		curOutputCounter = 0;
 		numSegmentsReady = 0;
 		this.noteOnType = noteOnType;
 //		log.debug("Started new period");
 	}
-	
-	public void addNewEvent( MadChannelNoteEvent eventToAdd )
+
+	public void addNewEvent( final MadChannelNoteEvent eventToAdd )
 	{
 		boolean isValidEvent = false;
-		MadChannelNoteEventType lastEventType = lastEvent.getEventType();
-		MadChannelNoteEventType eventToAddEventType = eventToAdd.getEventType();
+		final MadChannelNoteEventType lastEventType = lastEvent.getEventType();
+		final MadChannelNoteEventType eventToAddEventType = eventToAdd.getEventType();
 
 		switch( lastEventType )
 		{
@@ -176,18 +176,24 @@ public class PeriodNoteState
 					}
 					default:
 					{
-						log.debug("Unhandled case of eventoaddtype says ignore event eta: " + eventToAddEventType );
+						if( log.isDebugEnabled() )
+						{
+							log.debug("Unhandled case of eventoaddtype says ignore event eta: " + eventToAddEventType );
+						}
 					}
 				}
 				break;
 			}
 			default:
 			{
-				log.debug("Unhandled case of lasteventype says ignore event let: " + lastEventType );
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Unhandled case of lasteventype says ignore event let: " + lastEventType );
+				}
 				break;
 			}
 		}
-		
+
 		if( isValidEvent )
 		{
 //			log.debug("Adding valid event");
@@ -201,10 +207,10 @@ public class PeriodNoteState
 					addSegmentData( 0, lastEvent );
 				}
 			}
-			
+
 			// Now add a segment for this event
 			addSegmentData( eventToAdd.getEventSampleIndex(), eventToAdd );
-			
+
 			// Finally copy over to last event
 			copier.copyValues( eventToAdd, lastEvent );
 		}
@@ -212,10 +218,10 @@ public class PeriodNoteState
 		{
 //			log.debug("Wasn't valid event, skipped it.");
 		}
-		
+
 	}
-	
-	private void addSegmentData( int segmentStartIndex, MadChannelNoteEvent event )
+
+	private void addSegmentData( final int segmentStartIndex, final MadChannelNoteEvent event )
 	{
 //		log.debug("Adding segment data for " + event.eventType + " from " + segmentStartIndex );
 		segmentBounds[ ( curOutputCounter * 2) ] = segmentStartIndex;
@@ -229,8 +235,8 @@ public class PeriodNoteState
 //		log.debug("Set last event to " + lastEvent.eventType );
 		curOutputCounter++;
 	}
-	
-	public void doPeriodNoEvents( int numFrames )
+
+	public void doPeriodNoEvents( final int numFrames )
 	{
 //		MadNoteEventType eventType = lastEvent.getEventType();
 //		if( eventType == MadNoteEventType.NOTE_OFF )
@@ -243,28 +249,28 @@ public class PeriodNoteState
 		copier.copyValues( lastEvent, segmentEvents[ 0 ] );
 	}
 
-	public void turnOffNotes( int numFrames )
+	public void turnOffNotes( final int numFrames )
 	{
 		segmentBounds[ 0 ] = 0;
 		segmentBounds[ 1 ] = numFrames;
 		segmentEvents[ 0 ].setEventType( MadChannelNoteEventType.NOTE_OFF );
 		copier.copyValues( segmentEvents[0], lastEvent );
-		curOutputCounter++;		
+		curOutputCounter++;
 	}
 
-	public void endPeriod( int numFrames )
+	public void endPeriod( final int numFrames )
 	{
 		if( curOutputCounter == 0 )
 		{
 //			log.debug("Doing period with no events.");
 			doPeriodNoEvents( numFrames );
 		}
-	
+
 		if( curOutputCounter > 0 )
 		{
 //			log.debug("Closing off segment " + curOutputCounter + " to end at " + audioChannelBufferLength );
-			int previousSegmentNum = curOutputCounter - 1;
-			int segmentEndIndex = (previousSegmentNum * 2) + 1;
+			final int previousSegmentNum = curOutputCounter - 1;
+			final int segmentEndIndex = (previousSegmentNum * 2) + 1;
 //			log.debug("Setting segment end index " + segmentEndIndex + " to " + audioChannelBufferLength );
 			segmentBounds[ segmentEndIndex ] = numFrames;
 			copier.copyValues( segmentEvents[ previousSegmentNum ], lastEvent );
@@ -274,7 +280,7 @@ public class PeriodNoteState
 			// No action during the period, fill in a single empty period
 			segmentBounds[ 0 ] = 0;
 			segmentBounds[ 1 ] = numFrames;
-			MadChannelNoteEventType eventType = lastEvent.getEventType();
+			final MadChannelNoteEventType eventType = lastEvent.getEventType();
 			if( eventType == MadChannelNoteEventType.NOTE_OFF )
 			{
 				lastEvent.reset();
@@ -289,7 +295,7 @@ public class PeriodNoteState
 //		log.debug("Ended period");
 	}
 
-	public void fillGate( float[] gb )
+	public void fillGate( final float[] gb )
 	{
 //		if( numSegmentsReady > 0 )
 //		{
@@ -298,9 +304,9 @@ public class PeriodNoteState
 //		}
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
-			int startIndex = segmentBounds[ (p * 2) ];
-			int endIndex = segmentBounds[ (p*2) + 1 ];
-			MadChannelNoteEvent event = segmentEvents[ p ];
+			final int startIndex = segmentBounds[ (p * 2) ];
+			final int endIndex = segmentBounds[ (p*2) + 1 ];
+			final MadChannelNoteEvent event = segmentEvents[ p ];
 			float gateVal = 0.0f;
 			switch( event.getEventType() )
 			{
@@ -326,7 +332,7 @@ public class PeriodNoteState
 //					log.debug("Gate output event type " + event.eventType + " fill from " + startIndex + " to " + endIndex + " with " + gateVal );
 //				}
 //			}
-			
+
 			if( startIndex == -1 || endIndex == -1 )
 			{
 				log.error("Bugger");
@@ -340,26 +346,26 @@ public class PeriodNoteState
 				Arrays.fill( gb, startIndex, endIndex, gateVal );
 			}
 		}
-		
-	}
-	
-	private MadChannelNoteEvent lastTriggerEvent = new MadChannelNoteEvent();
 
-	public void fillTrigger( float[] tb )
+	}
+
+	private final MadChannelNoteEvent lastTriggerEvent = new MadChannelNoteEvent();
+
+	public void fillTrigger( final float[] tb )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
-			int startIndex = segmentBounds[ (p * 2) ];
-			int endIndex = segmentBounds[ (p*2) + 1 ];
-			MadChannelNoteEvent event = segmentEvents[ p ];
+			final int startIndex = segmentBounds[ (p * 2) ];
+			final int endIndex = segmentBounds[ (p*2) + 1 ];
+			final MadChannelNoteEvent event = segmentEvents[ p ];
 
 			boolean shouldTrigger = false;
 			switch( event.getEventType() )
 			{
 				case NOTE_ON:
 				{
-					MadChannelNoteEventType eventType = lastTriggerEvent.getEventType();
-					if( eventType != MadChannelNoteEventType.NOTE_ON || 
+					final MadChannelNoteEventType eventType = lastTriggerEvent.getEventType();
+					if( eventType != MadChannelNoteEventType.NOTE_ON ||
 							(eventType == MadChannelNoteEventType.NOTE_ON && lastTriggerEvent.getParamOne() != event.getParamOne() ) )
 					{
 //						log.debug("Triggering...");
@@ -380,17 +386,20 @@ public class PeriodNoteState
 				{
 				}
 			}
-			
+
 			if( startIndex == -1 || endIndex == -1 || startIndex == audioChannelBufferLength || endIndex > audioChannelBufferLength )
 			{
-				log.error( "Dodgy indexes again... " + startIndex + " " + endIndex );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Dodgy indexes again... " + startIndex + " " + endIndex );
+				}
 			}
 			else
 			{
 				if( shouldTrigger )
 				{
 					tb[ startIndex ] = 1.0f;
-					int spikeIndex = startIndex + 1;
+					final int spikeIndex = startIndex + 1;
 					if( spikeIndex < tb.length && endIndex  > spikeIndex )
 					{
 //						log.debug("Filled trigger spike at index " + spikeIndex );
@@ -406,16 +415,16 @@ public class PeriodNoteState
 			}
 		}
 	}
-	
+
 	private float curOutputFrequency = 0.0f;
 
-	public void fillFrequency( float[] fb )
+	public void fillFrequency( final float[] fb )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
-			int startIndex = segmentBounds[ (p * 2) ];
-			int endIndex = segmentBounds[ (p*2) + 1 ];
-			MadChannelNoteEvent event = segmentEvents[ p ];
+			final int startIndex = segmentBounds[ (p * 2) ];
+			final int endIndex = segmentBounds[ (p*2) + 1 ];
+			final MadChannelNoteEvent event = segmentEvents[ p ];
 			switch( event.getEventType() )
 			{
 				case NOTE_ON:
@@ -423,7 +432,7 @@ public class PeriodNoteState
 //					MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( event.getParamOne() );
 //					// Quick hack
 //					MadChannelNoteEventType eventType = lastTriggerEvent.getEventType();
-//					if( eventType != MadChannelNoteEventType.NOTE_ON || 
+//					if( eventType != MadChannelNoteEventType.NOTE_ON ||
 //							(eventType == MadChannelNoteEventType.NOTE_ON && lastTriggerEvent.getParamOne() != event.getParamOne() ) )
 //					{
 //						curOutputFrequency = mn.getFrequency();
@@ -433,7 +442,7 @@ public class PeriodNoteState
 //				}
 				case NOTE_CONTINUATION:
 				{
-					MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( event.getParamOne() );
+					final MidiNote mn = MidiUtils.getMidiNoteFromNumberReturnNull( event.getParamOne() );
 //					log.debug("Note on/cont with " + mn.toString() );
 					if( mn != null )
 					{
@@ -460,13 +469,13 @@ public class PeriodNoteState
 		}
 	}
 
-	public void fillVelocity( float[] vb )
+	public void fillVelocity( final float[] vb )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
-			int startIndex = segmentBounds[ (p * 2) ];
-			int endIndex = segmentBounds[ (p*2) + 1 ];
-			MadChannelNoteEvent event = segmentEvents[ p ];
+			final int startIndex = segmentBounds[ (p * 2) ];
+			final int endIndex = segmentBounds[ (p*2) + 1 ];
+			final MadChannelNoteEvent event = segmentEvents[ p ];
 			float velVal = 0.0f;
 			switch( event.getEventType() )
 			{
@@ -481,9 +490,9 @@ public class PeriodNoteState
 				{
 					break;
 				}
-					
+
 			}
-			
+
 			if( startIndex == -1 || endIndex == -1 )
 			{
 				log.debug("Not outputting velocity due to bad indexes...");
@@ -493,22 +502,22 @@ public class PeriodNoteState
 				Arrays.fill( vb, startIndex, endIndex, velVal );
 			}
 		}
-		
+
 	}
 
-	public void fillVelAmpMultiplier( float[] vb )
+	public void fillVelAmpMultiplier( final float[] vb )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
-			int startIndex = segmentBounds[ (p * 2) ];
-			int endIndex = segmentBounds[ (p*2) + 1 ];
-			MadChannelNoteEvent event = segmentEvents[ p ];
+			final int startIndex = segmentBounds[ (p * 2) ];
+			final int endIndex = segmentBounds[ (p*2) + 1 ];
+			final MadChannelNoteEvent event = segmentEvents[ p ];
 			switch( event.getEventType() )
 			{
 				case NOTE_ON:
 				case NOTE_CONTINUATION:
 				{
-					float linearVal = event.getParamTwo() / 128.0f;
+					final float linearVal = event.getParamTwo() / 128.0f;
 					targetVelAmpMultiplierVal = linearVal;
 //					targetVelAmpMultiplierVal = NormalisedValuesMapper.logMapF( linearVal );
 //					targetVelAmpMultiplierVal = NormalisedValuesMapper.expMapF( linearVal );
@@ -519,7 +528,7 @@ public class PeriodNoteState
 					break;
 				}
 			}
-			
+
 			if( startIndex == -1 || endIndex == -1 )
 			{
 				log.debug("Not outputting velocity due to bad indexes...");
@@ -534,7 +543,7 @@ public class PeriodNoteState
 //				lastVelAmpMultiplierVal = vb[endIndex-1];
 			}
 		}
-		
+
 	}
 
 }

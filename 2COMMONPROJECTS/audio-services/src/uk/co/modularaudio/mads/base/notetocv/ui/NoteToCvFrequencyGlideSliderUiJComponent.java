@@ -33,13 +33,13 @@ public class NoteToCvFrequencyGlideSliderUiJComponent extends PacSlider
 	implements IMadUiControlInstance<NoteToCvMadDefinition, NoteToCvMadInstance, NoteToCvMadUiInstance>
 {
 	private static final long serialVersionUID = 7923855236169668204L;
-	
-	private NoteToCvMadUiInstance uiInstance = null;
 
-	public NoteToCvFrequencyGlideSliderUiJComponent( NoteToCvMadDefinition definition,
-			NoteToCvMadInstance instance,
-			NoteToCvMadUiInstance uiInstance,
-			int controlIndex )
+	private final NoteToCvMadUiInstance uiInstance;
+
+	public NoteToCvFrequencyGlideSliderUiJComponent( final NoteToCvMadDefinition definition,
+			final NoteToCvMadInstance instance,
+			final NoteToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -53,19 +53,20 @@ public class NoteToCvFrequencyGlideSliderUiJComponent extends PacSlider
 		this.setValue( 100 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float newValue = (float) value / 10.0f;
+		final float newValue = value / 10.0f;
 		uiInstance.sendFrequencyGlide( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -73,7 +74,7 @@ public class NoteToCvFrequencyGlideSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

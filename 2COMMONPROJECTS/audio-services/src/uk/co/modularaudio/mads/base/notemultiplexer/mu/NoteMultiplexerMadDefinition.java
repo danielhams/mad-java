@@ -28,52 +28,51 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
+import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class NoteMultiplexerMadDefinition extends MadDefinition<NoteMultiplexerMadDefinition,NoteMultiplexerMadInstance>
 {
-	protected static Set<MadParameterDefinition> parameterDefinitions;
 	protected static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition( "numchannels", "Num Channels" );
+
+	protected static final Set<MadParameterDefinition> PARAM_DEFS;
 
 	static
 	{
-		parameterDefinitions = new HashSet<MadParameterDefinition>();
-		parameterDefinitions.add(  NUM_CHANNELS_PARAMETER );
+		PARAM_DEFS = new HashSet<MadParameterDefinition>();
+		PARAM_DEFS.add( NUM_CHANNELS_PARAMETER );
 	}
 
-	private static String id = "note_multiplexer";
-	private static String name = "Note Multiplexer";
-	private static String description = "Multiplex incoming notes to multiple polyphonic channels";
-	private static String classificationGroup = MadClassificationService.SOUND_ROUTING_GROUP_ID;
-	private static String classificationId = id;
-	private static String classificationName = description;
-	private static String classificationDescription = description;
+	public final static String DEFINITION_ID = "note_multiplexer";
+	private final static String USER_VISIBLE_NAME = "Note Multiplexer";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ROUTING_GROUP_ID;
+	private final static String CLASS_NAME = "Note Multiplexer";
+	private final static String CLASS_DESC = "Multiplex incoming notes to multiple polyphonic channels";
 
-	public NoteMultiplexerMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws DatastoreException, RecordNotFoundException
+	public NoteMultiplexerMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws DatastoreException, RecordNotFoundException
 	{
 		// Default super constructor is
 		// super( name, isParametrable, parameterDefinitions );
-		super( id, name, true,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME, true,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				parameterDefinitions,
+				PARAM_DEFS,
 				new NoteMultiplexerIOQueueBridge() );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition, String> parameterValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
 		throws MadProcessingException
 	{
-		NoteMultiplexerMadInstanceConfiguration ic = new NoteMultiplexerMadInstanceConfiguration( parameterValues );
+		final NoteMultiplexerMadInstanceConfiguration ic = new NoteMultiplexerMadInstanceConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
 	}
 }

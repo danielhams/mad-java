@@ -42,18 +42,18 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,Ms20FilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( Ms20FilterMadInstance.class.getName() );
-	
+
 	private static final int VALUE_CHASE_MILLIS = 2;
 
 	public static final float MAXIMUM_RESONANCE_VALUE = 4.0f;
 	public static final float MAXIMUM_THRESHOLD_VALUE = 4.0f;
-	
+
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	private int sampleRate = -1;
 	private int periodLength = -1;
-	
+
 	protected float currentFrequency = 20.0f;
 	protected float currentFilterResonance = 1.0f;
 	protected float currentSaturationThreshold = 0.9f;
@@ -61,72 +61,72 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 	protected float desiredFrequency = 20.0f;
 	protected float desiredFilterResonance = 1.0f;
 	protected float desiredSaturationThreshold = 0.9f;
-	
+
 	protected FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.NONE;
-	
-	private int oversamplingRatio = 4;
+
+	private final int oversamplingRatio = 4;
 	private int oversamplingSampleRate = -1;
 	private int oversamplingPeriodLength = -1;
-	
-	private Oversampler freqCvOversampler = null;
-	private float[] freqCvOversampleBuffer = null;
-	
-	private Oversampler resCvOversampler = null;
-	private float[] resCvOversampleBuffer = null;
-	
-	private Oversampler thresCvOversampler = null;
-	private float[] thresCvOversampleBuffer = null;
-	
-	private float[] oversampleTemporaryBuffer = null;
-	
-	private Oversampler leftOversampler = null;
-	private Oversampler rightOversampler = null;
-	
-	private Ms20FilterRuntime leftMs20FilterRuntime = null;
-	private Ms20FilterRuntime rightMs20FilterRuntime = null;
-	
-	public Ms20FilterMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			Ms20FilterMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	private Oversampler freqCvOversampler;
+	private float[] freqCvOversampleBuffer;
+
+	private Oversampler resCvOversampler;
+	private float[] resCvOversampleBuffer;
+
+	private Oversampler thresCvOversampler;
+	private float[] thresCvOversampleBuffer;
+
+	private float[] oversampleTemporaryBuffer;
+
+	private Oversampler leftOversampler;
+	private Oversampler rightOversampler;
+
+	private Ms20FilterRuntime leftMs20FilterRuntime;
+	private Ms20FilterRuntime rightMs20FilterRuntime;
+
+	public Ms20FilterMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final Ms20FilterMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 			periodLength = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
-			
+
 			oversamplingSampleRate = oversamplingRatio * sampleRate;
 			oversamplingPeriodLength = oversamplingRatio * periodLength;
-			
+
 			freqCvOversampleBuffer = new float[ oversamplingPeriodLength ];
 			freqCvOversampler = new Oversampler( sampleRate, periodLength, oversamplingRatio );
-			
+
 			resCvOversampleBuffer = new float[ oversamplingPeriodLength ];
 			resCvOversampler = new Oversampler( sampleRate, periodLength, oversamplingRatio );
-			
+
 			thresCvOversampleBuffer = new float[ oversamplingPeriodLength ];
 			thresCvOversampler = new Oversampler( sampleRate, periodLength, oversamplingRatio );
-			
+
 			oversampleTemporaryBuffer = new float[ oversamplingPeriodLength ];
-			
+
 			leftOversampler = new Oversampler( sampleRate, periodLength, oversamplingRatio );
 			rightOversampler = new Oversampler( sampleRate, periodLength, oversamplingRatio );
 
 			leftMs20FilterRuntime = new Ms20FilterRuntime( oversamplingSampleRate );
 			rightMs20FilterRuntime = new Ms20FilterRuntime( oversamplingSampleRate );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -138,41 +138,41 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		int numOversampledFrames = numFrames * oversamplingRatio;
-		boolean inLConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.CONSUMER_IN_LEFT );
-		MadChannelBuffer inLcb = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_LEFT ];
-		float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
-		
-		boolean inRConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.CONSUMER_IN_RIGHT );
-		MadChannelBuffer inRcb = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_RIGHT ];
-		float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
-		
-		boolean inCvFreqConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
-		MadChannelBuffer inFreq = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
-		float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
-		
-		boolean inCvResConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE  );
-		MadChannelBuffer inRes = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE ];
-		float[] inResFloats = (inCvResConnected ? inRes.floatBuffer : null );
-		
-		boolean inCvThresConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_THRESHOLD  );
-		MadChannelBuffer inThres = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_THRESHOLD ];
-		float[] inThresFloats = (inCvThresConnected ? inThres.floatBuffer : null );
-		
-		boolean outLConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.PRODUCER_OUT_LEFT );
-		MadChannelBuffer outLcb = channelBuffers[ Ms20FilterMadDefinition.PRODUCER_OUT_LEFT ];
-		float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
-		
-		boolean outRConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT );
-		MadChannelBuffer outRcb = channelBuffers[ Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT ];
-		float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
-		
+		final int numOversampledFrames = numFrames * oversamplingRatio;
+		final boolean inLConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.CONSUMER_IN_LEFT );
+		final MadChannelBuffer inLcb = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_LEFT ];
+		final float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
+
+		final boolean inRConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.CONSUMER_IN_RIGHT );
+		final MadChannelBuffer inRcb = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_RIGHT ];
+		final float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
+
+		final boolean inCvFreqConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
+		final MadChannelBuffer inFreq = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
+		final float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
+
+		final boolean inCvResConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE  );
+		final MadChannelBuffer inRes = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE ];
+		final float[] inResFloats = (inCvResConnected ? inRes.floatBuffer : null );
+
+		final boolean inCvThresConnected = channelConnectedFlags.get(  Ms20FilterMadDefinition.CONSUMER_IN_CV_THRESHOLD  );
+		final MadChannelBuffer inThres = channelBuffers[ Ms20FilterMadDefinition.CONSUMER_IN_CV_THRESHOLD ];
+		final float[] inThresFloats = (inCvThresConnected ? inThres.floatBuffer : null );
+
+		final boolean outLConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.PRODUCER_OUT_LEFT );
+		final MadChannelBuffer outLcb = channelBuffers[ Ms20FilterMadDefinition.PRODUCER_OUT_LEFT ];
+		final float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
+
+		final boolean outRConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT );
+		final MadChannelBuffer outRcb = channelBuffers[ Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT ];
+		final float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
+
 		currentFrequency = (currentFrequency * curValueRatio) + (desiredFrequency * newValueRatio );
 		currentFrequency = AudioMath.limitIt( currentFrequency, 1.0f, 22040.0f );
 
@@ -181,12 +181,12 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 
 		currentSaturationThreshold = (currentSaturationThreshold * curValueRatio ) + (desiredSaturationThreshold * newValueRatio );
 		currentSaturationThreshold = AudioMath.limitIt( currentSaturationThreshold, 0.0f, MAXIMUM_THRESHOLD_VALUE );
-		
+
 		if( inCvFreqConnected )
 		{
 			freqCvOversampler.oversample( inCvFreqFloats, numFrames, freqCvOversampleBuffer );
 		}
-		
+
 		if( inCvResConnected )
 		{
 			for( int i = 0 ; i < numFrames ; i++ )
@@ -281,7 +281,7 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 				System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
 			}
 		}
-		
+
 		if( !inRConnected && outRConnected )
 		{
 			Arrays.fill( outRfloats, 0.0f );

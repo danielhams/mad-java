@@ -29,24 +29,24 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUi
 public class NoteToCvMadUiInstance extends NoEventsNonConfigurableMadUiInstance<NoteToCvMadDefinition, NoteToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( NoteToCvMadUiInstance.class.getName() );
-	
-	public NoteToCvMadUiInstance( NoteToCvMadInstance instance,
-			NoteToCvMadUiDefinition componentUiDefinition )
+
+	public NoteToCvMadUiInstance( final NoteToCvMadInstance instance,
+			final NoteToCvMadUiDefinition componentUiDefinition )
 	{
 		super( componentUiDefinition.getCellSpan(), instance, componentUiDefinition );
 	}
 
-	public void sendNoteOnType( NoteOnType noteOnType )
+	public void sendNoteOnType( final NoteOnType noteOnType )
 	{
 		sendTemporalValueToInstance( NoteToCvIOQueueBridge.COMMAND_NOTE_ON_TYPE, noteOnType.ordinal() );
 	}
 
-	public void sendFrequencyGlide( float guiDesiredFrequencyGlideMillis )
+	public void sendFrequencyGlide( final float guiDesiredFrequencyGlideMillis )
 	{
 		sendTemporalValueToInstance( NoteToCvIOQueueBridge.COMMAND_FREQ_GLIDE_MILLIS, Float.floatToIntBits( guiDesiredFrequencyGlideMillis ) );
 	}
 
-	public void sendChannelNum( int channelNum )
+	public void sendChannelNum( final int channelNum )
 	{
 		sendCommandValueToInstance( NoteToCvIOQueueBridge.COMMAND_CHANNEL_NUM, channelNum );
 	}

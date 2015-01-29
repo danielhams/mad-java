@@ -30,19 +30,19 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class Ms20FilterRuntime
 {
 	private static Log log = LogFactory.getLog( Ms20FilterRuntime.class.getName() );
-	
+
 	private float previousValuesFrequency = -10.0f;
 	private float previousValueK = -1.0f;
 	private float previousValueB = -1.0f;
 	private float previousValueA = -1.0f;
-	
+
 //	private float lastClipOut = 0.0f;
 //	private float delayOneVal = 0.0f;
 //	private float delayTwoVal = 0.0f;
 //	private float delayThreeVal = 0.0f;
 //	private float delayFourVal = 0.0f;
 //	private float delayFiveVal = 0.0f;
-	
+
 	private float lastClipRing = 0.0f;
 	private float delayOneRing = 0.0f;
 	private float delayTwoRing = 0.0f;
@@ -50,24 +50,24 @@ public class Ms20FilterRuntime
 	private float delayFourRing = 0.0f;
 	private float delayFiveRing = 0.0f;
 //	private UnsafeFloatRingBuffer delayFiveRing = new UnsafeFloatRingBuffer( 10 );
-	
-	private double ONE_PI_D_OVER_SAMPLERATE = 0.0;
 
-	public Ms20FilterRuntime( int sampleRate )
+	private double onePiDOverSampleRate = 0.0;
+
+	public Ms20FilterRuntime( final int sampleRate )
 	{
-		this.ONE_PI_D_OVER_SAMPLERATE = MathDefines.ONE_PI_D / sampleRate;
+		this.onePiDOverSampleRate = MathDefines.ONE_PI_D / sampleRate;
 		reset();
 	}
 
 	private void reset()
 	{
-		
+
 //		delayOneVal = 0.0f;
 //		delayTwoVal = 0.0f;
 //		delayThreeVal = 0.0f;
 //		delayFourVal = 0.0f;
 //		delayFiveVal = 0.0f;
-		
+
 //		lastClipRing.clear();
 //		delayOneRing.clear();
 //		delayTwoRing.clear();
@@ -80,9 +80,9 @@ public class Ms20FilterRuntime
 		delayThreeRing = 0.0f;
 		delayFourRing = 0.0f;
 		delayFiveRing = 0.0f;
-		
+
 //		lastClipOut = 0.0f;
-		
+
 //		if( lastClipRing.getNumReadable() == 0 )
 //		{
 //			for( int i = 0 ; i < numToDelay ; i++ )
@@ -96,40 +96,40 @@ public class Ms20FilterRuntime
 //			}
 //		}
 	}
-	
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float frequency,
-			float filterResonance,
-			float filterThreshold )
+
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float frequency,
+			final float filterResonance,
+			final float filterThreshold )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
 		recomputeFrequencyDepVals( frequency );
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			inputFloats[ i ] = innerLoopFilterCalc( filterMode, inputFloats[i], filterResonance, filterThreshold );
 		}
 	}
-	
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float[] frequencyFloats,
-			float filterResonance,
-			float filterThreshold )
+
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float[] frequencyFloats,
+			final float filterResonance,
+			final float filterThreshold )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			recomputeFrequencyDepVals( frequencyFloats[ i ] );
@@ -137,19 +137,19 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float[] frequencyFloats,
-			float[] resonanceFloats,
-			float filterThreshold )
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float[] frequencyFloats,
+			final float[] resonanceFloats,
+			final float filterThreshold )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			recomputeFrequencyDepVals( frequencyFloats[ i ] );
@@ -157,19 +157,19 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float[] frequencyFloats,
-			float resonance,
-			float[] thresholdFloats )
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float[] frequencyFloats,
+			final float resonance,
+			final float[] thresholdFloats )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			recomputeFrequencyDepVals( frequencyFloats[ i ] );
@@ -177,19 +177,19 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float[] frequencyFloats,
-			float[] resonanceFloats,
-			float[] thresholdFloats )
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float[] frequencyFloats,
+			final float[] resonanceFloats,
+			final float[] thresholdFloats )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			recomputeFrequencyDepVals( frequencyFloats[ i ] );
@@ -197,19 +197,19 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float frequency,
-			float[] resonanceFloats,
-			float[] thresholdFloats )
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float frequency,
+			final float[] resonanceFloats,
+			final float[] thresholdFloats )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		recomputeFrequencyDepVals( frequency );
 
 		for( int i = 0 ; i < length ; i++ )
@@ -217,20 +217,20 @@ public class Ms20FilterRuntime
 			inputFloats[ i ] = innerLoopFilterCalc( filterMode, inputFloats[i], resonanceFloats[i], thresholdFloats[i] );
 		}
 	}
-	
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float frequency,
-			float resonance,
-			float[] thresholdFloats )
+
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float frequency,
+			final float resonance,
+			final float[] thresholdFloats )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		recomputeFrequencyDepVals( frequency );
 
 		for( int i = 0 ; i < length ; i++ )
@@ -239,19 +239,19 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	public final void filterFloats( FrequencyFilterMode filterMode,
-			float[] inputFloats,
-			int pos,
-			int length,
-			float frequency,
-			float[] resonanceFloats,
-			float threshold )
+	public final void filterFloats( final FrequencyFilterMode filterMode,
+			final float[] inputFloats,
+			final int pos,
+			final int length,
+			final float frequency,
+			final float[] resonanceFloats,
+			final float threshold )
 	{
 		if( filterMode == FrequencyFilterMode.NONE )
 		{
 			return;
 		}
-		
+
 		recomputeFrequencyDepVals( frequency );
 
 		for( int i = 0 ; i < length ; i++ )
@@ -260,20 +260,20 @@ public class Ms20FilterRuntime
 		}
 	}
 
-	private void recomputeFrequencyDepVals( float frequency )
+	private void recomputeFrequencyDepVals( final float frequency )
 	{
 		if( frequency != previousValuesFrequency )
 		{
 			previousValuesFrequency = frequency;
 //			previousValueK = (float)FastMath.tan( MathDefines.ONE_PI_D * (frequency / sampleRate ) );
-			previousValueK = (float)FastMath.tan( ONE_PI_D_OVER_SAMPLERATE  * frequency );
+			previousValueK = (float)FastMath.tan( onePiDOverSampleRate  * frequency );
 
 			previousValueB = ( previousValueK / (previousValueK + 1 ) );
 			previousValueA = ( (previousValueK - 1 ) / (previousValueK +  1 ) );
 		}
 	}
-	
-	private float innerLoopFilterCalc( FrequencyFilterMode mode, float inValue, float filterResonance, float filterThreshold )
+
+	private float innerLoopFilterCalc( final FrequencyFilterMode mode, final float inValue, final float filterResonance, final float filterThreshold )
 	{
 //		inValue = checkVal( inValue );
 		float lastClipOut = lastClipRing;
@@ -299,17 +299,20 @@ public class Ms20FilterRuntime
 			default:
 			{
 				firstSumResult = 0.0f;
-				log.warn("Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Unknown filter mode: " + mode );
+				}
 				break;
 			}
 		}
-		
-		float firstBResult = previousValueB * firstSumResult;
-		
+
+		final float firstBResult = previousValueB * firstSumResult;
+
 		float delayTwoVal = delayTwoRing;
-		float firstAResult = previousValueA * delayTwoVal;
-		
-		float delayOneVal = delayOneRing;
+		final float firstAResult = previousValueA * delayTwoVal;
+
+		final float delayOneVal = delayOneRing;
 		float secondSumResult;
 		switch( mode )
 		{
@@ -332,7 +335,10 @@ public class Ms20FilterRuntime
 			default:
 			{
 				secondSumResult = 0.0f;
-				log.warn("Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Unknown filter mode: " + mode );
+				}
 			}
 		}
 
@@ -358,16 +364,19 @@ public class Ms20FilterRuntime
 			default:
 			{
 				thirdSumResult = 0.0f;
-				log.warn("Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Unknown filter mode: " + mode );
+				}
 				break;
 			}
 		}
-		
-		float secondBResult = previousValueB * thirdSumResult;
-		
+
+		final float secondBResult = previousValueB * thirdSumResult;
+
 		float delayFourVal = delayFourRing;
-		float secondAResult = previousValueA * delayFourVal;
-		
+		final float secondAResult = previousValueA * delayFourVal;
+
 		float delayThreeVal = delayThreeRing;
 		float fourthSumResult;
 		switch( mode )
@@ -391,11 +400,14 @@ public class Ms20FilterRuntime
 			default:
 			{
 				fourthSumResult = 0.0f;
-				log.warn("Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Unknown filter mode: " + mode );
+				}
 				break;
 			}
 		}
-		
+
 		float fifthSumResult;
 		switch( mode )
 		{
@@ -417,21 +429,24 @@ public class Ms20FilterRuntime
 			}
 			default:
 			{
-				log.warn( "Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Unknown filter mode: " + mode );
+				}
 				fifthSumResult = 0.0f;
 				break;
 			}
 		}
-		
+
 		float delayFiveVal = delayFiveRing;
-		
-		float firstKResult = filterResonance * delayFiveVal;
-		
+
+		final float firstKResult = filterResonance * delayFiveVal;
+
 //		float saturatedVal = saturator.processValue( filterThreshold, firstKResult );
 		float saturatedVal;
 		{
-			int sign = ( firstKResult < 0.0f ? -1 : 1 );
-			float absValue = sign * firstKResult;
+			final int sign = ( firstKResult < 0.0f ? -1 : 1 );
+			final float absValue = sign * firstKResult;
 			if( absValue > filterThreshold )
 			{
 				float amountOver = absValue - filterThreshold;
@@ -445,9 +460,9 @@ public class Ms20FilterRuntime
 				saturatedVal = firstKResult;
 			}
 		}
-		
-		float clippedVal = (0.25f * firstKResult) + (0.75f * saturatedVal );
-		
+
+		final float clippedVal = (0.25f * firstKResult) + (0.75f * saturatedVal );
+
 		float clipSumVal;
 		switch( mode )
 		{
@@ -469,7 +484,10 @@ public class Ms20FilterRuntime
 			}
 			default:
 			{
-				log.warn( "Unknown filter mode: " + mode );
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Unknown filter mode: " + mode );
+				}
 				clipSumVal = 0.0f;
 			}
 		}
@@ -502,12 +520,12 @@ public class Ms20FilterRuntime
 //		delayFiveVal = checkVal( fifthSumResult );
 		delayFiveVal = fifthSumResult;
 		delayFiveRing = delayFiveVal;
-		
-		float filteredVal = ( mode == FrequencyFilterMode.BR ? inValue - fifthSumResult : fifthSumResult );
+
+		final float filteredVal = ( mode == FrequencyFilterMode.BR ? inValue - fifthSumResult : fifthSumResult );
 
 		return filteredVal;
 	}
-	
+
 //	private final float checkVal( float inVal )
 //	{
 //		if( inVal == 0.0f )

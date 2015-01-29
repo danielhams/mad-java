@@ -43,20 +43,20 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class NoteDebugMadInstance extends MadInstance<NoteDebugMadDefinition,NoteDebugMadInstance>
 {
 	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
-	
+
 //	private int notePeriodLength = -1;
-	
-	public NoteDebugMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			NoteDebugMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public NoteDebugMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final NoteDebugMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 //		notePeriodLength = hardwareChannelSettings.getNoteChannelSetting().getChannelBufferLength();
@@ -68,24 +68,27 @@ public class NoteDebugMadInstance extends MadInstance<NoteDebugMadDefinition,Not
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean noteConnected = channelConnectedFlags.get( NoteDebugMadDefinition.CONSUMER_NOTE );
-		MadChannelBuffer noteCb = channelBuffers[ NoteDebugMadDefinition.CONSUMER_NOTE ];
-		
+		final boolean noteConnected = channelConnectedFlags.get( NoteDebugMadDefinition.CONSUMER_NOTE );
+		final MadChannelBuffer noteCb = channelBuffers[ NoteDebugMadDefinition.CONSUMER_NOTE ];
+
 		if( noteConnected )
 		{
-			MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
-			int numNotes = noteCb.numElementsInBuffer;
+			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
+			final int numNotes = noteCb.numElementsInBuffer;
 			// Process the messages
 			for( int n = 0 ; n < numNotes ; n++ )
 			{
-				MadChannelNoteEvent ne = noteEvents[ n ];
-				log.debug("Received a note event: " + ne.toString() );
+				final MadChannelNoteEvent ne = noteEvents[ n ];
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Received a note event: " + ne.toString() );
+				}
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

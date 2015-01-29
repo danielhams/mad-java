@@ -32,16 +32,16 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
 public class NoteMultiplexerMadInstanceConfiguration
 {
-	private int numOutputChannels = -1;
-	
-	private int totalNumChannels = -1;
-	
-	private MadChannelConfiguration channelConfiguration = null;
-	private MadChannelDefinition[] channelDefinitions = null;
-	
-	public NoteMultiplexerMadInstanceConfiguration( Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+	private int numOutputChannels;
+
+	private final int totalNumChannels;
+
+	private final MadChannelConfiguration channelConfiguration;
+	private final MadChannelDefinition[] channelDefinitions;
+
+	public NoteMultiplexerMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
 	{
-		String numChannelsStr = parameterValues.get( NoteMultiplexerMadDefinition.NUM_CHANNELS_PARAMETER );
+		final String numChannelsStr = parameterValues.get( NoteMultiplexerMadDefinition.NUM_CHANNELS_PARAMETER );
 		boolean parsed = true;
 		numOutputChannels = -1;
 		if( numChannelsStr != null)
@@ -60,10 +60,10 @@ public class NoteMultiplexerMadInstanceConfiguration
 //			throw new MadProcessingException(  msg  );
 			numOutputChannels = 2;
 		}
-		
+
 		totalNumChannels = 1 + numOutputChannels;
 		channelDefinitions = new MadChannelDefinition[ totalNumChannels ];
-		
+
 		channelDefinitions[ 0 ] = new MadChannelDefinition( "Input Notes",
 				MadChannelType.NOTE,
 				MadChannelDirection.CONSUMER,
@@ -79,7 +79,7 @@ public class NoteMultiplexerMadInstanceConfiguration
 					MadChannelPosition.MONO );
 			curChannelCounter++;
 		}
-		
+
 		// Build the channel configuration
 		channelConfiguration = new MadChannelConfiguration( channelDefinitions );
 	}

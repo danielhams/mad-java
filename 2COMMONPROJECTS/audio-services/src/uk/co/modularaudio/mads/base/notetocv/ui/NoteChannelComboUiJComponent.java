@@ -39,38 +39,38 @@ public class NoteChannelComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 5596596996111941194L;
 
-	private NoteToCvMadUiInstance uiInstance = null;
-	
+	private final NoteToCvMadUiInstance uiInstance;
+
 	private static OpenIntObjectHashMap<String> channelNumToDisplayStringMap = new OpenIntObjectHashMap<String>();
 	private static OpenObjectIntHashMap<String> displayStringToChannelNumMap = new OpenObjectIntHashMap<String>();
 	private final static int MAXIMUM_CHANNEL_NUMBER = 15;
 	private final static int ALL_CHANNELS_INDEX = -1;
-	
+
 	static
 	{
 		channelNumToDisplayStringMap.put( ALL_CHANNELS_INDEX, "All Channels");
 		displayStringToChannelNumMap.put( "All Channels", ALL_CHANNELS_INDEX );
 		for( int i = 0 ; i <= MAXIMUM_CHANNEL_NUMBER ; i++ )
 		{
-			String displayString = "Channel " + i;
+			final String displayString = "Channel " + i;
 			channelNumToDisplayStringMap.put( i, displayString );
 			displayStringToChannelNumMap.put( displayString, i );
 		}
 	}
 
-	public NoteChannelComboUiJComponent( NoteToCvMadDefinition definition,
-			NoteToCvMadInstance instance,
-			NoteToCvMadUiInstance uiInstance,
-			int controlIndex )
+	public NoteChannelComboUiJComponent( final NoteToCvMadDefinition definition,
+			final NoteToCvMadInstance instance,
+			final NoteToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( false );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 		for( int i = -1 ; i <= MAXIMUM_CHANNEL_NUMBER ; i++ )
 		{
-			String displayString = channelNumToDisplayStringMap.get( i );
+			final String displayString = channelNumToDisplayStringMap.get( i );
 			cbm.addElement( displayString );
 		}
 		this.setModel( cbm );
@@ -87,7 +87,7 @@ public class NoteChannelComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -95,12 +95,12 @@ public class NoteChannelComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String displayString = (String)getSelectedItem();
-			int channelNum = displayStringToChannelNumMap.get( displayString );
+			final String displayString = (String)getSelectedItem();
+			final int channelNum = displayStringToChannelNumMap.get( displayString );
 			uiInstance.sendChannelNum( channelNum );
 		}
 	}

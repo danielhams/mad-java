@@ -34,13 +34,13 @@ public class OscillatorHertzSliderUiJComponent extends PacSlider
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private OscillatorMadUiInstance uiInstance = null;
+	private final OscillatorMadUiInstance uiInstance;
 
 	public OscillatorHertzSliderUiJComponent(
-			OscillatorMadDefinition definition,
-			OscillatorMadInstance instance,
-			OscillatorMadUiInstance uiInstance,
-			int controlIndex )
+			final OscillatorMadDefinition definition,
+			final OscillatorMadInstance instance,
+			final OscillatorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -52,20 +52,21 @@ public class OscillatorHertzSliderUiJComponent extends PacSlider
 		// Default value
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
 		// Convert it into a float
-		float valToSend = (float) value;
+		final float valToSend = value;
 		uiInstance.sendFrequencyChange( valToSend );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -73,15 +74,15 @@ public class OscillatorHertzSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void receiveControlValue( String strValue )
+	public void receiveControlValue( final String strValue )
 	{
 		super.receiveControlValue( strValue );
-		float initialValue = (float) this.getValue();
+		final float initialValue = this.getValue();
 		uiInstance.sendFrequencyChangeImmediate( initialValue );
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

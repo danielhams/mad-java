@@ -44,10 +44,10 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,OscillatorMadInstance>
 {
 	private static Log log = LogFactory.getLog( OscillatorMadInstance.class.getName() );
-	
+
 	private static final int VALUE_CHASE_MILLIS = 1;
-	private int sampleRate = 0;
-	
+	private int sampleRate;
+
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
 	protected float oscillationFrequency = 100.0f;
@@ -56,33 +56,33 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 	protected OscillatorWaveShape curWaveShape = OscillatorWaveShape.SINE;
 
 	private OscillatorWaveShape usedWaveShape = OscillatorWaveShape.SINE;
-	private OscillatorInstances oscillatorTables = null;
-	private Oscillator oscillator = null;
-	
+	private OscillatorInstances oscillatorTables;
+	private Oscillator oscillator;
+
 	private final static boolean CHECK_NAN = false;
-	
-	public OscillatorMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			OscillatorMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public OscillatorMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final OscillatorMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		
+
 		try
 		{
 			oscillatorTables = new OscillatorInstances( creationContext.getOscillatorFactory() );
 			oscillator = oscillatorTables.getOscillator( OscillatorWaveShape.SINE );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg ="Exception caught getting an oscillator: " + e.toString();
+			final String msg ="Exception caught getting an oscillator: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -91,7 +91,7 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -103,18 +103,18 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean cvFreqConnected = channelConnectedFlags.get( OscillatorMadDefinition.CONSUMER_CV_FREQ );
-		MadChannelBuffer cvFreqBuf = channelBuffers[ OscillatorMadDefinition.CONSUMER_CV_FREQ ];
-		boolean audioOutConnected = channelConnectedFlags.get( OscillatorMadDefinition.PRODUCER_AUDIO_OUT );
-		MadChannelBuffer audioOutBuf = channelBuffers[ OscillatorMadDefinition.PRODUCER_AUDIO_OUT ];
-		boolean cvOutConnected = channelConnectedFlags.get( OscillatorMadDefinition.PRODUCER_CV_OUT );
-		MadChannelBuffer cvOutBuf = channelBuffers[ OscillatorMadDefinition.PRODUCER_CV_OUT ];
+		final boolean cvFreqConnected = channelConnectedFlags.get( OscillatorMadDefinition.CONSUMER_CV_FREQ );
+		final MadChannelBuffer cvFreqBuf = channelBuffers[ OscillatorMadDefinition.CONSUMER_CV_FREQ ];
+		final boolean audioOutConnected = channelConnectedFlags.get( OscillatorMadDefinition.PRODUCER_AUDIO_OUT );
+		final MadChannelBuffer audioOutBuf = channelBuffers[ OscillatorMadDefinition.PRODUCER_AUDIO_OUT ];
+		final boolean cvOutConnected = channelConnectedFlags.get( OscillatorMadDefinition.PRODUCER_CV_OUT );
+		final MadChannelBuffer cvOutBuf = channelBuffers[ OscillatorMadDefinition.PRODUCER_CV_OUT ];
 		if( !audioOutConnected && !cvOutConnected )
 		{
 			// Do nothing, we have no output anyway
@@ -128,14 +128,14 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 			}
 
 			// Need one of the buffers to render into
-			float[] genFloats = (audioOutConnected ? audioOutBuf.floatBuffer : cvOutBuf.floatBuffer );
-			
+			final float[] genFloats = (audioOutConnected ? audioOutBuf.floatBuffer : cvOutBuf.floatBuffer );
+
 			if( usedWaveShape != curWaveShape )
 			{
 				usedWaveShape = curWaveShape;
 				oscillator = oscillatorTables.getOscillator( usedWaveShape );
 			}
-			
+
 			if( cvFreqConnected )
 			{
 				oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, 1.0f, 0, numFrames, sampleRate );
@@ -145,19 +145,19 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 				runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
 				oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, 1.0f, 0, numFrames, sampleRate );
 			}
-			
+
 			if( audioOutConnected && cvOutConnected )
 			{
 				// We rendered into audio out, copy it over into the cv out
-				float[] cvOutFloats = cvOutBuf.floatBuffer;
+				final float[] cvOutFloats = cvOutBuf.floatBuffer;
 				System.arraycopy( genFloats, 0, cvOutFloats, 0, genFloats.length );
 			}
 		}
 		if( CHECK_NAN )
 		{
-			float[] audioOutFloats = audioOutBuf.floatBuffer;
-			float[] cvOutFloats = cvOutBuf.floatBuffer;
-			
+			final float[] audioOutFloats = audioOutBuf.floatBuffer;
+			final float[] cvOutFloats = cvOutBuf.floatBuffer;
+
 			for( int i = 0 ; i < numFrames ; i++ )
 			{
 				if( audioOutConnected )
@@ -166,7 +166,7 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 					{
 						log.error("Generated an audio NaN");
 					}
-					
+
 					if( cvOutFloats[ i ] == Float.NaN )
 					{
 						log.error("Generated a cv NaN");

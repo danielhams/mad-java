@@ -38,31 +38,31 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class PrngMadInstance extends MadInstance<PrngMadDefinition,PrngMadInstance>
 {
-	private Random randomGenerator = null;
-	
-	private static final int q = 15;
-	private static float c1 = (1 << q) - 1;
-	private static float c2 = ((int)(c1 / 3.0)) + 1;
-	private static float c3 = 1.0f / c1;
+	private Random randomGenerator;
 
-	public PrngMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			PrngMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private static final int Q = 15;
+	private static final float C1 = (1 << Q) - 1;
+	private static final float C2 = ((int)(C1 / 3.0)) + 1;
+	private static final float C3 = 1.0f / C1;
+
+	public PrngMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final PrngMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			randomGenerator = new Random();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -74,15 +74,15 @@ public class PrngMadInstance extends MadInstance<PrngMadDefinition,PrngMadInstan
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean outCvConnected = channelConnectedFlags.get( PrngMadDefinition.PRODUCER_CV_OUT );
-		float[] outCvFloats = channelBuffers[ PrngMadDefinition.PRODUCER_CV_OUT ].floatBuffer;
-		
+		final boolean outCvConnected = channelConnectedFlags.get( PrngMadDefinition.PRODUCER_CV_OUT );
+		final float[] outCvFloats = channelBuffers[ PrngMadDefinition.PRODUCER_CV_OUT ].floatBuffer;
+
 		if( outCvConnected )
 		{
 			for( int s = 0 ; s < numFrames ; s++ )
@@ -94,12 +94,12 @@ public class PrngMadInstance extends MadInstance<PrngMadDefinition,PrngMadInstan
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
+
 	private float nextPrng()
 	{
-		float random = randomGenerator.nextFloat();
+		final float random = randomGenerator.nextFloat();
 		// (2.f * ((random * c2) + (random * c2) + (random * c2)) - 3.f * (c2 - 1.f)) * c3;
-		float noise = (2.f * ((random * c2) + (random * c2) + (random * c2)) - 3.f * (c2 - 1.f)) * c3;
+		final float noise = (2.f * ((random * C2) + (random * C2) + (random * C2)) - 3.f * (C2 - 1.f)) * C3;
 
 		return noise;
 	}

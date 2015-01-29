@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -37,39 +38,38 @@ public class PrngMadDefinition extends AbstractNonConfigurableMadDefinition<Prng
 	public final static int PRODUCER_CV_OUT = 0;
 	public final static int NUM_CHANNELS = 1;
 
-	private final static String definitionId = "prng";
+	public final static String DEFINITION_ID = "prng";
 
-	private final static String userVisibleName = "Pseudo Random Number Generator";
+	private final static String USER_VISIBLE_NAME = "Pseudo Random Number Generator";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "prng";
-	private final static String classificationName = "Pseudeo Random Number Generator";
-	private final static String classificationDescription = "Generate random values between -1.0 and 1.0";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Pseudeo Random Number Generator";
+	private final static String CLASS_DESC = "Generate random values between -1.0 and 1.0";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Output CV" };
+	private final static String[] CHAN_NAMES = new String[] { "Output CV" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV };
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.PRODUCER };
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO};
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO};
 
-	public PrngMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public PrngMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new PrngIOQueueBridge(),
+				new MadNullLocklessQueueBridge<PrngMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

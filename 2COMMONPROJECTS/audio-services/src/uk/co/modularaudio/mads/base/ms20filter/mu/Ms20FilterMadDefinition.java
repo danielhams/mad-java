@@ -43,17 +43,16 @@ public class Ms20FilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 	public final static int PRODUCER_OUT_RIGHT = 6;
 	public final static int NUM_CHANNELS = 7;
 
-	private final static String definitionId = "ms20_filter";
+	public final static String DEFINITION_ID = "ms20_filter";
 
-	private final static String userVisibleName = "Ms20 Frequency Filter";
+	private final static String USER_VISIBLE_NAME = "Ms20 Frequency Filter";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "ms20_filter";
-	private final static String classificationName = "Ms20 Frequency Filter";
-	private final static String classificationDescription = "Simulation of the MS20 resonant filter to remove or allow frequencies";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Ms20 Frequency Filter";
+	private final static String CLASS_DESC = "Simulation of the MS20 resonant filter to remove or allow frequencies";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
 		"Input CV Frequency",
 		"Input CV Resonance",
@@ -61,7 +60,7 @@ public class Ms20FilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 		"Output Wave Left",
 		"Output Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -69,7 +68,7 @@ public class Ms20FilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
@@ -77,7 +76,7 @@ public class Ms20FilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
@@ -85,21 +84,21 @@ public class Ms20FilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public Ms20FilterMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public Ms20FilterMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new Ms20FilterIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }
