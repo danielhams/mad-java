@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public abstract class MadUiControlDefinition
 	<D extends MadDefinition<D,I>,
 	I extends MadInstance<D,I>,
-	U extends MadUiInstance<D, I>> implements IMadUiControlDefinition<D, I, U>
+	U extends AbstractMadUiInstance<D, I>> implements IMadUiControlDefinition<D, I, U>
 {
 	public enum ControlType
 	{

@@ -23,10 +23,9 @@ package uk.co.modularaudio.mads.base.cvsurface.ui;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class CvSurfaceMadUiInstance extends AbstractNonConfigurableMadUiInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance>
+public class CvSurfaceMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance>
 {
 //	private static Log log = LogFactory.getLog( CvSurfaceMadUiInstance.class.getName() );
 
@@ -45,10 +44,5 @@ public class CvSurfaceMadUiInstance extends AbstractNonConfigurableMadUiInstance
 		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWX, (Float.floatToIntBits( newX ) ) );
 
 		sendTemporalValueToInstance( CvSurfaceIOQueueBridge.COMMAND_NEWY, (Float.floatToIntBits( newY ) ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( final CvSurfaceMadInstance instance, final IOQueueEvent nextOutgoingEntry )
-	{
 	}
 }

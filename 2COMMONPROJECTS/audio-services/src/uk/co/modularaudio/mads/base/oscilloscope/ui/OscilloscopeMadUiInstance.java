@@ -32,7 +32,7 @@ import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeWriteableScopeData;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -41,7 +41,7 @@ import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.pooling.dumb.ObjectPool;
 import uk.co.modularaudio.util.pooling.dumb.ObjectPool.ObjectPoolLifecycleManager;
 
-public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance>
+public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance>
 	implements IOQueueEventUiConsumer<OscilloscopeMadInstance>, ObjectPoolLifecycleManager<OscilloscopeWriteableScopeData>,
 	ScopeDataListener
 {

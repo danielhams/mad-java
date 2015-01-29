@@ -22,9 +22,9 @@ package uk.co.modularaudio.mads.base.flipflop.ui;
 
 import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadDefinition;
 import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class FlipFlopMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<FlipFlopMadDefinition, FlipFlopMadInstance>
+public class FlipFlopMadUiInstance extends NoEventsNonConfigurableMadUiInstance<FlipFlopMadDefinition, FlipFlopMadInstance>
 {
 	public FlipFlopMadUiInstance( final FlipFlopMadInstance instance,
 			final FlipFlopMadUiDefinition uiDefinition )

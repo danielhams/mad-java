@@ -18,38 +18,40 @@
  *
  */
 
-package uk.co.modularaudio.mads.internal.feedbacklink.ui;
+package uk.co.modularaudio.util.audio.gui.mad.helper;
 
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
+import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class FeedbackLinkProducerMadUiInstance extends AbstractMadUiInstance<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
+public class NoEventsNoNameChangeConfigurableMadUiInstance<D extends MadDefinition<D, I>, I extends MadInstance<D,I>>
+	extends AbstractMadUiInstance<D, I>
 {
-	private final FeedbackLinkProducerMadUiDefinition flUiDefinition;
-
-	public FeedbackLinkProducerMadUiInstance( final FeedbackLinkProducerMadInstance instance,
-			final FeedbackLinkProducerMadUiDefinition uiDefinition )
+	private final Span span;
+	public NoEventsNoNameChangeConfigurableMadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition, final Span span )
 	{
-		super( instance,  uiDefinition );
-		this.flUiDefinition = uiDefinition;
+		super( instance, uiDefinition );
+		this.span = span;
 	}
 
 	@Override
-	public Span getCellSpan()
+	public final void consumeQueueEntry( final I instance, final IOQueueEvent nextOutgoingEntry )
 	{
-		return flUiDefinition.getCellSpan();
+		// Do nothing
 	}
 
 	@Override
-	public void consumeQueueEntry( final FeedbackLinkProducerMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	public final Span getCellSpan()
 	{
+		return span;
 	}
 
 	@Override
-	public void receiveComponentNameChange( final String newName )
+	public final void receiveComponentNameChange( final String newName )
 	{
+		// Do nothing
 	}
 }

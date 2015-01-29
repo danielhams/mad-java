@@ -29,7 +29,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public interface IMadUiControlInstance<D extends MadDefinition<D, I>,
 	I extends MadInstance<D, I>,
-	U extends MadUiInstance<D, I>>
+	U extends AbstractMadUiInstance<D, I>>
 {
 	boolean needsDisplayProcessing();
 

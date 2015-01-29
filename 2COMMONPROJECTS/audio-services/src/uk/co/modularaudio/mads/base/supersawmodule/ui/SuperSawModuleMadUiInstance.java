@@ -22,9 +22,9 @@ package uk.co.modularaudio.mads.base.supersawmodule.ui;
 
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinition;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class SuperSawModuleMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<SuperSawModuleMadDefinition, SuperSawModuleMadInstance>
+public class SuperSawModuleMadUiInstance extends NoEventsNonConfigurableMadUiInstance<SuperSawModuleMadDefinition, SuperSawModuleMadInstance>
 {
 
 	public SuperSawModuleMadUiInstance( SuperSawModuleMadInstance instance,

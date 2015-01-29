@@ -21,14 +21,14 @@
 package uk.co.modularaudio.util.audio.gui.mad.helper;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.table.Span;
 
 public abstract class AbstractNonConfigurableMadUiInstance<D extends MadDefinition<D,I>,
 	I extends MadInstance<D, I>>
-	extends MadUiInstance<D, I>
+	extends AbstractMadUiInstance<D, I>
 {
 	protected final Span span;
 
@@ -41,7 +41,7 @@ public abstract class AbstractNonConfigurableMadUiInstance<D extends MadDefiniti
 	}
 
 	@Override
-	public Span getCellSpan()
+	public final Span getCellSpan()
 	{
 		return span;
 	}

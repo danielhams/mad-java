@@ -22,11 +22,11 @@ package uk.co.modularaudio.mads.internal.fade.ui;
 
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class FadeInMadUiInstance extends MadUiInstance<FadeInMadDefinition, FadeInMadInstance>
+public class FadeInMadUiInstance extends AbstractMadUiInstance<FadeInMadDefinition, FadeInMadInstance>
 {
 	public FadeInMadUiInstance( final FadeInMadInstance instance,
 			final FadeInMadUiDefinition uiDefinition )
@@ -42,6 +42,11 @@ public class FadeInMadUiInstance extends MadUiInstance<FadeInMadDefinition, Fade
 
 	@Override
 	public void consumeQueueEntry( final FadeInMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	{
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
 	{
 	}
 }

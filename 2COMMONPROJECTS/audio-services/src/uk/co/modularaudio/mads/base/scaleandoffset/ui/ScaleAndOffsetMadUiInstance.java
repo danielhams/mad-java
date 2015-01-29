@@ -23,10 +23,9 @@ package uk.co.modularaudio.mads.base.scaleandoffset.ui;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class ScaleAndOffsetMadUiInstance extends AbstractNonConfigurableMadUiInstance<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance>
+public class ScaleAndOffsetMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ScaleAndOffsetMadUiInstance.class.getName() );
 
@@ -44,10 +43,5 @@ public class ScaleAndOffsetMadUiInstance extends AbstractNonConfigurableMadUiIns
 	public void sendOffsetChange( final float floatValue )
 	{
 		sendTemporalValueToInstance( ScaleAndOffsetIOQueueBridge.COMMAND_IN_OFFSET, Float.floatToIntBits( floatValue ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( final ScaleAndOffsetMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

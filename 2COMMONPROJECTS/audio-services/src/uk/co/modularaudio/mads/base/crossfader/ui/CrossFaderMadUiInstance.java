@@ -23,12 +23,11 @@ package uk.co.modularaudio.mads.base.crossfader.ui;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderIOQueueBridge;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.wavetable.powertable.RawCrossfadePowerTable;
 import uk.co.modularaudio.util.audio.wavetable.powertable.StandardCrossfadePowerTables;
 
-public class CrossFaderMadUiInstance extends AbstractNonConfigurableMadUiInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
+public class CrossFaderMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
 {
 //	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
 
@@ -73,12 +72,6 @@ public class CrossFaderMadUiInstance extends AbstractNonConfigurableMadUiInstanc
 		final long combinedValue = ampAInt | ((long)ampBInt << 32 );
 
 		sendTemporalValueToInstance( CrossFaderIOQueueBridge.COMMAND_AMPA_AMPB, combinedValue );
-	}
-
-	@Override
-	public void consumeQueueEntry( final CrossFaderMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
-		// No queue processing.
 	}
 
 	public void setPowerCurve( final RawCrossfadePowerTable powerCurve )

@@ -24,7 +24,7 @@ import java.awt.Component;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -35,7 +35,7 @@ public class InternalMadUiControlInstance extends AbstractMadUiControlInstance
 	private final IMadUiControlInstance realUiControlInstance;
 
 	@SuppressWarnings("unchecked")
-	public InternalMadUiControlInstance( final MadUiInstance uiInstance,
+	public InternalMadUiControlInstance( final AbstractMadUiInstance uiInstance,
 			final MadUiControlDefinition definition,
 			final IMadUiControlInstance realUiControlInstance )
 	{

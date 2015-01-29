@@ -34,7 +34,7 @@ import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -68,19 +68,19 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public MadUiInstance<?,?> createNewComponentUiInstanceForComponent( final MadInstance<?,?> instance )
+	public AbstractMadUiInstance<?,?> createNewComponentUiInstanceForComponent( final MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException
 			{
 		final MadDefinition<?,?> definition = instance.getDefinition();
 		//		log.debug("Creating new ui instance of " + definition.getName() );
 		final MadUiDefinition cud = componentDefinitionToUiDefinitionMap.get( definition );
-		final MadUiInstance<?, ?> retVal = cud.createNewUiInstance( instance );
+		final AbstractMadUiInstance<?, ?> retVal = cud.createNewUiInstance( instance );
 		//		log.debug("Created new ui instance of " + definition.getName() );
 		return retVal;
 			}
 
 	@Override
-	public void destroyUiInstance( final MadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
+	public void destroyUiInstance( final AbstractMadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
 			throws DatastoreException, RecordNotFoundException
 	{
 		// Do nothing, java is easy :-)

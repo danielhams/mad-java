@@ -34,7 +34,7 @@ import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.service.madgraph.GraphType;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.DirtyableRackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;
@@ -112,7 +112,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 				// Add our IO component to the graph at the top
 				final MadDefinition<?,?> rackMasterIoDefinition = componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
 				final MadInstance<?,?> rackMasterIoInstance = componentService.createInstanceFromDefinition( rackMasterIoDefinition, null, RM_INSTANCE_NAME );
-				final MadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
+				final AbstractMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
 				final RackComponent rackMasterIORackComponent = new RackComponent( RM_INSTANCE_NAME,
 						rackMasterIoInstance,
 						rackMasterUiInstance );
@@ -155,7 +155,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 				// Add our IO component to the graph at the top
 				final MadDefinition<?,?> rackMasterIoDefinition = componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
 				final MadInstance<?,?> rackMasterIoInstance = componentService.createInstanceFromDefinition( rackMasterIoDefinition, null, RM_INSTANCE_NAME );
-				final MadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
+				final AbstractMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
 				final RackComponent rackMasterIORackComponent = new RackComponent( RM_INSTANCE_NAME,
 						rackMasterIoInstance,
 						rackMasterUiInstance );
@@ -242,7 +242,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		try
 		{
 			final MadInstance<?,?> newAuInstance = componentService.createInstanceFromDefinition( madDefinition, parameterValues, name );
-			final MadUiInstance<?,?> uiInstance = componentUiService.createUiInstanceForInstance( newAuInstance );
+			final AbstractMadUiInstance<?,?> uiInstance = componentUiService.createUiInstanceForInstance( newAuInstance );
 			final RackComponent rci = new RackComponent( name,
 					newAuInstance,
 					uiInstance );
@@ -271,7 +271,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		try
 		{
 			final MadInstance<?,?> madInstance = componentService.createInstanceFromDefinition( madDefinition, parameterValues, name );
-			final MadUiInstance<?,?> madUiInstance = componentUiService.createUiInstanceForInstance( madInstance );
+			final AbstractMadUiInstance<?,?> madUiInstance = componentUiService.createUiInstanceForInstance( madInstance );
 			final RackComponent rci = new RackComponent( name, madInstance, madUiInstance );
 			int testRow = 0;
 			for( ; !canAdd && testRow < rack.getNumRows() ; testRow++ )
@@ -519,7 +519,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 			{
 				final MadInstance<?,?> aui = rmToDelete.getInstance();
 				rack.removeContents( rmToDelete );
-				final MadUiInstance<?,?> auui = rmToDelete.getUiInstance();
+				final AbstractMadUiInstance<?,?> auui = rmToDelete.getUiInstance();
 				componentUiService.destroyUiInstance( auui );
 				componentService.destroyInstance( aui );
 				rmToDelete.destroy();
@@ -597,7 +597,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 		}
 
 		// Call destroy on the ui instance
-		final MadUiInstance<?, ?> componentUiInstance = componentForAction.getUiInstance();
+		final AbstractMadUiInstance<?, ?> componentUiInstance = componentForAction.getUiInstance();
 		componentUiInstance.destroy();
 
 		// Now destroy the component UI instance itself

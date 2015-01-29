@@ -26,84 +26,84 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateIOQueueBridge;
 import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateMadInstance;
-import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class StereoGateMadUiInstance
-	extends AbstractNonConfigurableMadUiInstance<StereoGateMadDefinition, StereoGateMadInstance>
+	extends AbstractNoNameChangeNonConfigurableMadUiInstance<StereoGateMadDefinition, StereoGateMadInstance>
 	implements IOQueueEventUiConsumer<StereoGateMadInstance>
 {
 	private static Log log = LogFactory.getLog( StereoGateMadUiInstance.class.getName() );
-	
-	private List<GateListener> gateListeners = new ArrayList<GateListener>();
 
-	public StereoGateMadUiInstance( StereoGateMadInstance instance,
-			StereoGateMadUiDefinition uiDefinition )
+	private final List<GateListener> gateListeners = new ArrayList<GateListener>();
+
+	public StereoGateMadUiInstance( final StereoGateMadInstance instance,
+			final StereoGateMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendOneCurveAsFloat( int command,
-			float guiDesiredValue )
+
+	public void sendOneCurveAsFloat( final int command,
+			final float guiDesiredValue )
 	{
-		long value = (long)(Float.floatToIntBits( guiDesiredValue ) );
+		final long value = (Float.floatToIntBits( guiDesiredValue ) );
 		sendTemporalValueToInstance(command, value);
 		propogateChange( command, guiDesiredValue );
 	}
-	
-	private void propogateChange( int command, float value )
+
+	private void propogateChange( final int command, final float value )
 	{
 		for( int i =0 ; i < gateListeners.size() ; i++ )
 		{
-			GateListener l = gateListeners.get( i );
+			final GateListener l = gateListeners.get( i );
 			l.receiveChange( command, value );
 		}
 	}
-	
-	public void addGateListener( GateListener l )
+
+	public void addGateListener( final GateListener l )
 	{
 		gateListeners.add( l );
 	}
-	
-	public void removeGateListener( GateListener l )
+
+	public void removeGateListener( final GateListener l )
 	{
 		gateListeners.remove( l );
 	}
 
 	@Override
 	public void doDisplayProcessing(
-			ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+			final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
 		// Receive any events from the instance first
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
-		
+
 		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
 	}
 
 	@Override
-	public void consumeQueueEntry( StereoGateMadInstance instance, IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final StereoGateMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			default:
 			{
-				String msg = "Unknown command receive for UI: " + nextOutgoingEntry.command;
+				final String msg = "Unknown command receive for UI: " + nextOutgoingEntry.command;
 				log.error( msg );
 				break;
 			}
 		}
-		
+
 	}
 
-	public void updateThresholdType( int thresholdType )
+	public void updateThresholdType( final int thresholdType )
 	{
 		sendTemporalValueToInstance(StereoGateIOQueueBridge.COMMAND_IN_THRESHOLD_TYPE, thresholdType );
 	}

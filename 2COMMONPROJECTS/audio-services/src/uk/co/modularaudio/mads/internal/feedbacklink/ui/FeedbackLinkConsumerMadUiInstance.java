@@ -22,11 +22,11 @@ package uk.co.modularaudio.mads.internal.feedbacklink.ui;
 
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class FeedbackLinkConsumerMadUiInstance extends MadUiInstance<FeedbackLinkConsumerMadDefinition, FeedbackLinkConsumerMadInstance>
+public class FeedbackLinkConsumerMadUiInstance extends AbstractMadUiInstance<FeedbackLinkConsumerMadDefinition, FeedbackLinkConsumerMadInstance>
 {
 	private final FeedbackLinkConsumerMadUiDefinition flUiDefinition;
 
@@ -45,6 +45,11 @@ public class FeedbackLinkConsumerMadUiInstance extends MadUiInstance<FeedbackLin
 
 	@Override
 	public void consumeQueueEntry( final FeedbackLinkConsumerMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	{
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
 	{
 	}
 }

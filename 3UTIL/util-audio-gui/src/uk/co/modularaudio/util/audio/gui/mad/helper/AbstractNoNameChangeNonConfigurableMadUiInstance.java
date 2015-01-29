@@ -18,35 +18,31 @@
  *
  */
 
-package uk.co.modularaudio.mads.internal.fade.ui;
+package uk.co.modularaudio.util.audio.gui.mad.helper;
 
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
+import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class FadeOutMadUiInstance extends AbstractMadUiInstance<FadeOutMadDefinition, FadeOutMadInstance>
+public abstract class AbstractNoNameChangeNonConfigurableMadUiInstance<D extends MadDefinition<D,I>, I extends MadInstance<D, I>>
+	extends AbstractNonConfigurableMadUiInstance<D, I>
 {
-	public FadeOutMadUiInstance( final FadeOutMadInstance instance,
-			final FadeOutMadUiDefinition uiDefinition )
+	public AbstractNoNameChangeNonConfigurableMadUiInstance( final Span span,
+			final I instance,
+			final MadUiDefinition<D, I> componentUiDefinition )
 	{
-		super( instance, uiDefinition );
+		super( span, instance, componentUiDefinition );
 	}
 
 	@Override
-	public Span getCellSpan()
+	public final void receiveComponentNameChange( final String newName )
 	{
-		return uiDefinition.getCellSpan();
+		// No name change
 	}
 
 	@Override
-	public void consumeQueueEntry( final FadeOutMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
-	}
+	public abstract void consumeQueueEntry( I instance, IOQueueEvent nextOutgoingEntry );
 
-	@Override
-	public void receiveComponentNameChange( final String newName )
-	{
-	}
 }

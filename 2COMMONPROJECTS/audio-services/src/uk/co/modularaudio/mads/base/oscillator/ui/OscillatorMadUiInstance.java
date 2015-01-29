@@ -23,43 +23,36 @@ package uk.co.modularaudio.mads.base.oscillator.ui;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadInstance;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
 
-public class OscillatorMadUiInstance extends AbstractNonConfigurableMadUiInstance<OscillatorMadDefinition, OscillatorMadInstance>
+public class OscillatorMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<OscillatorMadDefinition, OscillatorMadInstance>
 {
 //	private static Log log = LogFactory.getLog( OscillatorMadUiInstance.class.getName() );
-	
-	public OscillatorMadUiInstance( OscillatorMadInstance instance,
-			OscillatorMadUiDefinition uiDefinition )
+
+	public OscillatorMadUiInstance( final OscillatorMadInstance instance,
+			final OscillatorMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendWaveChoice( OscillatorWaveShape waveShape )
+
+	public void sendWaveChoice( final OscillatorWaveShape waveShape )
 	{
 		sendTemporalValueToInstance( OscillatorIOQueueBridge.COMMAND_IN_WAVE, waveShape.ordinal() );
 	}
 
-	public void sendFrequencyChange( float frequency )
+	public void sendFrequencyChange( final float frequency )
 	{
 		sendTemporalValueToInstance( OscillatorIOQueueBridge.COMMAND_IN_FREQUENCY, Float.floatToIntBits( frequency) );
 	}
-	
-	public void sendFrequencyChangeImmediate( float frequency )
+
+	public void sendFrequencyChangeImmediate( final float frequency )
 	{
 		sendCommandValueToInstance( OscillatorIOQueueBridge.COMMAND_IN_FREQUENCY_IMMEDIATE, Float.floatToIntBits( frequency) );
 	}
-	
-	public void sendWaveShape( OscillatorWaveShape waveShape )
+
+	public void sendWaveShape( final OscillatorWaveShape waveShape )
 	{
 		sendTemporalValueToInstance( OscillatorIOQueueBridge.COMMAND_IN_WAVE, waveShape.ordinal() );
-	}
-
-	@Override
-	public void consumeQueueEntry( OscillatorMadInstance instance,
-			IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

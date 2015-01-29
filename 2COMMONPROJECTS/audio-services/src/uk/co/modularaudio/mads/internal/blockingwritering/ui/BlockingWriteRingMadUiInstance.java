@@ -22,11 +22,11 @@ package uk.co.modularaudio.mads.internal.blockingwritering.ui;
 
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class BlockingWriteRingMadUiInstance extends MadUiInstance<BlockingWriteRingMadDefinition, BlockingWriteRingMadInstance>
+public class BlockingWriteRingMadUiInstance extends AbstractMadUiInstance<BlockingWriteRingMadDefinition, BlockingWriteRingMadInstance>
 {
 	private final BlockingWriteRingMadUiDefinition fiUiDefinition;
 
@@ -45,6 +45,11 @@ public class BlockingWriteRingMadUiInstance extends MadUiInstance<BlockingWriteR
 
 	@Override
 	public void consumeQueueEntry( final BlockingWriteRingMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	{
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
 	{
 	}
 }

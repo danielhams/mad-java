@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -41,7 +41,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.image.ImageFactory;
 
 public abstract class AbstractConfigurableMadUiDefinition
-	<D extends MadDefinition<D,I>, I extends MadInstance<D, I>, U extends MadUiInstance<D, I>>
+	<D extends MadDefinition<D,I>, I extends MadInstance<D, I>, U extends AbstractMadUiInstance<D, I>>
  	extends MadUiDefinition<D, I>
 {
 	private final Class<U> instanceClass;
@@ -79,10 +79,10 @@ public abstract class AbstractConfigurableMadUiDefinition
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadUiInstance<D, I> createNewUiInstance( final I instance )
+	public AbstractMadUiInstance<D, I> createNewUiInstance( final I instance )
 		throws DatastoreException
 	{
-		MadUiInstance<D, I> retVal = null;
+		AbstractMadUiInstance<D, I> retVal = null;
 		try
 		{
 			// Setup where the channels live
@@ -116,7 +116,7 @@ public abstract class AbstractConfigurableMadUiDefinition
 					this,
 			};
 			final Object oic = uiInsCons.newInstance( insComParams );
-			retVal = (MadUiInstance<D, I>)oic;
+			retVal = (AbstractMadUiInstance<D, I>)oic;
 
 			final String[] uiControlNames = uiInstanceConfiguration.getUiControlNames();
 			final ControlType[] uiControlTypes = uiInstanceConfiguration.getUiControlTypes();

@@ -23,9 +23,9 @@ package uk.co.modularaudio.mads.base.xrunner.ui;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadInstance;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class XRunnerMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<XRunnerMadDefinition, XRunnerMadInstance>
+public class XRunnerMadUiInstance extends NoEventsNonConfigurableMadUiInstance<XRunnerMadDefinition, XRunnerMadInstance>
 {
 	public XRunnerMadUiInstance( XRunnerMadInstance instance,
 			XRunnerMadUiDefinition uiDefinition )

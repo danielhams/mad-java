@@ -24,9 +24,9 @@ import uk.co.modularaudio.mads.base.notetocv.mu.NoteOnType;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class NoteToCvMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<NoteToCvMadDefinition, NoteToCvMadInstance>
+public class NoteToCvMadUiInstance extends NoEventsNonConfigurableMadUiInstance<NoteToCvMadDefinition, NoteToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( NoteToCvMadUiInstance.class.getName() );
 	

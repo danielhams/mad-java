@@ -25,16 +25,16 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 import uk.co.modularaudio.util.audio.fft.FftWindow;
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.runav.RunningAverageComputer;
@@ -50,7 +50,7 @@ import uk.co.modularaudio.util.audio.stft.streaming.StreamingWolaProcessor;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class SpectralAmpMadUiInstance extends
-		AbstractNonConfigurableMadUiInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance>
+		AbstractNoNameChangeNonConfigurableMadUiInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance>
 		implements IOQueueEventUiConsumer<SpectralAmpMadInstance>
 {
 	private static Log log = LogFactory.getLog( SpectralAmpMadUiInstance.class.getName() );
@@ -70,11 +70,11 @@ public class SpectralAmpMadUiInstance extends
 
 	private StreamingWolaProcessor wolaProcessor = null;
 	private SpecDataListener specDataListener = null;
-	private float[][] wolaArray = new float[1][];
+	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 
-	public SpectralAmpMadUiInstance( SpectralAmpMadInstance instance,
-			SpectralAmpMadUiDefinition uiDefinition )
+	public SpectralAmpMadUiInstance( final SpectralAmpMadInstance instance,
+			final SpectralAmpMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 		initialiseBuffers();
@@ -98,7 +98,7 @@ public class SpectralAmpMadUiInstance extends
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters, final long currentGuiTick )
 	{
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
@@ -107,7 +107,7 @@ public class SpectralAmpMadUiInstance extends
 
 		if( peakAmpAccumulator.hasNewAmps() )
 		{
-			float[][] computedAmps = peakAmpAccumulator.getComputedAmpsMarkTaken();
+			final float[][] computedAmps = peakAmpAccumulator.getComputedAmpsMarkTaken();
 			specDataListener.processScopeData( computedAmps[0] );
 			// log.trace("Got new amps - first value is " + computedAmps[0][0]
 			// );
@@ -118,40 +118,40 @@ public class SpectralAmpMadUiInstance extends
 	{
 		try
 		{
-			int fftSize = desiredFftSize;
-			int windowLength = (fftSize >= SpectralAmpMadDefinition.MAX_WINDOW_LENGTH ? SpectralAmpMadDefinition.MAX_WINDOW_LENGTH
+			final int fftSize = desiredFftSize;
+			final int windowLength = (fftSize >= SpectralAmpMadDefinition.MAX_WINDOW_LENGTH ? SpectralAmpMadDefinition.MAX_WINDOW_LENGTH
 					: fftSize);
-			FftWindow hannWindow = new HannFftWindow( windowLength );
+			final FftWindow hannWindow = new HannFftWindow( windowLength );
 
-			StftParameters params = new StftParameters( dataRate, 1, windowLength,
+			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
 					SpectralAmpMadDefinition.NUM_OVERLAPS, fftSize, hannWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			wolaProcessor = new StreamingWolaProcessor( params, peakAmpAccumulator );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught reinitialising frequency processor" + e.toString();
+			final String msg = "Exception caught reinitialising frequency processor" + e.toString();
 			log.error( msg, e );
 		}
 	}
 
-	public void setDesiredFftSize( int resolution )
+	public void setDesiredFftSize( final int resolution )
 	{
 		this.desiredFftSize = resolution;
 		reinitialiseFrequencyProcessor();
 	}
 
 	@Override
-	public void consumeQueueEntry( SpectralAmpMadInstance instance, IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final SpectralAmpMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 		switch (nextOutgoingEntry.command)
 		{
 			case SpectralAmpIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
-				long value = nextOutgoingEntry.value;
-				int bufferNum = (int) ((value) & 0xFFFFFFFF);
-				int ringBufferIndex = (int) ((value >> 32) & 0xFFFFFFFF);
+				final long value = nextOutgoingEntry.value;
+				final int bufferNum = (int) ((value) & 0xFFFFFFFF);
+				final int ringBufferIndex = (int) ((value >> 32) & 0xFFFFFFFF);
 
 				if (bufferNum == 0)
 				{
@@ -167,19 +167,19 @@ public class SpectralAmpMadUiInstance extends
 		}
 	}
 
-	private void receiveBufferIndexUpdate( long indexUpdateTimestamp, int writeIndex )
+	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		int numReadable = backendRingBuffer.getNumReadableWithWriteIndex( writeIndex );
-		
-		int spaceAvailable = frontendRingBuffer.getNumWriteable();
+		final int numReadable = backendRingBuffer.getNumReadableWithWriteIndex( writeIndex );
+
+		final int spaceAvailable = frontendRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
 		{
-			int spaceToFree = numReadable - spaceAvailable;
+			final int spaceToFree = numReadable - spaceAvailable;
 //			log.trace("Moving forward " + spaceToFree + " floats");
 			frontendRingBuffer.moveForward( spaceToFree );
 		}
-		
-		int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
+
+		final int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
 		if( numRead != numReadable )
 		{
 			log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
@@ -191,14 +191,14 @@ public class SpectralAmpMadUiInstance extends
 		{
 			// Need to pass new data to the wola and check if there is new data to be displayed here
 //			log.trace( "Successfully passed " + numRead + " samples from mad instance to UI ring buffer" );
-			int ferbWp = frontendRingBuffer.writePosition;
-			
+			final int ferbWp = frontendRingBuffer.writePosition;
+
 			int readStartOffset = ferbWp - numReadable;
 			if( readStartOffset < 0 )
 			{
 				readStartOffset += frontendRingBuffer.bufferLength;
 			}
-			
+
 			int numStraightRead;
 
 			if( ferbWp > readStartOffset )
@@ -211,11 +211,11 @@ public class SpectralAmpMadUiInstance extends
 				// Some wrapping going on
 				numStraightRead = frontendRingBuffer.bufferLength - readStartOffset;
 			}
-			
+
 			numStraightRead = (numStraightRead > numReadable ? numReadable : numStraightRead );
 
-			int numWrappedRead = numReadable - numStraightRead;
-			
+			final int numWrappedRead = numReadable - numStraightRead;
+
 			wolaArray[0] = frontendRingBuffer.buffer;
 
 			if( numStraightRead > 0 )
@@ -239,12 +239,12 @@ public class SpectralAmpMadUiInstance extends
 
 	}
 
-	public void setSpecDataListener( SpecDataListener specDataListener )
+	public void setSpecDataListener( final SpecDataListener specDataListener )
 	{
 		this.specDataListener = specDataListener;
 	}
 
-	public void sendUiActive( boolean showing )
+	public void sendUiActive( final boolean showing )
 	{
 		sendTemporalValueToInstance( SpectralAmpIOQueueBridge.COMMAND_IN_ACTIVE, (showing ? 1 : 0) );
 	}
@@ -264,19 +264,19 @@ public class SpectralAmpMadUiInstance extends
 		return desiredRunningAverageComputer;
 	}
 
-	public void setDesiredAmpScaleComputer( AmpScaleComputer desiredAmpScaleComputer )
+	public void setDesiredAmpScaleComputer( final AmpScaleComputer desiredAmpScaleComputer )
 	{
 		this.desiredAmpScaleComputer = desiredAmpScaleComputer;
 		reinitialiseFrequencyProcessor();
 	}
 
-	public void setDesiredFreqScaleComputer( FrequencyScaleComputer desiredFreqScaleComputer )
+	public void setDesiredFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
 	{
 		this.desiredFreqScaleComputer = desiredFreqScaleComputer;
 		reinitialiseFrequencyProcessor();
 	}
 
-	public void setDesiredRunningAverageComputer( RunningAverageComputer desiredRunningAverageComputer )
+	public void setDesiredRunningAverageComputer( final RunningAverageComputer desiredRunningAverageComputer )
 	{
 		this.desiredRunningAverageComputer = desiredRunningAverageComputer;
 		reinitialiseFrequencyProcessor();

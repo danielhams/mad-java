@@ -24,47 +24,35 @@ import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinit
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstance;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstanceConfiguration;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeConfigurableMadUiInstance;
 import uk.co.modularaudio.util.table.Span;
 
-public class NoteMultiplexerMadUiInstance extends MadUiInstance<NoteMultiplexerMadDefinition, NoteMultiplexerMadInstance>
+public class NoteMultiplexerMadUiInstance extends NoEventsNoNameChangeConfigurableMadUiInstance<NoteMultiplexerMadDefinition, NoteMultiplexerMadInstance>
 {
-	private Span span = null;
-
-	public NoteMultiplexerMadUiInstance( NoteMultiplexerMadInstance instance,
-			NoteMultiplexerMadUiDefinition uiDefinition )
+	public NoteMultiplexerMadUiInstance( final NoteMultiplexerMadInstance instance,
+			final NoteMultiplexerMadUiDefinition uiDefinition )
 	{
-		super( instance, uiDefinition );
-		
-		NoteMultiplexerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
-		int numInputChannels = 1;
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-		
-		int startXOffset = NoteMultiplexerMadUiDefinition.INPUT_CHANNELS_START.x;
-		int startYOffset = NoteMultiplexerMadUiDefinition.INPUT_CHANNELS_START.y;
-		int numChannelsWidth = numInputChannels * NoteMultiplexerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
-		int outputChannelsHeight = numOutputChannels * NoteMultiplexerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
-		
-		int totalWidth = startXOffset + numChannelsWidth + NoteMultiplexerMadUiDefinition.INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
+		super( instance, uiDefinition, calculateSpanForInstanceConfiguration( instance.getInstanceConfiguration() ) );
+	}
+
+	private static Span calculateSpanForInstanceConfiguration( final NoteMultiplexerMadInstanceConfiguration instanceConfiguration )
+	{
+		final int numInputChannels = 1;
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+
+		final int startXOffset = NoteMultiplexerMadUiDefinition.INPUT_CHANNELS_START.x;
+		final int startYOffset = NoteMultiplexerMadUiDefinition.INPUT_CHANNELS_START.y;
+		final int numChannelsWidth = numInputChannels * NoteMultiplexerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
+		final int outputChannelsHeight = numOutputChannels * NoteMultiplexerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
+
+		final int totalWidth = startXOffset + numChannelsWidth + NoteMultiplexerMadUiDefinition.INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
 				numChannelsWidth;
-		int totalHeight = startYOffset + outputChannelsHeight;
-		
+		final int totalHeight = startYOffset + outputChannelsHeight;
+
 		// 150 x 50  per cell
-		int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
-		int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
-		
-		span = new Span( numCellsWide, numCellsHigh );
-	}
+		final int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
+		final int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
 
-	@Override
-	public Span getCellSpan()
-	{
-		return span;
-	}
-
-	@Override
-	public void consumeQueueEntry( NoteMultiplexerMadInstance instance, IOQueueEvent nextOutgoingEntry)
-	{
+		return new Span( numCellsWide, numCellsHigh );
 	}
 }

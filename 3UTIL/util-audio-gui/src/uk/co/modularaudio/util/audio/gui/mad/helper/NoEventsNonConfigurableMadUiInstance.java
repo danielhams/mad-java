@@ -29,13 +29,13 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class AbstractNonConfigurableNoEventsMadUiInstance<D extends MadDefinition<D,I>,
+public class NoEventsNonConfigurableMadUiInstance<D extends MadDefinition<D,I>,
 I extends MadInstance<D, I>>
 	extends AbstractNonConfigurableMadUiInstance<D, I>
 {
-	private static Log log = LogFactory.getLog( AbstractNonConfigurableNoEventsMadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( NoEventsNonConfigurableMadUiInstance.class.getName() );
 
-	public AbstractNonConfigurableNoEventsMadUiInstance(final Span span,
+	public NoEventsNonConfigurableMadUiInstance(final Span span,
 			final I instance,
 			final MadUiDefinition<D, I> componentUiDefinition)
 	{
@@ -47,5 +47,11 @@ I extends MadInstance<D, I>>
 			final IOQueueEvent nextOutgoingEntry)
 	{
 		log.error("MadUiInstance subclasses no events - yet queue entry consumer called!");
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
+	{
+		// Do nothing
 	}
 }

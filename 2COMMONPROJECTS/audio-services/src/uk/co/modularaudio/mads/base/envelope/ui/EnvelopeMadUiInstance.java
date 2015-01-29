@@ -27,18 +27,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.envelope.mu.Envelope;
+import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeIOQueueBridge;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeIOQueueBridge;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeWaveChoice;
 import uk.co.modularaudio.mads.base.envelope.ui.WaveTableChoiceAttackCombo.WaveTableChoiceEnum;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class EnvelopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<EnvelopeMadDefinition, EnvelopeMadInstance>
+public class EnvelopeMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<EnvelopeMadDefinition, EnvelopeMadInstance>
 	implements IOQueueEventUiConsumer<EnvelopeMadInstance>
 {
 	private static Log log = LogFactory.getLog( EnvelopeMadUiInstance.class.getName() );

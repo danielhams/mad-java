@@ -24,36 +24,30 @@ import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterIOQueueBridge;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class MoogFilterMadUiInstance extends AbstractNonConfigurableMadUiInstance<MoogFilterMadDefinition, MoogFilterMadInstance>
+public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<MoogFilterMadDefinition, MoogFilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( MoogFilterMadUiInstance.class.getName() );
-	
-	public MoogFilterMadUiInstance( MoogFilterMadInstance instance,
-			MoogFilterMadUiDefinition uiDefinition )
+
+	public MoogFilterMadUiInstance( final MoogFilterMadInstance instance,
+			final MoogFilterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendFilterModeChange( FrequencyFilterMode desiredFilterMode )
+	public void sendFilterModeChange( final FrequencyFilterMode desiredFilterMode )
 	{
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_FILTER_MODE, desiredFilterMode.ordinal() );
 	}
 
-	public void sendFrequencyChange( float desiredFrequency )
+	public void sendFrequencyChange( final float desiredFrequency )
 	{
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_FREQUENCY, Float.floatToIntBits( desiredFrequency ) );
 	}
 
-	public void sendBandwidthChange( float desiredBandwidth )
+	public void sendBandwidthChange( final float desiredBandwidth )
 	{
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_Q, Float.floatToIntBits( desiredBandwidth ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( MoogFilterMadInstance instance, IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

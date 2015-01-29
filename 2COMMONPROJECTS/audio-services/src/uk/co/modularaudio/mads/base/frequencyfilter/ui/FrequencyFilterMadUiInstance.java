@@ -24,10 +24,9 @@ import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinit
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterIOQueueBridge;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class FrequencyFilterMadUiInstance extends AbstractNonConfigurableMadUiInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance>
+public class FrequencyFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( FrequencyFilterMadUiInstance.class.getName() );
 
@@ -55,10 +54,5 @@ public class FrequencyFilterMadUiInstance extends AbstractNonConfigurableMadUiIn
 	public void send24dBChange( final boolean desired24db )
 	{
 		sendTemporalValueToInstance( FrequencyFilterIOQueueBridge.COMMAND_DBTOGGLE, (desired24db ? 1 : 0 ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( final FrequencyFilterMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -42,7 +42,7 @@ import uk.co.modularaudio.util.table.Span;
 
 public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefinition<D,I>,
 	I extends MadInstance<D, I>,
-	U extends MadUiInstance<D, I>>
+	U extends AbstractMadUiInstance<D, I>>
  	extends MadUiDefinition<D, I>
 {
 	private final Span span;
@@ -126,10 +126,10 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadUiInstance<D, I> createNewUiInstance( final I instance )
+	public AbstractMadUiInstance<D, I> createNewUiInstance( final I instance )
 		throws DatastoreException
 	{
-		MadUiInstance<D, I> retVal = null;
+		AbstractMadUiInstance<D, I> retVal = null;
 		try
 		{
 			// Setup where the channels live
@@ -156,7 +156,7 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 					this
 			};
 			final Object oic = uiInsCons.newInstance( insComParams );
-			retVal = (MadUiInstance<D, I>)oic;
+			retVal = (AbstractMadUiInstance<D, I>)oic;
 
 			// And setup the controls
 			final ArrayList<AbstractMadUiControlInstance<?,?,?>> uiControlInstances = new ArrayList<AbstractMadUiControlInstance<?,?,?>>();

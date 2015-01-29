@@ -29,19 +29,17 @@ import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstanceConfiguration;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
-public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerMadInstance>
+public class MixerMadUiInstance extends AbstractNoNameChangeConfigurableMadUiInstance<MixerMadDefinition, MixerMadInstance>
 	implements IOQueueEventUiConsumer<MixerMadInstance>
 {
 	private static Log log = LogFactory.getLog( MixerMadUiInstance.class.getName() );
-
-	private final Span span;
 
 	private final OpenIntObjectHashMap<MeterValueReceiver> laneMeterReceiversMap = new OpenIntObjectHashMap<MeterValueReceiver>();
 	private MeterValueReceiver masterMeterReceiver;
@@ -51,10 +49,11 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 	public MixerMadUiInstance( final MixerMadInstance instance,
 			final MixerMadUiDefinition uiDefinition )
 	{
-		super( instance, uiDefinition );
+		super( instance, uiDefinition, calculateSpanForInstanceConfiguration( instance.getInstanceConfiguration() ) );
+	}
 
-		final MixerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
-
+	private static Span calculateSpanForInstanceConfiguration( final MixerMadInstanceConfiguration instanceConfiguration )
+	{
 		final int numInputLanes = instanceConfiguration.getNumInputLanes();
 //		int numChannelsPerLane = instanceConfiguration.getNumChannelsPerLane();
 		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
@@ -74,13 +73,7 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 		final int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
 		final int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
 
-		span = new Span( numCellsWide, numCellsHigh );
-	}
-
-	@Override
-	public Span getCellSpan()
-	{
-		return span;
+		return new Span( numCellsWide, numCellsHigh );
 	}
 
 	@Override

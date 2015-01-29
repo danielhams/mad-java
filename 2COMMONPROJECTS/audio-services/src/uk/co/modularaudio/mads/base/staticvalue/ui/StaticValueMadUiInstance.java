@@ -23,10 +23,9 @@ package uk.co.modularaudio.mads.base.staticvalue.ui;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueIOQueueBridge;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class StaticValueMadUiInstance extends AbstractNonConfigurableMadUiInstance<StaticValueMadDefinition, StaticValueMadInstance>
+public class StaticValueMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<StaticValueMadDefinition, StaticValueMadInstance>
 {
 //	private static Log log = LogFactory.getLog( StaticValueMadUiInstance.class.getName() );
 
@@ -39,10 +38,5 @@ public class StaticValueMadUiInstance extends AbstractNonConfigurableMadUiInstan
 	public void sendValueChange( final float newValue )
 	{
 		sendTemporalValueToInstance( StaticValueIOQueueBridge.COMMAND_VALUE, Float.floatToIntBits( newValue ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( final StaticValueMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

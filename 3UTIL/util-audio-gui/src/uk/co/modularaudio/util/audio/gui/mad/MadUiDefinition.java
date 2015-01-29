@@ -59,7 +59,7 @@ public abstract class MadUiDefinition
 		this.isParametrable = isParametrable;
 	}
 
-	public abstract MadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;
+	public abstract AbstractMadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;
 
 	public D getDefinition()
 	{

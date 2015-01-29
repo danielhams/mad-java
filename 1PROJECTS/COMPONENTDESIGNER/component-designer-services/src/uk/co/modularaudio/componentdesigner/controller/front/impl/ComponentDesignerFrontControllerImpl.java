@@ -74,7 +74,7 @@ import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
@@ -560,7 +560,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		for( int i = 0 ; i < rackComponents.size() ; i++)
 		{
 			final RackComponent rc = rackComponents.get( i );
-			final MadUiInstance<?, ?> uiInstance = rc.getUiInstance();
+			final AbstractMadUiInstance<?, ?> uiInstance = rc.getUiInstance();
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{
 //				log.debug("Calling rdt on " + uiInstance.getInstance().getInstanceName() );

@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerIOQueueBridge;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class WaveRollerMadUiInstance extends AbstractNonConfigurableMadUiInstance<WaveRollerMadDefinition, WaveRollerMadInstance>
+public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<WaveRollerMadDefinition, WaveRollerMadInstance>
 	implements IOQueueEventUiConsumer<WaveRollerMadInstance>
 {
 	private static Log log = LogFactory.getLog( WaveRollerMadUiInstance.class.getName() );

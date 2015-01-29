@@ -26,13 +26,13 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerIOQueueBridge;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class PatternSequencerMadUiInstance extends AbstractNonConfigurableMadUiInstance<PatternSequencerMadDefinition, PatternSequencerMadInstance>
+public class PatternSequencerMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<PatternSequencerMadDefinition, PatternSequencerMadInstance>
 	implements IOQueueEventUiConsumer<PatternSequencerMadInstance>
 {
 	private static Log log = LogFactory.getLog( PatternSequencerMadUiInstance.class.getName() );

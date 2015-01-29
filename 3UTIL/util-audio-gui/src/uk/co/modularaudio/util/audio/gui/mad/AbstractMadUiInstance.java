@@ -35,10 +35,10 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
-public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends MadInstance<D,I>>
+public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I extends MadInstance<D,I>>
 	implements IMadUiInstance<D, I>, MadInstance.InstanceLifecycleListener, IOQueueEventUiConsumer<I>
 {
-	private static Log log = LogFactory.getLog( MadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( AbstractMadUiInstance.class.getName() );
 
 	protected final I instance;
 	protected final MadUiDefinition<D,  I> uiDefinition;
@@ -62,7 +62,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	protected MadFrameTimeFactory frameTimeFactory = null;
 	protected long temporalValueFixedLatencyFrames = 0;
 
-	public MadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition )
+	public AbstractMadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition )
 	{
 		this.instance = instance;
 		this.uiDefinition = uiDefinition;
@@ -206,10 +206,7 @@ public abstract class MadUiInstance<D extends MadDefinition<D, I>, I extends Mad
 	}
 
 	@Override
-	public void receiveComponentNameChange( final String newName )
-	{
-		// Do nothing by default.
-	}
+	public abstract void receiveComponentNameChange( final String newName );
 
 	public void setUiControlsAndChannels( final AbstractMadUiControlInstance<?, ?, ?>[] controlsIn,
 			final AbstractMadUiControlInstance<?, ?, ?>[] displayProcessingControlsIn,

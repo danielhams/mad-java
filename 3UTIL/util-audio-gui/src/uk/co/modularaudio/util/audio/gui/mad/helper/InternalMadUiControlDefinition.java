@@ -26,7 +26,7 @@ import java.lang.reflect.Constructor;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -48,7 +48,7 @@ public class InternalMadUiControlDefinition extends MadUiControlDefinition
 	@SuppressWarnings("unchecked")
 	@Override
 	public AbstractMadUiControlInstance createInstance( final MadInstance instance,
-			final MadUiInstance uiInstance )
+			final AbstractMadUiInstance uiInstance )
 		throws DatastoreException
 	{
 		try

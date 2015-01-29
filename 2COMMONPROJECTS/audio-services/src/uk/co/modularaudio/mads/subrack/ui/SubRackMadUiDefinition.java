@@ -32,7 +32,7 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -106,10 +106,10 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( final SubRackMadInstance madInstance )
+	public AbstractMadUiInstance<?,?> createNewUiInstance( final SubRackMadInstance madInstance )
 		throws DatastoreException
 	{
-		MadUiInstance<SubRackMadDefinition,SubRackMadInstance> retVal = null;
+		AbstractMadUiInstance<SubRackMadDefinition,SubRackMadInstance> retVal = null;
 		try
 		{
 			// Setup where the channels live

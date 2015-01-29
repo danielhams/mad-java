@@ -24,10 +24,9 @@ import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerEventMapping;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class ControllerToCvMadUiInstance extends AbstractNonConfigurableMadUiInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance>
+public class ControllerToCvMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ControllerToCvMadUiInstance.class.getName() );
 
@@ -50,10 +49,5 @@ public class ControllerToCvMadUiInstance extends AbstractNonConfigurableMadUiIns
 	public void sendSelectedController( final int controller )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_CONTROLLER_NUMBER, controller );
-	}
-
-	@Override
-	public void consumeQueueEntry( final ControllerToCvMadInstance instance, final IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

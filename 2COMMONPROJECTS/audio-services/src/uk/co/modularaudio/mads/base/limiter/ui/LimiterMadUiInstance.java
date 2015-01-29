@@ -23,28 +23,22 @@ package uk.co.modularaudio.mads.base.limiter.ui;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class LimiterMadUiInstance extends AbstractNonConfigurableMadUiInstance<LimiterMadDefinition, LimiterMadInstance>
+public class LimiterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<LimiterMadDefinition, LimiterMadInstance>
 {
-	public LimiterMadUiInstance( LimiterMadInstance instance, LimiterMadUiDefinition uiDefinition )
+	public LimiterMadUiInstance( final LimiterMadInstance instance, final LimiterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendKneeChange( float incomingKnee )
+
+	public void sendKneeChange( final float incomingKnee )
 	{
 		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_KNEE, Float.floatToIntBits( incomingKnee ) );
 	}
-	
-	public void sendFalloffChange( float incomingFalloff )
+
+	public void sendFalloffChange( final float incomingFalloff )
 	{
 		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_FALLOFF, Float.floatToIntBits( incomingFalloff ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( LimiterMadInstance instance, IOQueueEvent nextOutgoingEntry )
-	{
 	}
 }

@@ -22,9 +22,9 @@ package uk.co.modularaudio.mads.base.dctrap.ui;
 
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class DCTrapMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<DCTrapMadDefinition, DCTrapMadInstance>
+public class DCTrapMadUiInstance extends NoEventsNonConfigurableMadUiInstance<DCTrapMadDefinition, DCTrapMadInstance>
 {
 	public DCTrapMadUiInstance( final DCTrapMadInstance instance,
 			final DCTrapMadUiDefinition uiDefinition )

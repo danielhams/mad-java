@@ -22,26 +22,13 @@ package uk.co.modularaudio.mads.rackmasterio.ui;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
-import uk.co.modularaudio.util.table.Span;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class RackMasterIOMadUiInstance extends MadUiInstance<RackMasterIOMadDefinition, RackMasterIOMadInstance>
+public class RackMasterIOMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<RackMasterIOMadDefinition, RackMasterIOMadInstance>
 {
 	public RackMasterIOMadUiInstance( final RackMasterIOMadInstance instance,
 			final RackMasterIOMadUiDefinition uiDefinition )
 	{
-		super( instance, uiDefinition );
-	}
-
-	@Override
-	public Span getCellSpan()
-	{
-		return uiDefinition.getCellSpan();
-	}
-
-	@Override
-	public void consumeQueueEntry( final RackMasterIOMadInstance instance, final IOQueueEvent nextOutgoingEntry )
-	{
+		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 }

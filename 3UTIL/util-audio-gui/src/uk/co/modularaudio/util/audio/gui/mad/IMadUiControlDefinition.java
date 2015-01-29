@@ -29,7 +29,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public interface IMadUiControlDefinition
 	<D extends MadDefinition<D,I>,
 	I extends MadInstance<D,I>,
-	U extends MadUiInstance<D,I>>
+	U extends AbstractMadUiInstance<D,I>>
 {
 
 	int getControlIndex();

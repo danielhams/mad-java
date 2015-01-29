@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 public abstract class AbstractMadUiControlInstance
 	<D extends MadDefinition<D,I>,
 	I extends MadInstance<D,I>,
-	U extends MadUiInstance<D, I>>
+	U extends AbstractMadUiInstance<D, I>>
 	implements IMadUiControlInstance<D, I, U>
 {
 	protected final U componentUiInstance;

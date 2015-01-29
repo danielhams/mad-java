@@ -20,27 +20,17 @@
 
 package uk.co.modularaudio.mads.base.notedebug.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class NoteDebugMadUiInstance extends AbstractNonConfigurableMadUiInstance<NoteDebugMadDefinition, NoteDebugMadInstance>
+public class NoteDebugMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<NoteDebugMadDefinition, NoteDebugMadInstance>
 {
-	private static Log log = LogFactory.getLog( NoteDebugMadUiInstance.class.getName() );
-	
-	public NoteDebugMadUiInstance( NoteDebugMadInstance instance,
-			NoteDebugMadUiDefinition uiDefinition )
+//	private static Log log = LogFactory.getLog( NoteDebugMadUiInstance.class.getName() );
+
+	public NoteDebugMadUiInstance( final NoteDebugMadInstance instance,
+			final NoteDebugMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
-	}
-
-	@Override
-	public void consumeQueueEntry( NoteDebugMadInstance instance, IOQueueEvent nextOutgoingEntry )
-	{
-		log.debug("Received an event: " + nextOutgoingEntry.command );
 	}
 }
