@@ -57,11 +57,11 @@ import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotFrameTimeFactory;
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.MTRenderingJobQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.AppRenderingErrorStruct;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue.AppRenderingErrorStruct;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -138,7 +138,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private RackService rackService;
 
-	private AbstractAppRenderingIO appRenderingIO;
+	private AppRenderingIO appRenderingIO;
 
 	private RackDataModel userVisibleRack;
 
@@ -996,7 +996,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					}
 				}
 
-				final AbstractAppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
+				final AppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
 				retVal = testAppRenderingIO.testRendering( AUDIO_TEST_RUN_MILLIS );
 
 				if( wasRunningBeforeTest && !retVal)

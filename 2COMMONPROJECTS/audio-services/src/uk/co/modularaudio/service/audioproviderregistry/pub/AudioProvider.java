@@ -22,9 +22,6 @@ package uk.co.modularaudio.service.audioproviderregistry.pub;
 
 import java.util.List;
 
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDeviceCriteria;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
@@ -34,13 +31,13 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public abstract class AudioProvider
 {
-	private String id;
-	
-	protected AudioProvider( String id )
+	private final String id;
+
+	protected AudioProvider( final String id )
 	{
 		this.id = id;
 	}
-	
+
 	public String getId()
 	{
 		return id;
@@ -51,14 +48,14 @@ public abstract class AudioProvider
 
 	public abstract List<? extends MidiHardwareDevice> getAllProducerMidiDevices( MidiHardwareDeviceCriteria criteria )
 			throws DatastoreException;
-	
+
 	public abstract List<? extends AudioHardwareDevice> getAllProducerAudioDevices( AudioHardwareDeviceCriteria criteria )
 			throws DatastoreException;
 
 	public abstract List<? extends AudioHardwareDevice> getAllConsumerAudioDevices( AudioHardwareDeviceCriteria criteria )
 			throws DatastoreException;
 
-	public abstract AbstractAppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	public abstract AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorQueue errorQueue,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException;

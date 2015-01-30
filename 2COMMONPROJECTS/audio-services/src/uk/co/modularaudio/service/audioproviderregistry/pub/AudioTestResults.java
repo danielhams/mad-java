@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.vos;
+package uk.co.modularaudio.service.audioproviderregistry.pub;
 
 import org.apache.commons.logging.Log;
 

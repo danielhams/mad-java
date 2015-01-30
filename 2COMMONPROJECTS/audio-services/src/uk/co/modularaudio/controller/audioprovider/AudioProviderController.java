@@ -20,15 +20,15 @@
 
 package uk.co.modularaudio.controller.audioprovider;
 
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public interface AudioProviderController
 {
-	AbstractAppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException, RecordNotFoundException;
 }

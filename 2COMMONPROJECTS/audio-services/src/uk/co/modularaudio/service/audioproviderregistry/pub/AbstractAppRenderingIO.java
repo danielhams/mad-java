@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.vos;
+package uk.co.modularaudio.service.audioproviderregistry.pub;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,8 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.ClockSourceJobQueueProcessing;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingLifecycleListener.SignalType;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -47,7 +48,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
-public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
+public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, AppRenderingIO
 {
 	private static Log log = LogFactory.getLog( AbstractAppRenderingIO.class.getName() );
 
@@ -103,6 +104,10 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 		errorQueue.addCallbackForRenderingIO( this, errorCallback );
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#startRendering()
+	 */
+	@Override
 	public void startRendering()
 	{
 		if( isRendering() )
@@ -150,6 +155,10 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#stopRendering()
+	 */
+	@Override
 	public boolean stopRendering()
 	{
 		if( !isRendering() )
@@ -189,11 +198,19 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#isRendering()
+	 */
+	@Override
 	public boolean isRendering()
 	{
 		return rendering.get();
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#testRendering(long)
+	 */
+	@Override
 	public boolean testRendering( final long testClientRunMillis )
 	{
 		final AudioTestResults retVal = new AudioTestResults();
@@ -326,11 +343,19 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 		return retVal.isSuccessfull();
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#getAppRenderingGraph()
+	 */
+	@Override
 	public AppRenderingGraph getAppRenderingGraph()
 	{
 		return appRenderingGraph;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#destroy()
+	 */
+	@Override
 	public void destroy()
 	{
 		try
@@ -392,6 +417,10 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#setShouldRecordPeriods(boolean)
+	 */
+	@Override
 	public void setShouldRecordPeriods( final boolean should )
 	{
 		this.shouldRecordPeriods = should;
@@ -438,6 +467,9 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#getCurrentUiFrameTime()
+	 */
 	@Override
 	public abstract long getCurrentUiFrameTime();
 }

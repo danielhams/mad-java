@@ -36,10 +36,10 @@ import org.jaudiolibs.jnajack.JackOptions;
 import org.jaudiolibs.jnajack.JackStatus;
 
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AbstractAppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;

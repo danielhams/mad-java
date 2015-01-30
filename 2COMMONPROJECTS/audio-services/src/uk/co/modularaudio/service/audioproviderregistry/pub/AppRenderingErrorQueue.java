@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.vos;
+package uk.co.modularaudio.service.audioproviderregistry.pub;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,11 +43,11 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 
 	public class AppRenderingErrorStruct
 	{
-		public final AbstractAppRenderingIO sourceRenderingIO;
+		public final AppRenderingIO sourceRenderingIO;
 		public final ErrorSeverity severity;
 		public final String msg;
 
-		public AppRenderingErrorStruct( final AbstractAppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+		public AppRenderingErrorStruct( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
 		{
 			this.sourceRenderingIO = sourceRenderingIO;
 			this.severity = severity;
@@ -113,7 +113,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void removeCallbackForRenderingIO( final AbstractAppRenderingIO sourceRenderingIO )
+	public void removeCallbackForRenderingIO( final AppRenderingIO sourceRenderingIO )
 	{
 		final AppRenderingErrorCallback callback = appRenderingToCallbackMap.get( sourceRenderingIO );
 		if( callback == null )
@@ -133,7 +133,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void queueError( final AbstractAppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+	public void queueError( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
 	{
 		final AppRenderingErrorStruct es = new AppRenderingErrorStruct( sourceRenderingIO, severity, msg );
 		errorQueue.add( es );

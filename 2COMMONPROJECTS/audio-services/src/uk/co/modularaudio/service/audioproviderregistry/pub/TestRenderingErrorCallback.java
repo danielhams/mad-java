@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.vos;
+package uk.co.modularaudio.service.audioproviderregistry.pub;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue.ErrorSeverity;
 
 
 public class TestRenderingErrorCallback
@@ -48,7 +48,6 @@ public class TestRenderingErrorCallback
 				error.sourceRenderingIO.stopRendering();
 			}
 		}
-
 	}
 
 	@Override

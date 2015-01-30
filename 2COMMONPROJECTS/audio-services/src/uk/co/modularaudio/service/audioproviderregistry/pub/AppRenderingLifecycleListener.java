@@ -18,13 +18,27 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.vos;
+package uk.co.modularaudio.service.audioproviderregistry.pub;
 
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.AppRenderingErrorStruct;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
-public interface AppRenderingErrorCallback
+public interface AppRenderingLifecycleListener
 {
-	void errorCallback( AppRenderingErrorStruct error );
-	
-	String getName();
+	public enum SignalType
+	{
+		PRE_START,
+		POST_START,
+		PRE_STOP,
+		POST_STOP,
+		START_TEST,
+		STOP_TEST
+	};
+	public void receiveEngineSignal( HardwareIOChannelSettings coreEngineChannelSettings,
+			MadFrameTimeFactory frameTimeFactory,
+			SignalType signalType,
+			AppRenderingErrorQueue errorQueue )
+		throws DatastoreException, MadProcessingException;
 }

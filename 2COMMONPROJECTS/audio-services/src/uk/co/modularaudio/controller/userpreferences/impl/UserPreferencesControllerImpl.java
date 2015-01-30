@@ -50,14 +50,14 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	{
 	}
 
-	public UserPreferencesService getUserPreferencesService()
-	{
-		return userPreferencesService;
-	}
-
 	public void setUserPreferencesService(final UserPreferencesService userPreferencesService)
 	{
 		this.userPreferencesService = userPreferencesService;
+	}
+
+	public void setGuiService( final GuiService guiService )
+	{
+		this.guiService = guiService;
 	}
 
 	@Override
@@ -76,11 +76,6 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 			throws DatastoreException
 	{
 		userPreferencesService.applyUserPreferencesChanges( userPreferencesMVCController );
-	}
-
-	public void setGuiService( final GuiService guiService )
-	{
-		this.guiService = guiService;
 	}
 
 	@Override

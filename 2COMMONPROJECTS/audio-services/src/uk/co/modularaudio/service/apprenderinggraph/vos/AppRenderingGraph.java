@@ -38,6 +38,8 @@ import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotClo
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotFrameTimeFactory;
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.MTRenderingJobQueue;
 import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.STRenderingJobQueue;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue;
+import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingLifecycleListener;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.madgraph.GraphType;
