@@ -27,10 +27,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetectionRT;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetector;
-import uk.co.modularaudio.service.audioanalysis.vos.AnalysedData;
-import uk.co.modularaudio.service.hashedstorage.vos.HashedRef;
+import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.util.audio.format.DataRate;
 
 public class BeatDetectionListener implements AnalysisListener

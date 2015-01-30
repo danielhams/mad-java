@@ -24,9 +24,9 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;

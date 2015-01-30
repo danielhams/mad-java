@@ -23,9 +23,9 @@ package uk.co.modularaudio.service.rendering.impl.rpdump;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 import uk.co.modularaudio.service.rendering.impl.MadParallelRenderingJob;
 import uk.co.modularaudio.service.rendering.impl.MadRenderingJob;
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;

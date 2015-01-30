@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;

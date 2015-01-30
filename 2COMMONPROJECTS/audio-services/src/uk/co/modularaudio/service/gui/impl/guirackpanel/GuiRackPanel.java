@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
+import uk.co.modularaudio.service.gui.GuiRackBackActionListener;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.sub.GuiRackActions;
@@ -46,7 +47,6 @@ import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackD
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackDragPolicy;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragDecorations;
 import uk.co.modularaudio.service.gui.impl.racktable.front.FrontRackTableGuiFactory;
-import uk.co.modularaudio.service.gui.valueobjects.GuiRackBackActionListener;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.rack.RackService;

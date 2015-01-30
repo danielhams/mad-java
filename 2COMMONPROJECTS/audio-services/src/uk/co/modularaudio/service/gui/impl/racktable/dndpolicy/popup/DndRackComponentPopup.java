@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.popup;
 
 import javax.swing.JPopupMenu;
 
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 

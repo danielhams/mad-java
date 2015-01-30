@@ -26,9 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
-import uk.co.modularaudio.service.hashedstorage.vos.HashedRef;
-import uk.co.modularaudio.service.hashedstorage.vos.HashedWarehouse;
+import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
 import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;

@@ -25,7 +25,7 @@ import java.util.Collection;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
-import uk.co.modularaudio.service.madcomponentui.factoryshell.AbstractMadComponentUiFactory;
+import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;

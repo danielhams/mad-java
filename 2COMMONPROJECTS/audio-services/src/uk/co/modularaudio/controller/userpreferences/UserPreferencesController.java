@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.controller.userpreferences;
 
-import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
+import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.exception.DatastoreException;
 

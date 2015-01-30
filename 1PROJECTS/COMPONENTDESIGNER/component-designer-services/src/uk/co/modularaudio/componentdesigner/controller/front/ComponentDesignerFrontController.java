@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
-import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
+import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;

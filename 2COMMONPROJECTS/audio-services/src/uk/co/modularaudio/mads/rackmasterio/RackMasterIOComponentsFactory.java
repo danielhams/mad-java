@@ -25,7 +25,7 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
-import uk.co.modularaudio.service.madcomponent.factoryshell.AbstractMadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;

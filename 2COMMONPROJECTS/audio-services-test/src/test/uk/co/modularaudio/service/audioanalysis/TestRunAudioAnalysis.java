@@ -31,9 +31,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.BasicConfigurator;
 import org.springframework.context.support.GenericApplicationContext;
 
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AudioAnalysisException;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
-import uk.co.modularaudio.service.audioanalysis.vos.AnalysedData;
-import uk.co.modularaudio.service.audioanalysis.vos.AudioAnalysisException;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;

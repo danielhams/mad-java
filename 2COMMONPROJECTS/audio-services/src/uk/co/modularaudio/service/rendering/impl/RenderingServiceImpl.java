@@ -30,13 +30,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.madgraph.MadGraphService;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.rendering.impl.flatgraph.DirectedDependencyGraph;
 import uk.co.modularaudio.service.rendering.impl.flatgraph.DirectedDependencyGraphHelper;
 import uk.co.modularaudio.service.rendering.impl.flatgraph.FlattenedRenderJob;
 import uk.co.modularaudio.service.rendering.impl.rpdump.Dumper;
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;

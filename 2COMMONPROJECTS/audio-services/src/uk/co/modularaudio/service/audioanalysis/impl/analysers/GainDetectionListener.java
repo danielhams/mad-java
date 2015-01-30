@@ -20,8 +20,8 @@
 
 package uk.co.modularaudio.service.audioanalysis.impl.analysers;
 
-import uk.co.modularaudio.service.audioanalysis.vos.AnalysedData;
-import uk.co.modularaudio.service.hashedstorage.vos.HashedRef;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.util.audio.format.DataRate;
 
 public class GainDetectionListener implements AnalysisListener

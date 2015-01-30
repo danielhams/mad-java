@@ -28,8 +28,8 @@ import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;

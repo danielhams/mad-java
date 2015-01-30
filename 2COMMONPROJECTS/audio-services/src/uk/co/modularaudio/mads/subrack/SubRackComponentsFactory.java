@@ -28,7 +28,7 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiService;
-import uk.co.modularaudio.service.madcomponent.factoryshell.AbstractMadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;

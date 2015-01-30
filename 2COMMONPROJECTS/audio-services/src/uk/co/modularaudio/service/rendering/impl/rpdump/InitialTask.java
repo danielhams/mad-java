@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.rendering.impl.rpdump;
 
 import java.util.Collection;
 
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 
 public class InitialTask implements Runnable
 {

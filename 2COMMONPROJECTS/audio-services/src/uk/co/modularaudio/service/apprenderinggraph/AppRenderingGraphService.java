@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.apprenderinggraph;
 
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface AppRenderingGraphService

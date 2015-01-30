@@ -28,10 +28,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiAudioChannelPlug;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiCVChannelPlug;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiChannelPlug;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiNoteChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiAudioChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiCVChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiNoteChannelPlug;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;

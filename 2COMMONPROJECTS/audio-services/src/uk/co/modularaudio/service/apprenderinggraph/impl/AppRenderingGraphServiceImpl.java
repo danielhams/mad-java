@@ -26,8 +26,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;

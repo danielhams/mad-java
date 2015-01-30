@@ -20,8 +20,8 @@
 
 package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
 
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 

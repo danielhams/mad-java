@@ -22,9 +22,9 @@ package uk.co.modularaudio.service.rendering.impl;
 
 import java.util.Set;
 
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
-import uk.co.modularaudio.service.rendering.vos.profiling.RenderingPlanProfileResults;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;

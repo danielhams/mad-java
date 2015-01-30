@@ -21,11 +21,11 @@
 package uk.co.modularaudio.controller.audioprovider.impl;
 
 import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.AudioProvider;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
-import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO;
-import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;

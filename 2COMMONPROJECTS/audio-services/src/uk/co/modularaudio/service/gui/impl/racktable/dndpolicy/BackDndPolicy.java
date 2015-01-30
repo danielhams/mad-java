@@ -22,14 +22,14 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy;
 
 import java.util.ArrayList;
 
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.gui.GuiRackBackActionListener;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTableDndPolicy;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackDragDecorations;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackDragPolicy;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragDecorations;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragPolicy;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
-import uk.co.modularaudio.service.gui.valueobjects.GuiRackBackActionListener;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;

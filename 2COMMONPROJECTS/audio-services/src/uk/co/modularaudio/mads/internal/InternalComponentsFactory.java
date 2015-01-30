@@ -40,7 +40,7 @@ import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadInstance;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadDefinition;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadInstance;
-import uk.co.modularaudio.service.madcomponent.factoryshell.AbstractMadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;

@@ -40,8 +40,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;

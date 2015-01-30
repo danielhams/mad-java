@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.gui.impl.guirackpanel;
 
-import uk.co.modularaudio.service.gui.valueobjects.GuiRackBackActionListener;
+import uk.co.modularaudio.service.gui.GuiRackBackActionListener;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;

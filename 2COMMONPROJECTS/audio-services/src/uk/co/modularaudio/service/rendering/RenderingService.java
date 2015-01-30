@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.rendering;
 
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;

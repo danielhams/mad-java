@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.samplecaching.impl;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import uk.co.modularaudio.service.library.vos.LibraryEntry;
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 
 public class InternalSampleCacheClient implements SampleCacheClient

@@ -21,7 +21,7 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.bia.ComponentBackImageACache;

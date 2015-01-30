@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
 
-import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
 
 public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
 {

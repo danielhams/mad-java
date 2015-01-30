@@ -24,8 +24,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
 
 
 public class MTRenderingJobQueue implements RenderingJobQueue

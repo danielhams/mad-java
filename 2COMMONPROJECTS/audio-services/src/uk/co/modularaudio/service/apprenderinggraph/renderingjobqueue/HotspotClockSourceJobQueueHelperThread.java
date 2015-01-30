@@ -25,9 +25,9 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;

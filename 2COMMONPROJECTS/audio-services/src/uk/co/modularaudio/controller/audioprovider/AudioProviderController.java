@@ -20,8 +20,8 @@
 
 package uk.co.modularaudio.controller.audioprovider;
 
-import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingIO;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;

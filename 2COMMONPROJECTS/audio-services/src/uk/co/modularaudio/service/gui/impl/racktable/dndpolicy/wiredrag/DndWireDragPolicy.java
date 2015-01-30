@@ -27,13 +27,13 @@ import java.awt.Rectangle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.gui.GuiRackBackActionListener;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTableDndPolicy;
 import uk.co.modularaudio.service.gui.impl.racktable.back.RackWirePositionHelper;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.RegionHintType;
-import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
-import uk.co.modularaudio.service.gui.valueobjects.GuiRackBackActionListener;
-import uk.co.modularaudio.service.gui.valueobjects.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;

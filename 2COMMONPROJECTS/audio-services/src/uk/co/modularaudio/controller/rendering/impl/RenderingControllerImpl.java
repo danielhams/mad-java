@@ -21,10 +21,10 @@
 package uk.co.modularaudio.controller.rendering.impl;
 
 import uk.co.modularaudio.controller.rendering.RenderingController;
+import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.service.rendering.vos.RenderingPlan;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;

@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.mahout.math.map.OpenLongObjectHashMap;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
-import uk.co.modularaudio.service.library.vos.LibraryEntry;
+import uk.co.modularaudio.service.library.LibraryEntry;
 
 public class SampleCacheEntry
 {

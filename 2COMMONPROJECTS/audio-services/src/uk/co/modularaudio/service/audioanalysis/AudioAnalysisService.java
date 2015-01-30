@@ -24,8 +24,6 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import uk.co.modularaudio.service.audioanalysis.vos.AnalysedData;
-import uk.co.modularaudio.service.audioanalysis.vos.AudioAnalysisException;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.unitOfWork.ProgressListener;

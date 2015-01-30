@@ -23,8 +23,6 @@ package uk.co.modularaudio.service.hashedstorage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import uk.co.modularaudio.service.hashedstorage.vos.HashedRef;
-import uk.co.modularaudio.service.hashedstorage.vos.HashedWarehouse;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface HashedStorageService

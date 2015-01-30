@@ -22,7 +22,6 @@ package uk.co.modularaudio.service.gui;
 
 import java.awt.Component;
 
-import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;

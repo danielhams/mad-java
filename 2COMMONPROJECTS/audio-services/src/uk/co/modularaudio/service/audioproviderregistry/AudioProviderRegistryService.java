@@ -22,7 +22,6 @@ package uk.co.modularaudio.service.audioproviderregistry;
 
 import java.util.List;
 
-import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDeviceCriteria;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;

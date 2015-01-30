@@ -25,12 +25,12 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
-import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
-import uk.co.modularaudio.service.gui.valueobjects.mvc.UserPreferencesGuiFpsMVCView;
-import uk.co.modularaudio.service.gui.valueobjects.mvc.UserPreferencesInputDeviceMVCView;
-import uk.co.modularaudio.service.gui.valueobjects.mvc.UserPreferencesInputMidiDeviceMVCView;
-import uk.co.modularaudio.service.gui.valueobjects.mvc.UserPreferencesOutputDeviceMVCView;
-import uk.co.modularaudio.service.gui.valueobjects.mvc.UserPreferencesOutputMidiDeviceMVCView;
+import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesGuiFpsMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputDeviceMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputMidiDeviceMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputDeviceMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputMidiDeviceMVCView;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class PreferencesAudioSystemPage extends JPanel

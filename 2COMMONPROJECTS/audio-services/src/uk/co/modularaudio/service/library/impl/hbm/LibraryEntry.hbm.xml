@@ -3,7 +3,7 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
-	<hibernate-mapping package="uk.co.modularaudio.service.library.vos">
+	<hibernate-mapping package="uk.co.modularaudio.service.library">
 		<class name="LibraryEntry" table="LIBRARY_ENTRY">
 			<id name="libraryEntryId" column="LIBRARY_ENTRY_ID">
     			<generator class="sequence">

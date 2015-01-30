@@ -34,7 +34,7 @@ import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadD
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkProducerMadUiDefinition;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
-import uk.co.modularaudio.service.madcomponentui.factoryshell.AbstractMadComponentUiFactory;
+import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;

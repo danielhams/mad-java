@@ -24,7 +24,6 @@ import java.io.File;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import uk.co.modularaudio.service.library.vos.LibraryEntry;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;

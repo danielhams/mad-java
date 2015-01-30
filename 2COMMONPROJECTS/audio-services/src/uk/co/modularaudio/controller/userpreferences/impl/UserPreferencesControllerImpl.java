@@ -22,7 +22,7 @@ package uk.co.modularaudio.controller.userpreferences.impl;
 
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.gui.GuiService;
-import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
+import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
