@@ -66,10 +66,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	private String configFilePath;
 	private String[] additionalFilePaths;
 
+	private String encryptionKey;
+	private boolean useEncryption = false;
+
 	private final HashMap<String,String> keyToValueMap = new HashMap<String,String>();
 	private final HashSet<String> usedKeys = new HashSet<String>();
 
-	private final static String B64_ENCRYPTION_KEY = "eUg0lWOSVA2vSgN/OcDz8Q==";
+//	private final static String B64_ENCRYPTION_KEY = "eUg0lWOSVA2vSgN/OcDz8Q==";
 
 	private SecretKeySpec keySpec;
 
@@ -134,25 +137,32 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 
 
-		try
+		if( useEncryption && encryptionKey != null )
 		{
-			// Initialise the secret key with our pepper (its not salt, since salt should be added to taste i.e. random).
-			final byte keyAsBytes[] = Base64.decodeBase64( B64_ENCRYPTION_KEY );
+			try
+			{
+				// Initialise the secret key with our pepper (its not salt, since salt should be added to taste i.e. random).
+				final byte keyAsBytes[] = Base64.decodeBase64( encryptionKey );
 
-			keySpec = new SecretKeySpec(keyAsBytes, "Blowfish");
-			cipher = Cipher.getInstance("Blowfish");
+				keySpec = new SecretKeySpec(keyAsBytes, "Blowfish");
+				cipher = Cipher.getInstance("Blowfish");
+			}
+			catch (final NoSuchAlgorithmException nsae)
+			{
+				final String msg = "Unable to initialise config key decryption: " + nsae.toString();
+				log.error(msg, nsae);
+				throw new ComponentConfigurationException(msg);
+			}
+			catch (final NoSuchPaddingException nspe)
+			{
+				final String msg = "Unable to initialise config key decryption: " + nspe.toString();
+				log.error(msg, nspe);
+				throw new ComponentConfigurationException(msg);
+			}
 		}
-		catch (final NoSuchAlgorithmException nsae)
+		else if( useEncryption )
 		{
-			final String msg = "Unable to initialise config key decryption: " + nsae.toString();
-			log.error(msg, nsae);
-			throw new ComponentConfigurationException(msg);
-		}
-		catch (final NoSuchPaddingException nspe)
-		{
-			final String msg = "Unable to initialise config key decryption: " + nspe.toString();
-			log.error(msg, nspe);
-			throw new ComponentConfigurationException(msg);
+			throw new ComponentConfigurationException( "No encryption key specified yet component expected one" );
 		}
 	}
 
@@ -288,6 +298,16 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		this.additionalResourcePaths = additionalResourcePaths;
 	}
 
+	public void setUseEncryption( final boolean useEncryption )
+	{
+		this.useEncryption = useEncryption;
+	}
+
+	public void setEncryptionKey( final String encryptionKey )
+	{
+		this.encryptionKey = encryptionKey;
+	}
+
 	@Override
 	public String getSingleStringValue(final String key)
 			throws RecordNotFoundException
@@ -334,6 +354,10 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	public String getSingleEncryptedStringValue(final String key)
 			throws RecordNotFoundException
 	{
+		if( !useEncryption )
+		{
+			throw new RecordNotFoundException("No encryption configured");
+		}
 		String retVal = keyToValueMap.get(key);
 		usedKeys.add( key );
 
@@ -364,19 +388,27 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			throws IOException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException, UnsupportedEncodingException
 	{
+		if( !useEncryption )
+		{
+			throw new IllegalStateException("No encryption configured");
+		}
 		final byte cipherTextBytes[] = Base64.decodeBase64(cipherTextString);
 
 		cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
 		final byte plainTextBytes[] = cipher.doFinal(cipherTextBytes);
 
-		return (new String(plainTextBytes, "UTF-8"));
+		return new String(plainTextBytes, "UTF-8");
 	}
 
 	public String encryptStringWithKey(final String plainText)
 			throws UnsupportedEncodingException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException
 	{
+		if( !useEncryption )
+		{
+			throw new IllegalStateException("No encryption configured");
+		}
 		final byte plainTextBytes[] = plainText.getBytes("UTF-8");
 
 		cipher.init(Cipher.ENCRYPT_MODE, keySpec);
@@ -385,7 +417,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 
 		final String b64CipherText = Base64.encodeBase64String(cipherTextBytes);
 
-		return (b64CipherText);
+		return b64CipherText;
 	}
 
 	@Override
