@@ -360,15 +360,6 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
-	/**
-	 * @param retVal
-	 * @return
-	 * @throws IOException
-	 * @throws IllegalStateException
-	 * @throws IllegalBlockSizeException
-	 * @throws BadPaddingException
-	 * @throws UnsupportedEncodingException
-	 */
 	public String decryptStringWithKey(final String cipherTextString)
 			throws IOException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException, UnsupportedEncodingException
@@ -382,15 +373,6 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (new String(plainTextBytes, "UTF-8"));
 	}
 
-	/**
-	 * @param plainText
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 * @throws InvalidKeyException
-	 * @throws BadPaddingException
-	 * @throws IllegalBlockSizeException
-	 * @throws IllegalStateException
-	 */
 	public String encryptStringWithKey(final String plainText)
 			throws UnsupportedEncodingException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
 			BadPaddingException

@@ -25,27 +25,29 @@ package uk.co.modularaudio.util.pooling.common;
  * in the resource lifecycle.</P>
  * <P>The resource pool can have any number of arbiters set at various stages.
  * They are:
+ * </P>
  * <UL>
- * <LI>Creation - The arbiter is called after the resource is created.
- * <LI>PreUse   - The arbiter is called before the resource is retrieved from the pool.
- * <LI>PostUse  - The arbiter is called before the resource is returned to the client.
- * <LI>PreRelease - The arbiter is called before the resource is returned to the pool.
- * <LI>PostRelease - The arbiter is called after the resource is returned to the pool.
- * <LI>Expiration - The arbiter is called to determine if a particular resource has expired.
- * <LI>Removal - The arbiter is called before the resource is removed entirely from the pool.
- * </UL></P>
+ * <LI>Creation - The arbiter is called after the resource is created.</LI>
+ * <LI>PreUse   - The arbiter is called before the resource is retrieved from the pool.</LI>
+ * <LI>PostUse  - The arbiter is called before the resource is returned to the client.</LI>
+ * <LI>PreRelease - The arbiter is called before the resource is returned to the pool.</LI>
+ * <LI>PostRelease - The arbiter is called after the resource is returned to the pool.</LI>
+ * <LI>Expiration - The arbiter is called to determine if a particular resource has expired.</LI>
+ * <LI>Removal - The arbiter is called before the resource is removed entirely from the pool.</LI>
+ * </UL>
  * <P>The arbiters are stored in a chain for each of the above scenarios, and the return value from the arbiter 'arbitrateResource' method determines whether any further arbiters in the list are executed.</P>
  * <P>The return values and meanings for 'arbitrateResource' are as follows:
- * <UL>
- * <LI>CONTINUE - Continue to process all further arbiters in this chain
- * <LI>FINISH - Do not process further arbiters in this chain, but continue with the operatoin
- * <LI>FAIL - Do not process further arbiters in this chain, the operation should fail.
- * </UL>
  * </P>
+ * <UL>
+ * <LI>CONTINUE - Continue to process all further arbiters in this chain.</LI>
+ * <LI>FINISH - Do not process further arbiters in this chain, but continue with the operation.</LI>
+ * <LI>FAIL - Do not process further arbiters in this chain, the operation should fail.</LI>
+ * </UL>
  * <P><font color="#ff0000">An arbiter is <B>guaranteed</B> to have exclusive locked access to the pool during its arbitration.</font></P>
  * @author dan
  * @version 1.0
- * @see uk.co.modularaudio.util.pooling.common.Pool*/
+ * @see uk.co.modularaudio.util.pooling.common.Pool
+ **/
 public interface Arbiter
 {
   int arbitrateOnResource(Pool pool, PoolStructure data, Resource res);

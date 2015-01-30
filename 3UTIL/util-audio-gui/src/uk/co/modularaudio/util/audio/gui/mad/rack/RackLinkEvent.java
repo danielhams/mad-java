@@ -28,14 +28,9 @@ import java.util.EventObject;
  *
  * @author dan
  *
- * @param <A>
- * @param <B>
  */
 public class RackLinkEvent extends EventObject
 {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 6214316660381045148L;
 
 	public RackDataModel mySource;
@@ -124,7 +119,7 @@ public class RackLinkEvent extends EventObject
 	//
 
 	/**
-	 * Returns the first row that changed. HEADER_ROW means the meta data, ie.
+	 * @return Returns the first row that changed. HEADER_ROW means the meta data, ie.
 	 * names, types and order of the columns.
 	 */
 	public int getFirstRow()
@@ -132,20 +127,28 @@ public class RackLinkEvent extends EventObject
 		return firstRow;
 	};
 
-	/** Returns the last row that changed. */
+	/**
+	 * @return Returns the last row that changed.
+	 */
 	public int getLastRow()
 	{
 		return lastRow;
 	};
 
 	/**
-	 * Returns the type of event - one of: INSERT, UPDATE and DELETE.
+	 * @return Returns the type of event - one of: INSERT, UPDATE and DELETE.
 	 */
 	public int getType()
 	{
 		return type;
 	}
 
+	/**
+	 * @param source The table the event is for
+	 * @param firstRow The start index of the change
+	 * @param lastRow The end index (non-inclusive) of the change
+	 * @param type The type of the change
+	 */
 	public void setValues( final RackDataModel source, final int firstRow, final int lastRow, final int type )
 	{
 		this.source = source;

@@ -25,11 +25,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-/**
- * @See Graph
- * @author dan
- *
- */
 public interface RenderingService
 {
 	RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graph,

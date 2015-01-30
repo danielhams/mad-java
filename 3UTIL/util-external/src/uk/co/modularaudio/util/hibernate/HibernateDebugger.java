@@ -32,39 +32,39 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class HibernateDebugger
 {
 	/**
-	 * Take the HQL and provide a HQL with all the parameters expanded
-	 * @param query
-	 * @param log
-	 * @param parameters
-	 * @return
+	 * Expand the HQL and return a completed string with replaced parameters
+	 * @param query The source HQL query
+	 * @param log the logger which the output will be written
+	 * @param parameters a map of parameters to the query
+	 * @return the completed HQL query with parameters inlined
 	 */
-	public static String translateQuery(String query,Log log,Map<String,String> parameters  ) {
+	public static String translateQuery(String query,final Log log,final Map<String,String> parameters  ) {
 		String result = null;
 		if (parameters != null && parameters.size()>0) {
-			for (Iterator<Entry<String,String>> iter = parameters.entrySet().iterator(); iter.hasNext();)
+			for (final Iterator<Entry<String,String>> iter = parameters.entrySet().iterator(); iter.hasNext();)
 			{
-				Map.Entry<String,String> element = (Map.Entry<String,String>) iter.next();
-				Object value = element.getValue(); 
+				final Map.Entry<String,String> element = iter.next();
+				final Object value = element.getValue();
 				result=query.replaceAll(":"+element.getKey().toString(), (value!=null) ? value.toString() : "NULL");
 				query = result;
-			
+
 			}
 		} else {
 			result = query;
 		}
-		
+
 		log.debug(result);
 		return result;
 	}
-	
+
 	/**
-	 * Take the Object and provide a HQL with all the parameters expanded
-	 * @param query
-	 * @param log
-	 * @param parameters
-	 * @return
+	 * Take the Object and dump it's fields to the provided logger
+	 * @param sourceObject the object to debug
+	 * @param log the logger which the output will be written
+	 * @param message the prefix to add to the log output
+	 * @return A combined string containing the property names and values for the source object
 	 */
-	public static String showObjectProperties(Object sourceObject,Log log,String message ) {
+	public static String showObjectProperties(final Object sourceObject,final Log log,final String message ) {
 		String result = null;
 		try
 		{
@@ -73,11 +73,11 @@ public class HibernateDebugger
 			}
 			result += ReflectionUtils.debugObjectValues(sourceObject);
 		}
-		catch (DatastoreException e)
+		catch (final DatastoreException e)
 		{
 			log.debug("Problem while trying to debug an object properties",e);
 		}
-		
+
 		log.debug(result);
 		return result;
 	}

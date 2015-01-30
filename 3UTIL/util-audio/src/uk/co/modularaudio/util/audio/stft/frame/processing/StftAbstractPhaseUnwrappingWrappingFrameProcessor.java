@@ -23,7 +23,6 @@ package uk.co.modularaudio.util.audio.stft.frame.processing;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
-import uk.co.modularaudio.util.audio.stft.StftException;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.synthesis.StftFrameSynthesisStep;
 import uk.co.modularaudio.util.audio.stft.tools.ComplexPolarConverter;
@@ -32,30 +31,30 @@ import uk.co.modularaudio.util.audio.stft.tools.PhaseFrequencyConverter;
 public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implements StftFrameProcessor
 {
 //	private static Log log = LogFactory.getLog( StftAbstractPhaseUnwrappingWrappingFrameProcessor.class.getName() );
-	
-	protected StftParameters params = null;
-	protected int numReals = -1;
-	protected int complexArraySize = -1;
-	protected int numBins = -1;
-	
-	protected int analysisStepSize = -1;
-	protected int sampleRate = 0;
-	protected int numChannels = -1;
-	protected float totalFrequencyHeadroom = 0.0f;
-	protected float freqPerBin = 0.0f;
-	protected float[][] oldAnalPhases = null;
-	protected float[][] oldSynthPhases = null;
-	
-	protected ComplexPolarConverter complexPolarConverter = null;
-	protected PhaseFrequencyConverter phaseFrequencyConverter = null;
-	
-	protected StftDataFrame lastDataFrame = null;
-	
+
+	protected StftParameters params;
+	protected int numReals;
+	protected int complexArraySize;
+	protected int numBins;
+
+	protected int analysisStepSize;
+	protected int sampleRate;
+	protected int numChannels;
+	protected float totalFrequencyHeadroom;
+	protected float freqPerBin;
+	protected float[][] oldAnalPhases;
+	protected float[][] oldSynthPhases;
+
+	protected ComplexPolarConverter complexPolarConverter;
+	protected PhaseFrequencyConverter phaseFrequencyConverter;
+
+	protected StftDataFrame lastDataFrame;
+
 	@Override
 	public abstract int getNumFramesNeeded();
 
 	@Override
-	public void setParams( StftParameters params )
+	public void setParams( final StftParameters params )
 	{
 		this.params = params;
 		this.numChannels = params.getNumChannels();
@@ -77,38 +76,38 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 		}
 
 		complexPolarConverter = new ComplexPolarConverter( params );
-		
+
 		phaseFrequencyConverter = new PhaseFrequencyConverter( params );
-		
+
 		lastDataFrame = new StftDataFrame( numChannels, numReals, complexArraySize, numBins );
-		
+
 	}
 
 	@Override
-	public int processIncomingFrame( StftDataFrame outputFrame,
-			ArrayList<StftDataFrame> lookaheadFrames,
-			StftFrameSynthesisStep synthStep )
+	public int processIncomingFrame( final StftDataFrame outputFrame,
+			final ArrayList<StftDataFrame> lookaheadFrames,
+			final StftFrameSynthesisStep synthStep )
 	{
-		StftDataFrame curFrame = lookaheadFrames.get( 0 );
-		
-		float[][] complexFrame = curFrame.complexFrame;
-		float[][] amps = curFrame.amps;
-		float[][] phases = curFrame.phases;
-		float[][] freqs = curFrame.freqs;
-		float inputScal = curFrame.inputScal;
-		float inputFac = curFrame.inputFac;
-		
+		final StftDataFrame curFrame = lookaheadFrames.get( 0 );
+
+		final float[][] complexFrame = curFrame.complexFrame;
+		final float[][] amps = curFrame.amps;
+		final float[][] phases = curFrame.phases;
+		final float[][] freqs = curFrame.freqs;
+		final float inputScal = curFrame.inputScal;
+		final float inputFac = curFrame.inputFac;
+
 		complexToPolarUnwrapPhase( curFrame, complexFrame, amps, phases, freqs, oldAnalPhases, inputScal, inputFac );
-		
+
 		processUnwrappedIncomingFrame( outputFrame,
 				lookaheadFrames,
 				synthStep );
-		
+
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
 			System.arraycopy( phases[chan], 0, oldAnalPhases[chan], 0, numBins );
 			System.arraycopy( outputFrame.phases[chan], 0, oldSynthPhases[chan], 0, numBins );
-			
+
 			System.arraycopy( outputFrame.amps[chan], 0, lastDataFrame.amps[chan], 0, numBins );
 			System.arraycopy( outputFrame.freqs[chan], 0, lastDataFrame.freqs[chan], 0, numBins );
 			System.arraycopy( outputFrame.phases[chan], 0, lastDataFrame.phases[chan], 0, numBins );
@@ -119,52 +118,43 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 	public abstract void processUnwrappedIncomingFrame( StftDataFrame outputFrame,
 			ArrayList<StftDataFrame> lookaheadFrames,
 			StftFrameSynthesisStep synthStep );
-	
-	/**
-	 * Intended to be used as helper by subclasses
-	 * @param outputFrame
-	 * @param outputScal
-	 * @param outputFac
-	 * @param synthStep
-	 * @param isFreqs
-	 * @throws StftException
-	 */
-	public void processWrappedOutgoingFrame( StftDataFrame outputFrame,
-			float twoPiSynthStepSizeOverSampleRate,
-			StftFrameSynthesisStep synthStep,
-			boolean isFreqs )
+
+	public void processWrappedOutgoingFrame( final StftDataFrame outputFrame,
+			final float twoPiSynthStepSizeOverSampleRate,
+			final StftFrameSynthesisStep synthStep,
+			final boolean isFreqs )
 	{
 //		double speedScale = synthStep.getSpeedScale();
 
 //		float[][] complexFrame = outputFrame.complexFrame;
 //		float[][] amps = outputFrame.amps;
-		float[][] phases = outputFrame.phases;
-		float[][] freqs = outputFrame.freqs;
-		
+		final float[][] phases = outputFrame.phases;
+		final float[][] freqs = outputFrame.freqs;
+
 		// Debug the conversion of one freq to phase
 		phaseFrequencyConverter.allFreqToPhaseArr( synthStep.getRoundedStepSize(),
 				twoPiSynthStepSizeOverSampleRate,
 				oldSynthPhases,
 				phases,
 				freqs );
-		
+
 		lastDataFrame = outputFrame;
 	}
 
 	@Override
 	public abstract boolean isPeakProcessor();
 
-	private void complexToPolarUnwrapPhase( StftDataFrame frame,
-			float[][] complexFrameArr,
-			float[][] ampsArr,
-			float[][] phasesArr,
-			float[][] freqsArr,
-			float[][] oldAnalPhasesArr,
-			float inputScal,
-			float inputFac )
+	private void complexToPolarUnwrapPhase( final StftDataFrame frame,
+			final float[][] complexFrameArr,
+			final float[][] ampsArr,
+			final float[][] phasesArr,
+			final float[][] freqsArr,
+			final float[][] oldAnalPhasesArr,
+			final float inputScal,
+			final float inputFac )
 	{
 		complexPolarConverter.complexToPolar( frame );
-			
+
 		// Use the peak finder to remove anything that isn't a peak
 		//		peakFinder.identifyPeaks( amps, phases, peakBuffer, binToPeakBuffer );
 		//		peakFinder.quickHackBinZeroing( binToPeakBuffer, amps );
@@ -173,6 +163,7 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 				freqsArr );
 	}
 
+	@Override
 	public StftDataFrame getLastDataFrame()
 	{
 		return lastDataFrame;

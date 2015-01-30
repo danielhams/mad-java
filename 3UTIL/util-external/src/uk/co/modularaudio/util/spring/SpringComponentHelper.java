@@ -33,7 +33,6 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.xml.sax.InputSource;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class SpringComponentHelper
 {
@@ -58,14 +57,14 @@ public class SpringComponentHelper
 	}
 
 	public GenericApplicationContext makeAppContext()
-			throws RecordNotFoundException, DatastoreException
+			throws DatastoreException
 	{
 		return makeAppContext( DEFAULT_BEANS_FILENAME, null, null, null );
 	}
 
 	public GenericApplicationContext makeAppContext( final String beansResourcePath,
 			final String configResourcePath )
-					throws RecordNotFoundException, DatastoreException
+					throws DatastoreException
 	{
 		return makeAppContext( beansResourcePath, configResourcePath, null, null );
 	}
@@ -74,7 +73,7 @@ public class SpringComponentHelper
 			final String configResourcePath,
 			final String[] additionalBeansResources,
 			final String[] additionalConfigResources )
-					throws RecordNotFoundException, DatastoreException
+					throws DatastoreException
 	{
 		GenericApplicationContext appContext = null;
 

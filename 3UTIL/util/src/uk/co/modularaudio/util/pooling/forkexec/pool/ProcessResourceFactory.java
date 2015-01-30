@@ -40,7 +40,7 @@ public class ProcessResourceFactory implements Factory
 	String[] resourceCmdArray;
 	String resourceOutputTerminator;
 
-	public ProcessResourceFactory( String[] cmdArray, String outputTerminator )
+	public ProcessResourceFactory( final String[] cmdArray, final String outputTerminator )
 	{
 		if (log.isTraceEnabled())
 		{
@@ -67,7 +67,7 @@ public class ProcessResourceFactory implements Factory
 			retVal = new MultishotProcessResource( resourceCmdArray, resourceOutputTerminator );
 			log.trace( "created resource.." );
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
 			throw new FactoryProductionException( ioe.toString() );
 		}
@@ -87,7 +87,7 @@ public class ProcessResourceFactory implements Factory
 		{
 			tester = new MultishotProcessResource( resourceCmdArray, resourceOutputTerminator );
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
 			ioe.printStackTrace();
 			wasError = true;
@@ -103,7 +103,7 @@ public class ProcessResourceFactory implements Factory
 			{
 				tester.close();
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 			}
 		}
@@ -114,9 +114,6 @@ public class ProcessResourceFactory implements Factory
 	 * @label creates
 	 */
 	/* # MultishotProcessResource lnkMultishotProcessResource; */
-	/**
-	 * @see uk.co.modularaudio.util.pooling.common.Factory#shutdown()
-	 */
 	public void shutdown()
 	{
 	}

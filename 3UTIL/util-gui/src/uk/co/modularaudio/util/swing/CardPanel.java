@@ -32,27 +32,27 @@ import javax.swing.JPanel;
 
 
 /**
- * A simpler alternative to a JPanel with a CardLayout.  The AWT CardLayout 
- * layout manager can be inconvenient to use because the special "stack of 
+ * A simpler alternative to a JPanel with a CardLayout.  The AWT CardLayout
+ * layout manager can be inconvenient to use because the special "stack of
  * cards" operations it supports require a cast to use.  For example to show
  * the card named "myCard" given a JPanel with a CardLayout one would write:
  * <pre>
  * ((CardLayout)(myJPanel.getLayout())).show(myJPanel, "myCard");
  * </pre>
- * This doesn't work well with Swing - all of the CardLayout display operations, 
+ * This doesn't work well with Swing - all of the CardLayout display operations,
  * like <code>show</code> call validate directly.  Swing supports automatic
  * validation (see JComponent.revalidate()); this direct call to validate is
  * inefficient.
  * <p>
  * The CardPane JPanel subclass is intended to support a layout with a modest number
- * of cards, on the order of 100 or less.  A cards name is it's component 
+ * of cards, on the order of 100 or less.  A cards name is it's component
  * name, as in java.awt.Component.getName(), which is set when the component
  * is added to the CardPanel:
  * <pre>
  * myCardPanel.add(myChild, "MyChildName");
- * myChild.getName() <i>=> "MyChildName"</i>
+ * myChild.getName() <i>=&gt; "MyChildName"</i>
  * </pre>
- * As with CardLayout, the first child added to a CardPanel is made visible 
+ * As with CardLayout, the first child added to a CardPanel is made visible
  * and there's only one child visible at a time.  The <code>showCard</code>
  * method accepts either a childs name or the child itself:
  * <pre>
@@ -66,33 +66,32 @@ import javax.swing.JPanel;
 
 public class CardPanel extends JPanel
 {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = -7155388611045482798L;
 
 
-	private static class Layout implements LayoutManager 
+	private static class Layout implements LayoutManager
     {
-	/** 
-	 * Set the childs name (if non-null) and and make it visible 
+	/**
+	 * Set the childs name (if non-null) and and make it visible
 	 * iff it's the only CardPanel child.
 	 * @see java.awt.Component#setName
 	 */
-	public void addLayoutComponent(String name, Component child) {
+	@Override
+	public void addLayoutComponent(final String name, final Component child) {
 	    if (name != null) {
 		child.setName(name);
 	    }
 	    child.setVisible(child.getParent().getComponentCount() == 1);
 	}
 
-	/** 
+	/**
 	 * If this child was visible, then make the first remaining
 	 * child visible.
 	 */
-	public void removeLayoutComponent(Component child) {
+	@Override
+	public void removeLayoutComponent(final Component child) {
 	    if (child.isVisible()) {
-		Container parent = child.getParent();
+		final Container parent = child.getParent();
 		if (parent.getComponentCount() > 0) {
 		    parent.getComponent(0).setVisible(true);
 		}
@@ -102,14 +101,15 @@ public class CardPanel extends JPanel
 	/**
 	 * @return the maximum preferred width/height + the parents insets
 	 */
-	public Dimension preferredLayoutSize(Container parent) {
-	    int nChildren = parent.getComponentCount();
-	    Insets insets = parent.getInsets();
+	@Override
+	public Dimension preferredLayoutSize(final Container parent) {
+	    final int nChildren = parent.getComponentCount();
+	    final Insets insets = parent.getInsets();
 	    int width = insets.left + insets.right;
 	    int height = insets.top + insets.bottom;
 
 	    for (int i = 0; i < nChildren; i++) {
-		Dimension d = parent.getComponent(i).getPreferredSize();
+		final Dimension d = parent.getComponent(i).getPreferredSize();
 		if (d.width > width) {
 		    width = d.width;
 		}
@@ -123,14 +123,15 @@ public class CardPanel extends JPanel
 	/**
 	 * @return the maximum minimum width/height + the parents insets
 	 */
-	public Dimension minimumLayoutSize(Container parent) {
-	    int nChildren = parent.getComponentCount();
-	    Insets insets = parent.getInsets();
+	@Override
+	public Dimension minimumLayoutSize(final Container parent) {
+	    final int nChildren = parent.getComponentCount();
+	    final Insets insets = parent.getInsets();
 	    int width = insets.left + insets.right;
 	    int height = insets.top + insets.bottom;
 
 	    for (int i = 0; i < nChildren; i++) {
-		Dimension d = parent.getComponent(i).getMinimumSize();
+		final Dimension d = parent.getComponent(i).getMinimumSize();
 		if (d.width > width) {
 		    width = d.width;
 		}
@@ -141,15 +142,16 @@ public class CardPanel extends JPanel
 	    return new Dimension(width, height);
 	}
 
-	public void layoutContainer(Container parent) {
-	    int nChildren = parent.getComponentCount();
-	    Insets insets = parent.getInsets();
+	@Override
+	public void layoutContainer(final Container parent) {
+	    final int nChildren = parent.getComponentCount();
+	    final Insets insets = parent.getInsets();
 	    for (int i = 0; i < nChildren; i++) {
-		Component child = parent.getComponent(i);
+		final Component child = parent.getComponent(i);
 		if (child.isVisible()) {
-		    Rectangle r = parent.getBounds();
-		    int width = r.width - insets.left + insets.right;
-		    int height = r.height - insets.top + insets.bottom;
+		    final Rectangle r = parent.getBounds();
+		    final int width = r.width - insets.left + insets.right;
+		    final int height = r.height - insets.top + insets.bottom;
 		    child.setBounds(insets.left, insets.top, width, height);
 		    break;
 		}
@@ -159,25 +161,25 @@ public class CardPanel extends JPanel
 
 
     /**
-     * Creates a CardPanel.  Children, called "cards" in this API, should be added 
-     * with add().  The first child we be made visible, subsequent children will 
+     * Creates a CardPanel.  Children, called "cards" in this API, should be added
+     * with add().  The first child we be made visible, subsequent children will
      * be hidden.  To show a card, use one of the show*Card methods.
      */
     public CardPanel() {
 	super(new Layout());
     }
 
-    
-    /** 
+
+    /**
      * Return the index of the first (and one would hope - only)
-     * visible child.  If a visible child can't be found, 
-     * perhaps the caller has inexlicably hidden all of the 
+     * visible child.  If a visible child can't be found,
+     * perhaps the caller has inexlicably hidden all of the
      * children, then return -1.
      */
     private int getVisibleChildIndex() {
-	int nChildren = getComponentCount();
+	final int nChildren = getComponentCount();
 	for (int i = 0; i < nChildren; i++) {
-	    Component child = getComponent(i);
+	    final Component child = getComponent(i);
 	    if (child.isVisible()) {
 		return i;
 	    }
@@ -186,16 +188,16 @@ public class CardPanel extends JPanel
     }
 
 
-    /** 
+    /**
      * Hide the currently visible child  "card" and show the
      * specified card.  If the specified card isn't a child
      * of the CardPanel then we add it here.
      */
-    public void showCard(Component card) {
+    public void showCard(final Component card) {
 	if (card.getParent() != this) {
 	    add(card);
 	}
-	int index = getVisibleChildIndex();
+	final int index = getVisibleChildIndex();
 	if (index != -1) {
 	    getComponent(index).setVisible(false);
 	}
@@ -203,16 +205,16 @@ public class CardPanel extends JPanel
 	revalidate();
 	repaint();
     }
-	
+
 
     /**
      * Show the card with the specified name.
      * @see java.awt.Component#getName
      */
-    public void showCard(String name) {
-	int nChildren = getComponentCount();
+    public void showCard(final String name) {
+	final int nChildren = getComponentCount();
 	for (int i = 0; i < nChildren; i++) {
-	    Component child = getComponent(i);
+	    final Component child = getComponent(i);
 	    if (child.getName().equals(name)) {
 		showCard(child);
 		break;
@@ -230,7 +232,7 @@ public class CardPanel extends JPanel
 	if (getComponentCount() <= 0) {
 	    return;
 	}
-	int index = getVisibleChildIndex();
+	final int index = getVisibleChildIndex();
 	if (index == -1) {
 	    showCard(getComponent(0));
 	}
@@ -252,7 +254,7 @@ public class CardPanel extends JPanel
 	if (getComponentCount() <= 0) {
 	    return;
 	}
-	int index = getVisibleChildIndex();
+	final int index = getVisibleChildIndex();
 	if (index == -1) {
 	    showCard(getComponent(0));
 	}

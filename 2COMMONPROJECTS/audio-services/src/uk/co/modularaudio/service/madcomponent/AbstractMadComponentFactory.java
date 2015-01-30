@@ -55,8 +55,8 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 		return definitions;
 	}
 
-	public abstract Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > provideDefClassToInsClassMap() throws ComponentConfigurationException;
-	public abstract MadCreationContext getCreationContext();
+	protected abstract Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > provideDefClassToInsClassMap() throws ComponentConfigurationException;
+	protected abstract MadCreationContext getCreationContext();
 
 	@SuppressWarnings("rawtypes")
 	@Override

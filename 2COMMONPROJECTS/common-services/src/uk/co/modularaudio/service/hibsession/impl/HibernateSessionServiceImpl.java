@@ -71,14 +71,15 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	private final Set<Session> sessionsInUse = Collections.synchronizedSet(new HashSet<Session>());
 
 	/**
-	 * Method to setup the mapping files for hibernate
+	 * Method to setup hibernate with appropriate configuration for the supplied persisted beans
 	 *
-	 * @param listHibernateFiles
+	 * @param persistedBeans The beans to setup
+	 * @throws IOException On failure during the read of the related HBM bean metadata files
 	 */
-	public void setupPersistenceConfig(final List<HibernatePersistedBeanDefinition> listHibernateFiles)
+	public void setupPersistenceConfig(final List<HibernatePersistedBeanDefinition> persistedBeans )
 			throws IOException
 	{
-		for (final HibernatePersistedBeanDefinition beanDefinition : listHibernateFiles)
+		for (final HibernatePersistedBeanDefinition beanDefinition : persistedBeans)
 		{
 			final String originalHbmResourceName = beanDefinition.getHbmResourceName();
 			if( log.isTraceEnabled() )
@@ -106,9 +107,9 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 			throws RecordNotFoundException
 	{
 		final String[] hibernateProperties = configurationService.getKeysBeginningWith(HIBERNATE_KEY);
-		String key = null;
-		String value = null;
-		Properties prop = null;
+		String key;
+		String value;
+		Properties prop;
 		for (int i = 0; i < hibernateProperties.length; i++)
 		{
 			prop = new Properties();
@@ -141,18 +142,18 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	/**
 	 * Method that should be exposed to do all the configuration of hibernate
 	 *
-	 * @param listHibernateFiles
-	 * @throws RecordNotFoundException
+	 * @param persistedBeans The beans that will be configured
+	 * @throws DatastoreException On a failure during the configuration of the beans
 	 */
 	@Override
-	public void configureHibernate(final List<HibernatePersistedBeanDefinition> listHibernateFiles)
-			throws RecordNotFoundException, DatastoreException
+	public void configureHibernate(final List<HibernatePersistedBeanDefinition> persistedBeans )
+			throws DatastoreException
 	{
 		try
 		{
 			prepareConfiguration();
 			configureProperties();
-			setupPersistenceConfig(listHibernateFiles);
+			setupPersistenceConfig(persistedBeans);
 			serviceRegistry = new StandardServiceRegistryBuilder().applySettings( configuration.getProperties() ).build();
 			sessionFactory = configuration.buildSessionFactory( serviceRegistry );
 		}
@@ -179,7 +180,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	{
 		final Session tmpSession = sessionFactory.openSession();
 		sessionsInUse.add( tmpSession );
-		return( tmpSession );
+		return tmpSession;
 	}
 
 	@Override

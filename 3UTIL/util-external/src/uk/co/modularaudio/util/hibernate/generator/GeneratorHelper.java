@@ -32,7 +32,6 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
 import uk.co.modularaudio.util.hibernate.common.ComponentWithHibernatePersistence;
 import uk.co.modularaudio.util.hibernate.common.TableNamePrefixer;
@@ -42,83 +41,89 @@ import uk.co.modularaudio.util.spring.SpringComponentHelper;
 public class GeneratorHelper
 {
 	/**
-	 * Generate the DDL according to the list of hibernate mapping files for one component implementing IsHibernatePersistedComponent interface
-	 * @param sourceDirectory
-	 * @param destinationDirectory
-	 * @param outputFileName
+	 * Generate the DDL for one component implementing the IsHibernatePersistedComponent interface
+	 * @param component The persisted component we wish to obtain the DDL for
+	 * @param dialectName Which hibernate dialect should be used
+	 * @param destinationDirectory The output directory
+	 * @param outputFileName The output filename
+	 * @throws IOException On errors reading the related hbm files for a component or writing the output DDL file
 	 */
-	public void generateDDL(ComponentWithHibernatePersistence component, String dialectName, String destinationDirectory,
-			String outputFileName) throws IOException
+	public void generateDDL( final ComponentWithHibernatePersistence component, final String dialectName, final String destinationDirectory,
+			final String outputFileName ) throws IOException
 	{
-		Configuration configuration = new Configuration();
-		List<HibernatePersistedBeanDefinition> listHBM = component.listHibernatePersistedBeanDefinitions();
-		for (HibernatePersistedBeanDefinition hbmDefinition : listHBM)
+		final Configuration configuration = new Configuration();
+		final List<HibernatePersistedBeanDefinition> listHBM = component.listHibernatePersistedBeanDefinitions();
+		for (final HibernatePersistedBeanDefinition hbmDefinition : listHBM)
 		{
-			String originalHbmResourceName = hbmDefinition.getHbmResourceName();
-			
-			InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
-			
-			String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
-			
-			String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, hbmDefinition.getPersistedBeanTablePrefix());
+			final String originalHbmResourceName = hbmDefinition.getHbmResourceName();
+
+			final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
+
+			final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+
+			final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, hbmDefinition.getPersistedBeanTablePrefix());
 
 			configuration.addXML( newHbmString );
 
 		}
-		configureAndGenerate(dialectName, destinationDirectory, outputFileName, configuration);
+		configureAndGenerate( dialectName, destinationDirectory, outputFileName, configuration );
 	}
 
 	/**
-	 * Method to configure the only properties needed with the hbm files and generate the DDL
-	 * @param dialectName
-	 * @param destinationDirectory
-	 * @param outputFileName
-	 * @param configuration
+	 * Method to configure necessary hibernate properties and generate DDL for a supplied configuration
+	 * @param dialectName Which hibernate dialect should be used
+	 * @param destinationDirectory The output directory
+	 * @param outputFileName The output filename
+	 * @param configuration The hibernate configuration setup with the appropriate schema objects
 	 */
-	private void configureAndGenerate(String dialectName, String destinationDirectory, String outputFileName,
-			Configuration configuration)
+	private void configureAndGenerate(final String dialectName, final String destinationDirectory, final String outputFileName,
+			final Configuration configuration)
 	{
-		Properties dialect = new Properties();
+		final Properties dialect = new Properties();
 		dialect.setProperty("hibernate.dialect", dialectName);
 		configuration.addProperties(dialect);
 
-		SchemaExport se = new SchemaExport(configuration);
+		final SchemaExport se = new SchemaExport(configuration);
 		se.setOutputFile(destinationDirectory + outputFileName);
 		se.setDelimiter(";\n");
 		se.create(true, false);
 	}
 
 	/**
-	 * Generate the DDL according to the beans.xml file searching for components implementing the IsHibernatePersistedComponent interface
-	 * @param sourceDirectory
-	 * @param destinationDirectory
-	 * @param outputFileName
+	 * Generate an appropriate DDL by loading a Spring beans.xml and searching for components implementing the IsHibernatePersistedComponent interface
+	 * @param beansFilename The Spring beans.xml file to read
+	 * @param configurationFilename The configuration filename necessary
+	 * @param dialectName The hibernate dialect that should be used
+	 * @param destinationDirectory The output directory
+	 * @param outputFileName The output filename
+	 * @throws DatastoreException A general failure during processing (such as starting up the application context)
+	 * @throws IOException On errors setting up the components, reading the HBM configurations or writing the output DDL file
 	 */
-	public void generateFromBeansDDL(String beansFilename, String configurationFilename, String dialectName, String destinationDirectory,
-			String outputFileName)
-		throws DatastoreException, RecordNotFoundException, IOException
+	public void generateFromBeansDDL(final String beansFilename, final String configurationFilename, final String dialectName, final String destinationDirectory,
+			final String outputFileName)
+		throws DatastoreException, IOException
 	{
-		Configuration configuration = new Configuration();
-		SpringComponentHelper sch = new SpringComponentHelper();
-		GenericApplicationContext appContext = sch.makeAppContext( beansFilename, configurationFilename);
+		final Configuration configuration = new Configuration();
+		final SpringComponentHelper sch = new SpringComponentHelper();
+		final GenericApplicationContext appContext = sch.makeAppContext( beansFilename, configurationFilename);
 
-		Map<String,ComponentWithHibernatePersistence> components = appContext.getBeansOfType(ComponentWithHibernatePersistence.class);
+		final Map<String,ComponentWithHibernatePersistence> components = appContext.getBeansOfType(ComponentWithHibernatePersistence.class);
 
-		for (Iterator<ComponentWithHibernatePersistence> iter = components.values().iterator(); iter.hasNext();)
+		for (final Iterator<ComponentWithHibernatePersistence> iter = components.values().iterator(); iter.hasNext();)
 		{
-			ComponentWithHibernatePersistence component = (ComponentWithHibernatePersistence) iter.next();
-			List<HibernatePersistedBeanDefinition> hbmDefinitions = component.listHibernatePersistedBeanDefinitions();
-			
-			for( HibernatePersistedBeanDefinition beanDefinition : hbmDefinitions )
+			final ComponentWithHibernatePersistence component = iter.next();
+			final List<HibernatePersistedBeanDefinition> hbmDefinitions = component.listHibernatePersistedBeanDefinitions();
+
+			for( final HibernatePersistedBeanDefinition beanDefinition : hbmDefinitions )
 			{
-				String originalHbmResourceName = beanDefinition.getHbmResourceName();
-				
-				InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
-				
-				String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
-				
-				String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
-	
+				final String originalHbmResourceName = beanDefinition.getHbmResourceName();
+
+				final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
+
+				final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+
+				final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
+
 				configuration.addXML( newHbmString );
 			}
 		}

@@ -61,7 +61,7 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	{
 	}
 
-	public abstract void setupTypeToDefinitionClasses() throws DatastoreException;
+	protected abstract void setupTypeToDefinitionClasses() throws DatastoreException;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override

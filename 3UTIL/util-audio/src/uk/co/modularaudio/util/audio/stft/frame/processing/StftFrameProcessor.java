@@ -31,15 +31,15 @@ public interface StftFrameProcessor
 {
 	/**
 	 * Whether the WOLA processor will attempt to get the frame processor to synthesise.
-	 * @return
+	 * @return true if the results of processIncomingFrame should be synthesised
 	 */
 	public boolean isSynthesisingProcessor();
 
 	/**
 	 * How many frames the processor needs to see before it will begin to return generated frames.
-	 * Return <= 0 means the processor will produce a frame for every input frame.
+	 * Return &lt;= 0 means the processor will produce a frame for every input frame.
 	 *
-	 * @return
+	 * @return the number of frames before output - zero indicates immediate production of frames
 	 */
 	public int getNumFramesNeeded();
 
@@ -47,7 +47,8 @@ public interface StftFrameProcessor
 	 * The frequency processor will need to know things like the sample rate,
 	 * number of overlaps and incoming step size etc
 	 *
-	 * @param params
+	 * @param params The parameters that will be used during subsequent processIncomingFrame calls.
+	 * @throws StftException
 	 */
 	public void setParams( StftParameters params ) throws StftException;
 
@@ -65,7 +66,7 @@ public interface StftFrameProcessor
 
 	/**
 	 * Does this processor perform peak detection?
-	 * @return
+	 * @return true if the frame processor traverses and fills the peak channel buffers
 	 */
 	public boolean isPeakProcessor();
 
