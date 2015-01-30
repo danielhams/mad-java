@@ -67,7 +67,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 			SoundfilePlayerMadUiInstance uiInstance,
 			int controlIndex )
 	{
-		setOpaque(true);
+		setOpaque(false);
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint("fill");
@@ -94,7 +94,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 //			Font f = tb.getFont().deriveFont( 8.0f );
 			final Font f = tb.getFont();
 			tb.setFont( f );
-			add( tb, "grow, wrap");
+			add( tb, "grow, shrink, wrap");
 		}
 
 		uiInstance.setZoomProducer( this );

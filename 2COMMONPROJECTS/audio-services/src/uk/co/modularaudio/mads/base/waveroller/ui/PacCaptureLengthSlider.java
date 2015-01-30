@@ -71,6 +71,7 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 		lh.addLayoutConstraint( "fill" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "gap 0" );
+//		lh.addLayoutConstraint( "debug" );
 		this.setLayout( lh.createMigLayout() );
 		this.add( view, "grow" );
 

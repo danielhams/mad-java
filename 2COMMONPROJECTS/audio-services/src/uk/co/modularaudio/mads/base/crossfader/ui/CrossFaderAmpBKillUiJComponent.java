@@ -49,7 +49,7 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 		super( false );
 
 		this.uiInstance = uiInstance;
-		this.setOpaque( true );
+		this.setOpaque( false );
 //		Font f = this.getFont().deriveFont( 9f );
 		Font f = this.getFont();
 		setFont( f );

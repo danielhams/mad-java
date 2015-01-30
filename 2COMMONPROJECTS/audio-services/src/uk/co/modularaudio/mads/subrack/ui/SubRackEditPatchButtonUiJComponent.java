@@ -46,7 +46,7 @@ public class SubRackEditPatchButtonUiJComponent extends PacToggleButton
 			SubRackEditPatchButtonUiControlDefinition def )
 	{
 		super( false );
-		setOpaque( true );
+		setOpaque( false );
 
 		this.uiInstance = uiInstance;
 		uiInstance.addPatchTabCloseListener( this );

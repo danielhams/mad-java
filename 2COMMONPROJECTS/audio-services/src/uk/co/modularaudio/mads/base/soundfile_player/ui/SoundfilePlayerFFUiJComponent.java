@@ -45,7 +45,7 @@ public class SoundfilePlayerFFUiJComponent extends NoDisplayPacButton
 	{
 		this.uiInstance = uiInstance;
 		
-		this.setOpaque( true );
+		this.setOpaque( false );
 //		Font f = this.getFont().deriveFont( 9f );
 		Font f = this.getFont();
 		setFont( f );

@@ -50,7 +50,7 @@ public class SubRackChoosePatchButtonUiJComponent extends PacButton
 			SubRackMadUiInstance uiInstance,
 			SubRackChoosePatchButtonUiControlDefinition def )
 	{
-		setOpaque( true );
+		setOpaque( false );
 
 		this.uiInstance = uiInstance;
 

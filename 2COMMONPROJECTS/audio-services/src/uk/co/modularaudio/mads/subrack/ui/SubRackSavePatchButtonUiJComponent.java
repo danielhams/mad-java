@@ -50,7 +50,7 @@ public class SubRackSavePatchButtonUiJComponent extends PacButton
 			SubRackMadUiInstance uiInstance,
 			SubRackSavePatchButtonUiControlDefinition def )
 	{
-		setOpaque( true );
+		setOpaque( false );
 
 		this.uiInstance = uiInstance;
 

@@ -48,7 +48,7 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 		// Default value
 		super( false );
 		this.uiInstance = uiInstance;
-		this.setOpaque( true );
+		this.setOpaque( false );
 //		Font f = this.getFont().deriveFont( 9f );
 		final Font f = this.getFont();
 		setFont( f );

@@ -117,7 +117,7 @@ public class SliderDisplayView extends JPanel
 		// Left
 		if( labelOrientation == SatelliteOrientation.LEFT )
 		{
-			this.add( label, "align right" );
+			this.add( label, "alignx right, aligny center" );
 		}
 		if( textboxOrientation == SatelliteOrientation.LEFT )
 		{
