@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -172,7 +173,7 @@ public class RackMasterIOMadDefinition  extends AbstractNonConfigurableMadDefini
 						CLASS_NAME,
 						CLASS_DESC,
 						ReleaseState.RELEASED ),
-				new RackMasterIOQueueBridge(),
+				new MadNullLocklessQueueBridge<RackMasterIOMadInstance>(),
 				ChanIndexes.NUM_CHANNELS.ordinal(),
 				CHAN_NAMES,
 				CHAN_TYPES,
