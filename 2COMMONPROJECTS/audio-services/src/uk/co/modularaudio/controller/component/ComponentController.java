@@ -20,26 +20,14 @@
 
 package uk.co.modularaudio.controller.component;
 
-import java.util.Map;
-
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
-import uk.co.modularaudio.util.audio.mad.MadInstance;
-import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.table.Span;
 
 public interface ComponentController
 {
-	MadDefinition<?,?> findDefinitionById( String definitionId ) throws DatastoreException, RecordNotFoundException;
-
-	MadInstance<?,?> createInstanceFromDefinition( MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			String name )
-			throws MadProcessingException, DatastoreException, RecordNotFoundException;
-
 	MadDefinitionListModel listDefinitionsAvailable() throws DatastoreException;
 
 	Span getUiSpanForDefinition( MadDefinition<?, ?> definition )

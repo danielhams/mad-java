@@ -25,8 +25,6 @@ import java.util.Map;
 
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
-import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
@@ -34,7 +32,6 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
-import uk.co.modularaudio.util.table.NoSuchContentsException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
@@ -42,27 +39,10 @@ public interface RackController
 {
 	RackDataModel createNewRackDataModel( String rackName, String rackPath, int numCols, int numRows, boolean withRackIO ) throws DatastoreException;
 
-	RackComponent createComponentAtPosition( RackDataModel rack, MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues, String name, int col, int row )
-		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
-			MAConstraintViolationException, RecordNotFoundException;
-
 	RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition, String> parameterValues, String name )
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 			MAConstraintViolationException, RecordNotFoundException;
-
-	String getNameForNewComponentOfType( RackDataModel rackDataModel, MadDefinition<?,?> typeToAdd) throws DatastoreException;
-
-	void moveContentsToPosition(RackDataModel rackDataModel, RackComponent component, int x, int y)
-		throws DatastoreException, NoSuchContentsException, TableIndexOutOfBoundsException, ContentsAlreadyAddedException, TableCellFullException;
-
-	RackLink addRackLink( RackDataModel rack, RackComponent producerRackComponent, MadChannelInstance producerChannelInstance,
-			RackComponent consumerRackComponent, MadChannelInstance consumerChannelInstance )
-			throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
-
-	void removeRackLink( RackDataModel rackDataModel, RackLink rackLink)
-		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
 
 	// Debugging methods
 	void dumpRack( RackDataModel rdm );
