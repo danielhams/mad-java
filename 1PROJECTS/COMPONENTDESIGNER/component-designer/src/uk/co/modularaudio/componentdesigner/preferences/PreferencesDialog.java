@@ -33,8 +33,8 @@ import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
-import uk.co.modularaudio.componentdesigner.preferences.PreferencesActions.ApplyPreferencesChangesAction;
-import uk.co.modularaudio.componentdesigner.preferences.PreferencesActions.CancelPreferencesChangesAction;
+import uk.co.modularaudio.componentdesigner.preferences.actions.ApplyPreferencesChangesAction;
+import uk.co.modularaudio.componentdesigner.preferences.actions.CancelPreferencesChangesAction;
 import uk.co.modularaudio.service.gui.valueobjects.UserPreferencesMVCView;
 import uk.co.modularaudio.util.exception.DatastoreException;
 

@@ -25,5 +25,4 @@ import javax.swing.JPanel;
 public class PreferencesGeneralPage extends JPanel
 {
 	private static final long serialVersionUID = -2922911338893619656L;
-
 }

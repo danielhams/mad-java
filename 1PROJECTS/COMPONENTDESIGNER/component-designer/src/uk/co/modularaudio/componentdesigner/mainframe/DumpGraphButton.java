@@ -24,12 +24,9 @@ import javax.swing.JButton;
 
 public class DumpGraphButton extends JButton
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8928027446768816793L;
 
-	public DumpGraphButton( MainFrameActions actions )
+	public DumpGraphButton( final MainFrameActions actions )
 	{
 		this.setText( "Dump Graph" );
 		this.setAction( actions.getDumpGraphAction() );

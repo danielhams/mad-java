@@ -26,7 +26,7 @@ public class MainFrame extends JFrame
 {
 	private static final long serialVersionUID = 7117994509153670242L;
 
-	private ComponentDesignerToolbar toolbar = null;
+	private ComponentDesignerToolbar toolbar;
 
 	public void setToolbar(final ComponentDesignerToolbar toolbar)
 	{

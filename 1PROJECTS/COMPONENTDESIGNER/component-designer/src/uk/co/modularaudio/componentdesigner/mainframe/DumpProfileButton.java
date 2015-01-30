@@ -24,12 +24,9 @@ import javax.swing.JButton;
 
 public class DumpProfileButton extends JButton
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8928027446768816793L;
 
-	public DumpProfileButton( MainFrameActions actions )
+	public DumpProfileButton( final MainFrameActions actions )
 	{
 		this.setText( "Dump Profile" );
 		this.setAction( actions.getDumpProfileAction() );

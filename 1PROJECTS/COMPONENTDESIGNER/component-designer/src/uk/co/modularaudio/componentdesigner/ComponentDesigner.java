@@ -87,7 +87,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 	{
 	}
 
-	public void init( final boolean showAlpha , final boolean showBeta,
+	public void init( final boolean showAlpha, final boolean showBeta,
 			final String additionalBeansResource, final String additionalConfigResource ) throws DatastoreException
 	{
 		// Setup the application context and get the necessary references to the gui controller
