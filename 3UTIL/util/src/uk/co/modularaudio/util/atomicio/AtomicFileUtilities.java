@@ -28,8 +28,8 @@ import java.io.IOException;
  */
 public interface AtomicFileUtilities
 {
-	public boolean copyFile(String fromPath, String toPath) throws IOException;
-	
-	public boolean moveFile(String fromPath, String toPath) throws IOException;
-	
+	public boolean copyFile( String fromPath, String toPath ) throws IOException;
+
+	public boolean moveFile( String fromPath, String toPath ) throws IOException;
+
 }

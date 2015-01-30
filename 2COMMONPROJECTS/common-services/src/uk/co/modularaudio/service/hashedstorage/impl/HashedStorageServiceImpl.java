@@ -29,7 +29,6 @@ import java.io.InputStream;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
-import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -73,7 +72,10 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		final String outputPath = computeWarehouseRefPath( warehouse, hashedRef );
 		final File outputFile = new File( outputPath );
 		final File enclosingDir = outputFile.getParentFile();
-		FileUtilities.recursiveMakeDir( enclosingDir.getAbsolutePath() );
+		if( !enclosingDir.mkdirs() )
+		{
+			throw new IOException("Failed during enclosing directory creation");
+		}
 		final FileOutputStream fos = new FileOutputStream( outputPath );
 		int numRead = 0;
 		while( (numRead = contents.read( storageBuf ) ) > 0 )

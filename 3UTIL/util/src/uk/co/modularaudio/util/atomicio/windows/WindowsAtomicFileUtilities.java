@@ -27,7 +27,6 @@ import java.io.IOException;
 
 import uk.co.modularaudio.util.atomicio.AtomicFileUtilities;
 
-
 /**
  * @author dan
  *
@@ -37,68 +36,71 @@ public class WindowsAtomicFileUtilities implements AtomicFileUtilities
 	private final static int BUF_SIZE = 10 * 1024;
 
 	/**
-	 * @see uk.co.modularaudio.util.atomicio.AtomicFileUtilities#copyFile(String, String)
+	 * @see uk.co.modularaudio.util.atomicio.AtomicFileUtilities#copyFile(String,
+	 *      String)
 	 */
-	public boolean copyFile(String fromPath, String toPath) throws IOException
+	@Override
+	public boolean copyFile( final String fromPath, final String toPath ) throws IOException
 	{
 		boolean retVal = false;
-		byte buffer[] = new byte[BUF_SIZE];
+		final byte buffer[] = new byte[BUF_SIZE];
 
 		// Set the temporary directory to be the same directory as the topath
-		File outFile = new File(toPath);
-		String outPath = outFile.getParent();
-		File outDir = new File(outPath);
+		final File outFile = new File( toPath );
+		final String outPath = outFile.getParent();
+		final File outDir = new File( outPath );
 
 		// Make sure the temporary file is created in the same directory as the
 		// destination file - since that makes the rename atomic.
-		File tmpFile = File.createTempFile("uafu", null, outDir);
-		
+		final File tmpFile = File.createTempFile( "uafu", null, outDir );
+
 		// Now copy the from to the tmpfile
-		File inFile = new File(fromPath);
-		FileInputStream fis = new FileInputStream(inFile);
-		FileOutputStream fos = new FileOutputStream(tmpFile);
-		
+		final File inFile = new File( fromPath );
+		final FileInputStream fis = new FileInputStream( inFile );
+		final FileOutputStream fos = new FileOutputStream( tmpFile );
+
 		int numRead = 0;
-		
-		while((numRead = fis.read(buffer)) != -1)
+
+		while ((numRead = fis.read( buffer )) != -1)
 		{
-			fos.write(buffer, 0, numRead);
+			fos.write( buffer, 0, numRead );
 		}
 		fos.close();
 		fis.close();
-		
+
 		// Now move this to the new filename
-		retVal = this.moveFile( tmpFile.getAbsolutePath(), toPath);
-		return(retVal);
+		retVal = this.moveFile( tmpFile.getAbsolutePath(), toPath );
+		return (retVal);
 	}
 
 	/**
-	 * @see uk.co.modularaudio.util.atomicio.AtomicFileUtilities#moveFile(String, String)
+	 * @see uk.co.modularaudio.util.atomicio.AtomicFileUtilities#moveFile(String,
+	 *      String)
 	 */
-	public boolean moveFile(String fromPath, String toPath) throws IOException
+	@Override
+	public boolean moveFile( final String fromPath, final String toPath ) throws IOException
 	{
 		boolean retVal = false;
-		File fromFile = new File(fromPath);
-		if(!fromFile.exists())
+		final File fromFile = new File( fromPath );
+		if (!fromFile.exists())
 		{
-			throw new IOException("File does not exist.");
+			throw new IOException( "File does not exist." );
 		}
-		
+
 		if (!fromFile.isFile())
 		{
-			throw new IOException("Path specified is not a file.");
+			throw new IOException( "Path specified is not a file." );
 		}
-		
-		if (!fromFile.renameTo( new File(toPath)))
+
+		if (!fromFile.renameTo( new File( toPath ) ))
 		{
-			throw new IOException("Unable to move file " + fromPath +
-				" to " + toPath);
+			throw new IOException( "Unable to move file " + fromPath + " to " + toPath );
 		}
 		else
 		{
 			retVal = true;
 		}
-		return(retVal);
+		return (retVal);
 	}
 
 }

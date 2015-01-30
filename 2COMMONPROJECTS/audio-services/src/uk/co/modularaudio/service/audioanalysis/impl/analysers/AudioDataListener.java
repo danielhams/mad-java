@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.datalistener;
+package uk.co.modularaudio.service.audioanalysis.impl.analysers;
 
 import uk.co.modularaudio.util.audio.format.DataRate;
 

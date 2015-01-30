@@ -22,7 +22,6 @@ package uk.co.modularaudio.service.audioanalysis.impl.analysers;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
-import uk.co.modularaudio.util.audio.datalistener.AudioDataListener;
 
 public interface AnalysisListener extends AudioDataListener
 {
