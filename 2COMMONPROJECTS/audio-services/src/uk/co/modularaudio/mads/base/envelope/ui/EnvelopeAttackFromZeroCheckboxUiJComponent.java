@@ -26,7 +26,7 @@ import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacCheckBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacCheckBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

@@ -31,7 +31,7 @@ import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefi
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacADSRSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacADSRSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;

@@ -29,7 +29,7 @@ import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.mads.base.spectralroll.util.SpecDataListener;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

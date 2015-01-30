@@ -35,7 +35,7 @@ import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefi
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerRuntimePattern;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.gui.patternsequencer.PatternSequencer;
 import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceModel;
 import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceModelListener;

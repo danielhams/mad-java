@@ -27,7 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class TGFrame extends JFrame

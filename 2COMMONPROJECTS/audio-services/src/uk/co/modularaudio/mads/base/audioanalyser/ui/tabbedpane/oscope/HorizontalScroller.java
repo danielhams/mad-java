@@ -28,7 +28,7 @@ import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferZoomAndPositionListener;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState.ZoomDirection;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AAColours;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 
 public class HorizontalScroller extends PacPanel implements BufferZoomAndPositionListener
 {

@@ -35,7 +35,7 @@ import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeWriteableScopeData;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeWriteableScopeData.FloatType;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;

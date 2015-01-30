@@ -33,7 +33,7 @@ import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferStateListener;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferZoomAndPositionListener;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AudioAnalyserDisplay;
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPainter;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;

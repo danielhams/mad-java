@@ -37,7 +37,7 @@ import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeRuntime;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComponent;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComponent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;

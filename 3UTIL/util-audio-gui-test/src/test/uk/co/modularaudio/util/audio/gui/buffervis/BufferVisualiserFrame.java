@@ -24,8 +24,6 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 
-import uk.co.modularaudio.util.audio.gui.buffervis.BufferVisualiser;
-
 public class BufferVisualiserFrame extends JFrame
 {
 	private static final long serialVersionUID = -1841622140858949623L;

@@ -22,7 +22,7 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 import java.awt.event.ActionEvent;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 
 public abstract class NoDisplayPacButton extends PacButton
 {

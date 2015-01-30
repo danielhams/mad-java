@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.mixer.ui;
 import java.awt.Color;
 import java.awt.Font;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
 import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener;
 import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;

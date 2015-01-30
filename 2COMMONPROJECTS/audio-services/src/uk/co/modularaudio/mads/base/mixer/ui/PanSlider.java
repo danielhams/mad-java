@@ -26,7 +26,7 @@ import java.util.Hashtable;
 
 import javax.swing.JLabel;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener;
 import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 

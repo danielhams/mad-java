@@ -24,9 +24,9 @@ package uk.co.modularaudio.util.audio.format;
 public enum DataRate
 {
 	SR_1024, SR_22050, SR_32000, SR_44100, SR_48000, SR_88200, SR_96000, SR_192000;
-	
-	public static DataRate getCDQuality() { return SR_44100; };
-	
+
+	public final static DataRate CD_QUALITY = SR_44100;
+
 	public int getValue()
 	{
 		switch( this )
@@ -51,54 +51,54 @@ public enum DataRate
 			return -1;
 		}
 	}
-	
+
 	// Calculated from sample rate and buffer size
-	public double calculateLatency(int bufferSize)
+	public double calculateLatency(final int bufferSize)
 	{
-		double retVal = (double)bufferSize / (double)this.getValue();
+		final double retVal = (double)bufferSize / (double)this.getValue();
 		return retVal;
 	}
-	
+
 	// Calculate a rounded integer number of samples for a number of milliseconds
-	public int calculateSamplesForLatency( int millis )
+	public int calculateSamplesForLatency( final int millis )
 	{
-		int numSamplesPerSecond = this.getValue();
-		float numSamplesPerMilli = numSamplesPerSecond / 1000.0f;
-		float numSamplesForFadeOut = numSamplesPerMilli * millis;
+		final int numSamplesPerSecond = this.getValue();
+		final float numSamplesPerMilli = numSamplesPerSecond / 1000.0f;
+		final float numSamplesForFadeOut = numSamplesPerMilli * millis;
 		return Math.round( numSamplesForFadeOut );
 	}
 
-	public static DataRate fromFrequency( int outputFrequency ) throws UnknownDataRateException
+	public static DataRate fromFrequency( final int outputFrequency ) throws UnknownDataRateException
 	{
 		DataRate retVal = null;
-		
-		DataRate values[] = DataRate.values();
+
+		final DataRate values[] = DataRate.values();
 
 		for( int i = 0 ; i < values.length ; i++ )
 		{
-			DataRate toTest = values[i];
-			String asString = toTest.toString();
-			String testString = "SR_" + outputFrequency;
+			final DataRate toTest = values[i];
+			final String asString = toTest.toString();
+			final String testString = "SR_" + outputFrequency;
 			if( asString.equals( testString ) )
 			{
 				retVal = toTest;
 			}
 		}
-		
+
 		if( retVal == null )
 		{
 			// Didn't find it
-			String msg = "Unable to translate frequency " + outputFrequency + " into a known sample rate.";
+			final String msg = "Unable to translate frequency " + outputFrequency + " into a known sample rate.";
 			throw new UnknownDataRateException( msg );
 		}
 		return retVal;
 	}
 
-	public int calculateUsecLatencyForFrames( int numFrames )
+	public int calculateUsecLatencyForFrames( final int numFrames )
 	{
-		int samplesPerSecond = getValue();
-		double samplesPerMicrosecond = samplesPerSecond / 1000000.0;
-		double microSecondsPerSample = 1.0 / samplesPerMicrosecond;
+		final int samplesPerSecond = getValue();
+		final double samplesPerMicrosecond = samplesPerSecond / 1000000.0;
+		final double microSecondsPerSample = 1.0 / samplesPerMicrosecond;
 		return (int)Math.round( microSecondsPerSample * numFrames );
 	}
 

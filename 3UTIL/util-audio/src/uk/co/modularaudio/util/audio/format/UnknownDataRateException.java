@@ -22,13 +22,9 @@ package uk.co.modularaudio.util.audio.format;
 
 public class UnknownDataRateException extends Exception
 {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9205576940655470227L;
 
-	public UnknownDataRateException( String msg )
+	public UnknownDataRateException( final String msg )
 	{
 		super( msg );
 	}

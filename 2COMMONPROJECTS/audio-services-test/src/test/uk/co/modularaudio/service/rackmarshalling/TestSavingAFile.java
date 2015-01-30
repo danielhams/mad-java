@@ -48,39 +48,39 @@ public class TestSavingAFile extends AbstractGraphTest
 		throws Exception
 	{
 		log.debug("Started.");
-		RackDataModel emptyRack = rackService.createNewRackDataModel( "Empty Rack", "", 20, 20, true );
+		final RackDataModel emptyRack = rackService.createNewRackDataModel( "Empty Rack", "", 20, 20, true );
 		rackService.dumpRack( emptyRack );
 
-		DataRate dataRate = DataRate.getCDQuality();
-		MadGraphInstance<?,?> rackModelRootGraph = rackService.getRackGraphInstance( emptyRack );
-		MadGraphInstance<?,?> emptyRackRootGraph = rackModelRootGraph;
-		int channelBufferLength = 64;
-		HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
+		final DataRate dataRate = DataRate.CD_QUALITY;
+		final MadGraphInstance<?,?> rackModelRootGraph = rackService.getRackGraphInstance( emptyRack );
+		final MadGraphInstance<?,?> emptyRackRootGraph = rackModelRootGraph;
+		final int channelBufferLength = 64;
+		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		long nanosLatency = 1000;
-		int sfLatency = 10;
-		HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
-		RenderingPlan emptyRenderingPlan = renderingService.createRenderingPlan( emptyRackRootGraph, dataRateConfiguration, this );
+		final long nanosLatency = 1000;
+		final int sfLatency = 10;
+		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
+		final RenderingPlan emptyRenderingPlan = renderingService.createRenderingPlan( emptyRackRootGraph, dataRateConfiguration, this );
 		renderingService.dumpRenderingPlan( emptyRenderingPlan );
 
-		String instanceName = "Test component one";
-		Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-		MadDefinition<?,?> fadeInDefinition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
-		RackComponent testComponent = rackService.createComponent( emptyRack, fadeInDefinition, parameterValues, instanceName );
-		MadInstance<?,?> testComponentOne = testComponent.getInstance();
-		MadChannelInstance ftciChannelInstance = testComponentOne.getChannelInstanceByName( "Input" );
-		MadChannelInstance ftcoChannelInstance = testComponentOne.getChannelInstanceByName( "Output" );
+		final String instanceName = "Test component one";
+		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+		final MadDefinition<?,?> fadeInDefinition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final RackComponent testComponent = rackService.createComponent( emptyRack, fadeInDefinition, parameterValues, instanceName );
+		final MadInstance<?,?> testComponentOne = testComponent.getInstance();
+		final MadChannelInstance ftciChannelInstance = testComponentOne.getChannelInstanceByName( "Input" );
+		final MadChannelInstance ftcoChannelInstance = testComponentOne.getChannelInstanceByName( "Output" );
 		rackService.dumpRack( emptyRack );
 
-		String secInstanceName = "The second test component";
-		RackComponent secondComponent = rackService.createComponent( emptyRack, fadeInDefinition, parameterValues,secInstanceName );
-		MadInstance<?,?> testComponentTwo = secondComponent.getInstance();
-		MadChannelInstance stciChannelInstance = testComponentTwo.getChannelInstanceByName( "Input" );
-		MadChannelInstance stcoChannelInstance = testComponentTwo.getChannelInstanceByName( "Output" );
+		final String secInstanceName = "The second test component";
+		final RackComponent secondComponent = rackService.createComponent( emptyRack, fadeInDefinition, parameterValues,secInstanceName );
+		final MadInstance<?,?> testComponentTwo = secondComponent.getInstance();
+		final MadChannelInstance stciChannelInstance = testComponentTwo.getChannelInstanceByName( "Input" );
+		final MadChannelInstance stcoChannelInstance = testComponentTwo.getChannelInstanceByName( "Output" );
 
 		// Wire it to the input and output
-		MadChannelInstance rackInputChannelInstance = emptyRack.getRackIOChannelInstanceByName( "Input Channel 3" );
-		MadChannelInstance rackOutputChannelInstance = emptyRack.getRackIOChannelInstanceByName( "Output Channel 2" );
+		final MadChannelInstance rackInputChannelInstance = emptyRack.getRackIOChannelInstanceByName( "Input Channel 3" );
+		final MadChannelInstance rackOutputChannelInstance = emptyRack.getRackIOChannelInstanceByName( "Output Channel 2" );
 		rackService.addRackIOLink( emptyRack, rackInputChannelInstance, testComponent, ftciChannelInstance );
 
 		// And wire the first to the second
@@ -102,7 +102,7 @@ public class TestSavingAFile extends AbstractGraphTest
 		*/
 
 		// Create a rendering plan from it
-		RenderingPlan testRenderingPlan = renderingService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, this );
+		final RenderingPlan testRenderingPlan = renderingService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, this );
 		renderingService.dumpRenderingPlan( testRenderingPlan );
 	}
 }

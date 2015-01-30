@@ -27,7 +27,7 @@ import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadInstance;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AudioAnalyserTabbedPane;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;

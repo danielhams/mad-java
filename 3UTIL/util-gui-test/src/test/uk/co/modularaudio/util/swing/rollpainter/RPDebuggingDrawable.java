@@ -21,7 +21,7 @@
 package test.uk.co.modularaudio.util.swing.rollpainter;
 
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class RPDebuggingDrawable extends PacPanel

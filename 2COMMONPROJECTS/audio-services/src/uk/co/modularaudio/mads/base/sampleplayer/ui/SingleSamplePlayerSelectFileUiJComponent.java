@@ -34,7 +34,7 @@ import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinit
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadInstance;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSampleRuntime;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

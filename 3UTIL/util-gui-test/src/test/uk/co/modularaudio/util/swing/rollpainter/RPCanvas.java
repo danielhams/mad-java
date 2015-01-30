@@ -28,7 +28,7 @@ import test.uk.co.modularaudio.util.swing.rollpainter.buffer.Buffer;
 import test.uk.co.modularaudio.util.swing.rollpainter.buffer.BufferClearer;
 import test.uk.co.modularaudio.util.swing.rollpainter.buffer.SampleFactory;
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPainter;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 

@@ -22,7 +22,7 @@ package uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane;
 
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferFreezeListener;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 
 public class FreezeButton extends PacToggleButton
 	implements BufferFreezeListener

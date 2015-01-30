@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.oscope;
 import java.awt.Graphics;
 
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AAColours;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 
 public class WaveScale extends PacPanel
 {

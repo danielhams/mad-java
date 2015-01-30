@@ -18,21 +18,46 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.paccontrols;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
-import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class PacPanel extends JPanel
+import javax.swing.JButton;
+
+public abstract class PacButton extends JButton
 {
-	private static final long serialVersionUID = 5332789663669584571L;
+	private static final long serialVersionUID = 5907687589303985605L;
+
+	public PacButton()
+	{
+		this.addActionListener( new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(final ActionEvent e)
+			{
+				receiveEvent( e );
+			}
+		} );
+	}
 
 	public String getControlValue()
 	{
-		return "";
+		return isSelected() ? "true" : "false";
 	}
 
 	public void receiveControlValue( final String value )
 	{
+		if( value.length() > 0 && value.equals( "true" ) )
+		{
+			setSelected( true );
+		}
+		else
+		{
+			setSelected( false );
+		}
 	}
 
+	public abstract void receiveEvent( ActionEvent e);
 }

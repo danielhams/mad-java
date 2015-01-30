@@ -47,60 +47,60 @@ public class TestFlatteningGraph extends AbstractGraphTest
 		throws Exception
 	{
 		log.debug("SimpleGraphFlattenTest beginning.");
-		MadGraphInstance<?,?> graphToRender = graphService.createNewRootGraph(  "Test Simple Graph" );
+		final MadGraphInstance<?,?> graphToRender = graphService.createNewRootGraph(  "Test Simple Graph" );
 
-		MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
 		graphService.addInstanceToGraphWithName(  graphToRender, firstInstance, firstInstance.getInstanceName() );
 
-		MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
-		MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
+		final MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
 
-		MadInstance<?,?> secondInstance = componentService.createInstanceFromDefinition(  definition,
+		final MadInstance<?,?> secondInstance = componentService.createInstanceFromDefinition(  definition,
 				emptyParameterMap, "Test instance two");
 
 		graphService.addInstanceToGraphWithName( graphToRender, secondInstance, secondInstance.getInstanceName() );
 
-		MadChannelInstance[] secondChannelInstances = secondInstance.getChannelInstances();
-		MadChannelInstance secondProducerChannel = secondChannelInstances[ FadeInMadDefinition.PRODUCER ];
-		MadChannelInstance secondConsumerChannel = secondChannelInstances[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance[] secondChannelInstances = secondInstance.getChannelInstances();
+		final MadChannelInstance secondProducerChannel = secondChannelInstances[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance secondConsumerChannel = secondChannelInstances[ FadeInMadDefinition.CONSUMER ];
 
-		MadLink link = new MadLink( secondProducerChannel, firstConsumerChannel );
+		final MadLink link = new MadLink( secondProducerChannel, firstConsumerChannel );
 
 		graphService.addLink( graphToRender,  link );
 
-		MadInstance<?,?> thirdInstance = componentService.createInstanceFromDefinition(  definition,
+		final MadInstance<?,?> thirdInstance = componentService.createInstanceFromDefinition(  definition,
 				emptyParameterMap, "Third one");
 
 		graphService.addInstanceToGraphWithName( graphToRender, thirdInstance, thirdInstance.getInstanceName() );
 
-		MadChannelInstance[] thirdChannelInstances = thirdInstance.getChannelInstances();
-		MadChannelInstance thirdProducerChannel = thirdChannelInstances[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance[] thirdChannelInstances = thirdInstance.getChannelInstances();
+		final MadChannelInstance thirdProducerChannel = thirdChannelInstances[ FadeInMadDefinition.PRODUCER ];
 
-		MadLink link2 = new MadLink( thirdProducerChannel, secondConsumerChannel );
+		final MadLink link2 = new MadLink( thirdProducerChannel, secondConsumerChannel );
 
 		graphService.addLink( graphToRender, link2 );
 
-		DataRate dataRate = DataRate.getCDQuality();
-		int channelBufferLength = 64;
-		HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
+		final DataRate dataRate = DataRate.CD_QUALITY;
+		final int channelBufferLength = 64;
+		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		long nanosLatency = 1000;
-		int sfLatency = 10;
-		HardwareIOChannelSettings planDataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
+		final long nanosLatency = 1000;
+		final int sfLatency = 10;
+		final HardwareIOChannelSettings planDataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
 		RenderingPlan renderingPlan = null;
 //		int numRenderingPlanCreations = 10000;
-		int numRenderingPlanCreations = 1;
+		final int numRenderingPlanCreations = 1;
 		for( int i = 0 ; i < numRenderingPlanCreations ; i ++)
 		{
 			log.debug("Before creating the rendering plan");
-			long bt = System.nanoTime();
+			final long bt = System.nanoTime();
 			renderingPlan = renderingService.createRenderingPlan( graphToRender, planDataRateConfiguration, this );
-			long at = System.nanoTime();
-			long diff = at - bt;
-			long inMicros = diff / 1000;
+			final long at = System.nanoTime();
+			final long diff = at - bt;
+			final long inMicros = diff / 1000;
 			log.debug("After creating the rendering plan diff in micros is " + inMicros );
 		}
 		graphService.dumpGraph(  graphToRender  );

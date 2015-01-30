@@ -30,7 +30,7 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.logdisplay.runav.FallComputer;
 import uk.co.modularaudio.util.audio.logdisplay.runav.FastFallComputer;
 import uk.co.modularaudio.util.audio.logdisplay.runav.LongAverageComputer;

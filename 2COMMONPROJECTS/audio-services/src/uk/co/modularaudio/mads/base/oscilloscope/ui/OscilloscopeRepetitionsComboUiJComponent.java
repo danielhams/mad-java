@@ -31,7 +31,7 @@ import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeCaptureRepetitionsEnum;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

@@ -29,7 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;

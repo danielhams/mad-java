@@ -28,7 +28,7 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceModel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;

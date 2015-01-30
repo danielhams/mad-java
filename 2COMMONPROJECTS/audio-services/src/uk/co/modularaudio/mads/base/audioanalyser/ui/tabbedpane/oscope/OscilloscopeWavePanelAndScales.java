@@ -24,7 +24,7 @@ import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AAColours;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.AudioAnalyserDisplay;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.oscope.WaveDisplay.DisplayTypeEnum;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 

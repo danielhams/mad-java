@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferFreezeListener;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState.PanDirection;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 
 public class RightButton extends PacButton
 	implements BufferFreezeListener

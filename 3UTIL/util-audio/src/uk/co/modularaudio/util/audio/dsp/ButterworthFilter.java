@@ -30,15 +30,15 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class ButterworthFilter
 {
 	private static Log log = LogFactory.getLog( ButterworthFilter.class.getName() );
-	
+
 //	private final static boolean DEBUG_NAN = false;
 
-	public static float filter( ButterworthFilterRT rt, float[] input, int offset, int length, float freq, float bw, FrequencyFilterMode mode, float sr )
+	public static float filter( final ButterworthFilterRT rt, final float[] input, final int offset, final int length, float freq, final float bw, final FrequencyFilterMode mode, final float sr )
 	{
 		boolean allZeros = true;
 		for( int s = 0 ; s < length ; s++ )
 		{
-			float curVal = input[ offset + s ];
+			final float curVal = input[ offset + s ];
 			if( curVal < 0.0f && curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 			{
 				input[ offset + s ] = 0.0f;
@@ -55,23 +55,23 @@ public class ButterworthFilter
 				allZeros = false;
 			}
 		}
-		
+
 		if( allZeros )
 		{
 			return 0.0f;
 		}
 
 		float a, a1, a2, b1, b2, tanthe, costhe, sqrtan, tansq, w;
-		if( freq < 10.0f ) 
+		if( freq < 10.0f )
 		{
 			freq = 10.0f;
 		}
-		
+
 		if( mode == FrequencyFilterMode.NONE )
 		{
 			return input[ length - 1];
 		}
-		
+
 		switch( mode )
 		{
 		case LP:
@@ -133,9 +133,9 @@ public class ButterworthFilter
 			b2 = 0;
 			break;
 		}
-		
-		float[] fbds = rt.feedbackDelaySample;
-		
+
+		final float[] fbds = rt.feedbackDelaySample;
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			w = input[offset + i] - b1*fbds[0] - b2*fbds[1];
@@ -177,22 +177,22 @@ public class ButterworthFilter
 //				}
 //			}
 		}
-		
+
 		return input[offset];
 	}
-	
-	public static float filterWithFreq( ButterworthFilterRT rt, float[] input, int offset, int length, float[] freqs, float bw, FrequencyFilterMode mode, float sr )
+
+	public static float filterWithFreq( final ButterworthFilterRT rt, final float[] input, final int offset, final int length, final float[] freqs, final float bw, final FrequencyFilterMode mode, final float sr )
 	{
 		float a, a1, a2, b1, b2, tanthe, costhe, sqrtan, tansq, w;
-		
+
 		if( mode == FrequencyFilterMode.NONE )
 		{
 			return input[ length - 1];
 		}
-		
+
 		for( int s = 0 ; s < length ; s++ )
 		{
-			float curVal = input[s];
+			final float curVal = input[s];
 			if( curVal < 0.0f && curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 			{
 				input[ s ] = 0.0f;
@@ -202,7 +202,7 @@ public class ButterworthFilter
 				input[ s ] = 0.0f;
 			}
 		}
-		
+
 		for( int i = 0 ; i < length ; i++ )
 		{
 			float freq = freqs[i];
@@ -258,11 +258,11 @@ public class ButterworthFilter
 				b2 = 0;
 				break;
 			}
-			
-			float[] fbds = rt.feedbackDelaySample;
-			
+
+			final float[] fbds = rt.feedbackDelaySample;
+
 			w = input[offset + i] - b1*fbds[0] - b2*fbds[1];
-			float result = (a*w + a1*fbds[0] + a2*fbds[1]);
+			final float result = (a*w + a1*fbds[0] + a2*fbds[1]);
 			// Clamp output samples
 //			if( result > 1.0f )
 //			{
@@ -291,7 +291,7 @@ public class ButterworthFilter
 //				}
 //			}
 		}
-		
+
 		return input[offset];
 	}
 }

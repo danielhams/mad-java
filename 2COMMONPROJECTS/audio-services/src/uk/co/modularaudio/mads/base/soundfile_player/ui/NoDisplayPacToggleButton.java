@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 
 public abstract class NoDisplayPacToggleButton extends PacToggleButton
 {

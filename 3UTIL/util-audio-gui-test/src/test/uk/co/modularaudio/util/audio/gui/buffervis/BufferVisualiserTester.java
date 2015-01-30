@@ -25,7 +25,6 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.buffervis.BufferVisualiser;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
 public class BufferVisualiserTester extends TestCase

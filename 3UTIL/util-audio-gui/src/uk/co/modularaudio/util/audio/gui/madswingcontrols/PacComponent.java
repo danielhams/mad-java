@@ -18,20 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.pvoc.support;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
-public class PvocPlayPosition
+import java.awt.Component;
+
+
+public abstract class PacComponent extends Component
 {
-	public long pos;
-	public double frac;
-	
-	public String toString()
-	{
-		StringBuilder retVal = new StringBuilder( 10 );
-		retVal.append( "Pos: " );
-		retVal.append( pos );
-		retVal.append( "-" );
-		retVal.append( frac );
-		return retVal.toString();
-	}
+	private static final long serialVersionUID = -437811233199546479L;
+
+	public abstract String getControlValue();
+
+	public abstract void receiveControlValue( final String value );
+
 }

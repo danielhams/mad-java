@@ -32,25 +32,26 @@ public enum SampleBits
 	SAMPLE_32LE( 4, "32", true, false ),
 	SAMPLE_32BE( 4, "32", true, true ),
 	SAMPLE_FLOAT( 4, "32", true, false );
-	
+
 	private int sizeBytes = -1;
 	private String id = null;
 	private boolean signed = false;
 	private boolean bigEndian = false;
-	
-	private SampleBits( int sizeBytes, String id, boolean signed, boolean bigEndian )
+
+	private SampleBits( final int sizeBytes, final String id, final boolean signed, final boolean bigEndian )
 	{
 		this.sizeBytes = sizeBytes;
 		this.id = id;
 		this.signed = signed;
 		this.bigEndian = bigEndian;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return id;
 	}
-	
+
 	public int getSizeBytes()
 	{
 		return sizeBytes;
@@ -60,7 +61,7 @@ public enum SampleBits
 	{
 		return signed;
 	}
-	
+
 	public boolean isBigEndian()
 	{
 		return bigEndian;

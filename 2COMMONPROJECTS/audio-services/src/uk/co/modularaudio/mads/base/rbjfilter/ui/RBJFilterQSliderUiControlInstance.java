@@ -31,7 +31,7 @@ import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
 import uk.co.modularaudio.util.audio.dsp.RBJFilterRT;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacLogSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLogSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.math.MathFormatter;

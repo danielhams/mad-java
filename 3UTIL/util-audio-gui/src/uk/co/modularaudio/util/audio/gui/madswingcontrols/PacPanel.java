@@ -18,17 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.paccontrols;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
-import java.awt.Component;
+import javax.swing.JPanel;
 
-
-public abstract class PacComponent extends Component
+public class PacPanel extends JPanel
 {
-	private static final long serialVersionUID = -437811233199546479L;
+	private static final long serialVersionUID = 5332789663669584571L;
 
-	public abstract String getControlValue();
+	public String getControlValue()
+	{
+		return "";
+	}
 
-	public abstract void receiveControlValue( final String value );
+	public void receiveControlValue( final String value )
+	{
+	}
 
 }

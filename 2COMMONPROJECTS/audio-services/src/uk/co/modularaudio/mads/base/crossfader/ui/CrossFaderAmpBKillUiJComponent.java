@@ -28,7 +28,7 @@ import javax.swing.event.ChangeEvent;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

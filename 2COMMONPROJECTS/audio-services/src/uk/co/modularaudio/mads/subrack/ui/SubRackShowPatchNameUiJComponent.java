@@ -29,7 +29,7 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacLabel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLabel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

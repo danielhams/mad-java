@@ -20,7 +20,7 @@
 
 package test.uk.co.modularaudio.util.swing.rollpainter;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 
 public class RPPlayStopToggleButton extends PacToggleButton

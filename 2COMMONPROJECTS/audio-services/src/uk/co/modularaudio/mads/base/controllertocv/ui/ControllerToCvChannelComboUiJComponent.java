@@ -29,7 +29,7 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

@@ -27,10 +27,10 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.tabbedpane.oscope.OscilloscopeWavePanelAndScales;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacLabel;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleButton;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleGroup;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLabel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleGroup;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 

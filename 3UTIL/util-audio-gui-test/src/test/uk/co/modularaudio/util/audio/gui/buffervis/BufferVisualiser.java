@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.buffervis;
+package test.uk.co.modularaudio.util.audio.gui.buffervis;
 
 import java.awt.Color;
 import java.awt.Dimension;

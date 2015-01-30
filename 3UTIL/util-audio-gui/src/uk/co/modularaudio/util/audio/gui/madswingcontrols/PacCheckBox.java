@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.paccontrols;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

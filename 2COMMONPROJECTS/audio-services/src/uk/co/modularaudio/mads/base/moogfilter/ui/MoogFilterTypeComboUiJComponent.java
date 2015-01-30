@@ -30,7 +30,7 @@ import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

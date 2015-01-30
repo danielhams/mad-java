@@ -25,7 +25,7 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadDefinition;
 import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;

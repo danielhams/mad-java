@@ -33,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.LinearAmpScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.LogLogAmpScaleComputer;

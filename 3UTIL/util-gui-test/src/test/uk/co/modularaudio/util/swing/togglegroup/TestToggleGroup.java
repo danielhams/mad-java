@@ -23,7 +23,7 @@ package test.uk.co.modularaudio.util.swing.togglegroup;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacToggleGroup;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleGroup;
 
 public class TestToggleGroup extends PacToggleGroup
 {

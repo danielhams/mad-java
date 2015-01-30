@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.paccontrols;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;

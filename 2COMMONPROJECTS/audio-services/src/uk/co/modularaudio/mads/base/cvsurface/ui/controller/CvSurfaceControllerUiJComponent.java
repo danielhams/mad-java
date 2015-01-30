@@ -32,7 +32,7 @@ import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.ui.CvSurfaceMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComponent;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComponent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

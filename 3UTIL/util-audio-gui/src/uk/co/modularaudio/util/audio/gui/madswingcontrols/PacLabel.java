@@ -18,34 +18,34 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.pvoc;
+package uk.co.modularaudio.util.audio.gui.madswingcontrols;
 
-import org.jtransforms.fft.FloatFFT_1D;
+import java.awt.Color;
 
-public class PvocFftComputer
+import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
+
+public class PacLabel extends JLabel
 {
-	private FloatFFT_1D realFft;
-	public final int externalNyIndex;
+	private static final long serialVersionUID = -7825874273873291912L;
 
-	public PvocFftComputer( int fftSize, int fftComplexArraySize )
+	public PacLabel()
 	{
-		realFft = new FloatFFT_1D( fftSize );
-		externalNyIndex = fftComplexArraySize - 2;
+		super();
+		setBorder( new LineBorder( Color.BLACK, 1 ) );
 	}
 
-	public void realForward( float[] a )
+	public PacLabel( final String label )
 	{
-		realFft.realForward( a );
-		// Move nyquist to appropriate place
-		a[ externalNyIndex ] = a[1];
-		a[1]=0.0f;
+		super( label );
 	}
 
-	public void realInverse( float[] a )
+	public String getControlValue()
 	{
-		// Move nyquist into appropriate place before inverse
-		a[1] = a[ externalNyIndex ];
-		realFft.realInverse( a, true );
+		return "";
 	}
 
+	public void receiveControlValue( final String value )
+	{
+	}
 }

@@ -29,7 +29,7 @@ import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
 import uk.co.modularaudio.mads.base.envelope.ui.WaveTableChoiceAttackCombo.WaveTableChoiceEnum;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacPanel;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboController;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboModel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;

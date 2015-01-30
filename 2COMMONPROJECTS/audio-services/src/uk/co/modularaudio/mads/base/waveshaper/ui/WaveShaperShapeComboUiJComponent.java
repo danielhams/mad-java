@@ -30,7 +30,7 @@ import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadDefinition;
 import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadInstance;
 import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperWaveTables;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 

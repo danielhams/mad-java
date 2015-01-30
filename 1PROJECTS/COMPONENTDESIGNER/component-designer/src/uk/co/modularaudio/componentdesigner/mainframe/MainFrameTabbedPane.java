@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.SubrackTab;
 import uk.co.modularaudio.service.gui.SubrackTab.SubrackTitleListener;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 
 public class MainFrameTabbedPane extends JTabbedPane implements GuiTabbedPane, SubrackTitleListener
 {

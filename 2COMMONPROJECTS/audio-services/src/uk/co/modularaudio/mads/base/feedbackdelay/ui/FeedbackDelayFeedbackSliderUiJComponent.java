@@ -25,7 +25,7 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
