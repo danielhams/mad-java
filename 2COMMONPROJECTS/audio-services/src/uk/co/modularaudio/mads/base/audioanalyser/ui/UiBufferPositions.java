@@ -23,18 +23,18 @@ package uk.co.modularaudio.mads.base.audioanalyser.ui;
 public class UiBufferPositions
 {
 	public boolean frozen;
-	
+
 	public int numSamplesToDisplay;
-	
+
 	public int startBufferPos;
 	public int endBufferPos;
 	public int startWindowOffset;
 	public int endWindowOffset;
-	
-	public UiBufferPositions( boolean frozen, int numSamplesToDisplay, int startBufferPos, int endBufferPos, int startWindowOffset, int endWindowOffset )
+
+	public UiBufferPositions( final boolean frozen, final int numSamplesToDisplay, final int startBufferPos, final int endBufferPos, final int startWindowOffset, final int endWindowOffset )
 	{
 		this.frozen = frozen;
-		
+
 		this.numSamplesToDisplay = numSamplesToDisplay;
 		this.startBufferPos = startBufferPos;
 		this.endBufferPos = endBufferPos;
@@ -43,13 +43,13 @@ public class UiBufferPositions
 		this.startWindowOffset = startWindowOffset;
 		this.endWindowOffset = endWindowOffset;
 	}
-	
-	public UiBufferPositions( UiBufferPositions sp )
+
+	public UiBufferPositions( final UiBufferPositions sp )
 	{
 		assign( sp );
 	}
-	
-	public void assign( UiBufferPositions sp )
+
+	public void assign( final UiBufferPositions sp )
 	{
 		this.frozen = sp.frozen;
 		this.numSamplesToDisplay = sp.numSamplesToDisplay;
@@ -59,10 +59,10 @@ public class UiBufferPositions
 		this.endWindowOffset = sp.endWindowOffset;
 	}
 
-	public void resetBufferPositions( int newStartBufferPos,
-		int newEndBufferPos,
-		int newStartWindowOffset,
-		int newEndWindowOffset )
+	public void resetBufferPositions( final int newStartBufferPos,
+		final int newEndBufferPos,
+		final int newStartWindowOffset,
+		final int newEndWindowOffset )
 	{
 		this.startBufferPos = newStartBufferPos;
 		this.endBufferPos = newEndBufferPos;
@@ -70,21 +70,8 @@ public class UiBufferPositions
 		this.endWindowOffset = newEndWindowOffset;
 	}
 
-	public void setNumSamplesToDisplay( int newNumSamplesToDisplay )
+	public void setNumSamplesToDisplay( final int newNumSamplesToDisplay )
 	{
 		this.numSamplesToDisplay = newNumSamplesToDisplay;
-	}
-	
-	public boolean equals( final UiBufferPositions a )
-	{
-		if( a.frozen != frozen ||
-				a.numSamplesToDisplay != numSamplesToDisplay ||
-				a.startBufferPos != startBufferPos ||
-				a.endBufferPos != endBufferPos ||
-				a.startWindowOffset != startWindowOffset ||
-				a.endWindowOffset != endWindowOffset )
-			return false;
-			
-		return true;
 	}
 }

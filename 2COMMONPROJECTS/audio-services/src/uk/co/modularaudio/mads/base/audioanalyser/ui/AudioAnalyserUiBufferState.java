@@ -35,13 +35,13 @@ import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 public class AudioAnalyserUiBufferState
 {
 	private static Log log = LogFactory.getLog( AudioAnalyserUiBufferState.class.getName() );
-	
+
 	public enum ZoomDirection
 	{
 		IN,
 		OUT
 	};
-	
+
 	public enum PanDirection
 	{
 		BACK,
@@ -50,69 +50,69 @@ public class AudioAnalyserUiBufferState
 
 	private final AudioAnalyserMadInstance instance;
 	private final float bufferLengthMilliseconds;
-	private int minSamplesToDisplay = -1;
-	public int maxSamplesToDisplay = -1;
-	
-	private AudioAnalyserDataRingBuffer instanceRingBuffer = null;
-	
-	private AudioAnalyserDataBuffers dataBuffers = null;
-	
-	private int sampleRate = -1;
-	private int lastBufferWriteIndex = -1;
-	
-	private ArrayList<BufferStateListener> bufferStateListeners = new ArrayList<BufferStateListener>();
-	private ArrayList<BufferFreezeListener> bufferFreezeListeners = new ArrayList<BufferFreezeListener>();
-	private ArrayList<BufferZoomAndPositionListener> bufferZoomAndPositionListeners = new ArrayList<BufferZoomAndPositionListener>();
-	
+	private int minSamplesToDisplay;
+	public int maxSamplesToDisplay;
+
+	private AudioAnalyserDataRingBuffer instanceRingBuffer;
+
+	private final AudioAnalyserDataBuffers dataBuffers;
+
+	private int sampleRate;
+	private int lastBufferWriteIndex;
+
+	private final ArrayList<BufferStateListener> bufferStateListeners = new ArrayList<BufferStateListener>();
+	private final ArrayList<BufferFreezeListener> bufferFreezeListeners = new ArrayList<BufferFreezeListener>();
+	private final ArrayList<BufferZoomAndPositionListener> bufferZoomAndPositionListeners = new ArrayList<BufferZoomAndPositionListener>();
+
 	public final UiBufferPositions bufferPositions;
-	
+
 	private int samplesDeltaPerZoomChange;
 
-	public AudioAnalyserUiBufferState( AudioAnalyserMadInstance auInstance, float bufferLengthMilliseconds )
+	public AudioAnalyserUiBufferState( final AudioAnalyserMadInstance auInstance, final float bufferLengthMilliseconds )
 	{
 		this.instance = auInstance;
 		this.bufferLengthMilliseconds = bufferLengthMilliseconds;
-		
-		int sampleRate = 44100;
-		int numSamplesToDisplay = sampleRate * 4;
+
+		final int sampleRate = 44100;
+		final int numSamplesToDisplay = sampleRate * 4;
 		minSamplesToDisplay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 80.0f );
 		maxSamplesToDisplay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 5000.0f );
 		bufferPositions = new UiBufferPositions( false, numSamplesToDisplay, 0, 0, maxSamplesToDisplay - numSamplesToDisplay, maxSamplesToDisplay );
 
 		// Create a "default" buffer set and size - we'll resize if need be on startup
-		int dataBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(sampleRate, bufferLengthMilliseconds);
+		final int dataBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(sampleRate, bufferLengthMilliseconds);
 		// And fill with empties
 		dataBuffers = new AudioAnalyserDataBuffers( sampleRate, dataBufferLength, true );
 	}
 
-	public void receiveStartup( HardwareIOChannelSettings ratesAndLatency,
-			MadTimingParameters timingParameters)
+	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency,
+			final MadTimingParameters timingParameters)
 	{
 		sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
-		
-		int dataBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(sampleRate, bufferLengthMilliseconds);
+
+		final int dataBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(sampleRate, bufferLengthMilliseconds);
 		dataBuffers.resetIfNeeded( sampleRate, dataBufferLength, true );
-		
+
 		minSamplesToDisplay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 320.0f );
 		maxSamplesToDisplay = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 5000.0f );
 		samplesDeltaPerZoomChange = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 100.0f );
-		
+
 		instanceRingBuffer = instance.getDataRingBuffer();
 		lastBufferWriteIndex = instanceRingBuffer.getWritePosition();
 
 		// We reset the positions anyway since the buffer is getting reset (due to possible sample rate change)
-		int newEndBufferPos = dataBuffers.writePosition;
+		final int newEndBufferPos = dataBuffers.writePosition;
 		int newStartBufferPos = newEndBufferPos - maxSamplesToDisplay;
 		if( newStartBufferPos < 0 )
 		{
 			newStartBufferPos += dataBuffers.bufferLength;
 		}
-		
-		int newStartWindowOffset = maxSamplesToDisplay - bufferPositions.numSamplesToDisplay;
-		int newEndWindowOffset = maxSamplesToDisplay;
+
+		final int newStartWindowOffset = maxSamplesToDisplay - bufferPositions.numSamplesToDisplay;
+		final int newEndWindowOffset = maxSamplesToDisplay;
 		bufferPositions.resetBufferPositions( newStartBufferPos, newEndBufferPos, newStartWindowOffset, newEndWindowOffset );
-		
-		for( BufferStateListener bsl : bufferStateListeners )
+
+		for( final BufferStateListener bsl : bufferStateListeners )
 		{
 			bsl.receiveStartup( ratesAndLatency,
 					timingParameters );
@@ -121,7 +121,7 @@ public class AudioAnalyserUiBufferState
 
 	public void receiveStop()
 	{
-		for( BufferStateListener bsl : bufferStateListeners )
+		for( final BufferStateListener bsl : bufferStateListeners )
 		{
 			bsl.receiveStop();
 		}
@@ -129,17 +129,17 @@ public class AudioAnalyserUiBufferState
 
 	public void destroy()
 	{
-		for( BufferStateListener bsl : bufferStateListeners )
+		for( final BufferStateListener bsl : bufferStateListeners )
 		{
 			bsl.receiveDestroy();
 		}
 	}
 
-	public void receiveBufferIndexUpdate( long updateTimestamp, int bufferWriteIndex )
+	public void receiveBufferIndexUpdate( final long updateTimestamp, final int bufferWriteIndex )
 	{
 		if( bufferWriteIndex != lastBufferWriteIndex )
 		{
-			int numReadable = instanceRingBuffer.getNumReadableWithWriteIndex( bufferWriteIndex );
+			final int numReadable = instanceRingBuffer.getNumReadableWithWriteIndex( bufferWriteIndex );
 
 			if( bufferPositions.frozen )
 			{
@@ -147,26 +147,29 @@ public class AudioAnalyserUiBufferState
 			}
 			else
 			{
-				int spaceAvailable = dataBuffers.getNumWriteable();
+				final int spaceAvailable = dataBuffers.getNumWriteable();
 				if( spaceAvailable < numReadable )
 				{
-					int spaceToFree = numReadable - spaceAvailable;
+					final int spaceToFree = numReadable - spaceAvailable;
 					dataBuffers.moveForward( spaceToFree );
 				}
-	
+
 				// Add on the new data
-				int numRead = instanceRingBuffer.readToRingWithWriteIndex( bufferWriteIndex, dataBuffers,  numReadable );
+				final int numRead = instanceRingBuffer.readToRingWithWriteIndex( bufferWriteIndex, dataBuffers,  numReadable );
 				if( numRead != numReadable )
 				{
-					log.error("Failed reading from data ring buffer - expected " + numReadable + " and received " + numRead);
+					if( log.isErrorEnabled() )
+					{
+						log.error("Failed reading from data ring buffer - expected " + numReadable + " and received " + numRead);
+					}
 					// Zero buffer and set to full
 					Arrays.fill( dataBuffers.buffer, 0.0f );
 					dataBuffers.readPosition = 0;
 					dataBuffers.writePosition = dataBuffers.bufferLength - 1;
 				}
 				// Filter into relevant freq buffers
-				
-				int newEndBufferPos = dataBuffers.writePosition;
+
+				final int newEndBufferPos = dataBuffers.writePosition;
 				int newStartBufferPos = newEndBufferPos - maxSamplesToDisplay;
 				if( newStartBufferPos < 0 )
 				{
@@ -177,26 +180,26 @@ public class AudioAnalyserUiBufferState
 		}
 		lastBufferWriteIndex = bufferWriteIndex;
 	}
-	
-	public void addBufferStateListener( BufferStateListener bsl )
+
+	public void addBufferStateListener( final BufferStateListener bsl )
 	{
 		bufferStateListeners.add( bsl );
 	}
-	
-	public void addBufferFreezeListener( BufferFreezeListener bfl )
+
+	public void addBufferFreezeListener( final BufferFreezeListener bfl )
 	{
 		bufferFreezeListeners.add( bfl );
 		bfl.receiveFreezeStateChange(bufferPositions.frozen);
 	}
-	
-	public void addBufferZoomAndPositionListener( BufferZoomAndPositionListener bzapl )
+
+	public void addBufferZoomAndPositionListener( final BufferZoomAndPositionListener bzapl )
 	{
 		bufferZoomAndPositionListeners.add( bzapl );
 	}
-	
-	public void setFrozen( boolean frozen )
+
+	public void setFrozen( final boolean frozen )
 	{
-		boolean shouldNotify = (bufferPositions.frozen != frozen );
+		final boolean shouldNotify = (bufferPositions.frozen != frozen );
 		if( shouldNotify )
 		{
 			this.bufferPositions.frozen = frozen;
@@ -205,32 +208,32 @@ public class AudioAnalyserUiBufferState
 				// Reset buffer window pos to be the end of the buffer
 				bufferPositions.endWindowOffset = maxSamplesToDisplay;
 				bufferPositions.startWindowOffset = maxSamplesToDisplay - bufferPositions.numSamplesToDisplay;
-				for( BufferZoomAndPositionListener bzpl : bufferZoomAndPositionListeners )
+				for( final BufferZoomAndPositionListener bzpl : bufferZoomAndPositionListeners )
 				{
 					bzpl.receiveZoomAndPositionUpdate();
 				}
 			}
-			
-			for( BufferFreezeListener bfl : bufferFreezeListeners )
+
+			for( final BufferFreezeListener bfl : bufferFreezeListeners )
 			{
 				bfl.receiveFreezeStateChange( frozen );
 			}
 		}
 	}
-	
+
 	public boolean isFrozen()
 	{
 		return bufferPositions.frozen;
 	}
-	
+
 	public AudioAnalyserDataBuffers getDataBuffers()
 	{
 		return dataBuffers;
 	}
 
-	public void zoom( ZoomDirection zoomDirection )
+	public void zoom( final ZoomDirection zoomDirection )
 	{
-		int previousNumSamplesToDisplay = bufferPositions.numSamplesToDisplay;
+		final int previousNumSamplesToDisplay = bufferPositions.numSamplesToDisplay;
 		int newNumSamplesToDisplay = bufferPositions.numSamplesToDisplay;
 		switch( zoomDirection )
 		{
@@ -256,8 +259,8 @@ public class AudioAnalyserUiBufferState
 //		log.debug("Will change num samples to display to " + newNumSamplesToDisplay + " samples");
 
 		// Now adjust the start and end positions
-		int newStartBufferPos = bufferPositions.startBufferPos;
-		int newEndBufferPos = bufferPositions.endBufferPos;
+		final int newStartBufferPos = bufferPositions.startBufferPos;
+		final int newEndBufferPos = bufferPositions.endBufferPos;
 		int newEndWindowOffset;
 		int newStartWindowOffset;
 //		log.debug("Adjusting origStartOffset(" + bufferPositions.startWindowOffset + ") origEndOffset(" + bufferPositions.endWindowOffset + ")");
@@ -271,8 +274,8 @@ public class AudioAnalyserUiBufferState
 			else
 			{
 				// Adjust around the center
-				int centerBufferPos = bufferPositions.startWindowOffset + ((bufferPositions.endWindowOffset - bufferPositions.startWindowOffset) / 2);
-				int halfSamplesToDisplay = newNumSamplesToDisplay / 2;
+				final int centerBufferPos = bufferPositions.startWindowOffset + ((bufferPositions.endWindowOffset - bufferPositions.startWindowOffset) / 2);
+				final int halfSamplesToDisplay = newNumSamplesToDisplay / 2;
 				newStartWindowOffset = centerBufferPos - halfSamplesToDisplay;
 				newEndWindowOffset = centerBufferPos + halfSamplesToDisplay;
 				if( newStartWindowOffset < 0 )
@@ -296,31 +299,31 @@ public class AudioAnalyserUiBufferState
 		}
 //		log.debug("Will zoom adjust to newWindowStart(" + newStartWindowOffset + ") newWindowEnd(" + newEndWindowOffset + ") with numSam("
 //				+ newNumSamplesToDisplay +")" );
-		
+
 		bufferPositions.setNumSamplesToDisplay( newNumSamplesToDisplay );
 		bufferPositions.resetBufferPositions( newStartBufferPos, newEndBufferPos, newStartWindowOffset, newEndWindowOffset );
-		
+
 		if( newNumSamplesToDisplay != previousNumSamplesToDisplay )
 		{
-			for( BufferZoomAndPositionListener bzapl : bufferZoomAndPositionListeners )
+			for( final BufferZoomAndPositionListener bzapl : bufferZoomAndPositionListeners )
 			{
 				bzapl.receiveZoomAndPositionUpdate();
 			}
 		}
 	}
-	
-	public void pan( PanDirection direction )
+
+	public void pan( final PanDirection direction )
 	{
 		// Always move by a scaled amount
-		int samplesDeltaForPanChange = bufferPositions.numSamplesToDisplay / 20;
-		
+		final int samplesDeltaForPanChange = bufferPositions.numSamplesToDisplay / 20;
+
 		int numSamplesChangeForStartAndEnd;
-		
+
 		switch( direction )
 		{
 			case BACK:
 			{
-				int newStartWindowOffset = bufferPositions.startWindowOffset - samplesDeltaForPanChange;
+				final int newStartWindowOffset = bufferPositions.startWindowOffset - samplesDeltaForPanChange;
 				if( newStartWindowOffset < 0 )
 				{
 					numSamplesChangeForStartAndEnd = (-bufferPositions.startWindowOffset);
@@ -334,8 +337,8 @@ public class AudioAnalyserUiBufferState
 			case FORWARD:
 			default:
 			{
-				int newEndWindowOffset = bufferPositions.endWindowOffset + samplesDeltaForPanChange;
-				int diffToEnd = newEndWindowOffset - maxSamplesToDisplay;
+				final int newEndWindowOffset = bufferPositions.endWindowOffset + samplesDeltaForPanChange;
+				final int diffToEnd = newEndWindowOffset - maxSamplesToDisplay;
 				if( diffToEnd > 0 )
 				{
 					numSamplesChangeForStartAndEnd = maxSamplesToDisplay - bufferPositions.endWindowOffset;
@@ -347,16 +350,16 @@ public class AudioAnalyserUiBufferState
 				break;
 			}
 		}
-		
+
 //		log.debug( "Pan delta is " + numSamplesChangeForStartAndEnd );
-		
+
 		bufferPositions.startWindowOffset += numSamplesChangeForStartAndEnd;
 		bufferPositions.endWindowOffset += numSamplesChangeForStartAndEnd;
-		
+
 //		log.debug("Will pan adjust to newWindowStart(" + bufferPositions.startWindowOffset + ") newWindowEnd(" + bufferPositions.endWindowOffset + ") with " +
 //				" numSam(" + bufferPositions.numSamplesToDisplay + ")" );
-		
-		for( BufferZoomAndPositionListener bzpl : bufferZoomAndPositionListeners )
+
+		for( final BufferZoomAndPositionListener bzpl : bufferZoomAndPositionListeners )
 		{
 			bzpl.receiveZoomAndPositionUpdate();
 		}

@@ -102,7 +102,10 @@ public class AudioAnalyserMadUiInstance extends AbstractNoNameChangeConfigurable
 			}
 			default:
 			{
-				log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}

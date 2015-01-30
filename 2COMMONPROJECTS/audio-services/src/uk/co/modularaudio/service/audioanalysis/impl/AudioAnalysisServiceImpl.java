@@ -216,7 +216,10 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		dataFetcher.open( desiredAudioFormat,  file );
 
 		final long totalFloats = dataFetcher.getNumTotalFloats();
-		log.debug("Beginning audio analysis on file " + file.getName() + " with " + totalFloats + " total floating point samples");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Beginning audio analysis on file " + file.getName() + " with " + totalFloats + " total floating point samples");
+		}
 
 		for( final AnalysisListener al : analysisListeners )
 		{

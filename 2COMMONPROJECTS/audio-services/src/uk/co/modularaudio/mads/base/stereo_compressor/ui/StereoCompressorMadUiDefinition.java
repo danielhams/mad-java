@@ -49,14 +49,14 @@ public class StereoCompressorMadUiDefinition
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {
-		new Point( 45, 100 ),
-		new Point( 65, 100 ),
-		new Point( 100, 100 ),
-		new Point( 120, 100 ),
-		new Point( 175, 100 ),
-		new Point( 195, 100 ),
-		new Point( 230, 100 ),
-		new Point( 250, 100 )
+		new Point(  75, 160 ),
+		new Point(  95, 160 ),
+		new Point( 150, 160 ),
+		new Point( 170, 160 ),
+		new Point( 390, 160 ),
+		new Point( 410, 160 ),
+		new Point( 465, 160 ),
+		new Point( 485, 160 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

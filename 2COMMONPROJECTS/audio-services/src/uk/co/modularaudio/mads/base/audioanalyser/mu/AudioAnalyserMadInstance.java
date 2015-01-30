@@ -157,8 +157,12 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 			}
 			catch(final Exception boe )
 			{
-				// Do nothing.
-				log.debug("Caught boe: " + boe.toString(), boe );
+				// Log it for now, while it's in development
+				// TODO fixme when ready.
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Caught boe: " + boe.toString(), boe );
+				}
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

@@ -25,9 +25,6 @@ import java.awt.Font;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -37,7 +34,7 @@ public class AudioAnalyserTabbedPane extends JTabbedPane
 {
 	private static final long serialVersionUID = -4248511027552356776L;
 
-	private final Log log = LogFactory.getLog( AudioAnalyserTabbedPane.class.getName() );
+//	private final Log log = LogFactory.getLog( AudioAnalyserTabbedPane.class.getName() );
 
 	private final AudioAnalyserOscilloscope oscilloscopeComponent;
 	private final AudioAnalyserSpectralRoll spectralRollComponent;
@@ -84,7 +81,6 @@ public class AudioAnalyserTabbedPane extends JTabbedPane
 	@Override
 	public void setSelectedIndex(final int index)
 	{
-		log.debug("Setting selected tab by index");
 		currentSelectedDisplay = index;
 		super.setSelectedIndex(index);
 		displays[index].setNeedsFullUpdate();

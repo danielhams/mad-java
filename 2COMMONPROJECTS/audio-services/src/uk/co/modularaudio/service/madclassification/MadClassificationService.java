@@ -32,9 +32,9 @@ public interface MadClassificationService
 	public final static String SOUND_ROUTING_GROUP_ID = "sound_routing";
 	public final static String CONTROL_PROCESSING_GROUP_ID = "control_processing";
 	public final static String USER_RACK_GROUP_ID = "user_rack";
-	public static final String SOUND_PROCESSING_GROUP_ID = "sound_processing";
-	public static final String SOUND_ANALYSIS_GROUP_ID = "sound_analysis";
+	public final static String SOUND_PROCESSING_GROUP_ID = "sound_processing";
+	public final static String SOUND_ANALYSIS_GROUP_ID = "sound_analysis";
 
-	MadClassificationGroup findGroupById( String internalGroupId ) throws DatastoreException, RecordNotFoundException;
+	MadClassificationGroup findGroupById( String groupId ) throws DatastoreException, RecordNotFoundException;
 
 }

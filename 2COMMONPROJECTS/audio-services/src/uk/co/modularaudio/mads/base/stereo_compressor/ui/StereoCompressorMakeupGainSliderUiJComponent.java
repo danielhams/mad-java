@@ -40,22 +40,22 @@ public class StereoCompressorMakeupGainSliderUiJComponent extends PacCompression
 	implements IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( StereoCompressorMakeupGainSliderUiJComponent.class.getName() );
-	
+
 	private static final long serialVersionUID = 2538907435465770032L;
-	
+
 	private StereoCompressorMadUiInstance uiInstance = null;
 
-	public StereoCompressorMakeupGainSliderUiJComponent( StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public StereoCompressorMakeupGainSliderUiJComponent( final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( -12.0f, 12.0f, 0.0f,
 				"dB",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
-				"Gain:",
+				"Out Gain:",
 				Color.WHITE,
 				Color.WHITE,
 				false );
@@ -63,18 +63,19 @@ public class StereoCompressorMakeupGainSliderUiJComponent extends PacCompression
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendOneCurveAsFloat( StereoCompressorIOQueueBridge.COMMAND_IN_MAKEUP_GAIN, newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,7 +86,7 @@ public class StereoCompressorMakeupGainSliderUiJComponent extends PacCompression
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -93,24 +94,24 @@ public class StereoCompressorMakeupGainSliderUiJComponent extends PacCompression
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

@@ -57,17 +57,17 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	private int framesPerFrontEndPeriod = -1;
 	private int framesUntilIO = -1;
 
-	public CrossFaderMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			CrossFaderMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public CrossFaderMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final CrossFaderMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -80,7 +80,7 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 			framesUntilIO = framesPerFrontEndPeriod;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -135,14 +135,14 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			{
 				if( framesUntilIO == 0 )
 				{
-					long adjustedFrameTime = periodStartFrameTime + curOutputIndex;
+					final long adjustedFrameTime = periodStartFrameTime + curOutputIndex;
 
 					preProcess( tempQueueEntryStorage, timingParameters, adjustedFrameTime );
 
 					framesUntilIO = framesPerFrontEndPeriod;
 				}
 
-				int numThisRound = framesLeft < framesUntilIO ? framesLeft : framesUntilIO;
+				final int numThisRound = framesLeft < framesUntilIO ? framesLeft : framesUntilIO;
 
 				for( int i = 0 ; i < numThisRound ; i++ )
 				{

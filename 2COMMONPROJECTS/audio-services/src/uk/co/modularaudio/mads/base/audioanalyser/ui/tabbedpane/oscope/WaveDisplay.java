@@ -132,7 +132,10 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 	public void setBounds(final int x, final int y, final int width, final int height)
 	{
 		super.setBounds(x, y, width, height);
-		log.debug("Bounds set to " + x + ", " + y + "-" + width + "," + height );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Bounds set to " + x + ", " + y + "-" + width + "," + height );
+		}
 	}
 
 	@Override
@@ -160,7 +163,7 @@ implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeList
 		setNeedsFullUpdate();
 	}
 
-	public void setDisplayType( final DisplayTypeEnum displayTypeEnum )
+	public final void setDisplayType( final DisplayTypeEnum displayTypeEnum )
 	{
 		curDisplayType = displayTypeEnum;
 

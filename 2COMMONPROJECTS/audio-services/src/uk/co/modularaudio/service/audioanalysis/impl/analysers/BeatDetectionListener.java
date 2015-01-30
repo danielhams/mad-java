@@ -145,7 +145,10 @@ public class BeatDetectionListener implements AnalysisListener
 			{
 				if( result.bpm == detectedBpm )
 				{
-					log.debug("Cumulative bpm confidence at " + detectedBpm);
+					if( log.isDebugEnabled())
+					{
+						log.debug("Cumulative bpm confidence at " + detectedBpm);
+					}
 					result.confidence += origConfidence;
 				}
 			}

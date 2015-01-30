@@ -41,22 +41,22 @@ public class StereoCompressorReleaseSliderUiJComponent extends PacADSRSlider
 	implements IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( StereoCompressorReleaseSliderUiJComponent.class.getName() );
-	
+
 	private static final long serialVersionUID = -4922358294632182579L;
-	
+
 	private StereoCompressorMadUiInstance uiInstance = null;
 
-	public StereoCompressorReleaseSliderUiJComponent( StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public StereoCompressorReleaseSliderUiJComponent( final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 10.0f, 1000.0f, 1.0f,
 				"ms",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
-				"Rel:",
+				"Release:",
 				Color.WHITE,
 				Color.WHITE,
 				false );
@@ -64,18 +64,19 @@ public class StereoCompressorReleaseSliderUiJComponent extends PacADSRSlider
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendOneCurve( StereoCompressorIOQueueBridge.COMMAND_IN_RELEASE_MILLIS, newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -86,7 +87,7 @@ public class StereoCompressorReleaseSliderUiJComponent extends PacADSRSlider
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -94,24 +95,24 @@ public class StereoCompressorReleaseSliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}
