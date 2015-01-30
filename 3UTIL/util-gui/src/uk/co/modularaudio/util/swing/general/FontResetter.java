@@ -7,19 +7,19 @@ import javax.swing.plaf.FontUIResource;
 
 public class FontResetter
 {
-	public static void setUIFontFromString( String fontName, int fontStyle, int fontSize )
+	public static void setUIFontFromString( final String fontName, final int fontStyle, final int fontSize )
 	{
-		FontUIResource f = new FontUIResource( fontName, fontStyle, fontSize );
+		final FontUIResource f = new FontUIResource( fontName, fontStyle, fontSize );
 		setUIFont( f );
 	}
 
-	public static void setUIFont( javax.swing.plaf.FontUIResource f )
+	public static void setUIFont( final javax.swing.plaf.FontUIResource f )
 	{
-		Enumeration<Object> keys = UIManager.getDefaults().keys();
+		final Enumeration<Object> keys = UIManager.getDefaults().keys();
 		while( keys.hasMoreElements() )
 		{
-			Object key = keys.nextElement();
-			Object value = UIManager.get( key );
+			final Object key = keys.nextElement();
+			final Object value = UIManager.get( key );
 			if( value != null && value instanceof javax.swing.plaf.FontUIResource )
 			{
 				UIManager.put( key,  f );

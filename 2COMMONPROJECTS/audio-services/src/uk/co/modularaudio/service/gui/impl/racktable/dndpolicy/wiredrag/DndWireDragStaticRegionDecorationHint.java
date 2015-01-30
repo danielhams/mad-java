@@ -31,18 +31,18 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( NewDndWireDragStaticRegionDecorationHint.class.getName() );
-	
-	private RegionHintType hintType = null;
+
+	private RegionHintType hintType;
 	private Rectangle hintRectangle = new Rectangle( 0, 0, 0, 0 );
-	private Rectangle previousRenderRectangle = null;
-	
-	private DndTargetRegionImageGenerator targetRegionGenerator = new DndTargetRegionImageGenerator();
-	
+	private Rectangle previousRenderRectangle;
+
+	private final DndTargetRegionImageGenerator targetRegionGenerator = new DndTargetRegionImageGenerator();
+
 	public DndWireDragStaticRegionDecorationHint()
 	{
 	}
 
-	public void setRegionHint( RegionHintType hintType, Rectangle incomingHintRectangle, Rectangle renderRectangle )
+	public void setRegionHint( final RegionHintType hintType, final Rectangle incomingHintRectangle, final Rectangle renderRectangle )
 	{
 		boolean isUpdated = false;
 
@@ -51,13 +51,13 @@ public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDe
 			this.hintRectangle = incomingHintRectangle;
 			isUpdated = true;
 		}
-		
+
 		if( this.hintType != hintType )
 		{
 			this.hintType = hintType;
 			isUpdated = true;
 		}
-		
+
 		if( previousRenderRectangle != null && !previousRenderRectangle.equals( renderRectangle ) )
 		{
 			isUpdated = true;
@@ -85,14 +85,14 @@ public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDe
 	{
 		return false;
 	}
-	
+
 	@Override
-	public void setMousePosition(Point mousePosition)
+	public void setMousePosition(final Point mousePosition)
 	{
 	}
-	
+
 	@Override
-	public void setActive( boolean activeBool )
+	public void setActive( final boolean activeBool )
 	{
 		if( active != activeBool )
 		{
@@ -110,6 +110,12 @@ public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDe
 				table.repaint( targetRegionGenerator.getBounds() );
 			}
 		}
-		
+
+	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// No animation
 	}
 }

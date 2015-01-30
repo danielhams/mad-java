@@ -36,7 +36,7 @@ public class SampleCacheBlock
 
 	public long blockID;
 	public final AtomicReference<SampleCacheBlockEnum> useStatus = new AtomicReference<SampleCacheBlockEnum>( SampleCacheBlockEnum.NOT_IN_USE );
-	public FloatBufferBlock blockData;
+	public final FloatBufferBlock blockData;
 
 	public SampleCacheBlock( final long blockID, final FloatBufferBlock floatBufferBlock )
 	{

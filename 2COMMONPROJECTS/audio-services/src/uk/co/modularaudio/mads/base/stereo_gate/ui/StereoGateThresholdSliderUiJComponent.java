@@ -40,15 +40,15 @@ public class StereoGateThresholdSliderUiJComponent extends PacThresholdSlider
 	implements IMadUiControlInstance<StereoGateMadDefinition, StereoGateMadInstance, StereoGateMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( StereoGateThresholdSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-	private StereoGateMadUiInstance uiInstance = null;
 
-	public StereoGateThresholdSliderUiJComponent( StereoGateMadDefinition definition,
-			StereoGateMadInstance instance,
-			StereoGateMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final StereoGateMadUiInstance uiInstance;
+
+	public StereoGateThresholdSliderUiJComponent( final StereoGateMadDefinition definition,
+			final StereoGateMadInstance instance,
+			final StereoGateMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( -60.0f, 0.0f, -1.0f,
 				"dB",
@@ -63,18 +63,19 @@ public class StereoGateThresholdSliderUiJComponent extends PacThresholdSlider
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendOneCurveAsFloat( StereoGateIOQueueBridge.COMMAND_IN_THRESHOLD, newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,7 +86,7 @@ public class StereoGateThresholdSliderUiJComponent extends PacThresholdSlider
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -93,24 +94,24 @@ public class StereoGateThresholdSliderUiJComponent extends PacThresholdSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

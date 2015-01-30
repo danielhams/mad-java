@@ -23,26 +23,20 @@ package uk.co.modularaudio.mads.base.mikethecleaner.ui;
 import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerIOQueueBridge;
 import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadDefinition;
 import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class MikeCleanerMadUiInstance extends AbstractNonConfigurableMadUiInstance<MikeCleanerMadDefinition, MikeCleanerMadInstance>
+public class MikeCleanerMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<MikeCleanerMadDefinition, MikeCleanerMadInstance>
 {
 //	private static Log log = LogFactory.getLog( MikeCleanerMadUiInstance.class.getName() );
-	
-	public MikeCleanerMadUiInstance( MikeCleanerMadInstance instance,
-			MikeCleanerMadUiDefinition uiDefinition )
+
+	public MikeCleanerMadUiInstance( final MikeCleanerMadInstance instance,
+			final MikeCleanerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendThresholdChange( float threshold )
+	public void sendThresholdChange( final float threshold )
 	{
 		sendTemporalValueToInstance( MikeCleanerIOQueueBridge.COMMAND_THRESHOLD, Float.floatToIntBits( threshold ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( MikeCleanerMadInstance instance, IOQueueEvent nextOutgoingEntry )
-	{
 	}
 }

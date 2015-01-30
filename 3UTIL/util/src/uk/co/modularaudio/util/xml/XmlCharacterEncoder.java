@@ -33,12 +33,12 @@ public class XmlCharacterEncoder
 	/**
 	 * The size our array needs to be (chars go from 0 -> 65535)
 	 */
-	private static int HASH_SIZE = 65536;
+	private final static int HASH_SIZE = 65536;
 
 	/**
 	 * The array of chars -> Encoding Strings
 	 */
-	private static String[] entityHashMap;
+	private final static String[] ENTITY_HASH_MAP;
 
 	/**
 	 * Encodes 's' by converting each character to its equivalent XML mapping,
@@ -46,25 +46,25 @@ public class XmlCharacterEncoder
 	 * @param s the string to convert.
 	 * @return a string with entities encoded.
 	 */
-	public final static String encodeForCData(String s)
+	public final static String encodeForCData(final String s)
 	{
 		return s.replaceAll( "]]>", "]]]]><![CDATA[>");
 	}
-	
+
 	/**
 	 * Encodes 's' by converting each character to its equivalent XML mapping,
 	 * where one exists.
 	 * @param s the string to convert.
 	 * @return a string with entities encoded.
 	 */
-	public final static String encode(String s)
+	public final static String encode(final String s)
 	{
-		StringBuilder sb = new StringBuilder();
-		char[] chars = s.toCharArray();
+		final StringBuilder sb = new StringBuilder();
+		final char[] chars = s.toCharArray();
 		for (int i = 0; i < chars.length; i++)
 		{
-			char c = chars[i];
-			String hashString = entityHashMap[(int) c];
+			final char c = chars[i];
+			final String hashString = ENTITY_HASH_MAP[c];
 			if (hashString == null)
 			{
 				sb.append(String.valueOf(c));
@@ -86,9 +86,9 @@ public class XmlCharacterEncoder
 	 * @return a string that contains either an entity representing 'c'
 	 * or 'c' itself.
 	 */
-	public final static String getEntity(char c)
+	public final static String getEntity(final char c)
 	{
-		String s = entityHashMap[(int) c];
+		final String s = ENTITY_HASH_MAP[c];
 		if (s == null)
 		{
 			return (String.valueOf(s));
@@ -105,30 +105,31 @@ public class XmlCharacterEncoder
 	static
 	{
 
-		entityHashMap = new String[HASH_SIZE];
+		ENTITY_HASH_MAP = new String[HASH_SIZE];
 		for (int i = 0; i < HASH_SIZE; i++)
 		{
-			entityHashMap[i] = null;
+			ENTITY_HASH_MAP[i] = null;
 		}
 		// Greater than, less than, single apostraphe, double quotes and ampersand
-		entityHashMap[(int) '\u0022'] = "&quot;"; //quotation mark = APL quote.
-		entityHashMap[(int) '\u0026'] = "&amp;"; //ampersand.
-		entityHashMap[(int) '\u003C'] = "&lt;"; //less-than sign.
-		entityHashMap[(int) '\u003E'] = "&gt;"; //greater-than sign.
-		entityHashMap[(int) '\'']     = "&apos;"; // Apostraphe
+		ENTITY_HASH_MAP['\u0022'] = "&quot;"; //quotation mark = APL quote.
+		ENTITY_HASH_MAP['\u0026'] = "&amp;"; //ampersand.
+		ENTITY_HASH_MAP['\u003C'] = "&lt;"; //less-than sign.
+		ENTITY_HASH_MAP['\u003E'] = "&gt;"; //greater-than sign.
+		ENTITY_HASH_MAP['\'']     = "&apos;"; // Apostraphe
 	}
 
 	/**
 	 * Creates a Writer that, when written to, writes entity
 	 * equivalents of each character to 'out'; where entity equivalents do not
 	 * exist, the original character is written directly to 'out'.
-	 * @param out the writer to which to write the output.
+	 * @param outputWriter the writer to which to write the output.
 	 */
-	public final static Writer createWriter(final Writer out)
+	public final static Writer createWriter(final Writer outputWriter)
 	{
-		return new FilterWriter(out)
+		return new FilterWriter(outputWriter)
 		{
-			public void write(char[] cbuf, int off, int len) throws IOException
+			@Override
+			public void write(final char[] cbuf, final int off, final int len) throws IOException
 			{
 				for (int i = off; i < off + len; i++)
 				{
@@ -138,19 +139,23 @@ public class XmlCharacterEncoder
 			// Not sure whether I need to override these or not, so will do to
 			// play safe. The Java documentation doesn't bother to say what
 			// the implementation of these methods in FilterWriter actually do.
+			@Override
 			public void close() throws IOException
 			{
 				this.out.close();
 			}
+			@Override
 			public void flush() throws IOException
 			{
 				this.out.flush();
 			}
-			public void write(int c) throws IOException
+			@Override
+			public void write(final int c) throws IOException
 			{
 				this.out.write(XmlCharacterEncoder.getEntity((char) c));
 			}
-			public void write(String str, int off, int len) throws IOException
+			@Override
+			public void write(final String str, final int off, final int len) throws IOException
 			{
 				this.write(str.toCharArray(), off, len);
 			}

@@ -27,16 +27,16 @@ public enum Scale
 {
 	MAJOR,
 	MINOR;
-	
-	static Map<Scale,String> scaleToStringMap = new HashMap<Scale,String>();
-	static Map<String,Scale> stringToScaleMap = new HashMap<String,Scale>();
-	
+
+	public final static Map<Scale,String> SCALE_TO_STR_MAP = new HashMap<Scale,String>();
+	public final static Map<String,Scale> STR_TO_SCALE_MAP = new HashMap<String,Scale>();
+
 	static
 	{
-		scaleToStringMap.put( MAJOR, "MAJOR" );
-		scaleToStringMap.put( MINOR, "MINOR" );
-		
-		stringToScaleMap.put( "MAJOR", MAJOR );
-		stringToScaleMap.put( "MINOR", MINOR );
+		SCALE_TO_STR_MAP.put( MAJOR, "MAJOR" );
+		SCALE_TO_STR_MAP.put( MINOR, "MINOR" );
+
+		STR_TO_SCALE_MAP.put( "MAJOR", MAJOR );
+		STR_TO_SCALE_MAP.put( "MINOR", MINOR );
 	};
 }

@@ -61,7 +61,7 @@ import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallbac
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -74,7 +74,7 @@ import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
@@ -120,42 +120,46 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private final static String CONFIG_KEY_FORCE_HOTSPOT_COMPILE = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".ForceHotspotCompile";
 	private final static String CONFIG_KEY_RENDER_COMPONENT_IMAGES = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".RenderComponentImages";
-	private GuiHelperController guiHelperController = null;
-	private RackController rackController = null;
-	private ComponentController componentController = null;
-	private RenderingController renderingController = null;
-	private AudioProviderController audioProviderController = null;
-	private UserPreferencesController userPreferencesController = null;
-	private SampleCachingController sampleCachingController = null;
-	private ConfigurationService configurationService = null;
-	private BufferedImageAllocationService bufferedImageAllocationService = null;
-
-	private TimingService timingService = null;
-
-	private AppRenderingIO appRenderingIO = null;
-
-	private RackDataModel userVisibleRack = null;
-
-	private RackModelRenderingComponent guiRack = null;
 
 	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 10000;
 	private static final int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 512;
 
-	private boolean forceHotspotCompile = false;
-	private boolean renderComponentImages = false;
+	private GuiHelperController guiHelperController;
+	private RackController rackController;
+	private ComponentController componentController;
+	private RenderingController renderingController;
+	private AudioProviderController audioProviderController;
+	private UserPreferencesController userPreferencesController;
+	private SampleCachingController sampleCachingController;
+	private ConfigurationService configurationService;
+	private BufferedImageAllocationService bufferedImageAllocationService;
+
+	private TimingService timingService;
+
+	private RackService rackService;
+
+	private AbstractAppRenderingIO appRenderingIO;
+
+	private RackDataModel userVisibleRack;
+
+	private RackModelRenderingComponent guiRack;
+
+	private boolean forceHotspotCompile;
+	private boolean renderComponentImages;
 
 	// Timer for driving the gui updates
-	private GuiDrivingTimer guiDrivingTimer = null;
-	private ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage = null;
+	private GuiDrivingTimer guiDrivingTimer;
+	private ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage;
 
 	private boolean loggingEnabled = true;
 
-	private boolean currentlyRendering = false;
+	private boolean currentlyRendering;
 
-	private String absolutePathToFilename = null;
+	private String absolutePathToFilename;
 
-	private List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
-	private Priority previousLoggingThreshold = null;
+	private final List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
+
+	private Priority previousLoggingThreshold;
 
 	@Override
 	public void destroy()
@@ -165,61 +169,66 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		Map<String, String> errors = new HashMap<String, String>();
+		final Map<String, String> errors = new HashMap<String, String>();
 		forceHotspotCompile = ConfigurationServiceHelper.checkForBooleanKey(configurationService, CONFIG_KEY_FORCE_HOTSPOT_COMPILE, errors);
 		renderComponentImages = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_RENDER_COMPONENT_IMAGES, errors );
 		ConfigurationServiceHelper.errorCheck(errors);
 		guiTemporaryEventStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
 	}
 
-	public void setRackController( RackController rackController)
+	public void setRackController( final RackController rackController)
 	{
 		this.rackController = rackController;
 	}
 
-	public void setComponentController( ComponentController componentController)
+	public void setComponentController( final ComponentController componentController)
 	{
 		this.componentController = componentController;
 	}
 
-	public void setGuiHelperController( GuiHelperController guiController)
+	public void setGuiHelperController( final GuiHelperController guiController)
 	{
 		this.guiHelperController = guiController;
 	}
 
-	public void setRenderingController( RenderingController renderingController)
+	public void setRenderingController( final RenderingController renderingController)
 	{
 		this.renderingController = renderingController;
 	}
 
-	public void setConfigurationService( ConfigurationService configurationService)
+	public void setConfigurationService( final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
-	public void setAudioProviderController( AudioProviderController audioProviderController)
+	public void setAudioProviderController( final AudioProviderController audioProviderController)
 	{
 		this.audioProviderController = audioProviderController;
 	}
 
-	public void setUserPreferencesController( UserPreferencesController userPreferencesController)
+	public void setUserPreferencesController( final UserPreferencesController userPreferencesController)
 	{
 		this.userPreferencesController = userPreferencesController;
 	}
 
-	public void setSampleCachingController( SampleCachingController sampleCachingController )
+	public void setSampleCachingController( final SampleCachingController sampleCachingController )
 	{
 		this.sampleCachingController = sampleCachingController;
 	}
 
-	public void setBufferedImageAllocationService( BufferedImageAllocationService bufferedImageAllocationService )
+	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
-	public void setTimingService( TimingService timingService )
+	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
+	}
+
+	public void setRackService( final RackService rackService )
+	{
+		this.rackService = rackService;
 	}
 
 	@Override
@@ -249,11 +258,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void toggleLogging()
 	{
 		loggingEnabled = (loggingEnabled ? false : true );
-		Logger rootLogger = LogManager.getRootLogger();
-		Appender appender = rootLogger.getAppender( "console" );
+		final Logger rootLogger = LogManager.getRootLogger();
+		final Appender appender = rootLogger.getAppender( "console" );
 		if( appender instanceof ConsoleAppender )
 		{
-			ConsoleAppender ca = (ConsoleAppender)appender;
+			final ConsoleAppender ca = (ConsoleAppender)appender;
 			if( loggingEnabled )
 			{
 				if( previousLoggingThreshold != null )
@@ -289,14 +298,14 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				startDisplayTick();
 			}
 			currentlyRendering = !currentlyRendering;
-			for( RenderingStateListener l : renderingStateListeners )
+			for( final RenderingStateListener l : renderingStateListeners )
 			{
 				l.receiveRenderingStateChange( currentlyRendering );
 			}
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught toggling rendering: " + e.toString();
+			final String msg = "Exception caught toggling rendering: " + e.toString();
 			log.error( msg, e );
 		}
 	}
@@ -312,10 +321,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		try
 		{
 			// Make sure we free up any resources consumed by components in the rack (IO)
-			RackDataModel previousRack = userVisibleRack;
+			final RackDataModel previousRack = userVisibleRack;
 			if( previousRack != null )
 			{
-				MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( previousRack );
+				final MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( previousRack );
 				if( appRenderingIO != null )
 				{
 					appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
@@ -328,7 +337,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					true );
 			guiRack.setRackDataModel( userVisibleRack );
 
-			MadGraphInstance<?,?> graphToRender = rackController.getRackGraphInstance( userVisibleRack );
+			final MadGraphInstance<?,?> graphToRender = rackController.getRackGraphInstance( userVisibleRack );
 			if( appRenderingIO != null )
 			{
 				appRenderingIO.getAppRenderingGraph().setApplicationGraph( graphToRender );
@@ -339,9 +348,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				rackController.destroyRackDataModel( previousRack );
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught creating rack: " + e.toString();
+			final String msg = "Exception caught creating rack: " + e.toString();
 			log.error( msg, e );
 		}
 	}
@@ -355,18 +364,18 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	}
 
 	@Override
-	public void loadRackFromFile(String filename) throws DatastoreException, IOException
+	public void loadRackFromFile(final String filename) throws DatastoreException, IOException
 	{
 		// Delete old rack contents to free up memory before we load a new one.
 		newRack();
 
 		absolutePathToFilename = filename;
 
-		RackDataModel newRack = rackController.loadRackFromFile(filename);
+		final RackDataModel newRack = rackController.loadRackFromFile(filename);
 		if( newRack != null )
 		{
-			RackDataModel oldModel = userVisibleRack;
-			MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( oldModel );
+			final RackDataModel oldModel = userVisibleRack;
+			final MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( oldModel );
 			if( appRenderingIO != null )
 			{
 				appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
@@ -374,7 +383,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			userVisibleRack = newRack;
 			guiRack.setRackDataModel( userVisibleRack );
 
-			MadGraphInstance<?,?> rackGraph = rackController.getRackGraphInstance( userVisibleRack );
+			final MadGraphInstance<?,?> rackGraph = rackController.getRackGraphInstance( userVisibleRack );
 			if( appRenderingIO != null )
 			{
 				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rackGraph );
@@ -383,7 +392,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 	}
 
-	private void destroyExistingRack( RackDataModel oldRackModel ) throws DatastoreException
+	private void destroyExistingRack( final RackDataModel oldRackModel ) throws DatastoreException
 	{
 		if( oldRackModel != null )
 		{
@@ -391,9 +400,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			{
 				rackController.destroyRackDataModel( oldRackModel );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Exception caught destroying rack: " + e.toString();
+				final String msg = "Exception caught destroying rack: " + e.toString();
 				throw new DatastoreException( msg, e );
 			}
 		}
@@ -411,21 +420,21 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public String getRackDataModelName()
 	{
-		return userVisibleRack.getName();
+		return rackService.getRackName( userVisibleRack );
 	}
 
 	@Override
-	public void saveRackToFile( String filename, String rackName ) throws DatastoreException, IOException
+	public void saveRackToFile( final String filename, final String rackName ) throws DatastoreException, IOException
 	{
 		absolutePathToFilename = filename;
-		userVisibleRack.setName( rackName );
+		rackService.setRackName( userVisibleRack, rackName );
 		rackController.saveRackToFile( userVisibleRack, filename );
 	}
 
 	@Override
 	public boolean isRackDirty()
 	{
-		return userVisibleRack.isDirty();
+		return rackService.isRackDirty( userVisibleRack );
 	}
 
 	@Override
@@ -438,7 +447,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		else
 		{
 			rackController.saveRackToFile( userVisibleRack, absolutePathToFilename );
-			userVisibleRack.setDirty( false );
+			rackService.setRackDirty( userVisibleRack, false );
 		}
 	}
 
@@ -452,13 +461,13 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	}
 
 	@Override
-	public void addRenderingStateListener(RenderingStateListener renderingStateListener)
+	public void addRenderingStateListener(final RenderingStateListener renderingStateListener)
 	{
 		renderingStateListeners.add( renderingStateListener );
 	}
 
 	@Override
-	public void removeRenderingStateListener(RenderingStateListener renderingStateListener)
+	public void removeRenderingStateListener(final RenderingStateListener renderingStateListener)
 	{
 		renderingStateListeners.remove( renderingStateListener );
 	}
@@ -467,7 +476,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void postInit() throws DatastoreException
 	{
 		// Create an empty rack during init
-		RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
+		final RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
 				"",
 				RackService.DEFAULT_RACK_COLS,
 				RackService.DEFAULT_RACK_ROWS,
@@ -485,10 +494,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	protected void startDisplayTick()
 	{
-		MadTimingSource timingSource = timingService.getTimingSource();
-		MadTimingParameters timingParameters = timingSource.getTimingParameters();
+		final MadTimingSource timingSource = timingService.getTimingSource();
+		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
 
-		int millisBetweenFrames = (int)(timingParameters.getNanosPerFrontEndPeriod() / 1000000);
+		final int millisBetweenFrames = (int)(timingParameters.getNanosPerFrontEndPeriod() / 1000000);
 		if( guiDrivingTimer == null )
 		{
 			guiDrivingTimer = new GuiDrivingTimer( millisBetweenFrames, new GuiTickActionListener( this ) );
@@ -503,15 +512,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			log.error("Unable to start display tick!");
 		}
-//		if( guiPeriodThreadedTimer != null )
-//		{
-//			log.error("Unable to start display tick as already started!");
-//		}
-//		else
-//		{
-//			guiPeriodThreadedTimer = new NanosecondPeriodicThreadedTimer( timingParameters.getNanosPerFrontEndPeriod(), MAThreadPriority.GUI, guiPeriodJob );
-//			guiPeriodThreadedTimer.start();
-//		}
 	}
 
 	protected void stopDisplayTick()
@@ -526,15 +526,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			log.error("Unable to stop display tick!");
 		}
-//		if( guiPeriodThreadedTimer == null )
-//		{
-//			log.error("Unable to stop display tick as none started!");
-//		}
-//		else
-//		{
-//			guiPeriodThreadedTimer.stop();
-//			guiPeriodThreadedTimer = null;
-//		}
 	}
 
 	private boolean frontPreviouslyShowing = true;
@@ -542,12 +533,12 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public void receiveDisplayTick()
 	{
-		MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
+		final MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
 
-		long currentGuiFrameTime = appRenderingIO.getCurrentUiFrameTime();
+		final long currentGuiFrameTime = appRenderingIO.getCurrentUiFrameTime();
 //		log.debug("Estimated GUI frame time is " + currentGuiFrameTime );
 
-		List<RackComponent> rackComponents = userVisibleRack.getEntriesAsList();
+		final List<RackComponent> rackComponents = userVisibleRack.getEntriesAsList();
 
 		boolean doAll = false;
 
@@ -570,8 +561,8 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 		for( int i = 0 ; i < rackComponents.size() ; i++)
 		{
-			RackComponent rc = rackComponents.get( i );
-			MadUiInstance<?, ?> uiInstance = rc.getUiInstance();
+			final RackComponent rc = rackComponents.get( i );
+			final AbstractMadUiInstance<?, ?> uiInstance = rc.getUiInstance();
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{
 //				log.debug("Calling rdt on " + uiInstance.getInstance().getInstanceName() );
@@ -581,10 +572,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 	}
 
-	private boolean isDefinitionPublic( MadDefinition<?,?> definition )
+	private boolean isDefinitionPublic( final MadDefinition<?,?> definition )
 	{
-		MadClassification auc = definition.getClassification();
-		MadClassificationGroup aug = auc.getGroup();
+		final MadClassification auc = definition.getClassification();
+		final MadClassificationGroup aug = auc.getGroup();
 		return ( aug != null ? aug.getVisibility() == Visibility.PUBLIC : false );
 	}
 
@@ -603,69 +594,75 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				{
 					// Now hotspot compile them in one big rack
 
-					MadDefinitionListModel allComponentTypes = componentController.listDefinitionsAvailable();
+					final MadDefinitionListModel allMadDefinitions = componentController.listDefinitionsAvailable();
 
 					// Create a new rack with at least four rows per component type
-					int numComponentTypes = allComponentTypes.getSize();
-					RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
+					final int numDefinitions = allMadDefinitions.getSize();
+					final RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
 							"",
 							RackService.DEFAULT_RACK_COLS,
-							RackService.DEFAULT_RACK_ROWS * numComponentTypes,
+							RackService.DEFAULT_RACK_ROWS * numDefinitions,
 							false );
 
-					Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+					final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
 
-					for( int i = 0 ; i < numComponentTypes ; i++ )
+					for( int i = 0 ; i < numDefinitions ; i++ )
 					{
-						Object o = allComponentTypes.getElementAt( i );
-						MadDefinition<?,?> ct = (MadDefinition<?,?>)o;
-						if( isDefinitionPublic( ct ) )
+						final Object o = allMadDefinitions.getElementAt( i );
+						final MadDefinition<?,?> md = (MadDefinition<?,?>)o;
+						if( isDefinitionPublic( md ) )
 						{
-							if( ct.isParametrable() )
+							if( md.isParametrable() )
 							{
 								// Attempt empty parameters creation
 								try
 								{
-									String name = ct.getId() + i;
-									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+									final String name = md.getId() + i;
+									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
 								}
-								catch(Exception e )
+								catch(final Exception e )
 								{
-									log.info("Skipping hotspot of " + ct.getId() + " as it needs parameters and no default didn't work." );
+									if( log.isInfoEnabled() )
+									{
+										log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." );
+									}
 								}
 							}
 							else
 							{
 								try
 								{
-									String name = ct.getId() + i;
-									rackController.createComponent( cacheRack, ct, emptyParameterValues, name );
+									final String name = md.getId() + i;
+									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
 								}
-								catch(RecordNotFoundException rnfe )
+								catch(final RecordNotFoundException rnfe )
 								{
-									log.info( "Skipping hotspot of " + ct.getId() + " - probably missing UI for it" );
+									if( log.isInfoEnabled() )
+									{
+										log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" );
+									}
 								}
 							}
 						}
 					}
 
-					MadGraphInstance<?,?> hotspotGraph = rackController.getRackGraphInstance( cacheRack );
+					final MadGraphInstance<?,?> hotspotGraph = rackController.getRackGraphInstance( cacheRack );
 
-					int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
+					final int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
 
-					HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
+					final HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
 							outputLatencyFrames );
 
-					long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
+					final long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
 							outputLatencyFrames );
 
-					HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
-					MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
-					RenderingPlan renderingPlan = renderingController.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
+					final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
+					final MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
+					final RenderingPlan renderingPlan = renderingController.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
 
 					// Now create a rendering plan from this rack
 					log.debug("Peforming hotspot mad instance looping.");
-					AppRenderingGraph hotspotAppGraph = renderingController.createAppRenderingGraph();
+					final AppRenderingGraph hotspotAppGraph = renderingController.createAppRenderingGraph();
 					hotspotAppGraph.startHotspotLooping( renderingPlan );
 					Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
 					hotspotAppGraph.stopHotspotLooping();
@@ -673,9 +670,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					rackController.destroyRackDataModel( cacheRack );
 				}
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Exception caught forcing hotspot compilation: " + e.toString();
+				final String msg = "Exception caught forcing hotspot compilation: " + e.toString();
 				log.error( msg, e );
 				throw new DatastoreException( msg, e );
 			}
@@ -688,30 +685,30 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		throws DatastoreException, ContentsAlreadyAddedException, TableCellFullException,
 			TableIndexOutOfBoundsException, MAConstraintViolationException, RecordNotFoundException
 	{
-		MadDefinitionListModel defs = componentController.listDefinitionsAvailable();
+		final MadDefinitionListModel defs = componentController.listDefinitionsAvailable();
 
-		Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+		final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
 
-		int numDefs = defs.getSize();
+		final int numDefs = defs.getSize();
 		for( int i = 0 ; i < numDefs ; ++i )
 		{
-			MadDefinition<?,?> def = defs.getElementAt( i );
+			final MadDefinition<?,?> def = defs.getElementAt( i );
 			if( isDefinitionPublic( def ) )
 			{
-				Span curComponentCellSpan = componentController.getUiSpanForDefinition( def );
+				final Span curComponentCellSpan = componentController.getUiSpanForDefinition( def );
 
 				// If it's the channel 8 mixer, paint the rack master with it
-				boolean paintRackMasterToo = ( def.getId().equals( MixerMadDefinition.DEFINITION_ID ) );
-				int rackWidthToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_COLS : curComponentCellSpan.x );
-				int rackHeightToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_ROWS : curComponentCellSpan.y + 2 );
+				final boolean paintRackMasterToo = ( def.getId().equals( MixerMadDefinition.DEFINITION_ID ) );
+				final int rackWidthToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_COLS : curComponentCellSpan.x );
+				final int rackHeightToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_ROWS : curComponentCellSpan.y + 2 );
 
-				RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
+				final RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
 						"",
 						rackWidthToUse,
 						rackHeightToUse,
 						paintRackMasterToo );
 
-				String name = def.getId() + i;
+				final String name = def.getId() + i;
 				rackController.createComponent( cacheRack, def, emptyParameterValues, name );
 
 				forceHotspotRackPainting( cacheRack, def.getId() );
@@ -728,7 +725,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			if( appRenderingIO != null )
 			{
-				AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
+				final AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
 
 				if( appRenderingGraph.isApplicationGraphActive() )
 				{
@@ -738,45 +735,48 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 				if( appRenderingGraph.isApplicationGraphSet() )
 				{
-					MadGraphInstance<?,?> graphToUnset = rackController.getRackGraphInstance( userVisibleRack );
+					final MadGraphInstance<?,?> graphToUnset = rackController.getRackGraphInstance( userVisibleRack );
 					appRenderingGraph.unsetApplicationGraph( graphToUnset );
 				}
 			}
 
 			destroyExistingRack( userVisibleRack );
 		}
-		catch ( Exception e)
+		catch ( final Exception e)
 		{
-			String msg = "Exception caught unsetting application graph: " + e.toString();
+			final String msg = "Exception caught unsetting application graph: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
-	private void forceHotspotRackPainting( RackDataModel cacheRack, String componentNameBeingDrawn )
+	private void forceHotspotRackPainting( final RackDataModel cacheRack, final String componentNameBeingDrawn )
 			throws DatastoreException
 	{
-		log.debug("Performing rack painting for " + componentNameBeingDrawn);
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Performing rack painting for " + componentNameBeingDrawn);
+		}
 		// Now create a temporary gui for it and get them to render their front and back into it
 		// This will populate the image buffer cache and clear up the stuff read from disk
 		RackModelRenderingComponent hotspotRenderingComponent = guiHelperController.createGuiForRackDataModel( cacheRack );
 		hotspotRenderingComponent.setForceRepaints( true );
 
-		JComponent renderingJComponent = hotspotRenderingComponent.getJComponent();
-		Dimension renderingPreferredSize = renderingJComponent.getPreferredSize();
+		final JComponent renderingJComponent = hotspotRenderingComponent.getJComponent();
+		final Dimension renderingPreferredSize = renderingJComponent.getPreferredSize();
 		renderingJComponent.setSize( renderingPreferredSize );
 		layoutComponent( renderingJComponent );
 
 		// Paint the front
-		AllocationMatch localAllocationMatch = new AllocationMatch();
-		TiledBufferedImage hotspotPaintTiledImage = bufferedImageAllocationService.allocateBufferedImage( this.getClass().getSimpleName(),
+		final AllocationMatch localAllocationMatch = new AllocationMatch();
+		final TiledBufferedImage hotspotPaintTiledImage = bufferedImageAllocationService.allocateBufferedImage( this.getClass().getSimpleName(),
 				localAllocationMatch,
 				AllocationLifetime.SHORT,
 				AllocationBufferType.TYPE_INT_RGB,
 				renderingPreferredSize.width,
 				renderingPreferredSize.height );
-		BufferedImage imageToRenderInto = hotspotPaintTiledImage.getUnderlyingBufferedImage();
-		Graphics hotspotPaintGraphics = imageToRenderInto.createGraphics();
-		CellRendererPane crp = new CellRendererPane();
+		final BufferedImage imageToRenderInto = hotspotPaintTiledImage.getUnderlyingBufferedImage();
+		final Graphics hotspotPaintGraphics = imageToRenderInto.createGraphics();
+		final CellRendererPane crp = new CellRendererPane();
 		crp.add( renderingJComponent );
 		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
 
@@ -784,7 +784,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		hotspotRenderingComponent.rotateRack();
 		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
 
-		RackDataModel emptyRack = rackController.createNewRackDataModel( "", "", 2, 2, false );
+		final RackDataModel emptyRack = rackController.createNewRackDataModel( "", "", 2, 2, false );
 
 		// Remove references to the data model passed in
 		hotspotRenderingComponent.setRackDataModel( emptyRack );
@@ -797,12 +797,12 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	}
 
-	private void layoutComponent( Component renderingJComponent )
+	private void layoutComponent( final Component renderingJComponent )
 	{
         synchronized (renderingJComponent.getTreeLock()) {
         	renderingJComponent.doLayout();
             if (renderingJComponent instanceof Container)
-                for (Component child : ((Container) renderingJComponent).getComponents())
+                for (final Component child : ((Container) renderingJComponent).getComponents())
                     layoutComponent(child);
         }
 	}
@@ -828,9 +828,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			}
 			startAudioEngine();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught saving user preferences: " + e.toString();
+			final String msg = "Exception caught saving user preferences: " + e.toString();
 			log.error( msg, e );
 		}
 	}
@@ -840,13 +840,13 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		try
 		{
-			boolean retVal = callCheckOrStartAudioEngine( false );
+			final boolean retVal = callCheckOrStartAudioEngine( false );
 
 			return retVal;
 		}
-		catch(DatastoreException de)
+		catch(final DatastoreException de)
 		{
-			String msg = "DatastoreException caught testing user preferences changes: " + de.toString();
+			final String msg = "DatastoreException caught testing user preferences changes: " + de.toString();
 			log.error( msg, de );
 			return false;
 		}
@@ -865,9 +865,12 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			userPreferencesController.reloadUserPreferences();
 		}
-		catch( DatastoreException de )
+		catch( final DatastoreException de )
 		{
-			log.error( "DatastoreException caught reloading user preferences: " + de.toString(), de );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "DatastoreException caught reloading user preferences: " + de.toString(), de );
+			}
 		}
 	}
 
@@ -878,9 +881,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			return( callCheckOrStartAudioEngine( true ) );
 		}
-		catch( Exception de )
+		catch( final Exception de )
 		{
-			String msg = "DatatoreException caught starting audio engine: " + de.toString();
+			final String msg = "DatatoreException caught starting audio engine: " + de.toString();
 			log.error( msg, de );
 			return false;
 		}
@@ -899,39 +902,40 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			try
 			{
-				AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
+				final AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
 				if( appRenderingGraph.isApplicationGraphActive() )
 				{
 					appRenderingGraph.deactivateApplicationGraph();
 				}
-				appRenderingGraph.unsetApplicationGraph( userVisibleRack.getRackGraph() );
+				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
+				appRenderingGraph.unsetApplicationGraph( rgi );
 				appRenderingIO.stopRendering();
 				appRenderingIO.destroy();
 				appRenderingIO = null;
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Exception caught stopping audio engine: " + e.toString();
+				final String msg = "Exception caught stopping audio engine: " + e.toString();
 				log.error( msg, e );
 			}
 		}
 	}
 
-	private boolean callCheckOrStartAudioEngine( boolean isStart )
+	private boolean callCheckOrStartAudioEngine( final boolean isStart )
 			throws DatastoreException
 	{
 		boolean retVal = false;
 
-		UserPreferencesMVCController userPreferencesMVCController = userPreferencesController.getUserPreferencesMVCController();
-		UserPreferencesMVCModel prefsModel = userPreferencesMVCController.getModel();
+		final UserPreferencesMVCController userPreferencesMVCController = userPreferencesController.getUserPreferencesMVCController();
+		final UserPreferencesMVCModel prefsModel = userPreferencesMVCController.getModel();
 
-		HardwareIOConfiguration hardwareIOConfiguration = PrefsModelToHardwareIOConfigurationBridge.modelToConfiguration( prefsModel );
+		final HardwareIOConfiguration hardwareIOConfiguration = PrefsModelToHardwareIOConfigurationBridge.modelToConfiguration( prefsModel );
 
-		AppRenderingErrorCallback errorCallback = new AppRenderingErrorCallback()
+		final AppRenderingErrorCallback errorCallback = new AppRenderingErrorCallback()
 		{
 
 			@Override
-			public void errorCallback( AppRenderingErrorStruct error )
+			public void errorCallback( final AppRenderingErrorStruct error )
 			{
 //				log.error( "AppRenderingErrorCallback happened: " + error.severity.toString() + " " + error.msg );
 
@@ -965,7 +969,8 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					throw new DatastoreException( "Attempting to replace magical audio IO when one already exists!");
 				}
 				appRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
-				appRenderingIO.getAppRenderingGraph().setApplicationGraph( userVisibleRack.getRackGraph() );
+				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
+				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rgi );
 
 				appRenderingIO.startRendering();
 				retVal = true;
@@ -985,13 +990,13 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 						Thread.currentThread();
 						Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
 					}
-					catch (InterruptedException e)
+					catch (final InterruptedException e)
 					{
 						log.error( e );
 					}
 				}
 
-				AppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
+				final AbstractAppRenderingIO testAppRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
 				retVal = testAppRenderingIO.testRendering( AUDIO_TEST_RUN_MILLIS );
 
 				if( wasRunningBeforeTest && !retVal)
@@ -1000,7 +1005,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					{
 						Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
 					}
-					catch (InterruptedException e)
+					catch (final InterruptedException e)
 					{
 						log.error( e );
 					}
@@ -1008,9 +1013,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				}
 			}
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught calling check or start audio engine: " + e.toString();
+			final String msg = "Exception caught calling check or start audio engine: " + e.toString();
 			log.error( msg, e );
 			if( appRenderingIO != null )
 			{
@@ -1029,38 +1034,38 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	}
 
 	@Override
-	public void registerRackTabbedPane( GuiTabbedPane rackTabbedPane )
+	public void registerRackTabbedPane( final GuiTabbedPane rackTabbedPane )
 	{
 		guiHelperController.registerRackTabbedPane( rackTabbedPane );
 	}
 
 	@Override
-	public void showYesNoQuestionDialog( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			String[] options,
-			String defaultChoice,
-			YesNoQuestionDialogCallback callback )
+	public void showYesNoQuestionDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String[] options,
+			final String defaultChoice,
+			final YesNoQuestionDialogCallback callback )
 	{
 		guiHelperController.showYesNoQuestionDialog( parentComponent, message, title, messageType,
 				options, defaultChoice, callback );
 	}
 
 	@Override
-	public void showTextInputDialog( Component parentComponent, String message,
-			String title, int messageType, String initialValue,
-			TextInputDialogCallback callback )
+	public void showTextInputDialog( final Component parentComponent, final String message,
+			final String title, final int messageType, final String initialValue,
+			final TextInputDialogCallback callback )
 	{
 		guiHelperController.showTextInputDialog( parentComponent, message, title,
 				messageType, initialValue, callback );
 	}
 
 	@Override
-	public void showMessageDialog( Component parentComponent, String message,
-			String title,
-			int messageType,
-			MessageDialogCallback callback )
+	public void showMessageDialog( final Component parentComponent, final String message,
+			final String title,
+			final int messageType,
+			final MessageDialogCallback callback )
 	{
 		guiHelperController.showMessageDialog( parentComponent, message, title, messageType,
 				callback );

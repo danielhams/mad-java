@@ -38,28 +38,28 @@ public class SpectralRollDisplayUiJComponent extends PacPanel
 	SpecDataListener
 {
 	private static final long serialVersionUID = -2715013080290701990L;
-	
+
 //	private static Log log = LogFactory.getLog( SpectralRollDisplayUiJComponent.class.getName() );
 
-	private DoubleImageScrollingCanvas scrollingCanvas = null;
-	
-	private SpectralRollMadUiInstance uiInstance = null;
-	
-	private boolean previouslyShowing = false;
+	private DoubleImageScrollingCanvas scrollingCanvas;
 
-	public SpectralRollDisplayUiJComponent( SpectralRollMadDefinition definition,
-			SpectralRollMadInstance instance,
-			SpectralRollMadUiInstance uiInstance,
-			int controlIndex )
+	private final SpectralRollMadUiInstance uiInstance;
+
+	private boolean previouslyShowing;
+
+	public SpectralRollDisplayUiJComponent( final SpectralRollMadDefinition definition,
+			final SpectralRollMadInstance instance,
+			final SpectralRollMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		setOpaque( true );
 
 		this.uiInstance = uiInstance;
 		uiInstance.setSpecDataListener( this );
 	}
-	
+
 	@Override
-	public void setBounds( Rectangle bounds )
+	public void setBounds( final Rectangle bounds )
 	{
 		super.setBounds( bounds );
 		scrollingCanvas = new DoubleImageScrollingCanvas( uiInstance, bounds.width, bounds.height );
@@ -72,11 +72,11 @@ public class SpectralRollDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
 		{
@@ -86,24 +86,24 @@ public class SpectralRollDisplayUiJComponent extends PacPanel
 			}
 			uiInstance.sendUiActive( showing );
 			previouslyShowing = showing;
-			
+
 		}
 	}
-	
+
 	private void clearDisplay()
 	{
 		scrollingCanvas.clear();
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
-		Graphics2D g2d = (Graphics2D)g;
+		final Graphics2D g2d = (Graphics2D)g;
 		scrollingCanvas.paint( g2d );
 	}
 
 	@Override
-	public void processScopeData( float[] newAmps )
+	public void processScopeData( final float[] newAmps )
 	{
 		scrollingCanvas.processNewAmps( newAmps );
 		repaint();

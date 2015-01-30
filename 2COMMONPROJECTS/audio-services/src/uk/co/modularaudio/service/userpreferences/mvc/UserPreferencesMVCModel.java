@@ -29,21 +29,21 @@ public class UserPreferencesMVCModel
 {
 //	private static Log log = LogFactory.getLog( UserPreferencesMVCModel.class.getName() );
 
-	private GuiFpsMVCModel fpsComboModel = null;
-	
-	private AudioSystemDeviceMVCModel inputDeviceComboModel = null;
-	private AudioSystemDeviceMVCModel outputDeviceComboModel = null;
-	private AudioSystemBufferSizeMVCModel bufferSizeModel = null;
-	private AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = null;
-	private AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = null;
-	
+	private final GuiFpsMVCModel fpsComboModel;
+
+	private final AudioSystemDeviceMVCModel inputDeviceComboModel;
+	private final AudioSystemDeviceMVCModel outputDeviceComboModel;
+	private final AudioSystemBufferSizeMVCModel bufferSizeModel;
+	private final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel;
+	private final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel;
+
 	public UserPreferencesMVCModel(
-			GuiFpsMVCModel fpsComboModel,
-			AudioSystemDeviceMVCModel inputDeviceComboModel,
-			AudioSystemDeviceMVCModel outputDeviceComboModel,
-			AudioSystemBufferSizeMVCModel bufferSizeModel,
-			AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel,
-			AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel )
+			final GuiFpsMVCModel fpsComboModel,
+			final AudioSystemDeviceMVCModel inputDeviceComboModel,
+			final AudioSystemDeviceMVCModel outputDeviceComboModel,
+			final AudioSystemBufferSizeMVCModel bufferSizeModel,
+			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel,
+			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel )
 	{
 		this.fpsComboModel = fpsComboModel;
 		this.inputDeviceComboModel = inputDeviceComboModel;
@@ -71,7 +71,7 @@ public class UserPreferencesMVCModel
 	{
 		return bufferSizeModel;
 	}
-	
+
 	public AudioSystemMidiDeviceMVCModel getInputMidiDeviceComboModel()
 	{
 		return inputMidiDeviceComboModel;

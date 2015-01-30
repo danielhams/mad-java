@@ -26,13 +26,13 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class HashComputer
 {
-	private static String convertToHex(byte[] data)
+	private static String convertToHex(final byte[] data)
 	{
-		StringBuilder buf = new StringBuilder();
+		final StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < data.length; i++)
 		{
 			int halfbyte = (data[i] >>> 4) & 0x0F;
-			int two_halfs = 0;
+			int twoHalfs = 0;
 			do
 			{
 				if ((0 <= halfbyte) && (halfbyte <= 9))
@@ -41,12 +41,12 @@ public class HashComputer
 					buf.append((char) ('a' + (halfbyte - 10)));
 				halfbyte = data[i] & 0x0F;
 			}
-			while (two_halfs++ < 1);
+			while (twoHalfs++ < 1);
 		}
 		return buf.toString();
 	}
 
-	public static String SHA1(String text) throws DatastoreException
+	public static String computeTextSha1(final String text) throws DatastoreException
 	{
 		try
 		{
@@ -57,9 +57,9 @@ public class HashComputer
 			sha1hash = md.digest();
 			return convertToHex(sha1hash);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception thrown computing sha1 hash: " + e.toString();
+			final String msg = "Exception thrown computing sha1 hash: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 	}

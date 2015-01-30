@@ -35,22 +35,22 @@ import uk.co.modularaudio.util.table.Span;
 public class EnvelopeMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>
 {
-	private static final Span span = new Span(2, 4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2, 4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		EnvelopeMadDefinition.CONSUMER_GATE,
 		EnvelopeMadDefinition.CONSUMER_RETRIGGER,
 		EnvelopeMadDefinition.PRODUCER_EGATE,
 		EnvelopeMadDefinition.PRODUCER_EAMP };
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 50, 45 ),
 		new Point( 70, 45 ),
 		new Point( 130, 45 ),
 		new Point( 150, 45 ),
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Display",
 		"Attack From Zero",
 		"Attack Wave Choice",
@@ -62,8 +62,8 @@ public class EnvelopeMadUiDefinition
 		"Release Slider",
 		"Scale Slider"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.DISPLAY,
 		ControlType.CHECKBOX,
 		ControlType.COMBO,
@@ -75,8 +75,8 @@ public class EnvelopeMadUiDefinition
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		EnvelopeDisplayUiJComponent.class,
 		EnvelopeAttackFromZeroCheckboxUiJComponent.class,
 		EnvelopeAttackWaveComboUiJComponent.class,
@@ -88,8 +88,8 @@ public class EnvelopeMadUiDefinition
 		EnvelopeReleaseSliderUiJComponent.class,
 		EnvelopeTimescaleSliderUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 6, 22, 245, 90 ),			// Display
 		new Rectangle( 6, 110, 100, 25 ),		// Attack From Zero
 		new Rectangle( 30, 135, 50, 25 ),		// Attack Wave Choice
@@ -101,20 +101,20 @@ public class EnvelopeMadUiDefinition
 		new Rectangle( 200, 165, 50, 85 ),	// Release Slider
 		new Rectangle( 6, 260, 240, 25 )		// Timescale Slider
 	};
-	
-	private static final Class<EnvelopeMadUiInstance> instanceClass = EnvelopeMadUiInstance.class;
 
-	public EnvelopeMadUiDefinition( BufferedImageAllocator bia, EnvelopeMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+	private static final Class<EnvelopeMadUiInstance> INSTANCE_CLASS = EnvelopeMadUiInstance.class;
+
+	public EnvelopeMadUiDefinition( final BufferedImageAllocator bia, final EnvelopeMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 		{
 			super( bia, definition, cif, imageRoot,
-					span,
-					instanceClass,
-					uiChannelInstanceIndexes,
-					uiChannelPositions,
-					uiControlNames,
-					uiControlTypes,
-					uiControlClasses,
-					uiControlBounds );
+					SPAN,
+					INSTANCE_CLASS,
+					CHAN_INDEXES,
+					CHAN_POSIS,
+					CONTROL_NAMES,
+					CONTROL_TYPES,
+					CONTROL_CLASSES,
+					CONTROL_BOUNDS );
 		}
 }

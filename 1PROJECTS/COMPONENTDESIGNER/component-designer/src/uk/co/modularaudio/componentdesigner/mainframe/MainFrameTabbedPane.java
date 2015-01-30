@@ -46,47 +46,50 @@ import uk.co.modularaudio.util.audio.gui.paccontrols.PacButton;
 public class MainFrameTabbedPane extends JTabbedPane implements GuiTabbedPane, SubrackTitleListener
 {
 	private static final long serialVersionUID = -8536408105149344856L;
-	
+
 	private static Log log = LogFactory.getLog( MainFrameTabbedPane.class.getName() );
-	
+
 	public MainFrameTabbedPane()
 	{
 	}
 
 	@Override
-	public void addNewSubrackTab( SubrackTab subrackTab, boolean isCloseable )
+	public void addNewSubrackTab( final SubrackTab subrackTab, final boolean isCloseable )
 	{
-		String title = subrackTab.getTitle();
-		JComponent src = subrackTab.getJComponent();
+		final String title = subrackTab.getTitle();
+		final JComponent src = subrackTab.getJComponent();
 		this.addTab( title, src );
 		if( isCloseable )
 		{
-			int index = this.indexOfComponent( src );
-			LabelAndCloseButton tabLabelAndCloseButton = new LabelAndCloseButton( subrackTab );
+			final int index = this.indexOfComponent( src );
+			final LabelAndCloseButton tabLabelAndCloseButton = new LabelAndCloseButton( subrackTab );
 			this.setTabComponentAt( index, tabLabelAndCloseButton );
 		}
 		subrackTab.addTitleListener( this );
-		
+
 		this.setSelectedComponent( src );
 	}
 
 	@Override
-	public void removeSubrackTab( SubrackTab subrackTab )
+	public void removeSubrackTab( final SubrackTab subrackTab )
 	{
 		subrackTab.removeTitleListener( this );
 		this.remove( subrackTab.getJComponent() );
 	}
 
 	@Override
-	public void receiveTitleUpdate( SubrackTab subrackTab, String newTitle )
+	public void receiveTitleUpdate( final SubrackTab subrackTab, final String newTitle )
 	{
-		JComponent jcomp = subrackTab.getJComponent();
-		int index = this.indexOfComponent( jcomp );
-		log.debug("Yup, got a title change: " + newTitle );
-		Component c = getTabComponentAt( index );
+		final JComponent jcomp = subrackTab.getJComponent();
+		final int index = this.indexOfComponent( jcomp );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Yup, got a title change: " + newTitle );
+		}
+		final Component c = getTabComponentAt( index );
 		if( c instanceof LabelAndCloseButton )
 		{
-			LabelAndCloseButton lacb = (LabelAndCloseButton)c;
+			final LabelAndCloseButton lacb = (LabelAndCloseButton)c;
 			lacb.resetTitle( newTitle );
 		}
 		else
@@ -98,38 +101,38 @@ public class MainFrameTabbedPane extends JTabbedPane implements GuiTabbedPane, S
 	private class LabelAndCloseButton extends JPanel
 	{
 		private static final long serialVersionUID = 4749639147954010294L;
-		
+
 		private JLabel titleLabel = null;
 
 		public LabelAndCloseButton( final SubrackTab subrackTab )
 		{
 			setOpaque( false );
-			MigLayout layout = new MigLayout("insets 0, gap 0");
+			final MigLayout layout = new MigLayout("insets 0, gap 0");
 			this.setLayout( layout );
 			titleLabel = new JLabel( subrackTab.getTitle() );
 			this.add( titleLabel, "");
-			JButton closeButton = new PacButton()
+			final JButton closeButton = new PacButton()
 			{
 				private static final long serialVersionUID = 4253160873361081364L;
 
 				@Override
-				public void receiveEvent( ActionEvent e )
+				public void receiveEvent( final ActionEvent e )
 				{
 					subrackTab.doTabClose();
 				}
 			};
-			Font f = closeButton.getFont();
+			final Font f = closeButton.getFont();
 			closeButton.setMargin( new Insets( 0, 0, 0, 0 ) );
 			closeButton.setFont( f.deriveFont( 9f ) );
 			closeButton.setText( "x" );
-			Rectangle bounds = new Rectangle( 0, 0, 40, 12  );
-			Dimension sizeDim = new Dimension( bounds.width, bounds.height );
+			final Rectangle bounds = new Rectangle( 0, 0, 40, 12  );
+			final Dimension sizeDim = new Dimension( bounds.width, bounds.height );
 			closeButton.setMinimumSize( sizeDim );
 			closeButton.setMaximumSize( sizeDim );
 			this.add( closeButton );
 		}
 
-		public void resetTitle( String newTitle )
+		public void resetTitle( final String newTitle )
 		{
 			titleLabel.setText( newTitle );
 		}

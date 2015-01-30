@@ -51,30 +51,30 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 	}
 
 	@Override
-	public HashedWarehouse initStorage( String rootPathOfStorage ) throws IOException
+	public HashedWarehouse initStorage( final String rootPathOfStorage ) throws IOException
 	{
-		HashedWarehouse retVal = new HashedWarehouse( rootPathOfStorage );
+		final HashedWarehouse retVal = new HashedWarehouse( rootPathOfStorage );
 		return retVal;
 	}
 
 	@Override
-	public HashedRef getHashedRefForFilename(String filename) throws DatastoreException
+	public HashedRef getHashedRefForFilename(final String filename) throws DatastoreException
 	{
-		HashedRef retVal = new HashedRef( HashComputer.SHA1( filename ) );
+		final HashedRef retVal = new HashedRef( HashComputer.computeTextSha1( filename ) );
 		return retVal;
 	}
 
-	private byte[] storageBuf = new byte[STORAGE_BUFFER_LENGTH];
+	private final byte[] storageBuf = new byte[STORAGE_BUFFER_LENGTH];
 
 	@Override
-	public void storeContentsInWarehouse( HashedWarehouse warehouse, HashedRef hashedRef, InputStream contents )
+	public void storeContentsInWarehouse( final HashedWarehouse warehouse, final HashedRef hashedRef, final InputStream contents )
 			throws IOException
 	{
-		String outputPath = computeWarehouseRefPath( warehouse, hashedRef );
-		File outputFile = new File( outputPath );
-		File enclosingDir = outputFile.getParentFile();
+		final String outputPath = computeWarehouseRefPath( warehouse, hashedRef );
+		final File outputFile = new File( outputPath );
+		final File enclosingDir = outputFile.getParentFile();
 		FileUtilities.recursiveMakeDir( enclosingDir.getAbsolutePath() );
-		FileOutputStream fos = new FileOutputStream( outputPath );
+		final FileOutputStream fos = new FileOutputStream( outputPath );
 		int numRead = 0;
 		while( (numRead = contents.read( storageBuf ) ) > 0 )
 		{
@@ -83,10 +83,10 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		fos.close();
 	}
 
-	private String computeWarehouseRefPath(HashedWarehouse warehouse, HashedRef hashedRef)
+	private String computeWarehouseRefPath(final HashedWarehouse warehouse, final HashedRef hashedRef)
 	{
-		StringBuilder retVal = new StringBuilder( warehouse.getStorageRootPath() );
-		String sha1 = hashedRef.getSha1OfId();
+		final StringBuilder retVal = new StringBuilder( warehouse.getStorageRootPath() );
+		final String sha1 = hashedRef.getSha1OfId();
 		retVal.append( "/" );
 		retVal.append( sha1.substring( 0, 2 ) );
 		retVal.append( "/" );
@@ -96,19 +96,19 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 	}
 
 	@Override
-	public InputStream getContentsFromWarehouse(HashedWarehouse warehouse, HashedRef hashedRef) throws IOException
+	public InputStream getContentsFromWarehouse(final HashedWarehouse warehouse, final HashedRef hashedRef) throws IOException
 	{
-		String inputPath = computeWarehouseRefPath( warehouse, hashedRef );
-		FileInputStream fis = new FileInputStream( inputPath );
+		final String inputPath = computeWarehouseRefPath( warehouse, hashedRef );
+		final FileInputStream fis = new FileInputStream( inputPath );
 		return fis;
 	}
 
 	@Override
-	public void removeContentsFromWarehouse(HashedWarehouse warehouse, HashedRef hashedRef) throws IOException
+	public void removeContentsFromWarehouse(final HashedWarehouse warehouse, final HashedRef hashedRef) throws IOException
 	{
-		String removalPath = computeWarehouseRefPath( warehouse, hashedRef );
-		File removalFile = new File( removalPath );
-		File removalDir = removalFile.getParentFile();
+		final String removalPath = computeWarehouseRefPath( warehouse, hashedRef );
+		final File removalFile = new File( removalPath );
+		final File removalDir = removalFile.getParentFile();
 		if( removalFile.delete() )
 		{
 			// Remove the directory if it's empty
@@ -127,7 +127,7 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 	}
 
 	@Override
-	public String getPathToHashedRef(HashedWarehouse warehouse, HashedRef hashedRef)
+	public String getPathToHashedRef(final HashedWarehouse warehouse, final HashedRef hashedRef)
 	{
 		return computeWarehouseRefPath( warehouse, hashedRef );
 	}

@@ -25,16 +25,16 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
-import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralroll.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralroll.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 import uk.co.modularaudio.util.audio.fft.FftWindow;
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.audio.logdisplay.freqscale.FrequencyScaleComputer;
@@ -52,36 +52,36 @@ import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.streaming.StreamingWolaProcessor;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
-public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInstance<SpectralRollMadDefinition, SpectralRollMadInstance>
+public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<SpectralRollMadDefinition, SpectralRollMadInstance>
 	implements IOQueueEventUiConsumer<SpectralRollMadInstance>
 {
 	private static Log log = LogFactory.getLog( SpectralRollMadUiInstance.class.getName() );
 
 	private static final float MAX_CAPTURE_MILLIS = 5000.0f;
-	
+
 	private DataRate dataRate = DataRate.SR_44100;
 	private int maxCaptureBufferLength;
 	private UnsafeFloatRingBuffer frontendRingBuffer;
 	private BackendToFrontendDataRingBuffer backendRingBuffer;
-	
+
 	// Stuff the UI sets
 	private int desiredFftSize = 0;
 	private FrequencyScaleComputer desiredFreqScaleComputer = new LogarithmicFreqScaleComputer();
 	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicAmpScaleComputer();
 	private RunningAverageComputer desiredRunningAverageComputer = new FastFallComputer();
-	
-	private StreamingWolaProcessor wolaProcessor = null;
-	private SpecDataListener specDataListener = null;
-	private float[][] wolaArray = new float[1][];
+
+	private StreamingWolaProcessor wolaProcessor;
+	private SpecDataListener specDataListener;
+	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 
-	public SpectralRollMadUiInstance( SpectralRollMadInstance instance,
-			SpectralRollMadUiDefinition uiDefinition )
+	public SpectralRollMadUiInstance( final SpectralRollMadInstance instance,
+			final SpectralRollMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 		initialiseBuffers();
 	}
-	
+
 	@Override
 	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency,
 			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory)
@@ -90,7 +90,7 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 		dataRate = ratesAndLatency.getAudioChannelSetting().getDataRate();
 		initialiseBuffers();
 	}
-	
+
 	private void initialiseBuffers()
 	{
 		maxCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( dataRate.getValue(),
@@ -100,17 +100,17 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
-		
+
 		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTick );
-		
+
 		if( peakAmpAccumulator.hasNewAmps() )
 		{
-			float[][] computedAmps = peakAmpAccumulator.getComputedAmpsMarkTaken();
+			final float[][] computedAmps = peakAmpAccumulator.getComputedAmpsMarkTaken();
 			specDataListener.processScopeData( computedAmps[0] );
 		}
 	}
@@ -119,51 +119,51 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	{
 		try
 		{
-			int fftSize = desiredFftSize;
-			int windowLength = (fftSize >= SpectralRollMadDefinition.MAX_WINDOW_LENGTH ? 
+			final int fftSize = desiredFftSize;
+			final int windowLength = (fftSize >= SpectralRollMadDefinition.MAX_WINDOW_LENGTH ?
 					SpectralRollMadDefinition.MAX_WINDOW_LENGTH : fftSize );
-			FftWindow hannWindow = new HannFftWindow( windowLength );
+			final FftWindow hannWindow = new HannFftWindow( windowLength );
 
-			StftParameters params = new StftParameters( dataRate, 1, windowLength, 
+			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
 					SpectralRollMadDefinition.NUM_OVERLAPS, fftSize, hannWindow );
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			wolaProcessor = new StreamingWolaProcessor( params, peakAmpAccumulator );
 		}
-		catch( Exception e)
+		catch( final Exception e)
 		{
-			String msg = "Exception caught reinitialising frequency processor: " + e.toString();
+			final String msg = "Exception caught reinitialising frequency processor: " + e.toString();
 			log.error( msg, e );
 		}
 	}
 
-	public void setDesiredFreqScaleComputer( FrequencyScaleComputer freqScaleComputer )
+	public void setDesiredFreqScaleComputer( final FrequencyScaleComputer freqScaleComputer )
 	{
 		desiredFreqScaleComputer = freqScaleComputer;
 		reinitialiseFrequencyProcessor();
 	}
 
-	public void setDesiredFftSize( int resolution )
+	public void setDesiredFftSize( final int resolution )
 	{
 		desiredFftSize = resolution;
 		reinitialiseFrequencyProcessor();
 	}
 
-	public void setDesiredAmpScaleComputer( AmpScaleComputer ampScaleComputer )
+	public void setDesiredAmpScaleComputer( final AmpScaleComputer ampScaleComputer )
 	{
 		desiredAmpScaleComputer = ampScaleComputer;
 		reinitialiseFrequencyProcessor();
 	}
 
 	@Override
-	public void consumeQueueEntry( SpectralRollMadInstance instance, IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final SpectralRollMadInstance instance, final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case SpectralRollIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
-				long value = nextOutgoingEntry.value;
-				int bufferNum = (int)((value) & 0xFFFFFFFF);
-				int ringBufferIndex = (int)((value >> 32) & 0xFFFFFFFF);
+				final long value = nextOutgoingEntry.value;
+				final int bufferNum = (int)((value) & 0xFFFFFFFF);
+				final int ringBufferIndex = (int)((value >> 32) & 0xFFFFFFFF);
 				if( bufferNum == 0 )
 				{
 					receiveBufferIndexUpdate( nextOutgoingEntry.frameTime, ringBufferIndex );
@@ -172,28 +172,34 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 			}
 			default:
 			{
-				log.error("Unknown output command: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown output command: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
 	}
 
-	private void receiveBufferIndexUpdate( long indexUpdateTimestamp, int writeIndex )
+	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		int numReadable = backendRingBuffer.getNumReadableWithWriteIndex( writeIndex );
-		
-		int spaceAvailable = frontendRingBuffer.getNumWriteable();
+		final int numReadable = backendRingBuffer.getNumReadableWithWriteIndex( writeIndex );
+
+		final int spaceAvailable = frontendRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
 		{
-			int spaceToFree = numReadable - spaceAvailable;
+			final int spaceToFree = numReadable - spaceAvailable;
 //			log.trace("Moving forward " + spaceToFree + " floats");
 			frontendRingBuffer.moveForward( spaceToFree );
 		}
-		
-		int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
+
+		final int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
 		if( numRead != numReadable )
 		{
-			log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			if( log.isWarnEnabled() )
+			{
+				log.warn( "Expected " + numReadable + " from mad instance ring but read " + numRead );
+			}
 			Arrays.fill( frontendRingBuffer.buffer, 0.0f );
 			frontendRingBuffer.readPosition = 0;
 			frontendRingBuffer.writePosition = frontendRingBuffer.bufferLength - 1;
@@ -202,14 +208,14 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 		{
 			// Need to pass new data to the wola and check if there is new data to be displayed here
 //			log.trace( "Successfully passed " + numRead + " samples from mad instance to UI ring buffer" );
-			int ferbWp = frontendRingBuffer.writePosition;
-			
+			final int ferbWp = frontendRingBuffer.writePosition;
+
 			int readStartOffset = ferbWp - numReadable;
 			if( readStartOffset < 0 )
 			{
 				readStartOffset += frontendRingBuffer.bufferLength;
 			}
-			
+
 			int numStraightRead;
 
 			if( ferbWp > readStartOffset )
@@ -222,11 +228,11 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 				// Some wrapping going on
 				numStraightRead = frontendRingBuffer.bufferLength - readStartOffset;
 			}
-			
+
 			numStraightRead = (numStraightRead > numReadable ? numReadable : numStraightRead );
 
-			int numWrappedRead = numReadable - numStraightRead;
-			
+			final int numWrappedRead = numReadable - numStraightRead;
+
 			wolaArray[0] = frontendRingBuffer.buffer;
 
 			if( numStraightRead > 0 )
@@ -243,19 +249,22 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 			}
 			else if( numWrappedRead > 0 )
 			{
-				log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+				if( log.isDebugEnabled() )
+				{
+					log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
+				}
 				wolaProcessor.write(  wolaArray, 0, numWrappedRead, 1.0, 1.0 );
 			}
 		}
 
 	}
 
-	public void setSpecDataListener( SpecDataListener specDataListener )
+	public void setSpecDataListener( final SpecDataListener specDataListener )
 	{
 		this.specDataListener = specDataListener;
 	}
-	
-	public void sendUiActive( boolean showing )
+
+	public void sendUiActive( final boolean showing )
 	{
 		sendTemporalValueToInstance( SpectralRollIOQueueBridge.COMMAND_IN_ACTIVE, ( showing ? 1 : 0 ) );
 	}
@@ -265,7 +274,7 @@ public class SpectralRollMadUiInstance extends AbstractNonConfigurableMadUiInsta
 		return desiredRunningAverageComputer;
 	}
 
-	public void setDesiredRunningAverageComputer( RunningAverageComputer desiredRunningAverageComputer )
+	public void setDesiredRunningAverageComputer( final RunningAverageComputer desiredRunningAverageComputer )
 	{
 		this.desiredRunningAverageComputer = desiredRunningAverageComputer;
 	}

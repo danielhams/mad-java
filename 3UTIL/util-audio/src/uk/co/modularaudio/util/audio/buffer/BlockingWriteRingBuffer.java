@@ -21,38 +21,49 @@
 package uk.co.modularaudio.util.audio.buffer;
 
 import java.nio.BufferUnderflowException;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer implements BlockingRingBufferInterface
 {
-	private Integer internalLock = new Integer(0);
+	private final ReentrantLock internalLock = new ReentrantLock();
+	private final Condition notEmpty = internalLock.newCondition();
 
-	public BlockingWriteRingBuffer(int capacity)
+	public BlockingWriteRingBuffer(final int capacity)
 	{
 		super(capacity);
 	}
 
-	public boolean readMaybeBlock(float[] target, int pos, int length) throws BufferUnderflowException, InterruptedException
+	@Override
+	public boolean readMaybeBlock(final float[] target, final int pos, final int length) throws BufferUnderflowException, InterruptedException
 	{
-		boolean didBlock =  false;
-		synchronized( internalLock )
+		final boolean didBlock =  false;
+		internalLock.lock();
+		try
 		{
-			int rp = readPosition.get();
-			int wp = writePosition.get();
-			int numReadable = calcNumReadable( rp, wp );
+			final int rp = readPosition.get();
+			final int wp = writePosition.get();
+			final int numReadable = calcNumReadable( rp, wp );
 			if( numReadable >= length )
 			{
 				super.internalRead( rp, wp, target, pos, length, true, false );
-				internalLock.notify();
+				notEmpty.notifyAll();
 			}
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return didBlock;
 	}
 
-	public boolean writeMaybeBlock(float[] source, int pos, int length) throws InterruptedException
+	@Override
+	public boolean writeMaybeBlock(final float[] source, final int pos, final int length) throws InterruptedException
 	{
 		boolean didBlock = false;
-		synchronized (internalLock)
+		internalLock.lock();
+		try
 		{
 			int rp = readPosition.get();
 			int wp = writePosition.get();
@@ -60,12 +71,20 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 			while( numWriteable < length )
 			{
 				didBlock = true;
-				internalLock.wait();
 				rp = readPosition.get();
 				wp = writePosition.get();
 				numWriteable = calcNumWriteable( rp, wp );
+
+				if( numWriteable <= 0 )
+				{
+					notEmpty.await();
+				}
 			}
 			super.internalWrite( rp, wp, source, pos, length, true );
+		}
+		finally
+		{
+			internalLock.unlock();
 		}
 		return didBlock;
 	}

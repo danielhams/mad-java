@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -43,8 +43,8 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 {
 	private static Log log = LogFactory.getLog( MadComponentUiServiceImpl.class.getName());
 
-	private Map<String, MadUiDefinition<?,?>> idToDefinitionMap = new HashMap<String, MadUiDefinition<?,?>>();
-	private Map<MadDefinition<?,?>, MadComponentUiFactory> auDefinitionToFactoryMap = new HashMap<MadDefinition<?,?>, MadComponentUiFactory>();
+	private final Map<String, MadUiDefinition<?,?>> idToDefinitionMap = new HashMap<String, MadUiDefinition<?,?>>();
+	private final Map<MadDefinition<?,?>, MadComponentUiFactory> auDefinitionToFactoryMap = new HashMap<MadDefinition<?,?>, MadComponentUiFactory>();
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -57,15 +57,19 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public void registerComponentUiFactory( MadComponentUiFactory componentUiFactory ) throws DatastoreException
+	public void registerComponentUiFactory( final MadComponentUiFactory componentUiFactory ) throws DatastoreException
 	{
-		log.info( "Registering ui components for " + componentUiFactory.getClass().getSimpleName() );
-		List<MadUiDefinition<?,?>> factoryDefinitions = componentUiFactory.listComponentUiDefinitions();
-
-		for( MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
+		if( log.isInfoEnabled() )
 		{
-			MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
-			String defId = audDefinition.getId();
+			log.info( "Registering ui components for " + componentUiFactory.getClass().getSimpleName() );
+		}
+
+		final List<MadUiDefinition<?,?>> factoryDefinitions = componentUiFactory.listComponentUiDefinitions();
+
+		for( final MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
+		{
+			final MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
+			final String defId = audDefinition.getId();
 			if( idToDefinitionMap.containsKey( defId ) )
 			{
 				throw new DatastoreException("Unable to UI definition for " + defId + " from " + componentUiFactory.getClass().getSimpleName() +
@@ -73,27 +77,31 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 			}
 		}
 
-		for( MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
+		for( final MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
 		{
-			MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
+			final MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
 			idToDefinitionMap.put( audDefinition.getId(), uiDefinition );
 			auDefinitionToFactoryMap.put( audDefinition, componentUiFactory );
 		}
 	}
 
 	@Override
-	public void unregisterComponentUiFactory( MadComponentUiFactory componentUiFactory ) throws DatastoreException
+	public void unregisterComponentUiFactory( final MadComponentUiFactory componentUiFactory ) throws DatastoreException
 	{
-		log.info( "Unregistering ui components for " + componentUiFactory.getClass().getSimpleName() );
-		List<MadUiDefinition<?,?>> factoryDefinitions = componentUiFactory.listComponentUiDefinitions();
-
-		for( MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
+		if( log.isInfoEnabled() )
 		{
-			MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
+			log.info( "Unregistering ui components for " + componentUiFactory.getClass().getSimpleName() );
+		}
+
+		final List<MadUiDefinition<?,?>> factoryDefinitions = componentUiFactory.listComponentUiDefinitions();
+
+		for( final MadUiDefinition<?,?> uiDefinition : factoryDefinitions )
+		{
+			final MadDefinition<?,?> audDefinition = uiDefinition.getDefinition();
 
 			if( auDefinitionToFactoryMap.get( audDefinition ) != componentUiFactory )
 			{
-				String msg = "During uifactory unregister - the factory is not marked as the source for the definition!";
+				final String msg = "During uifactory unregister - the factory is not marked as the source for the definition!";
 				log.error( msg );
 				throw new DatastoreException( msg );
 			}
@@ -115,14 +123,14 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public MadUiInstance<?,?> createUiInstanceForInstance( MadInstance<?,?> instance )
+	public AbstractMadUiInstance<?,?> createUiInstanceForInstance( final MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		MadDefinition<?,?> definition = instance.getDefinition();
-		MadComponentUiFactory factory = auDefinitionToFactoryMap.get( definition );
+		final MadDefinition<?,?> definition = instance.getDefinition();
+		final MadComponentUiFactory factory = auDefinitionToFactoryMap.get( definition );
 		if( factory == null )
 		{
-			String msg = "Unable to find a UI factory for the definition with id " + definition.getId();
+			final String msg = "Unable to find a UI factory for the definition with id " + definition.getId();
 			throw new RecordNotFoundException( msg );
 		}
 		else
@@ -132,13 +140,13 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public void destroyUiInstance( MadUiInstance<?, ?> uiInstanceToDestroy ) throws RecordNotFoundException, DatastoreException
+	public void destroyUiInstance( final AbstractMadUiInstance<?, ?> uiInstanceToDestroy ) throws RecordNotFoundException, DatastoreException
 	{
-		MadDefinition<?,?> def = uiInstanceToDestroy.getInstance().getDefinition();
-		MadComponentUiFactory factory = auDefinitionToFactoryMap.get( def );
+		final MadDefinition<?,?> def = uiInstanceToDestroy.getInstance().getDefinition();
+		final MadComponentUiFactory factory = auDefinitionToFactoryMap.get( def );
 		if( factory == null )
 		{
-			String msg = "Unable to find a UI factory for destruction for definition with id " + def.getId();
+			final String msg = "Unable to find a UI factory for destruction for definition with id " + def.getId();
 			throw new RecordNotFoundException( msg );
 		}
 		else
@@ -148,13 +156,13 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
 		throws DatastoreException, RecordNotFoundException
 	{
-		MadComponentUiFactory factory = auDefinitionToFactoryMap.get( definition );
+		final MadComponentUiFactory factory = auDefinitionToFactoryMap.get( definition );
 		if( factory == null )
 		{
-			String msg = "Unable to find a UI factory to supply the span for the definition with id " + definition.getId();
+			final String msg = "Unable to find a UI factory to supply the span for the definition with id " + definition.getId();
 			throw new RecordNotFoundException( msg );
 		}
 		else

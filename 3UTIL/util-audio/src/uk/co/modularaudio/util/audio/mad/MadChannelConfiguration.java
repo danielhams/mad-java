@@ -26,19 +26,19 @@ import java.util.Map;
 public class MadChannelConfiguration
 {
 	private static MadChannelConfiguration emptyChannelConfiguration = new MadChannelConfiguration( new MadChannelDefinition[0] );
-	
-	private MadChannelDefinition[] channelDefinitions = null;
-	private Map<String,MadChannelDefinition> nameToChannelDefinitionMap = new HashMap<String, MadChannelDefinition>();
-	
-	public MadChannelConfiguration( MadChannelDefinition[] channelDefinitions )
+
+	private final MadChannelDefinition[] channelDefinitions;
+	private final Map<String,MadChannelDefinition> nameToChannelDefinitionMap = new HashMap<String, MadChannelDefinition>();
+
+	public MadChannelConfiguration( final MadChannelDefinition[] channelDefinitions )
 	{
 		this.channelDefinitions = channelDefinitions;
-		for( MadChannelDefinition cd : channelDefinitions )
+		for( final MadChannelDefinition cd : channelDefinitions )
 		{
 			nameToChannelDefinitionMap.put( cd.name, cd );
 		}
 	}
-	
+
 	public MadChannelDefinition[] getOrderedChannelDefinitions()
 	{
 		return channelDefinitions;
@@ -48,5 +48,5 @@ public class MadChannelConfiguration
 	{
 		return emptyChannelConfiguration;
 	}
-	
+
 }

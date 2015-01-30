@@ -43,7 +43,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 {
 	private static Log log = LogFactory.getLog( BlockResamplerServiceImpl.class.getName() );
 
-	private SampleCachingService sampleCachingService = null;
+	private SampleCachingService sampleCachingService;
 
 	public void init() throws ComponentConfigurationException
 	{
@@ -53,21 +53,21 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	{
 	}
 
-	public void setSampleCachingService( SampleCachingService sampleCachingService )
+	public void setSampleCachingService( final SampleCachingService sampleCachingService )
 	{
 		this.sampleCachingService = sampleCachingService;
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( float[] tmpBuffer,
-			BlockResamplingClient resamplingClient,
-			int outputSampleRate,
-			float playbackSpeed,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
-			int numFramesRequired,
-			boolean addToOutput )
+	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( final float[] tmpBuffer,
+			final BlockResamplingClient resamplingClient,
+			final int outputSampleRate,
+			final float playbackSpeed,
+			final float[] outputLeftFloats,
+			final float[] outputRightFloats,
+			final int outputPos,
+			final int numFramesRequired,
+			final boolean addToOutput )
 	{
 		return sampleClientUnifiedFetchAndResample( tmpBuffer,
 				(InternalResamplingClient)resamplingClient,
@@ -82,16 +82,16 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResampleWithAmps( float[] tmpBuffer,
-			BlockResamplingClient resamplingClient,
-			int outputSampleRate,
-			float playbackSpeed,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
-			int numFramesRequired,
-			float[] requiredAmps,
-			boolean addToOutput )
+	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResampleWithAmps( final float[] tmpBuffer,
+			final BlockResamplingClient resamplingClient,
+			final int outputSampleRate,
+			final float playbackSpeed,
+			final float[] outputLeftFloats,
+			final float[] outputRightFloats,
+			final int outputPos,
+			final int numFramesRequired,
+			final float[] requiredAmps,
+			final boolean addToOutput )
 	{
 		return sampleClientUnifiedFetchAndResample( tmpBuffer,
 				(InternalResamplingClient)resamplingClient,
@@ -105,49 +105,49 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 				requiredAmps );
 	}
 
-	private RealtimeMethodReturnCodeEnum sampleClientUnifiedFetchAndResample( float[] tmpBuffer,
-		InternalResamplingClient resamplingClient,
-		int outputSampleRate,
+	private RealtimeMethodReturnCodeEnum sampleClientUnifiedFetchAndResample( final float[] tmpBuffer,
+		final InternalResamplingClient resamplingClient,
+		final int outputSampleRate,
 		float playbackSpeed,
-		float[] outputLeftFloats,
-		float[] outputRightFloats,
-		int outputPos,
-		int numFramesRequired,
-		boolean addToOutput,
-		boolean haveAmps,
-		float[] amps )
+		final float[] outputLeftFloats,
+		final float[] outputRightFloats,
+		final int outputPos,
+		final int numFramesRequired,
+		final boolean addToOutput,
+		final boolean haveAmps,
+		final float[] amps )
 	{
 
-		SampleCacheClient sampleCacheClient = resamplingClient.getSampleCacheClient();
+		final SampleCacheClient sampleCacheClient = resamplingClient.getSampleCacheClient();
 
-		int sourceSampleRate = sampleCacheClient.getSampleRate();
+		final int sourceSampleRate = sampleCacheClient.getSampleRate();
 		if( sourceSampleRate != outputSampleRate )
 		{
-			float speedMultiplier = sourceSampleRate / (float)outputSampleRate;
+			final float speedMultiplier = sourceSampleRate / (float)outputSampleRate;
 			playbackSpeed *= speedMultiplier;
 		}
 //		log.debug("Playback speed currently " + playbackSpeed );
 
 //		float absSpeed = Math.abs(playbackSpeed);
 
-		boolean isForwards = (playbackSpeed >= 0.0f);
+		final boolean isForwards = (playbackSpeed >= 0.0f);
 		if( !isForwards )
 		{
 			playbackSpeed = -playbackSpeed;
 		}
 
-		long curFramePosition = resamplingClient.getFramePosition();
-		float curFpOffset = resamplingClient.getFpOffset();
+		final long curFramePosition = resamplingClient.getFramePosition();
+		final float curFpOffset = resamplingClient.getFpOffset();
 //		log.debug("curFramePosition(" + curFramePosition + ") and startFpOffset(" + MathFormatter.slowDoublePrint(curFpOffset, 3, false ) + ")");
 
-		float fpNumFramesNeeded = (numFramesRequired * playbackSpeed);
-		int intNumFramesNeeded = (int)Math.ceil(fpNumFramesNeeded);
+		final float fpNumFramesNeeded = (numFramesRequired * playbackSpeed);
+		final int intNumFramesNeeded = (int)Math.ceil(fpNumFramesNeeded);
 
 //		log.debug("Resample at frame(" + curFramePosition +") and fpoffset(" + startFpOffset +") need " + numRequired + " frames at speed " + playbackSpeed + " will read " + intNumFramesNeeded );
 
 		// Read needed first sample for cubic interpolation and two samples at the end
-		int numFramesWithCubicSamples = intNumFramesNeeded + 3;
-		int tmpBufferFramePosForRead = 0;
+		final int numFramesWithCubicSamples = intNumFramesNeeded + 3;
+		final int tmpBufferFramePosForRead = 0;
 
 		long adjustedFramePosition;
 		float adjustedFpOffset;
@@ -159,7 +159,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			adjustedFpOffset = curFpOffset + playbackSpeed;
 			if( adjustedFpOffset >= 1.0f )
 			{
-				int extraInt = (int)adjustedFpOffset;
+				final int extraInt = (int)adjustedFpOffset;
 				adjustedFramePosition += extraInt;
 				adjustedFpOffset -= extraInt;
 			}
@@ -168,8 +168,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		{
 			adjustedFramePosition = (curFramePosition + 2) - numFramesWithCubicSamples;
 
-			float deltaOffset = (curFpOffset - playbackSpeed );
-			int deltaOffsetInt = (int)deltaOffset;
+			final float deltaOffset = (curFpOffset - playbackSpeed );
+			final int deltaOffsetInt = (int)deltaOffset;
 			adjustedFramePosition += deltaOffsetInt;
 			adjustedFpOffset = deltaOffset - deltaOffsetInt;
 
@@ -188,7 +188,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 		sampleCacheClient.setCurrentFramePosition( adjustedFramePosition );
 
-		RealtimeMethodReturnCodeEnum retCode = sampleCachingService.readSamplesForCacheClient( sampleCacheClient,
+		final RealtimeMethodReturnCodeEnum retCode = sampleCachingService.readSamplesForCacheClient( sampleCacheClient,
 				tmpBuffer,
 				tmpBufferFramePosForRead,
 				numFramesWithCubicSamples );
@@ -203,8 +203,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		}
 
 		// Split up into two streams of samples in the temporary buffer
-		int leftNonInterleavedIndex = numFramesWithCubicSamples + numFramesWithCubicSamples;
-		int rightNonInterleavedIndex = leftNonInterleavedIndex + numFramesWithCubicSamples;
+		final int leftNonInterleavedIndex = numFramesWithCubicSamples + numFramesWithCubicSamples;
+		final int rightNonInterleavedIndex = leftNonInterleavedIndex + numFramesWithCubicSamples;
 		deinterleaveFetchedSamples( tmpBuffer,
 				numFramesWithCubicSamples,
 				leftNonInterleavedIndex,
@@ -237,7 +237,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 //			}
 //		}
 
-		BlockResamplingMethod resamplingMethod = resamplingClient.getResamplingMethod();
+		final BlockResamplingMethod resamplingMethod = resamplingClient.getResamplingMethod();
 		// Now resample output into the given arrays
 		if( addToOutput )
 		{
@@ -254,8 +254,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 					outputRightFloats, outputPos, numFramesRequired, playbackSpeed, haveAmps, amps );
 		}
 
-		int overflowInt = (int)fpNumFramesNeeded;
-        float overflowFpOffset = fpNumFramesNeeded - overflowInt;
+		final int overflowInt = (int)fpNumFramesNeeded;
+        final float overflowFpOffset = fpNumFramesNeeded - overflowInt;
 
 		long newFramePosition;
 		float newFpOffset;
@@ -266,7 +266,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
     		newFpOffset = curFpOffset + overflowFpOffset;
     		if( newFpOffset >= 1.0f )
     		{
-    			int extraInt = (int)newFpOffset;
+    			final int extraInt = (int)newFpOffset;
     			newFramePosition += extraInt;
     			newFpOffset -= extraInt;
     		}
@@ -291,19 +291,19 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	private void deinterleaveFetchedSamples(float[] tmpBuffer, int numFramesWithCubicSamples,
-			int leftNonInterleavedIndex, int rightNonInterleavedIndex)
+	private void deinterleaveFetchedSamples(final float[] tmpBuffer, final int numFramesWithCubicSamples,
+			final int leftNonInterleavedIndex, final int rightNonInterleavedIndex)
 	{
 		for( int s = 0 ; s < numFramesWithCubicSamples ; ++s )
 		{
-			int readOffset = (s * 2);
+			final int readOffset = (s * 2);
 			tmpBuffer[ leftNonInterleavedIndex +s ] = tmpBuffer[ readOffset ];
 			tmpBuffer[ rightNonInterleavedIndex + s ] = tmpBuffer[ readOffset + 1 ];
 		}
 	}
 
-	private void interpolate( BlockResamplingMethod resamplingMethod, float[] sourceBuffer, int sourceIndex, float sourceFrac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed, boolean haveAmps, float[] amps )
+	private void interpolate( final BlockResamplingMethod resamplingMethod, final float[] sourceBuffer, final int sourceIndex, final float sourceFrac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final boolean haveAmps, final float[] amps )
 	{
 		if( outputPos + numFramesRequired > output.length )
 		{
@@ -375,8 +375,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		}
 	}
 
-	private void interpolateAdd( BlockResamplingMethod resamplingMethod, float[] sourceBuffer, int sourceIndex, float sourceFrac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed, boolean haveAmps, float[] amps )
+	private void interpolateAdd( final BlockResamplingMethod resamplingMethod, final float[] sourceBuffer, final int sourceIndex, final float sourceFrac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final boolean haveAmps, final float[] amps )
 	{
 		if( haveAmps )
 		{
@@ -432,28 +432,28 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		}
 	}
 
-	private void interpolateCubicLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateCubicLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
-			float y2 = sourceBuffer[ sourceIndex + 2 ];
-			float y3 = sourceBuffer[ sourceIndex + 3 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y2 = sourceBuffer[ sourceIndex + 2 ];
+			final float y3 = sourceBuffer[ sourceIndex + 3 ];
 //			log.debug("CubicInterpolate between y0(" + y0 + ") y1(" + y1 + ") y2(" + y2 + ") y3(" + y3 + ")");
 
-			float fracSq = frac * frac;
+			final float fracSq = frac * frac;
 
 //			float a0 = y3 - y2 - y0 + y1;
 //			float a1 = y0 - y1 - a0;
 //			float a2 = y2 - y0;
 //			float a3 = y1;
 
-			float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
-			float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
-			float a2 = -0.5f*y0 + 0.5f*y2;
-			float a3 = y1;
+			final float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
+			final float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
+			final float a2 = -0.5f*y0 + 0.5f*y2;
+			final float a3 = y1;
 
 			output[ outputPos + s ] = (a0 * frac * fracSq) + (a1 * fracSq) + (a2 * frac) + a3;
 			// Update source position using speed
@@ -461,20 +461,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //			if( frac > 1.0f )
 //			{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //			}
 		}
 	}
 
-	private void interpolateLinearLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateLinearLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] = (y0 * (1.0f - frac)) + (y1 * frac);
 			// Update source position using speed
@@ -482,20 +482,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //				if( frac > 1.0f )
 //				{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //				}
 		}
 	}
 
-	private void interpolateNearestLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateNearestLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] = ( frac < 0.5f ? y0 : y1);
 			// Update source position using speed
@@ -503,35 +503,35 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //					if( frac > 1.0f )
 //					{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //					}
 		}
 	}
 
-	private void interpolateAddCubicLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateAddCubicLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
-			float y2 = sourceBuffer[ sourceIndex + 2 ];
-			float y3 = sourceBuffer[ sourceIndex + 3 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y2 = sourceBuffer[ sourceIndex + 2 ];
+			final float y3 = sourceBuffer[ sourceIndex + 3 ];
 //				log.debug("CubicInterpolate between y0(" + y0 + ") y1(" + y1 + ") y2(" + y2 + ") y3(" + y3 + ")");
 
-			float fracSq = frac * frac;
+			final float fracSq = frac * frac;
 
 //				float a0 = y3 - y2 - y0 + y1;
 //				float a1 = y0 - y1 - a0;
 //				float a2 = y2 - y0;
 //				float a3 = y1;
 
-			float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
-			float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
-			float a2 = -0.5f*y0 + 0.5f*y2;
-			float a3 = y1;
+			final float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
+			final float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
+			final float a2 = -0.5f*y0 + 0.5f*y2;
+			final float a3 = y1;
 
 			output[ outputPos + s ] += (a0 * frac * fracSq) + (a1 * fracSq) + (a2 * frac) + a3;
 			// Update source position using speed
@@ -539,20 +539,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //				if( frac > 1.0f )
 //				{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //				}
 		}
 	}
 
-	private void interpolateAddLinearLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateAddLinearLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] += (y0 * (1.0f - frac)) + (y1 * frac);
 			// Update source position using speed
@@ -560,20 +560,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //					if( frac > 1.0f )
 //					{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //					}
 		}
 	}
 
-	private void interpolateAddNearestLoop( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed )
+	private void interpolateAddNearestLoop( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] += ( frac < 0.5f ? y0 : y1);
 			// Update source position using speed
@@ -581,35 +581,35 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //						if( frac > 1.0f )
 //						{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //						}
 		}
 	}
 
-	private void interpolateAddCubicLoopAmps( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed, float[] amps  )
+	private void interpolateAddCubicLoopAmps( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final float[] amps  )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
-			float y2 = sourceBuffer[ sourceIndex + 2 ];
-			float y3 = sourceBuffer[ sourceIndex + 3 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y2 = sourceBuffer[ sourceIndex + 2 ];
+			final float y3 = sourceBuffer[ sourceIndex + 3 ];
 //					log.debug("CubicInterpolate between y0(" + y0 + ") y1(" + y1 + ") y2(" + y2 + ") y3(" + y3 + ")");
 
-			float fracSq = frac * frac;
+			final float fracSq = frac * frac;
 
 //					float a0 = y3 - y2 - y0 + y1;
 //					float a1 = y0 - y1 - a0;
 //					float a2 = y2 - y0;
 //					float a3 = y1;
 
-			float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
-			float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
-			float a2 = -0.5f*y0 + 0.5f*y2;
-			float a3 = y1;
+			final float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
+			final float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
+			final float a2 = -0.5f*y0 + 0.5f*y2;
+			final float a3 = y1;
 
 			output[ outputPos + s ] += ((a0 * frac * fracSq) + (a1 * fracSq) + (a2 * frac) + a3) * amps[s];
 			// Update source position using speed
@@ -617,20 +617,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //					if( frac > 1.0f )
 //					{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //					}
 		}
 	}
 
-	private void interpolateAddLinearLoopAmp( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed, float[] amps )
+	private void interpolateAddLinearLoopAmp( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final float[] amps )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] += ((y0 * (1.0f - frac)) + (y1 * frac)) * amps[s];
 			// Update source position using speed
@@ -638,20 +638,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //						if( frac > 1.0f )
 //						{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //						}
 		}
 	}
 
-	private void interpolateAddNearestLoopAmps( float[] sourceBuffer, int sourceIndex, float frac,
-		float[] output, int outputPos, int numFramesRequired, float playbackSpeed, float[] amps )
+	private void interpolateAddNearestLoopAmps( final float[] sourceBuffer, int sourceIndex, float frac,
+		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final float[] amps )
 	{
 		for( int s = 0 ; s < numFramesRequired ; ++s )
 		{
-			float y0 = sourceBuffer[ sourceIndex ];
-			float y1 = sourceBuffer[ sourceIndex + 1 ];
+			final float y0 = sourceBuffer[ sourceIndex ];
+			final float y1 = sourceBuffer[ sourceIndex + 1 ];
 
 			output[ outputPos + s ] += (( frac < 0.5f ? y0 : y1)) * amps[s];
 			// Update source position using speed
@@ -659,7 +659,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			// Unnecessary branch...
 //							if( frac > 1.0f )
 //							{
-				int extraInt = (int)frac;
+				final int extraInt = (int)frac;
 				sourceIndex += extraInt;
 				frac -= extraInt;
 //							}
@@ -667,36 +667,36 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	}
 
 	@Override
-	public BlockResamplingClient createResamplingClient( String pathToFile, BlockResamplingMethod resamplingMethod )
+	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
 			throws DatastoreException, UnsupportedAudioFileException
 	{
 		SampleCacheClient scc;
 		try
 		{
 			scc = sampleCachingService.registerCacheClientForFile(pathToFile);
-			InternalResamplingClient brc = new InternalResamplingClient(scc, resamplingMethod, 0, 0.0f);
+			final InternalResamplingClient brc = new InternalResamplingClient(scc, resamplingMethod, 0, 0.0f);
 			return brc;
 		}
-		catch( NoSuchHibernateSessionException nshe )
+		catch( final NoSuchHibernateSessionException nshe )
 		{
-			String msg = "Missing hibernate session during register of sample cache client: " + nshe.toString();
+			final String msg = "Missing hibernate session during register of sample cache client: " + nshe.toString();
 			log.error( msg, nshe );
 			throw new DatastoreException( msg, nshe );
 		}
 	}
 
 	@Override
-	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( SampleCacheClient sampleCacheClient,
-		BlockResamplingMethod resamplingMethod )
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+		final BlockResamplingMethod resamplingMethod )
 	{
 		return new InternalResamplingClient(sampleCacheClient, resamplingMethod, 0, 0.0f);
 	}
 
 	@Override
-	public void destroyResamplingClient( BlockResamplingClient resamplingClient ) throws DatastoreException, RecordNotFoundException
+	public void destroyResamplingClient( final BlockResamplingClient resamplingClient ) throws DatastoreException, RecordNotFoundException
 	{
-		InternalResamplingClient brc = (InternalResamplingClient)resamplingClient;
-		SampleCacheClient scc = brc.getSampleCacheClient();
+		final InternalResamplingClient brc = (InternalResamplingClient)resamplingClient;
+		final SampleCacheClient scc = brc.getSampleCacheClient();
 		sampleCachingService.unregisterCacheClientForFile(scc);
 	}
 

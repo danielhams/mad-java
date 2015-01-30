@@ -14,7 +14,8 @@
 		<property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
-		<property name="timingService"><ref bean="timingService"></ref></property>
+        <property name="timingService"><ref bean="timingService"></ref></property>
+        <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>
 	<bean id="advancedComponentsFrontController" class="uk.co.modularaudio.controller.advancedcomponents.impl.AdvancedComponentsFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionController"><ref bean="hibernateSessionController"></ref></property>
@@ -47,7 +48,6 @@
 	</bean>
 	<bean id="sampleCachingController" class="uk.co.modularaudio.controller.samplecaching.impl.SampleCachingControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
-		<property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
 	</bean>
 	<bean id="rackService" class="uk.co.modularaudio.service.rack.impl.RackServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="graphService"><ref bean="graphService"></ref></property>
@@ -78,7 +78,6 @@
 	<bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
 	</bean>
 	<bean id="guiComponentFactoryService" class="uk.co.modularaudio.service.guicompfactory.impl.GuiComponentFactoryServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="baseComponentsFactory" class="uk.co.modularaudio.mads.base.BaseComponentsFactory" init-method="init" destroy-method="destroy">
@@ -163,7 +162,6 @@
 	<bean id="userPreferencesService" class="uk.co.modularaudio.service.userpreferences.impl.UserPreferencesServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService"></ref></property>
-		<property name="appRenderingGraphService"><ref bean="appRenderingGraphService"></ref></property>
 	</bean>
 	<bean id="classificationService" class="uk.co.modularaudio.service.madclassification.impl.MadClassificationServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
@@ -182,6 +180,5 @@
 	</bean>
 	<bean id="hibernateSessionController" class="uk.co.modularaudio.controller.hibsession.impl.HibernateSessionControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"/></property>
-		<property name="configurationService"><ref bean="configurationService"/></property>
 	</bean>
 </beans>

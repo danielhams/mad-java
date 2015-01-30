@@ -37,39 +37,38 @@ public class NoteDebugMadDefinition extends AbstractNonConfigurableMadDefinition
 	public final static int CONSUMER_NOTE= 0;
 	public final static int NUM_CHANNELS = 1;
 
-	private final static String definitionId = "note_debug";
+	public final static String DEFINITION_ID = "note_debug";
 
-	private final static String userVisibleName = "Note Debug";
+	private final static String USER_VISIBLE_NAME = "Note Debug";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String classificationId = "note_debug";
-	private final static String classificationName = "Note Debug";
-	private final static String classificationDescription = "Display incoming note values";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
+	private final static String CLASS_NAME = "Note Debug";
+	private final static String CLASS_DESC = "Display incoming note values";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Controller Note" };
+	private final static String[] CHAN_NAMES = new String[] { "Input Controller Note" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.NOTE };
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.NOTE };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER };
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO };
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO };
 
-	public NoteDebugMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public NoteDebugMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new NoteDebugIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

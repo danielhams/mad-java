@@ -20,6 +20,10 @@
 
 package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
 import uk.co.modularaudio.service.rendering.vos.RenderingJobQueue;
 
@@ -32,7 +36,8 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 
 //	private AtomicBoolean internalShouldBlock = new AtomicBoolean(true);
 	private volatile boolean internalShouldBlock = true; // NOPMD by dan on 22/01/15 07:40
-	private final Integer internalLock = Integer.valueOf(0);
+	private final ReentrantLock internalLock = new ReentrantLock( true );
+	private final Condition notEmpty = internalLock.newCondition();
 
 	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
 
@@ -52,21 +57,20 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 
 		if( localCanBlock )
 		{
-			synchronized( internalLock )
+			internalLock.lock();
+			retVal = mtSafeJobQueue.readOneOrNull();
+			if( retVal == null )
 			{
-				retVal = mtSafeJobQueue.readOneOrNull();
-				if( retVal == null )
+				try
 				{
-					try
-					{
-						internalLock.wait( JOB_FETCH_TIMEOUT_MILLIS );
-					}
-					catch( InterruptedException ie )
-					{
-						// Don't care, we're mirroring lack of an interrupted exception in c++
-					}
+					notEmpty.await( JOB_FETCH_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS );
+				}
+				catch( final InterruptedException ie )
+				{
+					// Don't care, we're mirroring lack of an interrupted exception in c++
 				}
 			}
+			internalLock.unlock();
 		}
 		else
 		{
@@ -85,10 +89,9 @@ public class MTRenderingJobQueue implements RenderingJobQueue
 		internalShouldBlock = shouldBlock;
 		if( !shouldBlock )
 		{
-			synchronized( internalLock )
-			{
-				internalLock.notifyAll();
-			}
+			internalLock.lock();
+			notEmpty.notifyAll();
+			internalLock.unlock();
 		}
 	}
 

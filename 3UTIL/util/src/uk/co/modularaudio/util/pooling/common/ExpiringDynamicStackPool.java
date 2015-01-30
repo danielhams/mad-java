@@ -39,89 +39,48 @@ import java.util.LinkedList;
  * @see uk.co.modularaudio.util.pooling.common.Arbiter
  * @see uk.co.modularaudio.util.pooling.common.AddResourcesArbiter
  * @see uk.co.modularaudio.util.pooling.common.RemoveResourcesArbiter*/
-public class ExpiringDynamicStackPool 
+public class ExpiringDynamicStackPool
 	extends Pool
 	implements IDynamicSizedPool
 {
 //	private static Log log = LogFactory.getLog(ExpiringDynamicStackPool.class.getName());
-	
-	public ExpiringDynamicStackPool(
-		int lowTide,
-		int highTide,
-		int allocationStep,
-		int minResources,
-		int maxResources,
-		long resourceCheckMilliSeconds,
-		long sizingCheckSleepMilliSeconds,
-		Factory factory)
+
+	public ExpiringDynamicStackPool( final int lowTide,
+		final int highTide,
+		final int allocationStep,
+		final int minResources,
+		final int maxResources,
+		final long resourceCheckMilliSeconds,
+		final long sizingCheckSleepMilliSeconds,
+		final Factory factory)
 	{
-		synchronized (poolSemaphore)
+		super( new StackPoolStructure(), sizingCheckSleepMilliSeconds, factory, resourceCheckMilliSeconds );
+		assert( sizingCheckSleepMilliSeconds > 0 );
+		assert( resourceCheckMilliSeconds > 0 );
+		poolLock.lock();
+		try
 		{
-			// Use a stack structure to store our resources. This makes recently
-			// used resources the ones that are used next.
-			//log.debug( "EDSP creating stack pool structure");
-			poolStructure = new StackPoolStructure();
-
-//			this.lowTide = lowTide;
-//			this.highTide = highTide;
-//			this.allocationStep = allocationStep;
 			this.minResources = minResources;
-//			this.maxResources = maxResources;
-//			this.resourceCheckMilliSeconds = resourceCheckMilliSeconds;
-			this.factory = factory;
-//			this.sizingCheckSleepMilliSeconds = sizingCheckSleepMilliSeconds;
 
-			// Pop in the resource creation thread. This thread sits waiting for
-			// things to tell it to create new ones. We will use arbiters to
-			// actually call the creation thread.
-			//log.debug( "EDSP creating resource creation thread");
-			poolSizingThread = new PoolSizingThread(this, this.poolSemaphore, factory, sizingCheckSleepMilliSeconds);
 
-			// Create an expiry thread. This thread looks to see if any resources
-			// have expired by calling the expiry arbiters on all the busy
-			// resources. If the arbiters say FAIL, then the expiry thread removes
-			// them from the pool.
-			poolExpiryThread =
-				new PoolExpiryThread(
-					resourceCheckMilliSeconds,
-					poolSemaphore,
-					this,
-					poolStructure);
-
-			// This arbiter is called when we need to (maybe) add new reasources
-			// into the pool. It will check the free size of the pool (+ any 
-			// outstanding creates in the creation thread), and ask the creation
-			// thread to create any more that are needed.
-			// Its called just before attempting to get a resource out of
-			// the pool.
-			//log.debug( "EDSP creating add resources arbiter.");
-			Arbiter addArbiter =
+			final Arbiter addArbiter =
 				new AddResourcesArbiter(
-					lowTide,
 					highTide,
 					allocationStep,
-					minResources,
 					maxResources,
-					poolSizingThread,
-					poolSemaphore);
+					poolLock );
 
 			this.addPreUseArbiter(addArbiter);
 
-			// Now an arbiter to remove resources when there are too many.
-			// This is called just after releasing a resource.
-			//log.debug( "EDSP creating remove resources arbiter.");
-			Arbiter removeArbiter =
+			final Arbiter removeArbiter =
 				new RemoveResourcesArbiter(
 					lowTide,
-					highTide,
 					allocationStep,
 					minResources,
-					maxResources,
-					poolSizingThread,
-					poolSemaphore);
+					poolLock );
 
 			this.addPostReleaseArbiter(removeArbiter);
-			
+
 			// Now add both these arbiters into the sizingArbiters list.
 			this.addSizingArbiter( addArbiter );
 			this.addSizingArbiter( removeArbiter );
@@ -130,73 +89,92 @@ public class ExpiringDynamicStackPool
 			// is resource specific, its left up to the implementation to add
 			// one in.
 		}
+		finally
+		{
+			poolLock.unlock();
+		}
 	}
 
+	@Override
 	public void init() throws FactoryProductionException
 	{
-		synchronized (poolSemaphore)
+		poolLock.lock();
+		try
 		{
 			// Set the factory up.
 			factory.init();
 
 			// Start off the threads for creation and expiry.
 			//log.debug( "EDSP starting creation thread.");
-			poolSizingThread.start();
-			
+			sizingThread.start();
+
 			//log.debug( "EDSP starting expiry thread.");
-			poolExpiryThread.start();
-			
+			expiryThread.start();
+
 			if (minResources != 0)
 			{
 				numNeeded = minResources;
 			}
 		}
+		finally
+		{
+			poolLock.unlock();
+		}
 	}
 
-//	private int lowTide = 0;
-//	private int highTide = 0;
-//	private int allocationStep = 0;
 	private int minResources = 0;
-//	private int maxResources = 0;
-//	private long resourceCheckMilliSeconds = 0;
-//	private long sizingCheckSleepMilliSeconds = 0;
-	
+
     protected int numNeeded = 0;
-    
-	private LinkedList<Arbiter> sizingArbiters = new LinkedList<Arbiter>();
-	
-	public void addSizingArbiter(Arbiter arb)
+
+	private final LinkedList<Arbiter> sizingArbiters = new LinkedList<Arbiter>();
+
+	@Override
+	public void addSizingArbiter(final Arbiter arb)
 	{
 		sizingArbiters.addLast( arb );
 	}
-	
-	public int arbitrateSize(Resource res)
+
+	@Override
+	public int arbitrateSize(final Resource res)
 	{
 		return (doArbitration(sizingArbiters, res));
 	}
-	
+
 	// Call the sizing arbiters when a resource is removed from the pool
-	public Resource removeResource( Resource res )
+	@Override
+	public Resource removeResource( final Resource res )
 	{
-        Resource retVal = super.removeResource( res );
-		synchronized(poolSemaphore)
+        final Resource retVal = super.removeResource( res );
+        poolLock.lock();
+        try
 		{
-			this.poolSemaphore.notifyAll();
+        	notEmpty.notifyAll();
 		}
+        finally
+        {
+        	poolLock.unlock();
+        }
 		this.arbitrateSize( res );
-		synchronized(poolSemaphore)
+		poolLock.lock();
+		try
 		{
-			this.poolSemaphore.notifyAll();
+			notEmpty.notifyAll();
+		}
+		finally
+		{
+			poolLock.unlock();
 		}
         return( retVal );
 	}
-    
-    public void addToNumNeeded(int numToAdd)
+
+    @Override
+	public void addToNumNeeded(final int numToAdd)
     {
         numNeeded += numToAdd;
     }
 
-    public int getNumNeeded()
+    @Override
+	public int getNumNeeded()
     {
         return numNeeded;
     }

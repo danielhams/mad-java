@@ -33,36 +33,36 @@ import uk.co.modularaudio.util.pooling.common.FixedSizePool;
 import uk.co.modularaudio.util.pooling.common.Resource;
 import uk.co.modularaudio.util.pooling.common.ResourceNotAvailableException;
 
-public class FormatterPool
+public final class FormatterPool
 {
 	private static Log log = LogFactory.getLog( FormatterPool.class.getName() );
-	
+
 	private static FormatterPool sp = new FormatterPool();
-	
+
 	public final static FormatterPool getFormatterPool()
 	{
 		return sp;
 	}
-	
+
 	public Formatter getFormatter()
 	{
 		try
 		{
-			FormatterResource fr = (FormatterResource) poolObj.useResource();
-			Formatter f = fr.getFormatter();
+			final FormatterResource fr = (FormatterResource) poolObj.useResource();
+			final Formatter f = fr.getFormatter();
 			resourceToFormatterMap.put( fr, f );
 			formatterToResourceMap.put( f, fr );
 			return f;
 		}
-		catch (ResourceNotAvailableException e)
+		catch (final ResourceNotAvailableException e)
 		{
 			return new Formatter( Locale.ENGLISH );
 		}
 	}
-	
-	public void returnFormatter( Formatter f )
+
+	public void returnFormatter( final Formatter f )
 	{
-		FormatterResource fr = formatterToResourceMap.get( f );
+		final FormatterResource fr = formatterToResourceMap.get( f );
 		if( fr == null )
 		{
 			log.error("How the..");
@@ -72,7 +72,7 @@ public class FormatterPool
 //		resourceToFormatterMap.remove( fr );
 		poolObj.releaseResource( fr );
 	}
-	
+
 	private FormatterPool()
 	{
 		poolObj = new FixedSizePool( 40, new FormatterFactory() );
@@ -80,15 +80,15 @@ public class FormatterPool
 		{
 			poolObj.init();
 		}
-		catch (FactoryProductionException e)
+		catch (final FactoryProductionException e)
 		{
 			log.error( e );
 		}
 	}
-	
+
 	private FixedSizePool poolObj = null;
-	private Map<Resource,Formatter> resourceToFormatterMap = new HashMap<Resource, Formatter>();
-	private Map<Formatter, FormatterResource> formatterToResourceMap = new HashMap<Formatter, FormatterResource>();
+	private final Map<Resource,Formatter> resourceToFormatterMap = new HashMap<Resource, Formatter>();
+	private final Map<Formatter, FormatterResource> formatterToResourceMap = new HashMap<Formatter, FormatterResource>();
 
 	@Override
 	protected void finalize() throws Throwable

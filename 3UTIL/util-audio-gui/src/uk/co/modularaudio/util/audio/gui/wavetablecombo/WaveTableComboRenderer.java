@@ -35,26 +35,26 @@ public class WaveTableComboRenderer extends JLabel
 	implements ComboViewListCellRenderer<WaveTableComboItem>
 {
 	private static final long serialVersionUID = -6633248241915765586L;
-	
+
 	public WaveTableComboRenderer()
 	{
 	}
-	
+
 //	private final static Log log = LogFactory.getLog( WaveTableComboRenderer.class.getName() );
-	
+
 	@SuppressWarnings("rawtypes")
-	private ListCellRenderer defaultRendererFactory = new DefaultListCellRenderer();
+	private final ListCellRenderer defaultRendererFactory = new DefaultListCellRenderer();
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Component getListCellRendererComponent( JList<? extends WaveTableComboItem> list,
-			WaveTableComboItem value,
-			int index,
-			boolean isSelected,
-			boolean cellHasFocus )
+	public Component getListCellRendererComponent( final JList<? extends WaveTableComboItem> list,
+			final WaveTableComboItem value,
+			final int index,
+			final boolean isSelected,
+			final boolean cellHasFocus )
 	{
 		Icon icon = null;
-		
+
 		if( isSelected )
 		{
 			setBackground( list.getSelectionBackground() );
@@ -65,12 +65,12 @@ public class WaveTableComboRenderer extends JLabel
 			setBackground( list.getBackground() );
 			setForeground( list.getForeground() );
 		}
-		
+
 		if( value != null )
 		{
 			this.setText( value.getDisplayString() );
-			WaveTable wt = value.getValue();
-			boolean isBipolar = value.isBipolar();
+			final WaveTable wt = value.getValue();
+			final boolean isBipolar = value.isBipolar();
 			icon = WaveTableIconCache.getIconForWaveTable( wt, isBipolar );
 			setIcon( icon );
 		}
@@ -80,7 +80,7 @@ public class WaveTableComboRenderer extends JLabel
 			setIcon( null );
 		}
 //		log.debug("get renderer called on " + this );
-		
+
 		return defaultRendererFactory.getListCellRendererComponent( list, icon, index, isSelected, cellHasFocus );
 //		return this;
 	}

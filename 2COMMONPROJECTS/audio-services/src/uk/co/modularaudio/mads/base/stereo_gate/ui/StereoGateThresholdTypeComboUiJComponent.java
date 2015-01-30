@@ -36,18 +36,18 @@ public class StereoGateThresholdTypeComboUiJComponent extends PacComboBox<Thresh
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private StereoGateMadUiInstance uiInstance = null;
+	private final StereoGateMadUiInstance uiInstance;
 
 	public StereoGateThresholdTypeComboUiJComponent(
-			StereoGateMadDefinition definition,
-			StereoGateMadInstance instance,
-			StereoGateMadUiInstance uiInstance,
-			int controlIndex )
+			final StereoGateMadDefinition definition,
+			final StereoGateMadInstance instance,
+			final StereoGateMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
-		DefaultComboBoxModel<ThresholdTypeEnum> cbm = new DefaultComboBoxModel<ThresholdTypeEnum>();
-		for( ThresholdTypeEnum e : ThresholdTypeEnum.values() )
+		final DefaultComboBoxModel<ThresholdTypeEnum> cbm = new DefaultComboBoxModel<ThresholdTypeEnum>();
+		for( final ThresholdTypeEnum e : ThresholdTypeEnum.values() )
 		{
 			cbm.addElement( e );
 		}
@@ -65,7 +65,7 @@ public class StereoGateThresholdTypeComboUiJComponent extends PacComboBox<Thresh
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -73,11 +73,11 @@ public class StereoGateThresholdTypeComboUiJComponent extends PacComboBox<Thresh
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			ThresholdTypeEnum tType = (ThresholdTypeEnum) getSelectedItem();
+			final ThresholdTypeEnum tType = (ThresholdTypeEnum) getSelectedItem();
 			uiInstance.updateThresholdType( tType.ordinal() );
 		}
 	}

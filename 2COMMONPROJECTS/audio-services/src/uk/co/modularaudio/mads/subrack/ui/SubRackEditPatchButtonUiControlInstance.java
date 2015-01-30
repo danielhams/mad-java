@@ -24,20 +24,20 @@ import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SubRackEditPatchButtonUiControlInstance 
-	extends MadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
+public class SubRackEditPatchButtonUiControlInstance
+	extends AbstractMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private SubRackMadInstance instance = null;
-	
+
 	private SubRackEditPatchButtonUiJComponent jComponent = null;
-	
-	public SubRackEditPatchButtonUiControlInstance( SubRackMadInstance instance,
-			SubRackMadUiInstance uiInstance,
-			SubRackEditPatchButtonUiControlDefinition def )
+
+	public SubRackEditPatchButtonUiControlInstance( final SubRackMadInstance instance,
+			final SubRackMadUiInstance uiInstance,
+			final SubRackEditPatchButtonUiControlDefinition def )
 	{
 		super( uiInstance, def );
 		this.instance = instance;
@@ -51,13 +51,13 @@ public class SubRackEditPatchButtonUiControlInstance
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		jComponent.receiveControlValue( value );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -73,5 +73,11 @@ public class SubRackEditPatchButtonUiControlInstance
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void destroy()
+	{
+		// Do nothing
 	}
 }

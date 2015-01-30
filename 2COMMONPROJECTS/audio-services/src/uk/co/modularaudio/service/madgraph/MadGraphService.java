@@ -39,7 +39,7 @@ public interface MadGraphService
 	// Can only create and delete graphs.
 	public MadGraphInstance<?,?> createNewRootGraph( String name )
 		throws DatastoreException;
-	
+
 	public MadGraphInstance<?,?> createNewParameterisedGraph( String name,
 			GraphType graphType,
 			int numInputAudioChannels,
@@ -49,13 +49,14 @@ public interface MadGraphService
 			int numInputNoteChannels,
 			int numOutputNoteChannels )
 		throws DatastoreException;
-	
+
 	public void destroyGraph( MadGraphInstance<?,?> graph, boolean deleteLinks, boolean deleteMadInstances ) throws DatastoreException;
-	
+
 	// CRUD on listeners on the graph
 	public void addGraphListener( MadGraphInstance<?,?> graph, MadGraphListener listener );
 	public void removeGraphListener( MadGraphInstance<?,?> graph, MadGraphListener listener );
-	
+	public boolean graphHasListeners( MadGraphInstance<?, ?> graph );
+
 	// CRUD on audio components in the graph - we are manipulating "instances"
 	// as components have extra properties when they are in a graph ( internal state of processing e.g. gain, pan etc)
 	public boolean checkCanAddInstanceToGraphWithName( MadGraphInstance<?,?> graph, String name );
@@ -79,21 +80,21 @@ public interface MadGraphService
 	// CRUD on links between components within the graph
 	public void addLink( MadGraphInstance<?,?> graph, MadLink link )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
-	
+
 	public void deleteLink( MadGraphInstance<?,?> graph, MadLink link )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
-	
+
 	public Collection<MadLink> findAllLinks( MadGraphInstance<?,?> graph )
 		throws DatastoreException;
-	
+
 	public Set<MadLink> findAllLinksToInstance( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
-	
+
 	public Set<MadLink> findAllLinksFromInstance( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
-	
+
 	// Debugging
 	public void dumpGraph( MadGraphInstance<?,?> g );
 

@@ -35,19 +35,19 @@ public class WaveDisplayMinMaxStructure
 	public float maxHiValue;
 	public float previousMinHiValue;
 	public float previousMaxHiValue;
-	
+
 	public WaveDisplayMinMaxStructure()
 	{
 		resetAll();
 	}
-	
-	public void resetAll()
+
+	public final void resetAll()
 	{
 		resetMinMax();
 		resetPrevious();
 	}
 
-	public void resetMinMax()
+	public final void resetMinMax()
 	{
 		minLowValue = Float.MAX_VALUE;
 		maxLowValue = -minLowValue;
@@ -58,8 +58,8 @@ public class WaveDisplayMinMaxStructure
 		minHiValue = Float.MAX_VALUE;
 		maxHiValue = -minHiValue;
 	}
-	
-	public void resetPrevious()
+
+	public final void resetPrevious()
 	{
 		previousMinLowValue = 0.0f;
 		previousMaxLowValue = 0.0f;
@@ -75,15 +75,15 @@ public class WaveDisplayMinMaxStructure
 	{
 		previousMinLowValue = minLowValue;
 		previousMaxLowValue = maxLowValue;
-		
+
 		previousMinMidValue = minMidValue;
 		previousMaxMidValue = maxMidValue;
-		
+
 		previousMinHiValue = minHiValue;
 		previousMaxHiValue = maxHiValue;
-		
+
 	}
-	
+
 	public void extendWithPrevious()
 	{
 		if( previousMaxLowValue < minLowValue )
@@ -111,8 +111,8 @@ public class WaveDisplayMinMaxStructure
 			maxHiValue = previousMinHiValue;
 		}
 	}
-	
-	public void processSample( float lowSample, float midSample, float hiSample )
+
+	public void processSample( final float lowSample, final float midSample, final float hiSample )
 	{
 		if( lowSample < minLowValue )
 		{

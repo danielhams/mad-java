@@ -27,14 +27,14 @@ import java.util.List;
 public class ListenableWaveTable
 {
 	private static final long DEBUG_THREAD_SLEEP_MILLIS = 1;
-	private float[] floatBuffer = null;
-	private int length = -1;
-	
+	private final float[] floatBuffer;
+	private final int length;
+
 	private boolean debug = false;
-	
-	private List<WaveTableListener> listeners = new ArrayList<WaveTableListener>();
-	
-	public ListenableWaveTable( int capacity, boolean initialiseToZero, boolean debug )
+
+	private final List<WaveTableListener> listeners = new ArrayList<WaveTableListener>();
+
+	public ListenableWaveTable( final int capacity, final boolean initialiseToZero, final boolean debug )
 	{
 		this.length = capacity;
 		this.debug = debug;
@@ -49,13 +49,13 @@ public class ListenableWaveTable
 		}
 		fireTableChanged();
 	}
-	
+
 	public int getLength()
 	{
 		return length;
 	}
-	
-	public float getValueAt( int position )
+
+	public float getValueAt( final int position )
 	{
 		if( position >= length )
 		{
@@ -66,16 +66,16 @@ public class ListenableWaveTable
 			return floatBuffer[position];
 		}
 	}
-	
-	public void setValueAt( int position, float value )
+
+	public void setValueAt( final int position, final float value )
 	{
 		floatBuffer[position] = value;
 		fireTableChanged();
 	}
-	
+
 	private void fireTableChanged()
 	{
-		for( WaveTableListener l : listeners )
+		for( final WaveTableListener l : listeners )
 		{
 			l.receiveTableChanged();
 		}
@@ -85,19 +85,19 @@ public class ListenableWaveTable
 			{
 				Thread.sleep( DEBUG_THREAD_SLEEP_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public void addListener( WaveTableListener l )
+
+	public void addListener( final WaveTableListener l )
 	{
 		listeners.add( l );
 	}
-	
-	public void removeListener( WaveTableListener l )
+
+	public void removeListener( final WaveTableListener l )
 	{
 		listeners.remove( l );
 	}

@@ -40,34 +40,34 @@ public class NoteOnTypeComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 5596596996111941194L;
 
-	private NoteToCvMadUiInstance uiInstance = null;
-	
+	private final NoteToCvMadUiInstance uiInstance;
+
 	private static Map<NoteOnType,String> noteOnTypeToNameMap = new HashMap<NoteOnType,String>();
 	private static Map<String,NoteOnType> nameToNoteOnTypeMap = new HashMap<String,NoteOnType>();
-	
+
 	static
 	{
 		noteOnTypeToNameMap.put( NoteOnType.FOLLOW_FIRST, "Follow First" );
 		noteOnTypeToNameMap.put( NoteOnType.FOLLOW_LAST, "Follow Last" );
-		
-		for( NoteOnType type : noteOnTypeToNameMap.keySet() )
+
+		for( final NoteOnType type : noteOnTypeToNameMap.keySet() )
 		{
 			nameToNoteOnTypeMap.put( noteOnTypeToNameMap.get( type ), type );
 		}
 	}
 
 	public NoteOnTypeComboUiJComponent(
-			NoteToCvMadDefinition definition,
-			NoteToCvMadInstance instance,
-			NoteToCvMadUiInstance uiInstance,
-			int controlIndex )
+			final NoteToCvMadDefinition definition,
+			final NoteToCvMadInstance instance,
+			final NoteToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( false );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for (String noteOnType : nameToNoteOnTypeMap.keySet() )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for (final String noteOnType : nameToNoteOnTypeMap.keySet() )
 		{
 			cbm.addElement( noteOnType );
 		}
@@ -85,7 +85,7 @@ public class NoteOnTypeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -93,12 +93,12 @@ public class NoteOnTypeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String noteOnTypeName = (String) getSelectedItem();
-			NoteOnType noteOnType = nameToNoteOnTypeMap.get( noteOnTypeName );
+			final String noteOnTypeName = (String) getSelectedItem();
+			final NoteOnType noteOnType = nameToNoteOnTypeMap.get( noteOnTypeName );
 			uiInstance.sendNoteOnType( noteOnType );
 		}
 	}

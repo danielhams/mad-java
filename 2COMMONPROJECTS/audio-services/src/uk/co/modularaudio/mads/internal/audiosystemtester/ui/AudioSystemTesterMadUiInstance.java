@@ -22,11 +22,11 @@ package uk.co.modularaudio.mads.internal.audiosystemtester.ui;
 
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadDefinition;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class AudioSystemTesterMadUiInstance extends MadUiInstance<AudioSystemTesterMadDefinition, AudioSystemTesterMadInstance>
+public class AudioSystemTesterMadUiInstance extends AbstractMadUiInstance<AudioSystemTesterMadDefinition, AudioSystemTesterMadInstance>
 {
 	public AudioSystemTesterMadUiInstance( final AudioSystemTesterMadInstance instance,
 			final AudioSystemTesterMadUiDefinition uiDefinition )
@@ -42,6 +42,11 @@ public class AudioSystemTesterMadUiInstance extends MadUiInstance<AudioSystemTes
 
 	@Override
 	public void consumeQueueEntry( final AudioSystemTesterMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	{
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
 	{
 	}
 }

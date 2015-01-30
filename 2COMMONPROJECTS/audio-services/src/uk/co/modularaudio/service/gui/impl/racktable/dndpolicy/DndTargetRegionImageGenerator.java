@@ -35,9 +35,9 @@ import javax.swing.JPanel;
 public class DndTargetRegionImageGenerator extends JPanel
 {
 //	private static Log log = LogFactory.getLog( DndTargetRegionImageGenerator.class.getName() );
-	
+
 	private static final long serialVersionUID = 6183543013092757291L;
-	
+
 	private static final float STRONG_CHANNEL_VALUE = 1.0f;
 
 	private static final float WEAK_CHANNEL_VALUE = 0.1f;
@@ -48,11 +48,11 @@ public class DndTargetRegionImageGenerator extends JPanel
 
 	private RegionHintType regionType = RegionHintType.SOURCE;
 
-	private RegionImageCache regionImageCache = new RegionImageCache();
+	private final RegionImageCache regionImageCache = new RegionImageCache();
 
 	private static final float REGION_HINT_BACKGROUND_TRANSPARENCY = 0.4f;
 	private static final float REGION_HINT_OUTLINE_TRANSPARENCY = 0.7f;
-	
+
 	public DndTargetRegionImageGenerator()
 	{
 		// We are transparent, so make us non-opaque
@@ -62,12 +62,13 @@ public class DndTargetRegionImageGenerator extends JPanel
 //		this.add( new JLabel("Hello dan"));
 //		this.setSize( 50, 50 );
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 //		log.debug("The paint is called.");
-		Rectangle bounds = getBounds();
-		 String id = bounds.width + ":" + bounds.height + ":" + regionType.ordinal();
+		final Rectangle bounds = getBounds();
+		 final String id = bounds.width + ":" + bounds.height + ":" + regionType.ordinal();
 		 BufferedImage bi = null;
 		 if( (bi = regionImageCache.getImageFromId( id ) ) == null )
 		 {
@@ -82,11 +83,11 @@ public class DndTargetRegionImageGenerator extends JPanel
 		 g.drawImage( bi, 0, 0, null );
 //		Graphics2D g2d = (Graphics2D)g;
 	}
-	
-	private BufferedImage generateImageFor(Rectangle bounds, RegionHintType rt )
+
+	private BufferedImage generateImageFor(final Rectangle bounds, final RegionHintType rt )
 	{
-		BufferedImage retVal = new BufferedImage( bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB );
-		Graphics2D g2d = retVal.createGraphics();
+		final BufferedImage retVal = new BufferedImage( bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D g2d = retVal.createGraphics();
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 				REGION_HINT_BACKGROUND_TRANSPARENCY));
 		Color regionColour = null;
@@ -111,16 +112,16 @@ public class DndTargetRegionImageGenerator extends JPanel
 
 		return retVal;
 	}
-	
-	private BufferedImage generateRegionHintOutlineImage( Rectangle bounds )
+
+	private BufferedImage generateRegionHintOutlineImage( final Rectangle bounds )
 	{
-		int width = bounds.width;
-		int height = bounds.height;
-		
-		BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-		Graphics2D g2d = (Graphics2D)retVal.createGraphics();
+		final int width = bounds.width;
+		final int height = bounds.height;
+
+		final BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D g2d = retVal.createGraphics();
 		g2d.setColor( SOURCE_REGION_HINT_COLOUR );
-		Stroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f}, 1.0f );
+		final Stroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f}, 1.0f );
 		g2d.setStroke( dashedStroke );
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 //				0.2f));
@@ -130,7 +131,7 @@ public class DndTargetRegionImageGenerator extends JPanel
 		return retVal;
 	}
 
-	public void setRegionType( RegionHintType hintType )
+	public void setRegionType( final RegionHintType hintType )
 	{
 		this.regionType = hintType;
 	}

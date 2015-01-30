@@ -28,7 +28,7 @@ public class AudioSystemBufferSizeMVCModel extends BasicIntegerSliderModel
 	public AudioSystemBufferSizeMVCModel()
 	{
 		this.setMinValue( 1 );
-		this.setMaxValue( BufferSizeSliderMVCController.bufferSizeToModelIndexMap.size() );
+		this.setMaxValue( BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.size() );
 	}
 
 	public int getBufferSizeFramesValue()

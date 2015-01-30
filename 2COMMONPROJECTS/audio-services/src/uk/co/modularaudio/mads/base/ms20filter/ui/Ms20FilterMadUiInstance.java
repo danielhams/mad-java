@@ -24,41 +24,35 @@ import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadDefinition;
 import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadInstance;
 import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterIOQueueBridge;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class Ms20FilterMadUiInstance extends AbstractNonConfigurableMadUiInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance>
+public class Ms20FilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( Ms20FilterMadUiInstance.class.getName() );
-	
-	public Ms20FilterMadUiInstance( Ms20FilterMadInstance instance,
-			Ms20FilterMadUiDefinition uiDefinition )
+
+	public Ms20FilterMadUiInstance( final Ms20FilterMadInstance instance,
+			final Ms20FilterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendFilterModeChange( FrequencyFilterMode desiredFilterMode )
+
+	public void sendFilterModeChange( final FrequencyFilterMode desiredFilterMode )
 	{
 		sendTemporalValueToInstance( Ms20FilterIOQueueBridge.COMMAND_FILTER_MODE, desiredFilterMode.ordinal() );
 	}
 
-	public void sendFrequencyChange( float desiredFrequency )
+	public void sendFrequencyChange( final float desiredFrequency )
 	{
 		sendTemporalValueToInstance( Ms20FilterIOQueueBridge.COMMAND_FREQUENCY, Float.floatToIntBits( desiredFrequency ) );
 	}
 
-	public void sendFilterResonanceChange( float desiredFilterResonance )
+	public void sendFilterResonanceChange( final float desiredFilterResonance )
 	{
 		sendTemporalValueToInstance( Ms20FilterIOQueueBridge.COMMAND_FILTER_RESONANCE, Float.floatToIntBits( desiredFilterResonance ) );
 	}
-	
-	public void sendThresholdChange( float desiredThreshold )
+
+	public void sendThresholdChange( final float desiredThreshold )
 	{
 		sendTemporalValueToInstance( Ms20FilterIOQueueBridge.COMMAND_THRESHOLD, Float.floatToIntBits( desiredThreshold ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( Ms20FilterMadInstance instance, IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

@@ -30,12 +30,12 @@ class InternalResamplingClient implements BlockResamplingClient
 	private final BlockResamplingMethod resamplingMethod;
 	private long framePosition;
 	private float fpOffset;
-	private long totalNumFrames;
+	private final long totalNumFrames;
 
-	public InternalResamplingClient( SampleCacheClient sampleCacheClient,
-			BlockResamplingMethod resamplingMethod,
-			long framePosition,
-			float fpOffset )
+	public InternalResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod resamplingMethod,
+			final long framePosition,
+			final float fpOffset )
 	{
 		this.sampleCacheClient = sampleCacheClient;
 		this.resamplingMethod = resamplingMethod;
@@ -44,21 +44,24 @@ class InternalResamplingClient implements BlockResamplingClient
 		totalNumFrames = sampleCacheClient.getTotalNumFrames();
 	}
 
+	@Override
 	public SampleCacheClient getSampleCacheClient()
 	{
 		return sampleCacheClient;
 	}
-	
+
 	public BlockResamplingMethod getResamplingMethod()
 	{
 		return resamplingMethod;
 	}
-	
+
+	@Override
 	public long getFramePosition()
 	{
 		return framePosition;
 	}
 
+	@Override
 	public float getFpOffset()
 	{
 		return fpOffset;
@@ -68,7 +71,7 @@ class InternalResamplingClient implements BlockResamplingClient
 	 * @see uk.co.modularaudio.projects.pac.service.blockresampler.BlockResamplingClient#setFramePosition(long)
 	 */
 	@Override
-	public void setFramePosition( long newPosition )
+	public void setFramePosition( final long newPosition )
 	{
 		this.framePosition = newPosition;
 		sampleCacheClient.setCurrentFramePosition( newPosition );
@@ -78,11 +81,12 @@ class InternalResamplingClient implements BlockResamplingClient
 	 * @see uk.co.modularaudio.projects.pac.service.blockresampler.BlockResamplingClient#setFpOffset(float)
 	 */
 	@Override
-	public void setFpOffset( float newFpOffset )
+	public void setFpOffset( final float newFpOffset )
 	{
 		this.fpOffset = newFpOffset;
 	}
 
+	@Override
 	public long getTotalNumFrames()
 	{
 		return totalNumFrames;

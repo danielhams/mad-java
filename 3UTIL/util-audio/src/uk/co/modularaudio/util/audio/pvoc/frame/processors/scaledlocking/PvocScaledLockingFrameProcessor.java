@@ -35,33 +35,34 @@ import uk.co.modularaudio.util.audio.pvoc.support.PvocFrameSynthesisStep;
 import uk.co.modularaudio.util.audio.pvoc.support.PvocPhaseFrequencyConverter;
 import uk.co.modularaudio.util.math.MathDefines;
 
- public strictfp class PvocScaledLockingFrameProcessor extends PvocFrameProcessor
+@SuppressWarnings("unused")
+public strictfp class PvocScaledLockingFrameProcessor extends PvocFrameProcessor
 {
 	private static Log log = LogFactory.getLog( PvocScaledLockingFrameProcessor.class.getName() );
-	
+
 	private int numChannels = -1;
 	private int sampleRate = -1;
 	private int numBins = -1;
 	private int lastBinIndex = -1;
-	
+
 	private float[][] previousSynthPhases = null;
 //	private float[][] previousSynthAmps = null;
-	
+
 	// Working data
-	private PvocPeaksWorkingBuffer workingBuffer;
+	private final PvocPeaksWorkingBuffer workingBuffer;
 
 	private PvocPeakFinder peakFinder = null;
-	
+
 	// Good for 2048 fft size - will need to scale it with fft
 	private static final int MAX_BIN_CROSSING_TOLERANCE = 3;
-	
-	private PvocComplexPolarConverter complexPolarConverter;
-	
-	private PvocPhaseFrequencyConverter phaseFrequencyConverter;
 
-	private float[] phasorStorage = new float[2];
+	private final PvocComplexPolarConverter complexPolarConverter;
 
-	public PvocScaledLockingFrameProcessor( PvocParameters parameters )
+	private final PvocPhaseFrequencyConverter phaseFrequencyConverter;
+
+	private final float[] phasorStorage = new float[2];
+
+	public PvocScaledLockingFrameProcessor( final PvocParameters parameters )
 	{
 		super( parameters );
 		numChannels = parameters.getNumChannels();
@@ -69,16 +70,16 @@ import uk.co.modularaudio.util.math.MathDefines;
 		sampleRate = parameters.getSampleRate();
 		numBins = parameters.getNumBins();
 		lastBinIndex = numBins - 1;
-		
+
 		previousSynthPhases = new float[numChannels][ numBins ];
 //		previousSynthAmps = new float[numChannels][ numBins ];
-		
+
 		workingBuffer = new PvocPeaksWorkingBuffer( parameters );
-		
+
 		peakFinder = new PvocPeakFinder( parameters );
-		
+
 		complexPolarConverter = parameters.getComplexPolarConverter();
-		
+
 		phaseFrequencyConverter = parameters.getPhaseFrequencyConverter();
 	}
 
@@ -89,37 +90,37 @@ import uk.co.modularaudio.util.math.MathDefines;
 	}
 
 	@Override
-	public int processIncomingFrame( PvocDataFrame outputFrame,
-			ArrayList<PvocDataFrame> lookaheadFrames,
-			PvocFrameSynthesisStep synthStep )
+	public int processIncomingFrame( final PvocDataFrame outputFrame,
+			final ArrayList<PvocDataFrame> lookaheadFrames,
+			final PvocFrameSynthesisStep synthStep )
 	{
-		PvocDataFrame curAnalFrame = lookaheadFrames.get( 0 );
-		PvocDataFrame oldAnalFrame = lookaheadFrames.get( 1 );
-		
+		final PvocDataFrame curAnalFrame = lookaheadFrames.get( 0 );
+		final PvocDataFrame oldAnalFrame = lookaheadFrames.get( 1 );
+
 		for( int channelNum = 0 ; channelNum < numChannels ; channelNum++ )
 		{
 			// Compute amps
 			peakFinder.computeAmpsSquared( curAnalFrame, channelNum );
-			
+
 			// Now eliminate other bins so we can debug one
-			int numPeaksInPeaksBuffer = peakFinder.identifyPeaks( curAnalFrame, channelNum );
-	
+			final int numPeaksInPeaksBuffer = peakFinder.identifyPeaks( curAnalFrame, channelNum );
+
 //			// Hack to zero bins around peaks
 //			peakFinder.quickZeroingLeaveBins( curAnalFrame, channelNum, 0, false, false, false );
 //			peakFinder.identifyPeaks( curAnalFrame, channelNum );
 
 			// Compute some things we will use when calculating freq/phase conversions
-			int synthesisStepSize = synthStep.getRoundedStepSize();
-	
-			float twoPiSynthStepSizeOverSampleRate = (MathDefines.TWO_PI_F * synthesisStepSize) / sampleRate;
-			
+			final int synthesisStepSize = synthStep.getRoundedStepSize();
+
+			final float twoPiSynthStepSizeOverSampleRate = (MathDefines.TWO_PI_F * synthesisStepSize) / sampleRate;
+
 			if( numPeaksInPeaksBuffer > 0 )
 			{
 				// Now correlate peaks with previous peaks
 				correlatePeaks( curAnalFrame,
 						oldAnalFrame,
 						channelNum );
-				
+
 				// Now for "starter" peaks, we initialise with the phase from analysis directly
 				if( workingBuffer.numStarterPeaks > 0 )
 				{
@@ -127,7 +128,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 							outputFrame,
 							channelNum );
 				}
-	
+
 				// For "running" peaks we are adding on the necessary phase rotations appropriate for the synthesis step size
 				if( workingBuffer.numRunningPeaks > 0 )
 				{
@@ -138,7 +139,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 							synthesisStepSize,
 							twoPiSynthStepSizeOverSampleRate );
 				}
-				
+
 				// For bin crossing peaks, we use the previous phase from the identified peak and add on how much is appropriate
 				// for this step
 				if( workingBuffer.numBinCrossingPeaks > 0 )
@@ -150,7 +151,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 							synthesisStepSize,
 							twoPiSynthStepSizeOverSampleRate );
 				}
-			
+
 				// And copy over the dc and nyquist amps into the complex frame
 				outputFrame.complexFrame[channelNum][ 0 ] = curAnalFrame.amps[channelNum][ 0 ] * curAnalFrame.dcSign[channelNum];
 				outputFrame.complexFrame[channelNum][ 1 ] = 0.0f;
@@ -161,14 +162,14 @@ import uk.co.modularaudio.util.math.MathDefines;
 			{
 				Arrays.fill( outputFrame.complexFrame[channelNum], 0.0f );
 			}
-			
+
 			 // Now copy into old buffers values we need
 //			System.arraycopy( outputFrame.amps[channelNum], 0, previousSynthAmps[channelNum], 0, numBins );
 			System.arraycopy( outputFrame.phases[channelNum], 0, previousSynthPhases[channelNum], 0, numBins );
 		}
-		
+
 //		log.debug( "ComplexFrame[0] contents are: " + MathFormatter.floatArrayPrint( outputFrame.complexFrame[0], 7 ) );
-		
+
 		return 0;
 	}
 
@@ -189,20 +190,20 @@ import uk.co.modularaudio.util.math.MathDefines;
 	{
 	}
 
-	private void correlatePeaks( PvocDataFrame curAnalFrame,
-			PvocDataFrame oldAnalFrame,
-			int c )
+	private void correlatePeaks( final PvocDataFrame curAnalFrame,
+			final PvocDataFrame oldAnalFrame,
+			final int c )
 	{
 		int runningPeaksIndex = 0;
 		int starterPeaksIndex = 0;
 		int binCrossingPeaksIndex = 0;
-	
+
 		for( int i = 0 ; i < curAnalFrame.numPeaksInPeaksBuffer[c] ; i++ )
 		{
-			int peakBinIndex = curAnalFrame.peaksBuffer[c][ i ];
+			final int peakBinIndex = curAnalFrame.peaksBuffer[c][ i ];
 			// Lookup this peak in the previous binToPeakBuffer and see if there is a correlation
-			int previousPeakForIndex = oldAnalFrame.binToPeakBuffer[c][ peakBinIndex ];
-			int absBinDiff = (previousPeakForIndex > peakBinIndex ? previousPeakForIndex - peakBinIndex : peakBinIndex - previousPeakForIndex );
+			final int previousPeakForIndex = oldAnalFrame.binToPeakBuffer[c][ peakBinIndex ];
+			final int absBinDiff = (previousPeakForIndex > peakBinIndex ? previousPeakForIndex - peakBinIndex : peakBinIndex - previousPeakForIndex );
 			if( previousPeakForIndex != -1 &&
 					previousPeakForIndex != 0 &&
 					absBinDiff <= MAX_BIN_CROSSING_TOLERANCE )
@@ -233,32 +234,32 @@ import uk.co.modularaudio.util.math.MathDefines;
 		workingBuffer.numBinCrossingPeaks = binCrossingPeaksIndex;
 	}
 
-	private void fillInRunningPeaksPhasor( PvocDataFrame curAnalFrame,
-			PvocDataFrame oldAnalFrame,
-			PvocDataFrame outputFrame,
-			int c,
-			int synthesisStepSize,
-			float twoPiSynthStepSizeOverSampleRate )
+	private void fillInRunningPeaksPhasor( final PvocDataFrame curAnalFrame,
+			final PvocDataFrame oldAnalFrame,
+			final PvocDataFrame outputFrame,
+			final int c,
+			final int synthesisStepSize,
+			final float twoPiSynthStepSizeOverSampleRate )
 	{
 		for( int r = 0 ; r < workingBuffer.numRunningPeaks ; r++ )
 		{
-			int runningBinIndex = workingBuffer.outputRunningPeaks[ r ];
-			int runningPeakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (runningBinIndex*2) ];
-			int runningPeakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (runningBinIndex*2)+1 ];
-			
-			float runningBinPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], runningBinIndex );
+			final int runningBinIndex = workingBuffer.outputRunningPeaks[ r ];
+			final int runningPeakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (runningBinIndex*2) ];
+			final int runningPeakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (runningBinIndex*2)+1 ];
+
+			final float runningBinPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], runningBinIndex );
 			curAnalFrame.phases[c][ runningBinIndex ] = runningBinPhase;
 			curAnalFrame.amps[c][ runningBinIndex ] = (float)Math.sqrt( curAnalFrame.ampsSquared[c][ runningBinIndex] );
-			
-			float runningBinFreq = phaseFrequencyConverter.phaseToFreq( runningBinPhase, oldAnalFrame.phases[c][runningBinIndex], runningBinIndex );
+
+			final float runningBinFreq = phaseFrequencyConverter.phaseToFreq( runningBinPhase, oldAnalFrame.phases[c][runningBinIndex], runningBinIndex );
 
 			// Recompute new phase
-			float myComputedPeakPhase = phaseFrequencyConverter.freqToPhase(
+			final float myComputedPeakPhase = phaseFrequencyConverter.freqToPhase(
 					twoPiSynthStepSizeOverSampleRate,
 					previousSynthPhases[c][ runningBinIndex ],
 					runningBinFreq );
-			
-			if( PvocPeakFinder.DEBUG_PEAKS )
+
+			if( PvocPeakFinder.DEBUG_PEAKS && log.isDebugEnabled() )
 			{
 				log.debug("Found running peak in bin " + runningBinIndex + " at freq " + runningBinFreq + " with amp " + curAnalFrame.amps[c][runningBinIndex] );
 				log.debug("Analysis phases: old( "+ oldAnalFrame.phases[c][ runningBinIndex ] + ") new( " + curAnalFrame.phases[c][ runningBinIndex ] + ")");
@@ -269,17 +270,17 @@ import uk.co.modularaudio.util.math.MathDefines;
 			outputFrame.amps[c][ runningBinIndex ] = curAnalFrame.amps[c][ runningBinIndex ];
 			// Populate the complex vector using this new phase
 			complexPolarConverter.onePolarToComplex( outputFrame.amps[c], outputFrame.phases[c], outputFrame.complexFrame[c], runningBinIndex );
-			
+
 			// Compute the phasor (rotator) from this new peak phase
-			float theta = computePhaseDiff( myComputedPeakPhase, runningBinPhase );
-			
+			final float theta = computePhaseDiff( myComputedPeakPhase, runningBinPhase );
+
 			generatePhasor( theta );
-			if( PvocPeakFinder.DEBUG_PEAKS )
+			if( PvocPeakFinder.DEBUG_PEAKS && log.isDebugEnabled() )
 			{
 				log.debug( "Generated theta " + theta + " and thus a phasor: " + phasorStorage[0] + " " + phasorStorage[1] );
 				log.debug( "Will rotate from " + runningPeakLowerBound + " to " + runningPeakUpperBound );
 			}
-			
+
 			// Now loop up and down around the peak multiplying the anal complex vecs by this phasor
 			for( int i = runningPeakLowerBound ; i < runningBinIndex ; i++ )
 			{
@@ -290,7 +291,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 						outputFrame.complexFrame[c],
 						2*i );
 			}
-			
+
 			for( int i = runningBinIndex + 1 ; i < runningPeakUpperBound ; i++ )
 			{
 				complexMultiply( phasorStorage[0],
@@ -303,15 +304,15 @@ import uk.co.modularaudio.util.math.MathDefines;
 		}
 	}
 
-	private void fillInStarterPeaks( PvocDataFrame curAnalFrame, PvocDataFrame outputFrame, int c )
+	private void fillInStarterPeaks( final PvocDataFrame curAnalFrame, final PvocDataFrame outputFrame, final int c )
 	{
 		for( int i = 0 ; i < workingBuffer.numStarterPeaks ; i++ )
 		{
-			int starterBinIndex = workingBuffer.outputStarterPeaks[ i ];
-			int peakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (starterBinIndex*2) ];
-			int peakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (starterBinIndex*2)+1 ];
+			final int starterBinIndex = workingBuffer.outputStarterPeaks[ i ];
+			final int peakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (starterBinIndex*2) ];
+			final int peakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (starterBinIndex*2)+1 ];
 
-			float curAnalPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], starterBinIndex );
+			final float curAnalPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], starterBinIndex );
 			curAnalFrame.phases[c][ starterBinIndex ] = curAnalPhase;
 
 			if( PvocPeakFinder.DEBUG_PEAKS )
@@ -320,15 +321,15 @@ import uk.co.modularaudio.util.math.MathDefines;
 				log.debug("Complex contents were (" + curAnalFrame.complexFrame[c][ starterBinIndex * 2] + ", " +
 						curAnalFrame.complexFrame[c][ (starterBinIndex * 2) + 1 ] + ")");
 			}
-			
+
 			outputFrame.phases[c][ starterBinIndex ] = curAnalPhase;
-			
+
 			// Straight array copy of the complex data from the analysis frame for the boundaries we worked out
-			int arrayCopyStart = (peakLowerBound * 2);
-			int arrayCopyEnd = (peakUpperBound * 2);
-			int lengthToCopy = arrayCopyEnd - arrayCopyStart;
+			final int arrayCopyStart = (peakLowerBound * 2);
+			final int arrayCopyEnd = (peakUpperBound * 2);
+			final int lengthToCopy = arrayCopyEnd - arrayCopyStart;
 			System.arraycopy( curAnalFrame.complexFrame[c], arrayCopyStart, outputFrame.complexFrame[c], arrayCopyStart, lengthToCopy );
-			
+
 			// Here's what the copy is actually doing....
 //			outputFrame.complexFrame[c][ starterBinIndex * 2 ] = curAnalFrame.complexFrame[c][ starterBinIndex * 2 ];
 //			outputFrame.complexFrame[c][ (starterBinIndex * 2) + 1 ] = curAnalFrame.complexFrame[c][ (starterBinIndex * 2) + 1 ];
@@ -340,7 +341,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 //				int curBinPeakNum = curAnalFrame.binToPeakBuffer[c][ dd ];
 //				if( curBinPeakNum == starterBinIndex )
 //				{
-//					// Copy over the complex pair from the analysis 
+//					// Copy over the complex pair from the analysis
 //					outputFrame.complexFrame[c][ (dd*2) ] = curAnalFrame.complexFrame[c][ (dd*2) ];
 //					outputFrame.complexFrame[c][ (dd*2)+1 ] = curAnalFrame.complexFrame[c][ (dd*2)+1 ];
 //				}
@@ -349,13 +350,13 @@ import uk.co.modularaudio.util.math.MathDefines;
 //					break;
 //				}
 //			}
-//			
+//
 //			for( int du = starterBinIndex + 1 ; du < lastBinIndex ; du++ )
 //			{
 //				int curBinPeakNum = curAnalFrame.binToPeakBuffer[c][ du ];
 //				if( curBinPeakNum == starterBinIndex )
 //				{
-//					// Copy over the complex pair from the analysis 
+//					// Copy over the complex pair from the analysis
 //					outputFrame.complexFrame[c][ (du*2) ] = curAnalFrame.complexFrame[c][ (du*2) ];
 //					outputFrame.complexFrame[c][ (du*2)+1 ] = curAnalFrame.complexFrame[c][ (du*2)+1 ];
 //				}
@@ -367,37 +368,37 @@ import uk.co.modularaudio.util.math.MathDefines;
 		}
 	}
 
-	private void fillInBinCrossingPeaksPhasor( PvocDataFrame curAnalFrame,
-			PvocDataFrame oldAnalFrame,
-			PvocDataFrame outputFrame,
-			int c,
-			int synthesisStepSize,
-			float twoPiSynthStepsOverSampleRate )
+	private void fillInBinCrossingPeaksPhasor( final PvocDataFrame curAnalFrame,
+			final PvocDataFrame oldAnalFrame,
+			final PvocDataFrame outputFrame,
+			final int c,
+			final int synthesisStepSize,
+			final float twoPiSynthStepsOverSampleRate )
 	{
 		for( int b = 0 ; b < workingBuffer.numBinCrossingPeaks; b = b + 2 )
 		{
-			int newPeakBinIndex = workingBuffer.outputBinCrossingPeaks[ b ];
-			int newPeakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (newPeakBinIndex*2) ];
-			int newPeakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (newPeakBinIndex*2)+1 ];
+			final int newPeakBinIndex = workingBuffer.outputBinCrossingPeaks[ b ];
+			final int newPeakLowerBound = curAnalFrame.peakBoundariesBuffer[c][ (newPeakBinIndex*2) ];
+			final int newPeakUpperBound = curAnalFrame.peakBoundariesBuffer[c][ (newPeakBinIndex*2)+1 ];
 
-			int prevPeakBinIndex = workingBuffer.outputBinCrossingPeaks[ b + 1 ];
-			
+			final int prevPeakBinIndex = workingBuffer.outputBinCrossingPeaks[ b + 1 ];
+
 			// Compute phase of new peak
-			float newPeakAnalPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], newPeakBinIndex );
+			final float newPeakAnalPhase = complexPolarConverter.oneComplexToPolarPhaseOnly( curAnalFrame.complexFrame[c], newPeakBinIndex );
 			curAnalFrame.phases[c][ newPeakBinIndex ] = newPeakAnalPhase;
 			curAnalFrame.amps[c][ newPeakBinIndex ] = (float)Math.sqrt( curAnalFrame.ampsSquared[c][ newPeakBinIndex ] );
-			
-			float newPeakFreq = phaseFrequencyConverter.crossBinPhaseToFreq( newPeakAnalPhase,
+
+			final float newPeakFreq = phaseFrequencyConverter.crossBinPhaseToFreq( newPeakAnalPhase,
 					oldAnalFrame.phases[c][ prevPeakBinIndex ],
 					newPeakBinIndex,
 					prevPeakBinIndex );
 
-			float newDanPeakPhase = phaseFrequencyConverter.crossBinFreqToPhase( twoPiSynthStepsOverSampleRate,
+			final float newDanPeakPhase = phaseFrequencyConverter.crossBinFreqToPhase( twoPiSynthStepsOverSampleRate,
 					previousSynthPhases[c][ prevPeakBinIndex ],
 					newPeakFreq );
 
-			
-			if( PvocPeakFinder.DEBUG_PEAKS )
+
+			if( PvocPeakFinder.DEBUG_PEAKS && log.isDebugEnabled() )
 			{
 				log.debug("So for bin " + prevPeakBinIndex + " old analysis phase is " + oldAnalFrame.phases[c][ prevPeakBinIndex ] +
 						" and old synth phase is " + previousSynthPhases[c][ prevPeakBinIndex ] );
@@ -408,19 +409,19 @@ import uk.co.modularaudio.util.math.MathDefines;
 			// Now re-create the complex data for this
 			outputFrame.phases[c][ newPeakBinIndex ] = newDanPeakPhase;
 			outputFrame.amps[c][ newPeakBinIndex ] = curAnalFrame.amps[c][ newPeakBinIndex ];
-			
+
 			complexPolarConverter.onePolarToComplex( outputFrame.amps[c],
 					outputFrame.phases[c],
 					outputFrame.complexFrame[c],
 					newPeakBinIndex );
 
 			// Convert the peak phase and amp back into complex form so we can compute the phasor from it.
-			float theta = computePhaseDiff( newDanPeakPhase, curAnalFrame.phases[c][ newPeakBinIndex ] );
-			
+			final float theta = computePhaseDiff( newDanPeakPhase, curAnalFrame.phases[c][ newPeakBinIndex ] );
+
 			generatePhasor( theta );
-			
+
 //			log.debug( "Generated a phasor: " + phasorStorage[0] + " " + phasorStorage[1] );
-			
+
 			// Now loop up and down around the peak multiplying the anal complex vecs by this phasor
 
 			for( int i = newPeakLowerBound ; i < newPeakBinIndex ; i++ )
@@ -432,7 +433,7 @@ import uk.co.modularaudio.util.math.MathDefines;
 						outputFrame.complexFrame[c],
 						2*i );
 			}
-			
+
 			for( int i = newPeakBinIndex + 1; i < newPeakUpperBound ; i++ )
 			{
 				complexMultiply( phasorStorage[0],
@@ -445,9 +446,9 @@ import uk.co.modularaudio.util.math.MathDefines;
 		}
 	}
 
-	private static final float computePhaseDiff( float a, float b )
+	private static final float computePhaseDiff( final float a, final float b )
 	{
-		float rawDiff = a-b;
+		final float rawDiff = a-b;
 		boolean positive = a > b;
 		float f = ( positive ? rawDiff : -rawDiff );
 		if( f > MathDefines.ONE_PI_F )
@@ -465,13 +466,13 @@ import uk.co.modularaudio.util.math.MathDefines;
 		}
 	}
 
-	private final void generatePhasor(float diffBetweenPeakAnalysisPhaseAndSynthesisPhase )
+	private final void generatePhasor(final float diffBetweenPeakAnalysisPhaseAndSynthesisPhase )
 	{
 		phasorStorage[0] = (float)(Math.cos( diffBetweenPeakAnalysisPhaseAndSynthesisPhase ));
 		phasorStorage[1] = (float)(Math.sin( diffBetweenPeakAnalysisPhaseAndSynthesisPhase ));
 	}
-	
-	private final static void complexMultiply(float aReal, float aImag, float bReal, float bImag, float[] outputComplexFrame, int outputOffset )
+
+	private final static void complexMultiply(final float aReal, final float aImag, final float bReal, final float bImag, final float[] outputComplexFrame, final int outputOffset )
 	{
 		outputComplexFrame[ outputOffset ] = (aReal * bReal) - (aImag * bImag);
 		outputComplexFrame[ outputOffset + 1 ] = (aReal * bImag) + (bReal * aImag);

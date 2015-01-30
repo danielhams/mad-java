@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
+import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.paccontrols.PacLabel;
@@ -37,21 +38,23 @@ public class SubRackShowPatchNameUiJComponent extends PacLabel
 {
 	private static final long serialVersionUID = 7488560789053700984L;
 
-	private SubRackMadInstance instance = null;
+	private final SubRackMadInstance instance;
+	private final RackService rackService;
 
-	public SubRackShowPatchNameUiJComponent( SubRackMadDefinition definition,
-			SubRackMadInstance instance,
-			SubRackMadUiInstance uiInstance,
-			SubRackShowPatchNameUiControlDefinition def )
+	public SubRackShowPatchNameUiJComponent( final SubRackMadDefinition definition,
+			final SubRackMadInstance instance,
+			final SubRackMadUiInstance uiInstance,
+			final SubRackShowPatchNameUiControlDefinition def )
 	{
 		this.instance = instance;
+		this.rackService = uiInstance.getRackService();
 
 		this.setOpaque( true );
 
 //		Font f = getFont().deriveFont( 9.0f );
-		Font f = getFont();
+		final Font f = getFont();
 		setFont( f );
-		
+
 //		this.setBackground( Color.WHITE );
 //		this.setBorder( new LineBorder( Color.BLACK ) );
 	}
@@ -63,22 +66,28 @@ public class SubRackShowPatchNameUiJComponent extends PacLabel
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
-		RackDataModel subRackDataModel = instance.getSubRackDataModel();
+		// This is ugly :-/
+		// Really shouldn't be doing this on the display tick
+		// but should be done with dirty listeners
 
-		String currentPatchName = instance.getCurrentPatchName();
-		String currentLabelName = getText();
-		
-		if( subRackDataModel.isDirty() )
+		// log.debug("Received display tick");
+		final RackDataModel subRackDataModel = instance.getSubRackDataModel();
+
+		final String currentPatchName = instance.getCurrentPatchName();
+		final String currentLabelName = getText();
+
+		if( rackService.isRackDirty( subRackDataModel ) )
 		{
 			if( currentLabelName.length() == 0 ||
 					currentLabelName.length() >= 1 && currentLabelName.charAt( currentLabelName.length() - 1 ) != '*' )
 			{
-				String newPatchName = currentPatchName + " *";
+				final String newPatchName = currentPatchName + " *";
+				// Setting the path to nothing means that when the patch is saved we inline the
+				// sub rack as a local sub rack.
 				subRackDataModel.setPath( "" );
 				if( !currentLabelName.equals( newPatchName ) )
 				{

@@ -47,12 +47,12 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOscillatorMadDefinition,BandLimitedOscillatorMadInstance>
 {
 	private static Log log = LogFactory.getLog( BandLimitedOscillatorMadInstance.class.getName() );
-	
-	private static final int VALUE_CHASE_MILLIS = 1;
-	private int sampleRate = 0;
 
-	private BandLimitedOscillatorInstances oscillatorInstances = null;
-	
+	private static final int VALUE_CHASE_MILLIS = 1;
+	private int sampleRate;
+
+	private final BandLimitedOscillatorInstances oscillatorInstances;
+
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
 	protected float oscillationFrequency = 100.0f;
@@ -62,26 +62,26 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 	protected OscillatorWaveShape desiredWaveShape = OscillatorWaveShape.SAW;
 
 	private OscillatorWaveShape usedWaveShape = OscillatorWaveShape.SAW;
-	private Oscillator oscillator = null;
+	private Oscillator oscillator;
 
 	private final static boolean CHECK_NAN = false;
-	
+
 	public float desiredPulsewidth = 1.0f;
 	public float runtimePulsewidth = 1.0f;
 
-	public BandLimitedOscillatorMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			BandLimitedOscillatorMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration ) throws NoWaveTableForShapeException, OscillatorFactoryException
+	public BandLimitedOscillatorMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final BandLimitedOscillatorMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration ) throws NoWaveTableForShapeException, OscillatorFactoryException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		
+
 		oscillatorInstances = new BandLimitedOscillatorInstances( creationContext.getOscillatorFactory() );
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -89,10 +89,10 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
-			
+
 			oscillator = oscillatorInstances.getOscillator( usedWaveShape );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -104,37 +104,37 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		
-		boolean cvFreqConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ );
-		MadChannelBuffer cvFreqBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ ];
+
+		final boolean cvFreqConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ );
+		final MadChannelBuffer cvFreqBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ ];
 		float[] cvFreqFloats = cvFreqBuf.floatBuffer;
-		
-		boolean phaseConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE );
-		MadChannelBuffer phaseBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE ];
-		float[] phaseSamples = phaseBuf.floatBuffer;
-		
-		boolean triggerConnected = channelConnectedFlags.get(  BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER );
-		MadChannelBuffer triggerBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER ];
-		float[] triggerSamples = triggerBuf.floatBuffer;
-		
-		boolean pwConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH );
-		MadChannelBuffer pwBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH ];
+
+		final boolean phaseConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE );
+		final MadChannelBuffer phaseBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE ];
+		final float[] phaseSamples = phaseBuf.floatBuffer;
+
+		final boolean triggerConnected = channelConnectedFlags.get(  BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER );
+		final MadChannelBuffer triggerBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER ];
+		final float[] triggerSamples = triggerBuf.floatBuffer;
+
+		final boolean pwConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH );
+		final MadChannelBuffer pwBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH ];
 		float[] pwFloats = pwBuf.floatBuffer;
-		
-		boolean audioOutConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.PRODUCER_AUDIO_OUT );
-		MadChannelBuffer audioOutBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.PRODUCER_AUDIO_OUT ];
-		float[] audioOutFloats = audioOutBuf.floatBuffer;
-		
-		boolean cvOutConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT );
-		MadChannelBuffer cvOutBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT ];
-		float[] cvOutFloats = cvOutBuf.floatBuffer;
-		
+
+		final boolean audioOutConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.PRODUCER_AUDIO_OUT );
+		final MadChannelBuffer audioOutBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.PRODUCER_AUDIO_OUT ];
+		final float[] audioOutFloats = audioOutBuf.floatBuffer;
+
+		final boolean cvOutConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT );
+		final MadChannelBuffer cvOutBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT ];
+		final float[] cvOutFloats = cvOutBuf.floatBuffer;
+
 		if( !audioOutConnected && !cvOutConnected )
 		{
 			// Do nothing, we have no output anyway
@@ -145,23 +145,23 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			{
 				cvFreqFloats = cvFreqBuf.floatBuffer;
 			}
-			
+
 			if( pwConnected )
 			{
 				pwFloats = pwBuf.floatBuffer;
 			}
 
 			// Need one of the buffers to render into
-			float[] genFloats = (audioOutConnected ? audioOutBuf.floatBuffer : cvOutBuf.floatBuffer );
-			
+			final float[] genFloats = (audioOutConnected ? audioOutBuf.floatBuffer : cvOutBuf.floatBuffer );
+
 			if( usedWaveShape != desiredWaveShape )
 			{
 				oscillator = oscillatorInstances.getOscillator( desiredWaveShape );
 				usedWaveShape = desiredWaveShape;
 			}
-			
+
 			if( !triggerConnected )
-			{	
+			{
 				if( cvFreqConnected )
 				{
 					if( pwConnected )
@@ -187,7 +187,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 						oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, runtimePulsewidth, 0, numFrames, sampleRate );
 					}
 				}
-				
+
 				if( audioOutConnected && cvOutConnected )
 				{
 					// We rendered into audio out, copy it over into the cv out
@@ -197,15 +197,15 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			else
 			{
 				// Have trigger samples - lets assume we have phase, too
-				
+
 				// Lets fill some false values to make it easier in the loops
-				
+
 				if( !cvFreqConnected )
 				{
 					runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
 					Arrays.fill( cvFreqFloats, runtimeOscillationFrequency );
 				}
-				
+
 				if( !pwConnected )
 				{
 					runtimePulsewidth = (runtimePulsewidth * curValueRatio ) + (desiredPulsewidth * newValueRatio );
@@ -213,19 +213,19 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 				}
 
 				int samplesLeft = numFrames;
-				int currentSampleIndex = 0;
+				final int currentSampleIndex = 0;
 				int checkStartIndex = 0;
-				
+
 				do
 				{
 					int s = currentSampleIndex;
-					
+
 					for( ; s < numFrames ; s++ )
 					{
 						if( triggerSamples[ s ] > 0.0f )
 						{
-							int length = s - checkStartIndex;
-							
+							final int length = s - checkStartIndex;
+
 							// Allow the oscillator to finish existing oscillation
 							if( length > 0 )
 							{
@@ -244,29 +244,29 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 							samplesLeft -= length;
 						}
 					}
-					
+
 					if( s >= numFrames )
 					{
-						int length = numFrames - checkStartIndex;
+						final int length = numFrames - checkStartIndex;
 						// Output up to the final period sample
 						oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, pwFloats, checkStartIndex, length, sampleRate );
 						samplesLeft -= length;
 					}
 				}
 				while( samplesLeft > 0 );
-				
+
 				if( audioOutConnected && cvOutConnected )
 				{
 					// We rendered into audio out, copy it over into the cv out
 					System.arraycopy( genFloats, 0, cvOutFloats, 0, numFrames );
 				}
-				
+
 			}
 		}
 
 		if( CHECK_NAN )
 		{
-			
+
 			for( int i = 0 ; i < numFrames ; i++ )
 			{
 				if( audioOutConnected )
@@ -275,7 +275,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 					{
 						log.error("Generated an audio NaN");
 					}
-					
+
 					if( cvOutFloats[ i ] == Float.NaN )
 					{
 						log.error("Generated a cv NaN");

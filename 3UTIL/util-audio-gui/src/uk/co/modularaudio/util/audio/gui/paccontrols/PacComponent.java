@@ -23,19 +23,12 @@ package uk.co.modularaudio.util.audio.gui.paccontrols;
 import java.awt.Component;
 
 
-public class PacComponent extends Component
+public abstract class PacComponent extends Component
 {
 	private static final long serialVersionUID = -437811233199546479L;
-	
-//	protected Rectangle realBounds = new Rectangle();
 
-	public String getControlValue()
-	{
-		return "";
-	}
-	
-	public void receiveControlValue( String value )
-	{
-	}
+	public abstract String getControlValue();
+
+	public abstract void receiveControlValue( final String value );
 
 }

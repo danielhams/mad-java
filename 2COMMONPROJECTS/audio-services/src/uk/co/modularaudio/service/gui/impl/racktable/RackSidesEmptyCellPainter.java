@@ -38,26 +38,26 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 //	private static final Color CONTENTS_COLOR = new Color( 0.6f, 0.6f, 0.6f );
 	private static final Color HIGHLIGHT_COLOR;
 	private static final Color LOWLIGHT_COLOR;
-	
+
 	static
 	{
 		HIGHLIGHT_COLOR = CONTENTS_COLOR.brighter();
 		LOWLIGHT_COLOR = CONTENTS_COLOR.darker();
 	}
-	
+
 	private static final float POS_FRAME_INSET_MULTIPLIER = 5.0f / 300.0f;
 	private static final float POS_FRAME_BAR_MULTIPLIER = 10.0f / 300.0f;
 	private static final float POS_CONTENTS_MULTIPLIER = 1.0f - ( 2 * (( 2 * POS_FRAME_INSET_MULTIPLIER ) + POS_FRAME_BAR_MULTIPLIER) );
 	private static final float POS_MOUNTING_HOLE_RADIUS_MULTIPLIER = 0.7f;
-	
+
 	private static final int POS_FRAME_INSET_WIDTH = 5;
 	private static final int POS_FRAME_BAR_WIDTH = 10;
-	
-	private Dimension cachedImageDimension = null;
-	private BufferedImage cachedImage = null;
+
+	private Dimension cachedImageDimension;
+	private BufferedImage cachedImage;
 
 	@Override
-	public void paintEmptyCell(Graphics g, int x, int y, int width, int height)
+	public void paintEmptyCell(final Graphics g, final int x, final int y, final int width, final int height)
 	{
 		if( cachedImageDimension == null )
 		{
@@ -66,18 +66,18 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		generateOneGridBufferedImage( cachedImageDimension );
 		g.drawImage( oneGridBufferedImage, x, y, null );
 	}
-	
-	private void internalPaintOne( Graphics parentG, int x, int y, int width, int height )
+
+	private void internalPaintOne( final Graphics parentG, final int x, final int y, final int width, final int height )
 	{
-		Graphics2D emptyG2d = (Graphics2D)parentG.create();
+		final Graphics2D emptyG2d = (Graphics2D)parentG.create();
 //		emptyG2d.setClip(x, y, width, height);
 		emptyG2d.translate( x, y );
 		// Only need to paint 0 -> width and 0 -> height
-		Dimension testDimension = new Dimension(width, height);
+		final Dimension testDimension = new Dimension(width, height);
 		if( cachedImageDimension == null || cachedImageDimension != testDimension )
 		{
 			cachedImage = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB);
-			Graphics2D g = cachedImage.createGraphics();
+			final Graphics2D g = cachedImage.createGraphics();
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			/**/
@@ -91,12 +91,12 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 			}
 			/**/
 		}
-		
+
 		emptyG2d.drawImage( cachedImage, 0, 0, width, height, null );
 
 	}
-	
-	public void reallyPaintItScaled( Graphics2D g, int width, int height )
+
+	public void reallyPaintItScaled( final Graphics2D g, final int width, final int height )
 	{
 		// Set up the background
 		g.setColor( CONTENTS_COLOR );
@@ -107,10 +107,10 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		//      <---> actual bar 20 (6.67 %)
 		//              <->frameoutset 5 (1.67 %)
 		//                   <------------------------------------------------------------------------> content 240 (80%)
-		float frameInsetWidth = width * POS_FRAME_INSET_MULTIPLIER;
-		float frameBarWidth = width * POS_FRAME_BAR_MULTIPLIER;
-		float contentWidth = width * POS_CONTENTS_MULTIPLIER;
-		
+		final float frameInsetWidth = width * POS_FRAME_INSET_MULTIPLIER;
+		final float frameBarWidth = width * POS_FRAME_BAR_MULTIPLIER;
+		final float contentWidth = width * POS_CONTENTS_MULTIPLIER;
+
 		float startXPos = 0;
 		float endXPos  = 0 ;
 
@@ -124,12 +124,12 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		startXPos = endXPos;
 		endXPos += frameInsetWidth;
 		drawScaledFrameRight( g, startXPos, 0, endXPos - 1, height );
-		
+
 		// Contents go here, just paint a darker gray for now
 		startXPos = endXPos;
 		endXPos += contentWidth;
 		drawScaledContents( g, startXPos, 0, endXPos - 1, height );
-		
+
 		// Finally the end bar too
 		startXPos = endXPos;
 		endXPos += frameInsetWidth;
@@ -140,10 +140,10 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		startXPos = endXPos;
 		endXPos += frameInsetWidth;
 		drawScaledFrameRight( g, startXPos, 0, endXPos - 1, height );
-		
+
 	}
 
-	public void reallyPaintItAbsolute( Graphics2D g, int width, int height )
+	public void reallyPaintItAbsolute( final Graphics2D g, final int width, final int height )
 	{
 		// Set up the background
 		g.setColor( CONTENTS_COLOR );
@@ -154,10 +154,10 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		//      <---> actual bar 20 (6.67 %)
 		//              <->frameoutset 5 (1.67 %)
 		//                   <------------------------------------------------------------------------> content 240 (80%)
-		float frameInsetWidth = POS_FRAME_INSET_WIDTH;
-		float frameBarWidth = POS_FRAME_BAR_WIDTH;
-		float contentWidth = width - ( 2 * frameBarWidth  + ( 4 * frameInsetWidth) );
-		
+		final float frameInsetWidth = POS_FRAME_INSET_WIDTH;
+		final float frameBarWidth = POS_FRAME_BAR_WIDTH;
+		final float contentWidth = width - ( 2 * frameBarWidth  + ( 4 * frameInsetWidth) );
+
 		float startXPos = 0;
 		float endXPos  = 0 ;
 
@@ -171,12 +171,12 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		startXPos = endXPos;
 		endXPos += frameInsetWidth;
 		drawScaledFrameRight( g, startXPos, 0, endXPos - 1, height );
-		
+
 		// Contents go here, just paint a darker gray for now
 		startXPos = endXPos;
 		endXPos += contentWidth +1;
 		drawScaledContents( g, startXPos, 0, endXPos - 1, height );
-		
+
 		// Finally the end bar too
 		startXPos = endXPos;
 		endXPos += frameInsetWidth -1;
@@ -187,75 +187,75 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		startXPos = endXPos;
 		endXPos += frameInsetWidth;
 		drawScaledFrameRight( g, startXPos, 0, endXPos - 1, height );
-		
+
 	}
 
-	private void drawScaledContents(Graphics2D g, float startXPos, int i, float endXPos, int height)
+	private void drawScaledContents(final Graphics2D g, final float startXPos, final int i, final float endXPos, final int height)
 	{
-		int leftPixel = (int)startXPos;
-		int rightPixel = (int)endXPos;
+		final int leftPixel = (int)startXPos;
+		final int rightPixel = (int)endXPos;
 		g.setColor( CONTENTS_COLOR );
 		g.fill3DRect( leftPixel, 0, rightPixel - leftPixel, height, false );
 	}
 
-	private void drawScaledFrameLeft(Graphics2D g, float startXPos, int i, float endXPos, int height)
+	private void drawScaledFrameLeft(final Graphics2D g, final float startXPos, final int i, final float endXPos, final int height)
 	{
-		int rightPixel = (int)endXPos;
+		final int rightPixel = (int)endXPos;
 		g.setColor( HIGHLIGHT_COLOR );
 		g.drawLine( rightPixel, 0, rightPixel, height );
 	}
 
-	private void drawScaledBar(Graphics2D g, float startXPos, int i, float endXPos, int height)
+	private void drawScaledBar(final Graphics2D g, final float startXPos, final int i, final float endXPos, final int height)
 	{
-		int leftPixel = (int)startXPos;
-		int rightPixel = ((int)endXPos);
+		final int leftPixel = (int)startXPos;
+		final int rightPixel = ((int)endXPos);
 		// Draw lowlight from the frame left
 		g.setColor( LOWLIGHT_COLOR );
 		g.drawLine( leftPixel, 0, leftPixel, height );
-		
+
 		// Now draw the two mounting holes
-		int diameter = (int)((rightPixel - leftPixel) * POS_MOUNTING_HOLE_RADIUS_MULTIPLIER);
-		int holeStartXPixel = leftPixel + (diameter / 2) - 1;
-		
+		final int diameter = (int)((rightPixel - leftPixel) * POS_MOUNTING_HOLE_RADIUS_MULTIPLIER);
+		final int holeStartXPixel = leftPixel + (diameter / 2) - 1;
+
 		// One for the top
 		int holeStartYPixel = 9;
 		g.fillOval( holeStartXPixel, holeStartYPixel, diameter, diameter );
-		
+
 		// One for the bottom
 		holeStartYPixel = height - (diameter + 10);
 		g.fillOval( holeStartXPixel, holeStartYPixel, diameter, diameter );
-		
+
 		// Finally the right highlight begins
 		g.setColor( HIGHLIGHT_COLOR );
 		g.drawLine( rightPixel, 0, rightPixel, height );
 	}
 
-	private void drawScaledFrameRight(Graphics2D g, float startXPos, int i, float endXPos, int height)
+	private void drawScaledFrameRight(final Graphics2D g, final float startXPos, final int i, final float endXPos, final int height)
 	{
-		int leftPixel = (int)startXPos;
+		final int leftPixel = (int)startXPos;
 		g.setColor( LOWLIGHT_COLOR );
 		g.drawLine( leftPixel, 0, leftPixel, height );
 	}
-	
+
 	private BufferedImage oneGridBufferedImage = null;
 	private BufferedImage singleBlutBufferedImage = null;
-	
+
 	@Override
-	public BufferedImage getSingleBlitBufferedImage(Dimension gridSize, int numCols, int numRows)
+	public BufferedImage getSingleBlitBufferedImage(final Dimension gridSize, final int numCols, final int numRows)
 	{
 		generateOneGridBufferedImage(gridSize);
-		
+
 		generateSingleBlitBufferedImage(gridSize, numCols, numRows);
 		return singleBlutBufferedImage;
 	}
 
-	private void generateSingleBlitBufferedImage(Dimension gridSize,
-			int numCols, int numRows)
+	private void generateSingleBlitBufferedImage(final Dimension gridSize,
+			final int numCols, final int numRows)
 	{
 		if( singleBlutBufferedImage == null )
 		{
 			singleBlutBufferedImage = new BufferedImage( gridSize.width * numCols, gridSize.height * numRows, BufferedImage.TYPE_INT_RGB );
-			Graphics g = singleBlutBufferedImage.createGraphics();
+			final Graphics g = singleBlutBufferedImage.createGraphics();
 			for( int i = 0 ; i < numCols ; i ++ )
 			{
 				for( int j = 0 ; j < numRows ; j++ )
@@ -263,16 +263,16 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 					g.drawImage( oneGridBufferedImage, i*gridSize.width, j*gridSize.height, null );
 //					paintEmptyCell( g, i * gridSize.width, j * gridSize.height, gridSize.width, gridSize.height);
 				}
-			}	
+			}
 		}
 	}
 
-	private void generateOneGridBufferedImage(Dimension gridSize)
+	private void generateOneGridBufferedImage(final Dimension gridSize)
 	{
 		if( oneGridBufferedImage == null )
 		{
 			oneGridBufferedImage = new BufferedImage( gridSize.width, gridSize.height, BufferedImage.TYPE_INT_RGB );
-			Graphics g = oneGridBufferedImage.createGraphics();
+			final Graphics g = oneGridBufferedImage.createGraphics();
 			internalPaintOne( g, 0, 0, gridSize.width, gridSize.height );
 		}
 	}

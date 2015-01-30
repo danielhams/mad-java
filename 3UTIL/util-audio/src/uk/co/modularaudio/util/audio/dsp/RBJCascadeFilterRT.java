@@ -46,17 +46,17 @@ public class RBJCascadeFilterRT
 		cy1 = 0;
 		cy2 = 0;
 	}
-	
-	public void recompute( int sampleRate, FrequencyFilterMode filterMode, float f0, float Q )
+
+	public void recompute( final int sampleRate, final FrequencyFilterMode filterMode, float f0, final float Q )
 	{
-		float maxFreq = (sampleRate / 2.0f) - 10.0f;
+		final float maxFreq = (sampleRate / 2.0f) - 10.0f;
 		if( f0 > maxFreq )
 		{
 			f0 = maxFreq;
 		}
 		float omega, sn, cs, alpha;
 		float a0, a1, a2, b0, b1, b2;
-		
+
 		omega = (MathDefines.TWO_PI_F * f0 ) / sampleRate;
 		sn = (float)Math.sin( omega );
 		cs = (float)Math.cos( omega );
@@ -64,6 +64,7 @@ public class RBJCascadeFilterRT
 
 		switch( filterMode )
 		{
+			default:
 			case LP:
 			{
 				b0 = (1.0f - cs) / 2.0f;
@@ -94,23 +95,19 @@ public class RBJCascadeFilterRT
 				a2 = 1.0f - alpha;
 				break;
 			}
-			default:
-			{
-				throw new RuntimeException("Unknown filter mode: " + filterMode);
-			}
 		}
-		
+
 		b0a0 = b0 / a0;
 		b1a0 = b1 / a0;
 		b2a0 = b2 / a0;
 		a1a0 = a1 / a0;
 		a2a0 = a2  / a0;
-		
+
 //		x1 = 0;
 //		x2 = 0;
 //		y1 = 0;
 //		y2 = 0;
-		
+
 //		log.debug("Recomputed filter params with f0(" + f0 + ") and Q(" + Q +")");
 	}
 }

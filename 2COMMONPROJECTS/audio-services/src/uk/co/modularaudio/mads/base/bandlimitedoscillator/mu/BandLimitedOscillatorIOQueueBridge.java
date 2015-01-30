@@ -43,25 +43,25 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( BandLimitedOscillatorMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final BandLimitedOscillatorMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_FREQUENCY:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float freq = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float freq = Float.intBitsToFloat( truncVal );
 				instance.oscillationFrequency = freq;
 				break;
 			}
 			case COMMAND_FREQUENCY_IMMEDIATE:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float freq = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float freq = Float.intBitsToFloat( truncVal );
 				instance.oscillationFrequency = freq;
 				instance.runtimeOscillationFrequency = freq;
 				break;
@@ -69,24 +69,24 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 			case COMMAND_WAVE:
 			{
 				// Is just the integer index of the enum
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				OscillatorWaveShape waveShape = OscillatorWaveShape.values()[ truncVal ];
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final OscillatorWaveShape waveShape = OscillatorWaveShape.values()[ truncVal ];
 				instance.desiredWaveShape = waveShape;
 				log.debug("Received wave shape change");
 				break;
 			}
 			case COMMAND_PULSE_WIDTH:
 			{
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float pw = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float pw = Float.intBitsToFloat( truncVal );
 				instance.desiredPulsewidth = pw;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

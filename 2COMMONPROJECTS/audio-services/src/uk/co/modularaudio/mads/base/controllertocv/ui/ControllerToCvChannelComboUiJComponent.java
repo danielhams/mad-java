@@ -38,27 +38,27 @@ public class ControllerToCvChannelComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private ControllerToCvMadUiInstance uiInstance = null;
+	private final ControllerToCvMadUiInstance uiInstance;
 
-	private Map<Integer, String> channelNumToDisplayNameMap = new HashMap<Integer, String>();
-	private Map<String, Integer> displayNameToChannelNumMap = new HashMap<String, Integer>();
+	private final Map<Integer, String> channelNumToDisplayNameMap = new HashMap<Integer, String>();
+	private final Map<String, Integer> displayNameToChannelNumMap = new HashMap<String, Integer>();
 
 	public ControllerToCvChannelComboUiJComponent(
-			ControllerToCvMadDefinition definition,
-			ControllerToCvMadInstance instance,
-			ControllerToCvMadUiInstance uiInstance,
-			int controlIndex )
+			final ControllerToCvMadDefinition definition,
+			final ControllerToCvMadInstance instance,
+			final ControllerToCvMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
+
 		channelNumToDisplayNameMap.put( 0, "Channel 0" );
 		channelNumToDisplayNameMap.put( 1, "Channel 1" );
-		
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( Map.Entry<Integer,String> entry : channelNumToDisplayNameMap.entrySet() )
+
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final Map.Entry<Integer,String> entry : channelNumToDisplayNameMap.entrySet() )
 		{
-			String displayName = entry.getValue();
+			final String displayName = entry.getValue();
 			cbm.addElement( displayName );
 			displayNameToChannelNumMap.put( displayName, entry.getKey() );
 		}
@@ -76,7 +76,7 @@ public class ControllerToCvChannelComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -84,16 +84,16 @@ public class ControllerToCvChannelComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
 			// Figure what they changed, and update the component instance data with
 			// the new table
-			String name = (String) getSelectedItem();
-			
-			Integer channel = displayNameToChannelNumMap.get( name );
-			
+			final String name = (String) getSelectedItem();
+
+			final Integer channel = displayNameToChannelNumMap.get( name );
+
 			uiInstance.sendSelectedChannel( channel );
 		}
 	}

@@ -56,7 +56,7 @@ public class ConnectionFactory implements Factory
 	 * @param username
 	 * @param password
 	 */
-	public ConnectionFactory( String classname, String connectionUrl, String username, String password )
+	public ConnectionFactory( final String classname, final String connectionUrl, final String username, final String password )
 	{
 		this.classname = classname;
 		this.connectionURL = connectionUrl;
@@ -84,10 +84,13 @@ public class ConnectionFactory implements Factory
 			res = createDBConnection();
 			// log.debug("Just created a database connection.");
 		}
-		catch (SQLException sqle)
+		catch (final SQLException sqle)
 		{
-			log.error( "Error creating DBConnection inside factory." );
-			log.error( "SQLE: " + sqle.toString() );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Error creating DBConnection inside factory." );
+				log.error( "SQLE: " + sqle.toString() );
+			}
 			throw new FactoryProductionException( sqle.toString() );
 		}
 		if (res == null)
@@ -109,29 +112,29 @@ public class ConnectionFactory implements Factory
 	private DatabaseConnectionResource createDBConnection() throws SQLException
 	{
 		// Create the connection
-		Connection c = getConnection();
+		final Connection c = getConnection();
 
 		// Force the application to explicitly set its commit points.
 		c.setAutoCommit( false );
 
 		String setupFunctionIndexes = "ALTER SESSION SET OPTIMIZER_MODE = FIRST_ROWS";
-		PreparedStatement som = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement som = c.prepareStatement( setupFunctionIndexes );
 		som.execute();
 		som.close();
 
 		setupFunctionIndexes = "ALTER SESSION SET QUERY_REWRITE_ENABLED = TRUE";
-		PreparedStatement sqre = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement sqre = c.prepareStatement( setupFunctionIndexes );
 		sqre.execute();
 		sqre.close();
 
 		setupFunctionIndexes = "ALTER SESSION SET QUERY_REWRITE_INTEGRITY = TRUSTED";
-		PreparedStatement sqri = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement sqri = c.prepareStatement( setupFunctionIndexes );
 		sqri.execute();
 		sqri.close();
 
 		// log.debug("Altered session to use function indexes.");
 
-		DatabaseConnectionResource dbcr = new DatabaseConnectionResource( c );
+		final DatabaseConnectionResource dbcr = new DatabaseConnectionResource( c );
 		return (dbcr);
 	}
 
@@ -147,7 +150,7 @@ public class ConnectionFactory implements Factory
 	{
 		// log.debug("About to getConnection of '" + connectionURL + "' (" +
 		// username + " -> " + password + ")");
-		Connection c = DriverManager.getConnection( connectionURL, username, password );
+		final Connection c = DriverManager.getConnection( connectionURL, username, password );
 		// log.debug("Successful in obtaining a connection.");
 		return (c);
 	}
@@ -172,14 +175,14 @@ public class ConnectionFactory implements Factory
 		{
 			Class.forName( classname );
 			// Test creating a connection
-			Connection c = getConnection();
+			final Connection c = getConnection();
 			c.close();
 		}
-		catch (ClassNotFoundException cnfe)
+		catch (final ClassNotFoundException cnfe)
 		{
 			throw new FactoryProductionException( cnfe.toString() );
 		}
-		catch (SQLException sqle)
+		catch (final SQLException sqle)
 		{
 			throw new FactoryProductionException( sqle.toString() );
 		}

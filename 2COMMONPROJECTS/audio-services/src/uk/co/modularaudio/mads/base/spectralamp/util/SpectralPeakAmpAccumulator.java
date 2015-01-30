@@ -32,25 +32,22 @@ import uk.co.modularaudio.util.audio.stft.tools.ComplexPolarConverter;
 public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 {
 //	private static Log log = LogFactory.getLog( SpectralPeakAmpAccumulator.class.getName());
-	
-//	private StftParameters parameters = null;
-	private int numChannels = -1;
-	private int numReals = -1;
-	private int complexArraySize = -1;
-	private int numBins = -1;
-	private ComplexPolarConverter complexPolarConverter = null;
-	private float[][] computedAmps = null;
-	
+
+	private int numChannels;
+	private int numReals;
+	private int complexArraySize;
+	private int numBins;
+	private ComplexPolarConverter complexPolarConverter;
+	private float[][] computedAmps;
+
 	private static final float CUR_VAL_WEIGHT = 0.5f;
 	private static final float PREV_VAL_WEIGHT = 0.5f;
-	
+
 	// Debugging
-	private StftDataFrame lastDataFrame = null;
-//	private int[][] peakChannelBuffers = null;
-//	private int[][] binToPeakChannelBuffers = null;
-	
+	private StftDataFrame lastDataFrame;
+
 	private boolean ampsTaken = true;
-	
+
 	public SpectralPeakAmpAccumulator()
 	{
 	}
@@ -68,9 +65,8 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 	}
 
 	@Override
-	public void setParams( StftParameters params )
+	public void setParams( final StftParameters params )
 	{
-//		this.parameters = params;
 		this.numChannels = params.getNumChannels();
 		this.numReals = params.getNumReals();
 		this.complexArraySize = params.getComplexArraySize();
@@ -81,31 +77,29 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 		{
 			computedAmps[chan] = new float[ numBins ];
 		}
-		
+
 		lastDataFrame = new StftDataFrame( numChannels, numReals, complexArraySize, numBins );
-//		peakChannelBuffers = new int[numChannels][numBins];
-//		binToPeakChannelBuffers = new int[numChannels][numBins];
 	}
-	
+
 
 	@Override
-	public int processIncomingFrame( StftDataFrame outputFrame,
-			ArrayList<StftDataFrame> lookaheadFrames,
-			StftFrameSynthesisStep synthStep )
+	public int processIncomingFrame( final StftDataFrame outputFrame,
+			final ArrayList<StftDataFrame> lookaheadFrames,
+			final StftFrameSynthesisStep synthStep )
 	{
-		StftDataFrame curFrame = lookaheadFrames.get( 0 );
+		final StftDataFrame curFrame = lookaheadFrames.get( 0 );
 		complexPolarConverter.complexToPolarAmpsOnly( curFrame );
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
 			for( int s = 0 ; s < numBins ; s++ )
 			{
-				float prevValue = computedAmps[chan][s];
+				final float prevValue = computedAmps[chan][s];
 //				if( Float.isNaN( prevValue ) )
 //				{
 //					log.error("Was the previous value..");
 //					prevValue = 0.0f;
 //				}
-				float newValue = curFrame.amps[chan][s];
+				final float newValue = curFrame.amps[chan][s];
 //				if( Float.isNaN(newValue) )
 //				{
 //					// Came from dodgy fft results...
@@ -124,7 +118,7 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 		}
 		lastDataFrame = outputFrame;
 		ampsTaken = false;
-		
+
 		return 0;
 	}
 
@@ -137,8 +131,9 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 	@Override
 	public void reset()
 	{
+		// Do nothing
 	}
-	
+
 	@Override
 	public StftFrameProcessorVisualDebugger getDebuggingVisualComponent()
 	{
@@ -154,13 +149,13 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 	@Override
 	public int[][] getPeakChannelBuffers()
 	{
-		return null;
+		return new int[0][];
 	}
 
 	@Override
 	public int[][] getBinToPeakChannelBuffers()
 	{
-		return null;
+		return new int[0][];
 	}
 
 	public float[][] getComputedAmpsMarkTaken()

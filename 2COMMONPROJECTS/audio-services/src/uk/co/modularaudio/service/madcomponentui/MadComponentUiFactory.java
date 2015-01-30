@@ -23,7 +23,7 @@ package uk.co.modularaudio.service.madcomponentui;
 import java.util.List;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -34,10 +34,10 @@ public interface MadComponentUiFactory
 {
 	public List<MadUiDefinition<?, ?>> listComponentUiDefinitions();
 	
-	public MadUiInstance<?,?> createNewComponentUiInstanceForComponent( MadInstance<?,?> componentInstance )
+	public AbstractMadUiInstance<?,?> createNewComponentUiInstanceForComponent( MadInstance<?,?> componentInstance )
 		throws DatastoreException, RecordNotFoundException;
 
-	public void destroyUiInstance( MadUiInstance<?, ?> uiInstanceToDestroy )
+	public void destroyUiInstance( AbstractMadUiInstance<?, ?> uiInstanceToDestroy )
 		throws DatastoreException, RecordNotFoundException;
 
 	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )

@@ -39,44 +39,44 @@ public class WaveRollerMadDefinition extends AbstractNonConfigurableMadDefinitio
 
 	public static final String DEFINITION_ID = "wave_roller";
 
-	private final static String userVisibleName = "Wave Roller";
+	private final static String USER_VISIBLE_NAME = "Wave Roller";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String classificationName = "Wave Roller";
-	private final static String classificationDescription = "Show the wave signal on a rolling screen";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
+	private final static String CLASS_NAME = "Wave Roller";
+	private final static String CLASS_DESC = "Show the wave signal on a rolling screen";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Input Wave 0"
 	};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO
 	};
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] {
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
 		MadChannelDirection.CONSUMER,
 	};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] {
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] {
 		MadChannelPosition.MONO
 	};
 
 	public WaveRollerMadDefinition( BaseComponentsCreationContext creationContext,
 			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
-						classificationName,
-						classificationDescription,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				new WaveRollerIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

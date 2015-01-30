@@ -26,46 +26,46 @@ import net.miginfocom.swing.MigLayout;
 
 public class MigLayoutStringHelper
 {
-	private ArrayList<String> layoutConstraints = new ArrayList<String>();
-	private ArrayList<String> columnConstraints = new ArrayList<String>();
-	private ArrayList<String> rowConstraints = new ArrayList<String>();
-	
+	private final ArrayList<String> layoutConstraints = new ArrayList<String>();
+	private final ArrayList<String> columnConstraints = new ArrayList<String>();
+	private final ArrayList<String> rowConstraints = new ArrayList<String>();
+
 	public MigLayoutStringHelper()
 	{
 	}
-	
-	public void addLayoutConstraint( String constraint )
+
+	public void addLayoutConstraint( final String constraint )
 	{
 		layoutConstraints.add( constraint );
 	}
-	
-	public void addColumnConstraint( String constraint )
+
+	public void addColumnConstraint( final String constraint )
 	{
 		columnConstraints.add( constraint );
 	}
-	
-	public void addRowConstraint( String constraint )
+
+	public void addRowConstraint( final String constraint )
 	{
 		rowConstraints.add( constraint );
 	}
-	
+
 	public MigLayout createMigLayout()
 	{
-		String layoutConstraintStr = buildConstraintString( layoutConstraints, true );
-		String columnConstraintStr = buildConstraintString( columnConstraints, false );
-		String rowConstraintStr = buildConstraintString( rowConstraints, false );
-		
-		MigLayout retVal = new MigLayout( layoutConstraintStr, columnConstraintStr, rowConstraintStr );
+		final String layoutConstraintStr = buildConstraintString( layoutConstraints, true );
+		final String columnConstraintStr = buildConstraintString( columnConstraints, false );
+		final String rowConstraintStr = buildConstraintString( rowConstraints, false );
+
+		final MigLayout retVal = new MigLayout( layoutConstraintStr, columnConstraintStr, rowConstraintStr );
 		return retVal;
 	}
-	
-	private String buildConstraintString( ArrayList<String> constraintList, boolean commanSeparated )
+
+	private String buildConstraintString( final ArrayList<String> constraintList, final boolean commanSeparated )
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		int curCount = 0;
-		
-		for( String s : constraintList )
+
+		for( final String s : constraintList )
 		{
 			if( curCount > 0 && commanSeparated )
 			{

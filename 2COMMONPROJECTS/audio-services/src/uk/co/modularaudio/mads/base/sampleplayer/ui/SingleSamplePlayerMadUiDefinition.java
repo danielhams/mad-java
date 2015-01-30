@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class SingleSamplePlayerMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<SingleSamplePlayerMadDefinition, SingleSamplePlayerMadInstance, SingleSamplePlayerMadUiInstance>
 {
-	private static final Span span = new Span(2,2);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,2);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV,
 		SingleSamplePlayerMadDefinition.CONSUMER_RETRIGGER_CV,
 		SingleSamplePlayerMadDefinition.CONSUMER_FREQ_CV,
@@ -45,8 +45,8 @@ public class SingleSamplePlayerMadUiDefinition
 		SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_L,
 		SingleSamplePlayerMadDefinition.PRODUCER_AUDIO_OUT_R
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 30, 45 ),
 		new Point( 50, 45 ),
 		new Point( 70, 45 ),
@@ -54,48 +54,48 @@ public class SingleSamplePlayerMadUiDefinition
 		new Point( 150, 45 ),
 		new Point( 170, 45 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"StartPosition",
 		"RootNoteChoice",
 		"FilenameLabel",
 		"ChooseFile"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.COMBO,
 		ControlType.DISPLAY,
 		ControlType.BUTTON
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		SingleSamplePlayerStartPosSliderUiJComponent.class,
 		SingleSamplePlayerRootNoteComboUiJComponent.class,
 		SingleSamplePlayerNameLabelUiJComponent.class,
 		SingleSamplePlayerSelectFileUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 16, 16, 160, 20 ),
 		new Rectangle( 190, 16, 50, 20 ),
 		new Rectangle( 16, 56, 180, 20 ),
 		new Rectangle( 210, 56, 30, 20 )
 	};
-	
-	private static final Class<SingleSamplePlayerMadUiInstance> instanceClass = SingleSamplePlayerMadUiInstance.class;
 
-	public SingleSamplePlayerMadUiDefinition( BufferedImageAllocator bia, SingleSamplePlayerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+	private static final Class<SingleSamplePlayerMadUiInstance> INSTANCE_CLASS = SingleSamplePlayerMadUiInstance.class;
+
+	public SingleSamplePlayerMadUiDefinition( final BufferedImageAllocator bia, final SingleSamplePlayerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 		{
 			super( bia, definition, cif, imageRoot,
-					span,
-					instanceClass,
-					uiChannelInstanceIndexes,
-					uiChannelPositions,
-					uiControlNames,
-					uiControlTypes,
-					uiControlClasses,
-					uiControlBounds );
+					SPAN,
+					INSTANCE_CLASS,
+					CHAN_INDEXES,
+					CHAN_POSIS,
+					CONTROL_NAMES,
+					CONTROL_TYPES,
+					CONTROL_CLASSES,
+					CONTROL_BOUNDS );
 		}
 }

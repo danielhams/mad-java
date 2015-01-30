@@ -24,7 +24,7 @@ import java.util.List;
 
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDeviceCriteria;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
@@ -58,7 +58,7 @@ public abstract class AudioProvider
 	public abstract List<? extends AudioHardwareDevice> getAllConsumerAudioDevices( AudioHardwareDeviceCriteria criteria )
 			throws DatastoreException;
 
-	public abstract AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	public abstract AbstractAppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorQueue errorQueue,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException;

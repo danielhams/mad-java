@@ -41,45 +41,47 @@ public class AttenuationMeter extends PacPanel
 {
 	public static final int PREFERRED_WIDTH = 10;
 	public static final int PREFERRED_METER_WIDTH = PREFERRED_WIDTH - 2;
-	
+
 	private static final Color OVER_THRESHOLD_COLOR = new Color( 0.4f, 0.8f, 0.4f );
-	
+
 	private static final long serialVersionUID = -7723883774839586874L;
 
 	private static Log log = LogFactory.getLog( AttenuationMeter.class.getName() );
-	
+
 	private float currentMeterValueDb = 0.0f;
 	private float previouslyPaintedMeterValueDb = 0.0f;
 
 	private long maxValueTimestamp = 0;
 	private float currentMinValueDb = 0.0f;
 	private float previouslyPaintedMinValueDb = 0.0f;
-	
+
 	private final MonoCompressorMadUiInstance uiInstance;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	private BufferedImageAllocator bufferedImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;	
-	
+
+	private final DbToLevelComputer dbToLevelComputer;
+
+	private final BufferedImageAllocator bufferedImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage outBufferedImage;
+	private Graphics outBufferedImageGraphics;
+
 	private int componentWidth = -1;
 	private int componentHeight = -1;
-	public AttenuationMeter( MonoCompressorMadUiInstance uiInstance,
-			DbToLevelComputer dbToLevelComputer, BufferedImageAllocator bia )
+
+	public AttenuationMeter( final MonoCompressorMadUiInstance uiInstance,
+			final DbToLevelComputer dbToLevelComputer, final BufferedImageAllocator bia )
 	{
 		setOpaque( true );
 		this.uiInstance = uiInstance;
 		this.dbToLevelComputer = dbToLevelComputer;
 		this.bufferedImageAllocator = bia;
-		
+
 		setBackground( Color.black );
-		Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
+		final Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
 		this.setPreferredSize( myPreferredSize );
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		checkBufferedImage();
 		if( outBufferedImage != null )
@@ -92,48 +94,48 @@ public class AttenuationMeter extends PacPanel
 	{
 //		log.debug("Repainting it.");
 		checkBufferedImage();
-		
+
 		if( outBufferedImageGraphics != null )
 		{
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
-			
-			int meterWidth = PREFERRED_METER_WIDTH;
-			int totalMeterHeight = componentHeight - 2;
-			
-			int meterHeight = totalMeterHeight;
-			int meterHeightOffset = 0;
-	
-			int yReverser = meterHeight + 1;
-			
+
+			final int meterWidth = PREFERRED_METER_WIDTH;
+			final int totalMeterHeight = componentHeight - 2;
+
+			final int meterHeight = totalMeterHeight;
+			final int meterHeightOffset = 0;
+
+			final int yReverser = meterHeight + 1;
+
 			float levelValue = 0.0f;
 			if( currentMeterValueDb != Float.NEGATIVE_INFINITY )
 			{
 				levelValue = calcLevelValueFromDb( currentMeterValueDb );
 			}
-	
+
 			outBufferedImageGraphics.setColor( OVER_THRESHOLD_COLOR );
-			float underVal = levelValue;
+			final float underVal = levelValue;
 			int underBarHeightInPixels = (int)(underVal * meterHeight );
 			underBarHeightInPixels = (underBarHeightInPixels > (meterHeight) ? (meterHeight) : (underBarHeightInPixels < 0 ? 0 : underBarHeightInPixels ));
 //			int underStartY = meterHeight - underBarHeightInPixels + 1 + meterHeightOffset;
 //			outBufferedImageGraphics.fillRect( 3, underStartY, meterWidth - 4, underBarHeightInPixels );
-			int underStartY = underBarHeightInPixels + 1 + meterHeightOffset;
+			final int underStartY = underBarHeightInPixels + 1 + meterHeightOffset;
 			outBufferedImageGraphics.fillRect( 3, 1, meterWidth - 4, meterHeight - underStartY );
-			
+
 			float minLevelValue = 0.0f;
-			Color maxDbColor = OVER_THRESHOLD_COLOR;
+			final Color maxDbColor = OVER_THRESHOLD_COLOR;
 			if( currentMinValueDb != Float.NEGATIVE_INFINITY )
 			{
 				minLevelValue = calcLevelValueFromDb( currentMinValueDb );
 			}
 			outBufferedImageGraphics.setColor( maxDbColor );
-			
+
 			int minValueHeightInPixels = (int)(minLevelValue * meterHeight);
 			minValueHeightInPixels = (minValueHeightInPixels > (meterHeight) ? (meterHeight) : (minValueHeightInPixels < 0 ? 0 : minValueHeightInPixels ));
-			int minStartY = yReverser - minValueHeightInPixels + meterHeightOffset;
+			final int minStartY = yReverser - minValueHeightInPixels + meterHeightOffset;
 			outBufferedImageGraphics.drawLine( 1, minStartY, meterWidth, minStartY );
-			
+
 	//		outBufferedImage.flush();
 		}
 	}
@@ -148,7 +150,7 @@ public class AttenuationMeter extends PacPanel
 			{
 				try
 				{
-					AllocationMatch myAllocationMatch = new AllocationMatch();
+					final AllocationMatch myAllocationMatch = new AllocationMatch();
 					tiledBufferedImage = bufferedImageAllocator.allocateBufferedImage( "AmpMeter",
 							myAllocationMatch,
 							AllocationLifetime.SHORT,
@@ -160,18 +162,18 @@ public class AttenuationMeter extends PacPanel
 					outBufferedImageGraphics.setColor( Color.BLACK );
 					outBufferedImageGraphics.fillRect( 0, 0, componentWidth, componentHeight );
 				}
-				catch( DatastoreException e)
+				catch( final DatastoreException e)
 				{
-					String msg = "Unable to allocation image for meter: " + e.toString();
+					final String msg = "Unable to allocation image for meter: " + e.toString();
 					log.error( msg, e );
 				}
 			}
 		}
 	}
-	
-	public void receiveDisplayTick( long currentTime )
+
+	public void receiveDisplayTick( final long currentTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 		if( currentMeterValueDb < currentMinValueDb )
 		{
 			currentMinValueDb = currentMeterValueDb;
@@ -182,7 +184,7 @@ public class AttenuationMeter extends PacPanel
 			currentMinValueDb = currentMeterValueDb;
 			maxValueTimestamp = currentTime;
 		}
-		
+
 		if( showing )
 		{
 			if( currentMeterValueDb != previouslyPaintedMeterValueDb ||
@@ -196,18 +198,18 @@ public class AttenuationMeter extends PacPanel
 		}
 	}
 
-	public void receiveMeterReadingInDb( long currentFrameTime, float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentFrameTime, final float meterReadingDb )
 	{
 		currentMeterValueDb = meterReadingDb;
 	}
 
-	public float calcLevelValueFromDb( float dbIn )
+	public float calcLevelValueFromDb( final float dbIn )
 	{
 //		return (dbIn + FirstDbToLevelComputer.LOWEST_NEGATIVE_DB ) / FirstDbToLevelComputer.LOWEST_NEGATIVE_DB;
 //		return (dbIn + -DbToLevelComputer.LOWEST_DIGITAL_DB_RATING ) / -DbToLevelComputer.LOWEST_DIGITAL_DB_RATING;
 		return dbToLevelComputer.toNormalisedSliderLevelFromDb( dbIn );
 	}
-	
+
 	public void destroy()
 	{
 		if( tiledBufferedImage != null )
@@ -216,9 +218,9 @@ public class AttenuationMeter extends PacPanel
 			{
 				bufferedImageAllocator.freeBufferedImage( tiledBufferedImage );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Failed to free up allocated image: " + e.toString();
+				final String msg = "Failed to free up allocated image: " + e.toString();
 				log.error( msg );
 			}
 			tiledBufferedImage = null;

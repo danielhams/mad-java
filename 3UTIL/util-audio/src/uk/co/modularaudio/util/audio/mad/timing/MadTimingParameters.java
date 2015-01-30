@@ -58,7 +58,7 @@ public class MadTimingParameters
 		this.nanosOutputLatency = nanosOutputLatency;
 	}
 
-	public void reset( final MadTimingParameters from )
+	public final void reset( final MadTimingParameters from )
 	{
 		this.nanosPerBackEndPeriod = from.nanosPerBackEndPeriod;
 		this.nanosPerBackEndSample = from.nanosPerBackEndSample;

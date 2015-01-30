@@ -38,43 +38,42 @@ public class CvSurfaceMadDefinition extends AbstractNonConfigurableMadDefinition
 	public final static int PRODUCER_OUT_CVY = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	private final static String definitionId = "cv_surface";
+	public final static String DEFINITION_ID = "cv_surface";
 
-	private final static String userVisibleName = "CV Surface";
+	private final static String USER_VISIBLE_NAME = "CV Surface";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "cv_surface";
-	private final static String classificationName = "CV Surface";
-	private final static String classificationDescription = "A surface generating X and Y CV values from positional touch";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "CV Surface";
+	private final static String CLASS_DESC = "A surface generating X and Y CV values from positional touch";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Output CV X",
+	private final static String[] CHAN_NAMES = new String[] { "Output CV X",
 		"Output CV Y" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER};
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public CvSurfaceMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public CvSurfaceMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new CvSurfaceIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

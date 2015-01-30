@@ -22,12 +22,11 @@ package uk.co.modularaudio.mads.base.prng.ui;
 
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class PrngMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<PrngMadDefinition, PrngMadInstance>
+public class PrngMadUiInstance extends NoEventsNonConfigurableMadUiInstance<PrngMadDefinition, PrngMadInstance>
 {
-
-	public PrngMadUiInstance( PrngMadInstance instance, PrngMadUiDefinition uiDefinition )
+	public PrngMadUiInstance( final PrngMadInstance instance, final PrngMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

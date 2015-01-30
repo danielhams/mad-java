@@ -20,6 +20,10 @@
 
 package uk.co.modularaudio.util.pooling.common;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,218 +41,253 @@ import org.apache.commons.logging.LogFactory;
 public class PoolSizingThread extends Thread
 {
 	protected static Log log = LogFactory.getLog(PoolSizingThread.class.getName());
-	
-	private long sizingCheckSleepMilliSeconds = 0;
 
-	public PoolSizingThread(IDynamicSizedPool pool, 
-	        Integer poolSemaphore, 
-	        Factory factory,
-	        long sizingCheckSleepMilliSeconds)
+	private final long sizingCheckSleepMilliSeconds;
+
+	public PoolSizingThread( final Factory factory,
+	        final long sizingCheckSleepMilliSeconds)
 	{
 		this.setName("PoolSizingThread");
-        
+
         if (log.isTraceEnabled())
             log.trace("PST created with ID: " + this.hashCode());
-        
+
 		// Keep a reference to the pool to put them in,
-		synchronized (shouldHaltMutex)
-		{
-			this.pool = pool;
-			this.poolSemaphore = poolSemaphore;
-			this.factory = factory;
-			this.sizingCheckSleepMilliSeconds = sizingCheckSleepMilliSeconds;
-		}
+        poolLock.lock();
+		this.factory = factory;
+		this.sizingCheckSleepMilliSeconds = sizingCheckSleepMilliSeconds;
+		poolLock.unlock();
 	}
 
+	@Override
 	public void run()
 	{
         if (log.isTraceEnabled())
             log.trace("PST run of ID: " + this.hashCode());
 		try
 		{
-			boolean localShouldHalt = false;
-			synchronized(shouldHaltMutex)
+			shouldHaltLock.lock();
+			boolean localShouldHalt = shouldHalt;
+			shouldHaltLock.unlock();
+
+			poolLock.lock();
+			int numThisRound = 0;
+			try
 			{
-				localShouldHalt = shouldHalt;
+				pool.arbitrateSize( null );
+				numThisRound = pool.getNumNeeded();
+			}
+			finally
+			{
+				poolLock.unlock();
 			}
 
-			int numThisRound = 0;
-            
-            if (numThisRound == 0)
-            {
-                synchronized( poolSemaphore )
-                {
-                    pool.arbitrateSize( null );
-                    numThisRound = pool.getNumNeeded();
-                }
-            }
-            
     		// Here we loop around checking to see if we should be halted.
     		while (!localShouldHalt)
     		{
-    			synchronized (shouldHaltMutex)
-    			{
-    				while (!localShouldHalt && numThisRound == 0)
-    				{
-    					try
-    					{
-    					    //log.debug("Waiting for notification of jobs");
-    						shouldHaltMutex.wait( sizingCheckSleepMilliSeconds );
-    					}
-    					catch (InterruptedException ie)
-    					{
-    					}
-                        
-    					localShouldHalt = shouldHalt;
-                        
-    					if (numThisRound == 0)
-    					{
-                            synchronized( poolSemaphore )
-                            {
-                                pool.arbitrateSize( null );
-                                numThisRound = pool.getNumNeeded();
-                            }
-    					}
-    
-    					if( log.isDebugEnabled() )
-    				    {
-    					    synchronized( poolSemaphore )
-    					    {
-//    					        int poolSize = ((Pool)pool).poolStructure.size();
-    					        log.debug("Pool " + pool.getName() + " - " + 
-                                        pool.toString() + " - numneeded: " + pool.getNumNeeded());
-    					    }
-    				    }
-    				}
-                    
-                    synchronized( poolSemaphore )
-                    {
-                        numThisRound = pool.getNumNeeded();
-                    }
-    
-    				if (localShouldHalt)
-    				{
-    					log.info("PoolSizingThreadhalting.");
-    					return;
-    				}
-    			}
-    
-    			if (numThisRound > 0)
-    			{
-    				synchronized(shouldHaltMutex)
-    				{
-    					localShouldHalt = shouldHalt;
-    					if (localShouldHalt)
-    					{
-    						log.info("PoolSizingThreadhalting.");
-    						return;
-    					}
-    				}
-    				// Create 1 new resource using the factory, and
-    				// add it in.
-                    
-                    if (log.isTraceEnabled())
-                        log.trace("Sizing thread needs " + numThisRound + " resources.");
-    				try
-    				{
-                        if (log.isTraceEnabled())
-                            log.trace("Asking factory to create a resource");
-                        Resource res = factory.createResource();
-    
-                        if (log.isTraceEnabled())
-                            log.trace("ST produced resource, adding to pool.");
-                        
-    					synchronized (poolSemaphore)
-    					{
-    						pool.addResource(res);
-    						poolSemaphore.notifyAll();
-                            pool.addToNumNeeded(-1);
+    			shouldHaltLock.lock();
+    			localShouldHalt = shouldHalt;
+    			shouldHaltLock.unlock();
+
+				while (!localShouldHalt && numThisRound == 0)
+				{
+					try
+					{
+					    //log.debug("Waiting for notification of jobs");
+						shouldHaltCondition.await( sizingCheckSleepMilliSeconds, TimeUnit.MILLISECONDS );
+					}
+					catch (final InterruptedException ie)
+					{
+					}
+
+					localShouldHalt = shouldHalt;
+
+					if (numThisRound == 0)
+					{
+						poolLock.lock();
+						try
+                        {
+                            pool.arbitrateSize( null );
                             numThisRound = pool.getNumNeeded();
-                            log.debug("ST added resource to pool.");
-    					}
-    				}
-    				catch (FactoryProductionException fpe)
-    				{
-    					log.error("Error creating resource:" + fpe.toString());
-                        log.error("Pool details are: " + pool.toString());
-    					// Sleep for a while after a failure to stop a CPU bound cycle
-    					try
-    					{
-    						Thread.sleep( sizingCheckSleepMilliSeconds );
-    					}
-    					catch (InterruptedException ie)
-    					{
-    						log.error("Caught interrupted exception waiting inside sizing delay loop.");
-    					}
-    				}
-    			}
-    			else if( numThisRound < 0)
-    			{
-    				synchronized(shouldHaltMutex)
-    				{
-    					localShouldHalt = shouldHalt;
-    					if (localShouldHalt)
-    					{
-    						log.info("PoolSizingThreadhalting.");
-    						return;
-    					}
-    				}
-    				// Call use resource, then remove resource.
+                        }
+						finally
+						{
+							poolLock.unlock();
+						}
+					}
+
+					if( log.isDebugEnabled() )
+				    {
+						poolLock.lock();
+						try
+					    {
+//    					        int poolSize = ((Pool)pool).poolStructure.size();
+					        log.debug("Pool - " +
+                                    pool.toString() + " - numneeded: " + pool.getNumNeeded());
+					    }
+						finally
+						{
+							poolLock.unlock();
+						}
+				    }
+				}
+
+				poolLock.lock();
+				numThisRound = pool.getNumNeeded();
+				poolLock.unlock();
+
+				if (localShouldHalt)
+				{
+					log.info("PoolSizingThreadhalting.");
+					return;
+				}
+			}
+
+			if (numThisRound > 0)
+			{
+				shouldHaltLock.lock();
+				localShouldHalt = shouldHalt;
+				shouldHaltLock.unlock();
+				if (localShouldHalt)
+				{
+					log.info("PoolSizingThreadhalting.");
+					return;
+				}
+
+				// Create 1 new resource using the factory, and
+				// add it in.
+
+                if (log.isTraceEnabled())
+                    log.trace("Sizing thread needs " + numThisRound + " resources.");
+				try
+				{
                     if (log.isTraceEnabled())
-                        log.trace("Creation thread needs " + numThisRound + " resources.");
-    				try
-    				{
+                        log.trace("Asking factory to create a resource");
+                    final Resource res = factory.createResource();
+
+                    if (log.isTraceEnabled())
+                        log.trace("ST produced resource, adding to pool.");
+
+                    poolLock.lock();
+                    try
+					{
+						pool.addResource(res);
+						notEmpty.signalAll();
+                        pool.addToNumNeeded(-1);
+                        numThisRound = pool.getNumNeeded();
+                        log.debug("ST added resource to pool.");
+					}
+                    finally
+                    {
+                    	poolLock.unlock();
+                    }
+				}
+				catch (final FactoryProductionException fpe)
+				{
+					if( log.isErrorEnabled() )
+					{
+						log.error("Error creating resource:" + fpe.toString());
+						log.error("Pool details are: " + pool.toString());
+					}
+					// Sleep for a while after a failure to stop a CPU bound cycle
+					try
+					{
+						Thread.sleep( sizingCheckSleepMilliSeconds );
+					}
+					catch (final InterruptedException ie)
+					{
+						log.error("Caught interrupted exception waiting inside sizing delay loop.");
+					}
+				}
+			}
+			else if( numThisRound < 0)
+			{
+				shouldHaltLock.lock();
+				localShouldHalt = shouldHalt;
+				shouldHaltLock.unlock();
+				if (localShouldHalt)
+				{
+					log.info("PoolSizingThreadhalting.");
+					return;
+				}
+
+				// Call use resource, then remove resource.
+                if (log.isTraceEnabled())
+                    log.trace("Creation thread needs " + numThisRound + " resources.");
+				try
+				{
+                    if (log.isTraceEnabled())
+                        log.trace( "ST removing resource.");
+
+                    poolLock.lock();
+                    try
+                    {
+                        final Resource res = pool.removeAnyFreeResource();
+                        postRemoveResource( res );
+                        pool.addToNumNeeded( 1 );
                         if (log.isTraceEnabled())
-                            log.trace( "ST removing resource.");
-                        
-    					synchronized (poolSemaphore)
-    					{
-                            Resource res = pool.removeAnyFreeResource();
-                            postRemoveResource( res );
-                            pool.addToNumNeeded( 1 );
-                            if (log.isTraceEnabled())
-                                log.trace("ST removed resource.");
-    					}
-    				}
-    				catch (ResourceNotAvailableException rnae)
-    				{
-    					log.warn("Exception caught creating resource: " + rnae.toString());
-    					try
-    					{
-    					    Thread.sleep( sizingCheckSleepMilliSeconds );
-    					}
-    					catch(InterruptedException ie)
-    					{
-    					}
-    				}
-    			}
+                            log.trace("ST removed resource.");
+					}
+                    finally
+                    {
+                    	poolLock.unlock();
+                    }
+				}
+				catch (final ResourceNotAvailableException rnae)
+				{
+					if( log.isWarnEnabled() )
+					{
+						log.warn("Exception caught creating resource: " + rnae.toString());
+					}
+					try
+					{
+					    Thread.sleep( sizingCheckSleepMilliSeconds );
+					}
+					catch(final InterruptedException ie)
+					{
+					}
+				}
     		}
     		log.info("PoolSizingThreadhalting.");
     		return;
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			log.error("Caught exception in pool sizing thread: " + e.toString());
+			if( log.isErrorEnabled() )
+			{
+				log.error("Caught exception in pool sizing thread: " + e.toString());
+			}
 		}
 	}
 
-	protected void postRemoveResource(Resource res)
+	protected void postRemoveResource(final Resource res)
     {
     }
 
     public void halt()
 	{
-		synchronized (shouldHaltMutex)
-		{
-			shouldHalt = true;
-			shouldHaltMutex.notifyAll();
-		}
+    	shouldHaltLock.lock();
+    	shouldHalt = true;
+    	shouldHaltCondition.notifyAll();
+    	shouldHaltLock.unlock();
 	}
 
-	private IDynamicSizedPool pool = null;
-	private Integer poolSemaphore = null;
-	
-	private Factory factory = null;
-	private boolean shouldHalt = false;
-	private Integer shouldHaltMutex = new Integer(0);
+	private IDynamicSizedPool pool;
+	private ReentrantLock poolLock;
+	private Condition notEmpty;
+
+	private final Factory factory;
+	private boolean shouldHalt;
+	private final ReentrantLock shouldHaltLock = new ReentrantLock();
+	private final Condition shouldHaltCondition = shouldHaltLock.newCondition();
+
+	public synchronized void startSizingThread( final IDynamicSizedPool sizedPool,
+			final ReentrantLock poolLock,
+			final Condition notEmpty )
+	{
+		this.pool = sizedPool;
+		this.poolLock = poolLock;
+		this.notEmpty = notEmpty;
+		super.start();
+	}
 }

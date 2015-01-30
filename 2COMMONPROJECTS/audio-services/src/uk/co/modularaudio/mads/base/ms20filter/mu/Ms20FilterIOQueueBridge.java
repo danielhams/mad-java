@@ -42,24 +42,24 @@ public class Ms20FilterIOQueueBridge extends MadLocklessQueueBridge<Ms20FilterMa
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( Ms20FilterMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final Ms20FilterMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_FILTER_MODE:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
 				instance.desiredFilterMode = FrequencyFilterMode.values()[ truncVal ];
 				break;
 			}
 			case COMMAND_FREQUENCY:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
 //				log.debug("DesiredFreq from raw value " + MathFormatter.floatPrint( floatVal, 3 ) );
 				instance.desiredFrequency = floatVal;
 				break;
@@ -67,10 +67,10 @@ public class Ms20FilterIOQueueBridge extends MadLocklessQueueBridge<Ms20FilterMa
 			case COMMAND_FILTER_RESONANCE:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
-				float innerResonance = floatVal * Ms20FilterMadInstance.MAXIMUM_RESONANCE_VALUE;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
+				final float innerResonance = floatVal * Ms20FilterMadInstance.MAXIMUM_RESONANCE_VALUE;
 //				log.debug("DesiredQ from raw value " + MathFormatter.floatPrint( floatVal, 3 ) + " to " + MathFormatter.floatPrint( innerQ, 3 ) );
 				instance.desiredFilterResonance = innerResonance;
 				break;
@@ -78,17 +78,17 @@ public class Ms20FilterIOQueueBridge extends MadLocklessQueueBridge<Ms20FilterMa
 			case COMMAND_THRESHOLD:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
-				float innerThreshold = floatVal * Ms20FilterMadInstance.MAXIMUM_THRESHOLD_VALUE;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
+				final float innerThreshold = floatVal * Ms20FilterMadInstance.MAXIMUM_THRESHOLD_VALUE;
 //				log.debug("DesiredSat from raw value " + MathFormatter.floatPrint( floatVal, 3 ) + " to " + MathFormatter.floatPrint( innerSat, 3 ) );
 				instance.desiredSaturationThreshold = innerThreshold;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

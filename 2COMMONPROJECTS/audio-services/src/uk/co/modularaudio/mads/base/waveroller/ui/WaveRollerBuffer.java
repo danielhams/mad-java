@@ -31,7 +31,7 @@ public class WaveRollerBuffer
 	protected final BufferedImage bi;
 	public final Graphics2D graphics;
 
-	public WaveRollerBuffer( TiledBufferedImage tbi )
+	public WaveRollerBuffer( final TiledBufferedImage tbi )
 	{
 		this.tbi = tbi;
 		bi = tbi.getUnderlyingBufferedImage();

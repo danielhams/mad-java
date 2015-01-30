@@ -42,16 +42,16 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 	implements MouseMotionListener, MouseListener
 {
 	private static Log log = LogFactory.getLog( JPanelDndTableMouseListener.class.getName());
-	
-	private JPanelDndTable<A, B, C> table;
-	private GuiDndTableState dndState = null;
-	private JPanelDndTablePolicy<A,B,C> dndPolicy = null;
-	private JPanelDndTableDecorationManager<A,B,C> decorationManager = null;
 
-	public JPanelDndTableMouseListener(JPanelDndTable<A, B, C> table,
-			GuiDndTableState dndState,
-			JPanelDndTablePolicy<A,B,C> dndPolicy,
-			JPanelDndTableDecorationManager<A,B,C> decorationManager )
+	private final JPanelDndTable<A, B, C> table;
+	private final GuiDndTableState dndState;
+	private final JPanelDndTablePolicy<A,B,C> dndPolicy;
+	private final JPanelDndTableDecorationManager<A,B,C> decorationManager;
+
+	public JPanelDndTableMouseListener(final JPanelDndTable<A, B, C> table,
+			final GuiDndTableState dndState,
+			final JPanelDndTablePolicy<A,B,C> dndPolicy,
+			final JPanelDndTableDecorationManager<A,B,C> decorationManager )
 	{
 		this.table = table;
 		this.dndState = dndState;
@@ -60,14 +60,14 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e)
+	public void mouseDragged(final MouseEvent e)
 	{
 		try
 		{
-			State curState = dndState.getCurrentState();
-			Point tablePoint = e.getPoint();
+			final State curState = dndState.getCurrentState();
+			final Point tablePoint = e.getPoint();
 //			log.debug("Mouse dragged point: " + tablePoint);
-			TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
+			final TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
 			Point localPoint = null;
 			C component = null;
 			if( componentAndLocalPoint != null )
@@ -99,22 +99,22 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 				break;
 			}
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught during mouse drag processing: " + e1.toString();
+			final String msg = "Exception caught during mouse drag processing: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent e)
+	public void mouseMoved(final MouseEvent e)
 	{
 		try
 		{
-			State curState = dndState.getCurrentState();
-			Point tablePoint = e.getPoint();
+			final State curState = dndState.getCurrentState();
+			final Point tablePoint = e.getPoint();
 //			log.debug("Mouse moved point: " + tablePoint);
-			TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
+			final TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
 			Point point = null;
 			C component = null;
 			if( componentAndLocalPoint != null )
@@ -145,30 +145,30 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 				break;
 			}
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught during mouse movement processing: " + e1.toString();
+			final String msg = "Exception caught during mouse movement processing: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
 //		log.debug(e);
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
 //		log.debug(e);
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
 //		log.debug(e);
-		State currentState = dndState.getCurrentState();
+		final State currentState = dndState.getCurrentState();
 		switch( currentState )
 		{
 		case MOUSE_OVER_DRAGGABLE_AREA:
@@ -178,9 +178,9 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 				dndPolicy.isMouseOverDndSource( table, null, null, null );
 				dndState.changeTo( State.BROWSING );
 			}
-			catch (BadStateTransitionException e1)
+			catch (final BadStateTransitionException e1)
 			{
-				String msg = "Error transitioning to browsing on mouse exit.";
+				final String msg = "Error transitioning to browsing on mouse exit.";
 				log.error( msg, e1 );
 			}
 			break;
@@ -192,22 +192,22 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 //		log.debug(e);
 		try
 		{
-			State currentState = dndState.getCurrentState();
+			final State currentState = dndState.getCurrentState();
 			switch( currentState )
 			{
 			case MOUSE_OVER_DRAGGABLE_AREA:
 				// Begin a drag
-				Point dragStartPoint = e.getPoint();
-				TwoTuple<Point, C> pointAndComponent = table.getComponentAtWithLocalPoint( dragStartPoint );
+				final Point dragStartPoint = e.getPoint();
+				final TwoTuple<Point, C> pointAndComponent = table.getComponentAtWithLocalPoint( dragStartPoint );
 				Point localPoint = null;
 				C component = null;
 				if( pointAndComponent != null )
-				{		
+				{
 					localPoint = pointAndComponent.getHead();
 					component = pointAndComponent.getTail();
 					dndPolicy.startDrag( table, component, localPoint, dragStartPoint );
@@ -224,22 +224,22 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 				break;
 			}
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught processing mouse press: " + e1.toString();
+			final String msg = "Exception caught processing mouse press: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 //		log.debug(e);
 		try
 		{
-			State curState = dndState.getCurrentState();
-			Point tablePoint = e.getPoint();
-			TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
+			final State curState = dndState.getCurrentState();
+			final Point tablePoint = e.getPoint();
+			final TwoTuple<Point, C> componentAndLocalPoint = table.getComponentAtWithLocalPoint( tablePoint );
 			Point point = null;
 			C component = null;
 			if( componentAndLocalPoint != null )
@@ -272,9 +272,9 @@ B extends SpanningContentsProperties, C extends Component & GuiDndTableComponent
 			// Synthesise a mouse moved event so that hover criteria etc are setup correctly
 			this.mouseMoved( e );
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught during mouse release processing: " + e1.toString();
+			final String msg = "Exception caught during mouse release processing: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}

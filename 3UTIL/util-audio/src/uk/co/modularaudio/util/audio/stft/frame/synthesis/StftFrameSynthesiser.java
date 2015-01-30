@@ -33,36 +33,36 @@ import uk.co.modularaudio.util.audio.stft.tools.OverlapAdder;
 public class StftFrameSynthesiser
 {
 //	private static Log log = LogFactory.getLog( StftFrameSynthesiser.class.getName() );
-	
-//	private StftParameters params = null;
-	
-	private int numChannels = -1;
-	private int windowLength = -1;
-	private int numReals = -1;
-	private int complexArraySize = -1;
-	private int numBins = -1;
-	private int analysisStepSize = -1;
-	private int lastOutputStepSize = -1;
-	private int numOverlaps = -1;
-	
-	private StftFrameSynthesiserBuffers buffers = null;
-	
-	private StftPlayPosition outputPosition = null;
-	
-	private FftWindow fftWindow = null;
-	private FloatFFT_1D fftComputer = null;
-	
-	private FrameRotatorPaddedTimeDomain frameRotator = null;
-	
-	private OverlapAdder[] overlapAdders = null;
-	private float[] resampleArray = null;
 
-	private StftStreamResampler[] linearResamplers = null;
-	private StftStreamResampler[] cubicResamplers = null;
-	
-	private float fftWindowValSquaredSum = 0.0f;
-	
-	public StftFrameSynthesiser( StftParameters params )
+//	private StftParameters params = null;
+
+	private final int numChannels;
+	private final int windowLength;
+	private final int numReals;
+	private final int complexArraySize;
+	private final int numBins;
+	private final int analysisStepSize;
+	private int lastOutputStepSize;
+	private final int numOverlaps;
+
+	private StftFrameSynthesiserBuffers buffers;
+
+	private StftPlayPosition outputPosition;
+
+	private final FftWindow fftWindow;
+	private final FloatFFT_1D fftComputer;
+
+	private final FrameRotatorPaddedTimeDomain frameRotator;
+
+	private final OverlapAdder[] overlapAdders;
+	private final float[] resampleArray;
+
+	private final StftStreamResampler[] linearResamplers;
+	private final StftStreamResampler[] cubicResamplers;
+
+	private float fftWindowValSquaredSum;
+
+	public StftFrameSynthesiser( final StftParameters params )
 	{
 //		this.params = params;
 		numChannels = params.getNumChannels();
@@ -75,18 +75,18 @@ public class StftFrameSynthesiser
 		setupBuffers();
 
 		fftWindow = params.getFftWindow();
-		float[] fftWindowAmps = fftWindow.getAmps();
-		int fftWindowLength = fftWindowAmps.length;
+		final float[] fftWindowAmps = fftWindow.getAmps();
+		final int fftWindowLength = fftWindowAmps.length;
 		for( int i = 0 ; i < fftWindowLength ; i++ )
 		{
-			float amp = fftWindowAmps[ i ];
+			final float amp = fftWindowAmps[ i ];
 			fftWindowValSquaredSum += (amp * amp);
 		}
-		
+
 		fftComputer = new FloatFFT_1D( numReals );
-		
+
 		frameRotator = new FrameRotatorPaddedTimeDomain( params );
-		
+
 		overlapAdders = new OverlapAdder[ numChannels ];
 		linearResamplers = new StftStreamResampler[ numChannels ];
 		cubicResamplers = new StftStreamResampler[ numChannels ];
@@ -96,38 +96,38 @@ public class StftFrameSynthesiser
 			linearResamplers[chan] = new StftStreamingLinearInterpolationResampler();
 			cubicResamplers[chan] = new StftStreamingCubicInterpolationResampler();
 		}
-		
+
 		resampleArray = new float[ analysisStepSize * 10 ];
-		
+
 		reset();
 	}
-	
-	private void setupBuffers()
+
+	private final void setupBuffers()
 	{
 		buffers = new StftFrameSynthesiserBuffers( numChannels, windowLength, numReals, complexArraySize, numBins, analysisStepSize);
 	}
 
-	public void synthesiseFrame( StftDataFrame processedFrame,
-			double speed,
-			double pitch,
-			UnsafeFloatRingBuffer[] outputRingBuffers,
-			StftFrameSynthesisStep synthStep )
+	public void synthesiseFrame( final StftDataFrame processedFrame,
+			final double speed,
+			final double pitch,
+			final UnsafeFloatRingBuffer[] outputRingBuffers,
+			final StftFrameSynthesisStep synthStep )
 	{
 		// Work out how much we move by
-		double synthesisStepSize = synthStep.getSynthesisStepSize();
-		double synthesisFrac = synthStep.getFrac();
-		int synthesisRoundedStepSize = synthStep.getRoundedStepSize();
-		double resampleRatio = synthStep.getInternalPitchRatio();
-		
-		long posOfFrame = processedFrame.position;
-		
+		final double synthesisStepSize = synthStep.getSynthesisStepSize();
+		final double synthesisFrac = synthStep.getFrac();
+		final int synthesisRoundedStepSize = synthStep.getRoundedStepSize();
+		final double resampleRatio = synthStep.getInternalPitchRatio();
+
+		final long posOfFrame = processedFrame.position;
+
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-		
+
 			// Now do the processing
 			// First we copy the incoming frame amps and freqs into our internal ones
 			System.arraycopy( processedFrame.amps[chan], 0, buffers.ampsBuffer[chan], 0, numBins );
-	
+
 			// Freqs shouldn't be produced by a frame processor, only phases
 			System.arraycopy( processedFrame.freqs[chan], 0, buffers.freqsBuffer[chan], 0, numBins );
 			System.arraycopy( processedFrame.phases[chan], 0, buffers.phasesBuffer[chan], 0, numBins );
@@ -135,20 +135,20 @@ public class StftFrameSynthesiser
 			// Copy out the fft data so we don't destroy it.
 			// This isn't strictly necessary but may make debugging easier
 			System.arraycopy( processedFrame.complexFrame[chan], 0, buffers.fftBuffer[chan], 0, complexArraySize );
-			
+
 			inverseFftOneChannel( buffers.fftBuffer[chan] );
-			
+
 			unrotateWindowForAlignmentOneChannel( buffers.fftBuffer[chan], buffers.outputWindowBuffer[chan], outputPosition, posOfFrame );
-			
+
 			applyOutputWindowingOneChannel( buffers.outputWindowBuffer[ chan ]);
-			
+
 			overlapAddToOutputRingForChannel( buffers.outputWindowBuffer[chan],
 					overlapAdders[chan],
 					synthesisStepSize,
 					synthesisRoundedStepSize );
-			
+
 			lastOutputStepSize = synthesisRoundedStepSize;
-			
+
 			removeSynthesisSamplesForChannel( overlapAdders[chan],
 					synthesisRoundedStepSize,
 					buffers.outputStepBuffer[chan] );
@@ -160,7 +160,7 @@ public class StftFrameSynthesiser
 					resampleArray,
 					(float)resampleRatio,
 					outputRingBuffers[ chan ] );
-			
+
 		}
 
 		// Update the position
@@ -168,27 +168,27 @@ public class StftFrameSynthesiser
 		outputPosition.frac += synthesisFrac;
 	}
 
-	private void inverseFftOneChannel( float[] bufferToFft )
+	private void inverseFftOneChannel( final float[] bufferToFft )
 	{
 		fftComputer.realInverse( bufferToFft, true );
 	}
 
-	private void unrotateWindowForAlignmentOneChannel( float[] inFftBuffer, float[] outputWindow, StftPlayPosition outputWavePosition, long posOfFrame )
+	private void unrotateWindowForAlignmentOneChannel( final float[] inFftBuffer, final float[] outputWindow, final StftPlayPosition outputWavePosition, final long posOfFrame )
 	{
 		frameRotator.outRotate( inFftBuffer, (int)posOfFrame , outputWindow );
 	}
 
-	private void applyOutputWindowingOneChannel( float[] outputWindowBuffer )
+	private void applyOutputWindowingOneChannel( final float[] outputWindowBuffer )
 	{
 		fftWindow.apply( outputWindowBuffer );
 	}
 
-	private void overlapAddToOutputRingForChannel( float[] outputWindowBuffer,
-			OverlapAdder overlapAdderForChan,
-			double synthesisStepSize,
-			int synthesisRoundedStepSize)
-	{		
-		float gain = synthesisRoundedStepSize / (float)fftWindowValSquaredSum;
+	private void overlapAddToOutputRingForChannel( final float[] outputWindowBuffer,
+			final OverlapAdder overlapAdderForChan,
+			final double synthesisStepSize,
+			final int synthesisRoundedStepSize)
+	{
+		final float gain = synthesisRoundedStepSize / fftWindowValSquaredSum;
 
 		for( int i = 0 ; i < outputWindowBuffer.length ; i++ )
 		{
@@ -196,15 +196,15 @@ public class StftFrameSynthesiser
 		}
 		overlapAdderForChan.addOverlap( outputWindowBuffer, synthesisRoundedStepSize, windowLength );
 	}
-	
-	private int resampleOutputSamples( int chan,
-			float[] inputSamples,
-			int numInputSamples,
-			float[] outputSamples,
-			float resampleRatio,
-			UnsafeFloatRingBuffer outputRingBuffer )
+
+	private int resampleOutputSamples( final int chan,
+			final float[] inputSamples,
+			final int numInputSamples,
+			final float[] outputSamples,
+			final float resampleRatio,
+			final UnsafeFloatRingBuffer outputRingBuffer )
 	{
-		boolean cubic = true;
+		final boolean cubic = true;
 		int numSamples;
 		if( cubic )
 		{
@@ -214,7 +214,7 @@ public class StftFrameSynthesiser
 		{
 			numSamples = linearResamplers[ chan ].streamResample( resampleRatio, inputSamples, numInputSamples, outputSamples );
 		}
-		int numWritten = outputRingBuffer.write( outputSamples, 0, numSamples );
+		final int numWritten = outputRingBuffer.write( outputSamples, 0, numSamples );
 		if( numWritten != numSamples )
 		{
 			// Failed to write into ring buffer
@@ -223,9 +223,9 @@ public class StftFrameSynthesiser
 		return numSamples;
 	}
 
-	private void removeSynthesisSamplesForChannel( OverlapAdder overlapAdder,
-			int numSamples,
-			float[] outputStepBuffer )
+	private void removeSynthesisSamplesForChannel( final OverlapAdder overlapAdder,
+			final int numSamples,
+			final float[] outputStepBuffer )
 	{
 		overlapAdder.readOutput( outputStepBuffer, numSamples );
 	}
@@ -235,7 +235,7 @@ public class StftFrameSynthesiser
 		return lastOutputStepSize;
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		outputPosition = new StftPlayPosition();
 		for( int chan = 0 ; chan < numChannels ; chan++ )

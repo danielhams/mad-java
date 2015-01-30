@@ -30,13 +30,16 @@ public class TestRenderingErrorCallback
 	implements AppRenderingErrorCallback
 {
 	private static Log log = LogFactory.getLog( TestRenderingErrorCallback.class.getName() );
-	
-	public boolean hadFatalErrors = false;
-		
+
+	public boolean hadFatalErrors;
+
 	@Override
-	public void errorCallback( AppRenderingErrorQueue.AppRenderingErrorStruct error )
+	public void errorCallback( final AppRenderingErrorQueue.AppRenderingErrorStruct error )
 	{
-		log.error( "AppRenderingErrorCallbacks called in rendering test: " + error.severity.toString() + " " + error.msg );
+		if( log.isErrorEnabled() )
+		{
+			log.error( "AppRenderingErrorCallbacks called in rendering test: " + error.severity.toString() + " " + error.msg );
+		}
 		if( error.severity == ErrorSeverity.FATAL )
 		{
 			hadFatalErrors = true;
@@ -45,7 +48,7 @@ public class TestRenderingErrorCallback
 				error.sourceRenderingIO.stopRendering();
 			}
 		}
-		
+
 	}
 
 	@Override

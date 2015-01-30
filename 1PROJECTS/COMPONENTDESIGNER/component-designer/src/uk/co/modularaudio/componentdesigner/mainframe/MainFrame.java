@@ -28,7 +28,7 @@ public class MainFrame extends JFrame
 
 	private ComponentDesignerToolbar toolbar = null;
 
-	public void setToolbar(ComponentDesignerToolbar toolbar)
+	public void setToolbar(final ComponentDesignerToolbar toolbar)
 	{
 		this.toolbar = toolbar;
 	}

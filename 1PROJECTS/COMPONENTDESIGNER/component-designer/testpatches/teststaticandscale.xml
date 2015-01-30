@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Empty Application Rack" cols="4" rows="39">
+    <rackComponent name="Oscilloscope 3" definitionId="oscilloscope">
+        <rackPosition column="2" row="1"/>
+        <rackControl name="CaptureTime" value="200.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="TriggerType" value="None"/>
+        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Recapture" value="false"/>
+    </rackComponent>
+    <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Scale" value="0.1"/>
+        <rackControl name="Offset" value="0.2"/>
+    </rackComponent>
+    <rackComponent name="Static Value 1" definitionId="static_value">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Value" value="0.5"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Scale And Offset 2" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 3" consumerChannelName="Input CV 1"/>
+    <rackLink producerRackComponentName="Static Value 1" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 3" consumerChannelName="Input CV 0"/>
+    <rackLink producerRackComponentName="Static Value 1" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 2" consumerChannelName="Input CV"/>
+</rack>

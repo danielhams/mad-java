@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class EnvelopeIOQueueBridge extends MadLocklessQueueBridge<EnvelopeMadInstance>
 {
 	private static Log log = LogFactory.getLog( EnvelopeIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_ATTACK_FROM_ZERO = 0;
 	public static final int COMMAND_IN_ATTACK_MILLIS = 1;
 	public static final int COMMAND_IN_ATTACK_WAVE_CHOICE = 2;
@@ -45,10 +45,10 @@ public class EnvelopeIOQueueBridge extends MadLocklessQueueBridge<EnvelopeMadIns
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( EnvelopeMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp,
-			IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final EnvelopeMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp,
+			final IOQueueEvent queueEntry )
 	{
 //		log.debug("Received queued event : " + queueEntry.command);
 		switch( queueEntry.command )
@@ -60,49 +60,49 @@ public class EnvelopeIOQueueBridge extends MadLocklessQueueBridge<EnvelopeMadIns
 			}
 			case COMMAND_IN_ATTACK_MILLIS:
 			{
-				float attackMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				final float attackMillis = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.getEnvelope().setAttackMillis( attackMillis );
 				break;
 			}
 			case COMMAND_IN_ATTACK_WAVE_CHOICE:
 			{
-				EnvelopeWaveChoice attackWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
+				final EnvelopeWaveChoice attackWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
 				instance.getEnvelope().setAttackWaveChoice( attackWaveChoice );
 				break;
 			}
 			case COMMAND_IN_DECAY_MILLIS:
 			{
-				float decayMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				final float decayMillis = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.getEnvelope().setDecayMillis( decayMillis );
 				break;
 			}
 			case COMMAND_IN_DECAY_WAVE_CHOICE:
 			{
-				EnvelopeWaveChoice decayWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
+				final EnvelopeWaveChoice decayWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
 				instance.getEnvelope().setDecayWaveChoice( decayWaveChoice );
 				break;
 			}
 			case COMMAND_IN_SUSTAIN_LEVEL:
 			{
-				float sustainLevel = Float.intBitsToFloat( (int)queueEntry.value );
+				final float sustainLevel = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.getEnvelope().setSustainLevel( sustainLevel );
 				break;
 			}
 			case COMMAND_IN_RELEASE_MILLIS:
 			{
-				float releaseMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				final float releaseMillis = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.getEnvelope().setReleaseMillis( releaseMillis );
 				break;
 			}
 			case COMMAND_IN_RELEASE_WAVE_CHOICE:
 			{
-				EnvelopeWaveChoice releaseWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
+				final EnvelopeWaveChoice releaseWaveChoice = EnvelopeWaveChoice.values()[ (int)queueEntry.value ];
 				instance.getEnvelope().setReleaseWaveChoice( releaseWaveChoice );
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

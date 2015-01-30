@@ -40,51 +40,50 @@ public class FoldbackDistortionMadDefinition extends AbstractNonConfigurableMadD
 	public final static int PRODUCER_OUT_RIGHT = 3;
 	public final static int NUM_CHANNELS = 4;
 
-	private final static String definitionId = "foldback_distortion";
+	public final static String DEFINITION_ID = "foldback_distortion";
 
-	private final static String userVisibleName = "Foldback Distortion";
+	private final static String USER_VISIBLE_NAME = "Foldback Distortion";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "foldback_distortion";
-	private final static String classificationName = "Foldback Distortion";
-	private final static String classificationDescription = "Introduce distortion by folding back the audio signal over a threshold";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Foldback Distortion";
+	private final static String CLASS_DESC = "Introduce distortion by folding back the audio signal over a threshold";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave Left",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
 		"Output Wave Left",
 		"Output Wave Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
+	private final static MadChannelPosition[] CHAN_POS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public FoldbackDistortionMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public FoldbackDistortionMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new FoldbackDistortionIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POS );
 
 	}
 }

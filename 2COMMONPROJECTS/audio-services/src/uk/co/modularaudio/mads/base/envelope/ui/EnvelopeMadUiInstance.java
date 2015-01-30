@@ -27,109 +27,109 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.envelope.mu.Envelope;
+import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeIOQueueBridge;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeIOQueueBridge;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeWaveChoice;
 import uk.co.modularaudio.mads.base.envelope.ui.WaveTableChoiceAttackCombo.WaveTableChoiceEnum;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class EnvelopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<EnvelopeMadDefinition, EnvelopeMadInstance>
+public class EnvelopeMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<EnvelopeMadDefinition, EnvelopeMadInstance>
 	implements IOQueueEventUiConsumer<EnvelopeMadInstance>
 {
 	private static Log log = LogFactory.getLog( EnvelopeMadUiInstance.class.getName() );
-	
-	private List<TimescaleChangeListener> timescaleChangeListeners = new ArrayList<TimescaleChangeListener>();
-	private List<EnvelopeValueListener> envelopeListeners = new ArrayList<EnvelopeValueListener>();
-	private List<EnvelopeValueProducer> envelopeValueProducers = new ArrayList<EnvelopeValueProducer>();
-	
-	private Envelope envelope = new Envelope();
 
-	public EnvelopeMadUiInstance( EnvelopeMadInstance instance,
-			EnvelopeMadUiDefinition uiDefinition )
+	private final List<TimescaleChangeListener> timescaleChangeListeners = new ArrayList<TimescaleChangeListener>();
+	private final List<EnvelopeValueListener> envelopeListeners = new ArrayList<EnvelopeValueListener>();
+	private final List<EnvelopeValueProducer> envelopeValueProducers = new ArrayList<EnvelopeValueProducer>();
+
+	private final Envelope envelope = new Envelope();
+
+	public EnvelopeMadUiInstance( final EnvelopeMadInstance instance,
+			final EnvelopeMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
+
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
 		// Process incoming queue messages before we let the controls have a chance to process;
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
-		
+
 		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
 	}
 
 	@Override
-	public void consumeQueueEntry( EnvelopeMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final EnvelopeMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			default:
 			{
-				String msg = "Unknown command to guI: " + nextOutgoingEntry.command;
+				final String msg = "Unknown command to guI: " + nextOutgoingEntry.command;
 				log.error( msg );
 			}
 		}
 	}
-	
-	public void addTimescaleChangeListener( TimescaleChangeListener l )
+
+	public void addTimescaleChangeListener( final TimescaleChangeListener l )
 	{
 		timescaleChangeListeners.add( l );
 	}
-	
-	public void removeTimescaleChangeListener( TimescaleChangeListener l )
+
+	public void removeTimescaleChangeListener( final TimescaleChangeListener l )
 	{
 		timescaleChangeListeners.remove( l );
 	}
 
-	public void propogateTimescaleChange( float newValue )
+	public void propogateTimescaleChange( final float newValue )
 	{
 		for( int i = 0 ; i < timescaleChangeListeners.size() ; i++)
 		{
-			TimescaleChangeListener l = timescaleChangeListeners.get( i );
+			final TimescaleChangeListener l = timescaleChangeListeners.get( i );
 			l.receiveTimescaleChange( newValue );
 		}
 	}
-	
-	public void addEnvelopeListener( EnvelopeValueListener l )
+
+	public void addEnvelopeListener( final EnvelopeValueListener l )
 	{
 		envelopeListeners.add( l );
 		l.receiveEnvelopeChange();
 	}
-	
-	public void removeEnvelopeListener( EnvelopeValueListener l )
+
+	public void removeEnvelopeListener( final EnvelopeValueListener l )
 	{
 		envelopeListeners.remove( l );
 	}
-	
+
 	public void propogateEnvelopeChange()
 	{
 		for( int i = 0 ; i < envelopeListeners.size() ; i++ )
 		{
-			EnvelopeValueListener l = envelopeListeners.get( i );
+			final EnvelopeValueListener l = envelopeListeners.get( i );
 			l.receiveEnvelopeChange();
 		}
 	}
 
-	public void addEnvelopeProducer( EnvelopeValueProducer p )
+	public void addEnvelopeProducer( final EnvelopeValueProducer p )
 	{
 		envelopeValueProducers.add( p );
 	}
-	
-	public void removeEnvelopeProducer( EnvelopeValueProducer p )
+
+	public void removeEnvelopeProducer( final EnvelopeValueProducer p )
 	{
 		envelopeValueProducers.remove( p );
 	}
 
-	public void setAttackFromZero( boolean attackFromZero )
+	public void setAttackFromZero( final boolean attackFromZero )
 	{
 		envelope.setAttackFromZero( attackFromZero );
 		propogateEnvelopeChange();
@@ -137,24 +137,24 @@ public class EnvelopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_ATTACK_FROM_ZERO, (attackFromZero ? 1 : 0 ) );
 	}
 
-	public void setAttackMillis( float newValue )
+	public void setAttackMillis( final float newValue )
 	{
 		envelope.setAttackMillis( newValue );
 		propogateEnvelopeChange();
-		
+
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_ATTACK_MILLIS, Float.floatToIntBits( newValue ) );
 	}
 
-	public void setAttackWaveChoice( WaveTableChoiceEnum enumValue )
+	public void setAttackWaveChoice( final WaveTableChoiceEnum enumValue )
 	{
-		EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
+		final EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
 		envelope.setAttackWaveChoice( envWaveChoice );
 		propogateEnvelopeChange();
 
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_ATTACK_WAVE_CHOICE, envWaveChoice.ordinal() );
 	}
 
-	public void setDecayMillis( float newValue )
+	public void setDecayMillis( final float newValue )
 	{
 		envelope.setDecayMillis( newValue );
 		propogateEnvelopeChange();
@@ -162,44 +162,45 @@ public class EnvelopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_DECAY_MILLIS, Float.floatToIntBits( newValue ) );
 	}
 
-	public void setDecayWaveChoice( WaveTableChoiceEnum enumValue )
+	public void setDecayWaveChoice( final WaveTableChoiceEnum enumValue )
 	{
-		EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
+		final EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
 		envelope.setDecayWaveChoice( envWaveChoice );
 		propogateEnvelopeChange();
-		
+
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_DECAY_WAVE_CHOICE, envWaveChoice.ordinal() );
 	}
 
-	public void setSustainLevel( float newValue )
+	public void setSustainLevel( final float newValue )
 	{
 		envelope.setSustainLevel( newValue );
 		propogateEnvelopeChange();
-		
+
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_SUSTAIN_LEVEL, Float.floatToIntBits( newValue ) );
 	}
 
-	public void setReleaseMillis( float newValue )
+	public void setReleaseMillis( final float newValue )
 	{
 		envelope.setReleaseMillis( newValue );
 		propogateEnvelopeChange();
-		
+
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_RELEASE_MILLIS, Float.floatToIntBits( newValue ) );
 	}
 
-	public void setReleaseWaveChoice( WaveTableChoiceEnum enumValue )
+	public void setReleaseWaveChoice( final WaveTableChoiceEnum enumValue )
 	{
-		EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
+		final EnvelopeWaveChoice envWaveChoice = mapComboWaveChoiceToEnvelope( enumValue );
 		envelope.setReleaseWaveChoice( envWaveChoice );
 		propogateEnvelopeChange();
-		
+
 		sendTemporalValueToInstance( EnvelopeIOQueueBridge.COMMAND_IN_RELEASE_WAVE_CHOICE, envWaveChoice.ordinal() );
 	}
 
-	private EnvelopeWaveChoice mapComboWaveChoiceToEnvelope( WaveTableChoiceEnum wtChoice )
+	private EnvelopeWaveChoice mapComboWaveChoiceToEnvelope( final WaveTableChoiceEnum wtChoice )
 	{
 		switch( wtChoice )
 		{
+			default:
 			case LINEAR:
 			{
 				return EnvelopeWaveChoice.LINEAR;
@@ -219,10 +220,6 @@ public class EnvelopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<
 			case LOG_FREQ:
 			{
 				return EnvelopeWaveChoice.LOG_FREQ;
-			}
-			default:
-			{
-				throw new RuntimeException("Unmapped wave table choice enum: " + wtChoice.toString() );
 			}
 		}
 	}

@@ -35,53 +35,53 @@ import uk.co.modularaudio.util.table.Span;
 public class OscillatorMadUiDefinition 
 	extends AbstractNonConfigurableMadUiDefinition<OscillatorMadDefinition, OscillatorMadInstance, OscillatorMadUiInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		OscillatorMadDefinition.CONSUMER_CV_FREQ,
 		OscillatorMadDefinition.PRODUCER_AUDIO_OUT,
 		OscillatorMadDefinition.PRODUCER_CV_OUT
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 80, 30 ),
 		new Point( 140, 30 ),
 		new Point( 170, 30 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Frequency",
 		"Shape"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.COMBO
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		OscillatorHertzSliderUiJComponent.class,
 		OscillatorShapeComboUiJComponent.class
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 113, 3, 75, 43 ),
 		new Rectangle( 190, 15, 65, 20 )
 	};
 	
-	private static final Class<OscillatorMadUiInstance> instanceClass = OscillatorMadUiInstance.class;
+	private static final Class<OscillatorMadUiInstance> INSTANCE_CLASS = OscillatorMadUiInstance.class;
 	
 	public OscillatorMadUiDefinition( BufferedImageAllocator bia, OscillatorMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

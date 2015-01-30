@@ -45,17 +45,17 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 	implements IMadUiControlInstance<SpectralRollMadDefinition, SpectralRollMadInstance, SpectralRollMadUiInstance>
 {
 	private static final long serialVersionUID = 3571032632219667963L;
-	
-	private static Log log = LogFactory.getLog( SpectralRollAmpScaleComboUiJComponent.class.getName() );
-	
-	private SpectralRollMadUiInstance uiInstance = null;
-	
-	private Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
 
-	public SpectralRollAmpScaleComboUiJComponent( SpectralRollMadDefinition definition,
-			SpectralRollMadInstance instance,
-			SpectralRollMadUiInstance uiInstance,
-			int controlIndex )
+	private static Log log = LogFactory.getLog( SpectralRollAmpScaleComboUiJComponent.class.getName() );
+
+	private final SpectralRollMadUiInstance uiInstance;
+
+	private final Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
+
+	public SpectralRollAmpScaleComboUiJComponent( final SpectralRollMadDefinition definition,
+			final SpectralRollMadInstance instance,
+			final SpectralRollMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -64,17 +64,17 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 		ampScaleToCalculatorMap.put( "Log", new LogarithmicAmpScaleComputer() );
 		ampScaleToCalculatorMap.put( "Log-Log", new LogLogAmpScaleComputer() );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( String waveName : ampScaleToCalculatorMap.keySet() )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final String waveName : ampScaleToCalculatorMap.keySet() )
 		{
 			cbm.addElement( waveName );
 		}
 		this.setModel( cbm );
-		
+
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
-		
+
 		this.setSelectedItem( "Log" );
 	}
 
@@ -85,7 +85,7 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -93,13 +93,13 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		log.debug("receiveIndexUpdate");
 		if( previousIndex != newIndex )
 		{
-			String name = (String)getSelectedItem();
-			AmpScaleComputer ampScaleComputer = ampScaleToCalculatorMap.get( name );
+			final String name = (String)getSelectedItem();
+			final AmpScaleComputer ampScaleComputer = ampScaleToCalculatorMap.get( name );
 			uiInstance.setDesiredAmpScaleComputer( ampScaleComputer );
 		}
 	}

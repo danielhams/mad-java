@@ -43,7 +43,7 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 	private final GuiComponentPainter painter;
 
 	private HashMap<MadDefinition<?,?>, 
-		OpenLongObjectHashMap<BufferedImage>> componentTypeToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
+		OpenLongObjectHashMap<BufferedImage>> madDefinitionToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
 			OpenLongObjectHashMap<BufferedImage>>();
 	
 	public AbstractComponentImageRCache( GuiComponentPainter painter )
@@ -59,7 +59,7 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 		MadDefinition<?,?> madDefinition = madInstance.getDefinition();
 		long compoundKey = buildCompoundKey( width, height );
 
-		OpenLongObjectHashMap<BufferedImage> dimensionsToImageMap = componentTypeToMapOfDimToImage.get( madDefinition );
+		OpenLongObjectHashMap<BufferedImage> dimensionsToImageMap = madDefinitionToMapOfDimToImage.get( madDefinition );
 		
 		BufferedImage bufferedImage = null;
 		if( dimensionsToImageMap != null && dimensionsToImageMap.containsKey( compoundKey ) )
@@ -92,7 +92,7 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 				if( dimensionsToImageMap == null )
 				{
 					dimensionsToImageMap = new OpenLongObjectHashMap<BufferedImage>();
-					componentTypeToMapOfDimToImage.put( madDefinition, dimensionsToImageMap );
+					madDefinitionToMapOfDimToImage.put( madDefinition, dimensionsToImageMap );
 				}
 				dimensionsToImageMap.put( compoundKey, bufferedImage );
 			}
@@ -112,11 +112,11 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 
 	public void destroy()
 	{
-		Collection<OpenLongObjectHashMap<BufferedImage>> typeToBufs = componentTypeToMapOfDimToImage.values();
+		Collection<OpenLongObjectHashMap<BufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
 		for( OpenLongObjectHashMap<BufferedImage> imsForType : typeToBufs )
 		{
 			imsForType.clear();
 		}
-		componentTypeToMapOfDimToImage.clear();
+		madDefinitionToMapOfDimToImage.clear();
 	}
 }

@@ -35,69 +35,64 @@ import uk.co.modularaudio.util.table.Span;
 public class SpectralAmpMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	private static final Span span = new Span(2,4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		SpectralAmpMadDefinition.CONSUMER_IN
 	};
-	
-	private static final Point[] uiChannelPositions = new Point[] {
+
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 )
 	};
-	
-	private static final String[] uiControlNames = new String[] {
+
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Resolution",
 		"Frequency Scale",
 		"Amp Scale",
 		"Running Average",
 		"Display"
 	};
-	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.DISPLAY
 	};
-	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		SpectralAmpResolutionComboUiJComponent.class,
 		SpectralAmpFrequencyScaleComboUiJComponent.class,
 		SpectralAmpAmpScaleComboUiJComponent.class,
 		SpectralAmpRunningAverageComboUiJComponent.class,
 		SpectralAmpDisplayUiJComponent.class
 	};
-	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
-//		new Rectangle( 457,  10,  96,  20 ),
-//		new Rectangle( 457,  52,  96,  20 ),
-//		new Rectangle( 457,  90,  96,  20 ),
-//		new Rectangle( 457, 128,  96,  20 ),
-//		new Rectangle(   6,  22, 446, 168 )
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle(  70, 274,  96,  30 ),		// Resolution
 		new Rectangle( 180, 274,  96,  30 ),		// Freq
 		new Rectangle( 290, 274,  96,  30 ),		// Amp
 		new Rectangle( 400, 274,  96,  30 ),		// Runn Av
 		new Rectangle(   6,  34, 544, 230 )			// Display
 	};
-	
-	private static final Class<SpectralAmpMadUiInstance> instanceClass = SpectralAmpMadUiInstance.class;
-	
-	public SpectralAmpMadUiDefinition( BufferedImageAllocator bia,
-			SpectralAmpMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+
+	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;
+
+	public SpectralAmpMadUiDefinition( final BufferedImageAllocator bia,
+			final SpectralAmpMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

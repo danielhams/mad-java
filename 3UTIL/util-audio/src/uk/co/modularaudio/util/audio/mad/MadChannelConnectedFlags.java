@@ -23,20 +23,20 @@ package uk.co.modularaudio.util.audio.mad;
 
 public class MadChannelConnectedFlags
 {
-	private byte[] storage;
-	
-	public MadChannelConnectedFlags( int numChannelInstances )
+	private final byte[] storage;
+
+	public MadChannelConnectedFlags( final int numChannelInstances )
 	{
 		storage = new byte[ (numChannelInstances / 8) + 1];
 	}
 
-	public void set( int idx )
+	public void set( final int idx )
 	{
-		int storageIndex = idx / 8;
+		final int storageIndex = idx / 8;
 		storage[ storageIndex ] = (byte)(storage[ storageIndex ] | ( 1 << (idx%8)));
 	}
 
-	public boolean get( int idx )
+	public boolean get( final int idx )
 	{
 		return (storage[ (idx/8) ] & (1 << (idx % 8))) != 0;
 	}

@@ -36,22 +36,22 @@ import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.Satelli
 public abstract class PacLogSlider extends JPanel implements ValueChangeListener
 {
 	private static final long serialVersionUID = 2783504281404548759L;
-	
-	protected SliderDisplayView view;
-	protected SliderDisplayModel model;
-	protected SliderDisplayController controller;
 
-	public PacLogSlider( float minValue,
-			float maxValue,
-			float initialValue,
-			SatelliteOrientation labelOrientation,
-			DisplayOrientation displayOrientation,
-			SatelliteOrientation textboxOrientation,
-			String labelText,
-			Color labelColor,
-			String unitsText,
-			Color unitsColor,
-			boolean opaque )
+	protected final SliderDisplayView view;
+	protected final SliderDisplayModel model;
+	protected final SliderDisplayController controller;
+
+	public PacLogSlider( final float minValue,
+			final float maxValue,
+			final float initialValue,
+			final SatelliteOrientation labelOrientation,
+			final DisplayOrientation displayOrientation,
+			final SatelliteOrientation textboxOrientation,
+			final String labelText,
+			final Color labelColor,
+			final String unitsText,
+			final Color unitsColor,
+			final boolean opaque )
 	{
 		this.model = new SliderDisplayModel( minValue,
 				maxValue,
@@ -72,8 +72,8 @@ public abstract class PacLogSlider extends JPanel implements ValueChangeListener
 				labelColor,
 				unitsColor,
 				opaque );
-		
-		MigLayoutStringHelper lh = new MigLayoutStringHelper();
+
+		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "gap 0" );
@@ -81,7 +81,7 @@ public abstract class PacLogSlider extends JPanel implements ValueChangeListener
 //		lh.addLayoutConstraint( "debug" );
 		this.setLayout( lh.createMigLayout() );
 		this.add( view, "grow" );
-		
+
 		// Finally subscribe to the mode so that derived classes can handle the value change
 		model.addChangeListener( this );
 		controller.setValue( this, 0 );

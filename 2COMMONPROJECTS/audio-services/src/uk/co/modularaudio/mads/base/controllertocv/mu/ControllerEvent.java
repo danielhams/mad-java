@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.controllertocv.mu;
 
 public class ControllerEvent
 {
-	public int sampleIndex = -1;
-	public float desiredValue = -1;
+	public int sampleIndex;
+	public float desiredValue;
 
 }

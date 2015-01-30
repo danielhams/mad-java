@@ -44,59 +44,51 @@ public class PeakDisplay
 	private static final Color RUNNING_PEAK_COLOR = new Color( 209, 139, 46, 255 );
 
 	private static Log log = LogFactory.getLog( PeakDisplay.class.getName() );
-	
-	private int canvasWidth = -1;
-	private int canvasHeight = -1;
 
-	private BufferedImageAllocator bufferImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage image = null;
-	private Graphics2D imageGraphics2d = null;
-	
-	private SpectralAmpMadUiInstance uiInstance = null;
-	
-	private int maxNumBins = -1;
-	private float[] runningBinPeaks = null;
-	private float[] previousBinPeaks = null;
-	
-	private int currentNumBins = -1;
-	private float[] computedBins = null;
-	
-	private BasicStroke wideLineStroke = null;
-	private Stroke originalStroke = null;
+	private final int canvasWidth;
+	private final int canvasHeight;
 
-//	private int imageWidth = -1;
-//	private int imageHeight = -1;
+	private final BufferedImageAllocator bufferImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage image;
+	private Graphics2D imageGraphics2d;
 
-//	private long numPolygonsPainted = 0;
+	private final SpectralAmpMadUiInstance uiInstance;
 
-	public PeakDisplay( Component parent, int canvasWidth, int canvasHeight, SpectralAmpMadUiInstance uiInstance )
+	private final int maxNumBins;
+	private final float[] runningBinPeaks;
+	private final float[] previousBinPeaks;
+
+	private int currentNumBins;
+	private final float[] computedBins;
+
+	private final BasicStroke wideLineStroke;
+	private Stroke originalStroke;
+
+	public PeakDisplay( final Component parent, final int canvasWidth, final int canvasHeight, final SpectralAmpMadUiInstance uiInstance )
 	{
 		this.bufferImageAllocator = uiInstance.getUiDefinition().getBufferedImageAllocator();
-		
+
 		this.canvasWidth = canvasWidth;
 		this.canvasHeight = canvasHeight;
-		
+
 		this.uiInstance = uiInstance;
-		
+
 		this.maxNumBins = SpectralAmpMadDefinition.MAX_NUM_FFT_BINS;
 		runningBinPeaks = new float[ maxNumBins ];
 		previousBinPeaks = new float[ maxNumBins ];
 		computedBins = new float[ maxNumBins ];
 
-//		imageWidth = canvasWidth;
-//		imageHeight = canvasHeight;
-
 		wideLineStroke = new BasicStroke( 2 );
 	}
-	
-	public void paint( Graphics2D g2d )
+
+	public void paint( final Graphics2D g2d )
 	{
 		// Paint the current image one the right so that currentPixelIndex lines up with the right hand side
 		// then paint the other image to it's right lined up
 		if( image != null )
 		{
-			int currentXOffset = 0;
+			final int currentXOffset = 0;
 			g2d.drawImage( image, currentXOffset, 0,  null );
 		}
 		else
@@ -105,7 +97,7 @@ public class PeakDisplay
 			g2d.fillRect( 0, 0, canvasWidth, canvasHeight );
 		}
 	}
-	
+
 	private void checkForImage()
 	{
 		if( image == null )
@@ -115,11 +107,11 @@ public class PeakDisplay
 			originalStroke = imageGraphics2d.getStroke();
 		}
 	}
-	
-	public void processNewAmps( float[] amps )
+
+	public void processNewAmps( final float[] amps )
 	{
 //		log.trace("Processing new amps");
-		int incomingNumBins = amps.length;
+		final int incomingNumBins = amps.length;
 		if( incomingNumBins != currentNumBins )
 		{
 			clear();
@@ -143,29 +135,25 @@ public class PeakDisplay
 
 	private void recomputeRunningPeaks()
 	{
-		RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
-		
+		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
+
 		// add in previousBinPeaks to the running bin peaks using some weight
 		runAvComputer.computeNewRunningAverages( currentNumBins, previousBinPeaks, runningBinPeaks );
 	}
-	
-	private int[] xPoints = new int[3];
-	private int[] yPoints = new int[3];
-	
-	private int[] dxs = new int[3];
-	private int[] dys = new int[3];
-	
-	private void paintPeaksIntoBufferedImage( float[] bins, int numBins )
+
+	private final int[] xPoints = new int[3];
+	private final int[] yPoints = new int[3];
+
+	private final int[] dxs = new int[3];
+	private final int[] dys = new int[3];
+
+	private void paintPeaksIntoBufferedImage( final float[] bins, final int numBins )
 	{
 		clearBufferedImage();
-//		numPolygonsPainted = 0;
+
 		paintMags( bins, numBins, true );
 		System.arraycopy( bins, 0, previousBinPeaks, 0, maxNumBins );
 		paintMags( runningBinPeaks, numBins, false );
-		if( log.isDebugEnabled() )
-		{
-//			log.debug("Painted " + numPolygonsPainted + " polygons in one pass");
-		}
 	}
 
 	private void clearBufferedImage()
@@ -175,10 +163,10 @@ public class PeakDisplay
 		imageGraphics2d.fillRect( 0, 0, canvasWidth, canvasHeight );
 	}
 
-	private void paintMags(float[] bins, int numBins, boolean drawSolid )
+	private void paintMags(final float[] bins, final int numBins, final boolean drawSolid )
 	{
-		AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
-		FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
+		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
+		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 
 		xPoints[0] = -1;
 		xPoints[1] = -1;
@@ -186,12 +174,12 @@ public class PeakDisplay
 		yPoints[0] = -1;
 		yPoints[1] = -1;
 		yPoints[2] = -1;
-		
+
 		int originx = 0;
 		int originy = canvasHeight;
-		
+
 		int previousBinDrawn = -1;
-		
+
 		if( drawSolid )
 		{
 			imageGraphics2d.setStroke( originalStroke );
@@ -200,7 +188,7 @@ public class PeakDisplay
 		{
 			imageGraphics2d.setStroke( wideLineStroke );
 		}
-		
+
 //		WritableRaster wr = image.getRaster();
 //		DataBuffer db = wr.getDataBuffer();
 //		DataBufferInt dbi = (DataBufferInt)db;
@@ -208,7 +196,7 @@ public class PeakDisplay
 
 		for( int i = 0 ; i < canvasWidth ; i++ )
 		{
-			int whichBin = freqScaleComputer.displayBinToSpectraBin( numBins, canvasWidth, i );
+			final int whichBin = freqScaleComputer.displayBinToSpectraBin( numBins, canvasWidth, i );
 
 			if( whichBin != previousBinDrawn )
 			{
@@ -216,15 +204,15 @@ public class PeakDisplay
 				yPoints[0] = yPoints[1];
 				xPoints[1] = xPoints[2];
 				yPoints[1] = yPoints[2];
-				
+
 				previousBinDrawn = whichBin;
-	
-				float valForBin = bins[ whichBin ];
+
+				final float valForBin = bins[ whichBin ];
 				xPoints[2] = i;
-				float ampScaledValue = ampScaleComputer.scaleIt( valForBin );
-				int windowY = windowScaleY( ampScaledValue );
+				final float ampScaledValue = ampScaleComputer.scaleIt( valForBin );
+				final int windowY = windowScaleY( ampScaledValue );
 				yPoints[2] = windowY;
-				
+
 				if( xPoints[1] != -1 )
 				{
 					dxs[0] = originx;
@@ -233,7 +221,7 @@ public class PeakDisplay
 					dys[1] = yPoints[1];
 					dxs[2] = xPoints[2];
 					dys[2] = yPoints[2];
-					
+
 					if( dys[0] > 0 && dys[1] > 0 && dys[2] > 0 )
 					{
 						Color color = null;
@@ -253,7 +241,7 @@ public class PeakDisplay
 							// If we decompose into line drawing, draw line, not a polygon
 							fillPolygonOrDrawLine( imageGraphics2d, dxs, dys, 3 );
 
-							
+
 //							imageGraphics2d.fillPolygon( dxs, dys, 3 );
 	//						fillPolygon( rawPixelData, dxs, dys, 3, intPackedColor );
 	//						fillWritableRasterPolygon( wr, dxs, dys, 3, intPackedColor );
@@ -281,24 +269,22 @@ public class PeakDisplay
 			}
 		}
 	}
-	
-	private void fillPolygonOrDrawLine( Graphics2D imageGraphics2d, int[] dxs, int[] dys, int numPoints )
+
+	private void fillPolygonOrDrawLine( final Graphics2D imageGraphics2d, final int[] dxs, final int[] dys, final int numPoints )
 	{
-//		numPolygonsPainted++;
-	
 		int firstDiff = dxs[1] - dxs[0];
 		firstDiff = (firstDiff < 0 ? -firstDiff : firstDiff );
 		int secondDiff = dxs[2] - dxs[0];
 		secondDiff = (secondDiff < 0 ? -secondDiff : secondDiff );
 		int thirdDiff = dxs[2] - dxs[1];
 		thirdDiff = (thirdDiff < 0 ? -thirdDiff : thirdDiff);
-		int maxXDiff = ( firstDiff > secondDiff ? (firstDiff > thirdDiff ? firstDiff : thirdDiff ) : (secondDiff > thirdDiff ? secondDiff : thirdDiff ) );
-		
+		final int maxXDiff = ( firstDiff > secondDiff ? (firstDiff > thirdDiff ? firstDiff : thirdDiff ) : (secondDiff > thirdDiff ? secondDiff : thirdDiff ) );
+
 		if( maxXDiff == 1 )
 		{
-			int minY = (dys[0] < dys[1] ? (dys[0] < dys[2] ? dys[0] : dys[2] ) : (dys[1] < dys[2] ? dys[1] : dys[2] ) );
-			int maxY = (dys[0] > dys[1] ? (dys[0] > dys[2] ? dys[0] : dys[2] ) : (dys[1] > dys[2] ? dys[1] : dys[2] ) );
-			int lineX = dxs[0];
+			final int minY = (dys[0] < dys[1] ? (dys[0] < dys[2] ? dys[0] : dys[2] ) : (dys[1] < dys[2] ? dys[1] : dys[2] ) );
+			final int maxY = (dys[0] > dys[1] ? (dys[0] > dys[2] ? dys[0] : dys[2] ) : (dys[1] > dys[2] ? dys[1] : dys[2] ) );
+			final int lineX = dxs[0];
 			imageGraphics2d.drawLine( lineX, minY, lineX, maxY );
 		}
 		else
@@ -306,17 +292,17 @@ public class PeakDisplay
 			imageGraphics2d.fillPolygon( dxs, dys, 3 );
 		}
 	}
-	
-	private int windowScaleY( float ampScaledVal )
+
+	private int windowScaleY( final float ampScaledVal )
 	{
 		return canvasHeight - (int)(ampScaledVal * canvasHeight );
 	}
-	
-	private OpenIntObjectHashMap<Color> colorMap = new OpenIntObjectHashMap<Color>();
-	
-	private Color colorFor( float val )
+
+	private final OpenIntObjectHashMap<Color> colorMap = new OpenIntObjectHashMap<Color>();
+
+	private Color colorFor( final float val )
 	{
-		int intVal = newColourFor( val );
+		final int intVal = newColourFor( val );
 		Color retVal = colorMap.get( intVal );
 		if( retVal == null )
 		{
@@ -325,8 +311,8 @@ public class PeakDisplay
 		}
 		return retVal;
 	}
-	
-	private int newColourFor( float val )
+
+	private int newColourFor( final float val )
 	{
 		// Is between 0 -> 1
 		// Divide into two sections
@@ -338,13 +324,13 @@ public class PeakDisplay
 		}
 		else if( val < 0.5f )
 		{
-			int greyLevel = (int)( (val * 2) * 255);
+			final int greyLevel = (int)( (val * 2) * 255);
 			return (greyLevel << 16) |(greyLevel << 8) | (greyLevel );
 		}
 		else if( val <= 1.0f )
 		{
-			int redAmount = (int)(((val - 0.5f) * 2) * 255);
-			int greyLevel = 255 - redAmount;
+			final int redAmount = (int)(((val - 0.5f) * 2) * 255);
+			final int greyLevel = 255 - redAmount;
 			return (255 << 16) | (greyLevel << 8) | (greyLevel);
 		}
 		else
@@ -352,7 +338,7 @@ public class PeakDisplay
 			return 0xff0000;
 		}
 	}
-	
+
 	public void destroy()
 	{
 		if( tiledBufferedImage != null )
@@ -363,9 +349,9 @@ public class PeakDisplay
 				bufferImageAllocator.freeBufferedImage( tiledBufferedImage );
 				tiledBufferedImage = null;
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Unable to free tiled image: " + e.toString();
+				final String msg = "Unable to free tiled image: " + e.toString();
 				log.error( msg, e );
 			}
 		}

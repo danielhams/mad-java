@@ -28,37 +28,37 @@ public class MixerMuteAndSoloMachine
 {
 //	private static Log log = LogFactory.getLog( Channel8MixerMuteAndSoloMachine.class.getName() );
 
-	private MixerMadInstance instance = null;
-	private LaneProcessor[] channelLaneProcessors = null;
-	
-	private int numChannels = -1;
-	
-	private boolean[] channelMuteValues = null;
-	private boolean[] channelSoloValues = null;
-	private int numChannelsInSolo = 0;
+	private final MixerMadInstance instance;
+	private final LaneProcessor[] channelLaneProcessors;
 
-	public MixerMuteAndSoloMachine( MixerMadInstance instance,
-			LaneProcessor[] channelLaneProcessors )
+	private final int numChannels;
+
+	private final boolean[] channelMuteValues;
+	private final boolean[] channelSoloValues;
+	private int numChannelsInSolo;
+
+	public MixerMuteAndSoloMachine( final MixerMadInstance instance,
+			final LaneProcessor[] channelLaneProcessors )
 	{
 		this.instance = instance;
 		this.channelLaneProcessors = channelLaneProcessors;
-		
+
 		numChannels = channelLaneProcessors.length;
-		
+
 		channelMuteValues = new boolean[ numChannels ];
 		channelSoloValues = new boolean[ numChannels ];
 		Arrays.fill( channelMuteValues, false );
 		Arrays.fill( channelSoloValues, false );
 	}
 
-	public void setLaneMute( ThreadSpecificTemporaryEventStorage tses, long timestamp, int laneNumber, boolean muteValue )
+	public void setLaneMute( final ThreadSpecificTemporaryEventStorage tses, final long timestamp, final int laneNumber, final boolean muteValue )
 	{
 //		log.debug("Received lane mute of " + muteValue + " for lane " + laneNumber );
 		channelMuteValues[ laneNumber ] = muteValue;
 		updateLaneProcessors( tses, timestamp );
 	}
 
-	public void setLaneSolo( ThreadSpecificTemporaryEventStorage tses, long timestamp, int laneNumber, boolean soloValue )
+	public void setLaneSolo( final ThreadSpecificTemporaryEventStorage tses, final long timestamp, final int laneNumber, final boolean soloValue )
 	{
 //		log.debug("Received lane solo of " + soloValue + " for lane " + laneNumber );
 		channelSoloValues[ laneNumber ] = soloValue;
@@ -72,31 +72,31 @@ public class MixerMuteAndSoloMachine
 		}
 		updateLaneProcessors( tses, timestamp );
 	}
-	
-	private void updateLaneProcessors( ThreadSpecificTemporaryEventStorage tses, long timestamp )
+
+	private void updateLaneProcessors( final ThreadSpecificTemporaryEventStorage tses, final long timestamp )
 	{
-		boolean soloMode = ( numChannelsInSolo > 0 );
+		final boolean soloMode = ( numChannelsInSolo > 0 );
 		if( soloMode )
 		{
 //			log.debug("Updating in solo mode");
 			for( int i = 0 ; i < numChannels ; i++ )
 			{
-				boolean channelSolod = channelSoloValues[ i ];
+				final boolean channelSolod = channelSoloValues[ i ];
 				channelLaneProcessors[ i ].setLaneActive( channelSolod );
-				
+
 				instance.emitLaneSoloStatus( tses, timestamp, i, channelSolod );
 				instance.emitLaneMuteStatus( tses, timestamp, i, channelMuteValues[ i ] );
 			}
-			
+
 		}
 		else
 		{
 //			log.debug("Updating in mute mode");
 			for( int i = 0 ; i < numChannels ; i++ )
 			{
-				boolean channelMuted = channelMuteValues[ i ];
+				final boolean channelMuted = channelMuteValues[ i ];
 				channelLaneProcessors[ i ].setLaneActive( !channelMuted );
-				
+
 				instance.emitLaneMuteStatus( tses, timestamp, i, channelMuted );
 				instance.emitLaneSoloStatus( tses, timestamp, i, false );
 			}

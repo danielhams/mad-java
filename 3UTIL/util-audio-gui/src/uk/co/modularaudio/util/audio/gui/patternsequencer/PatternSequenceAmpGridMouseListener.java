@@ -36,14 +36,14 @@ import uk.co.modularaudio.util.audio.midi.MidiNote;
 public class PatternSequenceAmpGridMouseListener implements MouseListener, MouseMotionListener
 {
 	private static Log log = LogFactory.getLog( PatternSequenceAmpGridMouseListener.class.getName() );
-	
-	private PatternSequenceAmpGrid ampGrid = null;
-	private PatternSequenceModel dataModel = null;
-	
-	private Dimension tableCellDimensions = null;
-	private Dimension tableSize = null;
 
-	public PatternSequenceAmpGridMouseListener( PatternSequenceAmpGrid ampGrid, PatternSequenceModel dataModel )
+	private final PatternSequenceAmpGrid ampGrid;
+	private final PatternSequenceModel dataModel;
+
+	private final Dimension tableCellDimensions;
+	private final Dimension tableSize;
+
+	public PatternSequenceAmpGridMouseListener( final PatternSequenceAmpGrid ampGrid, final PatternSequenceModel dataModel )
 	{
 		this.ampGrid = ampGrid;
 		this.dataModel = dataModel;
@@ -52,43 +52,43 @@ public class PatternSequenceAmpGridMouseListener implements MouseListener, Mouse
 	}
 
 	@Override
-	public void mouseDragged( MouseEvent e )
+	public void mouseDragged( final MouseEvent e )
 	{
 		processMouseClickAtPosition( e.getPoint() );
 	}
 
 	@Override
-	public void mouseMoved( MouseEvent e )
+	public void mouseMoved( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent e )
+	public void mouseClicked( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mousePressed( MouseEvent e )
+	public void mousePressed( final MouseEvent e )
 	{
 //		log.debug("Mouse pressed");
-		Point clickPoint = e.getPoint();
+		final Point clickPoint = e.getPoint();
 		processMouseClickAtPosition( clickPoint );
 	}
 
-	private void processMouseClickAtPosition( Point clickPoint )
+	private void processMouseClickAtPosition( final Point clickPoint )
 	{
 		if( clickPoint.x >= 0 && clickPoint.x <= (tableSize.width ) &&
 				clickPoint.y >= 0 && clickPoint.y <= (tableSize.height ) )
 		{
-			int cellCol = (clickPoint.x / tableCellDimensions.width);
+			final int cellCol = (clickPoint.x / tableCellDimensions.width);
 			if( cellCol < 0 || cellCol > (dataModel.getNumSteps() - 1 ) )
 			{
 				return;
 			}
 //			log.debug("Within bounds. Will calculate new amp from y " + clickPoint.y );
-			int clickPointGridOffset = (ampGrid.getSize().height + 2) - clickPoint.y;
+			final int clickPointGridOffset = (ampGrid.getSize().height + 2) - clickPoint.y;
 //			log.debug("Clickpointgridoffset " + clickPointGridOffset );
-			float realY = clickPointGridOffset;
+			final float realY = clickPointGridOffset;
 //			log.debug("Calculate real Y of " + realY );
 			float newAmp = (realY / PatternSequenceAmpGrid.AMP_BOX_HEIGHT );
 			if( newAmp < 0.2f ) newAmp = 0.2f;
@@ -98,35 +98,35 @@ public class PatternSequenceAmpGridMouseListener implements MouseListener, Mouse
 			try
 			{
 				// Only change the amp if it's already set
-				PatternSequenceStep noteFound = dataModel.getNoteAtStep( cellCol );
-				MidiNote mn = noteFound.note;
-				boolean isContinuation = dataModel.getContinuationState();
+				final PatternSequenceStep noteFound = dataModel.getNoteAtStep( cellCol );
+				final MidiNote mn = noteFound.note;
+				final boolean isContinuation = dataModel.getContinuationState();
 				if( noteFound != null && mn != null )
 				{
 //					log.debug("Setting note at step " + cellCol + " " + mn + " " + isContinuation + " " + newAmp );
 					dataModel.setAmpAndContinuationAtStep( cellCol, isContinuation, newAmp );
 				}
 			}
-			catch (Exception e1)
+			catch (final Exception e1)
 			{
-				String msg = "Exception caught adding contents to table: " + e1.toString();
+				final String msg = "Exception caught adding contents to table: " + e1.toString();
 				log.error( msg, e1 );
 			}
 		}
 	}
-	
+
 	@Override
-	public void mouseReleased( MouseEvent e )
+	public void mouseReleased( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseEntered( MouseEvent e )
+	public void mouseEntered( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseExited( MouseEvent e )
+	public void mouseExited( final MouseEvent e )
 	{
 	}
 

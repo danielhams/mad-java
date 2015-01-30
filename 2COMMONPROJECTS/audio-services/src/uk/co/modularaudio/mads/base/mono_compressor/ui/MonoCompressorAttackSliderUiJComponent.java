@@ -41,15 +41,15 @@ public class MonoCompressorAttackSliderUiJComponent extends PacADSRSlider
 	implements IMadUiControlInstance<MonoCompressorMadDefinition, MonoCompressorMadInstance, MonoCompressorMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( MonoCompressorAttackSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 7923855236169668204L;
-	
-	private MonoCompressorMadUiInstance uiInstance = null;
 
-	public MonoCompressorAttackSliderUiJComponent( MonoCompressorMadDefinition definition,
-			MonoCompressorMadInstance instance,
-			MonoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 7923855236169668204L;
+
+	private final MonoCompressorMadUiInstance uiInstance;
+
+	public MonoCompressorAttackSliderUiJComponent( final MonoCompressorMadDefinition definition,
+			final MonoCompressorMadInstance instance,
+			final MonoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 1.0f, 100.0f, 1.0f,
 				"ms",
@@ -64,18 +64,19 @@ public class MonoCompressorAttackSliderUiJComponent extends PacADSRSlider
 		this.uiInstance = uiInstance;
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.sendOneCurve( MonoCompressorIOQueueBridge.COMMAND_IN_ATTACK_MILLIS, newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -94,24 +95,24 @@ public class MonoCompressorAttackSliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

@@ -25,18 +25,18 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceS
 
 public class PatternSequencerRuntimePattern
 {
-	public int numSteps = -1;
-	public PatternSequenceStep[] stepNotes = null;
-	public boolean used = false;
-	
-	public PatternSequencerRuntimePattern( int numSteps )
+	public int numSteps;
+	public PatternSequenceStep[] stepNotes;
+	public boolean used;
+
+	public PatternSequencerRuntimePattern( final int numSteps )
 	{
 		this.numSteps = numSteps;
 		stepNotes = new PatternSequenceStep[ numSteps ];
 		initialiseArray();
 	}
-	
-	public void copyTo( PatternSequencerRuntimePattern target )
+
+	public void copyTo( final PatternSequencerRuntimePattern target )
 	{
 		if( target.numSteps != numSteps )
 		{
@@ -46,9 +46,9 @@ public class PatternSequencerRuntimePattern
 		System.arraycopy( stepNotes, 0,  target.stepNotes, 0, numSteps );
 	}
 
-	public void copyFrom( PatternSequenceModel dataModel )
+	public void copyFrom( final PatternSequenceModel dataModel )
 	{
-		int newNumSteps = dataModel.getNumSteps();
+		final int newNumSteps = dataModel.getNumSteps();
 		if( newNumSteps != numSteps )
 		{
 			numSteps = newNumSteps;
@@ -57,7 +57,7 @@ public class PatternSequencerRuntimePattern
 
 		for( int i = 0 ; i < numSteps ; i++ )
 		{
-			PatternSequenceStep psn = dataModel.getNoteAtStep( i );
+			final PatternSequenceStep psn = dataModel.getNoteAtStep( i );
 			stepNotes[ i ].note = psn.note;
 			stepNotes[ i ].isContinuation = psn.isContinuation;
 			stepNotes[ i ].amp = psn.amp;

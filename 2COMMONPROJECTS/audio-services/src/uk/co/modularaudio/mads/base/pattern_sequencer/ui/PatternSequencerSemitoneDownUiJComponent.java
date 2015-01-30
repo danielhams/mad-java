@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.base.pattern_sequencer.ui;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
@@ -38,30 +39,32 @@ public class PatternSequencerSemitoneDownUiJComponent extends PacButton
 {
 	private static final long serialVersionUID = 6005212426192029708L;
 
-	private PatternSequenceModel dataModel = null;;
+	private final PatternSequenceModel dataModel;
 
 	public PatternSequencerSemitoneDownUiJComponent(
-			PatternSequencerMadDefinition definition,
-			PatternSequencerMadInstance instance,
-			PatternSequencerMadUiInstance uiInstance,
-			int controlIndex )
+			final PatternSequencerMadDefinition definition,
+			final PatternSequencerMadInstance instance,
+			final PatternSequencerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super();
 
 		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
+		final Font f = this.getFont();
+		setFont( f );
 		this.setText( "Semitone Down" );
-		
+
 		dataModel = instance.getPatternDataModel();
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -69,7 +72,7 @@ public class PatternSequencerSemitoneDownUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveEvent( ActionEvent e )
+	public void receiveEvent( final ActionEvent e )
 	{
 		dataModel.transpose( PatternSequenceModelTranspose.SEMITONE_DOWN );
 	}

@@ -25,24 +25,24 @@ import org.apache.commons.logging.Log;
 public class AudioTestResults
 {
 //	private static Log log = LogFactory.getLog( AudioTestResults.class.getName() );
-	
-	public long numSoftOverflows = 0;
-	public long numSoftUnderflows = 0;
-	public long numHardOverflows = 0;
-	public long numHardUnderflows = 0;
-	public boolean fatalException = false;
-	public long numPeriodsRecorded = 0;
+
+	public long numSoftOverflows;
+	public long numSoftUnderflows;
+	public long numHardOverflows;
+	public long numHardUnderflows;
+	public boolean fatalException;
+	public long numPeriodsRecorded;
 
 	public AudioTestResults()
 	{
 	}
 
-	public void fillIn( long numSoftOverflows,
-			long numSoftUnderflows,
-			long numHardOverflows,
-			long numHardUnderflows,
-			boolean fatalException,
-			long numPeriodsRecorded )
+	public void fillIn( final long numSoftOverflows,
+			final long numSoftUnderflows,
+			final long numHardOverflows,
+			final long numHardUnderflows,
+			final boolean fatalException,
+			final long numPeriodsRecorded )
 	{
 		this.numSoftOverflows = numSoftOverflows;
 		this.numSoftUnderflows = numSoftUnderflows;
@@ -52,22 +52,25 @@ public class AudioTestResults
 		this.numPeriodsRecorded  = numPeriodsRecorded;
 	}
 
-	public void logResults( Log log )
+	public void logResults( final Log log )
 	{
 		// Only interested in the hardware underflows / overflows
-		long totalErrors = numHardOverflows + numHardUnderflows;
+		final long totalErrors = numHardOverflows + numHardUnderflows;
 		float percentageErrors = 0.0f;
 		if( numPeriodsRecorded > 0 )
 		{
 			percentageErrors = (float)totalErrors / (float)numPeriodsRecorded;
 		}
-		log.info( "Test had " +
-				numSoftOverflows + " soft overflows and " +
-				numSoftUnderflows + " soft underflows for " +
-				numHardOverflows + " hard overflows and " +
-				numHardUnderflows + " hard underflows for " +
-				numPeriodsRecorded + " periods recorded");
-		log.info("This is " + percentageErrors + " percent hard errors");
+		if( log.isInfoEnabled() )
+		{
+			log.info( "Test had " +
+					numSoftOverflows + " soft overflows and " +
+					numSoftUnderflows + " soft underflows for " +
+					numHardOverflows + " hard overflows and " +
+					numHardUnderflows + " hard underflows for " +
+					numPeriodsRecorded + " periods recorded");
+			log.info("This is " + percentageErrors + " percent hard errors");
+		}
 	}
 
 	public boolean isSuccessfull()
@@ -75,7 +78,7 @@ public class AudioTestResults
 		boolean success = true;
 
 		// Only interested in the hardware underflows / overflows
-		long totalErrors = numHardOverflows + numHardUnderflows;
+		final long totalErrors = numHardOverflows + numHardUnderflows;
 		float percentageErrors = 0.0f;
 		if( numPeriodsRecorded == 0 )
 		{

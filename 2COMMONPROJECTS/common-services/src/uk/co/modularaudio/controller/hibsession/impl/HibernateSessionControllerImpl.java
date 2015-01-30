@@ -25,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
@@ -42,24 +41,7 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 
 	private HibernateSessionService hibernateSessionService;
 
-	private ConfigurationService configurationService;
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
-
-	public HibernateSessionService getHibernateSessionService()
-	{
-		return hibernateSessionService;
-	}
-
-	public void setHibernateSessionService(HibernateSessionService sessionService)
+	public void setHibernateSessionService(final HibernateSessionService sessionService)
 	{
 		this.hibernateSessionService = sessionService;
 	}
@@ -70,14 +52,14 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 	@Override
 	public void getThreadSession()
 	{
-		Session tmpSession = hibernateSessionService.getSession();
+		final Session tmpSession = hibernateSessionService.getSession();
 		ThreadLocalSessionResource.setSessionResource( tmpSession );
 	}
 
 	@Override
 	public void releaseThreadSession() throws NoSuchHibernateSessionException
 	{
-		Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
+		final Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
 		ThreadLocalSessionResource.setSessionResource( null );
 		hibernateSessionService.releaseSession( currentThreadSession );
 	}
@@ -87,13 +69,16 @@ public class HibernateSessionControllerImpl implements HibernateSessionControlle
 	{
 		try
 		{
-			Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
+			final Session currentThreadSession = ThreadLocalSessionResource.getSessionResource();
 			ThreadLocalSessionResource.setSessionResource( null );
 			hibernateSessionService.releaseSession( currentThreadSession );
 		}
-		catch( Throwable t )
+		catch( final Throwable t )
 		{
-			log.error("Throwable caught releasing thread session: " + t.toString(), t );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Throwable caught releasing thread session: " + t.toString(), t );
+			}
 		}
 	}
 

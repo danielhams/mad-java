@@ -53,14 +53,14 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 {
 	private static Log log = LogFactory.getLog( MadComponentServiceImpl.class.getName() );
 
-	private MadDefinitionComparator auDefComparator = new MadDefinitionComparator();
+	private final static MadDefinitionComparator DEF_COMPARATOR = new MadDefinitionComparator();
 
-	private Map<String, MadDefinition<?,?>> idToDefinitionMap = new HashMap<String, MadDefinition<?,?>>();
-	private Set<String> displayNameSet = new HashSet<String>();
-	private Map<MadDefinition<?,?>, MadComponentFactory> definitionToFactoryMap = new HashMap<MadDefinition<?,?>, MadComponentFactory>();
+	private final Map<String, MadDefinition<?,?>> idToDefinitionMap = new HashMap<String, MadDefinition<?,?>>();
+	private final Set<String> displayNameSet = new HashSet<String>();
+	private final Map<MadDefinition<?,?>, MadComponentFactory> definitionToFactoryMap = new HashMap<MadDefinition<?,?>, MadComponentFactory>();
 
-	private boolean showAlpha = false;
-	private boolean showBeta = false;
+	private boolean showAlpha;
+	private boolean showBeta;
 
 	public MadComponentServiceImpl()
 	{
@@ -70,16 +70,16 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 	public MadDefinitionListModel listDefinitionsAvailable()
 			throws DatastoreException
 	{
-		Vector<MadDefinition<?,?>> defsForSorting = new Vector<MadDefinition<?,?>>();
-		for( MadDefinition<?,?> definition : definitionToFactoryMap.keySet() )
+		final Vector<MadDefinition<?,?>> defsForSorting = new Vector<MadDefinition<?,?>>();
+		for( final MadDefinition<?,?> definition : definitionToFactoryMap.keySet() )
 		{
 			boolean shouldAdd = false;
 
-			MadClassification classification = definition.getClassification();
+			final MadClassification classification = definition.getClassification();
 
 			if( classification.getGroup().getVisibility() == Visibility.PUBLIC )
 			{
-				ReleaseState state = classification.getState();
+				final ReleaseState state = classification.getState();
 
 				switch( state )
 				{
@@ -113,23 +113,26 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 			}
 		}
 
-		Collections.sort( defsForSorting, auDefComparator );
+		Collections.sort( defsForSorting, DEF_COMPARATOR );
 
-		MadDefinitionListModel knownDefinitions = new MadDefinitionListModel( defsForSorting, auDefComparator );
+		final MadDefinitionListModel knownDefinitions = new MadDefinitionListModel( defsForSorting, DEF_COMPARATOR );
 		return knownDefinitions;
 	}
 
 	@Override
-	public void registerComponentFactory( MadComponentFactory componentFactory)
+	public void registerComponentFactory( final MadComponentFactory componentFactory)
 			throws DatastoreException, MAConstraintViolationException
 	{
-		log.debug("Registering components for " + componentFactory.getClass().getSimpleName());
-		Collection<MadDefinition<?,?>> factoryDefinitions = componentFactory.listDefinitions();
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Registering components for " + componentFactory.getClass().getSimpleName());
+		}
+		final Collection<MadDefinition<?,?>> factoryDefinitions = componentFactory.listDefinitions();
 
 		// First pass checking the definitions are unique
-		for( MadDefinition<?,?> definition : factoryDefinitions )
+		for( final MadDefinition<?,?> definition : factoryDefinitions )
 		{
-			String id = definition.getId();
+			final String id = definition.getId();
 			if( idToDefinitionMap.get( id ) != null )
 			{
 				throw new MAConstraintViolationException( "Attempting to register a definition with an ID already taken: " + id );
@@ -140,7 +143,7 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 			}
 		}
 		// Second pass, adding them
-		for( MadDefinition<?,?> definition : factoryDefinitions )
+		for( final MadDefinition<?,?> definition : factoryDefinitions )
 		{
 			displayNameSet.add( definition.getClassification().getName() );
 			idToDefinitionMap.put( definition.getId(), definition );
@@ -159,30 +162,30 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 	}
 
 	@Override
-	public MadDefinition<?,?> findDefinitionById( String definitionId )
+	public MadDefinition<?,?> findDefinitionById( final String definitionId )
 			throws DatastoreException, RecordNotFoundException
 	{
-		MadDefinition<?,?> retVal = idToDefinitionMap.get( definitionId );
+		final MadDefinition<?,?> retVal = idToDefinitionMap.get( definitionId );
 		if( retVal == null )
 		{
-			String msg = "Mad Definition with id: " + definitionId + " not found.";
+			final String msg = "Mad Definition with id: " + definitionId + " not found.";
 			throw new RecordNotFoundException( msg );
 		}
 		return retVal;
 	}
 
 	@Override
-	public MadInstance<?,?> createInstanceFromDefinition( MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			String instanceName )
+	public MadInstance<?,?> createInstanceFromDefinition( final MadDefinition<?,?> definition,
+			final Map<MadParameterDefinition, String> parameterValues,
+			final String instanceName )
 			throws DatastoreException, RecordNotFoundException,
 			MadProcessingException
 	{
 		// Find the associated factory and delegate
-		IMadInstanceFactory instanceFactory = definitionToFactoryMap.get( definition  );
+		final IMadInstanceFactory instanceFactory = definitionToFactoryMap.get( definition  );
 		if( instanceFactory != null )
 		{
-			MadInstance<?,?> factoryCreatedInstance = instanceFactory.createInstanceForDefinition( definition, parameterValues, instanceName );
+			final MadInstance<?,?> factoryCreatedInstance = instanceFactory.createInstanceForDefinition( definition, parameterValues, instanceName );
 			if( factoryCreatedInstance == null )
 			{
 				throw new RecordNotFoundException( "Factory did not create an instance of the required mad: " + definition.getId());
@@ -194,18 +197,21 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 		}
 		else
 		{
-			String msg = "Unable to find factory for definition: " + definition.getId();
+			final String msg = "Unable to find factory for definition: " + definition.getId();
 			throw new RecordNotFoundException( msg );
 		}
 	}
 
 	@Override
-	public void unregisterComponentFactory( MadComponentFactory componentFactory )
+	public void unregisterComponentFactory( final MadComponentFactory componentFactory )
 			throws DatastoreException
 	{
-		log.debug("Unregistering components for " + componentFactory.getClass().getSimpleName());
-		Collection<MadDefinition<?,?>> factoryDefs = componentFactory.listDefinitions();
-		for( MadDefinition<?,?> def : factoryDefs )
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Unregistering components for " + componentFactory.getClass().getSimpleName());
+		}
+		final Collection<MadDefinition<?,?>> factoryDefs = componentFactory.listDefinitions();
+		for( final MadDefinition<?,?> def : factoryDefs )
 		{
 			displayNameSet.remove( def.getClassification().getName() );
 			idToDefinitionMap.remove( def.getId() );
@@ -214,25 +220,25 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 	}
 
 	@Override
-	public void destroyInstance( MadInstance<?,?> instance )
+	public void destroyInstance( final MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		MadDefinition<?,?> definition = instance.getDefinition();
+		final MadDefinition<?,?> definition = instance.getDefinition();
 		// Find the associated factory and delegate
-		IMadInstanceFactory instanceFactory = definitionToFactoryMap.get( definition  );
+		final IMadInstanceFactory instanceFactory = definitionToFactoryMap.get( definition  );
 		if( instanceFactory != null )
 		{
 			instanceFactory.destroyInstance( instance );
 		}
 		else
 		{
-			String msg = "Unable to find factory for definition: " + definition.getId();
+			final String msg = "Unable to find factory for definition: " + definition.getId();
 			throw new RecordNotFoundException( msg );
 		}
 	}
 
 	@Override
-	public void setReleaseLevel( boolean showAlpha, boolean showBeta )
+	public void setReleaseLevel( final boolean showAlpha, final boolean showBeta )
 	{
 		this.showAlpha = showAlpha;
 		this.showBeta = showBeta;

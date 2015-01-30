@@ -31,31 +31,32 @@ public class GuiCVChannelPlug extends GuiChannelPlug
 {
 	private static final long serialVersionUID = 8525746091614600992L;
 
-	public GuiCVChannelPlug(MadUiChannelInstance sacd)
+	public GuiCVChannelPlug(final MadUiChannelInstance sacd)
 	{
 		super(sacd);
 	}
 
-	public void paint( Graphics g )
+	@Override
+	public void paint( final Graphics g )
 	{
 		if( DRAWN_PLUGS )
 		{
 			if( plugImage == null )
 			{
-				int width = getWidth();
-				int height = getHeight();
-				String uniqueId = "cv_" + width + "_" + height;
+				final int width = getWidth();
+				final int height = getHeight();
+				final String uniqueId = "cv_" + width + "_" + height;
 				plugImage = plugImageCache.fetchOrCreatePlugImage( uniqueId, width, height, this );
 			}
 			g.drawImage( plugImage, 0, 0, null );
-		}		
+		}
 	}
 
 	@Override
-	public BufferedImage createPlugImage( int width, int height )
+	public BufferedImage createPlugImage( final int width, final int height )
 	{
-		BufferedImage newImage = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-		Graphics2D g2d = newImage.createGraphics();
+		final BufferedImage newImage = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D g2d = newImage.createGraphics();
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		g2d.setColor( PLUG_INSIDE_COLOR );
 		g2d.fillRect( 0, 0, PLUG_DIAMETER, PLUG_DIAMETER );

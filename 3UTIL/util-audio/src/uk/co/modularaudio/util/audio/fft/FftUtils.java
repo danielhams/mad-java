@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 public class FftUtils
 {
-	public static void autocorr( float[] input, float[] output )
+	public static void autocorr( final float[] input, final float[] output )
 	{
 		float tmp = 0.0f;
 		for( int i = 0 ; i < input.length ; i++ )
@@ -38,7 +38,7 @@ public class FftUtils
 		}
 	}
 
-    public static float maxValue( float[] in )
+    public static float maxValue( final float[] in )
     {
         float retVal = 0.0f;
         for( int i = 0 ; i < in.length ; i++ )
@@ -51,7 +51,7 @@ public class FftUtils
         return retVal;
     }
 
-	public static int maxValuePos(float[] in)
+	public static int maxValuePos(final float[] in)
 	{
         float maxVal = 0.0f;
         int maxPos = 0;
@@ -66,16 +66,16 @@ public class FftUtils
         return maxPos;
 	}
 
-	public static void weight(float[] input, float[] weights)
+	public static void weight(final float[] input, final float[] weights)
 	{
-		int length = ( input.length < weights.length ? input.length : weights.length );
+		final int length = ( input.length < weights.length ? input.length : weights.length );
 		for( int i = 0 ; i < length ; i++ )
 		{
 			input[i] = input[i] * weights[i];
-		}		
+		}
 	}
 
-	public static void rev(float[] input)
+	public static void rev(final float[] input)
 	{
 		float tmp;
 		for( int i = 0 ; i < (int)Math.floor( input.length / 2) ; i++ )
@@ -86,21 +86,21 @@ public class FftUtils
 		}
 	}
 
-	public static void zeros(float[] input)
+	public static void zeros(final float[] input)
 	{
 		Arrays.fill(input, 0, input.length, 0.0f );
 	}
 
-	public static void ones(float[] input)
+	public static void ones(final float[] input)
 	{
 		Arrays.fill(input, 0, input.length, 1.0f );
 	}
 
-	public static float quadint(float[] input, int pos)
+	public static float quadint(final float[] input, final int pos)
 	{
 		float s0, s1, s2;
-		int x0 = (pos < 1 ? pos : pos - 1 );
-		int x2 = (pos + 1 < input.length ? pos + 1 : pos );
+		final int x0 = (pos < 1 ? pos : pos - 1 );
+		final int x2 = (pos + 1 < input.length ? pos + 1 : pos );
 		if( x0 == pos )
 		{
 			return ( input[pos] <= input[x2] ? input[pos] : input[x2] );
@@ -114,9 +114,9 @@ public class FftUtils
 		s2 = input[x2];
 		return pos + 0.5f * (s2 - s0) / (s2 - 2.0f * s1 + s0 );
 	}
-	
-	public static void smbFft(float[] fftBuffer, long fftFrameSize, long sign)
-	/* 
+
+	public static void smbFft(final float[] fftBuffer, final long fftFrameSize, final long sign)
+	/*
 		FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
 		Fills fftBuffer[0...2*fftFrameSize-1] with the Fourier transform of the
 		time domain data in fftBuffer[0...2*fftFrameSize-1]. The FFT array takes
@@ -138,7 +138,7 @@ public class FftUtils
 				j <<= 1;
 			}
 			if (i < j) {
-				p1 = i; 
+				p1 = i;
 				p2 = j;
 				temp = fftBuffer[p1];
 				fftBuffer[p1] = fftBuffer[p2];
@@ -163,8 +163,8 @@ public class FftUtils
 				p1r = j; p1i = p1r+1;
 				p2r = p1r+le2; p2i = p2r+1;
 				for (i = j; i < 2*fftFrameSize; i += le) {
-					tr = fftBuffer[(int) p2r] * ur - fftBuffer[(int) p2i] * ui;
-					ti = fftBuffer[(int) p2r] * ui + fftBuffer[(int) p2i] * ur;
+					tr = fftBuffer[p2r] * ur - fftBuffer[p2i] * ui;
+					ti = fftBuffer[p2r] * ui + fftBuffer[p2i] * ur;
 					fftBuffer[p2r] = fftBuffer[p1r] - tr; fftBuffer[p2i] = fftBuffer[p1i] - ti;
 					fftBuffer[p1r] += tr; fftBuffer[p1i] += ti;
 
@@ -184,7 +184,7 @@ public class FftUtils
 		}
 	}
 
-	public static void ones(double[] input)
+	public static void ones(final double[] input)
 	{
 		Arrays.fill(input, 0, input.length, 1.0 );
 	}

@@ -28,9 +28,9 @@ import javax.swing.JComboBox;
 public abstract class PacComboBox<E> extends JComboBox<E> implements ItemListener
 {
 	private static final long serialVersionUID = -5893486140336953577L;
-	
+
 	private int previousIndex = -1;
-	
+
 	public PacComboBox()
 	{
 		super();
@@ -39,17 +39,17 @@ public abstract class PacComboBox<E> extends JComboBox<E> implements ItemListene
 
 	public String getControlValue()
 	{
-		int selectedItemIndex = this.getSelectedIndex();
+		final int selectedItemIndex = this.getSelectedIndex();
 		return this.getItemAt( selectedItemIndex ).toString();
 	}
-	
-	public void receiveControlValue( String strValue )
+
+	public void receiveControlValue( final String strValue )
 	{
 		int index = -1;
 		boolean done = false;
 		for( int i = 0 ; !done && i < this.getItemCount() ; i++ )
 		{
-			E item = this.getItemAt( i );
+			final E item = this.getItemAt( i );
 			if( item.toString().equals( strValue ) )
 			{
 				index = i;
@@ -63,16 +63,16 @@ public abstract class PacComboBox<E> extends JComboBox<E> implements ItemListene
 	}
 
 	@Override
-	public void itemStateChanged( ItemEvent e )
+	public void itemStateChanged( final ItemEvent e )
 	{
 		if( e.getSource() == this )
 		{
-			int newIndex = getSelectedIndex();
+			final int newIndex = getSelectedIndex();
 			receiveIndexUpdate( previousIndex, newIndex );
 			previousIndex = newIndex;
 		}
 	}
 
 	protected abstract void receiveIndexUpdate( int previousIndex, int newIndex );
-	
+
 }

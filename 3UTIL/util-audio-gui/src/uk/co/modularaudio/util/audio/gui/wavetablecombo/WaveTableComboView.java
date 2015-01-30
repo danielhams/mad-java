@@ -25,14 +25,14 @@ import uk.co.modularaudio.util.swing.mvc.combo.ComboView;
 public class WaveTableComboView extends ComboView<WaveTableComboItem>
 {
 	private static final long serialVersionUID = -32033726533875374L;
-	
+
 	protected WaveTableComboView()
 	{
 		super( new WaveTableComboRenderer() );
 	}
 
-	public WaveTableComboView( WaveTableComboModel cm,
-			WaveTableComboController cc )
+	public WaveTableComboView( final WaveTableComboModel cm,
+			final WaveTableComboController cc )
 	{
 		super( cm, cc, new WaveTableComboRenderer() );
 	}

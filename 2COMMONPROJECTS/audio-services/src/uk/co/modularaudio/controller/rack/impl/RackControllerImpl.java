@@ -28,8 +28,6 @@ import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
-import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
@@ -39,21 +37,20 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
-import uk.co.modularaudio.util.table.NoSuchContentsException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
 public class RackControllerImpl implements ComponentWithLifecycle, RackController
 {
-	private RackService rackService = null;
-	private RackMarshallingService rackMarshallingService = null;
+	private RackService rackService;
+	private RackMarshallingService rackMarshallingService;
 
-	public void setRackService(RackService rackService)
+	public void setRackService(final RackService rackService)
 	{
 		this.rackService = rackService;
 	}
 
-	public void setRackMarshallingService(RackMarshallingService rackMarshallingService)
+	public void setRackMarshallingService(final RackMarshallingService rackMarshallingService)
 	{
 		this.rackMarshallingService = rackMarshallingService;
 	}
@@ -69,90 +66,48 @@ public class RackControllerImpl implements ComponentWithLifecycle, RackControlle
 	}
 
 	@Override
-	public RackDataModel createNewRackDataModel( String rackName, String rackPath, int numCols, int numRows, boolean withRackIO ) throws DatastoreException
+	public RackDataModel createNewRackDataModel( final String rackName, final String rackPath, final int numCols, final int numRows, final boolean withRackIO ) throws DatastoreException
 	{
 		return rackService.createNewRackDataModel( rackName, rackPath, numCols, numRows, withRackIO );
 	}
 
 	@Override
-	public String getNameForNewComponentOfType( RackDataModel rackDataModel, MadDefinition<?,?> typeToAdd) throws DatastoreException
-	{
-		return rackService.getNameForNewComponentOfType( rackDataModel, typeToAdd );
-	}
-
-	@Override
-	public void dumpRack( RackDataModel rdm )
+	public void dumpRack( final RackDataModel rdm )
 	{
 		rackService.dumpRack( rdm );
 	}
 
 	@Override
-	public void moveContentsToPosition(RackDataModel rackDataModel, RackComponent component, int x, int y)
-			throws DatastoreException, NoSuchContentsException, TableIndexOutOfBoundsException, ContentsAlreadyAddedException, TableCellFullException
-	{
-		rackService.moveContentsToPosition( rackDataModel, component, x, y );
-	}
-
-	@Override
-	public void removeRackLink(RackDataModel rackDataModel, RackLink rackLink) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
-	{
-		rackService.deleteRackLink( rackDataModel, rackLink );
-	}
-
-	@Override
-	public RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException
+	public RackDataModel loadRackFromFile(final String filename) throws DatastoreException, IOException
 	{
 		return rackMarshallingService.loadRackFromFile(filename);
 	}
 
 	@Override
-	public void saveRackToFile(RackDataModel dataModel, String filename) throws DatastoreException, IOException
+	public void saveRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
 	{
 		rackMarshallingService.saveRackToFile(dataModel, filename);
-		dataModel.setDirty( false );
+		rackService.setRackDirty( dataModel, false );
 	}
 
 	@Override
-	public void destroyRackDataModel(RackDataModel rackDataModel) throws DatastoreException, MAConstraintViolationException
+	public void destroyRackDataModel(final RackDataModel rackDataModel) throws DatastoreException, MAConstraintViolationException
 	{
 		rackService.destroyRackDataModel( rackDataModel );
 	}
 
 	@Override
-	public MadGraphInstance<?,?> getRackGraphInstance( RackDataModel rack )
+	public MadGraphInstance<?,?> getRackGraphInstance( final RackDataModel rack )
 	{
 		return rackService.getRackGraphInstance( rack );
 	}
 
 	@Override
-	public RackComponent createComponentAtPosition( RackDataModel rack, MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues, String name, int col, int row )
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
-			MAConstraintViolationException, RecordNotFoundException
-	{
-		return rackService.createComponentAtPosition( rack, definition, parameterValues, name, col, row );
-	}
-
-	@Override
-	public RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues, String name )
+	public RackComponent createComponent( final RackDataModel rack, final MadDefinition<?,?> definition,
+			final Map<MadParameterDefinition, String> parameterValues, final String name )
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 			MAConstraintViolationException, RecordNotFoundException
 	{
 		return rackService.createComponent( rack, definition, parameterValues, name );
-	}
-
-	@Override
-	public RackLink addRackLink( RackDataModel rack,
-			RackComponent producerRackComponent,
-			MadChannelInstance producerChannelInstance,
-			RackComponent consumerRackComponent,
-			MadChannelInstance consumerChannelInstance )
-			throws DatastoreException, RecordNotFoundException,
-			MAConstraintViolationException
-	{
-		return rackService.addRackLink( rack, producerRackComponent,
-				producerChannelInstance, consumerRackComponent,
-				consumerChannelInstance );
 	}
 }

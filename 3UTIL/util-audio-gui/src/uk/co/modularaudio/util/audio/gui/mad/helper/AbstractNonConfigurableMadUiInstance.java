@@ -21,27 +21,27 @@
 package uk.co.modularaudio.util.audio.gui.mad.helper;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.table.Span;
 
-public abstract class AbstractNonConfigurableMadUiInstance<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD, MI>>
-	extends MadUiInstance<MD, MI>
+public abstract class AbstractNonConfigurableMadUiInstance<D extends MadDefinition<D,I>,
+	I extends MadInstance<D, I>>
+	extends AbstractMadUiInstance<D, I>
 {
-	protected Span span = null;
+	protected final Span span;
 
-	public AbstractNonConfigurableMadUiInstance( Span span,
-			MI instance,
-			MadUiDefinition<MD, MI> componentUiDefinition )
+	public AbstractNonConfigurableMadUiInstance( final Span span,
+			final I instance,
+			final MadUiDefinition<D, I> componentUiDefinition )
 	{
 		super( instance, componentUiDefinition );
 		this.span = span;
 	}
 
 	@Override
-	public Span getCellSpan()
+	public final Span getCellSpan()
 	{
 		return span;
 	}

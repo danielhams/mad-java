@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.mad.graph;
 
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 
-public class MadGraphQueueBridge<AUGI extends MadGraphInstance<?, AUGI>>
-	extends MadNullLocklessQueueBridge<AUGI>
+public class MadGraphQueueBridge<I extends MadGraphInstance<?, I>>
+	extends MadNullLocklessQueueBridge<I>
 {
 }

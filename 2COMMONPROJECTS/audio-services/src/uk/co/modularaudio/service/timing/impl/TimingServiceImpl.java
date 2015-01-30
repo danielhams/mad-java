@@ -27,12 +27,11 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 
 public class TimingServiceImpl implements ComponentWithLifecycle, TimingService
 {
-	private InternalTimingSource timingSource = null;
+	private final InternalTimingSource timingSource = new InternalTimingSource();
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		timingSource = new InternalTimingSource();
 	}
 
 	@Override

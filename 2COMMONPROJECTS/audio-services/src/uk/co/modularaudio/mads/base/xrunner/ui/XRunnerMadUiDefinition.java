@@ -35,47 +35,47 @@ import uk.co.modularaudio.util.table.Span;
 public class XRunnerMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<XRunnerMadDefinition, XRunnerMadInstance, XRunnerMadUiInstance>
 {
-	private static final Span span = new Span(1,1);
+	private static final Span SPAN = new Span(1,1);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		XRunnerMadDefinition.CONSUMER_IN_WAVE,
 		XRunnerMadDefinition.PRODUCER_OUT_WAVE,
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 80, 30 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"DoXRun"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.BUTTON
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		DoXRunButtonUiJComponent.class
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 6, 21, 94, 20 )
 	};
 	
-	private static final Class<XRunnerMadUiInstance> instanceClass = XRunnerMadUiInstance.class;
+	private static final Class<XRunnerMadUiInstance> INSTANCE_CLASS = XRunnerMadUiInstance.class;
 	
 	public XRunnerMadUiDefinition( BufferedImageAllocator bia, XRunnerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

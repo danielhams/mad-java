@@ -38,31 +38,31 @@ import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 public class DndRackDragPolicyDragTargetHelper
 {
 	private static Log log = LogFactory.getLog( DndRackDragPolicyDragTargetHelper.class.getName() );
-	
-	private LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table = null;
-	private RackDataModel dataModel = null;
-	
+
+	private final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table;
+	private final RackDataModel dataModel;
+
 	// Working set during a drag
 	int dataModelNumCols = -1;
 	int dataModelNumRows = -1;
 	int dragSourceColSpan = -1;
 	int dragSourceRowSpan = -1;
-	
-	private RackComponent dragSource = null;
-	private Span dragSourceSpan = null;
+
+	private final RackComponent dragSource;
+	private final Span dragSourceSpan;
 //	private Map<String, DndRackDragMatch> dragTargetToValidityMap =
 //		new HashMap<String, DndRackDragMatch>();
-	private OpenIntObjectHashMap<DndRackDragMatch> dragTargetPointToValidityMap =
+	private final OpenIntObjectHashMap<DndRackDragMatch> dragTargetPointToValidityMap =
 			new OpenIntObjectHashMap<DndRackDragMatch>();
-	private Point dragSourceMouseOffset = null;
-	
-	private int[] tableIndexesPoint = new int[2];
-	
-	public DndRackDragPolicyDragTargetHelper( LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
-			RackDataModel dataModel,
-			RackComponent dragSource,
-			Span dragSourceCellSpan,
-			Point dragSourceMouseOffset )
+	private final Point dragSourceMouseOffset;
+
+	private final int[] tableIndexesPoint = new int[2];
+
+	public DndRackDragPolicyDragTargetHelper( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
+			final RackDataModel dataModel,
+			final RackComponent dragSource,
+			final Span dragSourceCellSpan,
+			final Point dragSourceMouseOffset )
 	{
 		this.table = table;
 		this.dataModel = dataModel;
@@ -78,36 +78,36 @@ public class DndRackDragPolicyDragTargetHelper
 		dragSourceColSpan = dragSourceCellSpan.x;
 		dragSourceRowSpan = dragSourceCellSpan.y;
 	}
-	
-	public DndRackDragMatch lookupDragMatchUseCache( Point dragLocalPoint,
-			Point mouseDragTargetPoint )
+
+	public DndRackDragMatch lookupDragMatchUseCache( final Point dragLocalPoint,
+			final Point mouseDragTargetPoint )
 		throws DndRackDragTargetLookupException, NoSuchContentsException
 	{
-		int[] dragTargetPoint = new int[2];
+		final int[] dragTargetPoint = new int[2];
 		dragTargetPoint[0] = mouseDragTargetPoint.x;
 		dragTargetPoint[1] = mouseDragTargetPoint.y;
-		
+
 		// Now add on half the thing being dragged's size so we are testing where the center of it
 		offsetDragTargetPointBySourceSize( dragTargetPoint, dragLocalPoint );
-		
+
 //		log.debug("Converted mouse drag point into drag target point: " + dragTargetPoint );
 
 		// We need to turn the drag target point into the underlying cell index in the table for our tests
 		table.pointToTableIndexes( dragTargetPoint, tableIndexesPoint );
-		
+
 		// See if we already computed a target match for these table indexes - this way we only recompute
 		// a match when the mouse passes over cells boundaries into a cell we haven't visited before.
 		// This is a BIG performance boost since we aren't doing the full computation for every mouse event.
-		int tableIndexesPointHashcode = tableIndexesPoint.hashCode();
+		final int tableIndexesPointHashcode = tableIndexesPoint.hashCode();
 		DndRackDragMatch dragMatch = dragTargetPointToValidityMap.get( tableIndexesPointHashcode );
-		
+
 		if( dragMatch == null )
 		{
 //			log.debug("Didn't find a drag target cache match for " + tableIndexes );
 
-			DndRackDragMatch tmpMatch = new DndRackDragMatch();
-			boolean foundMatch = lookupDragMatchsInSourceSpan( tableIndexesPoint, dragSourceSpan, tmpMatch);
-			
+			final DndRackDragMatch tmpMatch = new DndRackDragMatch();
+			final boolean foundMatch = lookupDragMatchsInSourceSpan( tableIndexesPoint, dragSourceSpan, tmpMatch);
+
 			if( !foundMatch )
 			{
 				// Fill in the match with the top left indexes computed before
@@ -132,24 +132,27 @@ public class DndRackDragPolicyDragTargetHelper
 		}
 		else
 		{
-			log.debug("Found a drag target cache match for " + tableIndexesPoint );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Found a drag target cache match for " + tableIndexesPoint );
+			}
 		}
 
 		return dragMatch;
 	}
 
-	private boolean lookupDragMatchsInSourceSpan( int[] tableIndex, Span objectSpan, DndRackDragMatch dragMatch )
+	private boolean lookupDragMatchsInSourceSpan( final int[] tableIndex, final Span objectSpan, final DndRackDragMatch dragMatch )
 			throws DndRackDragTargetLookupException, NoSuchContentsException
 	{
 		boolean foundMatch = false;
-		
+
 		// We want solutions to come from the columns first, so the inner loop should be on the columns
 		for( int j = 0 ; !foundMatch && j < objectSpan.y ; j++ )
 		{
 			for( int i = 0 ; !foundMatch && i < objectSpan.x ; i++ )
 			{
-				int pointToTryX = tableIndex[0] + i;
-				int pointToTryY = tableIndex[1] + j;
+				final int pointToTryX = tableIndex[0] + i;
+				final int pointToTryY = tableIndex[1] + j;
 				if( pointToTryX < dataModelNumCols && pointToTryY < dataModelNumRows )
 				{
 					// TODO check this is correct
@@ -165,13 +168,13 @@ public class DndRackDragPolicyDragTargetHelper
 		return foundMatch;
 	}
 
-	private boolean lookupDndDragMatchBySlidingObject( int tableX, int tableY, DndRackDragMatch dragMatch)
+	private boolean lookupDndDragMatchBySlidingObject( final int tableX, final int tableY, final DndRackDragMatch dragMatch)
 			throws DndRackDragTargetLookupException, NoSuchContentsException
 	{
 		boolean foundMatch = false;
-		
-		int x = tableX;
-		int y = tableY;
+
+		final int x = tableX;
+		final int y = tableY;
 		if( (x >= 0 && x <= dataModelNumCols) &&
 				( y >= 0 && y <= dataModelNumRows ) )
 		{
@@ -185,8 +188,8 @@ public class DndRackDragPolicyDragTargetHelper
 					curYOffset = -j;
 					try
 					{
-						int testCol = x + curXOffset;
-						int testRow = y + curYOffset;
+						final int testCol = x + curXOffset;
+						final int testRow = y + curYOffset;
 						if( dataModel.canMoveContentsToPosition( dragSource, testCol, testRow) )
 						{
 							dragMatch.colsOffset = testCol;
@@ -195,7 +198,7 @@ public class DndRackDragPolicyDragTargetHelper
 							foundMatch = true;
 						}
 					}
-					catch (TableIndexOutOfBoundsException e)
+					catch (final TableIndexOutOfBoundsException e)
 					{
 						// Ignore
 					}
@@ -204,13 +207,13 @@ public class DndRackDragPolicyDragTargetHelper
 		}
 		else
 		{
-			String msg = "Error converting drag target point to indexes in the table.";
+			final String msg = "Error converting drag target point to indexes in the table.";
 			throw new DndRackDragTargetLookupException( msg );
 		}
 		return foundMatch;
 	}
-	
-	private void offsetDragTargetPointBySourceSize( int[] dragTargetPoint, Point dragLocalPoint )
+
+	private void offsetDragTargetPointBySourceSize( final int[] dragTargetPoint, final Point dragLocalPoint )
 	{
 		// First remove the current "drag local point" to get the "top left" of the dragged thing
 		dragTargetPoint[0] += dragSourceMouseOffset.x;

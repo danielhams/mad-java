@@ -56,7 +56,7 @@ import uk.co.modularaudio.util.io.FileUtils;
 public class HibernateSessionServiceImpl implements HibernateSessionService, ComponentWithLifecycle
 {
 
-	private Log log = LogFactory.getLog(HibernateSessionServiceImpl.class.getName());
+	private final Log log = LogFactory.getLog(HibernateSessionServiceImpl.class.getName());
 
 	private static final String HIBERNATE_KEY = "hibernate";
 
@@ -68,25 +68,28 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 
 	private ConfigurationService configurationService;
 
-	private Set<Session> sessionsInUse = Collections.synchronizedSet(new HashSet<Session>());
+	private final Set<Session> sessionsInUse = Collections.synchronizedSet(new HashSet<Session>());
 
 	/**
 	 * Method to setup the mapping files for hibernate
 	 *
 	 * @param listHibernateFiles
 	 */
-	public void setupPersistenceConfig(List<HibernatePersistedBeanDefinition> listHibernateFiles)
-		throws IOException
+	public void setupPersistenceConfig(final List<HibernatePersistedBeanDefinition> listHibernateFiles)
+			throws IOException
 	{
-		for (HibernatePersistedBeanDefinition beanDefinition : listHibernateFiles)
+		for (final HibernatePersistedBeanDefinition beanDefinition : listHibernateFiles)
 		{
-			String originalHbmResourceName = beanDefinition.getHbmResourceName();
-			log.trace("Looking for " + originalHbmResourceName );
-			InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
+			final String originalHbmResourceName = beanDefinition.getHbmResourceName();
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Looking for " + originalHbmResourceName );
+			}
+			final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
 
-			String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+			final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
 
-			String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
+			final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
 
 			configuration.addXML( newHbmString );
 		}
@@ -102,7 +105,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	public void configureProperties()
 			throws RecordNotFoundException
 	{
-		String[] hibernateProperties = configurationService.getKeysBeginningWith(HIBERNATE_KEY);
+		final String[] hibernateProperties = configurationService.getKeysBeginningWith(HIBERNATE_KEY);
 		String key = null;
 		String value = null;
 		Properties prop = null;
@@ -113,7 +116,10 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 			value = configurationService.getSingleStringValue(key);
 			prop.setProperty(key, value);
 			configuration.addProperties(prop);
-			log.trace("HibernateProperty " + key + " : " + value);
+			if( log.isTraceEnabled() )
+			{
+				log.trace("HibernateProperty " + key + " : " + value);
+			}
 		}
 		log.trace("configureProperties end");
 	}
@@ -139,7 +145,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	 * @throws RecordNotFoundException
 	 */
 	@Override
-	public void configureHibernate(List<HibernatePersistedBeanDefinition> listHibernateFiles)
+	public void configureHibernate(final List<HibernatePersistedBeanDefinition> listHibernateFiles)
 			throws RecordNotFoundException, DatastoreException
 	{
 		try
@@ -150,25 +156,20 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 			serviceRegistry = new StandardServiceRegistryBuilder().applySettings( configuration.getProperties() ).build();
 			sessionFactory = configuration.buildSessionFactory( serviceRegistry );
 		}
-		catch (HibernateException he)
+		catch (final HibernateException he)
 		{
 			HibernateExceptionHandler.rethrowAsDatastoreLogAll( he, log,
 					"HibernateException thrown building session factory");
 		}
-		catch(Throwable t)
+		catch(final Throwable t)
 		{
-			String msg = "Throwable caught building session factory: " + t.toString();
+			final String msg = "Throwable caught building session factory: " + t.toString();
 			log.error( msg, t );
 			throw new DatastoreException( msg, t );
 		}
 	}
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
@@ -176,13 +177,13 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	@Override
 	public Session getSession()
 	{
-		Session tmpSession = sessionFactory.openSession();
+		final Session tmpSession = sessionFactory.openSession();
 		sessionsInUse.add( tmpSession );
 		return( tmpSession );
 	}
 
 	@Override
-	public void releaseSession( Session session )
+	public void releaseSession( final Session session )
 	{
 		sessionsInUse.remove( session );
 		session.close();
@@ -199,7 +200,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	{
 		if( sessionFactory != null)
 		{
-			for( Session usedSession : sessionsInUse )
+			for( final Session usedSession : sessionsInUse )
 			{
 				usedSession.close();
 			}

@@ -38,30 +38,25 @@ C extends Component & GuiDndTableComponent> implements GuiDndTableStateTransitio
 {
 	private static final Cursor OVER_DRAG_AREA_CURSOR = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR );
 	private static final Cursor DURING_DRAG_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR );
-	private JPanelDndTable<A, B, C> table = null;
-//	private GuiDndTableState state = null;
-//	private SwingDndTablePolicy<A,B,C> dndPolicy = null;
-	private JPanelDndTableDecorator tableDecorator = null;
-	private JPanelDndTableMouseFollowAnimationTimer mouseFollowThread= null;
-	
-	public JPanelDndTableDecorationManager( JPanelDndTable<A,B,C> table,
-			GuiDndTableState state,
-			JPanelDndTablePolicy<A,B,C> dndPolicy,
-			JPanelDndTableDecorations decorations )
+	private final JPanelDndTable<A, B, C> table;
+	private final JPanelDndTableDecorator tableDecorator;
+	private final JPanelDndTableMouseFollowAnimationTimer mouseFollowThread;
+
+	public JPanelDndTableDecorationManager( final JPanelDndTable<A,B,C> table,
+			final GuiDndTableState state,
+			final JPanelDndTablePolicy<A,B,C> dndPolicy,
+			final JPanelDndTableDecorations decorations )
 	{
 		this.table = table;
-//		this.state = state;
-//		this.dndPolicy = dndPolicy;
 
 		// Fetch the image we will be "dragging" along with it's offset from the mouse pointer position
 		tableDecorator = new JPanelDndTableDecorator( table, state, decorations );
 
 		mouseFollowThread = new JPanelDndTableMouseFollowAnimationTimer( tableDecorator );
-//		mouseFollowThread.start();
 	}
-	
+
 	@Override
-	public void receiveTransition(State stateBefore, State stateAfter)
+	public void receiveTransition(final State stateBefore, final State stateAfter)
 	{
 		switch( stateAfter )
 		{
@@ -84,13 +79,13 @@ C extends Component & GuiDndTableComponent> implements GuiDndTableStateTransitio
 			}
 		}
 	}
-	
-	public void setMouseLocation(Point tablePoint)
+
+	public void setMouseLocation(final Point tablePoint)
 	{
 		tableDecorator.setMousePosition( tablePoint );
 	}
 
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		tableDecorator.paint( g );
 	}

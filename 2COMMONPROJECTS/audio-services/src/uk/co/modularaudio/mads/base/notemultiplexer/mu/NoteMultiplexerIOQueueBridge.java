@@ -39,7 +39,7 @@ public class NoteMultiplexerIOQueueBridge extends MadLocklessQueueBridge<NoteMul
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( NoteMultiplexerMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final NoteMultiplexerMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
@@ -53,7 +53,7 @@ public class NoteMultiplexerIOQueueBridge extends MadLocklessQueueBridge<NoteMul
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

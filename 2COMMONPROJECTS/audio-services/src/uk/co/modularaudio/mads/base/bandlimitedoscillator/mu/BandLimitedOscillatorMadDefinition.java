@@ -43,17 +43,16 @@ public class BandLimitedOscillatorMadDefinition extends AbstractNonConfigurableM
 	public final static int PRODUCER_PHASE_OUT = 6;
 	public final static int NUM_CHANNELS = 7;
 
-	private final static String definitionId = "band_limited_oscillator";
+	public final static String DEFINITION_ID = "band_limited_oscillator";
 
-	private final static String userVisibleName = "Band Limited Oscillator";
+	private final static String USER_VISIBLE_NAME = "Band Limited Oscillator";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_SOURCE_GROUP_ID;
-	private final static String classificationId = "band_limited_oscillator";
-	private final static String classificationName = "Sound Source Band Limited Oscillator";
-	private final static String classificationDescription = "A sound producing band limited oscillator";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_SOURCE_GROUP_ID;
+	private final static String CLASS_NAME = "Sound Source Band Limited Oscillator";
+	private final static String CLASS_DESC = "A sound producing band limited oscillator";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Frequency CV",
+	private final static String[] CHAN_NAMES = new String[] { "Input Frequency CV",
 		"Input Trigger CV",
 		"Input Phase CV",
 		"Input Pulse Width CV",
@@ -61,7 +60,7 @@ public class BandLimitedOscillatorMadDefinition extends AbstractNonConfigurableM
 		"Output CV",
 		"Output Phase CV" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -69,7 +68,7 @@ public class BandLimitedOscillatorMadDefinition extends AbstractNonConfigurableM
 		MadChannelType.CV,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
@@ -77,7 +76,7 @@ public class BandLimitedOscillatorMadDefinition extends AbstractNonConfigurableM
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
@@ -85,22 +84,22 @@ public class BandLimitedOscillatorMadDefinition extends AbstractNonConfigurableM
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public BandLimitedOscillatorMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService )
+	public BandLimitedOscillatorMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService )
 		throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new BandLimitedOscillatorIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSI );
 
 	}
 }

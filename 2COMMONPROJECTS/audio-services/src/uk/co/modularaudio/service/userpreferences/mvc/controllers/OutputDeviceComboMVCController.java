@@ -28,10 +28,8 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboM
 
 public class OutputDeviceComboMVCController extends BasicIdStringAndValueComboController<AudioSystemDeviceComboItem, AudioHardwareDevice>
 {
-//	private static Log log = LogFactory.getLog( OutputDeviceComboMVCController.class.getName() );
-	
-	public OutputDeviceComboMVCController( IdStringAndValueComboModel<AudioSystemDeviceComboItem, AudioHardwareDevice> model,
-			UserPreferencesMVCController userPreferencesModelController )
+	public OutputDeviceComboMVCController( final IdStringAndValueComboModel<AudioSystemDeviceComboItem, AudioHardwareDevice> model,
+			final UserPreferencesMVCController userPreferencesModelController )
 	{
 		super(model);
 	}

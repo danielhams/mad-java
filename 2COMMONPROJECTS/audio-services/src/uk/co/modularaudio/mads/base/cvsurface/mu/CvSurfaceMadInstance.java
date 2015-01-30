@@ -39,40 +39,40 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance>
 {
 //	private static Log log = LogFactory.getLog( CvSurfaceMadInstance.class.getName() );
-	
+
 	private static final int VALUE_CHASE_MILLIS = 10;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
-	private long sampleRate = -1;
 
-	public float desiredX = 0.0f;
-	public float desiredY = 0.0f;
-	
-	private float actualX = 0.0f;
-	private float actualY = 0.0f;
-	
-	public CvSurfaceMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			CvSurfaceMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private long sampleRate;
+
+	public float desiredX;
+	public float desiredY;
+
+	private float actualX;
+	private float actualY;
+
+	public CvSurfaceMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final CvSurfaceMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -84,19 +84,19 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean outCVXConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVX);
-		MadChannelBuffer outCVXcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVX ];
-		float[] outCVXBuffer = (outCVXConnected ? outCVXcb.floatBuffer : null );
-		boolean outCVYConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVY );
-		MadChannelBuffer outCVYcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVY ];
-		float[] outCVYBuffer = (outCVYConnected ? outCVYcb.floatBuffer : null );
-		
+		final boolean outCVXConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVX);
+		final MadChannelBuffer outCVXcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVX ];
+		final float[] outCVXBuffer = (outCVXConnected ? outCVXcb.floatBuffer : null );
+		final boolean outCVYConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVY );
+		final MadChannelBuffer outCVYcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVY ];
+		final float[] outCVYBuffer = (outCVYConnected ? outCVYcb.floatBuffer : null );
+
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
 			actualX = (actualX * curValueRatio) + (desiredX * newValueRatio);

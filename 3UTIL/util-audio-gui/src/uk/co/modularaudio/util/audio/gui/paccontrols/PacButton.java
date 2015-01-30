@@ -28,13 +28,14 @@ import javax.swing.JButton;
 public abstract class PacButton extends JButton
 {
 	private static final long serialVersionUID = 5907687589303985605L;
-	
+
 	public PacButton()
 	{
 		this.addActionListener( new ActionListener()
 		{
-			
-			public void actionPerformed(ActionEvent e)
+
+			@Override
+			public void actionPerformed(final ActionEvent e)
 			{
 				receiveEvent( e );
 			}
@@ -43,12 +44,20 @@ public abstract class PacButton extends JButton
 
 	public String getControlValue()
 	{
-		return "";
+		return isSelected() ? "true" : "false";
 	}
-	
-	public void receiveControlValue( String value )
+
+	public void receiveControlValue( final String value )
 	{
+		if( value.length() > 0 && value.equals( "true" ) )
+		{
+			setSelected( true );
+		}
+		else
+		{
+			setSelected( false );
+		}
 	}
-	
+
 	public abstract void receiveEvent( ActionEvent e);
 }

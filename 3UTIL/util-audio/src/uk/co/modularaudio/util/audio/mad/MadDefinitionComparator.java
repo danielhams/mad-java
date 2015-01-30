@@ -28,7 +28,7 @@ public class MadDefinitionComparator implements Comparator<MadDefinition<?,?>>
 {
 
 	@Override
-	public int compare(MadDefinition<?, ?> o1, MadDefinition<?, ?> o2)
+	public int compare(final MadDefinition<?, ?> o1, final MadDefinition<?, ?> o2)
 	{
 		return o1.getName().compareTo( o2.getName() );
 	}

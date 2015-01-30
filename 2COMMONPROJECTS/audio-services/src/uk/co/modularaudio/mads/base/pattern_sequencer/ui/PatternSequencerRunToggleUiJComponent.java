@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.mads.base.pattern_sequencer.ui;
 
+import java.awt.Font;
+
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
@@ -34,20 +36,21 @@ public class PatternSequencerRunToggleUiJComponent extends PacToggleButton
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private PatternSequencerMadUiInstance uiInstance = null;
+	private final PatternSequencerMadUiInstance uiInstance;
 
 	public PatternSequencerRunToggleUiJComponent(
-			PatternSequencerMadDefinition definition,
-			PatternSequencerMadInstance instance,
-			PatternSequencerMadUiInstance uiInstance,
-			int controlIndex )
+			final PatternSequencerMadDefinition definition,
+			final PatternSequencerMadInstance instance,
+			final PatternSequencerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Default value
 		super( false );
 
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
+		final Font f = this.getFont();
+		setFont( f );
 		this.setText( "Run" );
 	}
 
@@ -58,7 +61,7 @@ public class PatternSequencerRunToggleUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -66,7 +69,7 @@ public class PatternSequencerRunToggleUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 		if( previousValue != newValue )
 		{

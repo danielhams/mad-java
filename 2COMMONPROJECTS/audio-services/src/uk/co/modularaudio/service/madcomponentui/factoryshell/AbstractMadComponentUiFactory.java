@@ -34,7 +34,7 @@ import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -49,12 +49,12 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 	protected static final String IMAGE_ROOT = "ImageRoot";
 
-	protected BufferedImageAllocationService bufferedImageAllocationService = null;
-	protected MadComponentUiService componentUiService = null;
-	protected ComponentImageFactory componentImageFactory = null;
-	protected ConfigurationService configurationService = null;
+	protected BufferedImageAllocationService bufferedImageAllocationService;
+	protected MadComponentUiService componentUiService;
+	protected ComponentImageFactory componentImageFactory;
+	protected ConfigurationService configurationService;
 
-	protected String imageRoot = null;
+	protected String imageRoot;
 
 	protected Map<MadDefinition<?,?>, MadUiDefinition<? extends MadDefinition<?,?>, ? extends MadInstance<?,?>>> componentDefinitionToUiDefinitionMap =
 			new HashMap<MadDefinition<?,?>, MadUiDefinition<? extends MadDefinition<?,?>, ? extends MadInstance<?,?>>>();
@@ -65,23 +65,22 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 	public abstract void setupTypeToDefinitionClasses() throws DatastoreException;
 
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public MadUiInstance<?,?> createNewComponentUiInstanceForComponent( MadInstance<?,?> instance )
+	public AbstractMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		MadDefinition<?,?> definition = instance.getDefinition();
-//		log.debug("Creating new ui instance of " + definition.getName() );
-		MadUiDefinition cud = componentDefinitionToUiDefinitionMap.get( definition );
-		MadUiInstance<?, ?> retVal = cud.createNewUiInstance( instance );
-//		log.debug("Created new ui instance of " + definition.getName() );
+		final MadDefinition<?, ?> definition = instance.getDefinition();
+		// log.debug("Creating new ui instance of " + definition.getName() );
+		final MadUiDefinition cud = componentDefinitionToUiDefinitionMap.get( definition );
+		final AbstractMadUiInstance<?, ?> retVal = cud.createNewUiInstance( instance );
+		// log.debug("Created new ui instance of " + definition.getName() );
 		return retVal;
 	}
 
 	@Override
-	public void destroyUiInstance( MadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
-		throws DatastoreException, RecordNotFoundException
+	public void destroyUiInstance( final AbstractMadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
+			throws DatastoreException, RecordNotFoundException
 	{
 		// Do nothing, java is easy :-)
 	}
@@ -93,9 +92,12 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 		{
 			componentUiService.unregisterComponentUiFactory( this );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			log.error( "Exception caught unregistering UI factory: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Exception caught unregistering UI factory: " + e.toString(), e );
+			}
 		}
 	}
 
@@ -106,10 +108,10 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 		String declaringClassSimpleName = null;
 		try
 		{
-			Class<?> declaringClass = this.getClass();
+			final Class<?> declaringClass = this.getClass();
 			if( declaringClass == null )
 			{
-				String msg = "Declaring class not defined - unable to fetch class specific configuration";
+				final String msg = "Declaring class not defined - unable to fetch class specific configuration";
 				log.error( msg );
 				throw new ComponentConfigurationException( msg );
 			}
@@ -119,9 +121,9 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 				imageRoot = configurationService.getSingleStringValue( declaringClassSimpleName + "." + IMAGE_ROOT );
 			}
 		}
-		catch( RecordNotFoundException rnfe )
+		catch( final RecordNotFoundException rnfe )
 		{
-			String msg = "Error configuring image factory: " + rnfe.toString();
+			final String msg = "Error configuring image factory: " + rnfe.toString();
 			log.error( msg, rnfe );
 			throw new ComponentConfigurationException( msg, rnfe );
 		}
@@ -134,44 +136,27 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 			componentUiService.registerComponentUiFactory( this );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught attempting to register component types: " + e.toString();
+			final String msg = "Exception caught attempting to register component types: " + e.toString();
 			log.error( msg, e );
 			throw new ComponentConfigurationException( msg, e );
 		}
 	}
 
 
-	public ComponentImageFactory getComponentImageFactory()
-	{
-		return componentImageFactory;
-	}
-
-
-	public void setComponentImageFactory(ComponentImageFactory componentImageFactory)
+	public void setComponentImageFactory(final ComponentImageFactory componentImageFactory)
 	{
 		this.componentImageFactory = componentImageFactory;
 	}
 
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
-	public MadComponentUiService getComponentUiService()
-	{
-		return componentUiService;
-	}
-
-	public void setComponentUiService(MadComponentUiService componentUiService)
+	public void setComponentUiService(final MadComponentUiService componentUiService)
 	{
 		this.componentUiService = componentUiService;
 	}
@@ -179,27 +164,22 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	@Override
 	public List<MadUiDefinition<?,?>> listComponentUiDefinitions()
 	{
-		List<MadUiDefinition<?,?>> retVal = new ArrayList<MadUiDefinition<?,?>>();
+		final List<MadUiDefinition<?,?>> retVal = new ArrayList<MadUiDefinition<?,?>>();
 		retVal.addAll( componentDefinitionToUiDefinitionMap.values() );
 		return retVal;
 	}
 
-	public BufferedImageAllocationService getBufferedImageAllocationService()
-	{
-		return bufferedImageAllocationService;
-	}
-
 	public void setBufferedImageAllocationService(
-			BufferedImageAllocationService bufferedImageAllocationService )
+			final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	@Override
-	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
-		throws DatastoreException, RecordNotFoundException
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
+			throws DatastoreException, RecordNotFoundException
 	{
-		MadUiDefinition<?,?> uiDef = componentDefinitionToUiDefinitionMap.get( definition );
+		final MadUiDefinition<?,?> uiDef = componentDefinitionToUiDefinitionMap.get( definition );
 		if( uiDef == null )
 		{
 			throw new RecordNotFoundException("No such definition handled: " + definition.getId() );

@@ -20,60 +20,61 @@
 
 package uk.co.modularaudio.mads.base.scaleandoffset.ui;
 
+import java.awt.Color;
+
 import javax.swing.JComponent;
-import javax.swing.event.ChangeEvent;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacFloatSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
-public class ScaleAndOffsetOffsetUiJComponent extends PacFloatSlider
+public class ScaleAndOffsetOffsetUiJComponent extends ValueSlider
 	implements IMadUiControlInstance<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance, ScaleAndOffsetMadUiInstance>
 {
-	private static final long serialVersionUID = 1765911121009492155L;
-	
-	private ScaleAndOffsetMadUiInstance uiInstance = null;
+	private static Log log = LogFactory.getLog( ScaleAndOffsetOffsetUiJComponent.class.getName() );
 
-	public ScaleAndOffsetOffsetUiJComponent( ScaleAndOffsetMadDefinition definition,
-			ScaleAndOffsetMadInstance instance,
-			ScaleAndOffsetMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final ScaleAndOffsetMadUiInstance uiInstance;
+
+	public ScaleAndOffsetOffsetUiJComponent( final ScaleAndOffsetMadDefinition definition,
+			final ScaleAndOffsetMadInstance instance,
+			final ScaleAndOffsetMadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		super( uiInstance.valueFloatSliderModel );
-
+		super( -500.0f, 500.0f, 0.0f,
+				"",
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				"Offset:",
+				Color.BLACK,
+				Color.BLACK,
+				false );
+//		this.setBackground( Color.ORANGE );
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
-//		this.setPaintLabels( true );
-//		this.setMinimum( 1 );
-//		this.setMaximum( 20000 );
-		// Default value
-		this.setValue( 0 );
-		this.setValue( ScaleAndOffsetMadUiInstance.START_VAL );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	public void stateChanged( ChangeEvent e )
+	private void passChangeToInstanceData( final float newValue )
 	{
-		this.passChangeToInstanceData( this.getValue() );
-	}
-
-	private void passChangeToInstanceData( double value )
-	{
-		// Convert it into a float
-		float floatValue = (float)value;
-		uiInstance.sendOffsetChange( floatValue );
+		uiInstance.sendOffsetChange( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -81,18 +82,37 @@ public class ScaleAndOffsetOffsetUiJComponent extends PacFloatSlider
 	}
 
 	@Override
-	public void receiveValueUpdate( double previousValue, double newValue )
+	public void destroy()
 	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
-		
 	}
 
 	@Override
-	public void destroy()
+	public String getControlValue()
 	{
+		return model.getValue() + "";
+	}
+
+	@Override
+	public void receiveControlValue( final String valueStr )
+	{
+		try
+		{
+//			log.debug("Received control value " + value );
+			final float asFloat = Float.parseFloat( valueStr );
+			model.setValue( this, asFloat );
+			receiveValueChange( this, asFloat );
+		}
+		catch( final Exception e )
+		{
+			final String msg = "Failed to parse control value: " + valueStr;
+			log.error( msg, e );
+		}
+	}
+
+	@Override
+	public void receiveValueChange( final Object source, final float newValue )
+	{
+		passChangeToInstanceData( newValue );
 	}
 
 	@Override

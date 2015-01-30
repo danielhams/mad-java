@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class Ms20FilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<Ms20FilterMadDefinition, Ms20FilterMadInstance, Ms20FilterMadUiInstance>
 {
-	private static final Span span = new Span(2,2);
+	private static final Span SPAN = new Span(2,2);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
 		Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE,
 		Ms20FilterMadDefinition.CONSUMER_IN_CV_THRESHOLD,
@@ -47,7 +47,7 @@ public class Ms20FilterMadUiDefinition
 		Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSITIONS = new Point[] {
 		new Point( 50, 40 ),
 		new Point( 50, 70 ),
 		new Point( 50, 100 ),
@@ -57,47 +57,47 @@ public class Ms20FilterMadUiDefinition
 		new Point( 170, 100 )
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Frequency",
 		"Resonance",
 		"Threshold"
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		Ms20FilterTypeComboUiJComponent.class,
 		Ms20FilterFrequencySliderUiControlInstance.class,
 		Ms20FilterResonanceSliderUiJComponent.class,
 		Ms20FilterThresholdSliderUiJComponent.class,
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 30, 90, 20 ),
 		new Rectangle( 113, 3, 130, 43 ),
 		new Rectangle( 113, 48, 130, 43 ),
 		new Rectangle( 113, 93, 130, 43 )
 	};
 	
-	private static final Class<Ms20FilterMadUiInstance> instanceClass = Ms20FilterMadUiInstance.class;
+	private static final Class<Ms20FilterMadUiInstance> INSTANCE_CLASS = Ms20FilterMadUiInstance.class;
 	
 	public Ms20FilterMadUiDefinition( BufferedImageAllocator bia, Ms20FilterMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSITIONS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

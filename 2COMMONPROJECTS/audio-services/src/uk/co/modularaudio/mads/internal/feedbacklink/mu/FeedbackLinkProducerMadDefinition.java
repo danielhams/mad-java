@@ -38,42 +38,41 @@ public class FeedbackLinkProducerMadDefinition extends AbstractNonConfigurableMa
 	public final static int PRODUCER_CV_DEPENDENCY = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	public final static String definitionId = "feedback_link_producer";
+	public final static String DEFINITION_ID = "feedback_link_producer";
 
-	private final static String userVisibleName = "Feedback Link Producer";
+	private final static String USER_VISIBLE_NAME = "Feedback Link Producer";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationId = "feedback_link_producer";
-	private final static String classificationName = "Feedback Link Producer";
-	private final static String classificationDescription = "Internal component used in implementing cyclic loops in the audio graph";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Feedback Link Producer";
+	private final static String CLASS_DESC = "Internal component used in implementing cyclic loops in the audio graph";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Output Wave", "Output Dependency" };
+	private final static String[] CHAN_NAMES = new String[] { "Output Wave", "Output Dependency" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public FeedbackLinkProducerMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public FeedbackLinkProducerMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new FeedbackLinkProducerIOQueueBridge(),
-				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+						new FeedbackLinkProducerIOQueueBridge(),
+						NUM_CHANNELS,
+						CHAN_NAMES,
+						CHAN_TYPES,
+						CHAN_DIRS,
+						CHAN_POSI );
 
 	}
 }

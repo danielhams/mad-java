@@ -25,7 +25,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 
 // Yes, it's a hack - java generics blow
 public class SubRackSavePatchButtonUiControlDefinition extends MadUiControlDefinition<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
@@ -39,7 +39,7 @@ public class SubRackSavePatchButtonUiControlDefinition extends MadUiControlDefin
 	}
 
 	@Override
-	public MadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance> createInstance(
+	public AbstractMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance> createInstance(
 			SubRackMadInstance instance, SubRackMadUiInstance uiInstance )
 	{
 		return new SubRackSavePatchButtonUiControlInstance( instance, uiInstance, this );

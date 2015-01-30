@@ -91,7 +91,7 @@ public class RenderTask implements Runnable
 				}
 	//			renderJob.go();
 			}
-			catch (Exception e1)
+			catch (final Exception e1)
 			{
 				final String msg = "Exception caught rendering job " + renderJobInstance.getInstanceName() + ": " + e1.toString();
 				log.error( msg, e1 );

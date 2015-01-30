@@ -30,10 +30,10 @@ import javax.swing.JCheckBox;
 public abstract class PacCheckBox extends JCheckBox implements ActionListener, ItemListener
 {
 	private static final long serialVersionUID = 8646941466131693776L;
-	
+
 //	private static Log log = LogFactory.getLog( PacCheckBox.class.getName() );
-	
-	private boolean previousValue = false;
+
+	private boolean previousValue;
 
 	public PacCheckBox()
 	{
@@ -41,36 +41,36 @@ public abstract class PacCheckBox extends JCheckBox implements ActionListener, I
 		this.addItemListener( this );
 //		this.addActionListener( this );
 	}
-	
+
 	public String getControlValue()
 	{
-		int valueAsInt = (this.isSelected() ? 1 : 0 );
+		final int valueAsInt = (this.isSelected() ? 1 : 0 );
 		return Integer.toString( valueAsInt ) + "";
 	}
-	
-	public void receiveControlValue( String strValue )
+
+	public void receiveControlValue( final String strValue )
 	{
-		int value = Integer.parseInt( strValue );
+		final int value = Integer.parseInt( strValue );
 		this.setSelected( value == 1 );
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
-		boolean newValue = this.isSelected();
+		final boolean newValue = this.isSelected();
 		if( newValue != previousValue )
 		{
 			receiveUpdate( previousValue, newValue );
 			previousValue = newValue;
 		}
 	}
-	
+
 	public abstract void receiveUpdate( boolean statusBefore, boolean newStatus );
 
 	@Override
-	public void itemStateChanged( ItemEvent e )
+	public void itemStateChanged( final ItemEvent e )
 	{
-		boolean newValue = this.isSelected();
+		final boolean newValue = this.isSelected();
 		if( newValue != previousValue )
 		{
 			receiveUpdate( previousValue, newValue );

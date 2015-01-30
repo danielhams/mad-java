@@ -24,7 +24,5 @@ import java.awt.image.BufferedImage;
 
 public interface GuiPlugImageCreator
 {
-
 	BufferedImage createPlugImage( int width, int height );
-
 }

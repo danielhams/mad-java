@@ -24,7 +24,9 @@ import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeWriteableScopeDa
 
 public interface ScopeDataListener
 {
-
 	void processScopeData( OscilloscopeWriteableScopeData scopeData );
 
+	void setCaptureTimeProducer( OscilloscopeCaptureTimeProducer captureTimeProducer );
+
+	void setCaptureTimeMillis( float captureMillis );
 }

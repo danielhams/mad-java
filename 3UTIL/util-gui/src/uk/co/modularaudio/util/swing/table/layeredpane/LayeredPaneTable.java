@@ -63,33 +63,33 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 	public static final int LPT_DRAGGEDCOMPONENTS_LAYER = 200;
 	public static final int LPT_DRAGGEDWIRE_LAYER = 250;
 	public static final int LPT_TOOLTIP_LAYER = 300;
-	
+
 //	private static Log log = LogFactory.getLog( LayeredPaneTable.class.getName() );
-	
-	protected TableInterface<A, B> dataModel = null;
-	protected Dimension gridSize = null;
+
+	protected TableInterface<A, B> dataModel;
+	protected final Dimension gridSize;
 	protected int numCols = -1;
 	protected int numRows = -1;
-	protected boolean showGrid = false;
-	protected Color gridColour = null;
-	protected GuiTableComponentTableDataModelListener<A, B, C> listener = null;
-	protected GuiTableComponentToGuiFactory<A,C> factory = null;
-	
-	private GuiTableEmptyCellPainter emptyCellPainter = null;
-	
-	public LayeredPaneTable( TableInterface<A, B> dataModel,
-			GuiTableComponentToGuiFactory<A,C> factory,
-			Dimension gridSize, 
-			boolean showGrid, 
-			Color gridColour,
-			GuiTableEmptyCellPainter emptyCellPainter )
+	protected final boolean showGrid;
+	protected final Color gridColour;
+	protected GuiTableComponentTableDataModelListener<A, B, C> listener;
+	protected GuiTableComponentToGuiFactory<A,C> factory;
+
+	private final GuiTableEmptyCellPainter emptyCellPainter;
+
+	public LayeredPaneTable( final TableInterface<A, B> dataModel,
+			final GuiTableComponentToGuiFactory<A,C> factory,
+			final Dimension gridSize,
+			final boolean showGrid,
+			final Color gridColour,
+			final GuiTableEmptyCellPainter emptyCellPainter )
 	{
 		this.dataModel = dataModel;
 		this.gridSize = gridSize;
 		this.showGrid = showGrid;
 		this.gridColour = gridColour;
 		this.factory = factory;
-		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this, factory );
+		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this );
 		dataModel.addListener( listener );
 		// Use an absolute layout
 		setLayout( null );
@@ -97,7 +97,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		this.setOpaque( true );
 		// Set the empty cell painter we will use
 		this.emptyCellPainter = emptyCellPainter;
-		
+
 		fullRefreshFromModel();
 	}
 
@@ -107,21 +107,21 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		numCols = dataModel.getNumCols();
 		numRows = dataModel.getNumRows();
 		this.setPreferredSize( new Dimension( (numCols * gridSize.width) + 1, (numRows * gridSize.height ) + 1 ) );
-		
+
 		// Remove the component we placed as the background
 		installBackgroundComponent();
-		
+
 		// Clear up the internal structures
 		clearUpInternalStructures();
-		
+
 		// Iterate over all the components in the data model setting them into their appropriate positions
-		List<A> modelEntries = dataModel.getEntriesAsList();
+		final List<A> modelEntries = dataModel.getEntriesAsList();
 		for( int i = 0 ; i < modelEntries.size() ; i++ )
 		{
-			A modelEntry = modelEntries.get( i );
-			TablePosition tablePosition = dataModel.getContentsOriginReturnNull( modelEntry );
-			C swingComponent = factory.generateSwingComponent( modelEntry );
-			Span span = modelEntry.getCellSpan();
+			final A modelEntry = modelEntries.get( i );
+			final TablePosition tablePosition = dataModel.getContentsOriginReturnNull( modelEntry );
+			final C swingComponent = factory.generateSwingComponent( modelEntry );
+			final Span span = modelEntry.getCellSpan();
 			addGuiComponentAtGrid( modelEntry,
 					swingComponent,
 					i,
@@ -138,13 +138,13 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 	private void clearUpInternalStructures()
 	{
 		// Remove swing components in the right layer
-		Component[] comps = this.getComponentsInLayer( LPT_COMPONENTS_LAYER );
-		for( Component c : comps )
+		final Component[] comps = this.getComponentsInLayer( LPT_COMPONENTS_LAYER );
+		for( final Component c : comps )
 		{
 			this.remove( c );
 		}
-		
-		for( C guiComponent : guiComponentListMirrorOfModel )
+
+		for( final C guiComponent : guiComponentListMirrorOfModel )
 		{
 			guiComponent.destroy();
 		}
@@ -152,48 +152,49 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		guiComponentToTableModelComponentMap.clear();
 		tableModelComponentToGuiComponentMap.clear();
 	}
-	
+
 	private void installBackgroundComponent()
 	{
 		// Remove swing components in the right layer
-		Component[] comps = this.getComponentsInLayer( LPT_BACKGROUND_LAYER );
-		for( Component c : comps )
+		final Component[] comps = this.getComponentsInLayer( LPT_BACKGROUND_LAYER );
+		for( final Component c : comps )
 		{
 			this.remove( c );
 		}
-		
-		LayeredPaneTableBackgroundComponent backgroundComponent = new LayeredPaneTableBackgroundComponent( emptyCellPainter,
+
+		final LayeredPaneTableBackgroundComponent backgroundComponent = new LayeredPaneTableBackgroundComponent( emptyCellPainter,
 				gridSize, numCols, numRows );
 		this.setLayer( backgroundComponent, LPT_BACKGROUND_LAYER );
 		backgroundComponent.setBounds( 0, 0, gridSize.width * numCols, gridSize.height * numRows );
 		this.add( backgroundComponent );
 	}
-	
+
 	// Internal caches
-	private ArrayList<C> guiComponentListMirrorOfModel = new ArrayList<C>();
-	private Map<C, A> guiComponentToTableModelComponentMap = new HashMap<C, A>();
-	private Map<A, C> tableModelComponentToGuiComponentMap = new HashMap<A, C>();
-	
-	public A getTableModelComponentFromGui( C guiComponent )
+	private final ArrayList<C> guiComponentListMirrorOfModel = new ArrayList<C>();
+	private final Map<C, A> guiComponentToTableModelComponentMap = new HashMap<C, A>();
+	private final Map<A, C> tableModelComponentToGuiComponentMap = new HashMap<A, C>();
+
+	public A getTableModelComponentFromGui( final C guiComponent )
 	{
 		return guiComponentToTableModelComponentMap.get( guiComponent );
 	}
-	
-	public C getGuiComponentFromTableModel( A tableModelComponent )
+
+	public C getGuiComponentFromTableModel( final A tableModelComponent )
 	{
 		return tableModelComponentToGuiComponentMap.get( tableModelComponent );
 	}
 
-	public void addGuiComponentAtGrid( A tableModelComponent,
-			C guiComponent,
-			int indexInModel,
-			int gridStartX, int gridStartY, int gridEndX, int gridEndY )
+	@Override
+	public void addGuiComponentAtGrid( final A tableModelComponent,
+			final C guiComponent,
+			final int indexInModel,
+			final int gridStartX, final int gridStartY, final int gridEndX, final int gridEndY )
 	{
 		// Set the bounds
-		int startX = gridStartX * gridSize.width;
-		int startY = gridStartY * gridSize.height;
-		int endX = ((gridEndX + 1) * gridSize.width);
-		int endY = ((gridEndY + 1) * gridSize.height);
+		final int startX = gridStartX * gridSize.width;
+		final int startY = gridStartY * gridSize.height;
+		final int endX = ((gridEndX + 1) * gridSize.width);
+		final int endY = ((gridEndY + 1) * gridSize.height);
 		guiComponent.setBounds( new Rectangle( startX, startY, endX - startX, endY - startY ) );
 		this.setLayer( guiComponent, LPT_COMPONENTS_LAYER );
 		this.add( guiComponent );
@@ -203,56 +204,59 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 //		log.debug("Added gui component " + guiComponent.toString() + " at index " + indexInModel + " into grid at " + gridStartX + ", " + gridStartY );
 	}
 
-	protected void moveGuiComponentInGrid( C guiComponent,
-		int gridStartX, int gridStartY, int gridEndX, int gridEndY )
+	protected void moveGuiComponentInGrid( final C guiComponent,
+		final int gridStartX, final int gridStartY, final int gridEndX, final int gridEndY )
 	{
-		Rectangle previousBounds = guiComponent.getBounds();
+		final Rectangle previousBounds = guiComponent.getBounds();
 		this.repaint( previousBounds );
 		// Set the bounds
-		int startX = gridStartX * gridSize.width;
-		int startY = gridStartY * gridSize.height;
+		final int startX = gridStartX * gridSize.width;
+		final int startY = gridStartY * gridSize.height;
 		guiComponent.setLocation( startX, startY );
 	}
 
-	public void insertGuiComponentFromModelIndex(int index)
+	@Override
+	public void insertGuiComponentFromModelIndex(final int index)
 	{
 		// We don't have a gui component yet, so fetch the table model component at that index,
 		// create a new gui component for it, and add it in the appropriate place.
-		A tableModelContents = dataModel.getEntryAt( index );
-		C guiComponent = factory.generateSwingComponent( tableModelContents );
-		TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
-		Span span = tableModelContents.getCellSpan();
-		int gridStartX = tp.x;
-		int gridStartY = tp.y;
-		int gridEndX = tp.x + (span.x - 1);
-		int gridEndY = tp.y + (span.y - 1);
-		this.addGuiComponentAtGrid( tableModelContents, guiComponent, index, 
+		final A tableModelContents = dataModel.getEntryAt( index );
+		final C guiComponent = factory.generateSwingComponent( tableModelContents );
+		final TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
+		final Span span = tableModelContents.getCellSpan();
+		final int gridStartX = tp.x;
+		final int gridStartY = tp.y;
+		final int gridEndX = tp.x + (span.x - 1);
+		final int gridEndY = tp.y + (span.y - 1);
+		this.addGuiComponentAtGrid( tableModelContents, guiComponent, index,
 				gridStartX, gridStartY, gridEndX, gridEndY );
 //		log.debug("Inserted gui component " + guiComponent.toString() + " at index " + index );
 	}
 
-	public void updateGuiComponentFromModelIndex(int index)
+	@Override
+	public void updateGuiComponentFromModelIndex(final int index)
 	{
-		A tableModelContents = dataModel.getEntryAt( index );
-		C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelContents );
-		TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
-		Span span = tableModelContents.getCellSpan();
-		int gridStartX = tp.x;
-		int gridStartY = tp.y;
-		int gridEndX = tp.x + (span.x - 1);
-		int gridEndY = tp.y + (span.y - 1);
+		final A tableModelContents = dataModel.getEntryAt( index );
+		final C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelContents );
+		final TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
+		final Span span = tableModelContents.getCellSpan();
+		final int gridStartX = tp.x;
+		final int gridStartY = tp.y;
+		final int gridEndX = tp.x + (span.x - 1);
+		final int gridEndY = tp.y + (span.y - 1);
 		this.moveGuiComponentInGrid( guiComponent,
 				gridStartX, gridStartY, gridEndX, gridEndY );
 	}
 
-	public void removeGuiComponentFromModelIndex(int index)
+	@Override
+	public void removeGuiComponentFromModelIndex(final int index)
 	{
 //		log.debug("Removing gui component at index " + index );
-		C guiComponent = guiComponentListMirrorOfModel.get( index );
+		final C guiComponent = guiComponentListMirrorOfModel.get( index );
 		guiComponent.destroy();
 //		log.debug("It is " + guiComponent.toString() );
 		// Doing this remove doesn't seem to schedule a repaint - so do it manually
-		Rectangle removedComponentBounds = guiComponent.getBounds();
+		final Rectangle removedComponentBounds = guiComponent.getBounds();
 		this.remove( guiComponent );
 		this.repaint( removedComponentBounds );
 		guiComponentListMirrorOfModel.remove( guiComponent );
@@ -260,12 +264,12 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		layeredTablePaint(g);
 	}
-		
-	public void layeredTablePaint(Graphics g)
+
+	public void layeredTablePaint(final Graphics g)
 	{
 		// Graphics2D g2d = (Graphics2D) g.create();
 		super.paint(g);
@@ -275,28 +279,28 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		}
 	}
 
-	private void paintTableGrid(Graphics g)
+	private void paintTableGrid(final Graphics g)
 	{
 		// Now paint our grid (simple loop over X and then Y)
-		Graphics gridG = g.create();
+		final Graphics gridG = g.create();
 		gridG.setColor(gridColour);
 		for (int i = 0; i <= numCols; i++)
 		{
-			int lineStartY = 0;
-			int lineX = i * gridSize.width;
-			int lineEndY = numRows * gridSize.height;
+			final int lineStartY = 0;
+			final int lineX = i * gridSize.width;
+			final int lineEndY = numRows * gridSize.height;
 			gridG.drawLine(lineX, lineStartY, lineX, lineEndY);
 		}
 		for (int j = 0; j <= numRows; j++)
 		{
-			int lineStartX = 0;
-			int lineY = j * gridSize.height;
-			int lineEndX = numCols * gridSize.width;
+			final int lineStartX = 0;
+			final int lineY = j * gridSize.height;
+			final int lineEndX = numCols * gridSize.width;
 			gridG.drawLine(lineStartX, lineY, lineEndX, lineY);
 		}
 	}
 
-	public void pointToTableIndexes( int[] tablePoint, int[] outputPoint)
+	public void pointToTableIndexes( final int[] tablePoint, final int[] outputPoint)
 	{
 		int colNum = tablePoint[0] / gridSize.width;
 		int rowNum = tablePoint[1] / gridSize.height;
@@ -316,7 +320,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		{
 			rowNum = numRows - 1;
 		}
-		
+
 		outputPoint[0] = colNum;
 		outputPoint[1] = rowNum;
 	}
@@ -341,7 +345,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		return gridSize;
 	}
 
-	public void setDataModel( TableInterface<A, B> dataModel )
+	public void setDataModel( final TableInterface<A, B> dataModel )
 	{
 		if( this.dataModel != null )
 		{

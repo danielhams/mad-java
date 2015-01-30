@@ -30,10 +30,10 @@ public class RenderingPlanProfileResults
 	private int numJobs;
 
 	private HashMap<AbstractParallelRenderingJob,JobProfileResult> jobToProfileResultMap;
-	private long clockCallbackStart = -1;
-	private long clockCallbackPostProducer = -1;
-	private long clockCallbackPostRpFetch = -1;
-	private long clockCallbackPostLoop = -1;
+	private long clockCallbackStart;
+	private long clockCallbackPostProducer;
+	private long clockCallbackPostRpFetch;
+	private long clockCallbackPostLoop;
 
 //	private AtomicBoolean filled = new AtomicBoolean( false );
 	private volatile boolean filled = false;

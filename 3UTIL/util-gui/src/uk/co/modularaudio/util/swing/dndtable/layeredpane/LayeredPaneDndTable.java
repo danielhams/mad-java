@@ -50,33 +50,32 @@ public class LayeredPaneDndTable<A extends RackModelTableSpanningContents,
 	private static final long serialVersionUID = -8519000108823657929L;
 
 	private static Log log = LogFactory.getLog( LayeredPaneDndTable.class.getName() );
-	
-	protected GuiDndTableState dndState = null;
-//	private LayeredPaneDndTablePolicy<A,B,C> dndPolicy = null;
-	protected LayeredPaneDndTableMouseListener<A,B,C> dndMouseListener = null;
-	protected LayeredPaneDndTableDecorationManager<A,B,C> dndDecorationManager = null;
-	
-	protected boolean forcePaint = false;
-	
-	private int[] tableIndexesPoint = new int[2];
 
-	public LayeredPaneDndTable( TableInterface<A, B> dataModel,
-			GuiDndTableComponentToGuiFactory<A,C> factory,
-			LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
-			LayeredPaneDndTableDecorations decorations,
-			Dimension gridSize,
-			boolean showGrid,
-			Color gridColour,
-			GuiTableEmptyCellPainter emptyCellPainter)
+	protected GuiDndTableState dndState;
+	protected LayeredPaneDndTableMouseListener<A,B,C> dndMouseListener;
+	protected LayeredPaneDndTableDecorationManager<A,B,C> dndDecorationManager;
+
+	protected boolean forcePaint = false;
+
+	private final int[] tableIndexesPoint = new int[2];
+
+	public LayeredPaneDndTable( final TableInterface<A, B> dataModel,
+			final GuiDndTableComponentToGuiFactory<A,C> factory,
+			final LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
+			final LayeredPaneDndTableDecorations decorations,
+			final Dimension gridSize,
+			final boolean showGrid,
+			final Color gridColour,
+			final GuiTableEmptyCellPainter emptyCellPainter)
 	{
 		super(dataModel, factory, gridSize, showGrid, gridColour, emptyCellPainter );
-		
+
 		// For DnD we use
 		// (1) A state tracking object that notified interested parties
 		// (2) A mouse listener that takes mouse co-ordinates and allows the policy object to determine how / if to call the
 		//       DnDComponent the mouse is over
 		// (3) Custom paint logic so that when a "drag" is underway we can over-paint with ticks / crosses type thing
-//		this.dndPolicy = dndPolicy;
+
 		this.dndState = new GuiDndTableState( GuiDndTableState.State.BROWSING);
 		this.dndDecorationManager = new LayeredPaneDndTableDecorationManager<A,B,C>( this, dndState, dndPolicy, decorations );
 		this.dndMouseListener = new LayeredPaneDndTableMouseListener<A,B,C>( this, dndState, dndPolicy, dndDecorationManager );
@@ -85,24 +84,24 @@ public class LayeredPaneDndTable<A extends RackModelTableSpanningContents,
 		dndState.addTransitionListener( dndDecorationManager );
 	}
 
-	public boolean getComponentAtWithLocalPoint( Point rsp, TwoTuple<Point, C> destination )
+	public boolean getComponentAtWithLocalPoint( final Point rsp, final TwoTuple<Point, C> destination )
 	{
 		boolean retVal = false;
 //		log.debug("Searching for component at " + rsp.toString() );
-		int[] compIndexes = new int[2];
+		final int[] compIndexes = new int[2];
 		compIndexes[0] = rsp.x;
 		compIndexes[1] = rsp.y;
 		pointToTableIndexes( compIndexes, tableIndexesPoint );
 
-		A tableComponent = dataModel.getContentsAtPosition( tableIndexesPoint[0], tableIndexesPoint[1] );
+		final A tableComponent = dataModel.getContentsAtPosition( tableIndexesPoint[0], tableIndexesPoint[1] );
 		if( tableComponent != null )
 		{
-			C swingComponent = getGuiComponentFromTableModel( tableComponent );
+			final C swingComponent = getGuiComponentFromTableModel( tableComponent );
 			if( swingComponent != null )
 			{
 				// Work out the remained from the component width
 				retVal = true;
-				Point thePoint = destination.getHead();
+				final Point thePoint = destination.getHead();
 				thePoint.x = compIndexes[0] - swingComponent.getX();
 				thePoint.y = compIndexes[1] - swingComponent.getY();
 				destination.setTail( swingComponent );
@@ -112,12 +111,12 @@ public class LayeredPaneDndTable<A extends RackModelTableSpanningContents,
 
 		return retVal;
 	}
-	
+
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
-		boolean showing = isShowing();
-		boolean visible = isVisible();
+		final boolean showing = isShowing();
+		final boolean visible = isVisible();
 //		log.debug("Attempted repaint...");
 		if( forcePaint || (showing && visible) )
 		{

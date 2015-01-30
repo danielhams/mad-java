@@ -27,16 +27,16 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
 public interface IMadUiInstance
-	<MD extends MadDefinition<MD,MI>, MI extends MadInstance<MD, MI> >
+	<D extends MadDefinition<D,I>, I extends MadInstance<D, I> >
 {
 	
 	Span getCellSpan();
 	
-	MI getInstance();
+	I getInstance();
 	
-	MadUiDefinition<MD, MI> getUiDefinition();
+	MadUiDefinition<D, I> getUiDefinition();
 	
-	MadUiControlInstance<?,?,?>[] getUiControlInstances();
+	AbstractMadUiControlInstance<?,?,?>[] getUiControlInstances();
 	
 	MadUiChannelInstance[] getUiChannelInstances();
 	

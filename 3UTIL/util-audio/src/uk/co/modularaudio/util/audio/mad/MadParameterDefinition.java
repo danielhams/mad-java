@@ -22,10 +22,10 @@ package uk.co.modularaudio.util.audio.mad;
 
 public class MadParameterDefinition
 {
-	private String id = null;
-	private String userVisibleString = null;
-	
-	public MadParameterDefinition( String key, String userVisibleString )
+	private final String id;
+	private final String userVisibleString;
+
+	public MadParameterDefinition( final String key, final String userVisibleString )
 	{
 		this.id = key;
 		this.userVisibleString = userVisibleString;
@@ -35,7 +35,7 @@ public class MadParameterDefinition
 	{
 		return id;
 	}
-	
+
 	public String getUserVisibleString()
 	{
 		return userVisibleString;

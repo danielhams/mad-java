@@ -47,7 +47,7 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 	private static final int VALUE_CHASE_MILLIS = 10;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	private long sampleRate = -1;
 
 	protected float desiredThreshold = 0.0f;
@@ -57,28 +57,28 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 	private float rightSquaresSum = 0.0f;
 
 	public ThresholdTypeEnum desiredThresholdType = ThresholdTypeEnum.RMS;
-	
-	public StereoGateMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			StereoGateMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public StereoGateMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final StereoGateMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -90,28 +90,28 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inWaveLeftConnected = channelConnectedFlags.get( StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT );
-		MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT ];
-		float[] inWaveLeftFloats = (inWaveLeftConnected ? inWaveLeftCb.floatBuffer : null );
+		final boolean inWaveLeftConnected = channelConnectedFlags.get( StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT );
+		final MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT ];
+		final float[] inWaveLeftFloats = (inWaveLeftConnected ? inWaveLeftCb.floatBuffer : null );
 
-		boolean inWaveRightConnected = channelConnectedFlags.get( StereoGateMadDefinition.CONSUMER_IN_WAVE_RIGHT );
-		MadChannelBuffer inWaveRightCb = channelBuffers[ StereoGateMadDefinition.CONSUMER_IN_WAVE_RIGHT ];
-		float[] inWaveRightFloats = (inWaveRightConnected ? inWaveRightCb.floatBuffer : null );
-		
-		boolean outGateConnected = channelConnectedFlags.get( StereoGateMadDefinition.PRODUCER_OUT_CV_GATE );
-		MadChannelBuffer outGateCb = channelBuffers[ StereoGateMadDefinition.PRODUCER_OUT_CV_GATE ];
-		float[] outGateFloats =( outGateConnected ? outGateCb.floatBuffer : null );
-		
-		boolean outOverConnected = channelConnectedFlags.get( StereoGateMadDefinition.PRODUCER_OUT_CV_OVERDRIVE );
-		MadChannelBuffer outOverCb = channelBuffers[ StereoGateMadDefinition.PRODUCER_OUT_CV_OVERDRIVE ];
-		float[] outOverFloats  = ( outOverConnected ? outOverCb.floatBuffer : null );
-		
+		final boolean inWaveRightConnected = channelConnectedFlags.get( StereoGateMadDefinition.CONSUMER_IN_WAVE_RIGHT );
+		final MadChannelBuffer inWaveRightCb = channelBuffers[ StereoGateMadDefinition.CONSUMER_IN_WAVE_RIGHT ];
+		final float[] inWaveRightFloats = (inWaveRightConnected ? inWaveRightCb.floatBuffer : null );
+
+		final boolean outGateConnected = channelConnectedFlags.get( StereoGateMadDefinition.PRODUCER_OUT_CV_GATE );
+		final MadChannelBuffer outGateCb = channelBuffers[ StereoGateMadDefinition.PRODUCER_OUT_CV_GATE ];
+		final float[] outGateFloats =( outGateConnected ? outGateCb.floatBuffer : null );
+
+		final boolean outOverConnected = channelConnectedFlags.get( StereoGateMadDefinition.PRODUCER_OUT_CV_OVERDRIVE );
+		final MadChannelBuffer outOverCb = channelBuffers[ StereoGateMadDefinition.PRODUCER_OUT_CV_OVERDRIVE ];
+		final float[] outOverFloats  = ( outOverConnected ? outOverCb.floatBuffer : null );
+
 		float loopThreshold = curThreshold;
 
 		switch( desiredThresholdType )
@@ -133,7 +133,7 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 						rightVal = (rightVal < 0.0f ? -rightVal : rightVal );
 					}
 					loopThreshold = (loopThreshold * curValueRatio ) + (desiredThreshold * newValueRatio );
-					
+
 					float amountOver = 0.0f;
 					if( leftVal > loopThreshold )
 					{
@@ -143,7 +143,7 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 					{
 						amountOver = rightVal - loopThreshold;
 					}
-					
+
 					if( outGateConnected )
 					{
 						outGateFloats[ s ] = (amountOver > 0.0f ? 1.0f : 0.0f );
@@ -162,18 +162,18 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 				{
 					if( inWaveLeftConnected )
 					{
-						float leftVal = inWaveLeftFloats[ s ];
+						final float leftVal = inWaveLeftFloats[ s ];
 						leftSquaresSum = ((leftSquaresSum + (leftVal * leftVal))) / 2.0f;
 					}
-					float leftRms = (float)Math.sqrt( leftSquaresSum );
+					final float leftRms = (float)Math.sqrt( leftSquaresSum );
 					if( inWaveRightConnected )
 					{
-						float rightVal = inWaveRightFloats[ s ];
+						final float rightVal = inWaveRightFloats[ s ];
 						rightSquaresSum = ((rightSquaresSum + (rightVal * rightVal) )) / 2.0f;
 					}
-					float rightRms = (float)Math.sqrt( rightSquaresSum );
+					final float rightRms = (float)Math.sqrt( rightSquaresSum );
 					loopThreshold = (loopThreshold * curValueRatio ) + (desiredThreshold * newValueRatio );
-					
+
 					float amountOver = 0.0f;
 					if( leftRms > rightRms && leftRms > loopThreshold )
 					{
@@ -183,7 +183,7 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 					{
 						amountOver = rightRms - loopThreshold;
 					}
-					
+
 					if( outGateConnected )
 					{
 						outGateFloats[ s ] = (amountOver > 0.0f ? 1.0f : 0.0f );
@@ -198,7 +198,7 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 			}
 			default:
 			{
-				String msg = "Unknown threshold type: " + desiredThresholdType;
+				final String msg = "Unknown threshold type: " + desiredThresholdType;
 				log.error( msg );
 				return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
 			}

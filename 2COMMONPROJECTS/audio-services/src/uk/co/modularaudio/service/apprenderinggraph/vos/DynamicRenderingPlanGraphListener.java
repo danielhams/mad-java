@@ -36,37 +36,37 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 {
 	private static Log log = LogFactory.getLog( DynamicRenderingPlanGraphListener.class.getName() );
 
-	private RenderingService renderingService = null;
-	private MadGraphInstance<?,?> rootGraph = null;
-	private AppRenderingGraph appRenderingGraph = null;
+	private final RenderingService renderingService;
+	private final MadGraphInstance<?,?> rootGraph;
+	private final AppRenderingGraph appRenderingGraph;
 
-	public DynamicRenderingPlanGraphListener( RenderingService renderingService,
-			AppRenderingGraph appRenderingGraph,
-			MadGraphInstance<?,?> rootGraph )
+	public DynamicRenderingPlanGraphListener( final RenderingService renderingService,
+			final AppRenderingGraph appRenderingGraph,
+			final MadGraphInstance<?,?> rootGraph )
 	{
 		this.renderingService = renderingService;
 		this.rootGraph = rootGraph;
 		this.appRenderingGraph = appRenderingGraph;
 	}
 
-	public void forcePlanCreation( HardwareIOChannelSettings coreEngineChannelSettings,
-			MadFrameTimeFactory frameTimeFactory )
+	public void forcePlanCreation( final HardwareIOChannelSettings coreEngineChannelSettings,
+			final MadFrameTimeFactory frameTimeFactory )
 		throws DatastoreException, MadProcessingException
 	{
 		try
 		{
-			RenderingPlan oldRp = appRenderingGraph.getAtomicRenderingPlan().get();
+			final RenderingPlan oldRp = appRenderingGraph.getAtomicRenderingPlan().get();
 			if( oldRp != null )
 			{
-				String msg = "Found an old rendering plan although we shouldn't be rendering!";
+				final String msg = "Found an old rendering plan although we shouldn't be rendering!";
 				throw new MadProcessingException( msg );
 			}
-			RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, coreEngineChannelSettings, frameTimeFactory );
+			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, coreEngineChannelSettings, frameTimeFactory );
 			appRenderingGraph.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			 String msg = "Exception caugtht forcing plan creation: " + e.toString();
+			 final String msg = "Exception caugtht forcing plan creation: " + e.toString();
 			 log.error( msg, e );
 			 throw new DatastoreException( msg, e  );
 		}
@@ -80,16 +80,16 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 		// Recompute the rendering plan for the graph and push it into the execution service as the plan that will be executed.
 		try
 		{
-			RenderingPlan oldRenderingPlan = appRenderingGraph.getAtomicRenderingPlan().get();
-			HardwareIOChannelSettings planChannelSettings = oldRenderingPlan.getPlanChannelSettings();
-			MadFrameTimeFactory planFrameTimeFactory = oldRenderingPlan.getPlanFrameTimeFactory();
-			RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, planChannelSettings, planFrameTimeFactory );
+			final RenderingPlan oldRenderingPlan = appRenderingGraph.getAtomicRenderingPlan().get();
+			final HardwareIOChannelSettings planChannelSettings = oldRenderingPlan.getPlanChannelSettings();
+			final MadFrameTimeFactory planFrameTimeFactory = oldRenderingPlan.getPlanFrameTimeFactory();
+			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, planChannelSettings, planFrameTimeFactory );
 
 			appRenderingGraph.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught generating a rendering plan and pushing it to the execution service: " + e.toString();
+			final String msg = "Exception caught generating a rendering plan and pushing it to the execution service: " + e.toString();
 			log.error( msg, e );
 		}
 	}

@@ -22,17 +22,17 @@ package uk.co.modularaudio.util.audio.mad.hardwareio;
 
 public final class AudioHardwareDevice
 {
-	protected String providerId = null;
-	protected String id = null;
-	protected String userVisibleName = null;
+	protected String providerId;
+	protected String id;
+	protected String userVisibleName;
 	protected DeviceDirection streamType = DeviceDirection.PRODUCER;
-	protected int numChannels = -1;
+	protected int numChannels;
 
-	public AudioHardwareDevice( String providerId,
-			String id,
-			String userVisibleName,
-			DeviceDirection streamType,
-			int numChannels )
+	public AudioHardwareDevice( final String providerId,
+			final String id,
+			final String userVisibleName,
+			final DeviceDirection streamType,
+			final int numChannels )
 	{
 		this.providerId = providerId;
 		this.id = id;
@@ -40,12 +40,12 @@ public final class AudioHardwareDevice
 		this.streamType = streamType;
 		this.numChannels = numChannels;
 	}
-	
+
 	public String getProviderId()
 	{
 		return providerId;
 	}
-	
+
 	public String getId()
 	{
 		return id;
@@ -66,9 +66,10 @@ public final class AudioHardwareDevice
 		return numChannels;
 	}
 
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder( id.length() + 2 + userVisibleName.length() );
+		final StringBuilder sb = new StringBuilder( id.length() + 2 + userVisibleName.length() );
 		sb.append( id );
 		sb.append( " " );
 		sb.append( userVisibleName );

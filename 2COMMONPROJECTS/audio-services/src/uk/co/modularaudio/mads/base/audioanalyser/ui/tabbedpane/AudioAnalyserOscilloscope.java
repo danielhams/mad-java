@@ -44,14 +44,14 @@ public class AudioAnalyserOscilloscope extends JPanel
 
 	private final PacLabel ampLabel;
 
-	private final static String[] ampOptionLabels = new String[] {
+	private final static String[] AMP_OPTION_LABELS = new String[] {
 		"lin",
 		"dB",
 		"3speech",
 		"3music"
 	};
 
-	private final static WaveDisplay.DisplayTypeEnum[] ampOptionDisplayTypes = new WaveDisplay.DisplayTypeEnum[] {
+	private final static WaveDisplay.DisplayTypeEnum[] AMP_OPTION_DISPLAY_TYPES = new WaveDisplay.DisplayTypeEnum[] {
 		WaveDisplay.DisplayTypeEnum.RAW,
 		WaveDisplay.DisplayTypeEnum.dB,
 		WaveDisplay.DisplayTypeEnum.ThreeSpeech,
@@ -91,7 +91,7 @@ public class AudioAnalyserOscilloscope extends JPanel
 		doSetFont( ampLabel );
 		add( ampLabel, "align right" );
 
-		ampToggleGroup = new PacToggleGroup( ampOptionLabels, 0 )
+		ampToggleGroup = new PacToggleGroup( AMP_OPTION_LABELS, 0 )
 		{
 
 			@Override
@@ -99,7 +99,7 @@ public class AudioAnalyserOscilloscope extends JPanel
 			{
 				if( newSelection != previousSelection )
 				{
-					wavePanelAndScales.setDisplayType( ampOptionDisplayTypes[ newSelection ] );
+					wavePanelAndScales.setDisplayType( AMP_OPTION_DISPLAY_TYPES[ newSelection ] );
 				}
 			}
 		};

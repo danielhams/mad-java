@@ -31,44 +31,44 @@ public class BandLimitedWaveTableMap
 {
 //	private static Log log = LogFactory.getLog( BandLimitedWaveTableMap.class.getName() );
 
-	private Set<CubicPaddedRawWaveTable> bandLimitedWaveTables = new HashSet<CubicPaddedRawWaveTable>();
-	
-	private FixedFreqTreeMap fixedFreqTreeMap = null;
-	
-	private final static MidiNote bandStartMidiNote = MidiUtils.getMidiNoteFromStringReturnNull( "C3" );
-	private final static MidiNote bandEndMidiNote = MidiUtils.getMidiNoteFromStringReturnNull( "G10" );
+	private final Set<CubicPaddedRawWaveTable> bandLimitedWaveTables = new HashSet<CubicPaddedRawWaveTable>();
+
+	private final FixedFreqTreeMap fixedFreqTreeMap;
+
+	private final static MidiNote BAND_START_NOTE = MidiUtils.getMidiNoteFromStringReturnNull( "C3" );
+	private final static MidiNote BAND_END_NOTE = MidiUtils.getMidiNoteFromStringReturnNull( "G10" );
 	private final int notesBetweenBands = 1;
-	
-	public BandLimitedWaveTableMap( String waveCacheRoot, RawWaveTableGenerator waveTableBandGenerator, int cycleLength )
+
+	public BandLimitedWaveTableMap( final String waveCacheRoot, final RawWaveTableGenerator waveTableBandGenerator, final int cycleLength )
 		throws IOException
 	{
-		FreqTreeMap<FreqTreeMapEntry> freqTreeMap = new FreqTreeMap<FreqTreeMapEntry>();
-		
-		FrequencyBander freqBander = new FrequencyBander( bandStartMidiNote, bandEndMidiNote, notesBetweenBands );
-		int numBands = freqBander.getNumBands();
-		float[] bandStartFreqs = freqBander.getBaseFreqPerBand();
-		int[] bandNumHarms = freqBander.getNumHarmsPerBand();
-		
+		final FreqTreeMap<FreqTreeMapEntry> freqTreeMap = new FreqTreeMap<FreqTreeMapEntry>();
+
+		final FrequencyBander freqBander = new FrequencyBander( BAND_START_NOTE, BAND_END_NOTE, notesBetweenBands );
+		final int numBands = freqBander.getNumBands();
+		final float[] bandStartFreqs = freqBander.getBaseFreqPerBand();
+		final int[] bandNumHarms = freqBander.getNumHarmsPerBand();
+
 		for( int i = 0 ; i < numBands ; i++ )
 		{
-			float bandStartFreq = bandStartFreqs[ i ];
-			int numHarmonics = bandNumHarms[ i ];
-			
-			CubicPaddedRawWaveTable waveTableForBand = waveTableBandGenerator.readFromCacheOrGenerate( waveCacheRoot,
+			final float bandStartFreq = bandStartFreqs[ i ];
+			final int numHarmonics = bandNumHarms[ i ];
+
+			final CubicPaddedRawWaveTable waveTableForBand = waveTableBandGenerator.readFromCacheOrGenerate( waveCacheRoot,
 					cycleLength,
 					numHarmonics );
 			bandLimitedWaveTables.add(  waveTableForBand );
 
-			FreqTreeMapEntry freqTreeMapEntry = new FreqTreeMapEntry( bandStartFreq, waveTableForBand );
+			final FreqTreeMapEntry freqTreeMapEntry = new FreqTreeMapEntry( bandStartFreq, waveTableForBand );
 			freqTreeMap.add( freqTreeMapEntry );
 		}
-		
+
 		// And generate the quick lookup table
 		fixedFreqTreeMap = freqTreeMap.fix();
 	}
 
-	
-	public CubicPaddedRawWaveTable getWaveTableForFrequency( float freq )
+
+	public CubicPaddedRawWaveTable getWaveTableForFrequency( final float freq )
 	{
 		return fixedFreqTreeMap.iterativeLookupWavetableForFreq( freq );
 	}

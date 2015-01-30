@@ -58,7 +58,7 @@ public class Dumper
 				numDone++;
 			}
 		}
-		catch (InterruptedException e)
+		catch (final InterruptedException e)
 		{
 			e.printStackTrace();
 		}

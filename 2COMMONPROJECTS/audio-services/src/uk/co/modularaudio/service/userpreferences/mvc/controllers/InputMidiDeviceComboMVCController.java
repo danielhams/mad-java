@@ -29,27 +29,23 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.BasicIdStringAndValueC
 
 public class InputMidiDeviceComboMVCController extends BasicIdStringAndValueComboController<AudioSystemMidiDeviceComboItem, MidiHardwareDevice>
 {
-//	private static Log log = LogFactory.getLog( InputMidiDeviceComboMVCController.class.getName() );
-	
-//	private UserPreferencesMVCController userPreferencesModelController = null;
-
-	public InputMidiDeviceComboMVCController( AudioSystemMidiDeviceMVCModel model,
-			UserPreferencesMVCController userPreferencesModelController )
+	public InputMidiDeviceComboMVCController( final AudioSystemMidiDeviceMVCModel model,
+			final UserPreferencesMVCController userPreferencesModelController )
 	{
 		super(model);
-//		this.userPreferencesModelController = userPreferencesModelController;
 	}
 
 	@Override
-	public void setSelectedElement(AudioSystemMidiDeviceComboItem selectedElement) throws RecordNotFoundException
+	public void setSelectedElement(final AudioSystemMidiDeviceComboItem selectedElement) throws RecordNotFoundException
 	{
 		// Let the parent do what it needs
 		super.setSelectedElement(selectedElement);
 	}
 
-	public void setSelectedElementById(String inputDeviceId) throws RecordNotFoundException
+	@Override
+	public void setSelectedElementById(final String inputDeviceId) throws RecordNotFoundException
 	{
-		AudioSystemMidiDeviceComboItem itemForId = model.getElementById( inputDeviceId );
+		final AudioSystemMidiDeviceComboItem itemForId = model.getElementById( inputDeviceId );
 		setSelectedElement( itemForId );
 	}
 

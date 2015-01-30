@@ -37,25 +37,25 @@ import uk.co.modularaudio.util.table.Span;
 public class NoteMultiplexerMadUiDefinition extends
 	AbstractConfigurableMadUiDefinition<NoteMultiplexerMadDefinition, NoteMultiplexerMadInstance, NoteMultiplexerMadUiInstance>
 {
-	private static final Class<NoteMultiplexerMadUiInstance> instanceClass = NoteMultiplexerMadUiInstance.class;
+	private static final Class<NoteMultiplexerMadUiInstance> INSTANCE_CLASS = NoteMultiplexerMadUiInstance.class;
 
 	public static final Point INPUT_CHANNELS_START = new Point( 40, 40 );
 	public static final int CHANNEL_TO_CHANNEL_INCREMENT = 20;
 
 	public static final int INPUT_TO_OUTPUT_CHANNEL_INCREMENT = 40;
 
-	private final Span defaultSpan = new Span(1,1);
+	private final static Span DEFAULT_SPAN = new Span(1,1);
 
 	public NoteMultiplexerMadUiDefinition(
-			BufferedImageAllocator bia,
-			NoteMultiplexerMadDefinition definition,
-			ComponentImageFactory cif, String imageRoot )
+			final BufferedImageAllocator bia,
+			final NoteMultiplexerMadDefinition definition,
+			final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, instanceClass );
+		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
 	}
 
-	private Point[] getUiChannelPositionsForAui( int numInputChannels, int numOutputChannels, int numTotalChannels )
+	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )
 	{
 		Point[] retVal;
 
@@ -67,7 +67,7 @@ public class NoteMultiplexerMadUiDefinition extends
 					+ (ic * CHANNEL_TO_CHANNEL_INCREMENT),
 					INPUT_CHANNELS_START.y );
 		}
-		Point lastInputChannelPoint = retVal[curChannelIndex - 1];
+		final Point lastInputChannelPoint = retVal[curChannelIndex - 1];
 		for (int ot = 0; ot < numOutputChannels; ot++)
 		{
 			retVal[curChannelIndex++] = new Point( lastInputChannelPoint.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT,
@@ -76,7 +76,7 @@ public class NoteMultiplexerMadUiDefinition extends
 		return retVal;
 	}
 
-	private int[] getUiChannelInstanceIndexesForAui( int numInputChannels, int numOutputChannels, int numTotalChannels )
+	private int[] getUiChannelInstanceIndexesForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )
 	{
 		int[] retVal;
 
@@ -94,18 +94,18 @@ public class NoteMultiplexerMadUiDefinition extends
 	}
 
 	@Override
-	protected MadUiInstanceConfiguration getUiInstanceConfiguration( NoteMultiplexerMadInstance instance )
+	protected MadUiInstanceConfiguration getUiInstanceConfiguration( final NoteMultiplexerMadInstance instance )
 	{
-		NoteMultiplexerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
+		final NoteMultiplexerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
 
-		int numInputChannels = 1;
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
-		
-		int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( numInputChannels, numOutputChannels, numTotalChannels );
+		final int numInputChannels = 1;
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+		final int numTotalChannels = instanceConfiguration.getNumTotalChannels();
 
-		Point[] uiChannelPositions = getUiChannelPositionsForAui( numInputChannels, numOutputChannels, numTotalChannels );
-		
+		final int[] uiChannelInstanceIndexes = getUiChannelInstanceIndexesForAui( numInputChannels, numOutputChannels, numTotalChannels );
+
+		final Point[] uiChannelPositions = getUiChannelPositionsForAui( numInputChannels, numOutputChannels, numTotalChannels );
+
 		return new MadUiInstanceConfiguration( uiChannelPositions,
 				uiChannelInstanceIndexes,
 				new Rectangle[0],
@@ -117,6 +117,6 @@ public class NoteMultiplexerMadUiDefinition extends
 	@Override
 	public Span getCellSpan()
 	{
-		return defaultSpan;
+		return DEFAULT_SPAN;
 	}
 }

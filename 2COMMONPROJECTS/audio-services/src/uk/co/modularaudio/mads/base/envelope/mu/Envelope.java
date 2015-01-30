@@ -33,13 +33,13 @@ public class Envelope
 	private float attackMillis = EnvelopeDefaults.ATTACK_MILLIS;
 	private int attackSamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, attackMillis );
 	private ValueMappingWaveTable attackWaveTable = getTableForChoice( EnvelopeDefaults.ATTACK_WAVE_CHOICE );
-	
+
 	private float decayMillis = EnvelopeDefaults.DECAY_MILLIS;
 	private int decaySamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, decayMillis );
 	private ValueMappingWaveTable decayWaveTable = getTableForChoice( EnvelopeDefaults.DECAY_WAVE_CHOICE );
-	
+
 	private float sustainLevel = EnvelopeDefaults.SUSTAIN_LEVEL;
-	
+
 	private float releaseMillis = EnvelopeDefaults.RELEASE_MILLIS;
 	private int releaseSamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, releaseMillis );
 	private ValueMappingWaveTable releaseWaveTable = getTableForChoice( EnvelopeDefaults.RELEASE_WAVE_CHOICE );
@@ -48,7 +48,7 @@ public class Envelope
 	{
 	}
 
-	public void setSampleRate( int sampleRate )
+	public void setSampleRate( final int sampleRate )
 	{
 		this.sampleRate = sampleRate;
 		setAttackMillis( attackMillis );
@@ -56,7 +56,7 @@ public class Envelope
 		setReleaseMillis( releaseMillis );
 	}
 
-	public void setAttackFromZero( boolean attackFromZero )
+	public void setAttackFromZero( final boolean attackFromZero )
 	{
 		this.attackFromZero = attackFromZero;
 	}
@@ -66,83 +66,84 @@ public class Envelope
 		return attackFromZero;
 	}
 
-	public void setAttackMillis( float attackMillis )
+	public void setAttackMillis( final float attackMillis )
 	{
 		this.attackMillis = attackMillis;
 		attackSamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, attackMillis );
 	}
-	
+
 	public int getAttackSamples()
 	{
 		return attackSamplesLength;
 	}
 
-	public void setAttackWaveChoice( EnvelopeWaveChoice attackWaveChoice )
+	public void setAttackWaveChoice( final EnvelopeWaveChoice attackWaveChoice )
 	{
 		attackWaveTable = getTableForChoice( attackWaveChoice );
 	}
-	
+
 	public ValueMappingWaveTable getAttackWaveTable()
 	{
 		return attackWaveTable;
 	}
 
-	public void setDecayMillis( float decayMillis )
+	public void setDecayMillis( final float decayMillis )
 	{
 		this.decayMillis = decayMillis;
 		decaySamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, decayMillis );
 	}
-	
+
 	public int getDecaySamples()
 	{
 		return decaySamplesLength;
 	}
 
-	public void setDecayWaveChoice( EnvelopeWaveChoice decayWaveChoice )
+	public void setDecayWaveChoice( final EnvelopeWaveChoice decayWaveChoice )
 	{
 		decayWaveTable = getTableForChoice( decayWaveChoice );
 	}
-	
+
 	public ValueMappingWaveTable getDecayWaveTable()
 	{
 		return decayWaveTable;
 	}
 
-	public void setSustainLevel( float sustainLevel )
+	public void setSustainLevel( final float sustainLevel )
 	{
 		this.sustainLevel = sustainLevel;
 	}
-	
+
 	public float getSustainLevel()
 	{
 		return sustainLevel;
 	}
 
-	public void setReleaseMillis( float releaseMillis )
+	public void setReleaseMillis( final float releaseMillis )
 	{
 		this.releaseMillis = releaseMillis;
 		releaseSamplesLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, releaseMillis );
 	}
-	
+
 	public int getReleaseSamples()
 	{
 		return releaseSamplesLength;
 	}
 
-	public void setReleaseWaveChoice( EnvelopeWaveChoice releaseWaveChoice )
+	public void setReleaseWaveChoice( final EnvelopeWaveChoice releaseWaveChoice )
 	{
 		this.releaseWaveTable = getTableForChoice( releaseWaveChoice );
 	}
-	
+
 	public ValueMappingWaveTable getReleaseWaveTable()
 	{
 		return releaseWaveTable;
 	}
-	
-	private final static ValueMappingWaveTable getTableForChoice( EnvelopeWaveChoice waveChoice )
+
+	private final static ValueMappingWaveTable getTableForChoice( final EnvelopeWaveChoice waveChoice )
 	{
 		switch( waveChoice )
 		{
+			default:
 			case LINEAR:
 			{
 				return StandardValueMappingWaveTables.getLinearAttackMappingWaveTable();
@@ -163,10 +164,6 @@ public class Envelope
 			{
 				return StandardValueMappingWaveTables.getLogFreqAttackMappingWaveTable();
 			}
-			default:
-			{
-				throw new RuntimeException( "Unmapping wave choice in envelope" );
-			}
 		}
 	}
 
@@ -185,7 +182,7 @@ public class Envelope
 		return releaseMillis;
 	}
 
-	public void setFromEnvelope( Envelope e )
+	public void setFromEnvelope( final Envelope e )
 	{
 		this.sampleRate = e.sampleRate;
 		this.attackFromZero = e.attackFromZero;

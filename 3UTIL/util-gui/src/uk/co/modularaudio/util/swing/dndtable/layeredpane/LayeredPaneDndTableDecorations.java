@@ -25,21 +25,21 @@ import java.util.ArrayList;
 public class LayeredPaneDndTableDecorations
 {
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableDecorations.class.getName() );
-	
+
 	protected ArrayList<LayeredPaneDndTableDecorationHint> hints = new ArrayList<LayeredPaneDndTableDecorationHint>();
-	
+
 	protected LayeredPaneDndTableDecorations()
 	{
 	}
-	
-	public LayeredPaneDndTableDecorations( ArrayList<LayeredPaneDndTableDecorationHint> hints )
+
+	public LayeredPaneDndTableDecorations( final ArrayList<LayeredPaneDndTableDecorationHint> hints )
 	{
 		if( hints != null )
 		{
 			this.hints = hints;
 		}
 	}
-	
+
 	public ArrayList<LayeredPaneDndTableDecorationHint> getHints()
 	{
 		return hints;

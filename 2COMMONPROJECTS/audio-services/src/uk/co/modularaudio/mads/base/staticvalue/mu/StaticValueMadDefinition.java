@@ -37,39 +37,38 @@ public class StaticValueMadDefinition extends AbstractNonConfigurableMadDefiniti
 	public final static int PRODUCER_CV_OUT_IDX = 0;
 	public final static int NUM_CHANNELS = 1;
 
-	private final static String definitionId = "static_value";
+	public final static String DEFINITION_ID = "static_value";
 
-	private final static String userVisibleName = "Static Value";
+	private final static String USER_VISIBLE_NAME = "Static Value";
 
-	private final static String classificationGroup = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String classificationId = "static_value";
-	private final static String classificationName = "Static Value";
-	private final static String classificationDescription = "Outputs a specific static value.";
+	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Static Value";
+	private final static String CLASS_DESC = "Outputs a specific static value.";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Output CV" };
+	private final static String[] CHAN_NAMES = new String[] { "Output CV" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.CV };
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.PRODUCER };
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO };
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO };
 
-	public StaticValueMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public StaticValueMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
-						ReleaseState.ALPHA ),
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
+						ReleaseState.RELEASED ),
 				new StaticValueIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

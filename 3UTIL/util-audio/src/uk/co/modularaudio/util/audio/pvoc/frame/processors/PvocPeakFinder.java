@@ -31,7 +31,7 @@ import uk.co.modularaudio.util.audio.pvoc.support.PvocDataFrame;
 public class PvocPeakFinder
 {
 	private static Log log = LogFactory.getLog( PvocPeakFinder.class.getName() );
-	
+
 	// Anything below this threshold is marked as not involved in a peak
 //	public static final float LOCK_THRESHOLD = 2.0f;
 
@@ -39,10 +39,10 @@ public class PvocPeakFinder
 
 //	public static final float LOCK_THRESHOLD = ( 0.1f * 0.1f );
 
-	public static boolean DEBUG_PEAKS = false;
+	public final static boolean DEBUG_PEAKS = false;
 
 	private static final int LOWER_BIN_INDEX_THRESHOLD = 2;
-	
+
 	private final float peakLockThreshold;
 
 	private final int numBins;
@@ -50,8 +50,8 @@ public class PvocPeakFinder
 	private final int lastBinIndexMinusOne;
 	private final int lastBinIndexMinusTwo;
 	private final int lastBinIndexMinusThree;
-	
-	public PvocPeakFinder( PvocParameters params )
+
+	public PvocPeakFinder( final PvocParameters params )
 	{
 		this.peakLockThreshold = params.getPeakLockThreshold();
 		this.numBins = params.getNumBins();
@@ -59,27 +59,30 @@ public class PvocPeakFinder
 		this.lastBinIndexMinusOne = lastBinIndex - 1;
 		this.lastBinIndexMinusTwo = lastBinIndex - 2;
 		this.lastBinIndexMinusThree = lastBinIndex - 3;
-		log.debug("Peak threshold set to " + peakLockThreshold );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Peak threshold set to " + peakLockThreshold );
+		}
 	}
-	
-	public final void computeAmpsSquared( PvocDataFrame curAnalFrame, int c )
+
+	public final void computeAmpsSquared( final PvocDataFrame curAnalFrame, final int c )
 	{
-		float[] analComplexFrame = curAnalFrame.complexFrame[ c ];
-		float[] analAmpsSquared = curAnalFrame.ampsSquared[ c ];
-		float[] analAmps = curAnalFrame.amps[ c ];
-		
-		float dcVal = analComplexFrame[ 0 ];
-		int dcSign = (dcVal < 0.0f ? -1 : 1 );
+		final float[] analComplexFrame = curAnalFrame.complexFrame[ c ];
+		final float[] analAmpsSquared = curAnalFrame.ampsSquared[ c ];
+		final float[] analAmps = curAnalFrame.amps[ c ];
+
+		final float dcVal = analComplexFrame[ 0 ];
+		final int dcSign = (dcVal < 0.0f ? -1 : 1 );
 		curAnalFrame.dcSign[ c ] = dcSign;
 		analAmps[ 0 ] = dcVal * dcSign;
 		analAmpsSquared[0] = 0.0f;
-		
-		float nyVal = analComplexFrame[ lastBinIndex ];
-		int nySign = (nyVal < 0.0f ? -1 : 1 );
+
+		final float nyVal = analComplexFrame[ lastBinIndex ];
+		final int nySign = (nyVal < 0.0f ? -1 : 1 );
 		curAnalFrame.nySign[ c ] = nySign;
 		analAmps[ lastBinIndex ] = nyVal * nySign;
 		analAmpsSquared[ lastBinIndex ] = 0.0f;
-		
+
 		for( int i = 1 ; i < lastBinIndex ; i++ )
 		{
 			analAmpsSquared[ i ] = (
@@ -88,42 +91,42 @@ public class PvocPeakFinder
 					);
 		}
 	}
-	
-	public final void computeAmpsFromAmpsSquared( PvocDataFrame curAnalFrame, int c )
+
+	public final void computeAmpsFromAmpsSquared( final PvocDataFrame curAnalFrame, final int c )
 	{
-		float[] analAmpsSquared = curAnalFrame.ampsSquared[ c ];
-		float[] analAmps = curAnalFrame.amps[ c ];
-		
+		final float[] analAmpsSquared = curAnalFrame.ampsSquared[ c ];
+		final float[] analAmps = curAnalFrame.amps[ c ];
+
 		for( int i = 1 ; i < lastBinIndex ; i++ )
 		{
 			analAmps[ i ] = (float)Math.sqrt( analAmpsSquared[i] );
 		}
 	}
 
-	public final int identifyPeaks( PvocDataFrame curAnalFrame, int c )
+	public final int identifyPeaks( final PvocDataFrame curAnalFrame, final int c )
 	{
-		int numPeaksFound = setupLockIndicators( curAnalFrame, c );
+		final int numPeaksFound = setupLockIndicators( curAnalFrame, c );
 		if( numPeaksFound > 0 )
 		{
 			getRegionsOfInfluence( curAnalFrame, c );
 		}
-	
+
 		return numPeaksFound;
 	}
 
-	private final int setupLockIndicators( PvocDataFrame curAnalFrame, int c )
+	private final int setupLockIndicators( final PvocDataFrame curAnalFrame, final int c )
 	{
-		float[] amps = curAnalFrame.ampsSquared[c];
-		int[] peaksBuffer = curAnalFrame.peaksBuffer[c];
+		final float[] amps = curAnalFrame.ampsSquared[c];
+		final int[] peaksBuffer = curAnalFrame.peaksBuffer[c];
 		int sliIndex = 0;
-		
+
 		// Do zero bin seperately to avoid branch mispredict in the loop
 		if( amps[0] > peakLockThreshold && amps[0] > amps[1] && amps[0] >= amps[2] )
 		{
 			// Map zero bin to bin 1 so phase computations kind of work.
 			peaksBuffer[ sliIndex++ ] = 1;
 		}
-		
+
 		for( int i = 1 ; i < LOWER_BIN_INDEX_THRESHOLD ; i++ )
 		{
 			if( amps[i] > peakLockThreshold &&
@@ -133,7 +136,7 @@ public class PvocPeakFinder
 				i=i+1;
 			}
 		}
-		
+
 		for( int i = LOWER_BIN_INDEX_THRESHOLD ; i < lastBinIndexMinusOne ; i++ )
 		{
 			if( amps[i] > peakLockThreshold &&
@@ -146,7 +149,7 @@ public class PvocPeakFinder
 				i=i+2;
 			}
 		}
-		
+
 		if( amps[ lastBinIndexMinusOne ] > peakLockThreshold &&
 				amps[ lastBinIndexMinusOne ] > amps[ lastBinIndexMinusTwo ] &&
 				amps[ lastBinIndexMinusOne ] > amps[ lastBinIndex ] &&
@@ -169,24 +172,24 @@ public class PvocPeakFinder
 		return sliIndex ;
 	}
 
-	private final void getRegionsOfInfluence( PvocDataFrame curAnalFrame, int c )
+	private final void getRegionsOfInfluence( final PvocDataFrame curAnalFrame, final int c )
 	{
-		float[] amps = curAnalFrame.ampsSquared[c];
-		int[] peaksBuffer = curAnalFrame.peaksBuffer[c];
-		int[] peakBoundariesBuffer = curAnalFrame.peakBoundariesBuffer[c];
-		int[] binToPeakBuffer = curAnalFrame.binToPeakBuffer[c];
+		final float[] amps = curAnalFrame.ampsSquared[c];
+		final int[] peaksBuffer = curAnalFrame.peaksBuffer[c];
+		final int[] peakBoundariesBuffer = curAnalFrame.peakBoundariesBuffer[c];
+		final int[] binToPeakBuffer = curAnalFrame.binToPeakBuffer[c];
 		int lowerBound = 0;
 		int upperBound = -1;
-		
+
 		// Unrolled last index of loop
-		int lastTestIndex = curAnalFrame.numPeaksInPeaksBuffer[c] - 1;
+		final int lastTestIndex = curAnalFrame.numPeaksInPeaksBuffer[c] - 1;
 
 		for( int i = 0 ; i < lastTestIndex ; i++ )
 		{
-			int lockedBinNum = peaksBuffer[ i ];
+			final int lockedBinNum = peaksBuffer[ i ];
 			// Look for where the next peak is by finding the next "lock indicator" if there is one
 			// If we don't have one (-1) then set the upper bound to be the final bin (but not nyquist bin)
-			int nextPeakBin = peaksBuffer[ i + 1 ];
+			final int nextPeakBin = peaksBuffer[ i + 1 ];
 
 			upperBound = findMinimaBetween( lockedBinNum, nextPeakBin, amps );
 
@@ -194,23 +197,23 @@ public class PvocPeakFinder
 			Arrays.fill( binToPeakBuffer, lowerBound, upperBound, lockedBinNum );
 			peakBoundariesBuffer[ (lockedBinNum * 2) ] = lowerBound;
 			peakBoundariesBuffer[ (lockedBinNum * 2) + 1 ] = upperBound;
-			
+
 			// Now move up lower bound
 			lowerBound = upperBound;
 		}
-		
-		int lockedBinNum = peaksBuffer[ lastTestIndex ];
+
+		final int lockedBinNum = peaksBuffer[ lastTestIndex ];
 		upperBound = numBins;
 		Arrays.fill( binToPeakBuffer, lowerBound, upperBound, lockedBinNum );
 		peakBoundariesBuffer[ (lockedBinNum * 2) ] = lowerBound;
 		peakBoundariesBuffer[ (lockedBinNum * 2) + 1 ] = upperBound;
 	}
 
-	private final int findMinimaBetween( int lockedBinNum,
-				int nextBinNum,
-				float[] amps )
+	private final int findMinimaBetween( final int lockedBinNum,
+				final int nextBinNum,
+				final float[] amps )
 	{
-		int lockedBinNumPlusOne = lockedBinNum + 1;
+		final int lockedBinNumPlusOne = lockedBinNum + 1;
 		int retBin = -1;
 		boolean foundIt = false;
 		// Pull out first amp (on this maxima) and work out derivative
@@ -222,7 +225,7 @@ public class PvocPeakFinder
 		float derivativeSignum = ( derivative < 0.0f ? -1.0f : 1.0f );
 //		log.debug("Examining bin " + lockedBinNum + " prevAmp " + prevAmp + " and curAmp " + curAmp + " with der " + derivative );
 //		log.debug("PrevDerSig is " + prevDerSig + " and derSig is " + derivativeSignum );
-		
+
 		boolean lastDerivativeWasNegative = false;
 		int binAtFirstNegativeDerivative = -1;
 		// Basically walk the amps from lockedBinNum to nextBinNum
@@ -235,7 +238,7 @@ public class PvocPeakFinder
 			derivativeSignum = ( derivative < 0.0f ? -1.0f : 1.0f );
 //			log.debug("Examining bin " + i + " prevAmp " + prevAmp + " and curAmp " + curAmp + " with der " + derivative );
 //			log.debug("PrevDerSig is " + prevDerSig + " and derSig is " + derivativeSignum );
-			
+
 			// derivative sign is positive, we are decreasing
 			// if negative, we are increasing in amplitude.
 			// for the sake of avoiding lobes being detected, we look for two negative derivatives
@@ -278,27 +281,27 @@ public class PvocPeakFinder
 			return retBin;
 		}
 	}
-	
-	public final void quickZeroingLeaveBins( PvocDataFrame curAnalFrame,
-			int channelNum,
-			int binsOnEachSide,
-			boolean cleanPeak,
-			boolean cleanAllBinsAbovePeaks,
-			boolean cleanAllBinsBelowPeaks )
+
+	public final void quickZeroingLeaveBins( final PvocDataFrame curAnalFrame,
+			final int channelNum,
+			final int binsOnEachSide,
+			final boolean cleanPeak,
+			final boolean cleanAllBinsAbovePeaks,
+			final boolean cleanAllBinsBelowPeaks )
 	{
-		float[] amps = curAnalFrame.ampsSquared[channelNum];
-		int[] binToPeakBuffer = curAnalFrame.binToPeakBuffer[channelNum];
-		float[] complexFrame = curAnalFrame.complexFrame[channelNum];
-		
+		final float[] amps = curAnalFrame.ampsSquared[channelNum];
+		final int[] binToPeakBuffer = curAnalFrame.binToPeakBuffer[channelNum];
+		final float[] complexFrame = curAnalFrame.complexFrame[channelNum];
+
 		// Now zero all the bins that aren't marked as a peak (ignore dc and nyquist)
 		amps[0] = 0.0f;
 		amps[lastBinIndex] = 0.0f;
 		for( int i = 1 ; i < lastBinIndex; i++ )
 		{
-			int currentBinPeakPointer = binToPeakBuffer[ i ];
+			final int currentBinPeakPointer = binToPeakBuffer[ i ];
 
-			int distanceToPeak = currentBinPeakPointer - i;
-			
+			final int distanceToPeak = currentBinPeakPointer - i;
+
 			if( distanceToPeak == 0 )
 			{
 				if( cleanPeak )
@@ -320,7 +323,7 @@ public class PvocPeakFinder
 			else if( distanceToPeak < 0 )
 			{
 				if( cleanAllBinsAbovePeaks || -distanceToPeak > binsOnEachSide )
-				{		
+				{
 					amps[ i ] = 0.0f;
 					complexFrame[ 2*i ] = 0.0f;
 					complexFrame[ (2*i)+1 ] = 0.0f;

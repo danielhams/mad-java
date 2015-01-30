@@ -30,47 +30,47 @@ public class LaneProcessor
 {
 //	private static final Log log = LogFactory.getLog( LaneProcessor.class.getName() );
 
-	private MixerMadInstance instance = null;
-	
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 0.0f;
-	
-	private int numChannelsPerLane = -1;
-	
-	private int laneNumber = -1;
-	private int[] inputChannelIndexes = null;
-	private int[] outputChannelIndexes = null;
-	
+	private final MixerMadInstance instance;
+
+	private float curValueRatio;
+	private float newValueRatio;
+
+	private final int numChannelsPerLane;
+
+	private final int laneNumber;
+	private final int[] inputChannelIndexes;
+	private final int[] outputChannelIndexes;
+
 	private float desiredAmpMultiplier = 0.5f;
-	
+
 	private float desiredLeftAmpMultiplier = 0.5f;
 	private float currentLeftAmpMultiplier = 0.5f;
 	private float desiredRightAmpMultiplier = 0.5f;
 	private float currentRightAmpMultiplier = 0.5f;
-	
-	private float desiredPanValue = 0.0f;
-	
+
+	private float desiredPanValue;
+
 	private boolean desiredActive = true;
 
-	private float currentLeftMeterReading = 0.0f;
-	private float currentRightMeterReading = 0.0f;
+	private float currentLeftMeterReading;
+	private float currentRightMeterReading;
 
-	public LaneProcessor( MixerMadInstance instance,
-			MixerMadInstanceConfiguration channelConfiguration,
-			int laneNumber,
-			float curValueRatio,
-			float newValueRatio )
+	public LaneProcessor( final MixerMadInstance instance,
+			final MixerMadInstanceConfiguration channelConfiguration,
+			final int laneNumber,
+			final float curValueRatio,
+			final float newValueRatio )
 	{
 		this.instance = instance;
 
 		this.curValueRatio = curValueRatio;
 		this.newValueRatio = newValueRatio;
 		this.laneNumber = laneNumber;
-		
+
 		numChannelsPerLane = channelConfiguration.getNumChannelsPerLane();
 		inputChannelIndexes = new int[ numChannelsPerLane ];
 		outputChannelIndexes = new int[ numChannelsPerLane ];
-		
+
 		for( int cn = 0 ; cn < numChannelsPerLane ; cn++ )
 		{
 			inputChannelIndexes[ cn ] = channelConfiguration.getIndexForInputLaneChannel( laneNumber, cn );
@@ -78,41 +78,41 @@ public class LaneProcessor
 		}
 	}
 
-	public void processLaneMixToOutput( ThreadSpecificTemporaryEventStorage tses,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
-			int position,
-			int length )
+	public void processLaneMixToOutput( final ThreadSpecificTemporaryEventStorage tses,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int position,
+			final int length )
 	{
 		// Only process if something is connected to us!
 		boolean inputConnected = false;
 		for( int cn = 0 ; !inputConnected && cn < numChannelsPerLane ; cn++ )
 		{
-			int indexOfChannel = inputChannelIndexes[ cn ];
+			final int indexOfChannel = inputChannelIndexes[ cn ];
 			if( channelConnectedFlags.get( indexOfChannel ) )
 			{
 				inputConnected = true;
 				break;
 			}
 		}
-		
-		float[] firstOutputChannel = channelBuffers[ outputChannelIndexes[ 0 ] ].floatBuffer;
-		float[] secondOutputChannel = channelBuffers[ outputChannelIndexes[ 1 ] ].floatBuffer;
-		
+
+		final float[] firstOutputChannel = channelBuffers[ outputChannelIndexes[ 0 ] ].floatBuffer;
+		final float[] secondOutputChannel = channelBuffers[ outputChannelIndexes[ 1 ] ].floatBuffer;
+
 		if( inputConnected )
 		{
-			boolean firstConnected = channelConnectedFlags.get( inputChannelIndexes[0] );
-			float[] firstInputChannel = channelBuffers[ inputChannelIndexes[ 0 ] ].floatBuffer;
-			boolean secondConnected = channelConnectedFlags.get( inputChannelIndexes[1] );
-			float[] secondInputChannel = channelBuffers[ inputChannelIndexes[ 1 ] ].floatBuffer;
-			
+			final boolean firstConnected = channelConnectedFlags.get( inputChannelIndexes[0] );
+			final float[] firstInputChannel = channelBuffers[ inputChannelIndexes[ 0 ] ].floatBuffer;
+			final boolean secondConnected = channelConnectedFlags.get( inputChannelIndexes[1] );
+			final float[] secondInputChannel = channelBuffers[ inputChannelIndexes[ 1 ] ].floatBuffer;
+
 			if( firstConnected )
 			{
 				if( currentLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 				{
 					currentLeftAmpMultiplier = 0.0f;
 				}
-				
+
 				if( currentLeftAmpMultiplier == 0.0f && desiredLeftAmpMultiplier == 0.0f )
 				{
 				}
@@ -122,8 +122,8 @@ public class LaneProcessor
 					{
 						currentLeftAmpMultiplier = ( currentLeftAmpMultiplier * curValueRatio ) + ( desiredLeftAmpMultiplier * newValueRatio );
 						float oneFloat = firstInputChannel[s] * currentLeftAmpMultiplier;
-						float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-						
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
 						if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 						{
 							oneFloat = 0.0f;
@@ -133,7 +133,7 @@ public class LaneProcessor
 							currentLeftMeterReading = absFloat;
 						}
 						firstOutputChannel[ s ] += oneFloat;
-						
+
 						if( !secondConnected )
 						{
 							secondOutputChannel[ s ] += oneFloat;
@@ -141,7 +141,7 @@ public class LaneProcessor
 					}
 				}
 			}
-			
+
 			if( secondConnected )
 			{
 				if( currentRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
@@ -158,8 +158,8 @@ public class LaneProcessor
 					{
 						currentRightAmpMultiplier = ( currentRightAmpMultiplier * curValueRatio ) + ( desiredRightAmpMultiplier * newValueRatio );
 						float oneFloat = secondInputChannel[s] * currentRightAmpMultiplier;
-						float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-						
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
 						if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 						{
 							oneFloat = 0.0f;
@@ -179,8 +179,8 @@ public class LaneProcessor
 			currentRightMeterReading = 0.0f;
 		}
 	}
-	
-	public void emitLaneMeterReadings( ThreadSpecificTemporaryEventStorage tses, long meterTimestamp )
+
+	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long meterTimestamp )
 	{
 //		log.debug("Emitting one at " + meterTimestamp);
 		instance.emitLaneMeterReading( tses, meterTimestamp, laneNumber, currentLeftMeterReading, currentRightMeterReading );
@@ -188,31 +188,31 @@ public class LaneProcessor
 		currentRightMeterReading = 0.0f;
 	}
 
-	public void setLaneAmp( float ampValue )
+	public void setLaneAmp( final float ampValue )
 	{
 //		log.debug("Setting lane " + laneNumber + " to amp " + ampValue );
-		desiredAmpMultiplier = ampValue;		
+		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
 	}
 
-	public void resetCurNewValues( float curValueRatio2, float newValueRatio2 )
+	public void resetCurNewValues( final float curValueRatio2, final float newValueRatio2 )
 	{
 		this.curValueRatio = curValueRatio2;
 		this.newValueRatio = newValueRatio2;
 	}
 
-	public void setLanePan( float panValue )
+	public void setLanePan( final float panValue )
 	{
 		desiredPanValue = panValue;
 		recomputeDesiredChannelAmps();
 	}
-	
-	public void setLaneActive( boolean active )
+
+	public void setLaneActive( final boolean active )
 	{
 		desiredActive = active;
 		recomputeDesiredChannelAmps();
 	}
-	
+
 	private void recomputeDesiredChannelAmps()
 	{
 		if( desiredActive )
@@ -223,7 +223,7 @@ public class LaneProcessor
 			float rightAmp = (desiredPanValue > 0.0f ? 1.0f : (1.0f + desiredPanValue) );
 			rightAmp = NormalisedValuesMapper.expMapF( rightAmp );
 			desiredRightAmpMultiplier = desiredAmpMultiplier * rightAmp;
-			
+
 			if( desiredLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 			{
 				desiredLeftAmpMultiplier = 0.0f;

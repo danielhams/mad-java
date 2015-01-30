@@ -31,13 +31,13 @@ public interface HashedStorageService
 {
 	// CRUD on the storage references
 	HashedWarehouse initStorage( String rootPathOfStorage ) throws IOException;
-	
+
 	// CRUD on entries in the warehouse
 	// Internal housekeeping, really
 	HashedRef getHashedRefForFilename( String filename ) throws DatastoreException;
-	
+
 	String getPathToHashedRef( HashedWarehouse warehouse, HashedRef hashedRef );
-	
+
 	void storeContentsInWarehouse( HashedWarehouse warehouse, HashedRef hashedRef, InputStream contents )
 		throws IOException;
 	InputStream getContentsFromWarehouse( HashedWarehouse warehouse, HashedRef hashedRef )

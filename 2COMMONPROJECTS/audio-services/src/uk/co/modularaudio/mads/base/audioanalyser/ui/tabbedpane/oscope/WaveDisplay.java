@@ -41,20 +41,20 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class WaveDisplay extends PacPanel
-	implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeListener, BufferStateListener
+implements AudioAnalyserDisplay, BufferZoomAndPositionListener, BufferFreezeListener, BufferStateListener
 {
 	private static final long serialVersionUID = -7355046237468407858L;
 
-	private final static Log log = LogFactory.getLog( WaveDisplay.class.getName() );
+	private static Log log = LogFactory.getLog( WaveDisplay.class.getName() );
 
 	private final AudioAnalyserUiBufferState uiBufferState;
-//	private final BufferedImageAllocator bia;
+	//	private final BufferedImageAllocator bia;
 
 	private RollPainter<WaveDisplayBufferedImage, WaveDisplayBufferedImageClearer> rollPainter;
 	private WaveDisplaySampleFactory sampleFactory;
 
-//	public final static int DISPLAY_WIDTH = 449;
 	public final static int DISPLAY_WIDTH = 449;
+	//	public final static int DISPLAY_WIDTH = 1066;
 	public final static int DISPLAY_HEIGHT = 171;
 
 	public enum DisplayTypeEnum
@@ -65,22 +65,17 @@ public class WaveDisplay extends PacPanel
 		ThreeMusic
 	};
 
-	private DisplayPresentationProcessor[] typeToDisplayProcessor = new DisplayPresentationProcessor[] {
-		null,
-		null,
-		null,
-		null
-	};
+	private final DisplayPresentationProcessor[] typeToDisplayProcessor = new DisplayPresentationProcessor[4];
 
 	private DisplayTypeEnum curDisplayType;
 
-	public WaveDisplay( AudioAnalyserUiBufferState uiBufferState, BufferedImageAllocator bia )
+	public WaveDisplay( final AudioAnalyserUiBufferState uiBufferState, final BufferedImageAllocator bia )
 	{
 		this.uiBufferState = uiBufferState;
 		uiBufferState.addBufferStateListener( this );
-//		this.bia = bia;
+		//		this.bia = bia;
 		setOpaque(true);
-//		setBackground(AAColours.BACKGROUND);
+		//		setBackground(AAColours.BACKGROUND);
 		setBackground( Color.BLUE );
 
 		try
@@ -91,16 +86,19 @@ public class WaveDisplay extends PacPanel
 			curDisplayType = DisplayTypeEnum.RAW;
 			setDisplayType( curDisplayType );
 		}
-		catch (DatastoreException e)
+		catch (final DatastoreException e)
 		{
-			log.error("DatastoreException caught initialising roll painter: " + e.toString(), e);
+			if( log.isErrorEnabled() )
+			{
+				log.error("DatastoreException caught initialising roll painter: " + e.toString(), e);
+			}
 		}
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			MadTimingParameters timingParameters,
-			long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters,
+			final long currentGuiTime )
 	{
 		if( rollPainter.checkAndUpdate() )
 		{
@@ -109,7 +107,7 @@ public class WaveDisplay extends PacPanel
 	}
 
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(final Graphics g)
 	{
 		if( rollPainter != null )
 		{
@@ -124,14 +122,14 @@ public class WaveDisplay extends PacPanel
 		}
 		else
 		{
-//			g.setColor( AAColours.BACKGROUND );
+			//			g.setColor( AAColours.BACKGROUND );
 			g.setColor( Color.BLUE );
 			g.fillRect( 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1 );
 		}
 	}
 
 	@Override
-	public void setBounds(int x, int y, int width, int height)
+	public void setBounds(final int x, final int y, final int width, final int height)
 	{
 		super.setBounds(x, y, width, height);
 		log.debug("Bounds set to " + x + ", " + y + "-" + width + "," + height );
@@ -148,7 +146,7 @@ public class WaveDisplay extends PacPanel
 	}
 
 	@Override
-	public void receiveFreezeStateChange(boolean frozen)
+	public void receiveFreezeStateChange(final boolean frozen)
 	{
 		if( !frozen )
 		{
@@ -162,13 +160,13 @@ public class WaveDisplay extends PacPanel
 		setNeedsFullUpdate();
 	}
 
-	public void setDisplayType( DisplayTypeEnum displayTypeEnum )
+	public void setDisplayType( final DisplayTypeEnum displayTypeEnum )
 	{
 		curDisplayType = displayTypeEnum;
 
-		AudioAnalyserDataBuffers dataBuffers = uiBufferState.getDataBuffers();
+		final AudioAnalyserDataBuffers dataBuffers = uiBufferState.getDataBuffers();
 
-		int dtOrdinal = displayTypeEnum.ordinal();
+		final int dtOrdinal = displayTypeEnum.ordinal();
 		DisplayPresentationProcessor dpp = typeToDisplayProcessor[ dtOrdinal ];
 
 		if( dpp == null )
@@ -206,7 +204,7 @@ public class WaveDisplay extends PacPanel
 	}
 
 	@Override
-	public void receiveStartup( HardwareIOChannelSettings ratesAndLatency, MadTimingParameters timingParameters )
+	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency, final MadTimingParameters timingParameters )
 	{
 	}
 
@@ -222,9 +220,12 @@ public class WaveDisplay extends PacPanel
 		{
 			rollPainter.cleanup();
 		}
-		catch (DatastoreException e)
+		catch (final DatastoreException e)
 		{
-			log.error("DatastoreException caught cleaning up roll painter: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("DatastoreException caught cleaning up roll painter: " + e.toString(), e );
+			}
 		}
 	}
 }

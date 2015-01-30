@@ -45,40 +45,35 @@ public class PreferencesManipulator
 	private static final String TAB_TITLE_AUDIO_SYSTEM = "Audio System";
 	private static final String TAB_TITLE_HARDWARE_PAGE = "Audio Hardware";
 
-	private ComponentDesignerFrontController fc = null;
-//	private ComponentImageFactory cif = null;
-//	private ConfigurationService cs = null;
-	private PreferencesDialog preferencesDialog = null;
-//	private PreferencesActions actions = null;
+	private final JTabbedPane tabbedPane;
 
-	private JTabbedPane tabbedPane = null;
+	private final PreferencesGeneralPage generalPage;
+	private final PreferencesAudioSystemPage audioSystemPage;
+	private final PreferencesHardwarePage hardwarePage;
 
-	private PreferencesGeneralPage generalPage = null;
-	private PreferencesAudioSystemPage audioSystemPage = null;
-	private PreferencesHardwarePage hardwarePage = null;
-
-	public PreferencesManipulator( ComponentDesignerFrontController fc,
-			ComponentImageFactory cif,
-			ConfigurationService cs,
-			PreferencesDialog preferencesDialog,
-			PreferencesActions actions ) throws DatastoreException
+	public PreferencesManipulator( final ComponentDesignerFrontController fc,
+			final ComponentImageFactory cif,
+			final ConfigurationService cs,
+			final PreferencesDialog preferencesDialog,
+			final PreferencesActions actions ) throws DatastoreException
 	{
-		this.fc = fc;
-//		this.cif = cif;
-//		this.cs = cs;
-		this.preferencesDialog = preferencesDialog;
-//		this.actions = actions;
-
 		preferencesDialog.setTitle( PREFERENCES_TITLE );
 		preferencesDialog.setSize( GuiConstants.GUI_PREFERENCES_DEFAULT_DIMENSIONS );
 		preferencesDialog.setMinimumSize( GuiConstants.GUI_PREFERENCES_MINIMUM_DIMENSIONS );
 		preferencesDialog.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 
-		Map<PreferencesDialogPageEnum, Component> pageToComponentMap = new HashMap<PreferencesDialogPageEnum, Component>();
-		pageToComponentMap.put( PreferencesDialogPageEnum.GENERAL, getGeneralPage() );
-		pageToComponentMap.put( PreferencesDialogPageEnum.AUDIO_SYSTEM, getAudioSystemPage());
-		pageToComponentMap.put( PreferencesDialogPageEnum.HARDWARE_PAGE, getHardwarePage() );
-		preferencesDialog.setPreferencesTabbedFrame( getContentFrame(), pageToComponentMap );
+		final Map<PreferencesDialogPageEnum, Component> pageToComponentMap = new HashMap<PreferencesDialogPageEnum, Component>();
+		generalPage = new PreferencesGeneralPage();
+		pageToComponentMap.put( PreferencesDialogPageEnum.GENERAL, generalPage );
+		audioSystemPage = new PreferencesAudioSystemPage( fc, preferencesDialog );
+		pageToComponentMap.put( PreferencesDialogPageEnum.AUDIO_SYSTEM, audioSystemPage );
+		hardwarePage = new PreferencesHardwarePage( fc, preferencesDialog );
+		pageToComponentMap.put( PreferencesDialogPageEnum.HARDWARE_PAGE, hardwarePage );
+		tabbedPane = new JTabbedPane();
+		tabbedPane.addTab( TAB_TITLE_GENERAL, generalPage );
+		tabbedPane.addTab( TAB_TITLE_AUDIO_SYSTEM, audioSystemPage );
+		tabbedPane.addTab( TAB_TITLE_HARDWARE_PAGE, hardwarePage );
+		preferencesDialog.setPreferencesTabbedFrame( tabbedPane, pageToComponentMap );
 
 		preferencesDialog.registerCancelAction( actions.getCancelAction() );
 		preferencesDialog.registerApplyAction( actions.getApplyAction() );
@@ -87,44 +82,5 @@ public class PreferencesManipulator
 //		GlobalKeyHelper.setupKeys( menubar, actions );
 //		GlobalKeyHelper.setupKeys( contentFrame, actions );
 //		GlobalKeyHelper.setupKeys( scrollableDesigner, actions );
-	}
-
-	private JTabbedPane getContentFrame() throws DatastoreException
-	{
-		if( tabbedPane == null )
-		{
-			tabbedPane = new JTabbedPane();
-			tabbedPane.addTab( TAB_TITLE_GENERAL, getGeneralPage() );
-			tabbedPane.addTab( TAB_TITLE_AUDIO_SYSTEM, getAudioSystemPage() );
-			tabbedPane.addTab( TAB_TITLE_HARDWARE_PAGE, getHardwarePage() );
-		}
-		return tabbedPane;
-	}
-
-	private Component getGeneralPage()
-	{
-		if( generalPage == null )
-		{
-			generalPage = new PreferencesGeneralPage();
-		}
-		return generalPage;
-	}
-
-	private Component getAudioSystemPage() throws DatastoreException
-	{
-		if( audioSystemPage == null )
-		{
-			audioSystemPage = new PreferencesAudioSystemPage( fc, preferencesDialog );
-		}
-		return audioSystemPage;
-	}
-
-	private Component getHardwarePage() throws DatastoreException
-	{
-		if( hardwarePage == null )
-		{
-			hardwarePage = new PreferencesHardwarePage( fc, preferencesDialog );
-		}
-		return hardwarePage;
 	}
 }

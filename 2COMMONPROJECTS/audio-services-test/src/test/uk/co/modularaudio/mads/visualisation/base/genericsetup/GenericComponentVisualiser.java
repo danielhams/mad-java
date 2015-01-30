@@ -22,7 +22,6 @@ package test.uk.co.modularaudio.mads.visualisation.base.genericsetup;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
@@ -45,7 +45,7 @@ import uk.co.modularaudio.service.gui.valueobjects.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -53,7 +53,6 @@ import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
-import uk.co.modularaudio.util.swing.general.FontResetter;
 import uk.co.modularaudio.util.table.Span;
 
 public class GenericComponentVisualiser
@@ -65,23 +64,23 @@ public class GenericComponentVisualiser
 	public MadComponentUiService componentUiService = null;
 	public GuiComponentFactoryService guiComponentFactoryService = null;
 
-//	public final static Color panelBackgroundColor = new Color( 0.3f, 0.1f, 0.1f );
+	//	public final static Color panelBackgroundColor = new Color( 0.3f, 0.1f, 0.1f );
 	public final static Color panelBackgroundColor = new Color( 0.25f, 0.25f, 0.25f );
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		FontResetter.setUIFontFromString( "Serif", Font.PLAIN, 10 );
-//		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-//		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
+		//		FontResetter.setUIFontFromString( "Serif", Font.PLAIN, 10 );
+		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 	}
 
 	public void setUp() throws Exception
 	{
-		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
-		PostInitPreShutdownContextHelper pipsch = new PostInitPreShutdownContextHelper();
+		final List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		final PostInitPreShutdownContextHelper pipsch = new PostInitPreShutdownContextHelper();
 		clientHelpers.add( pipsch );
-		SpringComponentHelper sch = new SpringComponentHelper( clientHelpers );
-		gac = sch.makeAppContext( "componentvisualisationbeans.xml", "componentvisualisation.properties" );
+		final SpringComponentHelper sch = new SpringComponentHelper( clientHelpers );
+		gac = sch.makeAppContext( "/componentvisualisationbeans.xml", "/componentvisualisation.properties" );
 		componentService = gac.getBean( MadComponentService.class );
 		componentUiService = gac.getBean( MadComponentUiService.class );
 		guiComponentFactoryService = gac.getBean( GuiComponentFactoryService.class );
@@ -95,32 +94,32 @@ public class GenericComponentVisualiser
 		}
 	}
 
-	public void testAndShowComponent( String definitionId )
+	public void testAndShowComponent( final String definitionId )
 			throws Exception
 	{
-		MadDefinition<?,?> compressorDef = componentService.findDefinitionById( definitionId );
-		Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-		String instanceName = "panel_test";
-		MadInstance<?,?> aui = componentService.createInstanceFromDefinition( compressorDef, parameterValues, instanceName );
+		final MadDefinition<?,?> compressorDef = componentService.findDefinitionById( definitionId );
+		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+		final String instanceName = "panel_test";
+		final MadInstance<?,?> aui = componentService.createInstanceFromDefinition( compressorDef, parameterValues, instanceName );
 
-		MadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
+		final AbstractMadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
 
-		JFrame testFrame = new JFrame();
-		JPanel testPanel = new JPanel();
-		MigLayout layout = new MigLayout("insets 10, gap 10, fill");
+		final JFrame testFrame = new JFrame();
+		final JPanel testPanel = new JPanel();
+		final MigLayout layout = new MigLayout("insets 10, gap 10, fill");
 		testPanel.setLayout( layout );
 		testFrame.add( testPanel );
 		testPanel.setBackground( panelBackgroundColor );
 
-		RackComponent rackComponent = new RackComponent( "Test", aui, auui );
-		AbstractGuiAudioComponent frontComponent = guiComponentFactoryService.createFrontGuiComponent( rackComponent );
-		AbstractGuiAudioComponent backComponent = guiComponentFactoryService.createBackGuiComponent( rackComponent );
+		final RackComponent rackComponent = new RackComponent( "Test", aui, auui );
+		final AbstractGuiAudioComponent frontComponent = guiComponentFactoryService.createFrontGuiComponent( rackComponent );
+		final AbstractGuiAudioComponent backComponent = guiComponentFactoryService.createBackGuiComponent( rackComponent );
 
-		Span cellSpan = auui.getCellSpan();
-		Dimension gridSize = GuiRackPanel.FRONT_GRID_SIZE;
-		int width = cellSpan.x * gridSize.width;
-		int height = cellSpan.y * gridSize.height;
-		Dimension componentSize = new Dimension( width, height );
+		final Span cellSpan = auui.getCellSpan();
+		final Dimension gridSize = GuiRackPanel.FRONT_GRID_SIZE;
+		final int width = cellSpan.x * gridSize.width;
+		final int height = cellSpan.y * gridSize.height;
+		final Dimension componentSize = new Dimension( width, height );
 		frontComponent.setSize( componentSize );
 		frontComponent.setMinimumSize( componentSize );
 		backComponent.setSize( componentSize );
@@ -132,25 +131,25 @@ public class GenericComponentVisualiser
 		{
 
 			@Override
-			public void componentShown( ComponentEvent e )
+			public void componentShown( final ComponentEvent e )
 			{
 			}
 
 			@Override
-			public void componentResized( ComponentEvent e )
+			public void componentResized( final ComponentEvent e )
 			{
-				Object o = e.getSource();
-				JFrame frame = (JFrame)o;
+				final Object o = e.getSource();
+				final JFrame frame = (JFrame)o;
 				log.debug("Component resized to be " + frame.getSize() );
 			}
 
 			@Override
-			public void componentMoved( ComponentEvent e )
+			public void componentMoved( final ComponentEvent e )
 			{
 			}
 
 			@Override
-			public void componentHidden( ComponentEvent e )
+			public void componentHidden( final ComponentEvent e )
 			{
 			}
 		} );

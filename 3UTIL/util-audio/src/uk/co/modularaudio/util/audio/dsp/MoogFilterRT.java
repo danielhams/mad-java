@@ -29,7 +29,7 @@ public class MoogFilterRT
 		reset();
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		in1 = 0.0f;
 		in2 = 0.0f;

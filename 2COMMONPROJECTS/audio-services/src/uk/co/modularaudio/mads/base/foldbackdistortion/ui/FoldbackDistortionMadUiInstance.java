@@ -23,31 +23,25 @@ package uk.co.modularaudio.mads.base.foldbackdistortion.ui;
 import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadDefinition;
 import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadInstance;
 import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class FoldbackDistortionMadUiInstance extends AbstractNonConfigurableMadUiInstance<FoldbackDistortionMadDefinition, FoldbackDistortionMadInstance>
+public class FoldbackDistortionMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<FoldbackDistortionMadDefinition, FoldbackDistortionMadInstance>
 {
 //	private static Log log = LogFactory.getLog( FoldbackDistortionMadUiInstance.class.getName() );
-	
-	public FoldbackDistortionMadUiInstance( FoldbackDistortionMadInstance instance,
-			FoldbackDistortionMadUiDefinition uiDefinition )
+
+	public FoldbackDistortionMadUiInstance( final FoldbackDistortionMadInstance instance,
+			final FoldbackDistortionMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendMaxFoldoversChange( int desiredMaxFoldovers )
+
+	public void sendMaxFoldoversChange( final int desiredMaxFoldovers )
 	{
 		sendTemporalValueToInstance( FoldbackDistortionIOQueueBridge.COMMAND_MAX_FOLDOVERS, desiredMaxFoldovers );
 	}
 
-	public void sendThresholdChange( float desiredThreshold )
+	public void sendThresholdChange( final float desiredThreshold )
 	{
 		sendTemporalValueToInstance( FoldbackDistortionIOQueueBridge.COMMAND_THRESHOLD, Float.floatToIntBits( desiredThreshold ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( FoldbackDistortionMadInstance instance, IOQueueEvent nextOutgoingEntry )
-	{
 	}
 }

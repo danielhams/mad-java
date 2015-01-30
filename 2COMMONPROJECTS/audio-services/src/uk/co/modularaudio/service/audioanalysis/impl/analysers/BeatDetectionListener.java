@@ -37,14 +37,14 @@ public class BeatDetectionListener implements AnalysisListener
 {
 	private static Log log = LogFactory.getLog( BeatDetectionListener.class.getName() );
 
-	private BeatDetectionRT rt = null;
-	private BeatDetector detector = null;
+	private BeatDetectionRT rt;
+	private BeatDetector detector;
 //	private int numChannels = -1;
 	private final int DEFAULT_WIN_LEN = 1024;
 
-	private int numStored = 0;
-	private float[] btIn = null;
-	private float[] btOut = null;
+	private int numStored;
+	private float[] btIn;
+	private float[] btOut;
 
 //	private long currentPosition = 0;
 
@@ -53,7 +53,7 @@ public class BeatDetectionListener implements AnalysisListener
 	}
 
 	@Override
-	public void start(DataRate dataRate, int numChannels, long totalFloatsLength)
+	public void start(final DataRate dataRate, final int numChannels, final long totalFloatsLength)
 	{
 //		this.numChannels = numChannels;
 		// Currently beat detection is mono and uses just left channel
@@ -68,7 +68,7 @@ public class BeatDetectionListener implements AnalysisListener
 	}
 
 	@Override
-	public void receiveData(float[] data, int dataLength )
+	public void receiveData(final float[] data, final int dataLength )
 	{
 		int numRead = dataLength;
 
@@ -79,14 +79,14 @@ public class BeatDetectionListener implements AnalysisListener
 			if( numStored < DEFAULT_WIN_LEN && numRead > 0)
 			{
 //				log.debug("Filling data");
-				int numToFill = DEFAULT_WIN_LEN - numStored;
-				int numToStore = numRead / 2 > numToFill ? numToFill : numRead / 2;
+				final int numToFill = DEFAULT_WIN_LEN - numStored;
+				final int numToStore = numRead / 2 > numToFill ? numToFill : numRead / 2;
 //				System.arraycopy( data, dataLength - numRead, btIn, numStored, numToStore );
 				// Only push in every other sample - quick hack to get around multi-channel stuff
 				for( int i = 0 ; i < numToStore ; i++ )
 				{
-					int dataIndex = dataLength - numRead + (i * 2);
-					int outputIndex = numStored + i;
+					final int dataIndex = dataLength - numRead + (i * 2);
+					final int outputIndex = numStored + i;
 					btIn[ outputIndex] = data[ dataIndex ];
 				}
 				numStored += numToStore;
@@ -122,23 +122,26 @@ public class BeatDetectionListener implements AnalysisListener
 		}
 
 		Collections.sort( bpmResults );
-		for( BpmResult bpmResult : bpmResults )
+		for( final BpmResult bpmResult : bpmResults )
 		{
-			log.debug("Bpm Result: " + bpmResult.toString());
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Bpm Result: " + bpmResult.toString());
+			}
 		}
 	}
 
-	private List<BpmResult> bpmResults = new ArrayList<BpmResult>();
+	private final List<BpmResult> bpmResults = new ArrayList<BpmResult>();
 
 	private void storeBpmAndConfidence()
 	{
-		float detectedBpm = rt.getBpm();
+		final float detectedBpm = rt.getBpm();
 		if( detectedBpm != 0.0 )
 		{
-			float origConfidence = rt.getConfidence();
+			final float origConfidence = rt.getConfidence();
 			// Check to see if we can add the confidence into an existing confidence entry
-			boolean didCum = false;
-			for( BpmResult result : bpmResults )
+			final boolean didCum = false;
+			for( final BpmResult result : bpmResults )
 			{
 				if( result.bpm == detectedBpm )
 				{
@@ -149,7 +152,7 @@ public class BeatDetectionListener implements AnalysisListener
 
 			if( !didCum )
 			{
-				BpmResult newResult = new BpmResult();
+				final BpmResult newResult = new BpmResult();
 				newResult.bpm = detectedBpm;
 				newResult.confidence = origConfidence;
 
@@ -160,14 +163,14 @@ public class BeatDetectionListener implements AnalysisListener
 	}
 
 	@Override
-	public void updateAnalysedData( AnalysedData analysedData, HashedRef hashedRef )
+	public void updateAnalysedData( final AnalysedData analysedData, final HashedRef hashedRef )
 	{
 		if( bpmResults.size() > 0 )
 		{
 			// use the first one
-			BpmResult highestMatch = bpmResults.get( 0 );
+			final BpmResult highestMatch = bpmResults.get( 0 );
 			analysedData.setDetectedBpm( (float) highestMatch.bpm );
-			long[] detectedBeatPositions = new long[0];
+			final long[] detectedBeatPositions = new long[0];
 			analysedData.setDetectedBeatPositions( detectedBeatPositions );
 		}
 
@@ -178,9 +181,9 @@ public class BeatDetectionListener implements AnalysisListener
 		double confidence = 0.0;
 		double bpm = 0.0;
 		@Override
-		public int compareTo(BpmResult o)
+		public int compareTo(final BpmResult o)
 		{
-			double diff = o.confidence - confidence;
+			final double diff = o.confidence - confidence;
 			if( diff < 0.0 )
 			{
 				return -1;

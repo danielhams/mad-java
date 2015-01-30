@@ -26,39 +26,37 @@ package uk.co.modularaudio.util.pooling.common;
  */
 public class FixedSizePool extends Pool
 {
-    public FixedSizePool(
-        int numResources,
-        Factory factory)
+    public FixedSizePool( final int numResources,
+        final Factory factory)
     {
-        synchronized (poolSemaphore)
-        {
-            // Use a stack structure to store our resources. This makes recently
-            // used resources the ones that are used next.
-            poolStructure = new StackPoolStructure();
-
-            this.numResources = numResources;
-            this.factory = factory;
-        }
+        // Use a stack structure to store our resources. This makes recently
+        // used resources the ones that are used next.
+    	super( new StackPoolStructure(), 0, factory, 0 );
+    	this.numResources = numResources;
     }
 
     @Override
 	public void init() throws FactoryProductionException
     {
-        synchronized (poolSemaphore)
-        {
+    	poolLock.lock();
+    	try
+    	{
             // Set the factory up.
             factory.init();
 
 			// Create the required number of resources
 			for(int i = 0 ; i < numResources ; i++)
 			{
-				Resource res = factory.createResource();
+				final Resource res = factory.createResource();
 				this.addResource( res );
 			}
-
         }
+    	finally
+    	{
+    		poolLock.unlock();
+    	}
     }
 
-	private int numResources = 0;
+	private final int numResources;
 
 }

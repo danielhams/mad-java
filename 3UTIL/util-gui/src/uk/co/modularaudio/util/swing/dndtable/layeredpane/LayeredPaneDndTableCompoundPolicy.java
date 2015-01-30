@@ -37,26 +37,26 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	implements LayeredPaneDndTablePolicy<A,B,C>
 {
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableCompoundPolicy.class.getName() );
-	
+
 	// Basically the first to "win"  a match in a call to "isMouseOverDndSource" gets to be the policy for the duration of the drag
-	private LayeredPaneDndTablePolicy<A,B,C> currentDragPolicy = null;
-	
-	private Point resetPoint = new Point(-1,-1);
-	
+	private LayeredPaneDndTablePolicy<A,B,C> currentDragPolicy;
+
+	private final Point resetPoint = new Point(-1,-1);
+
 	public LayeredPaneDndTableCompoundPolicy()
 	{
 	}
-	
+
 	public abstract ArrayList<LayeredPaneDndTablePolicy<A,B,C>> getPolicyList();
 
 	@Override
-	public boolean isMouseOverDndSource( LayeredPaneDndTable<A,B,C> table, C component, Point localPoint, Point tablePoint)
+	public boolean isMouseOverDndSource( final LayeredPaneDndTable<A,B,C> table, final C component, final Point localPoint, final Point tablePoint)
 	{
-		ArrayList<LayeredPaneDndTablePolicy<A,B,C>> policyList = getPolicyList();
+		final ArrayList<LayeredPaneDndTablePolicy<A,B,C>> policyList = getPolicyList();
 
 		boolean matchedOne = false;
-		
-		for( LayeredPaneDndTablePolicy<A,B,C> testPolicy : policyList )
+
+		for( final LayeredPaneDndTablePolicy<A,B,C> testPolicy : policyList )
 		{
 			if( testPolicy.isMouseOverDndSource( table, component, localPoint, tablePoint) )
 			{
@@ -66,11 +66,11 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 				break;
 			}
 		}
-		
+
 		if( matchedOne )
 		{
 			// Run a re-pass setting other policies to -1,-1
-			for( LayeredPaneDndTablePolicy<A,B,C> resetPolicy : policyList )
+			for( final LayeredPaneDndTablePolicy<A,B,C> resetPolicy : policyList )
 			{
 				if( resetPolicy != currentDragPolicy )
 				{
@@ -83,7 +83,7 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public void startDrag( LayeredPaneDndTable<A,B,C> table, C component, Point dragLocalPoint, Point dragStartPoint) throws RecordNotFoundException, DatastoreException
+	public void startDrag( final LayeredPaneDndTable<A,B,C> table, final C component, final Point dragLocalPoint, final Point dragStartPoint) throws RecordNotFoundException, DatastoreException
 	{
 		if( currentDragPolicy != null )
 		{
@@ -92,7 +92,7 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public boolean isValidDragTarget( LayeredPaneDndTable<A,B,C> table, C component, Point dragLocalPoint, Point dragTablePoint)
+	public boolean isValidDragTarget( final LayeredPaneDndTable<A,B,C> table, final C component, final Point dragLocalPoint, final Point dragTablePoint)
 	{
 		if( currentDragPolicy != null )
 		{
@@ -103,7 +103,7 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public void endDrag( LayeredPaneDndTable<A,B,C> table, C component, Point dragLocalPoint, Point dragEndPoint) throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
+	public void endDrag( final LayeredPaneDndTable<A,B,C> table, final C component, final Point dragLocalPoint, final Point dragEndPoint) throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
 	{
 		if( currentDragPolicy != null )
 		{
@@ -114,7 +114,7 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public void endInvalidDrag( LayeredPaneDndTable<A,B,C> table, C component, Point dragLocalPoint, Point dragEndPoint)
+	public void endInvalidDrag( final LayeredPaneDndTable<A,B,C> table, final C component, final Point dragLocalPoint, final Point dragEndPoint)
 	{
 		if( currentDragPolicy != null )
 		{
@@ -125,14 +125,14 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public boolean isMouseOverPopupSource( LayeredPaneDndTable<A, B, C> table,
-			C component, Point localPoint, Point tablePoint )
+	public boolean isMouseOverPopupSource( final LayeredPaneDndTable<A, B, C> table,
+			final C component, final Point localPoint, final Point tablePoint )
 	{
-		ArrayList<LayeredPaneDndTablePolicy<A,B,C>> policyList = getPolicyList();
+		final ArrayList<LayeredPaneDndTablePolicy<A,B,C>> policyList = getPolicyList();
 
 		boolean matchedOne = false;
-		
-		for( LayeredPaneDndTablePolicy<A,B,C> testPolicy : policyList )
+
+		for( final LayeredPaneDndTablePolicy<A,B,C> testPolicy : policyList )
 		{
 			if( testPolicy.isMouseOverPopupSource( table, component, localPoint, tablePoint) )
 			{
@@ -141,11 +141,11 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 				break;
 			}
 		}
-		
+
 		if( matchedOne )
 		{
 			// Run a re-pass setting other policies to -1,-1
-			for( LayeredPaneDndTablePolicy<A,B,C> resetPolicy : policyList )
+			for( final LayeredPaneDndTablePolicy<A,B,C> resetPolicy : policyList )
 			{
 				if( resetPolicy != currentDragPolicy )
 				{
@@ -158,12 +158,12 @@ B extends SpanningContentsProperties,C extends Component & LayeredPaneTableCompo
 	}
 
 	@Override
-	public void doPopup( LayeredPaneDndTable<A, B, C> table, C component,
-			Point localPoint, Point tablePoint )
+	public void doPopup( final LayeredPaneDndTable<A, B, C> table, final C component,
+			final Point localPoint, final Point tablePoint )
 	{
 		if( currentDragPolicy != null )
 		{
 			currentDragPolicy.doPopup( table, component, localPoint, tablePoint );
-		}		
+		}
 	}
 }

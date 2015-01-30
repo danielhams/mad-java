@@ -23,18 +23,18 @@ package uk.co.modularaudio.util.audio.wavetable.valuemapping;
 public class SuperSawDetuneValueMappingWaveTable extends ValueMappingWaveTable
 {
 
-	private static float POWER11_MULTIPLIER = 10028.7312891634f;
-	private static float POWER10_MULTIPLIER = 50818.8652045924f;
-	private static float POWER09_MULTIPLIER = 111363.4808729368f;
-	private static float POWER08_MULTIPLIER = 138150.6761080548f;
-	private static float POWER07_MULTIPLIER = 106649.6679158292f;
-	private static float POWER06_MULTIPLIER = 53046.9642751875f;
-	private static float POWER05_MULTIPLIER = 17019.9518580080f;
-	private static float POWER04_MULTIPLIER = 3425.0836591318f;
-	private static float POWER03_MULTIPLIER = 404.2703938388f;
-	private static float POWER02_MULTIPLIER = 24.1878824391f;
-	private static float POWER01_MULTIPLIER = 0.6717417634f;
-	private static float POWER00_MULTIPLIER = 0.0030115596f;
+	private final static float POWER11_MULTIPLIER = 10028.7312891634f;
+	private final static float POWER10_MULTIPLIER = 50818.8652045924f;
+	private final static float POWER09_MULTIPLIER = 111363.4808729368f;
+	private final static float POWER08_MULTIPLIER = 138150.6761080548f;
+	private final static float POWER07_MULTIPLIER = 106649.6679158292f;
+	private final static float POWER06_MULTIPLIER = 53046.9642751875f;
+	private final static float POWER05_MULTIPLIER = 17019.9518580080f;
+	private final static float POWER04_MULTIPLIER = 3425.0836591318f;
+	private final static float POWER03_MULTIPLIER = 404.2703938388f;
+	private final static float POWER02_MULTIPLIER = 24.1878824391f;
+	private final static float POWER01_MULTIPLIER = 0.6717417634f;
+	private final static float POWER00_MULTIPLIER = 0.0030115596f;
 
 //	y = (10028.7312891634*x^11)
 //			-(50818.8652045924*x^10)
@@ -48,23 +48,23 @@ public class SuperSawDetuneValueMappingWaveTable extends ValueMappingWaveTable
 //			-(24.1878824391*x^2)
 //			+(0.6717417634*x)
 //			+0.0030115596;
-	
-	public SuperSawDetuneValueMappingWaveTable( int capacity )
+
+	public SuperSawDetuneValueMappingWaveTable( final int capacity )
 	{
 		super( capacity );
-		
+
 		// It's cubic so data goes from 1
 		for( int s = 0 ; s < capacity ; s++ )
 		{
-			int index = s+1;
-			float mappedValue = doPolyMap((float)s / (capacity-1));
+			final int index = s+1;
+			final float mappedValue = doPolyMap((float)s / (capacity-1));
 			floatBuffer[ index ] = mappedValue;
 		}
-		
+
 		completeCubicWaveTableSetupForOneShot();
 	}
-	
-	private float doPolyMap( float x )
+
+	private float doPolyMap( final float x )
 	{
 		return (float)(
 				POWER11_MULTIPLIER * Math.pow( x, 11 )

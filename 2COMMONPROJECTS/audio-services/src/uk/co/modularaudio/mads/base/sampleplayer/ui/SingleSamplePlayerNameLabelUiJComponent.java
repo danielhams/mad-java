@@ -38,14 +38,11 @@ public class SingleSamplePlayerNameLabelUiJComponent extends PacLabel
 //	private static Log log = LogFactory.getLog( SingleSamplePlayerNameLabelUiJComponent.class.getName() );
 
 	private static final long serialVersionUID = -9143119755763498436L;
-	
-//	private String currentFileName = "";
-//	private String displayText = "";
-	
-	public SingleSamplePlayerNameLabelUiJComponent( SingleSamplePlayerMadDefinition definition,
-			SingleSamplePlayerMadInstance instance,
-			SingleSamplePlayerMadUiInstance uiInstance,
-			int controlIndex )
+
+	public SingleSamplePlayerNameLabelUiJComponent( final SingleSamplePlayerMadDefinition definition,
+			final SingleSamplePlayerMadInstance instance,
+			final SingleSamplePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( true );
 
@@ -55,21 +52,10 @@ public class SingleSamplePlayerNameLabelUiJComponent extends PacLabel
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-//		String guiSoundFile = instance.instanceData.guiSoundfile;
-//		if( guiSoundFile == null )
-//		{
-//			guiSoundFile = "";
-//		}
-//		if( !guiSoundFile.equals( currentFileName ) )
-//		{
-//			currentFileName = guiSoundFile;
-//			displayText = currentFileName.substring(currentFileName.lastIndexOf( "/" ));
-//			this.setText( displayText );
-//		}
 	}
 
 	@Override

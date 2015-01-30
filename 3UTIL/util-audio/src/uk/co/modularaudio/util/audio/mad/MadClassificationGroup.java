@@ -26,12 +26,12 @@ public class MadClassificationGroup
 	{
 		CODE, APP, PUBLIC
 	}
-	
-	private Visibility visibility = null;
-	private String name = null;
-	
-	public MadClassificationGroup( Visibility visibility,
-			String name )
+
+	private final Visibility visibility;
+	private final String name;
+
+	public MadClassificationGroup( final Visibility visibility,
+			final String name )
 	{
 		this.visibility = visibility;
 		this.name = name;

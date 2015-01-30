@@ -22,16 +22,16 @@ package uk.co.modularaudio.mads.internal.feedbacklink.ui;
 
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.table.Span;
 
-public class FeedbackLinkProducerMadUiInstance extends MadUiInstance<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
+public class FeedbackLinkProducerMadUiInstance extends AbstractMadUiInstance<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
 {
-	private FeedbackLinkProducerMadUiDefinition flUiDefinition = null;
-	
-	public FeedbackLinkProducerMadUiInstance( FeedbackLinkProducerMadInstance instance,
-			FeedbackLinkProducerMadUiDefinition uiDefinition )
+	private final FeedbackLinkProducerMadUiDefinition flUiDefinition;
+
+	public FeedbackLinkProducerMadUiInstance( final FeedbackLinkProducerMadInstance instance,
+			final FeedbackLinkProducerMadUiDefinition uiDefinition )
 	{
 		super( instance,  uiDefinition );
 		this.flUiDefinition = uiDefinition;
@@ -44,7 +44,12 @@ public class FeedbackLinkProducerMadUiInstance extends MadUiInstance<FeedbackLin
 	}
 
 	@Override
-	public void consumeQueueEntry( FeedbackLinkProducerMadInstance instance, IOQueueEvent nextOutgoingEntry)
+	public void consumeQueueEntry( final FeedbackLinkProducerMadInstance instance, final IOQueueEvent nextOutgoingEntry)
+	{
+	}
+
+	@Override
+	public void receiveComponentNameChange( final String newName )
 	{
 	}
 }

@@ -37,33 +37,29 @@ B extends SpanningContentsProperties,
 C extends Component & LayeredPaneTableComponent & GuiDndTableComponent> implements GuiDndTableStateTransitionListener
 {
 //	private static Log log = LogFactory.getLog( LayeredPaneDndTableDecorationManager.class.getName() );
-	
+
 	private static final Cursor OVER_DRAG_AREA_CURSOR = Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR );
 	private static final Cursor DURING_DRAG_CURSOR = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR );
-	private LayeredPaneDndTable<A, B, C> table = null;
-//	private GuiDndTableState state = null;
-//	private LayeredPaneDndTablePolicy<A,B,C> dndPolicy = null;
-	private LayeredPaneDndTableDecorator tableDecorator = null;
-	private LayeredPaneDndTableMouseFollowAnimationTimer mouseFollowThread= null;
-	
-	public LayeredPaneDndTableDecorationManager( LayeredPaneDndTable<A,B,C> table,
-			GuiDndTableState state,
-			LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
-			LayeredPaneDndTableDecorations decorations )
+	private final LayeredPaneDndTable<A, B, C> table;
+
+	private final LayeredPaneDndTableDecorator tableDecorator;
+	private final LayeredPaneDndTableMouseFollowAnimationTimer mouseFollowThread;
+
+	public LayeredPaneDndTableDecorationManager( final LayeredPaneDndTable<A,B,C> table,
+			final GuiDndTableState state,
+			final LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
+			final LayeredPaneDndTableDecorations decorations )
 	{
 		this.table = table;
-//		this.state = state;
-//		this.dndPolicy = dndPolicy;
 
 		// Aggregate of decorators used at runtime
 		tableDecorator = new LayeredPaneDndTableDecorator( table, state, decorations );
 
 		mouseFollowThread = new LayeredPaneDndTableMouseFollowAnimationTimer( tableDecorator );
-//		mouseFollowThread.start();
 	}
-	
+
 	@Override
-	public void receiveTransition(State stateBefore, State stateAfter)
+	public void receiveTransition(final State stateBefore, final State stateAfter)
 	{
 		switch( stateAfter )
 		{
@@ -89,8 +85,8 @@ C extends Component & LayeredPaneTableComponent & GuiDndTableComponent> implemen
 			}
 		}
 	}
-	
-	public void setMouseLocation(Point tablePoint)
+
+	public void setMouseLocation(final Point tablePoint)
 	{
 		tableDecorator.setMousePosition( tablePoint );
 	}

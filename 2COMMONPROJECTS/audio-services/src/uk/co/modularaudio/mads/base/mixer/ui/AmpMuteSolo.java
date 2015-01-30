@@ -29,22 +29,22 @@ import net.miginfocom.swing.MigLayout;
 public class AmpMuteSolo extends JPanel
 {
 	private static final long serialVersionUID = 1325276594564910791L;
-	
-//	private static Log log = LogFactory.getLog( AmpMuteSolo.class.getName() );
-	
-	private ChannelLaneMixerPanelUiInstance channelLaneMixerUiInstance = null;
-	
-	private MuteSoloToggleButton muteButton = null;
-	private MuteSoloToggleButton soloButton = null;
 
-	public AmpMuteSolo( ChannelLaneMixerPanelUiInstance channelLaneMixerPanelUiInstance )
+//	private static Log log = LogFactory.getLog( AmpMuteSolo.class.getName() );
+
+	private final ChannelLaneMixerPanelUiInstance channelLaneMixerUiInstance;
+
+	private final MuteSoloToggleButton muteButton;
+	private final MuteSoloToggleButton soloButton;
+
+	public AmpMuteSolo( final ChannelLaneMixerPanelUiInstance channelLaneMixerPanelUiInstance )
 	{
 		channelLaneMixerUiInstance = channelLaneMixerPanelUiInstance;
 
 		this.setBackground( Color.cyan );
 
 		this.setOpaque( false );
-		MigLayout compLayout = new MigLayout("insets 5, gap 0, fill");
+		final MigLayout compLayout = new MigLayout("insets 5, gap 0, fill");
 		this.setLayout( compLayout );
 
 		muteButton = new MuteSoloToggleButton( "m" )
@@ -52,7 +52,7 @@ public class AmpMuteSolo extends JPanel
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void receiveToggleEvent( boolean value )
+			public void receiveToggleEvent( final boolean value )
 			{
 				muteButtonClick( value );
 			}
@@ -63,7 +63,7 @@ public class AmpMuteSolo extends JPanel
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void receiveToggleEvent( boolean value )
+			public void receiveToggleEvent( final boolean value )
 			{
 				soloButtonClick( value );
 			}
@@ -72,28 +72,28 @@ public class AmpMuteSolo extends JPanel
 
 		this.validate();
 	}
-	
-	private void muteButtonClick( boolean toggleValue )
+
+	private void muteButtonClick( final boolean toggleValue )
 	{
 		channelLaneMixerUiInstance.setMuteValue( toggleValue );
 	}
-	
-	private void soloButtonClick( boolean toggleValue )
+
+	private void soloButtonClick( final boolean toggleValue )
 	{
 		channelLaneMixerUiInstance.setSoloValue( toggleValue );
 	}
 
-	public void receiveMuteSet( boolean muted )
+	public void receiveMuteSet( final boolean muted )
 	{
 		muteButton.setSelected( muted );
 	}
-	
-	public void receiveSoloSet( boolean solod )
+
+	public void receiveSoloSet( final boolean solod )
 	{
 		soloButton.setSelected( solod );
 	}
 
-	public void receiveControlValue( String muteSoloSetting )
+	public void receiveControlValue( final String muteSoloSetting )
 	{
 		if( muteSoloSetting != null && muteSoloSetting.length() >= 2 )
 		{

@@ -29,62 +29,55 @@ import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstanceConfiguration;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
-public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerMadInstance>
+public class MixerMadUiInstance extends AbstractNoNameChangeConfigurableMadUiInstance<MixerMadDefinition, MixerMadInstance>
 	implements IOQueueEventUiConsumer<MixerMadInstance>
 {
 	private static Log log = LogFactory.getLog( MixerMadUiInstance.class.getName() );
-	
-	private Span span = null;
 
-	private OpenIntObjectHashMap<MeterValueReceiver> laneMeterReceiversMap = new OpenIntObjectHashMap<MeterValueReceiver>();
-	private MeterValueReceiver masterMeterReceiver = null;
-	
+	private final OpenIntObjectHashMap<MeterValueReceiver> laneMeterReceiversMap = new OpenIntObjectHashMap<MeterValueReceiver>();
+	private MeterValueReceiver masterMeterReceiver;
+
 //	private long audioIOLatencyNanos = 0;
-	
-	public MixerMadUiInstance( MixerMadInstance instance,
-			MixerMadUiDefinition uiDefinition )
-	{
-		super( instance, uiDefinition );
-		
-		MixerMadInstanceConfiguration instanceConfiguration = instance.getInstanceConfiguration();
-		
-		int numInputLanes = instanceConfiguration.getNumInputLanes();
-//		int numChannelsPerLane = instanceConfiguration.getNumChannelsPerLane();
-		int numOutputChannels = instanceConfiguration.getNumOutputChannels();
-//		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
-		
-		int startXOffset = MixerMadUiDefinition.INPUT_LANES_START.x;
 
-		int numChannelsWidth = numInputLanes * MixerMadUiDefinition.LANE_TO_LANE_INCREMENT +
+	public MixerMadUiInstance( final MixerMadInstance instance,
+			final MixerMadUiDefinition uiDefinition )
+	{
+		super( instance, uiDefinition, calculateSpanForInstanceConfiguration( instance.getInstanceConfiguration() ) );
+	}
+
+	private static Span calculateSpanForInstanceConfiguration( final MixerMadInstanceConfiguration instanceConfiguration )
+	{
+		final int numInputLanes = instanceConfiguration.getNumInputLanes();
+//		int numChannelsPerLane = instanceConfiguration.getNumChannelsPerLane();
+		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
+//		int numTotalChannels = instanceConfiguration.getNumTotalChannels();
+
+		final int startXOffset = MixerMadUiDefinition.INPUT_LANES_START.x;
+
+		final int numChannelsWidth = numInputLanes * MixerMadUiDefinition.LANE_TO_LANE_INCREMENT +
 				MixerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
-		int outputChannelsWidth = numOutputChannels * MixerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
-		
-		int totalWidth = startXOffset + numChannelsWidth + MixerMadUiDefinition.INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
+		final int outputChannelsWidth = numOutputChannels * MixerMadUiDefinition.CHANNEL_TO_CHANNEL_INCREMENT;
+
+		final int totalWidth = startXOffset + numChannelsWidth + MixerMadUiDefinition.INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
 				outputChannelsWidth;
 
-		int totalHeight = MixerMadUiDefinition.INPUT_LANES_START.y + 20;
-		
-		int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
-		int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
-		
-		span = new Span( numCellsWide, numCellsHigh );
+		final int totalHeight = MixerMadUiDefinition.INPUT_LANES_START.y + 20;
+
+		final int numCellsWide = (totalWidth / GuiRackPanel.FRONT_GRID_SIZE.width) + (totalWidth % GuiRackPanel.FRONT_GRID_SIZE.width > 0 ? 1 : 0 );
+		final int numCellsHigh = (totalHeight / GuiRackPanel.FRONT_GRID_SIZE.height) + (totalHeight % GuiRackPanel.FRONT_GRID_SIZE.height > 0 ? 1 : 0 );
+
+		return new Span( numCellsWide, numCellsHigh );
 	}
 
 	@Override
-	public Span getCellSpan()
-	{
-		return span;
-	}
-
-	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage guiEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -97,8 +90,8 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 	}
 
 	@Override
-	public void consumeQueueEntry( MixerMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final MixerMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 //		log.debug("Consuming one");
 		switch( nextOutgoingEntry.command )
@@ -106,18 +99,21 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 			case MixerIOQueueBridge.COMMAND_OUT_LANE_METER:
 			{
 				// float
-				long value = nextOutgoingEntry.value;
-				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
-				
-				int laneNum = laneChanNum / 2;
-				int channelNum = laneChanNum % 2;
+				final long value = nextOutgoingEntry.value;
+				final int laneChanNum = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 
-				MeterValueReceiver laneReceiver = laneMeterReceiversMap.get( laneNum );
+				final int laneNum = laneChanNum / 2;
+				final int channelNum = laneChanNum % 2;
+
+				final MeterValueReceiver laneReceiver = laneMeterReceiversMap.get( laneNum );
 				if( laneReceiver == null )
 				{
-					log.warn( "Missing meter receiver for lane " + laneNum );
+					if( log.isWarnEnabled() )
+					{
+						log.warn( "Missing meter receiver for lane " + laneNum );
+					}
 				}
 				else
 				{
@@ -127,12 +123,12 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 			}
 			case MixerIOQueueBridge.COMMAND_OUT_MASTER_METER:
 			{
-				long value = nextOutgoingEntry.value;
-				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
-				
-				int channelNum = laneChanNum % 2;
+				final long value = nextOutgoingEntry.value;
+				final int laneChanNum = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
+
+				final int channelNum = laneChanNum % 2;
 
 				if( masterMeterReceiver == null )
 				{
@@ -174,64 +170,67 @@ public class MixerMadUiInstance extends MadUiInstance<MixerMadDefinition, MixerM
 			}
 			default:
 			{
-				log.error( "Unknown outgoing command: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "Unknown outgoing command: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
 	}
-	
-	public void registerLaneMeterReceiver( int laneNum, MeterValueReceiver meterReceiver )
+
+	public void registerLaneMeterReceiver( final int laneNum, final MeterValueReceiver meterReceiver )
 	{
 		laneMeterReceiversMap.put( laneNum, meterReceiver );
 	}
-	
-	public void registerMasterMeterReceiver( MeterValueReceiver meterReceiver )
+
+	public void registerMasterMeterReceiver( final MeterValueReceiver meterReceiver )
 	{
 		masterMeterReceiver = meterReceiver;
 	}
 
-	public void sendLaneMute( int laneNumber, boolean muteValue )
+	public void sendLaneMute( final int laneNumber, final boolean muteValue )
 	{
-		long muteBits = (muteValue ? 1 : 0 );
-		long joinedParts = (muteBits << 32) | laneNumber;
+		final long muteBits = (muteValue ? 1 : 0 );
+		final long joinedParts = (muteBits << 32) | laneNumber;
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_LANE_MUTE, joinedParts );
 	}
 
-	public void sendSoloValue( int laneNumber, boolean soloValue )
+	public void sendSoloValue( final int laneNumber, final boolean soloValue )
 	{
-		long soloBits = ( soloValue ? 1 : 0 );
-		long joinedParts = ( soloBits << 32) | laneNumber;
+		final long soloBits = ( soloValue ? 1 : 0 );
+		final long joinedParts = ( soloBits << 32) | laneNumber;
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_LANE_SOLO, joinedParts );
 	}
 
-	public void sendLaneAmp( int laneNumber, float newValue )
+	public void sendLaneAmp( final int laneNumber, final float newValue )
 	{
-		long floatIntBits = Float.floatToIntBits( newValue );
-		long joinedParts = (floatIntBits << 32) | laneNumber;
+		final long floatIntBits = Float.floatToIntBits( newValue );
+		final long joinedParts = (floatIntBits << 32) | laneNumber;
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_LANE_AMP, joinedParts );
 	}
 
-	public void sendMasterAmp( float newValue )
+	public void sendMasterAmp( final float newValue )
 	{
-		int floatIntBits = Float.floatToIntBits( newValue );
+		final int floatIntBits = Float.floatToIntBits( newValue );
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_MASTER_AMP,  floatIntBits );
 	}
 
-	public void sendUiActive( boolean active )
+	public void sendUiActive( final boolean active )
 	{
 		sendCommandValueToInstance( MixerIOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0 ) );
 	}
 
-	public void sendLanePan( int laneNumber, float panValue )
+	public void sendLanePan( final int laneNumber, final float panValue )
 	{
-		long floatIntBits = Float.floatToIntBits( panValue );
-		long joinedParts = (floatIntBits << 32) | laneNumber;
+		final long floatIntBits = Float.floatToIntBits( panValue );
+		final long joinedParts = (floatIntBits << 32) | laneNumber;
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_LANE_PAN, joinedParts);
 	}
 
-	public void sendMasterPan( float panValue )
+	public void sendMasterPan( final float panValue )
 	{
-		long floatIntBits = Float.floatToIntBits( panValue );
+		final long floatIntBits = Float.floatToIntBits( panValue );
 		sendTemporalValueToInstance( MixerIOQueueBridge.COMMAND_IN_MASTER_PAN, floatIntBits);
 	}
 }

@@ -30,9 +30,9 @@ public class UserPreferencesGuiFpsMVCView extends ComboView<GuiFpsComboItem>
 {
 	private static final long serialVersionUID = 6492571775655035133L;
 
-	public UserPreferencesGuiFpsMVCView( GuiFpsMVCModel cm,
-			GuiFpsComboMVCController cc,
-			ComboViewListCellRenderer<GuiFpsComboItem> cr)
+	public UserPreferencesGuiFpsMVCView( final GuiFpsMVCModel cm,
+			final GuiFpsComboMVCController cc,
+			final ComboViewListCellRenderer<GuiFpsComboItem> cr)
 	{
 		super(cm, cc, cr);
 	}

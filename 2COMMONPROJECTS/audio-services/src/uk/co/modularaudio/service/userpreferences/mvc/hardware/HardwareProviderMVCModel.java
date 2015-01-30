@@ -33,35 +33,41 @@ public class HardwareProviderMVCModel extends IdStringAndValueComboModel<Hardwar
 {
 	private static Log log = LogFactory.getLog( HardwareProviderMVCModel.class.getName() );
 
-	public HardwareProviderMVCModel(Collection<HardwareProviderComboItem> startupItems)
+	public HardwareProviderMVCModel(final Collection<HardwareProviderComboItem> startupItems)
 	{
 		super(startupItems);
 	}
 
-	public void setSelectedItemById(String deviceId)
+	public void setSelectedItemById(final String deviceId)
 	{
-		HardwareProviderComboItem item = this.idToElementMap.get( deviceId );
+		final HardwareProviderComboItem item = idToElementMap.get( deviceId );
 
 		if( item != null )
 		{
-			this.setSelectedItemByIndex( this.getItemIndex( item ) );
+			setSelectedItemByIndex( getItemIndex( item ) );
 		}
 	}
 
 	public List<HardwareProviderComboItem> getElements()
 	{
-		return this.theList;
+		return theList;
 	}
 
-	public void removeElements(Set<HardwareProviderComboItem> providersToRemove)
+	public void removeElements(final Set<HardwareProviderComboItem> providersToRemove)
 	{
 		int currentlySelectedItemIndex = getSelectedItemIndex();
 		HardwareProviderComboItem currentlySelectedItem = null;
-		log.debug("In provider remove elements CSII is " + currentlySelectedItemIndex );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("In provider remove elements CSII is " + currentlySelectedItemIndex );
+		}
 		if( currentlySelectedItemIndex != -1 )
 		{
 			currentlySelectedItem = getElementAt( currentlySelectedItemIndex );
-			log.debug("This maps to provider " + currentlySelectedItem.getDisplayString() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("This maps to provider " + currentlySelectedItem.getDisplayString() );
+			}
 			if( providersToRemove.contains( currentlySelectedItem ) )
 			{
 				log.debug("Setting currently selected item to -1");
@@ -69,32 +75,35 @@ public class HardwareProviderMVCModel extends IdStringAndValueComboModel<Hardwar
 				this.setSelectedItemByIndex( -1 );
 			}
 		}
-		for( HardwareProviderComboItem ci : providersToRemove )
+		for( final HardwareProviderComboItem ci : providersToRemove )
 		{
-			log.debug("Removing provider " + ci.getDisplayString() );
-			this.theList.remove( ci );
-			this.idToElementMap.remove( ci.getId() );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Removing provider " + ci.getDisplayString() );
+			}
+			theList.remove( ci );
+			idToElementMap.remove( ci.getId() );
 		}
-		
+
 		// Now make sure we still have the previously selected element selected
 		if( currentlySelectedItem != null )
 		{
-			int newSelectedIndex = this.theList.indexOf( currentlySelectedItem );
-			this.currentlySelectedItemIndex = newSelectedIndex;
-		}		
+			final int newSelectedIndex = theList.indexOf( currentlySelectedItem );
+			currentlySelectedItemIndex = newSelectedIndex;
+		}
 	}
 
-	public boolean containsProvider( HardwareProviderComboItem deviceComboItem )
+	public boolean containsProvider( final HardwareProviderComboItem deviceComboItem )
 	{
-		return this.theList.contains( deviceComboItem );
+		return theList.contains( deviceComboItem );
 	}
 
-	public void addNewElements(Set<HardwareProviderComboItem> providersToAdd)
+	public void addNewElements(final Set<HardwareProviderComboItem> providersToAdd)
 	{
-		for( HardwareProviderComboItem cdci : providersToAdd )
+		for( final HardwareProviderComboItem cdci : providersToAdd )
 		{
-			this.theList.add( cdci );
-			this.idToElementMap.put( cdci.getId(), cdci );
+			theList.add( cdci );
+			idToElementMap.put( cdci.getId(), cdci );
 		}
 	}
 }

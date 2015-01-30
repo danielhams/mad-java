@@ -24,36 +24,30 @@ import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerEventMapping;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class ControllerToCvMadUiInstance extends AbstractNonConfigurableMadUiInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance>
+public class ControllerToCvMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ControllerToCvMadUiInstance.class.getName() );
-	
-	public ControllerToCvMadUiInstance( ControllerToCvMadInstance instance,
-			ControllerToCvMadUiDefinition uiDefinition )
+
+	public ControllerToCvMadUiInstance( final ControllerToCvMadInstance instance,
+			final ControllerToCvMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendMapping( ControllerEventMapping mappingToUse )
+	public void sendMapping( final ControllerEventMapping mappingToUse )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_EVENT_MAPPING, mappingToUse.ordinal() );
 	}
 
-	public void sendSelectedChannel( int channelNumber )
+	public void sendSelectedChannel( final int channelNumber )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_CHANNEL_NUMBER, channelNumber );
 	}
 
-	public void sendSelectedController( int controller )
+	public void sendSelectedController( final int controller )
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_CONTROLLER_NUMBER, controller );
-	}
-
-	@Override
-	public void consumeQueueEntry( ControllerToCvMadInstance instance, IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

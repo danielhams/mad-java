@@ -36,35 +36,31 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class TypeToCacheComboBoxModel implements ComboBoxModel<String>
 {
-//	private OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap = null;
+	private final ArrayList<Integer> imageTypeValues = new ArrayList<Integer>();
+	private final ArrayList<String> displayValues = new ArrayList<String>();
 
-	private ArrayList<Integer> imageTypeValues = new ArrayList<Integer>();
-	private ArrayList<String> displayValues = new ArrayList<String>();
-	
-	private OpenObjectLongHashMap<String> displayNameToCacheKeyMap = new OpenObjectLongHashMap<String>();
+	private final OpenObjectLongHashMap<String> displayNameToCacheKeyMap = new OpenObjectLongHashMap<String>();
 
-	private String selectedItem = null;
+	private String selectedItem;
 
-	public TypeToCacheComboBoxModel( OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap )
+	public TypeToCacheComboBoxModel( final OpenLongObjectHashMap<AllocationCacheForImageType> typeToCacheMap )
 		throws DatastoreException
 	{
-//		this.typeToCacheMap = typeToCacheMap;
-		
 		imageTypeValues.add( -1 );
 		displayValues.add( "" );
-		
-		LongArrayList typeList = typeToCacheMap.keys();
-		int numTypes = typeList.size();
+
+		final LongArrayList typeList = typeToCacheMap.keys();
+		final int numTypes = typeList.size();
 		for( int t = 0 ; t < numTypes ; t++ )
 		{
-			long compoundKey = typeList.get( t );
-			int lifetime = (int)((compoundKey >> 32) & 0xffff);
-			AllocationLifetime al = AllocationLifetime.values()[lifetime];
-			int allocationType = (int)(compoundKey & 0xffff );
-			AllocationBufferType abt = AllocationBufferType.values()[ allocationType ];
-			
+			final long compoundKey = typeList.get( t );
+			final int lifetime = (int)((compoundKey >> 32) & 0xffff);
+			final AllocationLifetime al = AllocationLifetime.values()[lifetime];
+			final int allocationType = (int)(compoundKey & 0xffff );
+			final AllocationBufferType abt = AllocationBufferType.values()[ allocationType ];
+
 			imageTypeValues.add( abt.ordinal() );
-			String displayName = al.toString() + " " + abt.toString();
+			final String displayName = al.toString() + " " + abt.toString();
 			displayValues.add( displayName );
 			displayNameToCacheKeyMap.put( displayName, compoundKey );
 		}
@@ -77,23 +73,23 @@ public class TypeToCacheComboBoxModel implements ComboBoxModel<String>
 	}
 
 	@Override
-	public String getElementAt( int index )
+	public String getElementAt( final int index )
 	{
 		return displayValues.get( index );
 	}
 
 	@Override
-	public void addListDataListener( ListDataListener l )
+	public void addListDataListener( final ListDataListener l )
 	{
 	}
 
 	@Override
-	public void removeListDataListener( ListDataListener l )
+	public void removeListDataListener( final ListDataListener l )
 	{
 	}
 
 	@Override
-	public void setSelectedItem( Object anItem )
+	public void setSelectedItem( final Object anItem )
 	{
 		selectedItem  = (String)anItem;
 	}
@@ -114,7 +110,7 @@ public class TypeToCacheComboBoxModel implements ComboBoxModel<String>
 				retVal = displayNameToCacheKeyMap.get( selectedItem );
 			}
 		}
-		
+
 		return retVal;
 	}
 

@@ -24,13 +24,13 @@ import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 
 public class RackIOLink
 {
-	private MadChannelInstance rackChannelInstance = null;
-	private RackComponent rackComponent = null;
-	private MadChannelInstance rackComponentChannelInstance = null;
-	
-	public RackIOLink( MadChannelInstance rackChannelInstance,
-			RackComponent rackComponent,
-			MadChannelInstance rackComponentChannelInstance )
+	private final MadChannelInstance rackChannelInstance;
+	private final RackComponent rackComponent;
+	private final MadChannelInstance rackComponentChannelInstance;
+
+	public RackIOLink( final MadChannelInstance rackChannelInstance,
+			final RackComponent rackComponent,
+			final MadChannelInstance rackComponentChannelInstance )
 	{
 		this.rackChannelInstance = rackChannelInstance;
 		this.rackComponent = rackComponent;
@@ -52,9 +52,10 @@ public class RackIOLink
 		return rackComponentChannelInstance;
 	}
 
+	@Override
 	public String toString()
 	{
-		StringBuilder retVal = new StringBuilder();
+		final StringBuilder retVal = new StringBuilder();
 		retVal.append("Rack channel(");
 		retVal.append( rackChannelInstance.toString() );
 		retVal.append( ") -> RackComponent(" );

@@ -38,43 +38,42 @@ public class WaveShaperMadDefinition extends AbstractNonConfigurableMadDefinitio
 	public final static int PRODUCER_AUDIO_OUT = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	private final static String definitionId = "wave_shaper";
+	public final static String DEFINITION_ID = "wave_shaper";
 
-	private final static String userVisibleName = "Wave Shaper";
+	private final static String USER_VISIBLE_NAME = "Wave Shaper";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
-	private final static String classificationId = "wave_shaper";
-	private final static String classificationName = "Wave Shaper";
-	private final static String classificationDescription = "Shape the incoming signal using a lookup table";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
+	private final static String CLASS_NAME = "Wave Shaper";
+	private final static String CLASS_DESC = "Shape the incoming signal using a lookup table";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Input Wave",
+	private final static String[] CHAN_NAMES = new String[] { "Input Wave",
 		"Output Wave" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		 MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public WaveShaperMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public WaveShaperMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new WaveShaperIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

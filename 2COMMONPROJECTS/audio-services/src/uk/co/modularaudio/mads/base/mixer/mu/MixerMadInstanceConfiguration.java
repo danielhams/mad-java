@@ -33,22 +33,22 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 public class MixerMadInstanceConfiguration
 {
 	private static final int NUM_CHANNELS_PER_LANE = 2;
-	
-	private int numMixerLanes = -1;
-	
-	private int numInputChannels = -1;
-	private int numOutputChannels = -1;
-	private MadChannelType channelType = MadChannelType.AUDIO;
-	private int[] inputChannelIndexes = null;
-	private int[] outputChannelIndexes = null;
-	private int totalNumChannels = -1;
-	
-	private MadChannelConfiguration channelConfiguration = null;
-	private MadChannelDefinition[] channelDefinitions = null;
-	
-	public MixerMadInstanceConfiguration( Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+
+	private int numMixerLanes;
+
+	private final int numInputChannels;
+	private final int numOutputChannels;
+	private final MadChannelType channelType = MadChannelType.AUDIO;
+	private final int[] inputChannelIndexes;
+	private final int[] outputChannelIndexes;
+	private final int totalNumChannels;
+
+	private final MadChannelConfiguration channelConfiguration;
+	private final MadChannelDefinition[] channelDefinitions;
+
+	public MixerMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
 	{
-		String numMixerLanesStr = parameterValues.get( MixerMadDefinition.numLanesParameterDefinition );
+		final String numMixerLanesStr = parameterValues.get( MixerMadDefinition.NUM_LANES_DEF );
 		try
 		{
 			numMixerLanes = Integer.parseInt( numMixerLanesStr );
@@ -58,7 +58,7 @@ public class MixerMadInstanceConfiguration
 //				numMixerLanes = 8;
 			}
 		}
-		catch(NumberFormatException nfe )
+		catch(final NumberFormatException nfe )
 		{
 			numMixerLanes = 8;
 //			throw new MadProcessingException( "Num mixer lanes must fall between 1 and 8" );
@@ -91,10 +91,10 @@ public class MixerMadInstanceConfiguration
 						channelType,
 						MadChannelDirection.PRODUCER,
 						MadChannelPosition.MONO );
-				
+
 				curChannelCounter++;
 		}
-		
+
 		// Build the channel configuration
 		channelConfiguration = new MadChannelConfiguration( channelDefinitions );
 	}
@@ -113,18 +113,18 @@ public class MixerMadInstanceConfiguration
 	{
 		return numOutputChannels;
 	}
-	
+
 	public MadChannelType getChannelType()
 	{
 		return channelType;
 	}
 
-	public int getIndexForInputLaneChannel( int l, int c )
+	public int getIndexForInputLaneChannel( final int l, final int c )
 	{
 		return inputChannelIndexes[ (l * NUM_CHANNELS_PER_LANE) + c ];
 	}
 
-	public int getIndexForOutputChannel( int c )
+	public int getIndexForOutputChannel( final int c )
 	{
 		return outputChannelIndexes[ c];
 	}

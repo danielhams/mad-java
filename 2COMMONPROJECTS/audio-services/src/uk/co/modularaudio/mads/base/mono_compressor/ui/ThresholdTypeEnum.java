@@ -24,10 +24,10 @@ public enum ThresholdTypeEnum
 {
 	PEAK( "Peak" ),
 	RMS( "RMS");
-	
-	private String displayString = null;
-	
-	private ThresholdTypeEnum( String displayString )
+
+	private final String displayString;
+
+	private ThresholdTypeEnum( final String displayString )
 	{
 		this.displayString = displayString;
 	}
@@ -36,7 +36,8 @@ public enum ThresholdTypeEnum
 	{
 		return displayString;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return displayString;

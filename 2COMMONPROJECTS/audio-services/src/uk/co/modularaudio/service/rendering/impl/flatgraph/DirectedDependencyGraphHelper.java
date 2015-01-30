@@ -43,7 +43,7 @@ public class DirectedDependencyGraphHelper
 	{
 		final DirectedDependencyGraph retVal = new DirectedDependencyGraph();
 
-		final Collection<MadInstance<?,?>> madInstances = graph.getInstances();
+		final Collection<MadInstance<?,?>> madInstances = graphService.findAllInstances( graph );
 
 		// Working sets for the recursive marking
 		final List<MadInstance<?,?>> componentsToBeProcessed = new ArrayList<MadInstance<?,?>>( madInstances );

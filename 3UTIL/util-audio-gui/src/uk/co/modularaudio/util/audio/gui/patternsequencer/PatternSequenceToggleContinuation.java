@@ -38,47 +38,34 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceM
 public class PatternSequenceToggleContinuation extends JPanel
 {
 	private static Log log = LogFactory.getLog( PatternSequenceToggleContinuation.class.getName() );
-	
+
 	private static final long serialVersionUID = -8634575823868844834L;
-	
-//	private PatternSequenceModel dataModel = null;
-//	private int numMidiNotes = -1;
-//	private int numCols = -1;
-//	private Dimension cellDimensions = null;
-//	private Dimension size = null;
-//	private Color backgroundColour = null;
-//	private Color foregroundColour = null;
-//	private Color blockColour = null;
-	
-	private JCheckBox contCheckbox = null;
-	private JLabel contLabel = null;
-	
-	public PatternSequenceToggleContinuation( PatternSequenceModel dataModel,
-			Dimension blockDimensions,
-			Color backgroundColour,
-			Color gridColour,
-			Color blockColour )
+
+	private final JCheckBox contCheckbox;
+	private final JLabel contLabel;
+
+	public PatternSequenceToggleContinuation( final PatternSequenceModel dataModel,
+			final Dimension blockDimensions,
+			final Color backgroundColour,
+			final Color gridColour,
+			final Color blockColour )
 	{
-//		this.dataModel = dataModel;
-//		this.cellDimensions = blockDimensions;
-		log.debug("Table cell dimensions are " + blockDimensions.toString());
-//		this.numCols = dataModel.getNumSteps();
-//		this.numMidiNotes = MidiUtils.getNumMidiNotes();
-//		this.backgroundColour = backgroundColour;
-//		this.foregroundColour = gridColour;
-//		this.blockColour = blockColour;
-		
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Table cell dimensions are " + blockDimensions.toString());
+		}
+
 		this.setBackground( backgroundColour );
-		
-		MigLayout migLayout = new MigLayout("insets 0, gap 0, width " + PatternSequenceKeyboard.KEYBOARD_WIDTH + ", height " +
+
+		final MigLayout migLayout = new MigLayout("insets 0, gap 0, width " + PatternSequenceKeyboard.KEYBOARD_WIDTH + ", height " +
 				(PatternSequenceAmpGrid.AMP_BOX_HEIGHT - 20) );
 		setLayout( migLayout );
-		
+
 		contCheckbox = new PatternSequenceContinuationCheckbox( dataModel );
 		contCheckbox.setBackground( backgroundColour );
 		this.add( contCheckbox, "" );
 		contLabel = new JLabel( "C" );
-		Font f = contLabel.getFont().deriveFont( 9.0f );
+		final Font f = contLabel.getFont().deriveFont( 9.0f );
 		contLabel.setFont( f );
 		contLabel.setForeground( Color.WHITE );
 		this.add( contLabel, "" );

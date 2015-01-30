@@ -61,34 +61,34 @@ public class ComponentDesigner implements ExitSignalReceiver
 	private static Log log = LogFactory.getLog( ComponentDesigner.class.getName() );
 
 	private static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
-	private static String CONFIG_RESOURCE_PATH = "/cdconfiguration.properties";
+	private static String configResourcePath = "/cdconfiguration.properties";
 	private static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";
 	private static final String PLUGIN_CONFIG_RESOURCE_PATH = "/pluginconfiguration.properties";
 
 	// Gui bits
-	private MainFrame mainFrame = null;
-	private MainFrameActions mainFrameActions = null;
+	private MainFrame mainFrame;
+	private MainFrameActions mainFrameActions;
 	@SuppressWarnings("unused")
-	private MainFrameManipulator mainFrameManipulator = null;
+	private MainFrameManipulator mainFrameManipulator;
 
-	private PreferencesDialog preferencesDialog = null;
-	private PreferencesActions preferencesActions = null;
+	private PreferencesDialog preferencesDialog;
+	private PreferencesActions preferencesActions;
 	@SuppressWarnings("unused")
-	private PreferencesManipulator preferencesManipulator = null;
+	private PreferencesManipulator preferencesManipulator;
 
 	// Spring components
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
-	private ComponentDesignerFrontController componentDesignerFrontController = null;
-	private ConfigurationService configurationService = null;
-	private ComponentImageFactory componentImageFactory = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
+	private ComponentDesignerFrontController componentDesignerFrontController;
+	private ConfigurationService configurationService;
+	private ComponentImageFactory componentImageFactory;
 
 	public ComponentDesigner()
 	{
 	}
 
-	public void init( boolean showAlpha , boolean showBeta,
-			String additionalBeansResource, String additionalConfigResource ) throws DatastoreException
+	public void init( final boolean showAlpha , final boolean showBeta,
+			final String additionalBeansResource, final String additionalConfigResource ) throws DatastoreException
 	{
 		// Setup the application context and get the necessary references to the gui controller
 		setupApplicationContext( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
@@ -100,14 +100,14 @@ public class ComponentDesigner implements ExitSignalReceiver
 		preferencesManipulator = new PreferencesManipulator( componentDesignerFrontController, componentImageFactory, configurationService, preferencesDialog, preferencesActions );
 	}
 
-	public void setupApplicationContext( boolean showAlpha , boolean showBeta,
-			String additionalBeansResource, String additionalConfigResource )
+	public void setupApplicationContext( final boolean showAlpha , final boolean showBeta,
+			final String additionalBeansResource, final String additionalConfigResource )
 		throws DatastoreException
 	{
 		try
 		{
 			// We will be using postInit preShutdown calls to setup things we need after all the spring components are there
-			List<SpringContextHelper> contextHelperList = new ArrayList<SpringContextHelper>();
+			final List<SpringContextHelper> contextHelperList = new ArrayList<SpringContextHelper>();
 			contextHelperList.add( new PostRefreshSetMadReleaseLevelContextHelper( showAlpha, showBeta ) );
 			contextHelperList.add( new PostInitPreShutdownContextHelper() );
 			contextHelperList.add( new SpringHibernateContextHelper() );
@@ -124,14 +124,14 @@ public class ComponentDesigner implements ExitSignalReceiver
 				additionalConfigResources = new String[1];
 				additionalConfigResources[0] = additionalConfigResource;
 			}
-			gac = sch.makeAppContext( BEANS_RESOURCE_PATH, CONFIG_RESOURCE_PATH, additionalBeansResources, additionalConfigResources );
+			gac = sch.makeAppContext( BEANS_RESOURCE_PATH, configResourcePath, additionalBeansResources, additionalConfigResources );
 			componentDesignerFrontController = gac.getBean( ComponentDesignerFrontController.class );
 			componentImageFactory = gac.getBean( ComponentImageFactory.class );
 			configurationService = gac.getBean( ConfigurationService.class );
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught setting up spring context: " + e.toString();
+			final String msg = "Exception caught setting up spring context: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
@@ -145,8 +145,8 @@ public class ComponentDesigner implements ExitSignalReceiver
 	public void go()
 	{
 		mainFrame.setVisible( true );
-		Action checkAudioConfigurationAction = mainFrameActions.getCheckAudioConfigurationAction();
-		ActionEvent tmpActionEvent = new ActionEvent( this, 1, "blah");
+		final Action checkAudioConfigurationAction = mainFrameActions.getCheckAudioConfigurationAction();
+		final ActionEvent tmpActionEvent = new ActionEvent( this, 1, "blah");
 		checkAudioConfigurationAction.actionPerformed( tmpActionEvent );
 	}
 
@@ -156,42 +156,45 @@ public class ComponentDesigner implements ExitSignalReceiver
 		mainFrame.addWindowListener( new WindowListener()
 		{
 			@Override
-			public void windowClosed(WindowEvent e)
+			public void windowClosed(final WindowEvent e)
 			{
 				log.debug("Window closed event received");
 			}
 
 			@Override
-			public void windowOpened(WindowEvent e)
+			public void windowOpened(final WindowEvent e)
 			{
 				try
 				{
 					log.debug("Window opening event received - setting thread to lowest priority.");
 					ThreadUtils.setCurrentThreadPriority( MAThreadPriority.APPLICATION );
-					log.debug("Now set to " + MAThreadPriority.APPLICATION );
+					if( log.isDebugEnabled() )
+					{
+						log.debug("Now set to " + MAThreadPriority.APPLICATION );
+					}
 				}
-				catch ( Exception ie)
+				catch ( final Exception ie)
 				{
-					String msg = "Exception caught setting gui thread priority: " + ie.toString();
+					final String msg = "Exception caught setting gui thread priority: " + ie.toString();
 					log.error( msg, ie );
 				}
 			}
 			@Override
-			public void windowClosing(WindowEvent e)
+			public void windowClosing(final WindowEvent e)
 			{
 				log.debug("Window closing event received.");
-				Action exitAction = mainFrameActions.getExitAction();
-				ActionEvent exitActionEvent = new ActionEvent( e.getSource(), e.getID(), "");
+				final Action exitAction = mainFrameActions.getExitAction();
+				final ActionEvent exitActionEvent = new ActionEvent( e.getSource(), e.getID(), "");
 				exitAction.actionPerformed( exitActionEvent );
 			}
 			@Override
-			public void windowIconified(WindowEvent e) {}
+			public void windowIconified(final WindowEvent e) {}
 			@Override
-			public void windowDeiconified(WindowEvent e) {}
+			public void windowDeiconified(final WindowEvent e) {}
 			@Override
-			public void windowActivated(WindowEvent e) {}
+			public void windowActivated(final WindowEvent e) {}
 			@Override
-			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeactivated(final WindowEvent e) {}
 		});
 	}
 
@@ -215,7 +218,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 //		System.exit( 0 );
 	}
 
-	public static void main(String[] args) throws Exception
+	public static void main(final String[] args) throws Exception
 	{
 		boolean useSystemLookAndFeel = false;
 
@@ -228,7 +231,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 		{
 			for( int i = 0 ; i < args.length ; ++i )
 			{
-				String arg = args[i];
+				final String arg = args[i];
 				if( arg.equals("--useSlaf") )
 				{
 					useSystemLookAndFeel = true;
@@ -247,13 +250,16 @@ public class ComponentDesigner implements ExitSignalReceiver
 					additionalBeansResource = PLUGIN_BEANS_RESOURCE_PATH;
 					additionalConfigResource = PLUGIN_CONFIG_RESOURCE_PATH;
 
-					log.debug( "Will append plugin beans: " + additionalBeansResource );
-					log.debug( "Will append plugin config file: " + additionalConfigResource );
+					if( log.isDebugEnabled() )
+					{
+						log.debug( "Will append plugin beans: " + additionalBeansResource );
+						log.debug( "Will append plugin config file: " + additionalConfigResource );
+					}
 				}
 				else if( arg.equals( "--development") )
 				{
 					// Let me specify certain things with hard paths
-					CONFIG_RESOURCE_PATH = "/cddevelopment.properties";
+					configResourcePath = "/cddevelopment.properties";
 				}
 			}
 		}
@@ -264,8 +270,8 @@ public class ComponentDesigner implements ExitSignalReceiver
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
 
-		Font f = Font.decode( "" );
-		String fontName = f.getName();
+		final Font f = Font.decode( "" );
+		final String fontName = f.getName();
 		FontResetter.setUIFontFromString( fontName, Font.PLAIN, 10 );
 
 		log.info( "ComponentDesigner starting.");
@@ -286,9 +292,9 @@ public class ComponentDesigner implements ExitSignalReceiver
 					application.go();
 					application.registerCloseAction();
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
-					String msg = "Exception caught at top level of ComponentDesigner launch: " + e.toString();
+					final String msg = "Exception caught at top level of ComponentDesigner launch: " + e.toString();
 					log.error( msg, e );
 					System.exit(0);
 				}

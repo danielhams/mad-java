@@ -34,33 +34,33 @@ import uk.co.modularaudio.util.audio.stft.tools.OverlapAdder;
 public strictfp class PvocFrameSynthesiser
 {
 //	private static Log log = LogFactory.getLog( PvocFrameSynthesiser.class.getName() );
-	
-	private int numChannels;
-	private int windowLength;
-	private int fftSize;
-	private int fftComplexArraySize;
-	private int analysisStepSize;
-	private int numOverlaps;
-	
-	private PvocPlayPosition outputPosition;
-	
-	private FftWindow fftWindow;
-	private PvocFftComputer fftComputer;
-	
-	private float[] internalComplexArray;
-	
-	private PvocFrameRotatorPaddedTimeDomain frameRotator;
-	
-	private OverlapAdder[] overlapAdders;
-	private float[] resampleArray;
 
-	private PvocStreamResampler[] resamplers;
-	
+	private final int numChannels;
+	private final int windowLength;
+	private final int fftSize;
+	private final int fftComplexArraySize;
+	private final int analysisStepSize;
+	private final int numOverlaps;
+
+	private PvocPlayPosition outputPosition;
+
+	private final FftWindow fftWindow;
+	private final PvocFftComputer fftComputer;
+
+	private final float[] internalComplexArray;
+
+	private final PvocFrameRotatorPaddedTimeDomain frameRotator;
+
+	private final OverlapAdder[] overlapAdders;
+	private final float[] resampleArray;
+
+	private final PvocStreamResampler[] resamplers;
+
 	private float fftWindowValSquaredSum;
-	
-	private PvocDebugger debugger;
-	
-	public PvocFrameSynthesiser( PvocParameters params )
+
+	private final PvocDebugger debugger;
+
+	public PvocFrameSynthesiser( final PvocParameters params )
 	{
 		numChannels = params.getNumChannels();
 		windowLength = params.getWindowLength();
@@ -68,22 +68,22 @@ public strictfp class PvocFrameSynthesiser
 		fftComplexArraySize = params.getFftComplexArraySize();
 		analysisStepSize = params.getStepSize();
 		numOverlaps = params.getNumOverlaps();
-		
+
 		internalComplexArray = new float[ fftComplexArraySize ];
 
 		fftWindow = params.getFftWindow();
-		float[] fftWindowAmps = fftWindow.getAmps();
-		int fftWindowLength = fftWindowAmps.length;
+		final float[] fftWindowAmps = fftWindow.getAmps();
+		final int fftWindowLength = fftWindowAmps.length;
 		for( int i = 0 ; i < fftWindowLength ; i++ )
 		{
-			float amp = fftWindowAmps[ i ];
+			final float amp = fftWindowAmps[ i ];
 			fftWindowValSquaredSum += (amp * amp);
 		}
-		
+
 		fftComputer = params.getFftComputer();
-		
+
 		frameRotator = params.getFrameRotator();
-		
+
 		overlapAdders = new OverlapAdder[ numChannels ];
 		resamplers = new PvocStreamResampler[ numChannels ];
 		for( int chan = 0 ; chan < numChannels ; chan++ )
@@ -92,55 +92,55 @@ public strictfp class PvocFrameSynthesiser
 //			resamplers[chan] = new PvocStreamingCubicInterpolationResampler();
 			resamplers[chan] = new PvocStreamingLinearInterpolationResampler();
 		}
-		
+
 		resampleArray = new float[ analysisStepSize * 10 ];
 		debugger = params.getDebugger();
-		
+
 		reset();
 	}
-	
-	public int synthesiseFrame( PvocDataFrame processedFrame,
-			double speed,
-			double pitch,
-			UnsafeFloatRingBuffer[] outputRingBuffers,
-			PvocFrameSynthesisStep synthStep )
+
+	public int synthesiseFrame( final PvocDataFrame processedFrame,
+			final double speed,
+			final double pitch,
+			final UnsafeFloatRingBuffer[] outputRingBuffers,
+			final PvocFrameSynthesisStep synthStep )
 	{
 		// Work out how much we move by
-		double synthesisFrac = synthStep.getFrac();
-		int synthesisRoundedStepSize = synthStep.getRoundedStepSize();
-		double resampleRatio = synthStep.getInternalPitchRatio();
-		
-		float outputStepGain = synthesisRoundedStepSize / fftWindowValSquaredSum;
-		
+		final double synthesisFrac = synthStep.getFrac();
+		final int synthesisRoundedStepSize = synthStep.getRoundedStepSize();
+		final double resampleRatio = synthStep.getInternalPitchRatio();
+
+		final float outputStepGain = synthesisRoundedStepSize / fftWindowValSquaredSum;
+
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-		
+
 			// Now do the processing
 			System.arraycopy( processedFrame.complexFrame[chan], 0, internalComplexArray, 0, fftComplexArraySize );
-			
+
 			fftComputer.realInverse( internalComplexArray );
-			
+
 			if( debugger != null )
 			{
 				debugger.receiveProcessedWindowedRotatedSegment( internalComplexArray, fftSize );
 			}
-			
+
 			frameRotator.outRotate( internalComplexArray, processedFrame.complexFrame[chan] );
-			
+
 			fftWindow.applyWithGain( processedFrame.complexFrame[chan], outputStepGain );
-			
+
 			if( debugger != null )
 			{
 				debugger.receiveProcessedOutputSegment( processedFrame.complexFrame[chan], windowLength );
 			}
-			
+
 			overlapAdders[chan].addOverlap( processedFrame.complexFrame[chan], synthesisRoundedStepSize, windowLength );
-			
+
 			if( debugger != null )
 			{
 				debugger.receiveSynthesiserRingContents( overlapAdders[chan].getRingBuffer(), overlapAdders[chan].getRingBuffer().length );
 			}
-			
+
 			overlapAdders[chan].readOutput( internalComplexArray, synthesisRoundedStepSize );
 
 			// Resample and push into output ring
@@ -149,24 +149,24 @@ public strictfp class PvocFrameSynthesiser
 					resampleArray,
 					(float)resampleRatio,
 					outputRingBuffers[ chan ] );
-			
+
 		}
 
 		// Update the position
 		outputPosition.pos += synthesisRoundedStepSize;
 		outputPosition.frac += synthesisFrac;
-		
+
 		return 0;
 	}
 
-	private int resampleOutputSamples( int chan,
-			int numInputSamples,
-			float[] outputSamples,
-			float resampleRatio,
-			UnsafeFloatRingBuffer outputRingBuffer )
+	private int resampleOutputSamples( final int chan,
+			final int numInputSamples,
+			final float[] outputSamples,
+			final float resampleRatio,
+			final UnsafeFloatRingBuffer outputRingBuffer )
 	{
-		int numSamples = resamplers[ chan ].streamResample( resampleRatio, internalComplexArray, numInputSamples, outputSamples );
-		int numWritten = outputRingBuffer.write( outputSamples, 0, numSamples );
+		final int numSamples = resamplers[ chan ].streamResample( resampleRatio, internalComplexArray, numInputSamples, outputSamples );
+		final int numWritten = outputRingBuffer.write( outputSamples, 0, numSamples );
 		if( numWritten != numSamples )
 		{
 			// Failed to write into ring buffer
@@ -175,7 +175,7 @@ public strictfp class PvocFrameSynthesiser
 		return numSamples;
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		outputPosition = new PvocPlayPosition();
 		for( int chan = 0 ; chan < numChannels ; chan++ )

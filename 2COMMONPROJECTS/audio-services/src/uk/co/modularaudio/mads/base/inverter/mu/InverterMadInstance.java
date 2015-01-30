@@ -38,17 +38,17 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class InverterMadInstance extends MadInstance<InverterMadDefinition,InverterMadInstance>
 {
-	public InverterMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			InverterMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public InverterMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final InverterMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 	}
@@ -59,18 +59,18 @@ public class InverterMadInstance extends MadInstance<InverterMadDefinition,Inver
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( InverterMadDefinition.CONSUMER_AUDIO_IN );
-		float[] inFloats = channelBuffers[ InverterMadDefinition.CONSUMER_AUDIO_IN ].floatBuffer;
+		final boolean inConnected = channelConnectedFlags.get( InverterMadDefinition.CONSUMER_AUDIO_IN );
+		final float[] inFloats = channelBuffers[ InverterMadDefinition.CONSUMER_AUDIO_IN ].floatBuffer;
 
-		boolean outConnected = channelConnectedFlags.get( InverterMadDefinition.PRODUCER_AUDIO_OUT );
-		float[] outFloats = channelBuffers[ InverterMadDefinition.PRODUCER_AUDIO_OUT ].floatBuffer;
-		
+		final boolean outConnected = channelConnectedFlags.get( InverterMadDefinition.PRODUCER_AUDIO_OUT );
+		final float[] outFloats = channelBuffers[ InverterMadDefinition.PRODUCER_AUDIO_OUT ].floatBuffer;
+
 		if( !inConnected )
 		{
 			if( outConnected )

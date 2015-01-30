@@ -56,7 +56,7 @@ public class JNDIConnectionFactory implements Factory
 	 *
 	 * @param icString
 	 */
-	public JNDIConnectionFactory( String icString )
+	public JNDIConnectionFactory( final String icString )
 	{
 		this.icString = icString;
 	}
@@ -79,10 +79,13 @@ public class JNDIConnectionFactory implements Factory
 		{
 			res = createDBConnection();
 		}
-		catch (SQLException sqle)
+		catch (final SQLException sqle)
 		{
-			log.error( "Error creating DBConnection inside factory." );
-			log.error( "SQLE: " + sqle.toString() );
+			if( log.isErrorEnabled() )
+			{
+				log.error( "Error creating DBConnection inside factory." );
+				log.error( "SQLE: " + sqle.toString() );
+			}
 			throw new FactoryProductionException( sqle.toString() );
 		}
 		if (res == null)
@@ -104,29 +107,29 @@ public class JNDIConnectionFactory implements Factory
 	private DatabaseConnectionResource createDBConnection() throws SQLException
 	{
 		// Create the connection
-		Connection c = getConnection();
+		final Connection c = getConnection();
 
 		// Force the application to explicitly set its commit points.
 		c.setAutoCommit( false );
 
 		String setupFunctionIndexes = "ALTER SESSION SET OPTIMIZER_MODE = FIRST_ROWS";
-		PreparedStatement som = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement som = c.prepareStatement( setupFunctionIndexes );
 		som.execute();
 		som.close();
 
 		setupFunctionIndexes = "ALTER SESSION SET QUERY_REWRITE_ENABLED = TRUE";
-		PreparedStatement sqre = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement sqre = c.prepareStatement( setupFunctionIndexes );
 		sqre.execute();
 		sqre.close();
 
 		setupFunctionIndexes = "ALTER SESSION SET QUERY_REWRITE_INTEGRITY = TRUSTED";
-		PreparedStatement sqri = c.prepareStatement( setupFunctionIndexes );
+		final PreparedStatement sqri = c.prepareStatement( setupFunctionIndexes );
 		sqri.execute();
 		sqri.close();
 
 		// Log.debug(className, "Altered session to use function indexes.");
 
-		DatabaseConnectionResource dbcr = new DatabaseConnectionResource( c );
+		final DatabaseConnectionResource dbcr = new DatabaseConnectionResource( c );
 		return (dbcr);
 	}
 
@@ -141,7 +144,7 @@ public class JNDIConnectionFactory implements Factory
 	private Connection getConnection() throws SQLException
 	{
 		// Log.debug(className, "About to get JDNI Connection");
-		Connection c = ds.getConnection();
+		final Connection c = ds.getConnection();
 		// Log.debug(className, "Successful in obtaining a connection.");
 		return (c);
 	}
@@ -159,18 +162,18 @@ public class JNDIConnectionFactory implements Factory
 	{
 		try
 		{
-			InitialContext ic = new InitialContext();
+			final InitialContext ic = new InitialContext();
 			ds = (DataSource) ic.lookup( icString );
 
 			// Test creating a connection
-			Connection c = ds.getConnection();
+			final Connection c = ds.getConnection();
 			c.close();
 		}
-		catch (NamingException ne)
+		catch (final NamingException ne)
 		{
 			throw new FactoryProductionException( ne.toString() );
 		}
-		catch (SQLException sqle)
+		catch (final SQLException sqle)
 		{
 			throw new FactoryProductionException( sqle.toString() );
 		}

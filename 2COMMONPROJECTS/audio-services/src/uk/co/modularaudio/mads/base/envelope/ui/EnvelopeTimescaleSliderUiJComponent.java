@@ -40,15 +40,15 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 	implements IMadUiControlInstance<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>
 {
 	private static Log log = LogFactory.getLog( EnvelopeTimescaleSliderUiJComponent.class.getName() );
-	
-	private static final long serialVersionUID = 2538907435465770032L;
-	
-	private EnvelopeMadUiInstance uiInstance = null;
 
-	public EnvelopeTimescaleSliderUiJComponent( EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private final EnvelopeMadUiInstance uiInstance;
+
+	public EnvelopeTimescaleSliderUiJComponent( final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 0.0f, EnvelopeDefaults.MAX_TIMESCALE_MILLIS, -1.0f,
 				"",
@@ -61,22 +61,23 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 				false );
 		this.setBackground( Color.ORANGE );
 		this.uiInstance = uiInstance;
-		
+
 		model.setValue( EnvelopeDefaults.class, EnvelopeDefaults.TIMESCALE_MILLIS );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.propogateTimescaleChange( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -87,7 +88,7 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 	public void destroy()
 	{
 	}
-	
+
 	@Override
 	public String getControlValue()
 	{
@@ -95,24 +96,24 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
 //			log.debug("Received control value " + value );
-			float asFloat = Float.parseFloat( valueStr );
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		passChangeToInstanceData( newValue );
 	}

@@ -37,27 +37,27 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class FeedbackLinkProducerMadInstance extends MadInstance<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
 {
-	
-//	private int periodLength = -1;
 
-	public FeedbackLinkProducerMadInstance( InternalComponentsCreationContext creationContext,
-			String instanceName,
-			FeedbackLinkProducerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	//	private int periodLength = -1;
+
+	public FeedbackLinkProducerMadInstance( final InternalComponentsCreationContext creationContext,
+			final String instanceName,
+			final FeedbackLinkProducerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
-//			periodLength = dataRateConfiguration.getAudioDataLatencyConfiguration().getChannelBufferLength();
+			//			periodLength = dataRateConfiguration.getAudioDataLatencyConfiguration().getChannelBufferLength();
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
 			throw new MadProcessingException( e );
 		}
@@ -69,11 +69,11 @@ public class FeedbackLinkProducerMadInstance extends MadInstance<FeedbackLinkPro
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

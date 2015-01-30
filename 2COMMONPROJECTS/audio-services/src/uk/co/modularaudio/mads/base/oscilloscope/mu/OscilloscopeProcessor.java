@@ -28,44 +28,44 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class OscilloscopeProcessor
 {
 //	private static Log log = LogFactory.getLog( OscilloscopeProcessor.class.getName() );
-	
-	private OscilloscopeMadInstance instance = null;
-	
+
+	private final OscilloscopeMadInstance instance;
+
 	private OscilloscopeCaptureTriggerEnum triggerEnum = OscilloscopeCaptureTriggerEnum.NONE;
-	
+
 //	private int desiredCaptureSamples = 1;
 	private int periodLength = -1;
-	
-	protected ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData = null;
-	
-	private OscilloscopeWriteableScopeData scopeData = null;
-	
-	private boolean currentlyCapturing = false;
-	private float previousTriggerVal = 0.0f;
-	
-	public OscilloscopeProcessor( OscilloscopeMadInstance instance, 
-			ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData )
+
+	protected ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData;
+
+	private OscilloscopeWriteableScopeData scopeData;
+
+	private boolean currentlyCapturing;
+	private float previousTriggerVal;
+
+	public OscilloscopeProcessor( final OscilloscopeMadInstance instance,
+			final ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData )
 	{
 		this.instance = instance;
 		this.bufferedScopeData = bufferedScopeData;
 	}
-	
-	public void setPeriodData( OscilloscopeCaptureTriggerEnum triggerEnum,
-			int desiredCaptureSamples,
-			int periodLength )
+
+	public void setPeriodData( final OscilloscopeCaptureTriggerEnum triggerEnum,
+			final int desiredCaptureSamples,
+			final int periodLength )
 	{
 		this.periodLength = periodLength;
 //		this.desiredCaptureSamples = desiredCaptureSamples;
 		this.triggerEnum = triggerEnum;
 	}
-	
-	public void processPeriod( ThreadSpecificTemporaryEventStorage tses,
-			long timingInfo,
-			boolean triggerConnected, float[] triggerFloats,
-			boolean audio0Connected, float[] audio0Floats,
-			boolean cv0Connected, float[] cv0Floats,
-			boolean audio1Connected, float[] audio1Floats,
-			boolean cv1Connected, float[] cv1Floats )
+
+	public void processPeriod( final ThreadSpecificTemporaryEventStorage tses,
+			final long timingInfo,
+			final boolean triggerConnected, final float[] triggerFloats,
+			final boolean audio0Connected, final float[] audio0Floats,
+			final boolean cv0Connected, final float[] cv0Floats,
+			final boolean audio1Connected, final float[] audio1Floats,
+			final boolean cv1Connected, final float[] cv1Floats )
 	{
 		int triggerIndex = -1;
 		if( currentlyCapturing && scopeData.currentWriteIndex < scopeData.desiredDataLength )
@@ -91,7 +91,7 @@ public class OscilloscopeProcessor
 						float thisTrigVal = previousTriggerVal;
 						for( int s = 0 ; s < periodLength ; s++ )
 						{
-							float testVal = triggerFloats[ s ];
+							final float testVal = triggerFloats[ s ];
 							if( thisTrigVal <= 0.0 && testVal > 0.0 )
 							{
 								triggerIndex = s;
@@ -110,7 +110,7 @@ public class OscilloscopeProcessor
 						float thisTrigVal = previousTriggerVal;
 						for( int s = 0 ; s < periodLength ; s++ )
 						{
-							float testVal = triggerFloats[ s ];
+							final float testVal = triggerFloats[ s ];
 							if( thisTrigVal >= 0.0 && testVal < 0.0 )
 							{
 								triggerIndex = s;
@@ -131,11 +131,11 @@ public class OscilloscopeProcessor
 				triggerIndex = 0;
 			}
 		}
-		
+
 		if( triggerIndex != -1 )
 		{
 			// Have hit a trigger (or are still processing a previously triggered capture)
-			
+
 			// If we haven't yet obtained a scope data, go and get one.
 			if( bufferedScopeData.size() > 0 )
 			{
@@ -175,17 +175,17 @@ public class OscilloscopeProcessor
 					scopeData.float1Written = false;
 				}
 			}
-			
+
 			if( scopeData != null && currentlyCapturing )
 			{
 				// Pipe what we can from the buffers into the scope data
-				int numAvailable = periodLength - triggerIndex;
-				int scopeSpace = scopeData.desiredDataLength - scopeData.currentWriteIndex;
-				int numToWrite = (numAvailable < scopeSpace ? numAvailable : scopeSpace );
+				final int numAvailable = periodLength - triggerIndex;
+				final int scopeSpace = scopeData.desiredDataLength - scopeData.currentWriteIndex;
+				final int numToWrite = (numAvailable < scopeSpace ? numAvailable : scopeSpace );
 				for( int s = 0 ; s < numToWrite ; s++ )
 				{
-					int inIndex = triggerIndex + s;
-					int outIndex = scopeData.currentWriteIndex + s;
+					final int inIndex = triggerIndex + s;
+					final int outIndex = scopeData.currentWriteIndex + s;
 					if( audio0Connected )
 					{
 						scopeData.floatBuffer0[ outIndex ] = audio0Floats[ inIndex ];
@@ -194,7 +194,7 @@ public class OscilloscopeProcessor
 					{
 						scopeData.floatBuffer0[ outIndex ] = cv0Floats[ inIndex ];
 					}
-					
+
 					if( audio1Connected )
 					{
 						scopeData.floatBuffer1[ outIndex ] = audio1Floats[ inIndex ];
@@ -205,7 +205,7 @@ public class OscilloscopeProcessor
 					}
 				}
 				scopeData.currentWriteIndex += numToWrite;
-				
+
 				if( scopeData.currentWriteIndex >= scopeData.desiredDataLength )
 				{
 //					log.debug("Emitted scope data to ui");

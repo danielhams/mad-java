@@ -22,19 +22,17 @@ package uk.co.modularaudio.service.apprenderinggraph.vos;
 
 public class ParsedJobData
 {
-//	private long jobStartTimestamp = -1;
-//	private long jobEndTimestamp = -1;
-	private long jobOffsetFromStart = -1;
-	private long jobLength = -1;
-	private int jobThreadNum = -1;
-	private String jobName = "";
-	
-	public ParsedJobData( long jst,
-			long jet,
-			long jofs,
-			long jl,
-			int jn,
-			String jobName )
+	private final long jobOffsetFromStart;
+	private final long jobLength;
+	private final int jobThreadNum;
+	private final String jobName;
+
+	public ParsedJobData( final long jst,
+			final long jet,
+			final long jofs,
+			final long jl,
+			final int jn,
+			final String jobName )
 	{
 //		this.jobStartTimestamp = jst;
 //		this.jobEndTimestamp = jet;
@@ -44,10 +42,11 @@ public class ParsedJobData
 		this.jobName = jobName;
 	}
 
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		String jobStr = String.format( "JobLength(%8d) JobThreadNum(%d) JobName(%s)", jobLength, jobThreadNum, jobName );
+		final StringBuilder sb = new StringBuilder();
+		final String jobStr = String.format( "JobLength(%8d) JobThreadNum(%d) JobName(%s)", jobLength, jobThreadNum, jobName );
 		sb.append( jobStr );
 //		sb.append("JobOffsetFromStart(" );
 //		sb.append( jobOffsetFromStart );
@@ -65,5 +64,5 @@ public class ParsedJobData
 	{
 		return jobOffsetFromStart;
 	}
-	
+
 }

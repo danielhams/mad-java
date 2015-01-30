@@ -55,16 +55,16 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 {
 	private static Log log = LogFactory.getLog( LibraryServiceImpl.class.getName() );
 
-	private String databaseTablePrefix = null;
+	private String databaseTablePrefix;
 
-	private HibernateSessionService hibernateSessionService = null;
-	private AudioFileIOService audioFileIOService = null;
+	private HibernateSessionService hibernateSessionService;
+	private AudioFileIOService audioFileIOService;
 
 	public LibraryServiceImpl()
 	{
 	}
 
-	private List<HibernatePersistedBeanDefinition> hibernateBeanDefs = new ArrayList<HibernatePersistedBeanDefinition>();
+	private final List<HibernatePersistedBeanDefinition> hibernateBeanDefs = new ArrayList<HibernatePersistedBeanDefinition>();
 
 	@Override
 	public List<HibernatePersistedBeanDefinition> listHibernatePersistedBeanDefinitions()
@@ -95,39 +95,39 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	}
 
 	@Override
-	public LibraryEntry addFileToLibrary( File fileForEntry ) throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException
+	public LibraryEntry addFileToLibrary( final File fileForEntry ) throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException
 	{
 		LibraryEntry newEntry = null;
 		try
 		{
-			Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
-			ArrayList<CuePoint> cueList = new ArrayList<CuePoint>();
-			CuePoint trackStartCuePoint = new CuePoint( -1, 0, "track_start" );
+			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
+			final ArrayList<CuePoint> cueList = new ArrayList<CuePoint>();
+			final CuePoint trackStartCuePoint = new CuePoint( -1, 0, "track_start" );
 			cueList.add( trackStartCuePoint );
 
-			String title = fileForEntry.getName();
-			String location = fileForEntry.getAbsolutePath();
+			final String title = fileForEntry.getName();
+			final String location = fileForEntry.getAbsolutePath();
 
 			// This will let us test if it's a valid file format
-			StaticMetadata sm = audioFileIOService.sniffFileFormatOfFile( location );
+			final StaticMetadata sm = audioFileIOService.sniffFileFormatOfFile( location );
 
-			int numChannels = sm.numChannels;
-			long numFrames = sm.numFrames;
-			int sampleRate = sm.sampleRate;
+			final int numChannels = sm.numChannels;
+			final long numFrames = sm.numFrames;
+			final int sampleRate = sm.sampleRate;
 
 			newEntry = new LibraryEntry( -1, cueList, numChannels, sampleRate, numFrames, title, location );
 			hibernateSession.save( trackStartCuePoint );
 			hibernateSession.save( newEntry );
 			return newEntry;
 		}
-		catch( HibernateException he )
+		catch( final HibernateException he )
 		{
-			String msg = "HibernateException caught adding file to library: " + he.toString();
+			final String msg = "HibernateException caught adding file to library: " + he.toString();
 			HibernateExceptionHandler.rethrowJdbcAsDatastoreAndConstraintAsItself( he, log, msg, HibernateExceptionHandler.ALL_ARE_ERRORS );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught attempting to add file to library:" + e.toString();
+			final String msg = "Exception caught attempting to add file to library:" + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
@@ -135,45 +135,45 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	}
 
 	@Override
-	public LibraryEntry findLibraryEntryByFile( File file ) throws RecordNotFoundException, NoSuchHibernateSessionException, DatastoreException
+	public LibraryEntry findLibraryEntryByFile( final File file ) throws RecordNotFoundException, NoSuchHibernateSessionException, DatastoreException
 	{
 		LibraryEntry retVal = null;
 		try
 		{
-			HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder( log );
-			Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
-			String hqlString = "from LibraryEntry where location = :location";
+			final HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder( log );
+			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
+			final String hqlString = "from LibraryEntry where location = :location";
 			queryBuilder.initQuery( hibernateSession, hqlString );
-			String locationToFind = file.getAbsolutePath();
+			final String locationToFind = file.getAbsolutePath();
 			queryBuilder.setString( "location", locationToFind );
-			Query q = queryBuilder.buildQuery();
+			final Query q = queryBuilder.buildQuery();
 			retVal = (LibraryEntry)q.uniqueResult();
 			if( retVal == null )
 			{
 				throw new RecordNotFoundException();
 			}
 		}
-		catch( HibernateException he )
+		catch( final HibernateException he )
 		{
-			String msg = "HibernateException caught adding file to library: " + he.toString();
+			final String msg = "HibernateException caught adding file to library: " + he.toString();
 			HibernateExceptionHandler.rethrowAsDatastoreLogAll( he, log, msg );
 		}
 
 		return retVal;
 	}
 
-	public void setDatabaseTablePrefix( String databaseTablePrefix )
+	public void setDatabaseTablePrefix( final String databaseTablePrefix )
 	{
 		this.databaseTablePrefix = databaseTablePrefix;
 	}
 
 	public void setHibernateSessionService(
-			HibernateSessionService hibernateSessionService )
+			final HibernateSessionService hibernateSessionService )
 	{
 		this.hibernateSessionService = hibernateSessionService;
 	}
 
-	public void setAudioFileIOService( AudioFileIOService audioFileIOService )
+	public void setAudioFileIOService( final AudioFileIOService audioFileIOService )
 	{
 		this.audioFileIOService = audioFileIOService;
 	}

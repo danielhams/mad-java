@@ -38,22 +38,22 @@ public class StaticValueIOQueueBridge extends MadLocklessQueueBridge<StaticValue
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( StaticValueMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final StaticValueMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_VALUE:
 			{
 				// Is just a float
-				long longValue = queueEntry.value;
-				int truncVal = (int)longValue;
-				float value = Float.intBitsToFloat( truncVal );
+				final long longValue = queueEntry.value;
+				final int truncVal = (int)longValue;
+				final float value = Float.intBitsToFloat( truncVal );
 				instance.currentValue = value;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

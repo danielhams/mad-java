@@ -32,23 +32,18 @@ import uk.co.modularaudio.service.bufferedimageallocation.impl.cache.AllocationC
 public class RawImageBrowser extends JPanel implements ActionListener
 {
 //	private static Log log = LogFactory.getLog( RawImageBrowser.class.getName() );
-	
+
 	private static final long serialVersionUID = 3311354314509726320L;
-	
-	private RawImageCombo rawImageCombo = null;
-	private RawImageDisplay rawImageDisplay = null;
-	
-	public RawImageBrowser( AllocationCacheForImageType cache )
+
+	private final RawImageCombo rawImageCombo;
+	private final RawImageDisplay rawImageDisplay;
+
+	public RawImageBrowser( final AllocationCacheForImageType cache )
 	{
-		MigLayout layout = new MigLayout("fillx", "[][grow]", "[][fill,grow]");
+		final MigLayout layout = new MigLayout("fillx", "[][grow]", "[][fill,grow]");
 		this.setLayout( layout );
-		
-		this.addComponents( cache );
-	}
-	
-	private void addComponents( AllocationCacheForImageType cache )
-	{
-		JLabel comboLabel = new JLabel("Raw Image:");
+
+		final JLabel comboLabel = new JLabel("Raw Image:");
 		this.add( comboLabel, "" );
 		rawImageCombo = new RawImageCombo( this, cache );
 		this.add( rawImageCombo, "wrap");
@@ -58,26 +53,26 @@ public class RawImageBrowser extends JPanel implements ActionListener
 
 	public void refreshFromCache()
 	{
-		Object selectedItem = rawImageCombo.getSelectedItem();
+		final Object selectedItem = rawImageCombo.getSelectedItem();
 		rawImageDisplay.clearDisplayedImage();
 		rawImageCombo.refreshFromCache();
 		rawImageCombo.setSelectedItem( selectedItem );
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 //		log.debug( "Got an action: " + e.toString() );
 		if( e.getActionCommand().equals( "comboBoxChanged" ) )
 		{
-			String rawImageIdStr = (String)rawImageCombo.getSelectedItem();
+			final String rawImageIdStr = (String)rawImageCombo.getSelectedItem();
 			long rawImageId;
 			try
 			{
 				rawImageId = Long.parseLong( rawImageIdStr );
 				rawImageDisplay.displayRawImage( rawImageId );
 			}
-			catch (NumberFormatException e1)
+			catch (final NumberFormatException e1)
 			{
 			}
 		}

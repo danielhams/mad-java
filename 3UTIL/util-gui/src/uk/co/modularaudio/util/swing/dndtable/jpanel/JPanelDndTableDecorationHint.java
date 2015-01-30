@@ -29,19 +29,19 @@ import java.util.List;
 public abstract class JPanelDndTableDecorationHint
 {
 //	private static Log log = LogFactory.getLog( SwingDndTableDecorationHint.class.getName() );
-	
+
 	private boolean active = false;
-	
+
 	public boolean isActive()
 	{
 		return active;
 	}
-	
+
 	public abstract Rectangle getCurrentDamageRectangle();
-	
-	public void setActive( boolean activeBool)
+
+	public void setActive( final boolean activeBool)
 	{
-		Rectangle currentDamageRectangle = getCurrentDamageRectangle();
+		final Rectangle currentDamageRectangle = getCurrentDamageRectangle();
 		if( active != activeBool )
 		{
 			active = activeBool;
@@ -57,34 +57,34 @@ public abstract class JPanelDndTableDecorationHint
 			}
 		}
 	}
-	
+
 	public abstract boolean isMouseRelative();
 
 	public abstract void paint( Graphics g );
-	
+
 	public List<JPanelDndTableDecorationHintListener> listeners = new ArrayList<JPanelDndTableDecorationHintListener>();
-	
-	public void addListener( JPanelDndTableDecorationHintListener listener )
+
+	public void addListener( final JPanelDndTableDecorationHintListener listener )
 	{
 		this.listeners.add( listener );
 	}
-	
-	public void removeListener( JPanelDndTableDecorationHintListener listener )
+
+	public void removeListener( final JPanelDndTableDecorationHintListener listener )
 	{
 		this.listeners.remove( listener );
 	}
-	
-	public void emitNeedsRepaintEvent( Object source, Rectangle damageRectangle )
+
+	public void emitNeedsRepaintEvent( final Object source, final Rectangle damageRectangle )
 	{
-		for( JPanelDndTableDecorationHintListener l : listeners )
+		for( final JPanelDndTableDecorationHintListener l : listeners )
 		{
 			l.receiveNeedsRepaintSignal( source, damageRectangle );
 		}
 	}
-	
-	public void emitForceRepaintEvent( Object source, Rectangle damageRectangle )
+
+	public void emitForceRepaintEvent( final Object source, final Rectangle damageRectangle )
 	{
-		for( JPanelDndTableDecorationHintListener l : listeners )
+		for( final JPanelDndTableDecorationHintListener l : listeners )
 		{
 			l.receiveForceRepaintSignal( source, damageRectangle );
 		}
@@ -92,9 +92,5 @@ public abstract class JPanelDndTableDecorationHint
 
 	public abstract void setMousePosition(Point mousePosition);
 
-	public void signalAnimation()
-	{
-		// Do nothing by default. Most hints won't be animated
-	}
-	
+	public abstract void signalAnimation();
 }

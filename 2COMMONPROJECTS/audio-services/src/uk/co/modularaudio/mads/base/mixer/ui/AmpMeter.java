@@ -46,10 +46,10 @@ public class AmpMeter extends PacPanel
 	private static final float GREEN_THRESHOLD_DB = -6.0f;
 	private static final float ORANGE_THRESHOLD_DB = -3.0f;
 
-	private MixerMadInstance instance;
+	private final MixerMadInstance instance;
 
-	private float greenThresholdLevel = 0.0f;
-	private float orangeThreholdLevel = 0.0f;
+	private final float greenThresholdLevel;
+	private final float orangeThreholdLevel;
 
 	private static final long serialVersionUID = -7723883774839586874L;
 
@@ -64,20 +64,20 @@ public class AmpMeter extends PacPanel
 	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMaxValueDb = Float.NEGATIVE_INFINITY;
 
-	private DbToLevelComputer dbToLevelComputer = null;
+	private final DbToLevelComputer dbToLevelComputer;
 
-	private BufferedImageAllocator bufferedImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;
+	private final BufferedImageAllocator bufferedImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage outBufferedImage;
+	private Graphics outBufferedImageGraphics;
 
-	private int componentWidth = -1;
-	private int componentHeight = -1;
+	private int componentWidth;
+	private int componentHeight;
 
-	public AmpMeter( MixerMadUiInstance uiInstance,
-			DbToLevelComputer dbToLevelComputer,
-			BufferedImageAllocator bia,
-			boolean showClipBox )
+	public AmpMeter( final MixerMadUiInstance uiInstance,
+			final DbToLevelComputer dbToLevelComputer,
+			final BufferedImageAllocator bia,
+			final boolean showClipBox )
 	{
 		this.setOpaque( true );
 		this.instance = uiInstance.getInstance();
@@ -88,14 +88,14 @@ public class AmpMeter extends PacPanel
 		orangeThreholdLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( ORANGE_THRESHOLD_DB );
 
 		setBackground( Color.black );
-		Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
+		final Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
 		this.setPreferredSize( myPreferredSize );
 		this.setMinimumSize( myPreferredSize );
 
 		this.showClipBox = showClipBox;
 	}
 
-	private Color getColorForDb( float dbValue )
+	private Color getColorForDb( final float dbValue )
 	{
 		if( dbValue == Float.NEGATIVE_INFINITY )
 		{
@@ -116,7 +116,7 @@ public class AmpMeter extends PacPanel
 	}
 
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		if( outBufferedImage != null )
 		{
@@ -133,11 +133,11 @@ public class AmpMeter extends PacPanel
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
 
-			int meterWidth = PREFERRED_METER_WIDTH;
-			int totalMeterHeight = componentHeight - 2;
+			final int meterWidth = PREFERRED_METER_WIDTH;
+			final int totalMeterHeight = componentHeight - 2;
 
-			int meterHeight = (showClipBox ? totalMeterHeight - meterWidth : totalMeterHeight );
-			int meterHeightOffset = ( showClipBox ? meterWidth : 0 );
+			final int meterHeight = (showClipBox ? totalMeterHeight - meterWidth : totalMeterHeight );
+			final int meterHeightOffset = ( showClipBox ? meterWidth : 0 );
 
 			float levelValue = 0.0f;
 			if( currentMeterValueDb != Float.NEGATIVE_INFINITY )
@@ -146,33 +146,33 @@ public class AmpMeter extends PacPanel
 			}
 
 			outBufferedImageGraphics.setColor( Color.GREEN );
-			float greenVal = (levelValue >= greenThresholdLevel ? greenThresholdLevel : levelValue );
+			final float greenVal = (levelValue >= greenThresholdLevel ? greenThresholdLevel : levelValue );
 			int greenBarHeightInPixels = (int)(greenVal * meterHeight );
 			greenBarHeightInPixels = (greenBarHeightInPixels > (meterHeight) ? (meterHeight) : (greenBarHeightInPixels < 0 ? 0 : greenBarHeightInPixels ));
-			int greenStartY = meterHeight - greenBarHeightInPixels + 1 + meterHeightOffset;
+			final int greenStartY = meterHeight - greenBarHeightInPixels + 1 + meterHeightOffset;
 			outBufferedImageGraphics.fillRect( 3, greenStartY, meterWidth - 4, greenBarHeightInPixels );
 
 			if( currentMeterValueDb > GREEN_THRESHOLD_DB )
 			{
 				outBufferedImageGraphics.setColor( Color.orange );
-				float orangeVal = (levelValue >= orangeThreholdLevel ? orangeThreholdLevel : levelValue );
+				final float orangeVal = (levelValue >= orangeThreholdLevel ? orangeThreholdLevel : levelValue );
 				int orangeBarHeightInPixels = (int)(orangeVal * meterHeight );
 				orangeBarHeightInPixels = (orangeBarHeightInPixels > (meterHeight) ? (meterHeight) : (orangeBarHeightInPixels < 0 ? 0 : orangeBarHeightInPixels ));
 				// Take off the green
 				orangeBarHeightInPixels -= greenBarHeightInPixels;
-				int orangeStartY = greenStartY - orangeBarHeightInPixels;
+				final int orangeStartY = greenStartY - orangeBarHeightInPixels;
 	//			int orangeEndY = greenStartY;
 				outBufferedImageGraphics.fillRect( 3, orangeStartY, meterWidth - 4, orangeBarHeightInPixels );
 
 				if( currentMeterValueDb > ORANGE_THRESHOLD_DB )
 				{
 					outBufferedImageGraphics.setColor( Color.RED );
-					float redVal = levelValue;
+					final float redVal = levelValue;
 					int redBarHeightInPixels = (int)(redVal * meterHeight );
 					redBarHeightInPixels = (redBarHeightInPixels > (meterHeight) ? (meterHeight) : (redBarHeightInPixels < 0 ? 0 : redBarHeightInPixels ));
 					// Take off the green and orange
 					redBarHeightInPixels = redBarHeightInPixels - (greenBarHeightInPixels + orangeBarHeightInPixels );
-					int redStartY = orangeStartY - redBarHeightInPixels;
+					final int redStartY = orangeStartY - redBarHeightInPixels;
 	//				int redEndY = orangeStartY;
 					outBufferedImageGraphics.fillRect( 3, redStartY, meterWidth - 4, redBarHeightInPixels );
 
@@ -180,7 +180,7 @@ public class AmpMeter extends PacPanel
 			}
 
 			float maxLevelValue = 0.0f;
-			Color maxDbColor = getColorForDb( currentMaxValueDb );
+			final Color maxDbColor = getColorForDb( currentMaxValueDb );
 			if( currentMaxValueDb != Float.NEGATIVE_INFINITY )
 			{
 				maxLevelValue = dbToLevelComputer.toNormalisedSliderLevelFromDb( currentMaxValueDb );
@@ -189,8 +189,8 @@ public class AmpMeter extends PacPanel
 
 			int maxValueHeightInPixels = (int)(maxLevelValue * meterHeight);
 			maxValueHeightInPixels = (maxValueHeightInPixels > (meterHeight) ? (meterHeight) : (maxValueHeightInPixels < 0 ? 0 : maxValueHeightInPixels ));
-			int yReverser = meterHeight + 1;
-			int maxStartY = yReverser - maxValueHeightInPixels + meterHeightOffset;
+			final int yReverser = meterHeight + 1;
+			final int maxStartY = yReverser - maxValueHeightInPixels + meterHeightOffset;
 			outBufferedImageGraphics.drawLine( 1, maxStartY, meterWidth, maxStartY );
 
 			if( showClipBox )
@@ -208,9 +208,9 @@ public class AmpMeter extends PacPanel
 		}
 	}
 
-	public void receiveDisplayTick( long currentTime )
+	public void receiveDisplayTick( final long currentTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 		if( currentMeterValueDb > currentMaxValueDb )
 		{
 			currentMaxValueDb = currentMeterValueDb;
@@ -235,7 +235,7 @@ public class AmpMeter extends PacPanel
 		}
 	}
 
-	public void receiveMeterReadingInDb( long currentTimestamp, float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentTimestamp, final float meterReadingDb )
 	{
 		currentMeterValueDb = meterReadingDb;
 	}
@@ -248,9 +248,9 @@ public class AmpMeter extends PacPanel
 			{
 				bufferedImageAllocator.freeBufferedImage( tiledBufferedImage );
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
-				String msg = "Failed to free up allocated image: " + e.toString();
+				final String msg = "Failed to free up allocated image: " + e.toString();
 				log.error( msg );
 			}
 			tiledBufferedImage = null;
@@ -260,7 +260,7 @@ public class AmpMeter extends PacPanel
 	}
 
 	@Override
-	public void setBounds( int x, int y, int width, int height )
+	public void setBounds( final int x, final int y, final int width, final int height )
 	{
 		super.setBounds( x, y, width, height );
 		try
@@ -270,7 +270,7 @@ public class AmpMeter extends PacPanel
 				bufferedImageAllocator.freeBufferedImage( tiledBufferedImage );
 			}
 
-			AllocationMatch myAllocationMatch = new AllocationMatch();
+			final AllocationMatch myAllocationMatch = new AllocationMatch();
 			tiledBufferedImage = bufferedImageAllocator.allocateBufferedImage( "AmpMeter",
 					myAllocationMatch,
 					AllocationLifetime.SHORT,
@@ -282,9 +282,12 @@ public class AmpMeter extends PacPanel
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0, 0, componentWidth, componentHeight );
 		}
-		catch (DatastoreException e)
+		catch (final DatastoreException e)
 		{
-			log.error("DatastoreException caught allocating buffered image: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("DatastoreException caught allocating buffered image: " + e.toString(), e );
+			}
 		}
 		componentWidth = width;
 		componentHeight = height;

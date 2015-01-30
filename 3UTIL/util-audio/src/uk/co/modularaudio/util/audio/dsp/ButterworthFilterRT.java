@@ -22,14 +22,14 @@ package uk.co.modularaudio.util.audio.dsp;
 
 public class ButterworthFilterRT
 {
-	float[] feedbackDelaySample = new float[2];
-	
+	final float[] feedbackDelaySample = new float[2];
+
 	public ButterworthFilterRT()
 	{
 		clear();
 	}
 
-	public void clear()
+	public final void clear()
 	{
 		feedbackDelaySample[0] = 0.0f;
 		feedbackDelaySample[1] = 0.0f;

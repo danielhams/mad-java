@@ -27,21 +27,24 @@ public class OscilloscopeWriteableScopeData
 	{
 		AUDIO, CV
 	};
-	public float[] floatBuffer0 = null;
+	public final float[] floatBuffer0;
 	public FloatType floatBuffer0Type = FloatType.AUDIO;
-	public float[] floatBuffer1 = null;
+	public final float[] floatBuffer1;
 	public FloatType floatBuffer1Type = FloatType.AUDIO;
-	public boolean float0Written = false;
-	public boolean float1Written = false;
-	public boolean written = false;
+	public boolean float0Written;
+	public boolean float1Written;
+	public boolean written;
 	public int currentWriteIndex = 0;
 	public int desiredDataLength = -1;
 	public int internalBufferLength = -1;
-	
-	public OscilloscopeWriteableScopeData( int bufferLength )
+
+	public OscilloscopeWriteableScopeData( final int bufferLength )
 	{
 		this.internalBufferLength = bufferLength;
 		floatBuffer0 = new float[ internalBufferLength ];
 		floatBuffer1 = new float[ internalBufferLength ];
+		float0Written = false;
+		float1Written = false;
+		written = false;
 	}
 }

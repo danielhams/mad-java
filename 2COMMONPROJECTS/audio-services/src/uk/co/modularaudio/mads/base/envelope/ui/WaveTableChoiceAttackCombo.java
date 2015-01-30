@@ -38,46 +38,46 @@ public class WaveTableChoiceAttackCombo extends WaveTableComboView
 		LOG,
 		LOG_FREQ
 	};
-	
-	private static final long serialVersionUID = 2831518979757488524L;
-	
-	private WaveTableComboModel cm = null;
-	private WaveTableComboController cc = null;
 
-	private static HashSet<WaveTableComboItem> startupItems = new HashSet<WaveTableComboItem>();
-	
+	private static final long serialVersionUID = 2831518979757488524L;
+
+	private final WaveTableComboModel cm;
+	private final WaveTableComboController cc;
+
+	private final static HashSet<WaveTableComboItem> STARTUP_ITEMS = new HashSet<WaveTableComboItem>();
+
 	static
 	{
-		WaveTableComboItem li = new WaveTableComboItem( WaveTableChoiceEnum.LINEAR.toString(),
+		final WaveTableComboItem li = new WaveTableComboItem( WaveTableChoiceEnum.LINEAR.toString(),
 				"Linear", StandardValueMappingWaveTables.getLinearAttackMappingWaveTable(), false );
-		startupItems.add( li );
-		WaveTableComboItem expi = new WaveTableComboItem( WaveTableChoiceEnum.EXP.toString(),
+		STARTUP_ITEMS.add( li );
+		final WaveTableComboItem expi = new WaveTableComboItem( WaveTableChoiceEnum.EXP.toString(),
 				"Exponential", StandardValueMappingWaveTables.getExpAttackMappingWaveTable(), false );
-		startupItems.add( expi );
-		WaveTableComboItem expfi = new WaveTableComboItem( WaveTableChoiceEnum.EXP_FREQ.toString(),
+		STARTUP_ITEMS.add( expi );
+		final WaveTableComboItem expfi = new WaveTableComboItem( WaveTableChoiceEnum.EXP_FREQ.toString(),
 				"Exponential Frequency", StandardValueMappingWaveTables.getExpFreqAttackMappingWaveTable(), false );
-		startupItems.add( expfi );
-		WaveTableComboItem logi = new WaveTableComboItem( WaveTableChoiceEnum.LOG.toString(),
+		STARTUP_ITEMS.add( expfi );
+		final WaveTableComboItem logi = new WaveTableComboItem( WaveTableChoiceEnum.LOG.toString(),
 				"Logarythmic", StandardValueMappingWaveTables.getLogAttackMappingWaveTable(), false );
-		startupItems.add( logi );
-		WaveTableComboItem logfi = new WaveTableComboItem( WaveTableChoiceEnum.LOG_FREQ.toString(),
+		STARTUP_ITEMS.add( logi );
+		final WaveTableComboItem logfi = new WaveTableComboItem( WaveTableChoiceEnum.LOG_FREQ.toString(),
 				"Logarythmic Frequency", StandardValueMappingWaveTables.getLogFreqAttackMappingWaveTable(), false );
-		startupItems.add( logfi );
+		STARTUP_ITEMS.add( logfi );
 	}
 
-	public WaveTableChoiceAttackCombo( WaveTableChoiceChangeReceiver changeReceiver )
+	public WaveTableChoiceAttackCombo( final WaveTableChoiceChangeReceiver changeReceiver )
 	{
 		super();
-		cm = new WaveTableComboModel( startupItems );
+		cm = new WaveTableComboModel( STARTUP_ITEMS );
 		cc = new WaveTableControllerEmitChoice( cm, changeReceiver );
 		setModelAndController( cm, cc );
 	}
-	
+
 	public WaveTableComboController getWTController()
 	{
 		return cc;
 	}
-	
+
 	public WaveTableComboModel getWTModel()
 	{
 		return cm;

@@ -32,13 +32,13 @@ public class PreferencesHardwarePage extends JPanel
 	private static final long serialVersionUID = 8643014949116729611L;
 //	private UserPreferencesMVCView userPreferencesView = null;
 
-	public PreferencesHardwarePage( ComponentDesignerFrontController fc, PreferencesDialog preferencesDialog ) throws DatastoreException
+	public PreferencesHardwarePage( final ComponentDesignerFrontController fc, final PreferencesDialog preferencesDialog ) throws DatastoreException
 	{
 //		this.fc = fc;
 //		this.preferencesDialog = preferencesDialog;
 //		this.userPreferencesView = preferencesDialog.getUserPreferencesView();
 
-		String migLayoutString = "fill";
+		final String migLayoutString = "fill";
 		this.setLayout( new MigLayout( migLayoutString ) );
 
 //		JPanel deviceChoicePanel = getDeviceChoicePanel();

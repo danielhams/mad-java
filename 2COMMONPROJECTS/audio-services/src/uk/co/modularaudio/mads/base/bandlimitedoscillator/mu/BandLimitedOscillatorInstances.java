@@ -33,18 +33,18 @@ import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveTableType;
 
 public class BandLimitedOscillatorInstances
 {
-	private Map<OscillatorWaveShape, Oscillator> shapeToOscillatorMap = new HashMap<OscillatorWaveShape, Oscillator>();
-	
-	public BandLimitedOscillatorInstances( OscillatorFactory of ) throws NoWaveTableForShapeException, OscillatorFactoryException
+	private final Map<OscillatorWaveShape, Oscillator> shapeToOscillatorMap = new HashMap<OscillatorWaveShape, Oscillator>();
+
+	public BandLimitedOscillatorInstances( final OscillatorFactory of ) throws NoWaveTableForShapeException, OscillatorFactoryException
 	{
-		for( OscillatorWaveShape waveShape : OscillatorWaveShape.values() )
+		for( final OscillatorWaveShape waveShape : OscillatorWaveShape.values() )
 		{
-			Oscillator osc = of.createOscillator( OscillatorWaveTableType.BAND_LIMITED, OscillatorInterpolationType.CUBIC, waveShape );
+			final Oscillator osc = of.createOscillator( OscillatorWaveTableType.BAND_LIMITED, OscillatorInterpolationType.CUBIC, waveShape );
 			shapeToOscillatorMap.put( waveShape, osc );
 		}
 	}
-	
-	public Oscillator getOscillator( OscillatorWaveShape waveShape )
+
+	public Oscillator getOscillator( final OscillatorWaveShape waveShape )
 	{
 		return shapeToOscillatorMap.get( waveShape );
 	}

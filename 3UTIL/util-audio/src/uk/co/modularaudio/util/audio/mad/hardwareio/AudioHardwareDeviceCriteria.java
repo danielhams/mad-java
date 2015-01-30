@@ -28,16 +28,16 @@ public class AudioHardwareDeviceCriteria
 	private final SampleBits sampleBits;
 	private final DataRate dataRate;
 	private final int hardwareNumFramesPerBuffer;
-	
-	public AudioHardwareDeviceCriteria( SampleBits sampleBits,
-			DataRate dataRate,
-			int hardwareNumFramesPerBuffer )
+
+	public AudioHardwareDeviceCriteria( final SampleBits sampleBits,
+			final DataRate dataRate,
+			final int hardwareNumFramesPerBuffer )
 	{
 		this.sampleBits = sampleBits;
 		this.dataRate = dataRate;
 		this.hardwareNumFramesPerBuffer = hardwareNumFramesPerBuffer;
 	}
-	
+
 	public SampleBits getSampleBits()
 	{
 		return sampleBits;

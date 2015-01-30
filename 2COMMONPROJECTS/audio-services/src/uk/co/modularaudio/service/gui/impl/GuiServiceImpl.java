@@ -56,18 +56,18 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 {
 	private static Log log = LogFactory.getLog( GuiServiceImpl.class.getName() );
 
-	private GuiComponentFactoryService guiComponentFactoryService = null;
-	private MadComponentService componentService = null;
-	private RackService rackService = null;
-	private BufferedImageAllocationService bufferedImageAllocationService = null;
+	private GuiComponentFactoryService guiComponentFactoryService;
+	private MadComponentService componentService;
+	private RackService rackService;
+	private BufferedImageAllocationService bufferedImageAllocationService;
 
-	private MadDefinitionListModel typesComboModel = null;
+	private MadDefinitionListModel madDefinitionsModel;
 
-	private GuiTabbedPane tabbedPane = null;
+	private GuiTabbedPane tabbedPane;
 
-	private YesNoQuestionDialog yesNoQuestionDialog = null;
-	private TextInputDialog textInputDialog = null;
-	private MessageDialog messageDialog = null;
+	private YesNoQuestionDialog yesNoQuestionDialog;
+	private TextInputDialog textInputDialog;
+	private MessageDialog messageDialog;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -88,39 +88,39 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 			yesNoQuestionDialog.dispose();
 	}
 
-	public void setGuiComponentFactoryService(GuiComponentFactoryService guiComponentFactoryService)
+	public void setGuiComponentFactoryService(final GuiComponentFactoryService guiComponentFactoryService)
 	{
 		this.guiComponentFactoryService = guiComponentFactoryService;
 	}
 
-	public void setRackService(RackService rackService)
+	public void setRackService(final RackService rackService)
 	{
 		this.rackService = rackService;
 	}
 
-	public void setComponentService( MadComponentService componentService )
+	public void setComponentService( final MadComponentService componentService )
 	{
 		this.componentService = componentService;
 	}
 
 	public void setBufferedImageAllocationService(
-			BufferedImageAllocationService bufferedImageAllocationService )
+			final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	@Override
-	public UserPreferencesMVCView getUserPreferencesMVCView( UserPreferencesMVCController userPrefsModelController )
+	public UserPreferencesMVCView getUserPreferencesMVCView( final UserPreferencesMVCController userPrefsModelController )
 			throws DatastoreException
 	{
 		return new UserPreferencesMVCView( userPrefsModelController );
 	}
 
 	@Override
-	public RackModelRenderingComponent createGuiForRackDataModel( RackDataModel rackDataModel )
+	public RackModelRenderingComponent createGuiForRackDataModel( final RackDataModel rackDataModel )
 			throws DatastoreException
 	{
-		GuiRackPanel guiRackPanel = new GuiRackPanel( guiComponentFactoryService,
+		final GuiRackPanel guiRackPanel = new GuiRackPanel( guiComponentFactoryService,
 				this,
 				rackService,
 				componentService,
@@ -131,35 +131,35 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public MadDefinitionListModel getComponentTypesModel() throws DatastoreException
+	public MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException
 	{
-		if( typesComboModel == null )
+		if( madDefinitionsModel == null )
 		{
 			// Obtain the list of available component types from the component service
 			try
 			{
-				typesComboModel = componentService.listDefinitionsAvailable();
+				madDefinitionsModel = componentService.listDefinitionsAvailable();
 			}
-			catch (DatastoreException e)
+			catch (final DatastoreException e)
 			{
-				String msg = "Exception caught creating the component type list model: " + e.toString();
+				final String msg = "Exception caught creating the mad definition list model: " + e.toString();
 				log.error( msg, e );
 				// Fill in a "blank" model
-				typesComboModel = new MadDefinitionListModel( new Vector<MadDefinition<?,?>>(), new MadDefinitionComparator());
+				madDefinitionsModel = new MadDefinitionListModel( new Vector<MadDefinition<?,?>>(), new MadDefinitionComparator());
 			}
 		}
 
-		return typesComboModel;
+		return madDefinitionsModel;
 	}
 
 	@Override
-	public void registerRackTabbedPane( GuiTabbedPane rackTabbedPane )
+	public void registerRackTabbedPane( final GuiTabbedPane rackTabbedPane )
 	{
 		this.tabbedPane = rackTabbedPane;
 	}
 
 	@Override
-	public void addSubrackTab( SubrackTab subrackTab, boolean isClosable )
+	public void addSubrackTab( final SubrackTab subrackTab, final boolean isClosable )
 	{
 		if( tabbedPane != null )
 		{
@@ -168,7 +168,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void removeSubrackTab( SubrackTab subrackTab )
+	public void removeSubrackTab( final SubrackTab subrackTab )
 	{
 		if( tabbedPane != null )
 		{
@@ -177,15 +177,18 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showYesNoQuestionDialog( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			String[] options,
-			String defaultChoice,
-			YesNoQuestionDialogCallback callback )
+	public void showYesNoQuestionDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String[] options,
+			final String defaultChoice,
+			final YesNoQuestionDialogCallback callback )
 	{
-		log.debug("Would attempt to show yes no dialog with message " + message );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Would attempt to show yes no dialog with message " + message );
+		}
 		yesNoQuestionDialog.setValues( parentComponent,
 				message,
 				title,
@@ -197,24 +200,27 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showTextInputDialog( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			String initialValue,
-			TextInputDialogCallback callback )
+	public void showTextInputDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String initialValue,
+			final TextInputDialogCallback callback )
 	{
 		textInputDialog.setValues( parentComponent, message, title, messageType, initialValue, callback );
 		textInputDialog.go();
 	}
 
 	@Override
-	public void showMessageDialog( Component parentComponent, String message,
-			String title,
-			int messageType,
-			MessageDialogCallback callback )
+	public void showMessageDialog( final Component parentComponent, final String message,
+			final String title,
+			final int messageType,
+			final MessageDialogCallback callback )
 	{
-		log.debug("Would attempt to show message dialog with message " + message );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Would attempt to show message dialog with message " + message );
+		}
 		messageDialog.setValues( parentComponent,
 				message,
 				title,

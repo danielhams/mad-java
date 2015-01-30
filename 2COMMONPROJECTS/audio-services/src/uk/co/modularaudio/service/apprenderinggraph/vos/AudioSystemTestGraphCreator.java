@@ -38,23 +38,23 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class AudioSystemTestGraphCreator
 {
-	public static MadGraphInstance<?,?> createAudioSystemTestGraph( MadGraphService graphService, MadComponentService componentService )
+	public static MadGraphInstance<?,?> createAudioSystemTestGraph( final MadGraphService graphService, final MadComponentService componentService )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
-		MadGraphInstance<?, ?> graph = graphService.createNewParameterisedGraph( "AudioSystemTestGraph",
+		final MadGraphInstance<?, ?> graph = graphService.createNewParameterisedGraph( "AudioSystemTestGraph",
 				GraphType.APP_GRAPH,
 				16, 16,
 				16, 16,
 				16, 16 );
-		
-		MadDefinition<?, ?> audioSystemTesterDefinition = componentService.findDefinitionById( AudioSystemTesterMadDefinition.DEFINITION_ID );
-		Map<MadParameterDefinition, String> testerParameterValues = new HashMap<MadParameterDefinition,String>();
+
+		final MadDefinition<?, ?> audioSystemTesterDefinition = componentService.findDefinitionById( AudioSystemTesterMadDefinition.DEFINITION_ID );
+		final Map<MadParameterDefinition, String> testerParameterValues = new HashMap<MadParameterDefinition,String>();
 		testerParameterValues.put( AudioSystemTesterMadDefinition.NUM_CHANNELS_PARAMETER, "16" );
-		
-		MadInstance<?, ?> audioSystemTesterInstance = componentService.createInstanceFromDefinition( audioSystemTesterDefinition,
+
+		final MadInstance<?, ?> audioSystemTesterInstance = componentService.createInstanceFromDefinition( audioSystemTesterDefinition,
 				testerParameterValues,
 				"Audio System Tester" );
-		
+
 		// Now expose the instance channels as graph channels
 		graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( graph, audioSystemTesterInstance,
 				"Audio System Tester", false );

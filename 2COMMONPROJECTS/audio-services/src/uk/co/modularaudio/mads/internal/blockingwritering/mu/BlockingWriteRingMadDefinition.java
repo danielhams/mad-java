@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -38,42 +39,41 @@ public class BlockingWriteRingMadDefinition extends AbstractNonConfigurableMadDe
 	public final static int PRODUCER_RIGHT = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	public final static String definitionId = "blocking_write_ring";
+	public final static String DEFINITION_ID = "blocking_write_ring";
 
-	private final static String userVisibleName = "Blocking Write Ring";
+	private final static String USER_VISIBLE_NAME = "Blocking Write Ring";
 
-	private final static String classificationGroup = MadClassificationService.INTERNAL_GROUP_ID;
-	private final static String classificationId = "blocking_write_ring";
-	private final static String classificationName = "Blocking Write Ring";
-	private final static String classificationDescription = "Testing component allowing blocking writes from a thread outside the DSP thread.";
+	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
+	private final static String CLASS_NAME = "Blocking Write Ring";
+	private final static String CLASS_DESC = "Testing component allowing blocking writes from a thread outside the DSP thread.";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] { "Output Left", "Output Right" };
+	private final static String[] CHAN_NAMES = new String[] { "Output Left", "Output Right" };
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
+	private final static MadChannelDirection[] CHAN_DIRECTIONS = new MadChannelDirection[] { MadChannelDirection.PRODUCER,
 		 MadChannelDirection.PRODUCER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public BlockingWriteRingMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public BlockingWriteRingMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBLE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new BlockingWriteRingIOQueueBridge(),
+				new MadNullLocklessQueueBridge<BlockingWriteRingMadInstance>(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRECTIONS,
+				CHAN_POSI );
 
 	}
 }

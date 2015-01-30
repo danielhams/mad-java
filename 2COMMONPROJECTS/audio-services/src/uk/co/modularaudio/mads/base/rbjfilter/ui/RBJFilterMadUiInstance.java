@@ -24,37 +24,30 @@ import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterIOQueueBridge;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class RBJFilterMadUiInstance extends AbstractNonConfigurableMadUiInstance<RBJFilterMadDefinition, RBJFilterMadInstance>
+public class RBJFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<RBJFilterMadDefinition, RBJFilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( RBJFilterMadUiInstance.class.getName() );
-	
-	public RBJFilterMadUiInstance( RBJFilterMadInstance instance,
-			RBJFilterMadUiDefinition uiDefinition )
+
+	public RBJFilterMadUiInstance( final RBJFilterMadInstance instance,
+			final RBJFilterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendFilterModeChange( FrequencyFilterMode desiredFilterMode )
+	public void sendFilterModeChange( final FrequencyFilterMode desiredFilterMode )
 	{
 		sendTemporalValueToInstance( RBJFilterIOQueueBridge.COMMAND_FILTER_MODE, desiredFilterMode.ordinal() );
 	}
 
-	public void sendFrequencyChange( float desiredFrequency )
+	public void sendFrequencyChange( final float desiredFrequency )
 	{
 		sendTemporalValueToInstance( RBJFilterIOQueueBridge.COMMAND_FREQUENCY, Float.floatToIntBits( desiredFrequency ) );
 	}
 
-	public void sendBandwidthChange( float desiredBandwidth )
+	public void sendBandwidthChange( final float desiredBandwidth )
 	{
 		sendTemporalValueToInstance( RBJFilterIOQueueBridge.COMMAND_Q, Float.floatToIntBits( desiredBandwidth ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( RBJFilterMadInstance instance,
-			IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

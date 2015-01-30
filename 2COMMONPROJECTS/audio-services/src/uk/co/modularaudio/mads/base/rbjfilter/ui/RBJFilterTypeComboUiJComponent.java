@@ -39,15 +39,15 @@ public class RBJFilterTypeComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private Map<FrequencyFilterMode, String> modeToNameMap = new HashMap<FrequencyFilterMode, String>();
-	private Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
-	
-	private RBJFilterMadUiInstance uiInstance = null;
+	private final Map<FrequencyFilterMode, String> modeToNameMap = new HashMap<FrequencyFilterMode, String>();
+	private final Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
 
-	public RBJFilterTypeComboUiJComponent( RBJFilterMadDefinition definition,
-			RBJFilterMadInstance instance,
-			RBJFilterMadUiInstance uiInstance,
-			int controlIndex )
+	private final RBJFilterMadUiInstance uiInstance;
+
+	public RBJFilterTypeComboUiJComponent( final RBJFilterMadDefinition definition,
+			final RBJFilterMadInstance instance,
+			final RBJFilterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
@@ -58,17 +58,17 @@ public class RBJFilterTypeComboUiJComponent extends PacComboBox<String>
 		filterNameToModeMap.put( "High Pass", FrequencyFilterMode.HP );
 		filterNameToModeMap.put( "Band Pass", FrequencyFilterMode.BP );
 //		filterNameToModeMap.put( "Band Reject", FrequencyFilterMode.BR );
-		for( String name : filterNameToModeMap.keySet() )
+		for( final String name : filterNameToModeMap.keySet() )
 		{
 			modeToNameMap.put( filterNameToModeMap.get( name ), name );
 		}
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 
-		FrequencyFilterMode[] modeValues = FrequencyFilterMode.values();
-		for( FrequencyFilterMode mode : modeValues )
+		final FrequencyFilterMode[] modeValues = FrequencyFilterMode.values();
+		for( final FrequencyFilterMode mode : modeValues )
 		{
-			String modeName = modeToNameMap.get( mode );
+			final String modeName = modeToNameMap.get( mode );
 			cbm.addElement( modeName );
 		}
 
@@ -86,7 +86,7 @@ public class RBJFilterTypeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -94,12 +94,12 @@ public class RBJFilterTypeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			FrequencyFilterMode modeToUse = filterNameToModeMap.get( name );
+			final String name = (String) getSelectedItem();
+			final FrequencyFilterMode modeToUse = filterNameToModeMap.get( name );
 			uiInstance.sendFilterModeChange( modeToUse );
 		}
 	}

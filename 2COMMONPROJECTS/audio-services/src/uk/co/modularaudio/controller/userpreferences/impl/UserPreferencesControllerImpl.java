@@ -33,12 +33,12 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class UserPreferencesControllerImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, UserPreferencesController
 {
-	private UserPreferencesService userPreferencesService = null;
-	private GuiService guiService = null;
+	private UserPreferencesService userPreferencesService;
+	private GuiService guiService;
 
 	// Where we stored the user preferences model whilst it is being edited
-	private UserPreferencesMVCController userPreferencesMVCController = null;
-	private UserPreferencesMVCView userPreferencesMVCView = null;
+	private UserPreferencesMVCController userPreferencesMVCController;
+	private UserPreferencesMVCView userPreferencesMVCView;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -55,7 +55,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 		return userPreferencesService;
 	}
 
-	public void setUserPreferencesService(UserPreferencesService userPreferencesService)
+	public void setUserPreferencesService(final UserPreferencesService userPreferencesService)
 	{
 		this.userPreferencesService = userPreferencesService;
 	}
@@ -78,12 +78,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 		userPreferencesService.applyUserPreferencesChanges( userPreferencesMVCController );
 	}
 
-	public GuiService getGuiService()
-	{
-		return guiService;
-	}
-
-	public void setGuiService( GuiService guiService )
+	public void setGuiService( final GuiService guiService )
 	{
 		this.guiService = guiService;
 	}
@@ -113,7 +108,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	@Override
 	public void reloadUserPreferences() throws DatastoreException
 	{
-		UserPreferencesMVCModel model = userPreferencesService.createUserPreferencesModel();
+		final UserPreferencesMVCModel model = userPreferencesService.createUserPreferencesModel();
 
 		userPreferencesMVCController.setModel( model );
 		userPreferencesMVCView.setModel( model );

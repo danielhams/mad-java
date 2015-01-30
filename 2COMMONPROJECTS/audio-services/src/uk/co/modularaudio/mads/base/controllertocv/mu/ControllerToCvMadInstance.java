@@ -40,45 +40,45 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefinition,ControllerToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
-	
-	private int notePeriodLength = -1;
-	
-	private int sampleRate = -1;
+
+	private int notePeriodLength;
+
+	private int sampleRate;
 	private static final int VALUE_CHASE_MILLIS = 1;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
+
 	private ControllerEventProcessor eventProcessor = null;
-	
+
 	protected ControllerEventMapping desiredMapping = ControllerEventMapping.LINEAR;
 	protected int desiredChannel = 0;
 	protected int desiredController = 0;
-	
-	public ControllerToCvMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			ControllerToCvMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final ControllerToCvMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			notePeriodLength = hardwareChannelSettings.getNoteChannelSetting().getChannelBufferLength();
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
-			
+
 			eventProcessor = new ControllerEventProcessor( notePeriodLength );
 			eventProcessor.setNewRatios( curValueRatio, newValueRatio );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -90,28 +90,28 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean noteConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.CONSUMER_NOTE );
-		MadChannelBuffer noteCb = channelBuffers[ ControllerToCvMadDefinition.CONSUMER_NOTE ];
-		boolean outCvConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.PRODUCER_CV_OUT );
-		MadChannelBuffer outCvCb = channelBuffers[ ControllerToCvMadDefinition.PRODUCER_CV_OUT ];
-		
+		final boolean noteConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.CONSUMER_NOTE );
+		final MadChannelBuffer noteCb = channelBuffers[ ControllerToCvMadDefinition.CONSUMER_NOTE ];
+		final boolean outCvConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.PRODUCER_CV_OUT );
+		final MadChannelBuffer outCvCb = channelBuffers[ ControllerToCvMadDefinition.PRODUCER_CV_OUT ];
+
 //		eventProcessor.setNewRatios( curValueRatio, newValueRatio );
 		eventProcessor.setDesiredMapping( desiredMapping );
-		
+
 		if( noteConnected )
 		{
-			MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
-			int numNotes = noteCb.numElementsInBuffer;
+			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
+			final int numNotes = noteCb.numElementsInBuffer;
 			// Process the messages
 			for( int n = 0 ; n < numNotes ; n++ )
 			{
-				MadChannelNoteEvent ne = noteEvents[ n ];
+				final MadChannelNoteEvent ne = noteEvents[ n ];
 				switch( ne.getEventType() )
 				{
 					case CONTROLLER:
@@ -130,15 +130,15 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 					}
 				}
 			}
-			
+
 			if( numNotes == 0 )
 			{
 				eventProcessor.emptyPeriod( numFrames );
 			}
-			
+
 			if( outCvConnected )
 			{
-				float[] outCvFloats = outCvCb.floatBuffer;
+				final float[] outCvFloats = outCvCb.floatBuffer;
 				// Spit out values.
 				eventProcessor.outputCv( numFrames, outCvFloats );
 				eventProcessor.done();
@@ -150,10 +150,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		}
 		else if( outCvConnected )
 		{
-			float[] outCvFloats = outCvCb.floatBuffer;
+			final float[] outCvFloats = outCvCb.floatBuffer;
 
 			eventProcessor.emptyPeriod( numFrames );
-			
+
 			// Output nothing.
 			eventProcessor.outputCv( numFrames, outCvFloats );
 		}

@@ -41,25 +41,25 @@ public class OscillatorIOQueueBridge extends MadLocklessQueueBridge<OscillatorMa
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( OscillatorMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final OscillatorMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_FREQUENCY:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float freq = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float freq = Float.intBitsToFloat( truncVal );
 				instance.oscillationFrequency = freq;
 				break;
 			}
 			case COMMAND_IN_FREQUENCY_IMMEDIATE:
 			{
 				// Is just a float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float freq = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float freq = Float.intBitsToFloat( truncVal );
 				instance.oscillationFrequency = freq;
 				instance.runtimeOscillationFrequency = freq;
 				break;
@@ -67,15 +67,15 @@ public class OscillatorIOQueueBridge extends MadLocklessQueueBridge<OscillatorMa
 			case COMMAND_IN_WAVE:
 			{
 				// Is just the integer index of the enum
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				OscillatorWaveShape waveShape = OscillatorWaveShape.values()[ truncVal ];
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final OscillatorWaveShape waveShape = OscillatorWaveShape.values()[ truncVal ];
 				instance.curWaveShape = waveShape;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

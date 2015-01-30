@@ -24,20 +24,20 @@ package uk.co.modularaudio.util.audio.mad;
 public class MadProcessingException extends Exception
 {
 	private static final long serialVersionUID = 3476961951589794542L;
-	
-	public MadProcessingException( String msg )
+
+	public MadProcessingException( final String msg )
 	{
 		super( msg );
 	}
 
-	public MadProcessingException( String msg, Throwable cause )
+	public MadProcessingException( final String msg, final Throwable cause )
 	{
 		super( msg, cause );
 	}
 
-	public MadProcessingException( Throwable cause )
+	public MadProcessingException( final Throwable cause )
 	{
 		super( cause );
 	}
-	
+
 }

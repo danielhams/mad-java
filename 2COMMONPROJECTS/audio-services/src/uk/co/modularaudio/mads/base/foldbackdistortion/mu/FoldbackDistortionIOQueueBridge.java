@@ -39,30 +39,30 @@ public class FoldbackDistortionIOQueueBridge extends MadLocklessQueueBridge<Fold
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( FoldbackDistortionMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final FoldbackDistortionMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_MAX_FOLDOVERS:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
 				instance.desiredMaxFoldovers = truncVal;
 				break;
 			}
 			case COMMAND_THRESHOLD:
 			{
 				// float
-				long value = queueEntry.value;
-				int truncVal = (int)value;
-				float floatVal = Float.intBitsToFloat( truncVal );
+				final long value = queueEntry.value;
+				final int truncVal = (int)value;
+				final float floatVal = Float.intBitsToFloat( truncVal );
 				instance.desiredThreshold = floatVal;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

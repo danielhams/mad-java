@@ -28,15 +28,16 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 public class FrontRackTableGuiFactory implements RackTableGuiFactory
 {
 //	private Map<RackComponent, AbstractGuiAudioComponent> cacheOfGui = new HashMap<RackComponent, AbstractGuiAudioComponent>();
-	
-	private GuiComponentFactoryService guiComponentFactoryService = null;
-	
-	public FrontRackTableGuiFactory( GuiComponentFactoryService guiComponentFactoryService )
+
+	private final GuiComponentFactoryService guiComponentFactoryService;
+
+	public FrontRackTableGuiFactory( final GuiComponentFactoryService guiComponentFactoryService )
 	{
 		this.guiComponentFactoryService = guiComponentFactoryService;
 	}
-	
-	public AbstractGuiAudioComponent generateSwingComponent( RackComponent inComponent )
+
+	@Override
+	public AbstractGuiAudioComponent generateSwingComponent( final RackComponent inComponent )
 	{
 //		AbstractGuiAudioComponent retVal = cacheOfGui.get( inComponent );
 //		if( retVal == null )

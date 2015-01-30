@@ -23,10 +23,10 @@ package uk.co.modularaudio.mads.base.audioanalyser.ui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserIOQueueBridge;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadInstance;
-import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class AudioAnalyserMadUiInstance extends AbstractNonConfigurableMadUiInstance<AudioAnalyserMadDefinition, AudioAnalyserMadInstance>
+public class AudioAnalyserMadUiInstance extends AbstractNoNameChangeConfigurableMadUiInstance<AudioAnalyserMadDefinition, AudioAnalyserMadInstance>
 	implements IOQueueEventUiConsumer<AudioAnalyserMadInstance>
 {
 	private static Log log = LogFactory.getLog( AudioAnalyserMadUiInstance.class.getName() );
@@ -44,12 +44,12 @@ public class AudioAnalyserMadUiInstance extends AbstractNonConfigurableMadUiInst
 
 	protected long startupTimestamp = 0;
 
-	private AudioAnalyserUiBufferState uiBufferState;
+	private final AudioAnalyserUiBufferState uiBufferState;
 
-	public AudioAnalyserMadUiInstance( AudioAnalyserMadInstance instance,
-			AudioAnalyserMadUiDefinition componentUiDefinition )
+	public AudioAnalyserMadUiInstance( final AudioAnalyserMadInstance instance,
+			final AudioAnalyserMadUiDefinition componentUiDefinition )
 	{
-		super( componentUiDefinition.getCellSpan(), instance, componentUiDefinition );
+		super( instance, componentUiDefinition, componentUiDefinition.getCellSpan() );
 
 		uiBufferState = new AudioAnalyserUiBufferState( instance, MAX_CAPTURE_MILLIS );
 	}
@@ -72,7 +72,7 @@ public class AudioAnalyserMadUiInstance extends AbstractNonConfigurableMadUiInst
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -83,16 +83,16 @@ public class AudioAnalyserMadUiInstance extends AbstractNonConfigurableMadUiInst
 	}
 
 	@Override
-	public void consumeQueueEntry( AudioAnalyserMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final AudioAnalyserMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case AudioAnalyserIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
-				long value = nextOutgoingEntry.value;
-				int bufferNum = (int)((value ) & 0xFFFFFFFF);
-				int ringBufferIndex = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final long value = nextOutgoingEntry.value;
+				final int bufferNum = (int)((value ) & 0xFFFFFFFF);
+				final int ringBufferIndex = (int)((value >> 32 ) & 0xFFFFFFFF);
 
 				if( bufferNum == 0 && uiBufferState != null)
 				{
@@ -108,7 +108,7 @@ public class AudioAnalyserMadUiInstance extends AbstractNonConfigurableMadUiInst
 		}
 	}
 
-	public void sendUiActive( boolean active )
+	public void sendUiActive( final boolean active )
 	{
 		sendTemporalValueToInstance( AudioAnalyserIOQueueBridge.COMMAND_IN_ACTIVE, ( active ? 1 : 0 ) );
 	}

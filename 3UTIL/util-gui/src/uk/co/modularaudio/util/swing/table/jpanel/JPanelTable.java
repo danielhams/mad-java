@@ -47,52 +47,52 @@ import uk.co.modularaudio.util.table.TableInterface;
 import uk.co.modularaudio.util.table.TablePosition;
 
 
-public class JPanelTable<A extends RackModelTableSpanningContents, 
+public class JPanelTable<A extends RackModelTableSpanningContents,
 	B extends SpanningContentsProperties,
 	C extends Component>
 	extends JPanel
 	implements GuiTable<A, B, C >
 {
 	private static final long serialVersionUID = -7415174078798644069L;
-	
+
 //	private static Log log = LogFactory.getLog( SwingTable.class.getName() );
 
-	protected TableInterface<A, B> dataModel = null;
-	protected Dimension gridSize = null;
-	private boolean showGrid = false;
-	private Color gridColour = null;
+	protected TableInterface<A, B> dataModel;
+	protected Dimension gridSize;
+	private final boolean showGrid;
+	private final Color gridColour;
 	protected int numCols = 1;
 	protected int numRows = -1;
-	
-	private List<C> guiComponentListMirrorOfModel = new ArrayList<C>();
-	private Map<C, A> guiComponentToTableModelComponentMap = new HashMap<C, A>();
-	private Map<A, C> tableModelComponentToGuiComponentMap = new HashMap<A, C>();
-	
-	public A getTableModelComponentFromGui( C guiComponent )
+
+	private final List<C> guiComponentListMirrorOfModel = new ArrayList<C>();
+	private final Map<C, A> guiComponentToTableModelComponentMap = new HashMap<C, A>();
+	private final Map<A, C> tableModelComponentToGuiComponentMap = new HashMap<A, C>();
+
+	public A getTableModelComponentFromGui( final C guiComponent )
 	{
 		return guiComponentToTableModelComponentMap.get( guiComponent );
 	}
-	
-	public C getGuiComponentFromTableModel( A tableModelComponent )
+
+	public C getGuiComponentFromTableModel( final A tableModelComponent )
 	{
 		return tableModelComponentToGuiComponentMap.get( tableModelComponent );
 	}
-	
+
 	// A listener that updates our components when the model changes
 	private GuiTableComponentTableDataModelListener<A, B, C> listener = null;
-	
+
 	// A factory that generates new GUI components from the table model component definition
 	private GuiTableComponentToGuiFactory<A,C> factory = null;
-	
+
 	// Something used to "paint" empty cells
 	private GuiTableEmptyCellPainter emptyCellPainter = null;
-	
-	public JPanelTable( TableInterface<A, B> dataModel,
-			GuiTableEmptyCellPainter emptyCellPainter,
-			GuiTableComponentToGuiFactory<A,C> factory,
-			Dimension gridSize, 
-			boolean showGrid, 
-			Color gridColour )
+
+	public JPanelTable( final TableInterface<A, B> dataModel,
+			final GuiTableEmptyCellPainter emptyCellPainter,
+			final GuiTableComponentToGuiFactory<A,C> factory,
+			final Dimension gridSize,
+			final boolean showGrid,
+			final Color gridColour )
 	{
 		this.dataModel = dataModel;
 		this.emptyCellPainter = emptyCellPainter;
@@ -100,7 +100,7 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		this.showGrid = showGrid;
 		this.gridColour = gridColour;
 		this.factory = factory;
-		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this, factory );
+		this.listener = new GuiTableComponentTableDataModelListener<A, B, C>( this );
 		dataModel.addListener( listener );
 		// Use an absolute layout
 		setLayout( null );
@@ -108,8 +108,8 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		this.setOpaque( false );
 		fullRefreshFromModel();
 	}
-	
-	public void fullRefreshFromModel()
+
+	public final void fullRefreshFromModel()
 	{
 		// Remove swing components
 		this.removeAll();
@@ -117,20 +117,20 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		guiComponentListMirrorOfModel.clear();
 		guiComponentToTableModelComponentMap.clear();
 		tableModelComponentToGuiComponentMap.clear();
-		
+
 		// Now reset everything
 		numCols = dataModel.getNumCols();
 		numRows = dataModel.getNumRows();
 		this.setPreferredSize( new Dimension( (numCols * gridSize.width) + 1, (numRows * gridSize.height ) + 1 ) );
 		// Iterate over all the components in the data model setting them into their appropriate positions
 		// Iterate over all the components in the data model setting them into their appropriate positions
-		List<A> modelEntries = dataModel.getEntriesAsList();
+		final List<A> modelEntries = dataModel.getEntriesAsList();
 		for( int i = 0 ; i < modelEntries.size() ; i++ )
 		{
-			A modelEntry = modelEntries.get( i );
-			TablePosition tablePosition = dataModel.getContentsOriginReturnNull( modelEntry );
-			C swingComponent = factory.generateSwingComponent( modelEntry );
-			Span span = modelEntry.getCellSpan();
+			final A modelEntry = modelEntries.get( i );
+			final TablePosition tablePosition = dataModel.getContentsOriginReturnNull( modelEntry );
+			final C swingComponent = factory.generateSwingComponent( modelEntry );
+			final Span span = modelEntry.getCellSpan();
 			addGuiComponentAtGrid( modelEntry,
 					swingComponent,
 					i,
@@ -145,12 +145,12 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		swingTablePaint( g );
 	}
-	
-	public void swingTablePaint( Graphics g )
+
+	public void swingTablePaint( final Graphics g )
 	{
 //		Graphics2D g2d = (Graphics2D) g.create();
 		if( emptyCellPainter != null )
@@ -163,35 +163,35 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 			paintTableGrid( g );
 		}
 	}
-	
-	private void paintEmptyCells( Graphics g )
+
+	private void paintEmptyCells( final Graphics g )
 	{
 //		Graphics emptyG = g.create();
 		if( emptyCellPainter.needSingleBlit() )
 		{
 			// Use a cache buffered image rendered to the entire size of the table.
-			BufferedImage bi = emptyCellPainter.getSingleBlitBufferedImage( gridSize, numCols, numRows );
+			final BufferedImage bi = emptyCellPainter.getSingleBlitBufferedImage( gridSize, numCols, numRows );
 			g.drawImage( bi, 0, 0, null );
 		}
 		else
 		{
 			// For optimisations sake we should only paint what is visible.
 			// We do this by passing the current viewing region (clip)
-			Rectangle clipBounds = g.getClipBounds();
-			
+			final Rectangle clipBounds = g.getClipBounds();
+
 			// Work out the span this gives us
-			int spanStartX = (int)Math.floor( (double)(clipBounds.x) / gridSize.width );
-			int spanEndX = Math.min( (int)Math.ceil( (double)(clipBounds.x + clipBounds.width) / gridSize.width ), numCols );
-			int spanStartY = (int)Math.floor( (double)(clipBounds.y) / gridSize.height );
-			int spanEndY = Math.min( (int)Math.ceil( (double)(clipBounds.y + clipBounds.height) / gridSize.height ), numRows );
-			
+			final int spanStartX = (int)Math.floor( (double)(clipBounds.x) / gridSize.width );
+			final int spanEndX = Math.min( (int)Math.ceil( (double)(clipBounds.x + clipBounds.width) / gridSize.width ), numCols );
+			final int spanStartY = (int)Math.floor( (double)(clipBounds.y) / gridSize.height );
+			final int spanEndY = Math.min( (int)Math.ceil( (double)(clipBounds.y + clipBounds.height) / gridSize.height ), numRows );
+
 //			SwingTableEmptyCellPaintingVisitor<A, B> visitor = new SwingTableEmptyCellPaintingVisitor<A, B>( g ,
 //					gridSize,
 //					clipBounds,
 //					emptyCellPainter );
 //
 //			dataModel.visitCells(visitor,  spanStartX, spanStartY, spanEndX - spanStartX, spanEndY - spanStartY, true );
-	
+
 			// Using the visitor is expensive - just loop around the span we have
 			for( int x = spanStartX ; x < spanEndX ; x++ )
 			{
@@ -203,52 +203,53 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		}
 	}
 
-	private void paintTableGrid(Graphics g)
+	private void paintTableGrid(final Graphics g)
 	{
 		// Now paint our grid (simple loop over X and then Y)
-		Graphics gridG = g.create();
+		final Graphics gridG = g.create();
 		gridG.setColor( gridColour );
 		for( int i = 0 ; i <= numCols ; i++ )
 		{
-			int lineStartY = 0;
-			int lineX = i * gridSize.width;
-			int lineEndY = numRows * gridSize.height;
+			final int lineStartY = 0;
+			final int lineX = i * gridSize.width;
+			final int lineEndY = numRows * gridSize.height;
 			gridG.drawLine(lineX, lineStartY, lineX, lineEndY );
 		}
 		for( int j = 0 ; j <= numRows ; j++ )
 		{
-			int lineStartX = 0;
-			int lineY = j * gridSize.height;
-			int lineEndX = numCols * gridSize.width;
+			final int lineStartX = 0;
+			final int lineY = j * gridSize.height;
+			final int lineEndX = numCols * gridSize.width;
 			gridG.drawLine(lineStartX, lineY, lineEndX, lineY );
 		}
 	}
 
-	public void addGuiComponentAtGrid( A tableModelComponent,
-			C guiComponent,
-			int indexInModel,
-			int gridStartX, int gridStartY, int gridEndX, int gridEndY )
+	@Override
+	public void addGuiComponentAtGrid( final A tableModelComponent,
+			final C guiComponent,
+			final int indexInModel,
+			final int gridStartX, final int gridStartY, final int gridEndX, final int gridEndY )
 	{
 		// Set the bounds
-		int startX = gridStartX * gridSize.width;
-		int startY = gridStartY * gridSize.height;
-		int endX = ((gridEndX + 1) * gridSize.width);
-		int endY = ((gridEndY + 1) * gridSize.height);
+		final int startX = gridStartX * gridSize.width;
+		final int startY = gridStartY * gridSize.height;
+		final int endX = ((gridEndX + 1) * gridSize.width);
+		final int endY = ((gridEndY + 1) * gridSize.height);
 		guiComponent.setBounds( new Rectangle( startX, startY, endX - startX, endY - startY ) );
 		this.add( guiComponent );
 		guiComponentToTableModelComponentMap.put( guiComponent, tableModelComponent );
 		guiComponentListMirrorOfModel.add( guiComponent );
 		tableModelComponentToGuiComponentMap.put( tableModelComponent, guiComponent );
 	}
-	
-	protected void moveGuiComponentInGrid( C guiComponent,
-		int gridStartX, int gridStartY, int gridEndX, int gridEndY )
+
+	protected void moveGuiComponentInGrid( final C guiComponent,
+		final int gridStartX, final int gridStartY, final int gridEndX, final int gridEndY )
 	{
 		// Set the bounds
-		int startX = gridStartX * gridSize.width;
-		int startY = gridStartY * gridSize.height;
-		int endX = ((gridEndX + 1) * gridSize.width);
-		int endY = ((gridEndY + 1) * gridSize.height);
+		final int startX = gridStartX * gridSize.width;
+		final int startY = gridStartY * gridSize.height;
+		final int endX = ((gridEndX + 1) * gridSize.width);
+		final int endY = ((gridEndY + 1) * gridSize.height);
 		guiComponent.setBounds( new Rectangle( startX, startY, endX - startX, endY - startY ) );
 		guiComponent.invalidate();
 	}
@@ -258,18 +259,18 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		return new HashSet<A>(tableModelComponentToGuiComponentMap.keySet());
 	}
 
-	protected void removeTableModelComponentAndGui( A tableModelComponent,
-			int indexInModel )
+	protected void removeTableModelComponentAndGui( final A tableModelComponent,
+			final int indexInModel )
 	{
-		C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelComponent );
+		final C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelComponent );
 		assert( guiComponent != null);
 		guiComponentListMirrorOfModel.remove( indexInModel );
 		guiComponentToTableModelComponentMap.remove( guiComponent );
 		tableModelComponentToGuiComponentMap.remove( tableModelComponent );
 		this.remove( guiComponent );
 	}
-	
-	public Point pointToTableIndexes( Point tablePoint )
+
+	public Point pointToTableIndexes( final Point tablePoint )
 	{
 		int colNum = tablePoint.x / gridSize.width;
 		int rowNum = tablePoint.y / gridSize.height;
@@ -289,7 +290,7 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		{
 			rowNum = numRows - 1;
 		}
-		
+
 		return new Point( colNum, rowNum );
 	}
 
@@ -298,45 +299,48 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		return gridSize;
 	}
 
-	public void insertGuiComponentFromModelIndex(int index)
+	@Override
+	public void insertGuiComponentFromModelIndex(final int index)
 	{
 		// We don't have a gui component yet, so fetch the table model component at that index,
 		// create a new gui component for it, and add it in the appropriate place.
-		A tableModelContents = dataModel.getEntryAt( index );
-		C guiComponent = factory.generateSwingComponent( tableModelContents );
-		TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
-		Span span = tableModelContents.getCellSpan();
-		int gridStartX = tp.x;
-		int gridStartY = tp.y;
-		int gridEndX = tp.x + (span.x - 1);
-		int gridEndY = tp.y + (span.y - 1);
-		this.addGuiComponentAtGrid( tableModelContents, guiComponent, index, 
+		final A tableModelContents = dataModel.getEntryAt( index );
+		final C guiComponent = factory.generateSwingComponent( tableModelContents );
+		final TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
+		final Span span = tableModelContents.getCellSpan();
+		final int gridStartX = tp.x;
+		final int gridStartY = tp.y;
+		final int gridEndX = tp.x + (span.x - 1);
+		final int gridEndY = tp.y + (span.y - 1);
+		this.addGuiComponentAtGrid( tableModelContents, guiComponent, index,
 				gridStartX, gridStartY, gridEndX, gridEndY );
 	}
 
-	public void updateGuiComponentFromModelIndex(int index)
+	@Override
+	public void updateGuiComponentFromModelIndex(final int index)
 	{
-		A tableModelContents = dataModel.getEntryAt( index );
-		C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelContents );
-		TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
-		Span span = tableModelContents.getCellSpan();
-		int gridStartX = tp.x;
-		int gridStartY = tp.y;
-		int gridEndX = tp.x + (span.x - 1);
-		int gridEndY = tp.y + (span.y - 1);
+		final A tableModelContents = dataModel.getEntryAt( index );
+		final C guiComponent = tableModelComponentToGuiComponentMap.get( tableModelContents );
+		final TablePosition tp = dataModel.getContentsOriginReturnNull( tableModelContents );
+		final Span span = tableModelContents.getCellSpan();
+		final int gridStartX = tp.x;
+		final int gridStartY = tp.y;
+		final int gridEndX = tp.x + (span.x - 1);
+		final int gridEndY = tp.y + (span.y - 1);
 		this.moveGuiComponentInGrid( guiComponent,
 				gridStartX, gridStartY, gridEndX, gridEndY );
 	}
 
-	public void removeGuiComponentFromModelIndex(int index)
+	@Override
+	public void removeGuiComponentFromModelIndex(final int index)
 	{
-		C guiComponent = guiComponentListMirrorOfModel.get( index );
+		final C guiComponent = guiComponentListMirrorOfModel.get( index );
 		this.remove( guiComponent );
 		guiComponentListMirrorOfModel.remove( guiComponent );
 		guiComponentToTableModelComponentMap.remove( guiComponent );
 	}
-	
-	public void setDataModel( TableInterface<A, B> dataModel )
+
+	public void setDataModel( final TableInterface<A, B> dataModel )
 	{
 		this.dataModel.removeListener(listener);
 		this.dataModel = dataModel;
@@ -365,6 +369,6 @@ public class JPanelTable<A extends RackModelTableSpanningContents,
 		tableModelComponentToGuiComponentMap.clear();
 		listener = null;
 		factory = null;
-		dataModel.dirtyFixToCleanupReferences();		
+		dataModel.dirtyFixToCleanupReferences();
 	}
 }

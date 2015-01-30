@@ -29,39 +29,39 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
 public abstract class MadUiDefinition
-	<MD extends MadDefinition<MD,MI>,
-	MI extends MadInstance<MD,MI>>
-	implements IMadUiDefinition<MD, MI>
+	<D extends MadDefinition<D,I>,
+	I extends MadInstance<D,I>>
+	implements IMadUiDefinition<D, I>
 {
 //	private static Log log = LogFactory.getLog( MadUiDefinition.class.getName() );
-	
-	protected MD definition = null;
-	protected BufferedImageAllocator bufferedImageAllocator = null;
 
-	protected BufferedImage frontBufferedImage = null;
-	protected BufferedImage backBufferedImage = null;
+	protected final D definition;
+	protected final BufferedImageAllocator bufferedImageAllocator;
 
-	protected boolean isDraggable = false;
-	protected boolean isParametrable = false;
+	protected BufferedImage frontBufferedImage;
+	protected BufferedImage backBufferedImage;
 
-	public MadUiDefinition( BufferedImageAllocator bia, MD definition )
+	protected boolean isDraggable;
+	protected boolean isParametrable;
+
+	public MadUiDefinition( final BufferedImageAllocator bia, final D definition )
 	{
 		this( bia, definition, true, false );
 	}
-	
-	public MadUiDefinition( BufferedImageAllocator bia, MD definition,
-			boolean isDraggable,
-			boolean isParametrable )
+
+	public MadUiDefinition( final BufferedImageAllocator bia, final D definition,
+			final boolean isDraggable,
+			final boolean isParametrable )
 	{
 		this.bufferedImageAllocator = bia;
 		this.definition = definition;
 		this.isDraggable = isDraggable;
 		this.isParametrable = isParametrable;
 	}
-	
-	public abstract MadUiInstance<?, ?> createNewUiInstance( MI instance ) throws DatastoreException;
 
-	public MD getDefinition()
+	public abstract AbstractMadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;
+
+	public D getDefinition()
 	{
 		return definition;
 	}
@@ -70,7 +70,7 @@ public abstract class MadUiDefinition
 	{
 		return isDraggable;
 	}
-	
+
 	public boolean isParametrable()
 	{
 		return isParametrable;
@@ -86,13 +86,13 @@ public abstract class MadUiDefinition
 //		log.debug("Clearing front buffered image for " + definition.getName() );
 		frontBufferedImage = null;
 	}
-	
+
 	public void clearBackBufferedImage()
 	{
 //		log.debug("Clearing back buffered image for " + definition.getName() );
 		backBufferedImage = null;
 	}
-	
+
 	public abstract Span getCellSpan();
 
 }

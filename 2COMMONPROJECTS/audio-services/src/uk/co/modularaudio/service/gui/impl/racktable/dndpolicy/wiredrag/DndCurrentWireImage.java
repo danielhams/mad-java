@@ -35,24 +35,21 @@ import uk.co.modularaudio.service.gui.impl.racktable.back.RackLinkImage;
 public class DndCurrentWireImage extends JPanel
 {
 	private static final long serialVersionUID = 1832134641594451973L;
-	
+
 //	private static Log log = LogFactory.getLog( NewDndCurrentWireImage.class.getName() );
-	
+
 	private static final float CURRENT_WIRE_TRANSPARENCY = 0.7f;
-	
-//	private BufferedImageAllocationService bufferedImageAllocationService = null;
-	
-	private RackLinkImage currentRackLinkImage = null;
-	
-	public DndCurrentWireImage( BufferedImageAllocationService bufferedImageAllocationService )
+
+	private final RackLinkImage currentRackLinkImage;
+
+	public DndCurrentWireImage( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
-//		this.bufferedImageAllocationService = bufferedImageAllocationService;
 		this.setOpaque( false );
-		
+
 		currentRackLinkImage = new RackLinkImage( "NewDndCurrentWireImage", bufferedImageAllocationService, null, null, null );
 	}
 
-	public void setWirePosition( Point sourcePoint, Point sinkPoint )
+	public void setWirePosition( final Point sourcePoint, final Point sinkPoint )
 	{
 		if( sourcePoint == null || sinkPoint == null )
 		{
@@ -61,17 +58,18 @@ public class DndCurrentWireImage extends JPanel
 		else
 		{
 			currentRackLinkImage.redrawWireWithNewPoints( sourcePoint, sinkPoint );
-			Rectangle currentRectangle = currentRackLinkImage.getRectangle();
+			final Rectangle currentRectangle = currentRackLinkImage.getRectangle();
 			setBounds( currentRectangle );
 		}
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
-		BufferedImage bi = currentRackLinkImage.getBufferedImage();
+		final BufferedImage bi = currentRackLinkImage.getBufferedImage();
 		if( bi != null )
 		{
-			Graphics2D g2d = (Graphics2D)g;
+			final Graphics2D g2d = (Graphics2D)g;
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 					CURRENT_WIRE_TRANSPARENCY));
 
@@ -80,7 +78,7 @@ public class DndCurrentWireImage extends JPanel
 		}
 		else
 		{
-//	log.debug("Not got an image.");
+//			log.debug("Not got an image.");
 		}
 	}
 }

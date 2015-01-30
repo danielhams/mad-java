@@ -75,32 +75,32 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private static final String CONFIG_KEY_SCROLLING_MINMAX_COLOR = "ScrollingThumbnailMinMaxColor";
 	private static final String CONFIG_KEY_SCROLLING_RMS_COLOR = "ScrollingThumbnailRmsColor";
 
-	private ConfigurationService configurationService = null;
-	private AudioDataFetcherFactory audioDataFetcherFactory = null;
-	private HashedStorageService hashedStorageService = null;
+	private ConfigurationService configurationService;
+	private AudioDataFetcherFactory audioDataFetcherFactory;
+	private HashedStorageService hashedStorageService;
 
-	private String staticThumbnailRootDir = null;
-	private int staticThumbnailWidth = -1;
-	private int staticThumbnailHeight = -1;
-	private Color staticMinMaxColor = null;
-	private Color staticRmsColor = null;
+	private String staticThumbnailRootDir;
+	private int staticThumbnailWidth;
+	private int staticThumbnailHeight;
+	private Color staticMinMaxColor;
+	private Color staticRmsColor;
 
-	private String ziScrollingThumbnailRootDir = null;
-	private String zoScrollingThumbnailRootDir = null;
-	private int scrollingThumbnailSamplesPerPixelZoomedIn = -1;
-	private int scrollingThumbnailSamplesPerPixelZoomedOut = -1;
-	private int scrollingThumbnailHeight = -1;
-	private Color scrollingMinMaxColor = null;
-	private Color scrollingRmsColor = null;
+	private String ziScrollingThumbnailRootDir;
+	private String zoScrollingThumbnailRootDir;
+	private int scrollingThumbnailSamplesPerPixelZoomedIn;
+	private int scrollingThumbnailSamplesPerPixelZoomedOut;
+	private int scrollingThumbnailHeight;
+	private Color scrollingMinMaxColor;
+	private Color scrollingRmsColor;
 
-	private HashedWarehouse staticThumbnailWarehouse = null;
-	private HashedWarehouse ziScrollingThumbnailWarehouse = null;
-	private HashedWarehouse zoScrollingThumbnailWarehouse = null;
+	private HashedWarehouse staticThumbnailWarehouse;
+	private HashedWarehouse ziScrollingThumbnailWarehouse;
+	private HashedWarehouse zoScrollingThumbnailWarehouse;
 
-	private int analysisBufferSize = -1;
-	private float[] analysisBuffer = null;
+	private int analysisBufferSize;
+	private float[] analysisBuffer;
 
-	private ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>( 10 );
+	private final ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>( 10 );
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -142,9 +142,9 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			analysisBufferSize = configurationService.getSingleIntValue(
 					getClass().getSimpleName() + "." + CONFIG_KEY_ANALYSIS_BUFFER_SIZE );
 		}
-		catch (RecordNotFoundException e)
+		catch (final RecordNotFoundException e)
 		{
-			String msg = "Unable to find config key: " + e.toString();
+			final String msg = "Unable to find config key: " + e.toString();
 			log.error( msg, e);
 			throw new ComponentConfigurationException( msg, e );
 		}
@@ -156,9 +156,9 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			ziScrollingThumbnailWarehouse = hashedStorageService.initStorage( ziScrollingThumbnailRootDir );
 			zoScrollingThumbnailWarehouse = hashedStorageService.initStorage( zoScrollingThumbnailRootDir );
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
-			String msg = "Unable to initialise hashed storage: " + e.toString();
+			final String msg = "Unable to initialise hashed storage: " + e.toString();
 			log.error( msg, e);
 			throw new ComponentConfigurationException( msg, e );
 		}
@@ -167,11 +167,11 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		analysisBuffer = new float[ analysisBufferSize ];
 
 		// and then initialise the list of listeners.
-		BeatDetectionListener bdl = new BeatDetectionListener();
+		final BeatDetectionListener bdl = new BeatDetectionListener();
 		analysisListeners.add( bdl );
-		GainDetectionListener gdl = new GainDetectionListener();
+		final GainDetectionListener gdl = new GainDetectionListener();
 		analysisListeners.add( gdl );
-		ScrollingThumbnailGeneratorListener scgl = new ScrollingThumbnailGeneratorListener(
+		final ScrollingThumbnailGeneratorListener scgl = new ScrollingThumbnailGeneratorListener(
 				scrollingThumbnailSamplesPerPixelZoomedIn,
 				scrollingThumbnailSamplesPerPixelZoomedOut,
 				scrollingThumbnailHeight,
@@ -182,7 +182,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 				zoScrollingThumbnailWarehouse );
 
 		analysisListeners.add( scgl );
-		StaticThumbnailGeneratorListener stgl = new StaticThumbnailGeneratorListener( staticThumbnailWidth,
+		final StaticThumbnailGeneratorListener stgl = new StaticThumbnailGeneratorListener( staticThumbnailWidth,
 				staticThumbnailHeight,
 				staticMinMaxColor,
 				staticRmsColor,
@@ -197,28 +197,28 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	}
 
 	@Override
-	public AnalysedData analyseFile(String pathToFile, ProgressListener progressListener)
-		throws IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException, DatastoreException
+	public AnalysedData analyseFile(final String pathToFile, final ProgressListener progressListener)
+			throws IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException, DatastoreException
 	{
-		AnalysedData analysedData = new AnalysedData();
+		final AnalysedData analysedData = new AnalysedData();
 
 		// Create the hashed ref our listeners might be interested in
-		HashedRef fileHashedRef = hashedStorageService.getHashedRefForFilename( pathToFile );
+		final HashedRef fileHashedRef = hashedStorageService.getHashedRefForFilename( pathToFile );
 
 		// Get the data fetcher for the file and then loop around fetching chunks of the file and feeding it to the analysers
 		// Then at the end
-		File file = new File( pathToFile );
-		DataRate dataRate = DataRate.SR_44100;
-		int numChannels = 2;
-		IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( file );
-		AudioFormat desiredAudioFormat = new AudioFormat( dataRate.getValue(), 16, numChannels, true, true );
+		final File file = new File( pathToFile );
+		final DataRate dataRate = DataRate.SR_44100;
+		final int numChannels = 2;
+		final IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( file );
+		final AudioFormat desiredAudioFormat = new AudioFormat( dataRate.getValue(), 16, numChannels, true, true );
 
 		dataFetcher.open( desiredAudioFormat,  file );
 
-		long totalFloats = dataFetcher.getNumTotalFloats();
+		final long totalFloats = dataFetcher.getNumTotalFloats();
 		log.debug("Beginning audio analysis on file " + file.getName() + " with " + totalFloats + " total floating point samples");
 
-		for( AnalysisListener al : analysisListeners )
+		for( final AnalysisListener al : analysisListeners )
 		{
 			al.start( dataRate, numChannels, totalFloats );
 		}
@@ -236,12 +236,12 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			}
 			if( numRead > 0 )
 			{
-				for( AnalysisListener al : analysisListeners )
+				for( final AnalysisListener al : analysisListeners )
 				{
 					al.receiveData( analysisBuffer, numRead );
 				}
 			}
-			int newPercentageComplete = (int)( ((float)curPos / (float)totalFloats) * 100.0);
+			final int newPercentageComplete = (int)( ((float)curPos / (float)totalFloats) * 100.0);
 			if( newPercentageComplete != percentageComplete )
 			{
 				percentageComplete = newPercentageComplete;
@@ -249,7 +249,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			}
 		}
 
-		for( AnalysisListener al : analysisListeners )
+		for( final AnalysisListener al : analysisListeners )
 		{
 			al.end();
 			al.updateAnalysedData( analysedData, fileHashedRef );
@@ -258,32 +258,17 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		return analysedData;
 	}
 
-	public AudioDataFetcherFactory getAudioDataFetcherFactory()
-	{
-		return audioDataFetcherFactory;
-	}
-
-	public void setAudioDataFetcherFactory(AudioDataFetcherFactory audioDataFetcherFactory)
+	public void setAudioDataFetcherFactory(final AudioDataFetcherFactory audioDataFetcherFactory)
 	{
 		this.audioDataFetcherFactory = audioDataFetcherFactory;
 	}
 
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
-	public HashedStorageService getHashedStorageService()
-	{
-		return hashedStorageService;
-	}
-
-	public void setHashedStorageService(HashedStorageService hashedStorageService)
+	public void setHashedStorageService(final HashedStorageService hashedStorageService)
 	{
 		this.hashedStorageService = hashedStorageService;
 	}

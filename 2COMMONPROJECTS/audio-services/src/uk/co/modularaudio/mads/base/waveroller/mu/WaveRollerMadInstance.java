@@ -44,19 +44,19 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 {
 	private static Log log = LogFactory.getLog( WaveRollerMadInstance.class.getName() );
 
-	protected boolean active = false;
+	protected boolean active;
 
-	private int maxRingBufferingInSamples = -1;
+	private int maxRingBufferingInSamples;
 
-	private BackendToFrontendDataRingBuffer dataRingBuffer = null;
+	private BackendToFrontendDataRingBuffer dataRingBuffer;
 
-	private int numSamplesPerFrontEndPeriod = -1;
+	private int numSamplesPerFrontEndPeriod;
 
-	public WaveRollerMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			WaveRollerMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public WaveRollerMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final WaveRollerMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		dataRingBuffer = new BackendToFrontendDataRingBuffer( 1 );
@@ -64,19 +64,19 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
-			final MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
-			int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+			final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
 			// We will need enough buffer space such to queue samples between GUI frames
 			// this also needs to take into account output latency - as we'll get a "big" period and need to queue
 			// all of that.
-			long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
-			long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
-			long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
+			final long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
+			final long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
+			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
 
 			// We have to handle enough per visual frame along with the necessary audio IO latency
 			maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 16) +
@@ -88,7 +88,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -100,15 +100,15 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartTimestamp,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inConnected = channelConnectedFlags.get( WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
-		MadChannelBuffer inChannelBuffer = channelBuffers[ WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
-		float[] in0Floats = (inConnected ? inChannelBuffer.floatBuffer : null );
+		final boolean inConnected = channelConnectedFlags.get( WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
+		final MadChannelBuffer inChannelBuffer = channelBuffers[ WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
+		final float[] in0Floats = (inConnected ? inChannelBuffer.floatBuffer : null );
 
 		if( active )
 		{
@@ -119,7 +119,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{
-						long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
+						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
 
 						if( dataRingBuffer.getNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
 						{
@@ -133,14 +133,14 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 							preProcess(tempQueueEntryStorage, timingParameters, timestampForIndexUpdate);
 						}
 
-						int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
+						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
 
-						int numAvailable = numFrames - curSampleIndex;
-						int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
+						final int numAvailable = numFrames - curSampleIndex;
+						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
 
-						int spaceAvailable = dataRingBuffer.getNumWriteable();
+						final int spaceAvailable = dataRingBuffer.getNumWriteable();
 
-						int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
+						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
 						if( numToWrite > 0 )
 						{
 							dataRingBuffer.write( in0Floats, curSampleIndex, numToWrite );
@@ -156,21 +156,24 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 					}
 				}
 			}
-			catch( Exception boe )
+			catch( final Exception boe )
 			{
 				// Log it and we'll see if it crops up
-				log.debug("Caught boe: " + boe.toString(), boe );
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Caught boe: " + boe.toString(), boe );
+				}
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	private void queueWriteIndexUpdate(ThreadSpecificTemporaryEventStorage tses,
-			int dataChannelNum,
-			int writePosition,
-			long frameTime)
+	private void queueWriteIndexUpdate(final ThreadSpecificTemporaryEventStorage tses,
+			final int dataChannelNum,
+			final int writePosition,
+			final long frameTime)
 	{
-		long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum);
+		final long joinedParts = ((long)writePosition << 32 ) | (dataChannelNum);
 
 		localBridge.queueTemporalEventToUi( tses,
 				frameTime,

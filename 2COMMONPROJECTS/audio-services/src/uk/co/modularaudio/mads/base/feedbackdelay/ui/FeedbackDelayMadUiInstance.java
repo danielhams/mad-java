@@ -23,31 +23,25 @@ package uk.co.modularaudio.mads.base.feedbackdelay.ui;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadInstance;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class FeedbackDelayMadUiInstance extends AbstractNonConfigurableMadUiInstance<FeedbackDelayMadDefinition, FeedbackDelayMadInstance>
+public class FeedbackDelayMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<FeedbackDelayMadDefinition, FeedbackDelayMadInstance>
 {
 //	private static Log log = LogFactory.getLog( FeedbackDelayMadUiInstance.class.getName() );
-	
-	public FeedbackDelayMadUiInstance( FeedbackDelayMadInstance instance,
-			FeedbackDelayMadUiDefinition uiDefinition )
+
+	public FeedbackDelayMadUiInstance( final FeedbackDelayMadInstance instance,
+			final FeedbackDelayMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendDelayMillisChange( float incomingDelayMillis )
+
+	public void sendDelayMillisChange( final float incomingDelayMillis )
 	{
 		sendTemporalValueToInstance( FeedbackDelayIOQueueBridge.COMMAND_DELAY, Float.floatToIntBits(incomingDelayMillis) );
 	}
-	
-	public void sendFeedbackChange( float incomingFeedback )
+
+	public void sendFeedbackChange( final float incomingFeedback )
 	{
 		sendTemporalValueToInstance( FeedbackDelayIOQueueBridge.COMMAND_FEEDBACK, Float.floatToIntBits( incomingFeedback ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( FeedbackDelayMadInstance instance, IOQueueEvent nextOutgoingEntry )
-	{
 	}
 }

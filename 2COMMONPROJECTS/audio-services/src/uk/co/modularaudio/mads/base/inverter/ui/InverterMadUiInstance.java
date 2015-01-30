@@ -22,12 +22,11 @@ package uk.co.modularaudio.mads.base.inverter.ui;
 
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class InverterMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<InverterMadDefinition, InverterMadInstance>
+public class InverterMadUiInstance extends NoEventsNonConfigurableMadUiInstance<InverterMadDefinition, InverterMadInstance>
 {
-
-	public InverterMadUiInstance( InverterMadInstance instance, InverterMadUiDefinition uiDefinition )
+	public InverterMadUiInstance( final InverterMadInstance instance, final InverterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

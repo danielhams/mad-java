@@ -25,10 +25,10 @@ public class MadChannelBuffer
 {
 	public float[] floatBuffer;
 	public MadChannelNoteEvent[] noteBuffer;
-	public int bufferSize = -1;
-	public int numElementsInBuffer = 0;
-	
-	public MadChannelBuffer( MadChannelType channelType, int iBufferSize )
+	public final int bufferSize;
+	public int numElementsInBuffer;
+
+	public MadChannelBuffer( final MadChannelType channelType, final int iBufferSize )
 	{
 		bufferSize = iBufferSize;
 		switch( channelType )
@@ -52,7 +52,7 @@ public class MadChannelBuffer
 			}
 		}
 	}
-	
+
 	private float[] origFloatBuffer;
 	private MadChannelNoteEvent[] origNoteBuffer;
 }

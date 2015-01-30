@@ -33,7 +33,6 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -69,7 +68,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 {
 	private static Log log = LogFactory.getLog( UserPreferencesServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService = null;
+	private ConfigurationService configurationService;
 
 	private final static String CONFIG_KEY_PREFS_FILE = UserPreferencesServiceImpl.class.getSimpleName() + ".UserPreferencesFile";
 
@@ -84,42 +83,40 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 	private static final String DEFAULT_BUFFER_SIZE_STRING = "1024";
 
-	private String userPreferencesFilename = null;
-	private File userPreferencesFile = null;
-	private Properties userPreferencesProperties = null;
+	private String userPreferencesFilename;
+	private File userPreferencesFile;
+	private Properties userPreferencesProperties;
 
-	private AudioProviderRegistryService audioProviderRegistryService = null;
-	private AppRenderingGraphService appRenderingGraphService = null;
+	private AudioProviderRegistryService audioProviderRegistryService;
 
-	private UserPreferencesMVCController userPreferences = null;
+	private UserPreferencesMVCController userPreferences;
 
 	private int guiFps = -1;
 
-	private String outputDeviceId = null;
-	private String inputDeviceId = null;
+	private String outputDeviceId;
+	private String inputDeviceId;
 	private int bufferSize = -1;
-	private String inputMidiDeviceId = null;
-	private String outputMidiDeviceId = null;
+	private String inputMidiDeviceId;
+	private String outputMidiDeviceId;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( audioProviderRegistryService == null ||
-				appRenderingGraphService == null )
+		if( audioProviderRegistryService == null )
 		{
-			String msg = "UserPreferencesServiceImpl has missing service dependencies. Check configuration";
+			final String msg = "UserPreferencesServiceImpl has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );
 		}
-		Map<String,String> errors = new HashMap<String, String>();
+		final Map<String,String> errors = new HashMap<String, String>();
 		userPreferencesFilename = ConfigurationServiceHelper.checkForSingleStringKey(configurationService, CONFIG_KEY_PREFS_FILE, errors);
 		ConfigurationServiceHelper.errorCheck( errors );
 		try
 		{
 			readPreferencesFile();
 		}
-		catch( IOException ioe )
+		catch( final IOException ioe )
 		{
-			String msg = "IOException caught reading user preferences: " + ioe.toString();
+			final String msg = "IOException caught reading user preferences: " + ioe.toString();
 			log.error( msg, ioe );
 			throw new ComponentConfigurationException( msg, ioe );
 		}
@@ -146,18 +143,19 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	{
 	}
 
-	public void setConfigurationService(ConfigurationService configurationService)
+	public void setConfigurationService(final ConfigurationService configurationService)
 	{
 		this.configurationService = configurationService;
 	}
 
-	public String getSingleUserPreferenceStringByKey(String key, String defaultValue) throws DatastoreException,
-			RecordNotFoundException
+	public String getSingleUserPreferenceStringByKey( final String key,
+			final String defaultValue)
+		throws DatastoreException, RecordNotFoundException
 	{
-		String retVal = userPreferencesProperties.getProperty( key );
+		final String retVal = userPreferencesProperties.getProperty( key );
 		if( retVal == null && defaultValue == null )
 		{
-			String msg = "No such user preference: " + key;
+			final String msg = "No such user preference: " + key;
 			throw new RecordNotFoundException( msg );
 		}
 		else if( retVal == null && defaultValue != null )
@@ -170,26 +168,26 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		}
 	}
 
-	public void setSingleUserPreferenceByKey( String key, String value ) throws DatastoreException
+	public void setSingleUserPreferenceByKey( final String key, final String value ) throws DatastoreException
 	{
 	}
 
-	public int getSingleUserPreferenceIntByKey( String key, Integer defaultValue ) throws DatastoreException,
+	public int getSingleUserPreferenceIntByKey( final String key, final Integer defaultValue ) throws DatastoreException,
 			RecordNotFoundException
 	{
-		String val = userPreferencesProperties.getProperty( key );
+		final String val = userPreferencesProperties.getProperty( key );
 		Integer retVal = null;
 		try
 		{
 			retVal = Integer.parseInt( val );
 		}
-		catch( NumberFormatException nfe )
+		catch( final NumberFormatException nfe )
 		{
 		}
 
 		if( retVal == null && defaultValue == null )
 		{
-			String msg = "No such user preference: " + key;
+			final String msg = "No such user preference: " + key;
 			throw new RecordNotFoundException( msg );
 		}
 		else if( retVal == null && defaultValue != null )
@@ -202,7 +200,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		}
 	}
 
-	public void setAudioProviderRegistryService(AudioProviderRegistryService audioProviderRegistryService)
+	public void setAudioProviderRegistryService( final AudioProviderRegistryService audioProviderRegistryService )
 	{
 		this.audioProviderRegistryService = audioProviderRegistryService;
 	}
@@ -210,7 +208,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	@Override
 	public UserPreferencesMVCController getUserPreferencesMVCController() throws DatastoreException
 	{
-		UserPreferencesMVCModel model = createUserPreferencesModel();
+		final UserPreferencesMVCModel model = createUserPreferencesModel();
 
 		userPreferences = new UserPreferencesMVCController( model );
 
@@ -222,21 +220,21 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	@Override
 	public void setupPreferencesSelections()
 	{
-		GuiFpsComboMVCController fcc = userPreferences.getFpsComboController();
+		final GuiFpsComboMVCController fcc = userPreferences.getFpsComboController();
 
 		try
 		{
 			fcc.setSelectedElementById( guiFps + "" );
 		}
-		catch( RecordNotFoundException e1 )
+		catch( final RecordNotFoundException e1 )
 		{
 		}
 
-		OutputDeviceComboMVCController odc = userPreferences.getOutputDeviceComboController();
-		InputDeviceComboMVCController idc = userPreferences.getInputDeviceComboController();
-		BufferSizeSliderMVCController bsdc = userPreferences.getBufferSizeSliderController();
-		InputMidiDeviceComboMVCController imdc = userPreferences.getInputMidiDeviceComboController();
-		OutputMidiDeviceComboMVCController omdc = userPreferences.getOutputMidiDeviceComboController();
+		final OutputDeviceComboMVCController odc = userPreferences.getOutputDeviceComboController();
+		final InputDeviceComboMVCController idc = userPreferences.getInputDeviceComboController();
+		final BufferSizeSliderMVCController bsdc = userPreferences.getBufferSizeSliderController();
+		final InputMidiDeviceComboMVCController imdc = userPreferences.getInputMidiDeviceComboController();
+		final OutputMidiDeviceComboMVCController omdc = userPreferences.getOutputMidiDeviceComboController();
 
 		if( !inputDeviceId.equals( "" ) )
 		{
@@ -244,7 +242,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			{
 				idc.setSelectedElementById( inputDeviceId );
 			}
-			catch (RecordNotFoundException e)
+			catch (final RecordNotFoundException e)
 			{
 			}
 		}
@@ -254,7 +252,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			{
 				odc.setSelectedElementById( outputDeviceId );
 			}
-			catch(RecordNotFoundException e )
+			catch(final RecordNotFoundException e )
 			{
 			}
 		}
@@ -262,12 +260,12 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		try
 		{
 			// Translate to model index
-			int modelIndex = BufferSizeSliderMVCController.bufferSizeToModelIndexMap.get( bufferSize );
+			final int modelIndex = BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.get( bufferSize );
 			bsdc.setValue( modelIndex );
 		}
-		catch (ValueOutOfRangeException e)
+		catch (final ValueOutOfRangeException e)
 		{
-			String msg = "ValueOutOfRangeException caught setting buffer size: " + e.toString();
+			final String msg = "ValueOutOfRangeException caught setting buffer size: " + e.toString();
 			log.error( msg, e );
 		}
 
@@ -277,7 +275,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			{
 				imdc.setSelectedElementById( inputMidiDeviceId );
 			}
-			catch(RecordNotFoundException rnfe )
+			catch(final RecordNotFoundException rnfe )
 			{
 			}
 		}
@@ -288,7 +286,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			{
 				omdc.setSelectedElementById( outputMidiDeviceId );
 			}
-			catch(RecordNotFoundException rnfe )
+			catch(final RecordNotFoundException rnfe )
 			{
 			}
 		}
@@ -298,7 +296,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	public UserPreferencesMVCModel createUserPreferencesModel()
 			throws DatastoreException
 	{
-		List<GuiFpsComboItem> guiFpsItems = new ArrayList<GuiFpsComboItem>();
+		final List<GuiFpsComboItem> guiFpsItems = new ArrayList<GuiFpsComboItem>();
 
 		guiFpsItems.add( new GuiFpsComboItem("1",  "1") );
 		guiFpsItems.add( new GuiFpsComboItem("2",  "2") );
@@ -308,66 +306,66 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		guiFpsItems.add( new GuiFpsComboItem("30",  "30") );
 		guiFpsItems.add( new GuiFpsComboItem("60",  "60") );
 
-		List<AudioSystemDeviceComboItem> inputDeviceItems = new ArrayList<AudioSystemDeviceComboItem>();
-		List<AudioSystemDeviceComboItem> outputDeviceItems = new ArrayList<AudioSystemDeviceComboItem>();
-		List<AudioSystemMidiDeviceComboItem> inputMidiDeviceItems = new ArrayList<AudioSystemMidiDeviceComboItem>();
-		List<AudioSystemMidiDeviceComboItem> outputMidiDeviceItems = new ArrayList<AudioSystemMidiDeviceComboItem>();
+		final List<AudioSystemDeviceComboItem> inputDeviceItems = new ArrayList<AudioSystemDeviceComboItem>();
+		final List<AudioSystemDeviceComboItem> outputDeviceItems = new ArrayList<AudioSystemDeviceComboItem>();
+		final List<AudioSystemMidiDeviceComboItem> inputMidiDeviceItems = new ArrayList<AudioSystemMidiDeviceComboItem>();
+		final List<AudioSystemMidiDeviceComboItem> outputMidiDeviceItems = new ArrayList<AudioSystemMidiDeviceComboItem>();
 
 		// fill in device combo models with data pulled out from the audio provider registry
-		SampleBits sampleBits = SampleBits.SAMPLE_16LE;
-		DataRate dataRate = DataRate.SR_44100;
+		final SampleBits sampleBits = SampleBits.SAMPLE_16LE;
+		final DataRate dataRate = DataRate.SR_44100;
 //		DataRate dataRate = DataRate.SR_88200;
 //		DataRate dataRate = DataRate.SR_192000;
 
-		AudioHardwareDeviceCriteria criteria = new AudioHardwareDeviceCriteria( sampleBits,
+		final AudioHardwareDeviceCriteria criteria = new AudioHardwareDeviceCriteria( sampleBits,
 				dataRate,
 				bufferSize );
 
-		List<AudioHardwareDevice> iccs = audioProviderRegistryService.getAllProducerAudioDevices( criteria );
-		AudioSystemDeviceComboItem emptyInputDevice = new AudioSystemDeviceComboItem( "", "", null );
+		final List<AudioHardwareDevice> iccs = audioProviderRegistryService.getAllProducerAudioDevices( criteria );
+		final AudioSystemDeviceComboItem emptyInputDevice = new AudioSystemDeviceComboItem( "", "", null );
 		inputDeviceItems.add( emptyInputDevice );
-		for( AudioHardwareDevice hs : iccs )
+		for( final AudioHardwareDevice hs : iccs )
 		{
-			AudioSystemDeviceComboItem ni = new AudioSystemDeviceComboItem( hs.getId(), hs.getUserVisibleName(), hs );
+			final AudioSystemDeviceComboItem ni = new AudioSystemDeviceComboItem( hs.getId(), hs.getUserVisibleName(), hs );
 			inputDeviceItems.add( ni );
 		}
-		List<AudioHardwareDevice> occs = audioProviderRegistryService.getAllConsumerAudioDevices( criteria );
-		AudioSystemDeviceComboItem emptyOutputDevice = new AudioSystemDeviceComboItem( "", "", null );
+		final List<AudioHardwareDevice> occs = audioProviderRegistryService.getAllConsumerAudioDevices( criteria );
+		final AudioSystemDeviceComboItem emptyOutputDevice = new AudioSystemDeviceComboItem( "", "", null );
 		outputDeviceItems.add( emptyOutputDevice );
-		for( AudioHardwareDevice hs : occs )
+		for( final AudioHardwareDevice hs : occs )
 		{
-			AudioSystemDeviceComboItem ni = new AudioSystemDeviceComboItem( hs.getId(), hs.getUserVisibleName(), hs );
+			final AudioSystemDeviceComboItem ni = new AudioSystemDeviceComboItem( hs.getId(), hs.getUserVisibleName(), hs );
 			outputDeviceItems.add( ni );
 		}
 
-		MidiHardwareDeviceCriteria midiCriteria = new MidiHardwareDeviceCriteria();
+		final MidiHardwareDeviceCriteria midiCriteria = new MidiHardwareDeviceCriteria();
 
-		List<MidiHardwareDevice> imcs = audioProviderRegistryService.getAllConsumerMidiDevices( midiCriteria );
-		AudioSystemMidiDeviceComboItem emptyMidiDevice = new AudioSystemMidiDeviceComboItem( "", "", null );
+		final List<MidiHardwareDevice> imcs = audioProviderRegistryService.getAllConsumerMidiDevices( midiCriteria );
+		final AudioSystemMidiDeviceComboItem emptyMidiDevice = new AudioSystemMidiDeviceComboItem( "", "", null );
 		inputMidiDeviceItems.add( emptyMidiDevice );
-		for( MidiHardwareDevice mc : imcs )
+		for( final MidiHardwareDevice mc : imcs )
 		{
-			AudioSystemMidiDeviceComboItem mci = new AudioSystemMidiDeviceComboItem( mc.getId(), mc.getUserVisibleName(), mc );
+			final AudioSystemMidiDeviceComboItem mci = new AudioSystemMidiDeviceComboItem( mc.getId(), mc.getUserVisibleName(), mc );
 			inputMidiDeviceItems.add( mci );
 		}
 
-		List<MidiHardwareDevice> omcs = audioProviderRegistryService.getAllProducerMidiDevices( midiCriteria );
+		final List<MidiHardwareDevice> omcs = audioProviderRegistryService.getAllProducerMidiDevices( midiCriteria );
 		outputMidiDeviceItems.add( emptyMidiDevice );
-		for( MidiHardwareDevice mc : omcs )
+		for( final MidiHardwareDevice mc : omcs )
 		{
-			AudioSystemMidiDeviceComboItem mci = new AudioSystemMidiDeviceComboItem( mc.getId(), mc.getUserVisibleName(), mc );
+			final AudioSystemMidiDeviceComboItem mci = new AudioSystemMidiDeviceComboItem( mc.getId(), mc.getUserVisibleName(), mc );
 			outputMidiDeviceItems.add( mci );
 		}
 
-		GuiFpsMVCModel guiFpsComboModel = new GuiFpsMVCModel( guiFpsItems );
+		final GuiFpsMVCModel guiFpsComboModel = new GuiFpsMVCModel( guiFpsItems );
 
-		AudioSystemDeviceMVCModel inputDeviceComboModel = new AudioSystemDeviceMVCModel( inputDeviceItems );
-		AudioSystemDeviceMVCModel outputDeviceComboModel = new AudioSystemDeviceMVCModel( outputDeviceItems );
-		AudioSystemBufferSizeMVCModel bufferSizeModel = new AudioSystemBufferSizeMVCModel();
-		AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( inputMidiDeviceItems );
-		AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( outputMidiDeviceItems );
+		final AudioSystemDeviceMVCModel inputDeviceComboModel = new AudioSystemDeviceMVCModel( inputDeviceItems );
+		final AudioSystemDeviceMVCModel outputDeviceComboModel = new AudioSystemDeviceMVCModel( outputDeviceItems );
+		final AudioSystemBufferSizeMVCModel bufferSizeModel = new AudioSystemBufferSizeMVCModel();
+		final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( inputMidiDeviceItems );
+		final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( outputMidiDeviceItems );
 
-		UserPreferencesMVCModel model = new UserPreferencesMVCModel(
+		final UserPreferencesMVCModel model = new UserPreferencesMVCModel(
 				guiFpsComboModel,
 				inputDeviceComboModel,
 				outputDeviceComboModel,
@@ -378,23 +376,23 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	}
 
 	@Override
-	public void applyUserPreferencesChanges( UserPreferencesMVCController userPreferencesModelController )
+	public void applyUserPreferencesChanges( final UserPreferencesMVCController userPreferencesModelController )
 			throws DatastoreException
 	{
 		FileOutputStream os = null;
 		try
 		{
-			UserPreferencesMVCModel userPrefsMVCModel = userPreferencesModelController.getModel();
-			GuiFpsMVCModel guiFpsComboModel = userPrefsMVCModel.getFpsComboModel();
-			GuiFpsComboItem guiFpsItem = guiFpsComboModel.getSelectedElement();
-			AudioSystemDeviceMVCModel inputDeviceComboModel = userPrefsMVCModel.getInputDeviceComboModel();
-			AudioSystemDeviceComboItem inputDeviceComboItem = inputDeviceComboModel.getSelectedElement();
-			AudioSystemDeviceMVCModel outputDeviceComboModel = userPrefsMVCModel.getOutputDeviceComboModel();
-			AudioSystemDeviceComboItem outputDeviceComboItem = outputDeviceComboModel.getSelectedElement();
-			AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = userPrefsMVCModel.getInputMidiDeviceComboModel();
-			AudioSystemMidiDeviceComboItem inputMidiDeviceComboItem = inputMidiDeviceComboModel.getSelectedElement();
-			AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPrefsMVCModel.getOutputMidiDeviceComboModel();
-			AudioSystemMidiDeviceComboItem outputMidiDeviceComboItem = outputMidiDeviceComboModel.getSelectedElement();
+			final UserPreferencesMVCModel userPrefsMVCModel = userPreferencesModelController.getModel();
+			final GuiFpsMVCModel guiFpsComboModel = userPrefsMVCModel.getFpsComboModel();
+			final GuiFpsComboItem guiFpsItem = guiFpsComboModel.getSelectedElement();
+			final AudioSystemDeviceMVCModel inputDeviceComboModel = userPrefsMVCModel.getInputDeviceComboModel();
+			final AudioSystemDeviceComboItem inputDeviceComboItem = inputDeviceComboModel.getSelectedElement();
+			final AudioSystemDeviceMVCModel outputDeviceComboModel = userPrefsMVCModel.getOutputDeviceComboModel();
+			final AudioSystemDeviceComboItem outputDeviceComboItem = outputDeviceComboModel.getSelectedElement();
+			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = userPrefsMVCModel.getInputMidiDeviceComboModel();
+			final AudioSystemMidiDeviceComboItem inputMidiDeviceComboItem = inputMidiDeviceComboModel.getSelectedElement();
+			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPrefsMVCModel.getOutputMidiDeviceComboModel();
+			final AudioSystemMidiDeviceComboItem outputMidiDeviceComboItem = outputMidiDeviceComboModel.getSelectedElement();
 
 			userPreferencesProperties.put( PREFS_FILE_GUI_FPS, guiFpsItem.getId() );
 			userPreferencesProperties.put( PREFS_FILE_KEY_INPUT_DEVICE,
@@ -406,10 +404,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			userPreferencesProperties.put( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE,
 					(outputMidiDeviceComboItem == null ? "" : outputMidiDeviceComboItem.getId() ));
 
-			AudioSystemBufferSizeMVCModel bufferSizeModel = userPrefsMVCModel.getBufferSizeModel();
+			final AudioSystemBufferSizeMVCModel bufferSizeModel = userPrefsMVCModel.getBufferSizeModel();
 
-			int bufferSizeModelIndex = bufferSizeModel.getValue();
-			int bufferSize = BufferSizeSliderMVCController.modelIndexToBufferSizeMap.get( bufferSizeModelIndex );
+			final int bufferSizeModelIndex = bufferSizeModel.getValue();
+			final int bufferSize = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModelIndex );
 			userPreferencesProperties.put( PREFS_FILE_KEY_BUFFER_SIZE,
 					bufferSize + "" );
 			os = new FileOutputStream( userPreferencesFile );
@@ -418,9 +416,9 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			os = null;
 			readPreferencesFile();
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught storing user preferences: " + e.toString();
+			final String msg = "Exception caught storing user preferences: " + e.toString();
 			log.error( msg, e );
 		}
 		finally
@@ -431,19 +429,12 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 				{
 					os.close();
 				}
-				catch(Exception e)
+				catch(final Exception e)
 				{
-					String msg = "Exception caught closing prefs outputstream: " + e.toString();
+					final String msg = "Exception caught closing prefs outputstream: " + e.toString();
 					log.error( msg,e );
 				}
 			}
 		}
 	}
-
-	public void setAppRenderingGraphService(
-			AppRenderingGraphService appRenderingGraphService )
-	{
-		this.appRenderingGraphService = appRenderingGraphService;
-	}
-
 }

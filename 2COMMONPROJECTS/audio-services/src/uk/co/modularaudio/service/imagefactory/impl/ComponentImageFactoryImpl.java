@@ -29,7 +29,6 @@ import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -38,8 +37,6 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class ComponentImageFactoryImpl implements ComponentWithLifecycle, ComponentImageFactory
 {
 	private static Log log = LogFactory.getLog( ComponentImageFactoryImpl.class.getName() );
-
-	private ConfigurationService configurationService = null;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -52,31 +49,20 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 	}
 
 	@Override
-	public BufferedImage getBufferedImage( String directory, String filename) throws DatastoreException
+	public BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
 	{
 		BufferedImage retVal = null;
-		String pathToLoad = directory + "/" + filename;
+		final String pathToLoad = directory + "/" + filename;
 
 		try {
-			File input = new File( pathToLoad );
+			final File input = new File( pathToLoad );
 			retVal = ImageIO.read(input);
-		} catch (IOException ie) {
-			String msg = "Exception caught loading image " + pathToLoad + ": " + ie.toString();
+		} catch (final IOException ie) {
+			final String msg = "Exception caught loading image " + pathToLoad + ": " + ie.toString();
 			log.error( msg, ie );
 			throw new DatastoreException( msg, ie );
 		}
 
 		return retVal;
 	}
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
-	}
-
-	public void setConfigurationService(ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
-
 }

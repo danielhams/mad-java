@@ -40,37 +40,37 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 	private static final long serialVersionUID = -1751151942321586686L;
 
 //	private static Log log = LogFactory.getLog( SpectralRollResolutionComboUiJComponent.class.getName());
-	
-	private SpectralRollMadUiInstance uiInstance = null;
-	
-	private int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
-	
-	private Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
 
-	public SpectralRollResolutionComboUiJComponent( SpectralRollMadDefinition definition,
-			SpectralRollMadInstance instance,
-			SpectralRollMadUiInstance uiInstance,
-			int controlIndex )
+	private final SpectralRollMadUiInstance uiInstance;
+
+	private final int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
+
+	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
+
+	public SpectralRollResolutionComboUiJComponent( final SpectralRollMadDefinition definition,
+			final SpectralRollMadInstance instance,
+			final SpectralRollMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		
-		for( int res : resolutionChoices )
+
+		for( final int res : resolutionChoices )
 		{
 			runAvToCalculatorMap.put( res + "", res );
 		}
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( int res : resolutionChoices )
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for( final int res : resolutionChoices )
 		{
 			cbm.addElement( res + "" );
 		}
 		this.setModel( cbm );
-		
+
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
-		
+
 		this.setSelectedIndex( -1 );
 		this.setSelectedItem( "4096" );
 	}
@@ -82,7 +82,7 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -90,17 +90,17 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String)getSelectedItem();
+			final String name = (String)getSelectedItem();
 			if( name != null )
 			{
-				Integer resolution = runAvToCalculatorMap.get( name );
+				final Integer resolution = runAvToCalculatorMap.get( name );
 				uiInstance.setDesiredFftSize( resolution );
 			}
-		}		
+		}
 	}
 
 	@Override

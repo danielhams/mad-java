@@ -363,7 +363,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			loopThresholdDb = (loopThresholdDb * curValueRatio ) + (desiredThresholdDb * newValueRatio );
 
 			float absCompVal = internalAbsCompFloats[ s ];
-			float dbVal = AudioMath.FlevelToDb( absCompVal );
+			float dbVal = AudioMath.levelToDbF( absCompVal );
 
 			internalThresholdDbFloats[ s ] = loopThresholdDb;
 
@@ -430,7 +430,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 				float newAdjustedDb = thresholdDb + scaledDbPart + origDbPart;
 //				log.debug("Adjusted db(" + newAdjustedDb +")");
-				levelAmp = AudioMath.FdbToLevel( newAdjustedDb );
+				levelAmp = AudioMath.dbToLevelF( newAdjustedDb );
 			}
 			else
 			{

@@ -38,48 +38,48 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class BufferedImageDebugWindow extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = -4394218797027660403L;
-	
+
 //	private static final Log log = LogFactory.getLog( BufferedImageDebugWindow.class.getName() );
-	
+
 	private OpenLongObjectHashMap<AllocationCacheForImageType> allocationCachePerTypeMap = null;
 
-	private JButton consCheckButton = null;
-	private JPanel comboAndCache = null;
-	private ChooseBufferTypeCombo chooseBufferTypeCombo = null;
-	private BufferedImageTypeCachePanel bitCachePanel = null;
+	private final JButton consCheckButton;
+	private final JPanel comboAndCache;
+	private final ChooseBufferTypeCombo chooseBufferTypeCombo;
+	private BufferedImageTypeCachePanel bitCachePanel;
 
-	public BufferedImageDebugWindow( int windowX,
-			int windowY,
-			OpenLongObjectHashMap<AllocationCacheForImageType> bufferedImageTypeToAllocationCacheMap )
+	public BufferedImageDebugWindow( final int windowX,
+			final int windowY,
+			final OpenLongObjectHashMap<AllocationCacheForImageType> bufferedImageTypeToAllocationCacheMap )
 		throws DatastoreException
 	{
 		this.allocationCachePerTypeMap = bufferedImageTypeToAllocationCacheMap;
 		this.setTitle( this.getClass().getSimpleName() );
 		this.setSize( new Dimension(800,800) );
 		this.setLocation( windowX, windowY );
-		
+
 		comboAndCache = new JPanel();
-		MigLayout layout = new MigLayout("fillx, top, left", "", "[][][grow]");
+		final MigLayout layout = new MigLayout("fillx, top, left", "", "[][][grow]");
 		comboAndCache.setLayout( layout );
-		
+
 		consCheckButton = new JButton("Do consistency check");
 		comboAndCache.add( consCheckButton, "wrap" );
 		consCheckButton.addActionListener( this );
-		
+
 		chooseBufferTypeCombo = new ChooseBufferTypeCombo( bufferedImageTypeToAllocationCacheMap );
 		comboAndCache.add( chooseBufferTypeCombo, "wrap");
-		
+
 		chooseBufferTypeCombo.addActionListener( this );
-		
+
 		this.add( comboAndCache );
-		
+
 //		this.add( new BufferedImageTypeCachePanel( allocationCachePerTypeMap ) );
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
-		String actionCommand = e.getActionCommand();
+		final String actionCommand = e.getActionCommand();
 		if( actionCommand.equals("comboBoxChanged") )
 		{
 			if( bitCachePanel != null )
@@ -87,11 +87,11 @@ public class BufferedImageDebugWindow extends JFrame implements ActionListener
 				comboAndCache.remove( bitCachePanel );
 				bitCachePanel = null;
 			}
-			
-			long selectedCompoundKey = chooseBufferTypeCombo.getSelectedCompoundKey();
 
-			AllocationCacheForImageType cacheForImageType = allocationCachePerTypeMap.get( selectedCompoundKey );
-			
+			final long selectedCompoundKey = chooseBufferTypeCombo.getSelectedCompoundKey();
+
+			final AllocationCacheForImageType cacheForImageType = allocationCachePerTypeMap.get( selectedCompoundKey );
+
 			if( cacheForImageType != null )
 			{
 				bitCachePanel = new BufferedImageTypeCachePanel( cacheForImageType );
@@ -101,7 +101,7 @@ public class BufferedImageDebugWindow extends JFrame implements ActionListener
 		}
 		else if( actionCommand.equals("Do consistency check") )
 		{
-			for( AllocationCacheForImageType ac : allocationCachePerTypeMap.values() )
+			for( final AllocationCacheForImageType ac : allocationCachePerTypeMap.values() )
 			{
 				ac.doConsistencyChecks();
 			}

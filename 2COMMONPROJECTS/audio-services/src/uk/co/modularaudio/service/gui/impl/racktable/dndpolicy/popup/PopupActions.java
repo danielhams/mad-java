@@ -38,16 +38,17 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 public class PopupActions
 {
 	private static Log log = LogFactory.getLog( PopupActions.class.getName() );
-	
-	public Action rename;
-	public Action delete;
 
-	private RackDataModel rackDataModel = null;
-	private RackComponent componentForAction = null;
-	private RackService rackService = null;
-	private GuiService guiService = null;
-	private AbstractGuiAudioComponent guiComponent = null;
-	
+	public final Action rename;
+	public final Action delete;
+
+	private final RackService rackService;
+	private final GuiService guiService;
+
+	private RackDataModel rackDataModel;
+	private RackComponent componentForAction;
+	private AbstractGuiAudioComponent guiComponent;
+
 	public class RenameAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -2712982145491802426L;
@@ -58,58 +59,64 @@ public class PopupActions
 		}
 
 		@Override
-		public void actionPerformed( ActionEvent e )
+		public void actionPerformed( final ActionEvent e )
 		{
-			log.debug("Would attempt to rename " + componentForAction.getComponentName());
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Would attempt to rename " + componentForAction.getComponentName());
+			}
 			try
 			{
-				String defaultNewName = componentForAction.getComponentName();
-				String question = "Please enter the new name for " + defaultNewName;
-				String title = "Enter new component name";
-				String userNewName = (String) JOptionPane.showInputDialog( guiComponent,
+				final String defaultNewName = componentForAction.getComponentName();
+				final String question = "Please enter the new name for " + defaultNewName;
+				final String title = "Enter new component name";
+				final String userNewName = (String) JOptionPane.showInputDialog( guiComponent,
 						question,
 						title,
 						JOptionPane.QUESTION_MESSAGE,
 						null,
 						null,
 						defaultNewName );
-				
+
 				if( userNewName != null )
 				{
 					rackService.renameContents( rackDataModel, componentForAction, userNewName );
 				}
 			}
-			catch(Exception re)
+			catch(final Exception re)
 			{
-				String msg = "Exception caught renaming rack contents: " + re.toString();
+				final String msg = "Exception caught renaming rack contents: " + re.toString();
 				log.error( msg, re );
 			}
 		}
 	}
-	
+
 	public class DeleteAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -2817415117171786425L;
-		
+
 		public DeleteAction()
 		{
 			this.putValue( NAME, "Delete");
 		}
 
 		@Override
-		public void actionPerformed( ActionEvent e )
+		public void actionPerformed( final ActionEvent e )
 		{
-			log.debug("Would attempt to delete " + componentForAction.getComponentName() );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Would attempt to delete " + componentForAction.getComponentName() );
+			}
 			try
 			{
-				String defaultNewName = componentForAction.getComponentName();
-				String question = "Are you sure you wish to delete " + defaultNewName;
-				String title = "Delete Component";
-				
-				String[] options = {"Delete it",
+				final String defaultNewName = componentForAction.getComponentName();
+				final String question = "Are you sure you wish to delete " + defaultNewName;
+				final String title = "Delete Component";
+
+				final String[] options = {"Delete it",
 	                    "Don't delete it" };
-				
-				DeleteComponentYesNoCallback deleteCallback = new DeleteComponentYesNoCallback( rackService,
+
+				final DeleteComponentYesNoCallback deleteCallback = new DeleteComponentYesNoCallback( rackService,
 						rackDataModel,
 						componentForAction );
 
@@ -121,15 +128,15 @@ public class PopupActions
 						options[1],
 						deleteCallback );
 			}
-			catch(Exception re)
+			catch(final Exception re)
 			{
-				String msg = "Exception caught renaming rack contents: " + re.toString();
+				final String msg = "Exception caught renaming rack contents: " + re.toString();
 				log.error( msg, re );
 			}
 		}
 	}
-	
-	public PopupActions( RackService rackService, GuiService guiService )
+
+	public PopupActions( final RackService rackService, final GuiService guiService )
 	{
 		this.rackService  = rackService;
 		this.guiService = guiService;
@@ -137,7 +144,7 @@ public class PopupActions
 		delete = new DeleteAction();
 	}
 
-	public void setPopupData( RackDataModel rackDataModel, RackComponent rackComponent, AbstractGuiAudioComponent guiComponent )
+	public void setPopupData( final RackDataModel rackDataModel, final RackComponent rackComponent, final AbstractGuiAudioComponent guiComponent )
 	{
 		this.rackDataModel = rackDataModel;
 		this.componentForAction = rackComponent;

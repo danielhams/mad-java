@@ -45,18 +45,18 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 	private static final Point OFFSCREEN_MOUSE_MOVE_POINT = new Point( -1, -1 );
 
 	private static Log log = LogFactory.getLog( LayeredPaneDndTableMouseListener.class.getName());
-	
-	private LayeredPaneDndTable<A, B, C> table;
-	private GuiDndTableState dndState = null;
-	private LayeredPaneDndTablePolicy<A,B,C> dndPolicy = null;
-	private LayeredPaneDndTableDecorationManager<A,B,C> decorationManager = null;
-	
-	private TwoTuple<Point, C> componentAndLocalPoint = new TwoTuple<Point, C>( new Point(), null );
 
-	public LayeredPaneDndTableMouseListener( LayeredPaneDndTable<A, B, C> table,
-			GuiDndTableState dndState,
-			LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
-			LayeredPaneDndTableDecorationManager<A,B,C> decorationManager )
+	private final LayeredPaneDndTable<A, B, C> table;
+	private final GuiDndTableState dndState;
+	private final LayeredPaneDndTablePolicy<A,B,C> dndPolicy;
+	private final LayeredPaneDndTableDecorationManager<A,B,C> decorationManager;
+
+	private final TwoTuple<Point, C> componentAndLocalPoint = new TwoTuple<Point, C>( new Point(), null );
+
+	public LayeredPaneDndTableMouseListener( final LayeredPaneDndTable<A, B, C> table,
+			final GuiDndTableState dndState,
+			final LayeredPaneDndTablePolicy<A,B,C> dndPolicy,
+			final LayeredPaneDndTableDecorationManager<A,B,C> decorationManager )
 	{
 		this.table = table;
 		this.dndState = dndState;
@@ -65,14 +65,14 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e)
+	public void mouseDragged(final MouseEvent e)
 	{
 		try
 		{
-			State curState = dndState.getCurrentState();
-			Point tablePoint = e.getPoint();
+			final State curState = dndState.getCurrentState();
+			final Point tablePoint = e.getPoint();
 //			log.debug("Mouse dragged point: " + tablePoint);
-			boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
+			final boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
 
 			Point localPoint = null;
 			C component = null;
@@ -105,23 +105,23 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 				break;
 			}
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught during mouse drag processing: " + e1.toString();
+			final String msg = "Exception caught during mouse drag processing: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent e)
+	public void mouseMoved(final MouseEvent e)
 	{
 		try
 		{
-			State curState = dndState.getCurrentState();
-			Point tablePoint = e.getPoint();
+			final State curState = dndState.getCurrentState();
+			final Point tablePoint = e.getPoint();
 //			log.debug("Mouse moved point: " + tablePoint);
 			decorationManager.setMouseLocation( tablePoint );
-			boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
+			final boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
 			Point point = null;
 			C component = null;
 			if( foundIt )
@@ -161,30 +161,30 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 				break;
 			}
 		}
-		catch(Exception e1)
+		catch(final Exception e1)
 		{
-			String msg = "Exception caught during mouse movement processing: " + e1.toString();
+			final String msg = "Exception caught during mouse movement processing: " + e1.toString();
 			log.error( msg, e1 );
 		}
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e)
+	public void mouseClicked(final MouseEvent e)
 	{
 //		log.debug(e);
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e)
+	public void mouseEntered(final MouseEvent e)
 	{
 //		log.debug(e);
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e)
+	public void mouseExited(final MouseEvent e)
 	{
 //		log.debug(e);
-		State currentState = dndState.getCurrentState();
+		final State currentState = dndState.getCurrentState();
 		switch( currentState )
 		{
 		case MOUSE_OVER_DRAGGABLE_AREA:
@@ -194,9 +194,9 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 				dndPolicy.isMouseOverDndSource( table, null, null, null );
 				dndState.changeTo( State.BROWSING );
 			}
-			catch (BadStateTransitionException e1)
+			catch (final BadStateTransitionException e1)
 			{
-				String msg = "Error transitioning to browsing on mouse exit.";
+				final String msg = "Error transitioning to browsing on mouse exit.";
 				log.error( msg, e1 );
 			}
 			break;
@@ -208,21 +208,21 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e)
+	public void mousePressed(final MouseEvent e)
 	{
 		// Popup test
 		if( e.isPopupTrigger() )
 		{
-			Point dragStartPoint = e.getPoint();
-			boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
+			final Point dragStartPoint = e.getPoint();
+			final boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
 			Point localPoint = null;
 			C component = null;
 			if( foundIt )
-			{		
+			{
 				localPoint = componentAndLocalPoint.getHead();
 				component = componentAndLocalPoint.getTail();
 			}
-			
+
 			if( dndPolicy.isMouseOverPopupSource( table, component, localPoint, dragStartPoint ) )
 			{
 				try
@@ -231,9 +231,9 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 					dndPolicy.doPopup( table, component, localPoint, dragStartPoint );
 					dndState.changeTo( State.BROWSING );
 				}
-				catch( BadStateTransitionException bste )
+				catch( final BadStateTransitionException bste )
 				{
-					String msg = "Bad state transition attempting to perform popup";
+					final String msg = "Bad state transition attempting to perform popup";
 					log.error( msg, bste );
 				}
 			}
@@ -243,17 +243,17 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 	//		log.debug(e);
 			try
 			{
-				State currentState = dndState.getCurrentState();
+				final State currentState = dndState.getCurrentState();
 				switch( currentState )
 				{
 				case MOUSE_OVER_DRAGGABLE_AREA:
 					// Begin a drag
-					Point dragStartPoint = e.getPoint();
-					boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
+					final Point dragStartPoint = e.getPoint();
+					final boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
 					Point localPoint = null;
 					C component = null;
 					if( foundIt )
-					{		
+					{
 						localPoint = componentAndLocalPoint.getHead();
 						component = componentAndLocalPoint.getTail();
 						dndPolicy.startDrag( table, component, localPoint, dragStartPoint );
@@ -270,31 +270,31 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 					break;
 				}
 			}
-			catch(Exception e1)
+			catch(final Exception e1)
 			{
-				String msg = "Exception caught processing mouse press: " + e1.toString();
+				final String msg = "Exception caught processing mouse press: " + e1.toString();
 				log.error( msg, e1 );
 			}
 		}
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e)
+	public void mouseReleased(final MouseEvent e)
 	{
 //		log.debug("Mouse released.");
 		// Popup test
 		if( e.isPopupTrigger() )
 		{
-			Point dragStartPoint = e.getPoint();
-			boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
+			final Point dragStartPoint = e.getPoint();
+			final boolean foundIt = table.getComponentAtWithLocalPoint( dragStartPoint, componentAndLocalPoint );
 			Point localPoint = null;
 			C component = null;
 			if( foundIt )
-			{		
+			{
 				localPoint = componentAndLocalPoint.getHead();
 				component = componentAndLocalPoint.getTail();
 			}
-			
+
 			if( dndPolicy.isMouseOverPopupSource( table, component, localPoint, dragStartPoint ) )
 			{
 				dndPolicy.doPopup( table, component, localPoint, dragStartPoint );
@@ -305,9 +305,9 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 	//		log.debug(e);
 			try
 			{
-				State curState = dndState.getCurrentState();
-				Point tablePoint = e.getPoint();
-				boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
+				final State curState = dndState.getCurrentState();
+				final Point tablePoint = e.getPoint();
+				final boolean foundIt = table.getComponentAtWithLocalPoint( tablePoint, componentAndLocalPoint );
 				Point point = null;
 				C component = null;
 				if( foundIt )
@@ -341,15 +341,15 @@ B extends SpanningContentsProperties, C extends Component & LayeredPaneTableComp
 //				log.debug("Synthesising mouse move.");
 				synthesiseMouseMove( e );
 			}
-			catch(Exception e1)
+			catch(final Exception e1)
 			{
-				String msg = "Exception caught during mouse release processing: " + e1.toString();
+				final String msg = "Exception caught during mouse release processing: " + e1.toString();
 				log.error( msg, e1 );
 			}
 		}
 	}
 
-	private void synthesiseMouseMove( MouseEvent e )
+	private void synthesiseMouseMove( final MouseEvent e )
 	{
 		// Synthesise a mouse moved event so that hover criteria etc are setup correctly
 		this.mouseMoved( e );

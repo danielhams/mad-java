@@ -25,7 +25,7 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboI
 
 public class AudioSystemMidiDeviceComboItem extends IdStringAndValueComboItem<MidiHardwareDevice>
 {
-	public AudioSystemMidiDeviceComboItem(String id, String displayString, MidiHardwareDevice mcc )
+	public AudioSystemMidiDeviceComboItem(final String id, final String displayString, final MidiHardwareDevice mcc )
 	{
 		super(id, displayString, mcc);
 	}

@@ -35,16 +35,16 @@ public class GuiTableEmptyCellPaintingVisitor<A extends RackModelTableSpanningCo
 	implements TableCellVisitor<A, B>
 {
 //	private static Log log = LogFactory.getLog( GuiTableEmptyCellPaintingVisitor.class.getName() );
-	
-	private Graphics g = null;
-	private Dimension gridSize = null;
-	private Rectangle clipBounds = null;
-	private GuiTableEmptyCellPainter emptyCellPainter = null;
 
-	public GuiTableEmptyCellPaintingVisitor(Graphics emptyG,
-			Dimension gridSize,
-			Rectangle clipBounds,
-			GuiTableEmptyCellPainter emptyCellPainter )
+	private final Graphics g;
+	private final Dimension gridSize;
+	private final Rectangle clipBounds;
+	private final GuiTableEmptyCellPainter emptyCellPainter;
+
+	public GuiTableEmptyCellPaintingVisitor(final Graphics emptyG,
+			final Dimension gridSize,
+			final Rectangle clipBounds,
+			final GuiTableEmptyCellPainter emptyCellPainter )
 	{
 		this.g = emptyG;
 		this.gridSize = gridSize;
@@ -69,24 +69,24 @@ public class GuiTableEmptyCellPaintingVisitor<A extends RackModelTableSpanningCo
 	}
 
 	@Override
-	public void visit(TableCell<A> a, TableCellProperties<B> b, int indexInModel )
+	public void visit(final TableCell<A> a, final TableCellProperties<B> b, final int indexInModel )
 	{
-		int cellX = a.getCellX();
-		int cellY = a.getCellY();
-		int startX = (cellX * gridSize.width );
-		int startY = (cellY * gridSize.height );
+		final int cellX = a.getCellX();
+		final int cellY = a.getCellY();
+		final int startX = (cellX * gridSize.width );
+		final int startY = (cellY * gridSize.height );
 		emptyCellPainter.paintEmptyCell( g, startX, startY, gridSize.width, gridSize.height );
 	}
 
-	public void oldVisit(TableCell<A> a, TableCellProperties<B> b, int indexInModel )
+	public void oldVisit(final TableCell<A> a, final TableCellProperties<B> b, final int indexInModel )
 	{
 		if( a.getCellContents() == null )
 		{
-			int cellX = a.getCellX();
-			int cellY = a.getCellY();
-			int startX = (cellX * gridSize.width );
-			int startY = (cellY * gridSize.height );
-			Rectangle cellRect = new Rectangle( startX, startY, startX + gridSize.width, startY + gridSize.height );
+			final int cellX = a.getCellX();
+			final int cellY = a.getCellY();
+			final int startX = (cellX * gridSize.width );
+			final int startY = (cellY * gridSize.height );
+			final Rectangle cellRect = new Rectangle( startX, startY, startX + gridSize.width, startY + gridSize.height );
 			if( cellRect.intersects( clipBounds ) )
 			{
 //				log.debug("Painting empty cell: " + cellRect.toString() );

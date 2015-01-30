@@ -35,53 +35,56 @@ public abstract class RawWaveTableGenerator
 {
 	private static Log log = LogFactory.getLog( RawWaveTableGenerator.class.getName() );
 
-	public CubicPaddedRawWaveTable readFromCacheOrGenerate( String cacheFileRoot, int cycleLength, int numHarmonics )
+	public CubicPaddedRawWaveTable readFromCacheOrGenerate( final String cacheFileRoot, final int cycleLength, final int numHarmonics )
 			throws IOException
 	{
-		int sampleRate = 44100;
-		int numChannels = 1;
-		short numBitsPerSample = 16;
-		String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
+		final int sampleRate = 44100;
+		final int numChannels = 1;
+		final short numBitsPerSample = 16; // NOPMD by dan on 29/01/15 16:30
+		final String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
 
 		CubicPaddedRawWaveTable retVal = null;
 
 		// See if the file exists
-		String pathToCachedWave = cacheFileRoot + File.separatorChar + uniqueName;
-		File cachedWave = new File( pathToCachedWave );
+		final String pathToCachedWave = cacheFileRoot + File.separatorChar + uniqueName;
+		final File cachedWave = new File( pathToCachedWave );
 		if( cachedWave.exists() )
 		{
-			WaveFileReader fileReader = new WaveFileReader( pathToCachedWave );
-			long numTotalFloats = fileReader.getNumTotalFloats();
-			int numTotalFloatsAsInt = (int)numTotalFloats;
+			final WaveFileReader fileReader = new WaveFileReader( pathToCachedWave );
+			final long numTotalFloats = fileReader.getNumTotalFloats();
+			final int numTotalFloatsAsInt = (int)numTotalFloats;
 			if( numTotalFloatsAsInt != numTotalFloats )
 			{
-				throw new RuntimeException( "Internal error re-reading cached waves" );
+				throw new IOException( "Internal error re-reading cached waves" );
 			}
 			else if( numTotalFloatsAsInt != cycleLength + CubicPaddedRawWaveTable.NUM_EXTRA_SAMPLES_IN_BUFFER )
 			{
-				throw new RuntimeException( "The cached wave shape on disk doesn't match the size we expect" );
+				throw new IOException( "The cached wave shape on disk doesn't match the size we expect" );
 			}
-			float[] data = new float[ numTotalFloatsAsInt ];
+			final float[] data = new float[ numTotalFloatsAsInt ];
 			fileReader.read( data, 0, 0, numTotalFloatsAsInt );
 			fileReader.close();
 			retVal = new CubicPaddedRawWaveTable( data );
 		}
 		else
 		{
-			log.info("Generating wave table for " + uniqueName + " - please be patient");
+			if( log.isInfoEnabled() )
+			{
+				log.info("Generating wave table for " + uniqueName + " - please be patient");
+			}
 			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
 			// And write it out
 			FileUtils.recursiveMakeDir( cacheFileRoot );
-			String tmpPath = pathToCachedWave + ".tmp";
-			WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
+			final String tmpPath = pathToCachedWave + ".tmp";
+			final WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
 			fileWriter.writeFloats( retVal.buffer, retVal.bufferLength );
 			fileWriter.close();
 
-			File tmpFile = new File(tmpPath);
-			boolean success = tmpFile.renameTo( new File(pathToCachedWave ) );
+			final File tmpFile = new File(tmpPath);
+			final boolean success = tmpFile.renameTo( new File(pathToCachedWave ) );
 			if( !success )
 			{
-				String msg = "Failed moving temporary wave table cache file over to its final name";
+				final String msg = "Failed moving temporary wave table cache file over to its final name";
 				log.error( msg );
 				throw new IOException( msg );
 			}

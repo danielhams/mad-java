@@ -34,12 +34,12 @@ public class FeedbackDelayFeedbackSliderUiJComponent extends PacSlider
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private FeedbackDelayMadUiInstance uiInstance = null;
+	private final FeedbackDelayMadUiInstance uiInstance;
 
-	public FeedbackDelayFeedbackSliderUiJComponent( FeedbackDelayMadDefinition definition,
-			FeedbackDelayMadInstance instance,
-			FeedbackDelayMadUiInstance uiInstance,
-			int controlIndex )
+	public FeedbackDelayFeedbackSliderUiJComponent( final FeedbackDelayMadDefinition definition,
+			final FeedbackDelayMadInstance instance,
+			final FeedbackDelayMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -51,19 +51,20 @@ public class FeedbackDelayFeedbackSliderUiJComponent extends PacSlider
 		this.setValue( 500 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float valueToPass = value / 1000.0f;
+		final float valueToPass = value / 1000.0f;
 		uiInstance.sendFeedbackChange( valueToPass );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -71,7 +72,7 @@ public class FeedbackDelayFeedbackSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

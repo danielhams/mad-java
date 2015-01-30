@@ -20,16 +20,11 @@
 
 package uk.co.modularaudio.controller.component.impl;
 
-import java.util.Map;
-
 import uk.co.modularaudio.controller.component.ComponentController;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
-import uk.co.modularaudio.util.audio.mad.MadInstance;
-import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -38,9 +33,8 @@ import uk.co.modularaudio.util.table.Span;
 
 public class ComponentControllerImpl implements ComponentWithLifecycle, ComponentController
 {
-	
-	private MadComponentService componentService = null;
-	private MadComponentUiService componentUiService = null;
+	private MadComponentService componentService;
+	private MadComponentUiService componentUiService;
 
 	@Override
 	public void destroy()
@@ -52,12 +46,12 @@ public class ComponentControllerImpl implements ComponentWithLifecycle, Componen
 	{
 	}
 
-	public void setComponentService(MadComponentService componentService)
+	public void setComponentService(final MadComponentService componentService)
 	{
 		this.componentService = componentService;
 	}
 
-	public void setComponentUiService( MadComponentUiService componentUiService )
+	public void setComponentUiService( final MadComponentUiService componentUiService )
 	{
 		this.componentUiService = componentUiService;
 	}
@@ -69,23 +63,7 @@ public class ComponentControllerImpl implements ComponentWithLifecycle, Componen
 	}
 
 	@Override
-	public MadDefinition<?,?> findDefinitionById( String definitionId )
-			throws DatastoreException, RecordNotFoundException
-	{
-		return componentService.findDefinitionById( definitionId );
-	}
-
-	@Override
-	public MadInstance<?,?> createInstanceFromDefinition(
-			MadDefinition<?,?> definition,
-			Map<MadParameterDefinition, String> parameterValues,
-			String name ) throws MadProcessingException, DatastoreException, RecordNotFoundException
-	{
-		return componentService.createInstanceFromDefinition( definition, parameterValues, name );
-	}
-
-	@Override
-	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
 			throws DatastoreException, RecordNotFoundException
 	{
 		return componentUiService.getUiSpanForDefinition( definition );

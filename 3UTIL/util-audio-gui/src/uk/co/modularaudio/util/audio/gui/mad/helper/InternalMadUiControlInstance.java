@@ -23,21 +23,21 @@ package uk.co.modularaudio.util.audio.gui.mad.helper;
 import java.awt.Component;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 @SuppressWarnings("rawtypes")
-public class InternalMadUiControlInstance extends MadUiControlInstance
+public class InternalMadUiControlInstance extends AbstractMadUiControlInstance
 {
-	private IMadUiControlInstance realUiControlInstance = null;
+	private final IMadUiControlInstance realUiControlInstance;
 
 	@SuppressWarnings("unchecked")
-	public InternalMadUiControlInstance( MadUiInstance uiInstance,
-			MadUiControlDefinition definition,
-			IMadUiControlInstance realUiControlInstance )
+	public InternalMadUiControlInstance( final AbstractMadUiInstance uiInstance,
+			final MadUiControlDefinition definition,
+			final IMadUiControlInstance realUiControlInstance )
 	{
 		super( uiInstance, definition );
 		this.realUiControlInstance = realUiControlInstance;
@@ -50,13 +50,13 @@ public class InternalMadUiControlInstance extends MadUiControlInstance
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		realUiControlInstance.receiveControlValue( value );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{

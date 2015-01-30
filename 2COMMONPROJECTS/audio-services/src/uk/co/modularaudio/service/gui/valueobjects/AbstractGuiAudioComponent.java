@@ -34,10 +34,10 @@ import uk.co.modularaudio.util.swing.table.layeredpane.LayeredPaneTableComponent
 public abstract class AbstractGuiAudioComponent extends JPanel implements GuiDndTableComponent, LayeredPaneTableComponent
 {
 	private static final long serialVersionUID = 1400654882139462865L;
-	
-	protected RackComponent rackComponent = null;
-	
-	public AbstractGuiAudioComponent( RackComponent rackComponent )
+
+	protected final RackComponent rackComponent;
+
+	public AbstractGuiAudioComponent( final RackComponent rackComponent )
 	{
 		this.rackComponent = rackComponent;
 	}
@@ -45,7 +45,7 @@ public abstract class AbstractGuiAudioComponent extends JPanel implements GuiDnd
 	public abstract Rectangle getRenderedRectangle();
 
 	public abstract GuiChannelPlug getPlugFromPosition( Point localPoint );
-	
+
 	public abstract GuiChannelPlug getPlugFromMadChannelInstance( MadChannelInstance auChannelInstance );
 
 }

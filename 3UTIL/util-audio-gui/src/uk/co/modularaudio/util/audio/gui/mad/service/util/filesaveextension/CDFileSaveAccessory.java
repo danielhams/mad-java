@@ -27,24 +27,24 @@ import javax.swing.JTextField;
 public class CDFileSaveAccessory extends JPanel
 {
 	private static final long serialVersionUID = -5713965715731161607L;
-	
+
 //	private static Log log = LogFactory.getLog( CDFileSaveAccessory.class.getName() );
-	
-	private String fileName = null;
-	
-	private JLabel fileNameLabel = null;
-	private JTextField fileNameTextField = null;
-	
-	public CDFileSaveAccessory( String defaultName )
+
+	private final String fileName;
+
+	private final JLabel fileNameLabel;
+	private final JTextField fileNameTextField;
+
+	public CDFileSaveAccessory( final String defaultName )
 	{
 		fileName = defaultName;
-		
+
 		fileNameLabel = new JLabel( "Name:");
 		this.add( fileNameLabel );
 		fileNameTextField = new JTextField( fileName );
 		this.add( fileNameTextField );
 	}
-	
+
 	public String getFileName()
 	{
 		return fileNameTextField.getText();

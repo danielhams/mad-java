@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class GuiDndTableState
 {
 //	private static Log log = LogFactory.getLog( GuiDndTableState.class.getName() );
-	
+
 	public enum State
 	{
 		BROWSING,
@@ -33,26 +33,26 @@ public class GuiDndTableState
 		DURING_DRAG,
 		POPUP
 	}
-	
-	private State currentState = null;
-	private ArrayList<GuiDndTableStateTransitionListener> transitionListeners = new ArrayList<GuiDndTableStateTransitionListener>();
-	
-	public GuiDndTableState( State initialState )
+
+	private State currentState;
+	private final ArrayList<GuiDndTableStateTransitionListener> transitionListeners = new ArrayList<GuiDndTableStateTransitionListener>();
+
+	public GuiDndTableState( final State initialState )
 	{
 		this.currentState = initialState;
 	}
-	
-	public void addTransitionListener( GuiDndTableStateTransitionListener l )
+
+	public void addTransitionListener( final GuiDndTableStateTransitionListener l )
 	{
 		transitionListeners.add( l );
 	}
-	
-	public void removeTransitionListener( GuiDndTableStateTransitionListener l )
+
+	public void removeTransitionListener( final GuiDndTableStateTransitionListener l )
 	{
 		transitionListeners.remove( l );
 	}
-	
-	public void changeTo( State nextState ) throws BadStateTransitionException
+
+	public void changeTo( final State nextState ) throws BadStateTransitionException
 	{
 		boolean error = false;
 		switch( currentState )
@@ -96,10 +96,10 @@ public class GuiDndTableState
 		{
 			if( currentState != nextState )
 			{
-				State stateBefore = currentState;
-				State stateAfter = nextState;
+				final State stateBefore = currentState;
+				final State stateAfter = nextState;
 				currentState = nextState;
-				for( GuiDndTableStateTransitionListener l : transitionListeners) 
+				for( final GuiDndTableStateTransitionListener l : transitionListeners)
 				{
 					l.receiveTransition( stateBefore, stateAfter);
 				}
@@ -110,7 +110,7 @@ public class GuiDndTableState
 	public class BadStateTransitionException extends Exception
 	{
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -8041595538802094L;
 
@@ -119,7 +119,7 @@ public class GuiDndTableState
 			super();
 		}
 	}
-	
+
 	public interface GuiDndTableStateTransitionListener
 	{
 		void receiveTransition( State stateBefore, State stateAfter );

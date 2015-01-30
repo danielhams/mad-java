@@ -35,36 +35,32 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class PrefsModelToHardwareIOConfigurationBridge
 {
-	private PrefsModelToHardwareIOConfigurationBridge()
+	public static HardwareIOConfiguration modelToConfiguration( final UserPreferencesMVCModel audioPrefsModel ) throws DatastoreException
 	{
-	}
-	
-	public static HardwareIOConfiguration modelToConfiguration( UserPreferencesMVCModel audioPrefsModel ) throws DatastoreException
-	{
-		GuiFpsMVCModel fpsModel = audioPrefsModel.getFpsComboModel();
+		final GuiFpsMVCModel fpsModel = audioPrefsModel.getFpsComboModel();
 
-		AudioSystemDeviceMVCModel consumerDeviceComboModel = audioPrefsModel.getOutputDeviceComboModel();
-		int outputChannelsIndex = consumerDeviceComboModel.getSelectedItemIndex();
-		AudioSystemDeviceComboItem oc = ( outputChannelsIndex != -1 ? consumerDeviceComboModel.getElementAt(  outputChannelsIndex ) : null );
-		boolean outputChanSelected = ( oc != null ? oc.getValue() != null : false );
-		
-		AudioSystemDeviceMVCModel producerDeviceComboModel = audioPrefsModel.getInputDeviceComboModel();
-		int inputChannelsIndex = producerDeviceComboModel.getSelectedItemIndex();
-		AudioSystemDeviceComboItem ic = (inputChannelsIndex != -1 ? producerDeviceComboModel.getElementAt( inputChannelsIndex ) : null );
-		boolean inputChanSelected = ( ic != null ? ic.getValue() != null : false );
-		
-		AudioSystemBufferSizeMVCModel bufferSizeModel = audioPrefsModel.getBufferSizeModel();
-	
-		AudioSystemMidiDeviceMVCModel consumerMidiDeviceComboModel = audioPrefsModel.getOutputMidiDeviceComboModel();
-		int cmdi = consumerMidiDeviceComboModel.getSelectedItemIndex();
-		AudioSystemMidiDeviceComboItem cmdci = (cmdi != -1 ? consumerMidiDeviceComboModel.getElementAt( cmdi ) : null );
-		boolean consumerMidiSelected = ( cmdci != null ? cmdci.getValue() != null : false );
-		
-		AudioSystemMidiDeviceMVCModel producerMidiDeviceComboModel = audioPrefsModel.getInputMidiDeviceComboModel();
-		int pmdi = producerMidiDeviceComboModel.getSelectedItemIndex();
-		AudioSystemMidiDeviceComboItem pmdci = (pmdi != -1 ? producerMidiDeviceComboModel.getElementAt( pmdi ) : null );
-		boolean producerMidiSelected = ( pmdci != null ? pmdci.getValue() != null : false );
-		
+		final AudioSystemDeviceMVCModel consumerDeviceComboModel = audioPrefsModel.getOutputDeviceComboModel();
+		final int outputChannelsIndex = consumerDeviceComboModel.getSelectedItemIndex();
+		final AudioSystemDeviceComboItem oc = ( outputChannelsIndex != -1 ? consumerDeviceComboModel.getElementAt(  outputChannelsIndex ) : null );
+		final boolean outputChanSelected = ( oc != null ? oc.getValue() != null : false );
+
+		final AudioSystemDeviceMVCModel producerDeviceComboModel = audioPrefsModel.getInputDeviceComboModel();
+		final int inputChannelsIndex = producerDeviceComboModel.getSelectedItemIndex();
+		final AudioSystemDeviceComboItem ic = (inputChannelsIndex != -1 ? producerDeviceComboModel.getElementAt( inputChannelsIndex ) : null );
+		final boolean inputChanSelected = ( ic != null ? ic.getValue() != null : false );
+
+		final AudioSystemBufferSizeMVCModel bufferSizeModel = audioPrefsModel.getBufferSizeModel();
+
+		final AudioSystemMidiDeviceMVCModel consumerMidiDeviceComboModel = audioPrefsModel.getOutputMidiDeviceComboModel();
+		final int cmdi = consumerMidiDeviceComboModel.getSelectedItemIndex();
+		final AudioSystemMidiDeviceComboItem cmdci = (cmdi != -1 ? consumerMidiDeviceComboModel.getElementAt( cmdi ) : null );
+		final boolean consumerMidiSelected = ( cmdci != null ? cmdci.getValue() != null : false );
+
+		final AudioSystemMidiDeviceMVCModel producerMidiDeviceComboModel = audioPrefsModel.getInputMidiDeviceComboModel();
+		final int pmdi = producerMidiDeviceComboModel.getSelectedItemIndex();
+		final AudioSystemMidiDeviceComboItem pmdci = (pmdi != -1 ? producerMidiDeviceComboModel.getElementAt( pmdi ) : null );
+		final boolean producerMidiSelected = ( pmdci != null ? pmdci.getValue() != null : false );
+
 		if( outputChanSelected || inputChanSelected )
 		{
 			AudioSystemDeviceComboItem consumerDevice = null;
@@ -77,7 +73,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			{
 				producerDevice = producerDeviceComboModel.getElementAt( inputChannelsIndex );
 			}
-			
+
 			AudioSystemMidiDeviceComboItem consumerMidiDevice = null;
 			if( consumerMidiSelected )
 			{
@@ -88,16 +84,16 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			{
 				producerMidiDevice = pmdci;
 			}
-			
+
 			// The audio provider can potentionally takes an array of device channel configurations, so we'll build one elements arrays
 			// here
-			int fps = fpsModel.getFpsValue();
+			final int fps = fpsModel.getFpsValue();
 			AudioHardwareDevice consumerChannelConfig = null;
 			AudioHardwareDevice producerChannelConfig = null;
-			int bufferSizeFrames = BufferSizeSliderMVCController.modelIndexToBufferSizeMap.get( bufferSizeModel.getBufferSizeFramesValue() );
+			final int bufferSizeFrames = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModel.getBufferSizeFramesValue() );
 			MidiHardwareDevice consumerMidiConfig = null;
 			MidiHardwareDevice producerMidiConfig = null;
-			
+
 			if( consumerDevice != null )
 			{
 				consumerChannelConfig = consumerDevice.getValue();
@@ -107,7 +103,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			{
 				producerChannelConfig = producerDevice.getValue();
 			}
-			
+
 			if( consumerMidiDevice != null )
 			{
 				consumerMidiConfig = consumerMidiDevice.getValue();
@@ -117,8 +113,8 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			{
 				producerMidiConfig = producerMidiDevice.getValue();
 			}
-			
-			HardwareIOConfiguration retVal = new HardwareIOConfiguration( fps,
+
+			final HardwareIOConfiguration retVal = new HardwareIOConfiguration( fps,
 					consumerChannelConfig,
 					producerChannelConfig,
 					bufferSizeFrames,

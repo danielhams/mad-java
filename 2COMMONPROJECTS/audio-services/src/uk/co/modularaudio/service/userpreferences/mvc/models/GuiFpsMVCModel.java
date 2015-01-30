@@ -32,25 +32,31 @@ public class GuiFpsMVCModel extends IdStringComboModel<GuiFpsComboItem>
 {
 	private static Log log = LogFactory.getLog( GuiFpsMVCModel.class.getName() );
 
-	public GuiFpsMVCModel(Collection<GuiFpsComboItem> startupItems)
+	public GuiFpsMVCModel(final Collection<GuiFpsComboItem> startupItems)
 	{
 		super(startupItems);
 	}
 
 	@Override
-	public int getItemIndex(GuiFpsComboItem item)
+	public int getItemIndex(final GuiFpsComboItem item)
 	{
-		int retVal = super.getItemIndex(item);
-		
+		final int retVal = super.getItemIndex(item);
+
 		if( retVal == -1 )
 		{
-			log.error("Attempting to get index of " + item.getDisplayString() + " failed!");
-			for( GuiFpsComboItem i : this.idToElementMap.values() )
+			if( log.isErrorEnabled() )
 			{
-				log.error("OID(" + i.getId() + ") OV(" + i.getDisplayString() + ")");
+				log.error("Attempting to get index of " + item.getDisplayString() + " failed!");
+			}
+			for( final GuiFpsComboItem i : idToElementMap.values() )
+			{
+				if( log.isErrorEnabled() )
+				{
+					log.error("OID(" + i.getId() + ") OV(" + i.getDisplayString() + ")");
+				}
 			}
 		}
-		
+
 		return retVal;
 	}
 

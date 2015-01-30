@@ -20,40 +20,29 @@
 
 package uk.co.modularaudio.mads.base.sampleplayer.ui;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerIOQueueBridge;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadInstance;
-import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 
-public class SingleSamplePlayerMadUiInstance extends AbstractNonConfigurableMadUiInstance<SingleSamplePlayerMadDefinition, SingleSamplePlayerMadInstance>
+public class SingleSamplePlayerMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<SingleSamplePlayerMadDefinition, SingleSamplePlayerMadInstance>
 {
-	private static Log log = LogFactory.getLog( SingleSamplePlayerMadUiInstance.class.getName() );
-	
-	public SingleSamplePlayerMadUiInstance( SingleSamplePlayerMadInstance instance,
-			SingleSamplePlayerMadUiDefinition uiDefinition )
+//	private static Log log = LogFactory.getLog( SingleSamplePlayerMadUiInstance.class.getName() );
+
+	public SingleSamplePlayerMadUiInstance( final SingleSamplePlayerMadInstance instance,
+			final SingleSamplePlayerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void sendDesiredStartPosition( float startPosMillis )
+	public void sendDesiredStartPosition( final float startPosMillis )
 	{
 		sendTemporalValueToInstance( SingleSamplePlayerIOQueueBridge.COMMAND_START_POS, Float.floatToIntBits( startPosMillis ) );
 	}
 
-	public void sendRootNoteChoice( MidiNote mn )
+	public void sendRootNoteChoice( final MidiNote mn )
 	{
 		sendTemporalValueToInstance( SingleSamplePlayerIOQueueBridge.COMMAND_ROOT_NOTE, mn.getMidiNumber() );
-	}
-
-	@Override
-	public void consumeQueueEntry( SingleSamplePlayerMadInstance instance,
-			IOQueueEvent nextOutgoingEntry)
-	{
-		log.debug("Received UI queue event to consume: " + nextOutgoingEntry.toString() );
 	}
 }

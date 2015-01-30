@@ -28,29 +28,29 @@ public class HardwareIOChannelSettings
 	private final static DataRate STANDARD_DATA_RATE = DataRate.SR_44100;
 	private final static int STANDARD_BUF_LENGTH = 1024;
 	private final static int STANDARD_NOTE_BUFFER_LENGTH_AT_44100_1024 = 512;
-	private HardwareIOOneChannelSetting audioChannelSetting = null;
-	private HardwareIOOneChannelSetting noteChannelSetting = null;
-	
-	private long nanosOutputLatency = -1;
-	private int sampleFramesOutputLatency = -1;
-	
-	public HardwareIOChannelSettings( HardwareIOOneChannelSetting coreEngineAudioChannelSetting,
-			long nanosOutputLatency,
-			int sampleFramesOutputLatency )
+	private final HardwareIOOneChannelSetting audioChannelSetting;
+	private final HardwareIOOneChannelSetting noteChannelSetting;
+
+	private final long nanosOutputLatency;
+	private final int sampleFramesOutputLatency;
+
+	public HardwareIOChannelSettings( final HardwareIOOneChannelSetting coreEngineAudioChannelSetting,
+			final long nanosOutputLatency,
+			final int sampleFramesOutputLatency )
 	{
 		audioChannelSetting = coreEngineAudioChannelSetting;
 		this.nanosOutputLatency = nanosOutputLatency;
 		this.sampleFramesOutputLatency = sampleFramesOutputLatency;
 
 		// Note data is transmitted at 22khz
-		DataRate defaultNoteDataRate = DataRate.SR_22050;
+		final DataRate defaultNoteDataRate = DataRate.SR_22050;
 
-		float ratio = ((STANDARD_DATA_RATE.getValue() / (float)STANDARD_BUF_LENGTH)) / 
+		final float ratio = ((STANDARD_DATA_RATE.getValue() / (float)STANDARD_BUF_LENGTH)) /
 				(coreEngineAudioChannelSetting.getDataRate().getValue() / (float)coreEngineAudioChannelSetting.getChannelBufferLength() );
 
 		int noteDataBufferLengthAsInt = (int)(STANDARD_NOTE_BUFFER_LENGTH_AT_44100_1024 * ratio);
 		noteDataBufferLengthAsInt = (noteDataBufferLengthAsInt < STANDARD_NOTE_BUFFER_LENGTH_AT_44100_1024 ? STANDARD_NOTE_BUFFER_LENGTH_AT_44100_1024 : noteDataBufferLengthAsInt );
-			
+
 		noteChannelSetting = new HardwareIOOneChannelSetting( defaultNoteDataRate, noteDataBufferLengthAsInt );
 	}
 
@@ -63,8 +63,8 @@ public class HardwareIOChannelSettings
 	{
 		return noteChannelSetting;
 	}
-	
-	public int getChannelBufferLengthForChannelType( MadChannelType iType )
+
+	public int getChannelBufferLengthForChannelType( final MadChannelType iType )
 	{
 		switch( iType )
 		{
@@ -93,10 +93,11 @@ public class HardwareIOChannelSettings
 	{
 		return sampleFramesOutputLatency;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("AudioChannelSetting: ");
 		sb.append( audioChannelSetting.toString() );
 		sb.append(" NoteChannelSetting: ");
@@ -105,7 +106,7 @@ public class HardwareIOChannelSettings
 		sb.append( nanosOutputLatency );
 		sb.append(" SampleFramesOutputLatency: ");
 		sb.append( sampleFramesOutputLatency );
-		
+
 		return sb.toString();
 	}
 }

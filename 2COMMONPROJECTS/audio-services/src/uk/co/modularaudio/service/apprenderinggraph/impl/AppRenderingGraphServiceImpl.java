@@ -55,9 +55,9 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
 	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
 
-	private int numHelperThreads = -1;
+	private int numHelperThreads;
 	private boolean shouldProfileRenderingJobs;
-	private int maxWaitForTransitionMillis = -1;
+	private int maxWaitForTransitionMillis;
 
 	public AppRenderingGraphServiceImpl()
 	{
@@ -73,12 +73,12 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 				renderingService == null ||
 				timingService == null )
 		{
-			String msg = "AppRenderingGraphServiceImpl is missing service dependencies. Check configuration.";
+			final String msg = "AppRenderingGraphServiceImpl is missing service dependencies. Check configuration.";
 			log.error( msg );
 			throw new ComponentConfigurationException( msg );
 		}
 
-		Map<String,String> errors = new HashMap<String,String>();
+		final Map<String,String> errors = new HashMap<String,String>();
 
 		numHelperThreads = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_NUM_HELPER_THREADS, errors );
 
@@ -130,15 +130,15 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis );
 		}
-		catch( RecordNotFoundException rnfe )
+		catch( final RecordNotFoundException rnfe )
 		{
 			throw new DatastoreException( "RecordNotFoundException creating app rendering graph: " + rnfe.toString(), rnfe );
 		}
-		catch( MadProcessingException aupe )
+		catch( final MadProcessingException aupe )
 		{
 			throw new DatastoreException( "MadProcessingException creating app rendering graph: " + aupe.toString(), aupe );
 		}
-		catch (MAConstraintViolationException ecve)
+		catch (final MAConstraintViolationException ecve)
 		{
 			throw new DatastoreException( "ConstraintViolationException creating app rendering graph: " + ecve.toString(), ecve );
 		}

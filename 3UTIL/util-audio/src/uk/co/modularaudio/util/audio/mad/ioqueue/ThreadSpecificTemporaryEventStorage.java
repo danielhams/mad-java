@@ -22,21 +22,21 @@ package uk.co.modularaudio.util.audio.mad.ioqueue;
 
 public class ThreadSpecificTemporaryEventStorage
 {
-	public int numCommandEventsToInstance = 0;
-	public IOQueueEvent[] commandEventsToInstance;
-	public int numTemporalEventsToInstance = 0;
-	public IOQueueEvent[] temporalEventsToInstance;
-	public int numCommandEventsToUi = 0;
-	public IOQueueEvent[] commandEventsToUi;
-	public int numTemporalEventsToUi = 0;
-	public IOQueueEvent[] temporalEventsToUi;
-	
+	public int numCommandEventsToInstance;
+	public final IOQueueEvent[] commandEventsToInstance;
+	public int numTemporalEventsToInstance;
+	public final IOQueueEvent[] temporalEventsToInstance;
+	public int numCommandEventsToUi;
+	public final IOQueueEvent[] commandEventsToUi;
+	public int numTemporalEventsToUi;
+	public final IOQueueEvent[] temporalEventsToUi;
+
 	// 512K of floats
 	public final static int TEMP_FLOAT_ARRAY_LENGTH = 512 * 1024;
-	
+
 	public float[] temporaryFloatArray;
-	
-	public ThreadSpecificTemporaryEventStorage( int storageSizePerArray )
+
+	public ThreadSpecificTemporaryEventStorage( final int storageSizePerArray )
 	{
 		commandEventsToInstance = new IOQueueEvent[ storageSizePerArray ];
 		allocate( commandEventsToInstance );
@@ -46,25 +46,25 @@ public class ThreadSpecificTemporaryEventStorage
 		allocate( commandEventsToUi );
 		temporalEventsToUi = new IOQueueEvent[ storageSizePerArray ];
 		allocate( temporalEventsToUi );
-		
+
 		temporaryFloatArray = new float[ TEMP_FLOAT_ARRAY_LENGTH ];
 	}
 
-	private void allocate( IOQueueEvent[] eventsToAllocate )
+	private void allocate( final IOQueueEvent[] eventsToAllocate )
 	{
-		for( int i = 0 ; i < eventsToAllocate.length ; i++) 
+		for( int i = 0 ; i < eventsToAllocate.length ; i++)
 		{
 			eventsToAllocate[ i ] = new IOQueueEvent();
 		}
 	}
-	
-	public void resetEventsToInstance()
+
+	public final void resetEventsToInstance()
 	{
 		numCommandEventsToInstance = 0;
 		numTemporalEventsToInstance = 0;
 	}
-	
-	public void resetEventsToUi()
+
+	public final void resetEventsToUi()
 	{
 		numCommandEventsToUi = 0;
 		numTemporalEventsToUi = 0;

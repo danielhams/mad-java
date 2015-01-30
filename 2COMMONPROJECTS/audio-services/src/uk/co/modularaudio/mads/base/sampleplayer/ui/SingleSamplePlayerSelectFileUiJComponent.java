@@ -45,21 +45,21 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 
 	// Wait up to twenty milliseconds for the new sample to be used.
 	private static final long WAIT_TO_SWAP_NANOS = 1000 * 1000 * 20;
-	
+
 	private static Log log = LogFactory.getLog( SingleSamplePlayerSelectFileUiJComponent.class.getName() );
 
-	private String lastUsedDirectory = null;
-	private String lastUsedFilePath = null;
+	private String lastUsedDirectory;
+	private String lastUsedFilePath;
 
-	private SingleSamplePlayerMadInstance instance = null;
-	
-	private AdvancedComponentsFrontController advancedComponentsFrontController = null;
+	private final SingleSamplePlayerMadInstance instance;
+
+	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 
 	public SingleSamplePlayerSelectFileUiJComponent(
-			SingleSamplePlayerMadDefinition definition,
-			SingleSamplePlayerMadInstance instance,
-			SingleSamplePlayerMadUiInstance uiInstance,
-			int controlIndex )
+			final SingleSamplePlayerMadDefinition definition,
+			final SingleSamplePlayerMadInstance instance,
+			final SingleSamplePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.instance = instance;
 
@@ -70,25 +70,26 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 		this.setText( "/\\" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( String filename )
+	private void passChangeToInstanceData( final String filename )
 	{
 		lastUsedFilePath = filename;
 		try
 		{
 			// First start caching the new sample
-			SingleSampleRuntime sampleRuntime = new SingleSampleRuntime( advancedComponentsFrontController, filename );
+			final SingleSampleRuntime sampleRuntime = new SingleSampleRuntime( advancedComponentsFrontController, filename );
 
-			SingleSampleRuntime previousSampleRuntime = instance.desiredSampleRuntime.get();
+			final SingleSampleRuntime previousSampleRuntime = instance.desiredSampleRuntime.get();
 			// Push the new one
 			instance.desiredSampleRuntime.set( sampleRuntime );
-			
+
 			// Wait until it's marked as used.
-			long startTime = System.nanoTime();
+			final long startTime = System.nanoTime();
 			long curTime;
 			boolean wasUsed;
 			do
@@ -97,23 +98,23 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 				wasUsed = sampleRuntime.isUsed();
 			}
 			while( wasUsed == false && curTime < (startTime + WAIT_TO_SWAP_NANOS ) );
-			
+
 			if( previousSampleRuntime != null )
 			{
 				// Now we can de-allocate the previous clients
 				previousSampleRuntime.destroy();
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught attempting to use new sample file in sample player: " + e.toString();
+			final String msg = "Exception caught attempting to use new sample file in sample player: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -121,24 +122,27 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveEvent( ActionEvent e )
+	public void receiveEvent( final ActionEvent e )
 	{
-		JFileChooser openFileChooser = new JFileChooser();
+		final JFileChooser openFileChooser = new JFileChooser();
 		openFileChooser.setCurrentDirectory( new File( lastUsedDirectory ) );
-		int retVal = openFileChooser.showOpenDialog( this );
+		final int retVal = openFileChooser.showOpenDialog( this );
 		if (retVal == JFileChooser.APPROVE_OPTION)
 		{
 			// Store the directory we navigated to so next open uses it. Will be
 			// specific to the control instance of course
-			File f = openFileChooser.getSelectedFile();
+			final File f = openFileChooser.getSelectedFile();
 
 			if (f != null)
 			{
 				lastUsedDirectory = f.getParent();
-				log.debug( "Attempting to use audio file " + f.getPath() );
+				if( log.isDebugEnabled() )
+				{
+					log.debug( "Attempting to use audio file " + f.getPath() );
+				}
 				passChangeToInstanceData( f.getAbsolutePath() );
 			}
-		}		
+		}
 	}
 
 	@Override
@@ -148,7 +152,7 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 		if( value != null && !value.equals( "" ) )
 		{

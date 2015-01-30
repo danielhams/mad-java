@@ -36,9 +36,9 @@ public class MTSafeGenericRingBuffer<A>
 
 	protected final ReentrantLock writeLock = new ReentrantLock( true );
 
-	protected int capacity = -1;
-	protected int bufferLength = -1;
-	protected A[] buffer;
+	protected final int capacity;
+	protected final int bufferLength;
+	protected final A[] buffer;
 
 	@SuppressWarnings("unchecked")
 	public MTSafeGenericRingBuffer( final Class<A> clazz, final int capacity )
@@ -50,12 +50,12 @@ public class MTSafeGenericRingBuffer<A>
 
 	public int write( final A source[], final int pos, final int length )
 	{
-		int curReadPosition = readPosition.get();
+		final int curReadPosition = readPosition.get();
 		writeLock.lock();
 		try
 		{
-			int curWritePosition = writePosition.get();
-			int numWriteable = calcNumWriteable( curReadPosition, curWritePosition );
+			final int curWritePosition = writePosition.get();
+			final int numWriteable = calcNumWriteable( curReadPosition, curWritePosition );
 			int newPosition = curWritePosition;
 
 			if( numWriteable < length )
@@ -69,8 +69,8 @@ public class MTSafeGenericRingBuffer<A>
 				// Case where the write position might loop over the end of the buffer
 				if( newPosition + length > bufferLength )
 				{
-					int numToWriteAtEnd = bufferLength - newPosition;
-					int numToWriteAtStart = length - numToWriteAtEnd;
+					final int numToWriteAtEnd = bufferLength - newPosition;
+					final int numToWriteAtStart = length - numToWriteAtEnd;
 					System.arraycopy( source, pos, buffer, newPosition, numToWriteAtEnd );
 					System.arraycopy( source, pos + numToWriteAtEnd, buffer, 0, numToWriteAtStart );
 				}
@@ -147,7 +147,7 @@ public class MTSafeGenericRingBuffer<A>
 			{
 				newRp -= bufferLength;
 			}
-			boolean success = readPosition.compareAndSet( rp, newRp );
+			final boolean success = readPosition.compareAndSet( rp, newRp );
 			if( success )
 			{
 				// Fast track exit, stop re-evaluating the while

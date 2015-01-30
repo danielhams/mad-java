@@ -24,26 +24,19 @@ import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadDefinition;
 import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadInstance;
 import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperIOQueueBridge;
 import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperWaveTables.WaveType;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 
-public class WaveShaperMadUiInstance extends AbstractNonConfigurableMadUiInstance<WaveShaperMadDefinition, WaveShaperMadInstance>
+public class WaveShaperMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<WaveShaperMadDefinition, WaveShaperMadInstance>
 {
-	public WaveShaperMadUiInstance( WaveShaperMadInstance instance,
-			WaveShaperMadUiDefinition uiDefinition )
+	public WaveShaperMadUiInstance( final WaveShaperMadInstance instance,
+			final WaveShaperMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
 
-	public void sendWaveChoice( WaveType waveType )
+
+	public void sendWaveChoice( final WaveType waveType )
 	{
 		sendTemporalValueToInstance( WaveShaperIOQueueBridge.COMMAND_WAVE, waveType.ordinal() );
-	}
-
-
-	@Override
-	public void consumeQueueEntry( WaveShaperMadInstance instance, IOQueueEvent nextOutgoingEntry)
-	{
 	}
 }

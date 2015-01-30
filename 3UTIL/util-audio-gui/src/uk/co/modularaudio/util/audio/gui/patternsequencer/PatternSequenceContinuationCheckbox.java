@@ -29,10 +29,10 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceM
 public class PatternSequenceContinuationCheckbox extends JCheckBox implements ChangeListener
 {
 	private static final long serialVersionUID = 3373759560524146016L;
-	
-	private PatternSequenceModel dataModel = null;
 
-	public PatternSequenceContinuationCheckbox( PatternSequenceModel dataModel )
+	private final PatternSequenceModel dataModel;
+
+	public PatternSequenceContinuationCheckbox( final PatternSequenceModel dataModel )
 	{
 		this.setOpaque( false );
 		this.dataModel = dataModel;
@@ -40,9 +40,9 @@ public class PatternSequenceContinuationCheckbox extends JCheckBox implements Ch
 	}
 
 	@Override
-	public void stateChanged( ChangeEvent e )
+	public void stateChanged( final ChangeEvent e )
 	{
-		boolean isSelected = isSelected();
+		final boolean isSelected = isSelected();
 		dataModel.setContinuationState( isSelected );
 	}
 

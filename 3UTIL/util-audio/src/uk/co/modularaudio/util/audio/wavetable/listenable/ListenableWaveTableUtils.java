@@ -22,19 +22,19 @@ package uk.co.modularaudio.util.audio.wavetable.listenable;
 
 public class ListenableWaveTableUtils
 {
-	public static void normalise_table(ListenableWaveTable table, float scale)
+	public static void normaliseTable( final ListenableWaveTable table, final float scale )
 	{
 		int n;
 		float max = 0.f;
 		for(n=0; n < table.getLength(); n++)
 		{
-			float tableN = table.getValueAt( n );
+			final float tableN = table.getValueAt( n );
 			max = tableN > max ? tableN : max;
 		}
-		
+
 		for(n=0; n < table.getLength(); n++)
 		{
-			float curVal = table.getValueAt( n );
+			final float curVal = table.getValueAt( n );
 			table.setValueAt( n, curVal / max  );
 		}
 	}

@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class SuperSawModuleMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<SuperSawModuleMadDefinition, SuperSawModuleMadInstance, SuperSawModuleMadUiInstance>
 {
-	private static final Span span = new Span(2, 4);
+	private static final Span SPAN = new Span(2, 4);
 	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		SuperSawModuleMadDefinition.CONSUMER_CV_IN,
 		SuperSawModuleMadDefinition.CONSUMER_CV_FREQ_IN,
 		SuperSawModuleMadDefinition.CONSUMER_CV_MIX_IN,
@@ -58,7 +58,7 @@ public class SuperSawModuleMadUiDefinition
 		SuperSawModuleMadDefinition.PRODUCER_CV_OSC7_AMP
 	};
 	
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 20, 50 ),
 		new Point( 20, 70 ),
@@ -81,31 +81,31 @@ public class SuperSawModuleMadUiDefinition
 		new Point( 150, 170 ),
 	};
 	
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 	};
 	
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
 	
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
 	
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
 	
-	private static final Class<SuperSawModuleMadUiInstance> instanceClass = SuperSawModuleMadUiInstance.class;
+	private static final Class<SuperSawModuleMadUiInstance> INSTANCE_CLASS = SuperSawModuleMadUiInstance.class;
 
 	public SuperSawModuleMadUiDefinition( BufferedImageAllocator bia, SuperSawModuleMadDefinition definition, ComponentImageFactory cif, String imageRoot )
 			throws DatastoreException
 		{
 			super( bia, definition, cif, imageRoot,
-					span,
-					instanceClass,
-					uiChannelInstanceIndexes,
-					uiChannelPositions,
-					uiControlNames,
-					uiControlTypes,
-					uiControlClasses,
-					uiControlBounds );
+					SPAN,
+					INSTANCE_CLASS,
+					CHAN_INDEXES,
+					CHAN_POSIS,
+					CONTROL_NAMES,
+					CONTROL_TYPES,
+					CONTROL_CLASSES,
+					CONTROL_BOUNDS );
 		}
 }

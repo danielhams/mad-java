@@ -22,17 +22,17 @@ package uk.co.modularaudio.util.audio.midi;
 
 public class MidiNote
 {
-	private int midiNumber;
-	private char noteChar;
-	private int noteOctave;
-	private boolean whiteKey;
-	private float frequency;
-	
-	public MidiNote( int midiNumber,
-			char noteChar,
-			int noteOctave,
-			boolean whiteKey,
-			float frequency )
+	private final int midiNumber;
+	private final char noteChar;
+	private final int noteOctave;
+	private final boolean whiteKey;
+	private final float frequency;
+
+	public MidiNote( final int midiNumber,
+			final char noteChar,
+			final int noteOctave,
+			final boolean whiteKey,
+			final float frequency )
 	{
 		this.midiNumber = midiNumber;
 		this.noteChar = noteChar;
@@ -48,17 +48,17 @@ public class MidiNote
 
 	public String getNoteName()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append( noteChar );
 		sb.append( noteOctave );
 		return sb.toString();
 	}
-	
+
 	public char getNoteChar()
 	{
 		return noteChar;
 	}
-	
+
 	public boolean isWhiteKey()
 	{
 		return whiteKey;
@@ -68,7 +68,8 @@ public class MidiNote
 	{
 		return frequency;
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return "MN(" + midiNumber + ") Name(" + getNoteName() + ") FQ(" + frequency + ")";

@@ -39,57 +39,44 @@ public class PreferencesAudioSystemPage extends JPanel
 
 //	private static Log log = LogFactory.getLog( PreferencesAudioSystemPage.class.getName() );
 
-//	private GuiFrontController fc = null;
-//	private PreferencesDialog preferencesDialog = null;
-	private UserPreferencesMVCView userPreferencesView = null;
+	private final UserPreferencesMVCView userPreferencesView;
 
-	private UserPreferencesGuiFpsMVCView fpsCombo = null;
+	private final UserPreferencesGuiFpsMVCView fpsCombo;
 
-	private UserPreferencesInputDeviceMVCView inputDeviceCombo = null;
-	private UserPreferencesOutputDeviceMVCView outputDeviceCombo = null;
-//	private UserPreferencesBufferSizeMVCView bufferSizeSlider = null;
-	private UserPreferencesInputMidiDeviceMVCView inputMidiDeviceCombo = null;
-	private UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceCombo = null;
+	private final UserPreferencesInputDeviceMVCView inputDeviceCombo;
+	private final UserPreferencesOutputDeviceMVCView outputDeviceCombo;
 
-	public PreferencesAudioSystemPage( ComponentDesignerFrontController fc, PreferencesDialog preferencesDialog ) throws DatastoreException
+	private final UserPreferencesInputMidiDeviceMVCView inputMidiDeviceCombo;
+	private final UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceCombo;
+
+	public PreferencesAudioSystemPage( final ComponentDesignerFrontController fc, final PreferencesDialog preferencesDialog ) throws DatastoreException
 	{
-//		this.fc = fc;
-//		this.preferencesDialog = preferencesDialog;
 		this.userPreferencesView = preferencesDialog.getUserPreferencesView();
 
-		String migLayoutString = "fill";
+		final String migLayoutString = "fill";
 		this.setLayout( new MigLayout( migLayoutString ) );
 
-		JPanel deviceChoicePanel = getDeviceChoicePanel();
-		this.add( deviceChoicePanel, "grow, shrink" );
-		this.userPreferencesView = preferencesDialog.getUserPreferencesView();
-
-		this.validate();
-	}
-
-	private JPanel getDeviceChoicePanel()
-	{
-		JPanel retVal = new JPanel();
+		final JPanel deviceChoicePanel = new JPanel();
 //		String migLayoutString = "debug, center";
-		String migLayoutString = "center";
-		String rowLayoutString = "";
-		String colLayoutString = "[][fill,grow,shrink]";
-		retVal.setLayout( new MigLayout( migLayoutString, colLayoutString, rowLayoutString ));
+		final String dcLayoutString = "center";
+		final String rowLayoutString = "";
+		final String colLayoutString = "[][fill,grow,shrink]";
+		deviceChoicePanel.setLayout( new MigLayout( dcLayoutString, colLayoutString, rowLayoutString ));
 
-		JLabel fpsLabel = new JLabel("Gui FPS:" );
-		retVal.add( fpsLabel, "align right");
+		final JLabel fpsLabel = new JLabel("Gui FPS:" );
+		deviceChoicePanel.add( fpsLabel, "align right");
 		fpsCombo = userPreferencesView.getGuiFpsMVCView();
-		retVal.add( fpsCombo, "growx, shrink, wrap" );
+		deviceChoicePanel.add( fpsCombo, "growx, shrink, wrap" );
 
-		JLabel inputDeviceLabel = new JLabel( "Input Device:" );
-		retVal.add( inputDeviceLabel, "align right" );
+		final JLabel inputDeviceLabel = new JLabel( "Input Device:" );
+		deviceChoicePanel.add( inputDeviceLabel, "align right" );
 		inputDeviceCombo = userPreferencesView.getInputDeviceMVCView();
-		retVal.add( inputDeviceCombo, "growx, shrink, wrap" );
+		deviceChoicePanel.add( inputDeviceCombo, "growx, shrink, wrap" );
 
-		JLabel outputDeviceLabel = new JLabel( "Output Device:" );
-		retVal.add( outputDeviceLabel, "align right" );
+		final JLabel outputDeviceLabel = new JLabel( "Output Device:" );
+		deviceChoicePanel.add( outputDeviceLabel, "align right" );
 		outputDeviceCombo = userPreferencesView.getOutputDeviceMVCView();
-		retVal.add( outputDeviceCombo, "growx, shrink, wrap" );
+		deviceChoicePanel.add( outputDeviceCombo, "growx, shrink, wrap" );
 
 		// Only supporting jack for now, so no issue with buffer size selection
 //		JLabel clockLabel = new JLabel( "Buffer Size:" );
@@ -98,15 +85,16 @@ public class PreferencesAudioSystemPage extends JPanel
 //		retVal.add( bufferSizeSlider, "wrap");
 
 		inputMidiDeviceCombo = userPreferencesView.getInputMidiDeviceMVCView();
-		JLabel inputMidiLabel = new JLabel( "Midi In" );
-		retVal.add(  inputMidiLabel, "align right" );
-		retVal.add( inputMidiDeviceCombo, "growx, shrink, wrap" );
+		final JLabel inputMidiLabel = new JLabel( "Midi In" );
+		deviceChoicePanel.add(  inputMidiLabel, "align right" );
+		deviceChoicePanel.add( inputMidiDeviceCombo, "growx, shrink, wrap" );
 
 		outputMidiDeviceCombo = userPreferencesView.getOutputMidiDeviceMVCView();
-		JLabel outputMidiLabel = new JLabel( "Midi Out" );
-		retVal.add(  outputMidiLabel, "align right" );
-		retVal.add( outputMidiDeviceCombo, "growx, shrink, wrap" );
+		final JLabel outputMidiLabel = new JLabel( "Midi Out" );
+		deviceChoicePanel.add(  outputMidiLabel, "align right" );
+		deviceChoicePanel.add( outputMidiDeviceCombo, "growx, shrink, wrap" );
+		this.add( deviceChoicePanel, "grow, shrink" );
 
-		return retVal;
+		this.validate();
 	}
 }

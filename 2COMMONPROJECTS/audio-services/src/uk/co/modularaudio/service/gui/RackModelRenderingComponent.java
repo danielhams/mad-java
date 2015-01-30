@@ -27,14 +27,14 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 public interface RackModelRenderingComponent
 {
 	public void setRackDataModel( RackDataModel rackDataModel );
-	
+
 	public JComponent getJComponent();
-	
+
 	public boolean isFrontShowing();
 
 	public void destroy();
 
 	void rotateRack();
-	
+
 	void setForceRepaints( boolean forceRepaints );
 }

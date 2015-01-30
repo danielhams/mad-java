@@ -37,23 +37,23 @@ public class AudioAnalyserTabbedPane extends JTabbedPane
 {
 	private static final long serialVersionUID = -4248511027552356776L;
 
-	private static final Log log = LogFactory.getLog( AudioAnalyserTabbedPane.class.getName() );
+	private final Log log = LogFactory.getLog( AudioAnalyserTabbedPane.class.getName() );
 
 	private final AudioAnalyserOscilloscope oscilloscopeComponent;
 	private final AudioAnalyserSpectralRoll spectralRollComponent;
 	private final AudioAnalyserSpectralAmp spectralAmpComponent;
 
-	private AudioAnalyserDisplay[] displays;
+	private final AudioAnalyserDisplay[] displays;
 
 	private int currentSelectedDisplay = 0;
 
-	public AudioAnalyserTabbedPane( AudioAnalyserUiBufferState uiBufferState, BufferedImageAllocator bia )
+	public AudioAnalyserTabbedPane( final AudioAnalyserUiBufferState uiBufferState, final BufferedImageAllocator bia )
 	{
 		super( JTabbedPane.TOP );
 		setOpaque(false);
 
-		Font f = getFont();
-		Font newFont = f.deriveFont(9.0f);
+		final Font f = getFont();
+		final Font newFont = f.deriveFont(9.0f);
 		setFont( newFont );
 
 		displays = new AudioAnalyserDisplay[3];
@@ -71,18 +71,18 @@ public class AudioAnalyserTabbedPane extends JTabbedPane
 		this.setBorder( new EmptyBorder( 0,0,0,0 ) );
 	}
 
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
-			MadTimingParameters timingParameters,
-			long currentGuiTime )
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters,
+			final long currentGuiTime )
 	{
-		AudioAnalyserDisplay whichDisplay = displays[currentSelectedDisplay];
+		final AudioAnalyserDisplay whichDisplay = displays[currentSelectedDisplay];
 		whichDisplay.doDisplayProcessing( tempEventStorage,
 					timingParameters,
 					currentGuiTime );
 	}
 
 	@Override
-	public void setSelectedIndex(int index)
+	public void setSelectedIndex(final int index)
 	{
 		log.debug("Setting selected tab by index");
 		currentSelectedDisplay = index;

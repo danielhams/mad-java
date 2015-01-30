@@ -31,14 +31,14 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
 public class DeleteComponentYesNoCallback implements YesNoQuestionDialogCallback
 {
 	private static Log log = LogFactory.getLog( DeleteComponentYesNoCallback.class.getName() );
-	
-	private RackService rackService = null;
-	private RackDataModel rackDataModel = null;
-	private RackComponent componentForAction = null;
-		
-	public DeleteComponentYesNoCallback( RackService rackService,
-			RackDataModel rackDataModel,
-			RackComponent componentForAction )
+
+	private final RackService rackService;
+	private final RackDataModel rackDataModel;
+	private final RackComponent componentForAction;
+
+	public DeleteComponentYesNoCallback( final RackService rackService,
+			final RackDataModel rackDataModel,
+			final RackComponent componentForAction )
 	{
 		this.rackService = rackService;
 		this.rackDataModel = rackDataModel;
@@ -46,7 +46,7 @@ public class DeleteComponentYesNoCallback implements YesNoQuestionDialogCallback
 	}
 
 	@Override
-	public void receiveDialogResultValue( int value )
+	public void receiveDialogResultValue( final int value )
 	{
 		try
 		{
@@ -56,9 +56,9 @@ public class DeleteComponentYesNoCallback implements YesNoQuestionDialogCallback
 				rackService.removeContentsFromRack( rackDataModel, componentForAction );
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "DeleteComponentCallback caught exception removing contents from rack: " + e.toString();
+			final String msg = "DeleteComponentCallback caught exception removing contents from rack: " + e.toString();
 			log.error( msg, e );
 		}
 	}

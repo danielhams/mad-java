@@ -24,11 +24,11 @@ import uk.co.modularaudio.service.rendering.vos.AbstractParallelRenderingJob;
 
 public class JobProfileResult
 {
-	private int jobThreadExecutor = Integer.MAX_VALUE;
-	private long startTimestamp = -1;
-	private long endTimestamp = -1;
+	private int jobThreadExecutor;
+	private long startTimestamp;
+	private long endTimestamp;
 
-	public void pullResultsFromJob( AbstractParallelRenderingJob job )
+	public void pullResultsFromJob( final AbstractParallelRenderingJob job )
 	{
 		jobThreadExecutor = job.getJobThreadExecutor();
 		startTimestamp = job.getJobStartTimestamp();

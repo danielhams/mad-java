@@ -26,10 +26,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorIOQueueBridge;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
-import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
@@ -39,18 +39,18 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class StereoCompressorMadUiInstance
-	extends AbstractNonConfigurableMadUiInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance>
+	extends AbstractNoNameChangeNonConfigurableMadUiInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance>
 	implements IOQueueEventUiConsumer<StereoCompressorMadInstance>
 {
 	private static Log log = LogFactory.getLog( StereoCompressorMadUiInstance.class.getName() );
-	
+
 	// Reset every second
 	private final static int MILLIS_BETWEEN_PEAK_RESET = 1000;
-	
+
 //	public long audioIOLatencyNanos = 0;
 
 //	private FastSet<TimescaleChangeListener> timescaleChangeListeners = new FastSet<TimescaleChangeListener>();
-	private List<GateListener> gateListeners = new ArrayList<GateListener>();
+	private final List<GateListener> gateListeners = new ArrayList<GateListener>();
 
 	public float guiDesiredAttackMillis = 0.0f;
 
@@ -60,69 +60,69 @@ public class StereoCompressorMadUiInstance
 	private float lastThresholdDb = Float.NEGATIVE_INFINITY;
 	private MeterValueReceiver envSignalValueReceiver = null;
 	private MeterValueReceiver attenuationSignalValueReceiver = null;
-	
+
 	// One every second at 44.1
 	// Should be reset on "startup"
 	protected int framesBetweenPeakReset = 44100;
 
-	public StereoCompressorMadUiInstance( StereoCompressorMadInstance instance,
-			StereoCompressorMadUiDefinition uiDefinition )
+	public StereoCompressorMadUiInstance( final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
-	
-	public void sendOneCurveAsFloat( int command,
-			float guiDesiredValue )
+
+	public void sendOneCurveAsFloat( final int command,
+			final float guiDesiredValue )
 	{
-		long value = (long)(Float.floatToIntBits( guiDesiredValue ) );
+		final long value = (Float.floatToIntBits( guiDesiredValue ) );
 		sendTemporalValueToInstance(command, value);
 		propogateChange( command, guiDesiredValue );
 	}
-	
-	private void propogateChange( int command, float value )
+
+	private void propogateChange( final int command, final float value )
 	{
 		for( int i = 0; i < gateListeners.size() ; i++)
 		{
-			GateListener l = gateListeners.get( i );
+			final GateListener l = gateListeners.get( i );
 			l.receiveChange( command, value );
 		}
 	}
-	
-	public void addGateListener( GateListener l )
+
+	public void addGateListener( final GateListener l )
 	{
 		gateListeners.add( l );
 	}
-	
-	public void removeGateListener( GateListener l )
+
+	public void removeGateListener( final GateListener l )
 	{
 		gateListeners.remove( l );
 	}
 
 	@Override
 	public void doDisplayProcessing(
-			ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+			final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiFrameTime )
 	{
 		// Receive any events from the instance first
 		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
-		
+
 		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiFrameTime );
 	}
 
 	@Override
 	public void consumeQueueEntry(
-			StereoCompressorMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+			final StereoCompressorMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER:
 			{
-				long value = nextOutgoingEntry.value;
-				int chanNum = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
+				final long value = nextOutgoingEntry.value;
+				final int chanNum = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( sourceSignalValueReceiver != null )
 				{
 					sourceSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, chanNum, ampValue );
@@ -131,10 +131,10 @@ public class StereoCompressorMadUiInstance
 			}
 			case StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER:
 			{
-				long value = nextOutgoingEntry.value;
-				int chanNum = (int)((value ) & 0xFFFFFFFF);
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
+				final long value = nextOutgoingEntry.value;
+				final int chanNum = (int)((value ) & 0xFFFFFFFF);
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( outSignalValueReceiver != null )
 				{
 					outSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, chanNum, ampValue );
@@ -143,9 +143,9 @@ public class StereoCompressorMadUiInstance
 			}
 			case StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE:
 			{
-				long value = nextOutgoingEntry.value;
-				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
+				final long value = nextOutgoingEntry.value;
+				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( envSignalValueReceiver != null )
 				{
 					envSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, 0, ampValue );
@@ -154,9 +154,9 @@ public class StereoCompressorMadUiInstance
 			}
 			case StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION:
 			{
-				long value = nextOutgoingEntry.value;
-				int upper32Bits = (int)(value);
-				float ampValue = Float.intBitsToFloat( upper32Bits );
+				final long value = nextOutgoingEntry.value;
+				final int upper32Bits = (int)(value);
+				final float ampValue = Float.intBitsToFloat( upper32Bits );
 				if( attenuationSignalValueReceiver != null )
 				{
 					attenuationSignalValueReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, 0, ampValue );
@@ -165,53 +165,53 @@ public class StereoCompressorMadUiInstance
 			}
 			default:
 			{
-				String msg = "Unknown command receive for UI: " + nextOutgoingEntry.command;
+				final String msg = "Unknown command receive for UI: " + nextOutgoingEntry.command;
 				log.error( msg );
 				break;
 			}
 		}
-		
+
 	}
 
-	public void sendOneCurve( int command, float guiDesiredValue )
+	public void sendOneCurve( final int command, final float guiDesiredValue )
 	{
-		long value = (long)(Float.floatToIntBits( guiDesiredValue ) );
+		final long value = (Float.floatToIntBits( guiDesiredValue ) );
 		sendTemporalValueToInstance(command, value);
 	}
 
-	public void registerSourceSignalMeterValueReceiver( MeterValueReceiver meterValueReceiver )
+	public void registerSourceSignalMeterValueReceiver( final MeterValueReceiver meterValueReceiver )
 	{
 		this.sourceSignalValueReceiver  = meterValueReceiver;
 	}
-	
-	public void registerOutSignalMeterValueReceiver( MeterValueReceiver meterValueReceiver )
+
+	public void registerOutSignalMeterValueReceiver( final MeterValueReceiver meterValueReceiver )
 	{
 		this.outSignalValueReceiver  = meterValueReceiver;
 	}
-	
-	public void registerThresholdValueReceiver( ThresholdValueReceiver thresholdValueReceiver )
+
+	public void registerThresholdValueReceiver( final ThresholdValueReceiver thresholdValueReceiver )
 	{
 		this.thresholdValueReceiver = thresholdValueReceiver;
 		thresholdValueReceiver.receiveNewDbValue( lastThresholdDb );
 	}
-	
-	public void registerEnvSignalMeterValueReceiver( MeterValueReceiver meterValueReceiver )
+
+	public void registerEnvSignalMeterValueReceiver( final MeterValueReceiver meterValueReceiver )
 	{
 		this.envSignalValueReceiver = meterValueReceiver;
 	}
 
-	public void registerAttenuationSignalMeterValueReceiver( MeterValueReceiver meterValueReceiver )
+	public void registerAttenuationSignalMeterValueReceiver( final MeterValueReceiver meterValueReceiver )
 	{
 		this.attenuationSignalValueReceiver = meterValueReceiver;
 	}
 
-	public void sendUiActive( boolean showing )
+	public void sendUiActive( final boolean showing )
 	{
 		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_ACTIVE,
 			( showing ? 1 : 0 ) );
 	}
 
-	public void emitThresholdChange( float newValue )
+	public void emitThresholdChange( final float newValue )
 	{
 		lastThresholdDb = newValue;
 		if( thresholdValueReceiver != null )
@@ -221,23 +221,23 @@ public class StereoCompressorMadUiInstance
 		}
 	}
 
-	public void sendLookahead( boolean selected )
+	public void sendLookahead( final boolean selected )
 	{
 		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_LOOKAHEAD,
 			(selected ? 1 : 0 ) );
 	}
 
 	@Override
-	public void receiveStartup(HardwareIOChannelSettings ratesAndLatency,
-			MadTimingParameters timingParameters,
-			MadFrameTimeFactory frameTimeFactory)
+	public void receiveStartup(final HardwareIOChannelSettings ratesAndLatency,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory)
 	{
 		super.receiveStartup(ratesAndLatency, timingParameters, frameTimeFactory);
 		framesBetweenPeakReset = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( ratesAndLatency.getAudioChannelSetting().getDataRate().getValue(),
 				MILLIS_BETWEEN_PEAK_RESET );
 	}
 
-	public void updateThresholdType( int thresholdType )
+	public void updateThresholdType( final int thresholdType )
 	{
 		sendTemporalValueToInstance(StereoCompressorIOQueueBridge.COMMAND_IN_THRESHOLD_TYPE, thresholdType);
 	}

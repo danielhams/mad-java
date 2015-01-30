@@ -31,32 +31,32 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTableDefines;
 
-public class StandardBandLimitedWaveTables
+public final class StandardBandLimitedWaveTables
 {
 	private static Log log = LogFactory.getLog( StandardBandLimitedWaveTables.class.getName() );
-	
-	private String pathToCacheRoot;
-	private HashMap<OscillatorWaveShape, BandLimitedWaveTableMap> shapeToTableMap = new HashMap<OscillatorWaveShape, BandLimitedWaveTableMap>();
 
-	private StandardBandLimitedWaveTables( String pathToCacheRoot ) throws IOException
+	private final String pathToCacheRoot;
+	private final HashMap<OscillatorWaveShape, BandLimitedWaveTableMap> shapeToTableMap = new HashMap<OscillatorWaveShape, BandLimitedWaveTableMap>();
+
+	private StandardBandLimitedWaveTables( final String pathToCacheRoot ) throws IOException
 	{
 		this.pathToCacheRoot = pathToCacheRoot;
 	}
 
-	private static Lock instanceLock = new ReentrantLock();
-	private static AtomicReference<StandardBandLimitedWaveTables> privateInstance = new AtomicReference<StandardBandLimitedWaveTables>();
-	
-	public static StandardBandLimitedWaveTables getInstance( String pathToCacheRoot ) throws IOException
+	private final static Lock INSTANCE_LOCK = new ReentrantLock();
+	private final static AtomicReference<StandardBandLimitedWaveTables> PRIVATE_INSTANCE = new AtomicReference<StandardBandLimitedWaveTables>();
+
+	public static StandardBandLimitedWaveTables getInstance( final String pathToCacheRoot ) throws IOException
 	{
 		StandardBandLimitedWaveTables retVal = null;
 		try
 		{
-			instanceLock.lock();
-			retVal = privateInstance.get();
+			INSTANCE_LOCK.lock();
+			retVal = PRIVATE_INSTANCE.get();
 			if( retVal == null )
 			{
 				retVal = new StandardBandLimitedWaveTables( pathToCacheRoot );
-				if( !privateInstance.compareAndSet( null,  retVal ) )
+				if( !PRIVATE_INSTANCE.compareAndSet( null,  retVal ) )
 				{
 					log.error( "Failed creating the singleton....");
 				}
@@ -64,13 +64,13 @@ public class StandardBandLimitedWaveTables
 		}
 		finally
 		{
-			instanceLock.unlock();
+			INSTANCE_LOCK.unlock();
 		}
 
 		return retVal;
 	}
 
-	public BandLimitedWaveTableMap getMapForShape( OscillatorWaveShape waveShape ) throws NoWaveTableForShapeException
+	public BandLimitedWaveTableMap getMapForShape( final OscillatorWaveShape waveShape ) throws NoWaveTableForShapeException
 	{
 		if( !shapeToTableMap.containsKey( waveShape ) )
 		{
@@ -80,8 +80,8 @@ public class StandardBandLimitedWaveTables
 				{
 					case SAW:
 					{
-						SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
-						BandLimitedWaveTableMap sawWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
+						final SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
+						final BandLimitedWaveTableMap sawWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
 								sawWaveTableGenerator,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH );
 						shapeToTableMap.put( OscillatorWaveShape.SAW, sawWaveTableMap );
@@ -89,8 +89,8 @@ public class StandardBandLimitedWaveTables
 					}
 					case SQUARE:
 					{
-						SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
-						BandLimitedWaveTableMap squareWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
+						final SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
+						final BandLimitedWaveTableMap squareWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
 								squareWaveTableGenerator,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH );
 						shapeToTableMap.put( OscillatorWaveShape.SQUARE, squareWaveTableMap );
@@ -98,8 +98,8 @@ public class StandardBandLimitedWaveTables
 					}
 					case TEST1:
 					{
-						Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
-						BandLimitedWaveTableMap test1WaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
+						final Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
+						final BandLimitedWaveTableMap test1WaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
 								test1WaveTableGenerator,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH );
 						shapeToTableMap.put( OscillatorWaveShape.TEST1, test1WaveTableMap );
@@ -107,8 +107,8 @@ public class StandardBandLimitedWaveTables
 					}
 					case TRIANGLE:
 					{
-						TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
-						BandLimitedWaveTableMap triangleWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
+						final TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
+						final BandLimitedWaveTableMap triangleWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
 								triangleWaveTableGenerator,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH );
 						shapeToTableMap.put( OscillatorWaveShape.TRIANGLE, triangleWaveTableMap );
@@ -116,8 +116,8 @@ public class StandardBandLimitedWaveTables
 					}
 					case JUNO:
 					{
-						JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
-						BandLimitedWaveTableMap junoWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
+						final JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
+						final BandLimitedWaveTableMap junoWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
 								junoWaveTableGenerator,
 								RawWaveTableDefines.OSCILLATOR_BUFFER_LENGTH );
 						shapeToTableMap.put( OscillatorWaveShape.JUNO, junoWaveTableMap );
@@ -129,7 +129,7 @@ public class StandardBandLimitedWaveTables
 					}
 				}
 			}
-			catch( IOException ioe )
+			catch( final IOException ioe )
 			{
 				throw new NoWaveTableForShapeException( ioe );
 			}

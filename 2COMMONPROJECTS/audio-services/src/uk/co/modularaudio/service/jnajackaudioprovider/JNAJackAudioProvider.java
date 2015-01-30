@@ -38,7 +38,7 @@ import org.jaudiolibs.jnajack.JackStatus;
 import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
@@ -67,25 +67,25 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	private static final int NUM_STEREO_JACK_AUDIO_CHANNELS = 2;
 	private static final int NUM_SURROUND_JACK_AUDIO_CHANNELS = 8;
 
-	private ConfigurationService configurationService = null;
+	private ConfigurationService configurationService;
 
-	private AudioProviderRegistryService audioProviderRegistryService = null;
-	private TimingService timingService = null;
-	private AppRenderingGraphService appRenderingGraphService = null;
+	private AudioProviderRegistryService audioProviderRegistryService;
+	private TimingService timingService;
+	private AppRenderingGraphService appRenderingGraphService;
 
-	private boolean shouldRegister = false;
+	private boolean shouldRegister;
 
-	private ArrayList<AudioHardwareDevice> consumerAudioHardwareDevices = null;
-	private ArrayList<AudioHardwareDevice> producerAudioHardwareDevices = null;
+	private final ArrayList<AudioHardwareDevice> consumerAudioHardwareDevices;
+	private final ArrayList<AudioHardwareDevice> producerAudioHardwareDevices;
 
-	private ArrayList<MidiHardwareDevice> consumerMidiHardwareDevices = null;
-	private ArrayList<MidiHardwareDevice> producerMidiHardwareDevices = null;
+	private final ArrayList<MidiHardwareDevice> consumerMidiHardwareDevices;
+	private final ArrayList<MidiHardwareDevice> producerMidiHardwareDevices;
 
 	// JavaJack stuff
-	private boolean connectedToJack = false;
-	private Jack jack = null;
-	private JackClient client = null;
-	private String jackClientName = "Component Designer";
+	private boolean connectedToJack;
+	private Jack jack;
+	private JackClient client;
+	private final String jackClientName = "Component Designer";
 
 	public JNAJackAudioProvider()
 	{
@@ -107,7 +107,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 				audioProviderRegistryService == null ||
 				timingService == null )
 		{
-			String msg = "JNAJackAudioProvider is missing service dependencies. Please check configuration";
+			final String msg = "JNAJackAudioProvider is missing service dependencies. Please check configuration";
 			log.error( msg );
 			throw new ComponentConfigurationException( msg );
 		}
@@ -115,7 +115,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 		try
 		{
 
-			Map<String,String> errors = new HashMap<String,String>();
+			final Map<String,String> errors = new HashMap<String,String>();
 
 			shouldRegister = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_SHOULD_REGISTER, errors );
 
@@ -125,8 +125,8 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 			{
 				jack = Jack.getInstance();
 
-		        EnumSet<JackOptions> options = EnumSet.of(JackOptions.JackNoStartServer);
-		        EnumSet<JackStatus> status = EnumSet.noneOf( JackStatus.class );
+		        final EnumSet<JackOptions> options = EnumSet.of(JackOptions.JackNoStartServer);
+		        final EnumSet<JackStatus> status = EnumSet.noneOf( JackStatus.class );
 				client = jack.openClient( jackClientName, options, status, new Object[]{} );
 
 				if( client != null )
@@ -172,15 +172,15 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 				{
 					audioProviderRegistryService.registerAudioProvider( this );
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					log.error( e );
 				}
 			}
 		}
-		catch(JackException je )
+		catch(final JackException je )
 		{
-			String msg = "JackException caught during JNAJackAudioProvider init()";
+			final String msg = "JackException caught during JNAJackAudioProvider init()";
 			log.error( msg, je );
 			throw new ComponentConfigurationException( msg, je );
 		}
@@ -195,7 +195,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 			{
 				audioProviderRegistryService.unregisterAudioProvider( this );
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				log.error( e );
 			}
@@ -212,58 +212,58 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 		}
 	}
 
-	public void setAudioProviderRegistryService( AudioProviderRegistryService audioProviderRegistryService)
+	public void setAudioProviderRegistryService( final AudioProviderRegistryService audioProviderRegistryService)
 	{
 		this.audioProviderRegistryService = audioProviderRegistryService;
 	}
 
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}
 
-	public void setTimingService( TimingService timingService )
+	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
 	}
 
-	public void setAppRenderingGraphService( AppRenderingGraphService appRenderingGraphService )
+	public void setAppRenderingGraphService( final AppRenderingGraphService appRenderingGraphService )
 	{
 		this.appRenderingGraphService = appRenderingGraphService;
 	}
 
 	@Override
 	public List<? extends MidiHardwareDevice> getAllConsumerMidiDevices(
-			MidiHardwareDeviceCriteria criteria ) throws DatastoreException
+			final MidiHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return consumerMidiHardwareDevices;
 	}
 
 	@Override
 	public List<? extends MidiHardwareDevice> getAllProducerMidiDevices(
-			MidiHardwareDeviceCriteria criteria ) throws DatastoreException
+			final MidiHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return producerMidiHardwareDevices;
 	}
 
 	@Override
 	public List<? extends AudioHardwareDevice> getAllProducerAudioDevices(
-			AudioHardwareDeviceCriteria criteria ) throws DatastoreException
+			final AudioHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return producerAudioHardwareDevices;
 	}
 
 	@Override
 	public List<? extends AudioHardwareDevice> getAllConsumerAudioDevices(
-			AudioHardwareDeviceCriteria criteria ) throws DatastoreException
+			final AudioHardwareDeviceCriteria criteria ) throws DatastoreException
 	{
 		return consumerAudioHardwareDevices;
 	}
 
 	@Override
-	public AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
-			AppRenderingErrorQueue errorQueue,
-			AppRenderingErrorCallback errorCallback )
+	public AbstractAppRenderingIO createAppRenderingIOForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
+			final AppRenderingErrorQueue errorQueue,
+			final AppRenderingErrorCallback errorCallback )
 		throws DatastoreException
 	{
 		return new JNAJackAppRenderingIO( appRenderingGraphService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );

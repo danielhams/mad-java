@@ -75,8 +75,6 @@ import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.oscillator.ui.OscillatorMadUiDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.ui.OscilloscopeMadUiDefinition;
-import uk.co.modularaudio.mads.base.oscilloscopev2.mu.OscilloscopeV2MadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscopev2.ui.OscilloscopeV2MadUiDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
 import uk.co.modularaudio.mads.base.pattern_sequencer.ui.PatternSequencerMadUiDefinition;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
@@ -119,10 +117,10 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 {
 	private BaseComponentsFactory baseComponentsFactory = null;
-	
+
 	@SuppressWarnings("rawtypes")
-	private Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
-	
+	private final Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
+
 	public BaseComponentsUiFactory()
 	{
 		// Definitions to UiDefinitions
@@ -146,49 +144,47 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadUiDefinition.class );
 
 		classToUiDefinition.put( NoteToCvMadDefinition.class, NoteToCvMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( ControllerToCvMadDefinition.class, ControllerToCvMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( LinearCVAMadDefinition.class, LinearCVAMadUiDefinition.class );
 
-		classToUiDefinition.put( OscilloscopeV2MadDefinition.class, OscilloscopeV2MadUiDefinition.class );
-		
 		classToUiDefinition.put( MixerMadDefinition.class, MixerMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( PrngMadDefinition.class, PrngMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( DCTrapMadDefinition.class, DCTrapMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( FlipFlopMadDefinition.class, FlipFlopMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( StereoGateMadDefinition.class, StereoGateMadUiDefinition.class );
 		classToUiDefinition.put( MonoCompressorMadDefinition.class, MonoCompressorMadUiDefinition.class );
 		classToUiDefinition.put( StereoCompressorMadDefinition.class, StereoCompressorMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadUiDefinition.class );
 
 		classToUiDefinition.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( OscillatorMadDefinition.class, OscillatorMadUiDefinition.class );
 
 		classToUiDefinition.put( EnvelopeMadDefinition.class, EnvelopeMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( SuperSawModuleMadDefinition.class, SuperSawModuleMadUiDefinition.class );
 
 		classToUiDefinition.put( WaveRollerMadDefinition.class, WaveRollerMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( SoundfilePlayerMadDefinition.class, SoundfilePlayerMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( RBJFilterMadDefinition.class, RBJFilterMadUiDefinition.class );
 
 		classToUiDefinition.put( MoogFilterMadDefinition.class, MoogFilterMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( NoteDebugMadDefinition.class, NoteDebugMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadUiDefinition.class );
-		
+
 		classToUiDefinition.put( XRunnerMadDefinition.class, XRunnerMadUiDefinition.class );
 
 	}
@@ -199,35 +195,35 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 	{
 		try
 		{
-			Collection<MadDefinition<?,?>> auds = baseComponentsFactory.listDefinitions();
-			for( MadDefinition<?,?> aud : auds )
+			final Collection<MadDefinition<?,?>> auds = baseComponentsFactory.listDefinitions();
+			for( final MadDefinition<?,?> aud : auds )
 			{
-				Class classToInstantiate = classToUiDefinition.get( aud.getClass() );
-				Class[] constructorParamTypes = new Class[] {
+				final Class classToInstantiate = classToUiDefinition.get( aud.getClass() );
+				final Class[] constructorParamTypes = new Class[] {
 						BufferedImageAllocator.class,
 						aud.getClass(),
 						ComponentImageFactory.class,
 						String.class };
-				Object[] constructorParams = new Object[] {
+				final Object[] constructorParams = new Object[] {
 						bufferedImageAllocationService,
 						aud,
 						componentImageFactory,
 						imageRoot };
-				Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
-				Object newInstance = c.newInstance( constructorParams );
-				MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
-				
+				final Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
+				final Object newInstance = c.newInstance( constructorParams );
+				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
+
 				componentDefinitionToUiDefinitionMap.put( aud, instanceAsUiDefinition );
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught setting up UI definitions: " + e.toString();
+			final String msg = "Exception caught setting up UI definitions: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 	}
 
-	public void setBaseComponentsFactory( BaseComponentsFactory baseComponentsFactory )
+	public void setBaseComponentsFactory( final BaseComponentsFactory baseComponentsFactory )
 	{
 		this.baseComponentsFactory = baseComponentsFactory;
 	}

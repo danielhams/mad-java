@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveTableType;
 public class OscillatorInstances
 {
 //	private static Log log = LogFactory.getLog( OscillatorInstances.class.getName() );
-	
+
 	public enum WaveType
 	{
 		SINE,
@@ -43,19 +43,19 @@ public class OscillatorInstances
 		TRIANGLE,
 		TEST1
 	}
-	
-	private Map<OscillatorWaveShape, Oscillator> typeToTableMap = new HashMap<OscillatorWaveShape, Oscillator>();
-	
-	public OscillatorInstances( OscillatorFactory oscillatorFactory ) throws NoWaveTableForShapeException, OscillatorFactoryException
+
+	private final Map<OscillatorWaveShape, Oscillator> typeToTableMap = new HashMap<OscillatorWaveShape, Oscillator>();
+
+	public OscillatorInstances( final OscillatorFactory oscillatorFactory ) throws NoWaveTableForShapeException, OscillatorFactoryException
 	{
-		for( OscillatorWaveShape waveShape : OscillatorWaveShape.values() )
+		for( final OscillatorWaveShape waveShape : OscillatorWaveShape.values() )
 		{
-			typeToTableMap.put( waveShape, 
+			typeToTableMap.put( waveShape,
 					oscillatorFactory.createOscillator( OscillatorWaveTableType.SINGLE, OscillatorInterpolationType.LINEAR, waveShape ) );
 		}
 	}
-	
-	public Oscillator getOscillator( OscillatorWaveShape waveShape )
+
+	public Oscillator getOscillator( final OscillatorWaveShape waveShape )
 	{
 		return typeToTableMap.get( waveShape );
 	}

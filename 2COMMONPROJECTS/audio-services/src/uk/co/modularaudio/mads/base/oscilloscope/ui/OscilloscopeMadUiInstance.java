@@ -25,14 +25,14 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeCaptureRepetitionsEnum;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeCaptureTriggerEnum;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeIOQueueBridge;
+import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
+import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeWriteableScopeData;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -40,27 +40,26 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.pooling.dumb.ObjectPool;
 import uk.co.modularaudio.util.pooling.dumb.ObjectPool.ObjectPoolLifecycleManager;
-import uk.co.modularaudio.util.swing.general.FloatJSliderModel;
 
-public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance>
-	implements IOQueueEventUiConsumer<OscilloscopeMadInstance>, ObjectPoolLifecycleManager<OscilloscopeWriteableScopeData>
+public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance>
+	implements IOQueueEventUiConsumer<OscilloscopeMadInstance>, ObjectPoolLifecycleManager<OscilloscopeWriteableScopeData>,
+	ScopeDataListener
 {
 	private static Log log = LogFactory.getLog( OscilloscopeMadUiInstance.class.getName() );
 
 	private static final float MAX_CAPTURE_MILLIS = 5000.0f;
-	private int maxCaptureBufferLength = -1;
+	private int maxCaptureBufferLength;
 
 	// Stuff for our processing
-	protected ObjectPool<OscilloscopeWriteableScopeData> scopeDataPool = null;
+	protected ObjectPool<OscilloscopeWriteableScopeData> scopeDataPool;
 
-	protected boolean uiActive = false;
+	protected boolean uiActive;
 
-	private long knownAudioIOLatencyNanoseconds = 0;
+	private long knownAudioIOLatencyNanoseconds;
 
-	private int numScopeDatasConsumed = 0;
-//	private int displayTicks = 0;
+	private int numScopeDatasConsumed;
 
-	private ScopeDataListener scopeDataListener = null;
+	private ScopeDataListener scopeDataListener;
 
 	private OscilloscopeCaptureRepetitionsEnum repetitionsChoice = OscilloscopeCaptureRepetitionsEnum.CONTINOUS;
 
@@ -68,10 +67,8 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 
 	private int currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), 1.0f );
 
-	public FloatJSliderModel valueFloatSliderModel = new FloatJSliderModel( 20.0, 1.0, MAX_CAPTURE_MILLIS, 1.0 );
-
-	public OscilloscopeMadUiInstance( OscilloscopeMadInstance instance,
-			OscilloscopeMadUiDefinition uiDefinition )
+	public OscilloscopeMadUiInstance( final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 
@@ -81,11 +78,11 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		long newAln = timingParameters.getNanosOutputLatency();
+		final long newAln = timingParameters.getNanosOutputLatency();
 
 		if( newAln != knownAudioIOLatencyNanoseconds )
 		{
@@ -108,7 +105,7 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 //			if( displayTicks == 0 )
 			if( shouldEmit )
 			{
-				OscilloscopeWriteableScopeData scopeDataToSend = scopeDataPool.reserveObject();
+				final OscilloscopeWriteableScopeData scopeDataToSend = scopeDataPool.reserveObject();
 //				OscilloscopeWriteableScopeData scopeDataToSend = null;
 				if( scopeDataToSend != null )
 				{
@@ -131,15 +128,15 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	}
 
 	@Override
-	public void consumeQueueEntry( OscilloscopeMadInstance instance,
-			IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final OscilloscopeMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case OscilloscopeIOQueueBridge.COMMAND_OUT_SCOPE_DATA:
 			{
-				Object obj = nextOutgoingEntry.object;
-				OscilloscopeWriteableScopeData newDisplayData = (OscilloscopeWriteableScopeData)obj;
+				final Object obj = nextOutgoingEntry.object;
+				final OscilloscopeWriteableScopeData newDisplayData = (OscilloscopeWriteableScopeData)obj;
 //				log.debug("Received scope data with timestamp " + nextOutgoingEntry.realEventTimestamp );
 
 				if( scopeDataListener != null && newDisplayData.desiredDataLength == currentCaptureBufferLength && shouldEmit)
@@ -166,7 +163,10 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 			}
 			default:
 			{
-				log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown output command from MI: " + nextOutgoingEntry.command );
+				}
 				break;
 			}
 		}
@@ -176,7 +176,7 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	public OscilloscopeWriteableScopeData createNewInstance()
 	{
 //		log.debug("Creating extra scope instance.");
-		OscilloscopeWriteableScopeData oscilloscopeWriteableScopeData = new OscilloscopeWriteableScopeData(
+		final OscilloscopeWriteableScopeData oscilloscopeWriteableScopeData = new OscilloscopeWriteableScopeData(
 				maxCaptureBufferLength );
 		oscilloscopeWriteableScopeData.desiredDataLength = currentCaptureBufferLength;
 		resetInstanceForReuse( oscilloscopeWriteableScopeData );
@@ -184,33 +184,33 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 	}
 
 	@Override
-	public void resetInstanceForReuse( OscilloscopeWriteableScopeData objectToBeReused )
+	public void resetInstanceForReuse( final OscilloscopeWriteableScopeData objectToBeReused )
 	{
 		objectToBeReused.currentWriteIndex = 0;
 		objectToBeReused.written = false;
 		objectToBeReused.desiredDataLength = currentCaptureBufferLength;
 	}
 
-	private void recalculateDataPool( long audioIOLatencyNanos )
+	private void recalculateDataPool( final long audioIOLatencyNanos )
 	{
 		// Yes, there is a bug here in that we have to invalidate the pool when the latency changes as we need to resize the buffers
 		// (maxCaptureBufferLength changes)
 
-		long numMillisLatency = TimeUnit.NANOSECONDS.toMillis( audioIOLatencyNanos );
+		final long numMillisLatency = TimeUnit.NANOSECONDS.toMillis( audioIOLatencyNanos );
 //		log.debug( "The latency in millis is " + numMillisLatency );
 		maxCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), MAX_CAPTURE_MILLIS );
-		double secondsLatency = (numMillisLatency / 1000.0);
-		double numScopesNeededForLatencyDouble = (secondsLatency * 30 * 2) * 2;
+		final double secondsLatency = (numMillisLatency / 1000.0);
+		final double numScopesNeededForLatencyDouble = (secondsLatency * 30 * 2) * 2;
 //		double numScopesNeededForLatencyDouble = (secondsLatency * 3 * 2) * 1.2;
 //		log.debug("This is " + numScopesNeededForLatencyDouble + " num scopes needed per second");
 //		int numScopesNeeded = Math.max( ((int) numScopesNeededPerSecondDouble) + 1, 4 ) * 4;
-		int numScopesNeeded = Math.max( ((int) numScopesNeededForLatencyDouble) + 1, 4 );
+		final int numScopesNeeded = Math.max( ((int) numScopesNeededForLatencyDouble) + 1, 4 );
 //		log.debug("This computes to " + numScopesNeeded + " scope data blocks needed");
 
 		scopeDataPool.resetMaxAllocated( numScopesNeeded );
 	}
 
-	public void registerScopeDataListener( ScopeDataListener scopeDataListener )
+	public void registerScopeDataListener( final ScopeDataListener scopeDataListener )
 	{
 		this.scopeDataListener = scopeDataListener;
 	}
@@ -220,32 +220,57 @@ public class OscilloscopeMadUiInstance extends AbstractNonConfigurableMadUiInsta
 		shouldEmit = true;
 	}
 
-	public void sendUiActive( boolean active )
+	public void sendUiActive( final boolean active )
 	{
 		this.uiActive = active;
 		sendCommandValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_ACTIVE, ( active ? 1 : 0 ) );
 	}
 
-	public void sendTriggerChoice( OscilloscopeCaptureTriggerEnum ev )
+	public void sendTriggerChoice( final OscilloscopeCaptureTriggerEnum ev )
 	{
 		sendTemporalValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_TRIGGER, ev.ordinal() );
 	}
 
-	public void sendRepetitionChoice( OscilloscopeCaptureRepetitionsEnum rv )
+	public void sendRepetitionChoice( final OscilloscopeCaptureRepetitionsEnum rv )
 	{
 		repetitionsChoice = rv;
 		sendTemporalValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_REPETITIONS, rv.ordinal() );
 	}
 
-	public void sendCaptureMillis( float captureMillis )
+	public void sendCaptureMillis( final float captureMillis )
 	{
 		currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), captureMillis );
 		currentCaptureBufferLength = (currentCaptureBufferLength < 1 ? 1 : (currentCaptureBufferLength > maxCaptureBufferLength ? maxCaptureBufferLength : currentCaptureBufferLength ) );
 		sendCommandValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_MILLIS,  Float.floatToIntBits( captureMillis ));
 	}
 
-	public void sendScopeData( OscilloscopeWriteableScopeData dataToPassToInstance )
+	public void sendScopeData( final OscilloscopeWriteableScopeData dataToPassToInstance )
 	{
 		sendTemporalObjectToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_SCOPE_DATA, dataToPassToInstance );
+	}
+
+	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeUiJComponent captureTimeProducer )
+	{
+		captureTimeProducer.setScopeDataListener( this );
+		if( scopeDataListener != null )
+		{
+			scopeDataListener.setCaptureTimeProducer( captureTimeProducer );
+		}
+	}
+
+	@Override
+	public void processScopeData( final OscilloscopeWriteableScopeData scopeData )
+	{
+	}
+
+	@Override
+	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeProducer captureTimeProducer )
+	{
+	}
+
+	@Override
+	public void setCaptureTimeMillis( final float captureMillis )
+	{
+		sendCaptureMillis( captureMillis );
 	}
 }

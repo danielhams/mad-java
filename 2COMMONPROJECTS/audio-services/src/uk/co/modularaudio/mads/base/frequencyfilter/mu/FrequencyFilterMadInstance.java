@@ -43,50 +43,50 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDefinition,FrequencyFilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( FrequencyFilterMadInstance.class.getName() );
-	
+
 	private static final int VALUE_CHASE_MILLIS = 1;
 	protected float curValueRatio = 0.0f;
 	protected float newValueRatio = 1.0f;
-	
-	private long sampleRate = -1;
+
+	private long sampleRate;
 
 	public FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
 	public float desiredFrequency = 80.0f;
 	public float desiredBandwidth = 20.0f;
 	public boolean desired24dB = false;
-	
+
 	private float currentFrequency = 0.0f;
 	private float currentBandwidth = 0.0f;
-	private boolean actual24dB = false;
-	private ButterworthFilterRT leftChannelButterworthRT = new ButterworthFilterRT();
-	private ButterworthFilterRT rightChannelButterworthRT = new ButterworthFilterRT();
-	private ButterworthFilterRT leftChannel24dbRT = new ButterworthFilterRT();
-	private ButterworthFilterRT rightChannel24dbRT = new ButterworthFilterRT();
+	private boolean actual24dB;
+	private final ButterworthFilterRT leftChannelButterworthRT = new ButterworthFilterRT();
+	private final ButterworthFilterRT rightChannelButterworthRT = new ButterworthFilterRT();
+	private final ButterworthFilterRT leftChannel24dbRT = new ButterworthFilterRT();
+	private final ButterworthFilterRT rightChannel24dbRT = new ButterworthFilterRT();
 
-	private float lastLeftValue = 0.0f;
-	private float lastRightValue = 0.0f;
-	
-	public FrequencyFilterMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			FrequencyFilterMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private float lastLeftValue;
+	private float lastRightValue;
+
+	public FrequencyFilterMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final FrequencyFilterMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			
+
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -98,37 +98,37 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_LEFT );
-		MadChannelBuffer inLcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_LEFT ];
-		float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
-		boolean inRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT );
-		MadChannelBuffer inRcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT ];
-		float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
-		boolean inCvFreqConnected = channelConnectedFlags.get(  FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
-		MadChannelBuffer inFreq = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
-		float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
-		
-		boolean outLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT );
-		MadChannelBuffer outLcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT ];
-		float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
-		boolean outRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT );
-		MadChannelBuffer outRcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT ];
-		float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
-		
+		final boolean inLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_LEFT );
+		final MadChannelBuffer inLcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_LEFT ];
+		final float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
+		final boolean inRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT );
+		final MadChannelBuffer inRcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT ];
+		final float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
+		final boolean inCvFreqConnected = channelConnectedFlags.get(  FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
+		final MadChannelBuffer inFreq = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
+		final float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
 
-		boolean complementLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_LEFT );
-		MadChannelBuffer complementLcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_LEFT ];
-		float[] complementLfloats = (complementLConnected ? complementLcb.floatBuffer : null );
-		boolean complementRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT );
-		MadChannelBuffer complementRcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT ];
-		float[] complementRfloats = (complementRConnected ? complementRcb.floatBuffer : null );
-		
+		final boolean outLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT );
+		final MadChannelBuffer outLcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT ];
+		final float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
+		final boolean outRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT );
+		final MadChannelBuffer outRcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT ];
+		final float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
+
+
+		final boolean complementLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_LEFT );
+		final MadChannelBuffer complementLcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_LEFT ];
+		final float[] complementLfloats = (complementLConnected ? complementLcb.floatBuffer : null );
+		final boolean complementRConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT );
+		final MadChannelBuffer complementRcb = channelBuffers[ FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT ];
+		final float[] complementRfloats = (complementRConnected ? complementRcb.floatBuffer : null );
+
 		currentFrequency = (currentFrequency * curValueRatio) + (desiredFrequency * newValueRatio );
 		if( currentFrequency <= 1.0f )
 		{
@@ -147,7 +147,7 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			actual24dB = desired24dB;
 			doingSwitch = true;
 		}
-		
+
 		if( !inLConnected )
 		{
 			if( outLConnected )
@@ -162,7 +162,7 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		else if( inLConnected && outLConnected )
 		{
 			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
-			
+
 			if( !inCvFreqConnected )
 			{
 				ButterworthFilter.filter( leftChannelButterworthRT, outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
@@ -179,20 +179,20 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 					ButterworthFilter.filterWithFreq( leftChannel24dbRT, outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
-			
-			
+
+
 			if( doingSwitch )
 			{
 				// We've switched from 12 to 24 db, stop huge pops by fading
 				for( int i = 0 ; i < numFrames ; i++ )
 				{
-					float preRatio = ((float)(numFrames - i ) / numFrames );
-					float curRatio = 1.0f - preRatio;
-					float curLValue = outLfloats[ i ];
+					final float preRatio = ((float)(numFrames - i ) / numFrames );
+					final float curRatio = 1.0f - preRatio;
+					final float curLValue = outLfloats[ i ];
 					outLfloats[ i ] = (curLValue * curRatio) + (lastLeftValue * preRatio );
 				}
 			}
-			
+
 			if( complementLConnected )
 			{
 				for( int i = 0 ; i < numFrames ; ++i )
@@ -200,10 +200,10 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 					complementLfloats[i] = inLfloats[i] - outLfloats[i];
 				}
 			}
-			
+
 			lastLeftValue = outLfloats[ numFrames - 1 ];
 		}
-		
+
 		if( !inRConnected )
 		{
 			if( outRConnected )
@@ -218,11 +218,11 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		else if( inRConnected && outRConnected )
 		{
 			System.arraycopy( inRfloats, 0, outRfloats, 0, numFrames );
-			
+
 			if(!inCvFreqConnected )
 			{
 				ButterworthFilter.filter( rightChannelButterworthRT, outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
-				
+
 				if( desired24dB )
 				{
 					ButterworthFilter.filter( rightChannel24dbRT, outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
@@ -231,25 +231,25 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			else
 			{
 				ButterworthFilter.filterWithFreq( rightChannelButterworthRT, outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
-				
+
 				if( desired24dB )
 				{
 					ButterworthFilter.filterWithFreq( rightChannel24dbRT, outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
-			
+
 			if( doingSwitch )
 			{
 				// We've switched from 12 to 24 db, stop huge pops by fading
 				for( int i = 0 ; i < numFrames ; i++ )
 				{
-					float preRatio = ((float)(numFrames - i ) / numFrames );
-					float curRatio = 1.0f - preRatio;
-					float curRValue = outRfloats[ i ];
+					final float preRatio = ((float)(numFrames - i ) / numFrames );
+					final float curRatio = 1.0f - preRatio;
+					final float curRValue = outRfloats[ i ];
 					outRfloats[ i ] = (curRValue * curRatio) + (lastRightValue * preRatio );
 				}
 			}
-			
+
 			if( complementRConnected )
 			{
 				for( int i = 0 ; i < numFrames ; ++i )
@@ -257,7 +257,7 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 					complementRfloats[i] = inRfloats[i] - outRfloats[i];
 				}
 			}
-			
+
 			lastRightValue = outRfloats[ numFrames - 1 ];
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

@@ -32,17 +32,17 @@ import uk.co.modularaudio.util.swing.table.GuiTableEmptyCellPainter;
 public class LayeredPaneTableBackgroundComponent extends JPanel
 {
 	private static final long serialVersionUID = -2408915995418297022L;
-	
-//	private static Log log = LogFactory.getLog( LayeredPaneTableBackgroundComponent.class.getName() );
-	
-	private GuiTableEmptyCellPainter emptyCellPainter = null;
-	
-	private Dimension gridSize = null;
-	private int numCols = -1;
-	private int numRows = -1;
 
-	public LayeredPaneTableBackgroundComponent( GuiTableEmptyCellPainter emptyCellPainter,
-			Dimension gridSize, int numCols, int numRows )
+//	private static Log log = LogFactory.getLog( LayeredPaneTableBackgroundComponent.class.getName() );
+
+	private final GuiTableEmptyCellPainter emptyCellPainter;
+
+	private final Dimension gridSize;
+	private final int numCols;
+	private final int numRows;
+
+	public LayeredPaneTableBackgroundComponent( final GuiTableEmptyCellPainter emptyCellPainter,
+			final Dimension gridSize, final int numCols, final int numRows )
 	{
 		this.emptyCellPainter = emptyCellPainter;
 		this.gridSize = gridSize;
@@ -50,35 +50,36 @@ public class LayeredPaneTableBackgroundComponent extends JPanel
 		this.numRows = numRows;
 	}
 
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 //		Graphics emptyG = g.create();
 		if( emptyCellPainter.needSingleBlit() )
 		{
 			// Use a cache buffered image rendered to the entire size of the table.
-			BufferedImage bi = emptyCellPainter.getSingleBlitBufferedImage( gridSize, numCols, numRows );
+			final BufferedImage bi = emptyCellPainter.getSingleBlitBufferedImage( gridSize, numCols, numRows );
 			g.drawImage( bi, 0, 0, null );
 		}
 		else
 		{
 			// For optimisations sake we should only paint what is visible.
 			// We do this by passing the current viewing region (clip)
-			Rectangle clipBounds = g.getClipBounds();
-			
+			final Rectangle clipBounds = g.getClipBounds();
+
 			// Work out the span this gives us
-			int spanStartX = (int)Math.floor( (double)(clipBounds.x) / gridSize.width );
-			int spanEndX = Math.min( (int)Math.ceil( (double)(clipBounds.x + clipBounds.width) / gridSize.width ), numCols );
-			int spanStartY = (int)Math.floor( (double)(clipBounds.y) / gridSize.height );
-			int spanEndY = Math.min( (int)Math.ceil( (double)(clipBounds.y + clipBounds.height) / gridSize.height ), numRows );
-			
+			final int spanStartX = (int)Math.floor( (double)(clipBounds.x) / gridSize.width );
+			final int spanEndX = Math.min( (int)Math.ceil( (double)(clipBounds.x + clipBounds.width) / gridSize.width ), numCols );
+			final int spanStartY = (int)Math.floor( (double)(clipBounds.y) / gridSize.height );
+			final int spanEndY = Math.min( (int)Math.ceil( (double)(clipBounds.y + clipBounds.height) / gridSize.height ), numRows );
+
 //			SwingTableEmptyCellPaintingVisitor<A, B> visitor = new SwingTableEmptyCellPaintingVisitor<A, B>( g ,
 //					gridSize,
 //					clipBounds,
 //					emptyCellPainter );
 //
 //			dataModel.visitCells(visitor,  spanStartX, spanStartY, spanEndX - spanStartX, spanEndY - spanStartY, true );
-	
+
 			// Using the visitor is expensive - just loop around the span we have
 			for( int x = spanStartX ; x < spanEndX ; x++ )
 			{

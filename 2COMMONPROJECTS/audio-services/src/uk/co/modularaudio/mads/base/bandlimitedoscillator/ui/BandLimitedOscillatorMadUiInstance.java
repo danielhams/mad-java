@@ -26,43 +26,36 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorIOQueueBridge;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
 
-public class BandLimitedOscillatorMadUiInstance extends AbstractNonConfigurableMadUiInstance<BandLimitedOscillatorMadDefinition, BandLimitedOscillatorMadInstance>
+public class BandLimitedOscillatorMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<BandLimitedOscillatorMadDefinition, BandLimitedOscillatorMadInstance>
 {
 	static Log log = LogFactory.getLog( BandLimitedOscillatorMadUiInstance.class.getName() );
-	
-	public BandLimitedOscillatorMadUiInstance( BandLimitedOscillatorMadInstance instance,
-			BandLimitedOscillatorMadUiDefinition componentUiDefinition )
+
+	public BandLimitedOscillatorMadUiInstance( final BandLimitedOscillatorMadInstance instance,
+			final BandLimitedOscillatorMadUiDefinition componentUiDefinition )
 	{
 		super( componentUiDefinition.getCellSpan(), instance, componentUiDefinition );
 	}
 
-	public void sendFrequencyChange( float frequency )
+	public void sendFrequencyChange( final float frequency )
 	{
-		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_FREQUENCY, (long)(Float.floatToIntBits( frequency ) ) );
+		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_FREQUENCY, (Float.floatToIntBits( frequency ) ) );
 	}
-	
-	public void sendFrequencyChangeImmediate( float frequency )
+
+	public void sendFrequencyChangeImmediate( final float frequency )
 	{
-		sendCommandValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_FREQUENCY_IMMEDIATE, (long)(Float.floatToIntBits( frequency ) ) );
+		sendCommandValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_FREQUENCY_IMMEDIATE, (Float.floatToIntBits( frequency ) ) );
 	}
-	
-	public void sendWaveChoice( OscillatorWaveShape waveShape )
+
+	public void sendWaveChoice( final OscillatorWaveShape waveShape )
 	{
 		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_WAVE, waveShape.ordinal() );
 	}
 
-	public void sendPulsewidthChange( float pulsewidth )
+	public void sendPulsewidthChange( final float pulsewidth )
 	{
-		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_PULSE_WIDTH, (long)(Float.floatToIntBits( pulsewidth ) ) );
-	}
-
-	@Override
-	public void consumeQueueEntry( BandLimitedOscillatorMadInstance instance,
-			IOQueueEvent nextOutgoingEntry)
-	{
+		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_PULSE_WIDTH, (Float.floatToIntBits( pulsewidth ) ) );
 	}
 }

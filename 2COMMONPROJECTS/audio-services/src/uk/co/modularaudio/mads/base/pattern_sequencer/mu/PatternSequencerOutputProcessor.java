@@ -36,45 +36,48 @@ public class PatternSequencerOutputProcessor
 	private static final int HARDCODED_CHANNEL = 0;
 
 	private static Log log = LogFactory.getLog( PatternSequencerOutputProcessor.class.getName() );
-	
-	private long sampleRate = -1;
-	
-	private MadChannelNoteEventCopier noteCopier = new MadChannelNoteEventCopier();
-	
-	private PatternSequencerRuntimePattern patternToUse = null;
-	private boolean running = false;
+
+	private final long sampleRate;
+
+	private final MadChannelNoteEventCopier noteCopier = new MadChannelNoteEventCopier();
+
+	private PatternSequencerRuntimePattern patternToUse;
+	private boolean running;
 
 	private float bpm = 128.0f;
-	
-	private int numStepsTimesTwo = -1;
-	private float beatsPerSecond = 0.0f;
-	private float halfStepOffsetPerSample = 0.0f;
-	
-	private PatternSequenceStep currentPatternStep = new PatternSequenceStep();
-	
-	private int curOutputNoteCounter = 0;
-	private MadChannelNoteEvent[] internalOutputNotes = null;
-	
-	private float savedOutputStepIndexFloat = 0;
-	
-	public PatternSequencerOutputProcessor( long sampleRate, int periodLength, int notePeriodLength )
+
+	private int numStepsTimesTwo;
+	private float beatsPerSecond;
+	private float halfStepOffsetPerSample;
+
+	private final PatternSequenceStep currentPatternStep = new PatternSequenceStep();
+
+	private int curOutputNoteCounter;
+	private final MadChannelNoteEvent[] internalOutputNotes;
+
+	private float savedOutputStepIndexFloat;
+
+	public PatternSequencerOutputProcessor( final long sampleRate, final int periodLength, final int notePeriodLength )
 	{
 		this.sampleRate = sampleRate;
-		
+
 		internalOutputNotes = new MadChannelNoteEvent[ notePeriodLength ];
 		for( int i = 0 ; i < notePeriodLength ; i++ )
 		{
 			internalOutputNotes[ i ] = new MadChannelNoteEvent();
 		}
 	}
-	
-	public void setPatternDataBeforeStep( PatternSequencerRuntimePattern patternToUse, float bpmToUse, boolean running )
+
+	public void setPatternDataBeforeStep( final PatternSequencerRuntimePattern patternToUse, final float bpmToUse, final boolean running )
 	{
 		curOutputNoteCounter = 0;
-		
+
 		if( running != this.running )
 		{
-			log.debug("Spotted running status change ->(" + running + ")");
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Spotted running status change ->(" + running + ")");
+			}
 			if( this.running )
 			{
 				// Going from running -> stopped
@@ -91,7 +94,7 @@ public class PatternSequencerOutputProcessor
 		else
 		{
 			if( this.running )
-			{			
+			{
 				// Is running
 				if( patternToUse.used == false )
 				{
@@ -113,20 +116,20 @@ public class PatternSequencerOutputProcessor
 		}
 		this.bpm = bpmToUse;
 		this.running = running;
-		
+
 		numStepsTimesTwo = patternToUse.numSteps * 2;
 		beatsPerSecond = (bpm / 60.0f);
 		halfStepOffsetPerSample = (beatsPerSecond / sampleRate) * 2;
 //		log.debug("Bpm calcs bpm(" + bpm + ") beatsPerSecond(" + beatsPerSecond + ") halfStepOffset(" + halfStepOffsetPerSample +")");
 	}
-	
-	public void doStep( int numFrames )
+
+	public void doStep( final int numFrames )
 	{
 		if( running )
 		{
 			int curOutputStepIndex = (int)savedOutputStepIndexFloat;
 			float curOutputStepIndexFloat = savedOutputStepIndexFloat;
-			
+
 			for( int s = 0 ; s < numFrames ; s++ )
 			{
 				curOutputStepIndexFloat += halfStepOffsetPerSample;
@@ -134,14 +137,14 @@ public class PatternSequencerOutputProcessor
 				{
 					curOutputStepIndexFloat = 0.0f;
 				}
-				int tstIntIndex = (int)curOutputStepIndexFloat;
+				final int tstIntIndex = (int)curOutputStepIndexFloat;
 				if( tstIntIndex != curOutputStepIndex )
 				{
 					// We progressed a half-step - check which type - note boundary or half-step
 					if( tstIntIndex % 2 == 0 )
 					{
 						// Over new note boundary
-						PatternSequenceStep pss = patternToUse.stepNotes[ tstIntIndex / 2 ];
+						final PatternSequenceStep pss = patternToUse.stepNotes[ tstIntIndex / 2 ];
 						processNewStep( pss, s );
 					}
 					else
@@ -169,45 +172,45 @@ public class PatternSequencerOutputProcessor
 				currentPatternStep.note = null;
 			}
 		}
-		
+
 		// Finally mark the new pattern as used
 		patternToUse.used = true;
 	}
-	
-	public void outputNoteData( MadChannelBuffer outputNoteBuffer )
+
+	public void outputNoteData( final MadChannelBuffer outputNoteBuffer )
 	{
-		MadChannelNoteEvent[] outputNoteEvents = outputNoteBuffer.noteBuffer;
+		final MadChannelNoteEvent[] outputNoteEvents = outputNoteBuffer.noteBuffer;
 		outputNoteBuffer.numElementsInBuffer = curOutputNoteCounter;
 		for( int n = 0 ; n < curOutputNoteCounter ; n++ )
 		{
 			noteCopier.copyValues( internalOutputNotes[n], outputNoteEvents[n] );
 		}
 	}
-	
-	public void outputCvData( float[] outputCvData )
+
+	public void outputCvData( final float[] outputCvData )
 	{
 	}
 
-	private void processNewStep( PatternSequenceStep newStep, int sampleIndex )
+	private void processNewStep( final PatternSequenceStep newStep, final int sampleIndex )
 	{
-		boolean previousStepWasNote = (currentPatternStep == null ? false : currentPatternStep.note != null );
-		boolean previousStepWasContinuation = (previousStepWasNote ? currentPatternStep.isContinuation : false );
-		
-		boolean newStepIsNote = ( newStep == null ? false : newStep.note != null );
-		
+		final boolean previousStepWasNote = (currentPatternStep == null ? false : currentPatternStep.note != null );
+		final boolean previousStepWasContinuation = (previousStepWasNote ? currentPatternStep.isContinuation : false );
+
+		final boolean newStepIsNote = ( newStep == null ? false : newStep.note != null );
+
 		if( newStepIsNote )
 		{
-			int paramOne = newStep.note.getMidiNumber();
+			final int paramOne = newStep.note.getMidiNumber();
 
 			int roundedAmp = (int)(newStep.amp * 127.0f);
 			roundedAmp = (roundedAmp > 127 ? 127 : (roundedAmp < 0 ? 0 : roundedAmp ) );
-			int paramTwo = roundedAmp;
-			
+			final int paramTwo = roundedAmp;
+
 			MadChannelNoteEventType eventType;
 			int paramThree;
 			if( previousStepWasContinuation )
 			{
-				
+
 				eventType = MadChannelNoteEventType.NOTE_CONTINUATION;
 				paramThree = currentPatternStep.note.getMidiNumber();
 			}
@@ -216,7 +219,7 @@ public class PatternSequencerOutputProcessor
 				eventType = MadChannelNoteEventType.NOTE_ON;
 				paramThree = -1;
 			}
-			internalOutputNotes[ curOutputNoteCounter ].set( HARDCODED_CHANNEL, 
+			internalOutputNotes[ curOutputNoteCounter ].set( HARDCODED_CHANNEL,
 					sampleIndex,
 					eventType,
 					paramOne,
@@ -238,15 +241,15 @@ public class PatternSequencerOutputProcessor
 				curOutputNoteCounter++;
 			}
 		}
-		
+
 		PatternSequenceStepCopier.copyValues( newStep, currentPatternStep );
 	}
-	
-	private void processHalfStep( int sampleIndex )
+
+	private void processHalfStep( final int sampleIndex )
 	{
 		if( currentPatternStep != null )
 		{
-			MidiNote mn = currentPatternStep.note;
+			final MidiNote mn = currentPatternStep.note;
 			if( mn != null && !currentPatternStep.isContinuation )
 			{
 				internalOutputNotes[ curOutputNoteCounter ].set( HARDCODED_CHANNEL,
@@ -255,7 +258,7 @@ public class PatternSequencerOutputProcessor
 						mn.getMidiNumber(),
 						-1,
 						-1 );
-				
+
 				curOutputNoteCounter++;
 			}
 		}

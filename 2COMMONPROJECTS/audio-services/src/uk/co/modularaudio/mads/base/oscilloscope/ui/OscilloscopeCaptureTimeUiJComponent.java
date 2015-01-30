@@ -20,64 +20,71 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
+import java.awt.Color;
+
 import javax.swing.JComponent;
-import javax.swing.event.ChangeEvent;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
+import uk.co.modularaudio.mads.base.waveroller.ui.PacCaptureLengthSlider;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.paccontrols.PacFloatSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
-public class OscilloscopeCaptureTimeUiJComponent extends PacFloatSlider
-	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
+public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
+	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>,
+		OscilloscopeCaptureTimeProducer
 {
-	private static final long serialVersionUID = 2929944605857719387L;
-//	private static Log log = LogFactory.getLog( OscilloscopeCaptureTimeUiJComponent.class.getName() );
-		
-	private OscilloscopeMadUiInstance uiInstance = null;
+	private static Log log = LogFactory.getLog( OscilloscopeCaptureTimeUiJComponent.class.getName() );
 
-	public OscilloscopeCaptureTimeUiJComponent( OscilloscopeMadDefinition definition,
-			OscilloscopeMadInstance instance,
-			OscilloscopeMadUiInstance uiInstance,
-			int controlIndex )
+	private static final long serialVersionUID = 2538907435465770032L;
+
+	private ScopeDataListener dataListener;
+
+	public OscilloscopeCaptureTimeUiJComponent( final OscilloscopeMadDefinition definition,
+			final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		super( uiInstance.valueFloatSliderModel );
+		super( 1.0f, 5000.0f, 60f,
+				"ms",
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				"Capture Time:",
+				Color.WHITE,
+				Color.WHITE,
+				false );
+//		this.uiInstance = uiInstance;
 
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
-//		this.setPaintLabels( true );
-//		this.setMinimum( 1 );
-//		this.setMaximum( 20000 );
-		// Default value
-		this.passChangeToInstanceData( uiInstance.valueFloatSliderModel.getDoubleValue() );
+		uiInstance.setCaptureTimeProducer( this );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	public void stateChanged( ChangeEvent e )
+	private void passChangeToInstanceData( final float newValue )
 	{
-		this.passChangeToInstanceData( this.getValue() );
-	}
-
-	private void passChangeToInstanceData( double value )
-	{
-		// Convert it into a float
-		float floatValue = (float)value;
-		
-//		currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), captureMillis );
-//		currentCaptureBufferLength = (currentCaptureBufferLength < 1 ? 1 : (currentCaptureBufferLength > maxCaptureBufferLength ? maxCaptureBufferLength : currentCaptureBufferLength ) );
-//		instance.sendCaptureMillis( captureMillis );
-		uiInstance.sendCaptureMillis( floatValue );
+		if( dataListener != null )
+		{
+			dataListener.setCaptureTimeMillis( newValue );
+		}
+		else
+		{
+			log.debug("Data listener is null");
+		}
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,18 +92,50 @@ public class OscilloscopeCaptureTimeUiJComponent extends PacFloatSlider
 	}
 
 	@Override
-	public void receiveValueUpdate( double previousValue, double newValue )
+	public void destroy()
 	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
-		
 	}
 
 	@Override
-	public void destroy()
+	public String getControlValue()
 	{
+		return model.getValue() + "";
+	}
+
+	@Override
+	public void receiveControlValue( final String valueStr )
+	{
+		try
+		{
+//			log.debug("Received control value " + value );
+			final float asFloat = Float.parseFloat( valueStr );
+			model.setValue( this, asFloat );
+			receiveValueChange( this, asFloat );
+		}
+		catch( final Exception e )
+		{
+			final String msg = "Failed to parse control value: " + valueStr;
+			log.error( msg, e );
+		}
+	}
+
+	@Override
+	public void receiveValueChange( final Object source, final float newValue )
+	{
+		passChangeToInstanceData( newValue );
+	}
+
+	@Override
+	public float getCaptureTimeMillis()
+	{
+		return model.getValue();
+	}
+
+	@Override
+	public void setScopeDataListener( final ScopeDataListener dataListener )
+	{
+		this.dataListener = dataListener;
+		dataListener.setCaptureTimeMillis( model.getValue() );
 	}
 
 	@Override

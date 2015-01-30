@@ -23,7 +23,7 @@ package uk.co.modularaudio.controller.audioprovider.impl;
 import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.apprenderinggraph.vos.AppRenderingIO;
+import uk.co.modularaudio.service.apprenderinggraph.vos.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.audioproviderregistry.pub.AudioProvider;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
@@ -38,9 +38,9 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 {
 //	private final static Log log = LogFactory.getLog( AudioProviderControllerImpl.class.getName() );
 
-	private AudioProviderRegistryService audioProviderRegistryService = null;
+	private AudioProviderRegistryService audioProviderRegistryService;
 
-	private AppRenderingErrorQueue errorQueue = null;
+	private AppRenderingErrorQueue errorQueue;
 
 	public AudioProviderControllerImpl()
 	{
@@ -63,19 +63,19 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 		errorQueue.shutdown();
 	}
 
-	public void setAudioProviderRegistryService( AudioProviderRegistryService audioProviderRegistryService )
+	public void setAudioProviderRegistryService( final AudioProviderRegistryService audioProviderRegistryService )
 	{
 		this.audioProviderRegistryService = audioProviderRegistryService;
 	}
 
 	@Override
-	public AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
-			AppRenderingErrorCallback errorCallback )
+	public AbstractAppRenderingIO createAppRenderingIOForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
+			final AppRenderingErrorCallback errorCallback )
 			throws DatastoreException, RecordNotFoundException
 	{
 		// Check all the appropriate things come from the same provider
 		String firstFoundId = null;
-		AudioHardwareDevice phs = hardwareIOConfiguration.getProducerAudioDevice();
+		final AudioHardwareDevice phs = hardwareIOConfiguration.getProducerAudioDevice();
 		if( phs != null )
 		{
 			if( firstFoundId == null )
@@ -83,7 +83,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 				firstFoundId = phs.getProviderId();
 			}
 		}
-		AudioHardwareDevice chs = hardwareIOConfiguration.getConsumerAudioDevice();
+		final AudioHardwareDevice chs = hardwareIOConfiguration.getConsumerAudioDevice();
 		if( chs != null )
 		{
 			if( firstFoundId == null )
@@ -95,7 +95,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 				throw new DatastoreException("All hardware must come from the same provider.");
 			}
 		}
-		MidiHardwareDevice pmc = hardwareIOConfiguration.getProducerMidiDevice();
+		final MidiHardwareDevice pmc = hardwareIOConfiguration.getProducerMidiDevice();
 		if( pmc != null )
 		{
 			if( firstFoundId == null )
@@ -107,7 +107,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 				throw new DatastoreException("All hardware must come from the same provider.");
 			}
 		}
-		MidiHardwareDevice cmc = hardwareIOConfiguration.getConsumerMidiDevice();
+		final MidiHardwareDevice cmc = hardwareIOConfiguration.getConsumerMidiDevice();
 		if( cmc != null )
 		{
 			if( firstFoundId == null )
@@ -126,7 +126,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 		}
 
 		// Now get the audio provider from the registry
-		AudioProvider provider = audioProviderRegistryService.getProviderById( firstFoundId );
+		final AudioProvider provider = audioProviderRegistryService.getProviderById( firstFoundId );
 
 		return provider.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorQueue, errorCallback );
 	}

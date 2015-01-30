@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.madcomponentui;
 
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -36,9 +36,9 @@ public interface MadComponentUiService
 			throws DatastoreException;
 	
 	// Creating the UiComponentInstance for a particular mad instance
-	public MadUiInstance<?,?> createUiInstanceForInstance( MadInstance<?,?> instance )
+	public AbstractMadUiInstance<?,?> createUiInstanceForInstance( MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException;
-	public void destroyUiInstance( MadUiInstance<?,?> uiInstanceToDestroy ) throws DatastoreException, RecordNotFoundException;
+	public void destroyUiInstance( AbstractMadUiInstance<?,?> uiInstanceToDestroy ) throws DatastoreException, RecordNotFoundException;
 
 	// Allow the starting painting to know how big a particular component takes up
 	// for it's caching

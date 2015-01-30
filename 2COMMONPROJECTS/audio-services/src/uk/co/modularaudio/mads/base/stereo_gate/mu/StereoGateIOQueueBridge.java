@@ -32,42 +32,45 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 public class StereoGateIOQueueBridge extends MadLocklessQueueBridge<StereoGateMadInstance>
 {
 	private static Log log = LogFactory.getLog( StereoGateIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_THRESHOLD = 0;
 	public static final int COMMAND_IN_THRESHOLD_TYPE = 1;
-	
+
 	public StereoGateIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( 	StereoGateMadInstance instance,
-			ThreadSpecificTemporaryEventStorage tses,
-			long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( 	final StereoGateMadInstance instance,
+			final ThreadSpecificTemporaryEventStorage tses,
+			final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_THRESHOLD:
 			{
-				float valueAsFloat = Float.intBitsToFloat( (int)queueEntry.value );
-				float desiredThreshold = (float)AudioMath.dbToLevel( valueAsFloat );
+				final float valueAsFloat = Float.intBitsToFloat( (int)queueEntry.value );
+				final float desiredThreshold = (float)AudioMath.dbToLevel( valueAsFloat );
 				instance.desiredThreshold = desiredThreshold;
-				log.debug("Set desired threshold to " + desiredThreshold );
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Set desired threshold to " + desiredThreshold );
+				}
 				break;
 			}
 			case COMMAND_IN_THRESHOLD_TYPE:
 			{
-				int valueAsInt = (int)queueEntry.value;
+				final int valueAsInt = (int)queueEntry.value;
 				instance.desiredThresholdType = ThresholdTypeEnum.values()[ valueAsInt ];
 				break;
 			}
 			default:
 			{
-				String msg ="Unknown command to instance: " + queueEntry.command;
+				final String msg ="Unknown command to instance: " + queueEntry.command;
 				log.error( msg );
 				break;
 			}
 		}
-		
+
 	}
 }

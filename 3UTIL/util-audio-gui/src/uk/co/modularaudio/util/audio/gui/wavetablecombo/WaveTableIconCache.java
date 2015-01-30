@@ -35,59 +35,59 @@ import uk.co.modularaudio.util.audio.wavetable.WaveTable;
 public class WaveTableIconCache
 {
 //	private static final Log log = LogFactory.getLog( WaveTableIconCache.class.getName() );
-	
+
 	private static HashMap<WaveTable, Icon> tableToIconMap = new HashMap<WaveTable, Icon>();
-	
+
 //	private static final Dimension ICON_DIMENSION = new Dimension( 28, 25 );
 	private static final Dimension ICON_DIMENSION = new Dimension( 20, 17 );
 	private static final Color BACKGROUND_COLOR = new Color( 1.0f, 1.0f, 1.0f );
 	private static final Color FOREGROUND_COLOR = new Color( 0.0f, 0.0f, 0.0f );
 
-	public static synchronized Icon getIconForWaveTable( WaveTable wt, boolean isBipolar )
+	public static synchronized Icon getIconForWaveTable( final WaveTable wt, final boolean isBipolar )
 	{
 		Icon retVal = tableToIconMap.get( wt );
 		if( retVal == null )
 		{
-			BufferedImage generatedImage = generateWaveTableImage( wt, isBipolar );
+			final BufferedImage generatedImage = generateWaveTableImage( wt, isBipolar );
 			retVal = new ImageIcon( generatedImage );
 			tableToIconMap.put( wt, retVal );
 		}
 		return retVal;
 	}
 
-	private static BufferedImage generateWaveTableImage( WaveTable wt, boolean isBipolar )
+	private static BufferedImage generateWaveTableImage( final WaveTable wt, final boolean isBipolar )
 	{
-		int width = ICON_DIMENSION.width;
-		int height = ICON_DIMENSION.height;
-		BufferedImage bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
-		Graphics2D g2d = bi.createGraphics();
+		final int width = ICON_DIMENSION.width;
+		final int height = ICON_DIMENSION.height;
+		final BufferedImage bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+		final Graphics2D g2d = bi.createGraphics();
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
-		
+
 		g2d.setColor( BACKGROUND_COLOR );
 		g2d.fillRect( 0, 0, width, height );
-		
+
 		g2d.setColor( FOREGROUND_COLOR );
 
-		float offset = (isBipolar ? 1.0f : 0.0f );
-		float divisor = (isBipolar ? 2.0f : 1.0f );
-		
+		final float offset = (isBipolar ? 1.0f : 0.0f );
+		final float divisor = (isBipolar ? 2.0f : 1.0f );
+
 		int previousX = -1;
 		int previousY = -1;
 		for( int s = 0 ; s < width ; s++ )
 		{
-			float normalisedIndex = ((float)s / (width - 1));
-			float valAtIndex = wt.getValueAtNormalisedPosition( normalisedIndex );
-			float scaledForWindowVal = ((valAtIndex + offset) / divisor) * (height - 1);
-			int intHeight = (height - 1) - ((int)(scaledForWindowVal));
+			final float normalisedIndex = ((float)s / (width - 1));
+			final float valAtIndex = wt.getValueAtNormalisedPosition( normalisedIndex );
+			final float scaledForWindowVal = ((valAtIndex + offset) / divisor) * (height - 1);
+			final int intHeight = (height - 1) - ((int)(scaledForWindowVal));
 			if( previousX != -1 )
 			{
 				g2d.drawLine( previousX, previousY, s, intHeight );
 			}
-			
+
 			previousX = s;
 			previousY = intHeight;
 		}
-		
+
 		return bi;
 	}
 

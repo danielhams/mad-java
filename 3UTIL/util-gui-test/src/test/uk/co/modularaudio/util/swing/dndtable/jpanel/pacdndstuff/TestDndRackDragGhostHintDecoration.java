@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.swing.dndtable.jpanel.JPanelDndTableDecorationHin
 public class TestDndRackDragGhostHintDecoration extends JPanelDndTableDecorationHint
 {
 	private static Log log = LogFactory.getLog( TestDndRackDragGhostHintDecoration.class.getName() );
-	
+
 	private BufferedImage image = new BufferedImage( 1, 1, BufferedImage.TYPE_INT_ARGB );
 	private Point mouseOffset = new Point(0,0);
 	private Rectangle currentDamageRectangle = new Rectangle( 0, 0, -1, -1);
@@ -45,15 +45,15 @@ public class TestDndRackDragGhostHintDecoration extends JPanelDndTableDecoration
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		if( image != null )
 		{
 			g.drawImage( image, mouseOffset.x, mouseOffset.y, null );
-		}		
+		}
 	}
 
-	public void setImageAndOffset(BufferedImage image, Point mouseOffset )
+	public void setImageAndOffset(final BufferedImage image, final Point mouseOffset )
 	{
 		if( image == null || mouseOffset == null )
 		{
@@ -75,39 +75,45 @@ public class TestDndRackDragGhostHintDecoration extends JPanelDndTableDecoration
 		}
 		if( isUpdated )
 		{
-			Rectangle newDamangeRectangle = new Rectangle( curMousePosition.x + mouseOffset.x,
+			final Rectangle newDamangeRectangle = new Rectangle( curMousePosition.x + mouseOffset.x,
 					curMousePosition.y + mouseOffset.y,
 					image.getWidth(),
 					image.getHeight() );
-			Rectangle emitDamageRectangle = ( currentDamageRectangle == null ? newDamangeRectangle :
+			final Rectangle emitDamageRectangle = ( currentDamageRectangle == null ? newDamangeRectangle :
 				newDamangeRectangle.union( currentDamageRectangle ) );
 			currentDamageRectangle = newDamangeRectangle;
 			this.emitNeedsRepaintEvent( this, emitDamageRectangle );
 		}
 	}
-	
+
 
 	@Override
 	public Rectangle getCurrentDamageRectangle()
 	{
 		return currentDamageRectangle;
 	}
-	
+
 	private Point curMousePosition = new Point(0,0);
 
 	@Override
-	public void setMousePosition( Point mousePosition )
+	public void setMousePosition( final Point mousePosition )
 	{
 		curMousePosition = mousePosition;
 		// this means our damage rectangle has changed
-		Rectangle newDamangeRectangle = new Rectangle( curMousePosition.x + mouseOffset.x,
+		final Rectangle newDamangeRectangle = new Rectangle( curMousePosition.x + mouseOffset.x,
 				curMousePosition.y + mouseOffset.y,
 				image.getWidth(),
 				image.getHeight() );
-		Rectangle emitDamageRectangle = ( currentDamageRectangle == null ? newDamangeRectangle :
+		final Rectangle emitDamageRectangle = ( currentDamageRectangle == null ? newDamangeRectangle :
 			newDamangeRectangle.union( currentDamageRectangle ) );
 		currentDamageRectangle = newDamangeRectangle;
 		this.emitNeedsRepaintEvent( this, emitDamageRectangle );
+	}
+
+	@Override
+	public void signalAnimation()
+	{
+		// Not animated
 	}
 
 }

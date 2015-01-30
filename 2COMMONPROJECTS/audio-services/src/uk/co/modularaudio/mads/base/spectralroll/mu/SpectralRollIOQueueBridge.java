@@ -39,19 +39,19 @@ public class SpectralRollIOQueueBridge extends MadLocklessQueueBridge<SpectralRo
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( SpectralRollMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SpectralRollMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean isActive = ( queueEntry.value == 1 );
+				final boolean isActive = ( queueEntry.value == 1 );
 				instance.active = isActive;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

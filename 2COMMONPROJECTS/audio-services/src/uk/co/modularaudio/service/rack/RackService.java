@@ -42,7 +42,7 @@ public interface RackService
 {
 	public final static int DEFAULT_RACK_COLS = 4;
 	public final static int DEFAULT_RACK_ROWS = 40;
-	
+
 	// Lifecycle of the rack itself
 	RackDataModel createNewRackDataModel( String rackName, String rackPath, int numCols, int numRows, boolean withRackIO )
 		throws DatastoreException;
@@ -50,19 +50,23 @@ public interface RackService
 		throws DatastoreException;
 	void destroyRackDataModel( RackDataModel rack ) throws DatastoreException, MAConstraintViolationException;
 
+	void setRackName( RackDataModel rack, String newRackName );
+	String getRackName( RackDataModel rack );
+
+	void setRackDirty( RackDataModel rack, boolean dirtyFlag );
+	boolean isRackDirty( RackDataModel rack );
+
 	// Components in the rack
-	
-	// New methods that hide the instance creation
 	RackComponent createComponentAtPosition( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition,String> parameterValues, String name, int col, int row )
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
 	RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition,String> parameterValues, String name )
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
-	
+
 	void renameContents( RackDataModel rack, RackComponent component, String newName )
 		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException;
-	
+
 	void moveContentsToPosition(RackDataModel rack, RackComponent component, int x, int y) throws DatastoreException, NoSuchContentsException, TableIndexOutOfBoundsException, TableCellFullException;
 	String getNameForNewComponentOfType(RackDataModel rack, MadDefinition<?,?> definition)
 		throws DatastoreException;
@@ -70,7 +74,7 @@ public interface RackService
 	void removeContentsFromRack( RackDataModel rackDataModel,
 			RackComponent componentForAction )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException, NoSuchContentsException;
-	
+
 	// Access to the underlying graphs
 	MadGraphInstance<?,?> getRackGraphInstance( RackDataModel rack );
 
@@ -79,7 +83,7 @@ public interface RackService
 			RackComponent consumerRackComponent, MadChannelInstance consumerChannelInstance  )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
 	void deleteRackLink(RackDataModel rack, RackLink rackLink) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException;
-	
+
 	// Links to the IO of the rack
 	RackIOLink addRackIOLink( RackDataModel rack, MadChannelInstance rackChannelInstance, RackComponent rackComponent,
 			MadChannelInstance rackComponentChannelInstance )

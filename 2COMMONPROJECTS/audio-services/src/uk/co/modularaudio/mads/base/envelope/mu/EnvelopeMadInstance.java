@@ -40,32 +40,32 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, EnvelopeMadInstance>
 {
 //	private static Log log = LogFactory.getLog( EnvelopeMadInstance.class.getName() );
-	
-	protected int sampleRate = -1;
-	
-	private Envelope envelope = new Envelope();
-	
-	private EnvelopeRuntime envelopeRuntime = new EnvelopeRuntime();
-	
-	public EnvelopeMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			EnvelopeMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	private int sampleRate;
+
+	private final Envelope envelope = new Envelope();
+
+	private final EnvelopeRuntime envelopeRuntime = new EnvelopeRuntime();
+
+	public EnvelopeMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final EnvelopeMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			envelope.setSampleRate( (int)sampleRate );
+			envelope.setSampleRate( sampleRate );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -77,36 +77,36 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean inGateConnected = channelConnectedFlags.get( EnvelopeMadDefinition.CONSUMER_GATE );
-		MadChannelBuffer inGateBuffer = channelBuffers[ EnvelopeMadDefinition.CONSUMER_GATE ];
-		boolean inRetriggerConnected = channelConnectedFlags.get( EnvelopeMadDefinition.CONSUMER_RETRIGGER );
-		MadChannelBuffer inRetriggerBuffer = channelBuffers[ EnvelopeMadDefinition.CONSUMER_RETRIGGER ];
-		
-		boolean outGateConnected = channelConnectedFlags.get( EnvelopeMadDefinition.PRODUCER_EGATE );
-		MadChannelBuffer outGateBuffer = channelBuffers[ EnvelopeMadDefinition.PRODUCER_EGATE ];
-		float[] outGateFloats = outGateBuffer.floatBuffer;
-		boolean outAmpConnected = channelConnectedFlags.get( EnvelopeMadDefinition.PRODUCER_EAMP );
-		MadChannelBuffer outAmpBuffer = channelBuffers[ EnvelopeMadDefinition.PRODUCER_EAMP ];
-		float[] outAmpFloats = outAmpBuffer.floatBuffer;
+		final boolean inGateConnected = channelConnectedFlags.get( EnvelopeMadDefinition.CONSUMER_GATE );
+		final MadChannelBuffer inGateBuffer = channelBuffers[ EnvelopeMadDefinition.CONSUMER_GATE ];
+		final boolean inRetriggerConnected = channelConnectedFlags.get( EnvelopeMadDefinition.CONSUMER_RETRIGGER );
+		final MadChannelBuffer inRetriggerBuffer = channelBuffers[ EnvelopeMadDefinition.CONSUMER_RETRIGGER ];
+
+		final boolean outGateConnected = channelConnectedFlags.get( EnvelopeMadDefinition.PRODUCER_EGATE );
+		final MadChannelBuffer outGateBuffer = channelBuffers[ EnvelopeMadDefinition.PRODUCER_EGATE ];
+		final float[] outGateFloats = outGateBuffer.floatBuffer;
+		final boolean outAmpConnected = channelConnectedFlags.get( EnvelopeMadDefinition.PRODUCER_EAMP );
+		final MadChannelBuffer outAmpBuffer = channelBuffers[ EnvelopeMadDefinition.PRODUCER_EAMP ];
+		final float[] outAmpFloats = outAmpBuffer.floatBuffer;
 
 		int currentPeriodStartIndex = 0;
 		int ste = 0;
-		
+
 		if( inGateConnected && inRetriggerConnected )
 		{
-			float[] inGateFloats = inGateBuffer.floatBuffer;
-			float[] inRetriggerFloats = inRetriggerBuffer.floatBuffer;
+			final float[] inGateFloats = inGateBuffer.floatBuffer;
+			final float[] inRetriggerFloats = inRetriggerBuffer.floatBuffer;
 			do
 			{
-				EnvelopeSegment currentSegment = envelopeRuntime.getCurrentSegment();
+				final EnvelopeSegment currentSegment = envelopeRuntime.getCurrentSegment();
 //				log.debug("At sample index " + ste + " current period start index is " + currentPeriodStartIndex + " segment type is " + currentSegment.toString() );
-				
+
 				switch( currentSegment )
 				{
 					case ATTACK:
@@ -157,7 +157,7 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 								break;
 							}
 						}
-						
+
 						// If we hit the end of the period, just output the envelope up to this point
 						if( currentPeriodStartIndex != s && s >= numFrames )
 						{
@@ -198,7 +198,7 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 								ste = s;
 							}
 						}
-						
+
 						if( currentPeriodStartIndex != s && s == numFrames )
 						{
 							envelopeRuntime.outputEnvelope( envelope,
@@ -220,7 +220,7 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 			// Neither connected, reset the envelope variables
 			// and spit out nothing.
 			envelopeRuntime.reset();
-			
+
 			if( outGateConnected )
 			{
 				Arrays.fill( outGateBuffer.floatBuffer, 0.0f );
@@ -230,10 +230,10 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 				Arrays.fill( outAmpBuffer.floatBuffer, 0.0f );
 			}
 		}
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
+
 	public Envelope getEnvelope()
 	{
 		return envelope;

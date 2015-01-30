@@ -29,34 +29,34 @@ import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
 
 public class BufferSizeSliderMVCController extends BasicIntegerSliderController
 {
-	public static OpenIntIntHashMap bufferSizeToModelIndexMap = new OpenIntIntHashMap();
-	public static OpenIntIntHashMap modelIndexToBufferSizeMap = new OpenIntIntHashMap();
-	
+	public final static OpenIntIntHashMap BUF_SIZE_TO_INDEX_MAP = new OpenIntIntHashMap();
+	public final static OpenIntIntHashMap INDEX_TO_BUF_SIZE_MAP = new OpenIntIntHashMap();
+
 	static
 	{
-		bufferSizeToModelIndexMap.put( 256, 1 );
-		bufferSizeToModelIndexMap.put( 512, 2 );
-		bufferSizeToModelIndexMap.put( 1024, 3 );
-		bufferSizeToModelIndexMap.put( 1536, 4 );
-		bufferSizeToModelIndexMap.put( 2048, 5 );
-		bufferSizeToModelIndexMap.put( 2560, 6 );
-		bufferSizeToModelIndexMap.put( 4096, 7 );
-		bufferSizeToModelIndexMap.put( 8192, 8 );
-		bufferSizeToModelIndexMap.put( 16384, 9 );
-		bufferSizeToModelIndexMap.put( 32768, 10 );
-		
-		IntArrayList intArrayList = bufferSizeToModelIndexMap.keys();
+		BUF_SIZE_TO_INDEX_MAP.put( 256, 1 );
+		BUF_SIZE_TO_INDEX_MAP.put( 512, 2 );
+		BUF_SIZE_TO_INDEX_MAP.put( 1024, 3 );
+		BUF_SIZE_TO_INDEX_MAP.put( 1536, 4 );
+		BUF_SIZE_TO_INDEX_MAP.put( 2048, 5 );
+		BUF_SIZE_TO_INDEX_MAP.put( 2560, 6 );
+		BUF_SIZE_TO_INDEX_MAP.put( 4096, 7 );
+		BUF_SIZE_TO_INDEX_MAP.put( 8192, 8 );
+		BUF_SIZE_TO_INDEX_MAP.put( 16384, 9 );
+		BUF_SIZE_TO_INDEX_MAP.put( 32768, 10 );
+
+		final IntArrayList intArrayList = BUF_SIZE_TO_INDEX_MAP.keys();
 
 		for( int i = 0 ; i < intArrayList.size() ; i++ )
 		{
-			int bufSize = intArrayList.get( i );
-			int modelIndex = bufferSizeToModelIndexMap.get( bufSize );
-			
-			modelIndexToBufferSizeMap.put( modelIndex, bufSize );
+			final int bufSize = intArrayList.get( i );
+			final int modelIndex = BUF_SIZE_TO_INDEX_MAP.get( bufSize );
+
+			INDEX_TO_BUF_SIZE_MAP.put( modelIndex, bufSize );
 		}
 	}
 
-	public BufferSizeSliderMVCController(BasicIntegerSliderModel model, UserPreferencesMVCController userPreferencesMVCController)
+	public BufferSizeSliderMVCController(final BasicIntegerSliderModel model, final UserPreferencesMVCController userPreferencesMVCController)
 	{
 		super(model);
 	}

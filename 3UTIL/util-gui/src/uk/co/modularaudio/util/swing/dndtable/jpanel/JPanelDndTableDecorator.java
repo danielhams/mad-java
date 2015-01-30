@@ -33,41 +33,41 @@ import uk.co.modularaudio.util.swing.dndtable.GuiDndTableState.State;
 public class JPanelDndTableDecorator implements JPanelDndTableDecorationHintListener
 {
 	public final static boolean DO_INDIVIDUAL_REPAINTS = false;
-	
+
 //	private static Log log = LogFactory.getLog( SwingDndTableDecorator.class.getName() );
-	
+
 	private Point mousePosition = new Point();
-	
-	private JPanelDndTable<?,?,?> table = null;
-	private GuiDndTableState state = null;
-	
-	private JPanelDndTableDecorations decorations = null;
-	
-	public JPanelDndTableDecorator(JPanelDndTable<?,?,?> table,
-			GuiDndTableState state,
-			JPanelDndTableDecorations decorations )
+
+	private final JPanelDndTable<?,?,?> table;
+	private final GuiDndTableState state;
+
+	private final JPanelDndTableDecorations decorations;
+
+	public JPanelDndTableDecorator(final JPanelDndTable<?,?,?> table,
+			final GuiDndTableState state,
+			final JPanelDndTableDecorations decorations )
 	{
 		this.table = table;
 		this.state = state;
 		this.decorations = decorations;
-		for( JPanelDndTableDecorationHint hint : decorations.getHints() )
+		for( final JPanelDndTableDecorationHint hint : decorations.getHints() )
 		{
 			hint.addListener( this );
 		}
 	}
 
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 //		Graphics2D g2d= (Graphics2D)g;
 
 		if( decorations != null )
 		{
 			// Draw the hints
-			List<JPanelDndTableDecorationHint> hints = decorations.getHints();
-			
+			final List<JPanelDndTableDecorationHint> hints = decorations.getHints();
+
 			if( hints != null )
 			{
-				for( JPanelDndTableDecorationHint hint : hints )
+				for( final JPanelDndTableDecorationHint hint : hints )
 				{
 					if( hint.isActive() )
 					{
@@ -85,20 +85,20 @@ public class JPanelDndTableDecorator implements JPanelDndTableDecorationHintList
 			}
 		}
 	}
-	
-	private Deque<Rectangle> needsRepaintDamageQueue = new ArrayDeque<Rectangle>();
 
-	public void setMousePosition( Point mousePosition )
+	private final Deque<Rectangle> needsRepaintDamageQueue = new ArrayDeque<Rectangle>();
+
+	public void setMousePosition( final Point mousePosition )
 	{
 		this.mousePosition = mousePosition;
-		for( JPanelDndTableDecorationHint hint : decorations.getHints() )
+		for( final JPanelDndTableDecorationHint hint : decorations.getHints() )
 		{
 			hint.setMousePosition( mousePosition );
 		}
 	}
 
 	@Override
-	public void receiveNeedsRepaintSignal( Object source, Rectangle damageRectangle )
+	public void receiveNeedsRepaintSignal( final Object source, final Rectangle damageRectangle )
 	{
 		if( state.getCurrentState() == State.DURING_DRAG )
 		{
@@ -114,10 +114,10 @@ public class JPanelDndTableDecorator implements JPanelDndTableDecorationHintList
 	public void doRepaintIfNecessary()
 	{
 		Rectangle cumulativeDamangeRectangle = null;
-		int numToRemove = needsRepaintDamageQueue.size();
+		final int numToRemove = needsRepaintDamageQueue.size();
 		for( int i = 0 ; i < numToRemove ; i++ )
 		{
-			Rectangle curRectangle = needsRepaintDamageQueue.removeFirst();
+			final Rectangle curRectangle = needsRepaintDamageQueue.removeFirst();
 			if( DO_INDIVIDUAL_REPAINTS )
 			{
 				table.repaint( curRectangle );
@@ -149,7 +149,7 @@ public class JPanelDndTableDecorator implements JPanelDndTableDecorationHintList
 	}
 
 	@Override
-	public void receiveForceRepaintSignal( Object source, Rectangle damageRectangle )
+	public void receiveForceRepaintSignal( final Object source, final Rectangle damageRectangle )
 	{
 //		log.debug("Forced repaint on damage rectangle " + damageRectangle );
 		table.repaint( damageRectangle );
@@ -167,11 +167,11 @@ public class JPanelDndTableDecorator implements JPanelDndTableDecorationHintList
 
 	public void signalAnimation()
 	{
-		for( JPanelDndTableDecorationHint hint : decorations.getHints() )
+		for( final JPanelDndTableDecorationHint hint : decorations.getHints() )
 		{
 			hint.signalAnimation();
 		}
-		
+
 	}
-	
+
 }

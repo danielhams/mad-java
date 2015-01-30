@@ -23,7 +23,5 @@ package uk.co.modularaudio.mads.base.spectralroll.util;
 
 public interface SpecDataListener
 {
-
 	void processScopeData( float[] newAmps );
-
 }

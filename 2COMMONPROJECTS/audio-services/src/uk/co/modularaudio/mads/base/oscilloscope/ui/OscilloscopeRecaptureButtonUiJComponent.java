@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JComponent;
@@ -36,23 +37,25 @@ public class OscilloscopeRecaptureButtonUiJComponent extends PacButton
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private OscilloscopeMadUiInstance uiInstance = null;
+	private final OscilloscopeMadUiInstance uiInstance;
 
 	public OscilloscopeRecaptureButtonUiJComponent(
-			OscilloscopeMadDefinition definition,
-			OscilloscopeMadInstance instance,
-			OscilloscopeMadUiInstance uiInstance,
-			int controlIndex )
+			final OscilloscopeMadDefinition definition,
+			final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Default value
 		super();
 
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
+		final Font f = this.getFont();
+		setFont( f );
 		this.setText( "Recapture" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
@@ -64,7 +67,7 @@ public class OscilloscopeRecaptureButtonUiJComponent extends PacButton
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -72,7 +75,7 @@ public class OscilloscopeRecaptureButtonUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveEvent( ActionEvent e )
+	public void receiveEvent( final ActionEvent e )
 	{
 		passChangeToInstanceData();
 	}

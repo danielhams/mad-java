@@ -40,32 +40,32 @@ public class NoteToCvIOQueueBridge extends MadLocklessQueueBridge<NoteToCvMadIns
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( NoteToCvMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final NoteToCvMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_NOTE_ON_TYPE:
 			{
-				int val = (int)queueEntry.value;
-				NoteOnType not = NoteOnType.values()[val];
+				final int val = (int)queueEntry.value;
+				final NoteOnType not = NoteOnType.values()[val];
 				instance.desiredNoteOnType = not;
 				break;
 			}
 			case COMMAND_FREQ_GLIDE_MILLIS:
 			{
-				float val = Float.intBitsToFloat( (int)queueEntry.value );
+				final float val = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.setFrequencyGlideMillis( val );
 				break;
 			}
 			case COMMAND_CHANNEL_NUM:
 			{
-				int channelNum = (int)queueEntry.value;
+				final int channelNum = (int)queueEntry.value;
 				instance.desiredChannelNum = channelNum;
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

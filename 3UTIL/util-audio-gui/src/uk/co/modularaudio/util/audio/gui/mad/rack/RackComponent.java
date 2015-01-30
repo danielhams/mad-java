@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -35,13 +35,13 @@ import uk.co.modularaudio.util.table.Span;
 
 public class RackComponent implements RackModelTableSpanningContents
 {
-	private String name = null;
-	private MadInstance<?,?> ci = null;
-	private MadUiDefinition<?, ?> uiDefinition = null;
-	private MadUiInstance<?,?> cui = null;
-	private List<RackComponentNameChangeListener> nameChangeListeners = new ArrayList<RackComponentNameChangeListener>();
-	
-	public RackComponent( String name, MadInstance<?,?> ci, MadUiInstance<?, ?> cui )
+	private String name;
+	private MadInstance<?,?> ci;
+	private MadUiDefinition<?, ?> uiDefinition;
+	private AbstractMadUiInstance<?,?> cui;
+	private final List<RackComponentNameChangeListener> nameChangeListeners = new ArrayList<RackComponentNameChangeListener>();
+
+	public RackComponent( final String name, final MadInstance<?,?> ci, final AbstractMadUiInstance<?, ?> cui )
 	{
 		this.name = name;
 		this.ci = ci;
@@ -53,13 +53,13 @@ public class RackComponent implements RackModelTableSpanningContents
 	{
 		return cui.getUiDefinition();
 	}
-	
-	public MadUiInstance<?, ?> getUiInstance()
+
+	public AbstractMadUiInstance<?, ?> getUiInstance()
 	{
 		return cui;
 	}
 
-	public MadUiControlInstance<?,?,?>[] getUiControlInstances()
+	public AbstractMadUiControlInstance<?,?,?>[] getUiControlInstances()
 	{
 		return cui.getUiControlInstances();
 	}
@@ -68,7 +68,7 @@ public class RackComponent implements RackModelTableSpanningContents
 	{
 		return cui.getUiChannelInstances();
 	}
-	
+
 	public String getComponentName()
 	{
 		return name;
@@ -80,6 +80,7 @@ public class RackComponent implements RackModelTableSpanningContents
 		return cui.getCellSpan();
 	}
 
+	@Override
 	public String toString()
 	{
 		return name;
@@ -90,7 +91,7 @@ public class RackComponent implements RackModelTableSpanningContents
 		return ci;
 	}
 
-	public void receiveDisplayTick( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+	public void receiveDisplayTick( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiFrameTime)
 	{
@@ -102,16 +103,16 @@ public class RackComponent implements RackModelTableSpanningContents
 		return uiDefinition.isDraggable();
 	}
 
-	public void setComponentName( String newName )
+	public void setComponentName( final String newName )
 	{
 		name = newName;
-		for( RackComponentNameChangeListener l : nameChangeListeners )
+		for( final RackComponentNameChangeListener l : nameChangeListeners )
 		{
 			l.receiveNewName( newName );
 		}
 	}
 
-	public void addNameChangeListener( RackComponentNameChangeListener nameChangeListener )
+	public void addNameChangeListener( final RackComponentNameChangeListener nameChangeListener )
 	{
 		nameChangeListeners.add( nameChangeListener );
 	}
@@ -120,7 +121,7 @@ public class RackComponent implements RackModelTableSpanningContents
 	public void removalFromTable()
 	{
 	}
-	
+
 	public void destroy()
 	{
 		nameChangeListeners.clear();

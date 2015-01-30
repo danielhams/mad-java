@@ -35,28 +35,28 @@ import uk.co.modularaudio.util.audio.pvoc.support.PvocPlayPosition;
 public strictfp class PvocFrameCreator
 {
 	public static Log log = LogFactory.getLog( PvocFrameCreator.class.getName() );
-	
+
 	// Useful values
-	private int numChannels;
-	private int windowLength;
-	private int stepSize;
-	private int fftSize;
-	private int fftComplexArraySize;
+	private final int numChannels;
+	private final int windowLength;
+	private final int stepSize;
+	private final int fftSize;
+	private final int fftComplexArraySize;
 	private PvocPlayPosition curPos;
-	
-	private FftWindow fftWindow;
-	
-	private PvocFrameRotatorPaddedTimeDomain frameRotator;
-	
-	private PvocFftComputer fftComputer;
-	
-	private float[] internalComplexBuffer;
-	
-	private UnsafeFloatRingBuffer[] cumulativeWindowRingBuffers;
-	
-	private PvocDebugger debugger;
-	
-	public PvocFrameCreator( PvocParameters params )
+
+	private final FftWindow fftWindow;
+
+	private final PvocFrameRotatorPaddedTimeDomain frameRotator;
+
+	private final PvocFftComputer fftComputer;
+
+	private final float[] internalComplexBuffer;
+
+	private final UnsafeFloatRingBuffer[] cumulativeWindowRingBuffers;
+
+	private final PvocDebugger debugger;
+
+	public PvocFrameCreator( final PvocParameters params )
 	{
 		this.numChannels = params.getNumChannels();
 		this.fftWindow = params.getFftWindow();
@@ -64,11 +64,11 @@ public strictfp class PvocFrameCreator
 		this.stepSize = params.getStepSize();
 		this.fftSize = params.getFftSize();
 		this.fftComplexArraySize = params.getFftComplexArraySize();
-		
+
 		frameRotator = params.getFrameRotator();
-		
+
 		fftComputer = params.getFftComputer();
-		
+
 		debugger = params.getDebugger();
 
 		cumulativeWindowRingBuffers = new UnsafeFloatRingBuffer[ numChannels ];
@@ -76,41 +76,41 @@ public strictfp class PvocFrameCreator
 		{
 			cumulativeWindowRingBuffers[i] = new UnsafeFloatRingBuffer( windowLength + stepSize );
 		}
-		
+
 		internalComplexBuffer = new float[ fftComplexArraySize ];
 
 		reset();
 	}
-	
-	public int makeFrameFromNextStep( float[][] inputStep,
-			PvocDataFrame frameToFill )
+
+	public int makeFrameFromNextStep( final float[][] inputStep,
+			final PvocDataFrame frameToFill )
 	{
 		if( debugger != null )
 		{
 			debugger.receiveCreatorPosition( curPos );
 		}
-		
+
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
-			float[] complexFrame = frameToFill.complexFrame[i];
+			final float[] complexFrame = frameToFill.complexFrame[i];
 
 			cumulativeWindowRingBuffers[i].write( inputStep[i], 0, stepSize );
-			
+
 			// Now read out (and move) stepSize, then read out windowLength - stepSize without moving
-			int stepRead = cumulativeWindowRingBuffers[i].read( complexFrame, 0, stepSize );
+			final int stepRead = cumulativeWindowRingBuffers[i].read( complexFrame, 0, stepSize );
 			assert( stepRead == stepSize );
-			int restWindowRead = cumulativeWindowRingBuffers[i].readNoMove( complexFrame, stepSize, windowLength - stepSize );
+			final int restWindowRead = cumulativeWindowRingBuffers[i].readNoMove( complexFrame, stepSize, windowLength - stepSize );
 			assert( restWindowRead == windowLength - stepSize );
-			
+
 			if( debugger != null )
 			{
 				debugger.receiveCreatorInputSegment( complexFrame, windowLength );
 			}
-			
+
 			fftWindow.apply( complexFrame );
-			
+
 			frameRotator.inRotate( complexFrame, internalComplexBuffer );
-			
+
 			if( debugger != null )
 			{
 				debugger.receiveCreatorWindowedRotatedSegment( internalComplexBuffer, fftSize );
@@ -127,7 +127,7 @@ public strictfp class PvocFrameCreator
 //					break;
 //				}
 //			}
-//			
+//
 //			if( allZeros )
 //			{
 //				Arrays.fill( internalComplexBuffer, 0.0f );
@@ -136,26 +136,26 @@ public strictfp class PvocFrameCreator
 //			{
 				fftComputer.realForward( internalComplexBuffer );
 //			}
-			
+
 			// Make the complex frame available to the frame processor (for phase unwrapping)
 			System.arraycopy( internalComplexBuffer, 0, complexFrame, 0, fftComplexArraySize );
 		}
-		
+
 		// Move us along.
 		curPos.pos += stepSize;
-		
+
 		return 0;
 	}
 
-	public void reset()
+	public final void reset()
 	{
 		curPos = new PvocPlayPosition();
-		
+
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
 			cumulativeWindowRingBuffers[i].clear();
 			// Now we need to prime the window ring buffer
-			float[] primer = new float[ windowLength - stepSize ];
+			final float[] primer = new float[ windowLength - stepSize ];
 			cumulativeWindowRingBuffers[i].write( primer, 0, primer.length );
 		}
 	}

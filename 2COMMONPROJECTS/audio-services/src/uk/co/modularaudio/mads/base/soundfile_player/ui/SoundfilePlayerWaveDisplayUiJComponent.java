@@ -53,41 +53,41 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	ZoomDataListener, InstanceLifecycleListener
 {
 	private static final long serialVersionUID = -580564924377154659L;
-	
+
 	private static Log log = LogFactory.getLog( SoundfilePlayerWaveDisplayUiJComponent.class.getName() );
-	
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
-	
+
 	private final BufferedImageAllocator bia;
-	
+
 	private int displayWidth;
 	private int displayWidthMinusOneOverTwo;
 	private int displayHeight;
-	
-	private boolean active = false;
-	
+
+	private boolean active;
+
 	private float currentZoomMillis = 0.0f;
-	
-	private SoundfileDisplaySampleFactory rpSampleFactory = null;
-	private RollPainter<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer> rollPainter = null;
-	
-	private BlockResamplingClient rss = null;
-	
-	private final Color currentPositionColor = new Color( 0.4f, 0.2f, 0.2f );
-	
+
+	private SoundfileDisplaySampleFactory rpSampleFactory;
+	private RollPainter<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer> rollPainter;
+
+	private BlockResamplingClient rss;
+
+	private final static Color CURRENT_POSITION_COLOUR = new Color( 0.4f, 0.2f, 0.2f );
+
 	public SoundfilePlayerWaveDisplayUiJComponent(
-			SoundfilePlayerMadDefinition definition,
-			SoundfilePlayerMadInstance instance,
-			SoundfilePlayerMadUiInstance uiInstance,
-			int controlIndex )
+			final SoundfilePlayerMadDefinition definition,
+			final SoundfilePlayerMadInstance instance,
+			final SoundfilePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque(true);
 		this.uiInstance = uiInstance;
 		this.advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
-		
+
 		this.bia = uiInstance.getUiDefinition().getBufferedImageAllocator();
-		
+
 		uiInstance.addSampleEventListener( this );
 		uiInstance.setZoomDataListener( this );
 		uiInstance.addLifecycleListener( this );
@@ -95,9 +95,9 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 	@Override
 	public void doDisplayProcessing(
-			ThreadSpecificTemporaryEventStorage tempEventStorage,
-			MadTimingParameters timingParameters,
-			long currentGuiTime)
+			final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters,
+			final long currentGuiTime)
 	{
 		if( isShowing() )
 		{
@@ -122,7 +122,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 				uiInstance.sendActive( active );
 			}
 		}
-		
+
 		if( rollPainter != null )
 		{
 			if( rollPainter.checkAndUpdate() )
@@ -150,9 +150,12 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 			{
 				rollPainter.cleanup();
 			}
-			catch (DatastoreException e)
+			catch (final DatastoreException e)
 			{
-				log.error("Exception caught during roll painter cleanup: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Exception caught during roll painter cleanup: " + e.toString(), e );
+				}
 			}
 			rollPainter = null;
 		}
@@ -160,7 +163,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void paintComponent(Graphics g)
+	public void paintComponent(final Graphics g)
 	{
 		if( rollPainter != null )
 		{
@@ -178,12 +181,12 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 			g.setColor( Color.BLACK );
 			g.fillRect(0, 0, displayWidth, displayHeight );
 		}
-		g.setColor( currentPositionColor );
+		g.setColor( CURRENT_POSITION_COLOUR );
 		g.drawLine( displayWidthMinusOneOverTwo,  0, displayWidthMinusOneOverTwo, displayHeight );
 	}
-	
+
 	@Override
-	public void setBounds( Rectangle r )
+	public void setBounds( final Rectangle r )
 	{
 		super.setBounds( r );
 		displayWidth = r.width;
@@ -202,15 +205,18 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 					displayHeight,
 					uiInstance );
 			rollPainter = new RollPainter<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer>( displayWidth, rpSampleFactory );
-			
+
 			setSampleFactoryCaptureLengthMillis();
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			log.error("Exception caught setting up roll painter during bounds set: " + e.toString(), e );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Exception caught setting up roll painter during bounds set: " + e.toString(), e );
+			}
 		}
 	}
-	
+
 	private void setSampleFactoryCaptureLengthMillis()
 	{
 		if( uiInstance != null && uiInstance.knownDataRate != null )
@@ -224,7 +230,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void setZoomMillis(float zoomMillis)
+	public void setZoomMillis(final float zoomMillis)
 	{
 //		log.debug("Received zoom of " + zoomMillis + " millis");
 		currentZoomMillis = zoomMillis;
@@ -235,12 +241,12 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveSampleChangeEvent( BlockResamplingClient newSample)
+	public void receiveSampleChangeEvent( final BlockResamplingClient newSample)
 	{
 		rss = newSample;
 		if( newSample != null )
 		{
-			SampleCacheClient scc = newSample.getSampleCacheClient();
+			final SampleCacheClient scc = newSample.getSampleCacheClient();
 			rpSampleFactory.setSampleCacheClient( scc );
 		}
 		else
@@ -250,13 +256,13 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveDeltaPositionEvent( long newPosition )
+	public void receiveDeltaPositionEvent( final long newPosition )
 	{
 		rpSampleFactory.setCurrentPosition( newPosition );
 	}
 
 	@Override
-	public void receiveAbsPositionEvent( long newPosition )
+	public void receiveAbsPositionEvent( final long newPosition )
 	{
 		rpSampleFactory.setCurrentPosition( newPosition );
 		rpSampleFactory.resetForFullRepaint();
@@ -269,9 +275,9 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveStartup( HardwareIOChannelSettings hardwareChannelSettings,
-			MadTimingParameters timingParameters,
-			MadFrameTimeFactory frameTimeFactory )
+	public void receiveStartup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
 	{
 		setSampleFactoryCaptureLengthMillis();
 	}

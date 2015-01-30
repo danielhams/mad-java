@@ -31,22 +31,22 @@ import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDo
 public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 {
 	private static final long serialVersionUID = -5719433475892570967L;
-	
+
 //	private static Log log = LogFactory.getLog( AmpSlider.class.getName() );
-	
-	private AmpSliderChangeReceiver changeReceiver = null;
-	
-	private AmpSliderLevelsAndLabels ampSliderModel = null;
-	private DbToLevelComputer sliderDbToLevelComputer = null;
-	
-	private SliderDoubleClickMouseListener ampSliderMouseListener = null;
-	
-	public AmpSlider( Color foregroundColour )
+
+	private AmpSliderChangeReceiver changeReceiver;
+
+	private final AmpSliderLevelsAndLabels ampSliderModel;
+	private final DbToLevelComputer sliderDbToLevelComputer;
+
+	private final SliderDoubleClickMouseListener ampSliderMouseListener;
+
+	public AmpSlider( final Color foregroundColour )
 	{
-		
+
 		this.setOpaque( false );
 		this.setOrientation( VERTICAL );
-		Font f = this.getFont().deriveFont( 9.5f );
+		final Font f = this.getFont().deriveFont( 9.5f );
 //		Font f = this.getFont();
 
 		ampSliderModel = AmpSliderLevelsAndLabels.getInstance( f, foregroundColour );
@@ -71,13 +71,13 @@ public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 
 		this.addMouseListener( ampSliderMouseListener );
 	}
-	
+
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( changeReceiver != null )
 		{
-			float floatVal = (float)newValue / AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
+			final float floatVal = (float)newValue / AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
 			changeReceiver.receiveAmpSliderChange( floatVal );
 		}
 	}
@@ -86,7 +86,7 @@ public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 	public void receiveDoubleClick()
 	{
 		// Reset to zero DB
-		float sliderVal = sliderDbToLevelComputer.toNormalisedSliderLevelFromDb( 0.0f ) * AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
+		final float sliderVal = sliderDbToLevelComputer.toNormalisedSliderLevelFromDb( 0.0f ) * AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
 //		log.debug("Resetting to 0dB (" + sliderVal + ")");
 		this.setValue( (int)sliderVal );
 	}
@@ -96,10 +96,10 @@ public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 		return ampSliderModel;
 	}
 
-	public void setChangeReceiver( AmpSliderChangeReceiver changeReceiver )
+	public void setChangeReceiver( final AmpSliderChangeReceiver changeReceiver )
 	{
 		this.changeReceiver = changeReceiver;
-		int valueToBroadcast = getValue();
+		final int valueToBroadcast = getValue();
 		processValueChange( valueToBroadcast, valueToBroadcast );
 	}
 }

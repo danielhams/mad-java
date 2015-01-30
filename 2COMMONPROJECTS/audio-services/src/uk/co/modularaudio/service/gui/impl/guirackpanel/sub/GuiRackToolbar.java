@@ -62,17 +62,17 @@ public class GuiRackToolbar extends JToolBar
 	{
 		if( componentComboBox == null )
 		{
-			MadDefinitionListModel componentTypes = null;
+			MadDefinitionListModel madDefinitions = null;
 			try
 			{
-				componentTypes = guiService.getComponentTypesModel();
+				madDefinitions = guiService.getMadDefinitionsModel();
 			}
 			catch (DatastoreException e)
 			{
 				String msg = "Exception caught getting component types combo data: " + e.toString();
 				log.error( msg, e );
 			}
-			componentComboBox = new ComponentTypeComboBox( componentTypes );
+			componentComboBox = new MadDefinitionComboBox( madDefinitions );
 		}
 		return componentComboBox;
 	}

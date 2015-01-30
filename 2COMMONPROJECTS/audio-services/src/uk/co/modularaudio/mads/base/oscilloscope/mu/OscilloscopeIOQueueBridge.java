@@ -31,60 +31,60 @@ import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 public class OscilloscopeIOQueueBridge extends MadLocklessQueueBridge<OscilloscopeMadInstance>
 {
 	private static Log log = LogFactory.getLog( OscilloscopeIOQueueBridge.class.getName() );
-	
+
 	public static final int COMMAND_IN_ACTIVE = 0;
 	public static final int COMMAND_IN_SCOPE_DATA = 1;
 	public static final int COMMAND_IN_CAPTURE_TRIGGER = 2;
 	public static final int COMMAND_IN_CAPTURE_REPETITIONS = 3;
 	public static final int COMMAND_IN_CAPTURE_MILLIS = 4;
 	public static final int COMMAND_OUT_SCOPE_DATA = 5;
-	
+
 	public OscilloscopeIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( OscilloscopeMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final OscilloscopeMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_IN_SCOPE_DATA:
 			{
 				// Is just a float
-				Object obj = queueEntry.object;
-				OscilloscopeWriteableScopeData scopeData = (OscilloscopeWriteableScopeData)obj;
+				final Object obj = queueEntry.object;
+				final OscilloscopeWriteableScopeData scopeData = (OscilloscopeWriteableScopeData)obj;
 				instance.bufferedScopeData.add( scopeData );
 //				log.debug("Consumed a scope data command");
 				break;
 			}
 			case COMMAND_IN_ACTIVE:
 			{
-				boolean active = ( queueEntry.value == 1 );
+				final boolean active = ( queueEntry.value == 1 );
 				instance.active = active;
 				break;
 			}
 			case COMMAND_IN_CAPTURE_TRIGGER:
 			{
-				OscilloscopeCaptureTriggerEnum ct = OscilloscopeCaptureTriggerEnum.values()[ (int)queueEntry.value ];
+				final OscilloscopeCaptureTriggerEnum ct = OscilloscopeCaptureTriggerEnum.values()[ (int)queueEntry.value ];
 				instance.captureTrigger = ct;
 				break;
 			}
 			case COMMAND_IN_CAPTURE_REPETITIONS:
 			{
-				OscilloscopeCaptureRepetitionsEnum rt = OscilloscopeCaptureRepetitionsEnum.values()[ (int)queueEntry.value ];
+				final OscilloscopeCaptureRepetitionsEnum rt = OscilloscopeCaptureRepetitionsEnum.values()[ (int)queueEntry.value ];
 				instance.captureRepetitions = rt;
 				break;
 			}
 			case COMMAND_IN_CAPTURE_MILLIS:
 			{
-				float captureMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				final float captureMillis = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.desiredCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate,
 						captureMillis );
 				break;
 			}
 			default:
 			{
-				String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
+				final String msg = "Unknown command passed on incoming queue: " + queueEntry.command;
 				log.error( msg );
 			}
 		}

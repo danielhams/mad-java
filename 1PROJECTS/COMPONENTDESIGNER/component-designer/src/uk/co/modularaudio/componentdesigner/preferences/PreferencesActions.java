@@ -35,27 +35,27 @@ public class PreferencesActions
 	private static final String CANCEL_PREFERENCES_NAME = "Cancel Changes";
 	private static final String APPLY_PREFERENCES_NAME = "Apply Changes";
 
-	private CancelPreferencesChangesAction cancelPreferencesChangesAction = null;
-	private ApplyPreferencesChangesAction applyPreferencesChangesAction = null;
+	private final CancelPreferencesChangesAction cancelPreferencesChangesAction;
+	private final ApplyPreferencesChangesAction applyPreferencesChangesAction;
 
-	public PreferencesActions( ComponentDesigner componentDesigner,
-			ComponentDesignerFrontController fc,
-			PreferencesDialog preferencesDialog,
-			ConfigurationService configurationService )
+	public PreferencesActions( final ComponentDesigner componentDesigner,
+			final ComponentDesignerFrontController fc,
+			final PreferencesDialog preferencesDialog,
+			final ConfigurationService configurationService )
 	{
 		cancelPreferencesChangesAction = new CancelPreferencesChangesAction(fc, preferencesDialog);
 		applyPreferencesChangesAction = new ApplyPreferencesChangesAction(fc, preferencesDialog);
 	}
-	
+
 	public class CancelPreferencesChangesAction extends AbstractAction
 	{
 		private static final long serialVersionUID = 5378624881852594498L;
 
-		private ComponentDesignerFrontController fc = null;
+		private final ComponentDesignerFrontController fc;
 
-		private PreferencesDialog preferencesDialog = null;
-		
-		public CancelPreferencesChangesAction( ComponentDesignerFrontController fc, PreferencesDialog preferencesDialog )
+		private final PreferencesDialog preferencesDialog;
+
+		public CancelPreferencesChangesAction( final ComponentDesignerFrontController fc, final PreferencesDialog preferencesDialog )
 		{
 			this.fc = fc;
 			this.preferencesDialog = preferencesDialog;
@@ -63,22 +63,22 @@ public class PreferencesActions
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			fc.cancelUserPreferencesChanges();
 			fc.reloadUserPreferences();
 			preferencesDialog.close();
 		}
 	}
-	
+
 	public class ApplyPreferencesChangesAction extends AbstractAction
 	{
 		private static final long serialVersionUID = -4903439573172278487L;
-		
-		private ComponentDesignerFrontController fc = null;
-		private PreferencesDialog preferencesDialog = null;
-		
-		public ApplyPreferencesChangesAction( ComponentDesignerFrontController fc, PreferencesDialog pd )
+
+		private final ComponentDesignerFrontController fc;
+		private final PreferencesDialog preferencesDialog;
+
+		public ApplyPreferencesChangesAction( final ComponentDesignerFrontController fc, final PreferencesDialog pd )
 		{
 			this.fc = fc;
 			this.preferencesDialog = pd;
@@ -86,9 +86,9 @@ public class PreferencesActions
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
-			boolean wasRendering = fc.isRendering();
+			final boolean wasRendering = fc.isRendering();
 
 			if( wasRendering )
 			{
@@ -118,7 +118,7 @@ public class PreferencesActions
 	{
 		return cancelPreferencesChangesAction;
 	}
-	
+
 	public ApplyPreferencesChangesAction getApplyAction()
 	{
 		return applyPreferencesChangesAction;

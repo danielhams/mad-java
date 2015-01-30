@@ -41,35 +41,35 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteToCvMadInstance>
 {
 //	private static Log log = LogFactory.getLog( NoteToCvMadInstance.class.getName() );
-	
+
 	private final static float FREQ_VALUE_CHASE_MILLIS = 10;
-	
-	private int sampleRate = -1;
-	private int periodLength = -1;
-	private int notePeriodLength = -1;
-	
-	private float freqGlideCurValueRatio = 0.0f;
-	private float freqGlideNewValueRatio = 0.0f;
-	private float ampGlideCurValueRatio = 0.0f;
-	private float ampGlideNewValueRatio = 0.0f;
-	private PeriodNoteState periodNoteState = new PeriodNoteState();
+
+	private int sampleRate;
+	private int periodLength;
+	private int notePeriodLength;
+
+	private float freqGlideCurValueRatio;
+	private float freqGlideNewValueRatio;
+	private float ampGlideCurValueRatio;
+	private float ampGlideNewValueRatio;
+	private final PeriodNoteState periodNoteState = new PeriodNoteState();
 
 	public NoteOnType desiredNoteOnType = NoteOnType.FOLLOW_FIRST;
 
 	// Default - all channels
-	public int desiredChannelNum = -1;
-	
-	public NoteToCvMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			NoteToCvMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public int desiredChannelNum;
+
+	public NoteToCvMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final NoteToCvMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -77,16 +77,16 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 			periodLength = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 			notePeriodLength = hardwareChannelSettings.getNoteChannelSetting().getChannelBufferLength();
-			
+
 			freqGlideNewValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, FREQ_VALUE_CHASE_MILLIS );
 			freqGlideCurValueRatio = 1.0f - freqGlideNewValueRatio;
-			
+
 			ampGlideNewValueRatio = 0.05f;
 			ampGlideCurValueRatio = 1.0f - ampGlideNewValueRatio;
-			
+
 			periodNoteState.resize( periodLength, notePeriodLength );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -98,33 +98,33 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		boolean noteConnected = channelConnectedFlags.get( NoteToCvMadDefinition.CONSUMER_NOTE );
-		boolean outGateConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_GATE_OUT );
-		boolean outFreqConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_FREQ_OUT );
-		boolean outVelocityConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT );
-		boolean outTriggerConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT );
-		boolean outVelAmpMultConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT);
-		
+		final boolean noteConnected = channelConnectedFlags.get( NoteToCvMadDefinition.CONSUMER_NOTE );
+		final boolean outGateConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_GATE_OUT );
+		final boolean outFreqConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_FREQ_OUT );
+		final boolean outVelocityConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT );
+		final boolean outTriggerConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT );
+		final boolean outVelAmpMultConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT);
+
 		periodNoteState.setGlideRatios( freqGlideCurValueRatio, freqGlideNewValueRatio, ampGlideCurValueRatio, ampGlideNewValueRatio );
-		
+
 		periodNoteState.startNewPeriod( desiredNoteOnType );
-		
+
 		if( noteConnected )
 		{
-			MadChannelBuffer noteBuffer = channelBuffers[ NoteToCvMadDefinition.CONSUMER_NOTE ];
-			MadChannelNoteEvent[] noteEvents = noteBuffer.noteBuffer;
-			int numNotes = noteBuffer.numElementsInBuffer;
+			final MadChannelBuffer noteBuffer = channelBuffers[ NoteToCvMadDefinition.CONSUMER_NOTE ];
+			final MadChannelNoteEvent[] noteEvents = noteBuffer.noteBuffer;
+			final int numNotes = noteBuffer.numElementsInBuffer;
 
 			for( int i = 0 ; i < numNotes ; i++ )
 			{
-				MadChannelNoteEvent noteEvent = noteEvents[i];
-				MadChannelNoteEventType eventType = noteEvent.getEventType();
+				final MadChannelNoteEvent noteEvent = noteEvents[i];
+				final MadChannelNoteEventType eventType = noteEvent.getEventType();
 				switch( eventType )
 				{
 					case NOTE_ON:
@@ -153,46 +153,46 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 //			log.debug("No events as note channel not connected");
 			periodNoteState.turnOffNotes( numFrames );
 		}
-		
+
 		periodNoteState.endPeriod( numFrames );
-		
+
 		if( outGateConnected )
 		{
-			MadChannelBuffer outGateBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_GATE_OUT ];
-			float[] gb = outGateBuffer.floatBuffer;
+			final MadChannelBuffer outGateBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_GATE_OUT ];
+			final float[] gb = outGateBuffer.floatBuffer;
 			periodNoteState.fillGate( gb );
 		}
-		
+
 		if( outFreqConnected )
 		{
-			MadChannelBuffer outFreqBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_FREQ_OUT ];
-			float[] fb = outFreqBuffer.floatBuffer;
+			final MadChannelBuffer outFreqBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_FREQ_OUT ];
+			final float[] fb = outFreqBuffer.floatBuffer;
 			periodNoteState.fillFrequency( fb );
 		}
 
 		if( outVelocityConnected )
 		{
-			MadChannelBuffer outVelocityBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT ];
-			float[] vb = outVelocityBuffer.floatBuffer;
+			final MadChannelBuffer outVelocityBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT ];
+			final float[] vb = outVelocityBuffer.floatBuffer;
 			periodNoteState.fillVelocity( vb );
 		}
 
 		if( outTriggerConnected )
 		{
-			MadChannelBuffer outTriggerBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT ];
-			float[] tb = outTriggerBuffer.floatBuffer;
+			final MadChannelBuffer outTriggerBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT ];
+			final float[] tb = outTriggerBuffer.floatBuffer;
 			periodNoteState.fillTrigger( tb );
 		}
 
 		if( outVelAmpMultConnected )
 		{
-			MadChannelBuffer outVelAmpMultBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT ];
-			float[] tb = outVelAmpMultBuffer.floatBuffer;
+			final MadChannelBuffer outVelAmpMultBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT ];
+			final float[] tb = outVelAmpMultBuffer.floatBuffer;
 			periodNoteState.fillVelAmpMultiplier( tb );
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
-	
+
 	protected void setFrequencyGlideMillis( float val )
 	{
 		val = ( val < 0.0f ? 0.0f : val );

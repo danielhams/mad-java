@@ -38,21 +38,21 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class SampleAndHoldMadInstance extends MadInstance<SampleAndHoldMadDefinition,SampleAndHoldMadInstance>
 {
 //	private static Log log = LogFactory.getLog( SampleAndHoldMadInstance.class.getName() );
-	
+
 	private float lastValuePulled = 0.0f;
 	private float previousTriggerValue = 0.0f;
 
-	public SampleAndHoldMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			SampleAndHoldMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public SampleAndHoldMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final SampleAndHoldMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 	}
@@ -63,27 +63,27 @@ public class SampleAndHoldMadInstance extends MadInstance<SampleAndHoldMadDefini
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers, final int numFrames )
 	{
-		
-		boolean inCvConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.CONSUMER_CV_IN );
-		float[] inCvFloats = channelBuffers[ SampleAndHoldMadDefinition.CONSUMER_CV_IN ].floatBuffer;
-		boolean inTriggerConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.CONSUMER_TRIGGER_IN );
-		float[] inTriggerFloats = channelBuffers[ SampleAndHoldMadDefinition.CONSUMER_TRIGGER_IN ].floatBuffer;
-		boolean outCvConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.PRODUCER_CV_OUT );
-		float[] outCvFloats = channelBuffers[ SampleAndHoldMadDefinition.PRODUCER_CV_OUT ].floatBuffer;
-		
+
+		final boolean inCvConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.CONSUMER_CV_IN );
+		final float[] inCvFloats = channelBuffers[ SampleAndHoldMadDefinition.CONSUMER_CV_IN ].floatBuffer;
+		final boolean inTriggerConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.CONSUMER_TRIGGER_IN );
+		final float[] inTriggerFloats = channelBuffers[ SampleAndHoldMadDefinition.CONSUMER_TRIGGER_IN ].floatBuffer;
+		final boolean outCvConnected = channelConnectedFlags.get( SampleAndHoldMadDefinition.PRODUCER_CV_OUT );
+		final float[] outCvFloats = channelBuffers[ SampleAndHoldMadDefinition.PRODUCER_CV_OUT ].floatBuffer;
+
 		if( outCvConnected )
 		{
 			if( inTriggerConnected && inCvConnected )
 			{
 				for( int s = 0 ; s < numFrames ; s++ )
 				{
-					float curTriggerValue = inTriggerFloats[ s ];
+					final float curTriggerValue = inTriggerFloats[ s ];
 					if( previousTriggerValue <= 0.0f && curTriggerValue > 0.0f )
 					{
 						lastValuePulled = inCvFloats[ s ];

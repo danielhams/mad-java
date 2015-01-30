@@ -34,14 +34,14 @@ public class Ms20FilterThresholdSliderUiJComponent extends PacSlider
 implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance, Ms20FilterMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
-	
-	private Ms20FilterMadUiInstance uiInstance = null;
+
+	private final Ms20FilterMadUiInstance uiInstance;
 
 	public Ms20FilterThresholdSliderUiJComponent(
-			Ms20FilterMadDefinition definition,
-			Ms20FilterMadInstance instance,
-			Ms20FilterMadUiInstance uiInstance,
-			int controlIndex )
+			final Ms20FilterMadDefinition definition,
+			final Ms20FilterMadInstance instance,
+			final Ms20FilterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -53,20 +53,21 @@ implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance,
 		this.setValue( 100 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float valueToPass = value / 1000.0f;
-		float scaledValue = NormalisedValuesMapper.expMapF( valueToPass );
+		final float valueToPass = value / 1000.0f;
+		final float scaledValue = NormalisedValuesMapper.expMapF( valueToPass );
 		uiInstance.sendThresholdChange( scaledValue );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,7 +75,7 @@ implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance,
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

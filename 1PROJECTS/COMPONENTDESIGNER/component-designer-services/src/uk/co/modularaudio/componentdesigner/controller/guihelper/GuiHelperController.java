@@ -37,7 +37,7 @@ public interface GuiHelperController
 {
 	UserPreferencesMVCView getUserPreferencesMVCView( UserPreferencesMVCController prefsModelController ) throws DatastoreException;
 
-	MadDefinitionListModel getComponentTypesModel() throws DatastoreException;
+	MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException;
 
 	RackModelRenderingComponent createGuiForRackDataModel( RackDataModel rackDataModel ) throws DatastoreException;
 

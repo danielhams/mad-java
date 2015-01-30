@@ -32,26 +32,26 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 public class AttenuationMeterAndLabels extends JPanel
 {
 	private static final long serialVersionUID = 1358562457507980606L;
-	
+
 //	private static Log log = LogFactory.getLog( AttenuationMeterAndLabels.class.getName() );
-	
-	private static int METER_NUM_STEPS = 1000;
-		
-	private AttenuationMeter attenuationMeter = null;
-	private AttenuationMeterLevelMarks meterLabels = null;
-	
-	private DbToLevelComputer dbToLevelComputer = null;
-	
-	public AttenuationMeterAndLabels( MonoCompressorMadUiInstance uiInstance, BufferedImageAllocator bia )
+
+	private final static int METER_NUM_STEPS = 1000;
+
+	private final AttenuationMeter attenuationMeter;
+	private final AttenuationMeterLevelMarks meterLabels;
+
+	private final DbToLevelComputer dbToLevelComputer;
+
+	public AttenuationMeterAndLabels( final MonoCompressorMadUiInstance uiInstance, final BufferedImageAllocator bia )
 	{
 		setOpaque( false );
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, filly");
 		this.setLayout( compLayout );
-		
-		Font f = getFont().deriveFont( 9.0f );
-		
+
+		final Font f = getFont().deriveFont( 9.0f );
+
 		dbToLevelComputer = new AttenuationMeterDbToLevelComputer( METER_NUM_STEPS );
-		
+
 		attenuationMeter = new AttenuationMeter( uiInstance, dbToLevelComputer, bia);
 		this.add( attenuationMeter, "gaptop " +
 				SourceSignalAmpMeterLevelMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", gapbottom " +
@@ -60,13 +60,13 @@ public class AttenuationMeterAndLabels extends JPanel
 		this.add( meterLabels, "growy, growx 0");
 	}
 
-	public void receiveMeterReadingInDb( long currentTimestamp,
-			float meterReadingDb )
+	public void receiveMeterReadingInDb( final long currentTimestamp,
+			final float meterReadingDb )
 	{
 		attenuationMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
 	}
 
-	public void receiveDisplayTick( long currentGuiTime )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
 		attenuationMeter.receiveDisplayTick( currentGuiTime );
 	}

@@ -122,7 +122,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				16, 16,
 				16, 16,
 				16, 16 );
-		internalRootGraph.addInstanceWithName( internalHostingGraph, internalHostingGraph.getInstanceName() );
+		graphService.addInstanceToGraphWithName( internalRootGraph, internalHostingGraph, internalHostingGraph.getInstanceName() );
 		addIOComponentsToRootGraph();
 
 		// Temporary empty graph to render
@@ -168,7 +168,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 
 			graphService.destroyGraph( audioSystemTesterGraph, true, true );
 		}
-		catch ( DatastoreException e)
+		catch ( final DatastoreException e)
 		{
 			final String msg = "Exception caught cleaning up root graph: " + e.toString();
 			log.error( msg, e );
@@ -322,7 +322,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			// Switch over to application graph
 			internalUseGraph( externalApplicationGraph );
 		}
-		catch ( DatastoreException e)
+		catch ( final DatastoreException e)
 		{
 			final String msg = "Exception caught activating application graph: " + e.toString();
 			log.error( msg, e );
@@ -348,7 +348,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			{
 				internalUseGraph( emptyGraphWhenNotRendering );
 			}
-			catch( DatastoreException de )
+			catch( final DatastoreException de )
 			{
 				final String msg = "DatastoreException caught attempting to switch to empty graph: " + de.toString();
 				throw new MadProcessingException( msg, de );
@@ -388,7 +388,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 					graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( internalHostingGraph, audioSystemTesterGraph,
 							audioSystemTesterGraph.getInstanceName(), true );
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					final String msg = "Exception caught switching to testing graph: " + e.toString();
 					log.error( msg, e );
@@ -405,7 +405,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 					graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( internalHostingGraph, currentRenderingGraph,
 							currentRenderingGraph.getInstanceName(), true );
 				}
-				catch( Exception e )
+				catch( final Exception e )
 				{
 					final String msg = "Exception caught switching back from testing graph: " + e.toString();
 					log.error( msg, e );
@@ -457,7 +457,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 						{
 							Thread.sleep( sleepWaitingForFadeMillis );
 						}
-						catch( InterruptedException ie )
+						catch( final InterruptedException ie )
 						{}
 					}
 					else
@@ -490,7 +490,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 						{
 							Thread.sleep( sleepWaitingForFadeMillis );
 						}
-						catch( InterruptedException ie )
+						catch( final InterruptedException ie )
 						{}
 					}
 					else
@@ -554,7 +554,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		}
 		else if( previousPlan != null && newRenderingPlan == null )
 		{
-			needWaitForUse = internalRootGraph.hasListeners();
+			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
 			final HardwareIOChannelSettings previousPlanChannelSettings = previousPlan.getPlanChannelSettings();
 			final long nanosOutputLatency = previousPlanChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
@@ -575,7 +575,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 					newAui.internalEngineStartup( planChannelSettings, planTimingParameters, planFrameTimeFactory );
 				}
 			}
-			needWaitForUse = internalRootGraph.hasListeners();
+			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
 			final long nanosOutputLatency = planChannelSettings.getNanosOutputLatency();
 			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
 		}
@@ -592,7 +592,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				{
 					Thread.sleep( sleepWaitingForPlanMillis );
 				}
-				catch (InterruptedException e)
+				catch (final InterruptedException e)
 				{
 					if( log.isErrorEnabled() )
 					{
@@ -645,7 +645,8 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				(MasterInMadInstance) componentService.createInstanceFromDefinition( masterInDef,
 						null,
 						"Master In" );
-		internalRootGraph.addInstanceWithName( masterInInstance, masterInInstance.getInstanceName() );
+
+		graphService.addInstanceToGraphWithName( internalRootGraph, masterInInstance,  masterInInstance.getInstanceName() );
 
 		final MadChannelInstance[] micis = masterInInstance.getChannelInstances();
 		for (int i = 0; i < micis.length; i++)
@@ -655,7 +656,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			final String findChannelName = channelName.replaceAll( "Output", "Input" );
 			final MadChannelInstance subGraphInputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
 			final MadLink masterInLink = new MadLink( masterInputChannel, subGraphInputChannel );
-			internalRootGraph.addLink( masterInLink );
+			graphService.addLink( internalRootGraph, masterInLink );
 		}
 
 		final MadDefinition<?, ?> masterOutDef = componentService.findDefinitionById( MasterOutMadDefinition.DEFINITION_ID );
@@ -664,8 +665,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 						null,
 						"Master Out" );
 
-		internalRootGraph.addInstanceWithName( masterOutInstance,
-				masterOutInstance.getInstanceName() );
+		graphService.addInstanceToGraphWithName( internalRootGraph, masterOutInstance, masterOutInstance.getInstanceName() );
 
 		final MadChannelInstance[] mocis = masterOutInstance.getChannelInstances();
 		for (int o = 0; o < mocis.length; o++)
@@ -675,7 +675,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			final String findChannelName = channelName.replaceAll( "Input", "Output" );
 			final MadChannelInstance subGraphOutputChannel = internalHostingGraph.getChannelInstanceByName( findChannelName );
 			final MadLink masterOutLink = new MadLink( subGraphOutputChannel, masterOutputChannel );
-			internalRootGraph.addLink( masterOutLink );
+			graphService.addLink( internalRootGraph, masterOutLink );
 		}
 	}
 
@@ -702,7 +702,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			// Set the application graph and wire it up
 			addGraphToHostingGraphAndHookupChannels( currentRenderingGraph );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught attempting to set app rack: "
 					+ e.toString();
@@ -726,7 +726,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( internalHostingGraph, graphFromUser,
 					graphFromUser.getInstanceName(), true );
 		}
-		catch( RecordNotFoundException rnfe )
+		catch( final RecordNotFoundException rnfe )
 		{
 			final String msg = "RecordNotFoundException caught mapping app graph to hosting graph: " + rnfe.toString();
 			log.error( msg, rnfe );
@@ -754,7 +754,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		{
 			Thread.sleep( 5 );
 		}
-		catch( InterruptedException ie )
+		catch( final InterruptedException ie )
 		{
 		}
 
@@ -768,9 +768,9 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 				}
 				threads[ i ].join();
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				String msg = "Exception caught stopping and joining helper thread: " + e.toString();
+				final String msg = "Exception caught stopping and joining helper thread: " + e.toString();
 				log.error( msg, e );
 			}
 			threads[ i ] = null;
@@ -805,7 +805,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 			hotspotClockSourceThread.halt();
 			Thread.sleep( 200 );
 		}
-		catch(InterruptedException ie )
+		catch(final InterruptedException ie )
 		{
 		}
 		if( hotspotClockSourceThread.isAlive() )
@@ -816,7 +816,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 		{
 			hotspotClockSourceThread.join();
 		}
-		catch (InterruptedException ie)
+		catch (final InterruptedException ie)
 		{
 			final String msg = "Interrupted waiting for join to hotspot thread: " + ie.toString();
 			log.error( msg, ie );

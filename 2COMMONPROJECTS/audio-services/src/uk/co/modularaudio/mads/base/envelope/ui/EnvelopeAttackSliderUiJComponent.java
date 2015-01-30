@@ -42,17 +42,17 @@ public class EnvelopeAttackSliderUiJComponent extends PacADSRSlider
 		TimescaleChangeListener, EnvelopeValueProducer
 {
 	private static Log log = LogFactory.getLog( EnvelopeAttackSliderUiJComponent.class.getName() );
-	
+
 	private static final long serialVersionUID = 7923855236169668204L;
-	
+
 	private float lastDisplayValue = -1.0f;
-	
-	private EnvelopeMadUiInstance uiInstance = null;
-	
-	public EnvelopeAttackSliderUiJComponent( EnvelopeMadDefinition definition,
-			EnvelopeMadInstance instance,
-			EnvelopeMadUiInstance uiInstance,
-			int controlIndex )
+
+	private final EnvelopeMadUiInstance uiInstance;
+
+	public EnvelopeAttackSliderUiJComponent( final EnvelopeMadDefinition definition,
+			final EnvelopeMadInstance instance,
+			final EnvelopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super( 0.0f, 10.0f, 4.0f,
 				"ms",
@@ -67,22 +67,23 @@ public class EnvelopeAttackSliderUiJComponent extends PacADSRSlider
 		this.uiInstance = uiInstance;
 		uiInstance.addTimescaleChangeListener( this );
 		uiInstance.addEnvelopeProducer( this );
-		
+
 		model.setValue( EnvelopeDefaults.class, EnvelopeDefaults.ATTACK_MILLIS );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( float newValue )
+	private void passChangeToInstanceData( final float newValue )
 	{
 		uiInstance.setAttackMillis( newValue );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -103,24 +104,27 @@ public class EnvelopeAttackSliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveControlValue( String valueStr )
+	public void receiveControlValue( final String valueStr )
 	{
 		try
 		{
-			log.debug("Received control value " + valueStr );
-			float asFloat = Float.parseFloat( valueStr );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Received control value " + valueStr );
+			}
+			final float asFloat = Float.parseFloat( valueStr );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Failed to parse control value: " + valueStr;
+			final String msg = "Failed to parse control value: " + valueStr;
 			log.error( msg, e );
 		}
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		if( newValue != lastDisplayValue )
 		{
@@ -130,7 +134,7 @@ public class EnvelopeAttackSliderUiJComponent extends PacADSRSlider
 	}
 
 	@Override
-	public void receiveTimescaleChange( float newTimescaleUpperLimit )
+	public void receiveTimescaleChange( final float newTimescaleUpperLimit )
 	{
 		model.setMaxValue( newTimescaleUpperLimit );
 	}

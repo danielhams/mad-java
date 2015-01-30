@@ -28,7 +28,6 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTablePol
 
 public interface RackTableDndPolicy extends LayeredPaneDndTablePolicy<RackComponent, RackComponentProperties, AbstractGuiAudioComponent>
 {
-
 	void setRackDataModel(RackDataModel rackDataModel);
 
 	void destroy();

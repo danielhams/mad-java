@@ -35,61 +35,57 @@ import uk.co.modularaudio.util.table.Span;
 public class SpectralRollMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<SpectralRollMadDefinition, SpectralRollMadInstance, SpectralRollMadUiInstance>
 {
-	private static final Span span = new Span(2,4);
-	
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final Span SPAN = new Span(2,4);
+
+	private static final int[] CHAN_INDEXES = new int[] {
 		SpectralRollMadDefinition.CONSUMER_IN
 	};
 
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 140, 45 )
 	};
 
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Display",
 		"Amp Scale",
 		"Freq Scale",
 		"Resolution"
 	};
 
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.DISPLAY,
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.COMBO		
+		ControlType.COMBO
 	};
 
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		SpectralRollDisplayUiJComponent.class,
 		SpectralRollResolutionComboUiJComponent.class,
 		SpectralRollFrequencyScaleComboUiJComponent.class,
 		SpectralRollAmpScaleComboUiJComponent.class
 	};
 
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
-//		new Rectangle(   6, 22, 292, 168 ),
-//		new Rectangle( 304, 56,  96,  20 ),
-//		new Rectangle( 304, 98,  96,  20 ),
-//		new Rectangle( 304, 136, 96,  20 )
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle(   6,   34, 544, 230 ),		// Display
 		new Rectangle( 116,  274,  96,  30 ),		// FFT Resolution
 		new Rectangle( 230,  274,  96,  30 ),		// Freq
 		new Rectangle( 350,  274,  96,  30 )		// Amp
 	};
-	
-	private static final Class<SpectralRollMadUiInstance> instanceClass = SpectralRollMadUiInstance.class;
-	
-	public SpectralRollMadUiDefinition( BufferedImageAllocator bia, SpectralRollMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	private static final Class<SpectralRollMadUiInstance> INSTANCE_CLASS = SpectralRollMadUiInstance.class;
+
+	public SpectralRollMadUiDefinition( final BufferedImageAllocator bia, final SpectralRollMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

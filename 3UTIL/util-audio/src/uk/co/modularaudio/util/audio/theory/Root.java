@@ -39,84 +39,84 @@ public enum Root
 	A,
 	ASHARP_BFLAT,
 	B_CFLAT;
-	
-	public static Map<Root,List<String>> rootToStringMap = new HashMap<Root,List<String>>();
-	public static Map<String, Root> stringToRootMap = new HashMap<String,Root>();
+
+	public final static Map<Root,List<String>> ROOT_TO_STR_MAP = new HashMap<Root,List<String>>();
+	public final static Map<String, Root> STR_TO_ROOT_MAP = new HashMap<String,Root>();
 
 	static
 	{
 		List<String> tmpList = new ArrayList<String>();
 		tmpList.add( "C" );
-		rootToStringMap.put( C, tmpList );
-		stringToRootMap.put( "C", C );
-		
+		ROOT_TO_STR_MAP.put( C, tmpList );
+		STR_TO_ROOT_MAP.put( "C", C );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "C#" );
 		tmpList.add( "Db" );
-		rootToStringMap.put( CSHARP_DFLAT, tmpList);
-		stringToRootMap.put( "C#", CSHARP_DFLAT );
-		stringToRootMap.put( "Db", CSHARP_DFLAT );
-		
+		ROOT_TO_STR_MAP.put( CSHARP_DFLAT, tmpList);
+		STR_TO_ROOT_MAP.put( "C#", CSHARP_DFLAT );
+		STR_TO_ROOT_MAP.put( "Db", CSHARP_DFLAT );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "D" );
-		rootToStringMap.put( D, tmpList );
-		stringToRootMap.put( "D", D );
-		
+		ROOT_TO_STR_MAP.put( D, tmpList );
+		STR_TO_ROOT_MAP.put( "D", D );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "D#" );
 		tmpList.add( "Eb" );
-		rootToStringMap.put( DSHARP_EFLAT, tmpList );
-		stringToRootMap.put( "D#", DSHARP_EFLAT );
-		stringToRootMap.put( "Eb", DSHARP_EFLAT );
-		
+		ROOT_TO_STR_MAP.put( DSHARP_EFLAT, tmpList );
+		STR_TO_ROOT_MAP.put( "D#", DSHARP_EFLAT );
+		STR_TO_ROOT_MAP.put( "Eb", DSHARP_EFLAT );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "E" );
-		rootToStringMap.put( E, tmpList );
-		stringToRootMap.put( "E", E );
-		
+		ROOT_TO_STR_MAP.put( E, tmpList );
+		STR_TO_ROOT_MAP.put( "E", E );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "F" );
 		tmpList.add( "E#" );
-		rootToStringMap.put( ESHARP_F, tmpList );
-		stringToRootMap.put( "F", ESHARP_F );
-		stringToRootMap.put( "E#", ESHARP_F );
-		
+		ROOT_TO_STR_MAP.put( ESHARP_F, tmpList );
+		STR_TO_ROOT_MAP.put( "F", ESHARP_F );
+		STR_TO_ROOT_MAP.put( "E#", ESHARP_F );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "F#" );
 		tmpList.add( "Gb" );
-		rootToStringMap.put( FSHARP_GFLAT, tmpList );
-		stringToRootMap.put( "F#", FSHARP_GFLAT );
-		stringToRootMap.put( "Gb", FSHARP_GFLAT );
-		
+		ROOT_TO_STR_MAP.put( FSHARP_GFLAT, tmpList );
+		STR_TO_ROOT_MAP.put( "F#", FSHARP_GFLAT );
+		STR_TO_ROOT_MAP.put( "Gb", FSHARP_GFLAT );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "G" );
-		rootToStringMap.put( G, tmpList );
-		stringToRootMap.put( "G", G );
-		
+		ROOT_TO_STR_MAP.put( G, tmpList );
+		STR_TO_ROOT_MAP.put( "G", G );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "G#" );
 		tmpList.add( "Ab" );
-		rootToStringMap.put( GSHARP_AFLAT, tmpList );
-		stringToRootMap.put( "G#", GSHARP_AFLAT );
-		stringToRootMap.put( "Ab", GSHARP_AFLAT );
-		
+		ROOT_TO_STR_MAP.put( GSHARP_AFLAT, tmpList );
+		STR_TO_ROOT_MAP.put( "G#", GSHARP_AFLAT );
+		STR_TO_ROOT_MAP.put( "Ab", GSHARP_AFLAT );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "A" );
-		rootToStringMap.put( A, tmpList );
-		stringToRootMap.put( "A", A );
-		
+		ROOT_TO_STR_MAP.put( A, tmpList );
+		STR_TO_ROOT_MAP.put( "A", A );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "A#" );
 		tmpList.add( "Bb" );
-		rootToStringMap.put( ASHARP_BFLAT, tmpList );
-		stringToRootMap.put( "A#", ASHARP_BFLAT );
-		stringToRootMap.put( "Bb", ASHARP_BFLAT );
-		
+		ROOT_TO_STR_MAP.put( ASHARP_BFLAT, tmpList );
+		STR_TO_ROOT_MAP.put( "A#", ASHARP_BFLAT );
+		STR_TO_ROOT_MAP.put( "Bb", ASHARP_BFLAT );
+
 		tmpList = new ArrayList<String>();
 		tmpList.add( "B" );
 		tmpList.add( "Cb" );
-		rootToStringMap.put( B_CFLAT, tmpList );
-		stringToRootMap.put( "B", B_CFLAT );
-		stringToRootMap.put( "Cb", B_CFLAT );
+		ROOT_TO_STR_MAP.put( B_CFLAT, tmpList );
+		STR_TO_ROOT_MAP.put( "B", B_CFLAT );
+		STR_TO_ROOT_MAP.put( "Cb", B_CFLAT );
 	}
 }

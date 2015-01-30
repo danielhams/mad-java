@@ -25,11 +25,11 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 
 public class DndWireDragDecorations extends LayeredPaneDndTableDecorations
 {
-	private DndWireDragCurrentWireHint currentWireDecorationHint = null;
-	private DndWireDragStaticRegionDecorationHint sourcePlugDecorationHint = null;
-	private DndWireDragPlugNameTooltipHint plugNameTooltipHint = null;
+	private final DndWireDragCurrentWireHint currentWireDecorationHint;
+	private final DndWireDragStaticRegionDecorationHint sourcePlugDecorationHint;
+	private final DndWireDragPlugNameTooltipHint plugNameTooltipHint;
 
-	public DndWireDragDecorations( BufferedImageAllocationService bufferedImageAllocationService )
+	public DndWireDragDecorations( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		sourcePlugDecorationHint = new DndWireDragStaticRegionDecorationHint();
 		currentWireDecorationHint = new DndWireDragCurrentWireHint( bufferedImageAllocationService );
@@ -49,7 +49,7 @@ public class DndWireDragDecorations extends LayeredPaneDndTableDecorations
 	{
 		return sourcePlugDecorationHint;
 	}
-	
+
 	public DndWireDragPlugNameTooltipHint getPlugNameTooltipHint()
 	{
 		return plugNameTooltipHint;

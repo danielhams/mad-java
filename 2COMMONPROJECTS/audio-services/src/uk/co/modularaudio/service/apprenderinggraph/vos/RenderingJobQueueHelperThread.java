@@ -32,11 +32,11 @@ import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 public class RenderingJobQueueHelperThread extends AbstractInterruptableThread
 {
 	private static Log log = LogFactory.getLog( RenderingJobQueueHelperThread.class.getName() );
-	
-	private HelperThreadJobQueueProcessing jobQueueProcessing;
+
+	private final HelperThreadJobQueueProcessing jobQueueProcessing;
 	private final boolean shouldProfileRenderingJobs;
 
-	public RenderingJobQueueHelperThread( int threadNum, RenderingJobQueue renderingJobQueue, boolean shouldProfileRenderingJobs )
+	public RenderingJobQueueHelperThread( final int threadNum, final RenderingJobQueue renderingJobQueue, final boolean shouldProfileRenderingJobs )
 	{
 		super( MAThreadPriority.REALTIME );
 		jobQueueProcessing = new HelperThreadJobQueueProcessing( threadNum, renderingJobQueue );
@@ -54,8 +54,11 @@ public class RenderingJobQueueHelperThread extends AbstractInterruptableThread
 			localShouldHalt = shouldHalt;
 		}
 
-		log.debug("Processed " + jobQueueProcessing.getNumJobsProcessed() + " jobs");
-		jobQueueProcessing.resetNumJobProcessed();			
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Processed " + jobQueueProcessing.getNumJobsProcessed() + " jobs");
+		}
+		jobQueueProcessing.resetNumJobProcessed();
 	}
 
 }

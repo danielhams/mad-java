@@ -39,66 +39,58 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class AllocationCacheConfiguration
 {
 	private static Log log = LogFactory.getLog(AllocationCacheConfiguration.class.getName() );
-	
+
 	private static final String CONFIG_KEY_CACHE_STD_ALLOC_WIDTH = ".StdAllocWidth";
 	private static final String CONFIG_KEY_CACHE_STD_ALLOC_HEIGHT= ".StdAllocHeight";
 	private static final String CONFIG_KEY_CACHE_TYPES_AND_PAGES = ".TypesAndInitialPages";
 
 
-	private int stdAllocImageWidth = -1;
-	private int stdAllocImageHeight = -1;
+	private final int stdAllocImageWidth;
+	private final int stdAllocImageHeight;
 
-	private int numBufferedImageTypes = -1;
-	private AllocationBufferType[] bufferedImageTypes = null;
-	private AllocationLifetime[] bufferedImageLifetimes = null;
-	private OpenLongIntHashMap lifetimeAndTypeInitialPages = new OpenLongIntHashMap();
+	private final int numBufferedImageTypes;
+	private final AllocationBufferType[] bufferedImageTypes;
+	private final AllocationLifetime[] bufferedImageLifetimes;
+	private final OpenLongIntHashMap lifetimeAndTypeInitialPages = new OpenLongIntHashMap();
 
-	public AllocationCacheConfiguration( String configKeyPrefix, ConfigurationService configurationService ) throws ComponentConfigurationException
+	public AllocationCacheConfiguration( final String configKeyPrefix, final ConfigurationService configurationService ) throws ComponentConfigurationException
 	{
-		Map<String,String> errors = new HashMap<String,String>();
-		
+		final Map<String,String> errors = new HashMap<String,String>();
+
 		stdAllocImageWidth = ConfigurationServiceHelper.checkForIntKey( configurationService, configKeyPrefix + CONFIG_KEY_CACHE_STD_ALLOC_WIDTH, errors );
 		stdAllocImageHeight = ConfigurationServiceHelper.checkForIntKey( configurationService, configKeyPrefix + CONFIG_KEY_CACHE_STD_ALLOC_HEIGHT, errors );
-		String[] typesAndPages = ConfigurationServiceHelper.checkForCommaSeparatedStringValues( configurationService, 
+		final String[] typesAndPages = ConfigurationServiceHelper.checkForCommaSeparatedStringValues( configurationService,
 				configKeyPrefix + CONFIG_KEY_CACHE_TYPES_AND_PAGES, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
-		
-		extractInitialPagesFromConfigPairs( typesAndPages );
-		
-		log.debug("Configured with standard allocation sizes of ( " + stdAllocImageWidth + ", " + stdAllocImageHeight + " )");
-	}
 
-	private void extractInitialPagesFromConfigPairs( String[] typesAndPages )
-		throws ComponentConfigurationException
-	{
-		List<AllocationBufferType> typesFound = new ArrayList<AllocationBufferType>();
-		List<Integer> numInitialPagesForType = new ArrayList<Integer>();
-		List<AllocationLifetime> allocLifetimes = new ArrayList<AllocationLifetime>();
+		final List<AllocationBufferType> typesFound = new ArrayList<AllocationBufferType>();
+		final List<Integer> numInitialPagesForType = new ArrayList<Integer>();
+		final List<AllocationLifetime> allocLifetimes = new ArrayList<AllocationLifetime>();
 		int numFound = 0;
 		try
 		{
 			for( int i = 0 ; i < typesAndPages.length ; i++ )
 			{
-				String[] sepOnEquals = typesAndPages[i].split( "=" );
+				final String[] sepOnEquals = typesAndPages[i].split( "=" );
 				if( sepOnEquals.length != 2 )
 				{
-					String msg = "Malformed comma separated key value pairs (a=b,c=d) in initial pages";
+					final String msg = "Malformed comma separated key value pairs (a=b,c=d) in initial pages";
 					throw new ComponentConfigurationException( msg );
 				}
-				String id = sepOnEquals[ 0 ];
-				String[] splitId = id.split( "-" );
+				final String id = sepOnEquals[ 0 ];
+				final String[] splitId = id.split( "-" );
 				if( splitId.length != 2 )
 				{
-					String msg = "Malformed allocation lifetime and type in initial pages: " + id;
+					final String msg = "Malformed allocation lifetime and type in initial pages: " + id;
 					throw new ComponentConfigurationException( msg );
 				}
-				String lifetimeStr = splitId[0];
-				AllocationLifetime al = AllocationLifetime.valueOf( lifetimeStr );
-				String typeStr = splitId[1];
-				String numInitialPagesStr = sepOnEquals[ 1 ];
+				final String lifetimeStr = splitId[0];
+				final AllocationLifetime al = AllocationLifetime.valueOf( lifetimeStr );
+				final String typeStr = splitId[1];
+				final String numInitialPagesStr = sepOnEquals[ 1 ];
 
-				int numPagesAsInt = Integer.parseInt( numInitialPagesStr );
-				AllocationBufferType abt = AllocationBufferType.valueOf( typeStr );
+				final int numPagesAsInt = Integer.parseInt( numInitialPagesStr );
+				final AllocationBufferType abt = AllocationBufferType.valueOf( typeStr );
 				if( abt != null )
 				{
 					typesFound.add( abt );
@@ -108,7 +100,7 @@ public class AllocationCacheConfiguration
 				}
 				else
 				{
-					String msg = "Buffer type specified in configuration not handled: " + typeStr;
+					final String msg = "Buffer type specified in configuration not handled: " + typeStr;
 					throw new ComponentConfigurationException( msg );
 				}
 			}
@@ -117,17 +109,21 @@ public class AllocationCacheConfiguration
 			bufferedImageLifetimes = new AllocationLifetime[ numFound ];
 			for( int bic = 0 ; bic < numFound ; bic++ )
 			{
-				AllocationBufferType bufferedImageType = typesFound.get( bic );
-				AllocationLifetime lifetime = allocLifetimes.get( bic );
+				final AllocationBufferType bufferedImageType = typesFound.get( bic );
+				final AllocationLifetime lifetime = allocLifetimes.get( bic );
 				bufferedImageTypes[ bic ] = bufferedImageType;
 				bufferedImageLifetimes[ bic ] = lifetime;
-				long compoundKey = calculateCompoundKey( lifetime, bufferedImageType );
+				final long compoundKey = calculateCompoundKey( lifetime, bufferedImageType );
 				lifetimeAndTypeInitialPages.put( compoundKey, numInitialPagesForType.get( bic ) );
 			}
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Configured with standard allocation sizes of ( " + stdAllocImageWidth + ", " + stdAllocImageHeight + " )");
+			}
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Unable to parse initial pages configuration: " + e.toString();
+			final String msg = "Unable to parse initial pages configuration: " + e.toString();
 			throw new ComponentConfigurationException( msg, e );
 		}
 	}
@@ -147,20 +143,20 @@ public class AllocationCacheConfiguration
 		return numBufferedImageTypes;
 	}
 
-	public AllocationBufferType getBufferedImageTypeAt( int bic )
+	public AllocationBufferType getBufferedImageTypeAt( final int bic )
 	{
 		return bufferedImageTypes[ bic ];
 	}
 
-	public AllocationLifetime getLifetimeAt( int bic )
+	public AllocationLifetime getLifetimeAt( final int bic )
 	{
 		return bufferedImageLifetimes[ bic ];
 	}
-	
-	public int getInitialPagesForLifetimeAndType( AllocationLifetime lifetime, AllocationBufferType bufferedImageType )
-		throws RecordNotFoundException
+
+	public int getInitialPagesForLifetimeAndType( final AllocationLifetime lifetime, final AllocationBufferType bufferedImageType )
+			throws RecordNotFoundException
 	{
-		long compoundKey = calculateCompoundKey( lifetime, bufferedImageType );
+		final long compoundKey = calculateCompoundKey( lifetime, bufferedImageType );
 		if( lifetimeAndTypeInitialPages.containsKey( compoundKey ) )
 		{
 			return lifetimeAndTypeInitialPages.get( compoundKey );
@@ -171,10 +167,10 @@ public class AllocationCacheConfiguration
 		}
 	}
 
-	private long calculateCompoundKey( AllocationLifetime lifetime,
-			AllocationBufferType bufferedImageType )
+	private long calculateCompoundKey( final AllocationLifetime lifetime,
+			final AllocationBufferType bufferedImageType )
 	{
-		long compoundKey = ((long)lifetime.ordinal() << 32) | bufferedImageType.ordinal();
+		final long compoundKey = ((long)lifetime.ordinal() << 32) | bufferedImageType.ordinal();
 		return compoundKey;
 	}
 

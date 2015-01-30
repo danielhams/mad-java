@@ -34,14 +34,14 @@ public class Ms20FilterResonanceSliderUiJComponent extends PacSlider
 implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance, Ms20FilterMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
-	
-	private Ms20FilterMadUiInstance uiInstance = null;
+
+	private final Ms20FilterMadUiInstance uiInstance;
 
 	public Ms20FilterResonanceSliderUiJComponent(
-			Ms20FilterMadDefinition definition,
-			Ms20FilterMadInstance instance,
-			Ms20FilterMadUiInstance uiInstance,
-			int controlIndex )
+			final Ms20FilterMadDefinition definition,
+			final Ms20FilterMadInstance instance,
+			final Ms20FilterMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -53,26 +53,27 @@ implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance,
 		this.setValue( 0 );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( int value )
+	private void passChangeToInstanceData( final int value )
 	{
-		float valueToPass = value / 1000.0f;
-		// Linear from 0 -> 0.5, then 
-		float firstHalfVal = (valueToPass <= 0.5f ? valueToPass : 0.5f);
-		float firstHalfScaled = NormalisedValuesMapper.logMapF( firstHalfVal * 2 ) / 2;
+		final float valueToPass = value / 1000.0f;
+		// Linear from 0 -> 0.5, then
+		final float firstHalfVal = (valueToPass <= 0.5f ? valueToPass : 0.5f);
+		final float firstHalfScaled = NormalisedValuesMapper.logMapF( firstHalfVal * 2 ) / 2;
 
-		float secondHalfVal = (valueToPass - firstHalfVal);
-		float secondHalfScaled = NormalisedValuesMapper.expMapF( secondHalfVal * 2 ) / 2;
+		final float secondHalfVal = (valueToPass - firstHalfVal);
+		final float secondHalfScaled = NormalisedValuesMapper.expMapF( secondHalfVal * 2 ) / 2;
 
 		uiInstance.sendFilterResonanceChange( firstHalfScaled + secondHalfScaled );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -80,7 +81,7 @@ implements IMadUiControlInstance<Ms20FilterMadDefinition, Ms20FilterMadInstance,
 	}
 
 	@Override
-	public void processValueChange( int previousValue, int newValue )
+	public void processValueChange( final int previousValue, final int newValue )
 	{
 		if( previousValue != newValue )
 		{

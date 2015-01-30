@@ -12,7 +12,7 @@ public class PostRefreshSetMadReleaseLevelContextHelper implements SpringContext
 	private final boolean showAlpha;
 	private final boolean showBeta;
 
-	public PostRefreshSetMadReleaseLevelContextHelper( boolean showAlpha, boolean showBeta )
+	public PostRefreshSetMadReleaseLevelContextHelper( final boolean showAlpha, final boolean showBeta )
 	{
 		this.showAlpha = showAlpha;
 		this.showBeta = showBeta;
@@ -24,21 +24,21 @@ public class PostRefreshSetMadReleaseLevelContextHelper implements SpringContext
 	}
 
 	@Override
-	public void preRefreshDoThings( GenericApplicationContext appContext ) throws DatastoreException
+	public void preRefreshDoThings( final GenericApplicationContext appContext ) throws DatastoreException
 	{
 	}
 
 	@Override
-	public void postRefreshDoThings( GenericApplicationContext appContext,
-			BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException
+	public void postRefreshDoThings( final GenericApplicationContext appContext,
+			final BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException
 	{
-		MadComponentService componentService = appContext.getBean( MadComponentService.class );
+		final MadComponentService componentService = appContext.getBean( MadComponentService.class );
 		componentService.setReleaseLevel( showAlpha, showBeta );
 	}
 
 	@Override
-	public void preShutdownDoThings( GenericApplicationContext appContext,
-			BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException
+	public void preShutdownDoThings( final GenericApplicationContext appContext,
+			final BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException
 	{
 	}
 

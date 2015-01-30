@@ -28,9 +28,9 @@ import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadD
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -38,72 +38,74 @@ import uk.co.modularaudio.util.table.Span;
 
 public class FeedbackLinkProducerMadUiDefinition extends MadUiDefinition<FeedbackLinkProducerMadDefinition, FeedbackLinkProducerMadInstance>
 {
-	private static final Span span = new Span(2,1);
+	private static final Span SPAN = new Span(2,1);
 
 	private static final Point PRODUCER_CHANNEL_CENTER = new Point( 120, 30 );
 
 	private static final Point PRODUCER_CV_CHANNEL_CENTER = new Point( 160, 30 );
-	
-	private BufferedImage frontBufferedImage = null;
-	private BufferedImage backBufferedImage = null;
-	
-	public FeedbackLinkProducerMadUiDefinition( BufferedImageAllocator bia, FeedbackLinkProducerMadDefinition definition,
-			ComponentImageFactory cif, 
-			String imageRoot ) throws DatastoreException
+
+	private final BufferedImage frontBufferedImage;
+	private final BufferedImage backBufferedImage;
+
+	public FeedbackLinkProducerMadUiDefinition( final BufferedImageAllocator bia, final FeedbackLinkProducerMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot ) throws DatastoreException
 	{
 		super( bia, definition );
-		
+
 		frontBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_front.png" );
-		
+
 		backBufferedImage = cif.getBufferedImage( imageRoot,
 				definition.getId() + "_back.png");
 	}
 
+	@Override
 	public BufferedImage getFrontBufferedImage()
 	{
 		return frontBufferedImage;
 	}
 
+	@Override
 	public BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
 	}
 
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( FeedbackLinkProducerMadInstance instance )
+	public AbstractMadUiInstance<?,?> createNewUiInstance( final FeedbackLinkProducerMadInstance instance )
 		throws DatastoreException
 	{
-		MadUiInstance<?,?> retVal = null;
 		try
 		{
 			// Setup where the channels live
-			ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
-			MadChannelInstance[] channelInstances = instance.getChannelInstances();
-			MadChannelInstance consumerChannelInstance = channelInstances[ FeedbackLinkProducerMadDefinition.PRODUCER_AUDIO ];
+			final ArrayList<MadUiChannelInstance> uiChannelInstances = new ArrayList<MadUiChannelInstance>();
+			final MadChannelInstance[] channelInstances = instance.getChannelInstances();
+			final MadChannelInstance consumerChannelInstance = channelInstances[ FeedbackLinkProducerMadDefinition.PRODUCER_AUDIO ];
 			uiChannelInstances.add(  new MadUiChannelInstance( PRODUCER_CHANNEL_CENTER, consumerChannelInstance ) );
-			MadChannelInstance producerChannelInstance = channelInstances[ FeedbackLinkProducerMadDefinition.PRODUCER_CV_DEPENDENCY ];
+			final MadChannelInstance producerChannelInstance = channelInstances[ FeedbackLinkProducerMadDefinition.PRODUCER_CV_DEPENDENCY ];
 			uiChannelInstances.add( new MadUiChannelInstance( PRODUCER_CV_CHANNEL_CENTER, producerChannelInstance ) );
-			
+
 			// We don't have any controls...
-			
-			retVal = new FeedbackLinkProducerMadUiInstance( instance,
+
+			final AbstractMadUiInstance<?,?> retVal = new FeedbackLinkProducerMadUiInstance( instance,
 					this );
-			
-			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
-					 new MadUiControlInstance<?,?,?>[ 0 ],
+
+			retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],
+					 new AbstractMadUiControlInstance<?,?,?>[ 0 ],
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
+			return retVal;
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught creating new ui instance: " + e.toString();
+			final String msg = "Exception caught creating new ui instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
-		return retVal;
 	}
-	
+
+	@Override
 	public Span getCellSpan()
 	{
-		return span;
+		return SPAN;
 	}
 }

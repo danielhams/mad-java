@@ -31,13 +31,13 @@ public class GuiTickActionListener implements ActionListener
 
 	private final ComponentDesignerFrontController fc;
 
-	public GuiTickActionListener( ComponentDesignerFrontController fc )
+	public GuiTickActionListener( final ComponentDesignerFrontController fc )
 	{
 		this.fc = fc;
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		fc.receiveDisplayTick();
 	}

@@ -35,9 +35,9 @@ import uk.co.modularaudio.util.table.Span;
 public class FrequencyFilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
-	private static final Span span = new Span(2,2);
+	private static final Span SPAN = new Span(2,2);
 
-	private static final int[] uiChannelInstanceIndexes = new int[] {
+	private static final int[] CHAN_INDEXES = new int[] {
 		FrequencyFilterMadDefinition.CONSUMER_IN_LEFT,
 		FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT,
 		FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
@@ -47,7 +47,7 @@ public class FrequencyFilterMadUiDefinition
 		FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT
 	};
 
-	private static final Point[] uiChannelPositions = new Point[] {
+	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 200, 60 ),
 		new Point( 220, 60 ),
 		new Point( 250, 60 ),
@@ -57,35 +57,35 @@ public class FrequencyFilterMadUiDefinition
 		new Point( 260, 100 )
 	};
 
-	private static final String[] uiControlNames = new String[] {
+	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Toggle 24 dB",
 		"Knee",
 		"Bandwidth"
 	};
 
-	private static final ControlType[] uiControlTypes = new ControlType[] {
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.BUTTON,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
 
-	private static final Class<?>[] uiControlClasses = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		FrequencyFilterTypeComboUiJComponent.class,
 		FrequencyFilterDbToggleUiJComponent.class,
 		FrequencyFilterKneeSliderUiControlInstance.class,
 		FrequencyFilterBandwidthSliderUiControlInstance.class
 	};
 
-	private static final Rectangle[] uiControlBounds = new Rectangle[] {
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 40, 120, 30 ),		// FilterType
 		new Rectangle( 15, 90, 120, 30 ),		// DbToggle
 		new Rectangle( 145, 40, 400, 30 ),		// Freq
 		new Rectangle( 145, 90, 400, 30 )		// BW
 	};
 
-	private static final Class<FrequencyFilterMadUiInstance> instanceClass = FrequencyFilterMadUiInstance.class;
+	private static final Class<FrequencyFilterMadUiInstance> INSTANCE_CLASS = FrequencyFilterMadUiInstance.class;
 
 	public FrequencyFilterMadUiDefinition( BufferedImageAllocator bia,
 			FrequencyFilterMadDefinition definition,
@@ -94,13 +94,13 @@ public class FrequencyFilterMadUiDefinition
 		throws DatastoreException
 	{
 		super( bia, definition, cif, imageRoot,
-				span,
-				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
-				uiControlNames,
-				uiControlTypes,
-				uiControlClasses,
-				uiControlBounds );
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
 	}
 }

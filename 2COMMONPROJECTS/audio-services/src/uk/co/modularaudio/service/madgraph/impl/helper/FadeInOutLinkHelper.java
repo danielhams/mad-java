@@ -62,7 +62,7 @@ public class FadeInOutLinkHelper
 	private final PFadeInMadDefinition pfadeInDefinition;
 	private final PFadeOutMadDefinition pfadeOutDefinition;
 
-	private final Map<MadParameterDefinition, String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
+	private final static Map<MadParameterDefinition, String> EMPTY_PARAM_VALUES = new HashMap<MadParameterDefinition, String>();
 
 	private final long MAX_WAIT_MILLIS = 500;
 
@@ -98,7 +98,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -131,7 +131,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -166,7 +166,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -205,7 +205,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -272,7 +272,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -339,7 +339,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -386,7 +386,7 @@ public class FadeInOutLinkHelper
 			{
 				Thread.sleep( FadeDefinitions.FADE_MILLIS );
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				log.debug("Interrupted caught during fade out / in - can probably ignore.");
 			}
@@ -444,7 +444,7 @@ public class FadeInOutLinkHelper
 
 		// Add a fade out component to the graph
 		final FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
-				emptyParameterValues,
+				EMPTY_PARAM_VALUES,
 				"Internal Link Fade Out Component for link " + uniqueInstanceName );
 
 		final MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
@@ -477,7 +477,7 @@ public class FadeInOutLinkHelper
 
 		// Now insert a fade out component and map it in
 		final FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
-				emptyParameterValues,
+				EMPTY_PARAM_VALUES,
 				"Internal Link Fade Out Component for " + uniqueInstanceName );
 
 		final MadChannelInstance fadeOutProducerChannel = fadeOutInstance.getChannelInstances()[ FadeOutMadDefinition.PRODUCER ];
@@ -518,7 +518,7 @@ public class FadeInOutLinkHelper
 		final String uniqueInstanceName = link.toString();
 		// Add a fade in component to the graph
 		final FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
-				emptyParameterValues,
+				EMPTY_PARAM_VALUES,
 				"Internal Link Fade In Component for " + uniqueInstanceName );
 
 		final MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
@@ -547,7 +547,7 @@ public class FadeInOutLinkHelper
 		final String uniqueInstanceName = graphChannelInstance.toString();
 		// Add a fade out component to the graph
 		final FadeInMadInstance fadeInInstance = (FadeInMadInstance)componentService.createInstanceFromDefinition( fadeInDefinition,
-				emptyParameterValues,
+				EMPTY_PARAM_VALUES,
 				"Internal Link Fade In Component for graph channel " + uniqueInstanceName );
 
 		final MadChannelInstance fadeInProducerChannel = fadeInInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];

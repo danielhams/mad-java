@@ -29,17 +29,16 @@ import uk.co.modularaudio.util.mvc.combo.idstringandvalue.BasicIdStringAndValueC
 
 public class InputDeviceComboMVCController extends BasicIdStringAndValueComboController<AudioSystemDeviceComboItem, AudioHardwareDevice>
 {
-//	private static Log log = LogFactory.getLog( InputDeviceComboMVCController.class.getName() );
-	
-	public InputDeviceComboMVCController( AudioSystemDeviceMVCModel model,
-			UserPreferencesMVCController userPreferencesModelController )
+	public InputDeviceComboMVCController( final AudioSystemDeviceMVCModel model,
+			final UserPreferencesMVCController userPreferencesModelController )
 	{
 		super(model);
 	}
 
-	public void setSelectedElementById(String inputDeviceId) throws RecordNotFoundException
+	@Override
+	public void setSelectedElementById(final String inputDeviceId) throws RecordNotFoundException
 	{
-		AudioSystemDeviceComboItem itemForId = model.getElementById( inputDeviceId );
+		final AudioSystemDeviceComboItem itemForId = model.getElementById( inputDeviceId );
 		setSelectedElement( itemForId );
 	}
 

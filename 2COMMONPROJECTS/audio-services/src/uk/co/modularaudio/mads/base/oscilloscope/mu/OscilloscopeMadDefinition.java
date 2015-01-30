@@ -41,57 +41,56 @@ public class OscilloscopeMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int CONSUMER_CV_SIGNAL1 = 4;
 	public final static int NUM_CHANNELS = 5;
 
-	private final static String definitionId = "oscilloscope";
+	public final static String DEFINITION_ID = "oscilloscope";
 
-	private final static String userVisibleName = "Oscilloscope";
+	private final static String USER_VISIBILE_NAME = "Oscilloscope";
 
-	private final static String classificationGroup = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String classificationId = "oscilloscope";
-	private final static String classificationName = "Oscilloscope";
-	private final static String classificationDescription = "An oscilloscope for analysing sound";
+	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
+	private final static String CLASS_NAME = "Oscilloscope";
+	private final static String CLASS_DESC = "An oscilloscope for analysing sound";
 
 	// These must match the channel indexes given above
-	private final static String[] channelNames = new String[] {
+	private final static String[] CHAN_NAMES = new String[] {
 		"Input Trigger",
 		"Input Wave 0",
 		"Input CV 0",
 		"Input Wave 1",
 		"Input CV 1"};
 
-	private final static MadChannelType[] channelTypes = new MadChannelType[] {
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.CV,
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
 		MadChannelType.AUDIO,
 		MadChannelType.CV };
 
-	private final static MadChannelDirection[] channelDirections = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER };
 
-	private final static MadChannelPosition[] channelPositions = new MadChannelPosition[] { MadChannelPosition.MONO,
+	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
-	public OscilloscopeMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public OscilloscopeMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
-				new MadClassification( classificationService.findGroupById( classificationGroup ),
-						classificationId,
-						classificationName,
-						classificationDescription,
+		super( DEFINITION_ID, USER_VISIBILE_NAME,
+				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
+						DEFINITION_ID,
+						CLASS_NAME,
+						CLASS_DESC,
 						ReleaseState.ALPHA ),
 				new OscilloscopeIOQueueBridge(),
 				NUM_CHANNELS,
-				channelNames,
-				channelTypes,
-				channelDirections,
-				channelPositions );
+				CHAN_NAMES,
+				CHAN_TYPES,
+				CHAN_DIRS,
+				CHAN_POSIS );
 
 	}
 }

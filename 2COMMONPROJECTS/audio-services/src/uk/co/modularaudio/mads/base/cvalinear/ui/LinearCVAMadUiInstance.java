@@ -22,12 +22,12 @@ package uk.co.modularaudio.mads.base.cvalinear.ui;
 
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableNoEventsMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNonConfigurableMadUiInstance;
 
-public class LinearCVAMadUiInstance extends AbstractNonConfigurableNoEventsMadUiInstance<LinearCVAMadDefinition, LinearCVAMadInstance>
+public class LinearCVAMadUiInstance extends NoEventsNonConfigurableMadUiInstance<LinearCVAMadDefinition, LinearCVAMadInstance>
 {
-	public LinearCVAMadUiInstance( LinearCVAMadInstance instance,
-			LinearCVAMadUiDefinition uiDefinition )
+	public LinearCVAMadUiInstance( final LinearCVAMadInstance instance,
+			final LinearCVAMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}

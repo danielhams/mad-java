@@ -28,9 +28,9 @@ import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -73,7 +73,7 @@ public class FadeInMadUiDefinition extends MadUiDefinition<FadeInMadDefinition, 
 	}
 
 	@Override
-	public MadUiInstance<?,?> createNewUiInstance( final FadeInMadInstance instance )
+	public AbstractMadUiInstance<?,?> createNewUiInstance( final FadeInMadInstance instance )
 		throws DatastoreException
 	{
 		try
@@ -87,11 +87,11 @@ public class FadeInMadUiDefinition extends MadUiDefinition<FadeInMadDefinition, 
 			uiChannelInstances.add( new MadUiChannelInstance( PRODUCER_CHANNEL_CENTER, producerChannelInstance ) );
 
 			// We don't have any controls...
-			final MadUiInstance<?,?> retVal = new FadeInMadUiInstance( instance,
+			final AbstractMadUiInstance<?,?> retVal = new FadeInMadUiInstance( instance,
 					this );
 
-			retVal.setUiControlsAndChannels( new MadUiControlInstance<?,?,?>[ 0 ],
-					 new MadUiControlInstance<?,?,?>[ 0 ],
+			retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],
+					 new AbstractMadUiControlInstance<?,?,?>[ 0 ],
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 			return retVal;
 		}

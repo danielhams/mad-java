@@ -121,7 +121,7 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 			{
 				libraryEntry = libraryService.findLibraryEntryByFile( sampleFile );
 			}
-			catch(RecordNotFoundException rnfe )
+			catch(final RecordNotFoundException rnfe )
 			{
 				libraryEntry = libraryService.addFileToLibrary( sampleFile );
 			}
@@ -129,7 +129,7 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 			internalClient = new InternalSampleCacheClient( libraryEntry, 0L, 0L );
 			sampleCache.addClient( internalClient );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught registering cache client for file " + path + ": " + e.toString();
 			throw new DatastoreException( msg, e );

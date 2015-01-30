@@ -34,31 +34,31 @@ public class PatternSequencer extends JPanel
 	private static final long serialVersionUID = -3560105491686396192L;
 
 //	private static Log log = LogFactory.getLog( PatternSequencer.class.getName() );
-	
-	private PatternSequenceScrollingGrid scrollingNoteGrid = null;
-	private PatternSequenceToggleContinuation toggleContinuation = null;
-	private PatternSequenceAmpGrid ampGrid = null;
-	
-	public PatternSequencer( PatternSequenceModel dataModel,
-			Dimension blockDimensions,
-			Color backgroundColour,
-			Color gridColour,
-			Color blockColour )
+
+	private final PatternSequenceScrollingGrid scrollingNoteGrid;
+	private final PatternSequenceToggleContinuation toggleContinuation;
+	private final PatternSequenceAmpGrid ampGrid;
+
+	public PatternSequencer( final PatternSequenceModel dataModel,
+			final Dimension blockDimensions,
+			final Color backgroundColour,
+			final Color gridColour,
+			final Color blockColour )
 	{
 		this.setOpaque( true );
-		
+
 		setBackground( backgroundColour );
-		MigLayout layout = new MigLayout("insets 0, gap 0");
+		final MigLayout layout = new MigLayout("insets 0, gap 0");
 		setLayout( layout );
-		LineBorder theBorder = new LineBorder( backgroundColour, 2 );
+		final LineBorder theBorder = new LineBorder( backgroundColour, 2 );
 		setBorder( theBorder );
-		
+
 		scrollingNoteGrid = new PatternSequenceScrollingGrid( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 		this.add( scrollingNoteGrid, "grow, wrap, span 2");
 		toggleContinuation = new PatternSequenceToggleContinuation( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 		this.add( toggleContinuation, "" );
 		ampGrid = new PatternSequenceAmpGrid( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
-		this.add( ampGrid, "growx");		
+		this.add( ampGrid, "growx");
 	}
 
 }

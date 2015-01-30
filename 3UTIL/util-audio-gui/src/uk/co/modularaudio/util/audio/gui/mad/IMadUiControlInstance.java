@@ -27,9 +27,9 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public interface IMadUiControlInstance<MD extends MadDefinition<MD, MI>,
-	MI extends MadInstance<MD, MI>,
-	MUI extends MadUiInstance<MD, MI>>
+public interface IMadUiControlInstance<D extends MadDefinition<D, I>,
+	I extends MadInstance<D, I>,
+	U extends AbstractMadUiInstance<D, I>>
 {
 	boolean needsDisplayProcessing();
 

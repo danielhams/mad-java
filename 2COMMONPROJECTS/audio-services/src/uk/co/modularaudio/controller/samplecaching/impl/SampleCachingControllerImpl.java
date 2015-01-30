@@ -24,7 +24,6 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
-import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -36,8 +35,7 @@ import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 
 public class SampleCachingControllerImpl implements ComponentWithLifecycle, SampleCachingController
 {
-	private BlockResamplerService blockResamplerService = null;
-	private SampleCachingService sampleCachingService = null;
+	private SampleCachingService sampleCachingService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -49,18 +47,13 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 	{
 	}
 
-	public SampleCachingService getSampleCachingService()
-	{
-		return sampleCachingService;
-	}
-
-	public void setSampleCachingService( SampleCachingService sampleCachingService )
+	public void setSampleCachingService( final SampleCachingService sampleCachingService )
 	{
 		this.sampleCachingService = sampleCachingService;
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile( String path )
+	public SampleCacheClient registerCacheClientForFile( final String path )
 			throws NoSuchHibernateSessionException, DatastoreException,
 			UnsupportedAudioFileException
 	{
@@ -68,20 +61,10 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 	}
 
 	@Override
-	public void unregisterCacheClientForFile( SampleCacheClient client )
+	public void unregisterCacheClientForFile( final SampleCacheClient client )
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
 		sampleCachingService.unregisterCacheClientForFile( client );
-	}
-
-	public BlockResamplerService getBlockResamplerService()
-	{
-		return blockResamplerService;
-	}
-
-	public void setBlockResamplerService( BlockResamplerService blockResamplerService )
-	{
-		this.blockResamplerService = blockResamplerService;
 	}
 
 	@Override

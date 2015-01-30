@@ -29,20 +29,20 @@ import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 public class ControllerEventProcessor
 {
 	private static Log log = LogFactory.getLog( ControllerEventProcessor.class.getName() );
-	
-	private ControllerEvent[] events = null;
-	private int numEvents = 0;
-	
+
+	private final ControllerEvent[] events;
+	private int numEvents;
+
 	private float previousCvValue = 0.0f;
-	
+
 	private float curValueRatio = 1.0f;
 	private float newValueRatio = 0.0f;
-	
+
 	private float curDesiredValue = 0.0f;
 
 	private ControllerEventMapping mapping = ControllerEventMapping.LINEAR;
-	
-	public ControllerEventProcessor( int notePeriodLength )
+
+	public ControllerEventProcessor( final int notePeriodLength )
 	{
 		events = new ControllerEvent[ notePeriodLength ];
 		for( int e = 0 ; e < notePeriodLength ; e++ )
@@ -51,24 +51,24 @@ public class ControllerEventProcessor
 		}
 		numEvents = 0;
 	}
-	
-	public void setNewRatios( float newCurValueRatio, float newNewValueRatio )
+
+	public void setNewRatios( final float newCurValueRatio, final float newNewValueRatio )
 	{
 		this.curValueRatio = newCurValueRatio;
 		this.newValueRatio = newNewValueRatio;
 	}
 
-	public void processEvent( MadChannelNoteEvent ne )
+	public void processEvent( final MadChannelNoteEvent ne )
 	{
-		int sampleIndex = ne.getEventSampleIndex();
+		final int sampleIndex = ne.getEventSampleIndex();
 		events[ numEvents ].sampleIndex = sampleIndex;
-		float valToMap = (ne.getParamTwo() / 127.0f);
+		final float valToMap = (ne.getParamTwo() / 127.0f);
 		events[ numEvents ].desiredValue = mapValue( valToMap );
 		numEvents++;
 //		log.debug("Processed event: " + ne.toString() );
 	}
 
-	private float mapValue( float valToMap )
+	private float mapValue( final float valToMap )
 	{
 		switch( mapping )
 		{
@@ -110,30 +110,33 @@ public class ControllerEventProcessor
 			}
 			default:
 			{
-				log.error("Unknown mapping: " + mapping.toString() );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown mapping: " + mapping.toString() );
+				}
 			}
 		}
 		return valToMap;
 	}
 
-	public void emptyPeriod( int numFrames )
+	public void emptyPeriod( final int numFrames )
 	{
 	}
 
-	public void outputCv( int numFrames, float[] outCvFloats )
+	public void outputCv( final int numFrames, final float[] outCvFloats )
 	{
 		boolean loopDone = false;
 		int previousSampleIndex = 0;
 		for( int e = 0 ; !loopDone && e < numEvents ; e++ )
 		{
-			ControllerEvent event = events[ e ];
-			int sampleIndex = event.sampleIndex;
+			final ControllerEvent event = events[ e ];
+			final int sampleIndex = event.sampleIndex;
 			if( sampleIndex == -1 )
 			{
 				loopDone = true;
 			}
 			curDesiredValue = event.desiredValue;
-			
+
 			for( int s = previousSampleIndex ; s < sampleIndex ; s++ )
 			{
 				previousCvValue = (previousCvValue * curValueRatio) + (curDesiredValue * newValueRatio);
@@ -141,7 +144,7 @@ public class ControllerEventProcessor
 			}
 			previousSampleIndex = sampleIndex;
 		}
-		
+
 		for( int s = previousSampleIndex ; s < numFrames ; s++ )
 		{
 			if( previousCvValue != curDesiredValue && (previousCvValue - curDesiredValue) < Float.MIN_VALUE * 2000 )
@@ -161,7 +164,7 @@ public class ControllerEventProcessor
 		numEvents = 0;
 	}
 
-	public void setDesiredMapping( ControllerEventMapping desiredMapping )
+	public void setDesiredMapping( final ControllerEventMapping desiredMapping )
 	{
 		this.mapping  = desiredMapping;
 	}

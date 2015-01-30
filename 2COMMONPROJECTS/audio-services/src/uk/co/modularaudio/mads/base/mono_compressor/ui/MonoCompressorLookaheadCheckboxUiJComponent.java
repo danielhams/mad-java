@@ -34,12 +34,12 @@ public class MonoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private MonoCompressorMadUiInstance uiInstance = null;
+	private final MonoCompressorMadUiInstance uiInstance;
 
-	public MonoCompressorLookaheadCheckboxUiJComponent(  MonoCompressorMadDefinition definition,
-			MonoCompressorMadInstance instance,
-			MonoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public MonoCompressorLookaheadCheckboxUiJComponent(  final MonoCompressorMadDefinition definition,
+			final MonoCompressorMadInstance instance,
+			final MonoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super();
 
@@ -52,18 +52,19 @@ public class MonoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 		this.setSelected( false );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
 		uiInstance.sendLookahead( selected );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -71,7 +72,7 @@ public class MonoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 	}
 
 	@Override
-	public void receiveUpdate( boolean statusBefore, boolean newStatus )
+	public void receiveUpdate( final boolean statusBefore, final boolean newStatus )
 	{
 		if( statusBefore != newStatus )
 		{

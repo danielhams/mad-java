@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,15 +41,15 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private OscilloscopeMadUiInstance uiInstance = null;
+	private final OscilloscopeMadUiInstance uiInstance;
 
-	private Map<String, OscilloscopeCaptureTriggerEnum> triggerNameToEnumMap = new HashMap<String, OscilloscopeCaptureTriggerEnum>();
+	private final Map<String, OscilloscopeCaptureTriggerEnum> triggerNameToEnumMap = new HashMap<String, OscilloscopeCaptureTriggerEnum>();
 
 	public OscilloscopeTriggerComboUiJComponent(
-			OscilloscopeMadDefinition definition,
-			OscilloscopeMadInstance instance,
-			OscilloscopeMadUiInstance uiInstance,
-			int controlIndex )
+			final OscilloscopeMadDefinition definition,
+			final OscilloscopeMadInstance instance,
+			final OscilloscopeMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.uiInstance = uiInstance;
 
@@ -58,14 +59,15 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 		triggerNameToEnumMap.put( "On Rise", OscilloscopeCaptureTriggerEnum.ON_RISE );
 		triggerNameToEnumMap.put( "On Fall", OscilloscopeCaptureTriggerEnum.ON_FALL );
 
-		DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for (String triggerName : triggerNameToEnumMap.keySet())
+		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		for (final String triggerName : triggerNameToEnumMap.keySet())
 		{
 			cbm.addElement( triggerName );
 		}
 		this.setModel( cbm );
 
-		setFont( this.getFont().deriveFont( 9f ) );
+		final Font f = this.getFont();
+		setFont( f );
 
 		this.setSelectedItem( "None" );
 	}
@@ -77,7 +79,7 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -85,14 +87,14 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( int previousIndex, int newIndex )
+	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
 		if( previousIndex != newIndex )
 		{
-			String name = (String) getSelectedItem();
-			OscilloscopeCaptureTriggerEnum ev = triggerNameToEnumMap.get( name );
+			final String name = (String) getSelectedItem();
+			final OscilloscopeCaptureTriggerEnum ev = triggerNameToEnumMap.get( name );
 			uiInstance.sendTriggerChoice( ev );
-		}		
+		}
 	}
 
 	@Override

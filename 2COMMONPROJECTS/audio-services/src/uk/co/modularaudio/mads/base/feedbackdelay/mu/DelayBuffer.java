@@ -24,8 +24,7 @@ import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 
 public class DelayBuffer extends UnsafeFloatRingBuffer
 {
-
-	public DelayBuffer( int capacity )
+	public DelayBuffer( final int capacity )
 	{
 		super( capacity );
 	}
