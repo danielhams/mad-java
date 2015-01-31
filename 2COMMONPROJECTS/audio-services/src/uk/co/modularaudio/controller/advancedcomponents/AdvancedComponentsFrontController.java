@@ -27,7 +27,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorFactory;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 

@@ -24,8 +24,8 @@ import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderIOQueueBridge;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.wavetable.powertable.RawCrossfadePowerTable;
-import uk.co.modularaudio.util.audio.wavetable.powertable.StandardCrossfadePowerTables;
+import uk.co.modularaudio.util.audio.lookuptable.powertable.RawCrossfadePowerTable;
+import uk.co.modularaudio.util.audio.lookuptable.powertable.StandardCrossfadePowerTables;
 
 public class CrossFaderMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
 {

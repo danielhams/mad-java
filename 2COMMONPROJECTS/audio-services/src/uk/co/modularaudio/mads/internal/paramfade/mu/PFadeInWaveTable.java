@@ -21,9 +21,9 @@
 package uk.co.modularaudio.mads.internal.paramfade.mu;
 
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 
-public class PFadeInWaveTable extends RawWaveTable
+public class PFadeInWaveTable extends RawLookupTable
 {
 	public PFadeInWaveTable( final DataRate dataRate, final int millisForFadeIn)
 	{

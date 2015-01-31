@@ -36,9 +36,9 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.oscillatortable.Oscillator;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
-import uk.co.modularaudio.util.audio.wavetablent.Oscillator;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,OscillatorMadInstance>

@@ -28,7 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 import uk.co.modularaudio.util.swing.mvc.combo.ComboViewListCellRenderer;
 
 public class WaveTableComboRenderer extends JLabel
@@ -69,7 +69,7 @@ public class WaveTableComboRenderer extends JLabel
 		if( value != null )
 		{
 			this.setText( value.getDisplayString() );
-			final WaveTable wt = value.getValue();
+			final LookupTable wt = value.getValue();
 			final boolean isBipolar = value.isBipolar();
 			icon = WaveTableIconCache.getIconForWaveTable( wt, isBipolar );
 			setIcon( icon );

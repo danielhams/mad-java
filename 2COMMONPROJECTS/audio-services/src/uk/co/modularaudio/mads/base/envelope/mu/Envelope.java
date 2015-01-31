@@ -21,9 +21,9 @@
 package uk.co.modularaudio.mads.base.envelope.mu;
 
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.StandardValueMappingWaveTables;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.ValueMappingWaveTable;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.StandardValueMappingWaveTables;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.ValueMappingWaveTable;
 
 public class Envelope
 {

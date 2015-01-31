@@ -28,6 +28,7 @@ import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInWaveTable;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
 import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -42,7 +43,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.IOBuffers;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.wavetable.raw.RawWaveTable;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, MasterOutMadInstance>
@@ -122,7 +122,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 	{
 		final FadeType localFadeTable = curFadeTable.get();
 
-		RawWaveTable localFadeWaveTable = null;
+		RawLookupTable localFadeWaveTable = null;
 
 		int localFadePosition = fadeTableLength;
 

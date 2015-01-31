@@ -23,13 +23,13 @@ package uk.co.modularaudio.mads.base.oscillator.mu;
 import java.util.HashMap;
 import java.util.Map;
 
-import uk.co.modularaudio.util.audio.wavetablent.NoWaveTableForShapeException;
-import uk.co.modularaudio.util.audio.wavetablent.Oscillator;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorFactory;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorFactoryException;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorInterpolationType;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveTableType;
+import uk.co.modularaudio.util.audio.oscillatortable.NoWaveTableForShapeException;
+import uk.co.modularaudio.util.audio.oscillatortable.Oscillator;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactoryException;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorInterpolationType;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveTableType;
 
 public class OscillatorInstances
 {

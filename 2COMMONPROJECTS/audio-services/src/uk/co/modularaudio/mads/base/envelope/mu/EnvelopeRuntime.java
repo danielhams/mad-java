@@ -22,7 +22,7 @@ package uk.co.modularaudio.mads.base.envelope.mu;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.ValueMappingWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.ValueMappingWaveTable;
 
 public class EnvelopeRuntime
 {

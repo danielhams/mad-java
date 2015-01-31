@@ -24,7 +24,7 @@ import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadInstance;
 import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 
 public class OscillatorMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<OscillatorMadDefinition, OscillatorMadInstance>
 {

@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.SuperSawDetuneValueMappingWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.SuperSawOsc4AmpValueMappingWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.SuperSawSideOscAmpValueMappingWaveTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -34,9 +37,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.SuperSawDetuneValueMappingWaveTable;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.SuperSawOsc4AmpValueMappingWaveTable;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.SuperSawSideOscAmpValueMappingWaveTable;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class SuperSawModuleMadInstance extends MadInstance<SuperSawModuleMadDefinition,SuperSawModuleMadInstance>

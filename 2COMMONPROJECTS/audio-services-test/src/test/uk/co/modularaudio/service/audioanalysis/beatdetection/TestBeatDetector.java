@@ -28,11 +28,11 @@ import org.apache.log4j.BasicConfigurator;
 
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetectionRT;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetector;
-import uk.co.modularaudio.util.audio.wavetablent.Oscillator;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorFactory;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorInterpolationType;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveTableType;
+import uk.co.modularaudio.util.audio.oscillatortable.Oscillator;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorInterpolationType;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveTableType;
 
 public class TestBeatDetector extends TestCase
 {

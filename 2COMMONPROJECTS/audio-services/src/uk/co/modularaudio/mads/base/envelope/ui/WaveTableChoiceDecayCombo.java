@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboController
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboItem;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboModel;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboView;
-import uk.co.modularaudio.util.audio.wavetable.valuemapping.StandardValueMappingWaveTables;
+import uk.co.modularaudio.util.audio.lookuptable.valuemapping.StandardValueMappingWaveTables;
 
 public class WaveTableChoiceDecayCombo extends WaveTableComboView
 {

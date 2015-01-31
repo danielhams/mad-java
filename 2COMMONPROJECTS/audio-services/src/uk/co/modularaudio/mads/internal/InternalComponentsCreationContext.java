@@ -22,7 +22,7 @@ package uk.co.modularaudio.mads.internal;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorFactory;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 
 public class InternalComponentsCreationContext extends MadCreationContext
 {

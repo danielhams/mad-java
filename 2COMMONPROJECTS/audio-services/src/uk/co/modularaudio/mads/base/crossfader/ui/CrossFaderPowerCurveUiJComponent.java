@@ -31,10 +31,10 @@ import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
+import uk.co.modularaudio.util.audio.lookuptable.powertable.RawCrossfadePowerTable;
+import uk.co.modularaudio.util.audio.lookuptable.powertable.StandardCrossfadePowerTables;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.wavetable.powertable.RawCrossfadePowerTable;
-import uk.co.modularaudio.util.audio.wavetable.powertable.StandardCrossfadePowerTables;
 
 public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>

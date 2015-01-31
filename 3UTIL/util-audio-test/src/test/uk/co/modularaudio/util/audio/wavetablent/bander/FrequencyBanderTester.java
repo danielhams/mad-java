@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 import uk.co.modularaudio.util.audio.midi.MidiUtils;
-import uk.co.modularaudio.util.audio.wavetablent.FrequencyBander;
+import uk.co.modularaudio.util.audio.oscillatortable.FrequencyBander;
 
 public class FrequencyBanderTester extends TestCase
 {

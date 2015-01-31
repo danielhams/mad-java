@@ -29,39 +29,42 @@ import org.apache.commons.logging.LogFactory;
 public class FloatBufferBlockPool
 {
 	private static Log log = LogFactory.getLog( FloatBufferBlockPool.class.getName() );
-	
-	private int capacity;
-	private int defaultBlockSize;
+
+	private final int capacity;
+	private final int defaultBlockSize;
 	private ArrayList<FloatBufferBlock> freeBlocks = null;
 	private ArrayList<FloatBufferBlock> usedBlocks = null;
-	
-	public FloatBufferBlockPool( BlockBufferingConfiguration blockBufferingConfiguration )
+
+	public FloatBufferBlockPool( final BlockBufferingConfiguration blockBufferingConfiguration )
 	{
-		this( blockBufferingConfiguration.maxBlocksToBuffer, 
+		this( blockBufferingConfiguration.maxBlocksToBuffer,
 				blockBufferingConfiguration.blockLengthInFloats );
 	}
-	
-	private FloatBufferBlockPool( int capacity, int defaultBlockSize )
+
+	private FloatBufferBlockPool( final int capacity, final int defaultBlockSize )
 	{
 		this.capacity = capacity;
 		this.defaultBlockSize = defaultBlockSize;
 		freeBlocks = new ArrayList<FloatBufferBlock>( capacity );
 		usedBlocks = new ArrayList<FloatBufferBlock>( capacity );
 	}
-	
+
 	public void allocate()
 	{
-		log.trace( "Allocating " + capacity + " blocks of size " + defaultBlockSize );
+		if( log.isTraceEnabled() )
+		{
+			log.trace( "Allocating " + capacity + " blocks of size " + defaultBlockSize );
+		}
 		// And create empty blocks and add them to the free list
 		for( int i = 0 ; i < capacity ; i++ )
 		{
-			float[] newArray = new float[ defaultBlockSize ];
-			FloatBufferBlock freshBlock = new FloatBufferBlock( newArray, defaultBlockSize );
+			final float[] newArray = new float[ defaultBlockSize ];
+			final FloatBufferBlock freshBlock = new FloatBufferBlock( newArray, defaultBlockSize );
 			freeBlocks.add( freshBlock );
 		}
 		log.trace( "Allocation complete");
 	}
-	
+
 	public void destroy()
 	{
 		usedBlocks.clear();
@@ -75,15 +78,15 @@ public class FloatBufferBlockPool
 		{
 			retVal = freeBlocks.remove( freeBlocks.size() - 1 );
 		}
-		catch (NoSuchElementException e)
+		catch (final NoSuchElementException e)
 		{
 			throw new BlockNotAvailableException();
 		}
 		usedBlocks.add( retVal );
 		return retVal;
 	}
-	
-	public void returnBlock( FloatBufferBlock usedBlock )
+
+	public void returnBlock( final FloatBufferBlock usedBlock )
 	{
 		usedBlocks.remove( usedBlock );
 		freeBlocks.add( usedBlock );
@@ -93,12 +96,12 @@ public class FloatBufferBlockPool
 	{
 		return freeBlocks.size();
 	}
-	
+
 	public int getNumUsedBlocks()
 	{
 		return usedBlocks.size();
 	}
-	
+
 	public int getNumTotalBlocks()
 	{
 		return capacity;

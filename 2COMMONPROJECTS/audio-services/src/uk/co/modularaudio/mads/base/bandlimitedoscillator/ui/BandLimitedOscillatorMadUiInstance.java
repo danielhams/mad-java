@@ -27,7 +27,7 @@ import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillat
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 
 public class BandLimitedOscillatorMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<BandLimitedOscillatorMadDefinition, BandLimitedOscillatorMadInstance>
 {

@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.wavetablent.OscillatorWaveShape;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 
 public class OscillatorIOQueueBridge extends MadLocklessQueueBridge<OscillatorMadInstance>
 {

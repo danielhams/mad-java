@@ -30,20 +30,20 @@ import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 
 public class WaveTableIconCache
 {
 //	private static final Log log = LogFactory.getLog( WaveTableIconCache.class.getName() );
 
-	private static HashMap<WaveTable, Icon> tableToIconMap = new HashMap<WaveTable, Icon>();
+	private static HashMap<LookupTable, Icon> tableToIconMap = new HashMap<LookupTable, Icon>();
 
 //	private static final Dimension ICON_DIMENSION = new Dimension( 28, 25 );
 	private static final Dimension ICON_DIMENSION = new Dimension( 20, 17 );
 	private static final Color BACKGROUND_COLOR = new Color( 1.0f, 1.0f, 1.0f );
 	private static final Color FOREGROUND_COLOR = new Color( 0.0f, 0.0f, 0.0f );
 
-	public static synchronized Icon getIconForWaveTable( final WaveTable wt, final boolean isBipolar )
+	public static synchronized Icon getIconForWaveTable( final LookupTable wt, final boolean isBipolar )
 	{
 		Icon retVal = tableToIconMap.get( wt );
 		if( retVal == null )
@@ -55,7 +55,7 @@ public class WaveTableIconCache
 		return retVal;
 	}
 
-	private static BufferedImage generateWaveTableImage( final WaveTable wt, final boolean isBipolar )
+	private static BufferedImage generateWaveTableImage( final LookupTable wt, final boolean isBipolar )
 	{
 		final int width = ICON_DIMENSION.width;
 		final int height = ICON_DIMENSION.height;

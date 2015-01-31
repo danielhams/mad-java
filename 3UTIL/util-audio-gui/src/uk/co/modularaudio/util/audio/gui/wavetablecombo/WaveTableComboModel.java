@@ -22,11 +22,11 @@ package uk.co.modularaudio.util.audio.gui.wavetablecombo;
 
 import java.util.Collection;
 
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboModel;
 
 
-public class WaveTableComboModel extends IdStringAndValueComboModel<WaveTableComboItem, WaveTable>
+public class WaveTableComboModel extends IdStringAndValueComboModel<WaveTableComboItem, LookupTable>
 {
 	public WaveTableComboModel( final Collection<WaveTableComboItem> startupItems )
 	{

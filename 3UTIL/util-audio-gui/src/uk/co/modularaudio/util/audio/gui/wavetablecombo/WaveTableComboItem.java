@@ -20,14 +20,14 @@
 
 package uk.co.modularaudio.util.audio.gui.wavetablecombo;
 
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboItem;
 
-public class WaveTableComboItem extends IdStringAndValueComboItem<WaveTable>
+public class WaveTableComboItem extends IdStringAndValueComboItem<LookupTable>
 {
 	private final boolean isBipolar;
 
-	public WaveTableComboItem( final String id, final String displayString, final WaveTable value, final boolean isBipolar )
+	public WaveTableComboItem( final String id, final String displayString, final LookupTable value, final boolean isBipolar )
 	{
 		super( id, displayString, value );
 		this.isBipolar = isBipolar;

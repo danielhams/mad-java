@@ -103,8 +103,6 @@ import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinitio
 import uk.co.modularaudio.mads.base.supersawmodule.ui.SuperSawModuleMadUiDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerMadUiDefinition;
-import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadDefinition;
-import uk.co.modularaudio.mads.base.waveshaper.ui.WaveShaperMadUiDefinition;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
 import uk.co.modularaudio.mads.base.xrunner.ui.XRunnerMadUiDefinition;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
@@ -137,7 +135,6 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( SpectralAmpMadDefinition.class, SpectralAmpMadUiDefinition.class );
 		classToUiDefinition.put( SpectralRollMadDefinition.class, SpectralRollMadUiDefinition.class );
 		classToUiDefinition.put( InverterMadDefinition.class, InverterMadUiDefinition.class );
-		classToUiDefinition.put( WaveShaperMadDefinition.class, WaveShaperMadUiDefinition.class );
 		classToUiDefinition.put( CvSurfaceMadDefinition.class, CvSurfaceMadUiDefinition.class );
 		classToUiDefinition.put( PatternSequencerMadDefinition.class, PatternSequencerMadUiDefinition.class );
 		classToUiDefinition.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadUiDefinition.class );

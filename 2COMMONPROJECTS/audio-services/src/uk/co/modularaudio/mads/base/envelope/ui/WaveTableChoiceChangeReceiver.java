@@ -20,11 +20,11 @@
 
 package uk.co.modularaudio.mads.base.envelope.ui;
 
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 
 public interface WaveTableChoiceChangeReceiver
 {
 
-	void receiveChangedWaveTable( WaveTable waveTable );
+	void receiveChangedWaveTable( LookupTable waveTable );
 
 }

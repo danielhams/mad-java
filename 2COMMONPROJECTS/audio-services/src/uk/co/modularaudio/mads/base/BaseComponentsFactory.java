@@ -102,8 +102,6 @@ import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinitio
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadInstance;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
-import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadDefinition;
-import uk.co.modularaudio.mads.base.waveshaper.mu.WaveShaperMadInstance;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadInstance;
 import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
@@ -139,7 +137,6 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( SpectralAmpMadDefinition.class, SpectralAmpMadInstance.class );
 		defClassToInsClassMap.put( SpectralRollMadDefinition.class, SpectralRollMadInstance.class );
 		defClassToInsClassMap.put( InverterMadDefinition.class, InverterMadInstance.class );
-		defClassToInsClassMap.put( WaveShaperMadDefinition.class, WaveShaperMadInstance.class );
 
 		defClassToInsClassMap.put( PatternSequencerMadDefinition.class, PatternSequencerMadInstance.class );
 

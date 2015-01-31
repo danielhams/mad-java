@@ -32,9 +32,9 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboController;
 import uk.co.modularaudio.util.audio.gui.wavetablecombo.WaveTableComboModel;
+import uk.co.modularaudio.util.audio.lookuptable.LookupTable;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.wavetable.WaveTable;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class EnvelopeDecayWaveComboUiJComponent extends PacPanel
@@ -116,7 +116,7 @@ public class EnvelopeDecayWaveComboUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveChangedWaveTable( final WaveTable waveTable )
+	public void receiveChangedWaveTable( final LookupTable waveTable )
 	{
 //		log.debug("Received combo choice change: " + waveTable.toString() );
 		final String selectedWaveTableId = choiceModel.getSelectedElement().getId();
