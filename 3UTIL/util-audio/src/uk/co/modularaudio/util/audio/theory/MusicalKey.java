@@ -47,30 +47,30 @@ public class MusicalKey
 
 	public enum AllKeysEnum
 	{
-		GSHARP_AFLAT_MINOR,	// 01A
-		B_CFLAT_MAJOR,					// 01B
+		GSHARP_AFLAT_MINOR,		// 01A
+		B_CFLAT_MAJOR,			// 01B
 		DSHARP_EFLAT_MINOR,		// 02A
-		FSHARP_GFLAT_MAJOR,	// 02B
+		FSHARP_GFLAT_MAJOR,		// 02B
 		ASHARP_BFLAT_MINOR,		// 03A
-		CSHARP_DFLAT_MAJOR,	// 03B
-		ESHARP_F_MINOR,				// 04A
-		GSHARP_AFLAT_MAJOR,	// 04B
-		C_MINOR,									// 05A
-		DSHARP_EFLAT_MAJOR,	// 05B
-		G_MINOR,								// 06A
-		ASHARP_BFLAT_MAJOR,	// 06B
-		D_MINOR,								// 07A
-		ESHARP_F_MAJOR,				// 07B
-		A_MINOR,									// 08A
-		C_MAJOR,								// 08B
-		E_MINOR,									// 09A
-		G_MAJOR,								// 09B
-		B_CFLAT_MINOR,					// 10A
-		D_MAJOR,								// 10B
+		CSHARP_DFLAT_MAJOR,		// 03B
+		ESHARP_F_MINOR,			// 04A
+		GSHARP_AFLAT_MAJOR,		// 04B
+		C_MINOR,				// 05A
+		DSHARP_EFLAT_MAJOR,		// 05B
+		G_MINOR,				// 06A
+		ASHARP_BFLAT_MAJOR,		// 06B
+		D_MINOR,				// 07A
+		ESHARP_F_MAJOR,			// 07B
+		A_MINOR,				// 08A
+		C_MAJOR,				// 08B
+		E_MINOR,				// 09A
+		G_MAJOR,				// 09B
+		B_CFLAT_MINOR,			// 10A
+		D_MAJOR,				// 10B
 		FSHARP_GFLAT_MINOR,		// 11A
-		A_MAJOR,								// 11B
-		CSHARP_DFLAT_MINOR,	// 12A
-		E_MAJOR									// 12B
+		A_MAJOR,				// 11B
+		CSHARP_DFLAT_MINOR,		// 12A
+		E_MAJOR					// 12B
 	};
 
 	public final static Map<AllKeysEnum,MusicalKey> KEY_TO_MUSICAL_KEY_MAP = new HashMap<AllKeysEnum,MusicalKey>();
@@ -80,29 +80,29 @@ public class MusicalKey
 	static
 	{
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.GSHARP_AFLAT_MINOR, new MusicalKey( Root.GSHARP_AFLAT, Scale.MINOR ) );			// 01A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.B_CFLAT_MAJOR, new MusicalKey( Root.B_CFLAT, Scale.MAJOR ) );									// 01B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.B_CFLAT_MAJOR, new MusicalKey( Root.B_CFLAT, Scale.MAJOR ) );					// 01B
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.DSHARP_EFLAT_MINOR, new MusicalKey( Root.DSHARP_EFLAT, Scale.MINOR ) );			// 02A
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.FSHARP_GFLAT_MAJOR, new MusicalKey( Root.FSHARP_GFLAT, Scale.MAJOR ) );			// 02B
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ASHARP_BFLAT_MINOR, new MusicalKey( Root.ASHARP_BFLAT, Scale.MINOR ) );			// 03A
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.CSHARP_DFLAT_MAJOR, new MusicalKey( Root.CSHARP_DFLAT, Scale.MAJOR ) );			// 03B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ESHARP_F_MINOR, new MusicalKey( Root.ESHARP_F, Scale.MINOR ) );								// 04A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ESHARP_F_MINOR, new MusicalKey( Root.ESHARP_F, Scale.MINOR ) );					// 04A
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.GSHARP_AFLAT_MAJOR, new MusicalKey( Root.GSHARP_AFLAT, Scale.MAJOR ) );			// 04B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.C_MINOR, new MusicalKey( Root.C, Scale.MINOR ) );																	// 05A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.C_MINOR, new MusicalKey( Root.C, Scale.MINOR ) );								// 05A
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.DSHARP_EFLAT_MAJOR, new MusicalKey( Root.DSHARP_EFLAT, Scale.MAJOR ) );			// 05B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.G_MINOR, new MusicalKey( Root.G, Scale.MINOR ) );																	// 06A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.G_MINOR, new MusicalKey( Root.G, Scale.MINOR ) );								// 06A
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ASHARP_BFLAT_MAJOR, new MusicalKey( Root.ASHARP_BFLAT, Scale.MAJOR ) );			// 06B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.D_MINOR, new MusicalKey( Root.D, Scale.MINOR ) );																	// 07A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ESHARP_F_MAJOR, new MusicalKey( Root.ESHARP_F, Scale.MAJOR ) );								// 07B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.A_MINOR, new MusicalKey( Root.A, Scale.MINOR ) );																	// 08A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.C_MAJOR, new MusicalKey( Root.C, Scale.MAJOR ) );																	// 08B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.E_MINOR, new MusicalKey( Root.E, Scale.MINOR ) );																	// 09A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.G_MAJOR, new MusicalKey( Root.G, Scale.MAJOR ) );																	// 09B
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.B_CFLAT_MINOR, new MusicalKey( Root.B_CFLAT, Scale.MINOR ) );										// 10A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.D_MAJOR, new MusicalKey( Root.D, Scale.MAJOR ) );																	// 10B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.D_MINOR, new MusicalKey( Root.D, Scale.MINOR ) );								// 07A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.ESHARP_F_MAJOR, new MusicalKey( Root.ESHARP_F, Scale.MAJOR ) );					// 07B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.A_MINOR, new MusicalKey( Root.A, Scale.MINOR ) );								// 08A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.C_MAJOR, new MusicalKey( Root.C, Scale.MAJOR ) );								// 08B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.E_MINOR, new MusicalKey( Root.E, Scale.MINOR ) );								// 09A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.G_MAJOR, new MusicalKey( Root.G, Scale.MAJOR ) );								// 09B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.B_CFLAT_MINOR, new MusicalKey( Root.B_CFLAT, Scale.MINOR ) );					// 10A
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.D_MAJOR, new MusicalKey( Root.D, Scale.MAJOR ) );								// 10B
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.FSHARP_GFLAT_MINOR, new MusicalKey( Root.FSHARP_GFLAT, Scale.MINOR ) );			// 11A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.A_MAJOR, new MusicalKey( Root.A, Scale.MAJOR ) );																	// 11B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.A_MAJOR, new MusicalKey( Root.A, Scale.MAJOR ) );								// 11B
 		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.CSHARP_DFLAT_MINOR, new MusicalKey( Root.CSHARP_DFLAT, Scale.MINOR ) );			// 12A
-		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.E_MAJOR, new MusicalKey( Root.E, Scale.MAJOR ) );																	// 12B
+		KEY_TO_MUSICAL_KEY_MAP.put( AllKeysEnum.E_MAJOR, new MusicalKey( Root.E, Scale.MAJOR ) );								// 12B
 
 		final Set<AllKeysEnum> allKeysSet = KEY_TO_MUSICAL_KEY_MAP.keySet();
 		for( final AllKeysEnum keyEnum : allKeysSet )

@@ -37,35 +37,35 @@ public class ChildProcessExecutor
 
 	private static Log log = LogFactory.getLog( ChildProcessExecutor.class.getName() );
 
-	private Process process = null;
-	private InputStream inputStream = null;
-	private OutputStream outputStream = null;
-	private InputStream errorStream = null;
+	private Process process;
+	private InputStream inputStream;
+	private OutputStream outputStream;
+	private InputStream errorStream;
 
-	private int exitValue = -1;
+	private int exitValue;
 
-	public ChildProcessExecutor( String[] cmdArray ) throws IOException
+	public ChildProcessExecutor( final String[] cmdArray ) throws IOException
 	{
 		// log.debug("CPE Constructor called.");
-		Runtime runtime = Runtime.getRuntime();
+		final Runtime runtime = Runtime.getRuntime();
 		boolean wasError = false;
 		try
 		{
 			this.process = runtime.exec( cmdArray );
 		}
-		catch (SecurityException se)
+		catch (final SecurityException se)
 		{
 			log.warn( "Caught se" );
 		}
-		catch (NullPointerException npe)
+		catch (final NullPointerException npe)
 		{
 			log.warn( "Caught npe" );
 		}
-		catch (IOException ioe)
+		catch (final IOException ioe)
 		{
 			log.warn( "Caught ioe" );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			log.warn( "Caught e" );
 			wasError = true;
@@ -133,15 +133,15 @@ public class ChildProcessExecutor
 				}
 				finished = true;
 			}
-			catch (IllegalThreadStateException itse)
+			catch (final IllegalThreadStateException itse)
 			{
 				try
 				{
 					Thread.sleep( WAIT_FOR_DEATH_SLEEP_MILLIS );
 				}
-				catch (InterruptedException ie)
+				catch (final InterruptedException ie)
 				{
-					String msg = "Caught interruption in waiting for sub-process death: " + ie.toString();
+					final String msg = "Caught interruption in waiting for sub-process death: " + ie.toString();
 					log.warn( msg, ie );
 				}
 			}
@@ -150,7 +150,7 @@ public class ChildProcessExecutor
 		{
 			inputStream.close();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 		}
 		;
@@ -158,7 +158,7 @@ public class ChildProcessExecutor
 		{
 			outputStream.close();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 		}
 		;
@@ -166,7 +166,7 @@ public class ChildProcessExecutor
 		{
 			errorStream.close();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 		}
 		;
@@ -174,7 +174,7 @@ public class ChildProcessExecutor
 		{
 			process.destroy();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new IOException( "Error destroying child process: " + e.toString() );
 		}
@@ -196,9 +196,9 @@ public class ChildProcessExecutor
 				process.destroy();
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught destroying process: " + e.toString();
+			final String msg = "Exception caught destroying process: " + e.toString();
 			log.error( msg, e );
 		}
 	}

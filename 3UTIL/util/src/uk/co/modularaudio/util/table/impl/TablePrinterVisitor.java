@@ -39,18 +39,21 @@ public class TablePrinterVisitor<A extends RackModelTableSpanningContents, B ext
 	}
 
 	@Override
-	public void visit(TableCell<A> htc, TableCellProperties<B> htcp, int indexInModel )
+	public void visit(final TableCell<A> htc, final TableCellProperties<B> htcp, final int indexInModel )
 	{
-		A contents = htc.getCellContents();
-		B properties = htcp.getCellProperties();
+		final A contents = htc.getCellContents();
+		final B properties = htcp.getCellProperties();
 		if( contents != null )
 		{
-			String positionStr = "indexInModel(" + indexInModel + ") position(" + htc.getCellX() + "," + htc.getCellY() + ") - origin(" + 
+			final String positionStr = "indexInModel(" + indexInModel + ") position(" + htc.getCellX() + "," + htc.getCellY() + ") - origin(" +
 				htc.getOriginCellX() + "," + htc.getOriginCellY() + ")";
-			log.debug("The cell " + positionStr + " contains " + contents.toString());
-			if( properties != null )
+			if( log.isDebugEnabled() )
 			{
-				log.debug("Properties: " + properties.toString());
+				log.debug("The cell " + positionStr + " contains " + contents.toString());
+				if( properties != null )
+				{
+					log.debug("Properties: " + properties.toString());
+				}
 			}
 		}
 		else

@@ -35,8 +35,7 @@ import org.apache.commons.logging.LogFactory;
 
 public final class IOUtils
 {
-
-	private static final Log log = LogFactory.getLog(IOUtils.class);
+	private static Log log = LogFactory.getLog(IOUtils.class);
 
 	public static void writeUTF8( final String filePath, final String content ) throws IOException
 	{

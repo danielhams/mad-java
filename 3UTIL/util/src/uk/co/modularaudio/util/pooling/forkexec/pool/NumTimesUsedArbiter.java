@@ -31,9 +31,9 @@ import uk.co.modularaudio.util.pooling.common.Resource;
  */
 public class NumTimesUsedArbiter implements Arbiter
 {
-	private int maxUses = 0;
+	private final int maxUses;
 
-	public NumTimesUsedArbiter( int maxTimes )
+	public NumTimesUsedArbiter( final int maxTimes )
 	{
 		this.maxUses = maxTimes;
 	}
@@ -43,10 +43,10 @@ public class NumTimesUsedArbiter implements Arbiter
 	 *      PoolStructure, Resource)
 	 */
 	@Override
-	public int arbitrateOnResource( Pool pool, PoolStructure data, Resource res )
+	public int arbitrateOnResource( final Pool pool, final PoolStructure data, final Resource res )
 	{
 		int retVal = Arbiter.CONTINUE;
-		MultishotProcessResource procRes = (MultishotProcessResource) res;
+		final MultishotProcessResource procRes = (MultishotProcessResource) res;
 		if (procRes.getNumTimesUsed() > maxUses)
 		{
 			retVal = Arbiter.FAIL;

@@ -31,10 +31,10 @@ import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 public class NanosecondPeriodicThreadedTimer
 {
 	private static Log log = LogFactory.getLog( NanosecondPeriodicThreadedTimer.class.getName() );
-	
+
 	private final static int NUM_VALUES_IN_AVERAGE = 1000;
 	private final static int RATIO_FOR_EXISTING = NUM_VALUES_IN_AVERAGE - 1;
-	
+
 	private class TimerThread extends AbstractInterruptableThread
 	{
 		private long expectedWakeupNanos = 0;
@@ -42,13 +42,13 @@ public class NanosecondPeriodicThreadedTimer
 
 		private long averageAdjustedOvershoot = 0;
 		private long averageRegularOvershoot = 0;
-		
+
 		private long numCalls = 0;
 		private long numUndershoots = 0;
 		private long numAdjustedOvershoots = 0;
 		private long numRegularOvershoots = 0;
-		
-		public TimerThread( MAThreadPriority threadPriority )
+
+		public TimerThread( final MAThreadPriority threadPriority )
 		{
 			super(threadPriority);
 		}
@@ -57,9 +57,12 @@ public class NanosecondPeriodicThreadedTimer
 		protected void doJob() throws Exception
 		{
 			expectedWakeupNanos = System.nanoTime();
-			log.debug("Set initial wakeupnanos to " + expectedWakeupNanos );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Set initial wakeupnanos to " + expectedWakeupNanos );
+			}
 			boolean localShouldHalt = shouldHalt;
-			
+
 			while( !localShouldHalt )
 			{
 				long wakeupTime = System.nanoTime();
@@ -67,11 +70,11 @@ public class NanosecondPeriodicThreadedTimer
 				{
 					wakeupTime = System.nanoTime();
 				}
-				
+
 				timerJob.run();
 				numCalls++;
 				// Positive -> overshoot, negative, undershoot
-				long wakeupError = wakeupTime - expectedWakeupNanos;
+				final long wakeupError = wakeupTime - expectedWakeupNanos;
 				// Create an average error
 //				log.debug( (wakeupError >= 0 ? "Overshoot" : "Undershoot" ) + "Wakeup error of " +
 //						MathFormatter.fastFloatPrint((wakeupError / 1000000.0f), 8, true ) +
@@ -104,10 +107,10 @@ public class NanosecondPeriodicThreadedTimer
 				}
 //				log.debug("Average adjustement of " + adjustmentNanos);
 				expectedWakeupNanos += nanosBetweenCalls;
-				long adjustedWakeupNanos = expectedWakeupNanos - adjustmentNanos;
-				long fullNanosToSleep = adjustedWakeupNanos - System.nanoTime();
-				int nanosToSleep = (int)(fullNanosToSleep % 1000000);
-				long millisToSleep = fullNanosToSleep / 1000000;
+				final long adjustedWakeupNanos = expectedWakeupNanos - adjustmentNanos;
+				final long fullNanosToSleep = adjustedWakeupNanos - System.nanoTime();
+				final int nanosToSleep = (int)(fullNanosToSleep % 1000000);
+				final long millisToSleep = fullNanosToSleep / 1000000;
 				if( nanosToSleep >= 0 && millisToSleep >= 0 )
 				{
 					Thread.sleep( millisToSleep, nanosToSleep );
@@ -119,40 +122,46 @@ public class NanosecondPeriodicThreadedTimer
 				}
 				localShouldHalt = shouldHalt;
 			}
-			log.debug("Final adjustment nanos is " + adjustmentNanos + " which is " +
-					MathFormatter.fastFloatPrint( (adjustmentNanos / 1000000.0f), 8, true) +
-					" ms");
-			log.debug("And average adjusted overshoot is " + averageAdjustedOvershoot + " which is " +
-					MathFormatter.fastFloatPrint( (averageAdjustedOvershoot / 1000000.0f), 8, true) +
-					" ms");
-			log.debug("And average regular overshoot is " + averageRegularOvershoot + " which is " +
-					MathFormatter.fastFloatPrint( (averageRegularOvershoot / 1000000.0f), 8, true) +
-					" ms");
-			log.debug("Total calls: " + numCalls );
-			log.debug("Num undershoots: " + numUndershoots );
-			log.debug("Num adjusted overshoots: " + numAdjustedOvershoots );
-			log.debug("Num regular overshoots: " + numRegularOvershoots );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Final adjustment nanos is " + adjustmentNanos + " which is " +
+						MathFormatter.fastFloatPrint( (adjustmentNanos / 1000000.0f), 8, true) +
+						" ms");
+				log.debug("And average adjusted overshoot is " + averageAdjustedOvershoot + " which is " +
+						MathFormatter.fastFloatPrint( (averageAdjustedOvershoot / 1000000.0f), 8, true) +
+						" ms");
+				log.debug("And average regular overshoot is " + averageRegularOvershoot + " which is " +
+						MathFormatter.fastFloatPrint( (averageRegularOvershoot / 1000000.0f), 8, true) +
+						" ms");
+				log.debug("Total calls: " + numCalls );
+				log.debug("Num undershoots: " + numUndershoots );
+				log.debug("Num adjusted overshoots: " + numAdjustedOvershoots );
+				log.debug("Num regular overshoots: " + numRegularOvershoots );
+			}
 		}
 	};
-	
+
 	private final long nanosBetweenCalls;
 	private final MAThreadPriority threadPriority;
 	private final InterruptableJob timerJob;
-	
+
 	private TimerThread timerThread = null;
-	
-	public NanosecondPeriodicThreadedTimer( long nanosBetweenCalls,
-			MAThreadPriority threadPriority,
-			InterruptableJob timerJob )
+
+	public NanosecondPeriodicThreadedTimer( final long nanosBetweenCalls,
+			final MAThreadPriority threadPriority,
+			final InterruptableJob timerJob )
 	{
 		this.nanosBetweenCalls = nanosBetweenCalls;
 		this.threadPriority = threadPriority;
 		this.timerJob = timerJob;
-		log.debug("Nanos between calls is " + nanosBetweenCalls + " which is " +
-				MathFormatter.fastFloatPrint( (nanosBetweenCalls / 1000000.0f), 8, true ) +
-				" ms");
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Nanos between calls is " + nanosBetweenCalls + " which is " +
+					MathFormatter.fastFloatPrint( (nanosBetweenCalls / 1000000.0f), 8, true ) +
+					" ms");
+		}
 	}
-	
+
 	public void start()
 	{
 		if( timerThread != null )
@@ -165,7 +174,7 @@ public class NanosecondPeriodicThreadedTimer
 			timerThread.start();
 		}
 	}
-	
+
 	public void stop()
 	{
 		if( timerThread == null )
@@ -179,9 +188,12 @@ public class NanosecondPeriodicThreadedTimer
 			{
 				timerThread.join();
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
-				log.error("Failed during timer thread join: " + e.toString(), e );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Failed during timer thread join: " + e.toString(), e );
+				}
 			}
 			timerThread = null;
 		}

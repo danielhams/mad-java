@@ -37,8 +37,8 @@ public class ProcessResourceFactory implements Factory
 {
 	private static Log log = LogFactory.getLog( ProcessResourceFactory.class.getName() );
 
-	String[] resourceCmdArray;
-	String resourceOutputTerminator;
+	private final String[] resourceCmdArray;
+	private final String resourceOutputTerminator;
 
 	public ProcessResourceFactory( final String[] cmdArray, final String outputTerminator )
 	{
@@ -109,11 +109,6 @@ public class ProcessResourceFactory implements Factory
 		}
 	}
 
-	/**
-	 * @link dependency
-	 * @label creates
-	 */
-	/* # MultishotProcessResource lnkMultishotProcessResource; */
 	public void shutdown()
 	{
 	}

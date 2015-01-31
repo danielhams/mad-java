@@ -21,6 +21,7 @@
 package uk.co.modularaudio.componentdesigner.controller.front;
 
 import java.awt.Component;
+import java.awt.Dialog;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -34,18 +35,58 @@ import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
 
+/**
+ * <p>The contract of the front controller that exposes functionality to the GUI
+ * elements in the Component Designer application.</p>
+ *
+ * <p>Any implementing class will be required to maintain a number of pieces of
+ * state to maintain the application graph, rendering chain etc.</p>
+ *
+ * @author dan
+ *
+ */
 public interface ComponentDesignerFrontController
 {
-	// Receive a display tick from the gui thread (Swing timer for now)
+	/**
+	 * Receive a display tick from the gui thread (however that is done
+	 * - probably swing timer to begin with).
+s	 */
 	void receiveDisplayTick();
 
 	// Gui components to display and drag and drop components in the rack
+	/**
+	 * Obtain the main swing component used to present the component
+	 * designer rack including scroll bars
+	 *
+	 * @return The swing component that displays the rack
+	 */
 	RackModelRenderingComponent getGuiRack();
 
 	// Rendering of the graph
+	/**
+	 * <p>Whether there is currently audio rendering happening.</p>
+	 * <p>"Rendering" is both audio output using the current rack
+	 * graph and timed execution of the GUI thread callbacks to
+	 * active components.</p>
+	 * @return true if audio and GUI presentation is running
+	 */
 	boolean isRendering();
+
+	/**
+	 * Toggle the state of rendering.
+	 */
 	void toggleRendering();
+
+	/**
+	 * <p>Allows callers to register a listener for changes in the state of rendering.</p>
+	 * <p>In particular, this allows any "stop/start" button to be notified should
+	 * rendering halt for some reason (such as overruns).</p>
+	 * @param renderingStateListener the listener to add
+	 */
 	void addRenderingStateListener( RenderingStateListener renderingStateListener );
+	/**
+	 * @param renderingStateListener the listener to remove
+	 */
 	void removeRenderingStateListener( RenderingStateListener renderingStateListener );
 
 	// Debugging methods
@@ -61,6 +102,7 @@ public interface ComponentDesignerFrontController
 	void saveRack() throws DatastoreException, FileNotFoundException, IOException;
 	void saveRackToFile( String filename, String rackName ) throws DatastoreException, IOException;
 	void ensureRenderingStoppedBeforeExit() throws DatastoreException, MadProcessingException;
+
 	// Debugging method to get at the current rack data model
 	RackDataModel getUserRack();
 
@@ -78,6 +120,18 @@ public interface ComponentDesignerFrontController
 
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
 
+	/**
+	 * <p>Helper method for displaying a yes/no type question dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type (see {@link Dialog})
+	 * @param options an array of strings that are the text displayed on each option
+	 * @param defaultChoice which should be the default (on return press, for example)
+	 * @param callback a callback procedure that will receive the results of the dialog
+	 */
 	void showYesNoQuestionDialog( Component parentComponent,
 			String message,
 			String title,
@@ -86,6 +140,17 @@ public interface ComponentDesignerFrontController
 			String defaultChoice,
 			YesNoQuestionDialogCallback callback );
 
+	/**
+	 * <p>Helper method for displaying a yes/no type question dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param initialValue initial value to show (if required)
+	 * @param callback a callback procedure that will receive the results of the dialog
+	 */
 	void showTextInputDialog( Component parentComponent,
 			String message,
 			String title,
@@ -93,6 +158,16 @@ public interface ComponentDesignerFrontController
 			String initialValue,
 			TextInputDialogCallback callback );
 
+	/**
+	 * <p>Helper method for displaying a yes/no type question dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param callback a callback procedure that will do called when the dialog closes
+	 */
 	void showMessageDialog( Component parentComponent,
 			String message,
 			String title,

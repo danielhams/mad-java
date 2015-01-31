@@ -33,24 +33,27 @@ import uk.co.modularaudio.util.mvc.combo.ComboModelListenerEvent;
 public class BasicIdStringComboController<A extends IdStringComboItem> implements IdStringComboController<A>
 {
 	private static Log log = LogFactory.getLog( BasicIdStringComboController.class.getName());
-	
+
 	private IdStringComboModel<A> model = null;
-	
-	public BasicIdStringComboController( IdStringComboModel<A> model )
+
+	public BasicIdStringComboController( final IdStringComboModel<A> model )
 	{
 		this.model = model;
 	}
 
 	@Override
-	public void setSelectedElement( A selectedElement )
+	public void setSelectedElement( final A selectedElement )
 		throws RecordNotFoundException
 	{
 		// do some checks, update the necessary bits of the model
 		// and propogate a "refresh" event
-		int index = model.getItemIndex( selectedElement );
+		final int index = model.getItemIndex( selectedElement );
 		if( index == -1 )
 		{
-			log.error("Unable to find element: " + selectedElement.toString() + " in combo model");
+			if( log.isErrorEnabled() )
+			{
+				log.error("Unable to find element: " + selectedElement.toString() + " in combo model");
+			}
 			throw new RecordNotFoundException();
 		}
 		else
@@ -58,24 +61,24 @@ public class BasicIdStringComboController<A extends IdStringComboItem> implement
 			// This doesn't necessarily have to update the model.
 			// Could do something somewhere else and force a refresh
 			model.setSelectedItemByIndex( index );
-			ComboModelListenerEvent event = new ComboModelListenerEvent( EventType.SELECTION_CHANGED, index, -1 );
-			Collection<ComboModelListener<A>> listeners = model.getListeners();
-			for( ComboModelListener<A> l : listeners )
+			final ComboModelListenerEvent event = new ComboModelListenerEvent( EventType.SELECTION_CHANGED, index, -1 );
+			final Collection<ComboModelListener<A>> listeners = model.getListeners();
+			for( final ComboModelListener<A> l : listeners )
 			{
 				l.selectionChanged( event );
 			}
 		}
-		
+
 	}
 
 	@Override
-	public void setSelectedElementById( String selectedElementId ) throws RecordNotFoundException
+	public void setSelectedElementById( final String selectedElementId ) throws RecordNotFoundException
 	{
-		A elementToSelect = model.getElementById( selectedElementId );
+		final A elementToSelect = model.getElementById( selectedElementId );
 		this.setSelectedElement( elementToSelect );
 	}
 
-	public void setModel( IdStringComboModel<A> newModel )
+	public void setModel( final IdStringComboModel<A> newModel )
 	{
 		this.model = newModel;
 	}

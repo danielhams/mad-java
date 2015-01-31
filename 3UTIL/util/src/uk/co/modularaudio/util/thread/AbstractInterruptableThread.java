@@ -29,7 +29,7 @@ public abstract class AbstractInterruptableThread extends Thread implements Inte
 {
 	private static Log log = LogFactory.getLog( AbstractInterruptableThread.class.getName() );
 
-	protected volatile boolean shouldHalt = false;
+	protected volatile boolean shouldHalt = false; // NOPMD by dan on 31/01/15 16:34
 
 	protected MAThreadPriority threadPriority = null;
 

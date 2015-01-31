@@ -31,66 +31,63 @@ import java.io.OutputStream;
 
 public class LZWIndexedGIFEncoder
 {
-    short width_, height_;
-    int numColors_;
-    byte pixels_[];
-    byte colors_[];
+	private final int width, height;
+	private final int numColors;
+	private final byte pixels[];
+	private final byte colors[];
 
-    InternalScreenDescriptor sd_;
-    InternalImageDescriptor id_;
-
-    public LZWIndexedGIFEncoder(IndexColorModel colorModel, BufferedImage image)
+    public LZWIndexedGIFEncoder(final IndexColorModel colorModel, final BufferedImage image)
     	throws AWTException, IOException
     {
         //Log.printlnMemory("LZWIndexedGIFEncoder beginning");
-        width_ = (short) image.getWidth(null);
-        height_ = (short) image.getHeight(null);
-        numColors_ = colorModel.getMapSize();
-        if (numColors_ > 256)
+        width = image.getWidth(null);
+        height = image.getHeight(null);
+        numColors = colorModel.getMapSize();
+        if (numColors > 256)
         {
         	throw new IOException("Too many colors. Image must have < 256 colours in palette.");
         }
-        int[] tmpColors = new int[numColors_];
+        final int[] tmpColors = new int[numColors];
         //Log.printlnMemory("Got back " + numColors_ + " colors");
-        colors_ = new byte[numColors_ * 3];
+        colors = new byte[numColors * 3];
         colorModel.getRGBs( tmpColors );
-        for(int i=0;i<numColors_;i++)
+        for(int i=0;i<numColors;i++)
         {
-        	colors_[i * 3] = (byte)((tmpColors[i] >> 16) & 0XFF);
-        	colors_[(i * 3) + 1] = (byte)((tmpColors[i] >> 8) & 0XFF);
-        	colors_[(i * 3) + 2] = (byte)((tmpColors[i]) & 0XFF);
+        	colors[i * 3] = (byte)((tmpColors[i] >> 16) & 0XFF);
+        	colors[(i * 3) + 1] = (byte)((tmpColors[i] >> 8) & 0XFF);
+        	colors[(i * 3) + 2] = (byte)((tmpColors[i]) & 0XFF);
         }
 
-        Raster raster = image.getRaster();
-        DataBuffer dataBuffer = raster.getDataBuffer();
+        final Raster raster = image.getRaster();
+        final DataBuffer dataBuffer = raster.getDataBuffer();
 		if (dataBuffer.getDataType() != DataBuffer.TYPE_BYTE)
 		{
 			throw new IOException("BAD DATA TYPE MATCH IN IMAGE");
 		}
-		DataBufferByte byteBuffer = (DataBufferByte)dataBuffer;
+		final DataBufferByte byteBuffer = (DataBufferByte)dataBuffer;
 
-		pixels_ = byteBuffer.getData();
+		pixels = byteBuffer.getData();
     }
 
-    public void encode(OutputStream output) throws IOException
+    public void encode(final OutputStream output) throws IOException
     {
         InternalBitUtils.writeString(output, "GIF87a");
 
-        InternalScreenDescriptor sd =
-            new InternalScreenDescriptor(width_, height_, numColors_);
+        final InternalScreenDescriptor sd =
+            new InternalScreenDescriptor(width, height, numColors);
         sd.write(output);
 
-        output.write(colors_, 0, colors_.length);
+        output.write(colors, 0, colors.length);
 
-        InternalImageDescriptor id = new InternalImageDescriptor(width_, height_, ',');
+        InternalImageDescriptor id = new InternalImageDescriptor(width, height, ',');
         id.write(output);
 
-        byte codesize = InternalBitUtils.bitsNeeded(numColors_);
+        byte codesize = InternalBitUtils.bitsNeeded(numColors);
         if (codesize == 1)
             ++codesize;
         output.write(codesize);
 
-        InternalLZWCompressor.LZWCompress(output, codesize, pixels_);
+        InternalLZWCompressor.lzwCompress(output, codesize, pixels);
 
         output.write(0);
 
@@ -104,64 +101,64 @@ public class LZWIndexedGIFEncoder
 
 class InternalBitFile
 {
-    OutputStream output_;
-    byte buffer_[];
-    int index_, bitsLeft_;
+    OutputStream output;
+    byte buffer[];
+    int index, bitsLeft;
 
-    public InternalBitFile(OutputStream output)
+    public InternalBitFile(final OutputStream output)
     {
-        output_ = output;
-        buffer_ = new byte[256];
-        index_ = 0;
-        bitsLeft_ = 8;
+        this.output = output;
+        buffer = new byte[256];
+        index = 0;
+        bitsLeft = 8;
     }
 
     public void flush() throws IOException
     {
-        int numBytes = index_ + (bitsLeft_ == 8 ? 0 : 1);
+        final int numBytes = index + (bitsLeft == 8 ? 0 : 1);
         if (numBytes > 0)
         {
-            output_.write(numBytes);
-            output_.write(buffer_, 0, numBytes);
-            buffer_[0] = 0;
-            index_ = 0;
-            bitsLeft_ = 8;
+            output.write(numBytes);
+            output.write(buffer, 0, numBytes);
+            buffer[0] = 0;
+            index = 0;
+            bitsLeft = 8;
         }
     }
 
     public void writeBits(int bits, int numbits) throws IOException
     {
 //        int bitsWritten = 0;
-        int numBytes = 255;
+        final int numBytes = 255;
         do
         {
-            if ((index_ == 254 && bitsLeft_ == 0) || index_ > 254)
+            if ((index == 254 && bitsLeft == 0) || index > 254)
             {
-                output_.write(numBytes);
-                output_.write(buffer_, 0, numBytes);
+                output.write(numBytes);
+                output.write(buffer, 0, numBytes);
 
-                buffer_[0] = 0;
-                index_ = 0;
-                bitsLeft_ = 8;
+                buffer[0] = 0;
+                index = 0;
+                bitsLeft = 8;
             }
 
-            if (numbits <= bitsLeft_)
+            if (numbits <= bitsLeft)
             {
-                buffer_[index_] |= (bits & ((1 << numbits) - 1))
-                    << (8 - bitsLeft_);
+                buffer[index] |= (bits & ((1 << numbits) - 1))
+                    << (8 - bitsLeft);
 //                bitsWritten += numbits;
-                bitsLeft_ -= numbits;
+                bitsLeft -= numbits;
                 numbits = 0;
             }
             else
             {
-                buffer_[index_] |= (bits & ((1 << bitsLeft_) - 1))
-                    << (8 - bitsLeft_);
+                buffer[index] |= (bits & ((1 << bitsLeft) - 1))
+                    << (8 - bitsLeft);
 //                bitsWritten += bitsLeft_;
-                bits >>= bitsLeft_;
-                numbits -= bitsLeft_;
-                buffer_[++index_] = 0;
-                bitsLeft_ = 8;
+                bits >>= bitsLeft;
+                numbits -= bitsLeft;
+                buffer[++index] = 0;
+                bitsLeft = 8;
             }
         }
         while (numbits != 0);
@@ -171,44 +168,44 @@ class InternalBitFile
 class InternalLZWStringTable
 {
     private final static int RES_CODES = 2;
-    private final static short HASH_FREE = (short) 0xFFFF;
-    private final static short NEXT_FIRST = (short) 0xFFFF;
+    private final static int HASH_FREE = 0xFFFF;
+    private final static int NEXT_FIRST = 0xFFFF;
     private final static int MAXBITS = 12;
     private final static int MAXSTR = (1 << MAXBITS);
-    private final static short HASHSIZE = 9973;
-    private final static short HASHSTEP = 2039;
+    private final static int HASHSIZE = 9973;
+    private final static int HASHSTEP = 2039;
 
-    byte strChr_[];
-    short strNxt_[];
-    short strHsh_[];
-    short numStrings_;
+    private final byte strChr[];
+    private final int strNxt[];
+    private final int strHsh[];
+    private int numStrings;
 
     public InternalLZWStringTable()
     {
-        strChr_ = new byte[MAXSTR];
-        strNxt_ = new short[MAXSTR];
-        strHsh_ = new short[HASHSIZE];
+        strChr = new byte[MAXSTR];
+        strNxt = new int[MAXSTR];
+        strHsh = new int[HASHSIZE];
     }
 
-    public int addCharString(short index, byte b)
+    public int addCharString(final int index, final byte b)
     {
         int hshidx;
 
-        if (numStrings_ >= MAXSTR)
+        if (numStrings >= MAXSTR)
             return 0xFFFF;
 
         hshidx = hash(index, b);
-        while (strHsh_[hshidx] != HASH_FREE)
+        while (strHsh[hshidx] != HASH_FREE)
             hshidx = (hshidx + HASHSTEP) % HASHSIZE;
 
-        strHsh_[hshidx] = numStrings_;
-        strChr_[numStrings_] = b;
-        strNxt_[numStrings_] = (index != HASH_FREE) ? index : NEXT_FIRST;
+        strHsh[hshidx] = numStrings;
+        strChr[numStrings] = b;
+        strNxt[numStrings] = (index != HASH_FREE) ? index : NEXT_FIRST;
 
-        return numStrings_++;
+        return numStrings++;
     }
 
-    public short findCharString(short index, byte b)
+    public int findCharString(final int index, final byte b)
     {
         int hshidx, nxtidx;
 
@@ -216,52 +213,52 @@ class InternalLZWStringTable
             return b;
 
         hshidx = hash(index, b);
-        while ((nxtidx = strHsh_[hshidx]) != HASH_FREE)
+        while ((nxtidx = strHsh[hshidx]) != HASH_FREE)
         {
-            if (strNxt_[nxtidx] == index && strChr_[nxtidx] == b)
-                return (short) nxtidx;
+            if (strNxt[nxtidx] == index && strChr[nxtidx] == b)
+                return nxtidx;
             hshidx = (hshidx + HASHSTEP) % HASHSIZE;
         }
 
-        return (short) 0xFFFF;
+        return 0xFFFF;
     }
 
-    public void clearTable(int codesize)
+    public void clearTable(final int codesize)
     {
-        numStrings_ = 0;
+        numStrings = 0;
 
         for (int q = 0; q < HASHSIZE; q++)
         {
-            strHsh_[q] = HASH_FREE;
+            strHsh[q] = HASH_FREE;
         }
 
-        int w = (1 << codesize) + RES_CODES;
+        final int w = (1 << codesize) + RES_CODES;
         for (int q = 0; q < w; q++)
-            addCharString((short) 0xFFFF, (byte) q);
+            addCharString(0xFFFF, (byte) q);
     }
 
-    static public int hash(short index, byte lastbyte)
+    static public int hash(final int index, final byte lastbyte)
     {
-        return (((short) (lastbyte << 8) ^ index) & 0xFFFF) % HASHSIZE;
+        return (((lastbyte << 8) ^ index) & 0xFFFF) % HASHSIZE;
     }
 }
 
 class InternalLZWCompressor
 {
 
-    public static void LZWCompress(
-        OutputStream output,
-        int codesize,
-        byte toCompress[])
+    public static void lzwCompress(
+        final OutputStream output,
+        final int codesize,
+        final byte toCompress[])
         throws IOException
     {
         byte c;
-        short index;
+        int index;
         int clearcode, endofinfo, numbits, limit;
-        short prefix = (short) 0xFFFF;
+        int prefix = 0xFFFF;
 
-        InternalBitFile bitFile = new InternalBitFile(output);
-        InternalLZWStringTable strings = new InternalLZWStringTable();
+        final InternalBitFile bitFile = new InternalBitFile(output);
+        final InternalLZWStringTable strings = new InternalLZWStringTable();
 
         clearcode = 1 << codesize;
         endofinfo = clearcode + 1;
@@ -291,7 +288,7 @@ class InternalLZWCompressor
                     limit = (1 << numbits) - 1;
                 }
 
-                prefix = (short) (c & 0xFF);
+                prefix = (c & 0xFF);
             }
         }
 
@@ -305,66 +302,66 @@ class InternalLZWCompressor
 
 class InternalScreenDescriptor
 {
-    public short localScreenWidth_, localScreenHeight_;
-    private byte byte_;
-    public byte backgroundColorIndex_, pixelAspectRatio_;
+    private final int localScreenWidth, localScreenHeight;
+    private byte screenByte;
+    private final byte backgroundColorIndex, pixelAspectRatio;
 
-    public InternalScreenDescriptor(short width, short height, int numColors)
+    public InternalScreenDescriptor(final int width, final int height, final int numColors)
     {
-        localScreenWidth_ = width;
-        localScreenHeight_ = height;
+        localScreenWidth = width;
+        localScreenHeight = height;
         setGlobalColorTableSize(
             (byte) (InternalBitUtils.bitsNeeded(numColors) - 1));
         setGlobalColorTableFlag((byte) 1);
         setSortFlag((byte) 0);
         setColorResolution((byte) 7);
-        backgroundColorIndex_ = 0;
-        pixelAspectRatio_ = 0;
+        backgroundColorIndex = 0;
+        pixelAspectRatio = 0;
     }
 
-    public void write(OutputStream output) throws IOException
+    public void write(final OutputStream output) throws IOException
     {
-        InternalBitUtils.writeWord(output, localScreenWidth_);
-        InternalBitUtils.writeWord(output, localScreenHeight_);
-        output.write(byte_);
-        output.write(backgroundColorIndex_);
-        output.write(pixelAspectRatio_);
+        InternalBitUtils.writeWord(output, localScreenWidth);
+        InternalBitUtils.writeWord(output, localScreenHeight);
+        output.write(screenByte);
+        output.write(backgroundColorIndex);
+        output.write(pixelAspectRatio);
     }
 
-    public void setGlobalColorTableSize(byte num)
+    public void setGlobalColorTableSize(final byte num)
     {
-        byte_ |= (num & 7);
+        screenByte |= (num & 7);
     }
 
-    public void setSortFlag(byte num)
+    public void setSortFlag(final byte num)
     {
-        byte_ |= (num & 1) << 3;
+        screenByte |= (num & 1) << 3;
     }
 
-    public void setColorResolution(byte num)
+    public void setColorResolution(final byte num)
     {
-        byte_ |= (num & 7) << 4;
+        screenByte |= (num & 7) << 4;
     }
 
-    public void setGlobalColorTableFlag(byte num)
+    public void setGlobalColorTableFlag(final byte num)
     {
-        byte_ |= (num & 1) << 7;
+        screenByte |= (num & 1) << 7;
     }
 }
 
 class InternalImageDescriptor
 {
-    public byte separator_;
-    public short leftPosition_, topPosition_, width_, height_;
-    private byte byte_;
+    private final byte separator_;
+    private final int leftPosition, topPosition, width, height;
+    private byte internalByte;
 
-    public InternalImageDescriptor(short width, short height, char separator)
+    public InternalImageDescriptor(final int width, final int height, final char separator)
     {
         separator_ = (byte) separator;
-        leftPosition_ = 0;
-        topPosition_ = 0;
-        width_ = width;
-        height_ = height;
+        leftPosition = 0;
+        topPosition = 0;
+        this.width = width;
+        this.height = height;
         setLocalColorTableSize((byte) 0);
         setReserved((byte) 0);
         setSortFlag((byte) 0);
@@ -372,39 +369,39 @@ class InternalImageDescriptor
         setLocalColorTableFlag((byte) 0);
     }
 
-    public void write(OutputStream output) throws IOException
+    public void write(final OutputStream output) throws IOException
     {
         output.write(separator_);
-        InternalBitUtils.writeWord(output, leftPosition_);
-        InternalBitUtils.writeWord(output, topPosition_);
-        InternalBitUtils.writeWord(output, width_);
-        InternalBitUtils.writeWord(output, height_);
-        output.write(byte_);
+        InternalBitUtils.writeWord(output, leftPosition);
+        InternalBitUtils.writeWord(output, topPosition);
+        InternalBitUtils.writeWord(output, width);
+        InternalBitUtils.writeWord(output, height);
+        output.write(internalByte);
     }
 
-    public void setLocalColorTableSize(byte num)
+    public void setLocalColorTableSize(final byte num)
     {
-        byte_ |= (num & 7);
+        internalByte |= (num & 7);
     }
 
-    public void setReserved(byte num)
+    public void setReserved(final byte num)
     {
-        byte_ |= (num & 3) << 3;
+        internalByte |= (num & 3) << 3;
     }
 
-    public void setSortFlag(byte num)
+    public void setSortFlag(final byte num)
     {
-        byte_ |= (num & 1) << 5;
+        internalByte |= (num & 1) << 5;
     }
 
-    public void setInterlaceFlag(byte num)
+    public void setInterlaceFlag(final byte num)
     {
-        byte_ |= (num & 1) << 6;
+        internalByte |= (num & 1) << 6;
     }
 
-    public void setLocalColorTableFlag(byte num)
+    public void setLocalColorTableFlag(final byte num)
     {
-        byte_ |= (num & 1) << 7;
+        internalByte |= (num & 1) << 7;
     }
 }
 
@@ -423,14 +420,14 @@ class InternalBitUtils
         return ret;
     }
 
-    public static void writeWord(OutputStream output, short w)
+    public static void writeWord(final OutputStream output, final int w)
         throws IOException
     {
         output.write(w & 0xFF);
         output.write((w >> 8) & 0xFF);
     }
 
-    static void writeString(OutputStream output, String string)
+    static void writeString(final OutputStream output, final String string)
         throws IOException
     {
         for (int loop = 0; loop < string.length(); ++loop)
