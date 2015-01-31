@@ -39,14 +39,13 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.DeviceDirection;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDeviceCriteria;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
-import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class AudioProviderRegistryServiceImpl
-	implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, AudioProviderRegistryService
+	implements ComponentWithLifecycle, AudioProviderRegistryService
 {
 	private static Log log = LogFactory.getLog( AudioProviderRegistryServiceImpl.class.getName() );
 
@@ -78,16 +77,6 @@ public class AudioProviderRegistryServiceImpl
 			}
 		}
 		providers.clear();
-	}
-
-	@Override
-	public void postInit() throws DatastoreException
-	{
-	}
-
-	@Override
-	public void preShutdown() throws DatastoreException
-	{
 	}
 
 	@Override

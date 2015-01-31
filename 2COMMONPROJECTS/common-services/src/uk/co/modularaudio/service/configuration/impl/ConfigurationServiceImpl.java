@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -54,6 +53,15 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
+ * <p>An implementation of the configuration service interface that
+ * reads the configuration key values from a filesystem file or
+ * from a classloader resource path.</p>
+ *
+ * <p>Clients are advised to use the helper class ConfigurationServiceHelper
+ * which provides methods for bulk error handling.</p>
+ *
+ * @see uk.co.modularaudio.service.configuration.ConfigurationServiceHelper
+ *
  * @author dan
  *
  */
@@ -61,42 +69,79 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 {
 	private static Log log = LogFactory.getLog(ConfigurationServiceImpl.class.getName());
 
+	private final static String ALGO_TYPE = "Blowfish";
+
+	/**
+	 * The classloader resource path that should be used to find
+	 * a properties file containing key value pairs
+	 */
 	private String configResourcePath;
+	/**
+	 * A list of additional classloader resource paths that are used
+	 * to add additional key value pairs to the config information
+	 */
 	private String[] additionalResourcePaths;
+	/**
+	 * The filesystem path that should be used to find
+	 * a properties file containing key value pairs
+	 */
 	private String configFilePath;
+	/**
+	 * A list of additional filesystem paths that are used
+	 * to add additional key value pairs to the config information
+	 */
 	private String[] additionalFilePaths;
 
-	private String encryptionKey;
+	/**
+	 * Whether the configuration service should attempt to initialise
+	 * an encryption cipher. Requries setting the encryptionKey.
+	 */
 	private boolean useEncryption = false;
+	/**
+	 * A base64 encoded string used as encryption pepper.
+	 */
+	private String encryptionPepper;
+
+	private SecretKeySpec keySpec;
+	private Cipher cipher;
 
 	private final HashMap<String,String> keyToValueMap = new HashMap<String,String>();
 	private final HashSet<String> usedKeys = new HashSet<String>();
 
-//	private final static String B64_ENCRYPTION_KEY = "eUg0lWOSVA2vSgN/OcDz8Q==";
+	/**
+	 * If set to true the service will log where it is reading key value pairs from
+	 */
+	private final boolean logWhereConfigComesFrom;
 
-	private SecretKeySpec keySpec;
-
-	private Cipher cipher;
-
-	private final boolean logFileUsed;
-
+	/**
+	 * Emtpy constructor will initialise the service without it logging
+	 * where it is retrieving the key values from.
+	 */
 	public ConfigurationServiceImpl()
 	{
 		this( false );
 	}
 
-	public ConfigurationServiceImpl( final boolean logFileUsed )
+	/**
+	 * Constructor that allows you to specify if you want the
+	 * sources of key value pairs logged.
+	 * @param logWhereConfigComesFrom set to yes for logging of config sources
+	 */
+	public ConfigurationServiceImpl( final boolean logWhereConfigComesFrom )
 	{
-		this.logFileUsed = logFileUsed;
+		this.logWhereConfigComesFrom = logWhereConfigComesFrom;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.component.ComponentWithLifecycle#init()
+	 */
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 
 		if( configFilePath != null )
 		{
-			if( logFileUsed )
+			if( logWhereConfigComesFrom )
 			{
 				if( log.isInfoEnabled() )
 				{
@@ -115,7 +160,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 		else if( configResourcePath != null )
 		{
-			if( logFileUsed )
+			if( logWhereConfigComesFrom )
 			{
 				if( log.isInfoEnabled() )
 				{
@@ -137,27 +182,28 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 
 
-		if( useEncryption && encryptionKey != null )
+		if( useEncryption && encryptionPepper != null )
 		{
 			try
 			{
-				// Initialise the secret key with our pepper (its not salt, since salt should be added to taste i.e. random).
-				final byte keyAsBytes[] = Base64.decodeBase64( encryptionKey );
+				// Initialise the secret key with our pepper (its not salt,
+				// since salt should be added to taste i.e. random).
+				final byte keyAsBytes[] = Base64.decodeBase64( encryptionPepper );
 
-				keySpec = new SecretKeySpec(keyAsBytes, "Blowfish");
-				cipher = Cipher.getInstance("Blowfish");
+				keySpec = new SecretKeySpec(keyAsBytes, ALGO_TYPE);
+				cipher = Cipher.getInstance(ALGO_TYPE);
 			}
 			catch (final NoSuchAlgorithmException nsae)
 			{
 				final String msg = "Unable to initialise config key decryption: " + nsae.toString();
 				log.error(msg, nsae);
-				throw new ComponentConfigurationException(msg);
+				throw new ComponentConfigurationException(msg, nsae);
 			}
 			catch (final NoSuchPaddingException nspe)
 			{
 				final String msg = "Unable to initialise config key decryption: " + nspe.toString();
 				log.error(msg, nspe);
-				throw new ComponentConfigurationException(msg);
+				throw new ComponentConfigurationException(msg, nspe);
 			}
 		}
 		else if( useEncryption )
@@ -166,6 +212,12 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/**
+	 * Internal method that opens the supplied file and reads
+	 * it as though it is a properties file.
+	 * @param fpToProcess path of the file to read
+	 * @throws ComponentConfigurationException
+	 */
 	private void parseOneFilePath( final String fpToProcess ) throws ComponentConfigurationException
 	{
 		InputStream fis = null;
@@ -201,6 +253,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/**
+	 * Internal method that find the supplied resource using
+	 * the current class classloader and reads
+	 * it as though it is a properties file.
+	 * @param rpToProcess resource path to open
+	 * @throws ComponentConfigurationException
+	 */
 	private void parseOneResourcePath( final String rpToProcess ) throws ComponentConfigurationException
 	{
 		InputStream fis = null;
@@ -242,6 +301,13 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/**
+	 * Read the contents of a properties file as an input stream
+	 * and populate the internal key value pairs with the contents.
+	 * @param is input stream to parse
+	 * @throws ComponentConfigurationException on malformed content
+	 * @throws IOException on file IO errors
+	 */
 	private void parseOneInputStream( final InputStream is ) throws ComponentConfigurationException, IOException
 	{
 		final BufferedReader br = new BufferedReader( new InputStreamReader( is ) );
@@ -270,6 +336,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.component.ComponentWithLifecycle#destroy()
+	 */
 	@Override
 	public void destroy()
 	{
@@ -286,28 +355,52 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 	}
 
 	/**
-	 * @param configResource The property file to find in the classpath
+	 * <p>Specify a classloader resource path as the source of configuration
+	 * information.</p>
+	 * <p>If both a filesystem path and classloader resource path are specified,
+	 * the filesystem path wins.</p>
+	 * @param configResource the resource path
 	 */
 	public void setConfigResourcePath( final String configResource )
 	{
 		this.configResourcePath = configResource;
 	}
 
+	/**
+	 * Additional classloader resource paths from which to pull key value
+	 * pairs.
+	 * @param additionalResourcePaths an array of classloader resource paths
+	 */
 	public void setAdditionalResourcePaths( final String[] additionalResourcePaths )
 	{
 		this.additionalResourcePaths = additionalResourcePaths;
 	}
 
+	/**
+	 * If encryption of values inside the properties file is required
+	 * this field must be set to true
+	 * @param useEncryption set to true for use of encryption
+	 */
 	public void setUseEncryption( final boolean useEncryption )
 	{
 		this.useEncryption = useEncryption;
 	}
 
-	public void setEncryptionKey( final String encryptionKey )
+	/**
+	 * <p>The encryption seed passed during initialisation of the cipher.</p>
+	 * <p>This field must be set if useEncryption is true.</p>
+	 * <p>Use of the method {@link ConfigurationServiceImpl#encryptStringWithKey(String)}
+	 * is a good way to generate the necessary base64 encoded string.</p>
+	 * @param encryptionPepper base64 encoded string of the required encryption pepper
+	 */
+	public void setEncryptionPepper( final String encryptionPepper )
 	{
-		this.encryptionKey = encryptionKey;
+		this.encryptionPepper = encryptionPepper;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleStringValue(java.lang.String)
+	 */
 	@Override
 	public String getSingleStringValue(final String key)
 			throws RecordNotFoundException
@@ -325,16 +418,31 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/**
+	 * <p>Specify a filesystem path as the source of configuration
+	 * information.</p>
+	 * <p>If both a filesystem path and classloader resource path are specified,
+	 * the filesystem path wins.</p>
+	 * @param configFile path to the properties file on the filesystem
+	 */
 	public void setConfigFilePath( final String configFile )
 	{
 		this.configFilePath = configFile;
 	}
 
+	/**
+	 * Additional filesystem paths from which to pull key value
+	 * pairs.
+	 * @param additionalFilePaths array of filesystem paths
+	 */
 	public void setAdditionalFilePaths( final String[] additionalFilePaths )
 	{
 		this.additionalFilePaths = additionalFilePaths;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getCommaSeparatedStringValues(java.lang.String)
+	 */
 	@Override
 	public String[] getCommaSeparatedStringValues(final String key)
 			throws RecordNotFoundException
@@ -350,6 +458,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleEncryptedStringValue(java.lang.String)
+	 */
 	@Override
 	public String getSingleEncryptedStringValue(final String key)
 			throws RecordNotFoundException
@@ -384,9 +495,18 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/**
+	 * A method to decrypt a base64 encoded string ciphertext previous encrypted
+	 * with the corresponding encryptStringWithKey method.
+	 * @param cipherTextString base64 encoded cipher text
+	 * @return decrypted plain text
+	 * @throws InvalidKeyException on failure during cipher initialisation
+	 * @throws IllegalBlockSizeException on failure during cipher initialisation
+	 * @throws BadPaddingException on failure during cipher initialisation
+	 * @throws UnsupportedEncodingException on failure during cipher initialisation
+	 */
 	public String decryptStringWithKey(final String cipherTextString)
-			throws IOException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
-			BadPaddingException, UnsupportedEncodingException
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException
 	{
 		if( !useEncryption )
 		{
@@ -401,9 +521,18 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return new String(plainTextBytes, "UTF-8");
 	}
 
+	/**
+	 * A method to encrypt a given plaintext string using the configuration service internal
+	 * cipher mechanism.
+	 * @param plainText plaintext string to encrypt
+	 * @return cipher text encrypted contents as a base64 encoded string
+	 * @throws InvalidKeyException on failure during cipher initialisation
+	 * @throws IllegalBlockSizeException on failure during cipher initialisation
+	 * @throws BadPaddingException on failure during cipher initialisation
+	 * @throws UnsupportedEncodingException on failure during cipher initialisation
+	 */
 	public String encryptStringWithKey(final String plainText)
-			throws UnsupportedEncodingException, InvalidKeyException, IllegalStateException, IllegalBlockSizeException,
-			BadPaddingException
+			throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException
 	{
 		if( !useEncryption )
 		{
@@ -420,6 +549,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return b64CipherText;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleIntValue(java.lang.String)
+	 */
 	@Override
 	public int getSingleIntValue(final String key)
 			throws RecordNotFoundException
@@ -454,6 +586,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleLongValue(java.lang.String)
+	 */
 	@Override
 	public long getSingleLongValue(final String key)
 			throws RecordNotFoundException
@@ -488,6 +623,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleDoubleValue(java.lang.String)
+	 */
 	@Override
 	public double getSingleDoubleValue(final String key)
 			throws RecordNotFoundException
@@ -522,6 +660,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleFloatValue(java.lang.String)
+	 */
 	@Override
 	public float getSingleFloatValue(final String key)
 			throws RecordNotFoundException
@@ -556,6 +697,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleBooleanValue(java.lang.String)
+	 */
 	@Override
 	public boolean getSingleBooleanValue(final String key)
 			throws RecordNotFoundException
@@ -594,6 +738,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal);
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleBooleanValue(java.lang.String, boolean)
+	 */
 	@Override
 	public boolean getSingleBooleanValue(final String key, final boolean defaultValue)
 	{
@@ -624,6 +771,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return retVal;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getKeysBeginningWith(java.lang.String)
+	 */
 	@Override
 	public String[] getKeysBeginningWith(final String keyStart)
 	{
@@ -642,6 +792,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return (retVal.toArray(new String[0]));
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleStringValue(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getSingleStringValue(final String key, final String defaultValue)
 	{
@@ -658,6 +811,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleDateValue(java.lang.String)
+	 */
 	@Override
 	public Date getSingleDateValue(final String key)
 			throws RecordNotFoundException
@@ -667,11 +823,9 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 		return DateConverter.customDateTimeStrToJavaDate( strVal, DateConverter.MA_USER_DATE_TIME_FORMAT);
 	}
 
-	public Map<String,String> getKeyValues()
-	{
-		return keyToValueMap;
-	}
-
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.configuration.ConfigurationService#getSingleColorValue(java.lang.String)
+	 */
 	@Override
 	public Color getSingleColorValue(final String key )
 			throws RecordNotFoundException

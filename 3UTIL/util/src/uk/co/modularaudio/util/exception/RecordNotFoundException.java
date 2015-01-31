@@ -20,19 +20,26 @@
 
 package uk.co.modularaudio.util.exception;
 
-public class RecordNotFoundException extends Exception {
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
+/**
+ * <p>An exception indicating a failure to discover or find some information.</p>
+ * <p>It is not intended that this exception automatically triggers a rollback
+ * on any pending operation or transaction.</p>
+ *
+ * @author dan
+ *
+ */
+public class RecordNotFoundException extends Exception
+{
 	private static final long serialVersionUID = 7618212577123729940L;
 
-	public RecordNotFoundException(String message, Throwable cause) {
-		super(message, cause);
+	public RecordNotFoundException( final String message, final Throwable cause )
+	{
+		super( message, cause );
 	}
 
-	public RecordNotFoundException(String message) {
-		super(message);
+	public RecordNotFoundException( final String message )
+	{
+		super( message );
 	}
 
 	public RecordNotFoundException()

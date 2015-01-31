@@ -112,7 +112,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public void postInit() throws DatastoreException
+	public void postInit() throws ComponentConfigurationException
 	{
 		try
 		{
@@ -121,12 +121,12 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		catch (final Exception e)
 		{
 			final String msg = "Unable to initialise fade in out helper: " + e.toString();
-			throw new DatastoreException( msg, e );
+			throw new ComponentConfigurationException( msg, e );
 		}
 	}
 
 	@Override
-	public void preShutdown() throws DatastoreException
+	public void preShutdown()
 	{
 		// No actions
 	}

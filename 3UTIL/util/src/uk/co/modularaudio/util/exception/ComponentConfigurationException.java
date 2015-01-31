@@ -21,31 +21,30 @@
 package uk.co.modularaudio.util.exception;
 
 /**
+ * <p>An exception indicating a component (controller/service etc) was
+ * unable to initialise due to configuration problems.</p>
+ *
  * @author dan
  *
  */
 public class ComponentConfigurationException extends Exception
 {
-    /**
-	 * Comment for <code>serialVersionUID</code>
-	 */
 	private static final long serialVersionUID = -6679387801575855528L;
 
 
-	public ComponentConfigurationException(String message)
+	public ComponentConfigurationException(final String message)
     {
         super(message);
     }
-    
 
-	public ComponentConfigurationException(String arg0, Throwable arg1)
+	public ComponentConfigurationException(final String str, final Throwable t)
 	{
-		super(arg0, arg1);
+		super(str, t);
 	}
 
-	public ComponentConfigurationException( Throwable arg1 )
+	public ComponentConfigurationException( final Throwable t )
 	{
-		super( arg1 );
+		super( t );
 	}
 
 }

@@ -21,22 +21,29 @@
 package uk.co.modularaudio.util.exception;
 
 
-public class DatastoreException extends Exception {
-
-	/**
-	 * Comment for <code>serialVersionUID</code>
-	 */
+/**
+ * <p>An exception use to indicate that an error has occurred that
+ * requires any pending transactions to be rolled back and the
+ * current operation to be halted.</p>
+ *
+ * @author dan
+ *
+ */
+public class DatastoreException extends Exception
+{
 	private static final long serialVersionUID = 5235508062602526306L;
 
-	public DatastoreException(String message, Throwable cause) {
-		super(message, cause);
+	public DatastoreException( final String message, final Throwable cause )
+	{
+		super( message, cause );
 	}
 
-	public DatastoreException(String message) {
-		super(message);
+	public DatastoreException( final String message )
+	{
+		super( message );
 	}
 
-	public DatastoreException( Throwable cause )
+	public DatastoreException( final Throwable cause )
 	{
 		super( cause );
 	}

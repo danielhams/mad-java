@@ -27,6 +27,25 @@ import java.util.Map;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
+/**
+ * <p>The ConfigurationServiceHelper is intended to allow convenient extraction of
+ * configuration parameters and simplified error handling.</p>
+ * <p>An example of usage:</p>
+ * <pre>
+ * {@code
+ * Map<String,String> errors = new HashMap<String,String>();
+ * String contentsDir = ConfigurationServiceHelper.checkForSingleStringKey( configService, "MyService.ContentsDir", errors );
+ * boolean useThreads = ConfigurationServiceHelper.checkForSingleBooleanKey( configService, "MyService.UseThreads", errors );
+ * ConfigurationServiceHelper.errorCheck(errors);
+ * }
+ * </pre>
+ * <p>This will delay throwing any {@link RecordNotFoundException} until the
+ * call to errorCheck and will throw a single exception which lists all
+ * discovered errors.</p>
+ *
+ * @author dan
+ *
+ */
 public final class ConfigurationServiceHelper
 {
 	private ConfigurationServiceHelper()

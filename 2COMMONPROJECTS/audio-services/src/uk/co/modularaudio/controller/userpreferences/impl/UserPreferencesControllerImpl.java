@@ -90,13 +90,20 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	}
 
 	@Override
-	public void postInit() throws DatastoreException
+	public void postInit() throws ComponentConfigurationException
 	{
-		userPreferencesMVCController = userPreferencesService.getUserPreferencesMVCController();
+		try
+		{
+			userPreferencesMVCController = userPreferencesService.getUserPreferencesMVCController();
+		}
+		catch( final DatastoreException de )
+		{
+			throw new ComponentConfigurationException( de );
+		}
 	}
 
 	@Override
-	public void preShutdown() throws DatastoreException
+	public void preShutdown()
 	{
 	}
 

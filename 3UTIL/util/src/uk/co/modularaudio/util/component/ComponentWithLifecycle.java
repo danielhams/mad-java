@@ -23,12 +23,28 @@ package uk.co.modularaudio.util.component;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 
 /**
+ * <p>An interface that components (controllers, services etc) should implement
+ * that grants them lifecycle calls after any necessary dependency
+ * injection has taken place.</p>
+ *
+ * <p>Components wishing for additional initialisation/destruction calls should
+ * also implement {@link ComponentWithPostInitPreShutdown}.</p>
+ *
  * @author dan
  *
  */
 public interface ComponentWithLifecycle
 {
+    /**
+     * An initialisation method that will be called after any necessary
+     * dependency injection has occurred.
+     *
+     * @throws ComponentConfigurationException should the initialisation fail
+     */
     public void init() throws ComponentConfigurationException;
 
+    /**
+     * A method allowing a component/service to clean up any held resources.
+     */
     public void destroy();
 }

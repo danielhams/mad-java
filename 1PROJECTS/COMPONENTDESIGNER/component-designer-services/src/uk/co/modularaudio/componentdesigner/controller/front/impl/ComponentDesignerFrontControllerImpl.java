@@ -473,20 +473,27 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	}
 
 	@Override
-	public void postInit() throws DatastoreException
+	public void postInit() throws ComponentConfigurationException
 	{
-		// Create an empty rack during init
-		final RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
-				"",
-				RackService.DEFAULT_RACK_COLS,
-				RackService.DEFAULT_RACK_ROWS,
-				true );
-		guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
-		doStartupDuties();
+		try
+		{
+			// Create an empty rack during init
+			final RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
+					"",
+					RackService.DEFAULT_RACK_COLS,
+					RackService.DEFAULT_RACK_ROWS,
+					true );
+			guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
+			doStartupDuties();
+		}
+		catch( final DatastoreException de )
+		{
+			throw new ComponentConfigurationException( de );
+		}
 	}
 
 	@Override
-	public void preShutdown() throws DatastoreException
+	public void preShutdown()
 	{
 		guiRack.destroy();
 		doExitDuties();

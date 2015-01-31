@@ -20,12 +20,29 @@
 
 package uk.co.modularaudio.util.component;
 
+import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 
+/**
+ * <p>An interface that components (controllers, services etc) should implement
+ * that gives additional lifecycle calls after initialisation and before destruction.</p>
+ * <p>This is mainly useful for services that have post initialisation work to perform.</p>
+ *
+ * @author dan
+ *
+ */
 public interface ComponentWithPostInitPreShutdown
 {
-	public void postInit() throws DatastoreException;
-	
-	public void preShutdown() throws DatastoreException;
+	/**
+	 * Called after initialisation has completed.
+	 *
+	 * @throws DatastoreException allowing the component to indicate failure
+	 */
+	public void postInit() throws ComponentConfigurationException;
+
+	/**
+	 * Called before any shutdown/destroy methods.
+	 */
+	public void preShutdown();
 }
