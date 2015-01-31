@@ -26,11 +26,11 @@ import org.apache.commons.logging.LogFactory;
 public class UpperLimitCountingSemaphore extends CountingSemaphore
 {
 	private static Log log = LogFactory.getLog( UpperLimitCountingSemaphore.class.getName() );
-	
+
 	private int lowerBound = 0;
 	private int upperBound = 0;
-	
-	public UpperLimitCountingSemaphore( int numToStartWith, int lowerBound, int upperBound )
+
+	public UpperLimitCountingSemaphore( final int numToStartWith, final int lowerBound, final int upperBound )
 	{
 		super( numToStartWith );
 		this.lowerBound = lowerBound;
@@ -47,7 +47,7 @@ public class UpperLimitCountingSemaphore extends CountingSemaphore
 //				log.debug("Blocking aquire (consumer)");
 				wait();
 			}
-			catch(InterruptedException ie)
+			catch(final InterruptedException ie)
 			{
 			}
 		}
@@ -61,7 +61,7 @@ public class UpperLimitCountingSemaphore extends CountingSemaphore
 			notifyAll();
 		}
 	}
-	
+
 	public synchronized void nonBlockingAcquire() throws SemaphoreShutdownException
 	{
 		if( count == -1)
@@ -89,11 +89,11 @@ public class UpperLimitCountingSemaphore extends CountingSemaphore
 //				log.debug("Blocking release (producer)");
 				wait();
 			}
-			catch(InterruptedException ie)
+			catch(final InterruptedException ie)
 			{
 			}
 		}
-			
+
 		if( count == -1)
 		{
 			throw new SemaphoreShutdownException("Semaphore has been notified of a shutdown.");
@@ -107,6 +107,9 @@ public class UpperLimitCountingSemaphore extends CountingSemaphore
 
 	public synchronized void debug()
 	{
-		log.debug("Count is currently: " + count );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Count is currently: " + count );
+		}
 	}
 }
