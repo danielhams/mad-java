@@ -32,10 +32,10 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
-import uk.co.modularaudio.util.hibernate.common.ComponentWithHibernatePersistence;
-import uk.co.modularaudio.util.hibernate.common.TableNamePrefixer;
-import uk.co.modularaudio.util.io.FileUtils;
+import uk.co.modularaudio.util.hibernate.component.ComponentWithHibernatePersistence;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
+import uk.co.modularaudio.util.hibernate.component.TableNamePrefixer;
+import uk.co.modularaudio.util.io.IOUtils;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 
 public class GeneratorHelper
@@ -59,7 +59,7 @@ public class GeneratorHelper
 
 			final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
 
-			final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+			final String originalHbmString = IOUtils.basicReadInputStreamUTF8( hbmInputStream );
 
 			final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, hbmDefinition.getPersistedBeanTablePrefix());
 
@@ -120,7 +120,7 @@ public class GeneratorHelper
 
 				final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
 
-				final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+				final String originalHbmString = IOUtils.basicReadInputStreamUTF8( hbmInputStream );
 
 				final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
 

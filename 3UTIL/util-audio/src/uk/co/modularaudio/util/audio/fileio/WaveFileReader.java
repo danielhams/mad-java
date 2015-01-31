@@ -27,7 +27,7 @@ import java.io.RandomAccessFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.io.FloatToByteConverter;
+import uk.co.modularaudio.util.audio.format.FloatToByteConverter;
 
 @SuppressWarnings("unused")
 public class WaveFileReader

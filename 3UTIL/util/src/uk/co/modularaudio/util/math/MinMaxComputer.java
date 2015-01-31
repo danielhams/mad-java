@@ -22,14 +22,14 @@ package uk.co.modularaudio.util.math;
 
 public class MinMaxComputer
 {
-	public final static void calcMinMaxForFloats( float[] src, int pos, final int length, float[] inOutMinMax )
+	public final static void calcMinMaxForFloats( final float[] src, int pos, final int length, final float[] inOutMinMax )
 	{
-		int remainder = length % 2;
-		int endPos = pos + length - remainder;
+		final int remainder = length % 2;
+		final int endPos = pos + length - remainder;
 		while( pos < endPos )
 		{
-			float v1 = src[pos++];
-			float v2 = src[pos++];
+			final float v1 = src[pos++];
+			final float v2 = src[pos++];
 			if( v1 < v2 )
 			{
 				if( v1 < inOutMinMax[0] )
@@ -55,7 +55,7 @@ public class MinMaxComputer
 		}
 		if( remainder != 0 )
 		{
-			float vr = src[pos];
+			final float vr = src[pos];
 			if( vr < inOutMinMax[0] )
 			{
 				inOutMinMax[0] = vr;
@@ -67,15 +67,15 @@ public class MinMaxComputer
 		}
 	}
 
-	public final static void calcMinMaxForFloatsWithStride( float[] src, int pos, final int length, final int stride, float[] inOutMinMax )
+	public final static void calcMinMaxForFloatsWithStride( final float[] src, int pos, final int length, final int stride, final float[] inOutMinMax )
 	{
-		int remainder = length % 2;
-		int endPos = pos + ((length - remainder) * stride);
+		final int remainder = length % 2;
+		final int endPos = pos + ((length - remainder) * stride);
 		while( pos < endPos )
 		{
-			float v1 = src[pos];
+			final float v1 = src[pos];
 			pos += stride;
-			float v2 = src[pos];
+			final float v2 = src[pos];
 			pos += stride;
 			if( v1 < v2 )
 			{
@@ -102,7 +102,7 @@ public class MinMaxComputer
 		}
 		if( remainder != 0 )
 		{
-			float vr = src[pos];
+			final float vr = src[pos];
 			if( vr < inOutMinMax[0] )
 			{
 				inOutMinMax[0] = vr;

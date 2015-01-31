@@ -39,7 +39,7 @@ import org.kc7bfi.jflac.metadata.StreamInfo;
 import org.kc7bfi.jflac.sound.spi.Flac2PcmAudioInputStream;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 
-import uk.co.modularaudio.util.io.FloatToByteConverter;
+import uk.co.modularaudio.util.audio.format.FloatToByteConverter;
 
 
 public class BrokenAudioDataFetcher implements IAudioDataFetcher

@@ -22,26 +22,26 @@ package uk.co.modularaudio.util.math;
 
 public strictfp class FastMath
 {
-	
-	public final static float atan2( float y, float x )
+
+	public final static float atan2( final float y, final float x )
 	{
 		return (float)Math.atan2(y, x);
 	}
 
-	public final static float satan2(float y, float x)
+	public final static float satan2(final float y, final float x)
 	   {
 	     float t0, t1, t3, t4;
-	
-	     float xAbs = ( x < 0.0f ? -x : x );
-	     float yAbs = ( y < 0.0f ? -y : y );
-	    
+
+	     final float xAbs = ( x < 0.0f ? -x : x );
+	     final float yAbs = ( y < 0.0f ? -y : y );
+
 	     t3 = xAbs;
 	     t1 = yAbs;
 	     t0 = ( t3 > t1 ? t3 : t1 );
 	     t1 = ( t1 < t3 ? t1 : t3 );
 	     t3 = ( t0 == 0.0f ? 0.0f : 1f / t0 );
 	     t3 = t1 * t3;
-	
+
 	     t4 = t3 * t3;
 	     t0 =         - 0.013480470f;
 	     t0 = t0 * t4 + 0.057477314f;
@@ -50,15 +50,15 @@ public strictfp class FastMath
 	     t0 = t0 * t4 - 0.332994597f;
 	     t0 = t0 * t4 + 0.999995630f;
 	     t3 = t0 * t3;
-	
+
 	     t3 = (yAbs > xAbs) ? MathDefines.HALF_PI_F - t3 : t3;
 	     t3 = (x < 0) ?  MathDefines.ONE_PI_F - t3 : t3;
 	     t3 = (y < 0) ? -t3 : t3;
-	
+
 	     return t3;
 	   }
-	
-	public final static double tan( double theta )
+
+	public final static double tan( final double theta )
 	{
 //		return org.apache.commons.math3.util.FastMath.tan( theta );
 //		return 0.0000000001d;
@@ -66,7 +66,7 @@ public strictfp class FastMath
 		return Math.tan( theta );
 	}
 
-	public static double cos( double theta )
+	public static double cos( final double theta )
 	{
 		return Math.cos( theta );
 	}

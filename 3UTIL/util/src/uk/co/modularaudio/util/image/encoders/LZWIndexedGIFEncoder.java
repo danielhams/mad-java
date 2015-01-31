@@ -36,8 +36,8 @@ public class LZWIndexedGIFEncoder
     byte pixels_[];
     byte colors_[];
 
-    DansScreenDescriptor sd_;
-    DansImageDescriptor id_;
+    InternalScreenDescriptor sd_;
+    InternalImageDescriptor id_;
 
     public LZWIndexedGIFEncoder(IndexColorModel colorModel, BufferedImage image)
     	throws AWTException, IOException
@@ -74,27 +74,27 @@ public class LZWIndexedGIFEncoder
 
     public void encode(OutputStream output) throws IOException
     {
-        DansBitUtils.writeString(output, "GIF87a");
+        InternalBitUtils.writeString(output, "GIF87a");
 
-        DansScreenDescriptor sd =
-            new DansScreenDescriptor(width_, height_, numColors_);
+        InternalScreenDescriptor sd =
+            new InternalScreenDescriptor(width_, height_, numColors_);
         sd.write(output);
 
         output.write(colors_, 0, colors_.length);
 
-        DansImageDescriptor id = new DansImageDescriptor(width_, height_, ',');
+        InternalImageDescriptor id = new InternalImageDescriptor(width_, height_, ',');
         id.write(output);
 
-        byte codesize = DansBitUtils.bitsNeeded(numColors_);
+        byte codesize = InternalBitUtils.bitsNeeded(numColors_);
         if (codesize == 1)
             ++codesize;
         output.write(codesize);
 
-        DansLZWCompressor.LZWCompress(output, codesize, pixels_);
+        InternalLZWCompressor.LZWCompress(output, codesize, pixels_);
 
         output.write(0);
 
-        id = new DansImageDescriptor((byte) 0, (byte) 0, ';');
+        id = new InternalImageDescriptor((byte) 0, (byte) 0, ';');
         id.write(output);
 
         output.flush();
@@ -102,13 +102,13 @@ public class LZWIndexedGIFEncoder
     }
 }
 
-class DansBitFile
+class InternalBitFile
 {
     OutputStream output_;
     byte buffer_[];
     int index_, bitsLeft_;
 
-    public DansBitFile(OutputStream output)
+    public InternalBitFile(OutputStream output)
     {
         output_ = output;
         buffer_ = new byte[256];
@@ -168,7 +168,7 @@ class DansBitFile
     }
 }
 
-class DansLZWStringTable
+class InternalLZWStringTable
 {
     private final static int RES_CODES = 2;
     private final static short HASH_FREE = (short) 0xFFFF;
@@ -183,7 +183,7 @@ class DansLZWStringTable
     short strHsh_[];
     short numStrings_;
 
-    public DansLZWStringTable()
+    public InternalLZWStringTable()
     {
         strChr_ = new byte[MAXSTR];
         strNxt_ = new short[MAXSTR];
@@ -246,7 +246,7 @@ class DansLZWStringTable
     }
 }
 
-class DansLZWCompressor
+class InternalLZWCompressor
 {
 
     public static void LZWCompress(
@@ -260,8 +260,8 @@ class DansLZWCompressor
         int clearcode, endofinfo, numbits, limit;
         short prefix = (short) 0xFFFF;
 
-        DansBitFile bitFile = new DansBitFile(output);
-        DansLZWStringTable strings = new DansLZWStringTable();
+        InternalBitFile bitFile = new InternalBitFile(output);
+        InternalLZWStringTable strings = new InternalLZWStringTable();
 
         clearcode = 1 << codesize;
         endofinfo = clearcode + 1;
@@ -303,18 +303,18 @@ class DansLZWCompressor
     }
 }
 
-class DansScreenDescriptor
+class InternalScreenDescriptor
 {
     public short localScreenWidth_, localScreenHeight_;
     private byte byte_;
     public byte backgroundColorIndex_, pixelAspectRatio_;
 
-    public DansScreenDescriptor(short width, short height, int numColors)
+    public InternalScreenDescriptor(short width, short height, int numColors)
     {
         localScreenWidth_ = width;
         localScreenHeight_ = height;
         setGlobalColorTableSize(
-            (byte) (DansBitUtils.bitsNeeded(numColors) - 1));
+            (byte) (InternalBitUtils.bitsNeeded(numColors) - 1));
         setGlobalColorTableFlag((byte) 1);
         setSortFlag((byte) 0);
         setColorResolution((byte) 7);
@@ -324,8 +324,8 @@ class DansScreenDescriptor
 
     public void write(OutputStream output) throws IOException
     {
-        DansBitUtils.writeWord(output, localScreenWidth_);
-        DansBitUtils.writeWord(output, localScreenHeight_);
+        InternalBitUtils.writeWord(output, localScreenWidth_);
+        InternalBitUtils.writeWord(output, localScreenHeight_);
         output.write(byte_);
         output.write(backgroundColorIndex_);
         output.write(pixelAspectRatio_);
@@ -352,13 +352,13 @@ class DansScreenDescriptor
     }
 }
 
-class DansImageDescriptor
+class InternalImageDescriptor
 {
     public byte separator_;
     public short leftPosition_, topPosition_, width_, height_;
     private byte byte_;
 
-    public DansImageDescriptor(short width, short height, char separator)
+    public InternalImageDescriptor(short width, short height, char separator)
     {
         separator_ = (byte) separator;
         leftPosition_ = 0;
@@ -375,10 +375,10 @@ class DansImageDescriptor
     public void write(OutputStream output) throws IOException
     {
         output.write(separator_);
-        DansBitUtils.writeWord(output, leftPosition_);
-        DansBitUtils.writeWord(output, topPosition_);
-        DansBitUtils.writeWord(output, width_);
-        DansBitUtils.writeWord(output, height_);
+        InternalBitUtils.writeWord(output, leftPosition_);
+        InternalBitUtils.writeWord(output, topPosition_);
+        InternalBitUtils.writeWord(output, width_);
+        InternalBitUtils.writeWord(output, height_);
         output.write(byte_);
     }
 
@@ -408,7 +408,7 @@ class DansImageDescriptor
     }
 }
 
-class DansBitUtils
+class InternalBitUtils
 {
     public static byte bitsNeeded(int n)
     {

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.hibernate.common;
+package uk.co.modularaudio.util.hibernate.component;
 
 public class HibernatePersistedBeanDefinition
 {

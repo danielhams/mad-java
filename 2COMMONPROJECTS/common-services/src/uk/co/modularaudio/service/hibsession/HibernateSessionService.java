@@ -26,7 +26,7 @@ import org.hibernate.Session;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
 import uk.co.modularaudio.util.springhibernate.HibernateSessionFactory;
 
 /**

@@ -30,8 +30,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
-import uk.co.modularaudio.util.hibernate.common.ComponentWithHibernatePersistence;
+import uk.co.modularaudio.util.hibernate.component.ComponentWithHibernatePersistence;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
 import uk.co.modularaudio.util.spring.BeanInstantiationListAsPostProcessor;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
 

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.io;
+package uk.co.modularaudio.util.audio.format;
 
 
 public class FloatToByteConverter

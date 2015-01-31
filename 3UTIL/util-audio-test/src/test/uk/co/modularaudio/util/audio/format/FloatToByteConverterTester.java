@@ -18,14 +18,14 @@
  *
  */
 
-package test.uk.co.modularaudio.util.io;
+package test.uk.co.modularaudio.util.audio.format;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.io.FloatToByteConverter;
+import uk.co.modularaudio.util.audio.format.FloatToByteConverter;
 
 public class FloatToByteConverterTester extends TestCase
 {

@@ -23,7 +23,7 @@ package uk.co.modularaudio.util.audio.mad;
 import java.util.Comparator;
 import java.util.Vector;
 
-import uk.co.modularaudio.util.model.SortedItemListModel;
+import uk.co.modularaudio.util.sorteditemmodel.SortedItemListModel;
 
 public class MadDefinitionListModel extends SortedItemListModel<MadDefinition<?,?>>
 {

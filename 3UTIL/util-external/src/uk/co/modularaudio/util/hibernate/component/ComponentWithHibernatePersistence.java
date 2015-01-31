@@ -18,31 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.util.io;
+package uk.co.modularaudio.util.hibernate.component;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.List;
 
-public class StringStreamUtils
-{
-	public static String readString(InputStream is) throws IOException
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF8"));
-		StringBuilder buf = new StringBuilder();
-		while (br.ready())
-		{
-			buf.append(br.readLine());
-		}
-		return buf.toString();
-	}
-	
-	public static String readStringBlock(InputStream is) throws IOException
-	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF8"));
-		StringBuilder buf = new StringBuilder();
-		buf.append(br.readLine());
-		return buf.toString();
-	}
+public interface ComponentWithHibernatePersistence {
+
+	public List<HibernatePersistedBeanDefinition> listHibernatePersistedBeanDefinitions();
 }

@@ -44,9 +44,9 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.hibernate.HibernateExceptionHandler;
-import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
-import uk.co.modularaudio.util.hibernate.common.TableNamePrefixer;
-import uk.co.modularaudio.util.io.FileUtils;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
+import uk.co.modularaudio.util.hibernate.component.TableNamePrefixer;
+import uk.co.modularaudio.util.io.IOUtils;
 
 /**
  * Implementation class that is responsible of the configuration of hibernate. All that you need to configure and to
@@ -88,7 +88,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 			}
 			final InputStream hbmInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( originalHbmResourceName );
 
-			final String originalHbmString = FileUtils.basicReadInputStreamUTF8( hbmInputStream );
+			final String originalHbmString = IOUtils.basicReadInputStreamUTF8( hbmInputStream );
 
 			final String newHbmString = TableNamePrefixer.prefixTableNames( originalHbmString, beanDefinition.getPersistedBeanTablePrefix());
 

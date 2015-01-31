@@ -36,6 +36,6 @@ public class MathDefines
 
 	public static final double LOG_2_D = Math.log( 2.0 );
 	public static final float LOG_2_F = (float)LOG_2_D;
-	
+
 	public static final float MIN_AUDIO_FLOAT_AMP = Float.MIN_VALUE * 5000;
 }

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.hibernate.common;
+package uk.co.modularaudio.util.hibernate.component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

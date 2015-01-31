@@ -98,7 +98,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
         return baos.toString("UTF-8");
@@ -123,7 +123,7 @@ public final class XsltTransformer
         {
             log.warn("UnsupportedEncodingException occurred for the following xml, which needs to be transformed:");
             log.warn(xmlContent);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(uee);
         }
 
@@ -142,7 +142,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }
@@ -157,7 +157,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }
@@ -172,7 +172,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }
@@ -187,7 +187,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }
@@ -203,7 +203,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }
@@ -218,7 +218,7 @@ public final class XsltTransformer
         {
             log.warn("TransformerException occurred, please verify following xml, which needs to be transformed:");
             log.warn(xmlSource);
-            log.warn("Please verify the xlt's");
+            log.warn("Please verify the xslt's");
             throw(te);
         }
     }

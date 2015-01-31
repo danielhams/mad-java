@@ -28,19 +28,19 @@ public class MathFormatter
 {
 	private static FormatterPool formatterPool = FormatterPool.getFormatterPool();
 
-	public static String slowFloatPrint( float f )
+	public static String slowFloatPrint( final float f )
 	{
 		return slowFloatPrint( f, 2, true );
 	}
 
-	private static String fastFloatPrint( float f )
+	private static String fastFloatPrint( final float f )
 	{
 		return fastFloatPrint( f, 2, true );
 	}
 
-	public static String slowFloatPrint( float f, int numDecimals, boolean echoPlus )
+	public static String slowFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
 	{
-		Formatter formatter = formatterPool.getFormatter();
+		final Formatter formatter = formatterPool.getFormatter();
 		String retVal;
 		if( echoPlus || f < 0.0f)
 		{
@@ -53,10 +53,10 @@ public class MathFormatter
 		formatterPool.returnFormatter( formatter );
 		return retVal;
 	}
-	
-	public static String slowDoublePrint( double d, int numDecimals, boolean echoPlus )
+
+	public static String slowDoublePrint( final double d, final int numDecimals, final boolean echoPlus )
 	{
-		Formatter formatter = formatterPool.getFormatter();
+		final Formatter formatter = formatterPool.getFormatter();
 		String retVal;
 		if( echoPlus || d < 0.0f)
 		{
@@ -69,23 +69,23 @@ public class MathFormatter
 		formatterPool.returnFormatter( formatter );
 		return retVal;
 	}
-	
-	public static void fastFloatPrint( StringBuilder outputStringBuilder, float f, int numDecimals, boolean echoPlus )
+
+	public static void fastFloatPrint( final StringBuilder outputStringBuilder, final float f, final int numDecimals, final boolean echoPlus )
 	{
 		outputStringBuilder.append( slowFloatPrint( f, numDecimals, echoPlus ) );
 	}
-	
-	public static String fastFloatPrint( float f, int numDecimals, boolean echoPlus )
+
+	public static String fastFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
 	{
-		int minDigits = numDecimals + 1;
+		final int minDigits = numDecimals + 1;
 		int asInt = (int)(f * Math.pow( 10, numDecimals) );
-		boolean negative = asInt < 0;
+		final boolean negative = asInt < 0;
 		asInt = (negative ? -asInt : asInt );
-		StringBuilder inReverse = new StringBuilder(64);
+		final StringBuilder inReverse = new StringBuilder(64);
 
 		for( int i = 0 ; i < minDigits || asInt > 0 ; i++ )
 		{
-			int curDigit = asInt % 10;
+			final int curDigit = asInt % 10;
 			asInt = asInt / 10;
 			if( i == numDecimals && numDecimals > 0)
 			{
@@ -106,10 +106,10 @@ public class MathFormatter
 		return inReverse.toString();
 	}
 
-	public static String floatArrayPrint( float[] floats )
+	public static String floatArrayPrint( final float[] floats )
 	{
-		StringBuilder retVal = new StringBuilder();
-		
+		final StringBuilder retVal = new StringBuilder();
+
 		for( int i = 0 ; i < floats.length ; i++ )
 		{
 			retVal.append( fastFloatPrint( floats[ i ] ) );
@@ -118,14 +118,14 @@ public class MathFormatter
 				retVal.append( ",");
 			}
 		}
-		
+
 		return retVal.toString();
 	}
-	
-	public static String floatArrayPrint( float[] floats, int numDecimalPlaces )
+
+	public static String floatArrayPrint( final float[] floats, final int numDecimalPlaces )
 	{
-		StringBuilder retVal = new StringBuilder();
-		
+		final StringBuilder retVal = new StringBuilder();
+
 		for( int i = 0 ; i < floats.length ; i++ )
 		{
 			retVal.append( slowFloatPrint( floats[ i ], numDecimalPlaces, true ) );
@@ -134,26 +134,26 @@ public class MathFormatter
 				retVal.append( ",");
 			}
 		}
-		
+
 		return retVal.toString();
 	}
 
-	public static String intPrint( int d )
+	public static String intPrint( final int d )
 	{
-		Formatter formatter = formatterPool.getFormatter();
-		String retVal = formatter.format( "%04d", d ).toString();
+		final Formatter formatter = formatterPool.getFormatter();
+		final String retVal = formatter.format( "%04d", d ).toString();
 		formatterPool.returnFormatter( formatter );
 		return retVal;
 	}
-	
-	public static String floatRadianToDegrees( float radiansIn, int numDecimalPlaces )
+
+	public static String floatRadianToDegrees( float radiansIn, final int numDecimalPlaces )
 	{
 		// Normalise to +/- PI
 		while( radiansIn < 0 ) radiansIn += MathDefines.TWO_PI_F;
 		while( radiansIn > MathDefines.TWO_PI_F ) radiansIn -= MathDefines.TWO_PI_F;
-		
-		float inDegress = (radiansIn / MathDefines.TWO_PI_F ) * 360.0f;
-		
+
+		final float inDegress = (radiansIn / MathDefines.TWO_PI_F ) * 360.0f;
+
 		return slowFloatPrint( inDegress, numDecimalPlaces, true );
 	}
 }

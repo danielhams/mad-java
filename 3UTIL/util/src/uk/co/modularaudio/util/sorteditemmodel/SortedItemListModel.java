@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.model;
+package uk.co.modularaudio.util.sorteditemmodel;
 
 import java.util.Comparator;
 import java.util.Vector;

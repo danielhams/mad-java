@@ -28,7 +28,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
-import uk.co.modularaudio.util.io.FileUtils;
 
 
 public abstract class RawWaveTableGenerator
@@ -74,7 +73,12 @@ public abstract class RawWaveTableGenerator
 			}
 			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
 			// And write it out
-			FileUtils.recursiveMakeDir( cacheFileRoot );
+			final File cacheFileDir = new File( cacheFileRoot).getParentFile();
+			if( !cacheFileDir.mkdirs() )
+			{
+				throw new IOException( "Failed to make containing directory: " + cacheFileDir.getAbsolutePath() );
+			}
+
 			final String tmpPath = pathToCachedWave + ".tmp";
 			final WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
 			fileWriter.writeFloats( retVal.buffer, retVal.bufferLength );

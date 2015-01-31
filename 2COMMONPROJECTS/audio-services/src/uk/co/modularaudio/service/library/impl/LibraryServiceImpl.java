@@ -48,8 +48,8 @@ import uk.co.modularaudio.util.hibernate.HibernateQueryBuilder;
 import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 import uk.co.modularaudio.util.hibernate.ReflectionUtils;
 import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
-import uk.co.modularaudio.util.hibernate.common.ComponentWithHibernatePersistence;
-import uk.co.modularaudio.util.hibernate.common.HibernatePersistedBeanDefinition;
+import uk.co.modularaudio.util.hibernate.component.ComponentWithHibernatePersistence;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
 
 public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWithHibernatePersistence, LibraryService
 {
