@@ -27,41 +27,38 @@ import uk.co.modularaudio.util.audio.stft.StftParameters;
 public class FrameRotatorPaddedTimeDomain
 {
 //	private static Log log = LogFactory.getLog( FrameRotatorPaddedTimeDomain.class.getName() );
-	
-//	private StftParameters params = null;
-	
-	private int windowLength = -1;
-	private int numReals = -1;
-	private int translation = -1;
-	
-	public FrameRotatorPaddedTimeDomain( StftParameters params )
+
+	private final int windowLength;
+	private final int numReals;
+	private final int translation;
+
+	public FrameRotatorPaddedTimeDomain( final StftParameters params )
 	{
-//		this.params = params;
 		windowLength = params.getWindowLength();
 		numReals = params.getNumReals();
 		translation = numReals - (windowLength / 2);
 	}
-	
-	public final void inRotate( float[] data, int startIndex, float[] output )
+
+	public final void inRotate( final float[] data, final int startIndex, final float[] output )
 	{
 		for( int i = 0 ; i < windowLength ; i++ )
 		{
-			int inIndex = i;
-			int outIndex = (i + translation ) % numReals;
+			final int inIndex = i;
+			final int outIndex = (i + translation ) % numReals;
 			output[ outIndex ] = data[ inIndex ];
 		}
 		// Fill rest with zeros
-		int zerosStart = (windowLength + translation) % numReals;
-		int zerosEnd = translation;
+		final int zerosStart = (windowLength + translation) % numReals;
+		final int zerosEnd = translation;
 		Arrays.fill( output, zerosStart, zerosEnd, 0.0f );
 	}
 
-	public final void outRotate( float[] data, int startIndex, float[] output )
+	public final void outRotate( final float[] data, final int startIndex, final float[] output )
 	{
 		for( int i = 0 ; i < windowLength ; i++ )
 		{
-			int inIndex = (i + translation) % numReals;
-			int outIndex = i;
+			final int inIndex = (i + translation) % numReals;
+			final int outIndex = i;
 			output[ outIndex ] = data[ inIndex ];
 		}
 	}

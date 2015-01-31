@@ -18,38 +18,35 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.freqscale;
+package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
 
 public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 {
+	private int curNumBins;
+	private int curNumDisplayPoints;
+	private int[] displayPointToBinIndex ;
 
-	private int curNumBins = -1;
-	private int curNumDisplayPoints = -1;
-	private int[] displayPointToBinIndex = null;
-//	pixelToBinLogSpectrumIndexes = new int[ canvasWidth ];
-//	SpectralBinIndexComputer.computeBinIndexesForLogSpectrum( 44100.0, numBins, pixelToBinLogSpectrumIndexes );
-	
-	private boolean useSmoother = false;
-	
+	private boolean useSmoother;
+
 	public LogarithmicFreqScaleComputer()
 	{
 	}
-	
-	public LogarithmicFreqScaleComputer( boolean useSmoother )
+
+	public LogarithmicFreqScaleComputer( final boolean useSmoother )
 	{
 		this.useSmoother = useSmoother;
 	}
-	
+
 	@Override
-	public int displayBinToSpectraBin( int numBins, int numDisplayPoints, int currentDisplayPoint)
+	public int displayBinToSpectraBin( final int numBins, final int numDisplayPoints, final int currentDisplayPoint)
 	{
 		checkScalerCorrect( numBins, numDisplayPoints, useSmoother );
 
 		return displayPointToBinIndex[ currentDisplayPoint ];
 	}
 
-	private void checkScalerCorrect( int numBins, int numDisplayPoints, boolean useSmoother )
+	private void checkScalerCorrect( final int numBins, final int numDisplayPoints, final boolean useSmoother )
 	{
 		if( curNumBins != numBins || curNumDisplayPoints != numDisplayPoints )
 		{
@@ -69,10 +66,10 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 	}
 
 	@Override
-	public int spectraBinToDisplayBin( int numBins, int numDisplayPoints, int currentSpectraPoint )
+	public int spectraBinToDisplayBin( final int numBins, final int numDisplayPoints, final int currentSpectraPoint )
 	{
 		checkScalerCorrect( numBins, numDisplayPoints, useSmoother );
-		
+
 		// Now loop around until the currentSpectraPoint >= index
 		boolean foundIt = false;
 		int sp = 0;

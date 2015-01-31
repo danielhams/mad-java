@@ -35,7 +35,7 @@ public class StreamingWolaProcessor
 	private final UnsafeFloatRingBuffer[] inputRingBuffers;
 	private final UnsafeFloatRingBuffer[] outputRingBuffers;
 
-	private final WolaProcessor pvoc;
+	private final WolaProcessor wolaProcessor;
 
 //	private StftParameters params;
 	private final int numChannels;
@@ -64,7 +64,7 @@ public class StreamingWolaProcessor
 		// and buffer using the input ring buffer until we have enough to do a "step"
 		// Once a step is done, we start appending the output into the outputRingBuffer
 		// (if there is any)
-		pvoc = new WolaProcessor( params, frameProcessor );
+		wolaProcessor = new WolaProcessor( params, frameProcessor );
 
 		inputRingBuffers = new UnsafeFloatRingBuffer[ numChannels ];
 		outputRingBuffers = new UnsafeFloatRingBuffer[ numChannels ];
@@ -111,7 +111,7 @@ public class StreamingWolaProcessor
 //					}
 				}
 //				log.debug("Doing a next step");
-				pvoc.doNextStep( inputStepArray, speed, pitch, outputRingBuffers );
+				wolaProcessor.doNextStep( inputStepArray, speed, pitch, outputRingBuffers );
 				numInInput -= stepSize;
 			}
 		}
@@ -130,9 +130,9 @@ public class StreamingWolaProcessor
 		}
 	}
 
-	public WolaProcessor getPhaseVocoder()
+	public WolaProcessor getWolaProcessor()
 	{
-		return pvoc;
+		return wolaProcessor;
 	}
 
 	public void reset()
@@ -142,12 +142,12 @@ public class StreamingWolaProcessor
 			inputRingBuffers[chan].clear();
 			outputRingBuffers[chan].clear();
 		}
-		pvoc.reset();
+		wolaProcessor.reset();
 	}
 
 	public StftFrameProcessor getFrameProcessor()
 	{
-		return pvoc.getFrameProcessor();
+		return wolaProcessor.getFrameProcessor();
 	}
 
 	public int getNumFramesInputLatency()

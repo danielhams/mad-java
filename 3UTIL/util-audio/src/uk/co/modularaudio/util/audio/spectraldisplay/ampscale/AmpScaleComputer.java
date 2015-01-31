@@ -18,23 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.ampscale;
+package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
 
-
-
-public class LogarithmicAmpScaleComputer implements AmpScaleComputer
+public interface AmpScaleComputer
 {
-//	private static Log log = LogFactory.getLog( LogarithmicAmpScaleComputer.class.getName() );
 
-	private final static float SCALE_FACTOR = 9.08f;
-
-	@Override
-	public float scaleIt(final float valForBin)
-	{
-		float val = (valForBin * 10.0f) + 1.0f;
-		val = (float)Math.log( val );
-		val = val / SCALE_FACTOR;
-		return val;
-	}
+	float scaleIt(float valForBin);
 
 }

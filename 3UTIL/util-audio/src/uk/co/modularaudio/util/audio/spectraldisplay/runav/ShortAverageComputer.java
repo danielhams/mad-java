@@ -18,11 +18,28 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.ampscale;
+package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 
-public interface AmpScaleComputer
+
+public class ShortAverageComputer implements RunningAverageComputer
 {
+	@Override
+	public float computeNewRunningAverage(final float curValue, final float valToAdd)
+	{
+		float newValue = 0.0f;
+		newValue = (curValue * 0.5f) + (valToAdd * 0.5f);
 
-	float scaleIt(float valForBin);
+		return newValue;
+	}
 
+	@Override
+	public void computeNewRunningAverages( final int currentNumBins, final float[] newValues, final float[] runningValues)
+	{
+		for( int i = 0 ; i < currentNumBins ; i++ )
+		{
+			final float valToAdd = newValues[i];
+			final float curValue = runningValues[i];
+			runningValues[i] = (curValue * 0.5f) + (valToAdd * 0.5f);
+		}
+	}
 }

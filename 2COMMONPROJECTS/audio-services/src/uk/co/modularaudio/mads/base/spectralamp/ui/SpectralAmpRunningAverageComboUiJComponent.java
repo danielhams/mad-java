@@ -31,14 +31,14 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
-import uk.co.modularaudio.util.audio.logdisplay.runav.FallComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.FastFallComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.LongAverageComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.NoAverageComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.RunningAverageComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.ShortAverageComputer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
 
 public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<String>
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>

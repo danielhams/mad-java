@@ -27,8 +27,8 @@ import java.awt.image.WritableRaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
 import uk.co.modularaudio.util.bufferedimage.AllocationMatch;

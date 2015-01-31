@@ -18,24 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.runav;
+package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
 
-import java.util.Arrays;
 
-public class NoAverageComputer implements RunningAverageComputer
+
+public class LogarithmicAmpScaleComputer implements AmpScaleComputer
 {
+//	private static Log log = LogFactory.getLog( LogarithmicAmpScaleComputer.class.getName() );
+
+	private final static float SCALE_FACTOR = 9.08f;
 
 	@Override
-	public float computeNewRunningAverage( float curValue, float valToAdd )
+	public float scaleIt(final float valForBin)
 	{
-		return 0;
-	}
-
-	@Override
-	public void computeNewRunningAverages( int currentNumBins,
-			float[] valuesToAdd, float[] runningValues )
-	{
-		Arrays.fill( runningValues, 0.0f );
+		float val = (valForBin * 10.0f) + 1.0f;
+		val = (float)Math.log( val );
+		val = val / SCALE_FACTOR;
+		return val;
 	}
 
 }

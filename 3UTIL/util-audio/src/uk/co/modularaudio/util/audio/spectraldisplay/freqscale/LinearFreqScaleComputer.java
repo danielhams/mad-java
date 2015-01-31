@@ -18,16 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.ampscale;
+package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
 
-public class LinearAmpScaleComputer implements AmpScaleComputer
+public class LinearFreqScaleComputer implements FrequencyScaleComputer
 {
-
 	@Override
-	public float scaleIt(float valForBin)
+	public int displayBinToSpectraBin(final int numBins, final int numDisplayPoints,
+			final int currentDisplayPoint)
 	{
-		return valForBin / 500.0f;
+		final float fIndex = ((float)numBins / numDisplayPoints );
+		return (int)(fIndex * currentDisplayPoint );
+	}
+	@Override
+	public int spectraBinToDisplayBin( final int numBins, final int numDisplayPoints, final int currentSpectralPoint )
+	{
+		final float fIndex = numDisplayPoints / numBins;
+		return( (int)(currentSpectralPoint * fIndex) );
 	}
 
 }

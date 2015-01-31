@@ -27,31 +27,29 @@ import uk.co.modularaudio.util.math.FastMath;
 public class ComplexPolarConverter
 {
 //	private static Log log = LogFactory.getLog( ComplexPolarConverter.class.getName() );
-	
-//	private StftParameters params = null;
-	private int numBins = -1;
-	private int numChannels = -1;
-	
-	public ComplexPolarConverter( StftParameters params )
+
+	private final int numBins;
+	private final int numChannels;
+
+	public ComplexPolarConverter( final StftParameters params )
 	{
-//		this.params = params;
 		this.numChannels = params.getNumChannels();
 		this.numBins = params.getNumBins();
 	}
 
-	public final void complexToPolar( StftDataFrame frame )
+	public final void complexToPolar( final StftDataFrame frame )
 	{
-		float[][] complexFrame = frame.complexFrame;
-		float[][] amps = frame.amps;
-		float[][] phases = frame.phases;
+		final float[][] complexFrame = frame.complexFrame;
+		final float[][] amps = frame.amps;
+		final float[][] phases = frame.phases;
 		float real;
 		float imag;
 		float amp;
 		float phase;
-		
+
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-	
+
 			for( int i = 1 ; i < numBins - 1 ; i++ )
 			{
 				real = complexFrame[chan][ (i*2) ];
@@ -68,15 +66,15 @@ public class ComplexPolarConverter
 			amps[chan][numBins - 1 ] = complexFrame[chan][1] * frame.nySign[chan];
 		}
 	}
-	
-	public final void complexToPolarAmpsOnly( StftDataFrame frame )
+
+	public final void complexToPolarAmpsOnly( final StftDataFrame frame )
 	{
-		float[][] complexFrame = frame.complexFrame;
-		float[][] amps = frame.amps;
+		final float[][] complexFrame = frame.complexFrame;
+		final float[][] amps = frame.amps;
 		float real;
 		float imag;
 		float amp;
-		
+
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
 			for( int i = 1 ; i < numBins - 1 ; i++ )
@@ -90,25 +88,25 @@ public class ComplexPolarConverter
 			frame.dcSign[chan] = ( complexFrame[chan][0] < 0.0f ? -1 : 1 );
 			amps[chan][0] = complexFrame[chan][0] * frame.dcSign[chan];
 			frame.nySign[chan] = ( complexFrame[chan][1] < 0.0f ? -1 : 1 );
-			amps[chan][numBins - 1 ] = complexFrame[chan][1] * frame.nySign[chan];	
+			amps[chan][numBins - 1 ] = complexFrame[chan][1] * frame.nySign[chan];
 		}
 	}
 
-	public final void polarToComplex( StftDataFrame frame )
+	public final void polarToComplex( final StftDataFrame frame )
 	{
-		float[][] complexFrame = frame.complexFrame;
-		float[][] amps = frame.amps;
-		float[][] phases = frame.phases;
+		final float[][] complexFrame = frame.complexFrame;
+		final float[][] amps = frame.amps;
+		final float[][] phases = frame.phases;
 		float amp;
 		float phase;
 
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-	
+
 			// Copy over the amps for 0 and nyquist/2
 			complexFrame[chan][0] = amps[chan][0] * frame.dcSign[chan];
 			complexFrame[chan][1] = amps[chan][numBins - 1 ] * frame.nySign[chan];
-			
+
 			// Now loop over the amps and freqs, computing the needed phase before turning it
 			// back to complex
 			for( int i = 1 ; i < numBins - 1 ; i++ )
@@ -121,14 +119,14 @@ public class ComplexPolarConverter
 		}
 	}
 
-	public final void onePolarToComplex( float[] outputAmps,
-			float[] outputPhases,
-			float[] outputFftBuffer,
-			int binNumber )
+	public final void onePolarToComplex( final float[] outputAmps,
+			final float[] outputPhases,
+			final float[] outputFftBuffer,
+			final int binNumber )
 	{
-		float[] complexFrame = outputFftBuffer;
-		float[] amps = outputAmps;
-		float[] phases = outputPhases;
+		final float[] complexFrame = outputFftBuffer;
+		final float[] amps = outputAmps;
+		final float[] phases = outputPhases;
 		float amp;
 		float phase;
 
@@ -138,11 +136,11 @@ public class ComplexPolarConverter
 		complexFrame[ (binNumber*2) + 1 ] = (float)(amp * Math.sin( phase ) );
 
 	}
-	
-	public final void oneComplexToPolar( float[] complexFrame,
-			float[] amps,
-			float[] phases,
-			int binNumber )
+
+	public final void oneComplexToPolar( final float[] complexFrame,
+			final float[] amps,
+			final float[] phases,
+			final int binNumber )
 	{
 		float real;
 		float imag;
@@ -157,8 +155,8 @@ public class ComplexPolarConverter
 		phases[binNumber] = phase;
 	}
 
-	public final float oneComplexToPolarPhaseOnly( float[] complexFrame,
-			int binNumber )
+	public final float oneComplexToPolarPhaseOnly( final float[] complexFrame,
+			final int binNumber )
 	{
 		float real;
 		float imag;

@@ -46,13 +46,11 @@ public class PeakFinder
 //	private static final int LOWER_BIN_INDEX_THRESHOLD = 1;
 	private static final int LOWER_BIN_INDEX_THRESHOLD = -1;
 
-//	private StftParameters params = null;
 	private final int numBins;
 	private final int lastBinIndex;
 
 	public PeakFinder( final StftParameters params )
 	{
-//		this.params = params;
 		this.numBins = params.getNumBins();
 		this.lastBinIndex = numBins - 1;
 		if( log.isDebugEnabled() )
@@ -227,12 +225,15 @@ public class PeakFinder
 					peaksBuffer[ sliIndex++ ] = peakBinNum ;
 					if( DEBUG_PEAKS )
 					{
-						log.debug("Found a peak at index " + peakBinNum + " around " +
-								MathFormatter.slowFloatPrint( amps[ indexMinus2 ], 5, true ) + ", " +
-								MathFormatter.slowFloatPrint( amps[ indexMinus1 ], 5, true ) + ", " +
-								MathFormatter.slowFloatPrint( curAmp, 5, true ) + ", " +
-								MathFormatter.slowFloatPrint( amps[ indexPlus1 ], 5, true ) + ", " +
-								MathFormatter.slowFloatPrint( amps[ indexPlus2 ], 5, true ) );
+						if( log.isDebugEnabled() )
+						{
+							log.debug("Found a peak at index " + peakBinNum + " around " +
+									MathFormatter.slowFloatPrint( amps[ indexMinus2 ], 5, true ) + ", " +
+									MathFormatter.slowFloatPrint( amps[ indexMinus1 ], 5, true ) + ", " +
+									MathFormatter.slowFloatPrint( curAmp, 5, true ) + ", " +
+									MathFormatter.slowFloatPrint( amps[ indexPlus1 ], 5, true ) + ", " +
+									MathFormatter.slowFloatPrint( amps[ indexPlus2 ], 5, true ) );
+						}
 					}
 				}
 			}

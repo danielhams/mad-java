@@ -18,21 +18,16 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.ampscale;
+package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
 
 
-public class LogLogAmpScaleComputer implements AmpScaleComputer
+public class LinearAmpScaleComputer implements AmpScaleComputer
 {
 
 	@Override
-	public float scaleIt(float valForBin)
+	public float scaleIt(final float valForBin)
 	{
-		float val = valForBin * 10;
-		val = (float)Math.log1p( val );
-		val = val / 8.5f;
-		val = (float)Math.log1p( val * 10 );
-		val = val / 2.45f;
-		return val;
+		return valForBin / 500.0f;
 	}
 
 }

@@ -18,28 +18,42 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.runav;
+package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 
 
-public class ShortAverageComputer implements RunningAverageComputer
+public class FastFallComputer implements RunningAverageComputer
 {
 	@Override
-	public float computeNewRunningAverage(float curValue, float valToAdd)
+	public float computeNewRunningAverage(final float curValue, final float valToAdd)
 	{
 		float newValue = 0.0f;
-		newValue = (curValue * 0.5f) + (valToAdd * 0.5f);
+		if( valToAdd < curValue )
+		{
+			newValue = (curValue * 0.7f) + (valToAdd * 0.3f);
+		}
+		else
+		{
+			newValue = valToAdd;
+		}
 
 		return newValue;
 	}
-	
+
 	@Override
-	public void computeNewRunningAverages( int currentNumBins, float[] newValues, float[] runningValues)
+	public void computeNewRunningAverages( final int currentNumBins, final float[] newValues, final float[] runningValues)
 	{
 		for( int i = 0 ; i < currentNumBins ; i++ )
 		{
-			float valToAdd = newValues[i];
-			float curValue = runningValues[i];
-			runningValues[i] = (curValue * 0.5f) + (valToAdd * 0.5f);
+			final float valToAdd = newValues[i];
+			final float curValue = runningValues[i];
+			if( valToAdd < curValue )
+			{
+				runningValues[i] = (curValue * 0.7f) + (valToAdd * 0.3f);
+			}
+			else
+			{
+				runningValues[i] = valToAdd;
+			}
 		}
 	}
 }

@@ -33,9 +33,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenIntObjectHashMap;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.freqscale.FrequencyScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.runav.RunningAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 

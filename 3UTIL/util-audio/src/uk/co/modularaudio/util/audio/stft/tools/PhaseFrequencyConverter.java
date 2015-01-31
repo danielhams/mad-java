@@ -27,71 +27,69 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class PhaseFrequencyConverter
 {
 //	private static Log log = LogFactory.getLog( PhaseFrequencyConverter.class.getName() );
-	
-//	private StftParameters parameters;
 
-	private int numBins;
-	private float binCenterFreqs[];
-	private float freqPerBin;
-	
-	private float twoPiAnalysisStepsOverSampleRate;
-	private float sampleRateOverTwoPiAnalysisSteps;
-	
-	public PhaseFrequencyConverter( StftParameters parameters )
+	private final int numBins;
+	private final float binCenterFreqs[];
+	private final float freqPerBin;
+
+	private final float twoPiAnalysisStepsOverSampleRate;
+	private final float sampleRateOverTwoPiAnalysisSteps;
+
+	public PhaseFrequencyConverter( final StftParameters parameters )
 	{
 		numBins = parameters.getNumBins();
-		
+
 		freqPerBin = parameters.getFreqPerBin();
 		binCenterFreqs = parameters.getBinCenterFreqs();
-		
+
 		twoPiAnalysisStepsOverSampleRate = parameters.getTwoPiAnalysisStepsOverSampleRate();
 		sampleRateOverTwoPiAnalysisSteps = parameters.getSampleRateOverTwoPiAnalysisSteps();
 	}
 
-	public final float phaseToFreq( float phase,
-			float oldPhase,
-			int peakBinIndex )
+	public final float phaseToFreq( final float phase,
+			final float oldPhase,
+			final int peakBinIndex )
 	{
-		float newPeakCenterFreq = binCenterFreqs[ peakBinIndex ];
-		float expectedPhaseDiff = newPeakCenterFreq * twoPiAnalysisStepsOverSampleRate;
-		float calculatedPhaseDiff = phase - oldPhase;
-		
+		final float newPeakCenterFreq = binCenterFreqs[ peakBinIndex ];
+		final float expectedPhaseDiff = newPeakCenterFreq * twoPiAnalysisStepsOverSampleRate;
+		final float calculatedPhaseDiff = phase - oldPhase;
+
 		float deltaPhaseDiff = expectedPhaseDiff - calculatedPhaseDiff;
-		
+
 		// Now normalise the deviation from the center to within +- PI
 		deltaPhaseDiff = adjustRadiansToPlusMinusPiFloat( deltaPhaseDiff );
-		
-		float binTrueFreq = newPeakCenterFreq - (deltaPhaseDiff * sampleRateOverTwoPiAnalysisSteps);
+
+		final float binTrueFreq = newPeakCenterFreq - (deltaPhaseDiff * sampleRateOverTwoPiAnalysisSteps);
 
 		return binTrueFreq;
 	}
 
-	public final float crossBinPhaseToFreq( float newPeakPhase,
-			float deadPeakOldPhase,
-			int newPeakBinIndex,
-			int deadPeakBinIndex )
+	public final float crossBinPhaseToFreq( final float newPeakPhase,
+			final float deadPeakOldPhase,
+			final int newPeakBinIndex,
+			final int deadPeakBinIndex )
 	{
-		float newPeakCenterFreq = binCenterFreqs[ newPeakBinIndex ];
-		float expectedPhaseDiff = newPeakCenterFreq * twoPiAnalysisStepsOverSampleRate;
-		float calculatedPhaseDiff = newPeakPhase - deadPeakOldPhase;
-		
+		final float newPeakCenterFreq = binCenterFreqs[ newPeakBinIndex ];
+		final float expectedPhaseDiff = newPeakCenterFreq * twoPiAnalysisStepsOverSampleRate;
+		final float calculatedPhaseDiff = newPeakPhase - deadPeakOldPhase;
+
 		float deltaPhaseDiff = expectedPhaseDiff - calculatedPhaseDiff;
-		
+
 		// Now normalise the deviation from the center to within +- PI
 		deltaPhaseDiff = adjustRadiansToPlusMinusPiFloat( deltaPhaseDiff );
 
-		float binTrueFreq = newPeakCenterFreq - (deltaPhaseDiff * sampleRateOverTwoPiAnalysisSteps);
+		final float binTrueFreq = newPeakCenterFreq - (deltaPhaseDiff * sampleRateOverTwoPiAnalysisSteps);
 
 		return binTrueFreq;
 	}
 
 	public final float freqToPhase(
-			int synthStepSize,
-			float twoPiSynthStepSizeOverSampleRate,
-			float oldSynthPhase,
-			float trueFrequency )
+			final int synthStepSize,
+			final float twoPiSynthStepSizeOverSampleRate,
+			final float oldSynthPhase,
+			final float trueFrequency )
 	{
-		float advanceDueToLocalFreq = trueFrequency * twoPiSynthStepSizeOverSampleRate;
+		final float advanceDueToLocalFreq = trueFrequency * twoPiSynthStepSizeOverSampleRate;
 
 		float phase = oldSynthPhase + advanceDueToLocalFreq;
 
@@ -99,24 +97,24 @@ public class PhaseFrequencyConverter
 
 		return phase;
 	}
-	
-	public final float crossBinFreqToPhase( int synthStepSize,
-			float oldSynthPhaseDeadPeak,
-			float trueFrequencyNewPeak,
-			float twoPiSynthStepSizeOverSampleRate )
+
+	public final float crossBinFreqToPhase( final int synthStepSize,
+			final float oldSynthPhaseDeadPeak,
+			final float trueFrequencyNewPeak,
+			final float twoPiSynthStepSizeOverSampleRate )
 	{
-		float advanceDueToLocalFreq = trueFrequencyNewPeak * twoPiSynthStepSizeOverSampleRate;
+		final float advanceDueToLocalFreq = trueFrequencyNewPeak * twoPiSynthStepSizeOverSampleRate;
 
 		float phase = oldSynthPhaseDeadPeak + advanceDueToLocalFreq;
-		
+
 		phase = adjustRadiansToPlusMinusPiFloat( phase );
 
 		return phase;
 	}
-	
-	public final void allPhaseToFreqArr(float[][] phasesArr,
-			float[][] analPhasesArr,
-			float[][] freqsArr )
+
+	public final void allPhaseToFreqArr(final float[][] phasesArr,
+			final float[][] analPhasesArr,
+			final float[][] freqsArr )
 	{
 		for( int i = 0 ; i < phasesArr.length ; i++ )
 		{
@@ -125,23 +123,23 @@ public class PhaseFrequencyConverter
 					freqsArr[i] );
 		}
 	}
-	
-	public final void allPhaseToFreq(float[] phases,
-			float[] analPhases,
-			float[] freqs )
+
+	public final void allPhaseToFreq(final float[] phases,
+			final float[] analPhases,
+			final float[] freqs )
 	{
 		for( int i = 1 ; i < numBins - 1 ; i++ )
 		{
 			freqs[ i ] = phaseToFreq( phases[i], analPhases[i], i );
 		}
 	}
-	
+
 	public final void allFreqToPhaseArr(
-			int synthStepSize,
-			float twoPiSynthStepSizeOverSampleRate,
-			float[][] oldPhasesArr,
-			float[][] phasesArr,
-			float[][] freqsArr )
+			final int synthStepSize,
+			final float twoPiSynthStepSizeOverSampleRate,
+			final float[][] oldPhasesArr,
+			final float[][] phasesArr,
+			final float[][] freqsArr )
 	{
 		for( int i = 0 ; i < oldPhasesArr.length ; i++ )
 		{
@@ -152,21 +150,21 @@ public class PhaseFrequencyConverter
 					freqsArr[i] );
 		}
 	}
-	
+
 	public final void allFreqToPhase(
-			int synthStepSize,
-			float twoPiSynthStepSizeOverSampleRate,
-			float[] oldPhases,
-			float[] phases,
-			float[] freqs )
+			final int synthStepSize,
+			final float twoPiSynthStepSizeOverSampleRate,
+			final float[] oldPhases,
+			final float[] phases,
+			final float[] freqs )
 	{
 		for( int i = 1 ; i < numBins - 1 ; i++ )
 		{
 			phases[ i ] = freqToPhase( synthStepSize, twoPiSynthStepSizeOverSampleRate, oldPhases[ i ], freqs[ i ] );
 		}
 	}
-	
-	public final static float adjustRadiansToPlusMinusPiFloat( float inValue )
+
+	public final static float adjustRadiansToPlusMinusPiFloat( final float inValue )
 	{
 		int qpd = (int)(inValue / MathDefines.ONE_PI_F );
 		if( qpd >= 0 )
@@ -180,7 +178,7 @@ public class PhaseFrequencyConverter
 		return inValue - (MathDefines.ONE_PI_F * qpd );
 	}
 
-	public final static double adjustRadiansToPlusMinusPiDouble( double inValue )
+	public final static double adjustRadiansToPlusMinusPiDouble( final double inValue )
 	{
 		int qpd = (int)(inValue / MathDefines.ONE_PI_D );
 		if( qpd >= 0 )
@@ -193,13 +191,13 @@ public class PhaseFrequencyConverter
 		}
 		return inValue - (MathDefines.ONE_PI_D * qpd );
 	}
-	
-	public final double radiansPmPiToDegrees( double radians )
+
+	public final double radiansPmPiToDegrees( final double radians )
 	{
 		return (radians / MathDefines.ONE_PI_D) * 180.0;
 	}
-	
-	public final double radiansToDegrees( double radians )
+
+	public final double radiansToDegrees( final double radians )
 	{
 		return ( radians / MathDefines.TWO_PI_D ) * 360.0;
 	}

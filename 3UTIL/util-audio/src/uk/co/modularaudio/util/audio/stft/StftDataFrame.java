@@ -22,21 +22,21 @@ package uk.co.modularaudio.util.audio.stft;
 
 public class StftDataFrame
 {
-	public int numChannels = -1;
-	public float[][] complexFrame;
-	public float[][] amps;
-	public float[][] logAmps;
-	public float[][] phases;
-	public float[][] freqs;
-	public int[] dcSign = null;
-	public int[] nySign = null;
+	public final int numChannels;
+	public final float[][] complexFrame;
+	public final float[][] amps;
+	public final float[][] logAmps;
+	public final float[][] phases;
+	public final float[][] freqs;
+	public final int[] dcSign;
+	public final int[] nySign;
 
 	public float inputScal;
 	public float inputFac;
 
-	public long position = -1;
-	
-	public StftDataFrame( int numChannels, int numReals, int complexArraySize, int numBins )
+	public long position;
+
+	public StftDataFrame( final int numChannels, final int numReals, final int complexArraySize, final int numBins )
 	{
 		this.numChannels = numChannels;
 		complexFrame = new float[numChannels][ complexArraySize ];

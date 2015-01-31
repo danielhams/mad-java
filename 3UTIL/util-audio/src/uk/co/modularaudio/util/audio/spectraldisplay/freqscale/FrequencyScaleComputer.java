@@ -18,28 +18,13 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.runav;
+package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
-
-public class LongAverageComputer implements RunningAverageComputer
+public interface FrequencyScaleComputer
 {
-	@Override
-	public float computeNewRunningAverage(float curValue, float valToAdd)
-	{
-		float newValue = 0.0f;
-		newValue = (curValue * 0.95f) + (valToAdd * 0.05f);
 
-		return newValue;
-	}
-	
-	@Override
-	public void computeNewRunningAverages( int currentNumBins, float[] newValues, float[] runningValues)
-	{
-		for( int i = 0 ; i < currentNumBins ; i++ )
-		{
-			float valToAdd = newValues[i];
-			float curValue = runningValues[i];
-			runningValues[i] = (curValue * 0.95f) + (valToAdd * 0.05f);
-		}
-	}
+	int displayBinToSpectraBin(int numBins, int numDisplayPoints, int currentDisplayPoint);
+
+	int spectraBinToDisplayBin( int numBins, int numDisplayPoints, int currentSpectralPoint );
+
 }

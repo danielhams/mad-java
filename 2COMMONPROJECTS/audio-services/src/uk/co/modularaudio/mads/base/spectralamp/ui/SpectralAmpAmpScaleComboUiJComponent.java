@@ -31,12 +31,12 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.LinearAmpScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.LogLogAmpScaleComputer;
-import uk.co.modularaudio.util.audio.logdisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogLogAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
 
 public class SpectralAmpAmpScaleComboUiJComponent extends PacComboBox<String>
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>

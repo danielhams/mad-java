@@ -18,13 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.logdisplay.runav;
+package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 
-public interface RunningAverageComputer
+import java.util.Arrays;
+
+public class NoAverageComputer implements RunningAverageComputer
 {
 
-	float computeNewRunningAverage(float curValue, float valToAdd);
+	@Override
+	public float computeNewRunningAverage( final float curValue, final float valToAdd )
+	{
+		return 0;
+	}
 
-	void computeNewRunningAverages(int currentNumBins, float[] valuesToAdd, float[] runningValues );
-
+	@Override
+	public void computeNewRunningAverages( final int currentNumBins,
+			final float[] valuesToAdd, final float[] runningValues )
+	{
+		Arrays.fill( runningValues, 0.0f );
+	}
 }
