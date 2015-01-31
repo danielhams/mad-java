@@ -26,16 +26,14 @@ import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserUiBufferState;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.BufferStateListener;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.RBJFilter;
-import uk.co.modularaudio.util.audio.dsp.RBJFilterRT;
 import uk.co.modularaudio.util.audio.dsp.RMSFilter;
-import uk.co.modularaudio.util.audio.dsp.RMSFilterRT;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class RmsDataBuffers implements AdditionalDataBuffers, BufferStateListener
 {
 //	private static Log log = LogFactory.getLog( RmsDataBuffers.class.getName() );
-	
+
 	private final AudioAnalyserUiBufferState uiBufferState;
 
 	private final float lowRmsFreq;
@@ -45,30 +43,30 @@ public class RmsDataBuffers implements AdditionalDataBuffers, BufferStateListene
 	private final float midCof;
 	private final float highCof;
 
-	private RBJFilterRT lowFilterRt = new RBJFilterRT();
-	private RBJFilterRT midHighFilterRt = new RBJFilterRT();
-	private RBJFilterRT midFilterRt = new RBJFilterRT();
-	private RBJFilterRT highFilterRt = new RBJFilterRT();
-	
+	private final RBJFilter lowFilter = new RBJFilter();
+	private final RBJFilter midHighFilter = new RBJFilter();
+	private final RBJFilter midFilter = new RBJFilter();
+	private final RBJFilter highFilter = new RBJFilter();
+
 	public float[] lowDataBuffer;
 	public float[] midDataBuffer;
 	public float[] hiDataBuffer;
-	
-	private RMSFilterRT lowRmsFilterRt;
-	private RMSFilterRT midRmsFilterRt;
-	private RMSFilterRT hiRmsFilterRt;
-	
+
+	private RMSFilter lowRmsFilter;
+	private RMSFilter midRmsFilter;
+	private RMSFilter hiRmsFilter;
+
 	public float[] lowRmsBuffer;
 	public float[] midRmsBuffer;
 	public float[] hiRmsBuffer;
-	
-	public RmsDataBuffers( AudioAnalyserUiBufferState uiBufferState,
-			float lowRmsFreq,
-			float midRmsFreq,
-			float hiRmsFreq,
-			float lowCof,
-			float midCof,
-			float highCof )
+
+	public RmsDataBuffers( final AudioAnalyserUiBufferState uiBufferState,
+			final float lowRmsFreq,
+			final float midRmsFreq,
+			final float hiRmsFreq,
+			final float lowCof,
+			final float midCof,
+			final float highCof )
 	{
 //		// Good for music
 //		float minSmoothedFreq = 40.0f;
@@ -95,52 +93,52 @@ public class RmsDataBuffers implements AdditionalDataBuffers, BufferStateListene
 		this.lowCof = lowCof;
 		this.midCof = midCof;
 		this.highCof = highCof;
-		
-		AudioAnalyserDataBuffers dataBuffers = uiBufferState.getDataBuffers();
+
+		final AudioAnalyserDataBuffers dataBuffers = uiBufferState.getDataBuffers();
 		if( dataBuffers.bufferLength > 0 )
 		{
 			setup( dataBuffers.sampleRate, dataBuffers.bufferLength );
 		}
-		
+
 		uiBufferState.addBufferStateListener(this);
 	}
-	
+
 	@Override
-	public int write(float[] buffer, int pos, int length)
+	public int write(final float[] buffer, final int pos, final int length)
 	{
 //		log.debug("write called with pos(" + pos + ") length(" + length + ")");
-		
+
 		// Use the low data buffer as temp storage for midhigh processing
-		RBJFilter.filterIt( midHighFilterRt, buffer, pos, lowDataBuffer, pos, length );
-		RBJFilter.filterIt( midFilterRt, lowDataBuffer, pos, midDataBuffer, pos, length );
-		RBJFilter.filterIt( highFilterRt, lowDataBuffer, pos, hiDataBuffer, pos, length );
-		RBJFilter.filterIt( lowFilterRt, buffer, pos, lowDataBuffer, pos, length );
-		
-		RMSFilter.filterIt(lowRmsFilterRt, lowDataBuffer, pos, lowRmsBuffer, pos, length );
-		RMSFilter.filterIt(midRmsFilterRt, midDataBuffer, pos, midRmsBuffer, pos, length );
-		RMSFilter.filterIt(hiRmsFilterRt, hiDataBuffer, pos, hiRmsBuffer, pos, length );
-		
+		midHighFilter.filter( buffer, pos, lowDataBuffer, pos, length );
+		midFilter.filter( lowDataBuffer, pos, midDataBuffer, pos, length );
+		highFilter.filter( lowDataBuffer, pos, hiDataBuffer, pos, length );
+		lowFilter.filter( buffer, pos, lowDataBuffer, pos, length );
+
+		lowRmsFilter.filter( lowDataBuffer, pos, lowRmsBuffer, pos, length );
+		midRmsFilter.filter( midDataBuffer, pos, midRmsBuffer, pos, length );
+		hiRmsFilter.filter( hiDataBuffer, pos, hiRmsBuffer, pos, length );
+
 //		System.arraycopy( lowDataBuffer, lrp, lowRmsBuffer, lrp, numBefore );
 
 		return length;
 	}
 
 	@Override
-	public void receiveStartup(HardwareIOChannelSettings ratesAndLatency,
-			MadTimingParameters timingParameters)
+	public void receiveStartup(final HardwareIOChannelSettings ratesAndLatency,
+			final MadTimingParameters timingParameters)
 	{
-		int sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
-		int bufferLength = uiBufferState.getDataBuffers().bufferLength;
+		final int sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
+		final int bufferLength = uiBufferState.getDataBuffers().bufferLength;
 		setup( sampleRate, bufferLength );
 
 		reset();
 	}
-	
+
 	public void reset()
 	{
-		lowRmsFilterRt.reset();
-		midRmsFilterRt.reset();
-		hiRmsFilterRt.reset();
+		lowRmsFilter.reset();
+		midRmsFilter.reset();
+		hiRmsFilter.reset();
 	}
 
 	@Override
@@ -152,22 +150,22 @@ public class RmsDataBuffers implements AdditionalDataBuffers, BufferStateListene
 	public void receiveDestroy()
 	{
 	}
-	
-	private void setup( int sampleRate, int bufferLength )
+
+	private void setup( final int sampleRate, final int bufferLength )
 	{
-		lowFilterRt.recompute(sampleRate, FrequencyFilterMode.LP, lowCof, RBJFilterRT.ZERO_RESONANCE );
-		midHighFilterRt.recompute(sampleRate, FrequencyFilterMode.HP, midCof, RBJFilterRT.ZERO_RESONANCE );
-		midFilterRt.recompute(sampleRate, FrequencyFilterMode.LP, highCof, RBJFilterRT.ZERO_RESONANCE );
-		highFilterRt.recompute(sampleRate, FrequencyFilterMode.HP, highCof, RBJFilterRT.ZERO_RESONANCE );
-		
+		lowFilter.recompute(sampleRate, FrequencyFilterMode.LP, lowCof, RBJFilter.ZERO_RESONANCE );
+		midHighFilter.recompute(sampleRate, FrequencyFilterMode.HP, midCof, RBJFilter.ZERO_RESONANCE );
+		midFilter.recompute(sampleRate, FrequencyFilterMode.LP, highCof, RBJFilter.ZERO_RESONANCE );
+		highFilter.recompute(sampleRate, FrequencyFilterMode.HP, highCof, RBJFilter.ZERO_RESONANCE );
+
 		lowDataBuffer = new float[ bufferLength ];
 		midDataBuffer = new float[ bufferLength ];
 		hiDataBuffer = new float[ bufferLength ];
-		
-		lowRmsFilterRt = new RMSFilterRT(sampleRate, lowRmsFreq);
-		midRmsFilterRt = new RMSFilterRT(sampleRate, midRmsFreq );
-		hiRmsFilterRt = new RMSFilterRT(sampleRate, hiRmsFreq );
-		
+
+		lowRmsFilter = new RMSFilter(sampleRate, lowRmsFreq);
+		midRmsFilter = new RMSFilter(sampleRate, midRmsFreq );
+		hiRmsFilter = new RMSFilter(sampleRate, hiRmsFreq );
+
 		lowRmsBuffer = new float[ bufferLength ];
 		midRmsBuffer = new float[ bufferLength ];
 		hiRmsBuffer = new float[ bufferLength ];

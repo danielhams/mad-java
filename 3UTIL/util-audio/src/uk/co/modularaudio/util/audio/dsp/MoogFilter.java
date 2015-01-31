@@ -22,26 +22,46 @@ package uk.co.modularaudio.util.audio.dsp;
 
 public class MoogFilter
 {
-	public static void filterIt( MoogFilterRT rt, float[] cutoff, float[] res, float[] in, int inPos, float[] out, int outPos, int length )
+	private float in1, in2, in3, in4;
+	private float out1, out2, out3, out4;
+
+	public MoogFilter()
+	{
+		reset();
+	}
+
+	public final void reset()
+	{
+		in1 = 0.0f;
+		in2 = 0.0f;
+		in3 = 0.0f;
+		in4 = 0.0f;
+		out1 = 0.0f;
+		out2 = 0.0f;
+		out3 = 0.0f;
+		out4 = 0.0f;
+	}
+
+	public void filter( final float[] cutoff, final float[] res, final float[] in, final int inPos, final float[] out, final int outPos, final int length )
 	{
 		for( int i = inPos ; i < inPos + length ; ++i )
 		{
 			float input = in[ i ];
-			float f = cutoff[ i ] * 1.16f;
-			float oneMinusF = (1.0f - f);
-			float f2 = f * f;
-			float fb = res[i] * (1.0f - 0.15f * f2 );
-			input = input - (rt.out4 * fb);
+			final float f = cutoff[ i ] * 1.16f;
+			final float oneMinusF = (1.0f - f);
+			final float f2 = f * f;
+			final float fb = res[i] * (1.0f - 0.15f * f2 );
+			input = input - (out4 * fb);
 			input = input * 0.35013f * f2 * f2;
-			rt.out1 = input + (0.3f * rt.in1) + (oneMinusF * rt.out1);
-			rt.in1 = input;
-			rt.out2 = rt.out1 + (0.3f * rt.in2) + (oneMinusF * rt.out2);
-			rt.in2  =rt.out1;
-			rt.out3 = rt.out2 + (0.3f * rt.in3) + (oneMinusF * rt.out3);
-			rt.in3 = rt.out2;
-			rt.out4 = rt.out3 + (0.3f * rt.in4) + (oneMinusF * rt.out4);
-			rt.in4 = rt.out3;
-			out[i] = rt.out4;
+			out1 = input + (0.3f * in1) + (oneMinusF * out1);
+			in1 = input;
+			out2 = out1 + (0.3f * in2) + (oneMinusF * out2);
+			in2  = out1;
+			out3 = out2 + (0.3f * in3) + (oneMinusF * out3);
+			in3 = out2;
+			out4 = out3 + (0.3f * in4) + (oneMinusF * out4);
+			in4 = out3;
+			out[i] = out4;
 		}
 	}
 }

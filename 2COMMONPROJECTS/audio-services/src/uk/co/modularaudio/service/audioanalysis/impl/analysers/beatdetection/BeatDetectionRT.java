@@ -23,15 +23,15 @@ package uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilterRT;
+import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
 import uk.co.modularaudio.util.audio.fft.FftUtils;
 
 public class BeatDetectionRT
 {
 	private static Log log = LogFactory.getLog( BeatDetectionRT.class.getName() );
-	
-	ButterworthFilterRT butterworthRt = new ButterworthFilterRT();
-	
+
+	ButterworthFilter butterworth = new ButterworthFilter();
+
 	int channels;
 	int winlen;
 	float[] rwv;
@@ -54,19 +54,19 @@ public class BeatDetectionRT
 	float rp;
 	float rp1;
 	float rp2;
-	
-	public BeatDetectionRT( int channels, int winlen )
+
+	public BeatDetectionRT( final int channels, final int winlen )
 	{
 		this.channels = channels;
 		this.winlen = winlen;
 
-		float floatRayparam = (48.0f / 512.0f) * winlen;
-		
-		double logOfTwoOverRayparam = Math.log(2.0) / floatRayparam;
-		float dfwvnorm = (float)(Math.exp( logOfTwoOverRayparam * (winlen + 2 )));
+		final float floatRayparam = (48.0f / 512.0f) * winlen;
 
-		int laglen = winlen / 4;
-		int step = winlen / 4;
+		final double logOfTwoOverRayparam = Math.log(2.0) / floatRayparam;
+		final float dfwvnorm = (float)(Math.exp( logOfTwoOverRayparam * (winlen + 2 )));
+
+		final int laglen = winlen / 4;
+		final int step = winlen / 4;
 		lastbeat = 0;
 		counter = 0;
 		flagstep = 0;
@@ -84,17 +84,17 @@ public class BeatDetectionRT
 		phwv = new float[ 2 * laglen ];
 		phout = new float[ winlen ];
 		timesig = 0;
-		
+
 		for( int i = 0; i < winlen ; i++ )
 		{
 			dfwv[i] = (float)(Math.exp( logOfTwoOverRayparam * (i+1) )) / dfwvnorm;
 		}
 
-		float rayparamSquared = rayparam * rayparam;
+		final float rayparamSquared = rayparam * rayparam;
 		for( int i = 0 ; i < laglen ; i++ )
 		{
-			int iPlusOne = i+1;
-			int iPlusOneSquared = iPlusOne * iPlusOne;
+			final int iPlusOne = i+1;
+			final int iPlusOneSquared = iPlusOne * iPlusOne;
 			rwv[i] = (float)(
 					(iPlusOne / ( rayparamSquared ) )
 					*
@@ -106,7 +106,7 @@ public class BeatDetectionRT
 			}
 		}
 	}
-	
+
 	public float getBpm()
 	{
 		if( timesig != 0 && counter == 0 && flagstep == 0 )
@@ -118,7 +118,7 @@ public class BeatDetectionRT
 			return 0.0f;
 		}
 	}
-	
+
 	public float getConfidence()
 	{
 		if( gp != 0.0f )

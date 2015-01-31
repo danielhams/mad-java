@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
-import uk.co.modularaudio.util.audio.dsp.RBJFilterRT;
+import uk.co.modularaudio.util.audio.dsp.RBJFilter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLogSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -53,7 +53,7 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 			final RBJFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.1f, 10.0f, RBJFilterRT.ZERO_RESONANCE, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
+		super( 0.1f, 10.0f, RBJFilter.ZERO_RESONANCE, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
 				Color.BLACK,
 				"",
 				Color.BLACK,

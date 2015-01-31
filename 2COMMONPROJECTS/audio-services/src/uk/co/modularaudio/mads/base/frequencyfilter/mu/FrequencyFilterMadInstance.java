@@ -25,7 +25,6 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilterRT;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -58,10 +57,10 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	private float currentFrequency = 0.0f;
 	private float currentBandwidth = 0.0f;
 	private boolean actual24dB;
-	private final ButterworthFilterRT leftChannelButterworthRT = new ButterworthFilterRT();
-	private final ButterworthFilterRT rightChannelButterworthRT = new ButterworthFilterRT();
-	private final ButterworthFilterRT leftChannel24dbRT = new ButterworthFilterRT();
-	private final ButterworthFilterRT rightChannel24dbRT = new ButterworthFilterRT();
+	private final ButterworthFilter leftChannelButterworth = new ButterworthFilter();
+	private final ButterworthFilter rightChannelButterworth = new ButterworthFilter();
+	private final ButterworthFilter leftChannel24db = new ButterworthFilter();
+	private final ButterworthFilter rightChannel24db = new ButterworthFilter();
 
 	private float lastLeftValue;
 	private float lastRightValue;
@@ -140,10 +139,10 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		if( actual24dB != desired24dB )
 		{
 			// Switch - lets clear out the 24 rt values so stop a spike
-			leftChannelButterworthRT.clear();
-			rightChannelButterworthRT.clear();
-			leftChannel24dbRT.clear();
-			rightChannel24dbRT.clear();
+			leftChannelButterworth.clear();
+			rightChannelButterworth.clear();
+			leftChannel24db.clear();
+			rightChannel24db.clear();
 			actual24dB = desired24dB;
 			doingSwitch = true;
 		}
@@ -165,18 +164,18 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 			if( !inCvFreqConnected )
 			{
-				ButterworthFilter.filter( leftChannelButterworthRT, outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+				leftChannelButterworth.filter( outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				if( desired24dB )
 				{
-					ButterworthFilter.filter( leftChannel24dbRT, outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+					leftChannel24db.filter( outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 			else
 			{
-				ButterworthFilter.filterWithFreq( leftChannelButterworthRT, outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+				leftChannelButterworth.filterWithFreq( outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				if( desired24dB )
 				{
-					ButterworthFilter.filterWithFreq( leftChannel24dbRT, outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+					leftChannel24db.filterWithFreq( outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 
@@ -221,20 +220,20 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 			if(!inCvFreqConnected )
 			{
-				ButterworthFilter.filter( rightChannelButterworthRT, outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+				rightChannelButterworth.filter( outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 
 				if( desired24dB )
 				{
-					ButterworthFilter.filter( rightChannel24dbRT, outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+					rightChannel24db.filter( outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 			else
 			{
-				ButterworthFilter.filterWithFreq( rightChannelButterworthRT, outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+				rightChannelButterworth.filterWithFreq( outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 
 				if( desired24dB )
 				{
-					ButterworthFilter.filterWithFreq( rightChannel24dbRT, outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+					rightChannel24db.filterWithFreq( outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 

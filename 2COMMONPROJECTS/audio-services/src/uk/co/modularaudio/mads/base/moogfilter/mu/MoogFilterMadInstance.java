@@ -26,7 +26,6 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.MoogFilter;
-import uk.co.modularaudio.util.audio.dsp.MoogFilterRT;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -56,8 +55,8 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	protected float curFrequency = 400.0f;
 	protected float curQ = 1.0f;
 
-	protected MoogFilterRT leftFilterRt = new MoogFilterRT();
-	protected MoogFilterRT rightFilterRt = new MoogFilterRT();
+	protected MoogFilter leftFilter = new MoogFilter();
+	protected MoogFilter rightFilter = new MoogFilter();
 
 	private float[] tmpFreq;
 	private float[] tmpQ;
@@ -85,8 +84,8 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 			tmpFreq = new float[ numFramesPerPeriod ];
 			tmpQ = new float[ numFramesPerPeriod ];
 
-			leftFilterRt.reset();
-			rightFilterRt.reset();
+			leftFilter.reset();
+			rightFilter.reset();
 		}
 		catch (final Exception e)
 		{
@@ -142,7 +141,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				MoogFilter.filterIt(leftFilterRt, tmpFreq, tmpQ, inLfloats, 0, outLfloats, 0, numFrames);
+				leftFilter.filter( tmpFreq, tmpQ, inLfloats, 0, outLfloats, 0, numFrames);
 			}
 			else
 			{
@@ -158,7 +157,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				MoogFilter.filterIt(rightFilterRt, tmpFreq, tmpQ, inRfloats, 0, outRfloats, 0, numFrames);
+				rightFilter.filter( tmpFreq, tmpQ, inRfloats, 0, outRfloats, 0, numFrames);
 			}
 			else
 			{

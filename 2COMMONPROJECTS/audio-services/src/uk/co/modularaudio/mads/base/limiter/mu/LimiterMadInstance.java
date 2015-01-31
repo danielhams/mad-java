@@ -25,13 +25,12 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
-import uk.co.modularaudio.util.audio.dsp.LimiterRT;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -51,8 +50,8 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 
 	public float hardLimit = 0.0f;
 
-	private LimiterRT leftLimiterRt;
-	private LimiterRT rightLimiterRt;
+	private Limiter leftLimiterRt;
+	private Limiter rightLimiterRt;
 
 	protected float desiredKnee = 0.9f;
 	protected float desiredFalloff = 0.0f;
@@ -80,8 +79,8 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 			curValueRatio = 1.0f - newValueRatio;
 
-			leftLimiterRt = new LimiterRT( currentKnee, currentFalloff );
-			rightLimiterRt = new LimiterRT( currentKnee, currentFalloff );
+			leftLimiterRt = new Limiter( currentKnee, currentFalloff );
+			rightLimiterRt = new Limiter( currentKnee, currentFalloff );
 		}
 		catch (final Exception e)
 		{
@@ -136,7 +135,7 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		else if( inLConnected && outLConnected )
 		{
 			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
-			Limiter.filter( leftLimiterRt, outLfloats );
+			leftLimiterRt.filter( outLfloats, 0, numFrames );
 		}
 
 		if( !inRConnected && outRConnected )
@@ -146,7 +145,7 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		else if( inRConnected && outRConnected )
 		{
 			System.arraycopy( inRfloats, 0, outRfloats, 0, numFrames );
-			Limiter.filter( rightLimiterRt, outRfloats );
+			rightLimiterRt.filter( outRfloats, 0, numFrames );
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

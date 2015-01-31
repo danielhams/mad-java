@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.util.audio.dsp.LimiterRT;
+import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -66,7 +66,7 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 	private int leftOutputChannelIndex = -1;
 	private int rightOutputChannelIndex = -1;
 
-	private final LimiterRT limiterRt = new LimiterRT( 0.99, 5 );
+	private final Limiter limiterRt = new Limiter( 0.99, 5 );
 
 	public boolean active;
 
@@ -195,8 +195,8 @@ public class MixerMadInstance extends MadInstance<MixerMadDefinition, MixerMadIn
 		}
 
 		// Finally, run a limiter over the output to curb any clipping.
-		limiterRt.limitIt( leftOutputFloats, 0, numFrames );
-		limiterRt.limitIt( rightOutputFloats, 0, numFrames );
+		limiterRt.filter( leftOutputFloats, 0, numFrames );
+		limiterRt.filter( rightOutputFloats, 0, numFrames );
 
 //		debugTimestamp( "Done ", emitTimestamp );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

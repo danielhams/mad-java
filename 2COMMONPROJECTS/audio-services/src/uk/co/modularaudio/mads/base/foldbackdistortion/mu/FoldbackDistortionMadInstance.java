@@ -25,7 +25,6 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.dsp.FoldbackDistortion;
-import uk.co.modularaudio.util.audio.dsp.FoldbackDistortionRT;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -53,8 +52,8 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 	private int currentMaxFoldovers = 0;
 	private float currentThreshold = 0.0f;
 
-	private final FoldbackDistortionRT leftDistortionRt = new FoldbackDistortionRT();
-	private final FoldbackDistortionRT rightDistortionRt = new FoldbackDistortionRT();
+	private final FoldbackDistortion leftDistortion = new FoldbackDistortion();
+	private final FoldbackDistortion rightDistortion = new FoldbackDistortion();
 
 	public FoldbackDistortionMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -118,10 +117,10 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 		}
 		else if( inLConnected && outLConnected )
 		{
-			leftDistortionRt.threshold = currentThreshold;
-			leftDistortionRt.maxFoldbacks = currentMaxFoldovers;
+			leftDistortion.threshold = currentThreshold;
+			leftDistortion.maxFoldbacks = currentMaxFoldovers;
 			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
-			FoldbackDistortion.filter( leftDistortionRt , outLfloats );
+			leftDistortion.filter( outLfloats );
 		}
 
 		if( !inRConnected && outRConnected )
@@ -130,10 +129,10 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 		}
 		else if( inRConnected && outRConnected )
 		{
-			rightDistortionRt.threshold = currentThreshold;
-			rightDistortionRt.maxFoldbacks = currentMaxFoldovers;
+			rightDistortion.threshold = currentThreshold;
+			rightDistortion.maxFoldbacks = currentMaxFoldovers;
 			System.arraycopy( inRfloats, 0, outRfloats, 0, numFrames );
-			FoldbackDistortion.filter( rightDistortionRt, outRfloats );
+			rightDistortion.filter( outRfloats );
 		}
 		currentMaxFoldovers = desiredMaxFoldovers;
 		currentThreshold = (currentThreshold * curValueRatio ) + (desiredThreshold * newValueRatio );

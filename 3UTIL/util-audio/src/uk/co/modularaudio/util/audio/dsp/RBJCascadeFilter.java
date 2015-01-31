@@ -20,48 +20,137 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
+import uk.co.modularaudio.util.math.MathDefines;
+
 
 public class RBJCascadeFilter
 {
-	public static void filterIt( RBJCascadeFilterRT rt, float[] input, int inPos, float[] output, int outPos, int length )
+	public final static float ZERO_RESONANCE = (float)Math.sqrt(0.5);
+
+	private float b0a0, b1a0, b2a0, a1a0, a2a0;
+	private float x1, x2, y1, y2;
+	private float cx1, cx2, cy1, cy2;
+
+	public RBJCascadeFilter()
+	{
+		b0a0 = 0;
+		b1a0 = 0;
+		b2a0 = 0;
+		a1a0 = 0;
+		a2a0 = 0;
+		x1 = 0;
+		x2 = 0;
+		y1 = 0;
+		y2 = 0;
+		cx1 = 0;
+		cx2 = 0;
+		cy1 = 0;
+		cy2 = 0;
+	}
+
+	public void recompute( final int sampleRate, final FrequencyFilterMode filterMode, float f0, final float Q )
+	{
+		final float maxFreq = (sampleRate / 2.0f) - 10.0f;
+		if( f0 > maxFreq )
+		{
+			f0 = maxFreq;
+		}
+		float omega, sn, cs, alpha;
+		float a0, a1, a2, b0, b1, b2;
+
+		omega = (MathDefines.TWO_PI_F * f0 ) / sampleRate;
+		sn = (float)Math.sin( omega );
+		cs = (float)Math.cos( omega );
+		alpha = sn / (2.0f * Q);
+
+		switch( filterMode )
+		{
+			default:
+			case LP:
+			{
+				b0 = (1.0f - cs) / 2.0f;
+				b1 = 1.0f - cs;
+				b2 = (1.0f - cs) / 2.0f;
+				a0 = 1.0f + alpha;
+				a1 = -2.0f * cs;
+				a2 = 1.0f - alpha;
+				break;
+			}
+			case HP:
+			{
+				b0 = (1.0f + cs) / 2.0f;
+				b1 = -(1.0f + cs);
+				b2 = (1.0f + cs) / 2.0f;
+				a0 = 1.0f + alpha;
+				a1 = -2.0f * cs;
+				a2 = 1.0f - alpha;
+				break;
+			}
+			case BP:
+			{
+				b0 = sn / 2.0f;
+				b1 = 0;
+				b2 = -sn / 2.0f;
+				a0 = 1.0f + alpha;
+				a1 = -2.0f * cs;
+				a2 = 1.0f - alpha;
+				break;
+			}
+		}
+
+		b0a0 = b0 / a0;
+		b1a0 = b1 / a0;
+		b2a0 = b2 / a0;
+		a1a0 = a1 / a0;
+		a2a0 = a2  / a0;
+
+//		x1 = 0;
+//		x2 = 0;
+//		y1 = 0;
+//		y2 = 0;
+
+//		log.debug("Recomputed filter params with f0(" + f0 + ") and Q(" + Q +")");
+	}
+
+	public void filter( final float[] input, final int inPos, final float[] output, final int outPos, final int length )
 	{
 		for( int s = 0 ; s < length ; ++s )
 		{
-			float sample = input[ inPos + s];
-			float result = rt.b0a0 * sample + rt.b1a0 * rt.x1 + rt.b2a0 * rt.x2 - rt.a1a0 * rt.y1 - rt.a2a0 * rt.y2;
-			
-			rt.x2 = rt.x1;
-			rt.x1 = sample;
-			rt.y2 = rt.y1;
-			rt.y1 = result;
-			
-			float cascadeResult = rt.b0a0 * result + rt.b1a0 * rt.cx1 + rt.b2a0 * rt.cx2 - rt.a1a0 * rt.cy1 - rt.a2a0 * rt.cy2;
-			
-			rt.cx2 = rt.cx1;
-			rt.cx1 = result;
-			rt.cy2 = rt.cy1;
-			rt.cy1 = cascadeResult;
-			
+			final float sample = input[ inPos + s];
+			final float result = b0a0 * sample + b1a0 * x1 + b2a0 * x2 - a1a0 * y1 - a2a0 * y2;
+
+			x2 = x1;
+			x1 = sample;
+			y2 = y1;
+			y1 = result;
+
+			final float cascadeResult = b0a0 * result + b1a0 * cx1 + b2a0 * cx2 - a1a0 * cy1 - a2a0 * cy2;
+
+			cx2 = cx1;
+			cx1 = result;
+			cy2 = cy1;
+			cy1 = cascadeResult;
+
 			output[outPos + s] = cascadeResult;
 		}
 	}
-	
-	public static float filterIt( RBJCascadeFilterRT rt, float sample )
+
+	public float filterIt( final float sample )
 	{
-		float result = rt.b0a0 * sample + rt.b1a0 * rt.x1 + rt.b2a0 * rt.x2 - rt.a1a0 * rt.y1 - rt.a2a0 * rt.y2;
-		
-		rt.x2 = rt.x1;
-		rt.x1 = sample;
-		rt.y2 = rt.y1;
-		rt.y1 = result;
-		
-		float cascadeResult = rt.b0a0 * result + rt.b1a0 * rt.cx1 + rt.b2a0 * rt.cx2 - rt.a1a0 * rt.cy1 - rt.a2a0 * rt.cy2;
-		
-		rt.cx2 = rt.cx1;
-		rt.cx1 = result;
-		rt.cy2 = rt.cy1;
-		rt.cy1 = cascadeResult;
-		
+		final float result = b0a0 * sample + b1a0 * x1 + b2a0 * x2 - a1a0 * y1 - a2a0 * y2;
+
+		x2 = x1;
+		x1 = sample;
+		y2 = y1;
+		y1 = result;
+
+		final float cascadeResult = b0a0 * result + b1a0 * cx1 + b2a0 * cx2 - a1a0 * cy1 - a2a0 * cy2;
+
+		cx2 = cx1;
+		cx1 = result;
+		cy2 = cy1;
+		cy1 = cascadeResult;
+
 		return cascadeResult;
 	}
 }

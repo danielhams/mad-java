@@ -24,58 +24,65 @@ package uk.co.modularaudio.util.audio.dsp;
 public class FoldbackDistortion
 {
 //	private static Log log = LogFactory.getLog( FoldbackDistortion.class.getName() );
-	
-	public static float filter( FoldbackDistortionRT rt, float[] input )
+
+	public float threshold = 0.75f;
+	public int maxFoldbacks = 1;
+
+	public FoldbackDistortion()
 	{
-		
+	}
+
+	public float filter( final float[] input )
+	{
+
 		for( int i = 0 ; i < input.length ; i++ )
 		{
 			float val = input[i];
 			float absVal = Math.abs( val );
-			float diff = absVal - rt.threshold;
+			float diff = absVal - threshold;
 			int numFoldbacks = 0;
-			if( diff > 0.0f && rt.maxFoldbacks == 0 )
+			if( diff > 0.0f && maxFoldbacks == 0 )
 			{
 				if( val < 0.0f )
 				{
-					val = -rt.threshold;
+					val = -threshold;
 				}
 				else
 				{
-					val = rt.threshold;
+					val = threshold;
 				}
 			}
 			else
 			{
-				while( diff > 0.0f && numFoldbacks < rt.maxFoldbacks)
+				while( diff > 0.0f && numFoldbacks < maxFoldbacks)
 				{
 					if( val < 0.0f )
 					{
-						val = - ( rt.threshold - diff );
+						val = - ( threshold - diff );
 					}
 					else
 					{
-						val = rt.threshold -diff;
+						val = threshold -diff;
 					}
 					absVal = Math.abs( val );
-					diff = absVal - rt.threshold;
+					diff = absVal - threshold;
 					numFoldbacks++;
 				}
-				
-				if( absVal > rt.threshold )
+
+				if( absVal > threshold )
 				{
 					if( val > 0.0f )
 					{
-						val = rt.threshold;
+						val = threshold;
 					}
 					else
 					{
-						val = -rt.threshold;
+						val = -threshold;
 					}
 				}
 			}
 			input[i] = val;
-		}		
+		}
 		return input[0];
 	}
 }

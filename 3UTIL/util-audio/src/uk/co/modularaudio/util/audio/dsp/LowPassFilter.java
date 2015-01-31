@@ -22,23 +22,24 @@ package uk.co.modularaudio.util.audio.dsp;
 
 public class LowPassFilter
 {
-	
+	private double feedbackDelaySample = 0.0;
+
 	public LowPassFilter()
 	{
 	}
-	
-	public static float lowpass( LowPassFilterRT rt, float[] input, float freq, float sr )
+
+	public float filter( final float[] input, final float freq, final float sr )
 	{
 		double costh, coef;
 		costh = 2.0 - Math.cos( 2 * Math.PI * freq / sr );
 		coef = Math.sqrt( costh * costh - 1 ) - costh;
-		
+
 		for( int i = 0 ; i < input.length ; i++ )
 		{
-			input[i] = (float) (input[i] * (1 + coef ) - rt.feedbackDelaySample * coef );
-			rt.feedbackDelaySample = input[i];
+			input[i] = (float) (input[i] * (1 + coef ) - feedbackDelaySample * coef );
+			feedbackDelaySample = input[i];
 		}
-		
+
 		return input[0];
 	}
 }

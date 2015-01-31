@@ -26,13 +26,12 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.RBJFilter;
-import uk.co.modularaudio.util.audio.dsp.RBJFilterRT;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -49,8 +48,8 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 	public float desiredFrequency = 80.0f;
 	public float desiredQ = 20.0f;
 
-	private final RBJFilterRT leftFilterRT = new RBJFilterRT();
-	private final RBJFilterRT rightFilterRT = new RBJFilterRT();
+	private final RBJFilter leftFilter = new RBJFilter();
+	private final RBJFilter rightFilter = new RBJFilter();
 
 	public RBJFilterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -114,7 +113,7 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				RBJFilter.filterIt(leftFilterRT, inLfloats, 0, outLfloats, 0, numFrames);
+				leftFilter.filter( inLfloats, 0, outLfloats, 0, numFrames);
 			}
 			else
 			{
@@ -130,7 +129,7 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				RBJFilter.filterIt(rightFilterRT, inRfloats, 0, outRfloats, 0, numFrames);
+				rightFilter.filter( inRfloats, 0, outRfloats, 0, numFrames);
 			}
 			else
 			{
@@ -144,8 +143,8 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 	{
 		if( desiredFilterMode != FrequencyFilterMode.NONE )
 		{
-			leftFilterRT.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
-			rightFilterRT.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
+			leftFilter.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
+			rightFilter.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
 		}
 	}
 }

@@ -27,7 +27,7 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.stereo_gate.ui.ThresholdTypeEnum;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
-import uk.co.modularaudio.util.audio.dsp.LimiterRT;
+import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.envelope.FixedTransitionAdsrEnvelope;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -90,7 +90,7 @@ public class MonoCompressorMadInstance extends MadInstance<MonoCompressorMadDefi
 
 	protected boolean active;
 
-	private LimiterRT limiterRt;
+	private Limiter limiterRt;
 
 	private float[] internalAbsCompFloats;
 	private float[] internalThresholdDbFloats;
@@ -137,7 +137,7 @@ public class MonoCompressorMadInstance extends MadInstance<MonoCompressorMadDefi
 			internalEnvelopeFloats = new float[ periodLength ];
 			internalAmpFloats = new float[ periodLength ];
 
-			limiterRt = new LimiterRT( 0.99f, 5f );
+			limiterRt = new Limiter( 0.99f, 5f );
 		}
 		catch (final Exception e)
 		{
@@ -460,7 +460,7 @@ public class MonoCompressorMadInstance extends MadInstance<MonoCompressorMadDefi
 				outWaveLeftFloats[ s ] = outLeftFloat;
 			}
 			// Limit it
-			limiterRt.limitIt( outWaveLeftFloats, 0, outWaveLeftFloats.length );
+			limiterRt.filter( outWaveLeftFloats, 0, outWaveLeftFloats.length );
 		}
 	}
 }

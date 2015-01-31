@@ -21,7 +21,6 @@
 package uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection;
 
 import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilterRT;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.fft.FftUtils;
 
@@ -29,15 +28,15 @@ public class BeatDetector
 {
 //	private static Log log = LogFactory.getLog( BeatDetector.class.getName() );
 
-	public void detect(BeatDetectionRT rt, float[] input, float[] output)
+	public void detect(final BeatDetectionRT rt, final float[] input, final float[] output)
 	{
 		// First low pass filter the input
-		ButterworthFilterRT butterWorthRt = rt.butterworthRt;
-		ButterworthFilter.filter( butterWorthRt, input, 0, input.length, 60.0f, 10.0f, FrequencyFilterMode.LP, 44100);
+		final ButterworthFilter bwFilter = rt.butterworth;
+		bwFilter.filter( input, 0, input.length, 60.0f, 10.0f, FrequencyFilterMode.LP, 44100);
 
-		int step = rt.step;
-		int laglen = rt.rwv.length;
-		int winlen = rt.winlen;
+		final int step = rt.step;
+		final int laglen = rt.rwv.length;
+		final int winlen = rt.winlen;
 		int maxindex = 0;
 		int numelem = 4;
 
@@ -70,8 +69,8 @@ public class BeatDetector
 			{
 				for (int b = 1 - a; b < a; b++)
 				{
-					float val1 = rt.acf[ a * (i + 1) + b - 1];
-					float tstval = val1 * 1.0f / (2.0f*a-1.0f);
+					final float val1 = rt.acf[ a * (i + 1) + b - 1];
+					final float tstval = val1 * 1.0f / (2.0f*a-1.0f);
 					rt.acfout[i] +=  tstval;
 //					log.debug("tstval=" + tstval + " and acfout=" + rt.acfout[i]);
 				}
@@ -96,7 +95,7 @@ public class BeatDetector
 		{
 			for (int k = 0; k < kmax; k++)
 			{
-				int dfrevIndex = i + (int)Math.floor(bp * k);
+				final int dfrevIndex = i + (int)Math.floor(bp * k);
 				rt.phout[i] += rt.dfrev[dfrevIndex];
 			}
 		}
@@ -145,21 +144,21 @@ public class BeatDetector
 		output[0] = i;
 	}
 
-	private void checkstate(BeatDetectionRT rt)
+	private void checkstate(final BeatDetectionRT rt)
 	{
 		int flagconst = 0;
 		int counter = rt.counter;
 		int flagstep = rt.flagstep;
 		float gp = rt.gp;
 		float bp = rt.bp;
-		float rp = rt.rp;
+		final float rp = rt.rp;
 		float rp1 = rt.rp1;
 		float rp2 = rt.rp2;
-		int laglen = rt.rwv.length;
-		int acflen = rt.acf.length;
-		int step = rt.step;
-		float[] acf = rt.acf;
-		float[] acfout = rt.acfout;
+		final int laglen = rt.rwv.length;
+		final int acflen = rt.acf.length;
+		final int step = rt.step;
+		final float[] acf = rt.acf;
+		final float[] acfout = rt.acfout;
 
 		if (gp != 0.0f)
 		{
@@ -226,8 +225,8 @@ public class BeatDetector
 			for (int j = 0; j < laglen; j++)
 			{
 				// gwv[j] = EXP(-.5* SQR((smpl_t)(j+1.-gp)) / SQR(bt->g_var) );
-				float t1sq = (j + 1.0f - gp) * (j + 1.0f - gp);
-				float gvarsq = rt.gvar * rt.gvar;
+				final float t1sq = (j + 1.0f - gp) * (j + 1.0f - gp);
+				final float gvarsq = rt.gvar * rt.gvar;
 				rt.gwv[j] = (float) Math.exp(-0.5 * t1sq / gvarsq);
 			}
 			flagconst = 0;
@@ -276,7 +275,7 @@ public class BeatDetector
 		rt.rp2 = rp2;
 	}
 
-	private int gettimesig(float[] acf, int acflen, float gp)
+	private int gettimesig(final float[] acf, final int acflen, final float gp)
 	{
 //		return 4;
 		/**/
@@ -288,8 +287,8 @@ public class BeatDetector
 		{
 			for (int k = -2; k < 2; k++)
 			{
-				int threeIndex = (int)(3 * gp + k);
-				int fourIndex = (int)(4 * gp + k);
+				final int threeIndex = (int)(3 * gp + k);
+				final int fourIndex = (int)(4 * gp + k);
 				threeEnergy += acf[ threeIndex ];
 				fourEnergy += acf[ fourIndex ];
 			}
@@ -298,10 +297,10 @@ public class BeatDetector
 		{
 			for (int k = -2; k < 2; k++)
 			{
-				int twoIndex = (int)(2 * gp + k);
-				int threeIndex = (int)(3 * gp + k);
-				int fourIndex = (int)(4 * gp + k);
-				int sixIndex = (int)(6 * gp + k);
+				final int twoIndex = (int)(2 * gp + k);
+				final int threeIndex = (int)(3 * gp + k);
+				final int fourIndex = (int)(4 * gp + k);
+				final int sixIndex = (int)(6 * gp + k);
 				if( threeIndex > 0 && sixIndex > 0 )
 				{
 					threeEnergy += acf[threeIndex] + acf[sixIndex];

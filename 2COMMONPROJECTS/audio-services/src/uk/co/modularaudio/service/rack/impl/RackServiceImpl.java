@@ -50,7 +50,6 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.MadState;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
-import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
@@ -61,7 +60,7 @@ import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 import uk.co.modularaudio.util.table.impl.TablePrinter;
 
-public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, RackService
+public class RackServiceImpl implements ComponentWithLifecycle, RackService
 {
 	private static final String RM_INSTANCE_NAME = "Master IO";
 
@@ -78,16 +77,6 @@ public class RackServiceImpl implements ComponentWithLifecycle, ComponentWithPos
 
 	@Override
 	public void init() throws ComponentConfigurationException
-	{
-	}
-
-	@Override
-	public void postInit()
-	{
-	}
-
-	@Override
-	public void preShutdown()
 	{
 	}
 

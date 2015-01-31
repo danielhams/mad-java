@@ -31,9 +31,22 @@ public class ButterworthFilter
 {
 	private static Log log = LogFactory.getLog( ButterworthFilter.class.getName() );
 
+	private final float[] feedbackDelaySamples = new float[2];
+
+	public ButterworthFilter()
+	{
+		clear();
+	}
+
+	public final void clear()
+	{
+		feedbackDelaySamples[0] = 0.0f;
+		feedbackDelaySamples[1] = 0.0f;
+	}
+
 //	private final static boolean DEBUG_NAN = false;
 
-	public static float filter( final ButterworthFilterRT rt, final float[] input, final int offset, final int length, float freq, final float bw, final FrequencyFilterMode mode, final float sr )
+	public float filter( final float[] input, final int offset, final int length, float freq, final float bw, final FrequencyFilterMode mode, final float sr )
 	{
 		boolean allZeros = true;
 		for( int s = 0 ; s < length ; s++ )
@@ -134,12 +147,10 @@ public class ButterworthFilter
 			break;
 		}
 
-		final float[] fbds = rt.feedbackDelaySample;
-
 		for( int i = 0 ; i < length ; i++ )
 		{
-			w = input[offset + i] - b1*fbds[0] - b2*fbds[1];
-			float result = (a*w + a1*fbds[0] + a2*fbds[1]);
+			w = input[offset + i] - b1*feedbackDelaySamples[0] - b2*feedbackDelaySamples[1];
+			float result = (a*w + a1*feedbackDelaySamples[0] + a2*feedbackDelaySamples[1]);
 			// Clamp output samples
 //			if( result > 1.0f )
 //			{
@@ -160,8 +171,8 @@ public class ButterworthFilter
 			}
 			input[offset + i] = result;
 
-			fbds[1] = fbds[0];
-			fbds[0] = w;
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = w;
 
 //			if( DEBUG_NAN )
 //			{
@@ -181,7 +192,7 @@ public class ButterworthFilter
 		return input[offset];
 	}
 
-	public static float filterWithFreq( final ButterworthFilterRT rt, final float[] input, final int offset, final int length, final float[] freqs, final float bw, final FrequencyFilterMode mode, final float sr )
+	public float filterWithFreq( final float[] input, final int offset, final int length, final float[] freqs, final float bw, final FrequencyFilterMode mode, final float sr )
 	{
 		float a, a1, a2, b1, b2, tanthe, costhe, sqrtan, tansq, w;
 
@@ -259,10 +270,8 @@ public class ButterworthFilter
 				break;
 			}
 
-			final float[] fbds = rt.feedbackDelaySample;
-
-			w = input[offset + i] - b1*fbds[0] - b2*fbds[1];
-			final float result = (a*w + a1*fbds[0] + a2*fbds[1]);
+			w = input[offset + i] - b1*feedbackDelaySamples[0] - b2*feedbackDelaySamples[1];
+			final float result = (a*w + a1*feedbackDelaySamples[0] + a2*feedbackDelaySamples[1]);
 			// Clamp output samples
 //			if( result > 1.0f )
 //			{
@@ -274,8 +283,8 @@ public class ButterworthFilter
 //			}
 			input[offset + i] = result;
 
-			fbds[1] = fbds[0];
-			fbds[0] = w;
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = w;
 
 //			if( DEBUG_NAN )
 //			{

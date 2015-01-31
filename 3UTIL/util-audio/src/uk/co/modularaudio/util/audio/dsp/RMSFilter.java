@@ -20,66 +20,87 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
+import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
+
 
 public class RMSFilter
 {
-	public static void filterIt( RMSFilterRT rt, float[] input, int inPos, float[] output, int outPos, int length )
+	public float currentSumOfSquares = 0.0f;
+	public UnsafeFloatRingBuffer ringOfSquares;
+	public int numSamplesForMin = -1;
+
+	public RMSFilter( final int sampleRate, final float minSmoothedFrequency )
 	{
-		float currentSumOfSquares = rt.currentSumOfSquares;
-		
-		int rosBufferLength = rt.ringOfSquares.bufferLength;
-		int rosReadPos = rt.ringOfSquares.readPosition;
-		int rosWritePos = rt.ringOfSquares.writePosition;
+		recompute(sampleRate, minSmoothedFrequency);
+	}
+
+	public void recompute( final int sampleRate, final float minSmoothedFrequency )
+	{
+		// Make the ring of squares long enough for a full cycle of the min smoothed frequency
+		numSamplesForMin = (int)(sampleRate / minSmoothedFrequency);
+
+		ringOfSquares = new UnsafeFloatRingBuffer(numSamplesForMin, true);
+	}
+
+	public void reset()
+	{
+		currentSumOfSquares = 0.0f;
+		ringOfSquares.clearToZero();
+	}
+
+	public void filter( final float[] input, final int inPos, final float[] output, final int outPos, final int length )
+	{
+		final int rosBufferLength = ringOfSquares.bufferLength;
+		int rosReadPos = ringOfSquares.readPosition;
+		int rosWritePos = ringOfSquares.writePosition;
 
 		int numLeft = length;
 		int inIndex = inPos;
 		int outIndex = outPos;
-		
+
 		do
 		{
-			int numCanReadBefore = rosBufferLength - rosReadPos;
-			int numToReadBefore = (numLeft < numCanReadBefore ? numLeft : numCanReadBefore );
+			final int numCanReadBefore = rosBufferLength - rosReadPos;
+			final int numToReadBefore = (numLeft < numCanReadBefore ? numLeft : numCanReadBefore );
 
 			if( rosReadPos != 0 )
 			{
 				// Do the loop
 				for( int i = 0 ; i < numToReadBefore ; ++i )
 				{
-					float squareToRemove = rt.ringOfSquares.buffer[ rosReadPos++ ];
+					final float squareToRemove = ringOfSquares.buffer[ rosReadPos++ ];
 					currentSumOfSquares -= squareToRemove;
-					float inValue = input[ inIndex++ ];
-					float newSquare = ( inValue * inValue );
-					rt.ringOfSquares.buffer[ rosWritePos++ ] = newSquare;
+					final float inValue = input[ inIndex++ ];
+					final float newSquare = ( inValue * inValue );
+					ringOfSquares.buffer[ rosWritePos++ ] = newSquare;
 					currentSumOfSquares += newSquare;
 					currentSumOfSquares = (currentSumOfSquares < 0.0f ? 0.0f : currentSumOfSquares );
-					output[ outIndex++ ] = (float)Math.sqrt( currentSumOfSquares / rt.numSamplesForMin );
+					output[ outIndex++ ] = (float)Math.sqrt( currentSumOfSquares / numSamplesForMin );
 				}
 				numLeft -= numToReadBefore;
 			}
-			
+
 			if( numLeft > 0 )
 			{
 				rosReadPos = 0;
 				// Straddler
-				float squareToRemove = rt.ringOfSquares.buffer[ rosReadPos++ ];
+				final float squareToRemove = ringOfSquares.buffer[ rosReadPos++ ];
 				currentSumOfSquares -= squareToRemove;
-				float inValue = input[ inIndex++ ];
-				float newSquare = ( inValue * inValue );
-				rt.ringOfSquares.buffer[ rosWritePos++ ] = newSquare;
+				final float inValue = input[ inIndex++ ];
+				final float newSquare = ( inValue * inValue );
+				ringOfSquares.buffer[ rosWritePos++ ] = newSquare;
 				currentSumOfSquares += newSquare;
-				output[ outIndex++ ] = (float)Math.sqrt( currentSumOfSquares / rt.numSamplesForMin );
-				
+				output[ outIndex++ ] = (float)Math.sqrt( currentSumOfSquares / numSamplesForMin );
+
 				numLeft--;
 				rosWritePos = 0;
 			}
 		}
 		while( numLeft > 0 );
-		
+
 		// Move the ring of squares read/write indexes forward
-		rt.ringOfSquares.readPosition = rosReadPos;
-		rt.ringOfSquares.writePosition = rosWritePos;
-		
-		rt.currentSumOfSquares = currentSumOfSquares;
+		ringOfSquares.readPosition = rosReadPos;
+		ringOfSquares.writePosition = rosWritePos;
 	}
-	
+
 }
