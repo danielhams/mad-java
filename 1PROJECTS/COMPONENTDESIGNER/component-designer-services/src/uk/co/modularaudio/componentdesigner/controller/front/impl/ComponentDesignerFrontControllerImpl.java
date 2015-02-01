@@ -631,7 +631,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 								{
 									if( log.isInfoEnabled() )
 									{
-										log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." );
+										log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." ); // NOPMD by dan on 01/02/15 07:29
 									}
 								}
 							}
@@ -646,7 +646,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 								{
 									if( log.isInfoEnabled() )
 									{
-										log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" );
+										log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" ); // NOPMD by dan on 01/02/15 07:29
 									}
 								}
 							}

@@ -139,7 +139,10 @@ public class ReflectionUtils
 		}
 		catch (final Throwable thr)
 		{
-			log.debug( "Throwable problem in debugObjectValues: " + thr.toString(), thr );
+			if( log.isDebugEnabled() )
+			{
+				log.debug( "Throwable caught in debugObjectValues: " + thr.toString(), thr );
+			}
 		}
 
 		return debugString.toString();

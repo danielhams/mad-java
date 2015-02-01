@@ -35,6 +35,11 @@ public class EnumUserType implements UserType
 {
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
+	public EnumUserType()
+	{
+		super();
+	}
+
 	@Override
 	public int[] sqlTypes()
 	{
@@ -48,7 +53,7 @@ public class EnumUserType implements UserType
 	}
 
 	@Override
-	public boolean equals(final Object obj1, final Object obj2) throws HibernateException
+	public boolean equals(final Object obj1, final Object obj2) throws HibernateException // NOPMD by dan on 01/02/15 07:29
 	{
 		if (obj1 == obj2)
 			return true;
@@ -145,6 +150,7 @@ public class EnumUserType implements UserType
 	public void nullSafeSet( final PreparedStatement arg0, final Object arg1, final int arg2, final SessionImplementor arg3 )
 			throws HibernateException, SQLException
 	{
+		// do nothing, we don't use this bit
 	}
 
 }
