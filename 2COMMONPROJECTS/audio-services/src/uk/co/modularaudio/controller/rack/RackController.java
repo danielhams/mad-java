@@ -33,7 +33,6 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
@@ -60,7 +59,7 @@ public interface RackController
 	 */
 	RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition, String> parameterValues, String name )
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
+			throws TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 			MAConstraintViolationException, RecordNotFoundException;
 
 	/**

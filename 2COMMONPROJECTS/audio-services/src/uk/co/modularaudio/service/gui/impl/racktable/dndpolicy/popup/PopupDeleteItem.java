@@ -26,7 +26,7 @@ public class PopupDeleteItem extends JMenuItem
 {
 	private static final long serialVersionUID = 2029624755184307228L;
 
-	public PopupDeleteItem( PopupActions popupActions )
+	public PopupDeleteItem( final PopupActions popupActions )
 	{
 		this.setAction( popupActions.delete );
 	}

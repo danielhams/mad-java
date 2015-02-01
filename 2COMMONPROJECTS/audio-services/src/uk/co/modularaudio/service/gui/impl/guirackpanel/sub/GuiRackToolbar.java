@@ -25,9 +25,6 @@ import javax.swing.JComboBox;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
@@ -35,63 +32,22 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class GuiRackToolbar extends JToolBar
 {
-	private static Log log = LogFactory.getLog( GuiRackToolbar.class.getName() );
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -387065135870575057L;
 
-	private JComboBox<MadDefinition<?,?>> componentComboBox = null;
-	private JButton addComponentButton = null;
-	private JToggleButton rackRotateCheckbox = null;
+	private final JComboBox<MadDefinition<?,?>> componentComboBox;
+	private final JButton addComponentButton;
+	private final JToggleButton rackRotateCheckbox;
 
-	private GuiRackActions rackGuiActions = null;
-	private GuiService guiService = null;
-
-	public GuiRackToolbar( GuiRackActions rackGuiActions, GuiService guiService )
+	public GuiRackToolbar( final GuiRackActions rackGuiActions, final GuiService guiService ) throws DatastoreException
 	{
-		this.rackGuiActions = rackGuiActions;
-		this.guiService = guiService;
-		this.add( getComponentComboBox() );
-		this.add( getAddComponentButton() );
-		this.add( getRackRotateCheckbox() );
+		final MadDefinitionListModel madDefinitions = guiService.getMadDefinitionsModel();
+		componentComboBox = new MadDefinitionComboBox( madDefinitions );
+
+		this.add( componentComboBox );
+		addComponentButton = new AddComponentButton( rackGuiActions );
+		this.add( addComponentButton );
+		rackRotateCheckbox = new RotateRackCheckbox( rackGuiActions );
+		this.add( rackRotateCheckbox );
 		this.setFloatable( false );
-	}
-
-	public final JComboBox<MadDefinition<?,?>> getComponentComboBox()
-	{
-		if( componentComboBox == null )
-		{
-			MadDefinitionListModel madDefinitions = null;
-			try
-			{
-				madDefinitions = guiService.getMadDefinitionsModel();
-			}
-			catch (DatastoreException e)
-			{
-				String msg = "Exception caught getting component types combo data: " + e.toString();
-				log.error( msg, e );
-			}
-			componentComboBox = new MadDefinitionComboBox( madDefinitions );
-		}
-		return componentComboBox;
-	}
-
-	public final JButton getAddComponentButton()
-	{
-		if( addComponentButton == null )
-		{
-			addComponentButton = new AddComponentButton( rackGuiActions );
-		}
-		return addComponentButton;
-	}
-
-	public final JToggleButton getRackRotateCheckbox()
-	{
-		if( rackRotateCheckbox == null )
-		{
-			rackRotateCheckbox = new RotateRackCheckbox( rackGuiActions );
-		}
-		return rackRotateCheckbox;
 	}
 }

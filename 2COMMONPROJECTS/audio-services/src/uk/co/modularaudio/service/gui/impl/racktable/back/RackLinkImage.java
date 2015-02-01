@@ -30,20 +30,22 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
 public class RackLinkImage extends AbstractLinkImage
 {
 //	private static Log log = LogFactory.getLog( NewRackLinkImage.class.getName() );
-	
-	private RackLink rackLink = null;
-	
-	public RackLinkImage( String allocationSource, BufferedImageAllocationService bufferedImageAllocationService, RackLink rackLink, Point sourcePoint, Point sinkPoint )
+
+	private final RackLink rackLink;
+
+	public RackLinkImage( final String allocationSource, final BufferedImageAllocationService bufferedImageAllocationService, final RackLink rackLink, final Point sourcePoint, final Point sinkPoint )
 	{
 		super( allocationSource, bufferedImageAllocationService, sourcePoint, sinkPoint );
 		this.rackLink = rackLink;
 	}
-	
+
+	@Override
 	public Rectangle getRectangle()
 	{
 		return rectangle;
 	}
 
+	@Override
 	public BufferedImage getBufferedImage()
 	{
 		return bufferedImage;

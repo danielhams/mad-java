@@ -21,12 +21,32 @@
 package uk.co.modularaudio.controller.hibsession;
 
 import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 
+/**
+ * <p>Entry point for operations related to obtaining and releasing hibernate sessions.</p>
+ *
+ * @author dan
+ */
 public interface HibernateSessionController
 {
-
+	/**
+	 * <p>Obtain a hibernate session and fill in the thread
+	 * local structure for services to use as required.</p>
+	 * <p>No transaction is started by default.</p>
+	 * @see ThreadLocalSessionResource#getSessionResource()
+	 */
 	public void getThreadSession();
-	
+	/**
+	 * <p>Return a thread local session.</p>
+	 * <p>By default if a transaction is active it will be
+	 * rolled back.</p>
+	 * @throws NoSuchHibernateSessionException if no thread local session is found
+	 */
 	public void releaseThreadSession() throws NoSuchHibernateSessionException;
+	/**
+	 * <p>Return a thread local session.</p>
+	 * <p>No exceptions will be thrown calling this method.</p>
+	 */
 	public void releaseThreadSessionNoException();
 }

@@ -32,25 +32,20 @@ import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 
 public class MadDefinitionComboBox extends JComboBox<MadDefinition<?,?>>
 {
-
 	public class ComboBoxCellRenderer extends DefaultListCellRenderer
 	{
-
-		/**
-		 *
-		 */
 		private static final long serialVersionUID = -5614583177714511340L;
 
 		@Override
-		public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus)
+		public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") final JList list, final Object value,
+				final int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			if( value != null )
 			{
-				MadDefinition<?,?> realValue = (MadDefinition<?,?>)value;
-				StringBuilder visibleStr = new StringBuilder();
+				final MadDefinition<?,?> realValue = (MadDefinition<?,?>)value;
+				final StringBuilder visibleStr = new StringBuilder();
 				visibleStr.append( realValue.getName() );
-				ReleaseState rs = realValue.getClassification().getState();
+				final ReleaseState rs = realValue.getClassification().getState();
 				switch( rs )
 				{
 					case ALPHA:
@@ -78,12 +73,9 @@ public class MadDefinitionComboBox extends JComboBox<MadDefinition<?,?>>
 		}
 	}
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -1465726065333593273L;
 
-	public MadDefinitionComboBox( MadDefinitionListModel madDefinitions )
+	public MadDefinitionComboBox( final MadDefinitionListModel madDefinitions )
 	{
 		super( madDefinitions );
 		// Now register our custom cell renderer which just uses the name from inside the type

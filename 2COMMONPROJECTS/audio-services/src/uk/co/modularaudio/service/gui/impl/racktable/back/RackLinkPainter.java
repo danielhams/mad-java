@@ -48,26 +48,26 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 public class RackLinkPainter
 {
 	private static Log log = LogFactory.getLog( RackLinkPainter.class.getName() );
-	
+
 	private BufferedImageAllocationService bufferedImageAllocationService = null;
-	
+
 	private final static boolean DEBUG = false;
 	// Master image that is full width and height of the rack
 	// we'll clear it and subimage it when we need to paint a real one
-	private AllocationMatch masterImageAllocationMatch = new AllocationMatch();
-	private TiledBufferedImage compositeRackLinksTiledBufferedImage = null;
-	private Rectangle compositeImageRectangle = null;
-	private BufferedImage compositeRackLinksImage = null;
-	
-	private RackDataModel dataModel = null;
-	private RackTableWithLinks tableWithLinks = null;
-	private RackLinkImageRegistry rackLinkRegistry = null;
-	private RackLinkCompositeLinksGuiComponent compositeLinksGuiComponent = new RackLinkCompositeLinksGuiComponent();
+	private final AllocationMatch masterImageAllocationMatch = new AllocationMatch();
+	private TiledBufferedImage compositeRackLinksTiledBufferedImage;
+	private Rectangle compositeImageRectangle;
+	private BufferedImage compositeRackLinksImage;
 
-	public RackLinkPainter( BufferedImageAllocationService bufferedImageAllocationService, RackDataModel dataModel, RackTableWithLinks tableWithLinks )
+	private RackDataModel dataModel;
+	private final RackTableWithLinks tableWithLinks;
+	private final RackLinkImageRegistry rackLinkRegistry;
+	private final RackLinkCompositeLinksGuiComponent compositeLinksGuiComponent = new RackLinkCompositeLinksGuiComponent();
+
+	public RackLinkPainter( final BufferedImageAllocationService bufferedImageAllocationService, final RackDataModel dataModel, final RackTableWithLinks tableWithLinks )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
-		
+
 		this.dataModel = dataModel;
 		this.tableWithLinks = tableWithLinks;
 		rackLinkRegistry = new RackLinkImageRegistry();
@@ -79,8 +79,8 @@ public class RackLinkPainter
 	{
 		for( int i = 0 ; i < dataModel.getNumLinks() ; i++ )
 		{
-			RackLink rl = dataModel.getLinkAt( i );
-			
+			final RackLink rl = dataModel.getLinkAt( i );
+
 			drawOneRackLinkImageAndAdd( rl );
 		}
 	}
@@ -89,79 +89,79 @@ public class RackLinkPainter
 	{
 		for( int i = 0 ; i < dataModel.getNumIOLinks() ; i++ )
 		{
-			RackIOLink rl = dataModel.getIOLinkAt( i );
-			
+			final RackIOLink rl = dataModel.getIOLinkAt( i );
+
 			drawOneRackIOLinkImageAndAdd( rl );
 		}
 	}
 
-	public void drawOneRackLinkImageAndAdd( RackLink rl )
+	public void drawOneRackLinkImageAndAdd( final RackLink rl )
 	{
 		// For now lets assume some magic about how the end points of the cable are computed.
-		RackComponent sourceRackComponent = rl.getProducerRackComponent();
-		AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
-		MadChannelInstance sourceRackComponentChannel = rl.getProducerChannelInstance();
-		GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
-		Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+		final RackComponent sourceRackComponent = rl.getProducerRackComponent();
+		final AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
+		final MadChannelInstance sourceRackComponentChannel = rl.getProducerChannelInstance();
+		final GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+		final Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sourceGuiComponent,
-				sourceRackComponent, 
+				sourceRackComponent,
 				sourceGuiPlug );
-		
-		RackComponent sinkRackComponent = rl.getConsumerRackComponent();
-		AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
-		MadChannelInstance sinkRackComponentChannel = rl.getConsumerChannelInstance();
-		GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
-		Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+
+		final RackComponent sinkRackComponent = rl.getConsumerRackComponent();
+		final AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
+		final MadChannelInstance sinkRackComponentChannel = rl.getConsumerChannelInstance();
+		final GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
+		final Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sinkGuiComponent,
 				sinkRackComponent,
 				sinkGuiPlug );
-		
+
 		// Now allocate and draw a buffered image from this source point to the sink point.
-		RackLinkImage rli = new RackLinkImage( "NewRackLinkPainter", bufferedImageAllocationService, rl, sourcePoint, sinkPoint );
-		
+		final RackLinkImage rli = new RackLinkImage( "NewRackLinkPainter", bufferedImageAllocationService, rl, sourcePoint, sinkPoint );
+
 		// Now add this into the registry
 		rackLinkRegistry.addLinkToRegistry( rl, rli,
 				sourceRackComponent, sourceRackComponentChannel,
 				sinkRackComponent, sinkRackComponentChannel );
 	}
-	
-	public void drawOneRackIOLinkImageAndAdd( RackIOLink ril )
+
+	public void drawOneRackIOLinkImageAndAdd( final RackIOLink ril )
 	{
 		// Bit of a hack....
-		RackComponent masterIOComponent = dataModel.getContentsAtPosition( 0,  0 );
-		MadChannelInstance ioChannelInstance = ril.getRackChannelInstance();
-		RackComponent rackComponent = ril.getRackComponent();
-		MadChannelInstance rackComponentChannelInstance = ril.getRackComponentChannelInstance();
-		MadChannelDirection direction = rackComponentChannelInstance.definition.direction;
-		
-		// For now lets assume some magic about how the end points of the cable are computed.
-		RackComponent sourceRackComponent = (direction == MadChannelDirection.PRODUCER ? rackComponent : masterIOComponent );
-		AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
-		MadChannelInstance sourceRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? rackComponentChannelInstance : ioChannelInstance );
-		GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+		final RackComponent masterIOComponent = dataModel.getContentsAtPosition( 0,  0 );
+		final MadChannelInstance ioChannelInstance = ril.getRackChannelInstance();
+		final RackComponent rackComponent = ril.getRackComponent();
+		final MadChannelInstance rackComponentChannelInstance = ril.getRackComponentChannelInstance();
+		final MadChannelDirection direction = rackComponentChannelInstance.definition.direction;
 
-		Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+		// For now lets assume some magic about how the end points of the cable are computed.
+		final RackComponent sourceRackComponent = (direction == MadChannelDirection.PRODUCER ? rackComponent : masterIOComponent );
+		final AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
+		final MadChannelInstance sourceRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? rackComponentChannelInstance : ioChannelInstance );
+		final GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+
+		final Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sourceGuiComponent,
-				sourceRackComponent, 
+				sourceRackComponent,
 				sourceGuiPlug );
-		
-		RackComponent sinkRackComponent = (direction == MadChannelDirection.PRODUCER ? masterIOComponent : rackComponent );
-		AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
-		MadChannelInstance sinkRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? ioChannelInstance : rackComponentChannelInstance );
-		GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
-		Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+
+		final RackComponent sinkRackComponent = (direction == MadChannelDirection.PRODUCER ? masterIOComponent : rackComponent );
+		final AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
+		final MadChannelInstance sinkRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? ioChannelInstance : rackComponentChannelInstance );
+		final GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
+		final Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sinkGuiComponent,
 				sinkRackComponent,
 				sinkGuiPlug );
-		
+
 		// Now allocate and draw a buffered image from this source point to the sink point.
 		RackIOLinkImage rilo;
 		try
@@ -170,12 +170,12 @@ public class RackLinkPainter
 			// Now add this into the registry
 			rackLinkRegistry.addIOLinkToRegistry( ril, rilo, sourceRackComponent, sourceRackComponentChannel, sinkRackComponent, sinkRackComponentChannel );
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught creating buffered image: " + e.toString();
+			final String msg = "Exception caught creating buffered image: " + e.toString();
 			log.error( msg, e );
 		}
-		
+
 	}
 
 	public void createCompositeRackLinksImageAndRedisplay()
@@ -195,42 +195,42 @@ public class RackLinkPainter
 					freeCompositeRackLinksTiledImage();
 				}
 			}
-			
+
 			if( compositeRackLinksImage == null )
 			{
 				allocateNewCompositeTiledImage();
 			}
-			
-			Graphics2D clearG = compositeRackLinksImage.createGraphics();
+
+			final Graphics2D clearG = compositeRackLinksImage.createGraphics();
 			clearG.setComposite( AlphaComposite.getInstance( AlphaComposite.CLEAR, 0.0f ) );
 			clearG.fillRect( 0, 0, compositeImageRectangle.width, compositeImageRectangle.height );
 			clearG.dispose();
-			
-			Graphics2D crliG2d = compositeRackLinksImage.createGraphics();
+
+			final Graphics2D crliG2d = compositeRackLinksImage.createGraphics();
 
 			if( DEBUG)
 			{
 				crliG2d.drawRect( 0, 0, compositeImageRectangle.width - 1, compositeImageRectangle.height - 1 );
 			}
-			
+
 			// Now for each individual image paint it at the appropriate offset
-			for(RackIOLinkImage oneIOLinkImage : rackLinkRegistry.getRackIOLinkImages() )
+			for(final RackIOLinkImage oneIOLinkImage : rackLinkRegistry.getRackIOLinkImages() )
 			{
-				Rectangle oneIOLinkRectangle = oneIOLinkImage.getRectangle();
-				BufferedImage oneIOLinkBufferedImage = oneIOLinkImage.getBufferedImage();
-				int oneImageXOffset = oneIOLinkRectangle.x - compositeImageRectangle.x;
-				int oneImageYOffset = oneIOLinkRectangle.y - compositeImageRectangle.y;
+				final Rectangle oneIOLinkRectangle = oneIOLinkImage.getRectangle();
+				final BufferedImage oneIOLinkBufferedImage = oneIOLinkImage.getBufferedImage();
+				final int oneImageXOffset = oneIOLinkRectangle.x - compositeImageRectangle.x;
+				final int oneImageYOffset = oneIOLinkRectangle.y - compositeImageRectangle.y;
 				crliG2d.drawImage( oneIOLinkBufferedImage,
 						oneImageXOffset,
 						oneImageYOffset,
 						null );
 			}
-			for(RackLinkImage oneLinkImage : rackLinkRegistry.getRackLinkImages() )
+			for(final RackLinkImage oneLinkImage : rackLinkRegistry.getRackLinkImages() )
 			{
-				Rectangle oneLinkRectangle = oneLinkImage.getRectangle();
-				BufferedImage oneLinkBufferedImage = oneLinkImage.getBufferedImage();
-				int oneImageXOffset = oneLinkRectangle.x - compositeImageRectangle.x;
-				int oneImageYOffset = oneLinkRectangle.y - compositeImageRectangle.y;
+				final Rectangle oneLinkRectangle = oneLinkImage.getRectangle();
+				final BufferedImage oneLinkBufferedImage = oneLinkImage.getBufferedImage();
+				final int oneImageXOffset = oneLinkRectangle.x - compositeImageRectangle.x;
+				final int oneImageYOffset = oneLinkRectangle.y - compositeImageRectangle.y;
 				crliG2d.drawImage( oneLinkBufferedImage,
 						oneImageXOffset,
 						oneImageYOffset,
@@ -260,12 +260,12 @@ public class RackLinkPainter
 					AllocationBufferType.TYPE_INT_ARGB,
 					compositeImageRectangle.width,
 					compositeImageRectangle.height );
-			
+
 			compositeRackLinksImage = compositeRackLinksTiledBufferedImage.getUnderlyingBufferedImage();
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught allocating new rack links composite image: " + e.toString();
+			final String msg = "Exception caught allocating new rack links composite image: " + e.toString();
 			log.error( msg, e );
 		}
 	}
@@ -281,9 +281,9 @@ public class RackLinkPainter
 				compositeRackLinksTiledBufferedImage = null;
 			}
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught freeing rack links composite image: " + e.toString();
+			final String msg = "Exception caught freeing rack links composite image: " + e.toString();
 			log.error( msg, e );
 		}
 	}
@@ -297,10 +297,10 @@ public class RackLinkPainter
 		int maxX = 0;
 		int minY = Integer.MAX_VALUE;
 		int maxY = 0;
-		
-		for( RackIOLinkImage oneIOLinkImage : rackLinkRegistry.getRackIOLinkImages() )
+
+		for( final RackIOLinkImage oneIOLinkImage : rackLinkRegistry.getRackIOLinkImages() )
 		{
-			Rectangle olir = oneIOLinkImage.getRectangle();
+			final Rectangle olir = oneIOLinkImage.getRectangle();
 			if( olir.x < minX )
 			{
 				minX = olir.x;
@@ -318,9 +318,9 @@ public class RackLinkPainter
 				maxY = olir.y + olir.height;
 			}
 		}
-		for( RackLinkImage oneLinkImage : rackLinkRegistry.getRackLinkImages() )
+		for( final RackLinkImage oneLinkImage : rackLinkRegistry.getRackLinkImages() )
 		{
-			Rectangle olir = oneLinkImage.getRectangle();
+			final Rectangle olir = oneLinkImage.getRectangle();
 			if( olir.x < minX )
 			{
 				minX = olir.x;
@@ -338,7 +338,7 @@ public class RackLinkPainter
 				maxY = olir.y + olir.height;
 			}
 		}
-		
+
 		if( 0 == maxX || 0 == maxY )
 		{
 			return null;
@@ -357,113 +357,113 @@ public class RackLinkPainter
 		compositeRackLinksImage = null;
 	}
 
-	public void updateRackLinkImageForLink( RackLink rl )
+	public void updateRackLinkImageForLink( final RackLink rl )
 	{
-		RackLinkImage rli = rackLinkRegistry.getRackLinkImageForRackLink( rl );
-		
-		RackComponent sourceRackComponent = rl.getProducerRackComponent();
-		AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
-		MadChannelInstance sourceRackComponentChannel = rl.getProducerChannelInstance();
-		GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
-		Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug( tableWithLinks,
+		final RackLinkImage rli = rackLinkRegistry.getRackLinkImageForRackLink( rl );
+
+		final RackComponent sourceRackComponent = rl.getProducerRackComponent();
+		final AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
+		final MadChannelInstance sourceRackComponentChannel = rl.getProducerChannelInstance();
+		final GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+		final Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug( tableWithLinks,
 				dataModel,
 				sourceGuiComponent,
 				sourceRackComponent,
 				sourceGuiPlug );
-		
-		RackComponent sinkRackComponent = rl.getConsumerRackComponent();
-		AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
-		MadChannelInstance sinkRackComponentChannel = rl.getConsumerChannelInstance();
-		GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
-		Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+
+		final RackComponent sinkRackComponent = rl.getConsumerRackComponent();
+		final AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
+		final MadChannelInstance sinkRackComponentChannel = rl.getConsumerChannelInstance();
+		final GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
+		final Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sinkGuiComponent,
 				sinkRackComponent,
 				sinkGuiPlug );
-	
+
 		rli.redrawWireWithNewPoints( sourcePoint, sinkPoint );
 
 		updateCompositeComponentInTable();
 	}
-	
-	public void updateRackIOLinkImageForLink( RackIOLink rl )
+
+	public void updateRackIOLinkImageForLink( final RackIOLink rl )
 	{
-		RackIOLinkImage rili = rackLinkRegistry.getRackIOLinkImageForRackIOLink( rl );
+		final RackIOLinkImage rili = rackLinkRegistry.getRackIOLinkImageForRackIOLink( rl );
 
 		// Bit of a hack....
-		RackComponent masterIOComponent = dataModel.getContentsAtPosition( 0,  0 );
-		MadChannelInstance ioChannelInstance = rl.getRackChannelInstance();
-		RackComponent rackComponent = rl.getRackComponent();
-		MadChannelInstance rackComponentChannelInstance = rl.getRackComponentChannelInstance();
-		MadChannelDirection direction = rackComponentChannelInstance.definition.direction;
-		
-		// For now lets assume some magic about how the end points of the cable are computed.
-		RackComponent sourceRackComponent = (direction == MadChannelDirection.PRODUCER ? rackComponent : masterIOComponent );
-		AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
-		MadChannelInstance sourceRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? rackComponentChannelInstance : ioChannelInstance );
-		GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+		final RackComponent masterIOComponent = dataModel.getContentsAtPosition( 0,  0 );
+		final MadChannelInstance ioChannelInstance = rl.getRackChannelInstance();
+		final RackComponent rackComponent = rl.getRackComponent();
+		final MadChannelInstance rackComponentChannelInstance = rl.getRackComponentChannelInstance();
+		final MadChannelDirection direction = rackComponentChannelInstance.definition.direction;
 
-		Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+		// For now lets assume some magic about how the end points of the cable are computed.
+		final RackComponent sourceRackComponent = (direction == MadChannelDirection.PRODUCER ? rackComponent : masterIOComponent );
+		final AbstractGuiAudioComponent sourceGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sourceRackComponent );
+		final MadChannelInstance sourceRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? rackComponentChannelInstance : ioChannelInstance );
+		final GuiChannelPlug sourceGuiPlug = sourceGuiComponent.getPlugFromMadChannelInstance( sourceRackComponentChannel );
+
+		final Point sourcePoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sourceGuiComponent,
-				sourceRackComponent, 
+				sourceRackComponent,
 				sourceGuiPlug );
-		
-		RackComponent sinkRackComponent = (direction == MadChannelDirection.PRODUCER ? masterIOComponent : rackComponent );
-		AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
-		MadChannelInstance sinkRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? ioChannelInstance : rackComponentChannelInstance );
-		GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
-		Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
+
+		final RackComponent sinkRackComponent = (direction == MadChannelDirection.PRODUCER ? masterIOComponent : rackComponent );
+		final AbstractGuiAudioComponent sinkGuiComponent = tableWithLinks.getGuiComponentFromTableModel( sinkRackComponent );
+		final MadChannelInstance sinkRackComponentChannel = (direction == MadChannelDirection.PRODUCER ? ioChannelInstance : rackComponentChannelInstance );
+		final GuiChannelPlug sinkGuiPlug = sinkGuiComponent.getPlugFromMadChannelInstance( sinkRackComponentChannel );
+		final Point sinkPoint = RackWirePositionHelper.calculateCenterForComponentPlug(
 				tableWithLinks,
 				dataModel,
 				sinkGuiComponent,
 				sinkRackComponent,
 				sinkGuiPlug );
-		
+
 		rili.redrawWireWithNewPoints( sourcePoint, sinkPoint );
 
 		updateCompositeComponentInTable();
 	}
-	
-	public void removeRackLinkImageAt( int modelIndex )
+
+	public void removeRackLinkImageAt( final int modelIndex )
 	{
 //		log.debug("Asked to remove link image at " + modelIndex );
 		rackLinkRegistry.removeLinkAt( modelIndex );
 	}
-	
-	public List<RackLink> getLinksForComponent(RackComponent componentToFindLinksFor)
+
+	public List<RackLink> getLinksForComponent(final RackComponent componentToFindLinksFor)
 	{
 		// Return a copy so we don't get concurrent modification exceptions when removing / adding
 		return new ArrayList<RackLink>(rackLinkRegistry.getLinksForComponent( componentToFindLinksFor ));
 	}
 
-	public void updateLink( RackLink oneLink )
+	public void updateLink( final RackLink oneLink )
 	{
 		// Generate a new link and then re-create the composite image
 		updateRackLinkImageForLink( oneLink );
 //		createCompositeRackLinksImageAndRedisplay();
 	}
-	
-	public void updateIOLink( RackIOLink oneLink )
+
+	public void updateIOLink( final RackIOLink oneLink )
 	{
 		// Generate a new link and then re-create the composite image
 		updateRackIOLinkImageForLink( oneLink );
 //		createCompositeRackLinksImageAndRedisplay();
 	}
-	
-	public List<RackIOLink> getIOLinksForComponent( RackComponent componentToFindLinksFor )
+
+	public List<RackIOLink> getIOLinksForComponent( final RackComponent componentToFindLinksFor )
 	{
 		// Return a copy so we don't get concurrent modification exceptions when removing / adding
 		return new ArrayList<RackIOLink>(rackLinkRegistry.getIOLinksForComponent( componentToFindLinksFor ));
 	}
 
-	public void setDataModel(RackDataModel dataModel)
+	public void setDataModel(final RackDataModel dataModel)
 	{
 		this.dataModel = dataModel;
 	}
-	
+
 	public void updateCompositeComponentInTable()
 	{
 		if( compositeImageRectangle != null && compositeRackLinksImage != null )
@@ -476,7 +476,7 @@ public class RackLinkPainter
 		}
 	}
 
-	public void removeRackIOLinkImageAt( int modelIndex )
+	public void removeRackIOLinkImageAt( final int modelIndex )
 	{
 		rackLinkRegistry.removeIOLinkAt( modelIndex );
 	}

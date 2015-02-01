@@ -24,13 +24,9 @@ import javax.swing.JButton;
 
 public class AddComponentButton extends JButton
 {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8411663536444431279L;
 
-	public AddComponentButton( GuiRackActions rackGuiActions )
+	public AddComponentButton( final GuiRackActions rackGuiActions )
 	{
 		this.setText( "Add Component" );
 		this.setAction( rackGuiActions.getAddComponentAction() );

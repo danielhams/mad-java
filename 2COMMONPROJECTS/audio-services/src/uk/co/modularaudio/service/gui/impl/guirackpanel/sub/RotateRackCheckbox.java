@@ -22,12 +22,11 @@ package uk.co.modularaudio.service.gui.impl.guirackpanel.sub;
 
 import javax.swing.JCheckBox;
 
-
 public class RotateRackCheckbox extends JCheckBox
 {
 	private static final long serialVersionUID = -6118066264515637513L;
 
-	public RotateRackCheckbox( GuiRackActions rackGuiActions )
+	public RotateRackCheckbox( final GuiRackActions rackGuiActions )
 	{
 		this.setAction( rackGuiActions.getRackRotateToggleAction() );
 	}

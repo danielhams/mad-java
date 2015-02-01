@@ -24,19 +24,45 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import uk.co.modularaudio.service.library.LibraryService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
+import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 
+/**
+ * <p>Entry point for operations related to caching of audio data.</p>
+ * <p>The sample caching controller is a vertical responsibility controller
+ * that delegates and/or coordinates work as appropriate from services
+ * that implement the required functionality.</p>
+ *
+ * @author dan
+ */
 public interface SampleCachingController
 {
-
+	/**
+	 * <p>Obtain a sample caching client.</p>
+	 * <p>The client will be added to the list of clients that a background
+	 * thread will be charged with ensuring sufficient caching before
+	 * and after the current frame position of the client.</p>
+	 * <p>The file specified will be added to some internal library.</p>
+	 * @see SampleCachingService#registerCacheClientForFile(String)
+	 * @see LibraryService#addFileToLibrary(java.io.File)
+	 */
 	SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException,
 			UnsupportedAudioFileException;
 
+	/**
+	 * <p>Unregister the supplied client.</p>
+	 * @see SampleCachingService#unregisterCacheClientForFile(SampleCacheClient)
+	 */
 	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
 
+	/**
+	 * <p>Output debugging information onto the console about the use of the
+	 * sample cache</p>
+	 * @see SampleCachingService#dumpSampleCacheToLog()
+	 */
 	void dumpSampleCache();
-			
 }

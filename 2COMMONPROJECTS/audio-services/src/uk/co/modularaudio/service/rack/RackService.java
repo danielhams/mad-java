@@ -33,7 +33,6 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
 import uk.co.modularaudio.util.table.NoSuchContentsException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
@@ -59,10 +58,10 @@ public interface RackService
 	// Components in the rack
 	RackComponent createComponentAtPosition( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition,String> parameterValues, String name, int col, int row )
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
+			throws TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
 	RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition,String> parameterValues, String name )
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
+			throws TableCellFullException, TableIndexOutOfBoundsException, DatastoreException, MAConstraintViolationException, RecordNotFoundException;
 
 	void renameContents( RackDataModel rack, RackComponent component, String newName )
 		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException;

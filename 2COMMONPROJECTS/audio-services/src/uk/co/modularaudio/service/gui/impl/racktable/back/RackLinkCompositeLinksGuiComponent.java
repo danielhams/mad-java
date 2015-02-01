@@ -31,18 +31,18 @@ import javax.swing.JComponent;
 public class RackLinkCompositeLinksGuiComponent extends JComponent
 {
 	private static final long serialVersionUID = 3441350163975600834L;
-	
-	private Rectangle compositeLinksBounds = null;
-	private BufferedImage compositeLinksImage = null;
-	
+
+	private Rectangle compositeLinksBounds;
+	private BufferedImage compositeLinksImage;
+
 	private final static float GENERAL_WIRE_TRANSPARENCY = 0.7f;
 
 	public RackLinkCompositeLinksGuiComponent()
 	{
 		setOpaque( false );
 	}
-	
-	public void setBoundsAndImage( Rectangle bounds, BufferedImage image )
+
+	public void setBoundsAndImage( final Rectangle bounds, final BufferedImage image )
 	{
 		this.compositeLinksBounds = bounds;
 		this.compositeLinksImage = image;
@@ -51,12 +51,13 @@ public class RackLinkCompositeLinksGuiComponent extends JComponent
 			setBounds( bounds );
 		}
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		if( compositeLinksBounds != null && compositeLinksImage != null )
 		{
-			Graphics2D g2d = (Graphics2D)g;
+			final Graphics2D g2d = (Graphics2D)g;
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 					GENERAL_WIRE_TRANSPARENCY));
 			g.drawImage( compositeLinksImage, 0, 0, null );

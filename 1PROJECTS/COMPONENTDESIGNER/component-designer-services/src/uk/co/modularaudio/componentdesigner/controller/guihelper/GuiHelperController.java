@@ -22,27 +22,51 @@ package uk.co.modularaudio.componentdesigner.controller.guihelper;
 
 import java.awt.Component;
 
+import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
 
+/**
+ * <p>Entry point for operations related to the GUI.</p>
+ * <p>The gui helper controller is a vertical responsibility controller
+ * that delegates and/or coordinates work as appropriate from services
+ * that implement the required functionality.</p>
+ *
+ * @author dan
+ */
 public interface GuiHelperController
 {
+	/**
+	 * <p>Create a view for the supplied controller of a user
+	 * preferences model.</p>
+	 * @see GuiService#getUserPreferencesMVCView(UserPreferencesMVCController)
+	 */
 	UserPreferencesMVCView getUserPreferencesMVCView( UserPreferencesMVCController prefsModelController ) throws DatastoreException;
 
-	MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException;
-
+	/**
+	 * <p>Create a Swing component that presents the supplied
+	 * rack.</p>
+	 * @see GuiService#createGuiForRackDataModel(RackDataModel)
+	 */
 	RackModelRenderingComponent createGuiForRackDataModel( RackDataModel rackDataModel ) throws DatastoreException;
 
+	/**
+	 * <p>Register a new tab in the application tab pane.</p>
+	 * @see GuiService#registerRackTabbedPane(GuiTabbedPane)
+	 */
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
 
+	/**
+	 * <p>Show a yes no dialog to the user.</p>
+	 * @see GuiService#showYesNoQuestionDialog(Component, String, String, int, String[], String, YesNoQuestionDialogCallback)
+	 */
 	void showYesNoQuestionDialog( Component parentComponent,
 			String message,
 			String title,
@@ -51,6 +75,10 @@ public interface GuiHelperController
 			String defaultChoice,
 			YesNoQuestionDialogCallback callback );
 
+	/**
+	 * <p>Show a text input dialog to the user.</p>
+	 * @see GuiService#showTextInputDialog(Component, String, String, int, String, TextInputDialogCallback)
+	 */
 	void showTextInputDialog( Component parentComponent,
 			String message,
 			String title,
@@ -58,6 +86,10 @@ public interface GuiHelperController
 			String initialValue,
 			TextInputDialogCallback callback );
 
+	/**
+	 * <p>Show a message dialog to the user.</p>
+	 * @see GuiService#showMessageDialog(Component, String, String, int, MessageDialogCallback)
+	 */
 	void showMessageDialog( Component parentComponent,
 			String message,
 			String title,

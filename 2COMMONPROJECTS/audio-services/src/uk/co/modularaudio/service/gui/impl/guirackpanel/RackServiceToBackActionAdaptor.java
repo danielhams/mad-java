@@ -37,51 +37,51 @@ import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 public class RackServiceToBackActionAdaptor implements
 		GuiRackBackActionListener
 {
-	private RackService rackService = null;
-	private RackDataModel rackDataModel = null;
+	private final RackService rackService;
+	private RackDataModel rackDataModel;
 
-	public RackServiceToBackActionAdaptor( RackService rackService, RackDataModel rackDataModel )
+	public RackServiceToBackActionAdaptor( final RackService rackService, final RackDataModel rackDataModel )
 	{
 		this.rackService = rackService;
 		this.rackDataModel = rackDataModel;
 	}
 
 	@Override
-	public void guiMoveContentsToPosition( RackComponent component, int x, int y ) throws DatastoreException, TableCellFullException, TableIndexOutOfBoundsException, NoSuchContentsException
+	public void guiMoveContentsToPosition( final RackComponent component, final int x, final int y ) throws DatastoreException, TableCellFullException, TableIndexOutOfBoundsException, NoSuchContentsException
 	{
 		rackService.moveContentsToPosition( rackDataModel, component, x, y );
 	}
 
 	@Override
-	public void guiRemoveRackLink( RackLink rackLink ) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
+	public void guiRemoveRackLink( final RackLink rackLink ) throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		rackService.deleteRackLink( rackDataModel, rackLink );
 	}
 
 	@Override
-	public void guiAddRackLink(  RackComponent producerRackComponent, MadChannelInstance producerChannelInstance,
-			RackComponent consumerRackComponent, MadChannelInstance consumerChannelInstance  )
+	public void guiAddRackLink(  final RackComponent producerRackComponent, final MadChannelInstance producerChannelInstance,
+			final RackComponent consumerRackComponent, final MadChannelInstance consumerChannelInstance  )
 		throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		rackService.addRackLink( rackDataModel, producerRackComponent, producerChannelInstance, consumerRackComponent, consumerChannelInstance );
 	}
 
 	@Override
-	public void setRackDataModel( RackDataModel rackDataModel )
+	public void setRackDataModel( final RackDataModel rackDataModel )
 	{
 		this.rackDataModel = rackDataModel;
 	}
 
 	@Override
-	public void guiAddRackIOLink( MadChannelInstance rackChannelInstance, RackComponent rackComponent,
-			MadChannelInstance rackComponentChannelInstance ) 
+	public void guiAddRackIOLink( final MadChannelInstance rackChannelInstance, final RackComponent rackComponent,
+			final MadChannelInstance rackComponentChannelInstance )
 			throws DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 		rackService.addRackIOLink( rackDataModel, rackChannelInstance, rackComponent, rackComponentChannelInstance );
 	}
 
 	@Override
-	public void guiRemoveRackIOLink( RackIOLink existingLink )
+	public void guiRemoveRackIOLink( final RackIOLink existingLink )
 			throws DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		rackService.deleteRackIOLink( rackDataModel, existingLink );
@@ -90,7 +90,7 @@ public class RackServiceToBackActionAdaptor implements
 	@Override
 	public void destroy()
 	{
-		rackDataModel = null;		
+		this.rackDataModel = null;
 	}
 
 }

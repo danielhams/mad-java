@@ -51,90 +51,50 @@ import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 {
 //	private static Log log = LogFactory.getLog( GuiRackPanel.class.getName() );
-	
+
 	private static final long serialVersionUID = -8428902055860040205L;
-	
+
 	private static final boolean SHOW_GRIDS = false;
 	public final static Dimension FRONT_GRID_SIZE = new Dimension( 300, 80 );
 	public final static Dimension BACK_GRID_SIZE = new Dimension( 300, 80 );
 
-	private GuiComponentFactoryService guiComponentFactoryService = null;
-	private GuiService guiService = null;
-	private RackService rackService = null;
-	private MadComponentService componentService = null;
-	private BufferedImageAllocationService bufferedImageAllocationService = null;
-	private RackDataModel rackDataModel = null;
-	
-	private GuiRackToolbar toolbar = null;
-	
-	private GuiRackActions guiRackActions = null;
-	
-	private RackTable frontAudioComponentTable = null;
-	private RackTableWithLinks backAudioComponentTable = null;
-	private GuiRackAndWiresCardPanel rackAndWiresCardPanel = null;
-	private GuiScrollableArea scrollableArea = null;
-	private GuiRackBackActionListener backActionListener = null;
-	
-	public GuiRackPanel( GuiComponentFactoryService guiComponentFactoryService,
-			GuiService guiService,
-			RackService rackService,
-			MadComponentService componentService,
-			BufferedImageAllocationService bufferedImageAllocationService,
-			GuiRackBackActionListener backActionListener,
-			RackDataModel rackDataModel )
-	{
-		this.guiComponentFactoryService = guiComponentFactoryService;
-		this.guiService = guiService;
-		this.rackService = rackService;
-		this.componentService = componentService;
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
-		
-		this.rackDataModel = rackDataModel;
+	private final GuiRackToolbar toolbar;
 
+	private final GuiRackActions guiRackActions;
+
+	private final RackTable frontAudioComponentTable;
+	private final RackTableWithLinks backAudioComponentTable;
+	private final GuiRackAndWiresCardPanel rackAndWiresCardPanel;
+	private final GuiScrollableArea scrollableArea;
+	private final GuiRackBackActionListener backActionListener;
+
+	public GuiRackPanel( final GuiComponentFactoryService guiComponentFactoryService,
+			final GuiService guiService,
+			final RackService rackService,
+			final MadComponentService componentService,
+			final BufferedImageAllocationService bufferedImageAllocationService,
+			final GuiRackBackActionListener backActionListener,
+			final RackDataModel rackDataModel ) throws DatastoreException
+	{
 		this.backActionListener = backActionListener;
-		
-		setupRackActions();
-		
-		setupToolbar();
-		
-		setupFrontComponent();
-		setupBackComponent();
-		setupRackAndWiresCardPanel();
-		setupScrollableArea();
 
-		// Now setup the panel
-		// add the toolbar the scrollpane and cardpanel to it
-		MigLayout migLayout = new MigLayout("insets 0, fill");
-		this.setLayout( migLayout );
-		this.add( toolbar, "wrap" );
-		this.add( scrollableArea, "grow" );
-		this.validate();
-	}
-	
-	private void setupRackActions()
-	{
 		guiRackActions = new GuiRackActions( guiService, rackService, componentService, this, rackDataModel );
-	}
-	
-	private void setupToolbar()
-	{
+
 		toolbar = new GuiRackToolbar( guiRackActions, guiService );
-	}
-	
-	private void setupFrontComponent()
-	{
-		RackTableEmptyCellPainter frontEmptyCellPainter = new RackSidesEmptyCellPainter();
-	
-		Color gridColour = Color.BLUE;
-		RackTableGuiFactory frontAudioComponentToGuiFactory = new FrontRackTableGuiFactory( guiComponentFactoryService );
-		
-		DndRackDragDecorations decorations = new DndRackDragDecorations();
-		DndRackDragPolicy rackDragDndPolicy = new DndRackDragPolicy( rackService, guiService, rackDataModel, decorations );
-	
+
+		final RackTableEmptyCellPainter frontEmptyCellPainter = new RackSidesEmptyCellPainter();
+
+		final Color gridColour = Color.BLUE;
+		final RackTableGuiFactory frontAudioComponentToGuiFactory = new FrontRackTableGuiFactory( guiComponentFactoryService );
+
+		final DndRackDragDecorations decorations = new DndRackDragDecorations();
+		final DndRackDragPolicy rackDragDndPolicy = new DndRackDragPolicy( rackService, guiService, rackDataModel, decorations );
+
 		frontAudioComponentTable = new RackTable( rackDataModel,
 				frontEmptyCellPainter,
 				frontAudioComponentToGuiFactory,
@@ -143,25 +103,22 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 				FRONT_GRID_SIZE,
 				SHOW_GRIDS,
 				gridColour);
-	}
-	
-	private void setupBackComponent()
-	{
-		RackTableEmptyCellPainter backEmptyCellPainter = new RackSidesEmptyCellPainter();
-		
-		Color gridColour = Color.GREEN;
-		RackTableGuiFactory backAudioComponentToGuiFactory = new BackRackTableGuiFactory( guiComponentFactoryService );
-		
-		DndRackDragDecorations rackDecorations = new DndRackDragDecorations();
-		DndWireDragDecorations wireDecorations = new DndWireDragDecorations( bufferedImageAllocationService );
-		
-		RackTableDndPolicy backAudioComponentTableDndPolicy = new BackDndPolicy( rackService,
+
+		final RackTableEmptyCellPainter backEmptyCellPainter = new RackSidesEmptyCellPainter();
+
+		final Color backGridColour = Color.GREEN;
+		final RackTableGuiFactory backAudioComponentToGuiFactory = new BackRackTableGuiFactory( guiComponentFactoryService );
+
+		final DndRackDragDecorations rackDecorations = new DndRackDragDecorations();
+		final DndWireDragDecorations wireDecorations = new DndWireDragDecorations( bufferedImageAllocationService );
+
+		final RackTableDndPolicy backAudioComponentTableDndPolicy = new BackDndPolicy( rackService,
 				guiService,
 				rackDataModel,
 				rackDecorations,
 				wireDecorations,
 				backActionListener );
-		
+
 		backAudioComponentTable = new RackTableWithLinks( bufferedImageAllocationService,
 				rackDataModel,
 				backEmptyCellPainter,
@@ -171,29 +128,31 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 				wireDecorations,
 				BACK_GRID_SIZE,
 				SHOW_GRIDS, // showGrid,
-				gridColour );
-	}
-	
-	private void setupRackAndWiresCardPanel()
-	{
+				backGridColour );
+
 		rackAndWiresCardPanel = new GuiRackAndWiresCardPanel( frontAudioComponentTable, backAudioComponentTable );
-	}
-	
-	private void setupScrollableArea()
-	{
+
 		scrollableArea = new GuiScrollableArea();
 		scrollableArea.getViewport().add( rackAndWiresCardPanel );
+
+		// Now setup the panel
+		// add the toolbar the scrollpane and cardpanel to it
+		final MigLayout migLayout = new MigLayout("insets 0, fill");
+		this.setLayout( migLayout );
+		this.add( toolbar, "wrap" );
+		this.add( scrollableArea, "grow" );
+		this.validate();
 	}
 
 	@Override
-	public void setRackDataModel( RackDataModel rackDataModel )
+	public void setRackDataModel( final RackDataModel rackDataModel )
 	{
 		frontAudioComponentTable.setRackDataModel( rackDataModel );
 		backAudioComponentTable.setRackDataModel( rackDataModel );
 		backActionListener.setRackDataModel( rackDataModel );
 		guiRackActions.setRackDataModel( rackDataModel );
 	}
-	
+
 	@Override
 	public JComponent getJComponent()
 	{
@@ -203,9 +162,10 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 	@Override
 	public void rotateRack()
 	{
-		rackAndWiresCardPanel.rotateRack();		
+		rackAndWiresCardPanel.rotateRack();
 	}
 
+	@Override
 	public boolean isFrontShowing()
 	{
 		return rackAndWiresCardPanel.isFrontShowing();
@@ -219,13 +179,12 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 		backAudioComponentTable.destroy();
 		backActionListener.destroy();
 		guiRackActions.destroy();
-		rackDataModel = null;
 	}
 
 	@Override
-	public void setForceRepaints( boolean forceRepaints )
+	public void setForceRepaints( final boolean forceRepaints )
 	{
 		frontAudioComponentTable.setForceRepaints( forceRepaints );
-		backAudioComponentTable.setForceRepaints( forceRepaints );		
+		backAudioComponentTable.setForceRepaints( forceRepaints );
 	}
 }

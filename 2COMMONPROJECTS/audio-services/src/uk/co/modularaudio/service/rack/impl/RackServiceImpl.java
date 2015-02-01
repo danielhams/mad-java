@@ -189,32 +189,40 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 			final RackComponent rackComponent,
 			final int col,
 			final int row )
-					throws DatastoreException, MAConstraintViolationException, ContentsAlreadyAddedException,
-					TableCellFullException, TableIndexOutOfBoundsException
+					throws DatastoreException, MAConstraintViolationException, TableCellFullException, TableIndexOutOfBoundsException
 	{
-		final MadInstance<?,?> ci = rackComponent.getInstance();
-
-		// Must add to rack before adding to the graph - we want and GUI initialisation
-		// (like GUI element bounds) to be set before the component itself gets initialised.
-		// This avoids the startup() call on the component without a GUI thing knowing how
-		// big it needs to be for buffers
-		// However, it is the rack that checks for name collisions, so we need to check for name collisions first
-		if( !graphService.checkCanAddInstanceToGraphWithName( rack.getRackGraph(), ci.getInstanceName() ) )
+		try
 		{
-			throw new MAConstraintViolationException( "A component with the name " + ci.getInstanceName() + " already exists in this rack" );
+			final MadInstance<?,?> ci = rackComponent.getInstance();
+
+			// Must add to rack before adding to the graph - we want and GUI initialisation
+			// (like GUI element bounds) to be set before the component itself gets initialised.
+			// This avoids the startup() call on the component without a GUI thing knowing how
+			// big it needs to be for buffers
+			// However, it is the rack that checks for name collisions, so we need to check for name collisions first
+			if( !graphService.checkCanAddInstanceToGraphWithName( rack.getRackGraph(), ci.getInstanceName() ) )
+			{
+				throw new MAConstraintViolationException( "A component with the name " + ci.getInstanceName() + " already exists in this rack" );
+			}
+
+			rack.addContentsAtPosition( rackComponent,  col, row );
+
+			graphService.addInstanceToGraphWithName( rack.getRackGraph(), ci, ci.getInstanceName() );
+
+			if( ci instanceof DirtyableRackComponent )
+			{
+				final DirtyableRackComponent dirtyableComponent = (DirtyableRackComponent)ci;
+				dirtyableComponent.addRackDirtyListener( rack );
+			}
+			// Mark the rack as dirty
+			rack.setDirty( true );
 		}
-
-		rack.addContentsAtPosition( rackComponent,  col, row );
-
-		graphService.addInstanceToGraphWithName( rack.getRackGraph(), ci, ci.getInstanceName() );
-
-		if( ci instanceof DirtyableRackComponent )
+		catch (final ContentsAlreadyAddedException e)
 		{
-			final DirtyableRackComponent dirtyableComponent = (DirtyableRackComponent)ci;
-			dirtyableComponent.addRackDirtyListener( rack );
+			final String msg ="ContentsAlreadyAddedException caught during internal add: " + e.toString();
+			log.error( msg, e );
+			throw new DatastoreException( msg, e );
 		}
-		// Mark the rack as dirty
-		rack.setDirty( true );
 	}
 
 	@Override
@@ -224,7 +232,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 			final String name,
 			final int col,
 			final int row )
-					throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
+					throws TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 					MAConstraintViolationException, RecordNotFoundException
 	{
 		// Make a new RackComponent for this component instance and add it to the rack
@@ -252,7 +260,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 			final MadDefinition<?,?> madDefinition,
 			final Map<MadParameterDefinition,String> parameterValues,
 			final String name )
-					throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException,
+					throws TableCellFullException, TableIndexOutOfBoundsException,
 					DatastoreException, MAConstraintViolationException, RecordNotFoundException
 	{
 		final int newCol = 0;
@@ -273,9 +281,9 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 						break;
 					}
 				}
-				catch (final TableIndexOutOfBoundsException e)
+				catch (final TableIndexOutOfBoundsException | ContentsAlreadyAddedException e)
 				{
-					final String msg = "TableIndexOutOfBoundsException caught during addNamedContents: " + e.toString();
+					final String msg = "Exception caught during addNamedContents: " + e.toString();
 					log.error( msg, e );
 				}
 			}

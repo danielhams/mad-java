@@ -40,18 +40,18 @@ import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 public class NewComponentNameConfirmedCallback implements TextInputDialogCallback
 {
 	private static Log log = LogFactory.getLog( NewComponentNameConfirmedCallback.class.getName() );
-	
-	private RackService rackService = null;
-	private GuiService guiService = null;
-	private RackDataModel rackDataModel = null;
-	private Component parentComponent = null;
-	private MadDefinition<?,?> typeToAdd = null;
-	
-	public NewComponentNameConfirmedCallback( RackService rackService,
-			GuiService guiService,
-			RackDataModel rackDataModel,
-			Component parentComponent,
-			MadDefinition<?,?> typeToAdd )
+
+	private final RackService rackService;
+	private final GuiService guiService;
+	private final RackDataModel rackDataModel;
+	private final Component parentComponent;
+	private final MadDefinition<?,?> typeToAdd;
+
+	public NewComponentNameConfirmedCallback( final RackService rackService,
+			final GuiService guiService,
+			final RackDataModel rackDataModel,
+			final Component parentComponent,
+			final MadDefinition<?,?> typeToAdd )
 	{
 		this.rackService = rackService;
 		this.guiService = guiService;
@@ -61,7 +61,7 @@ public class NewComponentNameConfirmedCallback implements TextInputDialogCallbac
 	}
 
 	@Override
-	public void dialogClosedReceiveText( String userNewName )
+	public void dialogClosedReceiveText( final String userNewName )
 	{
 		try
 		{
@@ -70,20 +70,20 @@ public class NewComponentNameConfirmedCallback implements TextInputDialogCallbac
 			if( userNewName != null )
 			{
 				// Check to see if it's a parameterised instance
-				Map<MadParameterDefinition, String> paramValues = new HashMap<MadParameterDefinition, String>();
+				final Map<MadParameterDefinition, String> paramValues = new HashMap<MadParameterDefinition, String>();
 				boolean failedParameters = false;
 				if( typeToAdd.isParametrable() )
 				{
 					log.debug("Need some logic for parameterisable instances!");
-					
-					MadParameterDefinition[] parameterDefs = typeToAdd.getParameterDefinitions();
-					
+
+					final MadParameterDefinition[] parameterDefs = typeToAdd.getParameterDefinitions();
+
 					for( int i = 0 ; !failedParameters && i < parameterDefs.length ; i++ )
 					{
-						MadParameterDefinition aupd = parameterDefs[ i ];
+						final MadParameterDefinition aupd = parameterDefs[ i ];
 						question = "Please enter a value for the parameter " + aupd.getUserVisibleString();
 						title = "Enter creation parameter";
-						String parameterValue = (String)JOptionPane.showInputDialog( parentComponent,
+						final String parameterValue = (String)JOptionPane.showInputDialog( parentComponent,
 								question,
 								title,
 								JOptionPane.QUESTION_MESSAGE,
@@ -100,7 +100,7 @@ public class NewComponentNameConfirmedCallback implements TextInputDialogCallbac
 						}
 					}
 				}
-				
+
 				if( !failedParameters )
 				{
 					rackService.createComponent( rackDataModel, typeToAdd, paramValues, userNewName );
@@ -111,14 +111,14 @@ public class NewComponentNameConfirmedCallback implements TextInputDialogCallbac
 				}
 			}
 		}
-		catch( MAConstraintViolationException ecve )
+		catch( final MAConstraintViolationException ecve )
 		{
 			guiService.showMessageDialog( parentComponent, "A Component with that name already exists.", "Unable to add component",
 					JOptionPane.INFORMATION_MESSAGE, null );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught handling new component name confirmation: " + e.toString();
+			final String msg = "Exception caught handling new component name confirmation: " + e.toString();
 			log.error( msg, e );
 		}
 	}

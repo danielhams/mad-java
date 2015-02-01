@@ -42,28 +42,26 @@ public class GuiRackActions
 	public class RackRotateToggleAction extends AbstractAction
 	{
 		private static final long serialVersionUID = 6567077333146253552L;
-		
-//		private GuiService guiService = null;
-		private GuiRackPanel guiRackPanel = null;
-		
-		public RackRotateToggleAction( GuiService guiService, GuiRackPanel guiRackPanel )
+
+		private GuiRackPanel guiRackPanel;
+
+		public RackRotateToggleAction( final GuiService guiService, final GuiRackPanel guiRackPanel )
 		{
-//			this.guiService = guiService;
 			this.guiRackPanel = guiRackPanel;
 			this.putValue(NAME, "View Wires");
 			this.putValue(SELECTED_KEY, "RackRotate.selected");
 		}
 
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 			try
 			{
 				guiRackPanel.rotateRack();
 			}
-			catch (Exception ex)
+			catch (final Exception ex)
 			{
-				String msg = "Exception caught performing rotate rack action: " + ex.toString();
+				final String msg = "Exception caught performing rotate rack action: " + ex.toString();
 				log.error( msg, ex );
 			}
 		}
@@ -73,70 +71,69 @@ public class GuiRackActions
 			guiRackPanel = null;
 		}
 	}
-	
+
 	public class AddComponentAction extends AbstractAction
 	{
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = -7614791274456721383L;
-		
-		private GuiService guiService = null;
-		private RackService rackService = null;
-//		private ComponentService componentService = null;
-		private GuiRackPanel guiRackPanel = null;
-		private RackDataModel rackDataModel = null;
-		
-		public AddComponentAction( GuiService guiService,
-				RackService rackService,
-				MadComponentService componentService,
-				GuiRackPanel guiRackPanel, RackDataModel rackDataModel )
+
+		private final GuiService guiService;
+		private final RackService rackService;
+		private GuiRackPanel guiRackPanel;
+		private RackDataModel rackDataModel;
+
+		public AddComponentAction( final GuiService guiService,
+				final RackService rackService,
+				final MadComponentService componentService,
+				final GuiRackPanel guiRackPanel,
+				final RackDataModel rackDataModel )
 		{
 			this.guiService = guiService;
 			this.rackService = rackService;
-//			this.componentService = componentService;
 			this.rackDataModel = rackDataModel;
 			this.guiRackPanel = guiRackPanel;
 			this.putValue(NAME, "Add Component To Rack");
 		}
-		
+
 		@Override
-		public void actionPerformed(ActionEvent e)
+		public void actionPerformed(final ActionEvent e)
 		{
 
 //			log.debug("ActionPerformed on add component action");
 			try
 			{
-				MadDefinitionListModel pctcm = guiService.getMadDefinitionsModel();
-				MadDefinition<?,?> typeToAdd = (MadDefinition<?,?>) pctcm.getSelectedItem();
+				final MadDefinitionListModel pctcm = guiService.getMadDefinitionsModel();
+				final MadDefinition<?,?> typeToAdd = (MadDefinition<?,?>) pctcm.getSelectedItem();
 //				log.debug("Would attempt to add: " + typeToAdd.getId() );
 				// Pop up a dialog allowing the use to enter a new name
 				// We get the default to put in the dialog from the graph anyway.
-				String defaultNewName = rackService.getNameForNewComponentOfType( rackDataModel, typeToAdd );
-				String question = "Please enter the name for the new \"" + typeToAdd.getName() + "\"";
-				String title = "Enter new component name";
-				
-				NewComponentNameConfirmedCallback componentNameConfirmedCallback = new NewComponentNameConfirmedCallback( rackService,
+				final String defaultNewName = rackService.getNameForNewComponentOfType( rackDataModel, typeToAdd );
+				final String question = "Please enter the name for the new \"" + typeToAdd.getName() + "\"";
+				final String title = "Enter new component name";
+
+				final NewComponentNameConfirmedCallback componentNameConfirmedCallback = new NewComponentNameConfirmedCallback( rackService,
 						guiService,
 						rackDataModel,
 						guiRackPanel,
 						typeToAdd );
-				
+
 				guiService.showTextInputDialog( guiRackPanel,
 						question,
 						title,
 						JOptionPane.QUESTION_MESSAGE,
 						defaultNewName,
-						componentNameConfirmedCallback );	
+						componentNameConfirmedCallback );
 			}
-			catch(Exception ex)
+			catch(final Exception ex)
 			{
-				String msg = "Exception caught performing add component: " + ex.toString();
+				final String msg = "Exception caught performing add component: " + ex.toString();
 				log.error( msg, ex );
 			}
 		}
 
-		public void setRackDataModel( RackDataModel rackDataModel )
+		public void setRackDataModel( final RackDataModel rackDataModel )
 		{
 			this.rackDataModel = rackDataModel;
 		}
@@ -147,28 +144,17 @@ public class GuiRackActions
 			this.guiRackPanel = null;
 		}
 	}
-	
+
 	private static Log log = LogFactory.getLog( GuiRackActions.class.getName() );
-	
-//	private GuiService guiService = null;
-//	private RackService rackService = null;
-//	private ComponentService componentService = null;
-//	private GuiRackPanel guiRackPanel = null;
-//	private RackDataModel rackDataModel = null;
-	
-	private AddComponentAction addComponentAction = null;
-	private RackRotateToggleAction rackRotateToggleAction = null;
-	
-	public GuiRackActions( GuiService guiService,
-			RackService rackService,
-			MadComponentService componentService,
-			GuiRackPanel guiRackPanel, RackDataModel rackDataModel )
+
+	private final AddComponentAction addComponentAction;
+	private final RackRotateToggleAction rackRotateToggleAction;
+
+	public GuiRackActions( final GuiService guiService,
+			final RackService rackService,
+			final MadComponentService componentService,
+			final GuiRackPanel guiRackPanel, final RackDataModel rackDataModel )
 	{
-//		this.guiService = guiService;
-//		this.rackService = rackService;
-//		this.componentService = componentService;
-//		this.guiRackPanel = guiRackPanel;
-//		this.rackDataModel = rackDataModel;
 		addComponentAction = new AddComponentAction( guiService,
 				rackService,
 				componentService,
@@ -177,26 +163,25 @@ public class GuiRackActions
 		rackRotateToggleAction = new RackRotateToggleAction( guiService,
 				guiRackPanel );
 	}
-	
+
 	public Action getAddComponentAction()
 	{
 		return addComponentAction;
 	}
-	
+
 	public Action getRackRotateToggleAction()
 	{
 		return rackRotateToggleAction;
 	}
-	
-	public void setRackDataModel( RackDataModel rackDataModel )
+
+	public void setRackDataModel( final RackDataModel rackDataModel )
 	{
-//		this.rackDataModel = rackDataModel;
 		addComponentAction.setRackDataModel( rackDataModel );
 	}
 
 	public void destroy()
 	{
 		addComponentAction.destroy();
-		rackRotateToggleAction.destroy();		
+		rackRotateToggleAction.destroy();
 	}
 }

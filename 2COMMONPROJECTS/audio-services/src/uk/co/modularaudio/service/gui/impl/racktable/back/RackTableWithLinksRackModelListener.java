@@ -36,22 +36,22 @@ import uk.co.modularaudio.util.table.TableModelListener;
 public class RackTableWithLinksRackModelListener implements TableModelListener<RackComponent, RackComponentProperties>
 {
 	private static Log log = LogFactory.getLog( RackTableWithLinksRackModelListener.class.getName() );
-	
-	private RackTableWithLinks table = null;
 
-	public RackTableWithLinksRackModelListener( RackTableWithLinks rackTableWithLinks )
+	private final RackTableWithLinks table;
+
+	public RackTableWithLinksRackModelListener( final RackTableWithLinks rackTableWithLinks )
 	{
 		this.table = rackTableWithLinks;
 	}
 
 	@Override
-	public void tableChanged(TableModelEvent<RackComponent, RackComponentProperties> event)
+	public void tableChanged(final TableModelEvent<RackComponent, RackComponentProperties> event)
 	{
 //		log.debug("tableChanged received");
-		RackDataModel dataModel = (RackDataModel) event.getSource();
-		int eventType = event.getType();
-		int startRow = event.getFirstRow();
-		int endRow = event.getLastRow();
+		final RackDataModel dataModel = (RackDataModel) event.getSource();
+		final int eventType = event.getType();
+		final int startRow = event.getFirstRow();
+		final int endRow = event.getLastRow();
 		if( startRow == 0 && endRow == Integer.MAX_VALUE )
 		{
 			log.error("NOT IMPLEMENTED!");
@@ -71,20 +71,20 @@ public class RackTableWithLinksRackModelListener implements TableModelListener<R
 				int uCounter = startRow;
 				do
 				{
-					RackComponent componentToFindLinksFor = dataModel.getEntryAt( uCounter );
-					List<RackLink> linksToRefresh = table.getLinksForComponent( componentToFindLinksFor );
-					for( RackLink oneLink : linksToRefresh )
+					final RackComponent componentToFindLinksFor = dataModel.getEntryAt( uCounter );
+					final List<RackLink> linksToRefresh = table.getLinksForComponent( componentToFindLinksFor );
+					for( final RackLink oneLink : linksToRefresh )
 					{
 						table.updateLink( oneLink );
 					}
-					List<RackIOLink> ioLinksToRefresh = table.getIOLinksForComponent( componentToFindLinksFor );
-					for( RackIOLink oneIOLink : ioLinksToRefresh )
+					final List<RackIOLink> ioLinksToRefresh = table.getIOLinksForComponent( componentToFindLinksFor );
+					for( final RackIOLink oneIOLink : ioLinksToRefresh )
 					{
 						table.updateIOLink( oneIOLink );
 					}
 					uCounter++;
 				}
-				while( uCounter <= endRow );				
+				while( uCounter <= endRow );
 				break;
 			case TableModelEvent.DELETE:
 				// Entries removed from the table

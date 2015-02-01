@@ -55,7 +55,6 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 
 	private final DndRackComponentPopup popup;
 
-//	private NewDndRackDragDecorations decorations = null;
 	private final DndRackDragRegionHintDecoration regionHintDecorator;
 	private final DndRackDragGhostHintDecoration ghostHintDecorator;
 
@@ -63,7 +62,6 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 	{
 		this.rackService = rackService;
 		this.dataModel = dataModel;
-//		this.decorations = decorations;
 		regionHintDecorator = decorations.getRegionHintDecorator();
 		ghostHintDecorator = decorations.getGhostHintDecorator();
 
@@ -194,18 +192,18 @@ public class DndRackDragPolicy implements RackTableDndPolicy
 
 	// Stuff used to highlight the possible source of a drag region
 	private final Rectangle newRegionHintRectangle = new Rectangle(-1, -1);
-	private AbstractGuiAudioComponent regionHintSourceAreaImageComponent = null;
+	private AbstractGuiAudioComponent regionHintSourceAreaImageComponent;
 
 	// Copies of data the policy hangs on to to help with tests, or with the move itself.
-	private AbstractGuiAudioComponent dragSourceGuiComponent = null;
-	private RackComponent dragSourceTableComponent = null;
-	private Span dragSourceCellSpan = null;
-	private Point dragSourceMouseOffset = null;
-	private Point dragSourceOriginalOffset = null;
+	private AbstractGuiAudioComponent dragSourceGuiComponent;
+	private RackComponent dragSourceTableComponent;
+	private Span dragSourceCellSpan;
+	private Point dragSourceMouseOffset;
+	private Point dragSourceOriginalOffset;
 
 	// Setup by start drag
-	private DndRackDragPolicyDragTargetHelper dragTargetHelper = null;
-	private DndRackDragMatch dragMatch = null;
+	private DndRackDragPolicyDragTargetHelper dragTargetHelper;
+	private DndRackDragMatch dragMatch;
 
 	@Override
 	public void startDrag( final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,

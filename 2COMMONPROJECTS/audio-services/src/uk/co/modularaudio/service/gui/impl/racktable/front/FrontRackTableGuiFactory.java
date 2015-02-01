@@ -27,8 +27,6 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
 public class FrontRackTableGuiFactory implements RackTableGuiFactory
 {
-//	private Map<RackComponent, AbstractGuiAudioComponent> cacheOfGui = new HashMap<RackComponent, AbstractGuiAudioComponent>();
-
 	private final GuiComponentFactoryService guiComponentFactoryService;
 
 	public FrontRackTableGuiFactory( final GuiComponentFactoryService guiComponentFactoryService )
@@ -39,13 +37,6 @@ public class FrontRackTableGuiFactory implements RackTableGuiFactory
 	@Override
 	public AbstractGuiAudioComponent generateSwingComponent( final RackComponent inComponent )
 	{
-//		AbstractGuiAudioComponent retVal = cacheOfGui.get( inComponent );
-//		if( retVal == null )
-//		{
-//			retVal = guiComponentFactoryService.createFrontGuiComponent( inComponent );
-//			cacheOfGui.put( inComponent, retVal );
-//		}
-//		return retVal;
 		return guiComponentFactoryService.createFrontGuiComponent( inComponent );
 	}
 }

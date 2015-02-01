@@ -24,14 +24,15 @@ import java.awt.Shape;
 import java.awt.Stroke;
 
 public class CompositeStroke implements Stroke {
-	private Stroke stroke1, stroke2;
+	private final Stroke stroke1, stroke2;
 
-	public CompositeStroke( Stroke stroke1, Stroke stroke2 ) {
+	public CompositeStroke( final Stroke stroke1, final Stroke stroke2 ) {
 		this.stroke1 = stroke1;
 		this.stroke2 = stroke2;
 	}
 
-	public Shape createStrokedShape( Shape shape ) {
+	@Override
+	public Shape createStrokedShape( final Shape shape ) {
 		return stroke2.createStrokedShape( stroke1.createStrokedShape( shape ) );
 	}
 }

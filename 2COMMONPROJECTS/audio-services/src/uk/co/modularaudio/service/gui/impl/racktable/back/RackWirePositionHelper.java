@@ -35,32 +35,32 @@ import uk.co.modularaudio.util.table.TablePosition;
 public class RackWirePositionHelper
 {
 //	private static Log log = LogFactory.getLog( NewRackWirePositionHelper.class.getName() );
-	
+
 	public static Point calculateCenterForComponentPlug(
-			RackTable table,
-			RackDataModel model,
-			AbstractGuiAudioComponent guiComponent,
-			RackComponent src,
-			GuiChannelPlug plug )
+			final RackTable table,
+			final RackDataModel model,
+			final AbstractGuiAudioComponent guiComponent,
+			final RackComponent src,
+			final GuiChannelPlug plug )
 	{
-		Rectangle renderedRectangle = guiComponent.getRenderedRectangle();
-		Point absolutePosition = calculateComponentOrigin( table, model, src );
-		MadUiChannelInstance cd = plug.getUiChannelInstance();
-		Point internalChannelOffset = cd.getCenter();
+		final Rectangle renderedRectangle = guiComponent.getRenderedRectangle();
+		final Point absolutePosition = calculateComponentOrigin( table, model, src );
+		final MadUiChannelInstance cd = plug.getUiChannelInstance();
+		final Point internalChannelOffset = cd.getCenter();
 		absolutePosition.translate( internalChannelOffset.x, internalChannelOffset.y );
 		absolutePosition.translate( renderedRectangle.x, renderedRectangle.y );
 		// TODO THIS IS A HACK FOR THE INSETS IN BACK AND FRONT CONTAINERS
 		absolutePosition.translate( 1, 1 );
 		return absolutePosition;
 	}
-	
-	private static Point calculateComponentOrigin( RackTable table, RackDataModel dataModel, RackComponent rc )
+
+	private static Point calculateComponentOrigin( final RackTable table, final RackDataModel dataModel, final RackComponent rc )
 	{
-		TablePosition cp = dataModel.getContentsOriginReturnNull( rc );
-		Dimension gridSize = table.getGridSize();
-		int componentStartX = cp.x * gridSize.width;
-		int componentStartY = cp.y * gridSize.height;
+		final TablePosition cp = dataModel.getContentsOriginReturnNull( rc );
+		final Dimension gridSize = table.getGridSize();
+		final int componentStartX = cp.x * gridSize.width;
+		final int componentStartY = cp.y * gridSize.height;
 		return new Point( componentStartX, componentStartY );
 	}
-	
+
 }

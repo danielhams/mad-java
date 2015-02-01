@@ -36,7 +36,6 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
@@ -105,7 +104,7 @@ public class RackControllerImpl implements ComponentWithLifecycle, RackControlle
 	@Override
 	public RackComponent createComponent( final RackDataModel rack, final MadDefinition<?,?> definition,
 			final Map<MadParameterDefinition, String> parameterValues, final String name )
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
+			throws TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 			MAConstraintViolationException, RecordNotFoundException
 	{
 		return rackService.createComponent( rack, definition, parameterValues, name );

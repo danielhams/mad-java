@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDec
 
 public class LinksDecorations extends LayeredPaneDndTableDecorations
 {
-	public LinksDecorations( DndRackDragDecorations rackDecorations, DndWireDragDecorations wireDecorations )
+	public LinksDecorations( final DndRackDragDecorations rackDecorations, final DndWireDragDecorations wireDecorations )
 	{
 		this.hints.addAll( rackDecorations.getHints() );
 		this.hints.addAll( wireDecorations.getHints() );

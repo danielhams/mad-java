@@ -43,7 +43,6 @@ public class DndWireDragCurrentWireHint extends LayeredPaneDndTableDecorationHin
 
 	public DndWireDragCurrentWireHint( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
-//		this.bufferedImageAllocationService = bufferedImageAllocationService;
 		currentWireImage = new DndCurrentWireImage( bufferedImageAllocationService );
 	}
 

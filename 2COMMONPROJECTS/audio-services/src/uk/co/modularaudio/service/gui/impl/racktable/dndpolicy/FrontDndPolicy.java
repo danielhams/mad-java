@@ -28,10 +28,8 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 
 public class FrontDndPolicy extends DndRackDragPolicy
 {
-
 	public FrontDndPolicy( final RackService rackService, final GuiService guiService, final RackDataModel dataModel, final DndRackDragDecorations decorations )
 	{
 		super( rackService, guiService, dataModel, decorations );
 	}
-
 }

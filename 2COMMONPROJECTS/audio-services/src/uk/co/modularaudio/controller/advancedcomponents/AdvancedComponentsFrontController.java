@@ -31,16 +31,57 @@ import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
+/**
+ * <p>Entry point for audio components that require advanced functionality.</p>
+ * <p>For components such as a sound file player that requires audio data be
+ * cached in a background thread the advanced components front controller
+ * provides access to this functionality.</p>
+ * <p>The front controller takes care of any needed database transaction
+ * related to operations.</p>
+ * <p>For operations within the realtime rendering thread (such
+ * as reading a block of buffered audio data) it is recommended that
+ * the runtime of audio components obtain references to the services needed
+ * to perform the methods directly (such as the BlockResamplerService).</p>
+ *
+ * @author dan
+ */
 public interface AdvancedComponentsFrontController
 {
+	/**
+	 * <p>Obtain a sample cache client for a file.</p>
+	 * <p>This method takes care of the necessary database transaction
+	 * for filling an internal library with metadata.</p>
+	 * @see SampleCachingService#registerCacheClientForFile(String)
+	 */
 	SampleCacheClient registerCacheClientForFile( String path ) throws DatastoreException, UnsupportedAudioFileException;
 
+	/**
+	 * <p>Release a sample cache client.</p>
+	 * @see SampleCachingService#unregisterCacheClientForFile(SampleCacheClient)
+	 */
 	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
 
+	/**
+	 * <p>For components that allow selection of samples, this method
+	 * allows those components to have the same filesystem root.</p>
+	 */
 	String getSampleSelectionMusicRoot();
 
+	/**
+	 * <p>The oscillator factory can be used to obtain the various
+	 * audio oscillators that may be used for things such as direct
+	 * synthesis or LFO modulation.</p>
+	 */
 	OscillatorFactory getOscillatorFactory();
-	
+
+	/**
+	 * <p>For components playing back cached audio content at anything
+	 * other than unity the block resampler service can be used.</p>
+	 */
 	BlockResamplerService getBlockResamplerService();
+	/**
+	 * <p>For components interested purely in the original buffered
+	 * content it can be obtained via the SampleCachingService.</p>
+	 */
 	SampleCachingService getSampleCachingService();
 }

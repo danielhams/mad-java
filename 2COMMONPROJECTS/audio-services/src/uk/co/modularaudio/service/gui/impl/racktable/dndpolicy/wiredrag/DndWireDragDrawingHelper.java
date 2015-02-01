@@ -33,17 +33,16 @@ import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 
 public class DndWireDragDrawingHelper
 {
-
-	static BufferedImage generateRegionHintImage( AbstractGuiAudioComponent sourceGuiComponent,
-			GuiChannelPlug plug,
-			Color regionHintColor)
+	static BufferedImage generateRegionHintImage( final AbstractGuiAudioComponent sourceGuiComponent,
+			final GuiChannelPlug plug,
+			final Color regionHintColor)
 	{
-		Rectangle regionRectangle = plug.getBounds();
-		int width = regionRectangle.width + 2;
-		int height = regionRectangle.height + 2;
-		
-		BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-		Graphics2D g2d = (Graphics2D)retVal.createGraphics();
+		final Rectangle regionRectangle = plug.getBounds();
+		final int width = regionRectangle.width + 2;
+		final int height = regionRectangle.height + 2;
+
+		final BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D g2d = retVal.createGraphics();
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 				REGION_HINT_BACKGROUND_TRANSPARENCY));
 		g2d.setColor( regionHintColor );
@@ -54,18 +53,18 @@ public class DndWireDragDrawingHelper
 		return retVal;
 	}
 
-	static BufferedImage generateRegionHintOutlineImage( AbstractGuiAudioComponent sourceGuiComponent,
-			GuiChannelPlug plug,
-			Color regionHintColor)
+	static BufferedImage generateRegionHintOutlineImage( final AbstractGuiAudioComponent sourceGuiComponent,
+			final GuiChannelPlug plug,
+			final Color regionHintColor)
 	{
-		Rectangle regionRectangle = plug.getBounds();
-		int width = regionRectangle.width + 1;
-		int height = regionRectangle.height + 1;
-		
-		BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-		Graphics2D g2d = (Graphics2D)retVal.createGraphics();
+		final Rectangle regionRectangle = plug.getBounds();
+		final int width = regionRectangle.width + 1;
+		final int height = regionRectangle.height + 1;
+
+		final BufferedImage retVal = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D g2d = retVal.createGraphics();
 		g2d.setColor( regionHintColor );
-		Stroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f}, 1.0f );
+		final Stroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f}, 1.0f );
 		g2d.setStroke( dashedStroke );
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
 				REGION_HINT_OUTLINE_TRANSPARENCY));

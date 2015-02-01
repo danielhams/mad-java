@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.gui;
 
 import java.awt.Component;
+import java.awt.Dialog;
 
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
@@ -38,12 +39,31 @@ public interface GuiService
 
 	MadDefinitionListModel getMadDefinitionsModel() throws DatastoreException;
 
+	/**
+	 * <p>This method allows the enclosing application to register the tabbed pane
+	 * container that the application may use to add tabs to.</p>
+	 * <p>This is intended to allow compound container components - such as the sub rack
+	 * that have an internal "rack" or page concept - to ask for and display additional tabs.</p>
+	 * @param rackTabbedPane the enclosing application tab container
+	 */
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
 
 	void addContainerTab( ContainerTab subrackTab, boolean isClosesable );
 
 	void removeContainerTab( ContainerTab subrackTab );
 
+	/**
+	 * <p>Helper method for displaying a yes/no type question dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type (see {@link Dialog})
+	 * @param options an array of strings that are the text displayed on each option
+	 * @param defaultChoice which should be the default (on return press, for example)
+	 * @param callback a callback procedure that will receive the results of the dialog
+	 */
 	void showYesNoQuestionDialog( Component parentComponent,
 			String message,
 			String title,
@@ -52,6 +72,17 @@ public interface GuiService
 			String defaultChoice,
 			YesNoQuestionDialogCallback callback );
 
+	/**
+	 * <p>Helper method for displaying a text input dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param initialValue initial value to show (if required)
+	 * @param callback a callback procedure that will receive the results of the dialog
+	 */
 	void showTextInputDialog( Component parentComponent,
 			String message,
 			String title,
@@ -59,6 +90,16 @@ public interface GuiService
 			String initialValue,
 			TextInputDialogCallback callback );
 
+	/**
+	 * <p>Helper method for displaying a message dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (used for centering)
+	 * @param message the message to display
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param callback a callback procedure that will do called when the dialog closes
+	 */
 	void showMessageDialog( Component parentComponent,
 			String message,
 			String title,

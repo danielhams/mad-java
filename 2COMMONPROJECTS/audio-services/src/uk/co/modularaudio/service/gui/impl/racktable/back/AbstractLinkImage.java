@@ -41,12 +41,12 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 public abstract class AbstractLinkImage
 {
 	private static Log log = LogFactory.getLog( RackLinkImage.class.getName() );
-	
-	private String allocationSource = null;
-	private BufferedImageAllocationService bufferImageAllocationService = null;
-	
+
+	private final String allocationSource;
+	private final BufferedImageAllocationService bufferImageAllocationService;
+
 	protected Rectangle rectangle = new Rectangle();
-	protected BufferedImage bufferedImage = null;
+	protected BufferedImage bufferedImage;
 	protected static final float WIRE_HIGHLIGHT_WIDTH = 3.0f;
 
 	protected static final double WIRE_SHADOW_X_OFFSET = 2.0d;
@@ -71,15 +71,15 @@ public abstract class AbstractLinkImage
 	protected static final int LINK_IMAGE_PADDING_FOR_WIRE_RADIUS = LINK_IMAGE_DIST_TO_CENTER * 2;
 
 	protected static final int WIRE_DIP_PIXELS = 30;
-	
-	private TiledBufferedImage tiledBufferedImage = null;
-	private AllocationMatch allocationMatchToUse = new AllocationMatch();
-	
+
+	private TiledBufferedImage tiledBufferedImage;
+	private final AllocationMatch allocationMatchToUse = new AllocationMatch();
+
 	private static BasicStroke wireBodyStroke = new BasicStroke( WIRE_STROKE_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND );
 	private static CompositeStroke wireStroke = new CompositeStroke( wireBodyStroke, new BasicStroke( 2.0f ) );
 	private static BasicStroke basicStrokeOfOne = new BasicStroke( 1.0f );
-	
-	public AbstractLinkImage( String allocationSource, BufferedImageAllocationService bufferImageAllocationService, Point sourcePoint, Point sinkPoint )
+
+	public AbstractLinkImage( final String allocationSource, final BufferedImageAllocationService bufferImageAllocationService, final Point sourcePoint, final Point sinkPoint )
 	{
 		this.allocationSource = allocationSource;
 		this.bufferImageAllocationService = bufferImageAllocationService;
@@ -89,14 +89,14 @@ public abstract class AbstractLinkImage
 		}
 	}
 
-	private void drawLinkWireIntoImage( Point sourcePoint, Point sinkPoint )
+	private void drawLinkWireIntoImage( final Point sourcePoint, final Point sinkPoint )
 	{
 		//		log.debug("Drawing link from " + sourcePoint + " to " + sinkPoint);
-		
-		int fromX = sourcePoint.x;
-		int fromY = sourcePoint.y;
-		int toX = sinkPoint.x;
-		int toY = sinkPoint.y;
+
+		final int fromX = sourcePoint.x;
+		final int fromY = sourcePoint.y;
+		final int toX = sinkPoint.x;
+		final int toY = sinkPoint.y;
 
 		float f1, f2, f3, f4, f5, f6, f7, f8 = 0.0f;
 		f1 = fromX;
@@ -107,10 +107,10 @@ public abstract class AbstractLinkImage
 		f6 = toY + WIRE_DIP_PIXELS;
 		f7 = toX;
 		f8 = toY;
-		CubicCurve2D cubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
-		Rectangle cubicCurveBounds = cubicCurve.getBounds();
-		
-		int imageWidthToUse = cubicCurveBounds.width + LINK_IMAGE_PADDING_FOR_WIRE_RADIUS;
+		final CubicCurve2D cubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
+		final Rectangle cubicCurveBounds = cubicCurve.getBounds();
+
+		final int imageWidthToUse = cubicCurveBounds.width + LINK_IMAGE_PADDING_FOR_WIRE_RADIUS;
 //		int imageHeightToUse = cubicCurveBounds.height + WIRE_DIP_PIXELS;
 		int imageHeightToUse = cubicCurveBounds.height;
 		// If the wire is close to vertical (little Y difference) we make the image a little bigger to account for the wire "dip"
@@ -129,13 +129,13 @@ public abstract class AbstractLinkImage
 					imageWidthToUse,
 					imageHeightToUse );
 		}
-		catch ( Exception e)
+		catch ( final Exception e)
 		{
-			String msg = "Exception caught allocating buffered image: " + e.toString();
+			final String msg = "Exception caught allocating buffered image: " + e.toString();
 			log.error( msg, e );
 		}
 		bufferedImage = tiledBufferedImage.getUnderlyingBufferedImage();
-		Graphics2D g2d = bufferedImage.createGraphics();
+		final Graphics2D g2d = bufferedImage.createGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -147,33 +147,33 @@ public abstract class AbstractLinkImage
 		f6 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
 		f7 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
 		f8 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
-		
-		CubicCurve2D offSetCubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
-		
+
+		final CubicCurve2D offSetCubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
+
 		// Draw the highlight and shadow
 		if( DRAW_HIGHTLIGHT_AND_SHADOW )
 		{
-			Graphics2D sG2d = (Graphics2D)g2d.create();
+			final Graphics2D sG2d = (Graphics2D)g2d.create();
 			sG2d.translate(WIRE_SHADOW_X_OFFSET, WIRE_SHADOW_Y_OFFSET);
 			sG2d.setColor( Color.BLUE.darker());
 			sG2d.setStroke( new BasicStroke( WIRE_SHADOW_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
 			sG2d.draw( offSetCubicCurve );
 
-			Graphics2D hG2d = (Graphics2D)g2d.create();
+			final Graphics2D hG2d = (Graphics2D)g2d.create();
 			hG2d.translate(WIRE_HIGHLIGHT_X_OFFSET, WIRE_HIGHLIGHT_Y_OFFSET);
 			hG2d.setColor( Color.WHITE );
 			hG2d.setStroke( new BasicStroke( WIRE_HIGHLIGHT_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
 			hG2d.draw( offSetCubicCurve );
 		}
-		
+
 		g2d.setColor( Color.BLACK );
 		g2d.setStroke( wireStroke );
 		g2d.draw( offSetCubicCurve );
-		
+
 		g2d.setColor( Color.BLUE );
 		g2d.setStroke( wireBodyStroke );
 		g2d.draw( offSetCubicCurve );
-		
+
 		// For debugging, draw a green line around the outside of this image.
 		if( DRAW_WIRE_BOUNDING_BOX )
 		{
@@ -181,14 +181,14 @@ public abstract class AbstractLinkImage
 			g2d.setColor( Color.GREEN );
 			g2d.drawRect( 0, 0, imageWidthToUse - 1, imageHeightToUse - 1);
 		}
-		
+
 		rectangle.x = cubicCurveBounds.x - LINK_IMAGE_DIST_TO_CENTER;
 		rectangle.y = cubicCurveBounds.y - LINK_IMAGE_DIST_TO_CENTER;
 		rectangle.width = imageWidthToUse;
 		rectangle.height = imageHeightToUse;
 	}
-	
-	public void redrawWireWithNewPoints( Point sourcePoint, Point sinkPoint )
+
+	public void redrawWireWithNewPoints( final Point sourcePoint, final Point sinkPoint )
 	{
 		try
 		{
@@ -198,13 +198,13 @@ public abstract class AbstractLinkImage
 			}
 			drawLinkWireIntoImage( sourcePoint, sinkPoint );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught redrawing wire with new points: " + e.toString();
+			final String msg = "Exception caught redrawing wire with new points: " + e.toString();
 			log.error( msg, e );
 		}
 	}
-	
+
 	public Rectangle getRectangle()
 	{
 		return rectangle;
@@ -225,9 +225,9 @@ public abstract class AbstractLinkImage
 				tiledBufferedImage = null;
 			}
 		}
-		catch ( Exception e )
+		catch ( final Exception e )
 		{
-			String msg = "Exception caught freeing buffered image: " + e.toString();
+			final String msg = "Exception caught freeing buffered image: " + e.toString();
 			log.error( msg, e );
 		}
 	}

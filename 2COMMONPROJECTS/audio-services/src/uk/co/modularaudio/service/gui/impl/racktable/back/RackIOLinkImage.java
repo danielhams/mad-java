@@ -31,21 +31,23 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class RackIOLinkImage extends AbstractLinkImage
 {
 //	private static Log log = LogFactory.getLog( NewRackLinkImage.class.getName() );
-	
-	private RackIOLink rackIOLink = null;
-	
-	public RackIOLinkImage( BufferedImageAllocationService bufferedImageAllocationService, RackIOLink rackIOLink, Point sourcePoint, Point sinkPoint )
+
+	private final RackIOLink rackIOLink;
+
+	public RackIOLinkImage( final BufferedImageAllocationService bufferedImageAllocationService, final RackIOLink rackIOLink, final Point sourcePoint, final Point sinkPoint )
 		throws DatastoreException
 	{
 		super( "NewRackIOLinkImage", bufferedImageAllocationService, sourcePoint, sinkPoint );
 		this.rackIOLink = rackIOLink;
 	}
-	
+
+	@Override
 	public Rectangle getRectangle()
 	{
 		return rectangle;
 	}
 
+	@Override
 	public BufferedImage getBufferedImage()
 	{
 		return bufferedImage;

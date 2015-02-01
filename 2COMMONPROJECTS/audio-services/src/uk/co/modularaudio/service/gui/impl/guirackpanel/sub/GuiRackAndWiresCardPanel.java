@@ -21,51 +21,37 @@
 package uk.co.modularaudio.service.gui.impl.guirackpanel.sub;
 
 import java.awt.CardLayout;
-import java.awt.LayoutManager;
-
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
 import uk.co.modularaudio.service.gui.impl.racktable.back.RackTableWithLinks;
 
 public class GuiRackAndWiresCardPanel extends JPanel
 {
 	private static final long serialVersionUID = -562552338640474197L;
-	
+
 	private static final String ID_FRONT = "Front";
 	private static final String ID_BACK = "Back";
-	
-	private CardLayout frontBackCardLayout = null;
-	
-	protected RackModelRenderingComponent front = null;
-	protected RackModelRenderingComponent back = null;
-	
+
+	private final CardLayout frontBackCardLayout;
+
 	private boolean isFront = true;
-	
-	public GuiRackAndWiresCardPanel( RackTable frontAudioComponentTable,
-			RackTableWithLinks backAudioComponentTable )
+
+	public GuiRackAndWiresCardPanel( final RackTable frontAudioComponentTable,
+			final RackTableWithLinks backAudioComponentTable )
 	{
-		this.setLayout( getFrontBackCardLayout() );
+		frontBackCardLayout = new CardLayout();
+		this.setLayout( frontBackCardLayout );
 		this.add( frontAudioComponentTable.getJComponent(), ID_FRONT );
 		this.add( backAudioComponentTable.getJComponent(), ID_BACK );
 		frontBackCardLayout.addLayoutComponent( frontAudioComponentTable.getJComponent(), ID_FRONT );
 		frontBackCardLayout.addLayoutComponent( backAudioComponentTable.getJComponent(), ID_BACK );
-		
+
 		frontBackCardLayout.show( this, ID_FRONT );
 
 		this.validate();
 	}
-	
-	private LayoutManager getFrontBackCardLayout()
-	{
-		if( frontBackCardLayout == null )
-		{
-			frontBackCardLayout = new CardLayout();
-		}
-		return frontBackCardLayout;
-	}
-	
+
 	public void rotateRack()
 	{
 		if( isFront )
@@ -79,7 +65,7 @@ public class GuiRackAndWiresCardPanel extends JPanel
 			isFront = true;
 		}
 	}
-	
+
 	public boolean isFrontShowing()
 	{
 		return isFront;

@@ -26,7 +26,7 @@ public class PopupRenameItem extends JMenuItem
 {
 	private static final long serialVersionUID = 6001645894874642774L;
 
-	public PopupRenameItem( PopupActions popupActions )
+	public PopupRenameItem( final PopupActions popupActions )
 	{
 		this.setAction( popupActions.rename );
 	}

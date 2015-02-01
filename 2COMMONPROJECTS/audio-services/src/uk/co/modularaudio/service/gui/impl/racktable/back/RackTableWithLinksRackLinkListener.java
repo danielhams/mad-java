@@ -32,25 +32,25 @@ import uk.co.modularaudio.util.table.TableModelEvent;
 public class RackTableWithLinksRackLinkListener implements RackLinkListener, RackIOLinkListener
 {
 //	private static Log log = LogFactory.getLog( NewRackTableWithLinksRackLinkListener.class.getName() );
-	
-	private RackTableWithLinks table = null;
 
-	public RackTableWithLinksRackLinkListener( RackTableWithLinks table )
+	private final RackTableWithLinks table;
+
+	public RackTableWithLinksRackLinkListener( final RackTableWithLinks table )
 	{
 		this.table = table;
 	}
 
 	@Override
-	public void linksChanged(RackLinkEvent event)
+	public void linksChanged(final RackLinkEvent event)
 	{
 //		log.debug("Event received: " + event.toString());
-		
-		RackDataModel model = (RackDataModel)event.getSource();
-		
-		int eventType = event.getType();
-		int eventFirstRow = event.getFirstRow();
-		int eventLastRow = event.getLastRow();
-		
+
+		final RackDataModel model = (RackDataModel)event.getSource();
+
+		final int eventType = event.getType();
+		final int eventFirstRow = event.getFirstRow();
+		final int eventLastRow = event.getLastRow();
+
 		switch( eventType )
 		{
 		case TableModelEvent.INSERT:
@@ -58,7 +58,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			int iCounter = eventFirstRow;
 			do
 			{
-				RackLink rackLink = model.getLinkAt( iCounter );
+				final RackLink rackLink = model.getLinkAt( iCounter );
 				table.createRackLinkImageForNewLink( rackLink );
 				iCounter++;
 			}
@@ -66,8 +66,8 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			break;
 		case TableModelEvent.DELETE:
 			int dCounter = eventFirstRow;
-			int dEndRow = eventLastRow;
-			
+			final int dEndRow = eventLastRow;
+
 			do
 			{
 				table.removeRackLinkImageAt( eventFirstRow );
@@ -86,23 +86,23 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 	}
 
 	@Override
-	public void ioLinksChanged( RackIOLinkEvent event )
+	public void ioLinksChanged( final RackIOLinkEvent event )
 	{
 //		log.debug("Event received: " + event.toString());
-		
-		RackDataModel model = (RackDataModel)event.getSource();
-		
-		int eventType = event.getType();
-		int eventFirstRow = event.getFirstRow();
-		int eventLastRow = event.getLastRow();
-		
+
+		final RackDataModel model = (RackDataModel)event.getSource();
+
+		final int eventType = event.getType();
+		final int eventFirstRow = event.getFirstRow();
+		final int eventLastRow = event.getLastRow();
+
 		switch( eventType )
 		{
 		case TableModelEvent.INSERT:
 			int iCounter = eventFirstRow;
 			do
 			{
-				RackIOLink rackIOLink = model.getIOLinkAt( iCounter );
+				final RackIOLink rackIOLink = model.getIOLinkAt( iCounter );
 				table.createRackIOLinkImageForNewLink( rackIOLink );
 				iCounter++;
 			}
@@ -110,7 +110,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			break;
 		case TableModelEvent.DELETE:
 			int dCounter = eventFirstRow;
-			int dEndRow = eventLastRow;
+			final int dEndRow = eventLastRow;
 			do
 			{
 				table.removeRackIOLinkImageAt( eventFirstRow );
@@ -125,6 +125,6 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 
 		// Now tell the table to recompute the composite rack link image and redisplay
 		table.createCompositeRackLinksImageAndRedisplay();
-		
+
 	}
 }

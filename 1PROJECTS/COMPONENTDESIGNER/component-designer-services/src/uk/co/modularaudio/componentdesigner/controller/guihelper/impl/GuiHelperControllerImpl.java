@@ -29,7 +29,6 @@ import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -37,6 +36,10 @@ import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
 
+/**
+ * @author dan
+ *
+ */
 public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelperController
 {
 	private GuiService guiService;
@@ -63,13 +66,6 @@ public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelpe
 			throws DatastoreException
 	{
 		return guiService.getUserPreferencesMVCView( userPrefsMVCController );
-	}
-
-	@Override
-	public MadDefinitionListModel getMadDefinitionsModel()
-			throws DatastoreException
-	{
-		return guiService.getMadDefinitionsModel();
 	}
 
 	@Override
