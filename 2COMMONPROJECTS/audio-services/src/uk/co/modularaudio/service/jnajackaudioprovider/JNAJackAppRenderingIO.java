@@ -35,7 +35,7 @@ import org.jaudiolibs.jnajack.JackProcessCallback;
 import org.jaudiolibs.jnajack.JackShutdownCallback;
 import org.jaudiolibs.jnajack.JackXrunCallback;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
 import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
@@ -90,7 +90,7 @@ public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements Jac
 	private HardwareMidiNoteEvent[] tmpNoteEventArray;
 	private int tmpNoteEventArrayLength;
 
-	public JNAJackAppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
+	public JNAJackAppRenderingIO( final AppRenderingSessionService appRenderingGraphService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,

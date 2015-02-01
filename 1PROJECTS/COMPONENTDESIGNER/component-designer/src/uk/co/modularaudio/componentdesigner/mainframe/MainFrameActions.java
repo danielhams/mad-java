@@ -88,7 +88,7 @@ public class MainFrameActions
 		{
 			if(log.isInfoEnabled())
 			{
-				log.info("Unable to fetch default directory from configuration - if needed set " + CONFIG_KEY_DEFAULT_DIR );
+				log.info("Unable to fetch default directory from configuration - if needed set " + CONFIG_KEY_DEFAULT_DIR ); // NOPMD by dan on 01/02/15 09:42
 			}
 			defaultDirectory = "";
 		}

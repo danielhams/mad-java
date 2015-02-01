@@ -18,17 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph;
+package uk.co.modularaudio.service.apprenderingsession;
 
-import java.util.Comparator;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
-public class JobDataListComparator implements Comparator<ParsedJobData>
+public interface AppRenderingSessionService
 {
+	public AppRenderingSession createAppRenderingSession()
+		throws DatastoreException;
 
-	@Override
-	public int compare( final ParsedJobData o1, final ParsedJobData o2 )
-	{
-		return ((int)o1.getJobOffsetFromStart()) - ((int)o2.getJobOffsetFromStart());
-	}
-
+	public void destroyAppRenderingSession( AppRenderingSession renderingSession )
+		throws DatastoreException;
+		
+	boolean shouldProfileRenderingJobs();
 }

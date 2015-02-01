@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
+package uk.co.modularaudio.service.apprenderingsession.renderingjobqueue;
 
 import java.util.Set;
 

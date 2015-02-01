@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph;
+package uk.co.modularaudio.service.apprenderingsession;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,10 +34,10 @@ import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance.FadeType;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotClockSourceJobQueueHelperThread;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotFrameTimeFactory;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.MTRenderingJobQueue;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.STRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.HotspotClockSourceJobQueueHelperThread;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.HotspotFrameTimeFactory;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.MTRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingLifecycleListener;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -66,9 +66,37 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class AppRenderingGraph implements AppRenderingLifecycleListener
+/**
+ * <p>An AppRenderingSession is a stateful object used to manage the lifecycle and state
+ * of audio IO and application components.</p>
+ * <p>It is intended that one such object exists per application audio IO connection/session.</p>
+ * <p>An AppRenderingSession contains:</p>
+ * <ul>
+ * <li>A root graph</li>
+ * <li>A rendering plan related to the current state of the root graph</li>
+ * <li>A rendering job queue on which jobs from the rendering plan can be placed</li>
+ * <li>Zero or more rendering helper threads (currently zero due to JVM jitter)</li>
+ * <li>A testing graph containing a component that outputs a test square wave signal</li>
+ * </ul>
+ * <p>The root graph contains:</p>
+ * <ul>
+ * <li>Components for performing audio IO such as audio and MIDI
+ * <li>An internal hosting graph</li>
+ * <li>Links from the audio IO components to the appropriate channels
+ * of the internal hosting graph</li>
+ * </ul>
+ * <p>In turn, the internal hosting graph contains one of:</p>
+ * <ul>
+ * <li>An empty sub-graph when not rendering</li>
+ * <li>A full subgraph of the applications audio components when rendering</li>
+ * </ul>
+ *
+ * @author dan
+ *
+ */
+public class AppRenderingSession implements AppRenderingLifecycleListener
 {
-	private static Log log = LogFactory.getLog( AppRenderingGraph.class.getName() );
+	private static Log log = LogFactory.getLog( AppRenderingSession.class.getName() );
 
 	private final MadComponentService componentService;
 	private final MadGraphService graphService;
@@ -104,7 +132,7 @@ public class AppRenderingGraph implements AppRenderingLifecycleListener
 
 	private final JobDataListComparator jobDataListComparator = new JobDataListComparator();
 
-	public AppRenderingGraph( final MadComponentService componentService,
+	public AppRenderingSession( final MadComponentService componentService,
 			final MadGraphService graphService,
 			final RenderingService renderingService,
 			final TimingService timingService,

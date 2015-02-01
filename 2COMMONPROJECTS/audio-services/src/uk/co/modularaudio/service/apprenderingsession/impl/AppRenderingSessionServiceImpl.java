@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.impl;
+package uk.co.modularaudio.service.apprenderingsession.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -41,9 +41,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, AppRenderingGraphService
+public class AppRenderingSessionServiceImpl implements ComponentWithLifecycle, AppRenderingSessionService
 {
-	private static Log log = LogFactory.getLog( AppRenderingGraphServiceImpl.class.getName() );
+	private static Log log = LogFactory.getLog( AppRenderingSessionServiceImpl.class.getName() );
 
 	private ConfigurationService configurationService;
 	private MadComponentService componentService;
@@ -51,15 +51,15 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	private RenderingService renderingService;
 	private TimingService timingService;
 
-	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".NumHelperThreads";
-	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
-	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingGraphServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
+	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".NumHelperThreads";
+	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
+	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
 
 	private int numHelperThreads;
 	private boolean shouldProfileRenderingJobs;
 	private int maxWaitForTransitionMillis;
 
-	public AppRenderingGraphServiceImpl()
+	public AppRenderingSessionServiceImpl()
 	{
 		// Uses DI.
 	}
@@ -121,26 +121,26 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	}
 
 	@Override
-	public AppRenderingGraph createAppRenderingGraph() throws DatastoreException
+	public AppRenderingSession createAppRenderingSession() throws DatastoreException
 	{
 		try
 		{
-			return new AppRenderingGraph( componentService, graphService, renderingService, timingService,
+			return new AppRenderingSession( componentService, graphService, renderingService, timingService,
 					numHelperThreads,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis );
 		}
 		catch( final RecordNotFoundException rnfe )
 		{
-			throw new DatastoreException( "RecordNotFoundException creating app rendering graph: " + rnfe.toString(), rnfe );
+			throw new DatastoreException( "RecordNotFoundException creating app rendering session: " + rnfe.toString(), rnfe );
 		}
 		catch( final MadProcessingException aupe )
 		{
-			throw new DatastoreException( "MadProcessingException creating app rendering graph: " + aupe.toString(), aupe );
+			throw new DatastoreException( "MadProcessingException creating app rendering session: " + aupe.toString(), aupe );
 		}
 		catch (final MAConstraintViolationException ecve)
 		{
-			throw new DatastoreException( "ConstraintViolationException creating app rendering graph: " + ecve.toString(), ecve );
+			throw new DatastoreException( "ConstraintViolationException creating app rendering session: " + ecve.toString(), ecve );
 		}
 	}
 
@@ -151,7 +151,7 @@ public class AppRenderingGraphServiceImpl implements ComponentWithLifecycle, App
 	}
 
 	@Override
-	public void destroyAppRenderingGraph( final AppRenderingGraph graphToDestroy )
+	public void destroyAppRenderingSession( final AppRenderingSession renderingSession )
 		throws DatastoreException
 	{
 		// Don't need to do anything, the GC will take care of it

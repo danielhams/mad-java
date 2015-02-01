@@ -18,22 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue;
+package uk.co.modularaudio.service.apprenderingsession.renderingjobqueue;
 
-import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
 
-public class HotspotFrameTimeFactory implements MadFrameTimeFactory
+public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
 {
-	public HotspotFrameTimeFactory()
+//	private static Log log = LogFactory.getLog( HelperThreadJobQueueProcessing.class.getName() );
+
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue )
 	{
-		// Throw away class for hotspot compilation
+		this( threadNum, jobQueue, Type.HELPER_THREAD );
 	}
 
-	private long currentUiFrameTime;
-
-	@Override
-	public long getCurrentUiFrameTime()
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue, final Type threadType )
 	{
-		return currentUiFrameTime += 1000;
+		super( threadNum, jobQueue, threadType);
 	}
 }

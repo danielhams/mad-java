@@ -55,9 +55,9 @@ import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.HotspotFrameTimeFactory;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.MTRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.HotspotFrameTimeFactory;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.MTRenderingJobQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.AppRenderingErrorStruct;
@@ -237,7 +237,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		rackController.dumpRack( userVisibleRack );
 		if( appRenderingIO != null )
 		{
-			appRenderingIO.getAppRenderingGraph().dumpRenderingPlan();
+			appRenderingIO.getAppRenderingSession().dumpRenderingPlan();
 		}
 		if( sampleCachingController != null )
 		{
@@ -250,7 +250,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		if( appRenderingIO != null )
 		{
-			appRenderingIO.getAppRenderingGraph().dumpProfileResults();
+			appRenderingIO.getAppRenderingSession().dumpProfileResults();
 		}
 	}
 
@@ -290,11 +290,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			if( currentlyRendering )
 			{
 				stopDisplayTick();
-				appRenderingIO.getAppRenderingGraph().deactivateApplicationGraph();
+				appRenderingIO.getAppRenderingSession().deactivateApplicationGraph();
 			}
 			else
 			{
-				appRenderingIO.getAppRenderingGraph().activateApplicationGraph();
+				appRenderingIO.getAppRenderingSession().activateApplicationGraph();
 				startDisplayTick();
 			}
 			currentlyRendering = !currentlyRendering;
@@ -327,7 +327,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				final MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( previousRack );
 				if( appRenderingIO != null )
 				{
-					appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
+					appRenderingIO.getAppRenderingSession().unsetApplicationGraph( oldGraph );
 				}
 			}
 			userVisibleRack = rackController.createNewRackDataModel( "Empty Application Rack",
@@ -340,7 +340,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final MadGraphInstance<?,?> graphToRender = rackController.getRackGraphInstance( userVisibleRack );
 			if( appRenderingIO != null )
 			{
-				appRenderingIO.getAppRenderingGraph().setApplicationGraph( graphToRender );
+				appRenderingIO.getAppRenderingSession().setApplicationGraph( graphToRender );
 			}
 
 			if( previousRack != null )
@@ -378,7 +378,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final MadGraphInstance<?,?> oldGraph = rackController.getRackGraphInstance( oldModel );
 			if( appRenderingIO != null )
 			{
-				appRenderingIO.getAppRenderingGraph().unsetApplicationGraph( oldGraph );
+				appRenderingIO.getAppRenderingSession().unsetApplicationGraph( oldGraph );
 			}
 			userVisibleRack = newRack;
 			guiRack.setRackDataModel( userVisibleRack );
@@ -386,7 +386,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final MadGraphInstance<?,?> rackGraph = rackController.getRackGraphInstance( userVisibleRack );
 			if( appRenderingIO != null )
 			{
-				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rackGraph );
+				appRenderingIO.getAppRenderingSession().setApplicationGraph( rackGraph );
 			}
 			destroyExistingRack( oldModel );
 		}
@@ -669,10 +669,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 					// Now create a rendering plan from this rack
 					log.debug("Peforming hotspot mad instance looping.");
-					final AppRenderingGraph hotspotAppGraph = renderingController.createAppRenderingGraph();
-					hotspotAppGraph.startHotspotLooping( renderingPlan );
+					final AppRenderingSession hotspotRenderingSession = renderingController.createAppRenderingSession();
+					hotspotRenderingSession.startHotspotLooping( renderingPlan );
 					Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
-					hotspotAppGraph.stopHotspotLooping();
+					hotspotRenderingSession.stopHotspotLooping();
 
 					rackController.destroyRackDataModel( cacheRack );
 				}
@@ -732,18 +732,18 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			if( appRenderingIO != null )
 			{
-				final AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
+				final AppRenderingSession appRenderingSession = appRenderingIO.getAppRenderingSession();
 
-				if( appRenderingGraph.isApplicationGraphActive() )
+				if( appRenderingSession.isApplicationGraphActive() )
 				{
 					log.debug( "Will first deactivate the application graph");
-					appRenderingGraph.deactivateApplicationGraph();
+					appRenderingSession.deactivateApplicationGraph();
 				}
 
-				if( appRenderingGraph.isApplicationGraphSet() )
+				if( appRenderingSession.isApplicationGraphSet() )
 				{
 					final MadGraphInstance<?,?> graphToUnset = rackController.getRackGraphInstance( userVisibleRack );
-					appRenderingGraph.unsetApplicationGraph( graphToUnset );
+					appRenderingSession.unsetApplicationGraph( graphToUnset );
 				}
 			}
 
@@ -903,13 +903,13 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			try
 			{
-				final AppRenderingGraph appRenderingGraph = appRenderingIO.getAppRenderingGraph();
-				if( appRenderingGraph.isApplicationGraphActive() )
+				final AppRenderingSession appRenderingSession = appRenderingIO.getAppRenderingSession();
+				if( appRenderingSession.isApplicationGraphActive() )
 				{
-					appRenderingGraph.deactivateApplicationGraph();
+					appRenderingSession.deactivateApplicationGraph();
 				}
 				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
-				appRenderingGraph.unsetApplicationGraph( rgi );
+				appRenderingSession.unsetApplicationGraph( rgi );
 				appRenderingIO.stopRendering();
 				appRenderingIO.destroy();
 				appRenderingIO = null;
@@ -971,7 +971,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				}
 				appRenderingIO = audioProviderController.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorCallback );
 				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
-				appRenderingIO.getAppRenderingGraph().setApplicationGraph( rgi );
+				appRenderingIO.getAppRenderingSession().setApplicationGraph( rgi );
 
 				appRenderingIO.startRendering();
 				retVal = true;

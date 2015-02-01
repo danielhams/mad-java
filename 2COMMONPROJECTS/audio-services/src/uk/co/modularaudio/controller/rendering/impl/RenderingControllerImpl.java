@@ -21,8 +21,8 @@
 package uk.co.modularaudio.controller.rendering.impl;
 
 import uk.co.modularaudio.controller.rendering.RenderingController;
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
@@ -34,14 +34,20 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RenderingControllerImpl implements ComponentWithLifecycle, RenderingController
 {
-	private AppRenderingGraphService appRenderingGraphService;
+	private AppRenderingSessionService appRenderingSessionService;
 	private RenderingService renderingService;
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.component.ComponentWithLifecycle#init()
+	 */
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.component.ComponentWithLifecycle#destroy()
+	 */
 	@Override
 	public void destroy()
 	{
@@ -52,17 +58,23 @@ public class RenderingControllerImpl implements ComponentWithLifecycle, Renderin
 		this.renderingService = renderingService;
 	}
 
-	public void setAppRenderingGraphService( final AppRenderingGraphService appRenderingGraphService )
+	public void setAppRenderingSessionService( final AppRenderingSessionService appRenderingGraphService )
 	{
-		this.appRenderingGraphService = appRenderingGraphService;
+		this.appRenderingSessionService = appRenderingGraphService;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.controller.rendering.RenderingController#createAppRenderingGraph()
+	 */
 	@Override
-	public AppRenderingGraph createAppRenderingGraph() throws DatastoreException
+	public AppRenderingSession createAppRenderingSession() throws DatastoreException
 	{
-		return appRenderingGraphService.createAppRenderingGraph();
+		return appRenderingSessionService.createAppRenderingSession();
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.controller.rendering.RenderingController#createRenderingPlan(uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance, uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings, uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory)
+	 */
 	@Override
 	public RenderingPlan createRenderingPlan( final MadGraphInstance<?,?> graphInstance,
 			final HardwareIOChannelSettings hardwareChannelSettings,

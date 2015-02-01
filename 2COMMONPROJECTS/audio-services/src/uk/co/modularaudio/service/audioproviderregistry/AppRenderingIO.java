@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.audioproviderregistry;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
 
 public interface AppRenderingIO
 {
@@ -32,7 +32,7 @@ public interface AppRenderingIO
 
 	public abstract boolean testRendering( long testClientRunMillis );
 
-	public abstract AppRenderingGraph getAppRenderingGraph();
+	public abstract AppRenderingSession getAppRenderingSession();
 
 	public abstract void destroy();
 

@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraph;
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
-import uk.co.modularaudio.service.apprenderinggraph.renderingjobqueue.ClockSourceJobQueueProcessing;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
+import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.ClockSourceJobQueueProcessing;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
@@ -55,8 +55,8 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 	private final static long TEST_IO_WAIT_MILLIS = 200;
 	private final static long TEST_SLEEP_MILLIS = 100;
 
-	protected final AppRenderingGraphService appRenderingGraphService;
-	protected final AppRenderingGraph appRenderingGraph;
+	protected final AppRenderingSessionService appRenderingGraphService;
+	protected final AppRenderingSession appRenderingSession;
 	protected final TimingService timingService;
 
 	protected final AppRenderingErrorQueue errorQueue;
@@ -83,7 +83,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 
 	protected volatile boolean shouldProfileRenderingJobs; // NOPMD by dan on 01/02/15 07:08
 
-	public AbstractAppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
+	public AbstractAppRenderingIO( final AppRenderingSessionService appRenderingGraphService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,
@@ -93,9 +93,9 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 		this.appRenderingGraphService = appRenderingGraphService;
 		this.timingService = timingService;
 		this.hardwareConfiguration = hardwareConfiguration;
-		appRenderingGraph = appRenderingGraphService.createAppRenderingGraph();
+		appRenderingSession = appRenderingGraphService.createAppRenderingSession();
 
-		clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( appRenderingGraph.getRenderingJobQueue() );
+		clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( appRenderingSession.getRenderingJobQueue() );
 
 		shouldProfileRenderingJobs = appRenderingGraphService.shouldProfileRenderingJobs();
 
@@ -165,7 +165,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 		{
 			return false;
 		}
-		final AtomicReference<RenderingPlan> atomicRenderingPlan = appRenderingGraph.getAtomicRenderingPlan();
+		final AtomicReference<RenderingPlan> atomicRenderingPlan = appRenderingSession.getAtomicRenderingPlan();
 		final RenderingPlan renderingPlan = atomicRenderingPlan.get();
 		final HardwareIOOneChannelSetting fakeAudioChannelSetting = new HardwareIOOneChannelSetting(DataRate.SR_44100, 1024);
 		final HardwareIOChannelSettings fakeChannelSettings = new HardwareIOChannelSettings(fakeAudioChannelSetting, AudioTimingUtils.getNumNanosecondsForBufferLength(44100, 1024), 1024);
@@ -264,7 +264,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 			long currentTimestampMillis = System.currentTimeMillis();
 			while( currentTimestampMillis <= startupTimestampMillis + testClientRunMillis )
 			{
-				appRenderingGraph.dumpProfileResults();
+				appRenderingSession.dumpProfileResults();
 				try
 				{
 					Thread.sleep( TEST_SLEEP_MILLIS );
@@ -289,7 +289,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 			{
 				fireLifecycleSignal(hardwareChannelSettings, SignalType.STOP_TEST );
 
-				appRenderingGraph.dumpProfileResults();
+				appRenderingSession.dumpProfileResults();
 				try
 				{
 					Thread.sleep( 5 );
@@ -297,7 +297,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 				catch( final InterruptedException ie )
 				{
 				}
-				appRenderingGraph.dumpProfileResults();
+				appRenderingSession.dumpProfileResults();
 
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.PRE_STOP );
 				doProviderStop();
@@ -347,9 +347,9 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#getAppRenderingGraph()
 	 */
 	@Override
-	public AppRenderingGraph getAppRenderingGraph()
+	public AppRenderingSession getAppRenderingSession()
 	{
-		return appRenderingGraph;
+		return appRenderingSession;
 	}
 
 	/* (non-Javadoc)
@@ -365,17 +365,17 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 				log.warn("Destroy called but still rendering!");
 				stopRendering();
 			}
-			if( appRenderingGraph.isApplicationGraphActive() )
+			if( appRenderingSession.isApplicationGraphActive() )
 			{
-				appRenderingGraph.deactivateApplicationGraph();
+				appRenderingSession.deactivateApplicationGraph();
 			}
-			if( appRenderingGraph.isApplicationGraphSet() )
+			if( appRenderingSession.isApplicationGraphSet() )
 			{
-				final MadGraphInstance<?,?> graphToUnset = appRenderingGraph.getCurrentApplicationGraph();
-				appRenderingGraph.unsetApplicationGraph( graphToUnset );
+				final MadGraphInstance<?,?> graphToUnset = appRenderingSession.getCurrentApplicationGraph();
+				appRenderingSession.unsetApplicationGraph( graphToUnset );
 				// We don't destroy it, it was set by someone else, so they are responsible for destroying it
 			}
-			appRenderingGraphService.destroyAppRenderingGraph( appRenderingGraph );
+			appRenderingGraphService.destroyAppRenderingSession( appRenderingSession );
 
 		}
 		catch( final Exception e )
@@ -395,17 +395,17 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 			final AppRenderingLifecycleListener.SignalType signal )
 		throws DatastoreException, MadProcessingException
 	{
-		if( appRenderingGraph != null )
+		if( appRenderingSession != null )
 		{
-			appRenderingGraph.receiveEngineSignal( hardwareChannelSettings, this, signal, errorQueue );
+			appRenderingSession.receiveEngineSignal( hardwareChannelSettings, this, signal, errorQueue );
 		}
 
 		switch( signal )
 		{
 			case PRE_START:
 			{
-				masterInBuffers = appRenderingGraph.getMasterInBuffers();
-				masterOutBuffers = appRenderingGraph.getMasterOutBuffers();
+				masterInBuffers = appRenderingSession.getMasterInBuffers();
+				masterOutBuffers = appRenderingSession.getMasterOutBuffers();
 
 				break;
 			}
@@ -442,7 +442,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 		long clockCallbackPostRpFetch = -1;
 		try
 		{
-			rp = appRenderingGraph.getAtomicRenderingPlan().get();
+			rp = appRenderingSession.getAtomicRenderingPlan().get();
 
 			clockCallbackPostRpFetch = System.nanoTime();
 

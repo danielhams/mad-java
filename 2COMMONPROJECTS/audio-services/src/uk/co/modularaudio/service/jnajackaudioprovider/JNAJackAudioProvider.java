@@ -35,7 +35,7 @@ import org.jaudiolibs.jnajack.JackException;
 import org.jaudiolibs.jnajack.JackOptions;
 import org.jaudiolibs.jnajack.JackStatus;
 
-import uk.co.modularaudio.service.apprenderinggraph.AppRenderingGraphService;
+import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
 import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingIO;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
@@ -71,7 +71,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 
 	private AudioProviderRegistryService audioProviderRegistryService;
 	private TimingService timingService;
-	private AppRenderingGraphService appRenderingGraphService;
+	private AppRenderingSessionService appRenderingSessionService;
 
 	private boolean shouldRegister;
 
@@ -227,9 +227,9 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 		this.timingService = timingService;
 	}
 
-	public void setAppRenderingGraphService( final AppRenderingGraphService appRenderingGraphService )
+	public void setAppRenderingSessionService( final AppRenderingSessionService appRenderingGraphService )
 	{
-		this.appRenderingGraphService = appRenderingGraphService;
+		this.appRenderingSessionService = appRenderingGraphService;
 	}
 
 	@Override
@@ -266,6 +266,6 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 			final AppRenderingErrorCallback errorCallback )
 		throws DatastoreException
 	{
-		return new JNAJackAppRenderingIO( appRenderingGraphService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
+		return new JNAJackAppRenderingIO( appRenderingSessionService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
 	}
 }

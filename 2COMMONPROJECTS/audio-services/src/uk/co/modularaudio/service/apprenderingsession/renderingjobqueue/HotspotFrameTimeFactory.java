@@ -18,17 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderinggraph;
+package uk.co.modularaudio.service.apprenderingsession.renderingjobqueue;
 
-import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 
-public interface AppRenderingGraphService
+public class HotspotFrameTimeFactory implements MadFrameTimeFactory
 {
-	public AppRenderingGraph createAppRenderingGraph()
-		throws DatastoreException;
+	public HotspotFrameTimeFactory()
+	{
+		// Throw away class for hotspot compilation
+	}
 
-	public void destroyAppRenderingGraph( AppRenderingGraph graphToDestroy )
-		throws DatastoreException;
-		
-	boolean shouldProfileRenderingJobs();
+	private long currentUiFrameTime;
+
+	@Override
+	public long getCurrentUiFrameTime()
+	{
+		return currentUiFrameTime += 1000;
+	}
 }

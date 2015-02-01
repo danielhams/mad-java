@@ -198,7 +198,7 @@ public interface ComponentDesignerFrontController
 	boolean startAudioEngine();
 	/**
 	 * <p>Check if the system is already up and running with audio/MIDI IO.</p>
-	 * @return
+	 * @return current state of the audio engine IO
 	 */
 	boolean isAudioEngineRunning();
 	/**
