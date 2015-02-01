@@ -63,7 +63,7 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	{
 		if( log.isInfoEnabled() )
 		{
-			log.info( "Registering ui components for " + uiFactory.getClass().getSimpleName() );
+			log.info( "Registering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
 		}
 
 		final List<MadUiDefinition<?,?>> factoryDefinitions = uiFactory.listComponentUiDefinitions();
@@ -92,7 +92,7 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	{
 		if( log.isInfoEnabled() )
 		{
-			log.info( "Unregistering ui components for " + uiFactory.getClass().getSimpleName() );
+			log.info( "Unregistering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
 		}
 
 		final List<MadUiDefinition<?,?>> factoryDefinitions = uiFactory.listComponentUiDefinitions();

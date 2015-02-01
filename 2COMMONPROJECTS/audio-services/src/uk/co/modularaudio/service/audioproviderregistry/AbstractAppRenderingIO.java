@@ -67,7 +67,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 
 	protected final AtomicBoolean rendering = new AtomicBoolean( false );
 
-	protected volatile boolean shouldRecordPeriods;
+	protected volatile boolean shouldRecordPeriods; // NOPMD by dan on 01/02/15 07:08
 
 	protected int numSoftUnderflows;
 	protected int numSoftOverflows;
@@ -81,7 +81,7 @@ public abstract class AbstractAppRenderingIO implements MadFrameTimeFactory, App
 
 	protected ClockSourceJobQueueProcessing clockSourceJobQueueProcessing;
 
-	protected volatile boolean shouldProfileRenderingJobs;
+	protected volatile boolean shouldProfileRenderingJobs; // NOPMD by dan on 01/02/15 07:08
 
 	public AbstractAppRenderingIO( final AppRenderingGraphService appRenderingGraphService,
 			final TimingService timingService,

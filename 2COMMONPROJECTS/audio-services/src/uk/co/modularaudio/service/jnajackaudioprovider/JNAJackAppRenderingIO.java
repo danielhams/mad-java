@@ -113,7 +113,7 @@ public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements Jac
 			final int sampleRate = client.getSampleRate();
 			if( log.isInfoEnabled() )
 			{
-				log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")");
+				log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")"); // NOPMD by dan on 01/02/15 07:06
 			}
 			final DataRate dataRate = DataRate.fromFrequency(sampleRate);
 
@@ -437,7 +437,10 @@ public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements Jac
 			}
 			catch( final JackException je )
 			{
-				log.error( "JackException caught in midi process ports: " + je.toString(), je );
+				if( log.isErrorEnabled() )
+				{
+					log.error( "JackException caught in midi process ports: " + je.toString(), je );
+				}
 			}
 		}
 	}

@@ -36,7 +36,7 @@ public class RenderingPlanProfileResults
 	private long clockCallbackPostLoop;
 
 //	private AtomicBoolean filled = new AtomicBoolean( false );
-	private volatile boolean filled = false;
+	private volatile boolean filled = false; // NOPMD by dan on 01/02/15 07:07
 
 	public RenderingPlanProfileResults( final AbstractParallelRenderingJob[] jobsToProfile )
 	{

@@ -63,13 +63,13 @@ public class AudioTestResults
 		}
 		if( log.isInfoEnabled() )
 		{
-			log.info( "Test had " +
+			log.info( "Test had " + // NOPMD by dan on 01/02/15 07:07
 					numSoftOverflows + " soft overflows and " +
 					numSoftUnderflows + " soft underflows for " +
 					numHardOverflows + " hard overflows and " +
 					numHardUnderflows + " hard underflows for " +
 					numPeriodsRecorded + " periods recorded");
-			log.info("This is " + percentageErrors + " percent hard errors");
+			log.info("This is " + percentageErrors + " percent hard errors"); // NOPMD by dan on 01/02/15 07:07
 		}
 	}
 

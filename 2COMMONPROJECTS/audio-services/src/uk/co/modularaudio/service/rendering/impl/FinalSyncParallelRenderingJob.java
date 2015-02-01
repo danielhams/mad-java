@@ -29,10 +29,10 @@ public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 //	private static Log log = LogFactory.getLog( FinalSyncParallelRenderingJob.class.getName() );
 
 	private boolean localExecutedAtLeastOnce = false;
-	private volatile boolean executedAtLeastOnce = false;
+	private volatile boolean executedAtLeastOnce = false; // NOPMD by dan on 01/02/15 07:07
 
 	private boolean localWasJobExecuted = false;
-	private volatile boolean wasJobExecuted = false;
+	private volatile boolean wasJobExecuted = false; // NOPMD by dan on 01/02/15 07:07
 
 	public FinalSyncParallelRenderingJob()
 	{
