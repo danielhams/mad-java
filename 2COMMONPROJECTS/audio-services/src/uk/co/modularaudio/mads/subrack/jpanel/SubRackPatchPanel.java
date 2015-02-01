@@ -28,12 +28,12 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
-import uk.co.modularaudio.service.gui.SubrackTab;
+import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 
-public class SubRackPatchPanel extends JPanel implements SubrackTab
+public class SubRackPatchPanel extends JPanel implements ContainerTab
 {
 	private static final long serialVersionUID = 637534081127536206L;
 
@@ -43,7 +43,7 @@ public class SubRackPatchPanel extends JPanel implements SubrackTab
 
 	private final RackService rackService;
 
-	private final HashSet<SubrackTitleListener> titleListeners = new HashSet<SubrackTitleListener>();
+	private final HashSet<ContainerTabTitleListener> titleListeners = new HashSet<ContainerTabTitleListener>();
 
 	public SubRackPatchPanel( final SubRackMadUiInstance uiInstance, final RackModelRenderingComponent rmrc,
 			final RackService rackService )
@@ -80,20 +80,20 @@ public class SubRackPatchPanel extends JPanel implements SubrackTab
 	public void setTitle( final String newTitle )
 	{
 		this.title = newTitle;
-		for( final SubrackTitleListener l : titleListeners )
+		for( final ContainerTabTitleListener l : titleListeners )
 		{
 			l.receiveTitleUpdate( this, newTitle );
 		}
 	}
 
 	@Override
-	public void addTitleListener( final SubrackTitleListener listener )
+	public void addTitleListener( final ContainerTabTitleListener listener )
 	{
 		this.titleListeners.add( listener );
 	}
 
 	@Override
-	public void removeTitleListener( final SubrackTitleListener listener )
+	public void removeTitleListener( final ContainerTabTitleListener listener )
 	{
 		this.titleListeners.remove( listener );
 	}

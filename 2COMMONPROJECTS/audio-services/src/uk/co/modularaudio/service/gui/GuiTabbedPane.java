@@ -23,6 +23,6 @@ package uk.co.modularaudio.service.gui;
 
 public interface GuiTabbedPane
 {
-	void addNewSubrackTab( SubrackTab subrackTab, boolean isCloseable );
-	void removeSubrackTab( SubrackTab subrackTab );
+	void addNewContainerTab( ContainerTab containerTab, boolean isCloseable );
+	void removeContainerTab( ContainerTab containerTab );
 }

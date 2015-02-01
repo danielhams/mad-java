@@ -30,5 +30,4 @@ public interface UserPreferencesController
 	UserPreferencesMVCController getUserPreferencesMVCController() throws DatastoreException;
 	void applyUserPreferencesChanges() throws DatastoreException;
 	void reloadUserPreferences() throws DatastoreException;
-	void cancelUserPreferencesChanges();
 }

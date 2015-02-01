@@ -46,7 +46,6 @@ public class CancelPreferencesChangesAction extends AbstractAction
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		fc.cancelUserPreferencesChanges();
 		fc.reloadUserPreferences();
 		preferencesDialog.close();
 	}

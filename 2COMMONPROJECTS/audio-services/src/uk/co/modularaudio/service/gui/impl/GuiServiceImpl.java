@@ -30,7 +30,7 @@ import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocatio
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
-import uk.co.modularaudio.service.gui.SubrackTab;
+import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.RackServiceToBackActionAdaptor;
@@ -159,20 +159,20 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void addSubrackTab( final SubrackTab subrackTab, final boolean isClosable )
+	public void addContainerTab( final ContainerTab containerTab, final boolean isClosable )
 	{
 		if( tabbedPane != null )
 		{
-			tabbedPane.addNewSubrackTab( subrackTab, isClosable );
+			tabbedPane.addNewContainerTab( containerTab, isClosable );
 		}
 	}
 
 	@Override
-	public void removeSubrackTab( final SubrackTab subrackTab )
+	public void removeContainerTab( final ContainerTab subrackTab )
 	{
 		if( tabbedPane != null )
 		{
-			tabbedPane.removeSubrackTab( subrackTab );
+			tabbedPane.removeContainerTab( subrackTab );
 		}
 	}
 

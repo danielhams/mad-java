@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
+import uk.co.modularaudio.componentdesigner.mainframe.tabbedpane.MainFrameTabbedPane;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;

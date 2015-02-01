@@ -131,11 +131,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	private AudioProviderController audioProviderController;
 	private UserPreferencesController userPreferencesController;
 	private SampleCachingController sampleCachingController;
+
+	// TODO: Known violations of the component hierarchy
 	private ConfigurationService configurationService;
 	private BufferedImageAllocationService bufferedImageAllocationService;
-
 	private TimingService timingService;
-
 	private RackService rackService;
 
 	private AppRenderingIO appRenderingIO;
@@ -857,12 +857,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			log.error( msg, de );
 			return false;
 		}
-	}
-
-	@Override
-	public void cancelUserPreferencesChanges()
-	{
-		userPreferencesController.cancelUserPreferencesChanges();
 	}
 
 	@Override

@@ -117,10 +117,4 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 
 		userPreferencesService.setupPreferencesSelections();
 	}
-
-	@Override
-	public void cancelUserPreferencesChanges()
-	{
-		// Do nothing.
-	}
 }

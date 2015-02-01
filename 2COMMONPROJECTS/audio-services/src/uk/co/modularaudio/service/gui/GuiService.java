@@ -40,9 +40,9 @@ public interface GuiService
 
 	void registerRackTabbedPane( GuiTabbedPane rackTabbedPane );
 
-	void addSubrackTab( SubrackTab subrackTab, boolean isClosesable );
+	void addContainerTab( ContainerTab subrackTab, boolean isClosesable );
 
-	void removeSubrackTab( SubrackTab subrackTab );
+	void removeContainerTab( ContainerTab subrackTab );
 
 	void showYesNoQuestionDialog( Component parentComponent,
 			String message,

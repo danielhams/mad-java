@@ -174,11 +174,11 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		if( setVisible )
 		{
 //			log.debug("Would attach listeners...");
-			guiService.addSubrackTab( patchPanel, true );
+			guiService.addContainerTab( patchPanel, true );
 		}
 		else
 		{
-			guiService.removeSubrackTab( patchPanel );
+			guiService.removeContainerTab( patchPanel );
 //			log.debug("Would detach listeners..");
 			for( final PatchTabCloseListener l : patchTabCloseListeners )
 			{
@@ -256,7 +256,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 			{
 				if( guiService != null )
 				{
-					guiService.removeSubrackTab( patchPanel );
+					guiService.removeContainerTab( patchPanel );
 				}
 				if( guiRackPanel != null )
 				{

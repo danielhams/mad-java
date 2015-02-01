@@ -22,17 +22,17 @@ package uk.co.modularaudio.service.gui;
 
 import javax.swing.JComponent;
 
-public interface SubrackTab
+public interface ContainerTab
 {
-	public interface SubrackTitleListener
+	public interface ContainerTabTitleListener
 	{
-		void receiveTitleUpdate( SubrackTab subrackTab, String newTitle );
+		void receiveTitleUpdate( ContainerTab containerTab, String newTitle );
 	}
 
 	JComponent getJComponent();
 	String getTitle();
-	void addTitleListener( SubrackTitleListener listener );
-	void removeTitleListener( SubrackTitleListener listener );
+	void addTitleListener( ContainerTabTitleListener listener );
+	void removeTitleListener( ContainerTabTitleListener listener );
 	void doTabClose();
 
 }
