@@ -20,16 +20,37 @@
 
 package uk.co.modularaudio.controller.component;
 
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.table.Span;
 
+/**
+ * <p>Entry point for the macro operations that may be performed on
+ * MAD components.</p>
+ * <p>The component controller is a vertical responsibility controller that
+ * delegates and/or coordinates work as appropriate to services
+ * implementing the required functionality.
+ *
+ * @author dan
+ */
 public interface ComponentController
 {
+	/**
+	 * <p>Obtain a list of the MAD definitions currently available
+	 * in the system.</p>
+	 * @see MadComponentService#listDefinitionsAvailable()
+	 */
 	MadDefinitionListModel listDefinitionsAvailable() throws DatastoreException;
 
+	/**
+	 * <p>Obtain the width of a particular definition in terms of the rack
+	 * span.</p>
+	 * @see MadComponentUiService#getUiSpanForDefinition(MadDefinition)
+	 */
 	Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
 		throws DatastoreException, RecordNotFoundException;
 

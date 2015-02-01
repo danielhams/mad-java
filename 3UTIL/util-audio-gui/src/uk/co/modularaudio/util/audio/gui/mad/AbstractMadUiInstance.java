@@ -36,7 +36,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
 public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I extends MadInstance<D,I>>
-	implements IMadUiInstance<D, I>, MadInstance.InstanceLifecycleListener, IOQueueEventUiConsumer<I>
+	implements MadUiInstance<D, I>, MadInstance.InstanceLifecycleListener, IOQueueEventUiConsumer<I>
 {
 	private static Log log = LogFactory.getLog( AbstractMadUiInstance.class.getName() );
 

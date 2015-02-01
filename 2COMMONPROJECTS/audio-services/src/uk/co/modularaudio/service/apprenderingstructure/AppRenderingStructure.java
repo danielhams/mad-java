@@ -65,9 +65,9 @@ import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
- * <p>The AppRenderingStructure is a stateful object used to manage the lifecycle and state
- * of audio IO and application components.</p>
- * <p>It is intended that one such object exists per application audio IO connection/session.</p>
+ * <p>The AppRenderingStructure is an object used to manage the lifecycle
+ * of audio related state.</p>
+ * <p>It is intended that one such object exists per application audio session.</p>
  * <p>An AppRenderingStructure contains:</p>
  * <ul>
  * <li>A root graph</li>

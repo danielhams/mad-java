@@ -60,9 +60,9 @@ import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContaine
 import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.HotspotFrameTimeFactory;
 import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.MTRenderingJobQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -75,7 +75,7 @@ import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
@@ -570,7 +570,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		for( int i = 0 ; i < rackComponents.size() ; i++)
 		{
 			final RackComponent rc = rackComponents.get( i );
-			final AbstractMadUiInstance<?, ?> uiInstance = rc.getUiInstance();
+			final MadUiInstance<?, ?> uiInstance = rc.getUiInstance();
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{
 //				log.debug("Calling rdt on " + uiInstance.getInstance().getInstanceName() );

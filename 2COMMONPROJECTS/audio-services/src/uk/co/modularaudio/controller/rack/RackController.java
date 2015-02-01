@@ -23,6 +23,8 @@ package uk.co.modularaudio.controller.rack;
 import java.io.IOException;
 import java.util.Map;
 
+import uk.co.modularaudio.service.rack.RackService;
+import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -35,25 +37,60 @@ import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
 import uk.co.modularaudio.util.table.TableCellFullException;
 import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
+/**
+ * <p>Entry point for the macro operations that may be performed on a "rack".</p>
+ * <p>The rack controller is a vertical responsibility controller that delegates
+ * and / or coordinates work as appropriate from services that implement
+ * the required functionality.</p>
+ *
+ * @author dan
+ */
 public interface RackController
 {
+	/**
+	 * <p>Creates a new rack with the requested parameters.</p>
+	 * @see RackService#createNewRackDataModel(String, String, int, int, boolean)
+	 */
 	RackDataModel createNewRackDataModel( String rackName, String rackPath, int numCols, int numRows, boolean withRackIO ) throws DatastoreException;
 
+	/**
+	 * <p>Create a component within a rack and return it should
+	 * the caller need to do any operations on it.</p>
+	 * @see RackService#createComponent(RackDataModel, MadDefinition, Map, String)
+	 */
 	RackComponent createComponent( RackDataModel rack, MadDefinition<?,?> definition,
 			Map<MadParameterDefinition, String> parameterValues, String name )
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException,
 			MAConstraintViolationException, RecordNotFoundException;
 
-	// Debugging methods
-	void dumpRack( RackDataModel rdm );
-
+	/**
+	 * <p>Load a rack from a filesystem file.</p>
+	 * @see RackMarshallingService#loadRackFromFile(String)
+	 */
 	RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException;
 
+	/**
+	 * <p>Save a rack to the filesystem file.</p>
+	 * @see RackMarshallingService#saveRackToFile(RackDataModel, String)
+	 */
 	void saveRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
 
+	/**
+	 * <p>Perform any clean up needed on a rack.</p>
+	 * @see RackService#destroyRackDataModel(RackDataModel)
+	 */
 	void destroyRackDataModel(RackDataModel rackDataModel) throws DatastoreException, MAConstraintViolationException;
 
+	/**
+	 * <p>Obtain the internal MadGraphInstance inside a rack.</p>
+	 * @see RackService#getRackGraphInstance(RackDataModel)
+	 */
 	MadGraphInstance<?,?> getRackGraphInstance( RackDataModel rack );
 
-
+	// Debugging methods
+	/**
+	 * <p>Output the rack contents to the console.</p>
+	 * @see RackService#dumpRack(RackDataModel)
+	 */
+	void dumpRack( RackDataModel rdm );
 }

@@ -28,19 +28,21 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
  * The contract of the audio provider controller allows the creation
- * of an AppRenderingIO object that may then be associated
- * with an AppRenderingSession.</p>
+ * of an AppRenderingSession object for audio input/output.</p>
  *
  * @author dan
  */
 public interface AudioProviderController
 {
 	/**
-	 * @param hardwareIOConfiguration
-	 * @param errorCallback
-	 * @return
-	 * @throws DatastoreException
-	 * @throws RecordNotFoundException
+	 * <p>Create an AppRenderingSession with the supplied hardware configuration
+	 * for input and output audio and MIDI data.</p>
+	 * <p>The session is not started/active.</p>
+	 * @param hardwareIOConfiguration the required audio and MIDI devices
+	 * @param errorCallback a receiver for errors that occur while the session is active
+	 * @return the newly created session in a stopped state
+	 * @throws DatastoreException on unrecoverable error
+	 * @throws RecordNotFoundException if passed devices are no longer available
 	 */
 	AppRenderingSession createAppRenderingSessionForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorCallback errorCallback )

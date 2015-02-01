@@ -20,14 +20,42 @@
 
 package uk.co.modularaudio.controller.userpreferences;
 
+import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
+/**
+ * <p>Entry point for the macro operations that may be performed on user preferences.</p>
+ * <p>The user preferences controller is a vertical responsibility controller that delegates
+ * and/or coordinates work as appropriate to services implementing the required
+ * functionality.</p>
+ *
+ * @author dan
+ */
 public interface UserPreferencesController
 {
+	/**
+	 * <p>Obtain the MVC view for user preferences.</p>
+	 * @see GuiService#getUserPreferencesMVCView(UserPreferencesMVCController)
+	 */
 	UserPreferencesMVCView getUserPreferencesMVCView() throws DatastoreException;
+	/**
+	 * <p>Obtain the MVC controller for user preferences.</p>
+	 * @see UserPreferencesService#getUserPreferencesMVCController()
+	 */
 	UserPreferencesMVCController getUserPreferencesMVCController() throws DatastoreException;
+	/**
+	 * <p>Persist any changes made to the MVC model.</p>
+	 * @see UserPreferencesService#applyUserPreferencesChanges(UserPreferencesMVCController)
+	 */
 	void applyUserPreferencesChanges() throws DatastoreException;
+
+	/**
+	 * <p>Revert any changes made to the MVC model and reload what
+	 * was previously stored as preferences.</p>
+	 * @see UserPreferencesService#createUserPreferencesModel()
+	 */
 	void reloadUserPreferences() throws DatastoreException;
 }

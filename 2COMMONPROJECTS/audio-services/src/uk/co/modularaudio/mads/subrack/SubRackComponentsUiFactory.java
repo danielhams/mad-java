@@ -26,7 +26,7 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -38,29 +38,29 @@ public class SubRackComponentsUiFactory extends AbstractMadComponentUiFactory
 	@Override
 	public void setupTypeToDefinitionClasses() throws DatastoreException
 	{
-		Collection<MadDefinition<?,?>> auds = subRackComponentsFactory.listDefinitions();
-		for( MadDefinition<?,?> aud : auds )
+		final Collection<MadDefinition<?,?>> auds = subRackComponentsFactory.listDefinitions();
+		for( final MadDefinition<?,?> aud : auds )
 		{
 			if( aud instanceof SubRackMadDefinition )
 			{
-				SubRackMadDefinition fi = (SubRackMadDefinition)aud;
-				SubRackMadUiDefinition fiud = new SubRackMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory, imageRoot );
+				final SubRackMadDefinition fi = (SubRackMadDefinition)aud;
+				final SubRackMadUiDefinition fiud = new SubRackMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory, imageRoot );
 				componentDefinitionToUiDefinitionMap.put( aud, fiud );
 			}
 		}
 	}
 
-	public void setSubRackComponentsFactory( SubRackComponentsFactory subRackComponentsFactory )
+	public void setSubRackComponentsFactory( final SubRackComponentsFactory subRackComponentsFactory )
 	{
 		this.subRackComponentsFactory = subRackComponentsFactory;
 	}
 
 	@Override
-	public void destroyUiInstance( AbstractMadUiInstance<?, ?> instanceToDestroy )
+	public void destroyUiInstance( final MadUiInstance<?, ?> instanceToDestroy )
 			throws DatastoreException, RecordNotFoundException
 	{
 		// Clean it up before we actually destroy it
-		SubRackMadUiInstance uiInstance = (SubRackMadUiInstance)instanceToDestroy;
+		final SubRackMadUiInstance uiInstance = (SubRackMadUiInstance)instanceToDestroy;
 		uiInstance.cleanup();
 
 		super.destroyUiInstance( instanceToDestroy );
