@@ -25,36 +25,32 @@ import java.util.regex.Pattern;
 
 public class TableNamePrefixer
 {
-	private static Pattern tableDefPattern = null;
+	private final static Pattern TABLE_DEF_PATTERN;
 
-	private static Pattern sequenceDefPattern = null;
+	private final static Pattern SEQUENCE_DEF_PATTERN;
 
 	static
 	{
-		tableDefPattern = Pattern.compile("\\stable=\\\"([^\\\"]+)\\\"");
-		sequenceDefPattern = Pattern.compile("<param name=\\\"sequence\\\">([^<]+)</param>");
+		TABLE_DEF_PATTERN = Pattern.compile( "\\stable=\\\"([^\\\"]+)\\\"" );
+		SEQUENCE_DEF_PATTERN = Pattern.compile( "<param name=\\\"sequence\\\">([^<]+)</param>" );
 	}
 
-	public static String prefixTableNames(String originalHbmString, String persistedBeanTablePrefix)
+	public static String prefixTableNames( final String originalHbmString, final String persistedBeanTablePrefix )
 	{
 		// If the table prefix is filled in,
 		// Find each occurence of table="SOMETHING"
 		// and replace with table="PREFIX_SOMETHING"
-		if (persistedBeanTablePrefix != null && !persistedBeanTablePrefix.equals(""))
+		if (persistedBeanTablePrefix != null && !persistedBeanTablePrefix.equals( "" ))
 		{
-			Pattern patternToMatchAndPrefix = tableDefPattern;
-			
-			String tmpString = findAndPrefixPatternInString(originalHbmString, persistedBeanTablePrefix,
-					patternToMatchAndPrefix,
-					" table=\"",
-					"\"");
-			
-			patternToMatchAndPrefix = sequenceDefPattern;
-			
-			String newHbmString = findAndPrefixPatternInString( tmpString, persistedBeanTablePrefix,
-					patternToMatchAndPrefix,
-					"<param name=\"sequence\">",
-					"</param>");
+			Pattern patternToMatchAndPrefix = TABLE_DEF_PATTERN;
+
+			final String tmpString = findAndPrefixPatternInString( originalHbmString, persistedBeanTablePrefix,
+					patternToMatchAndPrefix, " table=\"", "\"" );
+
+			patternToMatchAndPrefix = SEQUENCE_DEF_PATTERN;
+
+			final String newHbmString = findAndPrefixPatternInString( tmpString, persistedBeanTablePrefix,
+					patternToMatchAndPrefix, "<param name=\"sequence\">", "</param>" );
 
 			return (newHbmString.toString());
 		}
@@ -64,33 +60,30 @@ public class TableNamePrefixer
 		}
 	}
 
-	protected static String findAndPrefixPatternInString(String originalHbmString,
-			String persistedBeanTablePrefix, 
-			Pattern patternToMatchAndPrefix,
-			String replacementPrefix,
-			String replacementPostfix)
+	protected static String findAndPrefixPatternInString( final String originalHbmString, final String persistedBeanTablePrefix,
+			final Pattern patternToMatchAndPrefix, final String replacementPrefix, final String replacementPostfix )
 	{
-		StringBuilder retVal = new StringBuilder(originalHbmString.length());
+		final StringBuilder retVal = new StringBuilder( originalHbmString.length() );
 
 		int curPos = 0;
 
-		Matcher matcher = patternToMatchAndPrefix.matcher(originalHbmString);
-		while (matcher.find(curPos))
+		final Matcher matcher = patternToMatchAndPrefix.matcher( originalHbmString );
+		while (matcher.find( curPos ))
 		{
 			// Found a match
-			int matchStart = matcher.start();
-			int matchEnd = matcher.end();
+			final int matchStart = matcher.start();
+			final int matchEnd = matcher.end();
 
-			String originalTableName = matcher.group(1);
+			final String originalTableName = matcher.group( 1 );
 
 			// Copy up to match start into the output
-			retVal.append(originalHbmString.substring(curPos, matchStart));
+			retVal.append( originalHbmString.substring( curPos, matchStart ) );
 
 			// Now append the new table string
 			retVal.append( replacementPrefix );
-			retVal.append(persistedBeanTablePrefix);
-			retVal.append("_");
-			retVal.append(originalTableName);
+			retVal.append( persistedBeanTablePrefix );
+			retVal.append( "_" );
+			retVal.append( originalTableName );
 			retVal.append( replacementPostfix );
 
 			// Now move the curPos up to matchEnd
@@ -99,7 +92,7 @@ public class TableNamePrefixer
 
 		if (curPos != originalHbmString.length())
 		{
-			retVal.append(originalHbmString.substring(curPos));
+			retVal.append( originalHbmString.substring( curPos ) );
 		}
 		return retVal.toString();
 	}

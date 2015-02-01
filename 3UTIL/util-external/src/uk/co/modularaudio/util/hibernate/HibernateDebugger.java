@@ -28,57 +28,67 @@ import org.apache.commons.logging.Log;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-
 public class HibernateDebugger
 {
 	/**
 	 * Expand the HQL and return a completed string with replaced parameters
+	 *
 	 * @param query The source HQL query
 	 * @param log the logger which the output will be written
 	 * @param parameters a map of parameters to the query
 	 * @return the completed HQL query with parameters inlined
 	 */
-	public static String translateQuery(String query,final Log log,final Map<String,String> parameters  ) {
-		String result = null;
-		if (parameters != null && parameters.size()>0) {
-			for (final Iterator<Entry<String,String>> iter = parameters.entrySet().iterator(); iter.hasNext();)
+	public static String translateQuery( final String query, final Log log, final Map<String, String> parameters )
+	{
+		final StringBuilder result = new StringBuilder();
+		if (parameters != null && parameters.size() > 0)
+		{
+			for (final Iterator<Entry<String, String>> iter = parameters.entrySet().iterator(); iter.hasNext();)
 			{
-				final Map.Entry<String,String> element = iter.next();
+				final Map.Entry<String, String> element = iter.next();
 				final Object value = element.getValue();
-				result=query.replaceAll(":"+element.getKey().toString(), (value!=null) ? value.toString() : "NULL");
-				query = result;
-
+				result.append( query.replaceAll( ":" + element.getKey().toString(), (value != null) ? value.toString()
+						: "NULL" ) );
 			}
-		} else {
-			result = query;
+		}
+		else
+		{
+			result.append( query );
 		}
 
-		log.debug(result);
-		return result;
+		final String retString = result.toString();
+		log.debug( retString );
+		return retString;
 	}
 
 	/**
 	 * Take the Object and dump it's fields to the provided logger
+	 *
 	 * @param sourceObject the object to debug
 	 * @param log the logger which the output will be written
 	 * @param message the prefix to add to the log output
-	 * @return A combined string containing the property names and values for the source object
+	 * @return A combined string containing the property names and values for
+	 *         the source object
 	 */
-	public static String showObjectProperties(final Object sourceObject,final Log log,final String message ) {
-		String result = null;
+	public static String showObjectProperties( final Object sourceObject, final Log log, final String message )
+	{
+		final StringBuilder result = new StringBuilder();
 		try
 		{
-			if (message != null) {
-				result = message + " : ";
+			if (message != null)
+			{
+				result.append( message );
+				result.append( " : " );
 			}
-			result += ReflectionUtils.debugObjectValues(sourceObject);
+			result.append( ReflectionUtils.debugObjectValues( sourceObject ) );
 		}
 		catch (final DatastoreException e)
 		{
-			log.debug("Problem while trying to debug an object properties",e);
+			log.debug( "Problem while trying to debug an object properties", e );
 		}
 
-		log.debug(result);
-		return result;
+		final String retString = result.toString();
+		log.debug( retString );
+		return retString;
 	}
 }

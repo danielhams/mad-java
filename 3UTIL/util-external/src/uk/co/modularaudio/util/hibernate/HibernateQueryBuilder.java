@@ -32,78 +32,76 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class HibernateQueryBuilder
 {
-	private Map<String,String> parameters=new HashMap<String,String>();
-	private Log log;
+	private final Map<String, String> parameters = new HashMap<String, String>();
+	private final Log log;
 	private Query queryResult;
 	private boolean isSqlQuery = false;
-	public HibernateQueryBuilder(Log log)  {
+
+	public HibernateQueryBuilder( final Log log )
+	{
 		this.log = log;
-		if (log == null) 
-		{
-			throw new NullPointerException("Logger is null unable to log things");
-		}
-	}
-	public HibernateQueryBuilder(Log log,boolean isSQLQuery)  {
-		this.log = log;
-		if (log == null) 
-		{
-			throw new NullPointerException("Logger is null unable to log things");
-		}
-		this.isSqlQuery = isSQLQuery;
-	}
-	public void initQuery(Session session,String query) {
-		if (isSqlQuery) 
-		{
-			queryResult = session.createSQLQuery(query);
-		} else
-		{
-			queryResult = session.createQuery(query);
-		}
-		
-	}
-	public Query buildQuery() throws DatastoreException {
-		if (parameters != null && parameters.size() >0 && queryResult.getNamedParameters().length != parameters.size()) {
-			throw new DatastoreException("The number of declared arguments is different form the number of argument passed to the query");
-		}
-		
-		HibernateDebugger.translateQuery(queryResult.getQueryString(),log,parameters);
-		return queryResult;
-	}
-	public void setString(String fieldName,String value) throws DatastoreException {
-		// if (value != null)
-		{
-			parameters.put(fieldName,value);
-			if (queryResult != null) {
-				queryResult.setString(fieldName,value);
-			} else {
-				throw new DatastoreException("Init your query before trying to build with parameters");
-			}
-		}
-			
-	}
-	public void setLong(String fieldName,Long value) throws DatastoreException {
-		// if (value != null)
-		{
-			parameters.put(fieldName,value.toString());
-			if (queryResult != null) {
-				queryResult.setLong(fieldName,value);
-			} else {
-				throw new DatastoreException("Init your query before trying to build with parameters");
-			}
-		}
-			
 	}
 
-	public void setDate(String fieldName,Date value) throws DatastoreException {
-		// if (value != null)
+	public HibernateQueryBuilder( final Log log, final boolean isSQLQuery )
+	{
+		this.log = log;
+		this.isSqlQuery = isSQLQuery;
+	}
+
+	public void initQuery( final Session session, final String query )
+	{
+		if (isSqlQuery)
 		{
-			parameters.put(fieldName,value.toString());
-			if (queryResult != null) {
-				queryResult.setDate(fieldName,value);
-			} else {
-				throw new DatastoreException("Init your query before trying to build with parameters");
-			}
+			queryResult = session.createSQLQuery( query );
 		}
-			
+		else
+		{
+			queryResult = session.createQuery( query );
+		}
+
+	}
+
+	public Query buildQuery() throws DatastoreException
+	{
+		if (parameters != null && parameters.size() > 0 && queryResult.getNamedParameters().length != parameters.size())
+		{
+			throw new DatastoreException( "The number of declared arguments is different form the number of argument passed to the query" );
+		}
+
+		HibernateDebugger.translateQuery( queryResult.getQueryString(), log, parameters );
+		return queryResult;
+	}
+
+	public void setString( final String fieldName, final String value ) throws DatastoreException
+	{
+		if( queryResult == null )
+		{
+			throw new DatastoreException( "Init your query before trying to build with parameters" );
+		}
+
+		parameters.put( fieldName, value );
+		queryResult.setString( fieldName, value );
+	}
+
+	public void setLong( final String fieldName, final Long value ) throws DatastoreException
+	{
+		if( queryResult == null )
+		{
+			throw new DatastoreException( "Init your query before trying to build with parameters" );
+		}
+
+		parameters.put( fieldName, value.toString() );
+		queryResult.setLong( fieldName, value );
+	}
+
+	public void setDate( final String fieldName, final Date value ) throws DatastoreException
+	{
+		if( queryResult == null )
+		{
+			throw new DatastoreException( "Init your query before trying to build with parameters" );
+		}
+
+		parameters.put( fieldName, value.toString() );
+		queryResult.setDate( fieldName, value );
 	}
 }

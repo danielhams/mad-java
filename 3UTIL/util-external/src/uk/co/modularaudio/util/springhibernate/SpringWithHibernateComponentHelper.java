@@ -25,7 +25,7 @@ package uk.co.modularaudio.util.springhibernate;
 public class SpringWithHibernateComponentHelper extends SpringComponentHelper
 {
 //	private static Log log = LogFactory.getLog( SpringWithHibernateComponentHelper.class.getName() );
-	
+
 	public SpringWithHibernateComponentHelper()
 	{
 		this.contextHelpers.add( new SpringHibernateContextHelper() );

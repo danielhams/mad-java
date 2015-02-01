@@ -31,11 +31,11 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 public class BeanInstantiationListAsPostProcessor implements BeanFactoryPostProcessor, BeanPostProcessor
 {
 //	private static Log log = LogFactory.getLog( BeanInstantiationListAsPostProcessor.class.getName() );
-	
-	private ArrayList<Object> beansInInitOrder = new ArrayList<Object>();
+
+	private final ArrayList<Object> beansInInitOrder = new ArrayList<Object>();
 
 	@Override
-	public void postProcessBeanFactory( ConfigurableListableBeanFactory bf )
+	public void postProcessBeanFactory( final ConfigurableListableBeanFactory bf )
 			throws BeansException
 	{
 		// Add a bean post processor that will store the order in which things should be instantiated.
@@ -43,7 +43,7 @@ public class BeanInstantiationListAsPostProcessor implements BeanFactoryPostProc
 	}
 
 	@Override
-	public Object postProcessAfterInitialization( Object beanObject, String beanName )
+	public Object postProcessAfterInitialization( final Object beanObject, final String beanName )
 			throws BeansException
 	{
 //		log.debug("postProcessBean with " + beanObject.toString() + " and " + beanName );
@@ -52,7 +52,7 @@ public class BeanInstantiationListAsPostProcessor implements BeanFactoryPostProc
 	}
 
 	@Override
-	public Object postProcessBeforeInitialization( Object arg0, String arg1 )
+	public Object postProcessBeforeInitialization( final Object arg0, final String arg1 )
 			throws BeansException
 	{
 		// Don't do anything.

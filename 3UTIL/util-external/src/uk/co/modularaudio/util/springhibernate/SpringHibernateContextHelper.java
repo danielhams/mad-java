@@ -46,42 +46,42 @@ public class SpringHibernateContextHelper implements SpringContextHelper
 	}
 
 	@Override
-	public void preRefreshDoThings(GenericApplicationContext appContext)
+	public void preRefreshDoThings(final GenericApplicationContext appContext)
 			throws DatastoreException
 	{
 		// Do nothing
 	}
 
 	@Override
-	public void postRefreshDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstatiationList )
+	public void postRefreshDoThings( final GenericApplicationContext appContext, final BeanInstantiationListAsPostProcessor beanInstatiationList )
 			throws DatastoreException
 	{
-		Map<String,ComponentWithHibernatePersistence> components = appContext.getBeansOfType(ComponentWithHibernatePersistence.class);
-		
-		List<HibernatePersistedBeanDefinition> hpbdList = new ArrayList<HibernatePersistedBeanDefinition>();
+		final Map<String,ComponentWithHibernatePersistence> components = appContext.getBeansOfType(ComponentWithHibernatePersistence.class);
 
-		for (Iterator<ComponentWithHibernatePersistence> iter = components.values().iterator(); iter.hasNext();)
+		final List<HibernatePersistedBeanDefinition> hpbdList = new ArrayList<HibernatePersistedBeanDefinition>();
+
+		for (final Iterator<ComponentWithHibernatePersistence> iter = components.values().iterator(); iter.hasNext();)
 		{
-			ComponentWithHibernatePersistence component = (ComponentWithHibernatePersistence) iter.next();
-			List<HibernatePersistedBeanDefinition> hbmDefinitions = component.listHibernatePersistedBeanDefinitions();
+			final ComponentWithHibernatePersistence component = iter.next();
+			final List<HibernatePersistedBeanDefinition> hbmDefinitions = component.listHibernatePersistedBeanDefinitions();
 			hpbdList.addAll( hbmDefinitions );
 		}
 		// Now make sure the hibernate session service is configured
 		try
 		{
-			HibernateSessionFactory hssi = appContext.getBean( HibernateSessionFactory.class );
+			final HibernateSessionFactory hssi = appContext.getBean( HibernateSessionFactory.class );
 			hssi.configureHibernate( hpbdList );
 		}
-		catch( Exception e )
+		catch( final Exception e )
 		{
-			String msg = "Exception caught initialising hibernate persisted components: " + e.toString();
+			final String msg = "Exception caught initialising hibernate persisted components: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
 	}
 
 	@Override
-	public void preShutdownDoThings(GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstatiationList )
+	public void preShutdownDoThings(final GenericApplicationContext appContext, final BeanInstantiationListAsPostProcessor beanInstatiationList )
 			throws DatastoreException
 	{
 		// Do nothing

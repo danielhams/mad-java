@@ -20,17 +20,18 @@
 
 package uk.co.modularaudio.util.hibernate;
 
-
 public class NoSuchHibernateSessionException extends Exception
 {
 	private static final long serialVersionUID = -6202643689100009187L;
 
-	public NoSuchHibernateSessionException(String message, Throwable cause) {
-		super(message, cause);
+	public NoSuchHibernateSessionException( final String message, final Throwable cause )
+	{
+		super( message, cause );
 	}
 
-	public NoSuchHibernateSessionException(String message) {
-		super(message);
+	public NoSuchHibernateSessionException( final String message )
+	{
+		super( message );
 	}
 
 	public NoSuchHibernateSessionException()

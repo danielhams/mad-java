@@ -33,113 +33,116 @@ import org.hibernate.usertype.UserType;
 
 public class EnumUserType implements UserType
 {
-
 	private static final int[] SQL_TYPES = { Types.VARCHAR };
 
-	public EnumUserType()
-	{
-		super();
-	}
-
+	@Override
 	public int[] sqlTypes()
 	{
 		return SQL_TYPES;
 	}
 
+	@Override
 	public Class<?> returnedClass()
 	{
 		return Enum.class;
 	}
 
-	public boolean equals(Object obj1, Object obj2) throws HibernateException
+	@Override
+	public boolean equals(final Object obj1, final Object obj2) throws HibernateException
 	{
 		if (obj1 == obj2)
 			return true;
 		if (obj1 == null || obj2 == null)
 			return false;
-		return ((Enum<?>) obj1).equals(((Enum<?>) obj2));
+		return ((Enum<?>) obj1).equals((obj2));
 	}
 
-	public int hashCode(Object object) throws HibernateException
+	@Override
+	public int hashCode(final Object object) throws HibernateException
 	{
 		return ((Enum<?>) object).hashCode();
 	}
 
-	private String getRepresentation(Object object)
+	private String getRepresentation(final Object object)
 	{
 		return object.getClass().getName() + " " + ((Enum<?>) object).name();
 	}
 
-	private Object getObject(String representation) throws HibernateException
+	private Object getObject(final String representation) throws HibernateException
 	{
 		try
 		{
-			String[] parts = representation.split(" ");
-			Class<?> c = Class.forName(parts[0]);
-			Field field = c.getField(parts[1]);
+			final String[] parts = representation.split(" ");
+			final Class<?> c = Class.forName(parts[0]);
+			final Field field = c.getField(parts[1]);
 			return field.get(null);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new HibernateException(e);
 		}
 	}
 
-	public Object nullSafeGet(ResultSet resultSet, String[] names, Object owner) throws HibernateException,
+	public Object nullSafeGet(final ResultSet resultSet, final String[] names, final Object owner) throws HibernateException,
 			SQLException
 	{
 		if (resultSet.wasNull())
 			return null;
-		String value = resultSet.getString(names[0]);
+		final String value = resultSet.getString(names[0]);
 		return getObject(value);
 	}
 
-	public void nullSafeSet(PreparedStatement statement, Object value, int index) throws HibernateException,
+	public void nullSafeSet(final PreparedStatement statement, final Object value, final int index) throws HibernateException,
 			SQLException
 	{
 		if (value == null)
 			statement.setNull(index, Types.VARCHAR);
 		else
 		{
-			String representation = getRepresentation(value);
+			final String representation = getRepresentation(value);
 			statement.setString(index, representation);
 		}
 	}
 
-	public Object deepCopy(Object value) throws HibernateException
+	@Override
+	public Object deepCopy(final Object value) throws HibernateException
 	{
 		return value;
 	}
 
+	@Override
 	public boolean isMutable()
 	{
 		return false;
 	}
 
-	public Serializable disassemble(Object object) throws HibernateException
+	@Override
+	public Serializable disassemble(final Object object) throws HibernateException
 	{
 		return getRepresentation(object);
 	}
 
-	public Object assemble(Serializable serializable, Object owner) throws HibernateException
+	@Override
+	public Object assemble(final Serializable serializable, final Object owner) throws HibernateException
 	{
 		return getObject((String) serializable);
 	}
 
-	public Object replace(Object original, Object target, Object owner) throws HibernateException
+	@Override
+	public Object replace(final Object original, final Object target, final Object owner) throws HibernateException
 	{
 		return original;
 	}
 
 	@Override
-	public Object nullSafeGet( ResultSet arg0, String[] arg1, SessionImplementor arg2, Object arg3 )
+	public Object nullSafeGet( final ResultSet arg0, final String[] arg1, final SessionImplementor arg2, final Object arg3 )
 			throws HibernateException, SQLException
 	{
 		return null;
 	}
 
 	@Override
-	public void nullSafeSet( PreparedStatement arg0, Object arg1, int arg2, SessionImplementor arg3 )
+	public void nullSafeSet( final PreparedStatement arg0, final Object arg1, final int arg2, final SessionImplementor arg3 )
 			throws HibernateException, SQLException
 	{
 	}

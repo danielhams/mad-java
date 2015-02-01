@@ -30,51 +30,48 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-
-
 public class ReflectionUtils
 {
-	private static Log log = LogFactory.getLog(ReflectionUtils.class.getName());
+	private static Log log = LogFactory.getLog( ReflectionUtils.class.getName() );
 
-
-	public static void copyOverGetAttributes(Class<?> interfaceListingAttributes, Object src, Object dest)
+	public static void copyOverGetAttributes( final Class<?> interfaceListingAttributes, final Object src, final Object dest )
 			throws DatastoreException
 	{
 		try
 		{
-			Method methods[] = interfaceListingAttributes.getMethods();
+			final Method methods[] = interfaceListingAttributes.getMethods();
 
 			for (int i = 0; i < methods.length; i++)
 			{
-				Method getMethod = methods[i];
-				String methodName = getMethod.getName();
+				final Method getMethod = methods[i];
+				final String methodName = getMethod.getName();
 
-				if (methodName.startsWith("get"))
+				if (methodName.startsWith( "get" ))
 				{
-					Class<?> returnType = getMethod.getReturnType();
-					
-					Object result = getMethod.invoke(src);
+					final Class<?> returnType = getMethod.getReturnType();
 
-					String setMethodName = methodName.replaceFirst("get", "set");
+					final Object result = getMethod.invoke( src );
 
-					Method setMethod = interfaceListingAttributes.getDeclaredMethod(setMethodName, new Class[]
-					{ returnType });
+					final String setMethodName = methodName.replaceFirst( "get", "set" );
 
-					setMethod.invoke(dest, result);
+					final Method setMethod = interfaceListingAttributes.getDeclaredMethod( setMethodName,
+							new Class[] { returnType } );
+
+					setMethod.invoke( dest, result );
 				}
 			}
 		}
-		catch (IllegalAccessException iae)
+		catch (final IllegalAccessException iae)
 		{
-			throw new DatastoreException("iae: " + iae.toString());
+			throw new DatastoreException( "iae: " + iae.toString() );
 		}
-		catch (InvocationTargetException ite)
+		catch (final InvocationTargetException ite)
 		{
-			throw new DatastoreException("ite: " + ite.toString());
+			throw new DatastoreException( "ite: " + ite.toString() );
 		}
-		catch (NoSuchMethodException nsme)
+		catch (final NoSuchMethodException nsme)
 		{
-			throw new DatastoreException("nsme: " + nsme.toString());
+			throw new DatastoreException( "nsme: " + nsme.toString() );
 		}
 	}
 
@@ -82,72 +79,79 @@ public class ReflectionUtils
 	 * Return a string to debug the values of an object
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String debugObjectValues(Object src) throws DatastoreException
+	public static String debugObjectValues( final Object src ) throws DatastoreException
 	{
-		StringBuilder debugString = new StringBuilder(src.getClass().getName()+" :");
-		StringBuilder collectionString = new StringBuilder();
-		String prefix="get";
+		final StringBuilder debugString = new StringBuilder( src.getClass().getName() + " :" );
+		final StringBuilder collectionString = new StringBuilder();
+		final String prefix = "get";
 		boolean firstGetter = true;
 		try
 		{
-			Method methods[] = src.getClass().getMethods();
+			final Method methods[] = src.getClass().getMethods();
 
 			for (int i = 0; i < methods.length; i++)
 			{
-				Method getMethod = methods[i];
-				String methodName = getMethod.getName();
-				
-				if (methodName.startsWith(prefix) && !methodName.equalsIgnoreCase("getclass"))
+				final Method getMethod = methods[i];
+				final String methodName = getMethod.getName();
+
+				if (methodName.startsWith( prefix ) && !methodName.equalsIgnoreCase( "getclass" ))
 				{
-					String propertyName = methodName.substring(prefix.length(),methodName.length());
-					if (getMethod.getParameterTypes().length>0) 
+					final String propertyName = methodName.substring( prefix.length(), methodName.length() );
+					if (getMethod.getParameterTypes().length > 0)
 					{
 						continue;
 					}
-					if (!firstGetter) {
-						debugString.append(",");
+					if (!firstGetter)
+					{
+						debugString.append( "," );
 					}
-					
-					Object result = getMethod.invoke(src);
-					if (result instanceof Map) {
-						collectionString.append(propertyName).append("=");
-						collectionString.append("(");
-						Map map = (Map)result;
-						for (Iterator iter = map.entrySet().iterator(); iter.hasNext();)
+
+					final Object result = getMethod.invoke( src );
+					if (result instanceof Map)
+					{
+						collectionString.append( propertyName ).append( "=" );
+						collectionString.append( "(" );
+						final Map map = (Map) result;
+						for (final Iterator iter = map.entrySet().iterator(); iter.hasNext();)
 						{
-							Map.Entry entry = (Map.Entry) iter.next();
-							collectionString.append(" ").append(entry.getKey()).append("|").append(entry.getValue());
-							if (iter.hasNext()) {
-								collectionString.append(",");
+							final Map.Entry entry = (Map.Entry) iter.next();
+							collectionString.append( " " ).append( entry.getKey() ).append( "|" )
+									.append( entry.getValue() );
+							if (iter.hasNext())
+							{
+								collectionString.append( "," );
 							}
 						}
-						collectionString.append(")");
-					} else {
-						debugString.append(propertyName).append("=");
-						debugString.append(result!=null?result.toString():"null");
+						collectionString.append( ")" );
+					}
+					else
+					{
+						debugString.append( propertyName ).append( "=" );
+						debugString.append( result != null ? result.toString() : "null" );
 					}
 					firstGetter = false;
 				}
 			}
-			if (collectionString.length()>0) {
-				debugString.append(",").append(collectionString);
+			if (collectionString.length() > 0)
+			{
+				debugString.append( "," ).append( collectionString );
 			}
 		}
-		catch (Throwable thr)
+		catch (final Throwable thr)
 		{
-			log.debug("Throwable problem in debugObjectValues: " + thr.toString(),thr);
+			log.debug( "Throwable problem in debugObjectValues: " + thr.toString(), thr );
 		}
-		
+
 		return debugString.toString();
 	}
-	
-	public static String getClassPackageAsPath( Object o )
+
+	public static String getClassPackageAsPath( final Object o )
 	{
-		Class<?> theObject = o.getClass();
-		Package thePackage = theObject.getPackage();
-		String packageAsString = thePackage.toString();
-		String tmpVal = packageAsString.replaceAll("package\\s","");
-		String retVal = tmpVal.replaceAll( "\\.", "/");
+		final Class<?> theObject = o.getClass();
+		final Package thePackage = theObject.getPackage();
+		final String packageAsString = thePackage.toString();
+		final String tmpVal = packageAsString.replaceAll( "package\\s", "" );
+		final String retVal = tmpVal.replaceAll( "\\.", "/" );
 		return retVal;
 	}
 

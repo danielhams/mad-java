@@ -28,7 +28,5 @@ import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinit
 
 public interface HibernateSessionFactory
 {
-
 	void configureHibernate( List<HibernatePersistedBeanDefinition> hpbdList ) throws DatastoreException, RecordNotFoundException;
-
 }

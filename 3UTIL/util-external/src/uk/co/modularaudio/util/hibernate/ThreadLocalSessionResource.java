@@ -22,25 +22,25 @@ package uk.co.modularaudio.util.hibernate;
 
 import org.hibernate.Session;
 
-public class ThreadLocalSessionResource {
-	
+public class ThreadLocalSessionResource
+{
 	private static ThreadLocal<Session> threadLocalVar = new ThreadLocal<Session>();
-	
+
 	public static Session getSessionResource() throws NoSuchHibernateSessionException
 	{
-		Session retVal = threadLocalVar.get();
-		if( retVal == null )
+		final Session retVal = threadLocalVar.get();
+		if (retVal == null)
 		{
-			throw new NoSuchHibernateSessionException("No hibernate session has been reserved for use with this thread");
+			throw new NoSuchHibernateSessionException( "No hibernate session has been reserved for use with this thread" );
 		}
 		else
 		{
-			return threadLocalVar.get();
+			return retVal;
 		}
 	}
-	
-	public static void setSessionResource(Session session) 
+
+	public static void setSessionResource( final Session session )
 	{
-		threadLocalVar.set(session);
+		threadLocalVar.set( session );
 	}
 }

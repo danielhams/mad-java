@@ -33,32 +33,32 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class PostInitPreShutdownContextHelper implements SpringContextHelper
 {
 	private static Log log = LogFactory.getLog( PostInitPreShutdownContextHelper.class.getName() );
-	
+
 	@Override
 	public void preContextDoThings() throws DatastoreException {}
 
 	@Override
-	public void preRefreshDoThings(GenericApplicationContext appContext)
+	public void preRefreshDoThings(final GenericApplicationContext appContext)
 		throws DatastoreException
 	{}
 
 	@Override
-	public void postRefreshDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList )
+	public void postRefreshDoThings( final GenericApplicationContext appContext, final BeanInstantiationListAsPostProcessor beanInstantiationList )
 			throws DatastoreException
 	{
 		// Process them in the order that beans were created
-		for( Object o : beanInstantiationList.asList() )
+		for( final Object o : beanInstantiationList.asList() )
 		{
 			if( o instanceof ComponentWithPostInitPreShutdown )
 			{
-				ComponentWithPostInitPreShutdown bean = (ComponentWithPostInitPreShutdown)o;
+				final ComponentWithPostInitPreShutdown bean = (ComponentWithPostInitPreShutdown)o;
 				try
 				{
 					bean.postInit();
 				}
-				catch(Exception e)
+				catch(final Exception e)
 				{
-					String msg = "Exception caught calling postInit() method of bean " +
+					final String msg = "Exception caught calling postInit() method of bean " +
 						bean.getClass().getName() + ": " + e.toString();
 					log.error( msg, e );
 					throw new DatastoreException( msg, e );
@@ -68,29 +68,29 @@ public class PostInitPreShutdownContextHelper implements SpringContextHelper
 	}
 
 	@Override
-	public void preShutdownDoThings(GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList )
+	public void preShutdownDoThings(final GenericApplicationContext appContext, final BeanInstantiationListAsPostProcessor beanInstantiationList )
 			throws DatastoreException
 	{
 		// Process them in reverse order to which the beans were created
-		List<Object> normalOrder = beanInstantiationList.asList();
-		ArrayList<Object> reverseOrder = new ArrayList<Object>();
+		final List<Object> normalOrder = beanInstantiationList.asList();
+		final ArrayList<Object> reverseOrder = new ArrayList<Object>();
 		for( int i = normalOrder.size() - 1 ; i > 0 ; i-- )
 		{
-			Object component = normalOrder.get( i );
+			final Object component = normalOrder.get( i );
 			if( component instanceof ComponentWithPostInitPreShutdown )
 			{
 				reverseOrder.add( component );
 			}
 		}
-		
-		for( Object o : reverseOrder )
+
+		for( final Object o : reverseOrder )
 		{
 			if( o instanceof ComponentWithPostInitPreShutdown )
 			{
-				ComponentWithPostInitPreShutdown bean = (ComponentWithPostInitPreShutdown)o;
+				final ComponentWithPostInitPreShutdown bean = (ComponentWithPostInitPreShutdown)o;
 				bean.preShutdown();
 			}
-		}		
+		}
 	}
 
 }

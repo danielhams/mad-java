@@ -26,8 +26,8 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface SpringContextHelper
 {
-	public void preContextDoThings() throws DatastoreException;
-	public void preRefreshDoThings( GenericApplicationContext appContext ) throws DatastoreException;
-	public void postRefreshDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException;
-	public void preShutdownDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException;
+	void preContextDoThings() throws DatastoreException;
+	void preRefreshDoThings( GenericApplicationContext appContext ) throws DatastoreException;
+	void postRefreshDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException;
+	void preShutdownDoThings( GenericApplicationContext appContext, BeanInstantiationListAsPostProcessor beanInstantiationList ) throws DatastoreException;
 }

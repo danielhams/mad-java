@@ -22,12 +22,12 @@ package uk.co.modularaudio.util.hibernate.component;
 
 public class HibernatePersistedBeanDefinition
 {
-	private String hbmResourceName = "";
+	private final String hbmResourceName;
 
-	private String persistedBeanTablePrefix = "";
-	
-	public HibernatePersistedBeanDefinition( String hbmResourceName,
-			String persistedBeanTablePrefix )
+	private final String persistedBeanTablePrefix;
+
+	public HibernatePersistedBeanDefinition( final String hbmResourceName,
+			final String persistedBeanTablePrefix )
 	{
 		this.hbmResourceName = hbmResourceName;
 		this.persistedBeanTablePrefix = persistedBeanTablePrefix;
@@ -38,18 +38,8 @@ public class HibernatePersistedBeanDefinition
 		return hbmResourceName;
 	}
 
-	public void setHbmResourceName(String hbmResourceName)
-	{
-		this.hbmResourceName = hbmResourceName;
-	}
-
 	public String getPersistedBeanTablePrefix()
 	{
 		return persistedBeanTablePrefix;
-	}
-
-	public void setPersistedBeanTablePrefix(String persistedBeanTablePrefix)
-	{
-		this.persistedBeanTablePrefix = persistedBeanTablePrefix;
 	}
 }

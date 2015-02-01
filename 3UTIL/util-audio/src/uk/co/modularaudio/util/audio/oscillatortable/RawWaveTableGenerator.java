@@ -69,7 +69,7 @@ public abstract class RawWaveTableGenerator
 		{
 			if( log.isInfoEnabled() )
 			{
-				log.info( "Generating wave table for " + uniqueName + " - please be patient" );
+				log.info( "Generating wave table for " + uniqueName + " - please be patient" ); // NOPMD by dan on 01/02/15 07:11
 			}
 			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
 			// And write it out

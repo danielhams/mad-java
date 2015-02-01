@@ -44,25 +44,25 @@ public class HibernateExceptionHandler
 
 	public static final int CONSTRAINT_IS_ERROR = 0x00000010;
 
-	public static void rethrowAsDatastoreLogAll(HibernateException he, Log log, String message)
+	public static void rethrowAsDatastoreLogAll( final HibernateException he, final Log log, final String message )
 			throws DatastoreException
 	{
-		String internalMess = concMess(message, he);
+		final String internalMess = concMess( message, he );
 		if (he instanceof JDBCConnectionException || he instanceof GenericJDBCException
 				|| he instanceof SQLGrammarException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof ConstraintViolationException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof LockAcquisitionException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof QuerySyntaxException)
 		{
@@ -81,28 +81,28 @@ public class HibernateExceptionHandler
 		}
 	}
 
-	public static void rethrowJdbcAsDatastore(HibernateException he, Log log, String message, int logErrorMask)
+	public static void rethrowJdbcAsDatastore( final HibernateException he, final Log log, final String message, final int logErrorMask ) // NOPMD by dan on 01/02/15 07:21
 			throws DatastoreException
 	{
-		String internalMess = concMess(message, he);
+		final String internalMess = concMess( message, he );
 		if (he instanceof JDBCConnectionException || he instanceof GenericJDBCException
 				|| he instanceof SQLGrammarException)
 		{
 			if ((logErrorMask & JDBC_IS_ERROR) != 0)
 			{
-				log.error(internalMess, he);
+				log.error( internalMess, he );
 			}
-			throw new DatastoreException(internalMess, he);
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof ConstraintViolationException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof LockAcquisitionException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof QuerySyntaxException)
 		{
@@ -116,44 +116,43 @@ public class HibernateExceptionHandler
 		}
 	}
 
-	public static void rethrowJdbcAsDatastoreAndConstraintAsItself(HibernateException he, Log log, String message,
-			int logErrorMask)
-			throws DatastoreException, MAConstraintViolationException
+	public static void rethrowJdbcAsDatastoreAndConstraintAsItself( final HibernateException he, final Log log, final String message,
+			final int logErrorMask ) throws DatastoreException, MAConstraintViolationException
 	{
-		String internalMess = concMess(message, he);
+		final String internalMess = concMess( message, he );
 		if (he instanceof JDBCConnectionException || he instanceof GenericJDBCException
 				|| he instanceof SQLGrammarException)
 		{
 			if ((logErrorMask & JDBC_IS_ERROR) != 0)
 			{
-				log.error(internalMess, he);
+				log.error( internalMess, he );
 			}
-			throw new DatastoreException(internalMess, he);
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof ConstraintViolationException)
 		{
 			if ((logErrorMask & CONSTRAINT_IS_ERROR) != 0)
 			{
-				log.error(internalMess, he);
+				log.error( internalMess, he );
 			}
-			throw new MAConstraintViolationException(internalMess, he);
+			throw new MAConstraintViolationException( internalMess, he );
 		}
 		else if (he instanceof LockAcquisitionException)
 		{
-			log.error(internalMess, he);
-			throw new DatastoreException(internalMess, he);
+			log.error( internalMess, he );
+			throw new DatastoreException( internalMess, he );
 		}
 		else if (he instanceof QuerySyntaxException)
 		{
 			log.error( internalMess, he );
 			throw new DatastoreException( internalMess, he );
 		}
-		else if( he instanceof IdentifierGenerationException)
+		else if (he instanceof IdentifierGenerationException)
 		{
 			log.error( internalMess, he );
 			throw new DatastoreException( internalMess, he );
 		}
-		else if( he instanceof PropertyValueException)
+		else if (he instanceof PropertyValueException)
 		{
 			log.error( internalMess, he );
 			throw new DatastoreException( internalMess, he );
@@ -165,7 +164,7 @@ public class HibernateExceptionHandler
 		}
 	}
 
-	private static String concMess(String message, HibernateException he)
+	private static String concMess( final String message, final HibernateException he )
 	{
 		return (message + ": " + he.getMessage());
 	}
