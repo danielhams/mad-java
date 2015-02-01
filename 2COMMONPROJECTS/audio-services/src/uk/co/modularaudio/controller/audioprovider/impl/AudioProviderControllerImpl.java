@@ -23,7 +23,7 @@ package uk.co.modularaudio.controller.audioprovider.impl;
 import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProvider;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
@@ -69,7 +69,7 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 	}
 
 	@Override
-	public AppRenderingIO createAppRenderingIOForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
+	public AppRenderingSession createAppRenderingSessionForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
 			final AppRenderingErrorCallback errorCallback )
 			throws DatastoreException, RecordNotFoundException
 	{
@@ -128,6 +128,6 @@ public class AudioProviderControllerImpl implements ComponentWithLifecycle, Audi
 		// Now get the audio provider from the registry
 		final AudioProvider provider = audioProviderRegistryService.getProviderById( firstFoundId );
 
-		return provider.createAppRenderingIOForConfiguration( hardwareIOConfiguration, errorQueue, errorCallback );
+		return provider.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorQueue, errorCallback );
 	}
 }

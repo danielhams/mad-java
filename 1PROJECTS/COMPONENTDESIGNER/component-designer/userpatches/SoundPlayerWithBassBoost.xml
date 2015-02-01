@@ -24,13 +24,13 @@
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/gPodder/Downloads/Let_s Go Techno Podcast/LGTP001_ERIC_SNEO.mp3"/>
         <rackControl name="ZoomToggleGroup" value="1"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="SpeedSlider" value="100.0"/>
-        <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
-        <rackControl name="FastForward" value=""/>
+        <rackControl name="Rewind" value="false"/>
+        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="FastForward" value="false"/>
     </rackComponent>
     <rackComponent name="Spectral Amp" definitionId="spectral_amp">
         <rackPosition column="0" row="8"/>

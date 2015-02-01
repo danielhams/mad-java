@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession.renderingjobqueue;
+package uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue;
 
 import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 import uk.co.modularaudio.service.rendering.RenderingJobQueue;

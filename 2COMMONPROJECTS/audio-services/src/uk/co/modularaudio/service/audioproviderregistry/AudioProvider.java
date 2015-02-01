@@ -55,7 +55,7 @@ public abstract class AudioProvider
 	public abstract List<? extends AudioHardwareDevice> getAllConsumerAudioDevices( AudioHardwareDeviceCriteria criteria )
 			throws DatastoreException;
 
-	public abstract AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	public abstract AppRenderingSession createAppRenderingSessionForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorQueue errorQueue,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException;

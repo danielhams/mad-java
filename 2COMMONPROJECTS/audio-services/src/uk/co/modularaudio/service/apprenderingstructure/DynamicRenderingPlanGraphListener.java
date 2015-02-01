@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession;
+package uk.co.modularaudio.service.apprenderingstructure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,15 +38,15 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 
 	private final RenderingService renderingService;
 	private final MadGraphInstance<?,?> rootGraph;
-	private final AppRenderingSession appRenderingSession;
+	private final AppRenderingStructure appRenderingStructure;
 
 	public DynamicRenderingPlanGraphListener( final RenderingService renderingService,
-			final AppRenderingSession appRenderingSession,
+			final AppRenderingStructure appRenderingStructure,
 			final MadGraphInstance<?,?> rootGraph )
 	{
 		this.renderingService = renderingService;
 		this.rootGraph = rootGraph;
-		this.appRenderingSession = appRenderingSession;
+		this.appRenderingStructure = appRenderingStructure;
 	}
 
 	public void forcePlanCreation( final HardwareIOChannelSettings coreEngineChannelSettings,
@@ -55,14 +55,14 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 	{
 		try
 		{
-			final RenderingPlan oldRp = appRenderingSession.getAtomicRenderingPlan().get();
+			final RenderingPlan oldRp = appRenderingStructure.getAtomicRenderingPlan().get();
 			if( oldRp != null )
 			{
 				final String msg = "Found an old rendering plan although we shouldn't be rendering!";
 				throw new MadProcessingException( msg );
 			}
 			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, coreEngineChannelSettings, frameTimeFactory );
-			appRenderingSession.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
+			appRenderingStructure.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}
 		catch( final Exception e )
 		{
@@ -80,12 +80,12 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 		// Recompute the rendering plan for the graph and push it into the execution service as the plan that will be executed.
 		try
 		{
-			final RenderingPlan oldRenderingPlan = appRenderingSession.getAtomicRenderingPlan().get();
+			final RenderingPlan oldRenderingPlan = appRenderingStructure.getAtomicRenderingPlan().get();
 			final HardwareIOChannelSettings planChannelSettings = oldRenderingPlan.getPlanChannelSettings();
 			final MadFrameTimeFactory planFrameTimeFactory = oldRenderingPlan.getPlanFrameTimeFactory();
 			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, planChannelSettings, planFrameTimeFactory );
 
-			appRenderingSession.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
+			appRenderingStructure.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}
 		catch (final Exception e)
 		{
@@ -97,7 +97,7 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 	public void destroy() throws MadProcessingException, DatastoreException
 	{
 		// Remove the rendering plan and destroy it
-		appRenderingSession.useNewRenderingPlanWithWaitDestroyPrevious( null );
+		appRenderingStructure.useNewRenderingPlanWithWaitDestroyPrevious( null );
 	}
 
 	@Override

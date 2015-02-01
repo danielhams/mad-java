@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession.impl;
+package uk.co.modularaudio.service.apprenderingstructure.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +26,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructure;
+import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -41,9 +42,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class AppRenderingSessionServiceImpl implements ComponentWithLifecycle, AppRenderingSessionService
+public class AppRenderingStructureServiceImpl implements ComponentWithLifecycle, AppRenderingStructureService
 {
-	private static Log log = LogFactory.getLog( AppRenderingSessionServiceImpl.class.getName() );
+	private static Log log = LogFactory.getLog( AppRenderingStructureServiceImpl.class.getName() );
 
 	private ConfigurationService configurationService;
 	private MadComponentService componentService;
@@ -51,15 +52,15 @@ public class AppRenderingSessionServiceImpl implements ComponentWithLifecycle, A
 	private RenderingService renderingService;
 	private TimingService timingService;
 
-	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".NumHelperThreads";
-	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
-	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingSessionServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
+	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingStructureServiceImpl.class.getSimpleName() + ".NumHelperThreads";
+	private static final String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingStructureServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
+	private static final String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingStructureServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
 
 	private int numHelperThreads;
 	private boolean shouldProfileRenderingJobs;
 	private int maxWaitForTransitionMillis;
 
-	public AppRenderingSessionServiceImpl()
+	public AppRenderingStructureServiceImpl()
 	{
 		// Uses DI.
 	}
@@ -121,26 +122,28 @@ public class AppRenderingSessionServiceImpl implements ComponentWithLifecycle, A
 	}
 
 	@Override
-	public AppRenderingSession createAppRenderingSession() throws DatastoreException
+	public AppRenderingStructure createAppRenderingStructure() throws DatastoreException
 	{
 		try
 		{
-			return new AppRenderingSession( componentService, graphService, renderingService, timingService,
+			return new AppRenderingStructure( componentService,
+					graphService,
+					renderingService,
 					numHelperThreads,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis );
 		}
 		catch( final RecordNotFoundException rnfe )
 		{
-			throw new DatastoreException( "RecordNotFoundException creating app rendering session: " + rnfe.toString(), rnfe );
+			throw new DatastoreException( "RecordNotFoundException creating app rendering structure: " + rnfe.toString(), rnfe );
 		}
 		catch( final MadProcessingException aupe )
 		{
-			throw new DatastoreException( "MadProcessingException creating app rendering session: " + aupe.toString(), aupe );
+			throw new DatastoreException( "MadProcessingException creating app rendering structure: " + aupe.toString(), aupe );
 		}
 		catch (final MAConstraintViolationException ecve)
 		{
-			throw new DatastoreException( "ConstraintViolationException creating app rendering session: " + ecve.toString(), ecve );
+			throw new DatastoreException( "ConstraintViolationException creating app rendering structure: " + ecve.toString(), ecve );
 		}
 	}
 
@@ -151,9 +154,36 @@ public class AppRenderingSessionServiceImpl implements ComponentWithLifecycle, A
 	}
 
 	@Override
-	public void destroyAppRenderingSession( final AppRenderingSession renderingSession )
+	public void destroyAppRenderingStructure( final AppRenderingStructure renderingStructure )
 		throws DatastoreException
 	{
 		// Don't need to do anything, the GC will take care of it
+	}
+
+	@Override
+	public HotspotRenderingContainer createHotspotRenderingContainer() throws DatastoreException
+	{
+		try
+		{
+			return new HotspotRenderingAppStructure( componentService,
+					graphService,
+					renderingService,
+					timingService,
+					numHelperThreads,
+					shouldProfileRenderingJobs,
+					maxWaitForTransitionMillis );
+		}
+		catch( final RecordNotFoundException rnfe )
+		{
+			throw new DatastoreException( "RecordNotFoundException creating hotspot rendering structure: " + rnfe.toString(), rnfe );
+		}
+		catch( final MadProcessingException aupe )
+		{
+			throw new DatastoreException( "MadProcessingException creating hotspot rendering structure: " + aupe.toString(), aupe );
+		}
+		catch (final MAConstraintViolationException ecve)
+		{
+			throw new DatastoreException( "ConstraintViolationException creating hotspot rendering structure: " + ecve.toString(), ecve );
+		}
 	}
 }

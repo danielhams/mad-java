@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession;
+package uk.co.modularaudio.service.apprenderingstructure;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession;
+package uk.co.modularaudio.service.apprenderingstructure;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,10 +34,9 @@ import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance.FadeType;
-import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.HotspotClockSourceJobQueueHelperThread;
-import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.HotspotFrameTimeFactory;
-import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.MTRenderingJobQueue;
-import uk.co.modularaudio.service.apprenderingsession.renderingjobqueue.STRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.HotspotFrameTimeFactory;
+import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.MTRenderingJobQueue;
+import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingLifecycleListener;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -49,7 +48,6 @@ import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.rendering.profiling.JobProfileResult;
 import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
-import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -67,10 +65,10 @@ import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
- * <p>An AppRenderingSession is a stateful object used to manage the lifecycle and state
+ * <p>The AppRenderingStructure is a stateful object used to manage the lifecycle and state
  * of audio IO and application components.</p>
  * <p>It is intended that one such object exists per application audio IO connection/session.</p>
- * <p>An AppRenderingSession contains:</p>
+ * <p>An AppRenderingStructure contains:</p>
  * <ul>
  * <li>A root graph</li>
  * <li>A rendering plan related to the current state of the root graph</li>
@@ -94,14 +92,13 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
  * @author dan
  *
  */
-public class AppRenderingSession implements AppRenderingLifecycleListener
+public class AppRenderingStructure implements AppRenderingLifecycleListener
 {
-	private static Log log = LogFactory.getLog( AppRenderingSession.class.getName() );
+	private static Log log = LogFactory.getLog( AppRenderingStructure.class.getName() );
 
-	private final MadComponentService componentService;
-	private final MadGraphService graphService;
-	private final RenderingService renderingService;
-	private final TimingService timingService;
+	protected final MadComponentService componentService;
+	protected final MadGraphService graphService;
+	protected final RenderingService renderingService;
 
 	private final MadGraphInstance<?, ?> internalRootGraph;
 	private final MadGraphInstance<?, ?> internalHostingGraph;
@@ -111,9 +108,9 @@ public class AppRenderingSession implements AppRenderingLifecycleListener
 
 	private final AtomicReference<RenderingPlan> renderingPlan = new AtomicReference<RenderingPlan>();
 
-	private final RenderingJobQueue renderingJobQueue;
+	protected final RenderingJobQueue renderingJobQueue;
 	private final int numHelperThreads;
-	private final boolean shouldProfileRenderingJobs;
+	protected final boolean shouldProfileRenderingJobs;
 	private final RenderingJobQueueHelperThread threads[];
 	private final int maxWaitForTransitionMillis;
 
@@ -128,14 +125,11 @@ public class AppRenderingSession implements AppRenderingLifecycleListener
 	// The graph containing the audio system tester components
 	private final MadGraphInstance<?,?> audioSystemTesterGraph;
 
-	private HotspotClockSourceJobQueueHelperThread hotspotClockSourceThread;
-
 	private final JobDataListComparator jobDataListComparator = new JobDataListComparator();
 
-	public AppRenderingSession( final MadComponentService componentService,
+	public AppRenderingStructure( final MadComponentService componentService,
 			final MadGraphService graphService,
 			final RenderingService renderingService,
-			final TimingService timingService,
 			final int numHelperThreads,
 			final boolean shouldProfileRenderingJobs,
 			final int maxWaitForTransitionMillis )
@@ -144,7 +138,6 @@ public class AppRenderingSession implements AppRenderingLifecycleListener
 		this.componentService = componentService;
 		this.graphService = graphService;
 		this.renderingService = renderingService;
-		this.timingService = timingService;
 
 		internalRootGraph = graphService.createNewRootGraph( "Component Designer IO Graph" );
 		internalHostingGraph = graphService.createNewParameterisedGraph( "Component Designer Hosting Graph",
@@ -815,43 +808,6 @@ public class AppRenderingSession implements AppRenderingLifecycleListener
 	public RenderingJobQueue getRenderingJobQueue()
 	{
 		return renderingJobQueue;
-	}
-
-	public void startHotspotLooping( final RenderingPlan renderingPlan )
-	{
-		hotspotClockSourceThread = new HotspotClockSourceJobQueueHelperThread( renderingPlan,
-				renderingService,
-				timingService,
-				renderingJobQueue,
-				shouldProfileRenderingJobs );
-		hotspotClockSourceThread.start();
-	}
-
-	public void stopHotspotLooping()
-	{
-		// Let it exit gracefully
-		try
-		{
-			hotspotClockSourceThread.halt();
-			Thread.sleep( 200 );
-		}
-		catch(final InterruptedException ie )
-		{
-		}
-		if( hotspotClockSourceThread.isAlive() )
-		{
-			hotspotClockSourceThread.forceHalt();
-		}
-		try
-		{
-			hotspotClockSourceThread.join();
-		}
-		catch (final InterruptedException ie)
-		{
-			final String msg = "Interrupted waiting for join to hotspot thread: " + ie.toString();
-			log.error( msg, ie );
-		}
-		hotspotClockSourceThread = null;
 	}
 
 	public IOBuffers getMasterInBuffers()

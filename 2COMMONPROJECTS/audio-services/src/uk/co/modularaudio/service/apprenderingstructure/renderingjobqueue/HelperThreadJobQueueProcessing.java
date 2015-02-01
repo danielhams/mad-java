@@ -18,17 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession;
+package uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue;
 
-import java.util.Comparator;
+import uk.co.modularaudio.service.rendering.RenderingJobQueue;
 
-public class JobDataListComparator implements Comparator<ParsedJobData>
+public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
 {
+//	private static Log log = LogFactory.getLog( HelperThreadJobQueueProcessing.class.getName() );
 
-	@Override
-	public int compare( final ParsedJobData o1, final ParsedJobData o2 )
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue )
 	{
-		return ((int)o1.getJobOffsetFromStart()) - ((int)o2.getJobOffsetFromStart());
+		this( threadNum, jobQueue, Type.HELPER_THREAD );
 	}
 
+	public HelperThreadJobQueueProcessing( final int threadNum, final RenderingJobQueue jobQueue, final Type threadType )
+	{
+		super( threadNum, jobQueue, threadType);
+	}
 }

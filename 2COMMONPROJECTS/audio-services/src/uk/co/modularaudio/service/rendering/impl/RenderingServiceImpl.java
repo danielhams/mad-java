@@ -104,7 +104,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		return retVal;
 	}
 
-	protected void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings dataRateConfiguration,
+	protected void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings planHardwareChannelSettings,
 			final MadRenderingJob renderingJob,
 			final MadGraphInstance<?,?> graph,
 			final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap,
@@ -137,7 +137,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 
 			final MadChannelType channelType = producerChannelInstance.definition.type;
 			final MadChannelBuffer buf = new MadChannelBuffer( channelType,
-					dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
+					planHardwareChannelSettings.getChannelBufferLengthForChannelType( channelType ) );
 			channelBufferArray[ channelIndex ] = buf;
 			allChannelBuffersSet.add( buf );
 			channelInstanceToBufferMap.put( producerChannelInstance, buf );
@@ -180,7 +180,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 			{
 				final MadChannelType channelType = auci.definition.type;
 				final MadChannelBuffer buf = new MadChannelBuffer( channelType,
-						dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
+						planHardwareChannelSettings.getChannelBufferLengthForChannelType( channelType ) );
 				channelBufferArray[ i ] = buf;
 				allChannelBuffersSet.add( buf );
 				channelInstanceToBufferMap.put( auci, buf );
@@ -192,7 +192,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 
 	protected RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
 			final MadGraphInstance<?,?> graph,
-			final HardwareIOChannelSettings planChannelSettings,
+			final HardwareIOChannelSettings planHardwareSettings,
 			final MadFrameTimeFactory planFrameTimeFactory,
 			final MadTimingSource timingSource )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException
@@ -228,7 +228,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 			allMadInstancesSet.add( madInstance );
 			final MadRenderingJob renderingJob = new MadRenderingJob( madInstance.getInstanceName(), madInstance );
 
-			fillInBuffersAndConnectedFlags( planChannelSettings,  renderingJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
+			fillInBuffersAndConnectedFlags( planHardwareSettings,  renderingJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
 
 			final MadParallelRenderingJob parallelJob = new MadParallelRenderingJob(flatJob.getCardinality(),  timingSource, renderingJob );
 			flatToParallelJobMap.put( flatJob, parallelJob );
@@ -306,7 +306,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 
 		final MadChannelBuffer[] allChannelBuffers = allChannelBuffersSet.toArray( new MadChannelBuffer[ allChannelBuffersSet.size() ] );
 
-		return new RenderingPlanWithFanAndSync( planChannelSettings,
+		return new RenderingPlanWithFanAndSync( planHardwareSettings,
 				timingSource.getTimingParameters(),
 				planFrameTimeFactory,
 				initialFanPrj,
@@ -349,7 +349,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 	}
 
 	@Override
-	public void destroyRenderingPlan( final RenderingPlan oldRp )
+	public void destroyRenderingPlan( final RenderingPlan renderingPlan )
 	{
 		// Do nothing, we'll let GC take care of it.
 	}

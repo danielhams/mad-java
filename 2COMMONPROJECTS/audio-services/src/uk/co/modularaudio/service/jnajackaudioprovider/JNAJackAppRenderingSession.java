@@ -35,8 +35,8 @@ import org.jaudiolibs.jnajack.JackProcessCallback;
 import org.jaudiolibs.jnajack.JackShutdownCallback;
 import org.jaudiolibs.jnajack.JackXrunCallback;
 
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
-import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingIO;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
@@ -60,9 +60,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
-public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
+public class JNAJackAppRenderingSession extends AbstractAppRenderingSession implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
 {
-	private static Log log = LogFactory.getLog( JNAJackAppRenderingIO.class.getName() );
+	private static Log log = LogFactory.getLog( JNAJackAppRenderingSession.class.getName() );
 
 //	private final Jack jack;
 	private final JackClient client;
@@ -90,7 +90,7 @@ public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements Jac
 	private HardwareMidiNoteEvent[] tmpNoteEventArray;
 	private int tmpNoteEventArrayLength;
 
-	public JNAJackAppRenderingIO( final AppRenderingSessionService appRenderingGraphService,
+	public JNAJackAppRenderingSession( final AppRenderingStructureService appRenderingStructureService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,
@@ -98,7 +98,7 @@ public class JNAJackAppRenderingIO extends AbstractAppRenderingIO implements Jac
 			final Jack jack,
 			final JackClient client ) throws DatastoreException
 	{
-		super( appRenderingGraphService, timingService, hardwareConfiguration, errorQueue, errorCallback );
+		super( appRenderingStructureService, timingService, hardwareConfiguration, errorQueue, errorCallback );
 //		this.jack = jack;
 		this.client =client;
 	}

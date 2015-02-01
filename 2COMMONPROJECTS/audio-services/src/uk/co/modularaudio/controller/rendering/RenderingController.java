@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.controller.rendering;
 
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
+import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
@@ -31,8 +31,8 @@ import uk.co.modularaudio.util.exception.DatastoreException;
  * <p>The contract of the rendering controller that is in charge of objects
  * related to rendering such as:
  * <ul>
- * <li>An application rendering graph into which the live graph may be mapped
  * <li>Creation of a rendering plan from a graph
+ * <li>Creation of a container that can be used to hotspot compile DSP code before use
  * </ul>
  * </p>
  *
@@ -42,11 +42,12 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public interface RenderingController
 {
 	/**
-	 * <p>Create an application rendering session.</p>
-	 * @return a newly initialised app rendering session in the state "not rendering"
+	 * <p>Create a container that can be used to force hotspot
+	 * compilation of dsp code.</p>
+	 * @return a newly initialised rendering container in the state "not rendering"
 	 * @throws DatastoreException if a non-recoverable error occurred
 	 */
-	AppRenderingSession createAppRenderingSession() throws DatastoreException;
+	HotspotRenderingContainer createHotspotRenderingContainer() throws DatastoreException;
 
 	/**
 	 * <p>Create a rendering plan for the given graph instances and output settings

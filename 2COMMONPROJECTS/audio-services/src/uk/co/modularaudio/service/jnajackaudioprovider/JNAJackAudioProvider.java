@@ -35,10 +35,10 @@ import org.jaudiolibs.jnajack.JackException;
 import org.jaudiolibs.jnajack.JackOptions;
 import org.jaudiolibs.jnajack.JackStatus;
 
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
-import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingIO;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProvider;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
@@ -71,7 +71,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 
 	private AudioProviderRegistryService audioProviderRegistryService;
 	private TimingService timingService;
-	private AppRenderingSessionService appRenderingSessionService;
+	private AppRenderingStructureService appRenderingStructureService;
 
 	private boolean shouldRegister;
 
@@ -227,9 +227,9 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 		this.timingService = timingService;
 	}
 
-	public void setAppRenderingSessionService( final AppRenderingSessionService appRenderingGraphService )
+	public void setAppRenderingStructureService( final AppRenderingStructureService appRenderingStructureService )
 	{
-		this.appRenderingSessionService = appRenderingGraphService;
+		this.appRenderingStructureService = appRenderingStructureService;
 	}
 
 	@Override
@@ -261,11 +261,11 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	}
 
 	@Override
-	public AbstractAppRenderingIO createAppRenderingIOForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
+	public AppRenderingSession createAppRenderingSessionForConfiguration( final HardwareIOConfiguration hardwareIOConfiguration,
 			final AppRenderingErrorQueue errorQueue,
 			final AppRenderingErrorCallback errorCallback )
 		throws DatastoreException
 	{
-		return new JNAJackAppRenderingIO( appRenderingSessionService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
+		return new JNAJackAppRenderingSession( appRenderingStructureService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
 	}
 }

@@ -18,17 +18,25 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession;
+package uk.co.modularaudio.service.audioproviderregistry;
 
-import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructure;
 
-public interface AppRenderingSessionService
+public interface AppRenderingSession
 {
-	public AppRenderingSession createAppRenderingSession()
-		throws DatastoreException;
+	public abstract void startRendering();
 
-	public void destroyAppRenderingSession( AppRenderingSession renderingSession )
-		throws DatastoreException;
-		
-	boolean shouldProfileRenderingJobs();
+	public abstract boolean stopRendering();
+
+	public abstract boolean isRendering();
+
+	public abstract boolean testRendering( long testClientRunMillis );
+
+	public abstract AppRenderingStructure getAppRenderingStructure();
+
+	public abstract void destroy();
+
+	public abstract void setShouldRecordPeriods( boolean should );
+
+	public abstract long getCurrentUiFrameTime();
 }

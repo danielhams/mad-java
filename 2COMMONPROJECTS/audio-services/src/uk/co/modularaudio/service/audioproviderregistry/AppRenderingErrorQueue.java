@@ -43,13 +43,13 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 
 	public class AppRenderingErrorStruct
 	{
-		public final AppRenderingIO sourceRenderingIO;
+		public final AppRenderingSession sourceRenderingSession;
 		public final ErrorSeverity severity;
 		public final String msg;
 
-		public AppRenderingErrorStruct( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+		public AppRenderingErrorStruct( final AppRenderingSession sourceRenderingSession, final ErrorSeverity severity, final String msg )
 		{
-			this.sourceRenderingIO = sourceRenderingIO;
+			this.sourceRenderingSession = sourceRenderingSession;
 			this.severity = severity;
 			this.msg = msg;
 		}
@@ -60,7 +60,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 			final StringBuilder sb = new StringBuilder();
 			sb.append( severity.toString() );
 			sb.append( " " );
-			sb.append( sourceRenderingIO.getClass().getSimpleName() );
+			sb.append( sourceRenderingSession.getClass().getSimpleName() );
 			sb.append( " " );
 			sb.append( msg );
 
@@ -70,7 +70,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 
 	private final BlockingDeque<AppRenderingErrorStruct> errorQueue = new LinkedBlockingDeque<AppRenderingErrorQueue.AppRenderingErrorStruct>();
 
-	private final Map<AbstractAppRenderingIO, AppRenderingErrorCallback> appRenderingToCallbackMap = new HashMap<AbstractAppRenderingIO, AppRenderingErrorCallback>();
+	private final Map<AppRenderingSession, AppRenderingErrorCallback> renderingSessionToCallbackMap = new HashMap<AppRenderingSession, AppRenderingErrorCallback>();
 
 	public AppRenderingErrorQueue()
 	{
@@ -87,7 +87,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		{
 			final AppRenderingErrorStruct error = errorQueue.takeFirst();
 
-			final AppRenderingErrorCallback callbackForIo = appRenderingToCallbackMap.get( error.sourceRenderingIO );
+			final AppRenderingErrorCallback callbackForIo = renderingSessionToCallbackMap.get( error.sourceRenderingSession );
 			if( callbackForIo == null )
 			{
 				if( log.isErrorEnabled() )
@@ -104,38 +104,38 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 		}
 	}
 
-	public void addCallbackForRenderingIO( final AbstractAppRenderingIO sourceRenderingIO, final AppRenderingErrorCallback callback )
+	public void addCallbackForRenderingSession( final AppRenderingSession sourceRenderingSession, final AppRenderingErrorCallback callback )
 	{
-		appRenderingToCallbackMap.put( sourceRenderingIO,  callback );
+		renderingSessionToCallbackMap.put( sourceRenderingSession,  callback );
 		if( log.isDebugEnabled() )
 		{
-			log.debug( "Adding error callback \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+			log.debug( "Adding error callback \"" + callback.getName() + "\" for " + sourceRenderingSession.getClass().getSimpleName() );
 		}
 	}
 
-	public void removeCallbackForRenderingIO( final AppRenderingIO sourceRenderingIO )
+	public void removeCallbackForRenderingIO( final AppRenderingSession sourceRenderingSession )
 	{
-		final AppRenderingErrorCallback callback = appRenderingToCallbackMap.get( sourceRenderingIO );
+		final AppRenderingErrorCallback callback = renderingSessionToCallbackMap.get( sourceRenderingSession );
 		if( callback == null )
 		{
 			if( log.isErrorEnabled() )
 			{
-				log.error( "Failed to find callback to remove for renderingIO: " + sourceRenderingIO.getClass().getSimpleName() );
+				log.error( "Failed to find callback to remove for renderingIO: " + sourceRenderingSession.getClass().getSimpleName() );
 			}
 		}
 		else
 		{
 			if( log.isDebugEnabled() )
 			{
-				log.debug( "Removing error callback for \"" + callback.getName() + "\" for " + sourceRenderingIO.getClass().getSimpleName() );
+				log.debug( "Removing error callback for \"" + callback.getName() + "\" for " + sourceRenderingSession.getClass().getSimpleName() );
 			}
-			appRenderingToCallbackMap.remove( sourceRenderingIO );
+			renderingSessionToCallbackMap.remove( sourceRenderingSession );
 		}
 	}
 
-	public void queueError( final AppRenderingIO sourceRenderingIO, final ErrorSeverity severity, final String msg )
+	public void queueError( final AppRenderingSession sourceRenderingSession, final ErrorSeverity severity, final String msg )
 	{
-		final AppRenderingErrorStruct es = new AppRenderingErrorStruct( sourceRenderingIO, severity, msg );
+		final AppRenderingErrorStruct es = new AppRenderingErrorStruct( sourceRenderingSession, severity, msg );
 		errorQueue.add( es );
 	}
 
@@ -147,7 +147,7 @@ public class AppRenderingErrorQueue extends AbstractInterruptableThread
 			this.forceHalt();
 			this.join();
 
-			if( appRenderingToCallbackMap.size() > 0 )
+			if( renderingSessionToCallbackMap.size() > 0 )
 			{
 				if( log.isWarnEnabled() )
 				{

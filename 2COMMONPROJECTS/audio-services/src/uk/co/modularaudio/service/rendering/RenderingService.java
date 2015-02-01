@@ -28,12 +28,12 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public interface RenderingService
 {
 	RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graph,
-			HardwareIOChannelSettings dataRateConfiguration,
+			HardwareIOChannelSettings hardwareSettings,
 			MadFrameTimeFactory frameTimeFactory )
 		throws DatastoreException;
 
 	void dumpRenderingPlan( RenderingPlan renderingPlan )
 		throws DatastoreException;
 
-	void destroyRenderingPlan( RenderingPlan oldRp );
+	void destroyRenderingPlan( RenderingPlan renderingPlan );
 }

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.apprenderingsession.renderingjobqueue;
+package uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;

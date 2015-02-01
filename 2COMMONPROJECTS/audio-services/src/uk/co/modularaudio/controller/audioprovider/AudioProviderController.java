@@ -21,14 +21,28 @@
 package uk.co.modularaudio.controller.audioprovider;
 
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingIO;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
+/**
+ * The contract of the audio provider controller allows the creation
+ * of an AppRenderingIO object that may then be associated
+ * with an AppRenderingSession.</p>
+ *
+ * @author dan
+ */
 public interface AudioProviderController
 {
-	AppRenderingIO createAppRenderingIOForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
+	/**
+	 * @param hardwareIOConfiguration
+	 * @param errorCallback
+	 * @return
+	 * @throws DatastoreException
+	 * @throws RecordNotFoundException
+	 */
+	AppRenderingSession createAppRenderingSessionForConfiguration( HardwareIOConfiguration hardwareIOConfiguration,
 			AppRenderingErrorCallback errorCallback )
 		throws DatastoreException, RecordNotFoundException;
 }

@@ -43,9 +43,9 @@ public class TestRenderingErrorCallback
 		if( error.severity == ErrorSeverity.FATAL )
 		{
 			hadFatalErrors = true;
-			if( error.sourceRenderingIO !=null && error.sourceRenderingIO.isRendering() )
+			if( error.sourceRenderingSession !=null && error.sourceRenderingSession.isRendering() )
 			{
-				error.sourceRenderingIO.stopRendering();
+				error.sourceRenderingSession.stopRendering();
 			}
 		}
 	}

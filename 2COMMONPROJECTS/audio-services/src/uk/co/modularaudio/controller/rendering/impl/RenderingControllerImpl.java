@@ -21,8 +21,8 @@
 package uk.co.modularaudio.controller.rendering.impl;
 
 import uk.co.modularaudio.controller.rendering.RenderingController;
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSession;
-import uk.co.modularaudio.service.apprenderingsession.AppRenderingSessionService;
+import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RenderingControllerImpl implements ComponentWithLifecycle, RenderingController
 {
-	private AppRenderingSessionService appRenderingSessionService;
+	private AppRenderingStructureService appRenderingStructureService;
 	private RenderingService renderingService;
 
 	/* (non-Javadoc)
@@ -58,18 +58,9 @@ public class RenderingControllerImpl implements ComponentWithLifecycle, Renderin
 		this.renderingService = renderingService;
 	}
 
-	public void setAppRenderingSessionService( final AppRenderingSessionService appRenderingGraphService )
+	public void setAppRenderingStructureService( final AppRenderingStructureService appRenderingStructureService )
 	{
-		this.appRenderingSessionService = appRenderingGraphService;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.controller.rendering.RenderingController#createAppRenderingGraph()
-	 */
-	@Override
-	public AppRenderingSession createAppRenderingSession() throws DatastoreException
-	{
-		return appRenderingSessionService.createAppRenderingSession();
+		this.appRenderingStructureService = appRenderingStructureService;
 	}
 
 	/* (non-Javadoc)
@@ -82,5 +73,14 @@ public class RenderingControllerImpl implements ComponentWithLifecycle, Renderin
 		throws DatastoreException
 	{
 		return renderingService.createRenderingPlan(graphInstance, hardwareChannelSettings, frameTimeFactory );
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.controller.rendering.RenderingController#createHotspotRenderingContainer()
+	 */
+	@Override
+	public HotspotRenderingContainer createHotspotRenderingContainer() throws DatastoreException
+	{
+		return appRenderingStructureService.createHotspotRenderingContainer();
 	}
 }
