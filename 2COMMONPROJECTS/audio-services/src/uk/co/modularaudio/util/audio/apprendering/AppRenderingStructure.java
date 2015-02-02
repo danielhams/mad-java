@@ -99,9 +99,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 {
 	private static Log log = LogFactory.getLog( AppRenderingStructure.class.getName() );
 
-	protected final MadComponentService componentService;
-	protected final MadGraphService graphService;
-	protected final RenderingService renderingService;
+	private final MadComponentService componentService;
+	private final MadGraphService graphService;
+	private final RenderingService renderingService;
 
 	private final MadGraphInstance<?, ?> internalRootGraph;
 	private final MadGraphInstance<?, ?> internalHostingGraph;
@@ -111,9 +111,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 
 	private final AtomicReference<RenderingPlan> renderingPlan = new AtomicReference<RenderingPlan>();
 
-	protected final AppRenderingJobQueue renderingJobQueue;
+	private final AppRenderingJobQueue renderingJobQueue;
 	private final int numHelperThreads;
-	protected final boolean shouldProfileRenderingJobs;
+	private final boolean shouldProfileRenderingJobs;
 	private final RenderingJobQueueHelperThread threads[];
 	private final int maxWaitForTransitionMillis;
 

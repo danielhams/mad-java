@@ -32,6 +32,7 @@ import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
@@ -161,7 +162,7 @@ public class AppRenderingStructureServiceImpl implements ComponentWithLifecycle,
 	}
 
 	@Override
-	public HotspotRenderingContainer createHotspotRenderingContainer() throws DatastoreException
+	public HotspotRenderingContainer createHotspotRenderingContainer( final RenderingPlan renderingPlan ) throws DatastoreException
 	{
 		try
 		{
@@ -169,9 +170,9 @@ public class AppRenderingStructureServiceImpl implements ComponentWithLifecycle,
 					graphService,
 					renderingService,
 					timingService,
-					numHelperThreads,
 					shouldProfileRenderingJobs,
-					maxWaitForTransitionMillis );
+					maxWaitForTransitionMillis,
+					renderingPlan );
 		}
 		catch( final RecordNotFoundException rnfe )
 		{

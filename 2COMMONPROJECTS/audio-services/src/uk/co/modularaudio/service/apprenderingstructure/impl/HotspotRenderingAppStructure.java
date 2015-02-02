@@ -9,8 +9,10 @@ import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.timing.TimingService;
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
 import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
 import uk.co.modularaudio.util.audio.apprendering.jobqueue.HotspotClockSourceJobQueueHelperThread;
+import uk.co.modularaudio.util.audio.apprendering.jobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
@@ -22,34 +24,31 @@ public class HotspotRenderingAppStructure extends AppRenderingStructure implemen
 
 	private HotspotClockSourceJobQueueHelperThread hotspotClockSourceThread;
 
-	private final TimingService timingService;
-
 	public HotspotRenderingAppStructure( final MadComponentService componentService,
 			final MadGraphService graphService,
 			final RenderingService renderingService,
 			final TimingService timingService,
-			final int numHelperThreads,
 			final boolean shouldProfileRenderingJobs,
-			final int maxWaitForTransitionMillis )
+			final int maxWaitForTransitionMillis,
+			final RenderingPlan renderingPlan )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		super( componentService,
 				graphService,
 				renderingService,
-				numHelperThreads,
+				0,
 				shouldProfileRenderingJobs,
 				maxWaitForTransitionMillis );
-		this.timingService = timingService;
-	}
-
-	@Override
-	public void startHotspotLooping( final RenderingPlan renderingPlan )
-	{
 		hotspotClockSourceThread = new HotspotClockSourceJobQueueHelperThread( renderingPlan,
 				renderingService,
 				timingService,
-				renderingJobQueue,
+				new STRenderingJobQueue( AppRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY ),
 				shouldProfileRenderingJobs );
+	}
+
+	@Override
+	public void startHotspotLooping()
+	{
 		hotspotClockSourceThread.start();
 	}
 

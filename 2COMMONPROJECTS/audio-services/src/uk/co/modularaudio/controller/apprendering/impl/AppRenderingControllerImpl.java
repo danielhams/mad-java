@@ -312,8 +312,8 @@ public class AppRenderingControllerImpl implements ComponentWithLifecycle, Compo
 
 		// Now create a rendering plan from this rack
 		log.debug("Peforming hotspot mad instance looping.");
-		final HotspotRenderingContainer hotspotContainer = appRenderingStructureService.createHotspotRenderingContainer();
-		hotspotContainer.startHotspotLooping( renderingPlan );
+		final HotspotRenderingContainer hotspotContainer = appRenderingStructureService.createHotspotRenderingContainer( renderingPlan );
+		hotspotContainer.startHotspotLooping();
 		Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
 		hotspotContainer.stopHotspotLooping();
 

@@ -62,6 +62,26 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 	private MadGraphService graphService;
 	private TimingService timingService;
 
+	public void setGraphService( final MadGraphService graphService )
+	{
+		this.graphService = graphService;
+	}
+
+	public void setTimingService( final TimingService timingService )
+	{
+		this.timingService = timingService;
+	}
+
+	@Override
+	public void init() throws ComponentConfigurationException
+	{
+	}
+
+	@Override
+	public void destroy()
+	{
+	}
+
 	@Override
 	public RenderingPlanWithFanAndSync createRenderingPlan( final MadGraphInstance<?,?> graph,
 		final HardwareIOChannelSettings hardwareChannelSettings,
@@ -104,7 +124,23 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		return retVal;
 	}
 
-	protected void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings planHardwareChannelSettings,
+	@Override
+	public void dumpRenderingPlan( final RenderingPlan renderingPlan ) throws DatastoreException
+	{
+		log.debug("Rendering plan dump:");
+		log.debug("=====================");
+		@SuppressWarnings("unused")
+		final Dumper dumper = new Dumper( renderingPlan );
+		log.debug("=====================");
+	}
+
+	@Override
+	public void destroyRenderingPlan( final RenderingPlan renderingPlan )
+	{
+		// Do nothing, we'll let GC take care of it.
+	}
+
+	private void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings planHardwareChannelSettings,
 			final MadRenderingJob renderingJob,
 			final MadGraphInstance<?,?> graph,
 			final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap,
@@ -190,7 +226,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		}
 	}
 
-	protected RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
+	private RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
 			final MadGraphInstance<?,?> graph,
 			final HardwareIOChannelSettings planHardwareSettings,
 			final MadFrameTimeFactory planFrameTimeFactory,
@@ -316,42 +352,6 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 				totalNumJobs + 2,
 				allMadInstancesSet,
 				allChannelBuffers );
-	}
-
-	@Override
-	public void destroy()
-	{
-	}
-
-	@Override
-	public void init() throws ComponentConfigurationException
-	{
-	}
-
-	public void setGraphService( final MadGraphService graphService )
-	{
-		this.graphService = graphService;
-	}
-
-	@Override
-	public void dumpRenderingPlan( final RenderingPlan renderingPlan ) throws DatastoreException
-	{
-		log.debug("Rendering plan dump:");
-		log.debug("=====================");
-		@SuppressWarnings("unused")
-		final Dumper dumper = new Dumper( renderingPlan );
-		log.debug("=====================");
-	}
-
-	public void setTimingService( final TimingService timingService )
-	{
-		this.timingService = timingService;
-	}
-
-	@Override
-	public void destroyRenderingPlan( final RenderingPlan renderingPlan )
-	{
-		// Do nothing, we'll let GC take care of it.
 	}
 
 }

@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.apprenderingstructure;
 
+import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
@@ -50,9 +51,10 @@ public interface AppRenderingStructureService
 	boolean shouldProfileRenderingJobs();
 
 	/**
+	 * @param renderingPlan
 	 * @return
 	 * @throws DatastoreException
 	 */
-	public HotspotRenderingContainer createHotspotRenderingContainer()
+	public HotspotRenderingContainer createHotspotRenderingContainer( RenderingPlan renderingPlan )
 		throws DatastoreException;
 }

@@ -24,6 +24,7 @@ import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 
 public interface AppRenderingJobQueue
 {
+	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
 
 	AbstractParallelRenderingJob getAJob( boolean canBlock );
 

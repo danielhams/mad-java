@@ -27,8 +27,6 @@ import uk.co.modularaudio.util.audio.buffer.UnsafeGenericRingBuffer;
 
 public class STRenderingJobQueue implements AppRenderingJobQueue
 {
-	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
-
 	private final UnsafeGenericRingBuffer<AbstractParallelRenderingJob> jobRing;
 
 	public STRenderingJobQueue( final int capacity )
