@@ -24,7 +24,11 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.library.LibraryService;
+import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -54,10 +58,40 @@ public interface SampleCachingController
 			UnsupportedAudioFileException;
 
 	/**
+	 * <p>Register to receive a callback once the thread that fills the sample
+	 * cache has completed the initial population pass.</p>
+	 * @see SampleCachingService#registerForBufferFillCompletion(SampleCacheClient, BufferFillCompletionListener)
+	 */
+	void registerForBufferFillCompletion( SampleCacheClient client, BufferFillCompletionListener completionListener );
+
+	/**
 	 * <p>Unregister the supplied client.</p>
 	 * @see SampleCachingService#unregisterCacheClientForFile(SampleCacheClient)
 	 */
 	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
+
+	/**
+	 * <p>Create a sampling client that can be used with the block resampler service
+	 * to output audio at variable speeds.</p>
+	 * @see BlockResamplerService#createResamplingClient(String, BlockResamplingMethod)
+	 */
+	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, UnsupportedAudioFileException;
+
+	/**
+	 * <p>Promote a regular sample caching client into one that can
+	 * be used with the block resampler service.</p>
+	 * @see BlockResamplerService#promoteSampleCacheClientToResamplingClient(SampleCacheClient, BlockResamplingMethod)
+	 */
+	BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic );
+
+	/**
+	 * <p>Unregister and clean up a block resampler service client.</p>
+	 * @see BlockResamplerService#destroyResamplingClient(BlockResamplingClient)
+	 */
+	void destroyResamplingClient( final BlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException;
 
 	/**
 	 * <p>Output debugging information onto the console about the use of the

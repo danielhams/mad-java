@@ -20,18 +20,39 @@
 
 package uk.co.modularaudio.service.apprenderingstructure;
 
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
+/**
+ * <p>Concerned with the creation and destruction of the app rendering structures.</p>
+ *
+ * @author dan
+ */
 public interface AppRenderingStructureService
 {
+	/**
+	 * @return
+	 * @throws DatastoreException
+	 */
 	public AppRenderingStructure createAppRenderingStructure()
 		throws DatastoreException;
 
+	/**
+	 * @param renderingStructure
+	 * @throws DatastoreException
+	 */
 	public void destroyAppRenderingStructure( AppRenderingStructure renderingStructure )
 		throws DatastoreException;
 
+	/**
+	 * @return
+	 */
 	boolean shouldProfileRenderingJobs();
 
+	/**
+	 * @return
+	 * @throws DatastoreException
+	 */
 	public HotspotRenderingContainer createHotspotRenderingContainer()
 		throws DatastoreException;
 }

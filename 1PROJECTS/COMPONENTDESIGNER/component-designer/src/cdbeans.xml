@@ -6,48 +6,47 @@
 	</bean>
 	<bean id="componentDesignerFrontController" class="uk.co.modularaudio.componentdesigner.controller.front.impl.ComponentDesignerFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiHelperController"><ref bean="guiHelperController"></ref></property>
-		<property name="componentController"><ref bean="componentController"></ref></property>
 		<property name="rackController"><ref bean="rackController"></ref></property>
-		<property name="renderingController"><ref bean="renderingController"></ref></property>
-		<property name="audioProviderController"><ref bean="audioProviderController"></ref></property>
+		<property name="appRenderingController"><ref bean="appRenderingController"></ref></property>
 		<property name="sampleCachingController"><ref bean="sampleCachingController"></ref></property>
 		<property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
         <property name="timingService"><ref bean="timingService"></ref></property>
         <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>
 	<bean id="advancedComponentsFrontController" class="uk.co.modularaudio.controller.advancedcomponents.impl.AdvancedComponentsFrontControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionController"><ref bean="hibernateSessionController"></ref></property>
 		<property name="sampleCachingController"><ref bean="sampleCachingController"></ref></property>
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
-		<property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
+        <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
 	</bean>
 	<bean id="guiHelperController" class="uk.co.modularaudio.componentdesigner.controller.guihelper.impl.GuiHelperControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiService"><ref bean="guiService"></ref></property>
 	</bean>
 	<bean id="rackController" class="uk.co.modularaudio.controller.rack.impl.RackControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="rackService"><ref bean="rackService"></ref></property>
-		<property name="rackMarshallingService"><ref bean="rackMarshallingService"></ref></property>
-	</bean>
-	<bean id="componentController" class="uk.co.modularaudio.controller.component.impl.ComponentControllerImpl" init-method="init" destroy-method="destroy">
+        <property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
         <property name="componentService"><ref bean="componentService"></ref></property>
         <property name="componentUiService"><ref bean="componentUiService"></ref></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="guiService"><ref bean="guiService" /></property>
+        <property name="rackMarshallingService"><ref bean="rackMarshallingService"></ref></property>
+        <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>
-	<bean id="renderingController" class="uk.co.modularaudio.controller.rendering.impl.RenderingControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="renderingService"><ref bean="renderingService" /></property>
+	<bean id="appRenderingController" class="uk.co.modularaudio.controller.apprendering.impl.AppRenderingControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="appRenderingStructureService"><ref bean="appRenderingStructureService"></ref></property>
-	</bean>
-	<bean id="audioProviderController" class="uk.co.modularaudio.controller.audioprovider.impl.AudioProviderControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService"></ref></property>
+        <property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService" /></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="componentService"><ref bean="componentService"></ref></property>
+        <property name="rackService"><ref bean="rackService"></ref></property>
+        <property name="renderingService"><ref bean="renderingService" /></property>
 	</bean>
 	<bean id="userPreferencesController" class="uk.co.modularaudio.controller.userpreferences.impl.UserPreferencesControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
-		<property name="guiService"><ref bean="guiService" /></property>
+        <property name="guiService"><ref bean="guiService" /></property>
 	</bean>
 	<bean id="sampleCachingController" class="uk.co.modularaudio.controller.samplecaching.impl.SampleCachingControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
+        <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
 	</bean>
 	<bean id="rackService" class="uk.co.modularaudio.service.rack.impl.RackServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="graphService"><ref bean="graphService"></ref></property>
@@ -66,7 +65,7 @@
 		<property name="guiComponentFactoryService"><ref bean="guiComponentFactoryService"></ref></property>
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="rackService"><ref bean="rackService"></ref></property>
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
+        <property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="graphService" class="uk.co.modularaudio.service.madgraph.impl.MadGraphServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>

@@ -35,8 +35,11 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
+import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
@@ -55,15 +58,15 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	private static final String CONFIG_KEY_SAMPLER_MUSIC_ROOT = "AdvancedComponents.SamplerMusicRoot";
 	private static final String CONFIG_KEY_WAVETABLES_CACHE_ROOT = "AdvancedComponents.WavetablesCacheRoot";
 
+	// Internally used service references
 	private ConfigurationService configurationService;
 	private HibernateSessionController hibernateSessionController;
 	private SampleCachingController sampleCachingController;
+
+	// Exposed data and services
 	private String samplePlayerSelectionRoot;
-
 	private String wavetablesCachingRoot;
-
 	private OscillatorFactory oscillatorFactory;
-
 	private BlockResamplerService blockResamplerService;
 	private SampleCachingService sampleCachingService;
 
@@ -117,6 +120,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	@Override
 	public SampleCacheClient registerCacheClientForFile( final String path ) throws DatastoreException, UnsupportedAudioFileException
 	{
+		// Hibernate session needed so added to internal library
 		Session sessionResource = null;
 		Transaction t = null;
 		try
@@ -155,9 +159,17 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
+	public void registerForBufferFillCompletion( final SampleCacheClient client,
+			final BufferFillCompletionListener completionListener )
+	{
+		sampleCachingController.registerForBufferFillCompletion( client, completionListener );
+	}
+
+	@Override
 	public void unregisterCacheClientForFile( final SampleCacheClient client )
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
+		// No hibernate session needed
 		sampleCachingController.unregisterCacheClientForFile( client );
 	}
 
@@ -165,11 +177,6 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public String getSampleSelectionMusicRoot()
 	{
 		return samplePlayerSelectionRoot;
-	}
-
-	public ConfigurationService getConfigurationService()
-	{
-		return configurationService;
 	}
 
 	public void setConfigurationService( final ConfigurationService configurationService )
@@ -193,5 +200,63 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public SampleCachingService getSampleCachingService()
 	{
 		return sampleCachingService;
+	}
+
+	@Override
+	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, UnsupportedAudioFileException
+	{
+		// Hibernate session needed so added to internal library
+		Session sessionResource = null;
+		Transaction t = null;
+		try
+		{
+			hibernateSessionController.getThreadSession();
+			sessionResource = ThreadLocalSessionResource.getSessionResource();
+			t = sessionResource.beginTransaction();
+			final BlockResamplingClient retVal = sampleCachingController.createResamplingClient( pathToFile, resamplingMethod );
+			t.commit();
+			t = null;
+			return retVal;
+		}
+		catch (final NoSuchHibernateSessionException e)
+		{
+			final String msg = "Error in using hibernate session: " + e.toString();
+			throw new DatastoreException( msg, e );
+		}
+		finally
+		{
+			if( t != null )
+			{
+				t.rollback();
+			}
+			try
+			{
+				if( sessionResource != null )
+				{
+					hibernateSessionController.releaseThreadSession();
+				}
+			}
+			catch (final NoSuchHibernateSessionException e)
+			{
+				// Nothing to clean up
+			}
+		}
+	}
+
+	@Override
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic )
+	{
+		// No hibernate session needed.
+		return sampleCachingController.promoteSampleCacheClientToResamplingClient( sampleCacheClient, cubic );
+	}
+
+	@Override
+	public void destroyResamplingClient( final BlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException
+	{
+		// No hibernate session needed.
+		sampleCachingController.destroyResamplingClient( resamplingClient );
 	}
 }

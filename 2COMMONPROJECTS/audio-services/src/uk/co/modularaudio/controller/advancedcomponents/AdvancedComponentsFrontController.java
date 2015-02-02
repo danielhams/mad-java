@@ -25,6 +25,9 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
@@ -48,20 +51,6 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public interface AdvancedComponentsFrontController
 {
 	/**
-	 * <p>Obtain a sample cache client for a file.</p>
-	 * <p>This method takes care of the necessary database transaction
-	 * for filling an internal library with metadata.</p>
-	 * @see SampleCachingService#registerCacheClientForFile(String)
-	 */
-	SampleCacheClient registerCacheClientForFile( String path ) throws DatastoreException, UnsupportedAudioFileException;
-
-	/**
-	 * <p>Release a sample cache client.</p>
-	 * @see SampleCachingService#unregisterCacheClientForFile(SampleCacheClient)
-	 */
-	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
-
-	/**
 	 * <p>For components that allow selection of samples, this method
 	 * allows those components to have the same filesystem root.</p>
 	 */
@@ -79,9 +68,40 @@ public interface AdvancedComponentsFrontController
 	 * other than unity the block resampler service can be used.</p>
 	 */
 	BlockResamplerService getBlockResamplerService();
+
 	/**
 	 * <p>For components interested purely in the original buffered
 	 * content it can be obtained via the SampleCachingService.</p>
 	 */
 	SampleCachingService getSampleCachingService();
+
+	/**
+	 * <p>Obtain a sample cache client for a file.</p>
+	 * <p>This method takes care of the necessary database transaction
+	 * for filling an internal library with metadata.</p>
+	 * @see SampleCachingService#registerCacheClientForFile(String)
+	 */
+	SampleCacheClient registerCacheClientForFile( String path ) throws DatastoreException, UnsupportedAudioFileException;
+
+	/**
+	 * <p>Register to receive a callback once the thread that fills the sample
+	 * cache has completed the initial population pass.</p>
+	 * @see SampleCachingService#registerForBufferFillCompletion(SampleCacheClient, BufferFillCompletionListener)
+	 */
+	void registerForBufferFillCompletion( SampleCacheClient client, BufferFillCompletionListener completionListener );
+
+	/**
+	 * <p>Release a sample cache client.</p>
+	 * @see SampleCachingService#unregisterCacheClientForFile(SampleCacheClient)
+	 */
+	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
+
+	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, UnsupportedAudioFileException;
+
+	BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic );
+
+	void destroyResamplingClient( final BlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException;
 }

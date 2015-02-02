@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructure;
 import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -35,6 +34,7 @@ import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.timing.TimingService;
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;

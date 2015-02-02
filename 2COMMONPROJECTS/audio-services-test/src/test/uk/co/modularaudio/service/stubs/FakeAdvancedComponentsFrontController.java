@@ -26,6 +26,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
@@ -61,14 +64,14 @@ public class FakeAdvancedComponentsFrontController
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile(String path)
+	public SampleCacheClient registerCacheClientForFile(final String path)
 			throws DatastoreException, UnsupportedAudioFileException
 	{
 		throw new DatastoreException("NI");
 	}
 
 	@Override
-	public void unregisterCacheClientForFile(SampleCacheClient client)
+	public void unregisterCacheClientForFile(final SampleCacheClient client)
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
 		throw new DatastoreException("NI");
@@ -84,5 +87,32 @@ public class FakeAdvancedComponentsFrontController
 	public SampleCachingService getSampleCachingService()
 	{
 		return null;
+	}
+
+	@Override
+	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, UnsupportedAudioFileException
+	{
+		return null;
+	}
+
+	@Override
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic )
+	{
+		return null;
+	}
+
+	@Override
+	public void destroyResamplingClient( final BlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException
+	{
+	}
+
+	@Override
+	public void registerForBufferFillCompletion( final SampleCacheClient client,
+			final BufferFillCompletionListener completionListener )
+	{
+		completionListener.notifyBufferFilled( client );
 	}
 }

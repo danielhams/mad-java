@@ -24,6 +24,10 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
+import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -36,10 +40,16 @@ import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 public class SampleCachingControllerImpl implements ComponentWithLifecycle, SampleCachingController
 {
 	private SampleCachingService sampleCachingService;
+	private BlockResamplerService blockResamplerService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( sampleCachingService == null ||
+				blockResamplerService == null )
+		{
+			throw new ComponentConfigurationException( "SampleCachingController missing service dependencies. Check configuration." );
+		}
 	}
 
 	@Override
@@ -52,12 +62,24 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 		this.sampleCachingService = sampleCachingService;
 	}
 
+	public void setBlockResamplerService( final BlockResamplerService blockResamplerService )
+	{
+		this.blockResamplerService = blockResamplerService;
+	}
+
 	@Override
 	public SampleCacheClient registerCacheClientForFile( final String path )
 			throws NoSuchHibernateSessionException, DatastoreException,
 			UnsupportedAudioFileException
 	{
 		return sampleCachingService.registerCacheClientForFile( path );
+	}
+
+	@Override
+	public void registerForBufferFillCompletion( final SampleCacheClient client,
+			final BufferFillCompletionListener completionListener )
+	{
+		sampleCachingService.registerForBufferFillCompletion( client, completionListener );
 	}
 
 	@Override
@@ -71,6 +93,27 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 	public void dumpSampleCache()
 	{
 		sampleCachingService.dumpSampleCacheToLog();
+	}
+
+	@Override
+	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, UnsupportedAudioFileException
+	{
+		return blockResamplerService.createResamplingClient( pathToFile, resamplingMethod );
+	}
+
+	@Override
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic )
+	{
+		return blockResamplerService.promoteSampleCacheClientToResamplingClient( sampleCacheClient, cubic );
+	}
+
+	@Override
+	public void destroyResamplingClient( final BlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException
+	{
+		blockResamplerService.destroyResamplingClient( resamplingClient );
 	}
 
 }

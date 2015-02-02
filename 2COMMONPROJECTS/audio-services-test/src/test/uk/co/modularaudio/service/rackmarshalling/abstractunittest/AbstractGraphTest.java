@@ -29,7 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
-import uk.co.modularaudio.controller.rendering.RenderingController;
+import uk.co.modularaudio.controller.apprendering.AppRenderingController;
 import uk.co.modularaudio.mads.internal.InternalComponentsFactory;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -46,26 +46,27 @@ public class AbstractGraphTest extends TestCase
 	implements MadFrameTimeFactory
 {
 	private static Log log = LogFactory.getLog( AbstractGraphTest.class.getName());
-	
-	private List<SpringContextHelper> clientHelpers = null;
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
-	
-	protected MadGraphService graphService = null;
-	protected MadComponentService componentService = null;
-	protected InternalComponentsFactory internalComponentsFactory = null;
-	protected MadClassificationService classificationService = null;
-	protected RenderingService renderingService = null;
-	protected RackService rackService = null;
-	protected RackMarshallingService rackMarshallingService = null;
-	
-	protected RenderingController renderingController = null;
-	
+
+	private List<SpringContextHelper> clientHelpers;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
+
+	protected MadGraphService graphService;
+	protected MadComponentService componentService;
+	protected InternalComponentsFactory internalComponentsFactory;
+	protected MadClassificationService classificationService;
+	protected RenderingService renderingService;
+	protected RackService rackService;
+	protected RackMarshallingService rackMarshallingService;
+
+	protected AppRenderingController appRenderingController;
+
+	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
 		log.info( getClass().getSimpleName() + " unit test beginning");
-		
+
 		clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -78,9 +79,10 @@ public class AbstractGraphTest extends TestCase
 		renderingService = gac.getBean( RenderingService.class );
 		rackService = gac.getBean( RackService.class );
 		rackMarshallingService = gac.getBean( RackMarshallingService.class );
-		renderingController = gac.getBean( RenderingController.class );
+		appRenderingController = gac.getBean( AppRenderingController.class );
 	}
 
+	@Override
 	protected void tearDown() throws Exception
 	{
 		log.info( getClass().getSimpleName() + " unit test done");

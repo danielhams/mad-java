@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.rendering;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
@@ -42,9 +43,9 @@ public abstract class AbstractParallelRenderingJob
 	protected int numProducersWeWaitFor;
 
 	// Timing information
-	protected long jobStartTimestamp = -1;
-	protected long jobEndTimestamp = -1;
-	protected int jobThreadExecutor = Integer.MAX_VALUE;
+	protected long jobStartTimestamp;
+	protected long jobEndTimestamp;
+	protected int jobThreadExecutor;
 
 	public AbstractParallelRenderingJob( final String iJobName,
 			final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
@@ -69,7 +70,7 @@ public abstract class AbstractParallelRenderingJob
 
 	public int getNumProducersStillToComplete()
 	{
-		int retVal = numProducersStillToComplete.get();
+		final int retVal = numProducersStillToComplete.get();
 		return retVal;
 	}
 
@@ -80,7 +81,7 @@ public abstract class AbstractParallelRenderingJob
 
 	public boolean markOneProducerAsCompleteCheckIfReadyToGo()
 	{
-		int numAfter = numProducersStillToComplete.decrementAndGet();
+		final int numAfter = numProducersStillToComplete.decrementAndGet();
 		return numAfter == 0;
 	}
 
@@ -116,7 +117,7 @@ public abstract class AbstractParallelRenderingJob
 		return jobThreadExecutor;
 	}
 
-	public void addSelfToQueue( final RenderingJobQueue renderingJobQueue )
+	public void addSelfToQueue( final AppRenderingJobQueue renderingJobQueue )
 	{
 		renderingJobQueue.writeOne( this );
 	}

@@ -29,21 +29,21 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public interface SampleCachingService
 {
-	public SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException;
-	public void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException;
-	
-	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( SampleCacheClient client, float[] outputSamples, int outputFramePos, int numFrames );
-	
-	public RealtimeMethodReturnCodeEnum readSamplesInBlocksForCacheClient( SampleCacheClient client,
+	SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException;
+	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException;
+
+	RealtimeMethodReturnCodeEnum readSamplesForCacheClient( SampleCacheClient client, float[] outputSamples, int outputFramePos, int numFrames );
+
+	RealtimeMethodReturnCodeEnum readSamplesInBlocksForCacheClient( SampleCacheClient client,
 			long framePosition,
 			int numFrames,
 			SampleAcceptor sampleAcceptor );
-			
-	public void registerForBufferFillCompletion( SampleCacheClient client, BufferFillCompletionListener completionListener );
 
-	public void dumpSampleCacheToLog();
+	void registerForBufferFillCompletion( SampleCacheClient client, BufferFillCompletionListener completionListener );
 
-	public String getSampleFileTitleForCacheClient( SampleCacheClient sampleCacheClient );
+	void dumpSampleCacheToLog();
 
-	public void addJobToCachePopulationThread();
+	String getSampleFileTitleForCacheClient( SampleCacheClient sampleCacheClient );
+
+	void addJobToCachePopulationThread();
 }

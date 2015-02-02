@@ -30,12 +30,10 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerIOQueueBridge;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
-import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
-import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance.InstanceLifecycleListener;
@@ -54,8 +52,6 @@ public class SoundfilePlayerMadUiInstance extends
 	private static Log log = LogFactory.getLog( SoundfilePlayerMadUiInstance.class.getName() );
 
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
-	private final SampleCachingService sampleCachingService;
-	private final BlockResamplerService resamplerService;
 	private final String musicRoot;
 
 	private final ArrayList<SoundfileSampleEventListener> sampleEventListeners = new ArrayList<SoundfileSampleEventListener>();
@@ -75,8 +71,6 @@ public class SoundfilePlayerMadUiInstance extends
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 
 		advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
-		sampleCachingService = advancedComponentsFrontController.getSampleCachingService();
-		resamplerService = advancedComponentsFrontController.getBlockResamplerService();
 
 		musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
 	}
@@ -179,7 +173,7 @@ public class SoundfilePlayerMadUiInstance extends
 		{
 			final SampleCacheClient sampleCacheClient = advancedComponentsFrontController.registerCacheClientForFile( filename );
 			log.debug("Registering for buffer fill completion");
-			sampleCachingService.registerForBufferFillCompletion( sampleCacheClient, this );
+			advancedComponentsFrontController.registerForBufferFillCompletion( sampleCacheClient, this );
 		}
 		catch ( final Exception e )
 		{
@@ -267,8 +261,8 @@ public class SoundfilePlayerMadUiInstance extends
 	@Override
 	public void notifyBufferFilled( final SampleCacheClient sampleCacheClient )
 	{
-		log.debug("Received notification that the buffer is filled!");
-		currentResampledSample = resamplerService.promoteSampleCacheClientToResamplingClient( sampleCacheClient,
+		log.debug("Received notification that the buffer is filled. Promoting to resampler client.");
+		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient( sampleCacheClient,
 			BlockResamplingMethod.CUBIC );
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );

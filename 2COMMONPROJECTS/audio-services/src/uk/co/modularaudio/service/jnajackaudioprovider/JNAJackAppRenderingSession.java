@@ -36,11 +36,11 @@ import org.jaudiolibs.jnajack.JackShutdownCallback;
 import org.jaudiolibs.jnajack.JackXrunCallback;
 
 import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
-import uk.co.modularaudio.service.audioproviderregistry.AbstractAppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.timing.TimingService;
+import uk.co.modularaudio.util.audio.apprendering.session.AbstractAppRenderingSession;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;

@@ -71,11 +71,11 @@ public class SingleSampleRuntime
 
 //		SampleCacheClient playingSampleCacheClient = advancedComponentsFrontController.registerCacheClientForFile( filename );
 //		playingSample = new BlockResamplerSampleClient( playingSampleCacheClient, BlockResamplingMethod.LINEAR, 0, 0.0f );
-		playingSample = blockResamplerService.createResamplingClient( filename, BlockResamplingMethod.LINEAR );
+		playingSample = advancedComponentsFrontController.createResamplingClient( filename, BlockResamplingMethod.LINEAR );
 
 //		SampleCacheClient fadeOutSampleCacheClient = advancedComponentsFrontController.registerCacheClientForFile( filename );
 //		fadeOutSample = new BlockResamplerSampleClient( fadeOutSampleCacheClient, BlockResamplingMethod.LINEAR, 0, 0.0f );
-		fadeOutSample = blockResamplerService.createResamplingClient( filename, BlockResamplingMethod.LINEAR );
+		fadeOutSample = advancedComponentsFrontController.createResamplingClient( filename, BlockResamplingMethod.LINEAR );
 	}
 
 	public void setRuntimeData( final int playingStartOffset, final int numFramesFadeOut, final float curValueRatio, final float newValueRatio )

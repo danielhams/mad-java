@@ -28,6 +28,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingSession;
 import uk.co.modularaudio.util.thread.AbstractInterruptableThread;
 import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 

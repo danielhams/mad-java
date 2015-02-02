@@ -21,19 +21,12 @@
 package uk.co.modularaudio.componentdesigner.controller.front.impl;
 
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.CellRendererPane;
-import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,70 +40,41 @@ import org.apache.log4j.Priority;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.controller.front.RenderingStateListener;
 import uk.co.modularaudio.componentdesigner.controller.guihelper.GuiHelperController;
-import uk.co.modularaudio.controller.audioprovider.AudioProviderController;
-import uk.co.modularaudio.controller.component.ComponentController;
+import uk.co.modularaudio.controller.apprendering.AppRenderingController;
 import uk.co.modularaudio.controller.rack.RackController;
-import uk.co.modularaudio.controller.rendering.RenderingController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructure;
-import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
-import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.HotspotFrameTimeFactory;
-import uk.co.modularaudio.service.apprenderingstructure.renderingjobqueue.MTRenderingJobQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingSession;
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.rack.RackService;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
-import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingSession;
+import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
+import uk.co.modularaudio.util.audio.apprendering.jobqueue.MTRenderingJobQueue;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.mad.MadClassification;
-import uk.co.modularaudio.util.audio.mad.MadClassificationGroup;
-import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
-import uk.co.modularaudio.util.audio.mad.MadDefinition;
-import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
-import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
-import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
-import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
-import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
-import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.exception.MAConstraintViolationException;
-import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
-import uk.co.modularaudio.util.table.ContentsAlreadyAddedException;
-import uk.co.modularaudio.util.table.Span;
-import uk.co.modularaudio.util.table.TableCellFullException;
-import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
 public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, ComponentDesignerFrontController
 {
@@ -119,23 +83,13 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private static Log log = LogFactory.getLog( ComponentDesignerFrontControllerImpl.class.getName() );
 
-	private final static String CONFIG_KEY_FORCE_HOTSPOT_COMPILE = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".ForceHotspotCompile";
-	private final static String CONFIG_KEY_RENDER_COMPONENT_IMAGES = ComponentDesignerFrontControllerImpl.class.getSimpleName() + ".RenderComponentImages";
-
-	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 10000;
-	private static final int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 512;
-
 	private GuiHelperController guiHelperController;
 	private RackController rackController;
-	private ComponentController componentController;
-	private RenderingController renderingController;
-	private AudioProviderController audioProviderController;
+	private AppRenderingController appRenderingController;
 	private UserPreferencesController userPreferencesController;
 	private SampleCachingController sampleCachingController;
 
 	// TODO: Known violations of the component hierarchy
-	private ConfigurationService configurationService;
-	private BufferedImageAllocationService bufferedImageAllocationService;
 	private TimingService timingService;
 	private RackService rackService;
 
@@ -144,9 +98,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	private RackDataModel userVisibleRack;
 
 	private RackModelRenderingComponent guiRack;
-
-	private boolean forceHotspotCompile;
-	private boolean renderComponentImages;
 
 	// Timer for driving the gui updates
 	private GuiDrivingTimer guiDrivingTimer;
@@ -162,19 +113,46 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private Priority previousLoggingThreshold;
 
-	@Override
-	public void destroy()
-	{
-	}
+	private boolean frontPreviouslyShowing = true;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 		final Map<String, String> errors = new HashMap<String, String>();
-		forceHotspotCompile = ConfigurationServiceHelper.checkForBooleanKey(configurationService, CONFIG_KEY_FORCE_HOTSPOT_COMPILE, errors);
-		renderComponentImages = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_RENDER_COMPONENT_IMAGES, errors );
 		ConfigurationServiceHelper.errorCheck(errors);
 		guiTemporaryEventStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
+	}
+
+	@Override
+	public void postInit() throws ComponentConfigurationException
+	{
+		try
+		{
+			// Create an empty rack during init
+			final RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
+					"",
+					RackService.DEFAULT_RACK_COLS,
+					RackService.DEFAULT_RACK_ROWS,
+					true );
+			guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
+			doStartupDuties();
+		}
+		catch( final DatastoreException de )
+		{
+			throw new ComponentConfigurationException( de );
+		}
+	}
+
+	@Override
+	public void preShutdown()
+	{
+		guiRack.destroy();
+		doExitDuties();
+	}
+
+	@Override
+	public void destroy()
+	{
 	}
 
 	public void setRackController( final RackController rackController)
@@ -182,29 +160,14 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		this.rackController = rackController;
 	}
 
-	public void setComponentController( final ComponentController componentController)
-	{
-		this.componentController = componentController;
-	}
-
 	public void setGuiHelperController( final GuiHelperController guiController)
 	{
 		this.guiHelperController = guiController;
 	}
 
-	public void setRenderingController( final RenderingController renderingController)
+	public void setAppRenderingController( final AppRenderingController appRenderingController)
 	{
-		this.renderingController = renderingController;
-	}
-
-	public void setConfigurationService( final ConfigurationService configurationService)
-	{
-		this.configurationService = configurationService;
-	}
-
-	public void setAudioProviderController( final AudioProviderController audioProviderController)
-	{
-		this.audioProviderController = audioProviderController;
+		this.appRenderingController = appRenderingController;
 	}
 
 	public void setUserPreferencesController( final UserPreferencesController userPreferencesController)
@@ -215,11 +178,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void setSampleCachingController( final SampleCachingController sampleCachingController )
 	{
 		this.sampleCachingController = sampleCachingController;
-	}
-
-	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
-	{
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	public void setTimingService( final TimingService timingService )
@@ -473,34 +431,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		renderingStateListeners.remove( renderingStateListener );
 	}
 
-	@Override
-	public void postInit() throws ComponentConfigurationException
-	{
-		try
-		{
-			// Create an empty rack during init
-			final RackDataModel tmpRack = rackController.createNewRackDataModel( "Init rack",
-					"",
-					RackService.DEFAULT_RACK_COLS,
-					RackService.DEFAULT_RACK_ROWS,
-					true );
-			guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
-			doStartupDuties();
-		}
-		catch( final DatastoreException de )
-		{
-			throw new ComponentConfigurationException( de );
-		}
-	}
-
-	@Override
-	public void preShutdown()
-	{
-		guiRack.destroy();
-		doExitDuties();
-	}
-
-	protected void startDisplayTick()
+	private void startDisplayTick()
 	{
 		final MadTimingSource timingSource = timingService.getTimingSource();
 		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
@@ -522,7 +453,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 	}
 
-	protected void stopDisplayTick()
+	private void stopDisplayTick()
 	{
 		if( guiDrivingTimer != null && guiDrivingTimer.isRunning() )
 		{
@@ -535,8 +466,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			log.error("Unable to stop display tick!");
 		}
 	}
-
-	private boolean frontPreviouslyShowing = true;
 
 	@Override
 	public void receiveDisplayTick()
@@ -580,150 +509,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 	}
 
-	private boolean isDefinitionPublic( final MadDefinition<?,?> definition )
-	{
-		final MadClassification auc = definition.getClassification();
-		final MadClassificationGroup aug = auc.getGroup();
-		return ( aug != null ? aug.getVisibility() == Visibility.PUBLIC : false );
-	}
-
 	private void doStartupDuties() throws DatastoreException
 	{
-		if( forceHotspotCompile || renderComponentImages )
-		{
-			try
-			{
-				if( renderComponentImages )
-				{
-					paintOneRackPerComponent();
-				}
-
-				if( forceHotspotCompile )
-				{
-					// Now hotspot compile them in one big rack
-
-					final MadDefinitionListModel allMadDefinitions = componentController.listDefinitionsAvailable();
-
-					// Create a new rack with at least four rows per component type
-					final int numDefinitions = allMadDefinitions.getSize();
-					final RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
-							"",
-							RackService.DEFAULT_RACK_COLS,
-							RackService.DEFAULT_RACK_ROWS * numDefinitions,
-							false );
-
-					final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
-
-					for( int i = 0 ; i < numDefinitions ; i++ )
-					{
-						final Object o = allMadDefinitions.getElementAt( i );
-						final MadDefinition<?,?> md = (MadDefinition<?,?>)o;
-						if( isDefinitionPublic( md ) )
-						{
-							if( md.isParametrable() )
-							{
-								// Attempt empty parameters creation
-								try
-								{
-									final String name = md.getId() + i;
-									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
-								}
-								catch(final Exception e )
-								{
-									if( log.isInfoEnabled() )
-									{
-										log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." ); // NOPMD by dan on 01/02/15 07:29
-									}
-								}
-							}
-							else
-							{
-								try
-								{
-									final String name = md.getId() + i;
-									rackController.createComponent( cacheRack, md, emptyParameterValues, name );
-								}
-								catch(final RecordNotFoundException rnfe )
-								{
-									if( log.isInfoEnabled() )
-									{
-										log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" ); // NOPMD by dan on 01/02/15 07:29
-									}
-								}
-							}
-						}
-					}
-
-					final MadGraphInstance<?,?> hotspotGraph = rackController.getRackGraphInstance( cacheRack );
-
-					final int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
-
-					final HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
-							outputLatencyFrames );
-
-					final long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
-							outputLatencyFrames );
-
-					final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
-					final MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
-					final RenderingPlan renderingPlan = renderingController.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
-
-					// Now create a rendering plan from this rack
-					log.debug("Peforming hotspot mad instance looping.");
-					final HotspotRenderingContainer hotspotContainer = renderingController.createHotspotRenderingContainer();
-					hotspotContainer.startHotspotLooping( renderingPlan );
-					Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
-					hotspotContainer.stopHotspotLooping();
-
-					rackController.destroyRackDataModel( cacheRack );
-				}
-			}
-			catch( final Exception e )
-			{
-				final String msg = "Exception caught forcing hotspot compilation: " + e.toString();
-				log.error( msg, e );
-				throw new DatastoreException( msg, e );
-			}
-		}
-
 		initialiseEmptyRack();
-	}
-
-	private void paintOneRackPerComponent()
-		throws DatastoreException, ContentsAlreadyAddedException, TableCellFullException,
-			TableIndexOutOfBoundsException, MAConstraintViolationException, RecordNotFoundException
-	{
-		final MadDefinitionListModel defs = componentController.listDefinitionsAvailable();
-
-		final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
-
-		final int numDefs = defs.getSize();
-		for( int i = 0 ; i < numDefs ; ++i )
-		{
-			final MadDefinition<?,?> def = defs.getElementAt( i );
-			if( isDefinitionPublic( def ) )
-			{
-				final Span curComponentCellSpan = componentController.getUiSpanForDefinition( def );
-
-				// If it's the channel 8 mixer, paint the rack master with it
-				final boolean paintRackMasterToo = ( def.getId().equals( MixerMadDefinition.DEFINITION_ID ) );
-				final int rackWidthToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_COLS : curComponentCellSpan.x );
-				final int rackHeightToUse = ( paintRackMasterToo ? RackService.DEFAULT_RACK_ROWS : curComponentCellSpan.y + 2 );
-
-				final RackDataModel cacheRack = rackController.createNewRackDataModel( "cachingrack",
-						"",
-						rackWidthToUse,
-						rackHeightToUse,
-						paintRackMasterToo );
-
-				final String name = def.getId() + i;
-				rackController.createComponent( cacheRack, def, emptyParameterValues, name );
-
-				forceHotspotRackPainting( cacheRack, def.getId() );
-
-				rackController.destroyRackDataModel( cacheRack );
-			}
-		}
 	}
 
 	private void doExitDuties()
@@ -755,64 +543,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final String msg = "Exception caught unsetting application graph: " + e.toString();
 			log.error( msg, e );
 		}
-	}
-
-	private void forceHotspotRackPainting( final RackDataModel cacheRack, final String componentNameBeingDrawn )
-			throws DatastoreException
-	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Performing rack painting for " + componentNameBeingDrawn);
-		}
-		// Now create a temporary gui for it and get them to render their front and back into it
-		// This will populate the image buffer cache and clear up the stuff read from disk
-		RackModelRenderingComponent hotspotRenderingComponent = guiHelperController.createGuiForRackDataModel( cacheRack );
-		hotspotRenderingComponent.setForceRepaints( true );
-
-		final JComponent renderingJComponent = hotspotRenderingComponent.getJComponent();
-		final Dimension renderingPreferredSize = renderingJComponent.getPreferredSize();
-		renderingJComponent.setSize( renderingPreferredSize );
-		layoutComponent( renderingJComponent );
-
-		// Paint the front
-		final AllocationMatch localAllocationMatch = new AllocationMatch();
-		final TiledBufferedImage hotspotPaintTiledImage = bufferedImageAllocationService.allocateBufferedImage( this.getClass().getSimpleName(),
-				localAllocationMatch,
-				AllocationLifetime.SHORT,
-				AllocationBufferType.TYPE_INT_RGB,
-				renderingPreferredSize.width,
-				renderingPreferredSize.height );
-		final BufferedImage imageToRenderInto = hotspotPaintTiledImage.getUnderlyingBufferedImage();
-		final Graphics hotspotPaintGraphics = imageToRenderInto.createGraphics();
-		final CellRendererPane crp = new CellRendererPane();
-		crp.add( renderingJComponent );
-		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
-
-		// And now the back
-		hotspotRenderingComponent.rotateRack();
-		crp.paintComponent( hotspotPaintGraphics, renderingJComponent, crp, 0, 0, renderingPreferredSize.width, renderingPreferredSize.height, true );
-
-		final RackDataModel emptyRack = rackController.createNewRackDataModel( "", "", 2, 2, false );
-
-		// Remove references to the data model passed in
-		hotspotRenderingComponent.setRackDataModel( emptyRack );
-
-		// And clear it up
-		hotspotRenderingComponent.destroy();
-		hotspotRenderingComponent = null;
-
-		bufferedImageAllocationService.freeBufferedImage( hotspotPaintTiledImage );
-
-	}
-
-	private void layoutComponent( final Component renderingJComponent )
-	{
-        synchronized (renderingJComponent.getTreeLock()) {
-        	renderingJComponent.doLayout();
-            if (renderingJComponent instanceof Container)
-                for (final Component child : ((Container) renderingJComponent).getComponents())
-                    layoutComponent(child);
-        }
 	}
 
 	@Override
@@ -970,7 +700,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 				{
 					throw new DatastoreException( "Attempting to replace magical audio IO when one already exists!");
 				}
-				appRenderingSession = audioProviderController.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorCallback );
+				appRenderingSession = appRenderingController.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorCallback );
 				final MadGraphInstance<?,?> rgi = rackService.getRackGraphInstance( userVisibleRack );
 				appRenderingSession.getAppRenderingStructure().setApplicationGraph( rgi );
 
@@ -998,7 +728,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					}
 				}
 
-				final AppRenderingSession testAppRenderingSession = audioProviderController.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorCallback );
+				final AppRenderingSession testAppRenderingSession = appRenderingController.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorCallback );
 				retVal = testAppRenderingSession.testRendering( AUDIO_TEST_RUN_MILLIS );
 
 				if( wasRunningBeforeTest && !retVal)
@@ -1078,5 +808,4 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		return userVisibleRack;
 	}
-
 }
