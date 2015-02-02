@@ -39,8 +39,6 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	private final ReentrantLock internalLock = new ReentrantLock( true );
 	private final Condition notEmpty = internalLock.newCondition();
 
-	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
-
 	public MTRenderingJobQueue( final int capacity )
 	{
 		mtSafeJobQueue = new MTSafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );

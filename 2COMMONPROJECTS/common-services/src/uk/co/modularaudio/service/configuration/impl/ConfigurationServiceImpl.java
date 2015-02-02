@@ -145,7 +145,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				if( log.isInfoEnabled() )
 				{
-					log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'");
+					log.info("ConfigurationServiceImpl beginning. Will use '" + configFilePath + "'"); // NOPMD by dan on 02/02/15 11:51
 				}
 			}
 			parseOneFilePath( configFilePath );
@@ -164,7 +164,7 @@ public class ConfigurationServiceImpl implements ConfigurationService, Component
 			{
 				if( log.isInfoEnabled() )
 				{
-					log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'");
+					log.info("ConfigurationServiceImpl beginning. Will use '" + configResourcePath + "'"); // NOPMD by dan on 02/02/15 11:51
 				}
 			}
 			parseOneResourcePath( configResourcePath );
