@@ -20,71 +20,25 @@
 
 package uk.co.modularaudio.controller.apprendering.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.controller.apprendering.AppRenderingController;
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
-import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProvider;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistryService;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
-import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
-import uk.co.modularaudio.service.madcomponent.MadComponentService;
-import uk.co.modularaudio.service.rack.RackService;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingSession;
-import uk.co.modularaudio.util.audio.apprendering.HotspotFrameTimeFactory;
-import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.mad.MadClassification;
-import uk.co.modularaudio.util.audio.mad.MadClassificationGroup;
-import uk.co.modularaudio.util.audio.mad.MadDefinition;
-import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
-import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;
-import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
-import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.table.TableCellFullException;
-import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 
-public class AppRenderingControllerImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, AppRenderingController
+public class AppRenderingControllerImpl implements ComponentWithLifecycle, AppRenderingController
 {
-	private static Log log = LogFactory.getLog( AppRenderingControllerImpl.class.getName() );
+//	private static Log log = LogFactory.getLog( AppRenderingControllerImpl.class.getName() );
 
-	private final static String CONFIG_KEY_STARTUP_HOTSPOT = AppRenderingControllerImpl.class.getSimpleName() + ".StartupHotspot";
-
-	private final static int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 1024;
-
-	// Two seconds of hotspotting
-	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 2000;
-
-	private ConfigurationService configurationService;
-	private MadComponentService componentService;
-	private RackService rackService;
 	private AudioProviderRegistryService audioProviderRegistryService;
-	private AppRenderingStructureService appRenderingStructureService;
-	private RenderingService renderingService;
-
-	private boolean doStartupHotspot;
 
 	private AppRenderingErrorQueue errorQueue;
 
@@ -95,20 +49,10 @@ public class AppRenderingControllerImpl implements ComponentWithLifecycle, Compo
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( audioProviderRegistryService == null ||
-				appRenderingStructureService == null ||
-				renderingService == null ||
-				configurationService == null ||
-				componentService == null ||
-				rackService == null
-				)
+		if( audioProviderRegistryService == null )
 		{
 			throw new ComponentConfigurationException( "Service is missing dependencies" );
 		}
-
-		final Map<String,String> errors = new HashMap<String,String>();
-		doStartupHotspot = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_STARTUP_HOTSPOT, errors );
-		ConfigurationServiceHelper.errorCheck( errors );
 
 		errorQueue = new AppRenderingErrorQueue();
 	}
@@ -119,59 +63,9 @@ public class AppRenderingControllerImpl implements ComponentWithLifecycle, Compo
 		errorQueue.shutdown();
 	}
 
-	@Override
-	public void postInit() throws ComponentConfigurationException
-	{
-		// Do any needed hotspot looping to get things compile hot
-		if( doStartupHotspot )
-		{
-			log.info("Beginning startup hotspot heating");
-			try
-			{
-				startupHotspot();
-			}
-			catch( final DatastoreException | TableCellFullException | TableIndexOutOfBoundsException | MAConstraintViolationException | InterruptedException e )
-			{
-				final String msg = "Failure during startup hotspot looping: " + e.toString();
-				log.error( msg, e );
-			}
-			log.info("Completed startup hotspot heating");
-		}
-	}
-
-	@Override
-	public void preShutdown()
-	{
-	}
-
 	public void setAudioProviderRegistryService( final AudioProviderRegistryService audioProviderRegistryService )
 	{
 		this.audioProviderRegistryService = audioProviderRegistryService;
-	}
-
-	public void setAppRenderingStructureService( final AppRenderingStructureService appRenderingStructureService )
-	{
-		this.appRenderingStructureService = appRenderingStructureService;
-	}
-
-	public void setRenderingService( final RenderingService renderingService )
-	{
-		this.renderingService = renderingService;
-	}
-
-	public void setConfigurationService( final ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
-	}
-
-	public void setComponentService( final MadComponentService componentService )
-	{
-		this.componentService = componentService;
-	}
-
-	public void setRackService( final RackService rackService )
-	{
-		this.rackService = rackService;
 	}
 
 	/* (non-Javadoc)
@@ -238,92 +132,5 @@ public class AppRenderingControllerImpl implements ComponentWithLifecycle, Compo
 		final AudioProvider provider = audioProviderRegistryService.getProviderById( firstFoundId );
 
 		return provider.createAppRenderingSessionForConfiguration( hardwareIOConfiguration, errorQueue, errorCallback );
-	}
-
-	private void startupHotspot() throws DatastoreException, TableCellFullException, TableIndexOutOfBoundsException, MAConstraintViolationException, InterruptedException
-	{
-		// Now hotspot compile them in one big rack
-
-		final MadDefinitionListModel allMadDefinitions = componentService.listDefinitionsAvailable();
-
-		// Create a new rack with at least four rows per component type
-		final int numDefinitions = allMadDefinitions.getSize();
-		final RackDataModel cacheRack = rackService.createNewRackDataModel( "cachingrack",
-				"",
-				RackService.DEFAULT_RACK_COLS,
-				RackService.DEFAULT_RACK_ROWS * numDefinitions,
-				false );
-
-		final Map<MadParameterDefinition,String> emptyParameterValues = new HashMap<MadParameterDefinition, String>();
-
-		for( int i = 0 ; i < numDefinitions ; i++ )
-		{
-			final Object o = allMadDefinitions.getElementAt( i );
-			final MadDefinition<?,?> md = (MadDefinition<?,?>)o;
-			if( isDefinitionPublic( md ) )
-			{
-				if( md.isParametrable() )
-				{
-					// Attempt empty parameters creation
-					try
-					{
-						final String name = md.getId() + i;
-						rackService.createComponent( cacheRack, md, emptyParameterValues, name );
-					}
-					catch(final Exception e )
-					{
-						if( log.isInfoEnabled() )
-						{
-							log.info("Skipping hotspot of " + md.getId() + " as it needs parameters and no default didn't work." ); // NOPMD by dan on 01/02/15 07:29
-						}
-					}
-				}
-				else
-				{
-					try
-					{
-						final String name = md.getId() + i;
-						rackService.createComponent( cacheRack, md, emptyParameterValues, name );
-					}
-					catch(final RecordNotFoundException rnfe )
-					{
-						if( log.isInfoEnabled() )
-						{
-							log.info( "Skipping hotspot of " + md.getId() + " - probably missing UI for it" ); // NOPMD by dan on 01/02/15 07:29
-						}
-					}
-				}
-			}
-		}
-
-		final MadGraphInstance<?,?> hotspotGraph = rackService.getRackGraphInstance( cacheRack );
-
-		final int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
-
-		final HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
-				outputLatencyFrames );
-
-		final long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
-				outputLatencyFrames );
-
-		final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
-		final MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
-		final RenderingPlan renderingPlan = renderingService.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
-
-		// Now create a rendering plan from this rack
-		log.debug("Peforming hotspot mad instance looping.");
-		final HotspotRenderingContainer hotspotContainer = appRenderingStructureService.createHotspotRenderingContainer( renderingPlan );
-		hotspotContainer.startHotspotLooping();
-		Thread.sleep( HOTSPOT_COMPILATION_TIME_MILLIS );
-		hotspotContainer.stopHotspotLooping();
-
-		rackService.destroyRackDataModel( cacheRack );
-	}
-
-	private final static boolean isDefinitionPublic( final MadDefinition<?,?> definition )
-	{
-		final MadClassification auc = definition.getClassification();
-		final MadClassificationGroup aug = auc.getGroup();
-		return ( aug != null ? aug.getVisibility() == Visibility.PUBLIC : false );
 	}
 }

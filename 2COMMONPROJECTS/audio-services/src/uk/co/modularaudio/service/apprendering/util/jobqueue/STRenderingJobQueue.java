@@ -18,30 +18,20 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
+import uk.co.modularaudio.util.audio.buffer.UnsafeGenericRingBuffer;
 
 
-public class MTRenderingJobQueue implements AppRenderingJobQueue
+public class STRenderingJobQueue implements AppRenderingJobQueue
 {
-	private static final int JOB_FETCH_TIMEOUT_MILLIS = 10;
+	private final UnsafeGenericRingBuffer<AbstractParallelRenderingJob> jobRing;
 
-	private final MTSafeGenericRingBuffer<AbstractParallelRenderingJob> mtSafeJobQueue;
-
-//	private AtomicBoolean internalShouldBlock = new AtomicBoolean(true);
-	private volatile boolean internalShouldBlock = true; // NOPMD by dan on 22/01/15 07:40
-	private final ReentrantLock internalLock = new ReentrantLock( true );
-	private final Condition notEmpty = internalLock.newCondition();
-
-	public MTRenderingJobQueue( final int capacity )
+	public STRenderingJobQueue( final int capacity )
 	{
-		mtSafeJobQueue = new MTSafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
+		jobRing = new UnsafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
 	}
 
 	/* (non-Javadoc)
@@ -50,31 +40,7 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	@Override
 	public AbstractParallelRenderingJob getAJob( final boolean canBlock )
 	{
-		AbstractParallelRenderingJob retVal = null;
-		final boolean localCanBlock = canBlock && internalShouldBlock;
-
-		if( localCanBlock )
-		{
-			internalLock.lock();
-			retVal = mtSafeJobQueue.readOneOrNull();
-			if( retVal == null )
-			{
-				try
-				{
-					notEmpty.await( JOB_FETCH_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS );
-				}
-				catch( final InterruptedException ie )
-				{
-					// Don't care, we're mirroring lack of an interrupted exception in c++
-				}
-			}
-			internalLock.unlock();
-		}
-		else
-		{
-			retVal = mtSafeJobQueue.readOneOrNull();
-		}
-		return retVal;
+		return jobRing.readOneOrNull();
 	}
 
 	/* (non-Javadoc)
@@ -83,14 +49,6 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	@Override
 	public void setBlocking( final boolean shouldBlock )
 	{
-//		internalShouldBlock.set( shouldBlock );
-		internalShouldBlock = shouldBlock;
-		if( !shouldBlock )
-		{
-			internalLock.lock();
-			notEmpty.notifyAll();
-			internalLock.unlock();
-		}
 	}
 
 	/* (non-Javadoc)
@@ -99,7 +57,7 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	@Override
 	public void write( final AbstractParallelRenderingJob[] jobs, final int startOffset, final int length )
 	{
-		mtSafeJobQueue.write( jobs, startOffset, length );
+		jobRing.write( jobs, startOffset, length );
 	}
 
 	/* (non-Javadoc)
@@ -108,6 +66,6 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	@Override
 	public void writeOne( final AbstractParallelRenderingJob job )
 	{
-		mtSafeJobQueue.writeOne( job );
+		jobRing.writeOne( job );
 	}
 }

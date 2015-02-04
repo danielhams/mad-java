@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.AbstractInterruptableThread;
 import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import java.lang.reflect.Array;
 import java.util.concurrent.atomic.AtomicInteger;

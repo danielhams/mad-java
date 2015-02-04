@@ -18,10 +18,10 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 

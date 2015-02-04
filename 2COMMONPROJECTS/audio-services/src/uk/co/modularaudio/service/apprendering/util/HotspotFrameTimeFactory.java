@@ -18,20 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering;
+package uk.co.modularaudio.service.apprendering.util;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 
-public interface AppRenderingJobQueue
+public class HotspotFrameTimeFactory implements MadFrameTimeFactory
 {
-	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
+	public HotspotFrameTimeFactory()
+	{
+		// Throw away class for hotspot compilation
+	}
 
-	AbstractParallelRenderingJob getAJob( boolean canBlock );
+	private long currentUiFrameTime;
 
-	void setBlocking( boolean shouldBlock );
-
-	void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length );
-
-	void writeOne( AbstractParallelRenderingJob job );
-
+	@Override
+	public long getCurrentUiFrameTime()
+	{
+		return currentUiFrameTime += 1000;
+	}
 }

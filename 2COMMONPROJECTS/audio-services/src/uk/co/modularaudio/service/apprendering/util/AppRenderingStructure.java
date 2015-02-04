@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering;
+package uk.co.modularaudio.service.apprendering.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +34,14 @@ import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance.FadeType;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.MTRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueHelperThread;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.STRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.session.AppRenderingLifecycleListener;
+import uk.co.modularaudio.service.apprendering.util.structure.AudioSystemTestGraphCreator;
+import uk.co.modularaudio.service.apprendering.util.structure.DynamicRenderingPlanGraphListener;
+import uk.co.modularaudio.service.apprendering.util.structure.JobDataListComparator;
+import uk.co.modularaudio.service.apprendering.util.structure.ParsedJobData;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
@@ -43,14 +51,6 @@ import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.rendering.profiling.JobProfileResult;
 import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.MTRenderingJobQueue;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.RenderingJobQueueHelperThread;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.STRenderingJobQueue;
-import uk.co.modularaudio.util.audio.apprendering.session.AppRenderingLifecycleListener;
-import uk.co.modularaudio.util.audio.apprendering.structure.AudioSystemTestGraphCreator;
-import uk.co.modularaudio.util.audio.apprendering.structure.DynamicRenderingPlanGraphListener;
-import uk.co.modularaudio.util.audio.apprendering.structure.JobDataListComparator;
-import uk.co.modularaudio.util.audio.apprendering.structure.ParsedJobData;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;

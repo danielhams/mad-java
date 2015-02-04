@@ -18,22 +18,28 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering;
+package uk.co.modularaudio.service.apprendering.util.session;
 
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
-public class HotspotFrameTimeFactory implements MadFrameTimeFactory
+public interface AppRenderingLifecycleListener
 {
-	public HotspotFrameTimeFactory()
+	public enum SignalType
 	{
-		// Throw away class for hotspot compilation
-	}
-
-	private long currentUiFrameTime;
-
-	@Override
-	public long getCurrentUiFrameTime()
-	{
-		return currentUiFrameTime += 1000;
-	}
+		PRE_START,
+		POST_START,
+		PRE_STOP,
+		POST_STOP,
+		START_TEST,
+		STOP_TEST
+	};
+	public void receiveEngineSignal( HardwareIOChannelSettings coreEngineChannelSettings,
+			MadFrameTimeFactory frameTimeFactory,
+			SignalType signalType,
+			AppRenderingErrorQueue errorQueue )
+		throws DatastoreException, MadProcessingException;
 }

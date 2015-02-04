@@ -25,15 +25,48 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
+/**
+ * <p>A service that can transform a low level MAD graph structure
+ * into an appropriate rendering plan that can be used at runtime.</p>
+ *
+ * @author dan
+ */
 public interface RenderingService
 {
+	/**
+	 * <p>Create a dynamic job style rendering plan from the
+	 * low-level graph of components and links.</p>
+	 * <p>The supplied graph may currently contain:
+	 * <ul>
+	 * <li>Components</li>
+	 * <li>Links between components</li>
+	 * <li>Sub graphs within the root containing the above</li>
+	 * </ul>
+	 * <p>Current the use of circular links within the graph is
+	 * not supported. Neither that of self-links.</p>
+	 * @param graph Graph containing (sub)components and links
+	 * @param hardwareSettings hardware settings (channel buffer lengths, sample rates) used to start components
+	 * @param frameTimeFactory the factory providing the "frame time" mapping
+	 * @return a new rendering plan
+	 * @throws DatastoreException
+	 */
 	RenderingPlan createRenderingPlan( MadGraphInstance<?,?> graph,
 			HardwareIOChannelSettings hardwareSettings,
 			MadFrameTimeFactory frameTimeFactory )
 		throws DatastoreException;
 
+	/**
+	 * <p>Output the supplied rendering plan in execution
+	 * order on the console</p>
+	 * @param renderingPlan
+	 * @throws DatastoreException
+	 */
 	void dumpRenderingPlan( RenderingPlan renderingPlan )
 		throws DatastoreException;
 
+	/**
+	 * <p>Do any required clean up of a rendering plan</p>
+	 * @param renderingPlan
+	 */
 	void destroyRenderingPlan( RenderingPlan renderingPlan );
 }

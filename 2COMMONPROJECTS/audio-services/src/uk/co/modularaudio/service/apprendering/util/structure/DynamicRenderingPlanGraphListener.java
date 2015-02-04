@@ -18,14 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.structure;
+package uk.co.modularaudio.service.apprendering.util.structure;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.apprendering.util.AppRenderingStructure;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;

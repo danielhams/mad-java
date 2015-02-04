@@ -18,28 +18,33 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.session;
+package uk.co.modularaudio.service.apprendering.util;
 
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
-import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-public interface AppRenderingLifecycleListener
+
+public interface AppRenderingSession
 {
-	public enum SignalType
-	{
-		PRE_START,
-		POST_START,
-		PRE_STOP,
-		POST_STOP,
-		START_TEST,
-		STOP_TEST
-	};
-	public void receiveEngineSignal( HardwareIOChannelSettings coreEngineChannelSettings,
-			MadFrameTimeFactory frameTimeFactory,
-			SignalType signalType,
-			AppRenderingErrorQueue errorQueue )
-		throws DatastoreException, MadProcessingException;
+	void destroy();
+
+	void startRendering();
+	boolean isRendering();
+	boolean stopRendering();
+
+	boolean testRendering( long testClientRunMillis );
+
+	long getCurrentUiFrameTime();
+
+	void dumpRenderingPlan() throws DatastoreException;
+	void dumpProfileResults();
+
+	void setApplicationGraph( MadGraphInstance<?, ?> newGraphToRender ) throws DatastoreException;
+	boolean isApplicationGraphSet();
+	void unsetApplicationGraph( MadGraphInstance<?, ?> oldGraphToUnset ) throws DatastoreException;
+
+	void activateApplicationGraph() throws MadProcessingException;
+	boolean isApplicationGraphActive();
+	void deactivateApplicationGraph() throws MadProcessingException;
 }

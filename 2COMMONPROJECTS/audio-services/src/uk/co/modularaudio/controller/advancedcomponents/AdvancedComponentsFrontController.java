@@ -36,12 +36,11 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
  * <p>Entry point for audio components that require advanced functionality.</p>
- * <p>For components such as a sound file player that requires audio data be
- * cached in a background thread the advanced components front controller
- * provides access to this functionality.</p>
- * <p>The front controller takes care of any needed database transaction
+ * <p>For components such as a sound file player that require audio data be
+ * cached in a background thread.</p>
+ * <p>This front controller takes care of any needed database transaction
  * related to operations.</p>
- * <p>For operations within the realtime rendering thread (such
+ * <p>For operations within the real time rendering thread (such
  * as reading a block of buffered audio data) it is recommended that
  * the runtime of audio components obtain references to the services needed
  * to perform the methods directly (such as the BlockResamplerService).</p>

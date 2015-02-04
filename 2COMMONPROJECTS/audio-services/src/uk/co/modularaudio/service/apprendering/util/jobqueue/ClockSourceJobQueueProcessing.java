@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueProcessing.Type;
 import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.RenderingJobQueueProcessing.Type;
 import uk.co.modularaudio.util.thread.RealtimeMethodErrorContext;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 

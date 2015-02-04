@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.session;
+package uk.co.modularaudio.service.apprendering.util.session;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -26,7 +26,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.apprendering.AppRenderingService;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingSession;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingStructure;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.ClockSourceJobQueueProcessing;
+import uk.co.modularaudio.service.apprendering.util.session.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AudioTestResults;
@@ -34,10 +38,6 @@ import uk.co.modularaudio.service.audioproviderregistry.TestRenderingErrorCallba
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingSession;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.ClockSourceJobQueueProcessing;
-import uk.co.modularaudio.util.audio.apprendering.session.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
@@ -60,7 +60,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	private final static long TEST_IO_WAIT_MILLIS = 200;
 	private final static long TEST_SLEEP_MILLIS = 100;
 
-	protected final AppRenderingStructureService appRenderingStructureService;
+	protected final AppRenderingService appRenderingService;
 	protected final AppRenderingStructure appRenderingStructure;
 	protected final TimingService timingService;
 
@@ -88,21 +88,21 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 
 	protected volatile boolean shouldProfileRenderingJobs; // NOPMD by dan on 01/02/15 07:08
 
-	public AbstractAppRenderingSession( final AppRenderingStructureService appRenderingGraphService,
+	public AbstractAppRenderingSession( final AppRenderingService appRenderingService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,
 			final AppRenderingErrorCallback errorCallback )
 		throws DatastoreException
 	{
-		this.appRenderingStructureService = appRenderingGraphService;
+		this.appRenderingService = appRenderingService;
 		this.timingService = timingService;
 		this.hardwareConfiguration = hardwareConfiguration;
-		appRenderingStructure = appRenderingGraphService.createAppRenderingStructure();
+		appRenderingStructure = appRenderingService.createAppRenderingStructure();
 
 		clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( appRenderingStructure.getRenderingJobQueue() );
 
-		shouldProfileRenderingJobs = appRenderingGraphService.shouldProfileRenderingJobs();
+		shouldProfileRenderingJobs = appRenderingService.shouldProfileRenderingJobs();
 
 		this.errorQueue = errorQueue;
 		this.errorCallback = errorCallback;
@@ -110,14 +110,14 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#startRendering()
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#startRendering()
 	 */
 	@Override
 	public void startRendering()
 	{
 		if( isRendering() )
 		{
-			errorQueue.queueError( this, ErrorSeverity.FATAL, "AppRenderingIO already rendering" );
+			errorQueue.queueError( this, ErrorSeverity.FATAL, "AbstractAppRenderingSession already rendering" );
 		}
 		else
 		{
@@ -161,7 +161,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#stopRendering()
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#stopRendering()
 	 */
 	@Override
 	public boolean stopRendering()
@@ -204,7 +204,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#isRendering()
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#isRendering()
 	 */
 	@Override
 	public boolean isRendering()
@@ -213,7 +213,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#testRendering(long)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#testRendering(long)
 	 */
 	@Override
 	public boolean testRendering( final long testClientRunMillis )
@@ -349,16 +349,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#getAppRenderingStructure()
-	 */
-	@Override
-	public AppRenderingStructure getAppRenderingStructure()
-	{
-		return appRenderingStructure;
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#destroy()
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#destroy()
 	 */
 	@Override
 	public void destroy()
@@ -380,7 +371,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 				appRenderingStructure.unsetApplicationGraph( graphToUnset );
 				// We don't destroy it, it was set by someone else, so they are responsible for destroying it
 			}
-			appRenderingStructureService.destroyAppRenderingStructure( appRenderingStructure );
+			appRenderingService.destroyAppRenderingStructure( appRenderingStructure );
 
 		}
 		catch( final Exception e )
@@ -422,11 +413,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#setShouldRecordPeriods(boolean)
-	 */
-	@Override
-	public void setShouldRecordPeriods( final boolean should )
+	private void setShouldRecordPeriods( final boolean should )
 	{
 		this.shouldRecordPeriods = should;
 	}
@@ -473,8 +460,80 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.audioproviderregistry.pub.AppRenderingIO#getCurrentUiFrameTime()
+	 * @see uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory#getCurrentUiFrameTime()
 	 */
 	@Override
 	public abstract long getCurrentUiFrameTime();
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#dumpRenderingPlan()
+	 */
+	@Override
+	public void dumpRenderingPlan() throws DatastoreException
+	{
+		appRenderingStructure.dumpRenderingPlan();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#dumpProfileResults()
+	 */
+	@Override
+	public void dumpProfileResults()
+	{
+		appRenderingStructure.dumpProfileResults();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#setApplicationGraph(uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance)
+	 */
+	@Override
+	public void setApplicationGraph( final MadGraphInstance<?, ?> newGraphToRender ) throws DatastoreException
+	{
+		appRenderingStructure.setApplicationGraph( newGraphToRender );
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#unsetApplicationGraph(uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance)
+	 */
+	@Override
+	public void unsetApplicationGraph( final MadGraphInstance<?, ?> oldGraphToUnset ) throws DatastoreException
+	{
+		appRenderingStructure.unsetApplicationGraph( oldGraphToUnset );
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#isApplicationGraphSet()
+	 */
+	@Override
+	public boolean isApplicationGraphSet()
+	{
+		return appRenderingStructure.isApplicationGraphSet();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#activateApplicationGraph()
+	 */
+	@Override
+	public void activateApplicationGraph() throws MadProcessingException
+	{
+		appRenderingStructure.activateApplicationGraph();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#deactivateApplicationGraph()
+	 */
+	@Override
+	public void deactivateApplicationGraph() throws MadProcessingException
+	{
+		appRenderingStructure.deactivateApplicationGraph();
+	}
+
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.util.audio.apprendering.AppRenderingSession#isApplicationGraphActive()
+	 */
+	@Override
+	public boolean isApplicationGraphActive()
+	{
+		return appRenderingStructure.isApplicationGraphActive();
+	}
 }

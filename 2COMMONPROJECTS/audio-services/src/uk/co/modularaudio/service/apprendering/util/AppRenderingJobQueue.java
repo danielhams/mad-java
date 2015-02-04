@@ -18,21 +18,20 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util;
 
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
+import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
 
-public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
+public interface AppRenderingJobQueue
 {
-//	private static Log log = LogFactory.getLog( HelperThreadJobQueueProcessing.class.getName() );
+	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
 
-	public HelperThreadJobQueueProcessing( final int threadNum, final AppRenderingJobQueue jobQueue )
-	{
-		this( threadNum, jobQueue, Type.HELPER_THREAD );
-	}
+	AbstractParallelRenderingJob getAJob( boolean canBlock );
 
-	public HelperThreadJobQueueProcessing( final int threadNum, final AppRenderingJobQueue jobQueue, final Type threadType )
-	{
-		super( threadNum, jobQueue, threadType);
-	}
+	void setBlocking( boolean shouldBlock );
+
+	void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length );
+
+	void writeOne( AbstractParallelRenderingJob job );
+
 }

@@ -35,7 +35,8 @@ import org.jaudiolibs.jnajack.JackException;
 import org.jaudiolibs.jnajack.JackOptions;
 import org.jaudiolibs.jnajack.JackStatus;
 
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.apprendering.AppRenderingService;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AudioProvider;
@@ -43,7 +44,6 @@ import uk.co.modularaudio.service.audioproviderregistry.AudioProviderRegistrySer
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.timing.TimingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingSession;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDeviceCriteria;
 import uk.co.modularaudio.util.audio.mad.hardwareio.DeviceDirection;
@@ -71,7 +71,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 
 	private AudioProviderRegistryService audioProviderRegistryService;
 	private TimingService timingService;
-	private AppRenderingStructureService appRenderingStructureService;
+	private AppRenderingService appRenderingService;
 
 	private boolean shouldRegister;
 
@@ -227,9 +227,9 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 		this.timingService = timingService;
 	}
 
-	public void setAppRenderingStructureService( final AppRenderingStructureService appRenderingStructureService )
+	public void setAppRenderingService( final AppRenderingService appRenderingService )
 	{
-		this.appRenderingStructureService = appRenderingStructureService;
+		this.appRenderingService = appRenderingService;
 	}
 
 	@Override
@@ -266,6 +266,6 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 			final AppRenderingErrorCallback errorCallback )
 		throws DatastoreException
 	{
-		return new JNAJackAppRenderingSession( appRenderingStructureService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
+		return new JNAJackAppRenderingSession( appRenderingService, timingService, hardwareIOConfiguration, errorQueue, errorCallback, jack, client );
 	}
 }

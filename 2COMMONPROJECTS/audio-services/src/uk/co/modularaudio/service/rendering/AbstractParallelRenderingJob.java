@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.rendering;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 

@@ -18,18 +18,18 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.apprendering.jobqueue;
+package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.HotspotFrameTimeFactory;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.timing.TimingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
-import uk.co.modularaudio.util.audio.apprendering.HotspotFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;

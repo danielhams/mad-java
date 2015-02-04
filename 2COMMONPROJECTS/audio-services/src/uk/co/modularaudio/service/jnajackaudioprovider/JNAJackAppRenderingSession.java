@@ -35,12 +35,12 @@ import org.jaudiolibs.jnajack.JackProcessCallback;
 import org.jaudiolibs.jnajack.JackShutdownCallback;
 import org.jaudiolibs.jnajack.JackXrunCallback;
 
-import uk.co.modularaudio.service.apprenderingstructure.AppRenderingStructureService;
+import uk.co.modularaudio.service.apprendering.AppRenderingService;
+import uk.co.modularaudio.service.apprendering.util.session.AbstractAppRenderingSession;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.timing.TimingService;
-import uk.co.modularaudio.util.audio.apprendering.session.AbstractAppRenderingSession;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
@@ -90,7 +90,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	private HardwareMidiNoteEvent[] tmpNoteEventArray;
 	private int tmpNoteEventArrayLength;
 
-	public JNAJackAppRenderingSession( final AppRenderingStructureService appRenderingStructureService,
+	public JNAJackAppRenderingSession( final AppRenderingService appRenderingService,
 			final TimingService timingService,
 			final HardwareIOConfiguration hardwareConfiguration,
 			final AppRenderingErrorQueue errorQueue,
@@ -98,7 +98,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			final Jack jack,
 			final JackClient client ) throws DatastoreException
 	{
-		super( appRenderingStructureService, timingService, hardwareConfiguration, errorQueue, errorCallback );
+		super( appRenderingService, timingService, hardwareConfiguration, errorQueue, errorCallback );
 //		this.jack = jack;
 		this.client =client;
 	}

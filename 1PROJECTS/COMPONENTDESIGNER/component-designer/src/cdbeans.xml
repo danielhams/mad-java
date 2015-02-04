@@ -33,12 +33,7 @@
         <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>
 	<bean id="appRenderingController" class="uk.co.modularaudio.controller.apprendering.impl.AppRenderingControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="appRenderingStructureService"><ref bean="appRenderingStructureService"></ref></property>
         <property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService" /></property>
-        <property name="configurationService"><ref bean="configurationService"></ref></property>
-        <property name="componentService"><ref bean="componentService"></ref></property>
-        <property name="rackService"><ref bean="rackService"></ref></property>
-        <property name="renderingService"><ref bean="renderingService" /></property>
 	</bean>
 	<bean id="userPreferencesController" class="uk.co.modularaudio.controller.userpreferences.impl.UserPreferencesControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
@@ -156,7 +151,7 @@
 		<property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService"></ref></property>
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
-		<property name="appRenderingStructureService"><ref bean="appRenderingStructureService"></ref></property>
+		<property name="appRenderingService"><ref bean="appRenderingService"></ref></property>
 	</bean>
 	<bean id="userPreferencesService" class="uk.co.modularaudio.service.userpreferences.impl.UserPreferencesServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
@@ -167,11 +162,12 @@
 	<bean id="bufferedImageAllocationService" class="uk.co.modularaudio.service.bufferedimageallocation.impl.BufferedImageAllocationServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
-	<bean id="appRenderingStructureService" class="uk.co.modularaudio.service.apprenderingstructure.impl.AppRenderingStructureServiceImpl" init-method="init" destroy-method="destroy">
+	<bean id="appRenderingService" class="uk.co.modularaudio.service.apprendering.impl.AppRenderingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="graphService"><ref bean="graphService"></ref></property>
-		<property name="renderingService"><ref bean="renderingService"></ref></property>
+        <property name="rackService"><ref bean="rackService"></ref></property>
+        <property name="renderingService"><ref bean="renderingService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
 	</bean>
 	<bean id="hibernateSessionService" class="uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl" init-method="init" destroy-method="destroy">

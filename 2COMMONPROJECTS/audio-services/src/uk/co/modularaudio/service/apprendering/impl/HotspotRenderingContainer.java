@@ -1,4 +1,4 @@
-package uk.co.modularaudio.service.apprenderingstructure;
+package uk.co.modularaudio.service.apprendering.impl;
 
 /**
  * <p>A simple container that when passed a rendering plan will

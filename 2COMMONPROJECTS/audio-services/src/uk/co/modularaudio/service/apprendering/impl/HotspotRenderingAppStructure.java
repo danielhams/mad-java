@@ -1,18 +1,17 @@
-package uk.co.modularaudio.service.apprenderingstructure.impl;
+package uk.co.modularaudio.service.apprendering.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.apprenderingstructure.HotspotRenderingContainer;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingStructure;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.HotspotClockSourceJobQueueHelperThread;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rendering.RenderingPlan;
 import uk.co.modularaudio.service.rendering.RenderingService;
 import uk.co.modularaudio.service.timing.TimingService;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingJobQueue;
-import uk.co.modularaudio.util.audio.apprendering.AppRenderingStructure;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.HotspotClockSourceJobQueueHelperThread;
-import uk.co.modularaudio.util.audio.apprendering.jobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
