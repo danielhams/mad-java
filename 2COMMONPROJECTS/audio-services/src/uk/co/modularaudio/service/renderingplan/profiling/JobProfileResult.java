@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.renderingplan.profiling;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 public class JobProfileResult
 {
@@ -28,7 +28,7 @@ public class JobProfileResult
 	private long startTimestamp;
 	private long endTimestamp;
 
-	public void pullResultsFromJob( final AbstractParallelRenderingJob job )
+	public void pullResultsFromJob( final RenderingJob job )
 	{
 		jobThreadExecutor = job.getJobThreadExecutor();
 		startTimestamp = job.getJobStartTimestamp();

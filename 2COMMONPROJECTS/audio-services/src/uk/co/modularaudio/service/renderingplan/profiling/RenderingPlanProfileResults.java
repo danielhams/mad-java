@@ -22,14 +22,14 @@ package uk.co.modularaudio.service.renderingplan.profiling;
 
 import java.util.HashMap;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 public class RenderingPlanProfileResults
 {
-	private AbstractParallelRenderingJob[] jobsToProfile;
+	private RenderingJob[] jobsToProfile;
 	private int numJobs;
 
-	private HashMap<AbstractParallelRenderingJob,JobProfileResult> jobToProfileResultMap;
+	private HashMap<RenderingJob,JobProfileResult> jobToProfileResultMap;
 	private long clockCallbackStart;
 	private long clockCallbackPostProducer;
 	private long clockCallbackPostRpFetch;
@@ -38,12 +38,12 @@ public class RenderingPlanProfileResults
 //	private AtomicBoolean filled = new AtomicBoolean( false );
 	private volatile boolean filled = false; // NOPMD by dan on 01/02/15 07:07
 
-	public RenderingPlanProfileResults( final AbstractParallelRenderingJob[] jobsToProfile )
+	public RenderingPlanProfileResults( final RenderingJob[] jobsToProfile )
 	{
 		this.jobsToProfile = jobsToProfile;
 		numJobs = jobsToProfile.length;
 
-		jobToProfileResultMap = new HashMap<AbstractParallelRenderingJob, JobProfileResult>( numJobs );
+		jobToProfileResultMap = new HashMap<RenderingJob, JobProfileResult>( numJobs );
 		for( int i = 0 ; i < numJobs ; i++ )
 		{
 			jobToProfileResultMap.put( jobsToProfile[ i ], new JobProfileResult() );
@@ -59,7 +59,7 @@ public class RenderingPlanProfileResults
 		this.clockCallbackPostProducer = clockCallbackPostProducer;
 		this.clockCallbackPostRpFetch = clockCallbackPostRpFetch;
 		this.clockCallbackPostLoop = clockCallbackPostLoop;
-		for( final AbstractParallelRenderingJob job : jobToProfileResultMap.keySet() )
+		for( final RenderingJob job : jobToProfileResultMap.keySet() )
 		{
 			final JobProfileResult jobResult = jobToProfileResultMap.get( job );
 			jobResult.pullResultsFromJob( job );
@@ -80,7 +80,7 @@ public class RenderingPlanProfileResults
 		filled = targetFilled;
 	}
 
-	public HashMap<AbstractParallelRenderingJob, JobProfileResult> getJobToProfileResultMap()
+	public HashMap<RenderingJob, JobProfileResult> getJobToProfileResultMap()
 	{
 		return jobToProfileResultMap;
 	}
@@ -113,7 +113,7 @@ public class RenderingPlanProfileResults
 		to.clockCallbackPostLoop = from.clockCallbackPostLoop;
 		to.jobsToProfile = from.jobsToProfile;
 		to.numJobs = from.numJobs;
-		to.jobToProfileResultMap = new HashMap<AbstractParallelRenderingJob, JobProfileResult>( from.jobToProfileResultMap );
+		to.jobToProfileResultMap = new HashMap<RenderingJob, JobProfileResult>( from.jobToProfileResultMap );
 		// Mark the original as able to be filled again
 //		from.filled = new AtomicBoolean( false );
 		from.filled = false;

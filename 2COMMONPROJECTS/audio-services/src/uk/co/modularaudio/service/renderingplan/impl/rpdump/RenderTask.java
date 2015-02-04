@@ -23,7 +23,7 @@ package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.impl.MadParallelRenderingJob;
 import uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -36,13 +36,13 @@ public class RenderTask implements Runnable
 
 	private final AddNewTaskInterface addNewTaskInterface;
 
-	private final AbstractParallelRenderingJob parallelRenderingJob;
+	private final RenderingJob parallelRenderingJob;
 
 	private final int maxJobs;
 	private final Runnable[] jobsToLaunch;
 
 	public RenderTask( final AddNewTaskInterface addNewTaskInterface,
-			final AbstractParallelRenderingJob job,
+			final RenderingJob job,
 			final int maxJobs )
 	{
 		this.addNewTaskInterface = addNewTaskInterface;
@@ -108,10 +108,10 @@ public class RenderTask implements Runnable
 
 		// Now it's complete we atomically decrement each of the sink jobs. If any of them go to zero they can be added
 		// as new jobs in the queue.
-		final AbstractParallelRenderingJob sinksToUpdate[] = parallelRenderingJob.getConsJobsThatWaitForUs();
+		final RenderingJob sinksToUpdate[] = parallelRenderingJob.getConsJobsThatWaitForUs();
 		int curJobNum = 0;
 
-		for( final AbstractParallelRenderingJob dJob : sinksToUpdate )
+		for( final RenderingJob dJob : sinksToUpdate )
 		{
 			final boolean readyToGo = dJob.markOneProducerAsCompleteCheckIfReadyToGo();
 			if( readyToGo )

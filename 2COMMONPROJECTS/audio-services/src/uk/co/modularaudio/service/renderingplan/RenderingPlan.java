@@ -33,11 +33,11 @@ public interface RenderingPlan
 	HardwareIOChannelSettings getPlanChannelSettings();
 	MadTimingParameters getPlanTimingParameters();
 	MadFrameTimeFactory getPlanFrameTimeFactory();
-	
-	AbstractParallelRenderingJob[] getAllJobs();
+
+	RenderingJob[] getAllJobs();
 
 	// Used to initially kick start audio rendering
-	AbstractParallelRenderingJob[] getInitialJobs();
+	RenderingJob[] getInitialJobs();
 
 	// Useful when dumping out a rendering plan so we don't iterate forever
 	int getTotalNumJobs();
@@ -52,7 +52,7 @@ public interface RenderingPlan
 	boolean wasPlanExecuted();
 
 	void fillProfilingIfNotFilled( long clockCallbackStart, long clockCallbackPostProducer, long clockCallbackPostRpFetch, long clockCallbackPostLoop );
-	
+
 	boolean getProfileResultsIfFilled( RenderingPlanProfileResults destinationResults );
-	
+
 }

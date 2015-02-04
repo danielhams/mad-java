@@ -46,7 +46,7 @@ import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.madgraph.GraphType;
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.service.renderingplan.profiling.JobProfileResult;
@@ -253,11 +253,11 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 							clockCallbackPostLoop + ") producerDuration(" + producerDuration + ") rpFetchDuration( " +
 							rpFetchDuration + ") loopDuration(" + loopDuration + ") totalDuration(" + totalDuration + ")");
 				}
-				final HashMap<AbstractParallelRenderingJob, JobProfileResult> jobToProfileResultMap = profileResults.getJobToProfileResultMap();
+				final HashMap<RenderingJob, JobProfileResult> jobToProfileResultMap = profileResults.getJobToProfileResultMap();
 
 				final ArrayList<ParsedJobData> jobDataList = new ArrayList<ParsedJobData>();
 
-				for( final AbstractParallelRenderingJob rj : jobToProfileResultMap.keySet() )
+				for( final RenderingJob rj : jobToProfileResultMap.keySet() )
 				{
 					final JobProfileResult jr = jobToProfileResultMap.get( rj );
 					final long jobStartTimestamp = jr.getStartTimestamp();

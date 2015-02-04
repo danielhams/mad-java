@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
 import java.util.ArrayList;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
@@ -33,9 +33,9 @@ public class Dumper
 	public Dumper( final RenderingPlan renderingPlan )
 		throws DatastoreException
 	{
-		final AbstractParallelRenderingJob initialJobs[] = renderingPlan.getInitialJobs();
-		final ArrayList<AbstractParallelRenderingJob> initialJobsArray = new ArrayList<AbstractParallelRenderingJob>();
-		for( final AbstractParallelRenderingJob job : initialJobs )
+		final RenderingJob initialJobs[] = renderingPlan.getInitialJobs();
+		final ArrayList<RenderingJob> initialJobsArray = new ArrayList<RenderingJob>();
+		for( final RenderingJob job : initialJobs )
 		{
 			initialJobsArray.add( job );
 		}

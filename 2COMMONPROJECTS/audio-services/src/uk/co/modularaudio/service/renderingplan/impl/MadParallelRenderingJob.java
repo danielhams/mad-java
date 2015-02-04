@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.service.renderingplan.impl;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class MadParallelRenderingJob extends AbstractParallelRenderingJob
+public class MadParallelRenderingJob extends AbstractRenderingJob
 {
 	private final MadTimingSource timingSource;
 	private final MadRenderingJob renderingJob;
@@ -41,7 +41,7 @@ public class MadParallelRenderingJob extends AbstractParallelRenderingJob
 		this.renderingJob = renderingJob;
 	}
 
-	public void setDependencies( final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+	public void setDependencies( final RenderingJob[] consJobsThatWaitForUs,
 			final int numSourcesWeWaitFor )
 	{
 		this.consJobsThatWaitForUs = consJobsThatWaitForUs;

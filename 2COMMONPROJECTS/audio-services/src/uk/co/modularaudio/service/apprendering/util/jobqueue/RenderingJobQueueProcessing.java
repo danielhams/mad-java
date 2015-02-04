@@ -21,7 +21,7 @@
 package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
@@ -59,7 +59,7 @@ public abstract class RenderingJobQueueProcessing
 
 	protected final RealtimeMethodReturnCodeEnum processJobAndDependants( final boolean canBlock, final boolean shouldProfileRenderingJobs )
 	{
-		AbstractParallelRenderingJob job = renderingJobQueue.getAJob( canBlock );
+		RenderingJob job = renderingJobQueue.getAJob( canBlock );
 
 		while( job != null )
 		{
@@ -70,15 +70,15 @@ public abstract class RenderingJobQueueProcessing
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	protected final AbstractParallelRenderingJob processOneJobReturnFirstDependant( AbstractParallelRenderingJob job,
+	protected final RenderingJob processOneJobReturnFirstDependant( RenderingJob job,
 			final boolean shouldProfileRenderingJobs )
 	{
 		job.goWithTimestamps( threadNum, tempQueueEntryStorage );
 
-		final AbstractParallelRenderingJob consJobs[] = job.getConsJobsThatWaitForUs();
+		final RenderingJob consJobs[] = job.getConsJobsThatWaitForUs();
 		job = null;
 
-		for( final AbstractParallelRenderingJob consJob : consJobs )
+		for( final RenderingJob consJob : consJobs )
 		{
 			final boolean readyToGo = consJob.markOneProducerAsCompleteCheckIfReadyToGo();
 			if( readyToGo )

@@ -18,21 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.service.renderingplan;
+package uk.co.modularaudio.service.renderingplan.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public abstract class AbstractParallelRenderingJob
+public abstract class AbstractRenderingJob implements RenderingJob
 {
 //	private static Log log = LogFactory.getLog( AbstractParallelRenderingJob.class.getName() );
 
 	protected final String jobName;
 
-	protected AbstractParallelRenderingJob[] consJobsThatWaitForUs;
+	protected RenderingJob[] consJobsThatWaitForUs;
 
 	// To allow dependent jobs to decrement our ready to go counter
 	protected final AtomicInteger numProducersStillToComplete;
@@ -47,8 +48,8 @@ public abstract class AbstractParallelRenderingJob
 	protected long jobEndTimestamp;
 	protected int jobThreadExecutor;
 
-	public AbstractParallelRenderingJob( final String iJobName,
-			final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+	public AbstractRenderingJob( final String iJobName,
+			final RenderingJob[] consJobsThatWaitForUs,
 			final int numProducersWeWaitFor )
 	{
 		this.jobName = iJobName;
@@ -57,34 +58,38 @@ public abstract class AbstractParallelRenderingJob
 		this.numProducersStillToComplete = new AtomicInteger( numProducersWeWaitFor );
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#toString()
+	 */
 	@Override
 	public String toString()
 	{
 		return jobName;
 	}
 
-	public final AbstractParallelRenderingJob[] getConsJobsThatWaitForUs()
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#getConsJobsThatWaitForUs()
+	 */
+	@Override
+	public final RenderingJob[] getConsJobsThatWaitForUs()
 	{
 		return consJobsThatWaitForUs;
 	}
 
-	public int getNumProducersStillToComplete()
-	{
-		final int retVal = numProducersStillToComplete.get();
-		return retVal;
-	}
-
-	public int getNumProducersWeWaitFor()
-	{
-		return numProducersWeWaitFor;
-	}
-
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#markOneProducerAsCompleteCheckIfReadyToGo()
+	 */
+	@Override
 	public boolean markOneProducerAsCompleteCheckIfReadyToGo()
 	{
 		final int numAfter = numProducersStillToComplete.decrementAndGet();
 		return numAfter == 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#goWithTimestamps(int, uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage)
+	 */
+	@Override
 	public final RealtimeMethodReturnCodeEnum goWithTimestamps( final int jobThreadExecutor,
 			final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
@@ -96,27 +101,47 @@ public abstract class AbstractParallelRenderingJob
 		return retVal;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#forDumpResetNumProducersStillToComplete()
+	 */
+	@Override
 	public final void forDumpResetNumProducersStillToComplete()
 	{
 		numProducersStillToComplete.set( numProducersWeWaitFor );
 	}
 	abstract protected RealtimeMethodReturnCodeEnum go( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage );
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#getJobStartTimestamp()
+	 */
+	@Override
 	public long getJobStartTimestamp()
 	{
 		return jobStartTimestamp;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#getJobEndTimestamp()
+	 */
+	@Override
 	public long getJobEndTimestamp()
 	{
 		return jobEndTimestamp;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#getJobThreadExecutor()
+	 */
+	@Override
 	public int getJobThreadExecutor()
 	{
 		return jobThreadExecutor;
 	}
 
+	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#addSelfToQueue(uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue)
+	 */
+	@Override
 	public void addSelfToQueue( final AppRenderingJobQueue renderingJobQueue )
 	{
 		renderingJobQueue.writeOne( this );

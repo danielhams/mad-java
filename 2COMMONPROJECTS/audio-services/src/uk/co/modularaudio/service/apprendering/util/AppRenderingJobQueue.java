@@ -20,18 +20,18 @@
 
 package uk.co.modularaudio.service.apprendering.util;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 public interface AppRenderingJobQueue
 {
 	public static final int RENDERING_JOB_QUEUE_CAPACITY = 256;
 
-	AbstractParallelRenderingJob getAJob( boolean canBlock );
+	RenderingJob getAJob( boolean canBlock );
 
 	void setBlocking( boolean shouldBlock );
 
-	void write( AbstractParallelRenderingJob[] jobs, int startOffset, int length );
+	void write( RenderingJob[] jobs, int startOffset, int length );
 
-	void writeOne( AbstractParallelRenderingJob job );
+	void writeOne( RenderingJob job );
 
 }

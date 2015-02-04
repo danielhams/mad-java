@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.renderingplan.impl;
 
 import java.util.Set;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -41,8 +41,8 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	private final MadFrameTimeFactory planFrameTimeFactory;
 //	private InitialFanParallelRenderingJob initialFanJob = null;
 	private final FinalSyncParallelRenderingJob finalSyncJob;
-	private final AbstractParallelRenderingJob[] allJobs;
-	private final AbstractParallelRenderingJob[] initialJobs;
+	private final RenderingJob[] allJobs;
+	private final RenderingJob[] initialJobs;
 	private final int totalNumJobs;
 	private final Set<MadInstance<?,?>> allMadInstances;
 
@@ -53,8 +53,8 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 			final MadFrameTimeFactory planFrameTimeFactory,
 			final InitialFanParallelRenderingJob initialFanJob,
 			final FinalSyncParallelRenderingJob finalSyncJob,
-			final AbstractParallelRenderingJob[] allJobs,
-			final AbstractParallelRenderingJob[] initialJobs,
+			final RenderingJob[] allJobs,
+			final RenderingJob[] initialJobs,
 			final int totalNumJobs,
 			final Set<MadInstance<?,?>> allMadInstances,
 			final MadChannelBuffer[] allChannelBuffers )
@@ -91,7 +91,7 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	}
 
 	@Override
-	public AbstractParallelRenderingJob[] getInitialJobs()
+	public RenderingJob[] getInitialJobs()
 	{
 		return initialJobs;
 	}
@@ -115,7 +115,7 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	}
 
 	@Override
-	public AbstractParallelRenderingJob[] getAllJobs()
+	public RenderingJob[] getAllJobs()
 	{
 		return allJobs;
 	}

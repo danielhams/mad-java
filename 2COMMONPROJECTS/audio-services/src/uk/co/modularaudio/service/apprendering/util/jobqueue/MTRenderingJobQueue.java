@@ -25,14 +25,14 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 
 public class MTRenderingJobQueue implements AppRenderingJobQueue
 {
 	private static final int JOB_FETCH_TIMEOUT_MILLIS = 10;
 
-	private final MTSafeGenericRingBuffer<AbstractParallelRenderingJob> mtSafeJobQueue;
+	private final MTSafeGenericRingBuffer<RenderingJob> mtSafeJobQueue;
 
 //	private AtomicBoolean internalShouldBlock = new AtomicBoolean(true);
 	private volatile boolean internalShouldBlock = true; // NOPMD by dan on 22/01/15 07:40
@@ -41,16 +41,16 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 
 	public MTRenderingJobQueue( final int capacity )
 	{
-		mtSafeJobQueue = new MTSafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
+		mtSafeJobQueue = new MTSafeGenericRingBuffer<RenderingJob>( RenderingJob.class, capacity );
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#getAJob(boolean)
 	 */
 	@Override
-	public AbstractParallelRenderingJob getAJob( final boolean canBlock )
+	public RenderingJob getAJob( final boolean canBlock )
 	{
-		AbstractParallelRenderingJob retVal = null;
+		RenderingJob retVal = null;
 		final boolean localCanBlock = canBlock && internalShouldBlock;
 
 		if( localCanBlock )
@@ -97,7 +97,7 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#write(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob[], int, int)
 	 */
 	@Override
-	public void write( final AbstractParallelRenderingJob[] jobs, final int startOffset, final int length )
+	public void write( final RenderingJob[] jobs, final int startOffset, final int length )
 	{
 		mtSafeJobQueue.write( jobs, startOffset, length );
 	}
@@ -106,7 +106,7 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#writeOne(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob)
 	 */
 	@Override
-	public void writeOne( final AbstractParallelRenderingJob job )
+	public void writeOne( final RenderingJob job )
 	{
 		mtSafeJobQueue.writeOne( job );
 	}

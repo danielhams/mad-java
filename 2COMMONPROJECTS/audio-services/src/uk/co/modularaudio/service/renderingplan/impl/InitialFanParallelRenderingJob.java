@@ -20,14 +20,14 @@
 
 package uk.co.modularaudio.service.renderingplan.impl;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class InitialFanParallelRenderingJob extends
-		AbstractParallelRenderingJob
+		AbstractRenderingJob
 {
-	public InitialFanParallelRenderingJob( final AbstractParallelRenderingJob[] consJobsThatWaitForUs,
+	public InitialFanParallelRenderingJob( final RenderingJob[] consJobsThatWaitForUs,
 			final int numSourcesWeWaitFor )
 	{
 		super( "Initial Fan", consJobsThatWaitForUs, numSourcesWeWaitFor );

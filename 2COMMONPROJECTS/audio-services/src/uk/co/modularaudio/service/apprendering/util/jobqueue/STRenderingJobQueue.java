@@ -21,24 +21,24 @@
 package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.buffer.UnsafeGenericRingBuffer;
 
 
 public class STRenderingJobQueue implements AppRenderingJobQueue
 {
-	private final UnsafeGenericRingBuffer<AbstractParallelRenderingJob> jobRing;
+	private final UnsafeGenericRingBuffer<RenderingJob> jobRing;
 
 	public STRenderingJobQueue( final int capacity )
 	{
-		jobRing = new UnsafeGenericRingBuffer<AbstractParallelRenderingJob>( AbstractParallelRenderingJob.class, capacity );
+		jobRing = new UnsafeGenericRingBuffer<RenderingJob>( RenderingJob.class, capacity );
 	}
 
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#getAJob(boolean)
 	 */
 	@Override
-	public AbstractParallelRenderingJob getAJob( final boolean canBlock )
+	public RenderingJob getAJob( final boolean canBlock )
 	{
 		return jobRing.readOneOrNull();
 	}
@@ -55,7 +55,7 @@ public class STRenderingJobQueue implements AppRenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#write(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob[], int, int)
 	 */
 	@Override
-	public void write( final AbstractParallelRenderingJob[] jobs, final int startOffset, final int length )
+	public void write( final RenderingJob[] jobs, final int startOffset, final int length )
 	{
 		jobRing.write( jobs, startOffset, length );
 	}
@@ -64,7 +64,7 @@ public class STRenderingJobQueue implements AppRenderingJobQueue
 	 * @see uk.co.modularaudio.projects.pac.service.rendering.vos.RenderingJobQueueI#writeOne(uk.co.modularaudio.projects.pac.service.rendering.vos.AbstractParallelRenderingJob)
 	 */
 	@Override
-	public void writeOne( final AbstractParallelRenderingJob job )
+	public void writeOne( final RenderingJob job )
 	{
 		jobRing.writeOne( job );
 	}

@@ -22,13 +22,13 @@ package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
 import java.util.Collection;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 public class InitialTask implements Runnable
 {
 //	private static Log log = LogFactory.getLog( InitialTask.class.getName() );
 
-	private final Collection<AbstractParallelRenderingJob> initialJobsCollection;
+	private final Collection<RenderingJob> initialJobsCollection;
 
 	private final AddNewTaskInterface addNewTaskInterface;
 
@@ -36,7 +36,7 @@ public class InitialTask implements Runnable
 	private final Runnable[] newTasks;
 
 	public InitialTask( final AddNewTaskInterface addNewTaskInterface,
-			final Collection<AbstractParallelRenderingJob> initialJobsCollection,
+			final Collection<RenderingJob> initialJobsCollection,
 			final int maxJobs )
 	{
 		this.addNewTaskInterface = addNewTaskInterface;
@@ -49,7 +49,7 @@ public class InitialTask implements Runnable
 	public void run()
 	{
 		int curJobNum = 0;
-		for( final AbstractParallelRenderingJob initialJob : initialJobsCollection )
+		for( final RenderingJob initialJob : initialJobsCollection )
 		{
 			final RenderTask renderTask = new RenderTask( addNewTaskInterface, initialJob, maxJobs );
 			newTasks[ curJobNum++ ] = renderTask;

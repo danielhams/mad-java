@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.madgraph.MadGraphService;
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.service.renderingplan.impl.flatgraph.DirectedDependencyGraph;
@@ -39,12 +39,12 @@ import uk.co.modularaudio.service.renderingplan.impl.flatgraph.FlattenedRenderJo
 import uk.co.modularaudio.service.renderingplan.impl.rpdump.Dumper;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -243,7 +243,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		final Map<FlattenedRenderJob, MadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, MadParallelRenderingJob>();
 		// Places we keep track of all, initial and final jobs
 		// As we want to insert a FAN job at the front, and a SYNC job at the end.
-		final Set<AbstractParallelRenderingJob> allJobSet = new HashSet<AbstractParallelRenderingJob>();
+		final Set<RenderingJob> allJobSet = new HashSet<RenderingJob>();
 		final Set<MadParallelRenderingJob> initialAuJobSet = new HashSet<MadParallelRenderingJob>();
 		final Set<MadParallelRenderingJob> finalAuJobSet = new HashSet<MadParallelRenderingJob>();
 		// We must update the final producersWeWaitFor of the final sync job after we know how many
@@ -287,7 +287,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final MadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );
 
 			// Now look up the jobs waiting for us
-			final Set<AbstractParallelRenderingJob> consJobsThatWaitForUsSet = new HashSet<AbstractParallelRenderingJob>();
+			final Set<RenderingJob> consJobsThatWaitForUsSet = new HashSet<RenderingJob>();
 			for( final FlattenedRenderJob flatConJobWaitingForUs : flatConsJobsWaitingForUs )
 			{
 				final MadParallelRenderingJob relatedParallelRenderJob = flatToParallelJobMap.get( flatConJobWaitingForUs );
@@ -306,7 +306,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 				consJobsThatWaitForUsSet.add( finalSyncPrj );
 			}
 
-			final AbstractParallelRenderingJob[] consJobsThatWaitForUs = consJobsThatWaitForUsSet.toArray( new AbstractParallelRenderingJob[ consJobsThatWaitForUsSet.size() ] );
+			final RenderingJob[] consJobsThatWaitForUs = consJobsThatWaitForUsSet.toArray( new RenderingJob[ consJobsThatWaitForUsSet.size() ] );
 
 			final int cardinality = flatJob.getCardinality();
 			if( numProducersWeWaitFor == 0 )
@@ -336,10 +336,10 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		allJobSet.add( initialFanPrj );
 		finalSyncPrj.setNumProducersWeWaitFor( finalAuJobSet.size() );
 
-		final AbstractParallelRenderingJob[] realInitialJobs = new AbstractParallelRenderingJob[1];
+		final RenderingJob[] realInitialJobs = new RenderingJob[1];
 		realInitialJobs[0] = initialFanPrj;
 
-		final AbstractParallelRenderingJob[] allJobs = allJobSet.toArray( new AbstractParallelRenderingJob[ allJobSet.size() ] );
+		final RenderingJob[] allJobs = allJobSet.toArray( new RenderingJob[ allJobSet.size() ] );
 
 		final MadChannelBuffer[] allChannelBuffers = allChannelBuffersSet.toArray( new MadChannelBuffer[ allChannelBuffersSet.size() ] );
 

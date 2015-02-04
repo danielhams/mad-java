@@ -20,11 +20,11 @@
 
 package uk.co.modularaudio.service.renderingplan.impl;
 
-import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
+public class FinalSyncParallelRenderingJob extends AbstractRenderingJob
 {
 //	private static Log log = LogFactory.getLog( FinalSyncParallelRenderingJob.class.getName() );
 
@@ -36,7 +36,7 @@ public class FinalSyncParallelRenderingJob extends AbstractParallelRenderingJob
 
 	public FinalSyncParallelRenderingJob()
 	{
-		super( "Final Sync", new AbstractParallelRenderingJob[0], 0 );
+		super( "Final Sync", new RenderingJob[0], 0 );
 	}
 
 	@Override
