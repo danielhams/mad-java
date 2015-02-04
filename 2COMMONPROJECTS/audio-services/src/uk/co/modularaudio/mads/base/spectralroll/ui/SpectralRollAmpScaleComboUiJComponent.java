@@ -27,9 +27,6 @@ import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -46,7 +43,7 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 3571032632219667963L;
 
-	private static Log log = LogFactory.getLog( SpectralRollAmpScaleComboUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralRollAmpScaleComboUiJComponent.class.getName() );
 
 	private final SpectralRollMadUiInstance uiInstance;
 
@@ -95,7 +92,7 @@ public class SpectralRollAmpScaleComboUiJComponent extends PacComboBox<String>
 	@Override
 	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
 	{
-		log.debug("receiveIndexUpdate");
+//		log.debug("receiveIndexUpdate");
 		if( previousIndex != newIndex )
 		{
 			final String name = (String)getSelectedItem();

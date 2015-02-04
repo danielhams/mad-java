@@ -260,7 +260,25 @@ public class ComponentDesigner implements ExitSignalReceiver
 				{
 					// Let me specify certain things with hard paths
 					configResourcePath = "/cddevelopment.properties";
+					log.info("In development mode. Will use /cddevelopment.properties for configuration");
 				}
+				else if( arg.equals( "--jprofiler") )
+				{
+					configResourcePath = "/cdjprofiler.properties";
+					log.info("In jprofiler mode - using absolute paths from /cdjprofiler.properties for configuration");
+				}
+			}
+			if( useSystemLookAndFeel )
+			{
+				log.info( "System look and feel activated" );
+			}
+			if( showAlpha )
+			{
+				log.info("Showing alpha components");
+			}
+			if( showBeta )
+			{
+				log.info("Showing beta components");
 			}
 		}
 
