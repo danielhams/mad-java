@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.flatgraph;
+package uk.co.modularaudio.service.renderingplan.impl.flatgraph;
 
 import java.util.HashSet;
 import java.util.Set;

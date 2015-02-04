@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.apprendering.util;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
 
 public interface AppRenderingJobQueue
 {

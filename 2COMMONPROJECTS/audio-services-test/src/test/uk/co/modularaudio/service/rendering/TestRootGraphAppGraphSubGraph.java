@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.service.madgraph.GraphType;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -111,15 +111,15 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 			{
 				log.debug("Beginning render plan creation");
 			}
-			magic = renderingService.createRenderingPlan( rootGraph, planDataRateConfiguration, this );
+			magic = renderingPlanService.createRenderingPlan( rootGraph, planDataRateConfiguration, this );
 			if( i == 0 || i == 999 )
 			{
 				log.debug("Finished render plan creation");
 			}
 		}
-		renderingService.dumpRenderingPlan( magic );
+		renderingPlanService.dumpRenderingPlan( magic );
 
-		renderingService.destroyRenderingPlan( magic );
+		renderingPlanService.destroyRenderingPlan( magic );
 
 		graphService.destroyGraph( rootGraph, true, true );
 	}

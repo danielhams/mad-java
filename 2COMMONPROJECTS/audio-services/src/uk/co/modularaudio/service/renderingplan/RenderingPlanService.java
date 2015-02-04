@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering;
+package uk.co.modularaudio.service.renderingplan;
 
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
@@ -31,7 +31,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
  *
  * @author dan
  */
-public interface RenderingService
+public interface RenderingPlanService
 {
 	/**
 	 * <p>Create a dynamic job style rendering plan from the

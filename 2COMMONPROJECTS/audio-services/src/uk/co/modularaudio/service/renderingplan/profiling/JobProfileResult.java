@@ -18,21 +18,36 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.tmprenderplan;
+package uk.co.modularaudio.service.renderingplan.profiling;
 
-import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
 
-public class TmpRenderingJob
+public class JobProfileResult
 {
-	private final MadInstance<?,?> madInstance;
+	private int jobThreadExecutor;
+	private long startTimestamp;
+	private long endTimestamp;
 
-	public TmpRenderingJob( final MadInstance<?,?> madInstance )
+	public void pullResultsFromJob( final AbstractParallelRenderingJob job )
 	{
-		this.madInstance = madInstance;
+		jobThreadExecutor = job.getJobThreadExecutor();
+		startTimestamp = job.getJobStartTimestamp();
+		endTimestamp = job.getJobEndTimestamp();
 	}
 
-	public MadInstance<?,?> getMadInstance()
+	public int getJobThreadExecutor()
 	{
-		return madInstance;
+		return jobThreadExecutor;
 	}
+
+	public long getStartTimestamp()
+	{
+		return startTimestamp;
+	}
+
+	public long getEndTimestamp()
+	{
+		return endTimestamp;
+	}
+
 }

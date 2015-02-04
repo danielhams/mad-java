@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering;
+package uk.co.modularaudio.service.renderingplan;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

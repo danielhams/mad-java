@@ -46,11 +46,11 @@ import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.madgraph.GraphType;
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.service.rendering.profiling.JobProfileResult;
-import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
+import uk.co.modularaudio.service.renderingplan.profiling.JobProfileResult;
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -101,7 +101,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 
 	private final MadComponentService componentService;
 	private final MadGraphService graphService;
-	private final RenderingService renderingService;
+	private final RenderingPlanService renderingPlanService;
 
 	private final MadGraphInstance<?, ?> internalRootGraph;
 	private final MadGraphInstance<?, ?> internalHostingGraph;
@@ -132,7 +132,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 
 	public AppRenderingStructure( final MadComponentService componentService,
 			final MadGraphService graphService,
-			final RenderingService renderingService,
+			final RenderingPlanService renderingService,
 			final int numHelperThreads,
 			final boolean shouldProfileRenderingJobs,
 			final int maxWaitForTransitionMillis )
@@ -140,7 +140,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 	{
 		this.componentService = componentService;
 		this.graphService = graphService;
-		this.renderingService = renderingService;
+		this.renderingPlanService = renderingService;
 
 		internalRootGraph = graphService.createNewRootGraph( "Component Designer IO Graph" );
 		internalHostingGraph = graphService.createNewParameterisedGraph( "Component Designer Hosting Graph",
@@ -214,8 +214,8 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 			final HardwareIOOneChannelSetting dumpChannelSetting = new HardwareIOOneChannelSetting( tmpDataRate,  1024 );
 			final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings(dumpChannelSetting, 40000, 1024 );
 			final MadFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
-			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( internalRootGraph, dataRateConfiguration, frameTimeFactory );
-			renderingService.dumpRenderingPlan( renderingPlan );
+			final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( internalRootGraph, dataRateConfiguration, frameTimeFactory );
+			renderingPlanService.dumpRenderingPlan( renderingPlan );
 		}
 		else
 		{
@@ -450,7 +450,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 				{
 					startThreads();
 
-					dynamicRenderingPlanGraphListener = new DynamicRenderingPlanGraphListener( renderingService,
+					dynamicRenderingPlanGraphListener = new DynamicRenderingPlanGraphListener( renderingPlanService,
 							this,
 							internalRootGraph );
 
@@ -659,7 +659,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 
 		if( previousPlan != null )
 		{
-			renderingService.destroyRenderingPlan( previousPlan );
+			renderingPlanService.destroyRenderingPlan( previousPlan );
 		}
 	}
 

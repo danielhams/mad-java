@@ -34,8 +34,8 @@ import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
@@ -69,7 +69,7 @@ public class AppRenderingServiceImpl
 	private MadComponentService componentService;
 	private MadGraphService graphService;
 	private RackService rackService;
-	private RenderingService renderingService;
+	private RenderingPlanService renderingPlanService;
 	private TimingService timingService;
 
 	private final static String CONFIG_KEY_STARTUP_HOTSPOT = AppRenderingServiceImpl.class.getSimpleName() + ".StartupHotspot";
@@ -100,7 +100,7 @@ public class AppRenderingServiceImpl
 				componentService == null ||
 				graphService == null ||
 				rackService == null ||
-				renderingService == null ||
+				renderingPlanService == null ||
 				timingService == null )
 		{
 			final String msg = "Missing service dependencies. Check configuration.";
@@ -174,9 +174,9 @@ public class AppRenderingServiceImpl
 		this.configurationService = configurationService;
 	}
 
-	public void setRenderingService( final RenderingService renderingService )
+	public void setRenderingPlanService( final RenderingPlanService renderingService )
 	{
-		this.renderingService = renderingService;
+		this.renderingPlanService = renderingService;
 	}
 
 	public void setTimingService( final TimingService timingService )
@@ -191,7 +191,7 @@ public class AppRenderingServiceImpl
 		{
 			return new AppRenderingStructure( componentService,
 					graphService,
-					renderingService,
+					renderingPlanService,
 					numHelperThreads,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis );
@@ -229,7 +229,7 @@ public class AppRenderingServiceImpl
 		{
 			return new HotspotRenderingAppStructure( componentService,
 					graphService,
-					renderingService,
+					renderingPlanService,
 					timingService,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis,
@@ -316,7 +316,7 @@ public class AppRenderingServiceImpl
 
 		final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
 		final MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
-		final RenderingPlan renderingPlan = renderingService.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
+		final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
 
 		// Now create a rendering plan from this rack
 		log.debug("Peforming hotspot mad instance looping.");

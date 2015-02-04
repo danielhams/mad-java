@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import test.uk.co.modularaudio.service.rackmarshalling.abstractunittest.AbstractGraphTest;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
@@ -60,8 +60,8 @@ public class TestSavingAFile extends AbstractGraphTest
 		final long nanosLatency = 1000;
 		final int sfLatency = 10;
 		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
-		final RenderingPlan emptyRenderingPlan = renderingService.createRenderingPlan( emptyRackRootGraph, dataRateConfiguration, this );
-		renderingService.dumpRenderingPlan( emptyRenderingPlan );
+		final RenderingPlan emptyRenderingPlan = renderingPlanService.createRenderingPlan( emptyRackRootGraph, dataRateConfiguration, this );
+		renderingPlanService.dumpRenderingPlan( emptyRenderingPlan );
 
 		final String instanceName = "Test component one";
 		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
@@ -102,7 +102,7 @@ public class TestSavingAFile extends AbstractGraphTest
 		*/
 
 		// Create a rendering plan from it
-		final RenderingPlan testRenderingPlan = renderingService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, this );
-		renderingService.dumpRenderingPlan( testRenderingPlan );
+		final RenderingPlan testRenderingPlan = renderingPlanService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, this );
+		renderingPlanService.dumpRenderingPlan( testRenderingPlan );
 	}
 }

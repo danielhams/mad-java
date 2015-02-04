@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl;
+package uk.co.modularaudio.service.renderingplan.impl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,13 +30,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.madgraph.MadGraphService;
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
-import uk.co.modularaudio.service.rendering.impl.flatgraph.DirectedDependencyGraph;
-import uk.co.modularaudio.service.rendering.impl.flatgraph.DirectedDependencyGraphHelper;
-import uk.co.modularaudio.service.rendering.impl.flatgraph.FlattenedRenderJob;
-import uk.co.modularaudio.service.rendering.impl.rpdump.Dumper;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
+import uk.co.modularaudio.service.renderingplan.impl.flatgraph.DirectedDependencyGraph;
+import uk.co.modularaudio.service.renderingplan.impl.flatgraph.DirectedDependencyGraphHelper;
+import uk.co.modularaudio.service.renderingplan.impl.flatgraph.FlattenedRenderJob;
+import uk.co.modularaudio.service.renderingplan.impl.rpdump.Dumper;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -55,9 +55,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 
-public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingService
+public class RenderingPlanServiceImpl implements ComponentWithLifecycle, RenderingPlanService
 {
-	private static Log log = LogFactory.getLog( RenderingServiceImpl.class.getName());
+	private static Log log = LogFactory.getLog( RenderingPlanServiceImpl.class.getName());
 
 	private MadGraphService graphService;
 	private TimingService timingService;
@@ -75,11 +75,13 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		// No init needed
 	}
 
 	@Override
 	public void destroy()
 	{
+		// No destroy needed
 	}
 
 	@Override
@@ -150,8 +152,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		final MadInstance<?,?> madInstance = renderingJob.getMadInstance();
 		final MadChannelInstance[] allAuChannelInstances = madInstance.getChannelInstances();
 		final MadChannelConnectedFlags channelActiveBitset = renderingJob.getChannelConnectedFlags();
-		// Should set the size of the bitset here
-		//channelActiveBitset.setSize( allAuChannelInstances.size() );
+
 		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
@@ -236,7 +237,7 @@ public class RenderingServiceImpl implements ComponentWithLifecycle, RenderingSe
 		// Sort all of the jobs into cardinality order - we start from producers
 		// and work down the graph
 		final List<FlattenedRenderJob> allFlattenedJobs = annotatedGraph.getJobs();
-//		Collections.sort( allFlattenedJobs, Collections.reverseOrder());
+
 		Collections.sort( allFlattenedJobs );
 
 		final Map<FlattenedRenderJob, MadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, MadParallelRenderingJob>();

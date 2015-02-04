@@ -139,7 +139,7 @@
 	<bean id="blockResamplerService" class="uk.co.modularaudio.service.blockresampler.impl.BlockResamplerServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
 	</bean>
-	<bean id="renderingService" class="uk.co.modularaudio.service.rendering.impl.RenderingServiceImpl" init-method="init" destroy-method="destroy">
+	<bean id="renderingPlanService" class="uk.co.modularaudio.service.renderingplan.impl.RenderingPlanServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="graphService"><ref bean="graphService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
 	</bean>	
@@ -167,7 +167,7 @@
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="graphService"><ref bean="graphService"></ref></property>
         <property name="rackService"><ref bean="rackService"></ref></property>
-        <property name="renderingService"><ref bean="renderingService"></ref></property>
+        <property name="renderingPlanService"><ref bean="renderingPlanService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
 	</bean>
 	<bean id="hibernateSessionService" class="uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl" init-method="init" destroy-method="destroy">

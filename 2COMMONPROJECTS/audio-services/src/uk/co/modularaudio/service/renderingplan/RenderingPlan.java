@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering;
+package uk.co.modularaudio.service.renderingplan;
 
 import java.util.Set;
 
-import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;

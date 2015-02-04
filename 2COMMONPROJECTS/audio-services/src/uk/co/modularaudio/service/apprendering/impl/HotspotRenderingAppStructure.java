@@ -9,8 +9,8 @@ import uk.co.modularaudio.service.apprendering.util.jobqueue.HotspotClockSourceJ
 import uk.co.modularaudio.service.apprendering.util.jobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -25,7 +25,7 @@ public class HotspotRenderingAppStructure extends AppRenderingStructure implemen
 
 	public HotspotRenderingAppStructure( final MadComponentService componentService,
 			final MadGraphService graphService,
-			final RenderingService renderingService,
+			final RenderingPlanService renderingService,
 			final TimingService timingService,
 			final boolean shouldProfileRenderingJobs,
 			final int maxWaitForTransitionMillis,

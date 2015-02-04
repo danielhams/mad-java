@@ -18,31 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.rpdump;
+package uk.co.modularaudio.service.renderingplan.impl.tmprenderplan;
 
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 
-public class DumpAddNewTask implements AddNewTaskInterface
+public class TmpRenderingJob
 {
+	private final MadInstance<?,?> madInstance;
 
-	private final DumpJobQueue jobQueue;
-
-	public DumpAddNewTask( final DumpJobQueue jobQueue )
+	public TmpRenderingJob( final MadInstance<?,?> madInstance )
 	{
-		this.jobQueue = jobQueue;
+		this.madInstance = madInstance;
 	}
 
-	@Override
-	public void addNewTask( final Runnable newTask )
+	public MadInstance<?,?> getMadInstance()
 	{
-		jobQueue.add( newTask );
-	}
-
-	@Override
-	public void addNewTasks( final Runnable[] jobsToLaunch, final int numJobsInArray )
-	{
-		for( int i = 0 ; i < numJobsInArray ; i++ )
-		{
-			addNewTask( jobsToLaunch[i] );
-		}
+		return madInstance;
 	}
 }

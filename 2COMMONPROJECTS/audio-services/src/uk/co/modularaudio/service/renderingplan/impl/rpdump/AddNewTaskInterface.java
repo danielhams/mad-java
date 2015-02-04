@@ -18,14 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.service.library;
+package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
-public class LibraryInitialisationError extends Exception
+
+public interface AddNewTaskInterface
 {
-	private static final long serialVersionUID = 7062106015599297569L;
-	
-	public LibraryInitialisationError( String msg, Throwable rootCause )
-	{
-		super( msg, rootCause );
-	}
+
+	void addNewTask( Runnable newTask );
+
+	void addNewTasks( Runnable[] jobsToLaunch, int jobsInArray );
+
 }

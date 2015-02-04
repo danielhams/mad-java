@@ -24,9 +24,7 @@ import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +48,6 @@ import uk.co.modularaudio.service.apprendering.util.jobqueue.MTRenderingJobQueue
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
-import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
@@ -117,8 +114,6 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		final Map<String, String> errors = new HashMap<String, String>();
-		ConfigurationServiceHelper.errorCheck(errors);
 		guiTemporaryEventStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
 	}
 
@@ -134,7 +129,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					RackService.DEFAULT_RACK_ROWS,
 					true );
 			guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
-			doStartupDuties();
+			initialiseEmptyRack();
 		}
 		catch( final DatastoreException de )
 		{
@@ -146,7 +141,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void preShutdown()
 	{
 		guiRack.destroy();
-		doExitDuties();
+		stopRenderingCleanupGraph();
 	}
 
 	@Override
@@ -508,12 +503,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 	}
 
-	private void doStartupDuties() throws DatastoreException
-	{
-		initialiseEmptyRack();
-	}
-
-	private void doExitDuties()
+	private void stopRenderingCleanupGraph()
 	{
 		log.debug( "Unsetting application graph" );
 		try

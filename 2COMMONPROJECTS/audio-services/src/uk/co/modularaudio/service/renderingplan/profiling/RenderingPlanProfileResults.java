@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.profiling;
+package uk.co.modularaudio.service.renderingplan.profiling;
 
 import java.util.HashMap;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
 
 public class RenderingPlanProfileResults
 {

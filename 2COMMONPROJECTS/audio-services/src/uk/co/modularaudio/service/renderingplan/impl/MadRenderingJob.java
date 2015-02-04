@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl;
+package uk.co.modularaudio.service.renderingplan.impl;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;

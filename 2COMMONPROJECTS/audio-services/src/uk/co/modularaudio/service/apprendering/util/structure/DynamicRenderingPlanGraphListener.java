@@ -24,8 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingStructure;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
@@ -37,15 +37,15 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 {
 	private static Log log = LogFactory.getLog( DynamicRenderingPlanGraphListener.class.getName() );
 
-	private final RenderingService renderingService;
+	private final RenderingPlanService renderingPlanService;
 	private final MadGraphInstance<?,?> rootGraph;
 	private final AppRenderingStructure appRenderingStructure;
 
-	public DynamicRenderingPlanGraphListener( final RenderingService renderingService,
+	public DynamicRenderingPlanGraphListener( final RenderingPlanService renderingPlanService,
 			final AppRenderingStructure appRenderingStructure,
 			final MadGraphInstance<?,?> rootGraph )
 	{
-		this.renderingService = renderingService;
+		this.renderingPlanService = renderingPlanService;
 		this.rootGraph = rootGraph;
 		this.appRenderingStructure = appRenderingStructure;
 	}
@@ -62,7 +62,7 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 				final String msg = "Found an old rendering plan although we shouldn't be rendering!";
 				throw new MadProcessingException( msg );
 			}
-			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, coreEngineChannelSettings, frameTimeFactory );
+			final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( rootGraph, coreEngineChannelSettings, frameTimeFactory );
 			appRenderingStructure.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}
 		catch( final Exception e )
@@ -84,7 +84,7 @@ public class DynamicRenderingPlanGraphListener implements MadGraphListener
 			final RenderingPlan oldRenderingPlan = appRenderingStructure.getAtomicRenderingPlan().get();
 			final HardwareIOChannelSettings planChannelSettings = oldRenderingPlan.getPlanChannelSettings();
 			final MadFrameTimeFactory planFrameTimeFactory = oldRenderingPlan.getPlanFrameTimeFactory();
-			final RenderingPlan renderingPlan = renderingService.createRenderingPlan( rootGraph, planChannelSettings, planFrameTimeFactory );
+			final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( rootGraph, planChannelSettings, planFrameTimeFactory );
 
 			appRenderingStructure.useNewRenderingPlanWithWaitDestroyPrevious( renderingPlan );
 		}

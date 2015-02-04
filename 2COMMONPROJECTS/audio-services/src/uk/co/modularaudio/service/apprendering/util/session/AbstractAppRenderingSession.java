@@ -36,7 +36,7 @@ import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.audioproviderregistry.AudioTestResults;
 import uk.co.modularaudio.service.audioproviderregistry.TestRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;

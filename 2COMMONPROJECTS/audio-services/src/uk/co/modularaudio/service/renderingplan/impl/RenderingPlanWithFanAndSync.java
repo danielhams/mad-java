@@ -18,13 +18,13 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl;
+package uk.co.modularaudio.service.renderingplan.impl;
 
 import java.util.Set;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.profiling.RenderingPlanProfileResults;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;

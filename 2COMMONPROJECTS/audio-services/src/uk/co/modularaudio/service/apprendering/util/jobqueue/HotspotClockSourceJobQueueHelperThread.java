@@ -27,8 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.service.apprendering.util.HotspotFrameTimeFactory;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
-import uk.co.modularaudio.service.rendering.RenderingService;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
@@ -44,7 +44,7 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 	private static Log log = LogFactory.getLog( HotspotClockSourceJobQueueHelperThread.class.getName() );
 
 	private final RenderingPlan renderingPlan;
-	private final RenderingService renderingService;
+	private final RenderingPlanService renderingService;
 	private final TimingService timingService;
 
 	private final boolean shouldProfileRenderingJobs;
@@ -53,7 +53,7 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 	private final HotspotFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
 
 	public HotspotClockSourceJobQueueHelperThread( final RenderingPlan renderingPlan,
-			final RenderingService renderingService,
+			final RenderingPlanService renderingService,
 			final TimingService timingService,
 			final AppRenderingJobQueue renderingJobQueue,
 			final boolean shouldProfileRenderingJobs )

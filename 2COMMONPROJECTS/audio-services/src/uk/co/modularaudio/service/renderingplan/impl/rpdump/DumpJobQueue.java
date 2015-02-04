@@ -18,36 +18,32 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.profiling;
+package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import java.util.Collection;
+import java.util.concurrent.ArrayBlockingQueue;
 
-public class JobProfileResult
+public class DumpJobQueue extends ArrayBlockingQueue<Runnable>
 {
-	private int jobThreadExecutor;
-	private long startTimestamp;
-	private long endTimestamp;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4860604642254737033L;
 
-	public void pullResultsFromJob( final AbstractParallelRenderingJob job )
+	public DumpJobQueue( final int capacity )
 	{
-		jobThreadExecutor = job.getJobThreadExecutor();
-		startTimestamp = job.getJobStartTimestamp();
-		endTimestamp = job.getJobEndTimestamp();
+		super( capacity, false );
 	}
 
-	public int getJobThreadExecutor()
+	public DumpJobQueue( final int capacity, final Collection<? extends Runnable> c)
 	{
-		return jobThreadExecutor;
+		super(capacity, false, c);
 	}
 
-	public long getStartTimestamp()
-	{
-		return startTimestamp;
-	}
 
-	public long getEndTimestamp()
+	@SuppressWarnings("unchecked")
+	public DumpJobQueue( final DumpJobQueue inQueue ) throws CloneNotSupportedException
 	{
-		return endTimestamp;
+		super( inQueue.size(), false, (Collection<Runnable>)(inQueue.clone()) );
 	}
-
 }

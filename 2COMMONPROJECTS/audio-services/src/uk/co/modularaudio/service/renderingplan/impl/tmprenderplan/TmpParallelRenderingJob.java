@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.tmprenderplan;
+package uk.co.modularaudio.service.renderingplan.impl.tmprenderplan;
 
 import java.util.List;
 

@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.rpdump;
+package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
 import java.util.ArrayList;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class Dumper

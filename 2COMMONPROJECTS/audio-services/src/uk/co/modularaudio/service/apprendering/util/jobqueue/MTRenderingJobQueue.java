@@ -25,7 +25,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
 
 
 public class MTRenderingJobQueue implements AppRenderingJobQueue

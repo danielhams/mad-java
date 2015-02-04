@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
-import uk.co.modularaudio.service.rendering.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -97,14 +97,14 @@ public class TestFlatteningGraph extends AbstractGraphTest
 		{
 			log.debug("Before creating the rendering plan");
 			final long bt = System.nanoTime();
-			renderingPlan = renderingService.createRenderingPlan( graphToRender, planDataRateConfiguration, this );
+			renderingPlan = renderingPlanService.createRenderingPlan( graphToRender, planDataRateConfiguration, this );
 			final long at = System.nanoTime();
 			final long diff = at - bt;
 			final long inMicros = diff / 1000;
 			log.debug("After creating the rendering plan diff in micros is " + inMicros );
 		}
 		graphService.dumpGraph(  graphToRender  );
-		renderingService.dumpRenderingPlan( renderingPlan );
+		renderingPlanService.dumpRenderingPlan( renderingPlan );
 
 		graphService.destroyGraph( graphToRender, true, true );
 	}

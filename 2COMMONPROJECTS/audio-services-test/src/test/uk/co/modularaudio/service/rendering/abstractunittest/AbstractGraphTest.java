@@ -35,7 +35,7 @@ import uk.co.modularaudio.mads.internal.InternalComponentsFactory;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
-import uk.co.modularaudio.service.rendering.RenderingService;
+import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
@@ -54,7 +54,7 @@ public class AbstractGraphTest extends TestCase
 	protected MadComponentService componentService = null;
 	protected InternalComponentsFactory internalComponentsFactory = null;
 	protected MadClassificationService classificationService = null;
-	protected RenderingService renderingService = null;
+	protected RenderingPlanService renderingPlanService = null;
 	protected AdvancedComponentsFrontController advancedComponentsFrontController = null;
 	
 	protected void setUp() throws Exception
@@ -71,7 +71,7 @@ public class AbstractGraphTest extends TestCase
 		graphService = gac.getBean( MadGraphService.class );
 		componentService = gac.getBean( MadComponentService.class );
 		internalComponentsFactory = gac.getBean( InternalComponentsFactory.class );
-		renderingService = gac.getBean( RenderingService.class );
+		renderingPlanService = gac.getBean( RenderingPlanService.class );
 		advancedComponentsFrontController = new FakeAdvancedComponentsFrontController();
 	}
 

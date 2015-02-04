@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.service.rendering.impl.rpdump;
+package uk.co.modularaudio.service.renderingplan.impl.rpdump;
 
 import java.util.Collection;
 
-import uk.co.modularaudio.service.rendering.AbstractParallelRenderingJob;
+import uk.co.modularaudio.service.renderingplan.AbstractParallelRenderingJob;
 
 public class InitialTask implements Runnable
 {
