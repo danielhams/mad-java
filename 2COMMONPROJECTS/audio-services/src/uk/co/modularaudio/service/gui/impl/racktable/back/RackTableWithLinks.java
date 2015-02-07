@@ -20,14 +20,9 @@
 
 package uk.co.modularaudio.service.gui.impl.racktable.back;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
@@ -46,13 +41,9 @@ public class RackTableWithLinks extends RackTable
 
 	private RackDataModel dataModel;
 
-	private final RackTableWithLinksRackModelListener rackModelListener;
-	private final RackTableWithLinksRackLinkListener rackLinkListener;
+	private final RackTableWithLinksListener rackWithLinksListener;
 
 	private final RackLinkPainter linkPainter;
-
-	private Rectangle compositeImageRectangle;
-	private BufferedImage compositeRackLinksImage;
 
 	public RackTableWithLinks( final BufferedImageAllocationService bufferedImageAllocationService,
 			final RackDataModel dataModel,
@@ -70,14 +61,10 @@ public class RackTableWithLinks extends RackTable
 
 		this.linkPainter = new RackLinkPainter( bufferedImageAllocationService, dataModel, this );
 
-		// Register a custom rack model listener so that when a component moves we recalculate the link images
-		rackModelListener = new RackTableWithLinksRackModelListener( linkPainter );
-		dataModel.addListener( rackModelListener );
+		// Add a listener to track changes to the model and links
+		rackWithLinksListener = new RackTableWithLinksListener( linkPainter );
 
-		// Also add a listener to track the rack link changes
-		rackLinkListener = new RackTableWithLinksRackLinkListener( linkPainter );
-		dataModel.addRackLinksListener( rackLinkListener );
-		dataModel.addRackIOLinksListener( rackLinkListener );
+		addListenersToModel();
 
 		fullLinksRefreshFromModel();
 	}
@@ -86,21 +73,11 @@ public class RackTableWithLinks extends RackTable
 	public void paint(final Graphics g)
 	{
 		layeredTablePaint( g );
-		if( compositeRackLinksImage != null )
-		{
-			final Graphics2D g2d = (Graphics2D) g.create();
-			final Composite alphaComposite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.65f );
-			g2d.setComposite( alphaComposite );
-			g2d.drawImage( compositeRackLinksImage, compositeImageRectangle.x, compositeImageRectangle.y, null );
-		}
 	}
 
 	public final void fullLinksRefreshFromModel()
 	{
 		// Make sure we are starting from a clean slate.
-		compositeImageRectangle = null;
-		compositeRackLinksImage = null;
-
 		linkPainter.clear();
 
 		// Produce the individual rackLinkImages from each rack link
@@ -124,18 +101,18 @@ public class RackTableWithLinks extends RackTable
 		fullLinksRefreshFromModel();
 	}
 
-	private void addListenersToModel()
+	private final void addListenersToModel()
 	{
-		dataModel.addListener( rackModelListener );
-		dataModel.addRackLinksListener( rackLinkListener );
-		dataModel.addRackIOLinksListener( rackLinkListener );
+		dataModel.addListener( rackWithLinksListener );
+		dataModel.addRackLinksListener( rackWithLinksListener );
+		dataModel.addRackIOLinksListener( rackWithLinksListener );
 	}
 
-	private void removeListenersFromModel()
+	private final void removeListenersFromModel()
 	{
-		dataModel.removeListener( rackModelListener );
-		dataModel.removeRackLinksListener( rackLinkListener );
-		dataModel.removeRackIOLinksListener( rackLinkListener );
+		dataModel.removeListener( rackWithLinksListener );
+		dataModel.removeRackLinksListener( rackWithLinksListener );
+		dataModel.removeRackIOLinksListener( rackWithLinksListener );
 	}
 
 	@Override
@@ -143,7 +120,7 @@ public class RackTableWithLinks extends RackTable
 	{
 		// We are a bit special in that:
 		// * we must release the composite rack links image
-		// * the link painter needs to release it's buffered images
+		// * the link painter needs to release its buffered images
 		linkPainter.destroy();
 
 		// Now do any cleanup that our parent wants to do.

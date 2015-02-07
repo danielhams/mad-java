@@ -29,19 +29,112 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLink;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLinkEvent;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLinkListener;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackLinkEvent;
+import uk.co.modularaudio.util.audio.gui.mad.rack.RackLinkListener;
 import uk.co.modularaudio.util.table.TableModelEvent;
 import uk.co.modularaudio.util.table.TableModelListener;
 
-public class RackTableWithLinksRackModelListener implements TableModelListener<RackComponent, RackComponentProperties>
+public class RackTableWithLinksListener
+	implements RackLinkListener, RackIOLinkListener, TableModelListener<RackComponent, RackComponentProperties>
 {
-	private static Log log = LogFactory.getLog( RackTableWithLinksRackModelListener.class.getName() );
+	private static Log log = LogFactory.getLog( RackTableWithLinksListener.class.getName() );
 
 	private final RackLinkPainter linkPainter;
 
-	public RackTableWithLinksRackModelListener( final RackLinkPainter linkPainter )
+	public RackTableWithLinksListener( final RackLinkPainter linkPainter )
 	{
 		this.linkPainter = linkPainter;
+	}
+
+	@Override
+	public void linksChanged(final RackLinkEvent event)
+	{
+//		log.debug("Event received: " + event.toString());
+
+		final RackDataModel model = (RackDataModel)event.getSource();
+
+		final int eventType = event.getType();
+		final int eventFirstRow = event.getFirstRow();
+		final int eventLastRow = event.getLastRow();
+
+		switch( eventType )
+		{
+		case TableModelEvent.INSERT:
+			// New entries added into the table
+			int iCounter = eventFirstRow;
+			do
+			{
+				final RackLink rackLink = model.getLinkAt( iCounter );
+				linkPainter.drawOneRackLinkImageAndAdd( rackLink );
+				iCounter++;
+			}
+			while( iCounter < eventLastRow );
+			break;
+		case TableModelEvent.DELETE:
+			int dCounter = eventFirstRow;
+			final int dEndRow = eventLastRow;
+
+			do
+			{
+				linkPainter.removeRackLinkImageAt( eventFirstRow );
+				dCounter++;
+			}
+			while( dCounter <= dEndRow );
+			break;
+		default:
+			// Trap unexpected case fall through
+			throw new IndexOutOfBoundsException();
+		}
+
+		// Now tell the table to recompute the composite rack link image and redisplay
+		// Not sure this is necessary
+		linkPainter.createCompositeRackLinksImageAndRedisplay();
+	}
+
+	@Override
+	public void ioLinksChanged( final RackIOLinkEvent event )
+	{
+//		log.debug("Event received: " + event.toString());
+
+		final RackDataModel model = (RackDataModel)event.getSource();
+
+		final int eventType = event.getType();
+		final int eventFirstRow = event.getFirstRow();
+		final int eventLastRow = event.getLastRow();
+
+		switch( eventType )
+		{
+		case TableModelEvent.INSERT:
+			int iCounter = eventFirstRow;
+			do
+			{
+				final RackIOLink rackIOLink = model.getIOLinkAt( iCounter );
+				linkPainter.drawOneRackIOLinkImageAndAdd( rackIOLink );
+				iCounter++;
+			}
+			while( iCounter < eventLastRow );
+			break;
+		case TableModelEvent.DELETE:
+			int dCounter = eventFirstRow;
+			final int dEndRow = eventLastRow;
+			do
+			{
+				linkPainter.removeRackIOLinkImageAt( eventFirstRow );
+				dCounter++;
+			}
+			while( dCounter <= dEndRow );
+			break;
+		default:
+			// Trap unexpected case fall through
+			throw new IndexOutOfBoundsException();
+		}
+
+		// Now tell the table to recompute the composite rack link image and redisplay
+		linkPainter.createCompositeRackLinksImageAndRedisplay();
+
 	}
 
 	@Override
@@ -94,5 +187,4 @@ public class RackTableWithLinksRackModelListener implements TableModelListener<R
 		}
 		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
-
 }
