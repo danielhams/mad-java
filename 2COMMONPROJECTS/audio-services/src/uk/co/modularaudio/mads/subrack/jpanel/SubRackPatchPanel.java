@@ -32,6 +32,7 @@ import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class SubRackPatchPanel extends JPanel implements ContainerTab
 {
@@ -59,7 +60,7 @@ public class SubRackPatchPanel extends JPanel implements ContainerTab
 		this.setMinimumSize( GuiConstants.GUI_MINIMUM_DIMENSIONS );
 	}
 
-	public void setRackDataModel( final RackDataModel subRackDataModel )
+	public void setRackDataModel( final RackDataModel subRackDataModel ) throws DatastoreException
 	{
 		this.title = rackService.getRackName( subRackDataModel );
 		rmrc.setRackDataModel( subRackDataModel );

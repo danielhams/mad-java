@@ -28,7 +28,7 @@ public class RackTableWithLinkDecorations extends LayeredPaneDndTableDecorations
 {
 	public RackTableWithLinkDecorations( final DndRackDragDecorations rackDecorations, final DndWireDragDecorations wireDecorations )
 	{
-		this.hints.addAll( rackDecorations.getHints() );
-		this.hints.addAll( wireDecorations.getHints() );
+		hints.addAll( rackDecorations.getHints() );
+		hints.addAll( wireDecorations.getHints() );
 	}
 }

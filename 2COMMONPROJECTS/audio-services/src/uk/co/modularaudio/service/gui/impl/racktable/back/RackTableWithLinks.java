@@ -32,6 +32,7 @@ import uk.co.modularaudio.service.gui.impl.racktable.RackTableGuiFactory;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackDragDecorations;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragDecorations;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RackTableWithLinks extends RackTable
 {
@@ -39,11 +40,7 @@ public class RackTableWithLinks extends RackTable
 
 //	private static Log log = LogFactory.getLog( NewRackTableWithLinks.class.getName() );
 
-	private RackDataModel dataModel;
-
-	private final RackTableWithLinksListener rackWithLinksListener;
-
-	private final RackLinkPainter linkPainter;
+	private final RackLinksCompositeOverlay rackLinksCompositeOverlay;
 
 	public RackTableWithLinks( final BufferedImageAllocationService bufferedImageAllocationService,
 			final RackDataModel dataModel,
@@ -53,20 +50,17 @@ public class RackTableWithLinks extends RackTable
 			final DndRackDragDecorations rackDecorations,
 			final DndWireDragDecorations wireDecorations,
 			final Dimension gridSize,
-			final boolean showGrid, final Color gridColour)
+			final boolean showGrid, final Color gridColour) throws DatastoreException
 	{
 		super( dataModel, emptyCellPainter, factory, dndPolicy, new RackTableWithLinkDecorations(rackDecorations, wireDecorations), gridSize, showGrid, gridColour );
 
-		this.dataModel = dataModel;
+		rackLinksCompositeOverlay = new RackLinksCompositeOverlay( bufferedImageAllocationService,
+				dataModel,
+				this );
 
-		this.linkPainter = new RackLinkPainter( bufferedImageAllocationService, dataModel, this );
+		this.setLayer( rackLinksCompositeOverlay, RackTableWithLinks.LPT_STATICWIRE_LAYER );
+		this.add( rackLinksCompositeOverlay );
 
-		// Add a listener to track changes to the model and links
-		rackWithLinksListener = new RackTableWithLinksListener( linkPainter );
-
-		addListenersToModel();
-
-		fullLinksRefreshFromModel();
 	}
 
 	@Override
@@ -75,44 +69,12 @@ public class RackTableWithLinks extends RackTable
 		layeredTablePaint( g );
 	}
 
-	public final void fullLinksRefreshFromModel()
-	{
-		// Make sure we are starting from a clean slate.
-		linkPainter.clear();
-
-		// Produce the individual rackLinkImages from each rack link
-		linkPainter.fullRefreshIndividualLinkImages();
-
-		// Now create the composite image with all of them on
-		linkPainter.createCompositeRackLinksImageAndRedisplay();
-	}
-
 	@Override
-	public void setRackDataModel(final RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel) throws DatastoreException
 	{
-		removeListenersFromModel();
-		linkPainter.clear();
+		super.setRackDataModel( rackDataModel );
 
-		super.setRackDataModel(rackDataModel);
-		this.dataModel = rackDataModel;
-		linkPainter.setDataModel( dataModel );
-
-		addListenersToModel();
-		fullLinksRefreshFromModel();
-	}
-
-	private final void addListenersToModel()
-	{
-		dataModel.addListener( rackWithLinksListener );
-		dataModel.addRackLinksListener( rackWithLinksListener );
-		dataModel.addRackIOLinksListener( rackWithLinksListener );
-	}
-
-	private final void removeListenersFromModel()
-	{
-		dataModel.removeListener( rackWithLinksListener );
-		dataModel.removeRackLinksListener( rackWithLinksListener );
-		dataModel.removeRackIOLinksListener( rackWithLinksListener );
+		rackLinksCompositeOverlay.setDataModel( rackDataModel );
 	}
 
 	@Override
@@ -121,11 +83,10 @@ public class RackTableWithLinks extends RackTable
 		// We are a bit special in that:
 		// * we must release the composite rack links image
 		// * the link painter needs to release its buffered images
-		linkPainter.destroy();
+
+		rackLinksCompositeOverlay.destroy();
 
 		// Now do any cleanup that our parent wants to do.
 		super.destroy();
-
-		dataModel = null;
 	}
 }

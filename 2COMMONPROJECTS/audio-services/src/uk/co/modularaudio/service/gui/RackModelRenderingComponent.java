@@ -23,10 +23,11 @@ package uk.co.modularaudio.service.gui;
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface RackModelRenderingComponent
 {
-	public void setRackDataModel( RackDataModel rackDataModel );
+	public void setRackDataModel( RackDataModel rackDataModel ) throws DatastoreException;
 
 	public JComponent getJComponent();
 

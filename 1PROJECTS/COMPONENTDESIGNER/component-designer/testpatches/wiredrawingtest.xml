@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Cross Fader 1" rackComponentChannelInstanceName="Input Channel 1 Left"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 2" rackComponentChannelInstanceName="Output Channel 1"/>
+    <rackComponent name="Cross Fader 1" definitionId="cross_fader">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="AmpAKill" value="false"/>
+        <rackControl name="AmpBKill" value="false"/>
+        <rackControl name="Slider" value="0"/>
+        <rackControl name="PowerCurve" value="Additive"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 2" definitionId="sub_rack">
+        <rackPosition column="0" row="1"/>
+        <rack name="Sub Rack 2" cols="4" rows="19">
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Cross Fader 1" rackComponentChannelInstanceName="Input Channel 1 Left"/>
+            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Cross Fader 2" rackComponentChannelInstanceName="Output Wave Left"/>
+            <rackComponent name="Cross Fader 1" definitionId="cross_fader">
+                <rackPosition column="0" row="0"/>
+                <rackControl name="AmpAKill" value="false"/>
+                <rackControl name="AmpBKill" value="false"/>
+                <rackControl name="Slider" value="0"/>
+                <rackControl name="PowerCurve" value="Additive"/>
+            </rackComponent>
+            <rackComponent name="Cross Fader 2" definitionId="cross_fader">
+                <rackPosition column="1" row="1"/>
+                <rackControl name="AmpAKill" value="false"/>
+                <rackControl name="AmpBKill" value="false"/>
+                <rackControl name="Slider" value="0"/>
+                <rackControl name="PowerCurve" value="Additive"/>
+            </rackComponent>
+            <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 2" consumerChannelName="Input Channel 1 Left"/>
+        </rack>
+    </rackComponent>
+    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
+</rack>

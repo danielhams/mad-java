@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.table.TableIndexOutOfBoundsException;
 public interface RackService
 {
 	public final static int DEFAULT_RACK_COLS = 4;
-	public final static int DEFAULT_RACK_ROWS = 40;
+	public final static int DEFAULT_RACK_ROWS = 20;
 
 	// Lifecycle of the rack itself
 	RackDataModel createNewRackDataModel( String rackName, String rackPath, int numCols, int numRows, boolean withRackIO )

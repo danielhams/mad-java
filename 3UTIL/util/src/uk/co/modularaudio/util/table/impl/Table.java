@@ -45,41 +45,41 @@ import uk.co.modularaudio.util.table.TableResizeException;
 public class Table<A extends RackModelTableSpanningContents, B extends SpanningContentsProperties> implements TableInterface<A, B>
 {
 //	private static Log log = LogFactory.getLog( Table.class.getName() );
-	
+
 	private Span tableSpan = null;
-	
+
 	private Object[][] tableCells;
 	private Object[][] tableProperties;
-	
-	private List<A> objectsInTable = new ArrayList<A>();
+
+	private final List<A> objectsInTable = new ArrayList<A>();
 //	private FastList<A> objectsInTableFastList = new FastList<A>();
-	private Map<A, TablePosition> objectToPositionMap = new HashMap<A, TablePosition>();
-	
-	private List<TableModelListener<A,B>> listeners = new ArrayList<TableModelListener<A,B>>();
-	
+	private final Map<A, TablePosition> objectToPositionMap = new HashMap<A, TablePosition>();
+
+	private final List<TableModelListener<A,B>> listeners = new ArrayList<TableModelListener<A,B>>();
+
 	protected TableModelEvent<A, B> outEvent = new TableModelEvent<A, B>( this, 0, 0, 0 );
-	
+
 	@SuppressWarnings("unchecked")
-	protected void visitTableCellsForSpan( int startX,
-			int startY,
-			Span span,
-			TableCellVisitor<A,B> visitor,
-			boolean visitAllCells,
-			boolean visitEmptyCells )
+	protected void visitTableCellsForSpan( final int startX,
+			final int startY,
+			final Span span,
+			final TableCellVisitor<A,B> visitor,
+			final boolean visitAllCells,
+			final boolean visitEmptyCells )
 	{
-		int xSpan = span.x;
-		int ySpan = span.y;
-		
+		final int xSpan = span.x;
+		final int ySpan = span.y;
+
 		visitor.begin();
-		
+
 		boolean allDone = visitor.isAllDone();
-		
+
 		for( int i = startX; !allDone && i < startX + xSpan ; i++ )
 		{
 			for( int j = startY ; !allDone && j < startY + ySpan ; j++ )
 			{
-				Object tco = tableCells[i][j];
-				TableCell<A> c = (TableCell<A>) tco;
+				final Object tco = tableCells[i][j];
+				final TableCell<A> c = (TableCell<A>) tco;
 
 				// If we shouldn't visit all cells we skip table entries where
 				// the cell isn't marked as the origin cell
@@ -98,13 +98,13 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 					{
 						shouldVisit = ( c.getCellX() == c.getOriginCellX() && c.getCellY() == c.getOriginCellY() );
 					}
-					
+
 				}
-				
+
 				if( shouldVisit )
 				{
-					Object tcp = tableProperties[i][j];
-					TableCellProperties<B> p = (TableCellProperties<B>)tcp;
+					final Object tcp = tableProperties[i][j];
+					final TableCellProperties<B> p = (TableCellProperties<B>)tcp;
 					visitor.visit( c, p, getEntryIndexReturnMinusOne( c.getCellContents() ) );
 					allDone = visitor.isAllDone();
 				}
@@ -113,13 +113,13 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		visitor.cleanup();
 	}
 
-	public Table(int x, int y)
+	public Table(final int x, final int y)
 	{
 		tableSpan = new Span( x, y );
 		// Java doesn't let us allocate generic arrays
 		tableCells = new Object[x][y];
 		tableProperties = new Object[x][y];
-		
+
 		// Fill it up
 		for( int i = 0 ; i < x ; i++ )
 		{
@@ -132,61 +132,61 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	}
 
 	@Override
-	public void addContentsAtPosition( A contents, int x, int y)
+	public void addContentsAtPosition( final A contents, final int x, final int y)
 		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
 	{
 		this.addContentsAndPropertiesAtPosition(contents, null, x, y);
 	}
-	
+
 	@Override
-	public void addContentsAndPropertiesAtPosition(A contents, B properties, int x, int y)
+	public void addContentsAndPropertiesAtPosition(final A contents, final B properties, final int x, final int y)
 			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
 	{
-		int newContentsIndex = noEventFireAddContentsAndProperties(contents, properties, x, y);
+		final int newContentsIndex = noEventFireAddContentsAndProperties(contents, properties, x, y);
 
 		// Finally emit a "contents inserted" for this objects index in the internal contents list
 		outEvent.setValues( this, newContentsIndex, newContentsIndex, TableModelEvent.INSERT );
 		fireTableChangedEvent( outEvent );
 	}
 
-	protected int noEventFireAddContentsAndProperties(A contents, B properties, int x, int y)
+	protected int noEventFireAddContentsAndProperties(final A contents, final B properties, final int x, final int y)
 			throws ContentsAlreadyAddedException, TableIndexOutOfBoundsException, TableCellFullException
 	{
 		// Check if all cells are free
 		if( !canStoreContentsAtPosition(contents, x, y) )
 		{
-			String msg = "Unable to find sufficient space for contents " + contents.toString() + " at cell (" + x + ", " + y + ")";
+			final String msg = "Unable to find sufficient space for contents " + contents.toString() + " at cell (" + x + ", " + y + ")";
 			throw new TableCellFullException( msg );
 		}
-		Span contentCellSpan = contents.getCellSpan();
+		final Span contentCellSpan = contents.getCellSpan();
 
 		// Ok, object is new and all the table cells are free.
-		InternalSetCellContentsAndPropertiesVisitor<A,B> sccv = 
+		final InternalSetCellContentsAndPropertiesVisitor<A,B> sccv =
 			new InternalSetCellContentsAndPropertiesVisitor<A,B>( contents, properties, x, y );
-		
+
 		visitTableCellsForSpan( x, y, contentCellSpan, sccv, true, true );
-		
+
 		// Now add this object into the set of objects already in the table
-		int newContentsIndex = objectsInTable.size();
+		final int newContentsIndex = objectsInTable.size();
 		objectsInTable.add( contents );
 		objectToPositionMap.put( contents, new TablePosition( x, y ) );
 		return newContentsIndex;
 	}
 
 	@Override
-	public void removeContents(A contents) throws NoSuchContentsException
+	public void removeContents(final A contents) throws NoSuchContentsException
 	{
-		int indexOfRemovedObject = noEventFireRemoveContents(contents);
-		
+		final int indexOfRemovedObject = noEventFireRemoveContents(contents);
+
 		// Now fire a rows deleted event
 		outEvent.setValues( this, indexOfRemovedObject, indexOfRemovedObject, TableModelEvent.DELETE );
 		fireTableChangedEvent( outEvent );
 	}
 
 	@SuppressWarnings("unchecked")
-	protected int noEventFireRemoveContents(A contents) throws NoSuchContentsException
+	protected int noEventFireRemoveContents(final A contents) throws NoSuchContentsException
 	{
-		TablePosition position = objectToPositionMap.get( contents );
+		final TablePosition position = objectToPositionMap.get( contents );
 		// Check it's in the table first
 		if( position == null )
 		{
@@ -194,19 +194,19 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		}
 		// delete it from inside the table
 		// We fetch the origin and span info, then loop over it
-		TableCell<A> cell = (TableCell<A>)tableCells[ position.x ][ position.y ];
-		
-		int originCellX = cell.getOriginCellX();
-		int originCellY = cell.getOriginCellY();
-		
-		Span cellContentsSpan = cell.getCellContents().getCellSpan();
-		
-		InternalClearCellContentsAndPropertiesVisitor<A, B> cellAndPropertiesClearVisitor = new InternalClearCellContentsAndPropertiesVisitor<A, B>();
-	
+		final TableCell<A> cell = (TableCell<A>)tableCells[ position.x ][ position.y ];
+
+		final int originCellX = cell.getOriginCellX();
+		final int originCellY = cell.getOriginCellY();
+
+		final Span cellContentsSpan = cell.getCellContents().getCellSpan();
+
+		final InternalClearCellContentsAndPropertiesVisitor<A, B> cellAndPropertiesClearVisitor = new InternalClearCellContentsAndPropertiesVisitor<A, B>();
+
 		visitTableCellsForSpan(originCellX, originCellY, cellContentsSpan, cellAndPropertiesClearVisitor, true, true );
-		
+
 		// Remove it from the table of objects
-		int indexOfRemovedObject = objectsInTable.indexOf( contents );
+		final int indexOfRemovedObject = objectsInTable.indexOf( contents );
 		objectsInTable.remove( indexOfRemovedObject );
 		objectToPositionMap.remove( contents );
 		return indexOfRemovedObject;
@@ -214,7 +214,7 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void moveContentsToPosition(A contents, int x, int y) throws DatastoreException, NoSuchContentsException,
+	public void moveContentsToPosition(final A contents, final int x, final int y) throws DatastoreException, NoSuchContentsException,
 			TableIndexOutOfBoundsException, TableCellFullException
 	{
 		// Use the internal no event fire methods to remove and then add the contents
@@ -222,29 +222,29 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		{
 			throw new NoSuchContentsException();
 		}
-		int indexOfUpdatedContents = objectsInTable.indexOf( contents );
-		TablePosition currentPosition = getContentsOriginReturnNull( contents );
-		B properties = getPropertiesAtPosition( currentPosition.x, currentPosition.y );
+		final int indexOfUpdatedContents = objectsInTable.indexOf( contents );
+		final TablePosition currentPosition = getContentsOriginReturnNull( contents );
+		final B properties = getPropertiesAtPosition( currentPosition.x, currentPosition.y );
 
 		// Removing from cells
-		TableCell<A> cell = (TableCell<A>)tableCells[ currentPosition.x ][ currentPosition.y ];
-		
-		int originCellX = cell.getOriginCellX();
-		int originCellY = cell.getOriginCellY();
-		
-		Span cellContentsSpan = cell.getCellContents().getCellSpan();
-		
-		InternalClearCellContentsAndPropertiesVisitor<A, B> cellAndPropertiesClearVisitor = new InternalClearCellContentsAndPropertiesVisitor<A, B>();
-	
+		final TableCell<A> cell = (TableCell<A>)tableCells[ currentPosition.x ][ currentPosition.y ];
+
+		final int originCellX = cell.getOriginCellX();
+		final int originCellY = cell.getOriginCellY();
+
+		final Span cellContentsSpan = cell.getCellContents().getCellSpan();
+
+		final InternalClearCellContentsAndPropertiesVisitor<A, B> cellAndPropertiesClearVisitor = new InternalClearCellContentsAndPropertiesVisitor<A, B>();
+
 		visitTableCellsForSpan(originCellX, originCellY, cellContentsSpan, cellAndPropertiesClearVisitor, true, true );
-		
+
 		// Adding it back at the new position
-		InternalSetCellContentsAndPropertiesVisitor<A,B> sccv = 
+		final InternalSetCellContentsAndPropertiesVisitor<A,B> sccv =
 			new InternalSetCellContentsAndPropertiesVisitor<A,B>( contents, properties, x, y );
-		
+
 		visitTableCellsForSpan( x, y, cellContentsSpan, sccv, true, true );
-		
-		TablePosition positionToUpdate = objectToPositionMap.get( contents );
+
+		final TablePosition positionToUpdate = objectToPositionMap.get( contents );
 		positionToUpdate.x = x;
 		positionToUpdate.y = y;
 
@@ -253,9 +253,9 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		fireTableChangedEvent( outEvent );
 	}
 
-	protected void fireTableChangedEvent(TableModelEvent<A, B> outEvent)
+	protected void fireTableChangedEvent(final TableModelEvent<A, B> outEvent)
 	{
-		for( TableModelListener<A, B> lis : listeners )
+		for( final TableModelListener<A, B> lis : listeners )
 		{
 			lis.tableChanged( outEvent );
 		}
@@ -263,18 +263,24 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public A getContentsAtPosition(int i, int j)
+	public A getContentsAtPosition(final int i, final int j)
 	{
-		TableCell<A> cell = (TableCell<A>) tableCells[i][j];
+		final TableCell<A> cell = (TableCell<A>) tableCells[i][j];
 		return cell.getCellContents();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public B getPropertiesAtPosition(int i, int j)
+	public B getPropertiesAtPosition(final int i, final int j)
 	{
-		TableCellProperties<B> cellProperties = (TableCellProperties<B>)tableProperties[i][j];
+		final TableCellProperties<B> cellProperties = (TableCellProperties<B>)tableProperties[i][j];
 		return cellProperties.getCellProperties();
+	}
+
+	@Override
+	public Span getSpan()
+	{
+		return tableSpan;
 	}
 
 	@Override
@@ -288,39 +294,39 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	{
 		return tableSpan.y;
 	}
-	
+
 	@Override
 	public int getNumEntries()
 	{
 		return objectsInTable.size();
 	}
-	
+
 	@Override
 	public Set<A> getEntriesAsSet()
 	{
 		return objectToPositionMap.keySet();
 	}
-	
+
 	@Override
 	public List<A> getEntriesAsList()
 	{
 		return objectsInTable;
 	}
-	
+
 //	@Override
 //	public FastList<A> getEntriesAsFastList()
 //	{
 //		return objectsInTableFastList;
 //	}
-	
+
 	@Override
-	public A getEntryAt( int index )
+	public A getEntryAt( final int index )
 	{
 		return objectsInTable.get( index );
 	}
-	
+
 	@Override
-	public int getEntryIndexReturnMinusOne( A contents )
+	public int getEntryIndexReturnMinusOne( final A contents )
 	{
 		if( objectsInTable.contains( contents ) )
 		{
@@ -333,73 +339,73 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	}
 
 	@Override
-	public void visitCells(TableCellVisitor<A, B> visitor, boolean visitAllCells )
+	public void visitCells(final TableCellVisitor<A, B> visitor, final boolean visitAllCells )
 	{
 		visitTableCellsForSpan( 0, 0, tableSpan, visitor, visitAllCells, true );
 	}
 
 	@Override
-	public void visitCells(TableCellVisitor<A, B> visitor, int x, int y, int xSpan, int ySpan, boolean visitAllCells )
+	public void visitCells(final TableCellVisitor<A, B> visitor, final int x, final int y, final int xSpan, final int ySpan, final boolean visitAllCells )
 	{
 		visitTableCellsForSpan( x, y, new Span( xSpan, ySpan ), visitor, visitAllCells, true );
 	}
-	
+
 	@Override
-	public void visitFilledCells(TableCellVisitor<A, B> visitor )
+	public void visitFilledCells(final TableCellVisitor<A, B> visitor )
 	{
 		visitTableCellsForSpan( 0, 0, tableSpan, visitor, false, false );
 	}
-	
+
 	@Override
-	public void visitFilledCells(TableCellVisitor<A, B> visitor, int x, int y, int xSpan, int ySpan )
+	public void visitFilledCells(final TableCellVisitor<A, B> visitor, final int x, final int y, final int xSpan, final int ySpan )
 	{
 		visitTableCellsForSpan( x, y, new Span( xSpan, ySpan ), visitor, false, false );
 	}
-	
+
 	@Override
-	public void visitEmptyCells( TableCellVisitor<A, B> visitor )
+	public void visitEmptyCells( final TableCellVisitor<A, B> visitor )
 	{
-		InternalEmptyCellsOnlyVisitorWrapper<A, B> wrapper = new InternalEmptyCellsOnlyVisitorWrapper<A, B>( visitor );
+		final InternalEmptyCellsOnlyVisitorWrapper<A, B> wrapper = new InternalEmptyCellsOnlyVisitorWrapper<A, B>( visitor );
 		visitTableCellsForSpan( 0, 0, tableSpan, wrapper, true, true );
 	}
-	
-	
+
+
 	@Override
-	public TablePosition getContentsOriginReturnNull(A contents)
+	public TablePosition getContentsOriginReturnNull(final A contents)
 	{
-		TablePosition retVal = objectToPositionMap.get( contents );
-		
+		final TablePosition retVal = objectToPositionMap.get( contents );
+
 		return retVal;
 	}
 
 	@Override
-	public void addListener(TableModelListener<A, B> listener)
+	public void addListener(final TableModelListener<A, B> listener)
 	{
-		this.listeners.add( listener );
+		listeners.add( listener );
 	}
 
 	@Override
-	public void removeListener(TableModelListener<A,B> listener)
+	public void removeListener(final TableModelListener<A,B> listener)
 	{
-		this.listeners.remove( listener );
+		listeners.remove( listener );
 	}
 
 	@Override
-	public boolean canStoreContentsAtPosition(A contents, int x, int y) throws ContentsAlreadyAddedException, TableIndexOutOfBoundsException
+	public boolean canStoreContentsAtPosition(final A contents, final int x, final int y) throws ContentsAlreadyAddedException, TableIndexOutOfBoundsException
 	{
-		InternalCheckEmptyCellVisitor<A,B> visitorToUse = new InternalCheckEmptyCellVisitor<A,B>();
+		final InternalCheckEmptyCellVisitor<A,B> visitorToUse = new InternalCheckEmptyCellVisitor<A,B>();
 		canStoreContentsAtPosition( visitorToUse, contents, x, y, true);
 		return visitorToUse.wasEmpty();
 	}
-	
+
 	@Override
-	public boolean canMoveContentsToPosition( A contents, int x, int y ) throws NoSuchContentsException, TableIndexOutOfBoundsException
+	public boolean canMoveContentsToPosition( final A contents, final int x, final int y ) throws NoSuchContentsException, TableIndexOutOfBoundsException
 	{
 		if( !objectToPositionMap.keySet().contains( contents ) )
 		{
 			throw new NoSuchContentsException();
 		}
-		
+
 //		try
 //		{
 //			InternalCheckEmptyCellVisitorIgnoreContents<A, B> visitorToUse = new InternalCheckEmptyCellVisitorIgnoreContents<A, B>( contents );
@@ -412,17 +418,18 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 //			e.printStackTrace();
 //			return false;
 //		}
-		// optimised version
+		// optimised version (for interesting values of optimised)
 		boolean canAdd = true;
-		Span span = contents.getCellSpan();
+		final Span span = contents.getCellSpan();
 		for( int i = x ; canAdd && i < x + span.x ; i++ )
 		{
 			for( int j = y ; canAdd && j < y + span.y ; j++ )
 			{
 				if( i >= 0 && (i < tableSpan.x) && j >= 0 && j < (tableSpan.y) )
 				{
-					Object o = tableCells[i][j];
+					final Object o = tableCells[i][j];
 					@SuppressWarnings("unchecked")
+					final
 					RackModelTableSpanningContents cell = ((TableCell<RackModelTableSpanningContents>)o).getCellContents();
 					if( cell != null && cell != contents )
 					{
@@ -437,8 +444,8 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		}
 		return canAdd;
 	}
-	
-	protected void canStoreContentsAtPosition( TableCellVisitor<A,B> visitorToUse, A contents, int x, int y, boolean throwContentsAlreadyAdded )
+
+	protected void canStoreContentsAtPosition( final TableCellVisitor<A,B> visitorToUse, final A contents, final int x, final int y, final boolean throwContentsAlreadyAdded )
 		throws ContentsAlreadyAddedException, TableIndexOutOfBoundsException
 	{
 		if( throwContentsAlreadyAdded )
@@ -449,13 +456,13 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 				throw new ContentsAlreadyAddedException();
 			}
 		}
-		
+
 		// Check it is within the bounds of the table span
-		Span contentCellSpan = contents.getCellSpan();
+		final Span contentCellSpan = contents.getCellSpan();
 		if( ( x < 0 || x + (contentCellSpan.x - 1) >= tableSpan.x ) ||
 				( y < 0 || y + (contentCellSpan.y - 1) >= tableSpan.y ) )
 		{
-			String msg = "Unable to store " + contents.toString() + " at (" + x + ", " + y + ") - component violates table boundaries";
+			final String msg = "Unable to store " + contents.toString() + " at (" + x + ", " + y + ") - component violates table boundaries";
 			throw new TableIndexOutOfBoundsException( msg );
 		}
 
@@ -464,12 +471,12 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	}
 
 	@Override
-	public void resize( int x, int y )
+	public void resize( final int x, final int y )
 		throws TableResizeException
 	{
 		// First check that resizing doesn't cause problems
 		boolean sizingProblems = false;
-		
+
 		if( x < 1 || y < 1 )
 		{
 			sizingProblems = true;
@@ -485,15 +492,15 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 			// Allocate a new backing array then iterate over the cells moving them across to the new array
 			// adding any necessary new TableCell and TableCellProperties objects
 			// then replace the internal array and update the tableSpan object
-			Span newTableSpan = new Span( x, y );
-			Object[][] newTableCells = new Object[x][y];
-			Object[][] newTableProperties = new Object[x][y];
-			InternalTableResizingVisitor<A, B> resizingVisitor = new InternalTableResizingVisitor<A, B>( tableSpan, 
+			final Span newTableSpan = new Span( x, y );
+			final Object[][] newTableCells = new Object[x][y];
+			final Object[][] newTableProperties = new Object[x][y];
+			final InternalTableResizingVisitor<A, B> resizingVisitor = new InternalTableResizingVisitor<A, B>( tableSpan,
 					newTableSpan,
-					newTableCells, 
+					newTableCells,
 					newTableProperties);
 			visitTableCellsForSpan( 0, 0, tableSpan, resizingVisitor, true, true );
-			
+
 			if( resizingVisitor.wasSizingProblems() )
 			{
 				throw new TableResizeException();
@@ -508,33 +515,34 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	}
 
 	@Override
-	public void insertColumn(int columnToInsert) throws TableResizeException
+	public void insertColumn(final int columnToInsert) throws TableResizeException
 	{
 		// Here we use a visitor to create a list of all the contents that fills the column that will be inserted that is an origin cell
 		// We create a list from these cells with new co-ordinates + 1 col and remove them from the existing table.
 		// We then resize the table to have one more column, and then we re-insert all of the contents at their new positions.
-		
-		throw new TableResizeException();		
+
+		throw new TableResizeException();
 	}
 
 	@Override
-	public void deleteColumn(int columnToDelete) throws TableResizeException
+	public void deleteColumn(final int columnToDelete) throws TableResizeException
 	{
-		throw new TableResizeException();		
+		throw new TableResizeException();
 	}
 
 	@Override
-	public void deleteRow(int rowToDelete) throws TableResizeException
+	public void deleteRow(final int rowToDelete) throws TableResizeException
 	{
-		throw new TableResizeException();		
+		throw new TableResizeException();
 	}
 
 	@Override
-	public void insertRow(int rowToInsert) throws TableResizeException
+	public void insertRow(final int rowToInsert) throws TableResizeException
 	{
-		throw new TableResizeException();		
+		throw new TableResizeException();
 	}
-	
+
+	@Override
 	public void dirtyFixToCleanupReferences()
 	{
 		for( int row = 0 ; row < tableSpan.y ; row++ )

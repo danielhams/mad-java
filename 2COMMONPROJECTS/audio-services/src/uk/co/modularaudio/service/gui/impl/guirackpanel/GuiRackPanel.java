@@ -145,7 +145,7 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 	}
 
 	@Override
-	public void setRackDataModel( final RackDataModel rackDataModel )
+	public void setRackDataModel( final RackDataModel rackDataModel ) throws DatastoreException
 	{
 		frontAudioComponentTable.setRackDataModel( rackDataModel );
 		backAudioComponentTable.setRackDataModel( rackDataModel );

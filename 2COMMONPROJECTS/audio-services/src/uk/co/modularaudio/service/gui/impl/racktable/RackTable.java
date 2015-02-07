@@ -30,6 +30,7 @@ import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTable;
 import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDecorations;
 
@@ -41,10 +42,11 @@ public class RackTable
 
 //	private static Log log = LogFactory.getLog( NewRackTable.class.getName() );
 
+	protected RackDataModel rackDataModel;
 	private final RackTableDndPolicy dndPolicy;
 
 	public RackTable(
-			final RackDataModel dataModel,
+			final RackDataModel rackDataModel,
 			final RackTableEmptyCellPainter emptyCellPainter,
 			final RackTableGuiFactory factory,
 			final RackTableDndPolicy dndPolicy,
@@ -53,13 +55,15 @@ public class RackTable
 			final boolean showGrid,
 			final Color gridColour)
 	{
-		super(dataModel, factory, dndPolicy, dndDecorations, gridSize, showGrid, gridColour, emptyCellPainter);
+		super( rackDataModel, factory, dndPolicy, dndDecorations, gridSize, showGrid, gridColour, emptyCellPainter);
 		this.dndPolicy = dndPolicy;
+		this.rackDataModel = rackDataModel;
 	}
 
-	public void setRackDataModel(final RackDataModel rackDataModel)
+	public void setRackDataModel(final RackDataModel rackDataModel) throws DatastoreException
 	{
 		super.setDataModel( rackDataModel );
+		this.rackDataModel = rackDataModel;
 		// Reset the data model referred to in the policy, too
 		dndPolicy.setRackDataModel( rackDataModel );
 	}
@@ -92,6 +96,7 @@ public class RackTable
 	{
 		super.destroy();
 		dndPolicy.destroy();
+		rackDataModel = null;
 	}
 
 	public void setForceRepaints( final boolean forceRepaints )
