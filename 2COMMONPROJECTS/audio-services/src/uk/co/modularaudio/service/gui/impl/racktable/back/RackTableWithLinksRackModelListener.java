@@ -37,11 +37,11 @@ public class RackTableWithLinksRackModelListener implements TableModelListener<R
 {
 	private static Log log = LogFactory.getLog( RackTableWithLinksRackModelListener.class.getName() );
 
-	private final RackTableWithLinks table;
+	private final RackLinkPainter linkPainter;
 
-	public RackTableWithLinksRackModelListener( final RackTableWithLinks rackTableWithLinks )
+	public RackTableWithLinksRackModelListener( final RackLinkPainter linkPainter )
 	{
-		this.table = rackTableWithLinks;
+		this.linkPainter = linkPainter;
 	}
 
 	@Override
@@ -72,15 +72,15 @@ public class RackTableWithLinksRackModelListener implements TableModelListener<R
 				do
 				{
 					final RackComponent componentToFindLinksFor = dataModel.getEntryAt( uCounter );
-					final List<RackLink> linksToRefresh = table.getLinksForComponent( componentToFindLinksFor );
+					final List<RackLink> linksToRefresh = linkPainter.getLinksForComponent( componentToFindLinksFor );
 					for( final RackLink oneLink : linksToRefresh )
 					{
-						table.updateLink( oneLink );
+						linkPainter.updateLink( oneLink );
 					}
-					final List<RackIOLink> ioLinksToRefresh = table.getIOLinksForComponent( componentToFindLinksFor );
+					final List<RackIOLink> ioLinksToRefresh = linkPainter.getIOLinksForComponent( componentToFindLinksFor );
 					for( final RackIOLink oneIOLink : ioLinksToRefresh )
 					{
-						table.updateIOLink( oneIOLink );
+						linkPainter.updateIOLink( oneIOLink );
 					}
 					uCounter++;
 				}
@@ -92,7 +92,7 @@ public class RackTableWithLinksRackModelListener implements TableModelListener<R
 				break;
 			}
 		}
-		table.createCompositeRackLinksImageAndRedisplay();
+		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
 
 }

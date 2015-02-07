@@ -33,11 +33,11 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 {
 //	private static Log log = LogFactory.getLog( NewRackTableWithLinksRackLinkListener.class.getName() );
 
-	private final RackTableWithLinks table;
+	private RackLinkPainter linkPainter;
 
-	public RackTableWithLinksRackLinkListener( final RackTableWithLinks table )
+	public RackTableWithLinksRackLinkListener( final RackLinkPainter linkPainter )
 	{
-		this.table = table;
+		this.linkPainter = linkPainter;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			do
 			{
 				final RackLink rackLink = model.getLinkAt( iCounter );
-				table.createRackLinkImageForNewLink( rackLink );
+				linkPainter.drawOneRackLinkImageAndAdd( rackLink );
 				iCounter++;
 			}
 			while( iCounter < eventLastRow );
@@ -70,7 +70,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 
 			do
 			{
-				table.removeRackLinkImageAt( eventFirstRow );
+				linkPainter.removeRackLinkImageAt( eventFirstRow );
 				dCounter++;
 			}
 			while( dCounter <= dEndRow );
@@ -82,7 +82,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 
 		// Now tell the table to recompute the composite rack link image and redisplay
 		// Not sure this is necessary
-		table.createCompositeRackLinksImageAndRedisplay();
+		linkPainter.createCompositeRackLinksImageAndRedisplay();
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			do
 			{
 				final RackIOLink rackIOLink = model.getIOLinkAt( iCounter );
-				table.createRackIOLinkImageForNewLink( rackIOLink );
+				linkPainter.drawOneRackIOLinkImageAndAdd( rackIOLink );
 				iCounter++;
 			}
 			while( iCounter < eventLastRow );
@@ -113,7 +113,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 			final int dEndRow = eventLastRow;
 			do
 			{
-				table.removeRackIOLinkImageAt( eventFirstRow );
+				linkPainter.removeRackIOLinkImageAt( eventFirstRow );
 				dCounter++;
 			}
 			while( dCounter <= dEndRow );
@@ -124,7 +124,7 @@ public class RackTableWithLinksRackLinkListener implements RackLinkListener, Rac
 		}
 
 		// Now tell the table to recompute the composite rack link image and redisplay
-		table.createCompositeRackLinksImageAndRedisplay();
+		linkPainter.createCompositeRackLinksImageAndRedisplay();
 
 	}
 }

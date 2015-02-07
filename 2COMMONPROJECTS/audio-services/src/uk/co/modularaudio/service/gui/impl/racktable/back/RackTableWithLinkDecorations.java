@@ -24,9 +24,9 @@ import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackD
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragDecorations;
 import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDecorations;
 
-public class LinksDecorations extends LayeredPaneDndTableDecorations
+public class RackTableWithLinkDecorations extends LayeredPaneDndTableDecorations
 {
-	public LinksDecorations( final DndRackDragDecorations rackDecorations, final DndWireDragDecorations wireDecorations )
+	public RackTableWithLinkDecorations( final DndRackDragDecorations rackDecorations, final DndWireDragDecorations wireDecorations )
 	{
 		this.hints.addAll( rackDecorations.getHints() );
 		this.hints.addAll( wireDecorations.getHints() );

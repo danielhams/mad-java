@@ -28,7 +28,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
@@ -37,10 +36,7 @@ import uk.co.modularaudio.service.gui.impl.racktable.RackTableEmptyCellPainter;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTableGuiFactory;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag.DndRackDragDecorations;
 import uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag.DndWireDragDecorations;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLink;
-import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
 
 public class RackTableWithLinks extends RackTable
 {
@@ -55,6 +51,9 @@ public class RackTableWithLinks extends RackTable
 
 	private final RackLinkPainter linkPainter;
 
+	private Rectangle compositeImageRectangle;
+	private BufferedImage compositeRackLinksImage;
+
 	public RackTableWithLinks( final BufferedImageAllocationService bufferedImageAllocationService,
 			final RackDataModel dataModel,
 			final RackTableEmptyCellPainter emptyCellPainter,
@@ -65,18 +64,18 @@ public class RackTableWithLinks extends RackTable
 			final Dimension gridSize,
 			final boolean showGrid, final Color gridColour)
 	{
-		super( dataModel, emptyCellPainter, factory, dndPolicy, new LinksDecorations(rackDecorations, wireDecorations), gridSize, showGrid, gridColour );
+		super( dataModel, emptyCellPainter, factory, dndPolicy, new RackTableWithLinkDecorations(rackDecorations, wireDecorations), gridSize, showGrid, gridColour );
 
 		this.dataModel = dataModel;
 
 		this.linkPainter = new RackLinkPainter( bufferedImageAllocationService, dataModel, this );
 
 		// Register a custom rack model listener so that when a component moves we recalculate the link images
-		rackModelListener = new RackTableWithLinksRackModelListener( this );
+		rackModelListener = new RackTableWithLinksRackModelListener( linkPainter );
 		dataModel.addListener( rackModelListener );
 
 		// Also add a listener to track the rack link changes
-		rackLinkListener = new RackTableWithLinksRackLinkListener( this );
+		rackLinkListener = new RackTableWithLinksRackLinkListener( linkPainter );
 		dataModel.addRackLinksListener( rackLinkListener );
 		dataModel.addRackIOLinksListener( rackLinkListener );
 
@@ -87,7 +86,6 @@ public class RackTableWithLinks extends RackTable
 	public void paint(final Graphics g)
 	{
 		layeredTablePaint( g );
-//		swingTablePaint( g );
 		if( compositeRackLinksImage != null )
 		{
 			final Graphics2D g2d = (Graphics2D) g.create();
@@ -95,11 +93,7 @@ public class RackTableWithLinks extends RackTable
 			g2d.setComposite( alphaComposite );
 			g2d.drawImage( compositeRackLinksImage, compositeImageRectangle.x, compositeImageRectangle.y, null );
 		}
-//		swingDndTablePaint( g );
 	}
-
-	private Rectangle compositeImageRectangle = null;
-	private BufferedImage compositeRackLinksImage = null;
 
 	public final void fullLinksRefreshFromModel()
 	{
@@ -110,46 +104,10 @@ public class RackTableWithLinks extends RackTable
 		linkPainter.clear();
 
 		// Produce the individual rackLinkImages from each rack link
-		linkPainter.createIndividualRackLinkImages();
-		linkPainter.createIndividualRackIOLinkImages();
+		linkPainter.fullRefreshIndividualLinkImages();
 
 		// Now create the composite image with all of them on
 		linkPainter.createCompositeRackLinksImageAndRedisplay();
-	}
-
-	public void createRackLinkImageForNewLink( final RackLink rackLink )
-	{
-		linkPainter.drawOneRackLinkImageAndAdd( rackLink );
-	}
-
-	public void updateRackLinkImageForLink( final RackLink rl )
-	{
-		linkPainter.updateRackLinkImageForLink( rl );
-	}
-
-	public void removeRackLinkImageAt( final int modelIndex )
-	{
-		linkPainter.removeRackLinkImageAt( modelIndex );
-	}
-
-	public List<RackLink> getLinksForComponent(final RackComponent componentToFindLinksFor)
-	{
-		return linkPainter.getLinksForComponent( componentToFindLinksFor );
-	}
-
-	public List<RackIOLink> getIOLinksForComponent( final RackComponent componentToFindLinksFor )
-	{
-		return linkPainter.getIOLinksForComponent( componentToFindLinksFor );
-	}
-
-	public void updateLink( final RackLink oneLink )
-	{
-		linkPainter.updateLink(oneLink);
-	}
-
-	public void updateIOLink( final RackIOLink oneLink )
-	{
-		linkPainter.updateIOLink(oneLink);
 	}
 
 	@Override
@@ -162,10 +120,15 @@ public class RackTableWithLinks extends RackTable
 		this.dataModel = rackDataModel;
 		linkPainter.setDataModel( dataModel );
 
+		addListenersToModel();
+		fullLinksRefreshFromModel();
+	}
+
+	private void addListenersToModel()
+	{
 		dataModel.addListener( rackModelListener );
 		dataModel.addRackLinksListener( rackLinkListener );
 		dataModel.addRackIOLinksListener( rackLinkListener );
-		fullLinksRefreshFromModel();
 	}
 
 	private void removeListenersFromModel()
@@ -173,21 +136,6 @@ public class RackTableWithLinks extends RackTable
 		dataModel.removeListener( rackModelListener );
 		dataModel.removeRackLinksListener( rackLinkListener );
 		dataModel.removeRackIOLinksListener( rackLinkListener );
-	}
-
-	public void createCompositeRackLinksImageAndRedisplay()
-	{
-		linkPainter.createCompositeRackLinksImageAndRedisplay();
-	}
-
-	public void createRackIOLinkImageForNewLink( final RackIOLink rackIOLink )
-	{
-		linkPainter.drawOneRackIOLinkImageAndAdd( rackIOLink );
-	}
-
-	public void removeRackIOLinkImageAt( final int modelIndex )
-	{
-		linkPainter.removeRackIOLinkImageAt( modelIndex );
 	}
 
 	@Override

@@ -64,7 +64,9 @@ public class RackLinkPainter
 	private final RackLinkImageRegistry rackLinkRegistry;
 	private final RackLinkCompositeLinksGuiComponent compositeLinksGuiComponent = new RackLinkCompositeLinksGuiComponent();
 
-	public RackLinkPainter( final BufferedImageAllocationService bufferedImageAllocationService, final RackDataModel dataModel, final RackTableWithLinks tableWithLinks )
+	public RackLinkPainter( final BufferedImageAllocationService bufferedImageAllocationService,
+			final RackDataModel dataModel,
+			final RackTableWithLinks tableWithLinks )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
 
@@ -75,7 +77,7 @@ public class RackLinkPainter
 		tableWithLinks.add( compositeLinksGuiComponent );
 	}
 
-	public void createIndividualRackLinkImages()
+	public void fullRefreshIndividualLinkImages()
 	{
 		for( int i = 0 ; i < dataModel.getNumLinks() ; i++ )
 		{
@@ -83,10 +85,7 @@ public class RackLinkPainter
 
 			drawOneRackLinkImageAndAdd( rl );
 		}
-	}
 
-	public void createIndividualRackIOLinkImages()
-	{
 		for( int i = 0 ; i < dataModel.getNumIOLinks() ; i++ )
 		{
 			final RackIOLink rl = dataModel.getIOLinkAt( i );
@@ -357,7 +356,7 @@ public class RackLinkPainter
 		compositeRackLinksImage = null;
 	}
 
-	public void updateRackLinkImageForLink( final RackLink rl )
+	private void updateRackLinkImageForLink( final RackLink rl )
 	{
 		final RackLinkImage rli = rackLinkRegistry.getRackLinkImageForRackLink( rl );
 
@@ -387,7 +386,7 @@ public class RackLinkPainter
 		updateCompositeComponentInTable();
 	}
 
-	public void updateRackIOLinkImageForLink( final RackIOLink rl )
+	private void updateRackIOLinkImageForLink( final RackIOLink rl )
 	{
 		final RackIOLinkImage rili = rackLinkRegistry.getRackIOLinkImageForRackIOLink( rl );
 
@@ -443,14 +442,12 @@ public class RackLinkPainter
 	{
 		// Generate a new link and then re-create the composite image
 		updateRackLinkImageForLink( oneLink );
-//		createCompositeRackLinksImageAndRedisplay();
 	}
 
 	public void updateIOLink( final RackIOLink oneLink )
 	{
 		// Generate a new link and then re-create the composite image
 		updateRackIOLinkImageForLink( oneLink );
-//		createCompositeRackLinksImageAndRedisplay();
 	}
 
 	public List<RackIOLink> getIOLinksForComponent( final RackComponent componentToFindLinksFor )
@@ -464,7 +461,7 @@ public class RackLinkPainter
 		this.dataModel = dataModel;
 	}
 
-	public void updateCompositeComponentInTable()
+	private void updateCompositeComponentInTable()
 	{
 		if( compositeImageRectangle != null && compositeRackLinksImage != null )
 		{
