@@ -85,13 +85,11 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 	}
 
 	@Override
-	public RenderingPlanWithFanAndSync createRenderingPlan( final MadGraphInstance<?,?> graph,
+	public RenderingPlan createRenderingPlan( final MadGraphInstance<?,?> graph,
 		final HardwareIOChannelSettings hardwareChannelSettings,
 		final MadFrameTimeFactory frameTimeFactory )
 			throws DatastoreException
 	{
-		RenderingPlanWithFanAndSync retVal = null;
-
 		try
 		{
 			// Remove subgraphs by recursively moving their contents 'up' until we have no more subgraphs
@@ -108,13 +106,15 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			// based on it along with dependency information
 			final MadTimingSource timingSource = timingService.getTimingSource();
 
-			retVal = annotatedDependencyGraphToRenderingPlan( dependencyGraph,
+			final RenderingPlan retVal = annotatedDependencyGraphToRenderingPlan( dependencyGraph,
 					zeroDepthGraph,
 					hardwareChannelSettings,
 					frameTimeFactory,
 					timingSource );
 
 			graphService.destroyGraph( zeroDepthGraph, true, false );
+
+			return retVal;
 		}
 		catch (final Exception e)
 		{
@@ -122,8 +122,6 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
-
-		return retVal;
 	}
 
 	@Override
@@ -227,7 +225,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		}
 	}
 
-	private RenderingPlanWithFanAndSync annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
+	private RenderingPlan annotatedDependencyGraphToRenderingPlan( final DirectedDependencyGraph annotatedGraph,
 			final MadGraphInstance<?,?> graph,
 			final HardwareIOChannelSettings planHardwareSettings,
 			final MadFrameTimeFactory planFrameTimeFactory,

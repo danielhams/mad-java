@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.controller.guihelper.impl;
+package uk.co.modularaudio.componentdesigner.controller.gui.impl;
 
 import java.awt.Component;
 
-import uk.co.modularaudio.componentdesigner.controller.guihelper.GuiHelperController;
+import uk.co.modularaudio.componentdesigner.controller.gui.GuiController;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
  * @author dan
  *
  */
-public class GuiHelperControllerImpl implements ComponentWithLifecycle, GuiHelperController
+public class GuiControllerImpl implements ComponentWithLifecycle, GuiController
 {
 	private GuiService guiService;
 

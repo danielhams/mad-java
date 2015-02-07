@@ -52,11 +52,11 @@ public class DateConverter
 	 * @param fromDB String
 	 * @return Date
 	 */
-	public static java.util.Date oracleDateTimeStrToJavaDate(String fromDB)
+	public static java.util.Date oracleDateTimeStrToJavaDate(final String fromDB)
 	{
 		if (fromDB != null && fromDB.length() > 0)
 		{
-			SimpleDateFormat dFormatter = new SimpleDateFormat(MA_ORACLE_DATE_TIME_FORMAT);
+			final SimpleDateFormat dFormatter = new SimpleDateFormat(MA_ORACLE_DATE_TIME_FORMAT);
 			return(dFormatter.parse(fromDB,new ParsePosition(0)));
 		}
 		else
@@ -66,10 +66,10 @@ public class DateConverter
 	}
 
 
-	public static java.sql.Timestamp oracleDateTimeStrToJavaTimestamp( String fromDB)
+	public static java.sql.Timestamp oracleDateTimeStrToJavaTimestamp( final String fromDB)
 	{
 		java.sql.Timestamp retVal = null;
-		java.util.Date tmpDate = oracleDateTimeStrToJavaDate( fromDB );
+		final java.util.Date tmpDate = oracleDateTimeStrToJavaDate( fromDB );
 		if (tmpDate != null)
 		{
 			retVal = new java.sql.Timestamp( tmpDate.getTime() );
@@ -84,7 +84,7 @@ public class DateConverter
 	 * @param inDate java.util.Date
 	 * @return String
 	 */
-	public static String javaDateToOracleDateTimeStr(java.util.Date inDate)
+	public static String javaDateToOracleDateTimeStr(final java.util.Date inDate)
 	{
 		return(javaDateToCustomDateTimeStr(inDate, MA_ORACLE_DATE_TIME_FORMAT));
 	}
@@ -96,14 +96,14 @@ public class DateConverter
 	 * @param inDateStr User String
 	 * @return String
 	 */
-	public static String userDateTimeStrToOracleDateTimeStr( String inDateStr)
+	public static String userDateTimeStrToOracleDateTimeStr( final String inDateStr)
 	{
 		String retString = "";
 
 		// First get it in Java format (if not null)
 		if (inDateStr != null && inDateStr.length() > 0)
 		{
-			java.util.Date jDate = userDateTimeStrToJavaDate( inDateStr );
+			final java.util.Date jDate = userDateTimeStrToJavaDate( inDateStr );
 			// Now convert this to DB format
 			retString = javaDateToOracleDateTimeStr( jDate );
 		}
@@ -118,7 +118,7 @@ public class DateConverter
 	 * @param userDateTimeStr String
 	 * @return Date
 	 */
-	public static java.util.Date userDateTimeStrToJavaDate( String userDateTimeStr)
+	public static java.util.Date userDateTimeStrToJavaDate( final String userDateTimeStr)
 	{
 		return(customDateTimeStrToJavaDate( userDateTimeStr, MA_USER_DATE_TIME_FORMAT));
 	}
@@ -132,14 +132,14 @@ public class DateConverter
 	 * @param inDateStr String
 	 * @return String
 	 */
-	public static String userDateStrToOracleDateTimeStr( String inDateStr)
+	public static String userDateStrToOracleDateTimeStr( final String inDateStr)
 	{
 		String retString = "";
 
 		// First get it in Java format (if not null)
 		if (inDateStr != null && inDateStr.length() > 0)
 		{
-			java.util.Date jDate = userDateStrToJavaDate( inDateStr );
+			final java.util.Date jDate = userDateStrToJavaDate( inDateStr );
 			// Now convert this to DB format
 			if (jDate != null)
 			{
@@ -149,11 +149,11 @@ public class DateConverter
 		return(retString);
 	}
 
-	public static Timestamp userDateStrToJavaTimestamp( String inDateStr )
+	public static Timestamp userDateStrToJavaTimestamp( final String inDateStr )
 	{
 		java.sql.Timestamp retVal = null;
 
-		java.util.Date tmpDate = userDateStrToJavaDate( inDateStr );
+		final java.util.Date tmpDate = userDateStrToJavaDate( inDateStr );
 
 		if (tmpDate != null)
 		{
@@ -163,11 +163,11 @@ public class DateConverter
 		return(retVal);
 	}
 
-	public static Timestamp userDateTimeStrToJavaTimestamp( String inDateTimeStr )
+	public static Timestamp userDateTimeStrToJavaTimestamp( final String inDateTimeStr )
 	{
 		java.sql.Timestamp retVal = null;
 
-		java.util.Date tmpDate = userDateTimeStrToJavaDate( inDateTimeStr );
+		final java.util.Date tmpDate = userDateTimeStrToJavaDate( inDateTimeStr );
 
 		if (tmpDate != null)
 		{
@@ -177,23 +177,23 @@ public class DateConverter
 	}
 
 
-	public static String javaTimestampToOracleDateTimeStr(Timestamp inTimestamp)
+	public static String javaTimestampToOracleDateTimeStr(final Timestamp inTimestamp)
 	{
 		// Convert the timestamp into a date, and then format it using the java date->userstr
-		java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
+		final java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
 
 		return(javaDateToOracleDateTimeStr( tmpDate) );
 	}
 
 
-	public static String javaTimestampToUserDateTimeStr(Timestamp inTimestamp)
+	public static String javaTimestampToUserDateTimeStr(final Timestamp inTimestamp)
 	{
 		String retVal = "";
 
 		if (inTimestamp != null)
 		{
 			// Convert the timestamp into a date, and then format it using the java date->userstr
-			java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
+			final java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
 
 			if (tmpDate != null)
 			{
@@ -205,14 +205,14 @@ public class DateConverter
 	}
 
 
-	public static String javaTimestampToUserDateStr(Timestamp inTimestamp)
+	public static String javaTimestampToUserDateStr(final Timestamp inTimestamp)
 	{
 		String retVal = "";
 
 		// Convert the timestamp into a date, and then format it using the java date->userstr
 		if (inTimestamp != null)
 		{
-			java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
+			final java.util.Date tmpDate = new java.util.Date( inTimestamp.getTime() );
 
 			if (tmpDate != null)
 			{
@@ -231,7 +231,7 @@ public class DateConverter
 	 * @param userDateStr String
 	 * @return Date
 	 */
-	public static java.util.Date userDateStrToJavaDate( String userDateStr)
+	public static java.util.Date userDateStrToJavaDate( final String userDateStr)
 	{
 		return(customDateTimeStrToJavaDate( userDateStr, MA_USER_DATE_FORMAT));
 	}
@@ -242,13 +242,13 @@ public class DateConverter
 	 * @param customDateFormat
 	 * @return Date
 	 */
-	public static java.util.Date customDateTimeStrToJavaDate( String customDateStr,
-		String customDateFormat)
+	public static java.util.Date customDateTimeStrToJavaDate( final String customDateStr,
+		final String customDateFormat)
 	{
 		java.util.Date retDate = null;
 		if (customDateStr != null && customDateStr.length() > 0)
 		{
-			SimpleDateFormat dFormatter = new SimpleDateFormat(customDateFormat);
+			final SimpleDateFormat dFormatter = new SimpleDateFormat(customDateFormat);
 			retDate = dFormatter.parse(customDateStr,new ParsePosition(0));
 		}
 		return(retDate);
@@ -262,12 +262,12 @@ public class DateConverter
 	 * @param oracleDateStr String
 	 * @return String
 	 */
-	public static String oracleDateTimeStrToUserDateTimeStr( String oracleDateStr)
+	public static String oracleDateTimeStrToUserDateTimeStr( final String oracleDateStr)
 	{
 		String retString = "";
 		if (oracleDateStr != null && oracleDateStr.length() > 0)
 		{
-			java.util.Date jDate = oracleDateTimeStrToJavaDate( oracleDateStr);
+			final java.util.Date jDate = oracleDateTimeStrToJavaDate( oracleDateStr);
 			retString = javaDateToUserDateTimeStr( jDate );
 		}
 		return(retString);
@@ -280,7 +280,7 @@ public class DateConverter
 	 * @param inDate java.util.Date
 	 * @return String
 	 */
-	public static String javaDateToUserDateTimeStr( java.util.Date inDate)
+	public static String javaDateToUserDateTimeStr( final java.util.Date inDate)
 	{
 		return(javaDateToCustomDateTimeStr( inDate, MA_USER_DATE_TIME_FORMAT));
 	}
@@ -291,14 +291,14 @@ public class DateConverter
 	 * @param customDateFormat
 	 * @return String
 	 */
-	public static String javaDateToCustomDateTimeStr( java.util.Date inDate,
-		String customDateFormat)
+	public static String javaDateToCustomDateTimeStr( final java.util.Date inDate,
+		final String customDateFormat)
 	{
 		String retString = "";
 		if(inDate != null)
 		{
-			SimpleDateFormat dFormatter = new SimpleDateFormat(customDateFormat);
-			StringBuffer retDate = new StringBuffer();
+			final SimpleDateFormat dFormatter = new SimpleDateFormat(customDateFormat);
+			final StringBuffer retDate = new StringBuffer();
 			retString = dFormatter.format(inDate, retDate, new FieldPosition(0)).toString();
 		}
 		return(retString);
@@ -311,12 +311,12 @@ public class DateConverter
 	 * @param oracleDateStr String
 	 * @return String
 	 */
-	public static String oracleDateTimeStrToUserDateStr( String oracleDateStr)
+	public static String oracleDateTimeStrToUserDateStr( final String oracleDateStr)
 	{
 		String retString = "";
 		if (oracleDateStr != null && oracleDateStr.length() > 0)
 		{
-			java.util.Date jDate = oracleDateTimeStrToJavaDate( oracleDateStr);
+			final java.util.Date jDate = oracleDateTimeStrToJavaDate( oracleDateStr);
 			retString = javaDateToUserDateStr( jDate );
 		}
 		return(retString);
@@ -329,12 +329,12 @@ public class DateConverter
 	 * @param inDate java.util.Date
 	 * @return String
 	 */
-	public static String javaDateToUserDateStr( java.util.Date inDate)
+	public static String javaDateToUserDateStr( final java.util.Date inDate)
 	{
 		return(javaDateToCustomDateTimeStr( inDate, MA_USER_DATE_FORMAT));
 	}
 
-	public static String javaDateToUserTimestampStr( java.util.Date inDate)
+	public static String javaDateToUserTimestampStr( final java.util.Date inDate)
 	{
 		return(javaDateToCustomDateTimeStr( inDate, MA_USER_DATE_TIME_MILLIS_FORMAT));
 	}

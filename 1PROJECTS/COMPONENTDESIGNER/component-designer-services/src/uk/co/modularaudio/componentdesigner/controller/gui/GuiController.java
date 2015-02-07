@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.controller.guihelper;
+package uk.co.modularaudio.componentdesigner.controller.gui;
 
 import java.awt.Component;
 
@@ -41,7 +41,7 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
  *
  * @author dan
  */
-public interface GuiHelperController
+public interface GuiController
 {
 	/**
 	 * <p>Create a view for the supplied controller of a user

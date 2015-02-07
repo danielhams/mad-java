@@ -37,7 +37,7 @@ import org.apache.log4j.Priority;
 
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.controller.front.RenderingStateListener;
-import uk.co.modularaudio.componentdesigner.controller.guihelper.GuiHelperController;
+import uk.co.modularaudio.componentdesigner.controller.gui.GuiController;
 import uk.co.modularaudio.controller.apprendering.AppRenderingController;
 import uk.co.modularaudio.controller.rack.RackController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
@@ -79,7 +79,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private static Log log = LogFactory.getLog( ComponentDesignerFrontControllerImpl.class.getName() );
 
-	private GuiHelperController guiHelperController;
+	private GuiController guiController;
 	private RackController rackController;
 	private AppRenderingController appRenderingController;
 	private UserPreferencesController userPreferencesController;
@@ -128,7 +128,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 					RackService.DEFAULT_RACK_COLS,
 					RackService.DEFAULT_RACK_ROWS,
 					true );
-			guiRack = guiHelperController.createGuiForRackDataModel( tmpRack );
+			guiRack = guiController.createGuiForRackDataModel( tmpRack );
 			initialiseEmptyRack();
 		}
 		catch( final DatastoreException de )
@@ -154,9 +154,9 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		this.rackController = rackController;
 	}
 
-	public void setGuiHelperController( final GuiHelperController guiController)
+	public void setGuiController( final GuiController guiController)
 	{
-		this.guiHelperController = guiController;
+		this.guiController = guiController;
 	}
 
 	public void setAppRenderingController( final AppRenderingController appRenderingController)
@@ -754,7 +754,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	@Override
 	public void registerRackTabbedPane( final GuiTabbedPane rackTabbedPane )
 	{
-		guiHelperController.registerRackTabbedPane( rackTabbedPane );
+		guiController.registerRackTabbedPane( rackTabbedPane );
 	}
 
 	@Override
@@ -766,7 +766,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final String defaultChoice,
 			final YesNoQuestionDialogCallback callback )
 	{
-		guiHelperController.showYesNoQuestionDialog( parentComponent, message, title, messageType,
+		guiController.showYesNoQuestionDialog( parentComponent, message, title, messageType,
 				options, defaultChoice, callback );
 	}
 
@@ -775,7 +775,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final String title, final int messageType, final String initialValue,
 			final TextInputDialogCallback callback )
 	{
-		guiHelperController.showTextInputDialog( parentComponent, message, title,
+		guiController.showTextInputDialog( parentComponent, message, title,
 				messageType, initialValue, callback );
 	}
 
@@ -785,7 +785,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			final int messageType,
 			final MessageDialogCallback callback )
 	{
-		guiHelperController.showMessageDialog( parentComponent, message, title, messageType,
+		guiController.showMessageDialog( parentComponent, message, title, messageType,
 				callback );
 	}
 
