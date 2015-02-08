@@ -21,7 +21,6 @@
 package uk.co.modularaudio.service.guicompfactory.impl.cache.painters;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -29,7 +28,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentPainter;
-import uk.co.modularaudio.service.guicompfactory.impl.components.ColorDefines;
+import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
@@ -37,14 +36,6 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 {
 //	private static Log log = LogFactory.getLog( GuiFrontComponentPainter.class.getName() );
 
-	private static final int DRAG_BAR_WIDTH = 20;
-	private final static int INSET = 3;
-	private final static float ARC = 10;
-
-//	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.6f;
-	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.35f;
-//	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.2f;
-	private static final Color BLANK_FRONT_COLOR = new Color( EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL );
 
 	private final Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
 	private final Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
@@ -65,16 +56,16 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		g2d.setComposite( opaqueComposite );
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
-		final int x = INSET;
+		g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
+		final int x = PaintedComponentDefines.INSET;
 		final int y = 0;
-		final int width = imageWidth - ( 2 * INSET) - 1;
+		final int width = imageWidth - ( 2 * PaintedComponentDefines.INSET) - 1;
 		final int height = imageHeight - 1;
-		final float arcWidth = ARC;
-		final float arcHeight = ARC;
+		final float arcWidth = PaintedComponentDefines.ARC;
+		final float arcHeight = PaintedComponentDefines.ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 		g2d.fill( roundedRectangle );
-		g2d.setColor( ColorDefines.CONTENTS_COLOR );
+		g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
 		g2d.draw( roundedRectangle );
 		// Now switch to erase mode to paint the holes
 		g2d.setComposite( eraseComposite );
@@ -89,7 +80,7 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		drawHole( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + width - holeXOffset, height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		g2d.setComposite( opaqueComposite );
-		g2d.setColor( ColorDefines.LOWLIGHT_COLOR );
+		g2d.setColor( PaintedComponentDefines.LOWLIGHT_COLOR );
 		drawHoleOutline( g2d, x + holeXOffset , holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
@@ -97,9 +88,9 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 
 		final MadUiDefinition<?,?> uiDefinition = rackComponent.getUiDefinition();
 		final BufferedImage rackComponentFrontImage = uiDefinition.getFrontBufferedImage();
-		final int frontStartX = DRAG_BAR_WIDTH;
+		final int frontStartX = PaintedComponentDefines.DRAG_BAR_WIDTH;
 		final int frontStartY = 2;
-		final int frontWidth = imageWidth - (2*DRAG_BAR_WIDTH);
+		final int frontWidth = imageWidth - (2*PaintedComponentDefines.DRAG_BAR_WIDTH);
 		final int frontHeight = imageHeight - 4;
 		if( rackComponentFrontImage != null && useCustomImages )
 		{
@@ -107,7 +98,7 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		}
 		else
 		{
-			g2d.setColor( BLANK_FRONT_COLOR );
+			g2d.setColor( PaintedComponentDefines.BLANK_FRONT_COLOR );
 			g2d.fillRect( frontStartX, frontStartY, frontWidth, frontHeight );
 		}
 	}

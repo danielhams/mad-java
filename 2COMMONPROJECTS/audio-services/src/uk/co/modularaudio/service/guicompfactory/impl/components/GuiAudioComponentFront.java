@@ -109,7 +109,7 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 		g.drawImage( getComponentImage(), 0, 0, null );
 		super.paint( g );
 
-		if( ColorDefines.DRAWING_DEBUG )
+		if( PaintedComponentDefines.DRAWING_DEBUG )
 		{
 			g.setColor( Color.red );
 			g.drawRect( 0, 0, getWidth() - 1, getHeight() - 1);

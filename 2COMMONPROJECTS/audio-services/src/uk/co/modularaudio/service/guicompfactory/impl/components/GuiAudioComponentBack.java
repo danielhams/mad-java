@@ -83,7 +83,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 			final Graphics2D g2d = (Graphics2D)g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
-			g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
+			g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
 			final Rectangle renderedRectangle = getRenderedRectangle();
 			final int x = renderedRectangle.x;
 			final int y = renderedRectangle.y;
@@ -93,13 +93,13 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 			final float arcHeight = ARC;
 			final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 			g2d.fill( roundedRectangle );
-			g2d.setColor( ColorDefines.CONTENTS_COLOR );
+			g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
 			g2d.draw( roundedRectangle );
 		}
 
 		super.paint( g );
 
-		if( ColorDefines.DRAWING_DEBUG )
+		if( PaintedComponentDefines.DRAWING_DEBUG )
 		{
 			g.setColor( Color.red );
 			g.drawRect( 0, 0, getWidth() - 1, getHeight() - 1);

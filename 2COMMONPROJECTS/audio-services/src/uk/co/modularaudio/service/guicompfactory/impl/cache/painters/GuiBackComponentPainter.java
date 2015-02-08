@@ -22,27 +22,18 @@ package uk.co.modularaudio.service.guicompfactory.impl.cache.painters;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentPainter;
-import uk.co.modularaudio.service.guicompfactory.impl.components.ColorDefines;
+import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
 public class GuiBackComponentPainter implements GuiComponentPainter
 {
 //	private static Log log = LogFactory.getLog( GuiBackComponentPainter.class.getName() );
-
-//	private static final int DRAG_BAR_WIDTH = 20;
-//	private final static int INSET = 3;
-	private final static float ARC = 10;
-
-	private static final Color BLANK_BACK_COLOR = new Color( GuiFrontComponentPainter.EMPTY_COMPONENT_GREY_LEVEL,
-			GuiFrontComponentPainter.EMPTY_COMPONENT_GREY_LEVEL,
-			GuiFrontComponentPainter.EMPTY_COMPONENT_GREY_LEVEL );
 
 //	private Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
 //	private Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
@@ -69,7 +60,7 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 		}
 		else
 		{
-			g2d.setColor( BLANK_BACK_COLOR );
+			g2d.setColor( PaintedComponentDefines.BLANK_BACK_COLOR );
 			g2d.fillRect( 0, 0, width, height );
 		}
 		g2d.setComposite( AlphaComposite.SrcOver );
@@ -78,20 +69,20 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 
 	private void paintRoundedComponent( final Graphics2D g2d, final int width, final int height )
 	{
-		final float arcWidth = ARC;
-		final float arcHeight = ARC;
+		final float arcWidth = PaintedComponentDefines.ARC;
+		final float arcHeight = PaintedComponentDefines.ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
-		g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
+		g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
 		g2d.fill( roundedRectangle );
 	}
 
 	private void paintRoundedOutline( final Graphics2D g2d, final int width, final int height )
 	{
 		g2d.setStroke( new BasicStroke( 2 ) );
-		final float arcWidth = ARC;
-		final float arcHeight = ARC;
+		final float arcWidth = PaintedComponentDefines.ARC;
+		final float arcHeight = PaintedComponentDefines.ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
-		g2d.setColor( ColorDefines.CONTENTS_COLOR );
+		g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
 //		g2d.setColor( Color.ORANGE );
 		g2d.draw( roundedRectangle );
 	}
