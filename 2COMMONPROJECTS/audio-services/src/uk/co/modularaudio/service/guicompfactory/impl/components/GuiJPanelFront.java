@@ -32,26 +32,26 @@ public class GuiJPanelFront extends JPanel
 {
 	private static final long serialVersionUID = -3269360028279565801L;
 //	private static Log log = LogFactory.getLog( GuiJPanelFront.class.getName() );
-	
-	private ComponentNameLabel componentNameLabel = null;
 
-	public GuiJPanelFront( RackComponent inComponent )
+	private final ComponentNameLabel componentNameLabel;
+
+	public GuiJPanelFront( final RackComponent inComponent )
 	{
 		this.setOpaque( false );
 		this.setLayout( null );
 		componentNameLabel = new ComponentNameLabel( inComponent );
 		this.add( componentNameLabel );
-		AbstractMadUiControlInstance<?,?,?>[] uiControls = inComponent.getUiControlInstances();
-		for( AbstractMadUiControlInstance<?,?,?> uic : uiControls )
+		final AbstractMadUiControlInstance<?,?,?>[] uiControls = inComponent.getUiControlInstances();
+		for( final AbstractMadUiControlInstance<?,?,?> uic : uiControls )
 		{
-			Component swingComponent = uic.getControl();
+			final Component swingComponent = uic.getControl();
 			this.add(swingComponent );
 			swingComponent.setBounds( uic.getUiControlDefinition().getControlBounds() );
 		}
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
 		super.paintChildren( g );
 	}
@@ -59,6 +59,6 @@ public class GuiJPanelFront extends JPanel
 	public void destroy()
 	{
 //		log.debug("GuiJPanelFront destroy called");
-		this.removeAll();		
+		this.removeAll();
 	}
 }

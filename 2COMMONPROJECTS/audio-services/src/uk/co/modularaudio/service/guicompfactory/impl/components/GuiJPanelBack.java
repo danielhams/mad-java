@@ -44,31 +44,31 @@ public class GuiJPanelBack extends JPanel
 
 //	private static Log log = LogFactory.getLog( GuiJPanelBack.class.getName() );
 
-	private GuiComponentImageCache imageCache = null;
-	
-	private RackComponent rackComponent = null;
-	
-	private BufferedImage composedBackgroundImage = null;
-	
-	private ComponentNameLabel componentNameLabel = null;
-	
-	private GuiChannelPlug[] plugsToDestroy = null;
+	private GuiComponentImageCache imageCache;
 
-	public GuiJPanelBack( GuiComponentImageCache imageCache, RackComponent inComponent )
+	private RackComponent rackComponent;
+
+	private BufferedImage composedBackgroundImage;
+
+	private final ComponentNameLabel componentNameLabel;
+
+	private GuiChannelPlug[] plugsToDestroy;
+
+	public GuiJPanelBack( final GuiComponentImageCache imageCache, final RackComponent inComponent )
 	{
 		this.imageCache = imageCache;
 		this.setOpaque( true );
 		this.setLayout( null );
 		componentNameLabel = new ComponentNameLabel( inComponent );
 		this.add( componentNameLabel );
-		
-		MadUiChannelInstance[] chanDefs = inComponent.getUiChannelInstances();
+
+		final MadUiChannelInstance[] chanDefs = inComponent.getUiChannelInstances();
 		plugsToDestroy = new GuiChannelPlug[ chanDefs.length ];
 		for( int i = 0 ; i < chanDefs.length ; i++ )
 		{
-			MadUiChannelInstance cd = chanDefs[ i ];
+			final MadUiChannelInstance cd = chanDefs[ i ];
 			GuiChannelPlug plug = null;
-			MadChannelDefinition channelDefinition = cd.getChannelInstance().definition;
+			final MadChannelDefinition channelDefinition = cd.getChannelInstance().definition;
 			switch( channelDefinition.type )
 			{
 				case AUDIO:
@@ -96,9 +96,9 @@ public class GuiJPanelBack extends JPanel
 	}
 
 	@Override
-	public void paint(Graphics g)
+	public void paint(final Graphics g)
 	{
-		Dimension curSize = this.getSize();
+		final Dimension curSize = this.getSize();
 		if( composedBackgroundImage == null )
 		{
 			this.composedBackgroundImage = imageCache.getImageForRackComponent( rackComponent, curSize.width, curSize.height, false );
@@ -108,11 +108,11 @@ public class GuiJPanelBack extends JPanel
 
 		super.paintChildren( g );
 	}
-	
-	public GuiChannelPlug getPlugFromPosition(Point localPoint)
+
+	public GuiChannelPlug getPlugFromPosition(final Point localPoint)
 	{
 		GuiChannelPlug retVal = null;
-		Component c = this.getComponentAt( localPoint );
+		final Component c = this.getComponentAt( localPoint );
 		if( c != null )
 		{
 			if( c instanceof GuiChannelPlug )
@@ -123,17 +123,17 @@ public class GuiJPanelBack extends JPanel
 		return retVal;
 	}
 
-	public GuiChannelPlug getPlugFromChannelInstance( MadChannelInstance auChannelInstance )
+	public GuiChannelPlug getPlugFromChannelInstance( final MadChannelInstance auChannelInstance )
 	{
 		GuiChannelPlug retVal = null;
-		Component[] children = this.getComponents();
+		final Component[] children = this.getComponents();
 		boolean foundIt = false;
 		for( int i = 0 ; !foundIt && i < children.length ; i++ )
 		{
-			Component c = children[i];
+			final Component c = children[i];
 			if( c instanceof GuiChannelPlug )
 			{
-				GuiChannelPlug gcp = (GuiChannelPlug)c;
+				final GuiChannelPlug gcp = (GuiChannelPlug)c;
 				if( gcp.getUiChannelInstance().getChannelInstance() == auChannelInstance )
 				{
 					retVal = gcp;

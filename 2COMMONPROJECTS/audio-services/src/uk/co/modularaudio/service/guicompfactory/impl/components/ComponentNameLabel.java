@@ -32,32 +32,25 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentNameChangeListene
 public class ComponentNameLabel extends JLabel implements RackComponentNameChangeListener
 {
 	private static final long serialVersionUID = 3688660710324108889L;
-//	private static final Color COLOR_CREAM = new Color( 191f/256f, 188f/256f, 121f/256f );
-//	private static final Color COLOR_BLACK = new Color( 0f, 0f, 0f );
-	
-//	private String text = null;
-	
-//	private RackComponent rackComponent = null;
-	
-	public ComponentNameLabel( RackComponent rackComponent )
+
+	public ComponentNameLabel( final RackComponent rackComponent )
 	{
-//		this.rackComponent = rackComponent;
 		setOpaque( true );
 		setFont( this.getFont().deriveFont( 9f ) );
-//		setBackground( COLOR_CREAM );
 		setText( rackComponent.getComponentName() );
 		setBounds( 3, 3, 100, 15 );
 		setBorder( new LineBorder( Color.BLACK, 1 ) );
 		rackComponent.addNameChangeListener( this );
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		super.paint( g );
 	}
 
 	@Override
-	public void receiveNewName( String newName )
+	public void receiveNewName( final String newName )
 	{
 		setText( newName );
 	}

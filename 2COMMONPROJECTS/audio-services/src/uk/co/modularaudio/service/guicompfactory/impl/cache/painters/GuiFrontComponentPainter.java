@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.service.guicompfactory.impl.cache.painters;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
@@ -36,10 +34,6 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 {
 //	private static Log log = LogFactory.getLog( GuiFrontComponentPainter.class.getName() );
 
-
-	private final Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
-	private final Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
-
 	public GuiFrontComponentPainter()
 	{
 	}
@@ -53,7 +47,7 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 	{
 		final Graphics2D g2d = bufferedImage.createGraphics();
 		// Draw the things we want seen
-		g2d.setComposite( opaqueComposite );
+		g2d.setComposite( PaintedComponentDefines.OPAQUE_COMPOSITE );
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
@@ -68,7 +62,7 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
 		g2d.draw( roundedRectangle );
 		// Now switch to erase mode to paint the holes
-		g2d.setComposite( eraseComposite );
+		g2d.setComposite( PaintedComponentDefines.ERASE_COMPOSITE );
 		// Draw the holes a little too large.
 		final int holeXOffset = 7;
 		final int holeYOffset = 12;
@@ -79,7 +73,7 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		drawHole( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + width - holeXOffset, height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
-		g2d.setComposite( opaqueComposite );
+		g2d.setComposite( PaintedComponentDefines.OPAQUE_COMPOSITE );
 		g2d.setColor( PaintedComponentDefines.LOWLIGHT_COLOR );
 		drawHoleOutline( g2d, x + holeXOffset , holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );

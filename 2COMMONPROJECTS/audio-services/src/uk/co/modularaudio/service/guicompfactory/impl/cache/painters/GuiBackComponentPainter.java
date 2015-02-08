@@ -35,9 +35,6 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 {
 //	private static Log log = LogFactory.getLog( GuiBackComponentPainter.class.getName() );
 
-//	private Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
-//	private Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
-
 	public GuiBackComponentPainter()
 	{
 	}

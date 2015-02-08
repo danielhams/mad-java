@@ -42,17 +42,16 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 	private static final long serialVersionUID = -117457865168310944L;
 //	private static Log log = LogFactory.getLog( GuiAudioComponentFront.class.getName() );
 
-	private final static int INSET = 3;
 	//	private BufferedImageAllocationService bufferedImageAllocationService = null;
 //	private AllocationMatch allocationMatch = new AllocationMatch();
 
-	private GuiComponentImageCache imageCache = null;
+	private final GuiComponentImageCache imageCache;
 
-	private BufferedImage componentImage = null;
+	private BufferedImage componentImage;
 
 	private final Rectangle renderedRectangle = new Rectangle();
 
-	private GuiJPanelFront guiPanelFront = null;
+	private final GuiJPanelFront guiPanelFront;
 
 	public GuiAudioComponentFront( final GuiComponentImageCache imageCache, final RackComponent inComponent )
 	{
@@ -81,8 +80,8 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 		final int curWidth = this.getWidth();
 		final int mouseXPos = localPoint.x;
 //		int mouseYPos = localPoint.y;
-		if( (mouseXPos > INSET && mouseXPos < INSET + DRAG_BAR_WIDTH) ||
-					(mouseXPos < curWidth - INSET && mouseXPos > curWidth - DRAG_BAR_WIDTH ) )
+		if( (mouseXPos > PaintedComponentDefines.INSET && mouseXPos < PaintedComponentDefines.INSET + DRAG_BAR_WIDTH) ||
+					(mouseXPos < curWidth - PaintedComponentDefines.INSET && mouseXPos > curWidth - DRAG_BAR_WIDTH ) )
 		{
 			return true;
 		}
@@ -104,7 +103,8 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 	@Override
 	public void paint( final Graphics g )
 	{
-		renderedRectangle.setBounds( INSET, 0, this.getWidth() - ( 2 * INSET ),  getHeight() ) ;
+		renderedRectangle.setBounds( PaintedComponentDefines.INSET, 0,
+				this.getWidth() - ( 2 * PaintedComponentDefines.INSET ),  getHeight() ) ;
 		// Paint a rounded rectangle that shows our outline
 		g.drawImage( getComponentImage(), 0, 0, null );
 		super.paint( g );

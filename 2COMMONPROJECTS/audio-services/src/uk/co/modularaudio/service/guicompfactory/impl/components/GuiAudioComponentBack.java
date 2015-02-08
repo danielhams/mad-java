@@ -42,12 +42,9 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 
 //	private static Log log = LogFactory.getLog( GuiAudioComponentBack.class.getName() );
 
-	private final static int HORIZON_INSET = 20;
-	private final static float ARC = 10;
+	private static final boolean SHOW_BOUNDING_BOX = false;
 
-	private final boolean SHOW_BOUNDING_BOX = false;
-
-	private GuiJPanelBack backGuiComponent = null;
+	private final GuiJPanelBack backGuiComponent;
 
 	public GuiAudioComponentBack( final GuiComponentImageCache backImageCache, final RackComponent inComponent )
 	{
@@ -71,7 +68,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 		}
 		// Make sure it doesn't fall in the HORIZON_INSET region
 		final int x = localPoint.x;
-		return ( x >= HORIZON_INSET && x < this.getWidth() - HORIZON_INSET );
+		return ( x >= PaintedComponentDefines.HORIZON_INSET && x < this.getWidth() - PaintedComponentDefines.HORIZON_INSET );
 	}
 
 	@Override
@@ -89,8 +86,8 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 			final int y = renderedRectangle.y;
 			final int width = renderedRectangle.width;
 			final int height = renderedRectangle.height;
-			final float arcWidth = ARC;
-			final float arcHeight = ARC;
+			final float arcWidth = PaintedComponentDefines.ARC;
+			final float arcHeight = PaintedComponentDefines.ARC;
 			final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 			g2d.fill( roundedRectangle );
 			g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
@@ -109,7 +106,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	@Override
 	public Rectangle getRenderedRectangle()
 	{
-		return new Rectangle( HORIZON_INSET , 0, this.getWidth() - (2*HORIZON_INSET), this.getHeight());
+		return new Rectangle( PaintedComponentDefines.HORIZON_INSET , 0, this.getWidth() - (2*PaintedComponentDefines.HORIZON_INSET), this.getHeight());
 	}
 
 	@Override
@@ -117,7 +114,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	{
 		// Transform the point to remove the HROIZON_INSET
 		final Point transformedPoint = new Point( localPoint );
-		transformedPoint.translate( -HORIZON_INSET, 0 );
+		transformedPoint.translate( -PaintedComponentDefines.HORIZON_INSET, 0 );
 		return backGuiComponent.getPlugFromPosition( transformedPoint );
 	}
 

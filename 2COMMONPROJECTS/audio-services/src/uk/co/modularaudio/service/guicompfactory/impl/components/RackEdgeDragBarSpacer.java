@@ -30,24 +30,25 @@ public class RackEdgeDragBarSpacer extends JPanel
 	private static final long serialVersionUID = 223313899946195305L;
 
 	// Actually just a see-through spacer to let the underlying paint through
-	public RackEdgeDragBarSpacer( ComponentSide componentSide )
+	public RackEdgeDragBarSpacer( final ComponentSide componentSide )
 	{
 		this.setOpaque( false );
 		int minWidth = -1;
 		switch( componentSide )
 		{
 		case FRONT:
-			minWidth = 20;
+			minWidth = PaintedComponentDefines.DRAG_BAR_WIDTH;
 			break;
 		case BACK:
-			minWidth = 20;
+			minWidth = PaintedComponentDefines.DRAG_BAR_WIDTH;
 			break;
 		}
-		Dimension minSize = new Dimension( minWidth, 10 );
+		final Dimension minSize = new Dimension( minWidth, 10 );
 		this.setMinimumSize( minSize );
 	}
-	
-	public void paint( Graphics g )
+
+	@Override
+	public void paint( final Graphics g )
 	{
 		// Do nothing - this component is a spacer.
 	}

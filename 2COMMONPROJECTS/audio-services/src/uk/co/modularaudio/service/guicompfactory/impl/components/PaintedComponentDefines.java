@@ -20,7 +20,9 @@
 
 package uk.co.modularaudio.service.guicompfactory.impl.components;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 
 public class PaintedComponentDefines
 {
@@ -35,6 +37,8 @@ public class PaintedComponentDefines
 	public final static int INSET = 3;
 	public final static float ARC = 10;
 
+	public final static int HORIZON_INSET = 20;
+
 //	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.6f;
 	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.35f;
 //	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.2f;
@@ -43,6 +47,10 @@ public class PaintedComponentDefines
 	public static final Color BLANK_BACK_COLOR = new Color( EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL );
 
 	public static final boolean DRAWING_DEBUG = true;
+
+	public static final Composite OPAQUE_COMPOSITE = AlphaComposite.getInstance( AlphaComposite.SRC );
+	public static final Composite ERASE_COMPOSITE = AlphaComposite.getInstance( AlphaComposite.CLEAR );
+
 
 	static
 	{
