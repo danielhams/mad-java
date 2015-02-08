@@ -38,7 +38,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 
-public class GuiJPanelBack extends JPanel
+public class ComponentBack extends JPanel
 {
 	private static final long serialVersionUID = -896982424604292805L;
 
@@ -54,7 +54,7 @@ public class GuiJPanelBack extends JPanel
 
 	private GuiChannelPlug[] plugsToDestroy;
 
-	public GuiJPanelBack( final GuiComponentImageCache imageCache, final RackComponent inComponent )
+	public ComponentBack( final GuiComponentImageCache imageCache, final RackComponent inComponent )
 	{
 		this.imageCache = imageCache;
 		this.setOpaque( true );

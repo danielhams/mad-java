@@ -26,16 +26,16 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 
 
-public class GuiAudioComponentFront extends AbstractGuiAudioComponent
+public class ComponentWithSurroundFront extends AbstractGuiAudioComponent
 {
 	private static final int DRAG_BAR_WIDTH = 20;
 
@@ -51,9 +51,9 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 
 	private final Rectangle renderedRectangle = new Rectangle();
 
-	private final GuiJPanelFront guiPanelFront;
+	private final ComponentFront guiPanelFront;
 
-	public GuiAudioComponentFront( final GuiComponentImageCache imageCache, final RackComponent inComponent )
+	public ComponentWithSurroundFront( final GuiComponentImageCache imageCache, final RackComponent inComponent )
 	{
 		super( inComponent );
 		this.imageCache = imageCache;
@@ -61,10 +61,19 @@ public class GuiAudioComponentFront extends AbstractGuiAudioComponent
 
 		// Allow stuff underneath to show through
 		this.setOpaque( false );
-		this.setLayout( new MigLayout( "inset 1, gap 0, fill", "[][grow, fill][]", "fill") );
+
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		msh.addLayoutConstraint( "inset 1" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "debug" );
+
+		msh.addColumnConstraint( "[][grow, fill][]" );
+		msh.addRowConstraint( "fill" );
+		this.setLayout( msh.createMigLayout() );
 
 		this.add( new RackEdgeDragBarSpacer( ComponentSide.FRONT) );
-		guiPanelFront = new GuiJPanelFront( inComponent );
+		guiPanelFront = new ComponentFront( inComponent );
 		this.add( guiPanelFront );
 		this.add( new RackEdgeDragBarSpacer( ComponentSide.FRONT) );
 	}

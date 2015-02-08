@@ -28,33 +28,43 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 
-import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.table.layeredpane.LayeredPaneTableComponent;
 
-public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements LayeredPaneTableComponent
+public class ComponentWithSurroundBack extends AbstractGuiAudioComponent implements LayeredPaneTableComponent
 {
 	private static final long serialVersionUID = -2752405956760137849L;
 
 //	private static Log log = LogFactory.getLog( GuiAudioComponentBack.class.getName() );
 
-	private static final boolean SHOW_BOUNDING_BOX = false;
+	private static final boolean SHOW_BOUNDING_BOX = true;
 
-	private final GuiJPanelBack backGuiComponent;
+	private final ComponentBack backGuiComponent;
 
-	public GuiAudioComponentBack( final GuiComponentImageCache backImageCache, final RackComponent inComponent )
+	public ComponentWithSurroundBack( final GuiComponentImageCache backImageCache, final RackComponent inComponent )
 	{
 		super( inComponent );
 		// Allow stuff underneath to show through
 		this.setOpaque( false );
-		this.setLayout( new MigLayout( "inset 1, gap 0, fill", "[][grow, fill][]", "fill") );
+
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		msh.addLayoutConstraint( "inset 1" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "debug" );
+
+		msh.addColumnConstraint( "[][grow, fill][]" );
+		msh.addRowConstraint( "fill" );
+
+		this.setLayout( msh.createMigLayout() );
 
 		this.add( new RackEdgeDragBarSpacer( ComponentSide.BACK) );
-		backGuiComponent = new GuiJPanelBack( backImageCache, inComponent );
+		backGuiComponent = new ComponentBack( backImageCache, inComponent );
 		this.add( backGuiComponent );
 		this.add( new RackEdgeDragBarSpacer( ComponentSide.BACK) );
 	}
@@ -68,7 +78,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 		}
 		// Make sure it doesn't fall in the HORIZON_INSET region
 		final int x = localPoint.x;
-		return ( x >= PaintedComponentDefines.HORIZON_INSET && x < this.getWidth() - PaintedComponentDefines.HORIZON_INSET );
+		return ( x >= PaintedComponentDefines.DRAG_BAR_WIDTH && x < this.getWidth() - PaintedComponentDefines.DRAG_BAR_WIDTH );
 	}
 
 	@Override
@@ -106,7 +116,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	@Override
 	public Rectangle getRenderedRectangle()
 	{
-		return new Rectangle( PaintedComponentDefines.HORIZON_INSET , 0, this.getWidth() - (2*PaintedComponentDefines.HORIZON_INSET), this.getHeight());
+		return new Rectangle( PaintedComponentDefines.DRAG_BAR_WIDTH , 0, this.getWidth() - (2*PaintedComponentDefines.DRAG_BAR_WIDTH), this.getHeight());
 	}
 
 	@Override
@@ -114,7 +124,7 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	{
 		// Transform the point to remove the HROIZON_INSET
 		final Point transformedPoint = new Point( localPoint );
-		transformedPoint.translate( -PaintedComponentDefines.HORIZON_INSET, 0 );
+		transformedPoint.translate( -PaintedComponentDefines.DRAG_BAR_WIDTH, 0 );
 		return backGuiComponent.getPlugFromPosition( transformedPoint );
 	}
 

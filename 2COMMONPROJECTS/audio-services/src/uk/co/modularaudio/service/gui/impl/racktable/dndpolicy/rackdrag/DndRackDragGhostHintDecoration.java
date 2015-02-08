@@ -23,7 +23,7 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.rackdrag;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTable;
 import uk.co.modularaudio.util.swing.dndtable.layeredpane.LayeredPaneDndTableDecorationHint;
 

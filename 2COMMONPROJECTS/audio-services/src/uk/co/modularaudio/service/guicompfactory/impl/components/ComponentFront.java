@@ -28,14 +28,14 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
-public class GuiJPanelFront extends JPanel
+public class ComponentFront extends JPanel
 {
 	private static final long serialVersionUID = -3269360028279565801L;
 //	private static Log log = LogFactory.getLog( GuiJPanelFront.class.getName() );
 
 	private final ComponentNameLabel componentNameLabel;
 
-	public GuiJPanelFront( final RackComponent inComponent )
+	public ComponentFront( final RackComponent inComponent )
 	{
 		this.setOpaque( false );
 		this.setLayout( null );

@@ -21,15 +21,15 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.GuiComponentImageCache;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.bia.ComponentBackImageACache;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.bia.ComponentFrontImageACache;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.raw.ComponentBackImageRCache;
 import uk.co.modularaudio.service.guicompfactory.impl.cache.raw.ComponentFrontImageRCache;
-import uk.co.modularaudio.service.guicompfactory.impl.components.GuiAudioComponentBack;
-import uk.co.modularaudio.service.guicompfactory.impl.components.GuiAudioComponentFront;
+import uk.co.modularaudio.service.guicompfactory.impl.components.ComponentWithSurroundBack;
+import uk.co.modularaudio.service.guicompfactory.impl.components.ComponentWithSurroundFront;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -71,13 +71,13 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 	@Override
 	public AbstractGuiAudioComponent createBackGuiComponent(final RackComponent inComponent)
 	{
-		return new GuiAudioComponentBack( backComponentImageCache, inComponent );
+		return new ComponentWithSurroundBack( backComponentImageCache, inComponent );
 	}
 
 	@Override
 	public AbstractGuiAudioComponent createFrontGuiComponent(final RackComponent inComponent)
 	{
-		return new GuiAudioComponentFront( frontComponentImageCache, inComponent );
+		return new ComponentWithSurroundFront( frontComponentImageCache, inComponent );
 	}
 
 	public void setBufferedImageAllocationService(

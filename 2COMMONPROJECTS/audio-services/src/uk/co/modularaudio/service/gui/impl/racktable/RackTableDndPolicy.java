@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.gui.impl.racktable;
 
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.service.gui;
+package uk.co.modularaudio.service.guicompfactory;
 
 import java.awt.Point;
 import java.awt.Rectangle;

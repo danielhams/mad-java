@@ -28,8 +28,8 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
+import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 
 public class DndWireDragDrawingHelper
 {

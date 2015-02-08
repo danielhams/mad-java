@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.guicompfactory;
 
-import uk.co.modularaudio.service.gui.AbstractGuiAudioComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 
 public interface GuiComponentFactoryService
