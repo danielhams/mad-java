@@ -30,8 +30,8 @@ public class ComponentBackImageACache extends AbstractComponentImageACache
 
 	private static final GuiComponentPainter PAINTER = new GuiBackComponentPainter();
 
-	public ComponentBackImageACache( final BufferedImageAllocationService imageAllocationService )
+	public ComponentBackImageACache( final BufferedImageAllocationService imageAllocationService, final boolean useCustomImages  )
 	{
-		super( CACHE_ALLOCATION_NAME, imageAllocationService, PAINTER );
+		super( CACHE_ALLOCATION_NAME, imageAllocationService, PAINTER, useCustomImages );
 	}
 }

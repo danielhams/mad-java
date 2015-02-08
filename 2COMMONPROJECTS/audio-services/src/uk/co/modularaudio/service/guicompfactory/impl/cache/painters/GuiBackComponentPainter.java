@@ -46,22 +46,24 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 
 //	private Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
 //	private Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
-	
+
 	public GuiBackComponentPainter()
 	{
 	}
 
-	public void drawComponentImage( RackComponent rackComponent,
-			BufferedImage bufferedImage,
-			int width,
-			int height )
+	@Override
+	public void drawComponentImage( final RackComponent rackComponent,
+			final BufferedImage bufferedImage,
+			final boolean useCustomImages,
+			final int width,
+			final int height )
 	{
-		Graphics2D g2d = bufferedImage.createGraphics();
-		MadUiDefinition<?,?> uiDefinition = rackComponent.getUiDefinition();
+		final Graphics2D g2d = bufferedImage.createGraphics();
+		final MadUiDefinition<?,?> uiDefinition = rackComponent.getUiDefinition();
 		paintRoundedComponent( g2d, width, height );
-		BufferedImage rackBackImage = uiDefinition.getBackBufferedImage();
+		final BufferedImage rackBackImage = uiDefinition.getBackBufferedImage();
 		g2d.setComposite( AlphaComposite.SrcIn );
-		if( rackBackImage != null )
+		if( rackBackImage != null && useCustomImages )
 		{
 			g2d.drawImage( rackBackImage, 0, 0, width, height, null );
 		}
@@ -73,22 +75,22 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 		g2d.setComposite( AlphaComposite.SrcOver );
 		paintRoundedOutline( g2d, width, height );
 	}
-	
-	private void paintRoundedComponent( Graphics2D g2d, int width, int height )
+
+	private void paintRoundedComponent( final Graphics2D g2d, final int width, final int height )
 	{
-		float arcWidth = ARC;
-		float arcHeight = ARC;
-		RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
+		final float arcWidth = ARC;
+		final float arcHeight = ARC;
+		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
 		g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
 		g2d.fill( roundedRectangle );
 	}
 
-	private void paintRoundedOutline( Graphics2D g2d, int width, int height )
+	private void paintRoundedOutline( final Graphics2D g2d, final int width, final int height )
 	{
 		g2d.setStroke( new BasicStroke( 2 ) );
-		float arcWidth = ARC;
-		float arcHeight = ARC;
-		RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
+		final float arcWidth = ARC;
+		final float arcHeight = ARC;
+		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
 		g2d.setColor( ColorDefines.CONTENTS_COLOR );
 //		g2d.setColor( Color.ORANGE );
 		g2d.draw( roundedRectangle );

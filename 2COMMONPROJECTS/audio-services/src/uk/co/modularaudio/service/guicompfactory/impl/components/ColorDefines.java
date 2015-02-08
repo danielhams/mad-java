@@ -25,11 +25,14 @@ import java.awt.Color;
 public class ColorDefines
 {
 
-	public static final Color CONTENTS_COLOR = new Color( 0.3f, 0.3f, 0.3f );
+	public static final Color CONTENTS_COLOR = new Color( 0.2f, 0.2f, 0.2f );
+//	public static final Color CONTENTS_COLOR = new Color( 0.3f, 0.3f, 0.3f );
 //	public static final Color CONTENTS_COLOR = new Color( 0.6f, 0.6f, 0.6f );
 	public static final Color HIGHLIGHT_COLOR;
 	public static final Color LOWLIGHT_COLOR;
-	
+
+	public static final boolean DRAWING_DEBUG = true;
+
 	static
 	{
 		HIGHLIGHT_COLOR = CONTENTS_COLOR.brighter();

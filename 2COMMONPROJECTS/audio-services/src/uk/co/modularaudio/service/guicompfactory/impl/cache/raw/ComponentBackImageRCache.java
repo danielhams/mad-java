@@ -27,8 +27,8 @@ public class ComponentBackImageRCache extends AbstractComponentImageRCache
 {
 	private static final GuiComponentPainter PAINTER = new GuiBackComponentPainter();
 
-	public ComponentBackImageRCache()
+	public ComponentBackImageRCache( final boolean useCustomImages )
 	{
-		super( PAINTER );
+		super( PAINTER, useCustomImages );
 	}
 }

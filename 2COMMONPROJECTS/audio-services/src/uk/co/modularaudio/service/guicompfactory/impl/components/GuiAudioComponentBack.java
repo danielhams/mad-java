@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.guicompfactory.impl.components;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -40,21 +41,21 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	private static final long serialVersionUID = -2752405956760137849L;
 
 //	private static Log log = LogFactory.getLog( GuiAudioComponentBack.class.getName() );
-	
+
 	private final static int HORIZON_INSET = 20;
 	private final static float ARC = 10;
-	
+
 	private final boolean SHOW_BOUNDING_BOX = false;
-	
+
 	private GuiJPanelBack backGuiComponent = null;
-	
-	public GuiAudioComponentBack( GuiComponentImageCache backImageCache, RackComponent inComponent )
+
+	public GuiAudioComponentBack( final GuiComponentImageCache backImageCache, final RackComponent inComponent )
 	{
 		super( inComponent );
 		// Allow stuff underneath to show through
 		this.setOpaque( false );
 		this.setLayout( new MigLayout( "inset 1, gap 0, fill", "[][grow, fill][]", "fill") );
-		
+
 		this.add( new RackEdgeDragBarSpacer( ComponentSide.BACK) );
 		backGuiComponent = new GuiJPanelBack( backImageCache, inComponent );
 		this.add( backGuiComponent );
@@ -62,41 +63,47 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	}
 
 	@Override
-	public boolean isPointLocalDragRegion(Point localPoint)
+	public boolean isPointLocalDragRegion(final Point localPoint)
 	{
 		if( !rackComponent.isDraggable() )
 		{
 			return false;
 		}
 		// Make sure it doesn't fall in the HORIZON_INSET region
-		int x = localPoint.x;
+		final int x = localPoint.x;
 		return ( x >= HORIZON_INSET && x < this.getWidth() - HORIZON_INSET );
 	}
-	
+
 	@Override
-	public void paint( Graphics g )
+	public void paint( final Graphics g )
 	{
 		// Paint a rounded rectangle that shows our outline
 		if( SHOW_BOUNDING_BOX )
 		{
-			Graphics2D g2d = (Graphics2D)g;
+			final Graphics2D g2d = (Graphics2D)g;
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_ON);
 			g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
-			Rectangle renderedRectangle = getRenderedRectangle();
-			int x = renderedRectangle.x;
-			int y = renderedRectangle.y;
-			int width = renderedRectangle.width;
-			int height = renderedRectangle.height;
-			float arcWidth = ARC;
-			float arcHeight = ARC;
-			RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
+			final Rectangle renderedRectangle = getRenderedRectangle();
+			final int x = renderedRectangle.x;
+			final int y = renderedRectangle.y;
+			final int width = renderedRectangle.width;
+			final int height = renderedRectangle.height;
+			final float arcWidth = ARC;
+			final float arcHeight = ARC;
+			final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 			g2d.fill( roundedRectangle );
 			g2d.setColor( ColorDefines.CONTENTS_COLOR );
 			g2d.draw( roundedRectangle );
 		}
-		
+
 		super.paint( g );
+
+		if( ColorDefines.DRAWING_DEBUG )
+		{
+			g.setColor( Color.red );
+			g.drawRect( 0, 0, getWidth() - 1, getHeight() - 1);
+		}
 	}
 
 	@Override
@@ -106,20 +113,21 @@ public class GuiAudioComponentBack extends AbstractGuiAudioComponent implements 
 	}
 
 	@Override
-	public GuiChannelPlug getPlugFromPosition(Point localPoint)
+	public GuiChannelPlug getPlugFromPosition(final Point localPoint)
 	{
 		// Transform the point to remove the HROIZON_INSET
-		Point transformedPoint = new Point( localPoint );
+		final Point transformedPoint = new Point( localPoint );
 		transformedPoint.translate( -HORIZON_INSET, 0 );
 		return backGuiComponent.getPlugFromPosition( transformedPoint );
 	}
 
 	@Override
-	public GuiChannelPlug getPlugFromMadChannelInstance( MadChannelInstance auChannelInstance )
+	public GuiChannelPlug getPlugFromMadChannelInstance( final MadChannelInstance auChannelInstance )
 	{
 		return backGuiComponent.getPlugFromChannelInstance( auChannelInstance );
 	}
-	
+
+	@Override
 	public String toString()
 	{
 		return rackComponent.toString();

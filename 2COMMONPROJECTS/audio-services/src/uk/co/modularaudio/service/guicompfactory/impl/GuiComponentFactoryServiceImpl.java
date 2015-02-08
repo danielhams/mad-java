@@ -44,19 +44,20 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 	private GuiComponentImageCache backComponentImageCache;
 
 	private final static boolean USE_ALLOCATOR_TO_BACK_IMAGES = true;
+	private final static boolean USE_CUSTOM_IMAGES = true;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 		if( USE_ALLOCATOR_TO_BACK_IMAGES )
 		{
-			frontComponentImageCache = new ComponentFrontImageACache( bufferedImageAllocationService );
-			backComponentImageCache = new ComponentBackImageACache( bufferedImageAllocationService );
+			frontComponentImageCache = new ComponentFrontImageACache( bufferedImageAllocationService, USE_CUSTOM_IMAGES );
+			backComponentImageCache = new ComponentBackImageACache( bufferedImageAllocationService, USE_CUSTOM_IMAGES );
 		}
 		else
 		{
-			frontComponentImageCache = new ComponentFrontImageRCache();
-			backComponentImageCache = new ComponentBackImageRCache();
+			frontComponentImageCache = new ComponentFrontImageRCache( USE_CUSTOM_IMAGES );
+			backComponentImageCache = new ComponentBackImageRCache( USE_CUSTOM_IMAGES );
 		}
 	}
 

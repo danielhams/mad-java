@@ -80,7 +80,7 @@ public class AppRenderingServiceImpl
 	private final static int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 1024;
 
 	// Two seconds of hotspotting
-	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 2000;
+	private static final long HOTSPOT_COMPILATION_TIME_MILLIS = 3000;
 
 	private boolean doStartupHotspot;
 

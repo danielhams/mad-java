@@ -29,6 +29,7 @@ public interface GuiComponentPainter
 
 	public abstract void drawComponentImage( RackComponent rackComponent,
 			BufferedImage bufferedImage,
+			boolean useCustomImages,
 			int imageWidth,
 			int imageHeight );
 

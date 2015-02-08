@@ -43,45 +43,47 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 
 //	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.6f;
 	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.35f;
+//	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.2f;
 	private static final Color BLANK_FRONT_COLOR = new Color( EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL, EMPTY_COMPONENT_GREY_LEVEL );
-	
-	private Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
-	private Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
-	
+
+	private final Composite opaqueComposite = AlphaComposite.getInstance( AlphaComposite.SRC );
+	private final Composite eraseComposite = AlphaComposite.getInstance( AlphaComposite.CLEAR );
+
 	public GuiFrontComponentPainter()
 	{
 	}
 
 	@Override
-	public void drawComponentImage( RackComponent rackComponent,
-			BufferedImage bufferedImage,
-			int imageWidth,
-			int imageHeight )
+	public void drawComponentImage( final RackComponent rackComponent,
+			final BufferedImage bufferedImage,
+			final boolean useCustomImages,
+			final int imageWidth,
+			final int imageHeight )
 	{
-		Graphics2D g2d = bufferedImage.createGraphics();
+		final Graphics2D g2d = bufferedImage.createGraphics();
 		// Draw the things we want seen
 		g2d.setComposite( opaqueComposite );
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor( ColorDefines.HIGHLIGHT_COLOR );
-		int x = INSET;
-		int y = 0;
-		int width = imageWidth - ( 2 * INSET) - 1;
-		int height = imageHeight - 1;
-		float arcWidth = ARC;
-		float arcHeight = ARC;
-		RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
+		final int x = INSET;
+		final int y = 0;
+		final int width = imageWidth - ( 2 * INSET) - 1;
+		final int height = imageHeight - 1;
+		final float arcWidth = ARC;
+		final float arcHeight = ARC;
+		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 		g2d.fill( roundedRectangle );
 		g2d.setColor( ColorDefines.CONTENTS_COLOR );
 		g2d.draw( roundedRectangle );
 		// Now switch to erase mode to paint the holes
 		g2d.setComposite( eraseComposite );
 		// Draw the holes a little too large.
-		int holeXOffset = 7;
-		int holeYOffset = 12;
-		int holeRadius = 2;
-		int eraseHoleXRadius = holeRadius + 2;
-		int eraseHoleYRadius = holeRadius + 1;
+		final int holeXOffset = 7;
+		final int holeYOffset = 12;
+		final int holeRadius = 2;
+		final int eraseHoleXRadius = holeRadius + 2;
+		final int eraseHoleYRadius = holeRadius + 1;
 		drawHole( g2d, x + holeXOffset , holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
@@ -92,14 +94,14 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		drawHoleOutline( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, x + width - holeXOffset, height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
-		
-		MadUiDefinition<?,?> uiDefinition = rackComponent.getUiDefinition();
-		BufferedImage rackComponentFrontImage = uiDefinition.getFrontBufferedImage();
-		int frontStartX = DRAG_BAR_WIDTH;
-		int frontStartY = 2;
-		int frontWidth = imageWidth - (2*DRAG_BAR_WIDTH);
-		int frontHeight = imageHeight - 4;
-		if( rackComponentFrontImage != null )
+
+		final MadUiDefinition<?,?> uiDefinition = rackComponent.getUiDefinition();
+		final BufferedImage rackComponentFrontImage = uiDefinition.getFrontBufferedImage();
+		final int frontStartX = DRAG_BAR_WIDTH;
+		final int frontStartY = 2;
+		final int frontWidth = imageWidth - (2*DRAG_BAR_WIDTH);
+		final int frontHeight = imageHeight - 4;
+		if( rackComponentFrontImage != null && useCustomImages )
 		{
 			g2d.drawImage( rackComponentFrontImage, frontStartX, frontStartY, frontWidth, frontHeight, null );
 		}
@@ -110,21 +112,21 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		}
 	}
 
-	private void drawHole( Graphics2D g2d, int xCenter, int yCenter, int xRadius, int yRadius )
+	private void drawHole( final Graphics2D g2d, final int xCenter, final int yCenter, final int xRadius, final int yRadius )
 	{
-		int startX = xCenter - xRadius;
-		int startY = yCenter - yRadius;
-		int width = xRadius * 2;
-		int height = yRadius * 2;
+		final int startX = xCenter - xRadius;
+		final int startY = yCenter - yRadius;
+		final int width = xRadius * 2;
+		final int height = yRadius * 2;
 		g2d.fillOval( startX, startY, width, height );
 	}
 
-	private void drawHoleOutline( Graphics2D g2d, int xCenter, int yCenter, int xRadius, int yRadius )
+	private void drawHoleOutline( final Graphics2D g2d, final int xCenter, final int yCenter, final int xRadius, final int yRadius )
 	{
-		int startX = xCenter - xRadius;
-		int startY = yCenter - yRadius;
-		int width = xRadius * 2;
-		int height = yRadius * 2;
+		final int startX = xCenter - xRadius;
+		final int startY = yCenter - yRadius;
+		final int width = xRadius * 2;
+		final int height = yRadius * 2;
 		g2d.drawOval( startX, startY, width, height );
 	}
 

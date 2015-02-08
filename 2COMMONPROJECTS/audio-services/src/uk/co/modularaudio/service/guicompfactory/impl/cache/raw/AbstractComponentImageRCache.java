@@ -39,28 +39,31 @@ import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 public class AbstractComponentImageRCache implements GuiComponentImageCache
 {
 	private static Log log = LogFactory.getLog( AbstractComponentImageRCache.class.getName() );
-	
+
 	private final GuiComponentPainter painter;
 
-	private HashMap<MadDefinition<?,?>, 
-		OpenLongObjectHashMap<BufferedImage>> madDefinitionToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
-			OpenLongObjectHashMap<BufferedImage>>();
-	
-	public AbstractComponentImageRCache( GuiComponentPainter painter )
+	private final boolean useCustomImages;
+
+	private final HashMap<MadDefinition<?,?>, OpenLongObjectHashMap<BufferedImage>> madDefinitionToMapOfDimToImage =
+			new HashMap<MadDefinition<?,?>, OpenLongObjectHashMap<BufferedImage>>();
+
+	public AbstractComponentImageRCache( final GuiComponentPainter painter, final boolean useCustomImages )
 	{
 		this.painter = painter;
+		this.useCustomImages = useCustomImages;
 	}
-	
-	public BufferedImage getImageForRackComponent( RackComponent rackComponent, int width, int height, boolean isFront )
+
+	@Override
+	public BufferedImage getImageForRackComponent( final RackComponent rackComponent, final int width, final int height, final boolean isFront )
 	{
 //		log.debug("Creating image for " + rackComponent.getInstance().getDefinition().getName() + " of (" + width + ", " + height + ")");
 
-		MadInstance<?, ?> madInstance = rackComponent.getInstance();
-		MadDefinition<?,?> madDefinition = madInstance.getDefinition();
-		long compoundKey = buildCompoundKey( width, height );
+		final MadInstance<?, ?> madInstance = rackComponent.getInstance();
+		final MadDefinition<?,?> madDefinition = madInstance.getDefinition();
+		final long compoundKey = buildCompoundKey( width, height );
 
 		OpenLongObjectHashMap<BufferedImage> dimensionsToImageMap = madDefinitionToMapOfDimToImage.get( madDefinition );
-		
+
 		BufferedImage bufferedImage = null;
 		if( dimensionsToImageMap != null && dimensionsToImageMap.containsKey( compoundKey ) )
 		{
@@ -72,11 +75,11 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 			{
 				bufferedImage = new BufferedImage( width, height,
 						AllocationBufferType.TYPE_INT_ARGB.getJavaBufferedImageType() );
-						
-				painter.drawComponentImage( rackComponent, bufferedImage, width, height );
-				
+
+				painter.drawComponentImage( rackComponent, bufferedImage, useCustomImages, width, height );
+
 				// If the component isn't configurable we can dispose of the related image.
-				MadUiDefinition<?, ?> uiDefinition = rackComponent.getUiDefinition();
+				final MadUiDefinition<?, ?> uiDefinition = rackComponent.getUiDefinition();
 				if( !uiDefinition.isParametrable() )
 				{
 					if( isFront )
@@ -88,7 +91,11 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 						uiDefinition.clearBackBufferedImage();
 					}
 				}
-				
+				else
+				{
+					log.warn( "Holding on to component image: " + madDefinition.getId() );
+				}
+
 				if( dimensionsToImageMap == null )
 				{
 					dimensionsToImageMap = new OpenLongObjectHashMap<BufferedImage>();
@@ -96,24 +103,25 @@ public class AbstractComponentImageRCache implements GuiComponentImageCache
 				}
 				dimensionsToImageMap.put( compoundKey, bufferedImage );
 			}
-			catch ( Exception e )
+			catch ( final Exception e )
 			{
-				String msg = "Exception caught creating cached gui front image: " + e.toString();
+				final String msg = "Exception caught creating cached gui front image: " + e.toString();
 				log.error( msg, e );
 			}
 		}
 		return bufferedImage;
 	}
 
-	private long buildCompoundKey( int width, int height )
+	private long buildCompoundKey( final int width, final int height )
 	{
-		return ((long)width << 32) | (long)height;
+		return ((long)width << 32) | height;
 	}
 
+	@Override
 	public void destroy()
 	{
-		Collection<OpenLongObjectHashMap<BufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
-		for( OpenLongObjectHashMap<BufferedImage> imsForType : typeToBufs )
+		final Collection<OpenLongObjectHashMap<BufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
+		for( final OpenLongObjectHashMap<BufferedImage> imsForType : typeToBufs )
 		{
 			imsForType.clear();
 		}

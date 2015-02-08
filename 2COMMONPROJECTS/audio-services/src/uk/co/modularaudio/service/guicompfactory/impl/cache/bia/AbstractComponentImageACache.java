@@ -43,41 +43,46 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 public class AbstractComponentImageACache implements GuiComponentImageCache
 {
 	private static Log log = LogFactory.getLog( AbstractComponentImageACache.class.getName() );
-	
+
 	private final String guiCacheAllocationName;
 
 	private final BufferedImageAllocationService bufferedImageAllocationService;
-	
-	private final GuiComponentPainter painter;
 
-	private HashMap<MadDefinition<?,?>, 
+	private final GuiComponentPainter painter;
+	private final boolean useCustomImages;
+
+	private final HashMap<MadDefinition<?,?>,
 		OpenLongObjectHashMap<TiledBufferedImage>> madDefinitionToMapOfDimToImage = new HashMap<MadDefinition<?,?>,
 			OpenLongObjectHashMap<TiledBufferedImage>>();
-	
-	private AllocationMatch allocationMatchToUse = new AllocationMatch();
-	
+
+	private final AllocationMatch allocationMatchToUse = new AllocationMatch();
+
 	public AbstractComponentImageACache(
-			String guiCacheAllocationName,
-			BufferedImageAllocationService bufferedImageAllocationService,
-			GuiComponentPainter painter )
+			final String guiCacheAllocationName,
+			final BufferedImageAllocationService bufferedImageAllocationService,
+			final GuiComponentPainter painter,
+			final boolean useCustomImages  )
 	{
 		this.guiCacheAllocationName = guiCacheAllocationName;
-		
+
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
-		
+
 		this.painter = painter;
+
+		this.useCustomImages = useCustomImages;
 	}
-	
-	public BufferedImage getImageForRackComponent( RackComponent rackComponent, int width, int height, boolean isFront )
+
+	@Override
+	public BufferedImage getImageForRackComponent( final RackComponent rackComponent, final int width, final int height, final boolean isFront )
 	{
 //		log.debug("Creating image for " + rackComponent.getInstance().getDefinition().getName() + " of (" + width + ", " + height + ")");
 
-		MadInstance<?, ?> madInstance = rackComponent.getInstance();
-		MadDefinition<?,?> madDefinition = madInstance.getDefinition();
-		long compoundKey = buildCompoundKey( width, height );
+		final MadInstance<?, ?> madInstance = rackComponent.getInstance();
+		final MadDefinition<?,?> madDefinition = madInstance.getDefinition();
+		final long compoundKey = buildCompoundKey( width, height );
 
 		OpenLongObjectHashMap<TiledBufferedImage> dimensionsToImageMap = madDefinitionToMapOfDimToImage.get( madDefinition );
-		
+
 		TiledBufferedImage tiledImage = null;
 		if( dimensionsToImageMap != null && dimensionsToImageMap.containsKey( compoundKey ) )
 		{
@@ -93,12 +98,12 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 						AllocationLifetime.LONG,
 						AllocationBufferType.TYPE_INT_ARGB,
 						width, height );
-				
-				BufferedImage bufferedImage = tiledImage.getUnderlyingBufferedImage();
-				painter.drawComponentImage( rackComponent, bufferedImage, width, height );
-				
+
+				final BufferedImage bufferedImage = tiledImage.getUnderlyingBufferedImage();
+				painter.drawComponentImage( rackComponent, bufferedImage, useCustomImages, width, height );
+
 				// If the component isn't configurable we can dispose of the related image.
-				MadUiDefinition<?, ?> uiDefinition = rackComponent.getUiDefinition();
+				final MadUiDefinition<?, ?> uiDefinition = rackComponent.getUiDefinition();
 				if( !uiDefinition.isParametrable() )
 				{
 					if( isFront )
@@ -110,7 +115,11 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 						uiDefinition.clearBackBufferedImage();
 					}
 				}
-				
+				else
+				{
+					log.warn("Holding on to component image: " + madDefinition.getId() );
+				}
+
 				if( dimensionsToImageMap == null )
 				{
 					dimensionsToImageMap = new OpenLongObjectHashMap<TiledBufferedImage>();
@@ -118,35 +127,36 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 				}
 				dimensionsToImageMap.put( compoundKey, tiledImage );
 			}
-			catch ( Exception e )
+			catch ( final Exception e )
 			{
-				String msg = "Exception caught creating cached gui front image: " + e.toString();
+				final String msg = "Exception caught creating cached gui front image: " + e.toString();
 				log.error( msg, e );
 			}
 		}
 		return tiledImage.getUnderlyingBufferedImage();
 	}
 
-	private long buildCompoundKey( int width, int height )
+	private long buildCompoundKey( final int width, final int height )
 	{
-		return ((long)width << 32) | (long)height;
+		return ((long)width << 32) | height;
 	}
 
+	@Override
 	public void destroy()
 	{
-		Collection<OpenLongObjectHashMap<TiledBufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
-		for( OpenLongObjectHashMap<TiledBufferedImage> imsForType : typeToBufs )
+		final Collection<OpenLongObjectHashMap<TiledBufferedImage>> typeToBufs = madDefinitionToMapOfDimToImage.values();
+		for( final OpenLongObjectHashMap<TiledBufferedImage> imsForType : typeToBufs )
 		{
-			Collection<TiledBufferedImage> bufsStillRemaining = imsForType.values();
-			for( TiledBufferedImage toDestroy : bufsStillRemaining )
+			final Collection<TiledBufferedImage> bufsStillRemaining = imsForType.values();
+			for( final TiledBufferedImage toDestroy : bufsStillRemaining )
 			{
 				try
 				{
 					bufferedImageAllocationService.freeBufferedImage( toDestroy );
 				}
-				catch ( Exception e )
+				catch ( final Exception e )
 				{
-					String msg = "Exception caught freeing cached front component image: " + e.toString();
+					final String msg = "Exception caught freeing cached front component image: " + e.toString();
 					log.error( msg, e );
 				}
 			}

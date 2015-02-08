@@ -27,8 +27,8 @@ public class ComponentFrontImageRCache extends AbstractComponentImageRCache
 {
 	private static final GuiComponentPainter PAINTER = new GuiFrontComponentPainter();
 
-	public ComponentFrontImageRCache()
+	public ComponentFrontImageRCache(final boolean useCustomImages )
 	{
-		super( PAINTER );
+		super( PAINTER, useCustomImages );
 	}
 }
