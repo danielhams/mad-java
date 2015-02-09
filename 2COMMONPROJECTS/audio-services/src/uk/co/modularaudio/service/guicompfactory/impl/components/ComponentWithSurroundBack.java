@@ -40,9 +40,9 @@ public class ComponentWithSurroundBack extends AbstractGuiAudioComponent impleme
 {
 	private static final long serialVersionUID = -2752405956760137849L;
 
-//	private static Log log = LogFactory.getLog( GuiAudioComponentBack.class.getName() );
+//	private static Log log = LogFactory.getLog( ComponentWithSurroundBack.class.getName() );
 
-	private static final boolean SHOW_BOUNDING_BOX = true;
+	private static final boolean SHOW_BOUNDING_BOX = false;
 
 	private final ComponentBack backGuiComponent;
 
@@ -56,7 +56,7 @@ public class ComponentWithSurroundBack extends AbstractGuiAudioComponent impleme
 		msh.addLayoutConstraint( "inset 1" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
-		msh.addLayoutConstraint( "debug" );
+//		msh.addLayoutConstraint( "debug" );
 
 		msh.addColumnConstraint( "[][grow, fill][]" );
 		msh.addRowConstraint( "fill" );
@@ -96,8 +96,8 @@ public class ComponentWithSurroundBack extends AbstractGuiAudioComponent impleme
 			final int y = renderedRectangle.y;
 			final int width = renderedRectangle.width;
 			final int height = renderedRectangle.height;
-			final float arcWidth = PaintedComponentDefines.ARC;
-			final float arcHeight = PaintedComponentDefines.ARC;
+			final float arcWidth = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
+			final float arcHeight = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
 			final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 			g2d.fill( roundedRectangle );
 			g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );

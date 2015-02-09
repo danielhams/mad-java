@@ -40,7 +40,7 @@ public class ComponentWithSurroundFront extends AbstractGuiAudioComponent
 	private static final int DRAG_BAR_WIDTH = 20;
 
 	private static final long serialVersionUID = -117457865168310944L;
-//	private static Log log = LogFactory.getLog( GuiAudioComponentFront.class.getName() );
+//	private static Log log = LogFactory.getLog( ComponentWithSurroundFront.class.getName() );
 
 	//	private BufferedImageAllocationService bufferedImageAllocationService = null;
 //	private AllocationMatch allocationMatch = new AllocationMatch();
@@ -66,7 +66,7 @@ public class ComponentWithSurroundFront extends AbstractGuiAudioComponent
 		msh.addLayoutConstraint( "inset 1" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
-		msh.addLayoutConstraint( "debug" );
+//		msh.addLayoutConstraint( "debug" );
 
 		msh.addColumnConstraint( "[][grow, fill][]" );
 		msh.addRowConstraint( "fill" );

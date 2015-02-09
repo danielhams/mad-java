@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.guicompfactory.impl.components;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
@@ -33,12 +34,15 @@ public class ComponentNameLabel extends JLabel implements RackComponentNameChang
 {
 	private static final long serialVersionUID = 3688660710324108889L;
 
+	private final Rectangle bounds;
+
 	public ComponentNameLabel( final RackComponent rackComponent )
 	{
 		setOpaque( true );
 		setFont( this.getFont().deriveFont( 9f ) );
 		setText( rackComponent.getComponentName() );
-		setBounds( 3, 3, 100, 15 );
+		bounds = new Rectangle( 3, 3, 100, 15 );
+		setBounds( bounds );
 		setBorder( new LineBorder( Color.BLACK, 1 ) );
 		rackComponent.addNameChangeListener( this );
 	}
@@ -46,6 +50,7 @@ public class ComponentNameLabel extends JLabel implements RackComponentNameChang
 	@Override
 	public void paint( final Graphics g )
 	{
+		g.translate( bounds.x, bounds.y );
 		super.paint( g );
 	}
 

@@ -108,11 +108,11 @@ public class AbstractComponentImageACache implements GuiComponentImageCache
 				{
 					if( isFront )
 					{
-						uiDefinition.clearFrontBufferedImage();
+//						uiDefinition.clearFrontBufferedImage();
 					}
 					else
 					{
-						uiDefinition.clearBackBufferedImage();
+//						uiDefinition.clearBackBufferedImage();
 					}
 				}
 				else

@@ -55,8 +55,8 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		final int y = 0;
 		final int width = imageWidth - ( 2 * PaintedComponentDefines.INSET) - 1;
 		final int height = imageHeight - 1;
-		final float arcWidth = PaintedComponentDefines.ARC;
-		final float arcHeight = PaintedComponentDefines.ARC;
+		final float arcWidth = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
+		final float arcHeight = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( x, y, width, height, arcWidth, arcHeight );
 		g2d.fill( roundedRectangle );
 		g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
@@ -64,11 +64,11 @@ public class GuiFrontComponentPainter implements GuiComponentPainter
 		// Now switch to erase mode to paint the holes
 		g2d.setComposite( PaintedComponentDefines.ERASE_COMPOSITE );
 		// Draw the holes a little too large.
-		final int holeXOffset = 7;
-		final int holeYOffset = 12;
-		final int holeRadius = 2;
-		final int eraseHoleXRadius = holeRadius + 2;
-		final int eraseHoleYRadius = holeRadius + 1;
+		final int holeXOffset = PaintedComponentDefines.HOLE_POS_X_OFFSET;
+		final int holeYOffset = PaintedComponentDefines.HOLE_POS_Y_OFFSET;
+		final int holeRadius = PaintedComponentDefines.HOLE_BASE_RADIUS;
+		final int eraseHoleXRadius = holeRadius + PaintedComponentDefines.HOLE_SURROUND_RADIUS_X;
+		final int eraseHoleYRadius = holeRadius + PaintedComponentDefines.HOLE_SURROUND_RADIUS_Y;
 		drawHole( g2d, x + holeXOffset , holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + holeXOffset , height - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHole( g2d, x + width - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );

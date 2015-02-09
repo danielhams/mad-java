@@ -42,7 +42,7 @@ public class ComponentBack extends JPanel
 {
 	private static final long serialVersionUID = -896982424604292805L;
 
-//	private static Log log = LogFactory.getLog( GuiJPanelBack.class.getName() );
+//	private static Log log = LogFactory.getLog( ComponentBack.class.getName() );
 
 	private GuiComponentImageCache imageCache;
 
@@ -92,7 +92,6 @@ public class ComponentBack extends JPanel
 		}
 
 		this.rackComponent = inComponent;
-//		this.backgroundImage = rackComponent.getBackBufferedImage();
 	}
 
 	@Override
@@ -146,7 +145,6 @@ public class ComponentBack extends JPanel
 
 	public void destroy()
 	{
-//		log.debug("GuiJPanelBack destroy called");
 		this.removeAll();
 		for( int i = 0 ; i < plugsToDestroy.length ; i++ )
 		{

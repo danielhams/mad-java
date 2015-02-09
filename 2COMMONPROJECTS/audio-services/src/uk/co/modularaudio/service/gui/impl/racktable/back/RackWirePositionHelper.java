@@ -50,7 +50,7 @@ public class RackWirePositionHelper
 		absolutePosition.translate( internalChannelOffset.x, internalChannelOffset.y );
 		absolutePosition.translate( renderedRectangle.x, renderedRectangle.y );
 		// TODO THIS IS A HACK FOR THE INSETS IN BACK AND FRONT CONTAINERS
-		absolutePosition.translate( 1, 1 );
+//		absolutePosition.translate( 1, 1 );
 		return absolutePosition;
 	}
 

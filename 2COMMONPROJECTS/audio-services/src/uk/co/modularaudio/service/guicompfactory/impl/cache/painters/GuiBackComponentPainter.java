@@ -66,8 +66,8 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 
 	private void paintRoundedComponent( final Graphics2D g2d, final int width, final int height )
 	{
-		final float arcWidth = PaintedComponentDefines.ARC;
-		final float arcHeight = PaintedComponentDefines.ARC;
+		final float arcWidth = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
+		final float arcHeight = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
 		g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
 		g2d.fill( roundedRectangle );
@@ -76,8 +76,8 @@ public class GuiBackComponentPainter implements GuiComponentPainter
 	private void paintRoundedOutline( final Graphics2D g2d, final int width, final int height )
 	{
 		g2d.setStroke( new BasicStroke( 2 ) );
-		final float arcWidth = PaintedComponentDefines.ARC;
-		final float arcHeight = PaintedComponentDefines.ARC;
+		final float arcWidth = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
+		final float arcHeight = PaintedComponentDefines.OUTSIDE_BORDER_ARC;
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float( 0, 0, width, height, arcWidth, arcHeight );
 		g2d.setColor( PaintedComponentDefines.CONTENTS_COLOR );
 //		g2d.setColor( Color.ORANGE );

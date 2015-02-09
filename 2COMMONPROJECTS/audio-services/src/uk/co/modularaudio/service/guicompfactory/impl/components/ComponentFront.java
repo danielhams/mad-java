@@ -31,7 +31,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 public class ComponentFront extends JPanel
 {
 	private static final long serialVersionUID = -3269360028279565801L;
-//	private static Log log = LogFactory.getLog( GuiJPanelFront.class.getName() );
+//	private static Log log = LogFactory.getLog( ComponentFront.class.getName() );
 
 	private final ComponentNameLabel componentNameLabel;
 
@@ -58,7 +58,6 @@ public class ComponentFront extends JPanel
 
 	public void destroy()
 	{
-//		log.debug("GuiJPanelFront destroy called");
 		this.removeAll();
 	}
 }

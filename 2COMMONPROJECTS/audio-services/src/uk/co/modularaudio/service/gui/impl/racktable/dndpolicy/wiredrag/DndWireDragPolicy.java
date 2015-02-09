@@ -391,22 +391,22 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				else
 				{
 					// Calculate the start position for the wire we are dragging
-					final RackComponent mic = dataModel.getContentsAtPosition( 0, 0 );
+					final RackComponent masterIO = dataModel.getContentsAtPosition( 0, 0 );
 
-					final boolean targetIsMic = ( dragEndRackComponent == mic );
-					final boolean sourceIsMic = ( dragStartRackComponent == mic );
+					final boolean targetIsMasterIO = ( dragEndRackComponent == masterIO );
+					final boolean sourceIsMasterIO = ( dragStartRackComponent == masterIO );
 					final MadUiChannelInstance uiChannelInstance = testDragEndChannelPlug.getUiChannelInstance();
 					final MadInstance<?,?> targetRackComponentInstance = dragEndRackComponent.getInstance();
 					final MadChannelInstance channelInstance = uiChannelInstance.getChannelInstance();
 
-					if( targetIsMic )
+					if( targetIsMasterIO )
 					{
 						isTarget = isValidIOLinkTarget( table,
 								component,
 								targetRackComponentInstance,
 								channelInstance );
 					}
-					else if( sourceIsMic )
+					else if( sourceIsMasterIO )
 					{
 						isTarget = isValidIOLinkTarget( table,
 								component,

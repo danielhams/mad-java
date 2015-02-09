@@ -37,7 +37,7 @@ public class PaintedComponentDefines
 	public final static int DRAG_BAR_WIDTH = 20;
 //	public final static int DRAG_BAR_WIDTH = 22;
 	public final static int INSET = 3;
-	public final static float ARC = 10;
+	public final static float OUTSIDE_BORDER_ARC = 10;
 
 //	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.6f;
 	public final static float EMPTY_COMPONENT_GREY_LEVEL = 0.35f;
@@ -49,6 +49,7 @@ public class PaintedComponentDefines
 	public static final boolean DRAWING_DEBUG = false;
 
 	public static final Composite OPAQUE_COMPOSITE = AlphaComposite.getInstance( AlphaComposite.SRC );
+	public static final Composite SRCOVER_COMPOSITE = AlphaComposite.getInstance( AlphaComposite.SRC_OVER );
 	public static final Composite ERASE_COMPOSITE = AlphaComposite.getInstance( AlphaComposite.CLEAR );
 
 
@@ -57,5 +58,25 @@ public class PaintedComponentDefines
 		HIGHLIGHT_COLOR = CONTENTS_COLOR.brighter();
 		LOWLIGHT_COLOR = CONTENTS_COLOR.darker();
 	}
+
+	public static final int HOLE_BASE_RADIUS = 2;
+	public static final int HOLE_SURROUND_RADIUS_X = 2;
+	public static final int HOLE_SURROUND_RADIUS_Y = 1;
+	public static final int HOLE_POS_Y_OFFSET = 12;
+	public static final int HOLE_POS_X_OFFSET = 7;
+
+	// Plus one for the bar we will stretch the whole width/height as a "surround"
+	public final static int FRONT_MIN_WIDTH = DRAG_BAR_WIDTH * 2 + 1;
+	public final static int FRONT_MIN_HEIGHT = ((HOLE_POS_Y_OFFSET * 2) * 2) + 1;
+	public final static int FRONT_ONE_CORNER_HEIGHT = HOLE_POS_Y_OFFSET * 2;
+	public final static int FRONT_ONE_CORNER_WIDTH = DRAG_BAR_WIDTH;
+	public final static int FRONT_BOTTOM_TOP_INSET = 4;
+
+	public final static int BACK_INSET_WIDTH = 5;
+	public final static int BACK_MIN_WIDTH = BACK_INSET_WIDTH * 2 + 1;
+	public final static int BACK_MIN_HEIGHT = BACK_INSET_WIDTH * 2 + 1;
+	public final static int BACK_ONE_CORNER_HEIGHT = BACK_INSET_WIDTH;
+	public final static int BACK_ONE_CORNER_WIDTH = BACK_INSET_WIDTH;
+	public final static int BACK_BOTTOM_TOP_INSET = 4;
 
 }

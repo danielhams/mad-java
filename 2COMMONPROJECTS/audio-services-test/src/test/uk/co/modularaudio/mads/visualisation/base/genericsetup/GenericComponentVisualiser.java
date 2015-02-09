@@ -36,8 +36,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
@@ -57,7 +55,7 @@ import uk.co.modularaudio.util.table.Span;
 
 public class GenericComponentVisualiser
 {
-	private static Log log = LogFactory.getLog( GenericComponentVisualiser.class.getName() );
+//	private static Log log = LogFactory.getLog( GenericComponentVisualiser.class.getName() );
 
 	private GenericApplicationContext gac = null;
 	public MadComponentService componentService = null;
@@ -138,9 +136,9 @@ public class GenericComponentVisualiser
 			@Override
 			public void componentResized( final ComponentEvent e )
 			{
-				final Object o = e.getSource();
-				final JFrame frame = (JFrame)o;
-				log.debug("Component resized to be " + frame.getSize() );
+//				final Object o = e.getSource();
+//				final JFrame frame = (JFrame)o;
+//				log.debug("Component resized to be " + frame.getSize() );
 			}
 
 			@Override
