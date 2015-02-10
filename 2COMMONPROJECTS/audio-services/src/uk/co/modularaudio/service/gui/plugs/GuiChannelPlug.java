@@ -58,9 +58,9 @@ public abstract class GuiChannelPlug extends JPanel implements GuiPlugImageCreat
 		this.setOpaque( false );
 		this.uiChannelInstance = sacd;
 		center = sacd.getCenter();
-		final int startX = center.x - SOCKET_DIAMETER / 2;
-		final int startY = center.y - SOCKET_DIAMETER / 2;
-		plugBounds = new Rectangle( startX, startY, SOCKET_DIAMETER + 3, SOCKET_DIAMETER + 3);
+		final int startX = center.x - (SOCKET_DIAMETER / 2);
+		final int startY = center.y - (SOCKET_DIAMETER / 2);
+		plugBounds = new Rectangle( startX, startY, SOCKET_DIAMETER + 2, SOCKET_DIAMETER + 2);
 		this.setBounds( plugBounds );
 	}
 

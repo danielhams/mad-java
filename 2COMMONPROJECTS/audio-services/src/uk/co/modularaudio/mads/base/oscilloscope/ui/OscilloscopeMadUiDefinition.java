@@ -79,10 +79,10 @@ public class OscilloscopeMadUiDefinition
 
 	private static final Rectangle[] COUNTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 116,   3, 434,  30 ),		// Capture Time
-		new Rectangle(   6,  36, 424, 110 ),		// Display
-		new Rectangle( 436,  36, 120,  30 ),		// Trigger Combo
-		new Rectangle( 436,  76, 120,  30 ),		// Repetitions
-		new Rectangle( 436, 116, 120,  30 )			// Recapture
+		new Rectangle(   6,  36, 418, 110 ),		// Display
+		new Rectangle( 430,  36, 120,  30 ),		// Trigger Combo
+		new Rectangle( 430,  76, 120,  30 ),		// Repetitions
+		new Rectangle( 430, 116, 120,  30 )			// Recapture
 	};
 
 	private static final Class<OscilloscopeMadUiInstance> INSTANCE_CLASS = OscilloscopeMadUiInstance.class;

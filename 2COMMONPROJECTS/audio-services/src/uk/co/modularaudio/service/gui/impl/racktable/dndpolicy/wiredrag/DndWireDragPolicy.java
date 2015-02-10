@@ -128,10 +128,10 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				final TablePosition tp = dataModel.getContentsOriginReturnNull( tableComponent );
 				final Dimension gridSize = table.getGridSize();
 				final Rectangle plugBounds = channelPlug.getBounds();
-				final int hintXOffset = tp.x * gridSize.width + newDragSourcerenderedRectangle.x + plugBounds.x;
-				final int hintYOffset = tp.y * gridSize.height + newDragSourcerenderedRectangle.y + plugBounds.y;
-				final int hintWidth = plugBounds.width;
-				final int hintHeight = plugBounds.height;
+				final int hintXOffset = tp.x * gridSize.width + newDragSourcerenderedRectangle.x + plugBounds.x - 2;
+				final int hintYOffset = tp.y * gridSize.height + newDragSourcerenderedRectangle.y + plugBounds.y - 2;
+				final int hintWidth = plugBounds.width + 3;
+				final int hintHeight = plugBounds.height + 3;
 				final Rectangle hintRectangle = new Rectangle( hintXOffset, hintYOffset, hintWidth, hintHeight );
 
 				if( channelPlug != regionHintSourceGuiChannelPlug || !currentPlugHintRectangle .equals( hintRectangle ) )

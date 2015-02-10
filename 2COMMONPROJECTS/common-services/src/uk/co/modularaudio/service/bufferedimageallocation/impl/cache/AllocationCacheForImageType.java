@@ -258,6 +258,7 @@ public class AllocationCacheForImageType
 				// Create a custom assignment
 				widthToAlloc = imageWidthToUse;
 				heightToAlloc = imageHeightToUse;
+				log.debug( "Allocating image larger than cache dimensions: " + imageWidthToUse + ", " + imageHeightToUse );
 			}
 
 			// Allocate raw image
