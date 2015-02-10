@@ -23,7 +23,7 @@
 	</target>
 	
 	<target name="xjcbuild">
-		<xjc destdir="src" package="uk.co.modularaudio.service.rackmarshalling.generated.madrack_0_0_1">
+		<xjc destdir="src" package="uk.co.modularaudio.service.rackmarshalling.generated.madrack">
 			  <schema  dir="${schema.dir}" includes="madrack.xsd"/>
 		  <binding dir="${output.dir}" includes="*.xjb"/>
 		</xjc>

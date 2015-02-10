@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Initial Empty Rack" cols="4" rows="29">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Initial Empty Rack" cols="4" rows="29">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="MasterOutMixer" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="MasterOutMixer" rackComponentChannelInstanceName="Output Channel 2"/>
     <rackComponent name="Cross Fader 13" definitionId="cross_fader">
@@ -180,7 +180,7 @@
     <rackComponent name="Soundfile Player (Roll Painter) 14" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/home/dan/Music/PreferNotToLoseMusic/SetSources/OriginalWavs/20130215/3977441_Venus_Original_Mix.wav"/>
+        <rackControl name="SelectFile" value="/home/dan/gPodder/Downloads/Let_s Go Techno Podcast/LGTP003_ERIC_SNEO.mp3"/>
         <rackControl name="ZoomToggleGroup" value="1"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="SpeedSlider" value="100.0"/>

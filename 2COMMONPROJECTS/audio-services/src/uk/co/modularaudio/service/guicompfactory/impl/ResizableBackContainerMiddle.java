@@ -85,7 +85,7 @@ public class ResizableBackContainerMiddle extends JPanel
 		this.add( realComponent, "grow, wrap" );
 		this.add( bBorder, "growx" );
 
-		componentNameLabel = new ComponentNameLabel( rc );
+		componentNameLabel = new ComponentNameLabel( rc, this );
 	}
 
 	@Override

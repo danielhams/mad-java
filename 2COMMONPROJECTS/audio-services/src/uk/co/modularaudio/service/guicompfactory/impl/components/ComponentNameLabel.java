@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.guicompfactory.impl.components;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
@@ -35,9 +36,11 @@ public class ComponentNameLabel extends JLabel implements RackComponentNameChang
 	private static final long serialVersionUID = 3688660710324108889L;
 
 	private final Rectangle bounds;
+	private final Component parentForRefresh;
 
-	public ComponentNameLabel( final RackComponent rackComponent )
+	public ComponentNameLabel( final RackComponent rackComponent, final Component parentForRefresh )
 	{
+		this.parentForRefresh = parentForRefresh;
 		setOpaque( true );
 		setFont( this.getFont().deriveFont( 9f ) );
 		setText( rackComponent.getComponentName() );
@@ -58,6 +61,7 @@ public class ComponentNameLabel extends JLabel implements RackComponentNameChang
 	public void receiveNewName( final String newName )
 	{
 		setText( newName );
+		parentForRefresh.repaint();
 	}
 
 }
