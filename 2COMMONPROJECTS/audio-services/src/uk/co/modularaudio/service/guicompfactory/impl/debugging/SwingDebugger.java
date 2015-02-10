@@ -1,4 +1,4 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce;
+package uk.co.modularaudio.service.guicompfactory.impl.debugging;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,8 +8,10 @@ import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.service.guicompfactory.impl.MemReducedComponentFactory;
+import uk.co.modularaudio.service.guicompfactory.impl.ResizableBackContainer;
+import uk.co.modularaudio.service.guicompfactory.impl.ResizableFrontContainer;
 import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
-import uk.co.modularaudio.service.guicompfactory.impl.memreduce.fakemad.FakeRackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;

@@ -1,10 +1,7 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce;
+package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.gui.plugs.GuiAudioChannelPlug;
 import uk.co.modularaudio.service.gui.plugs.GuiCVChannelPlug;
@@ -22,7 +19,7 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 {
 	private static final long serialVersionUID = 5369121173959977190L;
 
-	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
+//	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
 
 	private final FixedSizeTransparentCorner ltCorner;
 	private final FixedXTransparentBorder lBorder;

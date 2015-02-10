@@ -1,13 +1,10 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce;
+package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
@@ -18,9 +15,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class MemReducedComponentFactory
 {
-	private static Log log = LogFactory.getLog( MemReducedComponentFactory.class.getName() );
-
-//	private final BufferedImageAllocationService bias;
+//	private static Log log = LogFactory.getLog( MemReducedComponentFactory.class.getName() );
 
 	private final ContainerImages frontDecorationImages;
 	private final ContainerImages backDecorationImages;
@@ -29,8 +24,6 @@ public class MemReducedComponentFactory
 
 	public MemReducedComponentFactory( final BufferedImageAllocationService bias ) throws MadProcessingException, DatastoreException
 	{
-//		this.bias = bufferedImageAllocationService;
-
 		frontDecorationImages = drawFrontDecorations();
 		backDecorationImages = drawBackDecorations();
 

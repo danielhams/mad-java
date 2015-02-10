@@ -1,4 +1,4 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce;
+package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Point;
 import java.awt.Rectangle;

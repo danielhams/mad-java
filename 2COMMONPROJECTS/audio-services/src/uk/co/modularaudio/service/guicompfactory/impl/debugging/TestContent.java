@@ -1,4 +1,4 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce;
+package uk.co.modularaudio.service.guicompfactory.impl.debugging;
 
 import javax.swing.JPanel;
 

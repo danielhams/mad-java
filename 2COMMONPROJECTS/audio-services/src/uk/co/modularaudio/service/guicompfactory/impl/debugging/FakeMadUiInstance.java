@@ -1,4 +1,4 @@
-package uk.co.modularaudio.service.guicompfactory.impl.memreduce.fakemad;
+package uk.co.modularaudio.service.guicompfactory.impl.debugging;
 
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
