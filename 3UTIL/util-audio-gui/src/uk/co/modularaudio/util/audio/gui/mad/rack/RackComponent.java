@@ -26,7 +26,7 @@ import java.util.List;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -38,10 +38,10 @@ public class RackComponent implements RackModelTableSpanningContents
 	private String name;
 	private MadInstance<?,?> ci;
 	private MadUiDefinition<?, ?> uiDefinition;
-	private MadUiInstance<?,?> cui;
+	private IMadUiInstance<?,?> cui;
 	private final List<RackComponentNameChangeListener> nameChangeListeners = new ArrayList<RackComponentNameChangeListener>();
 
-	public RackComponent( final String name, final MadInstance<?,?> ci, final MadUiInstance<?, ?> cui )
+	public RackComponent( final String name, final MadInstance<?,?> ci, final IMadUiInstance<?, ?> cui )
 	{
 		this.name = name;
 		this.ci = ci;
@@ -54,7 +54,7 @@ public class RackComponent implements RackModelTableSpanningContents
 		return cui.getUiDefinition();
 	}
 
-	public MadUiInstance<?, ?> getUiInstance()
+	public IMadUiInstance<?, ?> getUiInstance()
 	{
 		return cui;
 	}

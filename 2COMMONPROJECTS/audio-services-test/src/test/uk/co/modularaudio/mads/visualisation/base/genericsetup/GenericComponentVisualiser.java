@@ -43,7 +43,7 @@ import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -100,7 +100,7 @@ public class GenericComponentVisualiser
 		final String instanceName = "panel_test";
 		final MadInstance<?,?> aui = componentService.createInstanceFromDefinition( compressorDef, parameterValues, instanceName );
 
-		final MadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
+		final IMadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
 
 		final JFrame testFrame = new JFrame();
 		final JPanel testPanel = new JPanel();

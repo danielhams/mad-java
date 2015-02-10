@@ -26,7 +26,7 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -56,7 +56,7 @@ public class SubRackComponentsUiFactory extends AbstractMadComponentUiFactory
 	}
 
 	@Override
-	public void destroyUiInstance( final MadUiInstance<?, ?> instanceToDestroy )
+	public void destroyUiInstance( final IMadUiInstance<?, ?> instanceToDestroy )
 			throws DatastoreException, RecordNotFoundException
 	{
 		// Clean it up before we actually destroy it

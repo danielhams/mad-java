@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
-public interface MadUiInstance
+public interface IMadUiInstance
 	<D extends MadDefinition<D,I>, I extends MadInstance<D, I> >
 {
 	

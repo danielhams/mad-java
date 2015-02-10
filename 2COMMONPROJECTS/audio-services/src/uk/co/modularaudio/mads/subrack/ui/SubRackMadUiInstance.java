@@ -40,7 +40,7 @@ import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.service.util.filesaveextension.CDFileSaveAccessory;
@@ -145,7 +145,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		for( int i  =0 ; i < subRackComponents.size() ; i++ )
 		{
 			final RackComponent rackComponent = subRackComponents.get( i );
-			final MadUiInstance<?, ?> uiInstance = rackComponent.getUiInstance();
+			final IMadUiInstance<?, ?> uiInstance = rackComponent.getUiInstance();
 
 			if( doAll || uiInstance instanceof SubRackMadUiInstance )
 			{

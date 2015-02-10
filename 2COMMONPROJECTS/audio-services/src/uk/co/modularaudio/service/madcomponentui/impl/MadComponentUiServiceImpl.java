@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -125,7 +125,7 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public MadUiInstance<?,?> createUiInstanceForInstance( final MadInstance<?,?> instance )
+	public IMadUiInstance<?,?> createUiInstanceForInstance( final MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
 		final MadDefinition<?,?> definition = instance.getDefinition();
@@ -142,7 +142,7 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public void destroyUiInstance( final MadUiInstance<?, ?> uiInstance ) throws RecordNotFoundException, DatastoreException
+	public void destroyUiInstance( final IMadUiInstance<?, ?> uiInstance ) throws RecordNotFoundException, DatastoreException
 	{
 		final MadDefinition<?,?> def = uiInstance.getInstance().getDefinition();
 		final MadComponentUiFactory factory = auDefinitionToFactoryMap.get( def );
