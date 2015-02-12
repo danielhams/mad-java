@@ -71,13 +71,17 @@ public abstract class RawWaveTableGenerator
 			{
 				log.info( "Generating wave table for " + uniqueName + " - please be patient" ); // NOPMD by dan on 01/02/15 07:11
 			}
-			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
-			// And write it out
-			final File cacheFileDir = new File( cacheFileRoot).getParentFile();
-			if( !cacheFileDir.mkdirs() )
+			// Ensure parent dir exists
+			final File parent = new File(pathToCachedWave).getParentFile();
+			if( !parent.exists() )
 			{
-				throw new IOException( "Failed to make containing directory: " + cacheFileDir.getAbsolutePath() );
+				if( !parent.mkdirs() )
+				{
+					throw new IOException("Failed creating parent for wave table cache: " + parent.getAbsolutePath() );
+				}
 			}
+
+			retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
 
 			final String tmpPath = pathToCachedWave + ".tmp";
 			final WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
