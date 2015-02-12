@@ -1,16 +1,20 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class FixedYTransparentBorder extends JPanel
 {
 	private static final long serialVersionUID = -3847210402134143546L;
 
-//	private static Log log = LogFactory.getLog( FixedYTransparentBorder.class.getName() );
+	private static Log log = LogFactory.getLog( FixedYTransparentBorder.class.getName() );
 
 	private final BufferedImage bi;
 
@@ -24,7 +28,7 @@ public class FixedYTransparentBorder extends JPanel
 		this.setSize( size );
 		this.setMinimumSize( size );
 		this.setPreferredSize( size );
-//		log.debug("Set size to " + size.width + "," + size.height );
+		log.debug("Set size to " + size.width + "," + size.height );
 	}
 
 	@Override
@@ -33,7 +37,10 @@ public class FixedYTransparentBorder extends JPanel
 		final int width = getWidth();
 		final int height = getHeight();
 
-//		log.debug("Fixed Y is " + width + ", " + height );
+		g.setColor(Color.RED);
+		g.fillRect( 0, 0, width, height );
+
+		log.debug("Fixed Y is " + width + ", " + height );
 
 		g.drawImage( bi, 0, 0, width, height, null );
 	}

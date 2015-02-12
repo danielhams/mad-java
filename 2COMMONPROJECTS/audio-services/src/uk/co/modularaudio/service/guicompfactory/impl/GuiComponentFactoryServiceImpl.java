@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
+import uk.co.modularaudio.service.guicompfactory.impl.debugging.SwingDebugger;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -46,6 +47,7 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 		try
 		{
 			memReducedComponentFactory = new MemReducedComponentFactory( bufferedImageAllocationService );
+			final SwingDebugger swingDebugger = new SwingDebugger( bufferedImageAllocationService, memReducedComponentFactory );
 		}
 		catch( final DatastoreException | MadProcessingException de )
 		{

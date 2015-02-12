@@ -91,16 +91,16 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 		containerMiddle = new ResizableBackContainerMiddle( backImages, rc, plugsToDestroy );
 
-		this.add( ltCorner, "" );
+		this.add( ltCorner, "grow 0" );
 
 		this.add( containerMiddle, "grow, spany 3" );
 
-		this.add( rtCorner, "wrap");
+		this.add( rtCorner, "grow 0, wrap");
 		this.add( lBorder, "growy" );
 
 		this.add( rBorder, "growy, wrap" );
-		this.add( lbCorner, "" );
-		this.add( rbCorner );
+		this.add( lbCorner, "grow 0" );
+		this.add( rbCorner, "grow 0" );
 
 		this.renderedRectangle = new Rectangle( PaintedComponentDefines.DRAG_BAR_WIDTH +
 					PaintedComponentDefines.BACK_INSET_WIDTH,
