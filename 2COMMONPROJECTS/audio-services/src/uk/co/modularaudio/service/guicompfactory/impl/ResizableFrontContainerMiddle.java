@@ -1,6 +1,5 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -8,7 +7,6 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.service.guicompfactory.impl.components.ComponentNameLabel;
 import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
@@ -23,24 +21,6 @@ public class ResizableFrontContainerMiddle extends JPanel
 
 	private final ComponentNameLabel componentNameLabel;
 	private final BufferedImage backgroundImage;
-
-	private class RealComponent extends JPanel
-	{
-		private static final long serialVersionUID = 5211955307472576952L;
-
-		public RealComponent( final RackComponent rc )
-		{
-			this.setOpaque( false );
-			this.setLayout( null );
-			final AbstractMadUiControlInstance<?,?,?>[] uiControls = rc.getUiControlInstances();
-			for( final AbstractMadUiControlInstance<?,?,?> uic : uiControls )
-			{
-				final Component swingComponent = uic.getControl();
-				this.add(swingComponent );
-				swingComponent.setBounds( uic.getUiControlDefinition().getControlBounds() );
-			}
-		}
-	}
 
 	public ResizableFrontContainerMiddle( final ContainerImages ci, final RackComponent rc )
 	{
@@ -62,7 +42,7 @@ public class ResizableFrontContainerMiddle extends JPanel
 		bBorder = new FixedYTransparentBorder( ci.bibi );
 
 		this.add( tBorder, "growx, wrap" );
-		this.add( new RealComponent( rc ), "grow, wrap" );
+		this.add( new RealComponentFront( rc ), "grow, wrap" );
 		this.add( bBorder, "growx" );
 
 		componentNameLabel = new ComponentNameLabel( rc, this );

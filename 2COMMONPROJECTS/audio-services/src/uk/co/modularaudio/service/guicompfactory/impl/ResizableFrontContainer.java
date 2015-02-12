@@ -16,15 +16,9 @@ public class ResizableFrontContainer extends AbstractGuiAudioComponent
 
 //	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
 
-	private final FixedSizeTransparentCorner ltCorner;
-	private final FixedXTransparentBorder lBorder;
-	private final FixedSizeTransparentCorner lbCorner;
-
-	private final FixedSizeTransparentCorner rtCorner;
-	private final FixedXTransparentBorder rBorder;
-	private final FixedSizeTransparentCorner rbCorner;
-
+	private final ResizableContainerLeft containerLeft;
 	private final ResizableFrontContainerMiddle containerMiddle;
+	private final ResizableContainerRight containerRight;
 
 
 	private final Rectangle renderedRectangle;
@@ -43,30 +37,16 @@ public class ResizableFrontContainer extends AbstractGuiAudioComponent
 //		msh.addLayoutConstraint( "debug" );
 
 		msh.addColumnConstraint( "[][grow][]" );
-		msh.addRowConstraint( "[][grow][]" );
 
 		setLayout( msh.createMigLayout() );
 
-		ltCorner = new FixedSizeTransparentCorner( frontImages.ltbi );
-		lBorder = new FixedXTransparentBorder( frontImages.libi );
-		lbCorner = new FixedSizeTransparentCorner( frontImages.lbbi );
-
-		rtCorner = new FixedSizeTransparentCorner( frontImages.rtbi );
-		rBorder = new FixedXTransparentBorder( frontImages.ribi );
-		rbCorner = new FixedSizeTransparentCorner( frontImages.rbbi );
-
+		containerLeft = new ResizableContainerLeft( frontImages );
 		containerMiddle = new ResizableFrontContainerMiddle( frontImages, rc );
+		containerRight = new ResizableContainerRight( frontImages );
 
-		this.add( ltCorner, "" );
-
-		this.add( containerMiddle, "grow, spany 3" );
-
-		this.add( rtCorner, "wrap");
-		this.add( lBorder, "growy" );
-
-		this.add( rBorder, "growy, wrap" );
-		this.add( lbCorner, "" );
-		this.add( rbCorner );
+		this.add( containerLeft, "growy, width " + frontImages.ltbi.getWidth() + "!");
+		this.add( containerMiddle, "grow");
+		this.add( containerRight, "growy, width " + frontImages.rtbi.getWidth() + "!");
 
 		this.renderedRectangle = new Rectangle( 20, 20 );
 	}

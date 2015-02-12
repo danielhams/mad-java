@@ -21,9 +21,9 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 //	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
 
-	private final ResizableBackContainerLeft containerLeft;
+	private final ResizableContainerLeft containerLeft;
 	private final ResizableBackContainerMiddle containerMiddle;
-	private final ResizableBackContainerRight containerRight;
+	private final ResizableContainerRight containerRight;
 
 	private final Rectangle renderedRectangle;
 
@@ -77,11 +77,11 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 		realComponentBack = new RealComponentBack( this, rc );
 
-		containerLeft = new ResizableBackContainerLeft( backImages );
+		containerLeft = new ResizableContainerLeft( backImages );
 
 		containerMiddle = new ResizableBackContainerMiddle( backImages, realComponentBack, rc );
 
-		containerRight = new ResizableBackContainerRight( backImages );
+		containerRight = new ResizableContainerRight( backImages );
 
 		this.add( containerLeft, "growy, width " + backImages.ltbi.getWidth() + "!");
 		this.add( containerMiddle, "grow");

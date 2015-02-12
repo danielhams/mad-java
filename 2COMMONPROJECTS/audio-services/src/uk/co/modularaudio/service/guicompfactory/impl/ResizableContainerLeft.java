@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class ResizableBackContainerLeft extends JPanel
+public class ResizableContainerLeft extends JPanel
 {
 	private static final long serialVersionUID = 5700599707006370407L;
 
@@ -16,7 +16,7 @@ public class ResizableBackContainerLeft extends JPanel
 	private final FixedXTransparentBorder lBorder;
 	private final FixedSizeTransparentCorner bottomCorner;
 
-	public ResizableBackContainerLeft( final ContainerImages ci )
+	public ResizableContainerLeft( final ContainerImages ci )
 	{
 		this.setOpaque( false );
 
