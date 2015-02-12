@@ -41,6 +41,7 @@ public class FixedYTransparentBorder extends JPanel
 
 		log.debug("Fixed Y is " + width + ", " + height );
 
-		g.drawImage( bi, 0, 0, width, height, null );
+		// Ugly + 10 hack to get around bug where size passed isn't actual screen sizze :-(
+		g.drawImage( bi, 0, 0, width+10, height, null );
 	}
 }
