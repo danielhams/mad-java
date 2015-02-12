@@ -1,6 +1,5 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -25,46 +24,15 @@ public class ResizableBackContainerMiddle extends JPanel
 	private final ComponentNameLabel componentNameLabel;
 	private final BufferedImage backgroundImage;
 
-	private final GuiChannelPlug[] plugs;
+	private final RealComponentBack realComponentBack;
 
-	private final RealComponent realComponent;
-
-	private class RealComponent extends JPanel
+	public ResizableBackContainerMiddle( final ContainerImages ci, final RealComponentBack realComponentBack,
+			final RackComponent rc )
 	{
-		private static final long serialVersionUID = 5211955307472576952L;
-
-		public RealComponent( final RackComponent rc )
-		{
-			this.setOpaque( false );
-			this.setLayout( null );
-
-			for( final GuiChannelPlug plug : plugs )
-			{
-				this.add( plug );
-			}
-		}
-
-		public GuiChannelPlug getPlugFromPosition( final Point localPoint )
-		{
-//			log.debug("Looking for plug at real position " + localPoint );
-			GuiChannelPlug retVal = null;
-			final Component c = this.getComponentAt( localPoint );
-			if( c != null )
-			{
-				if( c instanceof GuiChannelPlug )
-				{
-					retVal = (GuiChannelPlug)c;
-				}
-			}
-			return retVal;
-		}
-	}
-
-	public ResizableBackContainerMiddle( final ContainerImages ci, final RackComponent rc, final GuiChannelPlug[] plugs )
-	{
-		this.setOpaque( false );
+		this.realComponentBack = realComponentBack;
 		this.backgroundImage = rc.getUiDefinition().getBackBufferedImage();
-		this.plugs = plugs;
+
+		this.setOpaque( false );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 
@@ -81,8 +49,7 @@ public class ResizableBackContainerMiddle extends JPanel
 		bBorder = new FixedYTransparentBorder( ci.bibi );
 
 		this.add( tBorder, "growx, wrap" );
-		realComponent = new RealComponent( rc );
-		this.add( realComponent, "grow, wrap" );
+		this.add( realComponentBack, "grow, wrap" );
 		this.add( bBorder, "growx" );
 
 		componentNameLabel = new ComponentNameLabel( rc, this );
@@ -106,7 +73,7 @@ public class ResizableBackContainerMiddle extends JPanel
 	public GuiChannelPlug getPlugFromPosition( final Point localPoint )
 	{
 //		log.debug("Asked for plug at position " + localPoint );
-		return realComponent.getPlugFromPosition( localPoint );
+		return realComponentBack.getPlugFromPosition( localPoint );
 	}
 
 }

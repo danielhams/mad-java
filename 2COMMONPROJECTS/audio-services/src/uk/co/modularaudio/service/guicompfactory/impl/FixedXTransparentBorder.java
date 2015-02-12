@@ -1,6 +1,5 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -36,8 +35,8 @@ public class FixedXTransparentBorder extends JPanel
 		final int width = getWidth();
 		final int height = getHeight();
 
-		g.setColor( Color.YELLOW );
-		g.fillRect( 0, 0, width, height );
+//		g.setColor( Color.YELLOW );
+//		g.fillRect( 0, 0, width, height );
 
 		log.debug("Fixed X is " + width + ", " + height );
 

@@ -1,6 +1,5 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -40,8 +39,8 @@ public class FixedSizeTransparentCorner extends JPanel
 
 		log.debug("FixedCorner size is: " + width + ", " + height);
 
-		g.setColor( Color.GREEN );
-		g.fillRect( 0, 0, width, height );
+//		g.setColor( Color.GREEN );
+//		g.fillRect( 0, 0, width, height );
 
 		g.drawImage( bi, 0, 0, null );
 	}

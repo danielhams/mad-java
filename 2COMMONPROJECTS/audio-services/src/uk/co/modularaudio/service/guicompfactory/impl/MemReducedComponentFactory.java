@@ -41,13 +41,47 @@ public class MemReducedComponentFactory
 		final Graphics2D g2d = frontDecorations.createGraphics();
 
 		g2d.setComposite( PaintedComponentDefines.OPAQUE_COMPOSITE );
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
 
 //		g2d.setColor( PaintedComponentDefines.HIGHLIGHT_COLOR );
 //		g2d.fillRect( 0, 0, FRONT_MIN_WIDTH, FRONT_MIN_HEIGHT );
 //		log.trace( "Filled rect in BI (" + FRONT_MIN_WIDTH + ", " + FRONT_MIN_HEIGHT + ")");
 
+		doActualFrontPaint( g2d );
+
+		final BufferedImage aaFrontDecorations = new BufferedImage( PaintedComponentDefines.FRONT_MIN_WIDTH+1, PaintedComponentDefines.FRONT_MIN_HEIGHT+1, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D aaG2d = aaFrontDecorations.createGraphics();
+		aaG2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		doActualFrontPaint( aaG2d );
+
+		final BufferedImage frontLeftTopDecoration = aaFrontDecorations.getSubimage( 0, 0, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
+		final BufferedImage frontLeftInsetDecoration = frontDecorations.getSubimage( 0, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 1, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, 1 );
+		final BufferedImage frontLeftBottomDecoration = aaFrontDecorations.getSubimage( 0, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 2, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
+
+		final BufferedImage frontTopInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 1, 0, 1, PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET );
+
+		final BufferedImage frontRightTopDecoration = aaFrontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, 0, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
+		final BufferedImage frontRightInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 1, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, 1 );
+		final BufferedImage frontRightBottomDecoration = aaFrontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 2, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
+
+		final BufferedImage frontBottomInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, (PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT * 2) + 2 - PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET, 1, PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET );
+
+		return new ContainerImages( frontDecorations,
+				aaFrontDecorations,
+				frontLeftTopDecoration,
+				frontLeftInsetDecoration,
+				frontLeftBottomDecoration,
+				frontTopInsetDecoration,
+				frontRightTopDecoration,
+				frontRightInsetDecoration,
+				frontRightBottomDecoration,
+				frontBottomInsetDecoration );
+
+	}
+
+	private void doActualFrontPaint( final Graphics2D g2d )
+	{
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(
 				0, 0,
 				PaintedComponentDefines.FRONT_MIN_WIDTH,
@@ -78,29 +112,6 @@ public class MemReducedComponentFactory
 		drawHoleOutline( g2d, holeXOffset , PaintedComponentDefines.FRONT_MIN_HEIGHT - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, PaintedComponentDefines.FRONT_MIN_WIDTH - holeXOffset, holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
 		drawHoleOutline( g2d, PaintedComponentDefines.FRONT_MIN_WIDTH - holeXOffset, PaintedComponentDefines.FRONT_MIN_HEIGHT - holeYOffset, eraseHoleXRadius, eraseHoleYRadius );
-
-		final BufferedImage frontLeftTopDecoration = frontDecorations.getSubimage( 0, 0, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
-		final BufferedImage frontLeftInsetDecoration = frontDecorations.getSubimage( 0, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 1, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, 1 );
-		final BufferedImage frontLeftBottomDecoration = frontDecorations.getSubimage( 0, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 2, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
-
-		final BufferedImage frontTopInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 1, 0, 1, PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET );
-
-		final BufferedImage frontRightTopDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, 0, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
-		final BufferedImage frontRightInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 1, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, 1 );
-		final BufferedImage frontRightBottomDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT + 2, PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH, PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT );
-
-		final BufferedImage frontBottomInsetDecoration = frontDecorations.getSubimage( PaintedComponentDefines.FRONT_ONE_CORNER_WIDTH + 2, (PaintedComponentDefines.FRONT_ONE_CORNER_HEIGHT * 2) + 2 - PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET, 1, PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET );
-
-		return new ContainerImages( frontDecorations,
-				frontLeftTopDecoration,
-				frontLeftInsetDecoration,
-				frontLeftBottomDecoration,
-				frontTopInsetDecoration,
-				frontRightTopDecoration,
-				frontRightInsetDecoration,
-				frontRightBottomDecoration,
-				frontBottomInsetDecoration );
-
 	}
 
 	private void drawHole( final Graphics2D g2d, final int xCenter, final int yCenter, final int xRadius, final int yRadius )
@@ -131,9 +142,62 @@ public class MemReducedComponentFactory
 		final Graphics2D g2d = backDecorations.createGraphics();
 
 		g2d.setComposite( PaintedComponentDefines.OPAQUE_COMPOSITE );
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
 
+		doActualBackPaint( g2d );
+
+		final BufferedImage aaBackDecorations = new BufferedImage( PaintedComponentDefines.BACK_MIN_WIDTH+1, PaintedComponentDefines.BACK_MIN_HEIGHT+1, BufferedImage.TYPE_INT_ARGB );
+		final Graphics2D aaG2d = aaBackDecorations.createGraphics();
+
+		aaG2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		doActualBackPaint( aaG2d );
+
+		final BufferedImage backLeftTopDecoration =
+				aaBackDecorations.getSubimage( 0, 0,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
+		final BufferedImage backLeftInsetDecoration =
+				backDecorations.getSubimage( 0, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 1,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, 1 );
+		final BufferedImage backLeftBottomDecoration =
+				aaBackDecorations.getSubimage( 0, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 2,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
+
+		final BufferedImage backTopInsetDecoration =
+				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 1, 0,
+						1, PaintedComponentDefines.BACK_BOTTOM_TOP_INSET );
+
+		final BufferedImage backRightTopDecoration =
+				aaBackDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2, 0,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
+		final BufferedImage backRightInsetDecoration =
+				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
+						PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 1,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, 1 );
+		final BufferedImage backRightBottomDecoration =
+				aaBackDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
+						PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 2,
+						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
+
+		final BufferedImage backBottomInsetDecoration =
+				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
+						(PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT * 2) + 2 - PaintedComponentDefines.BACK_BOTTOM_TOP_INSET,
+						1, PaintedComponentDefines.BACK_BOTTOM_TOP_INSET );
+
+		return new ContainerImages( backDecorations,
+				aaBackDecorations,
+				backLeftTopDecoration,
+				backLeftInsetDecoration,
+				backLeftBottomDecoration,
+				backTopInsetDecoration,
+				backRightTopDecoration,
+				backRightInsetDecoration,
+				backRightBottomDecoration,
+				backBottomInsetDecoration );
+	}
+
+	private void doActualBackPaint( final Graphics2D g2d )
+	{
 		final RoundRectangle2D roundedRectangle = new RoundRectangle2D.Float(
 				0, 0,
 				PaintedComponentDefines.BACK_MIN_WIDTH,
@@ -148,47 +212,6 @@ public class MemReducedComponentFactory
 
 //		g2d.setColor( Color.pink );
 //		g2d.fillRect( 0, 0, PaintedComponentDefines.BACK_MIN_WIDTH+1, PaintedComponentDefines.BACK_MIN_HEIGHT+1 );
-
-		final BufferedImage backLeftTopDecoration =
-				backDecorations.getSubimage( 0, 0,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
-		final BufferedImage backLeftInsetDecoration =
-				backDecorations.getSubimage( 0, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 1,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, 1 );
-		final BufferedImage backLeftBottomDecoration =
-				backDecorations.getSubimage( 0, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 2,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
-
-		final BufferedImage backTopInsetDecoration =
-				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 1, 0,
-						1, PaintedComponentDefines.BACK_BOTTOM_TOP_INSET );
-
-		final BufferedImage backRightTopDecoration =
-				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2, 0,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
-		final BufferedImage backRightInsetDecoration =
-				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
-						PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 1,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, 1 );
-		final BufferedImage backRightBottomDecoration =
-				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
-						PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT + 2,
-						PaintedComponentDefines.BACK_ONE_CORNER_WIDTH, PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT );
-
-		final BufferedImage backBottomInsetDecoration =
-				backDecorations.getSubimage( PaintedComponentDefines.BACK_ONE_CORNER_WIDTH + 2,
-						(PaintedComponentDefines.BACK_ONE_CORNER_HEIGHT * 2) + 2 - PaintedComponentDefines.BACK_BOTTOM_TOP_INSET,
-						1, PaintedComponentDefines.BACK_BOTTOM_TOP_INSET );
-
-		return new ContainerImages( backDecorations,
-				backLeftTopDecoration,
-				backLeftInsetDecoration,
-				backLeftBottomDecoration,
-				backTopInsetDecoration,
-				backRightTopDecoration,
-				backRightInsetDecoration,
-				backRightBottomDecoration,
-				backBottomInsetDecoration );
 	}
 	public void paint( final Graphics g )
 	{

@@ -21,20 +21,15 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 //	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
 
-	private final FixedSizeTransparentCorner ltCorner;
-	private final FixedXTransparentBorder lBorder;
-	private final FixedSizeTransparentCorner lbCorner;
-
-	private final FixedSizeTransparentCorner rtCorner;
-	private final FixedXTransparentBorder rBorder;
-	private final FixedSizeTransparentCorner rbCorner;
-
+	private final ResizableBackContainerLeft containerLeft;
 	private final ResizableBackContainerMiddle containerMiddle;
-
+	private final ResizableBackContainerRight containerRight;
 
 	private final Rectangle renderedRectangle;
 
-	private final GuiChannelPlug[] plugsToDestroy;
+	final GuiChannelPlug[] plugsToDestroy;
+
+	private final RealComponentBack realComponentBack;
 
 	public ResizableBackContainer( final ContainerImages backImages, final RackComponent rc )
 	{
@@ -77,30 +72,20 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 //		msh.addLayoutConstraint( "debug" );
 
 		msh.addColumnConstraint( "[][grow][]" );
-		msh.addRowConstraint( "[][grow][]" );
 
 		setLayout( msh.createMigLayout() );
 
-		ltCorner = new FixedSizeTransparentCorner( backImages.ltbi );
-		lBorder = new FixedXTransparentBorder( backImages.libi );
-		lbCorner = new FixedSizeTransparentCorner( backImages.lbbi );
+		realComponentBack = new RealComponentBack( this, rc );
 
-		rtCorner = new FixedSizeTransparentCorner( backImages.rtbi );
-		rBorder = new FixedXTransparentBorder( backImages.ribi );
-		rbCorner = new FixedSizeTransparentCorner( backImages.rbbi );
+		containerLeft = new ResizableBackContainerLeft( backImages );
 
-		containerMiddle = new ResizableBackContainerMiddle( backImages, rc, plugsToDestroy );
+		containerMiddle = new ResizableBackContainerMiddle( backImages, realComponentBack, rc );
 
-		this.add( ltCorner, "grow 0" );
+		containerRight = new ResizableBackContainerRight( backImages );
 
-		this.add( containerMiddle, "grow, spany 3" );
-
-		this.add( rtCorner, "grow 0, wrap");
-		this.add( lBorder, "growy" );
-
-		this.add( rBorder, "growy, wrap" );
-		this.add( lbCorner, "grow 0" );
-		this.add( rbCorner, "grow 0" );
+		this.add( containerLeft, "growy, width " + backImages.ltbi.getWidth() + "!");
+		this.add( containerMiddle, "grow");
+		this.add( containerRight, "growy, width " + backImages.rtbi.getWidth() + "!");
 
 		this.renderedRectangle = new Rectangle( PaintedComponentDefines.DRAG_BAR_WIDTH +
 					PaintedComponentDefines.BACK_INSET_WIDTH,
@@ -149,7 +134,7 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 //		log.debug("Asked for plug at position " + localPoint );
 		localPoint.x -= renderedRectangle.x;
 		localPoint.y -= renderedRectangle.y;
-		return containerMiddle.getPlugFromPosition( localPoint );
+		return realComponentBack.getPlugFromPosition( localPoint );
 	}
 
 

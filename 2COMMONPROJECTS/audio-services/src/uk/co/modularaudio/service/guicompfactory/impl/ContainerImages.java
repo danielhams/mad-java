@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 public class ContainerImages
 {
 	public BufferedImage src;
+	public BufferedImage aaSrc;
 	public BufferedImage ltbi;
 	public BufferedImage libi;
 	public BufferedImage lbbi;
@@ -16,6 +17,7 @@ public class ContainerImages
 
 	public ContainerImages(
 			final BufferedImage src,
+			final BufferedImage aaSrc,
 			final BufferedImage ltbi,
 			final BufferedImage libi,
 			final BufferedImage lbbi,
@@ -27,6 +29,7 @@ public class ContainerImages
 			)
 	{
 		this.src = src;
+		this.aaSrc = aaSrc;
 		this.ltbi = ltbi;
 		this.libi = libi;
 		this.lbbi = lbbi;
