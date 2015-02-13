@@ -27,6 +27,7 @@ import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefin
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadInstance;
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadInstanceConfiguration;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
@@ -52,7 +53,7 @@ public class AudioCvConverterMadUiDefinition
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_1x1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

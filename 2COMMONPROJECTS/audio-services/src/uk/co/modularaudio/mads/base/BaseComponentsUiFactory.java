@@ -55,8 +55,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.ui.InverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterMadUiDefinition;
-import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadDefinition;
-import uk.co.modularaudio.mads.base.mikethecleaner.ui.MikeCleanerMadUiDefinition;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.base.mixer.ui.MixerMadUiDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
@@ -130,7 +128,7 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadUiDefinition.class );
 		classToUiDefinition.put( Ms20FilterMadDefinition.class, Ms20FilterMadUiDefinition.class );
 		classToUiDefinition.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadUiDefinition.class );
-		classToUiDefinition.put( MikeCleanerMadDefinition.class, MikeCleanerMadUiDefinition.class );
+
 		classToUiDefinition.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadUiDefinition.class );
 		classToUiDefinition.put( SpectralAmpMadDefinition.class, SpectralAmpMadUiDefinition.class );
 		classToUiDefinition.put( SpectralRollMadDefinition.class, SpectralRollMadUiDefinition.class );

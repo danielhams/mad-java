@@ -6,6 +6,9 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 import uk.co.modularaudio.service.guicompfactory.impl.components.ComponentNameLabel;
 import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
@@ -16,7 +19,7 @@ public class ResizableBackContainerMiddle extends JPanel
 {
 	private static final long serialVersionUID = 5700599707006370407L;
 
-//	private static Log log = LogFactory.getLog( ResizableBackContainerMiddle.class.getName() );
+	private static Log log = LogFactory.getLog( ResizableBackContainerMiddle.class.getName() );
 
 	private final FixedYTransparentBorder tBorder;
 	private final FixedYTransparentBorder bBorder;
@@ -25,12 +28,14 @@ public class ResizableBackContainerMiddle extends JPanel
 	private final BufferedImage backgroundImage;
 
 	private final RealComponentBack realComponentBack;
+	private final RackComponent rc;
 
 	public ResizableBackContainerMiddle( final ContainerImages ci, final RealComponentBack realComponentBack,
 			final RackComponent rc )
 	{
 		this.realComponentBack = realComponentBack;
 		this.backgroundImage = rc.getUiDefinition().getBackBufferedImage();
+		this.rc = rc;
 
 		this.setOpaque( false );
 
@@ -62,8 +67,29 @@ public class ResizableBackContainerMiddle extends JPanel
 //		log.debug( "Painting rect " + paintRect.toString() );
 		if( backgroundImage != null )
 		{
+			final int imageWidth = backgroundImage.getWidth();
+			final int imageHeight = backgroundImage.getHeight();
+			final int width = getWidth();
+			final int height = getHeight();
+
+			if( imageWidth != width || imageHeight != height )
+			{
+				final StringBuilder sb = new StringBuilder("Component ");
+				sb.append( rc.getInstance().getDefinition().getId() );
+				sb.append( " has badly sized back image: (" );
+				sb.append( imageWidth );
+				sb.append( ", " );
+				sb.append( imageHeight );
+				sb.append( ") - component size(" );
+				sb.append( width );
+				sb.append( ", " );
+				sb.append( height );
+				sb.append( ")" );
+				final String msg = sb.toString();
+				log.warn( msg );
+			}
 //			log.debug("Drawing background image of dims " + backgroundImage.getWidth() + " " + backgroundImage.getHeight() );
-			g.drawImage( backgroundImage, 0, 0, getWidth(), getHeight(), null );
+			g.drawImage( backgroundImage, 0, 0, width, height, null );
 		}
 		super.paint( g );
 		g.translate( 0, PaintedComponentDefines.FRONT_BOTTOM_TOP_INSET );

@@ -21,12 +21,12 @@
 package uk.co.modularaudio.mads.internal.fade.ui;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
@@ -44,32 +44,13 @@ public class FadeInMadUiDefinition extends MadUiDefinition<FadeInMadDefinition, 
 
 	private static final Point PRODUCER_CHANNEL_CENTER = new Point( 160, 30 );
 
-	private final BufferedImage frontBufferedImage;
-	private final BufferedImage backBufferedImage;
-
 	public FadeInMadUiDefinition( final BufferedImageAllocator bia,
 			final FadeInMadDefinition definition,
 			final ComponentImageFactory cif,
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_back.png");
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition );
 	}
 
 	@Override
@@ -95,9 +76,9 @@ public class FadeInMadUiDefinition extends MadUiDefinition<FadeInMadDefinition, 
 					 uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 			return retVal;
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught creating new ui instance: " + e.toString();
+			final String msg = "Exception caught creating new ui instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 	}

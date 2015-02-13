@@ -96,7 +96,11 @@ public class PatternSequencerMadUiDefinition
 	public PatternSequencerMadUiDefinition( final BufferedImageAllocator bia, final PatternSequencerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 		{
-			super( bia, definition, cif, imageRoot,
+			super( bia,
+					cif,
+					imageRoot,
+					definition.getId(),
+					definition,
 					SPAN,
 					INSTANCE_CLASS,
 					CHAN_INDEXES,

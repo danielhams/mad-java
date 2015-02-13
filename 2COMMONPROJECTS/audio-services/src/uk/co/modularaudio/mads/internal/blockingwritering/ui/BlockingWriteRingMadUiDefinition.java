@@ -21,12 +21,12 @@
 package uk.co.modularaudio.mads.internal.blockingwritering.ui;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
@@ -43,32 +43,11 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 	private static final Point PRODUCER_LEFT_CHANNEL_CENTER = new Point( 160, 30 );
 	private static final Point PRODUCER_RIGHT_CHANNEL_CENTER = new Point( 180, 30 );
 
-	private final BufferedImage frontBufferedImage;
-	private final BufferedImage backBufferedImage;
-
 	public BlockingWriteRingMadUiDefinition( final BufferedImageAllocator bia, final BlockingWriteRingMadDefinition definition,
 			final ComponentImageFactory cif,
 			final String imageRoot ) throws DatastoreException
 	{
-		super( bia, definition );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition );
 	}
 
 	@Override

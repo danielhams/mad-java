@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -77,10 +78,14 @@ public class WaveRollerMadUiDefinition
 
 	private static final Class<WaveRollerMadUiInstance> INSTANCE_CLASS = WaveRollerMadUiInstance.class;
 
-	public WaveRollerMadUiDefinition( BufferedImageAllocator bia, WaveRollerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+	public WaveRollerMadUiDefinition( final BufferedImageAllocator bia, final WaveRollerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_2x2_BLUE,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

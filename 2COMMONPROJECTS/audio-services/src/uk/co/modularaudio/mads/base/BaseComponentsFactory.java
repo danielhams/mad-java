@@ -54,8 +54,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
-import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadDefinition;
-import uk.co.modularaudio.mads.base.mikethecleaner.mu.MikeCleanerMadInstance;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
 import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
@@ -132,7 +130,7 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadInstance.class );
 		defClassToInsClassMap.put( Ms20FilterMadDefinition.class, Ms20FilterMadInstance.class );
 		defClassToInsClassMap.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadInstance.class );
-		defClassToInsClassMap.put( MikeCleanerMadDefinition.class, MikeCleanerMadInstance.class );
+
 		defClassToInsClassMap.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadInstance.class );
 		defClassToInsClassMap.put( SpectralAmpMadDefinition.class, SpectralAmpMadInstance.class );
 		defClassToInsClassMap.put( SpectralRollMadDefinition.class, SpectralRollMadInstance.class );

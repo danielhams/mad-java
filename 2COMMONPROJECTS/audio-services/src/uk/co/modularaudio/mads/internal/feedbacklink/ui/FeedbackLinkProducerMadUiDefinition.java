@@ -21,12 +21,12 @@
 package uk.co.modularaudio.mads.internal.feedbacklink.ui;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
@@ -44,32 +44,11 @@ public class FeedbackLinkProducerMadUiDefinition extends MadUiDefinition<Feedbac
 
 	private static final Point PRODUCER_CV_CHANNEL_CENTER = new Point( 160, 30 );
 
-	private final BufferedImage frontBufferedImage;
-	private final BufferedImage backBufferedImage;
-
 	public FeedbackLinkProducerMadUiDefinition( final BufferedImageAllocator bia, final FeedbackLinkProducerMadDefinition definition,
 			final ComponentImageFactory cif,
 			final String imageRoot ) throws DatastoreException
 	{
-		super( bia, definition );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition );
 	}
 
 	@Override

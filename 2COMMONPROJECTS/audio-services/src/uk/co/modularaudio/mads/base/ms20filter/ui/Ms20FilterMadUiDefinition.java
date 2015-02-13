@@ -36,7 +36,7 @@ public class Ms20FilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<Ms20FilterMadDefinition, Ms20FilterMadInstance, Ms20FilterMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,2);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		Ms20FilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
 		Ms20FilterMadDefinition.CONSUMER_IN_CV_RESONANCE,
@@ -46,7 +46,7 @@ public class Ms20FilterMadUiDefinition
 		Ms20FilterMadDefinition.PRODUCER_OUT_LEFT,
 		Ms20FilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
-	
+
 	private static final Point[] CHAN_POSITIONS = new Point[] {
 		new Point( 50, 40 ),
 		new Point( 50, 70 ),
@@ -56,41 +56,45 @@ public class Ms20FilterMadUiDefinition
 		new Point( 150, 100 ),
 		new Point( 170, 100 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Frequency",
 		"Resonance",
 		"Threshold"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		Ms20FilterTypeComboUiJComponent.class,
 		Ms20FilterFrequencySliderUiControlInstance.class,
 		Ms20FilterResonanceSliderUiJComponent.class,
 		Ms20FilterThresholdSliderUiJComponent.class,
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 30, 90, 20 ),
 		new Rectangle( 113, 3, 130, 43 ),
 		new Rectangle( 113, 48, 130, 43 ),
 		new Rectangle( 113, 93, 130, 43 )
 	};
-	
+
 	private static final Class<Ms20FilterMadUiInstance> INSTANCE_CLASS = Ms20FilterMadUiInstance.class;
-	
-	public Ms20FilterMadUiDefinition( BufferedImageAllocator bia, Ms20FilterMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public Ms20FilterMadUiDefinition( final BufferedImageAllocator bia, final Ms20FilterMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				definition.getId(),
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

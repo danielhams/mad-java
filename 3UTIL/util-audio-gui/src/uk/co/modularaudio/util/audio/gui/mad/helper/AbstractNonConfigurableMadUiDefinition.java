@@ -22,7 +22,6 @@ package uk.co.modularaudio.util.audio.gui.mad.helper;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -54,9 +53,10 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 	private final Point[] uiChannelPositions;
 
 	public AbstractNonConfigurableMadUiDefinition( final BufferedImageAllocator bia,
-			final D definition,
 			final ImageFactory cif,
 			final String imageRoot,
+			final String imagePrefix,
+			final D definition,
 			final Span span,
 			final Class<U> instanceClass,
 			final int[] uiChannelInstanceIndexes,
@@ -68,15 +68,9 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 		throws DatastoreException
 	{
 		// Use default (is draggable, is not configurable)
-		super( bia, definition );
+		super( bia, cif, imageRoot, imagePrefix, definition );
 
 		this.span = span;
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
 
 		this.instanceClass = instanceClass;
 		this.uiChannelInstanceIndexes = uiChannelInstanceIndexes;
@@ -110,18 +104,6 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 			final String msg = "Exception caught instantiating control defs: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

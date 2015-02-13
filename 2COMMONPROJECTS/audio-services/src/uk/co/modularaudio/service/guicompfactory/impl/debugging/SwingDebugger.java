@@ -16,6 +16,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class SwingDebugger extends JFrame
@@ -49,7 +50,11 @@ public class SwingDebugger extends JFrame
 		}
 	};
 
-	public SwingDebugger( final BufferedImageAllocator bia, final MemReducedComponentFactory mrcf ) throws MadProcessingException, DatastoreException
+	public SwingDebugger( final BufferedImageAllocator bia,
+			final ImageFactory imageFactory,
+			final String imageRoot,
+			final String imagePrefix,
+			final MemReducedComponentFactory mrcf ) throws MadProcessingException, DatastoreException
 	{
 		this.mrcf = mrcf;
 
@@ -62,7 +67,7 @@ public class SwingDebugger extends JFrame
 
 		this.add( new DebugPanel(), "grow, wrap");
 
-		final RackComponent rc = FakeRackComponent.createInstance( bia );
+		final RackComponent rc = FakeRackComponent.createInstance( bia, imageFactory, imageRoot, imagePrefix );
 		this.add( new ResizableFrontContainer( mrcf.getFrontDecorationImages(), rc ), "grow, wrap");
 		this.add( new ResizableBackContainer( mrcf.getBackDecorationImages(), rc ), "grow");
 

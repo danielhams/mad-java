@@ -23,6 +23,8 @@ package uk.co.modularaudio.service.imagefactory.impl;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -38,6 +40,8 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 {
 	private static Log log = LogFactory.getLog( ComponentImageFactoryImpl.class.getName() );
 
+	private final Map<String, BufferedImage> biCache = new HashMap<String, BufferedImage>();
+
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
@@ -49,18 +53,28 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 	}
 
 	@Override
-	public BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
+	public synchronized BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
 	{
-		BufferedImage retVal = null;
 		final String pathToLoad = directory + "/" + filename;
 
-		try {
-			final File input = new File( pathToLoad );
-			retVal = ImageIO.read(input);
-		} catch (final IOException ie) {
-			final String msg = "Exception caught loading image " + pathToLoad + ": " + ie.toString();
-			log.error( msg, ie );
-			throw new DatastoreException( msg, ie );
+
+		BufferedImage retVal = biCache.get( pathToLoad );
+
+		if( retVal == null )
+		{
+			try {
+				final File input = new File( pathToLoad );
+				retVal = ImageIO.read(input);
+				if( log.isDebugEnabled() )
+				{
+					log.debug( "Adding " + pathToLoad + " to buffered image cache" );
+				}
+				biCache.put( pathToLoad, retVal );
+			} catch (final IOException ie) {
+				final String msg = "Exception caught loading image " + pathToLoad + ": " + ie.toString();
+				log.error( msg, ie );
+				throw new DatastoreException( msg, ie );
+			}
 		}
 
 		return retVal;

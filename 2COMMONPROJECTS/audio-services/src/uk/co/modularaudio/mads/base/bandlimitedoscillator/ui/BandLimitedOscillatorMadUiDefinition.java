@@ -26,17 +26,18 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
-public class BandLimitedOscillatorMadUiDefinition 
+public class BandLimitedOscillatorMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<BandLimitedOscillatorMadDefinition, BandLimitedOscillatorMadInstance, BandLimitedOscillatorMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,2);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ,
 		BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER,
@@ -46,7 +47,7 @@ public class BandLimitedOscillatorMadUiDefinition
 		BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT,
 		BandLimitedOscillatorMadDefinition.PRODUCER_PHASE_OUT
 	};
-	
+
 	private static final Point[] CHAN_POSI = new Point[] {
 		new Point( 80, 30 ),
 		new Point( 60, 50 ),
@@ -56,41 +57,42 @@ public class BandLimitedOscillatorMadUiDefinition
 		new Point( 200, 50 ),
 		new Point( 200, 70 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Frequency",
 		"Shape",
 		"Pulsewidth"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
 		ControlType.COMBO,
 		ControlType.SLIDER
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		BandLimitedOscillatorHertzSliderUiJComponent.class,
 		BandLimitedOscillatorShapeComboUiJComponent.class,
 		BandLimitedOscillatorPulseWidthUiJComponent.class
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 113, 3, 75, 43 ),
 		new Rectangle( 190, 15, 65, 20 ),
 		new Rectangle( 113, 50, 75, 42 )
 	};
-	
+
 	private static final Class<BandLimitedOscillatorMadUiInstance> INSTANCE_CLASS = BandLimitedOscillatorMadUiInstance.class;
-	
-	public BandLimitedOscillatorMadUiDefinition( BufferedImageAllocator bia,
-			BandLimitedOscillatorMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public BandLimitedOscillatorMadUiDefinition( final BufferedImageAllocator bia,
+			final BandLimitedOscillatorMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
 		super( bia,
-				definition,
 				cif,
 				imageRoot,
+				MadUIStandardBackgrounds.STD_2x2_DARKGRAY,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

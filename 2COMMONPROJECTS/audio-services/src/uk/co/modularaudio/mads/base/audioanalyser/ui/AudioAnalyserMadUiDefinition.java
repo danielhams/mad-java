@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -71,7 +72,11 @@ extends AbstractNonConfigurableMadUiDefinition<AudioAnalyserMadDefinition, Audio
 			final String imageRoot )
 					throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_2x4_BLUE,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

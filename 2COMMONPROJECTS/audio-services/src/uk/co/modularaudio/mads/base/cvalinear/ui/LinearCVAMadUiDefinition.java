@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,37 +37,41 @@ public class LinearCVAMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<LinearCVAMadDefinition, LinearCVAMadInstance, LinearCVAMadUiInstance>
 {
 	private static final Span SPAN = new Span(1,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		LinearCVAMadDefinition.CONSUMER_IN_WAVE,
 		LinearCVAMadDefinition.CONSUMER_IN_AMP_CV,
 		LinearCVAMadDefinition.PRODUCER_OUT_WAVE,
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 50, 30 ),
 		new Point( 80, 30 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
-	
+
 	private static final Class<LinearCVAMadUiInstance> INSTANCE_CLASS = LinearCVAMadUiInstance.class;
-	
-	public LinearCVAMadUiDefinition( BufferedImageAllocator bia, LinearCVAMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public LinearCVAMadUiDefinition( final BufferedImageAllocator bia, final LinearCVAMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_1x1_WHITE,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

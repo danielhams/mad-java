@@ -52,7 +52,7 @@ public class NoteMultiplexerMadUiDefinition extends
 			final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
+		super( bia, cif, imageRoot, definition.getId(), definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

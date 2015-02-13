@@ -27,6 +27,7 @@ import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMa
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstance;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstanceConfiguration;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
@@ -50,7 +51,7 @@ public class AudioSystemTesterMadUiDefinition
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,

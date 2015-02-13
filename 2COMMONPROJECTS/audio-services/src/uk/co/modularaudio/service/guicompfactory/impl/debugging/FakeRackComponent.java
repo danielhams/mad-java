@@ -8,6 +8,7 @@ import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public class FakeRackComponent extends RackComponent
@@ -22,12 +23,16 @@ public class FakeRackComponent extends RackComponent
 	}
 
 
-	public static FakeRackComponent createInstance( final BufferedImageAllocator bia ) throws MadProcessingException, DatastoreException
+	public static FakeRackComponent createInstance( final BufferedImageAllocator bia,
+			final ImageFactory imageFactory,
+			final String imageRoot,
+			final String imagePrefix
+			) throws MadProcessingException, DatastoreException
 	{
 		final MadClassification fakeClass = new MadClassification( classGroup, fakeStr, fakeStr, fakeStr, ReleaseState.RELEASED );
 		final FakeMadDefinition md = new FakeMadDefinition( fakeClass );
 		final FakeMadInstance mi = new FakeMadInstance( md );
-		final FakeMadUiDefinition mud = new FakeMadUiDefinition( bia, md );
+		final FakeMadUiDefinition mud = new FakeMadUiDefinition( bia, imageFactory, imageRoot, imagePrefix, md );
 		final FakeMadUiInstance mui = (FakeMadUiInstance) mud.createNewUiInstance( mi );
 		return new FakeRackComponent( "fakey", mi, mui );
 	}

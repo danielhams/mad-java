@@ -21,12 +21,12 @@
 package uk.co.modularaudio.mads.rackmasterio.ui;
 
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
@@ -68,9 +68,6 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 	private static final Point PRODUCER_NOTE_CHANNEL_START =
 			new Point( CONSUMER_NOTE_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
 
-	private final BufferedImage frontBufferedImage;
-	private final BufferedImage backBufferedImage;
-
 	public RackMasterIOMadUiDefinition( final BufferedImageAllocator bia,
 			final RackMasterIOMadDefinition definition,
 			final ComponentImageFactory cif,
@@ -78,23 +75,7 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 		throws DatastoreException
 	{
 		// master io is not draggable.
-		super( bia, definition, false, false );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot, definition.getId() + "_back.png");
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_4x1_DARKGRAY, definition, false, false );
 	}
 
 	@Override
@@ -125,7 +106,7 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 	private Point computeCenterForChannel( final int c, final MadChannelInstance auci )
 	{
 		int x;
-		int y = 0;
+		final int y = 0;
 		final MadChannelDefinition aucd = auci.definition;
 		final MadChannelDirection audirection = aucd.direction;
 		final MadChannelType autype = aucd.type;

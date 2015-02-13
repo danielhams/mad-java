@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,7 +37,7 @@ public class RBJFilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<RBJFilterMadDefinition, RBJFilterMadInstance, RBJFilterMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		RBJFilterMadDefinition.CONSUMER_IN_LEFT,
 		RBJFilterMadDefinition.CONSUMER_IN_RIGHT,
@@ -44,7 +45,7 @@ public class RBJFilterMadUiDefinition
 		RBJFilterMadDefinition.PRODUCER_OUT_LEFT,
 		RBJFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
@@ -52,38 +53,42 @@ public class RBJFilterMadUiDefinition
 		new Point( 150, 70 ),
 		new Point( 170, 70 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Frequency",
 		"Q"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		RBJFilterTypeComboUiJComponent.class,
 		RBJFilterFrequencySliderUiControlInstance.class,
 		RBJFilterQSliderUiControlInstance.class
 //		OldFrequencyFilterBandwidthSliderUiJComponent.class
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 30, 90, 20 ),
 		new Rectangle( 113, 3, 280, 43 ),
 		new Rectangle( 113, 53, 280, 43 )
 	};
-	
+
 	private static final Class<RBJFilterMadUiInstance> INSTANCE_CLASS = RBJFilterMadUiInstance.class;
-	
-	public RBJFilterMadUiDefinition( BufferedImageAllocator bia, RBJFilterMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public RBJFilterMadUiDefinition( final BufferedImageAllocator bia, final RBJFilterMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

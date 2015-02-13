@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -87,13 +88,17 @@ public class FrequencyFilterMadUiDefinition
 
 	private static final Class<FrequencyFilterMadUiInstance> INSTANCE_CLASS = FrequencyFilterMadUiInstance.class;
 
-	public FrequencyFilterMadUiDefinition( BufferedImageAllocator bia,
-			FrequencyFilterMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public FrequencyFilterMadUiDefinition( final BufferedImageAllocator bia,
+			final FrequencyFilterMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_2x2_DARKGRAY,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

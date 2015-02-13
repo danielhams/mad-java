@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadDefinition;
 import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,35 +37,39 @@ public class FlipFlopMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<FlipFlopMadDefinition, FlipFlopMadInstance, FlipFlopMadUiInstance>
 {
 	private static final Span SPAN = new Span(1,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		FlipFlopMadDefinition.CONSUMER_IN_WAVE,
 		FlipFlopMadDefinition.PRODUCER_OUT_CV,
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 80, 30 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
-	
+
 	private static final Class<FlipFlopMadUiInstance> INSTANCE_CLASS = FlipFlopMadUiInstance.class;
-	
-	public FlipFlopMadUiDefinition( BufferedImageAllocator bia, FlipFlopMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public FlipFlopMadUiDefinition( final BufferedImageAllocator bia, final FlipFlopMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_1x1_LIGHTGRAY,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,19 +37,19 @@ public class MonoCompressorMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<MonoCompressorMadDefinition, MonoCompressorMadInstance, MonoCompressorMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,4);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		MonoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT,
 		MonoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT,
 		MonoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 45, 100 ),
 		new Point( 100, 100 ),
 		new Point( 175, 100 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"ThresholdType",
 		"Lookahead",
@@ -61,7 +62,7 @@ public class MonoCompressorMadUiDefinition
 		"MakeupGain",
 		"OutMeter"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.CHECKBOX,
@@ -74,7 +75,7 @@ public class MonoCompressorMadUiDefinition
 		ControlType.SLIDER,
 		ControlType.DISPLAY
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		MonoCompressorThresholdTypeComboUiJComponent.class,
 		MonoCompressorLookaheadCheckboxUiJComponent.class,
@@ -87,7 +88,7 @@ public class MonoCompressorMadUiDefinition
 		MonoCompressorMakeupGainSliderUiJComponent.class,
 		MonoCompressorOutSignalMeterUiComponent.class
 	};
-	
+
 	// 6 Between sliders
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 16, 35, 80, 20 ),			// Threshold Type
@@ -101,16 +102,20 @@ public class MonoCompressorMadUiDefinition
 		new Rectangle( 306, 72, 50, 110 ),	// Makeup Gain
 		new Rectangle( 361, 72, 44, 110 )	// Out Signal Meter
 	};
-	
+
 	private static final Class<MonoCompressorMadUiInstance> INSTANCE_CLASS = MonoCompressorMadUiInstance.class;
-	
-	public MonoCompressorMadUiDefinition( BufferedImageAllocator bia,
-			MonoCompressorMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+
+	public MonoCompressorMadUiDefinition( final BufferedImageAllocator bia,
+			final MonoCompressorMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_2x4_BLUE,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

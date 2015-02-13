@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,38 +37,39 @@ public class NoteDebugMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<NoteDebugMadDefinition, NoteDebugMadInstance, NoteDebugMadUiInstance>
 {
 	private static final Span SPAN = new Span(2, 2);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		NoteDebugMadDefinition.CONSUMER_NOTE };
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 50, 45 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
-	
+
 	private static final Class<NoteDebugMadUiInstance> INSTANCE_CLASS = NoteDebugMadUiInstance.class;
 
-	public NoteDebugMadUiDefinition( BufferedImageAllocator bia,
-			NoteDebugMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public NoteDebugMadUiDefinition( final BufferedImageAllocator bia,
+			final NoteDebugMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 			throws DatastoreException
 		{
 			super( bia,
-					definition,
 					cif,
 					imageRoot,
+					MadUIStandardBackgrounds.STD_2x2_BLUE,
+					definition,
 					SPAN,
 					INSTANCE_CLASS,
 					CHAN_INDEXES,

@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,38 +37,42 @@ public class InverterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<InverterMadDefinition, InverterMadInstance, InverterMadUiInstance>
 {
 	private static final Span SPAN = new Span(1,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		InverterMadDefinition.CONSUMER_AUDIO_IN,
 		InverterMadDefinition.PRODUCER_AUDIO_OUT
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 50, 30 ),
 		new Point( 70, 30 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 	};
-	
+
 	private static final Class<InverterMadUiInstance> INSTANCE_CLASS = InverterMadUiInstance.class;
 
-	public InverterMadUiDefinition( BufferedImageAllocator bia,
-			InverterMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+	public InverterMadUiDefinition( final BufferedImageAllocator bia,
+			final InverterMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 			throws DatastoreException
 		{
-			super( bia, definition, cif, imageRoot,
+			super( bia,
+					cif,
+					imageRoot,
+					MadUIStandardBackgrounds.STD_1x1_LIGHTGRAY,
+					definition,
 					SPAN,
 					INSTANCE_CLASS,
 					CHAN_INDEXES,

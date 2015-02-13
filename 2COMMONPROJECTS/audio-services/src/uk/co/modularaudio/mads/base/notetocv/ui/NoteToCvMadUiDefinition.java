@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,7 +37,7 @@ public class NoteToCvMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<NoteToCvMadDefinition, NoteToCvMadInstance, NoteToCvMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		NoteToCvMadDefinition.CONSUMER_NOTE,
 		NoteToCvMadDefinition.PRODUCER_GATE_OUT,
@@ -45,7 +46,7 @@ public class NoteToCvMadUiDefinition
 		NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT,
 		NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT
 		};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 50, 45 ),
 		new Point( 130, 45 ),
@@ -54,37 +55,41 @@ public class NoteToCvMadUiDefinition
 		new Point( 190, 45 ),
 		new Point( 210, 45 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Note On Type",
 		"ChannelNum",
 		"Frequency Glide"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.SLIDER
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		NoteOnTypeComboUiJComponent.class,
 		NoteChannelComboUiJComponent.class,
 		NoteToCvFrequencyGlideSliderUiJComponent.class
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 30, 20, 110, 20 ),
 		new Rectangle( 30, 60, 110, 20 ),
 		new Rectangle( 150, 22, 75, 70 )
 	};
-	
+
 	private static final Class<NoteToCvMadUiInstance> INSTANCE_CLASS = NoteToCvMadUiInstance.class;
 
-	public NoteToCvMadUiDefinition( BufferedImageAllocator bia, NoteToCvMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+	public NoteToCvMadUiDefinition( final BufferedImageAllocator bia, final NoteToCvMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 			throws DatastoreException
 		{
-			super( bia, definition, cif, imageRoot,
+			super( bia,
+					cif,
+					imageRoot,
+					MadUIStandardBackgrounds.STD_2x1_DARKGRAY,
+					definition,
 					SPAN,
 					INSTANCE_CLASS,
 					CHAN_INDEXES,

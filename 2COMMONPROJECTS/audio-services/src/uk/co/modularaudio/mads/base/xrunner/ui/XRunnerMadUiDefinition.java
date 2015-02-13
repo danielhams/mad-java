@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
 import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,39 +37,43 @@ public class XRunnerMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<XRunnerMadDefinition, XRunnerMadInstance, XRunnerMadUiInstance>
 {
 	private static final Span SPAN = new Span(1,1);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		XRunnerMadDefinition.CONSUMER_IN_WAVE,
 		XRunnerMadDefinition.PRODUCER_OUT_WAVE,
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 20, 30 ),
 		new Point( 80, 30 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"DoXRun"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.BUTTON
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		DoXRunButtonUiJComponent.class
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 6, 21, 94, 20 )
 	};
-	
+
 	private static final Class<XRunnerMadUiInstance> INSTANCE_CLASS = XRunnerMadUiInstance.class;
-	
-	public XRunnerMadUiDefinition( BufferedImageAllocator bia, XRunnerMadDefinition definition, ComponentImageFactory cif, String imageRoot )
+
+	public XRunnerMadUiDefinition( final BufferedImageAllocator bia, final XRunnerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				MadUIStandardBackgrounds.STD_1x1_LIGHTGRAY,
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

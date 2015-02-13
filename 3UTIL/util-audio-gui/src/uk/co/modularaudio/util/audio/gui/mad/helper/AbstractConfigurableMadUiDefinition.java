@@ -22,7 +22,6 @@ package uk.co.modularaudio.util.audio.gui.mad.helper;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
@@ -47,34 +46,16 @@ public abstract class AbstractConfigurableMadUiDefinition
 	private final Class<U> instanceClass;
 
 	public AbstractConfigurableMadUiDefinition( final BufferedImageAllocator bia,
-			final D definition,
 			final ImageFactory cif,
 			final String imageRoot,
+			final String imagePrefix,
+			final D definition,
 			final Class<U> instanceClass )
 		throws DatastoreException
 	{
-		super( bia, definition, true, true );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
+		super( bia, cif, imageRoot, imagePrefix, definition, true, true );
 
 		this.instanceClass = instanceClass;
-
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -36,7 +36,7 @@ public class MoogFilterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<MoogFilterMadDefinition, MoogFilterMadInstance, MoogFilterMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,2);
-	
+
 	private static final int[] CHAN_INDEXES = new int[] {
 		MoogFilterMadDefinition.CONSUMER_IN_LEFT,
 		MoogFilterMadDefinition.CONSUMER_IN_RIGHT,
@@ -44,7 +44,7 @@ public class MoogFilterMadUiDefinition
 		MoogFilterMadDefinition.PRODUCER_OUT_LEFT,
 		MoogFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
-	
+
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
@@ -52,41 +52,45 @@ public class MoogFilterMadUiDefinition
 		new Point( 150, 70 ),
 		new Point( 170, 70 )
 	};
-	
+
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
 		"Frequency",
 		"Q"
 	};
-	
+
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
-	
+
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		MoogFilterTypeComboUiJComponent.class,
 		MoogFilterFrequencySliderUiControlInstance.class,
 		MoogFilterQSliderUiControlInstance.class
 //		OldFrequencyFilterBandwidthSliderUiJComponent.class
 	};
-	
+
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 15, 30, 90, 20 ),
 		new Rectangle( 113, 3, 280, 43 ),
 		new Rectangle( 113, 53, 280, 43 )
 	};
-	
+
 	private static final Class<MoogFilterMadUiInstance> INSTANCE_CLASS = MoogFilterMadUiInstance.class;
-	
-	public MoogFilterMadUiDefinition( BufferedImageAllocator bia,
-			MoogFilterMadDefinition definition,
-			ComponentImageFactory cif,
-			String imageRoot )
+
+	public MoogFilterMadUiDefinition( final BufferedImageAllocator bia,
+			final MoogFilterMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot,
+		super( bia,
+				cif,
+				imageRoot,
+				definition.getId(),
+				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

@@ -26,6 +26,7 @@ import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public abstract class MadUiDefinition
@@ -37,6 +38,7 @@ public abstract class MadUiDefinition
 
 	protected final D definition;
 	protected final BufferedImageAllocator bufferedImageAllocator;
+	protected final ImageFactory imageFactory;
 
 	protected BufferedImage frontBufferedImage;
 	protected BufferedImage backBufferedImage;
@@ -44,43 +46,70 @@ public abstract class MadUiDefinition
 	protected boolean isDraggable;
 	protected boolean isParametrable;
 
-	public MadUiDefinition( final BufferedImageAllocator bia, final D definition )
+	public MadUiDefinition( final BufferedImageAllocator bia,
+			final ImageFactory imageFactory,
+			final String imageRoot,
+			final String imagePrefix,
+			final D definition ) throws DatastoreException
 	{
-		this( bia, definition, true, false );
+		this( bia, imageFactory, imageRoot, imagePrefix, definition, true, false );
 	}
 
-	public MadUiDefinition( final BufferedImageAllocator bia, final D definition,
+	public MadUiDefinition( final BufferedImageAllocator bia,
+			final ImageFactory imageFactory,
+			final String imageRoot,
+			final String imagePrefix,
+			final D definition,
 			final boolean isDraggable,
-			final boolean isParametrable )
+			final boolean isParametrable ) throws DatastoreException
 	{
 		this.bufferedImageAllocator = bia;
+		this.imageFactory = imageFactory;
 		this.definition = definition;
 		this.isDraggable = isDraggable;
 		this.isParametrable = isParametrable;
+
+		frontBufferedImage = imageFactory.getBufferedImage( imageRoot,
+				imagePrefix + "_front.png" );
+
+		backBufferedImage = imageFactory.getBufferedImage( imageRoot,
+				imagePrefix + "_back.png");
 	}
 
 	public abstract AbstractMadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;
 
-	public D getDefinition()
+	public final D getDefinition()
 	{
 		return definition;
 	}
 
-	public boolean isDraggable()
+	public final boolean isDraggable()
 	{
 		return isDraggable;
 	}
 
-	public boolean isParametrable()
+	public final boolean isParametrable()
 	{
 		return isParametrable;
 	}
 
-	public BufferedImageAllocator getBufferedImageAllocator()
+	public final BufferedImageAllocator getBufferedImageAllocator()
 	{
 		return bufferedImageAllocator;
 	}
 
 	public abstract Span getCellSpan();
+
+	@Override
+	public final BufferedImage getFrontBufferedImage()
+	{
+		return frontBufferedImage;
+	}
+
+	@Override
+	public final BufferedImage getBackBufferedImage()
+	{
+		return backBufferedImage;
+	}
 
 }

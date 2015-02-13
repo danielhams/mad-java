@@ -62,7 +62,7 @@ public class MixerMadUiDefinition
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, definition, cif, imageRoot, INSTANCE_CLASS );
+		super( bia, cif, imageRoot, definition.getId(), definition, INSTANCE_CLASS );
 	}
 
 	protected Point[] getUiChannelPositionsForAui( final MixerMadInstanceConfiguration instanceConfiguration,

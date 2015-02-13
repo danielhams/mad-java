@@ -22,12 +22,12 @@ package uk.co.modularaudio.mads.subrack.ui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
@@ -73,9 +73,6 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	private static final Rectangle EDIT_PATCH_BOUNDS = new Rectangle( 425, 25, 60, 30 );
 	private static final Rectangle SAVE_PATCH_BOUNDS = new Rectangle( 490, 25, 60, 30 );
 
-	private BufferedImage frontBufferedImage;
-	private BufferedImage backBufferedImage;
-
 	public SubRackMadUiDefinition( final BufferedImageAllocator bia,
 			final SubRackMadDefinition definition,
 			final ComponentImageFactory cif,
@@ -83,25 +80,7 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 		throws DatastoreException
 	{
 		// Sub rack is draggable
-		super( bia, definition, true, false );
-
-		frontBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_front.png" );
-
-		backBufferedImage = cif.getBufferedImage( imageRoot,
-				definition.getId() + "_back.png");
-	}
-
-	@Override
-	public BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_DARKGRAY, definition, true, false );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -151,9 +130,9 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 					uiDisplayProcessingControlInstances.toArray( new AbstractMadUiControlInstance<?,?,?>[ uiDisplayProcessingControlInstances.size() ] ),
 					uiChannelInstances.toArray( new MadUiChannelInstance[ uiChannelInstances.size() ] ) );
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
-			String msg = "Exception caught creating new ui instance: " + e.toString();
+			final String msg = "Exception caught creating new ui instance: " + e.toString();
 			throw new DatastoreException( msg, e );
 		}
 		return retVal;
@@ -162,7 +141,7 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	private Point computeCenterForChannel( final int c, final MadChannelInstance auci )
 	{
 		int x = 0;
-		int y = 0;
+		final int y = 0;
 		final MadChannelDefinition aucd = auci.definition;
 		final MadChannelDirection audirection = aucd.direction;
 		final MadChannelType autype = aucd.type;
