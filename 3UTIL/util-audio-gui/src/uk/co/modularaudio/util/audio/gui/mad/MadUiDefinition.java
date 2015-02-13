@@ -22,9 +22,6 @@ package uk.co.modularaudio.util.audio.gui.mad;
 
 import java.awt.image.BufferedImage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -36,7 +33,7 @@ public abstract class MadUiDefinition
 	I extends MadInstance<D,I>>
 	implements IMadUiDefinition<D, I>
 {
-	private static Log log = LogFactory.getLog( MadUiDefinition.class.getName() );
+//	private static Log log = LogFactory.getLog( MadUiDefinition.class.getName() );
 
 	protected final D definition;
 	protected final BufferedImageAllocator bufferedImageAllocator;
@@ -82,18 +79,6 @@ public abstract class MadUiDefinition
 	public BufferedImageAllocator getBufferedImageAllocator()
 	{
 		return bufferedImageAllocator;
-	}
-
-	public void clearFrontBufferedImage()
-	{
-		log.debug("Clearing front buffered image for " + definition.getName() );
-		frontBufferedImage = null;
-	}
-
-	public void clearBackBufferedImage()
-	{
-		log.debug("Clearing back buffered image for " + definition.getName() );
-		backBufferedImage = null;
 	}
 
 	public abstract Span getCellSpan();

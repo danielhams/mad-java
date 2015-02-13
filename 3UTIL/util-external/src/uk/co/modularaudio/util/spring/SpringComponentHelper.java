@@ -196,6 +196,9 @@ public class SpringComponentHelper
 			throw new DatastoreException( msg, e );
 		}
 
+		// Perform a GC pass here to clean up before things are launched post refresh
+		Runtime.getRuntime().gc();
+
 		// Do any work needed after we refresh the context
 		// Post refresh calls
 		for( final SpringContextHelper helper : contextHelpers )
