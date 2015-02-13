@@ -27,10 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
+import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
-import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.GuiRackPanel;
 import uk.co.modularaudio.service.gui.impl.guirackpanel.RackServiceToBackActionAdaptor;
@@ -72,9 +72,6 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		yesNoQuestionDialog = new YesNoQuestionDialog();
-		textInputDialog = new TextInputDialog();
-		messageDialog = new MessageDialog();
 	}
 
 	@Override
@@ -176,6 +173,14 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 		}
 	}
 
+	private synchronized void checkYnDialog()
+	{
+		if( yesNoQuestionDialog == null )
+		{
+			yesNoQuestionDialog = new YesNoQuestionDialog();
+		}
+	}
+
 	@Override
 	public void showYesNoQuestionDialog( final Component parentComponent,
 			final String message,
@@ -189,6 +194,8 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 		{
 			log.trace("Would attempt to show yes no dialog with message " + message );
 		}
+		checkYnDialog();
+
 		yesNoQuestionDialog.setValues( parentComponent,
 				message,
 				title,
@@ -199,6 +206,14 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 		yesNoQuestionDialog.go();
 	}
 
+	private synchronized void checkTiDialog()
+	{
+		if( textInputDialog == null )
+		{
+			textInputDialog = new TextInputDialog();
+		}
+	}
+
 	@Override
 	public void showTextInputDialog( final Component parentComponent,
 			final String message,
@@ -207,8 +222,17 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 			final String initialValue,
 			final TextInputDialogCallback callback )
 	{
+		checkTiDialog();
 		textInputDialog.setValues( parentComponent, message, title, messageType, initialValue, callback );
 		textInputDialog.go();
+	}
+
+	private synchronized void checkMeDialog()
+	{
+		if( messageDialog == null )
+		{
+			messageDialog = new MessageDialog();
+		}
 	}
 
 	@Override
@@ -221,6 +245,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 		{
 			log.trace("Would attempt to show message dialog with message " + message );
 		}
+		checkMeDialog();
 		messageDialog.setValues( parentComponent,
 				message,
 				title,
