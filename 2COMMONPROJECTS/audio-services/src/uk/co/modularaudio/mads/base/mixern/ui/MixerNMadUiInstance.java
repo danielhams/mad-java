@@ -22,8 +22,6 @@ package uk.co.modularaudio.mads.base.mixern.ui;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mahout.math.map.OpenIntObjectHashMap;
-
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNIOQueueBridge;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadInstance;
@@ -42,7 +40,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 {
 	private static Log log = LogFactory.getLog( MixerNMadUiInstance.class.getName() );
 
-	private final OpenIntObjectHashMap<MeterValueReceiver> laneMeterReceiversMap = new OpenIntObjectHashMap<MeterValueReceiver>();
+	private final MeterValueReceiver[] laneMeterReceiversMap;
 	private MeterValueReceiver masterMeterReceiver;
 
 	private long framesBetweenPeakReset;
@@ -53,6 +51,8 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 			final MadUiDefinition<D, I> componentUiDefinition )
 	{
 		super( span, instance, componentUiDefinition );
+
+		laneMeterReceiversMap = new MeterValueReceiver[ instance.getDefinition().getMixerInstanceConfiguration().getNumMixerLanes() ];
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				final int laneNum = laneChanNum / 2;
 				final int channelNum = laneChanNum % 2;
 
-				final MeterValueReceiver laneReceiver = laneMeterReceiversMap.get( laneNum );
+				final MeterValueReceiver laneReceiver = laneMeterReceiversMap[ laneNum ];
 				if( laneReceiver == null )
 				{
 					if( log.isWarnEnabled() )
@@ -175,7 +175,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 
 	public void registerLaneMeterReceiver( final int laneNum, final MeterValueReceiver meterReceiver )
 	{
-		laneMeterReceiversMap.put( laneNum, meterReceiver );
+		laneMeterReceiversMap[ laneNum ] = meterReceiver;
 	}
 
 	public void registerMasterMeterReceiver( final MeterValueReceiver meterReceiver )
