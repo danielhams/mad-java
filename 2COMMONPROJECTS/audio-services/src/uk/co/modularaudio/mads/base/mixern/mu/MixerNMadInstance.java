@@ -90,32 +90,23 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
-		throws MadProcessingException
 	{
-		try
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+
+		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
+		curValueRatio = 1.0f - newValueRatio;
+
+		for( int i = 0 ; i < numInputLanes ; i++ )
 		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-
-			for( int i = 0 ; i < numInputLanes ; i++ )
-			{
-				channelLaneProcessors[ i ].resetCurNewValues( curValueRatio, newValueRatio );
-			}
-			masterProcessor.resetCurNewValues( curValueRatio, newValueRatio );
-
-			leftOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 0 );
-			rightOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 1 );
-
-			sampleFramesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
-			numSamplesProcessed = 0;
+			channelLaneProcessors[ i ].resetCurNewValues( curValueRatio, newValueRatio );
 		}
-		catch (final Exception e)
-		{
-			final String msg = "Exception caught starting up mixer: " + e.toString();
-			throw new MadProcessingException( msg, e );
-		}
+		masterProcessor.resetCurNewValues( curValueRatio, newValueRatio );
+
+		leftOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 0 );
+		rightOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 1 );
+
+		sampleFramesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+		numSamplesProcessed = 0;
 	}
 
 	@Override
