@@ -55,8 +55,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.ui.InverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterMadUiDefinition;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
-import uk.co.modularaudio.mads.base.mixer.ui.MixerMadUiDefinition;
 import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
 import uk.co.modularaudio.mads.base.mixer3.ui.Mixer3MadUiDefinition;
 import uk.co.modularaudio.mads.base.mixer8.mu.Mixer8MadDefinition;
@@ -147,8 +145,6 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( ControllerToCvMadDefinition.class, ControllerToCvMadUiDefinition.class );
 
 		classToUiDefinition.put( LinearCVAMadDefinition.class, LinearCVAMadUiDefinition.class );
-
-		classToUiDefinition.put( MixerMadDefinition.class, MixerMadUiDefinition.class );
 
 		classToUiDefinition.put( PrngMadDefinition.class, PrngMadUiDefinition.class );
 

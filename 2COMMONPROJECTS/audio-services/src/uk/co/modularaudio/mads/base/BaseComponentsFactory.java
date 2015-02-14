@@ -54,8 +54,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
 import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
 import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadInstance;
 import uk.co.modularaudio.mads.base.mixer8.mu.Mixer8MadDefinition;
@@ -165,7 +163,6 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		// Parameterised instances
 		defClassToInsClassMap.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadInstance.class );
 		defClassToInsClassMap.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadInstance.class );
-		defClassToInsClassMap.put( MixerMadDefinition.class, MixerMadInstance.class );
 
 		defClassToInsClassMap.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadInstance.class );
 

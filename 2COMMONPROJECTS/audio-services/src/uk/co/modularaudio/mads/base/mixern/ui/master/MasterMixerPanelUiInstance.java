@@ -25,9 +25,9 @@ import java.awt.Color;
 import javax.swing.JComponent;
 
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.mads.base.mixer.ui.MixerMadUiDefinition;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadInstance;
+import uk.co.modularaudio.mads.base.mixern.ui.MixerNMadUiDefinition;
 import uk.co.modularaudio.mads.base.mixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.mads.base.mixern.ui.lane.AmpSliderAndMeter;
 import uk.co.modularaudio.mads.base.mixern.ui.lane.AmpSliderChangeReceiver;
@@ -71,7 +71,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		this.uiInstance = uiInstance;
 
 		this.setOpaque( true );
-		this.setBackground( MixerMadUiDefinition.MASTER_BG_COLOR );
+		this.setBackground( MixerNMadUiDefinition.MASTER_BG_COLOR );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addRowConstraint( "[grow 0][fill][grow 0]" );

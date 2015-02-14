@@ -24,7 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import junit.framework.TestCase;
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
+import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
 
 public class TestCreateMixer extends TestCase
 {
@@ -50,6 +50,6 @@ public class TestCreateMixer extends TestCase
 	public void testAndShowComponent()
 			throws Exception
 	{
-		gcv.testAndShowComponent( MixerMadDefinition.DEFINITION_ID );
+		gcv.testAndShowComponent( Mixer3MadDefinition.DEFINITION_ID );
 	}
 }

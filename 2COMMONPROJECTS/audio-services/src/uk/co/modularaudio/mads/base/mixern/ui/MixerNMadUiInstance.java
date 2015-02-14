@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenIntObjectHashMap;
 
-import uk.co.modularaudio.mads.base.mixer.mu.MixerIOQueueBridge;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNIOQueueBridge;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadInstance;
@@ -51,7 +50,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 //		log.debug("Consuming one");
 		switch( nextOutgoingEntry.command )
 		{
-			case MixerIOQueueBridge.COMMAND_OUT_LANE_METER:
+			case MixerNIOQueueBridge.COMMAND_OUT_LANE_METER:
 			{
 				// float
 				final long value = nextOutgoingEntry.value;
@@ -76,7 +75,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				}
 				break;
 			}
-			case MixerIOQueueBridge.COMMAND_OUT_MASTER_METER:
+			case MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER:
 			{
 				final long value = nextOutgoingEntry.value;
 				final int laneChanNum = (int)((value ) & 0xFFFFFFFF);
@@ -95,7 +94,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				}
 				break;
 			}
-			case MixerIOQueueBridge.COMMAND_OUT_LANE_MUTE_SET:
+			case MixerNIOQueueBridge.COMMAND_OUT_LANE_MUTE_SET:
 			{
 //				long value = nextOutgoingEntry.value;
 //				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
@@ -105,7 +104,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 //				laneMeterReceiversMap.get( laneChanNum ).receiveMuteSet( nextOutgoingEntry.frameTime, muted );
 				break;
 			}
-			case MixerIOQueueBridge.COMMAND_OUT_LANE_SOLO_SET:
+			case MixerNIOQueueBridge.COMMAND_OUT_LANE_SOLO_SET:
 			{
 //				long value = nextOutgoingEntry.value;
 //				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
@@ -115,10 +114,10 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 //				laneMeterReceiversMap.get( laneChanNum ).receiveSoloSet( nextOutgoingEntry.frameTime, solod );
 				break;
 			}
-			case MixerIOQueueBridge.COMMAND_IN_LANE_AMP:
-			case MixerIOQueueBridge.COMMAND_IN_LANE_MUTE:
-			case MixerIOQueueBridge.COMMAND_IN_LANE_PAN:
-			case MixerIOQueueBridge.COMMAND_IN_LANE_SOLO:
+			case MixerNIOQueueBridge.COMMAND_IN_LANE_AMP:
+			case MixerNIOQueueBridge.COMMAND_IN_LANE_MUTE:
+			case MixerNIOQueueBridge.COMMAND_IN_LANE_PAN:
+			case MixerNIOQueueBridge.COMMAND_IN_LANE_SOLO:
 			{
 				// Ignore them.
 				break;

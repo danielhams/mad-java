@@ -36,10 +36,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadDefinition;
-import uk.co.modularaudio.mads.base.mixer.mu.MixerMadInstance;
-import uk.co.modularaudio.mads.base.mixer.ui.MixerMadUiInstance;
-import uk.co.modularaudio.mads.base.mixer.ui.ChannelLaneMixerPanelUiInstance;
+import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
+import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadInstance;
+import uk.co.modularaudio.mads.base.mixer3.ui.Mixer3MadUiInstance;
+import uk.co.modularaudio.mads.base.mixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -48,7 +48,7 @@ public class TestCreateMixerLane extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestCreateMixerLane.class.getName() );
 
-	private GenericComponentVisualiser gcv;
+	private final GenericComponentVisualiser gcv;
 
 	public TestCreateMixerLane() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
@@ -70,17 +70,17 @@ public class TestCreateMixerLane extends TestCase
 	public void testAndShowComponent()
 			throws Exception
 	{
-		MixerMadDefinition mixerDef = (MixerMadDefinition)gcv.componentService.findDefinitionById( MixerMadDefinition.DEFINITION_ID );
-		Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-		String instanceName = "panel_test";
-		MixerMadInstance mixerAui = (MixerMadInstance)gcv.componentService.createInstanceFromDefinition( mixerDef, parameterValues, instanceName );
+		final Mixer3MadDefinition mixerDef = (Mixer3MadDefinition)gcv.componentService.findDefinitionById( Mixer3MadDefinition.DEFINITION_ID );
+		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+		final String instanceName = "panel_test";
+		final Mixer3MadInstance mixerAui = (Mixer3MadInstance)gcv.componentService.createInstanceFromDefinition( mixerDef, parameterValues, instanceName );
 
-		MixerMadUiInstance mixerUi =
-				(MixerMadUiInstance)gcv.componentUiService.createUiInstanceForInstance( mixerAui );
+		final Mixer3MadUiInstance mixerUi =
+				(Mixer3MadUiInstance)gcv.componentUiService.createUiInstanceForInstance( mixerAui );
 
-		JFrame testFrame = new JFrame();
-		JPanel testPanel = new JPanel();
-		MigLayout layout = new MigLayout("insets 0, gap 0, fill");
+		final JFrame testFrame = new JFrame();
+		final JPanel testPanel = new JPanel();
+		final MigLayout layout = new MigLayout("insets 0, gap 0, fill");
 		testPanel.setLayout( layout );
 		testFrame.add( testPanel );
 //		Dimension minimumSize = new Dimension(71, 165);
@@ -88,7 +88,9 @@ public class TestCreateMixerLane extends TestCase
 //		testPanel.setMaximumSize( minimumSize );
 //		testPanel.setPreferredSize( minimumSize );
 
-		ChannelLaneMixerPanelUiInstance lanePanel = new ChannelLaneMixerPanelUiInstance( mixerDef, mixerAui, mixerUi, 0 );
+		final LaneMixerPanelUiInstance<Mixer3MadDefinition, Mixer3MadInstance, Mixer3MadUiInstance> lanePanel =
+				new LaneMixerPanelUiInstance<Mixer3MadDefinition, Mixer3MadInstance, Mixer3MadUiInstance>(
+						mixerDef, mixerAui, mixerUi, 0 );
 		testPanel.add( lanePanel, "grow" );
 		testPanel.setBackground( GenericComponentVisualiser.panelBackgroundColor );
 
@@ -96,25 +98,25 @@ public class TestCreateMixerLane extends TestCase
 		{
 
 			@Override
-			public void componentShown( ComponentEvent e )
+			public void componentShown( final ComponentEvent e )
 			{
 			}
 
 			@Override
-			public void componentResized( ComponentEvent e )
+			public void componentResized( final ComponentEvent e )
 			{
-				Object o = e.getSource();
-				JFrame frame = (JFrame)o;
+				final Object o = e.getSource();
+				final JFrame frame = (JFrame)o;
 				log.debug("Component resized to be " + frame.getSize() );
 			}
 
 			@Override
-			public void componentMoved( ComponentEvent e )
+			public void componentMoved( final ComponentEvent e )
 			{
 			}
 
 			@Override
-			public void componentHidden( ComponentEvent e )
+			public void componentHidden( final ComponentEvent e )
 			{
 			}
 		} );
@@ -127,8 +129,8 @@ public class TestCreateMixerLane extends TestCase
 		// Set some values
 		long currentGuiTime = System.nanoTime();
 //		long nanosPerPeriod = 0;
-		MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
-		ThreadSpecificTemporaryEventStorage tes = new ThreadSpecificTemporaryEventStorage( 512 );
+		final MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
+		final ThreadSpecificTemporaryEventStorage tes = new ThreadSpecificTemporaryEventStorage( 512 );
 		lanePanel.receiveMeterReadingLevel( currentGuiTime, 0, 0.8f );
 		lanePanel.receiveMeterReadingLevel( currentGuiTime, 1, 0.78f );
 
