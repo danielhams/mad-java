@@ -1,13 +1,14 @@
 package uk.co.modularaudio.mads.base.mixern.mu;
 
 import uk.co.modularaudio.util.audio.mad.MadClassification;
-import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 
-public class MixerNDefinition<D extends MadDefinition<D,I>, I extends MixerNInstance<D,I>>
+public class MixerNMadDefinition<D extends MixerNMadDefinition<D,I>, I extends MixerNMadInstance<D,I>>
 	extends AbstractNonConfigurableMadDefinition<D,I>
 {
-	public MixerNDefinition( final String definitionId,
+	private final MixerNInstanceConfiguration instanceConfiguration;
+
+	public MixerNMadDefinition( final String definitionId,
 			final String userVisibleName,
 			final MadClassification classification,
 			final MixerNInstanceConfiguration instanceConfiguration )
@@ -21,5 +22,11 @@ public class MixerNDefinition<D extends MadDefinition<D,I>, I extends MixerNInst
 				instanceConfiguration.getChannelTypes(),
 				instanceConfiguration.getChannelDirections(),
 				instanceConfiguration.getChannelPositions() );
+		this.instanceConfiguration = instanceConfiguration;
+	}
+
+	public MixerNInstanceConfiguration getMixerInstanceConfiguration()
+	{
+		return instanceConfiguration;
 	}
 }

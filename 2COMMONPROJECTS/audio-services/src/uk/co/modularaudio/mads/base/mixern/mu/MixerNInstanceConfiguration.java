@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.mixern.mu;
 
-import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
-import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
@@ -33,6 +31,7 @@ public class MixerNInstanceConfiguration
 
 	private final int numMixerLanes;
 
+	private final int numChannelsPerLane;
 	private final int numInputChannels;
 	private final int numOutputChannels;
 	private final MadChannelType channelType = MadChannelType.AUDIO;
@@ -40,30 +39,37 @@ public class MixerNInstanceConfiguration
 	private final int[] outputChannelIndexes;
 	private final int totalNumChannels;
 
-	private final MadChannelConfiguration channelConfiguration;
-	private final MadChannelDefinition[] channelDefinitions;
+	private final String[] channelNames;
+	private final MadChannelType[] channelTypes;
+	private final MadChannelDirection[] channelDirections;
+	private final MadChannelPosition[] channelPositions;
 
 	public MixerNInstanceConfiguration( final int numMixerLanes )
 		throws MadProcessingException
 	{
 		this.numMixerLanes = numMixerLanes;
 
-		numInputChannels = (numMixerLanes * NUM_CHANNELS_PER_LANE );
-		numOutputChannels = NUM_CHANNELS_PER_LANE;
+		numChannelsPerLane = NUM_CHANNELS_PER_LANE;
+		numInputChannels = (numMixerLanes * numChannelsPerLane );
+		numOutputChannels = numChannelsPerLane;
 		totalNumChannels = numInputChannels + numOutputChannels;
-		channelDefinitions = new MadChannelDefinition[ totalNumChannels ];
+
+		channelNames = new String[ totalNumChannels ];
+		channelTypes = new MadChannelType[ totalNumChannels ];
+		channelDirections = new MadChannelDirection[ totalNumChannels ];
+		channelPositions = new MadChannelPosition[ totalNumChannels ];
 
 		int curChannelCounter = 0;
 		inputChannelIndexes = new int[ numInputChannels ];
 		for( int il = 0 ; il < numMixerLanes ; il++ )
 		{
-			for( int ic = 0 ; ic < NUM_CHANNELS_PER_LANE ; ic++ )
+			for( int ic = 0 ; ic < numChannelsPerLane ; ic++ )
 			{
-				inputChannelIndexes[ (il * NUM_CHANNELS_PER_LANE) + ic ] = curChannelCounter;
-				channelDefinitions[ curChannelCounter ] = new MadChannelDefinition( "Lane " + (il + 1) + " Channel " + (ic + 1),
-						channelType,
-						MadChannelDirection.CONSUMER,
-						MadChannelPosition.MONO );
+				inputChannelIndexes[ (il * numChannelsPerLane) + ic ] = curChannelCounter;
+				channelNames[ curChannelCounter ] = "Lane " + (il + 1) + " Channel " + (ic + 1);
+				channelTypes[ curChannelCounter ] = channelType;
+				channelDirections[ curChannelCounter ] = MadChannelDirection.CONSUMER;
+				channelPositions[ curChannelCounter ] = MadChannelPosition.MONO;
 				curChannelCounter++;
 			}
 		}
@@ -72,21 +78,18 @@ public class MixerNInstanceConfiguration
 		{
 			outputChannelIndexes[ c ] = curChannelCounter;
 
-				channelDefinitions[ curChannelCounter ] = new MadChannelDefinition( "Output Channel " + ( c + 1),
-						channelType,
-						MadChannelDirection.PRODUCER,
-						MadChannelPosition.MONO );
+			channelNames[ curChannelCounter ] = "Output Channel " + ( c + 1);
+			channelTypes[ curChannelCounter ] = channelType;
+			channelDirections[ curChannelCounter ] = MadChannelDirection.PRODUCER;
+			channelPositions[ curChannelCounter ] = MadChannelPosition.MONO;
 
-				curChannelCounter++;
+			curChannelCounter++;
 		}
-
-		// Build the channel configuration
-		channelConfiguration = new MadChannelConfiguration( channelDefinitions );
 	}
 
-	public MadChannelConfiguration getChannelConfiguration()
+	public int getNumMixerLanes()
 	{
-		return channelConfiguration;
+		return numMixerLanes;
 	}
 
 	public int getNumInputChannels()
@@ -106,7 +109,7 @@ public class MixerNInstanceConfiguration
 
 	public int getIndexForInputLaneChannel( final int l, final int c )
 	{
-		return inputChannelIndexes[ (l * NUM_CHANNELS_PER_LANE) + c ];
+		return inputChannelIndexes[ (l * numChannelsPerLane) + c ];
 	}
 
 	public int getIndexForOutputChannel( final int c )
@@ -122,5 +125,30 @@ public class MixerNInstanceConfiguration
 	public int getNumInputLanes()
 	{
 		return numMixerLanes;
+	}
+
+	public String[] getChannelNames()
+	{
+		return channelNames;
+	}
+
+	public MadChannelType[] getChannelTypes()
+	{
+		return channelTypes;
+	}
+
+	public MadChannelDirection[] getChannelDirections()
+	{
+		return channelDirections;
+	}
+
+	public MadChannelPosition[] getChannelPositions()
+	{
+		return channelPositions;
+	}
+
+	public int getNumChannelsPerLane()
+	{
+		return numChannelsPerLane;
 	}
 }

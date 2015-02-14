@@ -28,7 +28,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
-public class MixerNIOQueueBridge<I extends MixerNInstance<?,I>> extends
+public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 		MadLocklessQueueBridge<I>
 {
 	private static Log log = LogFactory.getLog( MixerNIOQueueBridge.class.getName() );
