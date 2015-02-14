@@ -76,46 +76,61 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 			final int position,
 			final int length )
 	{
+		if( currentLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			currentLeftAmpMultiplier = 0.0f;
+		}
+
+		if( currentRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			currentRightAmpMultiplier = 0.0f;
+		}
+
+		// First left
 		for( int s = position ; s < position + length ; s++ )
 		{
-			for( int cn = 0 ; cn < numChannelsPerLane ; cn++ )
+			currentLeftAmpMultiplier = (currentLeftAmpMultiplier * curValueRatio ) + (desiredLeftAmpMultiplier * newValueRatio );
+
+			final int outputChannelIndex = outputChannelIndexes[ 0 ];
+			final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
+			float outputFloat = outputFloats[ s ] * currentLeftAmpMultiplier;
+			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
+
+			if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 			{
-				if( cn == 0 )
-				{
-					currentLeftAmpMultiplier = (currentLeftAmpMultiplier * curValueRatio ) + (desiredLeftAmpMultiplier * newValueRatio );
-				}
-				else if( cn == 1 )
-				{
-					currentRightAmpMultiplier = (currentRightAmpMultiplier * curValueRatio ) + (desiredRightAmpMultiplier * newValueRatio );
-				}
-				final int outputChannelIndex = outputChannelIndexes[ cn ];
-				final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
-				float outputFloat = outputFloats[ s ] * ( cn == 0 ? currentLeftAmpMultiplier : currentRightAmpMultiplier );
-				final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
-
-				if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					outputFloat = 0.0f;
-				}
-
-				if( cn == 0 )
-				{
-					if( absFloat > leftMeterLevel )
-					{
-						leftMeterLevel = absFloat;
-					}
-				}
-				else if( cn == 1 )
-				{
-					if( absFloat > rightMeterLevel )
-					{
-						rightMeterLevel = absFloat;
-					}
-				}
-				outputFloats[ s ] = outputFloat;
+				outputFloat = 0.0f;
 			}
+
+			if( absFloat > leftMeterLevel )
+			{
+				leftMeterLevel = absFloat;
+			}
+
+			outputFloats[ s ] = outputFloat;
 		}
-	}
+		// And right
+		for( int s = position ; s < position + length ; s++ )
+		{
+			currentRightAmpMultiplier = (currentRightAmpMultiplier * curValueRatio ) + (desiredRightAmpMultiplier * newValueRatio );
+
+			final int outputChannelIndex = outputChannelIndexes[ 1 ];
+			final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
+			float outputFloat = outputFloats[ s ] * currentRightAmpMultiplier;
+			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
+
+			if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			{
+				outputFloat = 0.0f;
+			}
+
+			if( absFloat > rightMeterLevel )
+			{
+				rightMeterLevel = absFloat;
+			}
+
+			outputFloats[ s ] = outputFloat;
+		}
+}
 
 	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
 	{
