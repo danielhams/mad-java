@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.mixer3.mu;
+package uk.co.modularaudio.mads.base.mixer8.mu;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,23 +13,23 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class Mixer3MadDefinition extends MixerNMadDefinition<Mixer3MadDefinition, Mixer3MadInstance>
+public class Mixer8MadDefinition extends MixerNMadDefinition<Mixer8MadDefinition, Mixer8MadInstance>
 {
-	private static Log log = LogFactory.getLog( Mixer3MadDefinition.class.getName() );
+	private static Log log = LogFactory.getLog( Mixer8MadDefinition.class.getName() );
 
-	public final static String DEFINITION_ID = "mixer3";
-	private final static String USER_VISIBLE_NAME = "Mixer (Three Stereo Lanes)";
+	public final static String DEFINITION_ID = "mixer8";
+	private final static String USER_VISIBLE_NAME = "Mixer (Eight Stereo Lanes)";
 
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
 
-	private final static String CLASS_NAME="Mixer (Three Stereo Lanes)";
-	private final static String CLASS_DESC="A three lane stereo mixer";
+	private final static String CLASS_NAME="Mixer (Eight Stereo Lanes)";
+	private final static String CLASS_DESC="An eight lane stereo mixer";
 
-	private final static int NUM_MIXER_LANES = 3;
+	private final static int NUM_MIXER_LANES = 8;
 
-	public final static MixerNInstanceConfiguration INSTANCE_CONFIGURATION = getMixer3InstanceConfiguration();
+	public final static MixerNInstanceConfiguration INSTANCE_CONFIGURATION = getMixer8InstanceConfiguration();
 
-	private static MixerNInstanceConfiguration getMixer3InstanceConfiguration()
+	private static MixerNInstanceConfiguration getMixer8InstanceConfiguration()
 	{
 		try
 		{
@@ -43,7 +43,7 @@ public class Mixer3MadDefinition extends MixerNMadDefinition<Mixer3MadDefinition
 		}
 	}
 
-	public Mixer3MadDefinition( final BaseComponentsCreationContext creationContent,
+	public Mixer8MadDefinition( final BaseComponentsCreationContext creationContent,
 			final MadClassificationService classService )
 		throws DatastoreException, RecordNotFoundException
 	{

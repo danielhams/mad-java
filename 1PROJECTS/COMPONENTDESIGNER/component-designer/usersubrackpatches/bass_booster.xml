@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Bass Boost Rack" cols="4" rows="39">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Input Pre Amp" rackComponentChannelInstanceName="Lane 1 Channel 1"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Input Pre Amp" rackComponentChannelInstanceName="Lane 1 Channel 2"/>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Bass Boost Rack" cols="4" rows="20">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Input Preamp" rackComponentChannelInstanceName="Lane 1 Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Input Preamp" rackComponentChannelInstanceName="Lane 1 Channel 2"/>
+    <rackIOLink rackChannelName="Input Channel 3" rackComponentName="Input Preamp" rackComponentChannelInstanceName="Lane 2 Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 4" rackComponentName="Input Preamp" rackComponentChannelInstanceName="Lane 2 Channel 2"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Wet Dry Mixer" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Wet Dry Mixer" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="Dry Mixdown" definitionId="mixer">
+    <rackComponent name="Dry Mixdown" definitionId="mixer3">
         <rackPosition column="2" row="4"/>
-        <rackControl name="MasterMixer" value="824:50"/>
-        <rackControl name="LaneMixer0" value="824:50:  "/>
-        <rackControl name="LaneMixer1" value="824:50:  "/>
-        <rackControl name="LaneMixer2" value="0:50:  "/>
-        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Mixer Lane 0" value="824:50:  "/>
+        <rackControl name="Mixer Lane 1" value="824:50:  "/>
+        <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
     <rackComponent name="Dry Wave" definitionId="wave_roller">
         <rackPosition column="2" row="8"/>
@@ -26,13 +27,12 @@
         <rackControl name="Knee" value="96.00"/>
         <rackControl name="Bandwidth" value="500.00"/>
     </rackComponent>
-    <rackComponent name="Input Pre Amp" definitionId="mixer">
+    <rackComponent name="Input Preamp" definitionId="mixer3">
         <rackPosition column="0" row="0"/>
-        <rackControl name="MasterMixer" value="824:50"/>
-        <rackControl name="LaneMixer0" value="734:50:  "/>
-        <rackControl name="LaneMixer1" value="0:50:  "/>
-        <rackControl name="LaneMixer2" value="0:50:  "/>
-        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Mixer Lane 0" value="724:50:  "/>
+        <rackControl name="Mixer Lane 1" value="0:50:  "/>
+        <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
     <rackComponent name="Low" definitionId="frequency_filter">
         <rackPosition column="2" row="2"/>
@@ -48,13 +48,12 @@
         <rackControl name="Slider" value="-1000"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
-    <rackComponent name="Wet Mixdown" definitionId="mixer">
+    <rackComponent name="Wet Mixdown" definitionId="mixer3">
         <rackPosition column="0" row="4"/>
-        <rackControl name="MasterMixer" value="824:50"/>
-        <rackControl name="LaneMixer0" value="824:50:  "/>
-        <rackControl name="LaneMixer1" value="915:50:  "/>
-        <rackControl name="LaneMixer2" value="0:50:  "/>
-        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Mixer Lane 0" value="824:50:  "/>
+        <rackControl name="Mixer Lane 1" value="924:50:  "/>
+        <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
     <rackComponent name="Wet Wave" definitionId="wave_roller">
         <rackPosition column="0" row="8"/>
@@ -70,10 +69,10 @@
     <rackLink producerRackComponentName="High" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Channel 1"/>
     <rackLink producerRackComponentName="High" producerChannelName="Output Wave Right" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 1 Channel 2"/>
     <rackLink producerRackComponentName="High" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Channel 2"/>
-    <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 1" consumerRackComponentName="High" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 1" consumerRackComponentName="Low" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 2" consumerRackComponentName="High" consumerChannelName="Input Wave Right"/>
-    <rackLink producerRackComponentName="Input Pre Amp" producerChannelName="Output Channel 2" consumerRackComponentName="Low" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Input Preamp" producerChannelName="Output Channel 1" consumerRackComponentName="High" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Input Preamp" producerChannelName="Output Channel 1" consumerRackComponentName="Low" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Input Preamp" producerChannelName="Output Channel 2" consumerRackComponentName="High" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Input Preamp" producerChannelName="Output Channel 2" consumerRackComponentName="Low" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Left" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 2 Channel 1"/>
     <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Channel 1"/>
     <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Right" consumerRackComponentName="Dry Mixdown" consumerChannelName="Lane 2 Channel 2"/>
