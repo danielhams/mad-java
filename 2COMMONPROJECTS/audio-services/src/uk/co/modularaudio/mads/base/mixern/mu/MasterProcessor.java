@@ -87,12 +87,12 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		}
 
 		// First left
+		int outputChannelIndex = outputChannelIndexes[ 0 ];
+		float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
 		for( int s = position ; s < position + length ; s++ )
 		{
 			currentLeftAmpMultiplier = (currentLeftAmpMultiplier * curValueRatio ) + (desiredLeftAmpMultiplier * newValueRatio );
 
-			final int outputChannelIndex = outputChannelIndexes[ 0 ];
-			final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
 			float outputFloat = outputFloats[ s ] * currentLeftAmpMultiplier;
 			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
 
@@ -109,12 +109,12 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 			outputFloats[ s ] = outputFloat;
 		}
 		// And right
+		outputChannelIndex = outputChannelIndexes[ 1 ];
+		outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
 		for( int s = position ; s < position + length ; s++ )
 		{
 			currentRightAmpMultiplier = (currentRightAmpMultiplier * curValueRatio ) + (desiredRightAmpMultiplier * newValueRatio );
 
-			final int outputChannelIndex = outputChannelIndexes[ 1 ];
-			final float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
 			float outputFloat = outputFloats[ s ] * currentRightAmpMultiplier;
 			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
 
