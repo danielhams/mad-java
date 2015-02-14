@@ -10,8 +10,10 @@ import uk.co.modularaudio.mads.base.mixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.mixern.ui.lane.MeterValueReceiver;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.table.Span;
 
@@ -23,12 +25,25 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	private final OpenIntObjectHashMap<MeterValueReceiver> laneMeterReceiversMap = new OpenIntObjectHashMap<MeterValueReceiver>();
 	private MeterValueReceiver masterMeterReceiver;
 
+	private long framesBetweenPeakReset;
+
 
 	public MixerNMadUiInstance( final Span span,
 			final I instance,
 			final MadUiDefinition<D, I> componentUiDefinition )
 	{
 		super( span, instance, componentUiDefinition );
+	}
+
+	@Override
+	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+	{
+		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
+
+		// Use the sample rate (i.e. one second between peak reset)
+		framesBetweenPeakReset = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
 	}
 
 	@Override
@@ -135,8 +150,7 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 
 	public long getFramesBetweenPeakReset()
 	{
-		// TODO Auto-generated method stub
-		return 44100;
+		return framesBetweenPeakReset;
 	}
 
 	public void registerLaneMeterReceiver( final int laneNum, final MeterValueReceiver meterReceiver )
