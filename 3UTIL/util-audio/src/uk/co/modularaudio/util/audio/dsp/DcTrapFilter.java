@@ -20,6 +20,9 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
+import uk.co.modularaudio.util.audio.math.AudioMath;
+
+
 public class DcTrapFilter
 {
 	private float r;
@@ -44,8 +47,16 @@ public class DcTrapFilter
 		float tmpPrevValue = previousValue;
 		for( int i = position ; i < position + length ; ++i )
 		{
-			final float curValue = samples[i];
+			float curValue = samples[i];
+			if( curValue > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curValue < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			{
+				curValue = 0.0f;
+			}
 			previousOutValue = curValue - tmpPrevValue + (r * previousOutValue );
+			if( previousOutValue > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && previousOutValue < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			{
+				previousOutValue = 0.0f;
+			}
 			samples[i] = previousOutValue;
 			tmpPrevValue = curValue;
 		}

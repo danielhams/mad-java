@@ -51,14 +51,20 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 		Arrays.fill( channelSoloValues, false );
 	}
 
-	public void setLaneMute( final ThreadSpecificTemporaryEventStorage tses, final long timestamp, final int laneNumber, final boolean muteValue )
+	public void setLaneMute( final ThreadSpecificTemporaryEventStorage tses,
+			final long timestamp,
+			final int laneNumber,
+			final boolean muteValue )
 	{
 //		log.debug("Received lane mute of " + muteValue + " for lane " + laneNumber );
 		channelMuteValues[ laneNumber ] = muteValue;
 		updateLaneProcessors( tses, timestamp );
 	}
 
-	public void setLaneSolo( final ThreadSpecificTemporaryEventStorage tses, final long timestamp, final int laneNumber, final boolean soloValue )
+	public void setLaneSolo( final ThreadSpecificTemporaryEventStorage tses,
+			final long timestamp,
+			final int laneNumber,
+			final boolean soloValue )
 	{
 //		log.debug("Received lane solo of " + soloValue + " for lane " + laneNumber );
 		channelSoloValues[ laneNumber ] = soloValue;

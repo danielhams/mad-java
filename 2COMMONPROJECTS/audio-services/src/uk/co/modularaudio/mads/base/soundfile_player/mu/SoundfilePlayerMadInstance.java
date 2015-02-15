@@ -43,6 +43,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
@@ -189,6 +190,11 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			if( numSamplesTillNextEvent <= 0 )
 			{
 				playSpeed = (playSpeed * curValueRatio) + (desiredPlaySpeed * newValueRatio);
+				if( playSpeed > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && playSpeed < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+				{
+					playSpeed = 0.0f;
+				}
+
 				// Emit position event
 				final long eventFrameTime = periodStartFrameTime + curOutputPos;
 				final long curSamplePos = resampledSample.getFramePosition();
