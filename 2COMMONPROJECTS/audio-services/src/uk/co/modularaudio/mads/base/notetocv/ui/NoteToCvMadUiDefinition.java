@@ -88,7 +88,7 @@ public class NoteToCvMadUiDefinition
 			super( bia,
 					cif,
 					imageRoot,
-					MadUIStandardBackgrounds.STD_2x1_DARKGRAY,
+					MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

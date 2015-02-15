@@ -33,8 +33,8 @@ import uk.co.modularaudio.util.table.Span;
 
 public class FakeRackComponent extends RackComponent
 {
-	final static String fakeStr = "fake";
-	private final static MadClassificationGroup classGroup = new MadClassificationGroup( Visibility.PUBLIC, fakeStr );
+	final static String FAKE_STR = "fake";
+	private final static MadClassificationGroup CLASS_GROUP = new MadClassificationGroup( Visibility.PUBLIC, FAKE_STR );
 	final static Span SPAN = new Span(2,2);
 
 	public FakeRackComponent( final String name, final FakeMadInstance mi, final FakeMadUiInstance mui )
@@ -49,7 +49,7 @@ public class FakeRackComponent extends RackComponent
 			final String imagePrefix
 			) throws MadProcessingException, DatastoreException
 	{
-		final MadClassification fakeClass = new MadClassification( classGroup, fakeStr, fakeStr, fakeStr, ReleaseState.RELEASED );
+		final MadClassification fakeClass = new MadClassification( CLASS_GROUP, FAKE_STR, FAKE_STR, FAKE_STR, ReleaseState.RELEASED );
 		final FakeMadDefinition md = new FakeMadDefinition( fakeClass );
 		final FakeMadInstance mi = new FakeMadInstance( md );
 		final FakeMadUiDefinition mud = new FakeMadUiDefinition( bia, imageFactory, imageRoot, imagePrefix, md );

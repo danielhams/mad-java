@@ -103,7 +103,7 @@ public class SoundfilePlayerMadUiDefinition extends
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x4_RACINGGREEN,
+				MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

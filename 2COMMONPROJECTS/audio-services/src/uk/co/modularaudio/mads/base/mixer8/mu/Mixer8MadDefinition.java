@@ -58,7 +58,10 @@ public class Mixer8MadDefinition extends MixerNMadDefinition<Mixer8MadDefinition
 		}
 		catch( final MadProcessingException de )
 		{
-			log.error("Exception caught initialising instance configuration: " + de.toString(), de);
+			if( log.isErrorEnabled() )
+			{
+				log.error("Exception caught initialising instance configuration: " + de.toString(), de);
+			}
 			return null;
 		}
 	}

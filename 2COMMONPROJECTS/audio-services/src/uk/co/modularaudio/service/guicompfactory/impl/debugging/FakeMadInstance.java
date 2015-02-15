@@ -38,7 +38,7 @@ class FakeMadInstance extends MadInstance<FakeMadDefinition, FakeMadInstance>
 
 	public FakeMadInstance( final FakeMadDefinition definition ) throws MadProcessingException
 	{
-		super( FakeRackComponent.fakeStr, definition, new HashMap<MadParameterDefinition,String>(),
+		super( FakeRackComponent.FAKE_STR, definition, new HashMap<MadParameterDefinition,String>(),
 				definition.getChannelConfigurationForParameters( null ) );
 	}
 

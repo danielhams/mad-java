@@ -71,7 +71,7 @@ public class DCTrapMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_1x1_LIGHTGRAY,
+				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

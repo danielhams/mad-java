@@ -84,7 +84,7 @@ public class WaveRollerMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x2_BLUE,
+				MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

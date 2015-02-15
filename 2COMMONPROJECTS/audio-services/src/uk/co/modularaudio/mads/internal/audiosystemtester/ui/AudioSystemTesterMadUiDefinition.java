@@ -51,7 +51,7 @@ public class AudioSystemTesterMadUiDefinition
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition, INSTANCE_CLASS );
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,

@@ -82,7 +82,7 @@ public class SpectralRollMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x4_BLUE,
+				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

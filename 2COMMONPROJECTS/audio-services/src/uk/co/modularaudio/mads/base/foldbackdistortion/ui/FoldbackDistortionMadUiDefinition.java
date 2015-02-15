@@ -83,7 +83,7 @@ public class FoldbackDistortionMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x1_METALLIC,
+				MadUIStandardBackgrounds.STD_2X1_METALLIC,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

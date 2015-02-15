@@ -70,7 +70,7 @@ public class LinearCVAMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_1x1_WHITE,
+				MadUIStandardBackgrounds.STD_1X1_WHITE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

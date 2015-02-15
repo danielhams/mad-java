@@ -36,8 +36,8 @@ class FakeMadDefinition extends MadDefinition<FakeMadDefinition, FakeMadInstance
 
 	public FakeMadDefinition( final MadClassification classification )
 	{
-		super( FakeRackComponent.fakeStr,
-				FakeRackComponent.fakeStr,
+		super( FakeRackComponent.FAKE_STR,
+				FakeRackComponent.FAKE_STR,
 				false,
 				classification,
 				new ArrayList<MadParameterDefinition>( 0 ),

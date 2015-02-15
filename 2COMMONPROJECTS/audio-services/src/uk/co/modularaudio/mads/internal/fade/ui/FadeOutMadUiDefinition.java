@@ -50,7 +50,7 @@ public class FadeOutMadUiDefinition extends MadUiDefinition<FadeOutMadDefinition
 			final String imageRoot )
 		throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY, definition );
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

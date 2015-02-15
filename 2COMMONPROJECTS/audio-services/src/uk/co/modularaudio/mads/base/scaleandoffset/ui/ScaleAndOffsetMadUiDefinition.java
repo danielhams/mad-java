@@ -81,7 +81,7 @@ public class ScaleAndOffsetMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x1_LIGHTGRAY,
+				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

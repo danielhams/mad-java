@@ -80,7 +80,7 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 		throws DatastoreException
 	{
 		// Sub rack is draggable
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2x1_DARKGRAY, definition, true, false );
+		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_DARKGRAY, definition, true, false );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

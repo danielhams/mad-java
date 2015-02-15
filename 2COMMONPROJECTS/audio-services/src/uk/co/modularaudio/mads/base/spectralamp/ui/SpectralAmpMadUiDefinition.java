@@ -89,7 +89,7 @@ public class SpectralAmpMadUiDefinition
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2x4_ORANGE,
+				MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

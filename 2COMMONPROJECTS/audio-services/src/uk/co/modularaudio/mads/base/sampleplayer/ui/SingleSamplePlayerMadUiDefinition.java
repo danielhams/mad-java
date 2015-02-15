@@ -92,7 +92,7 @@ public class SingleSamplePlayerMadUiDefinition
 			super( bia,
 					cif,
 					imageRoot,
-					MadUIStandardBackgrounds.STD_2x2_DARKGRAY,
+					MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,
