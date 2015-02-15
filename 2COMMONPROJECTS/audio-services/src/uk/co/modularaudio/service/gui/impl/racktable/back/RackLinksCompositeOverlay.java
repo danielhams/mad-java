@@ -144,12 +144,14 @@ public class RackLinksCompositeOverlay extends JComponent
 		public void ioLinksChanged( final RackIOLinkEvent outEvent )
 		{
 			rlco.redrawAllLinks();
+			repaint();
 		}
 
 		@Override
 		public void linksChanged( final RackLinkEvent outEvent )
 		{
 			rlco.redrawAllLinks();
+			repaint();
 		}
 	};
 
@@ -282,7 +284,6 @@ public class RackLinksCompositeOverlay extends JComponent
 			final RackIOLink ril = this.dataModel.getIOLinkAt( i );
 			drawOneIOLink( ril );
 		}
-
 	}
 
 	private void drawOneLink( final RackLink rl )

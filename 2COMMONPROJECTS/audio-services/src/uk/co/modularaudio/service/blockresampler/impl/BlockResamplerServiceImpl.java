@@ -216,28 +216,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			ArrayUtils.reverse( tmpBuffer, rightNonInterleavedIndex, numFramesWithCubicSamples );
 		}
 
-//		boolean lpnl = resampledSamplePlaybackDetails.getLowPassNyquistLimits();
-//		if( lpnl )
-//		{
-//			// Now if (a) ((fileSampleRate/2) * speed) > (outputSampleRate/2)
-//			// We have frequencies that will exceed the nyquist when resampled so lets low pass by
-//			// the appropriate amount before we resample
-//			// Since from (a) above we need an adjustment if
-//			// (b) speed > (outputSampleRate/(2*filesampleRate)
-//			// or
-//			// (c) fileSampleRate > (outputSampleRate/2*speed)
-//			float maxFileSampleRate = outputSampleRate / (2.0f * absSpeed );
-//			// Check if this max sample rate is lower that the sound file sample rate
-//			if( maxFileSampleRate < sourceSampleRate )
-//			{
-//				float lowPassFrequency = maxFileSampleRate / 2.0f;
-////				RBJFilterRT lpf = resampledSamplePlaybackDetails.getLowPassFilter();
-////				RBJFilter.filterIt( lpf,
-//
-//			}
-//		}
-
 		final BlockResamplingMethod resamplingMethod = resamplingClient.getResamplingMethod();
+
 		// Now resample output into the given arrays
 		if( addToOutput )
 		{
@@ -297,7 +277,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		for( int s = 0 ; s < numFramesWithCubicSamples ; ++s )
 		{
 			final int readOffset = (s * 2);
-			tmpBuffer[ leftNonInterleavedIndex +s ] = tmpBuffer[ readOffset ];
+			tmpBuffer[ leftNonInterleavedIndex + s ] = tmpBuffer[ readOffset ];
 			tmpBuffer[ rightNonInterleavedIndex + s ] = tmpBuffer[ readOffset + 1 ];
 		}
 	}
