@@ -19,81 +19,74 @@ public abstract class AbstractEventProcessor
 			final int frameOffset,
 			final int numFrames ) throws MadProcessingException
 	{
-		if (hasEventProcessing)
+		int numTemporalEvents = 0;
+		if( hasEventProcessing )
 		{
 			preProcess(tempEventQueue, timingParameters, numFrames);
-			final int numTemporalEvents = tempEventQueue.numTemporalEventsToInstance;
+			numTemporalEvents = tempEventQueue.numTemporalEventsToInstance;
+		}
 
-			if (numTemporalEvents > 0)
+		if( hasEventProcessing && numTemporalEvents > 0 )
+		{
+			// Chop period up into chunks up to the next event
+			// process the event and carry on.
+			int curEventIndex = 0;
+
+			final int numLeft = numFrames;
+			int curIndex = 0;
+
+			while (curEventIndex < numTemporalEvents)
 			{
-				int curEventIndex = 0;
+				IOQueueEvent comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
 
-				final int numLeft = numFrames;
-				int curIndex = 0;
+				long frameTime = comingEvent.frameTime;
 
-				while (curEventIndex < numTemporalEvents)
+				final long numToNextEvent = (frameTime - periodStartFrameTime);
+				final int numToNextEventInt = (int) numToNextEvent;
+				if (numToNextEventInt != numToNextEvent)
 				{
-					IOQueueEvent comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
-
-					long frameTime = comingEvent.frameTime;
-
-					final long numToNextEvent = (frameTime - periodStartFrameTime);
-					final int numToNextEventInt = (int) numToNextEvent;
-					if (numToNextEventInt != numToNextEvent)
-					{
-						throw new MadProcessingException( "Distance to event exceed ints!" );
-					}
-
-					final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
-
-					process( tempEventQueue,
-							timingParameters,
-							periodStartFrameTime,
-							channelConnectedFlags,
-							channelBuffers,
-							curIndex,
-							numThisRound );
-
-					curIndex += numThisRound;
-					periodStartFrameTime += numThisRound;
-					curEventIndex++;
-
-					do
-					{
-						processEvent( comingEvent );
-						comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
-						frameTime = comingEvent.frameTime;
-					}
-					while( curEventIndex < numTemporalEvents && frameTime <= periodStartFrameTime );
+					throw new MadProcessingException( "Distance to event exceed ints!" );
 				}
 
-				if (curIndex < numFrames)
+				final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
+
+				process( tempEventQueue,
+						timingParameters,
+						periodStartFrameTime,
+						channelConnectedFlags,
+						channelBuffers,
+						curIndex,
+						numThisRound );
+
+				curIndex += numThisRound;
+				periodStartFrameTime += numThisRound;
+				curEventIndex++;
+
+				// Process any remaining events
+				do
 				{
-					process( tempEventQueue,
-							timingParameters,
-							periodStartFrameTime,
-							channelConnectedFlags,
-							channelBuffers,
-							curIndex,
-							numFrames - curIndex );
+					processEvent( comingEvent );
+					comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
+					frameTime = comingEvent.frameTime;
 				}
+				while( curEventIndex < numTemporalEvents && frameTime <= periodStartFrameTime );
 			}
-			else
+
+			// Process any last chunk left over
+			if( curIndex < numFrames )
 			{
 				process( tempEventQueue,
 						timingParameters,
 						periodStartFrameTime,
 						channelConnectedFlags,
 						channelBuffers,
-						0,
-						numFrames );
+						curIndex,
+						numFrames - curIndex );
 			}
-			postProcess( tempEventQueue,
-					timingParameters,
-					periodStartFrameTime );
 		}
 		else
 		{
+			// Can be processed as one big chunk
 			process( tempEventQueue,
 					timingParameters,
 					periodStartFrameTime,
@@ -101,6 +94,13 @@ public abstract class AbstractEventProcessor
 					channelBuffers,
 					0,
 					numFrames );
+		}
+
+		if( hasEventProcessing )
+		{
+			postProcess( tempEventQueue,
+					timingParameters,
+					periodStartFrameTime );
 		}
 	}
 
