@@ -17,12 +17,13 @@ public abstract class AbstractEventProcessor
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
-			final int numFrames ) throws MadProcessingException
+			final int numFrames )
+		throws MadProcessingException
 	{
 		int numTemporalEvents = 0;
 		if( hasEventProcessing )
 		{
-			preProcess(tempEventQueue, timingParameters, numFrames);
+			preProcess( tempEventQueue, timingParameters, numFrames );
 			numTemporalEvents = tempEventQueue.numTemporalEventsToInstance;
 		}
 
@@ -35,7 +36,7 @@ public abstract class AbstractEventProcessor
 			final int numLeft = numFrames;
 			int curIndex = 0;
 
-			while (curEventIndex < numTemporalEvents)
+			while( curEventIndex < numTemporalEvents )
 			{
 				IOQueueEvent comingEvent = tempEventQueue.temporalEventsToInstance[curEventIndex];
 
@@ -43,7 +44,7 @@ public abstract class AbstractEventProcessor
 
 				final long numToNextEvent = (frameTime - periodStartFrameTime);
 				final int numToNextEventInt = (int) numToNextEvent;
-				if (numToNextEventInt != numToNextEvent)
+				if( numToNextEventInt != numToNextEvent )
 				{
 					throw new MadProcessingException( "Distance to event exceed ints!" );
 				}
@@ -98,9 +99,7 @@ public abstract class AbstractEventProcessor
 
 		if( hasEventProcessing )
 		{
-			postProcess( tempEventQueue,
-					timingParameters,
-					periodStartFrameTime );
+			postProcess( tempEventQueue, timingParameters, periodStartFrameTime );
 		}
 	}
 
