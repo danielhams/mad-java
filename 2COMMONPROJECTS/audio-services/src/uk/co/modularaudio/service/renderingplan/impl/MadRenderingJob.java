@@ -71,7 +71,7 @@ public class MadRenderingJob
 	}
 
 	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingSource timingSource )
+			final MadTimingSource timingSource )
 	{
 		errctx.reset();
 
@@ -87,27 +87,38 @@ public class MadRenderingJob
 			{
 				return errctx.getCurRetCode();
 			}
-		}
-
-		if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
-				timingParameters,
-				periodTimestamp,
-				channelActiveBitset,
-				channelBuffers,
-				timingPeriodData.getNumFramesThisPeriod() ) ) )
-		{
-			return errctx.getCurRetCode();
-		}
-
-		if( hasQueueProcessing )
-		{
-			if( !errctx.andWith( madInstance.postProcess( tempQueueEntryStorage,
+			if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
 					timingParameters,
-					periodTimestamp ) ) )
+					periodTimestamp,
+					channelActiveBitset,
+					channelBuffers,
+					timingPeriodData.getNumFramesThisPeriod() ) ) )
+			{
+				return errctx.getCurRetCode();
+			}
+			if( hasQueueProcessing )
+			{
+				if( !errctx.andWith( madInstance.postProcess( tempQueueEntryStorage,
+						timingParameters,
+						periodTimestamp ) ) )
+				{
+					return errctx.getCurRetCode();
+				}
+			}
+		}
+		else
+		{
+			if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
+					timingParameters,
+					periodTimestamp,
+					channelActiveBitset,
+					channelBuffers,
+					timingPeriodData.getNumFramesThisPeriod() ) ) )
 			{
 				return errctx.getCurRetCode();
 			}
 		}
+
 		return errctx.getCurRetCode();
 	}
 
