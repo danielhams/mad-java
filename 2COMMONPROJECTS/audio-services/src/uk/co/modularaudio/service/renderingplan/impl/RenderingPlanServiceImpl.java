@@ -262,8 +262,8 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final MadInstance<?,?> madInstance = flatJob.getMadInstance();
 			allMadInstancesSet.add( madInstance );
 			final MadRenderingJob renderingJob = ( madInstance.hasQueueProcessing() ?
-					new MadRenderingJobWithEvents( madInstance.getInstanceName(), madInstance ) :
-					new MadRenderingJobNoEvents( madInstance.getInstanceName(), madInstance ) );
+					new MadRenderingJobWithEvents( madInstance ) :
+					new MadRenderingJobNoEvents( madInstance ) );
 
 			fillInBuffersAndConnectedFlags( planHardwareSettings,  renderingJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
 

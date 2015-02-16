@@ -35,7 +35,7 @@ public class MadParallelRenderingJob extends AbstractRenderingJob
 			final MadTimingSource timingSource,
 			final MadRenderingJob renderingJob )
 	{
-		super( renderingJob.getInstanceName(), null, 0 );
+		super( renderingJob.getJobName(), null, 0 );
 		this.timingSource = timingSource;
 		this.cardinality = cardinality;
 		this.renderingJob = renderingJob;

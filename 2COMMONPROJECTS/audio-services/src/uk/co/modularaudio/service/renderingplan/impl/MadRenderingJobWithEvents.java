@@ -29,9 +29,9 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MadRenderingJobWithEvents extends AbstractMadRenderingJob
 {
-	public MadRenderingJobWithEvents( final String instanceName, final MadInstance<?,?> madInstance )
+	public MadRenderingJobWithEvents( final MadInstance<?,?> madInstance )
 	{
-		super( instanceName, madInstance );
+		super( madInstance );
 	}
 
 	/* (non-Javadoc)
@@ -43,48 +43,31 @@ public class MadRenderingJobWithEvents extends AbstractMadRenderingJob
 	{
 		errctx.reset();
 
-		final boolean hasQueueProcessing = madInstance.hasQueueProcessing();
 		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
 		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
 		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
-		if( hasQueueProcessing )
+
+		if( !errctx.andWith( madInstance.preProcess( tempQueueEntryStorage,
+				timingParameters,
+				periodTimestamp ) ) )
 		{
-			if( !errctx.andWith( madInstance.preProcess( tempQueueEntryStorage,
+			return errctx.getCurRetCode();
+		}
+		if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
+				timingParameters,
+				periodTimestamp,
+				channelActiveBitset,
+				channelBuffers,
+				timingPeriodData.getNumFramesThisPeriod() ) ) )
+		{
+			return errctx.getCurRetCode();
+		}
+
+		if( !errctx.andWith( madInstance.postProcess( tempQueueEntryStorage,
 					timingParameters,
 					periodTimestamp ) ) )
-			{
-				return errctx.getCurRetCode();
-			}
-			if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
-					timingParameters,
-					periodTimestamp,
-					channelActiveBitset,
-					channelBuffers,
-					timingPeriodData.getNumFramesThisPeriod() ) ) )
-			{
-				return errctx.getCurRetCode();
-			}
-			if( hasQueueProcessing )
-			{
-				if( !errctx.andWith( madInstance.postProcess( tempQueueEntryStorage,
-						timingParameters,
-						periodTimestamp ) ) )
-				{
-					return errctx.getCurRetCode();
-				}
-			}
-		}
-		else
 		{
-			if( !errctx.andWith( madInstance.process( tempQueueEntryStorage,
-					timingParameters,
-					periodTimestamp,
-					channelActiveBitset,
-					channelBuffers,
-					timingPeriodData.getNumFramesThisPeriod() ) ) )
-			{
-				return errctx.getCurRetCode();
-			}
+			return errctx.getCurRetCode();
 		}
 
 		return errctx.getCurRetCode();

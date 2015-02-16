@@ -29,9 +29,9 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MadRenderingJobNoEvents extends AbstractMadRenderingJob
 {
-	public MadRenderingJobNoEvents( final String instanceName, final MadInstance<?,?> madInstance )
+	public MadRenderingJobNoEvents( final MadInstance<?,?> madInstance )
 	{
-		super( instanceName, madInstance );
+		super( madInstance );
 	}
 
 	/* (non-Javadoc)

@@ -9,7 +9,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public interface MadRenderingJob
 {
-	String getInstanceName();
+	String getJobName();
 
 	MadInstance<?, ?> getMadInstance();
 

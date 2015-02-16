@@ -29,15 +29,15 @@ public abstract class AbstractMadRenderingJob implements MadRenderingJob
 {
 //	private static Log log = LogFactory.getLog( MadRenderingJob.class.getName() );
 
-	protected final String instanceName;
+	protected final String jobName;
 	protected final MadInstance<?,?> madInstance;
 	protected final MadChannelConnectedFlags channelActiveBitset;
 	protected final MadChannelBuffer[] channelBuffers;
 	protected final RealtimeMethodErrorContext errctx = new RealtimeMethodErrorContext();
 
-	public AbstractMadRenderingJob( final String instanceName, final MadInstance<?,?> madInstance )
+	public AbstractMadRenderingJob( final MadInstance<?,?> madInstance )
 	{
-		this.instanceName = instanceName;
+		this.jobName = madInstance.getInstanceName() + " of type " + madInstance.getDefinition().getName();
 		this.madInstance = madInstance;
 		final int numChannelInstances = madInstance.getChannelInstances().length;
 		channelBuffers = new MadChannelBuffer[ numChannelInstances ];
@@ -45,12 +45,12 @@ public abstract class AbstractMadRenderingJob implements MadRenderingJob
 	}
 
 	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getInstanceName()
+	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getJobName()
 	 */
 	@Override
-	public String getInstanceName()
+	public String getJobName()
 	{
-		return instanceName;
+		return jobName;
 	}
 
 	/* (non-Javadoc)
