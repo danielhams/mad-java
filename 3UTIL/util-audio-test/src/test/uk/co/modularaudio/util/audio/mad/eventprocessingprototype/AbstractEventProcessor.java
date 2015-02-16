@@ -11,7 +11,7 @@ public abstract class AbstractEventProcessor
 {
 	protected boolean hasEventProcessing;
 
-	public void doProcess( final ThreadSpecificTemporaryEventStorage tempEventQueue,
+	public void processWithEvents( final ThreadSpecificTemporaryEventStorage tempEventQueue,
 			final MadTimingParameters timingParameters,
 			long periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
@@ -20,14 +20,10 @@ public abstract class AbstractEventProcessor
 			final int numFrames )
 		throws MadProcessingException
 	{
-		int numTemporalEvents = 0;
-		if( hasEventProcessing )
-		{
-			preProcess( tempEventQueue, timingParameters, numFrames );
-			numTemporalEvents = tempEventQueue.numTemporalEventsToInstance;
-		}
+		preProcess( tempEventQueue, timingParameters, numFrames );
+		final int numTemporalEvents = tempEventQueue.numTemporalEventsToInstance;
 
-		if( hasEventProcessing && numTemporalEvents > 0 )
+		if( numTemporalEvents > 0 )
 		{
 			// Chop period up into chunks up to the next event
 			// process the event and carry on.
@@ -97,10 +93,27 @@ public abstract class AbstractEventProcessor
 					numFrames );
 		}
 
-		if( hasEventProcessing )
-		{
-			postProcess( tempEventQueue, timingParameters, periodStartFrameTime );
-		}
+		postProcess( tempEventQueue, timingParameters, periodStartFrameTime );
+	}
+
+
+	public void processNoEvents( final ThreadSpecificTemporaryEventStorage tempEventQueue,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
+		throws MadProcessingException
+	{
+		// Can be processed as one big chunk
+		process( tempEventQueue,
+				timingParameters,
+				periodStartFrameTime,
+				channelConnectedFlags,
+				channelBuffers,
+				0,
+				numFrames );
 	}
 
 	protected void preProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
