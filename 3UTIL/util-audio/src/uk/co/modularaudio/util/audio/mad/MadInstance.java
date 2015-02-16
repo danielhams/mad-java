@@ -69,6 +69,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	protected final boolean hasQueueProcessing;
 
 	protected final Vector<InstanceLifecycleListener> lifecycleListeners = new Vector<InstanceLifecycleListener>();
+	protected int temporalUiToInstanceFrameOffset;
 
 	public MadInstance( final String instanceName,
 			final MD definition,
@@ -124,6 +125,9 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		throws MadProcessingException
 	{
 		state = MadState.RUNNING;
+		// One buffer length delay for events from the UI so we get
+		// smooth temporal spacing
+		temporalUiToInstanceFrameOffset = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 		startup( hardwareChannelSettings, timingParameters, frameTimeFactory );
 		for( final InstanceLifecycleListener ill : lifecycleListeners )
 		{
@@ -148,12 +152,17 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 		// This isn't necessary as we're resetting the event counts by the following lines
 		//tempQueueEntryStorage.resetEventsToInstance();
+//		final long queuePullingFrameTime = periodStartFrameTime + temporalUiToInstanceFrameOffset;
+		final long queuePullingFrameTime = periodStartFrameTime;
 		tempQueueEntryStorage.numCommandEventsToInstance = commandToInstanceQueue.copyToTemp( tempQueueEntryStorage.commandEventsToInstance,
 				-1 );
+		// TODO work out how to fix this.
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
-				periodStartFrameTime );
+				queuePullingFrameTime );
 
-		// Now get the bridge to walk them
+		// Now get the bridge to walk the commands
+		// we'll leave the temporal ones to be
+		// processed by the instance when it chooses
 		final int numCommands = tempQueueEntryStorage.numCommandEventsToInstance;
 		for( int i = 0 ; i < numCommands ; i++ )
 		{

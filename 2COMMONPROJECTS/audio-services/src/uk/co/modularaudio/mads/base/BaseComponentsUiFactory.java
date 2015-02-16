@@ -33,6 +33,8 @@ import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillat
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.ui.BandLimitedOscillatorMadUiDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvMadUiDefinition;
+import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTMadDefinition;
+import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTMadUiDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.ui.CrossFaderMadUiDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
@@ -186,6 +188,7 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 
 		classToUiDefinition.put( Mixer8MadDefinition.class, Mixer8MadUiDefinition.class );
 
+		classToUiDefinition.put( CPTMadDefinition.class, CPTMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -109,8 +109,8 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 			final MadFrameTimeFactory frameTimeFactory )
 	{
 		this.frameTimeFactory = frameTimeFactory;
-		// Need to offset by the output latency so events don't get bunched up and processed in blocks
-		this.temporalValueFixedLatencyFrames = ratesAndLatency.getSampleFramesOutputLatency();
+		// Need to offset by one buffer length at audio rate so events don't get bunched up and processed in blocks
+		this.temporalValueFixedLatencyFrames = ratesAndLatency.getAudioChannelSetting().getChannelBufferLength();
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 		else
 		{
 			// The "graph" is probably not running, so just send it
-			localQueueBridge.sendTemporalEventToInstance( instance, 0,  outEvent );
+			localQueueBridge.sendTemporalEventToInstance( instance, 0, outEvent );
 		}
 	}
 

@@ -118,35 +118,6 @@ public abstract class MadLocklessQueueBridge<I extends MadInstance<?, I>>
 		tses.numTemporalEventsToUi++;
 	}
 
-//	public final void queueCommandEventToInstance( ThreadSpecificTemporaryEventStorage tses,
-//			int command,
-//			long value,
-//			Object object )
-//	{
-//		IOQueueEvent[] tempQueueEventStorage = tses.commandEventsToInstance;
-//		int storageOffset = tses.numCommandEventsToInstance;
-//		tempQueueEventStorage[ storageOffset ].frameTime = 0;
-//		tempQueueEventStorage[ storageOffset ].command = command;
-//		tempQueueEventStorage[ storageOffset ].value = value;
-//		tempQueueEventStorage[ storageOffset ].object = object;
-//		tses.numCommandEventsToInstance++;
-//	}
-//
-//	public final void queueTemporalEventToInstance( ThreadSpecificTemporaryEventStorage tses,
-//			long frameTime,
-//			int command,
-//			long value,
-//			Object object )
-//	{
-//		IOQueueEvent[] tempQueueEventStorage = tses.temporalEventsToInstance;
-//		int storageOffset = tses.numTemporalEventsToInstance;
-//		tempQueueEventStorage[ storageOffset ].frameTime = frameTime;
-//		tempQueueEventStorage[ storageOffset ].command = command;
-//		tempQueueEventStorage[ storageOffset ].value = value;
-//		tempQueueEventStorage[ storageOffset ].object = object;
-//		tses.numTemporalEventsToInstance++;
-//	}
-
 	public final void receiveQueuedEventsToUi( final ThreadSpecificTemporaryEventStorage tses, final I instance, final IOQueueEventUiConsumer<I> consumer )
 	{
 		for( int c = 0 ; c < tses.numCommandEventsToUi ; c++ )

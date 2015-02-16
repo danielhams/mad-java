@@ -32,6 +32,8 @@ import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillat
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
+import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTMadDefinition;
+import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTMadInstance;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
@@ -191,6 +193,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( Mixer3MadDefinition.class, Mixer3MadInstance.class );
 
 		defClassToInsClassMap.put( Mixer8MadDefinition.class, Mixer8MadInstance.class );
+
+		defClassToInsClassMap.put( CPTMadDefinition.class, CPTMadInstance.class );
 	}
 
 	@Override
