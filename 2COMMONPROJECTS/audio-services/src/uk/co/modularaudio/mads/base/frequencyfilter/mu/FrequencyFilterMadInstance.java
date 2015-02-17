@@ -97,11 +97,13 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		final boolean inLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_LEFT ];
@@ -151,31 +153,31 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			if( outLConnected )
 			{
-				Arrays.fill( outLfloats, 0.0f );
+				Arrays.fill( outLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 			if( complementLConnected )
 			{
-				Arrays.fill( complementLfloats, 0.0f );
+				Arrays.fill( complementLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 		}
 		else if( inLConnected && outLConnected )
 		{
-			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
+			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
 
 			if( !inCvFreqConnected )
 			{
-				leftChannelButterworth.filter( outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+				leftChannelButterworth.filter( outLfloats, frameOffset, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				if( desired24dB )
 				{
-					leftChannel24db.filter( outLfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+					leftChannel24db.filter( outLfloats, frameOffset, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 			else
 			{
-				leftChannelButterworth.filterWithFreq( outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+				leftChannelButterworth.filterWithFreq( outLfloats, frameOffset, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				if( desired24dB )
 				{
-					leftChannel24db.filterWithFreq( outLfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+					leftChannel24db.filterWithFreq( outLfloats, frameOffset, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 
@@ -187,8 +189,8 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 				{
 					final float preRatio = ((float)(numFrames - i ) / numFrames );
 					final float curRatio = 1.0f - preRatio;
-					final float curLValue = outLfloats[ i ];
-					outLfloats[ i ] = (curLValue * curRatio) + (lastLeftValue * preRatio );
+					final float curLValue = outLfloats[ frameOffset + i ];
+					outLfloats[ frameOffset + i ] = (curLValue * curRatio) + (lastLeftValue * preRatio );
 				}
 			}
 
@@ -196,44 +198,44 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			{
 				for( int i = 0 ; i < numFrames ; ++i )
 				{
-					complementLfloats[i] = inLfloats[i] - outLfloats[i];
+					complementLfloats[frameOffset + i] = inLfloats[frameOffset + i] - outLfloats[frameOffset + i];
 				}
 			}
 
-			lastLeftValue = outLfloats[ numFrames - 1 ];
+			lastLeftValue = outLfloats[ frameOffset + (numFrames - 1) ];
 		}
 
 		if( !inRConnected )
 		{
 			if( outRConnected )
 			{
-				Arrays.fill( outRfloats, 0.0f );
+				Arrays.fill( outRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 			if( complementRConnected )
 			{
-				Arrays.fill( complementRfloats, 0.0f );
+				Arrays.fill( complementRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 		}
 		else if( inRConnected && outRConnected )
 		{
-			System.arraycopy( inRfloats, 0, outRfloats, 0, numFrames );
+			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
 
 			if(!inCvFreqConnected )
 			{
-				rightChannelButterworth.filter( outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+				rightChannelButterworth.filter( outRfloats, frameOffset, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 
 				if( desired24dB )
 				{
-					rightChannel24db.filter( outRfloats, 0, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
+					rightChannel24db.filter( outRfloats, frameOffset, numFrames, currentFrequency, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 			else
 			{
-				rightChannelButterworth.filterWithFreq( outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+				rightChannelButterworth.filterWithFreq( outRfloats, frameOffset, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 
 				if( desired24dB )
 				{
-					rightChannel24db.filterWithFreq( outRfloats, 0, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
+					rightChannel24db.filterWithFreq( outRfloats, frameOffset, numFrames, inCvFreqFloats, currentBandwidth, desiredFilterMode, sampleRate );
 				}
 			}
 
@@ -244,8 +246,8 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 				{
 					final float preRatio = ((float)(numFrames - i ) / numFrames );
 					final float curRatio = 1.0f - preRatio;
-					final float curRValue = outRfloats[ i ];
-					outRfloats[ i ] = (curRValue * curRatio) + (lastRightValue * preRatio );
+					final float curRValue = outRfloats[ frameOffset + i ];
+					outRfloats[ frameOffset + i ] = (curRValue * curRatio) + (lastRightValue * preRatio );
 				}
 			}
 
@@ -253,11 +255,11 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			{
 				for( int i = 0 ; i < numFrames ; ++i )
 				{
-					complementRfloats[i] = inRfloats[i] - outRfloats[i];
+					complementRfloats[frameOffset + i] = inRfloats[frameOffset + i] - outRfloats[frameOffset + i];
 				}
 			}
 
-			lastRightValue = outRfloats[ numFrames - 1 ];
+			lastRightValue = outRfloats[ frameOffset + (numFrames - 1) ];
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

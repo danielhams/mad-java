@@ -128,12 +128,13 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		final MadChannelBuffer lb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_LEFT ];
 		final boolean leftConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_LEFT );
@@ -201,8 +202,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 				if( curSamplePos != lastEmittedPosition )
 				{
 					emitDeltaPositionEvent( tempQueueEntryStorage, eventFrameTime, curSamplePos, resampledSample );
-					postProcess(tempQueueEntryStorage, timingParameters, eventFrameTime );
-					preProcess( tempQueueEntryStorage, timingParameters, eventFrameTime );
 				}
 
 				lastEmittedPosition = curSamplePos;
@@ -223,7 +222,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 					playSpeed,
 					lfb,
 					rfb,
-					curOutputPos,
+					frameOffset + curOutputPos,
 					numThisRound,
 					false );
 
@@ -232,8 +231,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			curOutputPos += numThisRound;
 		}
 
-		leftDcTrap.filter( lfb, 0, numFrames );
-		rightDcTrap.filter( rfb, 0, numFrames );
+		leftDcTrap.filter( lfb, frameOffset, numFrames );
+		rightDcTrap.filter( rfb, frameOffset, numFrames );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -276,7 +275,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 //				advancedComponentsFrontController.unregisterCacheClientForFile(scc);
 				blockResamplerService.destroyResamplingClient(resampledSample);
 			}
-			catch( Exception e )
+			catch( final Exception e )
 			{
 				if( log.isErrorEnabled() )
 				{
