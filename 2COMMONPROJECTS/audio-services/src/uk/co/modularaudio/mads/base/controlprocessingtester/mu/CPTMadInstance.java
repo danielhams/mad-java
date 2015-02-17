@@ -22,9 +22,6 @@ package uk.co.modularaudio.mads.base.controlprocessingtester.mu;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -42,7 +39,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance>
 {
-	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
 
