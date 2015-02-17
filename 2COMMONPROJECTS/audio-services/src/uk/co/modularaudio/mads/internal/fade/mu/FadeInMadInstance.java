@@ -66,12 +66,12 @@ public class FadeInMadInstance extends MadInstance<FadeInMadDefinition, FadeInMa
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			int frameOffset , final int numFrames  )
 	{
 		// Only do some processing if we are connected
 		int runningTablePosition = curTablePosition.get();

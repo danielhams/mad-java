@@ -73,11 +73,11 @@ public class PFadeInMadInstance extends MadInstance<PFadeInMadDefinition, PFadeI
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
 	{
 //		log.trace("Process method called");
 //		log.trace("The channel connected flags are " + channelConnectedFlags.toString() );

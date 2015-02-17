@@ -66,27 +66,27 @@ public class TestInstantiatingMadBits
 //		long diff = after - before;
 //		log.debug("Did " + numToLog + " in " + diff + " nanos or " + (diff / 1000) + " micros or " + (diff / 1000000) + " millis");
 
-		DataRate dataRate = DataRate.SR_44100;
-		int channelBufferLength = 64;
-		HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
+		final DataRate dataRate = DataRate.SR_44100;
+		final int channelBufferLength = 64;
+		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength( dataRate.getValue(), channelBufferLength );
-		int sampleFramesOutputLatency = channelBufferLength;
+		final long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength( dataRate.getValue(), channelBufferLength );
+		final int sampleFramesOutputLatency = channelBufferLength;
 
-		HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosOutputLatency, sampleFramesOutputLatency );
+		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosOutputLatency, sampleFramesOutputLatency );
 
-		MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
+		final MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
 
-		TestMadDefinitionFactory defFactory = new TestMadDefinitionFactory();
-		TestMadInstanceFactory inFactory = new TestMadInstanceFactory();
-		Collection<MadDefinition<?,?>> defs = defFactory.listDefinitions();
-		for( MadDefinition<?,?> def : defs )
+		final TestMadDefinitionFactory defFactory = new TestMadDefinitionFactory();
+		final TestMadInstanceFactory inFactory = new TestMadInstanceFactory();
+		final Collection<MadDefinition<?,?>> defs = defFactory.listDefinitions();
+		for( final MadDefinition<?,?> def : defs )
 		{
-			MadParameterDefinition[] defParameters = def.getParameterDefinitions();
-			Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
+			final MadParameterDefinition[] defParameters = def.getParameterDefinitions();
+			final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
 			if( defParameters.length > 0 )
 			{
-				for( MadParameterDefinition paramDef : defParameters )
+				for( final MadParameterDefinition paramDef : defParameters )
 				{
 					if( paramDef.getKey().equals( "numchannels" ) )
 					{
@@ -98,19 +98,19 @@ public class TestInstantiatingMadBits
 					}
 				}
 			}
-			MadInstance<?,?> testInstance = inFactory.createInstanceForDefinition(  def, parameterValues, "Test Instance" );
+			final MadInstance<?,?> testInstance = inFactory.createInstanceForDefinition(  def, parameterValues, "Test Instance" );
 			log.debug("Got a new instance : " + testInstance.toString() );
 
-			MadChannelInstance[] channelInstances = testInstance.getChannelInstances();
-			int numChannels = channelInstances.length;
+			final MadChannelInstance[] channelInstances = testInstance.getChannelInstances();
+			final int numChannels = channelInstances.length;
 
-			long systemCurrentTime = System.currentTimeMillis();
-			MadChannelConnectedFlags channelConnectedFlags = new MadChannelConnectedFlags( numChannels );
-			MadChannelBuffer[] channelBuffers = new MadChannelBuffer[ numChannels ];
+			final long systemCurrentTime = System.currentTimeMillis();
+			final MadChannelConnectedFlags channelConnectedFlags = new MadChannelConnectedFlags( numChannels );
+			final MadChannelBuffer[] channelBuffers = new MadChannelBuffer[ numChannels ];
 			for( int i = 0 ; i < numChannels ; i++ )
 			{
-				MadChannelType channelType = channelInstances[ i ].definition.type;
-				MadChannelBuffer newBuffer = new MadChannelBuffer( channelType, dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
+				final MadChannelType channelType = channelInstances[ i ].definition.type;
+				final MadChannelBuffer newBuffer = new MadChannelBuffer( channelType, dataRateConfiguration.getChannelBufferLengthForChannelType( channelType ) );
 				channelBuffers[ i ] = newBuffer;
 				channelConnectedFlags.set(  i  );
 			}
@@ -123,23 +123,28 @@ public class TestInstantiatingMadBits
 
 	}
 
-	private void manyTeeTest( MadInstance<?,?> testInstance,
-			MadTimingParameters timingParameters,
-			long systemCurrentTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers )
+	private void manyTeeTest( final MadInstance<?,?> testInstance,
+			final MadTimingParameters timingParameters,
+			final long systemCurrentTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers )
 			throws MadProcessingException
 	{
 		// Now test calling the process method
-		int numRounds = 100000;
-		long nanosBefore = System.nanoTime();
-		int numFramesPerPeriod = 1024;
+		final int numRounds = 100000;
+		final long nanosBefore = System.nanoTime();
+		final int numFramesPerPeriod = 1024;
 		for( int i = 0 ; i < numRounds ; i++ )
 		{
-			testInstance.process( null, timingParameters, systemCurrentTime, channelConnectedFlags, channelBuffers, numFramesPerPeriod );
+			testInstance.processNoEvents( null,
+					timingParameters,
+					systemCurrentTime,
+					channelConnectedFlags,
+					channelBuffers,
+					numFramesPerPeriod );
 		}
-		long nanosAfter = System.nanoTime();
-		long diff = nanosAfter - nanosBefore;
+		final long nanosAfter = System.nanoTime();
+		final long diff = nanosAfter - nanosBefore;
 		log.debug( "For " + numRounds + " rounds it cost " + diff + " nanos" + " or " + (diff / 1000000) + " millis" );
 	}
 
@@ -147,10 +152,10 @@ public class TestInstantiatingMadBits
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main( String[] args ) throws Exception
+	public static void main( final String[] args ) throws Exception
 	{
 //		BasicConfigurator.configure();
-		TestInstantiatingMadBits tipb = new TestInstantiatingMadBits();
+		final TestInstantiatingMadBits tipb = new TestInstantiatingMadBits();
 		tipb.testEm();
 	}
 

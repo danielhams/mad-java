@@ -124,11 +124,11 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		log.error( "Subracks should never be scheduled!" );
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;

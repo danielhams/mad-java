@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -43,7 +42,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance>
 {
-	private static Log log = LogFactory.getLog( CrossFaderMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
 
@@ -55,9 +54,6 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	private float instanceRealAmpA = 0.0f;
 
 	private float desiredAmpA = 1.0f;
-
-	private int framesPerFrontEndPeriod = -1;
-	private int framesUntilIO = -1;
 
 	public CPTMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -72,20 +68,10 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-
-			framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
-			framesUntilIO = framesPerFrontEndPeriod;
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
+		curValueRatio = 1.0f - newValueRatio;
 	}
 
 	@Override
@@ -94,18 +80,14 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			final int frameOffset,
+			final int numFrames  )
 	{
-		int numTemporalEvents = tempQueueEntryStorage.numTemporalEventsToInstance;
-		if( numTemporalEvents > 0 )
-		{
-			log.debug("Have " + numTemporalEvents + " temporal events waiting");
-		}
 		final boolean in1LConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_LEFT );
 		final boolean in1RConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_RIGHT );
 
@@ -128,45 +110,25 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 			final MadChannelBuffer outRcb = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_RIGHT ];
 			final float[] outRBuffer = outRcb.floatBuffer;
 
-			int framesLeft = numFrames;
-			int curOutputIndex = 0;
-
-			while( framesLeft > 0 )
+			final int endFrameOffset = frameOffset + numFrames;
+			for( int i = frameOffset ; i < endFrameOffset ; i++ )
 			{
-				if( framesUntilIO == 0 )
+				final float in1lval = in1LBuffer[ i ];
+				final float lVal = in1lval * instanceRealAmpA;
+				outLBuffer[ i ] = lVal;
+
+				final float in1rval = in1RBuffer[ i ];
+
+				final float rVal = in1rval * instanceRealAmpA;
+				outRBuffer[ i ] = rVal;
+
+				// Fade between the values
+				instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
+				// And dampen any values that are just noise.
+				if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 				{
-					final long adjustedFrameTime = periodStartFrameTime + curOutputIndex;
-
-					preProcess( tempQueueEntryStorage, timingParameters, adjustedFrameTime );
-
-					framesUntilIO = framesPerFrontEndPeriod;
+					instanceRealAmpA = 0.0f;
 				}
-
-				final int numThisRound = framesLeft < framesUntilIO ? framesLeft : framesUntilIO;
-
-				for( int i = 0 ; i < numThisRound ; i++ )
-				{
-					final float in1lval = in1LBuffer[ curOutputIndex + i ];
-					final float lVal = in1lval * instanceRealAmpA;
-					outLBuffer[ curOutputIndex + i ] = lVal;
-
-					final float in1rval = in1RBuffer[ curOutputIndex + i ];
-
-					final float rVal = in1rval * instanceRealAmpA;
-					outRBuffer[ curOutputIndex + i ] = rVal;
-
-					// Fade between the values
-					instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
-					// And dampen any values that are just noise.
-					if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-					{
-						instanceRealAmpA = 0.0f;
-					}
-				}
-
-				curOutputIndex += numThisRound;
-				framesUntilIO -= numThisRound;
-				framesLeft -= numThisRound;
 			}
 		}
 

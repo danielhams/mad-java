@@ -90,11 +90,11 @@ public class StereoGateMadInstance extends MadInstance<StereoGateMadDefinition,S
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveLeftConnected = channelConnectedFlags.get( StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT );
 		final MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoGateMadDefinition.CONSUMER_IN_WAVE_LEFT ];

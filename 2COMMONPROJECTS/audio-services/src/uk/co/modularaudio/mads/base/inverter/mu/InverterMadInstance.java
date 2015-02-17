@@ -59,11 +59,11 @@ public class InverterMadInstance extends MadInstance<InverterMadDefinition,Inver
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( InverterMadDefinition.CONSUMER_AUDIO_IN );
 		final float[] inFloats = channelBuffers[ InverterMadDefinition.CONSUMER_AUDIO_IN ].floatBuffer;

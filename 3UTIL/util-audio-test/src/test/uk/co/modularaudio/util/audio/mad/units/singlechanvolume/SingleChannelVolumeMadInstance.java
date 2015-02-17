@@ -80,12 +80,12 @@ public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVol
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long currentTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
-			int numFrames )
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			MadTimingParameters timingParameters ,
+			long currentTime ,
+			MadChannelConnectedFlags channelConnectedFlags ,
+			MadChannelBuffer[] channelBuffers ,
+			int frameOffset , int numFrames  )
 	{
 //		float volumeMultiplier = realPeriodValues.volumeMultiplier;
 		

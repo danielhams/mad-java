@@ -61,12 +61,12 @@ public class StereoTeeMadInstance extends MadInstance<StereoTeeMadDefinition,
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long currentTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers,
-			int numFrames )
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			MadTimingParameters timingParameters ,
+			long currentTime ,
+			MadChannelConnectedFlags channelConnectedFlags ,
+			MadChannelBuffer[] channelBuffers ,
+			int frameOffset , int numFrames  )
 	{
 		int leftInputIndex = StereoTeeMadDefinition.CONSUMER_LEFT;
 		MadChannelBuffer leftInputChannelBuffer = channelBuffers[ leftInputIndex ];

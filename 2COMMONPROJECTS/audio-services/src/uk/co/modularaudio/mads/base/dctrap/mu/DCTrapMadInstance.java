@@ -68,12 +68,12 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long startFrameTime,
-			final MadChannelConnectedFlags connectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long startFrameTime ,
+			final MadChannelConnectedFlags connectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveConnected = connectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE );
 		final MadChannelBuffer inWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE ];

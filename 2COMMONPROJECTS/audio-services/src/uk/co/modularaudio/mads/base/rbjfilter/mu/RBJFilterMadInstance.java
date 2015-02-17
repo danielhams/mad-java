@@ -81,11 +81,11 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inLConnected = channelConnectedFlags.get( RBJFilterMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ RBJFilterMadDefinition.CONSUMER_IN_LEFT ];

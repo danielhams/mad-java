@@ -87,11 +87,11 @@ public class FoldbackDistortionMadInstance extends MadInstance<FoldbackDistortio
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inLConnected = channelConnectedFlags.get( FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ FoldbackDistortionMadDefinition.CONSUMER_IN_LEFT ];

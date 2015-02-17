@@ -73,12 +73,12 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-		final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+		int frameOffset , final int numFrames  )
 	{
 //		log.trace("Process method called");
 //		log.trace("The channel connected flags are " + channelConnectedFlags.toString() );

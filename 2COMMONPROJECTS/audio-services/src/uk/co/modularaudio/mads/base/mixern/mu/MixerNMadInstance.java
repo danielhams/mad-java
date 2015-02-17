@@ -110,12 +110,12 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			int frameOffset , final int numFrames  )
 	{
 		// Zero output so lane processors can just add to existing output floats
 		final float[] leftOutputFloats = channelBuffers[ leftOutputChannelIndex ].floatBuffer;

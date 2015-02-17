@@ -100,11 +100,11 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartTimestamp,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartTimestamp ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
 		final MadChannelBuffer inChannelBuffer = channelBuffers[ WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];

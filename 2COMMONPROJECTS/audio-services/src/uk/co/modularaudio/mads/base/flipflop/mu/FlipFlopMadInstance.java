@@ -82,11 +82,11 @@ public class FlipFlopMadInstance extends MadInstance<FlipFlopMadDefinition,FlipF
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveConnected = channelConnectedFlags.get( FlipFlopMadDefinition.CONSUMER_IN_WAVE );
 		final MadChannelBuffer inWaveCb = channelBuffers[ FlipFlopMadDefinition.CONSUMER_IN_WAVE ];

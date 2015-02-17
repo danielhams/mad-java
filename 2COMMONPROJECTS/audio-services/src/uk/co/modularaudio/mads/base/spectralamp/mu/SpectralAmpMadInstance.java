@@ -94,12 +94,12 @@ public class SpectralAmpMadInstance extends MadInstance<SpectralAmpMadDefinition
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartTimestamp,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartTimestamp ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			int frameOffset , final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( SpectralAmpMadDefinition.CONSUMER_IN);
 		final MadChannelBuffer inCb = channelBuffers[ SpectralAmpMadDefinition.CONSUMER_IN ];

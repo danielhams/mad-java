@@ -159,11 +159,11 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long currentTimestamp,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			MadTimingParameters timingParameters ,
+			long currentTimestamp ,
+			MadChannelConnectedFlags channelConnectedFlags ,
+			MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
 	{
 		boolean inWaveLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT );
 		MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT ];

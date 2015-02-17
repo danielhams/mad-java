@@ -64,11 +64,11 @@ public class RackMasterIOMadInstance extends MadInstance<RackMasterIOMadDefiniti
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, int numFrames )
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			MadTimingParameters timingParameters ,
+			long periodStartFrameTime ,
+			MadChannelConnectedFlags channelConnectedFlags ,
+			MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
 	{
 		log.error( "RackMasterIO shouldn't be scheduled!");
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;

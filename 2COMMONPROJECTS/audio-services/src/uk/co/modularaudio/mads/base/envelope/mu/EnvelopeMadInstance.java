@@ -77,11 +77,11 @@ public class EnvelopeMadInstance extends MadInstance<EnvelopeMadDefinition, Enve
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inGateConnected = channelConnectedFlags.get( EnvelopeMadDefinition.CONSUMER_GATE );
 		final MadChannelBuffer inGateBuffer = channelBuffers[ EnvelopeMadDefinition.CONSUMER_GATE ];

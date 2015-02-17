@@ -78,11 +78,11 @@ public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,Lin
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_WAVE );
 		final MadChannelBuffer inWaveCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_WAVE ];

@@ -24,12 +24,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenObjectIntHashMap;
 
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
+import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
-import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -46,7 +48,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		void receiveStop();
 	};
 
-//	private static Log log = LogFactory.getLog( MadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( MadInstance.class.getName() );
 
 	protected String instanceName;
 	protected final MD definition;
@@ -142,7 +144,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	// Check the instance queues and push into the temp storage
 	@SuppressWarnings("unchecked")
-	public final RealtimeMethodReturnCodeEnum preProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	protected final RealtimeMethodReturnCodeEnum preProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime )
 	{
@@ -152,11 +154,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 		// This isn't necessary as we're resetting the event counts by the following lines
 		//tempQueueEntryStorage.resetEventsToInstance();
-//		final long queuePullingFrameTime = periodStartFrameTime + temporalUiToInstanceFrameOffset;
-		final long queuePullingFrameTime = periodStartFrameTime;
+		final long queuePullingFrameTime = periodStartFrameTime + temporalUiToInstanceFrameOffset;
+//		final long queuePullingFrameTime = periodStartFrameTime;
 		tempQueueEntryStorage.numCommandEventsToInstance = commandToInstanceQueue.copyToTemp( tempQueueEntryStorage.commandEventsToInstance,
 				-1 );
-		// TODO work out how to fix this.
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
 				queuePullingFrameTime );
 
@@ -166,25 +167,181 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		final int numCommands = tempQueueEntryStorage.numCommandEventsToInstance;
 		for( int i = 0 ; i < numCommands ; i++ )
 		{
-			localBridge.receiveQueuedEventsToInstance( (MI) this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.commandEventsToInstance[ i ] );
+			localBridge.receiveQueuedEventsToInstance( (MI)this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.commandEventsToInstance[ i ] );
 		}
-		final int numTemporals = tempQueueEntryStorage.numTemporalEventsToInstance;
-		for( int i = 0 ; i < numTemporals ; i++ )
-		{
-			localBridge.receiveQueuedEventsToInstance( (MI)this, tempQueueEntryStorage, periodStartFrameTime, tempQueueEntryStorage.temporalEventsToInstance[ i ] );
-		}
+		// We don't push the temporal events here - it happens in the processWithEvents call
 
 		return retVal;
 	}
 
-	public abstract RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-		final MadTimingParameters timingParameters,
-		final long periodStartFrameTime,
-		MadChannelConnectedFlags channelConnectedFlags,
-		MadChannelBuffer[] channelBuffers,
-		final int numFrames );
+	private static final int computeNumToNextEvent( final long periodStartFrameTime,
+			final long eventFrameTime,
+			final int curFrameIndex )
+	{
+		final long numToNextEvent = (eventFrameTime - periodStartFrameTime) - curFrameIndex;
+		final int numToNextEventInt = (int) numToNextEvent;
+		if( numToNextEventInt != numToNextEvent )
+		{
+			log.error("Overflow of numToNextEvent");
+		}
+		return numToNextEventInt < 0 ? 0 : numToNextEventInt;
+	}
 
-	public final RealtimeMethodReturnCodeEnum postProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	@SuppressWarnings("unchecked")
+	private int consumeTimestampedEvents( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final int numTemporalEvents,
+			int curEventIndex,
+			final long curPeriodStartFrameTime )
+	{
+		while( curEventIndex < numTemporalEvents )
+		{
+			if( tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime > curPeriodStartFrameTime )
+			{
+				break;
+			}
+			else
+			{
+				localBridge.receiveQueuedEventsToInstance( (MI)this,
+						tempQueueEntryStorage,
+						curPeriodStartFrameTime,
+						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex++] );
+			}
+		}
+		return curEventIndex;
+	}
+
+	@SuppressWarnings("unchecked")
+	public RealtimeMethodReturnCodeEnum processWithEvents( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
+	{
+//		log.debug("ProcessWithEvents");
+		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
+
+		preProcess( tempQueueEntryStorage, timingParameters, periodStartFrameTime );
+		final int numTemporalEvents = tempQueueEntryStorage.numTemporalEventsToInstance;
+
+		if( numTemporalEvents > 0 )
+		{
+			// Chop period up into chunks up to the next event
+			// process the event and carry on.
+			int curEventIndex = 0;
+
+			int numLeft = numFrames;
+			int curFrameIndex = 0;
+			long curPeriodStartFrameTime = periodStartFrameTime;
+
+			// Process any events that should be taken on board before doing any dsp
+			curEventIndex = consumeTimestampedEvents( tempQueueEntryStorage,
+					numTemporalEvents,
+					curEventIndex,
+					curPeriodStartFrameTime );
+
+			int numToNextEventInt = ( curEventIndex == numTemporalEvents ? numLeft :
+				computeNumToNextEvent( periodStartFrameTime,
+						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime,
+						curFrameIndex )
+						);
+
+			// Now loop around doing chunks of DSP until we exhaust
+			// the frames
+			while( numLeft > 0 )
+			{
+				final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
+
+				if( (retVal = process( tempQueueEntryStorage,
+						timingParameters,
+						curPeriodStartFrameTime,
+						channelConnectedFlags,
+						channelBuffers,
+						curFrameIndex,
+						numThisRound ) )
+					!=
+					RealtimeMethodReturnCodeEnum.SUCCESS )
+				{
+					return retVal;
+				}
+
+				// Process any events for this frame index
+				curEventIndex = consumeTimestampedEvents( tempQueueEntryStorage,
+						numTemporalEvents,
+						curEventIndex,
+						curPeriodStartFrameTime );
+
+				curFrameIndex += numThisRound;
+				numLeft -= numThisRound;
+
+				numToNextEventInt = ( curEventIndex == numTemporalEvents ? numFrames :
+					computeNumToNextEvent( periodStartFrameTime,
+							tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime,
+							curFrameIndex )
+							);
+
+				curPeriodStartFrameTime += numThisRound;
+
+			}
+
+			// And process any events left over
+			while( curEventIndex < numTemporalEvents )
+			{
+				localBridge.receiveQueuedEventsToInstance( (MI)this,
+						tempQueueEntryStorage,
+						curPeriodStartFrameTime,
+						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex++] );
+			}
+		}
+		else
+		{
+			// Can be processed as one big chunk
+			if( (retVal = process( tempQueueEntryStorage,
+					timingParameters,
+					periodStartFrameTime,
+					channelConnectedFlags,
+					channelBuffers,
+					0,
+					numFrames ) )
+				!=
+				RealtimeMethodReturnCodeEnum.SUCCESS )
+			{
+				return retVal;
+			}
+		}
+
+		postProcess( tempQueueEntryStorage, timingParameters, periodStartFrameTime );
+
+		return retVal;
+	}
+
+
+	public RealtimeMethodReturnCodeEnum processNoEvents( final ThreadSpecificTemporaryEventStorage tempEventQueue,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int numFrames )
+	{
+		// Can be processed as one big chunk
+		return process( tempEventQueue,
+				timingParameters,
+				periodStartFrameTime,
+				channelConnectedFlags,
+				channelBuffers,
+				0,
+				numFrames );
+	}
+
+	public abstract RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			MadChannelConnectedFlags channelConnectedFlags,
+			MadChannelBuffer[] channelBuffers,
+			int frameOffset,
+			final int numFrames );
+
+	protected final RealtimeMethodReturnCodeEnum postProcess( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime )
 	{

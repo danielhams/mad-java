@@ -92,12 +92,13 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers,
-			final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers ,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean in1LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT );
 		final boolean in1RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT );

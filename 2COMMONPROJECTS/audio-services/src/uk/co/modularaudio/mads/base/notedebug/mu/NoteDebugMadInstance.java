@@ -68,11 +68,11 @@ public class NoteDebugMadInstance extends MadInstance<NoteDebugMadDefinition,Not
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( NoteDebugMadDefinition.CONSUMER_NOTE );
 		final MadChannelBuffer noteCb = channelBuffers[ NoteDebugMadDefinition.CONSUMER_NOTE ];

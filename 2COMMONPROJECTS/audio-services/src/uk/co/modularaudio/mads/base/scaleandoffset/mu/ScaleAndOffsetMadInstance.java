@@ -63,11 +63,11 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inScaleConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX );
 		final float[] inScaleFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX ].floatBuffer;

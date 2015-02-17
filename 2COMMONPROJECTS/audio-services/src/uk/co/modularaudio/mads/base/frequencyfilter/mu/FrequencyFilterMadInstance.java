@@ -97,11 +97,11 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inLConnected = channelConnectedFlags.get( FrequencyFilterMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ FrequencyFilterMadDefinition.CONSUMER_IN_LEFT ];

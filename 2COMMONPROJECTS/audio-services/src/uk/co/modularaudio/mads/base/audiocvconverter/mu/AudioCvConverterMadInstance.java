@@ -66,11 +66,11 @@ public class AudioCvConverterMadInstance extends MadInstance<AudioCvConverterMad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			MadChannelConnectedFlags channelConnectedFlags,
-			MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			MadChannelConnectedFlags channelConnectedFlags ,
+			MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		MadChannelType inChannelType = instanceConfiguration.getInChannelType();
 		int numChannels = instanceConfiguration.getNumInputChannels();

@@ -151,11 +151,11 @@ public class MonoCompressorMadInstance extends MadInstance<MonoCompressorMadDefi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long currentTimestamp,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long currentTimestamp ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveLeftConnected = channelConnectedFlags.get( MonoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT );
 		final MadChannelBuffer inWaveLeftCb = channelBuffers[ MonoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT ];

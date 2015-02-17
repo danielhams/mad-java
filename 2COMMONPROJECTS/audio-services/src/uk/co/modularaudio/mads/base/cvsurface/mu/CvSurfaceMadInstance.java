@@ -84,11 +84,11 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingParameters timingParameters,
-			final long periodStartFrameTime,
-			final MadChannelConnectedFlags channelConnectedFlags,
-			final MadChannelBuffer[] channelBuffers, final int numFrames )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
 	{
 		final boolean outCVXConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVX);
 		final MadChannelBuffer outCVXcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVX ];
