@@ -122,8 +122,8 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		final float[] leftOutputFloats = channelBuffers[ leftOutputChannelIndex ].floatBuffer;
 		final float[] rightOutputFloats = channelBuffers[ rightOutputChannelIndex ].floatBuffer;
 		final int lastFrameIndex = frameOffset + numFrames;
-		Arrays.fill(  leftOutputFloats, frameOffset, lastFrameIndex, 0.0f );
-		Arrays.fill(  rightOutputFloats, frameOffset, lastFrameIndex, 0.0f );
+		Arrays.fill( leftOutputFloats, frameOffset, lastFrameIndex, 0.0f );
+		Arrays.fill( rightOutputFloats, frameOffset, lastFrameIndex, 0.0f );
 
 		int currentSampleIndex = 0;
 
@@ -140,6 +140,8 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 					channelLaneProcessors[ il ].emitLaneMeterReadings( tempQueueEntryStorage, emitFrameTime );
 				}
 				masterProcessor.emitMasterMeterReadings( tempQueueEntryStorage, emitFrameTime );
+
+//				postProcess( tempQueueEntryStorage, timingParameters, emitFrameTime );
 
 				numSamplesProcessed = 0;
 			}

@@ -134,7 +134,7 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 
 	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
 	{
-//			log.debug("Emitting one at " + emitTimestamp);
+//		log.debug("Emitting one at " + emitTimestamp);
 		instance.emitMasterMeterReading( tses, emitTimestamp, leftMeterLevel, rightMeterLevel );
 		leftMeterLevel = 0.0f;
 		rightMeterLevel = 0.0f;

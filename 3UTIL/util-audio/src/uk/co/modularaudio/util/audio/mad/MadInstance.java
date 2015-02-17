@@ -180,10 +180,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	{
 		final long numToNextEvent = (eventFrameTime - periodStartFrameTime) - curFrameIndex;
 		final int numToNextEventInt = (int) numToNextEvent;
-		if( numToNextEventInt != numToNextEvent )
-		{
-			log.error("Overflow of numToNextEvent");
-		}
 		return numToNextEventInt < 0 ? 0 : numToNextEventInt;
 	}
 
@@ -218,7 +214,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final MadChannelBuffer[] channelBuffers,
 			final int numFrames )
 	{
-//		log.debug("ProcessWithEvents");
+//		log.debug("ProcessWithEvents in " + instanceName);
 		RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 
 		preProcess( tempQueueEntryStorage, timingParameters, periodStartFrameTime );
@@ -323,6 +319,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final MadChannelBuffer[] channelBuffers,
 			final int numFrames )
 	{
+//		log.debug("ProcessNoEvents in " + instanceName );
 		// Can be processed as one big chunk
 		return process( tempEventQueue,
 				timingParameters,
@@ -346,19 +343,30 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final long periodStartFrameTime )
 	{
 		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
-//			log.debug("Doing queue postprocessing for " + instanceName );
 
 		// Push outgoing (to ui) events into their real queues.
 
 		final int numCommands = tempQueueEntryStorage.numCommandEventsToUi;
 		if( numCommands > 0 )
 		{
-			commandToUiQueue.write( tempQueueEntryStorage.commandEventsToUi, 0, numCommands );
+			final int numWritten = commandToUiQueue.write( tempQueueEntryStorage.commandEventsToUi, 0, numCommands );
+			if( numWritten != numCommands )
+			{
+				log.warn("Overflow in postProcess command write of " + instanceName );
+				log.debug("Queue readable is " + commandToUiQueue.getNumReadable() );
+				log.debug("Queue writeable is " + commandToUiQueue.getNumWriteable() );
+			}
 		}
 		final int numTemporals = tempQueueEntryStorage.numTemporalEventsToUi;
 		if( numTemporals > 0 )
 		{
-			temporalToUiQueue.write( tempQueueEntryStorage.temporalEventsToUi, 0, numTemporals );
+			final int numWritten = temporalToUiQueue.write( tempQueueEntryStorage.temporalEventsToUi, 0, numTemporals );
+			if( numWritten != numTemporals )
+			{
+				log.warn("Overflow in postProcess command write of " + instanceName );
+				log.debug("Queue readable is " + temporalToUiQueue.getNumReadable() );
+				log.debug("Queue writeable is " + temporalToUiQueue.getNumWriteable() );
+			}
 		}
 
 		tempQueueEntryStorage.resetEventsToUi();

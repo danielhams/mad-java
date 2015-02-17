@@ -54,13 +54,14 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 
 	// Extra capacity for messages
 	private static final int CUSTOM_COMMAND_TO_UI_QUEUE_LENGTH = MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 2;
+	private static final int CUSTOM_TEMPORAL_TO_UI_QUEUE_LENGTH = MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 4;
 
 	public MixerNIOQueueBridge()
 	{
 		super( MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
 				MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
 				CUSTOM_COMMAND_TO_UI_QUEUE_LENGTH,
-				MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH );
+				CUSTOM_TEMPORAL_TO_UI_QUEUE_LENGTH );
 	}
 
 	@Override

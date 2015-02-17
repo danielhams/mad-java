@@ -188,7 +188,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		int curOutputPos = 0;
 		while( numStillToOutput > 0 )
 		{
-			if( numSamplesTillNextEvent <= 0 )
+			if( active && numSamplesTillNextEvent <= 0 )
 			{
 				playSpeed = (playSpeed * curValueRatio) + (desiredPlaySpeed * newValueRatio);
 				if( playSpeed > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && playSpeed < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
