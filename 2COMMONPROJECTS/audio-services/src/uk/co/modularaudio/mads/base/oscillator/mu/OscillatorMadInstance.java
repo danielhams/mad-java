@@ -107,7 +107,9 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean cvFreqConnected = channelConnectedFlags.get( OscillatorMadDefinition.CONSUMER_CV_FREQ );
 		final MadChannelBuffer cvFreqBuf = channelBuffers[ OscillatorMadDefinition.CONSUMER_CV_FREQ ];
@@ -138,19 +140,19 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 
 			if( cvFreqConnected )
 			{
-				oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, 1.0f, 0, numFrames, sampleRate );
+				oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, 1.0f, frameOffset, numFrames, sampleRate );
 			}
 			else
 			{
 				runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
-				oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, 1.0f, 0, numFrames, sampleRate );
+				oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, 1.0f, frameOffset, numFrames, sampleRate );
 			}
 
 			if( audioOutConnected && cvOutConnected )
 			{
 				// We rendered into audio out, copy it over into the cv out
 				final float[] cvOutFloats = cvOutBuf.floatBuffer;
-				System.arraycopy( genFloats, 0, cvOutFloats, 0, genFloats.length );
+				System.arraycopy( genFloats, frameOffset, cvOutFloats, frameOffset, numFrames );
 			}
 		}
 		if( CHECK_NAN )
@@ -162,12 +164,12 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 			{
 				if( audioOutConnected )
 				{
-					if( audioOutFloats[ i ] == Float.NaN )
+					if( audioOutFloats[ frameOffset + i ] == Float.NaN )
 					{
 						log.error("Generated an audio NaN");
 					}
 
-					if( cvOutFloats[ i ] == Float.NaN )
+					if( cvOutFloats[ frameOffset + i ] == Float.NaN )
 					{
 						log.error("Generated a cv NaN");
 					}

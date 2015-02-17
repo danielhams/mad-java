@@ -104,7 +104,9 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 			final MadTimingParameters timingParameters ,
 			final long periodStartTimestamp ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
 		final MadChannelBuffer inChannelBuffer = channelBuffers[ WaveRollerMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
@@ -128,9 +130,6 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 									dataRingBuffer.getWritePosition(),
 									timestampForIndexUpdate );
 							dataRingBuffer.setNumSamplesQueued( 0 );
-
-							postProcess(tempQueueEntryStorage, timingParameters, timestampForIndexUpdate);
-							preProcess(tempQueueEntryStorage, timingParameters, timestampForIndexUpdate);
 						}
 
 						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
@@ -143,7 +142,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
 						if( numToWrite > 0 )
 						{
-							dataRingBuffer.write( in0Floats, curSampleIndex, numToWrite );
+							dataRingBuffer.write( in0Floats, frameOffset + curSampleIndex, numToWrite );
 							dataRingBuffer.setNumSamplesQueued( dataRingBuffer.getNumSamplesQueued() + numToWrite );
 						}
 						else

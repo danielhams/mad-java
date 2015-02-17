@@ -54,9 +54,6 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	private float desiredAmpA = 1.0f;
 	private float desiredAmpB = 1.0f;
 
-	private int framesPerFrontEndPeriod = -1;
-	private int framesUntilIO = -1;
-
 	public CrossFaderMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
 			final CrossFaderMadDefinition definition,
@@ -70,20 +67,10 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-
-			framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
-			framesUntilIO = framesPerFrontEndPeriod;
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
+		curValueRatio = 1.0f - newValueRatio;
 	}
 
 	@Override
@@ -92,13 +79,13 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers ,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
-			final int numFrames  )
+			final int numFrames )
 	{
 		final boolean in1LConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT );
 		final boolean in1RConnected = channelConnectedFlags.get( CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT );
@@ -129,52 +116,32 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			final MadChannelBuffer outRcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_RIGHT ];
 			final float[] outRBuffer = outRcb.floatBuffer;
 
-			int framesLeft = numFrames;
-			int curOutputIndex = 0;
-
-			while( framesLeft > 0 )
+			final int lastFrameIndex = frameOffset + numFrames;
+			for( int i = frameOffset ; i < lastFrameIndex ; i++ )
 			{
-				if( framesUntilIO == 0 )
+				final float in1lval = in1LBuffer[ i ];
+				final float in2lval = in2LBuffer[ i ];
+				final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
+				outLBuffer[ i ] = lVal;
+
+				final float in1rval = in1RBuffer[ i ];
+				final float in2rval = in2RBuffer[ i ];
+
+				final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
+				outRBuffer[ i ] = rVal;
+
+				// Fade between the values
+				instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
+				instanceRealAmpB = ((instanceRealAmpB * curValueRatio) + (desiredAmpB * newValueRatio));
+				// And dampen any values that are just noise.
+				if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 				{
-					final long adjustedFrameTime = periodStartFrameTime + curOutputIndex;
-
-					preProcess( tempQueueEntryStorage, timingParameters, adjustedFrameTime );
-
-					framesUntilIO = framesPerFrontEndPeriod;
+					instanceRealAmpA = 0.0f;
 				}
-
-				final int numThisRound = framesLeft < framesUntilIO ? framesLeft : framesUntilIO;
-
-				for( int i = 0 ; i < numThisRound ; i++ )
+				if( instanceRealAmpB > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpB < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 				{
-					final float in1lval = in1LBuffer[ curOutputIndex + i ];
-					final float in2lval = in2LBuffer[ curOutputIndex + i ];
-					final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
-					outLBuffer[ curOutputIndex + i ] = lVal;
-
-					final float in1rval = in1RBuffer[ curOutputIndex + i ];
-					final float in2rval = in2RBuffer[ curOutputIndex + i ];
-
-					final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
-					outRBuffer[ curOutputIndex + i ] = rVal;
-
-					// Fade between the values
-					instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
-					instanceRealAmpB = ((instanceRealAmpB * curValueRatio) + (desiredAmpB * newValueRatio));
-					// And dampen any values that are just noise.
-					if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-					{
-						instanceRealAmpA = 0.0f;
-					}
-					if( instanceRealAmpB > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpB < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-					{
-						instanceRealAmpB = 0.0f;
-					}
+					instanceRealAmpB = 0.0f;
 				}
-
-				curOutputIndex += numThisRound;
-				framesUntilIO -= numThisRound;
-				framesLeft -= numThisRound;
 			}
 		}
 

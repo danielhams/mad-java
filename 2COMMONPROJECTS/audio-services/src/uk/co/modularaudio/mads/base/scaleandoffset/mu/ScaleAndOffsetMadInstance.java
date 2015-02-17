@@ -63,11 +63,13 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean inScaleConnected = channelConnectedFlags.get( ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX );
 		final float[] inScaleFloats = channelBuffers[ ScaleAndOffsetMadDefinition.CONSUMER_CV_SCALE_IDX ].floatBuffer;
@@ -90,21 +92,21 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 					// Use static scale and offset
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
-						outValueFloats[ i ] = (inValueFloats[i] * desiredScaleValue) + desiredOffsetValue;
+						outValueFloats[ frameOffset + i ] = (inValueFloats[frameOffset + i] * desiredScaleValue) + desiredOffsetValue;
 					}
 				}
 				else if( !inScaleConnected && inOffsetConnected )
 				{
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
-						outValueFloats[ i ] = (inValueFloats[i] * desiredScaleValue) + inOffsetFloats[i];
+						outValueFloats[ frameOffset + i ] = (inValueFloats[frameOffset + i] * desiredScaleValue) + inOffsetFloats[frameOffset + i];
 					}
 				}
 				else if( inScaleConnected && !inOffsetConnected )
 				{
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
-						outValueFloats[ i ] = (inValueFloats[i] * inScaleFloats[i]) + desiredOffsetValue;
+						outValueFloats[ frameOffset + i ] = (inValueFloats[frameOffset + i] * inScaleFloats[frameOffset + i]) + desiredOffsetValue;
 					}
 				}
 				else
@@ -112,7 +114,7 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 					// All connected
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
-						outValueFloats[ i ] = (inValueFloats[i] * inScaleFloats[i]) + inOffsetFloats[i];
+						outValueFloats[ frameOffset + i ] = (inValueFloats[frameOffset + i] * inScaleFloats[frameOffset + i]) + inOffsetFloats[frameOffset + i];
 					}
 				}
 			}
@@ -121,7 +123,7 @@ public class ScaleAndOffsetMadInstance extends MadInstance<ScaleAndOffsetMadDefi
 				// In value not connected
 				for( int i = 0 ; i < numFrames ; i++ )
 				{
-					outValueFloats[ i ] = inOffsetFloats[i];
+					outValueFloats[ frameOffset + i ] = inOffsetFloats[ frameOffset + i ];
 				}
 			}
 		}

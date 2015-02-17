@@ -115,13 +115,15 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+			final int frameOffset,
+			final int numFrames  )
 	{
 		// Zero output so lane processors can just add to existing output floats
 		final float[] leftOutputFloats = channelBuffers[ leftOutputChannelIndex ].floatBuffer;
 		final float[] rightOutputFloats = channelBuffers[ rightOutputChannelIndex ].floatBuffer;
-		Arrays.fill(  leftOutputFloats, 0.0f );
-		Arrays.fill(  rightOutputFloats, 0.0f );
+		final int lastFrameIndex = frameOffset + numFrames;
+		Arrays.fill(  leftOutputFloats, frameOffset, lastFrameIndex, 0.0f );
+		Arrays.fill(  rightOutputFloats, frameOffset, lastFrameIndex, 0.0f );
 
 		int currentSampleIndex = 0;
 
@@ -139,20 +141,6 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 				}
 				masterProcessor.emitMasterMeterReadings( tempQueueEntryStorage, emitFrameTime );
 
-				// Make sure they get pushed
-//				if( tempQueueEntryStorage.numTemporalEventsToUi > 0 )
-//				{
-//					log.debug("Emitting " + tempQueueEntryStorage.numTemporalEventsToUi + " events to UI");
-//				}
-				postProcess( tempQueueEntryStorage, timingParameters, emitFrameTime );
-
-				// And process new events
-//				debugTimestamp( "SubPe", emitTimestamp );
-				preProcess( tempQueueEntryStorage, timingParameters, emitFrameTime );
-//				if( tempQueueEntryStorage.numTemporalEventsToInstance > 0 )
-//				{
-//					log.debug("Consuming " + tempQueueEntryStorage.numTemporalEventsToInstance + " events to instance");
-//				}
 				numSamplesProcessed = 0;
 			}
 
@@ -164,19 +152,27 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			// Get each channel to add it's output in
 			for( int il = 0 ; il < numInputLanes ; il++ )
 			{
-				channelLaneProcessors[ il ].processLaneMixToOutput( tempQueueEntryStorage, channelConnectedFlags, channelBuffers, currentSampleIndex, numThisRound );
+				channelLaneProcessors[ il ].processLaneMixToOutput( tempQueueEntryStorage,
+						channelConnectedFlags,
+						channelBuffers,
+						frameOffset + currentSampleIndex,
+						numThisRound );
 			}
 
 			// Now apply master mix multiplier
-			masterProcessor.processMasterOutput( tempQueueEntryStorage, channelConnectedFlags, channelBuffers, currentSampleIndex, numThisRound );
+			masterProcessor.processMasterOutput( tempQueueEntryStorage,
+					channelConnectedFlags,
+					channelBuffers,
+					frameOffset + currentSampleIndex,
+					numThisRound );
 
 			currentSampleIndex += numThisRound;
 			numSamplesProcessed += numThisRound;
 		}
 
 		// Finally, run a limiter over the output to curb any clipping.
-		limiterRt.filter( leftOutputFloats, 0, numFrames );
-		limiterRt.filter( rightOutputFloats, 0, numFrames );
+		limiterRt.filter( leftOutputFloats, frameOffset, numFrames );
+		limiterRt.filter( rightOutputFloats, frameOffset, numFrames );
 
 //		debugTimestamp( "Done ", emitTimestamp );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

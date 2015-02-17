@@ -99,7 +99,7 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 			final long periodStartTimestamp ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+			final int frameOffset , final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( SpectralRollMadDefinition.CONSUMER_IN);
 		final MadChannelBuffer inCb = channelBuffers[ SpectralRollMadDefinition.CONSUMER_IN ];
@@ -123,9 +123,6 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 								dataRingBuffer.getWritePosition(),
 								timestampForIndexUpdate );
 							dataRingBuffer.setNumSamplesQueued( 0 );
-
-							postProcess( tempQueueEntryStorage, timingParameters, timestampForIndexUpdate );
-							preProcess( tempQueueEntryStorage, timingParameters, timestampForIndexUpdate );
 						}
 
 						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
@@ -139,7 +136,7 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 
 						if( numToWrite > 0 )
 						{
-							dataRingBuffer.write( inFloats, curSampleIndex, numToWrite );
+							dataRingBuffer.write( inFloats, frameOffset + curSampleIndex, numToWrite );
 							dataRingBuffer.setNumSamplesQueued( dataRingBuffer.getNumSamplesQueued() + numToWrite );
 						}
 						else

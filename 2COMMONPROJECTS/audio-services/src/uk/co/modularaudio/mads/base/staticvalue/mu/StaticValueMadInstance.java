@@ -63,17 +63,19 @@ public class StaticValueMadInstance extends MadInstance<StaticValueMadDefinition
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		final boolean outConnected = channelConnectedFlags.get( StaticValueMadDefinition.PRODUCER_CV_OUT_IDX );
 		final float[] outCvFloats = channelBuffers[ StaticValueMadDefinition.PRODUCER_CV_OUT_IDX ].floatBuffer;
 		if( outConnected )
 		{
-			Arrays.fill( outCvFloats, currentValue );
+			Arrays.fill( outCvFloats, frameOffset, frameOffset + numFrames, currentValue );
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

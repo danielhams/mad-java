@@ -90,7 +90,9 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean inTriggerConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER );
 		final MadChannelBuffer inTriggerChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER ];
