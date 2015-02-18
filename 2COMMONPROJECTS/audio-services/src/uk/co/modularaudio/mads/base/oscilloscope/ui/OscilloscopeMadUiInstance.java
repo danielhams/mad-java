@@ -237,11 +237,10 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		sendTemporalValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_REPETITIONS, rv.ordinal() );
 	}
 
-	public void sendCaptureMillis( final float captureMillis )
+	public void setCaptureMillis( final float captureMillis )
 	{
 		currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), captureMillis );
 		currentCaptureBufferLength = (currentCaptureBufferLength < 1 ? 1 : (currentCaptureBufferLength > maxCaptureBufferLength ? maxCaptureBufferLength : currentCaptureBufferLength ) );
-		sendCommandValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_MILLIS,  Float.floatToIntBits( captureMillis ));
 	}
 
 	public void sendScopeData( final OscilloscopeWriteableScopeData dataToPassToInstance )
@@ -271,6 +270,6 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	@Override
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
-		sendCaptureMillis( captureMillis );
+		setCaptureMillis( captureMillis );
 	}
 }

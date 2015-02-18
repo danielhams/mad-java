@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class OscilloscopeIOQueueBridge extends MadLocklessQueueBridge<OscilloscopeMadInstance>
 {
@@ -36,8 +35,7 @@ public class OscilloscopeIOQueueBridge extends MadLocklessQueueBridge<Oscillosco
 	public static final int COMMAND_IN_SCOPE_DATA = 1;
 	public static final int COMMAND_IN_CAPTURE_TRIGGER = 2;
 	public static final int COMMAND_IN_CAPTURE_REPETITIONS = 3;
-	public static final int COMMAND_IN_CAPTURE_MILLIS = 4;
-	public static final int COMMAND_OUT_SCOPE_DATA = 5;
+	public static final int COMMAND_OUT_SCOPE_DATA = 4;
 
 	public OscilloscopeIOQueueBridge()
 	{
@@ -73,13 +71,6 @@ public class OscilloscopeIOQueueBridge extends MadLocklessQueueBridge<Oscillosco
 			{
 				final OscilloscopeCaptureRepetitionsEnum rt = OscilloscopeCaptureRepetitionsEnum.values()[ (int)queueEntry.value ];
 				instance.captureRepetitions = rt;
-				break;
-			}
-			case COMMAND_IN_CAPTURE_MILLIS:
-			{
-				final float captureMillis = Float.intBitsToFloat( (int)queueEntry.value );
-				instance.desiredCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( instance.sampleRate,
-						captureMillis );
 				break;
 			}
 			default:

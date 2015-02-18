@@ -189,10 +189,12 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			int curEventIndex,
 			final long curPeriodStartFrameTime )
 	{
+//		log.debug("Start consume from event " + curEventIndex );
 		while( curEventIndex < numTemporalEvents )
 		{
 			if( tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime > curPeriodStartFrameTime )
 			{
+//				log.debug("Hit future event");
 				break;
 			}
 			else
@@ -201,8 +203,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 						tempQueueEntryStorage,
 						curPeriodStartFrameTime,
 						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex++] );
+//				log.debug("Consumed event");
 			}
 		}
+//		log.debug("Leaving consume before event " + curEventIndex );
 		return curEventIndex;
 	}
 
@@ -222,6 +226,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 		if( numTemporalEvents > 0 )
 		{
+//			log.debug( "Have " + numTemporalEvents + " temporal events to handle" );
 			// Chop period up into chunks up to the next event
 			// process the event and carry on.
 			int curEventIndex = 0;
@@ -242,11 +247,24 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 						curFrameIndex )
 						);
 
+			if( numToNextEventInt == 0 )
+			{
+				log.error("Distance to next event is zero!");
+			}
+
 			// Now loop around doing chunks of DSP until we exhaust
 			// the frames
 			while( numLeft > 0 )
 			{
 				final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
+//				if( numThisRound == 0 )
+//				{
+//					log.error("Have a zero length round :-(");
+//				}
+//				else
+//				{
+//					log.trace( "Have a round of length " + numThisRound );
+//				}
 
 				if( (retVal = process( tempQueueEntryStorage,
 						timingParameters,
@@ -262,6 +280,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				}
 
 				// Process any events for this frame index
+				curPeriodStartFrameTime += numThisRound;
 				curEventIndex = consumeTimestampedEvents( tempQueueEntryStorage,
 						numTemporalEvents,
 						curEventIndex,
@@ -275,9 +294,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 							tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime,
 							curFrameIndex )
 							);
-
-				curPeriodStartFrameTime += numThisRound;
-
+//				if( numToNextEventInt == 0 )
+//				{
+//					log.error("NTNE is zero in loop");
+//				}
 			}
 
 			// And process any events left over

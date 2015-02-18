@@ -31,7 +31,8 @@ public class CPTIOQueueBridge extends MadLocklessQueueBridge<CPTMadInstance>
 {
 	private static Log log = LogFactory.getLog( CPTIOQueueBridge.class.getName() );
 
-	public static final int COMMAND_AMPA_AMPB = 0;
+	public static final int COMMAND_AMP = 0;
+	public static final int COMMAND_INTERPOLATOR = 1;
 
 	public CPTIOQueueBridge()
 	{
@@ -45,12 +46,18 @@ public class CPTIOQueueBridge extends MadLocklessQueueBridge<CPTMadInstance>
 	{
 		switch( queueEntry.command )
 		{
-			case COMMAND_AMPA_AMPB:
+			case COMMAND_AMP:
 			{
 				final long value = queueEntry.value;
 				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
-				final float ampA = Float.intBitsToFloat( lower32Bits );
-				instance.setDesiredAmps( ampA );
+				final float amp = Float.intBitsToFloat( lower32Bits );
+				instance.setDesiredAmp( amp );
+				break;
+			}
+			case COMMAND_INTERPOLATOR:
+			{
+				final int val = (int)queueEntry.value;
+				instance.setInterpolatorByIndex( val );
 				break;
 			}
 			default:

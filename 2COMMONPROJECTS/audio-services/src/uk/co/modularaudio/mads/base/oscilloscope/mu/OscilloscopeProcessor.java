@@ -31,11 +31,6 @@ public class OscilloscopeProcessor
 
 	private final OscilloscopeMadInstance instance;
 
-	private OscilloscopeCaptureTriggerEnum triggerEnum = OscilloscopeCaptureTriggerEnum.NONE;
-
-//	private int desiredCaptureSamples = 1;
-	private int periodLength = -1;
-
 	protected ArrayList<OscilloscopeWriteableScopeData> bufferedScopeData;
 
 	private OscilloscopeWriteableScopeData scopeData;
@@ -50,16 +45,11 @@ public class OscilloscopeProcessor
 		this.bufferedScopeData = bufferedScopeData;
 	}
 
-	public void setPeriodData( final OscilloscopeCaptureTriggerEnum triggerEnum,
-			final int desiredCaptureSamples,
-			final int periodLength )
-	{
-		this.periodLength = periodLength;
-//		this.desiredCaptureSamples = desiredCaptureSamples;
-		this.triggerEnum = triggerEnum;
-	}
-
-	public void processPeriod( final ThreadSpecificTemporaryEventStorage tses,
+	public void processPeriod(
+			final OscilloscopeCaptureTriggerEnum triggerEnum,
+			final int frameOffset,
+			final int numFrames,
+			final ThreadSpecificTemporaryEventStorage tses,
 			final long timingInfo,
 			final boolean triggerConnected, final float[] triggerFloats,
 			final boolean audio0Connected, final float[] audio0Floats,
@@ -89,9 +79,9 @@ public class OscilloscopeProcessor
 					{
 						// Looking for < 0.0 to > 0.0
 						float thisTrigVal = previousTriggerVal;
-						for( int s = 0 ; s < periodLength ; s++ )
+						for( int s = 0 ; s < numFrames ; s++ )
 						{
-							final float testVal = triggerFloats[ s ];
+							final float testVal = triggerFloats[ frameOffset + s ];
 							if( thisTrigVal <= 0.0 && testVal > 0.0 )
 							{
 								triggerIndex = s;
@@ -108,9 +98,9 @@ public class OscilloscopeProcessor
 					{
 						// Looking for > 0.0 to < 0.0
 						float thisTrigVal = previousTriggerVal;
-						for( int s = 0 ; s < periodLength ; s++ )
+						for( int s = 0 ; s < numFrames ; s++ )
 						{
-							final float testVal = triggerFloats[ s ];
+							final float testVal = triggerFloats[ frameOffset + s ];
 							if( thisTrigVal >= 0.0 && testVal < 0.0 )
 							{
 								triggerIndex = s;
@@ -179,12 +169,12 @@ public class OscilloscopeProcessor
 			if( scopeData != null && currentlyCapturing )
 			{
 				// Pipe what we can from the buffers into the scope data
-				final int numAvailable = periodLength - triggerIndex;
+				final int numAvailable = numFrames - triggerIndex;
 				final int scopeSpace = scopeData.desiredDataLength - scopeData.currentWriteIndex;
 				final int numToWrite = (numAvailable < scopeSpace ? numAvailable : scopeSpace );
 				for( int s = 0 ; s < numToWrite ; s++ )
 				{
-					final int inIndex = triggerIndex + s;
+					final int inIndex = frameOffset + triggerIndex + s;
 					final int outIndex = scopeData.currentWriteIndex + s;
 					if( audio0Connected )
 					{
@@ -218,7 +208,7 @@ public class OscilloscopeProcessor
 
 		if( triggerConnected )
 		{
-			previousTriggerVal = triggerFloats[ periodLength - 1 ];
+			previousTriggerVal = triggerFloats[ frameOffset + numFrames - 1 ];
 		}
 	}
 

@@ -14,7 +14,8 @@
         <rackPosition column="0" row="3"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="Slider" value="-1000"/>
-        <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="PowerCurve" value="Equal Power"/>
+        <rackControl name="Interpolator" value="Half Hann"/>
     </rackComponent>
     <rackComponent name="Cross Fader 4" definitionId="cross_fader">
         <rackPosition column="2" row="6"/>
@@ -25,9 +26,9 @@
     </rackComponent>
     <rackComponent name="Input Source Mixer" definitionId="mixer3">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Master Lane" value="761:50"/>
+        <rackControl name="Master Lane" value="824:50"/>
         <rackControl name="Mixer Lane 0" value="824:50:M "/>
-        <rackControl name="Mixer Lane 1" value="824:50:  "/>
+        <rackControl name="Mixer Lane 1" value="772:50:  "/>
         <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 3" definitionId="mixer3">
@@ -37,7 +38,23 @@
         <rackControl name="Mixer Lane 1" value="0:50:  "/>
         <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
-    <rackComponent name="Spectral Roll 6" definitionId="spectral_roll">
+    <rackComponent name="Oscilloscope 10" definitionId="oscilloscope">
+        <rackPosition column="2" row="11"/>
+        <rackControl name="CaptureTime" value="3483.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="TriggerType" value="None"/>
+        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Recapture" value="false"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 9" definitionId="spectral_amp">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 9" definitionId="spectral_roll">
         <rackPosition column="2" row="2"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Amp Scale" value="16384"/>
@@ -46,21 +63,25 @@
     </rackComponent>
     <rackComponent name="Static Value 2" definitionId="static_value">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Value" value="45.0"/>
+        <rackControl name="Value" value="60.0"/>
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="0"/>
-        <rackControl name="CaptureTime" value="1500.0"/>
+        <rackControl name="CaptureTime" value="3483.3035"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="Right Scale" value=""/>
     </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 10" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Control Processing Tester 8" consumerChannelName="Input Channel Left"/>
     <rackLink producerRackComponentName="Control Processing Tester 8" producerChannelName="Output Wave Left" consumerRackComponentName="Input Source Mixer" consumerChannelName="Lane 2 Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Channel 1"/>
-    <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 6" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Oscilloscope 10" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 9" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 9" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 6" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Channel 2"/>
+    <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Right" consumerRackComponentName="Oscilloscope 10" consumerChannelName="Input Wave 1"/>
     <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 1" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 2" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="Static Value 2" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>

@@ -20,16 +20,20 @@
 
 package uk.co.modularaudio.mads.base.controlprocessingtester.ui;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTIOQueueBridge;
 import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTMadDefinition;
 import uk.co.modularaudio.mads.base.controlprocessingtester.mu.CPTMadInstance;
+import uk.co.modularaudio.mads.base.crossfader.ui.CrossFaderMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.lookuptable.powertable.RawCrossfadePowerTable;
 import uk.co.modularaudio.util.audio.lookuptable.powertable.StandardCrossfadePowerTables;
 
 public class CPTMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<CPTMadDefinition, CPTMadInstance>
 {
-//	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
 
 	private boolean guiKillA = false;
 	private float guiCrossFaderPosition = 0.0f;
@@ -55,15 +59,15 @@ public class CPTMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiIn
 		}
 
 		// Now pass these values to the running instance
-		sendAmpAAmpBChange( calculatedAmpA );
+		sendAmpChange( calculatedAmpA );
 	}
 
-	public void sendAmpAAmpBChange( final float ampA )
+	public void sendAmpChange( final float amp )
 	{
-		final int ampAInt = Float.floatToIntBits( ampA );
-		final long combinedValue = ampAInt;
+		final int ampInt = Float.floatToIntBits( amp );
+		final long combinedValue = ampInt;
 
-		sendTemporalValueToInstance( CPTIOQueueBridge.COMMAND_AMPA_AMPB, combinedValue );
+		sendTemporalValueToInstance( CPTIOQueueBridge.COMMAND_AMP, combinedValue );
 	}
 
 	public void setPowerCurve( final RawCrossfadePowerTable powerCurve )
@@ -76,8 +80,15 @@ public class CPTMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiIn
 		this.guiCrossFaderPosition = faderPosition;
 	}
 
-	public void setGuiKillA( final boolean selected )
+	public void setGuiKill( final boolean selected )
 	{
 		this.guiKillA = selected;
+	}
+
+	public void setInterpolator( final int interpolatorIndex )
+	{
+		sendTemporalValueToInstance( CPTIOQueueBridge.COMMAND_INTERPOLATOR, interpolatorIndex );
+		log.debug("Sent change to interpolator " + interpolatorIndex );
+
 	}
 }

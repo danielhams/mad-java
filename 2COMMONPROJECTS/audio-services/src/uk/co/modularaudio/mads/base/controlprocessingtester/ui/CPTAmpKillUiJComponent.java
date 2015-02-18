@@ -31,14 +31,14 @@ import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class CPTAmpAKillUiJComponent extends PacToggleButton
+public class CPTAmpKillUiJComponent extends PacToggleButton
 	implements IMadUiControlInstance<CPTMadDefinition, CPTMadInstance, CPTMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
 	private final CPTMadUiInstance uiInstance;
 
-	public CPTAmpAKillUiJComponent(
+	public CPTAmpKillUiJComponent(
 			final CPTMadDefinition definition,
 			final CPTMadInstance instance,
 			final CPTMadUiInstance uiInstance,
@@ -52,7 +52,7 @@ public class CPTAmpAKillUiJComponent extends PacToggleButton
 //		Font f = this.getFont().deriveFont( 9f );
 		final Font f = this.getFont();
 		setFont( f );
-		this.setText( "Kill A" );
+		this.setText( "Kill" );
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class CPTAmpAKillUiJComponent extends PacToggleButton
 
 	private void passChangeToInstanceData( final boolean selected )
 	{
-		uiInstance.setGuiKillA( selected );
+		uiInstance.setGuiKill( selected );
 		uiInstance.recalculateAmps();
 	}
 

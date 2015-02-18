@@ -55,25 +55,29 @@ public class CPTMadUiDefinition
 	private static final String[] CONTROL_NAMES = new String[] {
 		"AmpAKill",
 		"Slider",
-		"PowerCurve"
+		"PowerCurve",
+		"Interpolator"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.BUTTON,
 		ControlType.SLIDER,
+		ControlType.COMBO,
 		ControlType.COMBO
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		CPTAmpAKillUiJComponent.class,
+		CPTAmpKillUiJComponent.class,
 		CPTSliderUiJComponent.class,
-		CPTPowerCurveUiJComponent.class
+		CPTPowerCurveUiJComponent.class,
+		CPTCVInterpolatorUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  16, 30,  75, 30 ),		// AmpA Kill
-		new Rectangle( 116, 30, 328, 30 ),		// Fader Slider
-		new Rectangle( 240,  3, 130, 30 )		// Power Curve
+		new Rectangle(  16, 30,  75, 30 ),		// Amp Kill
+		new Rectangle( 116, 30, 418, 30 ),		// Fader Slider
+		new Rectangle( 160,  3, 130, 30 ),		// Power Curve
+		new Rectangle( 350,  3, 130, 30 )		// Interpolator
 	};
 
 	private static final Class<CPTMadUiInstance> INSTANCE_CLASS = CPTMadUiInstance.class;

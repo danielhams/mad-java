@@ -26,10 +26,10 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -52,8 +52,6 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 	protected OscilloscopeCaptureRepetitionsEnum captureRepetitions = OscilloscopeCaptureRepetitionsEnum.CONTINOUS;
 
 	protected OscilloscopeProcessor oscProc;
-
-	public int desiredCaptureSamples = 1;
 
 	public OscilloscopeMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -86,13 +84,13 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
-			final int numFrames  )
+			final int numFrames )
 	{
 		final boolean inTriggerConnected = channelConnectedFlags.get( OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER );
 		final MadChannelBuffer inTriggerChannelBuffer = channelBuffers[ OscilloscopeMadDefinition.CONSUMER_CV_TRIGGER ];
@@ -114,8 +112,10 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 
 		if( active )
 		{
-			oscProc.setPeriodData( captureTrigger, desiredCaptureSamples, numFrames );
-			oscProc.processPeriod( tempQueueEntryStorage,
+			oscProc.processPeriod( captureTrigger,
+					frameOffset,
+					numFrames,
+					tempQueueEntryStorage,
 					periodStartFrameTime,
 					inTriggerConnected, inTriggerFloats,
 					in0Connected, in0Floats,

@@ -22,7 +22,14 @@ package uk.co.modularaudio.mads.base.controlprocessingtester.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.controlprocessingtester.util.ControlValueInterpolator;
+import uk.co.modularaudio.mads.base.controlprocessingtester.util.HalfHannWindowInterpolator;
+import uk.co.modularaudio.mads.base.controlprocessingtester.util.NoneInterpolator;
+import uk.co.modularaudio.mads.base.controlprocessingtester.util.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -33,24 +40,21 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance>
 {
-//	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
 
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 1.0f;
+	private ControlValueInterpolator ampInterpolator;
 
-	private long sampleRate = -1;
+	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
+	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
+	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 
-	private float instanceRealAmpA = 0.0f;
-
-	private float desiredAmpA = 1.0f;
+	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[3];
 
 	public CPTMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -59,16 +63,21 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		interpolators[0] = noneInterpolator;
+		interpolators[1] = sorInterpolator;
+		interpolators[2] = hhInterpolator;
+		ampInterpolator = interpolators[0];
 	}
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-		curValueRatio = 1.0f - newValueRatio;
+		sorInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
+		hhInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
 	}
 
 	@Override
@@ -107,33 +116,34 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 			final MadChannelBuffer outRcb = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_RIGHT ];
 			final float[] outRBuffer = outRcb.floatBuffer;
 
-			final int endFrameOffset = frameOffset + numFrames;
-			for( int i = frameOffset ; i < endFrameOffset ; i++ )
+			// Use the temporary area as a place to put generate control values
+			final float[] tmpArea = tempQueueEntryStorage.temporaryFloatArray;
+
+			ampInterpolator.generateControlValues( tmpArea, 0, numFrames );
+
+			for( int i = 0 ; i < numFrames ; i++ )
 			{
-				final float in1lval = in1LBuffer[ i ];
-				final float lVal = in1lval * instanceRealAmpA;
-				outLBuffer[ i ] = lVal;
+				final int curIndex = frameOffset + i;
+				outLBuffer[ curIndex ] = in1LBuffer[ curIndex ] * tmpArea[i];
+				outRBuffer[ curIndex ] = in1RBuffer[ curIndex ] * tmpArea[i];
 
-				final float in1rval = in1RBuffer[ i ];
-
-				final float rVal = in1rval * instanceRealAmpA;
-				outRBuffer[ i ] = rVal;
-
-				// Fade between the values
-				instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
-				// And dampen any values that are just noise.
-				if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					instanceRealAmpA = 0.0f;
-				}
 			}
+			// And dampen any values that are just noise.
+			ampInterpolator.checkForDenormal();
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	public void setDesiredAmps( final float ampA )
+	public void setDesiredAmp( final float amp )
 	{
-		this.desiredAmpA = ampA;
+//		log.trace( "Received amp change: " + amp );
+		ampInterpolator.notifyOfNewIncomingAmp( amp );
+	}
+
+	public void setInterpolatorByIndex( final int interpolatorIndex )
+	{
+		ampInterpolator = interpolators[interpolatorIndex];
+		log.debug("Changed to " + ampInterpolator.getClass().getSimpleName() );
 	}
 }
