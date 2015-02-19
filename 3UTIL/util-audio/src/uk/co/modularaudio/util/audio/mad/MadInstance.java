@@ -247,10 +247,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 						curFrameIndex )
 						);
 
-			if( numToNextEventInt == 0 )
-			{
-				log.error("Distance to next event is zero!");
-			}
+//			if( numToNextEventInt == 0 )
+//			{
+//				log.error("Distance to next event is zero!");
+//			}
 
 			// Now loop around doing chunks of DSP until we exhaust
 			// the frames

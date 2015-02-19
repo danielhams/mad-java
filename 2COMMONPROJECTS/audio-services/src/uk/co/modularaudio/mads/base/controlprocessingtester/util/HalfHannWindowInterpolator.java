@@ -61,36 +61,21 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		if( lastWindowPos == curWindowPos )
-		{
-			// Hann fade over
-			if( haveValWaiting )
-			{
-				desVal = nextVal;
-				haveValWaiting = false;
-				curWindowPos = 0;
+		int numLeftInHann = lastWindowPos - curWindowPos;
+		int numWithHann = (numLeftInHann < length ? numLeftInHann : length );
+		int numAfter = length - numWithHann;
+		int curIndex = outputIndex;
 
-				generateControlValues( output, outputIndex, length );
-			}
-			else
-			{
-				Arrays.fill( output, outputIndex, outputIndex + length, curVal );
-			}
-		}
-		else
+		while( numWithHann > 0 )
 		{
-			// Still doing a fade using the hann table
-			final int numLeftInHann = lastWindowPos - curWindowPos;
-			final int numWithHann = (numLeftInHann < length ? numLeftInHann : length );
-			final int numAfter = length - numWithHann;
-
 			for( int i = 0 ; i < numWithHann ; ++i )
 			{
 				final float hannVal = hannBuffer[curWindowPos++];
 				final float nonHannVal = 1.0f - hannVal;
 				final float newVal = (curVal * nonHannVal) + (desVal * hannVal );
-				output[ outputIndex + i ] = newVal;
+				output[ curIndex + i ] = newVal;
 			}
+			curIndex += numWithHann;
 
 			if( curWindowPos == lastWindowPos )
 			{
@@ -101,20 +86,30 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 					haveValWaiting = false;
 					curWindowPos = 0;
 
-					if( numAfter > 0 )
-					{
-						generateControlValues( output, outputIndex + numWithHann, numAfter );
-					}
+					numLeftInHann = lastWindowPos;
+					numWithHann = (numLeftInHann < numAfter ? numLeftInHann : numAfter );
+					numAfter -= numWithHann;
+
+					// We go back around the loop again with the next value
 				}
 				else
 				{
-					if( numAfter > 0 )
-					{
-						Arrays.fill( output, outputIndex + numWithHann, outputIndex + length, curVal );
-					}
+					// Fall out of loop and fill in with curVal;
+					break;
 				}
 			}
+			else
+			{
+				// Haven't exhausted the window and have filled the length
+				return;
+			}
+		}
 
+		// No further use of hann window necessary, move to desVal
+		// and make it curVal
+		if( numAfter > 0 )
+		{
+			Arrays.fill( output, curIndex, outputIndex + length, curVal );
 		}
 	}
 

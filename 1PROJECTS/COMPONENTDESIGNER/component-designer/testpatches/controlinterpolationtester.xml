@@ -27,7 +27,7 @@
     </rackComponent>
     <rackComponent name="Frequency Filter 10" definitionId="frequency_filter">
         <rackPosition column="2" row="11"/>
-        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Filter Type" value="None"/>
         <rackControl name="Toggle 24 dB" value="true"/>
         <rackControl name="Knee" value="209.10"/>
         <rackControl name="Bandwidth" value="440.00"/>
