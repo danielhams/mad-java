@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Control Processing Tester 8" rackComponentChannelInstanceName="Input Channel Left"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Input Source Mixer" rackComponentChannelInstanceName="Lane 1 Channel 1"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Control Processing Tester 8" rackComponentChannelInstanceName="Input Channel Right"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Input Source Mixer" rackComponentChannelInstanceName="Lane 1 Channel 2"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 3" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 3" rackComponentChannelInstanceName="Output Channel 2"/>
@@ -18,6 +16,7 @@
         <rackControl name="Slider" value="-1000"/>
         <rackControl name="PowerCurve" value="Equal Power"/>
         <rackControl name="Interpolator" value="Half Hann"/>
+        <rackControl name="ValueChase" value="4.0"/>
     </rackComponent>
     <rackComponent name="Cross Fader 4" definitionId="cross_fader">
         <rackPosition column="2" row="6"/>
@@ -26,9 +25,16 @@
         <rackControl name="Slider" value="-1000"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
+    <rackComponent name="Frequency Filter 10" definitionId="frequency_filter">
+        <rackPosition column="2" row="11"/>
+        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
+        <rackControl name="Knee" value="209.10"/>
+        <rackControl name="Bandwidth" value="440.00"/>
+    </rackComponent>
     <rackComponent name="Input Source Mixer" definitionId="mixer3">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Master Lane" value="791:50"/>
         <rackControl name="Mixer Lane 0" value="824:50:M "/>
         <rackControl name="Mixer Lane 1" value="824:50:  "/>
         <rackControl name="Mixer Lane 2" value="0:50:  "/>
@@ -66,14 +72,16 @@
         <rackControl name="Display" value=""/>
         <rackControl name="Right Scale" value=""/>
     </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Control Processing Tester 8" consumerChannelName="Input Channel Left"/>
     <rackLink producerRackComponentName="Control Processing Tester 8" producerChannelName="Output Wave Left" consumerRackComponentName="Input Source Mixer" consumerChannelName="Lane 2 Channel 1"/>
-    <rackLink producerRackComponentName="Control Processing Tester 8" producerChannelName="Output Wave Right" consumerRackComponentName="Input Source Mixer" consumerChannelName="Lane 2 Channel 2"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 9" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 9" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 6" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Cross Fader 4" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Channel 2"/>
-    <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 1" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Left"/>
-    <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 2" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Right"/>
+    <rackLink producerRackComponentName="Frequency Filter 10" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Left"/>
+    <rackLink producerRackComponentName="Frequency Filter 10" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 4" consumerChannelName="Input Channel 1 Right"/>
+    <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 1" consumerRackComponentName="Frequency Filter 10" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Input Source Mixer" producerChannelName="Output Channel 2" consumerRackComponentName="Frequency Filter 10" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Static Value 2" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>
 </rack>

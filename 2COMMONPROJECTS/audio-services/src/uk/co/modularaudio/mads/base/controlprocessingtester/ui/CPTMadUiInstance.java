@@ -91,4 +91,11 @@ public class CPTMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiIn
 		log.debug("Sent change to interpolator " + interpolatorIndex );
 
 	}
+
+	public void setChaseValueMillis( final float chaseMillis )
+	{
+		final long floatIntBits = Float.floatToIntBits( chaseMillis );
+		sendTemporalValueToInstance( CPTIOQueueBridge.COMMAND_CHASE_MILLIS, floatIntBits );
+
+	}
 }

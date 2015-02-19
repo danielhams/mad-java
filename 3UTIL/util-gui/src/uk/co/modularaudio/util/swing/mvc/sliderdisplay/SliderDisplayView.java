@@ -35,13 +35,13 @@ public class SliderDisplayView extends JPanel
 {
 	private static final long serialVersionUID = 3201519946309189476L;
 //	private static Log log = LogFactory.getLog( SliderDisplayView.class.getName() );
-	
+
 	public enum DisplayOrientation
 	{
 		VERTICAL,
 		HORIZONTAL
 	};
-	
+
 	public enum SatelliteOrientation
 	{
 		ABOVE,
@@ -49,30 +49,30 @@ public class SliderDisplayView extends JPanel
 		BELOW,
 		LEFT
 	};
-	
+
 	private int numColumns = 1;
-	
+
 	private SliderDisplayLabel label = null;
 	private SliderDisplaySlider slider = null;
 	private SliderDisplayTextbox textbox = null;
-	
-	public SliderDisplayView( SliderDisplayModel model,
-			SliderDisplayController controller,
-			SatelliteOrientation labelOrientation,
-			DisplayOrientation displayOrientation,
-			SatelliteOrientation textboxOrientation,
-			String labelText,
-			Color labelColor,
-			Color unitsColor,
-			boolean opaque )
+
+	public SliderDisplayView( final SliderDisplayModel model,
+			final SliderDisplayController controller,
+			final SatelliteOrientation labelOrientation,
+			final DisplayOrientation displayOrientation,
+			final SatelliteOrientation textboxOrientation,
+			final String labelText,
+			final Color labelColor,
+			final Color unitsColor,
+			final boolean opaque )
 	{
 		this.setOpaque( opaque );
-		
+
 		// If the label orientation or textbox orientation is left/right
 		// we use a two column mode
 		numColumns = 1 + ( labelOrientation == SatelliteOrientation.LEFT || textboxOrientation == SatelliteOrientation.LEFT ? 1 : 0 ) +
 				(labelOrientation == SatelliteOrientation.RIGHT || textboxOrientation == SatelliteOrientation.RIGHT ? 1 : 0 );
-		MigLayoutStringHelper lh = new MigLayoutStringHelper();
+		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 
 //		lh.addLayoutConstraint( "debug" );
 		lh.addLayoutConstraint( "insets 0" );
@@ -95,15 +95,15 @@ public class SliderDisplayView extends JPanel
 			}
 		}
 
-//		lh.addLayoutConstraint( "fill" );
-		
-		MigLayout layout = lh.createMigLayout();
+		lh.addLayoutConstraint( "fill" );
+
+		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
-		
+
 		label = new SliderDisplayLabel( labelText, labelColor, opaque );
 		slider = new SliderDisplaySlider( model, controller, displayOrientation, labelColor, opaque );
 		textbox = new SliderDisplayTextbox( model, controller, unitsColor, opaque );
-		
+
 		// Any needed components at top
 		if( labelOrientation == SatelliteOrientation.ABOVE )
 		{
@@ -113,7 +113,7 @@ public class SliderDisplayView extends JPanel
 		{
 			this.add( textbox, "center, grow 0" );
 		}
-		
+
 		// Left
 		if( labelOrientation == SatelliteOrientation.LEFT )
 		{
@@ -148,7 +148,7 @@ public class SliderDisplayView extends JPanel
 				this.add( slider, "center, pushy 50, shrink 100" );
 			}
 		}
-		
+
 		// Now right
 		if( textboxOrientation == SatelliteOrientation.RIGHT )
 		{
@@ -174,7 +174,7 @@ public class SliderDisplayView extends JPanel
 				this.add( label, "align left, grow 0" );
 			}
 		}
-		
+
 		// And bottom
 		if( textboxOrientation == SatelliteOrientation.BELOW )
 		{
@@ -198,13 +198,13 @@ public class SliderDisplayView extends JPanel
 				this.add( label, "center, top, growx" );
 			}
 		}
-	
+
 		this.validate();
 	}
-	
-	public void addDoubleClickReceiver( SliderDoubleClickReceiver receiver )
+
+	public void addDoubleClickReceiver( final SliderDoubleClickReceiver receiver )
 	{
-		SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
+		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
 		slider.addMouseListener( doubleClickMouseListener );
 	}
 }

@@ -46,8 +46,6 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 {
 	private static Log log = LogFactory.getLog( CPTMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 10;
-
 	private ControlValueInterpolator ampInterpolator;
 
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
@@ -55,6 +53,9 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 
 	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[3];
+
+	private int sampleRate;
+	private float desValueChaseMillis;
 
 	public CPTMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -74,10 +75,10 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		sorInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
-		hhInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
+		sorInterpolator.reset( sampleRate, desValueChaseMillis );
+		hhInterpolator.reset( sampleRate, desValueChaseMillis );
 	}
 
 	@Override
@@ -145,5 +146,12 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	{
 		ampInterpolator = interpolators[interpolatorIndex];
 		log.debug("Changed to " + ampInterpolator.getClass().getSimpleName() );
+	}
+
+	public void setChaseMillis( final float chaseMillis )
+	{
+		desValueChaseMillis = chaseMillis;
+		sorInterpolator.reset( sampleRate, chaseMillis );
+		hhInterpolator.reset( sampleRate, chaseMillis );
 	}
 }

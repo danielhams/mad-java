@@ -33,6 +33,7 @@ public class CPTIOQueueBridge extends MadLocklessQueueBridge<CPTMadInstance>
 
 	public static final int COMMAND_AMP = 0;
 	public static final int COMMAND_INTERPOLATOR = 1;
+	public static final int COMMAND_CHASE_MILLIS = 2;
 
 	public CPTIOQueueBridge()
 	{
@@ -58,6 +59,12 @@ public class CPTIOQueueBridge extends MadLocklessQueueBridge<CPTMadInstance>
 			{
 				final int val = (int)queueEntry.value;
 				instance.setInterpolatorByIndex( val );
+				break;
+			}
+			case COMMAND_CHASE_MILLIS:
+			{
+				final float chaseMillis = Float.intBitsToFloat( (int)queueEntry.value );
+				instance.setChaseMillis( chaseMillis );
 				break;
 			}
 			default:
