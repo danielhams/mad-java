@@ -52,6 +52,7 @@ public class CPTCVInterpolatorUiJComponent extends PacComboBox<String>
 		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 		cbm.addElement( "None" );
 		cbm.addElement( "Sum Of Ratios" );
+		cbm.addElement( "Linear" );
 		cbm.addElement( "Half Hann" );
 
 		this.setModel( cbm );
@@ -60,7 +61,7 @@ public class CPTCVInterpolatorUiJComponent extends PacComboBox<String>
 		final Font f = this.getFont();
 		setFont( f );
 
-		this.setSelectedItem( "Additive" );
+		this.setSelectedItem( "None" );
 	}
 
 	@Override

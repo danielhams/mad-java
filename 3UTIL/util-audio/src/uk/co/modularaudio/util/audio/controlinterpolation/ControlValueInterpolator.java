@@ -26,7 +26,9 @@ public interface ControlValueInterpolator
 			int outputIndex,
 			int length );
 
-	void notifyOfNewIncomingAmp( float amp );
+	void notifyOfNewValue( float value );
 
 	void checkForDenormal();
+
+	void hardSetValue( float value );
 }

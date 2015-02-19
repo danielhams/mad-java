@@ -44,12 +44,14 @@ public class CPTValueChaseMillisSliderUiJComponent extends TimeSlider
 
 	private final CPTMadUiInstance uiInstance;
 
+	public final static float DEFAULT_CHASE_MILLIS = 3.7f;
+
 	public CPTValueChaseMillisSliderUiJComponent( final CPTMadDefinition definition,
 			final CPTMadInstance instance,
 			final CPTMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 10.0f, 10.0f,
+		super( 1.0f, 10.0f, DEFAULT_CHASE_MILLIS,
 				"ms",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,

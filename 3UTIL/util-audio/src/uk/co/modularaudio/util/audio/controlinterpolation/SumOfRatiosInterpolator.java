@@ -55,9 +55,9 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void notifyOfNewIncomingAmp( final float amp )
+	public void notifyOfNewValue( final float newValue )
 	{
-		this.desVal = amp;
+		this.desVal = newValue;
 	}
 
 	@Override
@@ -67,5 +67,12 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 		{
 			curVal = 0.0f;
 		}
+	}
+
+	@Override
+	public void hardSetValue( final float value )
+	{
+		this.curVal = value;
+		this.desVal = value;
 	}
 }

@@ -26,8 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -50,12 +52,13 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
+	private final LinearInterpolator lInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 
-	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[3];
+	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[4];
 
 	private int sampleRate;
-	private float desValueChaseMillis;
+	private float desValueChaseMillis = CPTValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
 
 	public CPTMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -67,7 +70,8 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 
 		interpolators[0] = noneInterpolator;
 		interpolators[1] = sorInterpolator;
-		interpolators[2] = hhInterpolator;
+		interpolators[2] = lInterpolator;
+		interpolators[3] = hhInterpolator;
 		ampInterpolator = interpolators[0];
 	}
 
@@ -78,6 +82,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
 		sorInterpolator.reset( sampleRate, desValueChaseMillis );
+		lInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
 	}
 
@@ -139,7 +144,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	public void setDesiredAmp( final float amp )
 	{
 //		log.trace( "Received amp change: " + amp );
-		ampInterpolator.notifyOfNewIncomingAmp( amp );
+		ampInterpolator.notifyOfNewValue( amp );
 	}
 
 	public void setInterpolatorByIndex( final int interpolatorIndex )
@@ -152,6 +157,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	{
 		desValueChaseMillis = chaseMillis;
 		sorInterpolator.reset( sampleRate, chaseMillis );
+		lInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
 	}
 }

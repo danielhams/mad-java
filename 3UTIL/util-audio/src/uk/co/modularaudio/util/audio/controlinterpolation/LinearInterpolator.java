@@ -22,19 +22,14 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
-public class HalfHannWindowInterpolator implements ControlValueInterpolator
+public class LinearInterpolator implements ControlValueInterpolator
 {
-	private static Log log = LogFactory.getLog( HalfHannWindowInterpolator.class.getName() );
+//	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
-	private HannFftWindow fullHannWindow;
-	private float[] hannBuffer;
+	private float[] interpolationBuffer;
 
 	private int curWindowPos;
 	private int lastWindowPos;
@@ -44,40 +39,40 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	private boolean haveValWaiting = false;
 	private float nextVal;
 
-	public HalfHannWindowInterpolator()
+	public LinearInterpolator()
 	{
 	}
 
 	public void reset( final int sampleRate, final float valueChaseMillis )
 	{
-		final int halfWindowLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, valueChaseMillis );
-		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
-		fullHannWindow = new HannFftWindow( halfWindowLength * 2 );
-		final float[] hwAmps = fullHannWindow.getAmps();
-		hannBuffer = new float[halfWindowLength];
-		System.arraycopy( hwAmps, 1, hannBuffer, 0, halfWindowLength );
+		final int interpolationLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, valueChaseMillis );
+		interpolationBuffer = new float[interpolationLength];
+		for( int i = 0 ; i < interpolationLength ; ++i )
+		{
+			interpolationBuffer[i] = ((float)i) / (float)(interpolationLength - 1);
+		}
 		curWindowPos = 0;
-		lastWindowPos = halfWindowLength;
+		lastWindowPos = interpolationLength;
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		int numLeftInHann = lastWindowPos - curWindowPos;
-		int numWithHann = (numLeftInHann < length ? numLeftInHann : length );
-		int numAfter = length - numWithHann;
+		int numLeftInInterpolation = lastWindowPos - curWindowPos;
+		int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
+		int numAfter = length - numWithInterpolation;
 		int curIndex = outputIndex;
 
-		while( numWithHann > 0 )
+		while( numWithInterpolation > 0 )
 		{
-			for( int i = 0 ; i < numWithHann ; ++i )
+			for( int i = 0 ; i < numWithInterpolation ; ++i )
 			{
-				final float hannVal = hannBuffer[curWindowPos++];
-				final float nonHannVal = 1.0f - hannVal;
-				final float newVal = (curVal * nonHannVal) + (desVal * hannVal );
+				final float interpVal = interpolationBuffer[curWindowPos++];
+				final float nonInterpVal = 1.0f - interpVal;
+				final float newVal = (curVal * nonInterpVal) + (desVal * interpVal );
 				output[ curIndex + i ] = newVal;
 			}
-			curIndex += numWithHann;
+			curIndex += numWithInterpolation;
 
 			if( curWindowPos == lastWindowPos )
 			{
@@ -88,9 +83,9 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 					haveValWaiting = false;
 					curWindowPos = 0;
 
-					numLeftInHann = lastWindowPos;
-					numWithHann = (numLeftInHann < numAfter ? numLeftInHann : numAfter );
-					numAfter -= numWithHann;
+					numLeftInInterpolation = lastWindowPos;
+					numWithInterpolation = (numLeftInInterpolation < numAfter ? numLeftInInterpolation : numAfter );
+					numAfter -= numWithInterpolation;
 
 					// We go back around the loop again with the next value
 				}
@@ -107,7 +102,7 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 			}
 		}
 
-		// No further use of hann window necessary, move to desVal
+		// No further use of window necessary, move to desVal
 		// and make it curVal
 		if( numAfter > 0 )
 		{

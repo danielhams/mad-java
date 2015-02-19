@@ -48,13 +48,20 @@ public class NoneInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void notifyOfNewIncomingAmp( final float amp )
+	public void notifyOfNewValue( final float newValue )
 	{
-		this.desVal = amp;
+		this.desVal = newValue;
 	}
 
 	@Override
 	public void checkForDenormal()
 	{
+	}
+
+	@Override
+	public void hardSetValue( final float value )
+	{
+		this.curVal = value;
+		this.desVal = value;
 	}
 }
