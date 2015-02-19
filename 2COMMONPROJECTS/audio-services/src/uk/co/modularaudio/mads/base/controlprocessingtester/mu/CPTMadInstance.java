@@ -26,10 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.controlprocessingtester.util.ControlValueInterpolator;
-import uk.co.modularaudio.mads.base.controlprocessingtester.util.HalfHannWindowInterpolator;
-import uk.co.modularaudio.mads.base.controlprocessingtester.util.NoneInterpolator;
-import uk.co.modularaudio.mads.base.controlprocessingtester.util.SumOfRatiosInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;

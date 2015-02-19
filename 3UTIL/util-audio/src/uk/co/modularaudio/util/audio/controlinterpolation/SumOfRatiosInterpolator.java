@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.controlprocessingtester.util;
+package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
