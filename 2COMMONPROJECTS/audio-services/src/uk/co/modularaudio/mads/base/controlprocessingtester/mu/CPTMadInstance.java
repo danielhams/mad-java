@@ -55,7 +55,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
 	private final LinearInterpolator lInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
-	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator();
+	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
 
 	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[5];
 

@@ -68,12 +68,17 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 
 	private final Derivative integrateDerivative = new Derivative();
 
+	private final float lowerBound;
+	private final float upperBound;
+
 	private float desPos = 0.0f;
 
-	public SpringAndDamperInterpolator()
+	public SpringAndDamperInterpolator( final float lowerBound, final float upperBound )
 	{
 		curState.x = 0.0f;
 		curState.v = 0.0f;
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
 	}
 
@@ -89,18 +94,18 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		}
 		else
 		{
-//			final float delta = desPos - curState.x;
+			final float delta = desPos - curState.x;
 //			log.debug("Performing integration desVal(" + desPos + ") delta(" + delta + ") - " + curState.x + " - " + curState.v );
 			for( int curIndex = outputIndex ; curIndex < lastIndex ; ++curIndex )
 			{
 				integrate( curState, 0, deltaTimestep );
-				if( curState.x > 1.0f )
+				if( curState.x > upperBound )
 				{
-					output[ curIndex ] = 1.0f;
+					output[ curIndex ] = upperBound;
 				}
-				else if( curState.x < -1.0f )
+				else if( curState.x < lowerBound )
 				{
-					output[ curIndex ] = -1.0f;
+					output[ curIndex ] = lowerBound;
 				}
 				else
 				{

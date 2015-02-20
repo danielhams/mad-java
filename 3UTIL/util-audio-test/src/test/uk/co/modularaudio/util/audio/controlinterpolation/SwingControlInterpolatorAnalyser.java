@@ -90,7 +90,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		sorInterpolator = new SumOfRatiosInterpolator();
 		lInterpolator = new LinearInterpolator();
 		hhInterpolator = new HalfHannWindowInterpolator();
-		sdInterpolator = new SpringAndDamperInterpolator();
+		sdInterpolator = new SpringAndDamperInterpolator( 0.0f, 1.0f );
 
 		noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
 		sorVisualiser = new InterpolatorVisualiser( sorInterpolator, noneVisualiser );

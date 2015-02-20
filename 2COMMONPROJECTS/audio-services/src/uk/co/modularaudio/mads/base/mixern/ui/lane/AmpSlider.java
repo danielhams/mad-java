@@ -23,6 +23,9 @@ package uk.co.modularaudio.mads.base.mixern.ui.lane;
 import java.awt.Color;
 import java.awt.Font;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
 import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener;
@@ -32,7 +35,7 @@ public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 {
 	private static final long serialVersionUID = -5719433475892570967L;
 
-//	private static Log log = LogFactory.getLog( AmpSlider.class.getName() );
+	private static Log log = LogFactory.getLog( AmpSlider.class.getName() );
 
 	private AmpSliderChangeReceiver changeReceiver;
 
@@ -78,6 +81,7 @@ public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 		if( changeReceiver != null )
 		{
 			final float floatVal = (float)newValue / AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
+			log.debug("Sending slider value of " + floatVal );
 			changeReceiver.receiveAmpSliderChange( floatVal );
 		}
 	}

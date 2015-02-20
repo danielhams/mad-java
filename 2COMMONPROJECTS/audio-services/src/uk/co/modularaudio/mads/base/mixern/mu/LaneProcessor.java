@@ -20,20 +20,22 @@
 
 package uk.co.modularaudio.mads.base.mixern.mu;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.audio.math.MixdownSliderDbToLevelComputer;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
 public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
 {
-//	private static final Log log = LogFactory.getLog( LaneProcessor.class.getName() );
+	private static final Log log = LogFactory.getLog( LaneProcessor.class.getName() );
 
 	private final I instance;
-
-	private float curValueRatio;
-	private float newValueRatio;
 
 	private final int numChannelsPerLane;
 
@@ -44,9 +46,7 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 	private float desiredAmpMultiplier = 0.5f;
 
 	private float desiredLeftAmpMultiplier = 0.5f;
-	private float currentLeftAmpMultiplier = 0.5f;
 	private float desiredRightAmpMultiplier = 0.5f;
-	private float currentRightAmpMultiplier = 0.5f;
 
 	private float desiredPanValue;
 
@@ -55,16 +55,17 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 	private float currentLeftMeterReading;
 	private float currentRightMeterReading;
 
+	private final SpringAndDamperInterpolator leftAmpInterpolator = new SpringAndDamperInterpolator( 0.0f,
+			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ));
+	private final SpringAndDamperInterpolator rightAmpInterpolator = new SpringAndDamperInterpolator( 0.0f,
+			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ));
+
 	public LaneProcessor( final I instance,
 			final MixerNInstanceConfiguration channelConfiguration,
-			final int laneNumber,
-			final float curValueRatio,
-			final float newValueRatio )
+			final int laneNumber )
 	{
 		this.instance = instance;
 
-		this.curValueRatio = curValueRatio;
-		this.newValueRatio = newValueRatio;
 		this.laneNumber = laneNumber;
 
 		numChannelsPerLane = channelConfiguration.getNumChannelsPerLane();
@@ -81,95 +82,64 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 	public void processLaneMixToOutput( final ThreadSpecificTemporaryEventStorage tses,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
-			final int position,
-			final int length )
+			final int frameOffset,
+			final int numFrames )
 	{
 		// Only process if something is connected to us!
-		boolean inputConnected = false;
-		for( int cn = 0 ; !inputConnected && cn < numChannelsPerLane ; cn++ )
-		{
-			final int indexOfChannel = inputChannelIndexes[ cn ];
-			if( channelConnectedFlags.get( indexOfChannel ) )
-			{
-				inputConnected = true;
-				break;
-			}
-		}
+		final boolean leftConnected = channelConnectedFlags.get( inputChannelIndexes[0] );
+		final boolean rightConnected = channelConnectedFlags.get( inputChannelIndexes[1] );
+		final boolean inputConnected = ( leftConnected | rightConnected );
 
-		final float[] firstOutputChannel = channelBuffers[ outputChannelIndexes[ 0 ] ].floatBuffer;
-		final float[] secondOutputChannel = channelBuffers[ outputChannelIndexes[ 1 ] ].floatBuffer;
+		final float[] leftMasterOutputChannel = channelBuffers[ outputChannelIndexes[ 0 ] ].floatBuffer;
+		final float[] rightMasterOutputChannel = channelBuffers[ outputChannelIndexes[ 1 ] ].floatBuffer;
 
 		if( inputConnected )
 		{
-			final boolean firstConnected = channelConnectedFlags.get( inputChannelIndexes[0] );
-			final float[] firstInputChannel = channelBuffers[ inputChannelIndexes[ 0 ] ].floatBuffer;
-			final boolean secondConnected = channelConnectedFlags.get( inputChannelIndexes[1] );
-			final float[] secondInputChannel = channelBuffers[ inputChannelIndexes[ 1 ] ].floatBuffer;
+			final float[] tmpBuffer = tses.temporaryFloatArray;
 
-			if( firstConnected )
+			final float[] leftInputChannel = channelBuffers[ inputChannelIndexes[ 0 ] ].floatBuffer;
+			final float[] rightInputChannel = channelBuffers[ inputChannelIndexes[ 1 ] ].floatBuffer;
+
+			if( leftConnected )
 			{
-				if( currentLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					currentLeftAmpMultiplier = 0.0f;
-				}
 
-				if( currentLeftAmpMultiplier == 0.0f && desiredLeftAmpMultiplier == 0.0f )
+				leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+
+				for( int s = 0 ; s < numFrames ; ++s )
 				{
-				}
-				else
-				{
-					for( int s = position ; s < position + length ; s++ )
+					final float oneFloat = leftInputChannel[frameOffset + s] * tmpBuffer[s];
+					final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+					if( absFloat > currentLeftMeterReading )
 					{
-						currentLeftAmpMultiplier = ( currentLeftAmpMultiplier * curValueRatio ) + ( desiredLeftAmpMultiplier * newValueRatio );
-						float oneFloat = firstInputChannel[s] * currentLeftAmpMultiplier;
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+						currentLeftMeterReading = absFloat;
+					}
 
-						if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-						{
-							oneFloat = 0.0f;
-						}
-						else if( absFloat > currentLeftMeterReading )
-						{
-							currentLeftMeterReading = absFloat;
-						}
-						firstOutputChannel[ s ] += oneFloat;
+					leftMasterOutputChannel[frameOffset + s] += oneFloat;
 
-						if( !secondConnected )
-						{
-							secondOutputChannel[ s ] += oneFloat;
-						}
+					if( !rightConnected )
+					{
+						rightMasterOutputChannel[ frameOffset + s ] += oneFloat;
 					}
 				}
 			}
 
-			if( secondConnected )
+			if( rightConnected )
 			{
-				if( currentRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					currentRightAmpMultiplier = 0.0f;
-				}
 
-				if( currentRightAmpMultiplier == 0.0f && desiredRightAmpMultiplier == 0.0f )
+				rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+
+				for( int s = 0 ; s < numFrames ; ++s )
 				{
-				}
-				else
-				{
-					for( int s = position ; s < position + length ; s++ )
+					final float oneFloat = rightInputChannel[frameOffset + s] * tmpBuffer[s];
+					final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+					if( absFloat > currentRightMeterReading )
 					{
-						currentRightAmpMultiplier = ( currentRightAmpMultiplier * curValueRatio ) + ( desiredRightAmpMultiplier * newValueRatio );
-						float oneFloat = secondInputChannel[s] * currentRightAmpMultiplier;
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-						if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-						{
-							oneFloat = 0.0f;
-						}
-						else if( absFloat > currentRightMeterReading )
-						{
-							currentRightMeterReading = absFloat;
-						}
-						secondOutputChannel[ s ] += oneFloat;
+						currentRightMeterReading = absFloat;
 					}
+
+					rightMasterOutputChannel[frameOffset + s] += oneFloat;
 				}
 			}
 		}
@@ -193,12 +163,6 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 //		log.debug("Setting lane " + laneNumber + " to amp " + ampValue );
 		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
-	}
-
-	public void resetCurNewValues( final float curValueRatio2, final float newValueRatio2 )
-	{
-		this.curValueRatio = curValueRatio2;
-		this.newValueRatio = newValueRatio2;
 	}
 
 	public void setLanePan( final float panValue )
@@ -238,5 +202,8 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 			desiredLeftAmpMultiplier = 0.0f;
 			desiredRightAmpMultiplier = 0.0f;
 		}
+
+		leftAmpInterpolator.notifyOfNewValue( desiredLeftAmpMultiplier );
+		rightAmpInterpolator.notifyOfNewValue( desiredRightAmpMultiplier );
 	}
 }
