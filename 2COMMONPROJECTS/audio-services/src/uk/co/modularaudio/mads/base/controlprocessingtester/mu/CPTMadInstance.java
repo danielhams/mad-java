@@ -31,6 +31,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolat
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -54,8 +55,9 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
 	private final LinearInterpolator lInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
+	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator();
 
-	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[4];
+	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[5];
 
 	private int sampleRate;
 	private float desValueChaseMillis = CPTValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
@@ -72,6 +74,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		interpolators[1] = sorInterpolator;
 		interpolators[2] = lInterpolator;
 		interpolators[3] = hhInterpolator;
+		interpolators[4] = sdInterpolator;
 		ampInterpolator = interpolators[0];
 	}
 
@@ -84,6 +87,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		sorInterpolator.reset( sampleRate, desValueChaseMillis );
 		lInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
+		sdInterpolator.reset( sampleRate, desValueChaseMillis );
 	}
 
 	@Override
@@ -159,5 +163,6 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		sorInterpolator.reset( sampleRate, chaseMillis );
 		lInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
+		sdInterpolator.reset( sampleRate, chaseMillis );
 	}
 }

@@ -15,8 +15,8 @@
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="Slider" value="-1000"/>
         <rackControl name="PowerCurve" value="Additive"/>
-        <rackControl name="Interpolator" value="Half Hann"/>
-        <rackControl name="ValueChase" value="3.7"/>
+        <rackControl name="Interpolator" value="SpringAndDamper"/>
+        <rackControl name="ValueChase" value="10.0"/>
     </rackComponent>
     <rackComponent name="Cross Fader 4" definitionId="cross_fader">
         <rackPosition column="2" row="6"/>
@@ -34,7 +34,7 @@
     </rackComponent>
     <rackComponent name="Input Source Mixer" definitionId="mixer3">
         <rackPosition column="0" row="6"/>
-        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Master Lane" value="786:50"/>
         <rackControl name="Mixer Lane 0" value="824:50:M "/>
         <rackControl name="Mixer Lane 1" value="824:50:  "/>
         <rackControl name="Mixer Lane 2" value="0:50:  "/>

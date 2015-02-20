@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 1" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackComponent name="ControlToAudio" definitionId="audio_cv_converter">
+        <rackPosition column="0" row="1"/>
+        <rackComponentParameterValue parameterName="inchanneltype" value="CV"/>
+        <rackComponentParameterValue parameterName="numchannels" value="1"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Mapping Curve" value="Linear"/>
+        <rackControl name="Channel Selection" value="Channel 0"/>
+        <rackControl name="Controller Selection" value="Controller 1"/>
+    </rackComponent>
+    <rackComponent name="Oscilloscope 3" definitionId="oscilloscope">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="TriggerType" value="None"/>
+        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Recapture" value="false"/>
+    </rackComponent>
+    <rackComponent name="Screencaster 4" definitionId="screencaster">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Choose Directory" value="false"/>
+        <rackControl name="Directory Label" value=""/>
+        <rackControl name="File Label" value=""/>
+        <rackControl name="Toggle Recording" value="false"/>
+        <rackControl name="Video Checkbox" value="0"/>
+        <rackControl name="Audio Checkbox" value="1"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 2" definitionId="wave_roller">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="CaptureTime" value="1500.0"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="ControlToAudio" producerChannelName="Output Channel 1" consumerRackComponentName="Screencaster 4" consumerChannelName="Input Wave Front Left"/>
+    <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="ControlToAudio" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 3" consumerChannelName="Input CV 0"/>
+</rack>

@@ -54,6 +54,7 @@ public class CPTCVInterpolatorUiJComponent extends PacComboBox<String>
 		cbm.addElement( "Sum Of Ratios" );
 		cbm.addElement( "Linear" );
 		cbm.addElement( "Half Hann" );
+		cbm.addElement( "SpringAndDamper" );
 
 		this.setModel( cbm );
 

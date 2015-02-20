@@ -1,6 +1,7 @@
 package test.uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -12,16 +13,21 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
+import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
+import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class SwingControlInterpolatorAnalysis extends JFrame
+public class SwingControlInterpolatorAnalyser extends JFrame
 {
 	private static final long serialVersionUID = -4175746847701555282L;
-	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalysis.class.getName() );
+	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalyser.class.getName() );
 
+//	private static final float VALUE_CHASE_MILLIS = 20.0f;
 	private static final float VALUE_CHASE_MILLIS = 10.0f;
+//	private static final float VALUE_CHASE_MILLIS = 5.33f;
 //	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
@@ -32,21 +38,30 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 //	private final static String SRC_FILE = "zero_to_one_multi_events.txt";
 	private final static String SRC_FILE = "zero_to_one_and_back_multi_events.txt";
 
+	private final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
+	private final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_5chan_processed.wav";
+
+//	public static final int VIS_WIDTH = 100;
+//	public static final int VIS_WIDTH = 200;
 	public static final int VIS_WIDTH = 1400;
 	public static final int VIS_HEIGHT = 100;
+	private static final float DIFF_FOR_7BIT_CONTROLLER = 1.0f / 128.0f;
 
 	private final NoneInterpolator noneInterpolator;
 	private final SumOfRatiosInterpolator sorInterpolator;
 	private final LinearInterpolator lInterpolator;
 	private final HalfHannWindowInterpolator hhInterpolator;
+	private final SpringAndDamperInterpolator sdInterpolator;
+
 	private final InterpolatorVisualiser noneVisualiser;
 	private final InterpolatorVisualiser sorVisualiser;
 	private final InterpolatorVisualiser lVisualiser;
 	private final InterpolatorVisualiser hhVisualiser;
+	private final InterpolatorVisualiser sdVisualiser;
 
 	private final InterpolatorVisualiser[] visualisers;
 
-	public SwingControlInterpolatorAnalysis()
+	public SwingControlInterpolatorAnalyser()
 	{
 //		setSize( 1024, 768 );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -55,16 +70,19 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 		sorInterpolator = new SumOfRatiosInterpolator();
 		lInterpolator = new LinearInterpolator();
 		hhInterpolator = new HalfHannWindowInterpolator();
+		sdInterpolator = new SpringAndDamperInterpolator();
 
 		noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
 		sorVisualiser = new InterpolatorVisualiser( sorInterpolator, noneVisualiser );
 		lVisualiser = new InterpolatorVisualiser( lInterpolator, noneVisualiser );
 		hhVisualiser = new InterpolatorVisualiser( hhInterpolator, noneVisualiser );
-		visualisers = new InterpolatorVisualiser[4];
+		sdVisualiser = new InterpolatorVisualiser( sdInterpolator, noneVisualiser );
+		visualisers = new InterpolatorVisualiser[5];
 		visualisers[0] = noneVisualiser;
 		visualisers[1] = sorVisualiser;
 		visualisers[2] = lVisualiser;
 		visualisers[3] = hhVisualiser;
+		visualisers[4] = sdVisualiser;
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint( "fill" );
@@ -77,7 +95,9 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 		add( new JLabel("Linear"), "wrap");
 		add( lVisualiser, "grow,wrap");
 		add( new JLabel("HalfHann"), "wrap");
-		add( hhVisualiser, "grow");
+		add( hhVisualiser, "grow,wrap");
+		add( new JLabel("SpringAndDamper"), "wrap");
+		add( sdVisualiser, "grow");
 
 		this.pack();
 	}
@@ -108,6 +128,8 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 		lInterpolator.hardSetValue( firstValue );
 		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 		hhInterpolator.hardSetValue( firstValue );
+		sdInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sdInterpolator.hardSetValue( firstValue );
 
 		// Pass it to all the visualisers for each interpolation
 		// type - we'll use the "none" interpolator to show the orginal signal
@@ -118,9 +140,93 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 
 	}
 
+	public void applyToWavFile( final String wavFile,
+			final String outWavFile )
+			throws IOException
+	{
+		final WaveFileReader reader = new WaveFileReader( wavFile );
+
+		final long numSamples = reader.getNumTotalFloats();
+
+		final int numSamplesInt = (int)numSamples;
+
+		final float[] samples = new float[numSamplesInt];
+
+		reader.read( samples, 0, 0, numSamplesInt );
+
+		// Work out the offsets for control value changes
+		final ArrayList<Integer> controlValueChanges = new ArrayList<Integer>();
+
+		float curSample = samples[0];
+
+		for( int s = 1 ; s < numSamplesInt ; ++s )
+		{
+			final float diff = curSample - samples[s];
+			final float absDiff = (diff < 0.0f ? -diff : diff );
+			if( absDiff > DIFF_FOR_7BIT_CONTROLLER )
+			{
+				controlValueChanges.add( s );
+				curSample = samples[s];
+			}
+		}
+
+		final WaveFileWriter writer = new WaveFileWriter( outWavFile, visualisers.length, DataRate.SR_48000.getValue(), (short)16 );
+
+		final float[][] processedSamples = new float[visualisers.length][];
+		for( int i = 0 ; i < visualisers.length ; ++i )
+		{
+			processedSamples[i] = new float[numSamplesInt];
+		}
+
+		noneInterpolator.reset();
+		noneInterpolator.hardSetValue( samples[0] );
+
+		sorInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sorInterpolator.hardSetValue( samples[0] );
+
+		lInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lInterpolator.hardSetValue( samples[0] );
+
+		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		hhInterpolator.hardSetValue( samples[0] );
+
+		sdInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sdInterpolator.hardSetValue( samples[0] );
+
+		int prevOffset = 0;
+		for( final int valueChangeOffset : controlValueChanges )
+		{
+			final float sampleAtChange = samples[valueChangeOffset];
+
+			noneInterpolator.notifyOfNewValue( sampleAtChange );
+			sorInterpolator.notifyOfNewValue( sampleAtChange );
+			lInterpolator.notifyOfNewValue( sampleAtChange );
+			hhInterpolator.notifyOfNewValue( sampleAtChange );
+			sdInterpolator.notifyOfNewValue( sampleAtChange );
+
+			noneInterpolator.generateControlValues( processedSamples[0], prevOffset, valueChangeOffset - prevOffset );
+			sorInterpolator.generateControlValues( processedSamples[1], prevOffset, valueChangeOffset - prevOffset );
+			lInterpolator.generateControlValues( processedSamples[2], prevOffset, valueChangeOffset - prevOffset );
+			hhInterpolator.generateControlValues( processedSamples[3], prevOffset, valueChangeOffset - prevOffset );
+			sdInterpolator.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
+			prevOffset = valueChangeOffset;
+		}
+
+		for( int i = 0 ; i < numSamplesInt ; ++i )
+		{
+			writer.writeFloats( processedSamples[0], i, 1 );
+			writer.writeFloats( processedSamples[1], i, 1 );
+			writer.writeFloats( processedSamples[2], i, 1 );
+			writer.writeFloats( processedSamples[3], i, 1 );
+			writer.writeFloats( processedSamples[4], i, 1 );
+		}
+		writer.close();
+		reader.close();
+	}
+
 	public static void main( final String[] args )
 	{
-		final SwingControlInterpolatorAnalysis scia = new SwingControlInterpolatorAnalysis();
+		final SwingControlInterpolatorAnalyser scia = new SwingControlInterpolatorAnalyser();
 		SwingUtilities.invokeLater( new Runnable()
 		{
 
@@ -130,6 +236,7 @@ public class SwingControlInterpolatorAnalysis extends JFrame
 				try
 				{
 					scia.setVisible( true );
+					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
 					scia.go();
 				}
 				catch( final Exception e )

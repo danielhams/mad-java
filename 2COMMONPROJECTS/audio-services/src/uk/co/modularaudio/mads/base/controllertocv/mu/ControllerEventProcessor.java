@@ -54,8 +54,10 @@ public class ControllerEventProcessor
 
 	public void setNewRatios( final float newCurValueRatio, final float newNewValueRatio )
 	{
-		this.curValueRatio = newCurValueRatio;
-		this.newValueRatio = newNewValueRatio;
+//		this.curValueRatio = newCurValueRatio;
+//		this.newValueRatio = newNewValueRatio;
+		this.curValueRatio = 0.0f;
+		this.newValueRatio = 1.0f;
 	}
 
 	public void processEvent( final MadChannelNoteEvent ne )
