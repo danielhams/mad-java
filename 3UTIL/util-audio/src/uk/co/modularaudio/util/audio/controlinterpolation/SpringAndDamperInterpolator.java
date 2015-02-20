@@ -26,6 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.math.MathFormatter;
 
 public class SpringAndDamperInterpolator implements ControlValueInterpolator
 {
@@ -41,8 +43,14 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	private static final float DAMPING_FACTOR = 0.5f;
 	private static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
 
-	private static final float MIN_VALUE_DELTA = 0.00001f;
-	private static final float MIN_VELOCITY = 0.000001f;
+//	private static final float FORCE_SCALE = 0.0005f;
+//	private static final float DAMPING_FACTOR = 0.05f;
+//	private static final float INTEGRATION_TIMESTEP_FOR_48K = 0.5f;
+
+	private static final float MIN_VALUE_DELTA_DB = -120.0f;
+//	private static final float MIN_VALUE_DELTA = AudioMath.dbToLevelF( MIN_VALUE_DELTA_DB );
+	private static final float MIN_VALUE_DELTA = 2 * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+	private static final float MIN_VELOCITY = 0.00001f;
 
 	private class State
 	{
@@ -87,14 +95,14 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	{
 		final int lastIndex = outputIndex + length;
 
-		if( curState.v == 0.0f && curState.x == desPos )
+		if( curState.v == 0.0 && curState.x == desPos )
 		{
 //			log.debug("Filling as steady state");
 			Arrays.fill( output, outputIndex, lastIndex, curState.x );
 		}
 		else
 		{
-			final float delta = desPos - curState.x;
+//			final double delta = desPos - curState.x;
 //			log.debug("Performing integration desVal(" + desPos + ") delta(" + delta + ") - " + curState.x + " - " + curState.v );
 			for( int curIndex = outputIndex ; curIndex < lastIndex ; ++curIndex )
 			{
@@ -127,15 +135,43 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		final float delta = desPos - curState.x;
 		final float absX = (delta < 0.0f ? -delta : delta );
 		final float absV = (curState.v < 0.0f ? -curState.v : curState.v );
+
+		if( curState.x != desPos )
+		{
+			final float deltaInDb = AudioMath.levelToDbF( absX );
+			log.debug("Not yet damped - pos(" + MathFormatter.slowFloatPrint( curState.x, 8, true ) +
+					") desPos(" + MathFormatter.slowFloatPrint( desPos, 8, true ) +
+					") delta(" + MathFormatter.slowFloatPrint( delta, 8, true ) +
+					") absV(" + MathFormatter.slowFloatPrint( absV, 8, true ) +
+					") deltaDb(" + MathFormatter.slowFloatPrint( deltaInDb, 8, true ) + ")");
+
+			// Nudge by two bits towards desired value
+			final int sigNum = (delta < 0 ? -2 : 2 );
+			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+		}
+
 //		if( absX < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
 //				absV < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-		if( absX < MIN_VALUE_DELTA &&
-				absV < MIN_VELOCITY )
+		if( absX <= MIN_VALUE_DELTA &&
+				absV <= MIN_VELOCITY )
 		{
 			curState.x = desPos;
 			curState.v = 0.0f;
-//			log.debug("Damped to desired value due to no velocity and close to done");
+//			log.debug("Damped to pos(" + MathFormatter.slowFloatPrint( desPos, 8, true ) +
+//					") v=0");
 		}
+		else
+		{
+			if( absX > MIN_VALUE_DELTA )
+			{
+				log.debug( "Not damping due to delta" );
+			}
+			if( absV > MIN_VELOCITY )
+			{
+				log.debug( "Not damping due to vel" );
+			}
+		}
+
 	}
 
 	@Override
@@ -183,8 +219,8 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		final float dvdt = 1.0f / 6.0f *
 				(a.dv + 2.0f*(b.dv + c.dv) + d.dv );
 
-		state.x = state.x + dxdt * dt;
-		state.v = state.v + dvdt * dt;
+		state.x = (state.x + dxdt * dt);
+		state.v = (state.v + dvdt * dt);
 	}
 
 	public final void reset( final int sampleRate, final float valueChaseMillis )

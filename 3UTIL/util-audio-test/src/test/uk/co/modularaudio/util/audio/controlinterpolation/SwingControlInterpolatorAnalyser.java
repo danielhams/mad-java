@@ -46,9 +46,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalyser.class.getName() );
 
 //	private static final float VALUE_CHASE_MILLIS = 20.0f;
-	private static final float VALUE_CHASE_MILLIS = 10.0f;
+//	private static final float VALUE_CHASE_MILLIS = 10.0f;
 //	private static final float VALUE_CHASE_MILLIS = 5.33f;
-//	private static final float VALUE_CHASE_MILLIS = 3.7f;
+	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();

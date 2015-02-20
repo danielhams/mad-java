@@ -148,7 +148,14 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	public void setDesiredAmp( final float amp )
 	{
 //		log.trace( "Received amp change: " + amp );
-		ampInterpolator.notifyOfNewValue( amp );
+//		ampInterpolator.notifyOfNewValue( amp );
+
+		// Set them all
+		noneInterpolator.notifyOfNewValue( amp );
+		sorInterpolator.notifyOfNewValue( amp );
+		lInterpolator.notifyOfNewValue( amp );
+		hhInterpolator.notifyOfNewValue( amp );
+		sdInterpolator.notifyOfNewValue( amp );
 	}
 
 	public void setInterpolatorByIndex( final int interpolatorIndex )

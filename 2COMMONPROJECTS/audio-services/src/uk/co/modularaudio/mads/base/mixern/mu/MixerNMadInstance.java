@@ -79,7 +79,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		channelLaneProcessors = new LaneProcessor[ numInputLanes ];
 		for( int i = 0 ; i < numInputLanes ; i++ )
 		{
-			channelLaneProcessors[ i ] = new LaneProcessor<D,I>( (I)this, instanceConfiguration, i );
+			channelLaneProcessors[ i ] = new LaneProcessor<D,I>( (I)this, instanceConfiguration, i, curValueRatio, newValueRatio );
 		}
 		masterProcessor = new MasterProcessor<D,I>( (I)this, instanceConfiguration, curValueRatio, newValueRatio );
 
@@ -96,6 +96,10 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
 		curValueRatio = 1.0f - newValueRatio;
 
+		for( int i = 0 ; i < numInputLanes ; i++ )
+		{
+			channelLaneProcessors[ i ].resetCurNewValues( curValueRatio, newValueRatio );
+		}
 		masterProcessor.resetCurNewValues( curValueRatio, newValueRatio );
 
 		leftOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 0 );
