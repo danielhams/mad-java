@@ -22,33 +22,44 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-public class NoneInterpolator implements ControlValueInterpolator
-{
+import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
+import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
-	private float curVal;
+public class LowPassInterpolator implements ControlValueInterpolator
+{
+//	private static Log log = LogFactory.getLog( LowPassInterpolator.class.getName() );
+
 	private float desVal;
 
-	public NoneInterpolator()
+	private int sampleRate;
+	private final ButterworthFilter lpFilter = new ButterworthFilter();
+
+//	private static final float LP_FREQ = 30.0f;
+	private static final float LP_FREQ = 65.0f;
+
+	private static final int TMP_LENGTH = 1024;
+	private static final int NUM_RESET_ITERS = 10;
+
+	public LowPassInterpolator()
 	{
 	}
 
-	public void reset()
+	public void reset( final int sampleRate, final float valueChaseMillis )
 	{
+		this.sampleRate = sampleRate;
 	}
-
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		curVal = desVal;
-
-		Arrays.fill( output, outputIndex, outputIndex + length, curVal );
+		Arrays.fill( output, outputIndex, outputIndex + length, desVal );
+		lpFilter.filter( output, outputIndex, length, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
 	}
 
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		this.desVal = newValue;
+		desVal = newValue;
 	}
 
 	@Override
@@ -59,7 +70,13 @@ public class NoneInterpolator implements ControlValueInterpolator
 	@Override
 	public void hardSetValue( final float value )
 	{
-		this.curVal = value;
 		this.desVal = value;
+		final float[] tmpArray = new float[TMP_LENGTH];
+		Arrays.fill( tmpArray, desVal );
+
+		for( int i = 0 ; i < NUM_RESET_ITERS ; ++i )
+		{
+			lpFilter.filter( tmpArray, 0, TMP_LENGTH, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
+		}
 	}
 }

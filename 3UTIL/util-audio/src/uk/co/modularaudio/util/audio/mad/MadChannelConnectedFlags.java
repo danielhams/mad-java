@@ -20,14 +20,21 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 public class MadChannelConnectedFlags
 {
+	private static Log log = LogFactory.getLog( MadChannelConnectedFlags.class.getName() );
+
 	private final byte[] storage;
+	private final int numBytes;
 
 	public MadChannelConnectedFlags( final int numChannelInstances )
 	{
-		storage = new byte[ (numChannelInstances / 8) + 1];
+		numBytes = (numChannelInstances / 8) + 1;
+		storage = new byte[ numBytes ];
 	}
 
 	public void set( final int idx )
@@ -41,4 +48,22 @@ public class MadChannelConnectedFlags
 		return (storage[ (idx/8) ] & (1 << (idx % 8))) != 0;
 	}
 
+	public boolean logicalAnd( final byte[] valsToAnd )
+	{
+		boolean retVal = true;
+
+		final int numToTest = (numBytes < valsToAnd.length ? numBytes : valsToAnd.length );
+		for( int b = 0 ; b < numToTest ; ++b )
+		{
+			retVal = retVal & ((storage[b] & valsToAnd[b]) == valsToAnd[b] );
+		}
+		return retVal;
+	}
+
+	public byte[] createMaskForSetChannels()
+	{
+		final byte[] copy = new byte[numBytes];
+		System.arraycopy( storage, 0, copy, 0, numBytes );
+		return copy;
+	}
 }

@@ -30,6 +30,7 @@ import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMill
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
@@ -56,11 +57,15 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	private final LinearInterpolator lInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
+	private final LowPassInterpolator lpInterpolator = new LowPassInterpolator();
 
-	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[5];
+	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[6];
 
 	private int sampleRate;
 	private float desValueChaseMillis = CPTValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
+
+	private final byte[] lChannelMask;
+	private final byte[] rChannelMask;
 
 	public CPTMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -75,7 +80,18 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		interpolators[2] = lInterpolator;
 		interpolators[3] = hhInterpolator;
 		interpolators[4] = sdInterpolator;
+		interpolators[5] = lpInterpolator;
 		ampInterpolator = interpolators[0];
+
+		final MadChannelConnectedFlags lMaskCcf = new MadChannelConnectedFlags( CPTMadDefinition.NUM_CHANNELS );
+		lMaskCcf.set( CPTMadDefinition.CONSUMER_CHAN1_LEFT );
+		lMaskCcf.set( CPTMadDefinition.PRODUCER_OUT_LEFT );
+		lChannelMask = lMaskCcf.createMaskForSetChannels();
+
+		final MadChannelConnectedFlags rMaskCcf = new MadChannelConnectedFlags( CPTMadDefinition.NUM_CHANNELS );
+		rMaskCcf.set( CPTMadDefinition.CONSUMER_CHAN1_RIGHT );
+		rMaskCcf.set( CPTMadDefinition.PRODUCER_OUT_RIGHT );
+		rChannelMask = rMaskCcf.createMaskForSetChannels();
 	}
 
 	@Override
@@ -88,6 +104,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		lInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
 		sdInterpolator.reset( sampleRate, desValueChaseMillis );
+		lpInterpolator.reset( sampleRate, desValueChaseMillis );
 	}
 
 	@Override
@@ -104,36 +121,37 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 			final int frameOffset,
 			final int numFrames  )
 	{
+		/*
 		final boolean in1LConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_LEFT );
 		final boolean in1RConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_RIGHT );
 
 		final boolean outLConnected = channelConnectedFlags.get( CPTMadDefinition.PRODUCER_OUT_LEFT );
 		final boolean outRConnected = channelConnectedFlags.get( CPTMadDefinition.PRODUCER_OUT_RIGHT );
+		*/
+
+		final boolean lConnected = channelConnectedFlags.logicalAnd( lChannelMask );
+		final boolean rConnected = channelConnectedFlags.logicalAnd( rChannelMask );
 
 		// Now mix them together with the precomputed amps
 		// only if we have at least one input and output connected
-		if( (outLConnected && in1LConnected)
-			||
-			(outRConnected && in1RConnected)
-			)
+//		if( (outLConnected && in1LConnected)
+//			||
+//			(outRConnected && in1RConnected)
+//			)
+		if( lConnected || rConnected )
 		{
-			final MadChannelBuffer in1Lcb = channelBuffers[ CPTMadDefinition.CONSUMER_CHAN1_LEFT ];
-			final float[] in1LBuffer = in1Lcb.floatBuffer;
-			final MadChannelBuffer in1Rcb = channelBuffers[ CPTMadDefinition.CONSUMER_CHAN1_RIGHT ];
-			final float[] in1RBuffer = in1Rcb.floatBuffer;
-			final MadChannelBuffer outLcb = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_LEFT ];
-			final float[] outLBuffer = outLcb.floatBuffer;
-			final MadChannelBuffer outRcb = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_RIGHT ];
-			final float[] outRBuffer = outRcb.floatBuffer;
+			final float[] in1LBuffer = channelBuffers[ CPTMadDefinition.CONSUMER_CHAN1_LEFT ].floatBuffer;
+			final float[] in1RBuffer = channelBuffers[ CPTMadDefinition.CONSUMER_CHAN1_RIGHT ].floatBuffer;
+			final float[] outLBuffer = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_LEFT ].floatBuffer;
+			final float[] outRBuffer = channelBuffers[ CPTMadDefinition.PRODUCER_OUT_RIGHT ].floatBuffer;
 
 			// Use the temporary area as a place to put generate control values
 			final float[] tmpArea = tempQueueEntryStorage.temporaryFloatArray;
 
 			ampInterpolator.generateControlValues( tmpArea, 0, numFrames );
-
-			for( int i = 0 ; i < numFrames ; i++ )
+			int curIndex = frameOffset;
+			for( int i = 0 ; i < numFrames ; i++, curIndex++ )
 			{
-				final int curIndex = frameOffset + i;
 				outLBuffer[ curIndex ] = in1LBuffer[ curIndex ] * tmpArea[i];
 				outRBuffer[ curIndex ] = in1RBuffer[ curIndex ] * tmpArea[i];
 
@@ -156,6 +174,7 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		lInterpolator.notifyOfNewValue( amp );
 		hhInterpolator.notifyOfNewValue( amp );
 		sdInterpolator.notifyOfNewValue( amp );
+		lpInterpolator.notifyOfNewValue( amp );
 	}
 
 	public void setInterpolatorByIndex( final int interpolatorIndex )
@@ -171,5 +190,6 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 		lInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
 		sdInterpolator.reset( sampleRate, chaseMillis );
+		lpInterpolator.reset( sampleRate, chaseMillis );
 	}
 }

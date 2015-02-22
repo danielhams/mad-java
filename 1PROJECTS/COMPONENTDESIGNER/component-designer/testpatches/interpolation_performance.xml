@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="HH" rackComponentChannelInstanceName="Input Channel Left"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="NONE" rackComponentChannelInstanceName="Input Channel Left"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="SD" rackComponentChannelInstanceName="Input Channel Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="HH" rackComponentChannelInstanceName="Input Channel Right"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="NONE" rackComponentChannelInstanceName="Input Channel Right"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="SD" rackComponentChannelInstanceName="Input Channel Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="SD" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="SD" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 3" rackComponentName="NONE" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 4" rackComponentName="NONE" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 5" rackComponentName="HH" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 6" rackComponentName="HH" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="HH" definitionId="cpt">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="AmpAKill" value="false"/>
+        <rackControl name="Slider" value="-1000"/>
+        <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Interpolator" value="Half Hann"/>
+        <rackControl name="ValueChase" value="5.3"/>
+    </rackComponent>
+    <rackComponent name="NONE" definitionId="cpt">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="AmpAKill" value="false"/>
+        <rackControl name="Slider" value="-1000"/>
+        <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Interpolator" value="None"/>
+        <rackControl name="ValueChase" value="5.3"/>
+    </rackComponent>
+    <rackComponent name="SD" definitionId="cpt">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="AmpAKill" value="false"/>
+        <rackControl name="Slider" value="-1000"/>
+        <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Interpolator" value="SpringAndDamper"/>
+        <rackControl name="ValueChase" value="5.3"/>
+    </rackComponent>
+</rack>
