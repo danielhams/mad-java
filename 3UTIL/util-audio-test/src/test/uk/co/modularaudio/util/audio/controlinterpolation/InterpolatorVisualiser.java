@@ -74,7 +74,8 @@ public class InterpolatorVisualiser extends JPanel
 
 	public void interpolateEvents( final TestEvent[] events )
 	{
-		final float[] vals = new float[SwingControlInterpolatorAnalyser.VIS_WIDTH];
+		int lastEventIndex = events[events.length - 1].getOffsetInSamples();
+		final float[] vals = new float[lastEventIndex];
 
 		final int numEvents = events.length;
 
@@ -83,10 +84,6 @@ public class InterpolatorVisualiser extends JPanel
 		for( int i = 1 ; i < numEvents ; ++i )
 		{
 			final int eventOffset = events[i].getOffsetInSamples();
-			if( eventOffset >= SwingControlInterpolatorAnalyser.VIS_WIDTH )
-			{
-				break;
-			}
 
 			// Generate using the interpolator up to this event
 			final int numForThisEvent = eventOffset - curOutputOffset;
@@ -99,7 +96,7 @@ public class InterpolatorVisualiser extends JPanel
 			curOutputOffset += numForThisEvent;
 		}
 
-		if( curOutputOffset < SwingControlInterpolatorAnalyser.VIS_WIDTH )
+		if( curOutputOffset < lastEventIndex )
 		{
 			valueInterpolator.generateControlValues( vals, curOutputOffset, SwingControlInterpolatorAnalyser.VIS_WIDTH - curOutputOffset );
 		}
@@ -116,8 +113,9 @@ public class InterpolatorVisualiser extends JPanel
 			for( int i = 1 ; i < numEvents ; ++i )
 			{
 				final int eventOffset = events[i].getOffsetInSamples();
+				final int eventPosInPixels = eventOffset / SwingControlInterpolatorAnalyser.VIS_SAMPLES_PER_PIXEL;
 
-				g2d.drawLine( eventOffset, 0, eventOffset, SwingControlInterpolatorAnalyser.VIS_HEIGHT + 1 );
+				g2d.drawLine( eventPosInPixels, 0, eventPosInPixels, SwingControlInterpolatorAnalyser.VIS_HEIGHT + 1 );
 			}
 		}
 
@@ -131,14 +129,14 @@ public class InterpolatorVisualiser extends JPanel
 		}
 
 		int previousY = (int)(vals[0] * SwingControlInterpolatorAnalyser.VIS_HEIGHT);
-		for( int i = 1 ; i < SwingControlInterpolatorAnalyser.VIS_WIDTH ; ++i )
+		for( int i = 1 ; i < lastEventIndex ; ++i )
 		{
 			final float val = vals[i];
 			final float asYValue = val * SwingControlInterpolatorAnalyser.VIS_HEIGHT;
 			final int asYInt = (int)asYValue;
-			final int x1 = i-1;
+			final int x1 = (i-1) / SwingControlInterpolatorAnalyser.VIS_SAMPLES_PER_PIXEL;
 			final int y1 = previousY;
-			final int x2 = i;
+			final int x2 = i / SwingControlInterpolatorAnalyser.VIS_SAMPLES_PER_PIXEL;
 			final int y2 = asYInt;
 //			log.debug("Drawing line from " + x1 + ", " + y1 + " to " + x2 + ", " + y2 );
 			g2d.drawLine( x1, SwingControlInterpolatorAnalyser.VIS_HEIGHT - y1,

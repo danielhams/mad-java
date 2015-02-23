@@ -24,8 +24,8 @@
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 92 master.mp3"/>
-        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGTP007_ERIC_SNEO.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="Rewind" value="false"/>

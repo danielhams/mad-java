@@ -64,8 +64,12 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 //	public static final int VIS_WIDTH = 100;
 //	public static final int VIS_WIDTH = 200;
-	public static final int VIS_WIDTH = 1400;
-	public static final int VIS_HEIGHT = 100;
+//	public static final int VIS_WIDTH = 1400;
+//	public static final int VIS_HEIGHT = 100;
+	public static final int VIS_WIDTH = 1024;
+	public static final int VIS_HEIGHT = 75;
+//	public static final int VIS_SAMPLES_PER_PIXEL=10;
+	public static final int VIS_SAMPLES_PER_PIXEL=2;
 	private static final float DIFF_FOR_7BIT_CONTROLLER = 1.0f / 128.0f;
 
 	private final NoneInterpolator noneInterpolator;
@@ -272,7 +276,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 				try
 				{
 					scia.setVisible( true );
-					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
+//					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
 					scia.go();
 				}
 				catch( final Exception e )
