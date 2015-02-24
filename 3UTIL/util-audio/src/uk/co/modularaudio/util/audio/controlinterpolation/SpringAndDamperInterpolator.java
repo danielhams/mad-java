@@ -34,23 +34,23 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	private static Log log = LogFactory.getLog( SpringAndDamperInterpolator.class.getName() );
 
 	// initial values
-//	private static final float FORCE_SCALE = 10.0f;
-//	private static final float DAMPING_FACTOR = 1.0f;
-//	private static final float INTEGRATION_TIMESTEP = 0.1f;
+//	public static final float FORCE_SCALE = 10.0f;
+//	public static final float DAMPING_FACTOR = 1.0f;
+//	public static final float INTEGRATION_TIMESTEP = 0.1f;
 
 	// Kinda happy (but issues with settling)
-	private static final float FORCE_SCALE = 0.1f;
-	private static final float DAMPING_FACTOR = 0.5f;
-	private static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
+	public static final float FORCE_SCALE = 0.1f;
+	public static final float DAMPING_FACTOR = 0.5f;
+	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
 
-//	private static final float FORCE_SCALE = 0.0005f;
-//	private static final float DAMPING_FACTOR = 0.05f;
-//	private static final float INTEGRATION_TIMESTEP_FOR_48K = 0.5f;
+//	public static final float FORCE_SCALE = 0.0005f;
+//	public static final float DAMPING_FACTOR = 0.05f;
+//	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.5f;
 
-	private static final float MIN_VALUE_DELTA_DB = -120.0f;
-//	private static final float MIN_VALUE_DELTA = AudioMath.dbToLevelF( MIN_VALUE_DELTA_DB );
-	private static final float MIN_VALUE_DELTA = 2 * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
-	private static final float MIN_VELOCITY = 0.00001f;
+	public static final float MIN_VALUE_DELTA_DB = -120.0f;
+//	public static final float MIN_VALUE_DELTA = AudioMath.dbToLevelF( MIN_VALUE_DELTA_DB );
+	public static final float MIN_VALUE_DELTA = 2 * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+	public static final float MIN_VELOCITY = 0.00001f;
 
 	private class State
 	{

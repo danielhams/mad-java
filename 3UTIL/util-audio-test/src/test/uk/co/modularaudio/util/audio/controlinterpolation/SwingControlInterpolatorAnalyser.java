@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,8 +49,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalyser.class.getName() );
 
 //	private static final float VALUE_CHASE_MILLIS = 20.0f;
-	private static final float VALUE_CHASE_MILLIS = 10.0f;
-//	private static final float VALUE_CHASE_MILLIS = 5.33f;
+//	private static final float VALUE_CHASE_MILLIS = 10.0f;
+	private static final float VALUE_CHASE_MILLIS = 5.33f;
 //	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
@@ -59,17 +61,19 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	private final static String SRC_FILE = "zero_to_one_multi_events.txt";
 	private final static String SRC_FILE = "zero_to_one_and_back_multi_events.txt";
 
-	private final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
-	private final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_6chan_processed.wav";
+	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
+	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_6chan_processed.wav";
 
 //	public static final int VIS_WIDTH = 100;
 //	public static final int VIS_WIDTH = 200;
-//	public static final int VIS_WIDTH = 1400;
-//	public static final int VIS_HEIGHT = 100;
-	public static final int VIS_WIDTH = 1024;
-	public static final int VIS_HEIGHT = 75;
+//	public static final int VIS_WIDTH = 1600;
+	public static final int VIS_WIDTH = 1400;
+	public static final int VIS_HEIGHT = 100;
+//	public static final int VIS_WIDTH = 1024;
+//	public static final int VIS_HEIGHT = 75;
 //	public static final int VIS_SAMPLES_PER_PIXEL=10;
 	public static final int VIS_SAMPLES_PER_PIXEL=2;
+//	public static final int VIS_SAMPLES_PER_PIXEL=1;
 	private static final float DIFF_FOR_7BIT_CONTROLLER = 1.0f / 128.0f;
 
 	private final NoneInterpolator noneInterpolator;
@@ -264,8 +268,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		reader.close();
 	}
 
-	public static void main( final String[] args )
+	public static void main( final String[] args ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
+		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		final SwingControlInterpolatorAnalyser scia = new SwingControlInterpolatorAnalyser();
 		SwingUtilities.invokeLater( new Runnable()
 		{
