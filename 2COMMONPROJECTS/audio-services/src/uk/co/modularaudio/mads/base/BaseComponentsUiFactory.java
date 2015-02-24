@@ -53,6 +53,8 @@ import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadD
 import uk.co.modularaudio.mads.base.foldbackdistortion.ui.FoldbackDistortionMadUiDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.ui.FrequencyFilterMadUiDefinition;
+import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
+import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterMadUiDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.ui.InverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
@@ -189,6 +191,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( Mixer8MadDefinition.class, Mixer8MadUiDefinition.class );
 
 		classToUiDefinition.put( CPTMadDefinition.class, CPTMadUiDefinition.class );
+
+		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

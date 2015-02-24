@@ -52,6 +52,8 @@ import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadD
 import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadInstance;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
+import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
+import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
@@ -195,6 +197,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( Mixer8MadDefinition.class, Mixer8MadInstance.class );
 
 		defClassToInsClassMap.put( CPTMadDefinition.class, CPTMadInstance.class );
+
+		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
 	}
 
 	@Override
