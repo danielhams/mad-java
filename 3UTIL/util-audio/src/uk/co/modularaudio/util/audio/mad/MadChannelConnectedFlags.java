@@ -20,14 +20,9 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 public class MadChannelConnectedFlags
 {
-	private static Log log = LogFactory.getLog( MadChannelConnectedFlags.class.getName() );
-
 	private final byte[] storage;
 	private final int numBytes;
 
