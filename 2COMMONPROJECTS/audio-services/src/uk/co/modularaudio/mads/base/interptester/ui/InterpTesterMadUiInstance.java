@@ -23,22 +23,23 @@ package uk.co.modularaudio.mads.base.interptester.ui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.crossfader.ui.CrossFaderMadUiInstance;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterIOQueueBridge;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.lookuptable.powertable.RawCrossfadePowerTable;
-import uk.co.modularaudio.util.audio.lookuptable.powertable.StandardCrossfadePowerTables;
+import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class InterpTesterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
+public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
-	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( InterpTesterMadUiInstance.class.getName() );
 
-	private boolean guiKillA = false;
-	private float guiCrossFaderPosition = 0.0f;
+	private ModelChangeReceiver modelChangeReceiver;
+	private PerfDataReceiver perfDataReceiver;
 
-	private RawCrossfadePowerTable powerCurve = StandardCrossfadePowerTables.getAdditivePowerTable();
+	private final InterpTesterSliderModels sliderModels = new InterpTesterSliderModels();
 
 	public InterpTesterMadUiInstance( final InterpTesterMadInstance instance,
 			final InterpTesterMadUiDefinition uiDefinition )
@@ -46,56 +47,97 @@ public class InterpTesterMadUiInstance extends NoEventsNoNameChangeNonConfigurab
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
 
-	public void recalculateAmps()
-	{
-		// Varies from -1.0 to +1.0
-		// Now use the power table from the instance to calculate the real amps
-		float calculatedAmpA = powerCurve.getLeftValueAt( guiCrossFaderPosition );
-
-		// Now take into account the kill buttons
-		if( guiKillA )
-		{
-			calculatedAmpA = 0.0f;
-		}
-
-		// Now pass these values to the running instance
-		sendAmpChange( calculatedAmpA );
-	}
-
-	public void sendAmpChange( final float amp )
-	{
-		final int ampInt = Float.floatToIntBits( amp );
-		final long combinedValue = ampInt;
-
-		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP, combinedValue );
-	}
-
-	public void setPowerCurve( final RawCrossfadePowerTable powerCurve )
-	{
-		this.powerCurve = powerCurve;
-	}
-
-	public void setCrossFaderPosition( final float faderPosition )
-	{
-		this.guiCrossFaderPosition = faderPosition;
-	}
-
-	public void setGuiKill( final boolean selected )
-	{
-		this.guiKillA = selected;
-	}
-
-	public void setInterpolator( final int interpolatorIndex )
-	{
-		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_INTERPOLATOR, interpolatorIndex );
-		log.debug("Sent change to interpolator " + interpolatorIndex );
-
-	}
-
 	public void setChaseValueMillis( final float chaseMillis )
 	{
 		final long floatIntBits = Float.floatToIntBits( chaseMillis );
 		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_CHASE_MILLIS, floatIntBits );
+	}
 
+	@Override
+	public void consumeQueueEntry( final InterpTesterMadInstance instance, final IOQueueEvent nextOutgoingEntry )
+	{
+		switch( nextOutgoingEntry.command )
+		{
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_NONE_NANOS:
+			{
+				perfDataReceiver.setNoneNanos( nextOutgoingEntry.value );
+				break;
+			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_LIN_NANOS:
+			{
+				perfDataReceiver.setLNanos( nextOutgoingEntry.value );
+				break;
+			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_HH_NANOS:
+			{
+				perfDataReceiver.setHHNanos( nextOutgoingEntry.value );
+				break;
+			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_SD_NANOS:
+			{
+				perfDataReceiver.setSDNanos( nextOutgoingEntry.value );
+				break;
+			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_LP_NANOS:
+			{
+				perfDataReceiver.setLPNanos( nextOutgoingEntry.value );
+				break;
+			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_SDD_NANOS:
+			{
+				perfDataReceiver.setSDDNanos( nextOutgoingEntry.value );
+				break;
+			}
+			default:
+			{
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown command received: " + nextOutgoingEntry.command);
+				}
+				break;
+			}
+		}
+
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTick )
+	{
+		localQueueBridge.receiveQueuedEventsToUi( guiTemporaryEventStorage, instance, this );
+		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
+	}
+
+	public void setValueModelIndex( final int selectedIndex )
+	{
+		modelChangeReceiver.receiveNewModelIndex( selectedIndex );
+	}
+
+	public void setModelChangeReceiver( final ModelChangeReceiver changeReceiver )
+	{
+		this.modelChangeReceiver = changeReceiver;
+	}
+
+	public void setPerfDataReceiver( final PerfDataReceiver dataReceiver )
+	{
+		this.perfDataReceiver = dataReceiver;
+	}
+
+	public void setValue( final float newValue )
+	{
+//		log.debug("Received new value: " + MathFormatter.slowFloatPrint( newValue, 5, true ) );
+		final int intBits = Float.floatToIntBits( newValue );
+		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP, intBits );
+	}
+
+	public void sendUiActive( final boolean active )
+	{
+		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_UIACTIVE, (active ? 1 : 0 ) );
+
+	}
+
+	public InterpTesterSliderModels getSliderModels()
+	{
+		return sliderModels;
 	}
 }

@@ -18,13 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madswingcontrols;
+package uk.co.modularaudio.mads.base.interptester.ui;
 
 import java.awt.Color;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
@@ -33,18 +32,16 @@ import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
-public abstract class PacADSRSlider extends JPanel implements ValueChangeListener
+public abstract class ValueSlider extends JPanel implements ValueChangeListener
 {
 	private static final long serialVersionUID = 2783504281404548759L;
 
 	protected final SliderDisplayView view;
-	protected final SliderDisplayModel model;
+	protected SliderDisplayModel model;
 	protected final SliderDisplayController controller;
 
-	public PacADSRSlider( final float minValue,
-			final float maxValue,
-			final float initialValue,
-			final String unitsStr,
+	public ValueSlider(
+			final SliderDisplayModel sliderDisplayModel,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
@@ -54,15 +51,7 @@ public abstract class PacADSRSlider extends JPanel implements ValueChangeListene
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
-		this.model = new SliderDisplayModel( minValue,
-				maxValue,
-				initialValue,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				2,
-				unitsStr );
+		this.model = sliderDisplayModel;
 
 		this.controller = new SliderDisplayController( model );
 		this.view = new SliderDisplayView( model,
@@ -73,14 +62,17 @@ public abstract class PacADSRSlider extends JPanel implements ValueChangeListene
 				labelText,
 				labelColor,
 				unitsColor,
-				opaque );
+				opaque,
+				true );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "gap 0" );
+		lh.addLayoutConstraint( "align center" );
+//		lh.addLayoutConstraint( "debug" );
 		this.setLayout( lh.createMigLayout() );
-		this.add( view, "" );
+		this.add( view, "grow" );
 
 		// Finally subscribe to the mode so that derived classes can handle the value change
 		model.addChangeListener( this );
@@ -91,8 +83,18 @@ public abstract class PacADSRSlider extends JPanel implements ValueChangeListene
 	@Override
 	public abstract void receiveValueChange( Object source, float newValue );
 
-	public boolean needsDisplayProcessing()
+	public void changeModel( final SliderDisplayModel newModel )
 	{
-		return false;
+		model.removeChangeListener( this );
+		model = newModel;
+
+		controller.changeModel( newModel );
+		view.changeModel( newModel );
+
+		model.addChangeListener( this );
+		controller.setValue( this, 0 );
+		controller.setValue( this, model.getInitialValue() );
+
 	}
+
 }

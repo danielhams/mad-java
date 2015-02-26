@@ -24,7 +24,6 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
@@ -41,10 +40,7 @@ public abstract class TimeSlider extends JPanel implements ValueChangeListener
 	protected final SliderDisplayModel model;
 	protected final SliderDisplayController controller;
 
-	public TimeSlider( final float minValue,
-			final float maxValue,
-			final float initialValue,
-			final String unitsStr,
+	public TimeSlider( final SliderDisplayModel model,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
@@ -54,18 +50,17 @@ public abstract class TimeSlider extends JPanel implements ValueChangeListener
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
-		this.model = new SliderDisplayModel( minValue,
-				maxValue,
-				initialValue,
-				5000,
-				1000,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				1,
-				unitsStr );
-
+		this.model = model;
 		this.controller = new SliderDisplayController( model );
-		this.view = new SliderDisplayView( model, controller, labelOrientation, displayOrientation, textboxOrientation, labelText, labelColor, unitsColor, opaque );
+		this.view = new SliderDisplayView( model,
+				controller,
+				labelOrientation,
+				displayOrientation,
+				textboxOrientation,
+				labelText,
+				labelColor,
+				unitsColor,
+				opaque );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );

@@ -72,7 +72,8 @@ public class MathFormatter
 
 	public static void fastFloatPrint( final StringBuilder outputStringBuilder, final float f, final int numDecimals, final boolean echoPlus )
 	{
-		outputStringBuilder.append( slowFloatPrint( f, numDecimals, echoPlus ) );
+//		outputStringBuilder.append( slowFloatPrint( f, numDecimals, echoPlus ) );
+		outputStringBuilder.append( fastFloatPrint( f, numDecimals, echoPlus ) );
 	}
 
 	public static String fastFloatPrint( final float f, final int numDecimals, final boolean echoPlus )

@@ -52,9 +52,9 @@ public class SliderDisplayView extends JPanel
 
 	private int numColumns = 1;
 
-	private SliderDisplayLabel label = null;
-	private SliderDisplaySlider slider = null;
-	private SliderDisplayTextbox textbox = null;
+	private final SliderDisplayLabel label;
+	private final SliderDisplaySlider slider;
+	private final SliderDisplayTextbox textbox;
 
 	public SliderDisplayView( final SliderDisplayModel model,
 			final SliderDisplayController controller,
@@ -65,6 +65,29 @@ public class SliderDisplayView extends JPanel
 			final Color labelColor,
 			final Color unitsColor,
 			final boolean opaque )
+	{
+		this( model,
+				controller,
+				labelOrientation,
+				displayOrientation,
+				textboxOrientation,
+				labelText,
+				labelColor,
+				unitsColor,
+				opaque,
+				false );
+	}
+
+	public SliderDisplayView( final SliderDisplayModel model,
+			final SliderDisplayController controller,
+			final SatelliteOrientation labelOrientation,
+			final DisplayOrientation displayOrientation,
+			final SatelliteOrientation textboxOrientation,
+			final String labelText,
+			final Color labelColor,
+			final Color unitsColor,
+			final boolean opaque,
+			final boolean doubleClickToReset )
 	{
 		this.setOpaque( opaque );
 
@@ -200,11 +223,30 @@ public class SliderDisplayView extends JPanel
 		}
 
 		this.validate();
+
+		if( doubleClickToReset )
+		{
+			addDoubleClickReceiver( new SliderDoubleClickReceiver()
+			{
+
+				@Override
+				public void receiveDoubleClick()
+				{
+					slider.setValue( slider.getInitialValue() );
+				}
+			} );
+		}
 	}
 
 	public void addDoubleClickReceiver( final SliderDoubleClickReceiver receiver )
 	{
 		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
 		slider.addMouseListener( doubleClickMouseListener );
+	}
+
+	public void changeModel( final SliderDisplayModel newModel )
+	{
+		slider.changeModel( newModel );
+		textbox.changeModel( newModel );
 	}
 }

@@ -20,38 +20,47 @@
 
 package uk.co.modularaudio.mads.base.interptester.ui;
 
+import java.awt.Color;
+
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
+import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLabel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class InterpTesterSliderUiJComponent extends PacSlider
+public class InterpTesterModelChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<InterpTesterMadDefinition, InterpTesterMadInstance, InterpTesterMadUiInstance>
 {
-	private static final long serialVersionUID = 6068897521037173787L;
+	private static final long serialVersionUID = 28004477652791854L;
 
-	private final InterpTesterMadUiInstance uiInstance;
+	private final ModelComboUiJComponent modelCombo;
 
-	public InterpTesterSliderUiJComponent(
+	public InterpTesterModelChoiceUiJComponent(
 			final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
 			final InterpTesterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		super();
-		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		this.setOrientation( HORIZONTAL );
-		setFont( this.getFont().deriveFont( 9f ) );
-		this.setPaintLabels( true );
-		this.setMinimum( -1000 );
-		this.setMaximum( 1000 );
-		// Default value
-		this.setValue( 0 );
+
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addColumnConstraint( "[][grow]" );
+		setLayout( msh.createMigLayout() );
+
+		final PacLabel modelLabel = new PacLabel("Model:");
+		modelLabel.setForeground( Color.BLACK );
+		add( modelLabel, "" );
+
+		modelCombo = new ModelComboUiJComponent( uiInstance );
+		add( modelCombo, "grow");
 	}
 
 	@Override
@@ -60,39 +69,33 @@ public class InterpTesterSliderUiJComponent extends PacSlider
 		return this;
 	}
 
-	private void passChangeToInstanceData( final int value )
-	{
-		final float newValue = (value) / 1000.0f;
-		uiInstance.setCrossFaderPosition( newValue );
-		uiInstance.recalculateAmps();
-	}
-
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
-	}
-
-	@Override
-	public void processValueChange( final int previousValue, final int newValue )
-	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
 	}
 
 	@Override
 	public void destroy()
 	{
-		// Nothing needed
 	}
 
 	@Override
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return modelCombo.getControlValue();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		modelCombo.receiveControlValue( value );
 	}
 }

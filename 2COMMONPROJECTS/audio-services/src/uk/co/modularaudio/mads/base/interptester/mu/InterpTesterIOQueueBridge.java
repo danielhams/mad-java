@@ -32,8 +32,16 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 	private static Log log = LogFactory.getLog( InterpTesterIOQueueBridge.class.getName() );
 
 	public static final int COMMAND_AMP = 0;
-	public static final int COMMAND_INTERPOLATOR = 1;
-	public static final int COMMAND_CHASE_MILLIS = 2;
+	public static final int COMMAND_CHASE_MILLIS = 1;
+
+	public static final int COMMAND_TO_UI_NONE_NANOS = 2;
+	public static final int COMMAND_TO_UI_LIN_NANOS = 3;
+	public static final int COMMAND_TO_UI_HH_NANOS = 4;
+	public static final int COMMAND_TO_UI_SD_NANOS = 5;
+	public static final int COMMAND_TO_UI_LP_NANOS = 6;
+	public static final int COMMAND_TO_UI_SDD_NANOS = 7;
+
+	public static final int COMMAND_UIACTIVE = 8;
 
 	public InterpTesterIOQueueBridge()
 	{
@@ -55,16 +63,15 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 				instance.setDesiredAmp( amp );
 				break;
 			}
-			case COMMAND_INTERPOLATOR:
-			{
-				final int val = (int)queueEntry.value;
-				instance.setInterpolatorByIndex( val );
-				break;
-			}
 			case COMMAND_CHASE_MILLIS:
 			{
 				final float chaseMillis = Float.intBitsToFloat( (int)queueEntry.value );
 				instance.setChaseMillis( chaseMillis );
+				break;
+			}
+			case COMMAND_UIACTIVE:
+			{
+				instance.setUiActive( queueEntry.value == 1 );
 				break;
 			}
 			default:

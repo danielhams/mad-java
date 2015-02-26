@@ -55,13 +55,13 @@ public class LowPassInterpolator implements ControlValueInterpolator
 		final int lastIndex = outputIndex + length;
 		Arrays.fill( output, outputIndex, lastIndex, desVal );
 		lpFilter.filter( output, outputIndex, length, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
-		for( int i = outputIndex ; i < lastIndex ; ++i )
-		{
-			final float curVal = output[ i ];
-			output[ i ] = ( curVal < -1.0f ? -1.0f :
-				( curVal > 1.0f ? 1.0f :
-					curVal ) );
-		}
+//		for( int i = outputIndex ; i < lastIndex ; ++i )
+//		{
+//			final float curVal = output[ i ];
+//			output[ i ] = ( curVal < -1.0f ? -1.0f :
+//				( curVal > 1.0f ? 1.0f :
+//					curVal ) );
+//		}
 	}
 
 	@Override

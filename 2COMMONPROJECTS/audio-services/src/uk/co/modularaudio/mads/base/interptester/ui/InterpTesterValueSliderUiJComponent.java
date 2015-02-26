@@ -29,48 +29,42 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
+import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
-public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
-	implements IMadUiControlInstance<InterpTesterMadDefinition, InterpTesterMadInstance, InterpTesterMadUiInstance>
+public class InterpTesterValueSliderUiJComponent extends ValueSlider
+	implements IMadUiControlInstance<InterpTesterMadDefinition, InterpTesterMadInstance, InterpTesterMadUiInstance>,
+	ModelChangeReceiver
 {
-	private static Log log = LogFactory.getLog( InterpTesterValueChaseMillisSliderUiJComponent.class.getName() );
+	private static Log log = LogFactory.getLog( InterpTesterValueSliderUiJComponent.class.getName() );
 
 	private static final long serialVersionUID = 2538907435465770032L;
 
 	private final InterpTesterMadUiInstance uiInstance;
 
-	public final static float DEFAULT_CHASE_MILLIS = 3.7f;
+	private final InterpTesterSliderModels sliderModels;
 
-	public InterpTesterValueChaseMillisSliderUiJComponent( final InterpTesterMadDefinition definition,
+	public InterpTesterValueSliderUiJComponent( final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
 			final InterpTesterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
-		super( new SliderDisplayModel( 1.0f,
-				10.0f,
-				DEFAULT_CHASE_MILLIS,
-				5000,
-				1000,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				1,
-				"ms"),
+		super( uiInstance.getSliderModels().getModelAt( 0 ),
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
-				"Chase:",
+				"Value:",
 				Color.BLACK,
 				Color.BLACK,
 				false );
 		this.uiInstance = uiInstance;
+		this.sliderModels = uiInstance.getSliderModels();
+		uiInstance.setModelChangeReceiver( this );
 	}
 
 	@Override
@@ -81,7 +75,7 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 
 	private void passChangeToInstanceData( final float newValue )
 	{
-		uiInstance.setChaseValueMillis( newValue );
+		uiInstance.setValue( newValue );
 	}
 
 	@Override
@@ -95,6 +89,7 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 	@Override
 	public void destroy()
 	{
+		uiInstance.setModelChangeReceiver( null );
 	}
 
 	@Override
@@ -108,8 +103,8 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 	{
 		try
 		{
-//			log.debug("Received control value " + value );
 			final float asFloat = Float.parseFloat( valueStr );
+//			log.debug("Received control value " + asFloat );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
 		}
@@ -130,5 +125,12 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void receiveNewModelIndex( final int selectedIndex )
+	{
+		final SliderDisplayModel newModel = sliderModels.getModelAt( selectedIndex );
+		changeModel( newModel );
 	}
 }

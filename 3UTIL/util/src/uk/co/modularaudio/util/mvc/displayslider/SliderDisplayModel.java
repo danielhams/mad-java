@@ -28,43 +28,57 @@ import org.apache.commons.logging.LogFactory;
 public class SliderDisplayModel
 {
 	private static Log log = LogFactory.getLog( SliderDisplayModel.class.getName() );
-	
-	private float minValue = 0.0f;
-	private float maxValue = 1.0f;
-	private float initialValue = 0.0f;
-	private int numSliderSteps = 100;
-	private int sliderMajorTickSpacing = 10;
 
-	private SliderIntToFloatConverter sliderIntToFloatConverter = new SimpleSliderIntToFloatConverter();
-	private int displayNumSigPlaces = 3;
-	private int displayNumDecPlaces = 2;
-	
-	private String displayUnitsStr = "";
-	
-	private float currentValue = initialValue;
+//	private float minValue = 0.0f;
+//	private float maxValue = 1.0f;
+//	private float initialValue = 0.0f;
+//	private int numSliderSteps = 100;
+//	private int sliderMajorTickSpacing = 10;
+//
+//	private SliderIntToFloatConverter sliderIntToFloatConverter = new SimpleSliderIntToFloatConverter();
+//	private int displayNumSigPlaces = 3;
+//	private int displayNumDecPlaces = 2;
+//
+//	private String displayUnitsStr = "";
+//
+//	private float currentValue = initialValue;
+
+	private final float minValue;
+	private float maxValue;
+	private final float initialValue;
+	private final int numSliderSteps;
+	private final int sliderMajorTickSpacing;
+
+	private final SliderIntToFloatConverter sliderIntToFloatConverter;
+	private final int displayNumSigPlaces;
+	private final int displayNumDecPlaces;
+
+	private final String displayUnitsStr;
+
+	private float currentValue;
 
 	public interface ValueChangeListener
 	{
 		void receiveValueChange( Object source, float newValue );
 	}
-	
-	private ArrayList<ValueChangeListener> changeListeners = new ArrayList<SliderDisplayModel.ValueChangeListener>();
 
-	public SliderDisplayModel()
-	{
-		log.warn("Using default model values - this is probably not what you want.");
-		// Uses default values above.
-	}
-		
-	public SliderDisplayModel( float minValue,
-			float maxValue,
-			float initialValue,
-			int numSliderSteps,
-			int sliderMajorTickSpacing,
-			SliderIntToFloatConverter sliderIntToFloatConverter,
-			int displayNumSigPlaces,
-			int displayNumDecPlaces,
-			String displayUnitsStr )
+	private final ArrayList<ValueChangeListener> changeListeners = new ArrayList<SliderDisplayModel.ValueChangeListener>();
+
+//	public SliderDisplayModel()
+//	{
+//		log.warn("Using default model values - this is probably not what you want.");
+//		// Uses default values above.
+//	}
+//
+	public SliderDisplayModel( final float minValue,
+			final float maxValue,
+			final float initialValue,
+			final int numSliderSteps,
+			final int sliderMajorTickSpacing,
+			final SliderIntToFloatConverter sliderIntToFloatConverter,
+			final int displayNumSigPlaces,
+			final int displayNumDecPlaces,
+			final String displayUnitsStr )
 	{
 		this.minValue = minValue;
 		this.maxValue = maxValue;
@@ -118,13 +132,13 @@ public class SliderDisplayModel
 	{
 		return displayUnitsStr;
 	}
-	
-	public void addChangeListener( ValueChangeListener l )
+
+	public void addChangeListener( final ValueChangeListener l )
 	{
 		changeListeners.add( l );
 	}
-	
-	public void removeChangeListener( ValueChangeListener l )
+
+	public void removeChangeListener( final ValueChangeListener l )
 	{
 		changeListeners.remove( l );
 	}
@@ -134,10 +148,10 @@ public class SliderDisplayModel
 		return currentValue;
 	}
 
-	public void setValue( Object source, float newFloatValue )
+	public void setValue( final Object source, final float newFloatValue )
 	{
 //		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
-		boolean wasDifferent = ( currentValue != newFloatValue );
+		final boolean wasDifferent = ( currentValue != newFloatValue );
 		currentValue = newFloatValue;
 //		if( currentValue > maxValue )
 //		{
@@ -153,11 +167,11 @@ public class SliderDisplayModel
 		}
 	}
 
-	private void notifyOfChange( Object source )
+	private void notifyOfChange( final Object source )
 	{
 		for( int i = 0 ; i < changeListeners.size() ; ++i )
 		{
-			ValueChangeListener cl = changeListeners.get( i );
+			final ValueChangeListener cl = changeListeners.get( i );
 			if( cl != source )
 			{
 				cl.receiveValueChange( source, currentValue );
@@ -170,7 +184,7 @@ public class SliderDisplayModel
 		return sliderMajorTickSpacing;
 	}
 
-	public void setMaxValue( float newTimescaleUpperLimit )
+	public void setMaxValue( final float newTimescaleUpperLimit )
 	{
 		maxValue = newTimescaleUpperLimit;
 		notifyOfChange( this );

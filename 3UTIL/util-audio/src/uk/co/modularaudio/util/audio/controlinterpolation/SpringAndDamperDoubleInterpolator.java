@@ -28,42 +28,33 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class SpringAndDamperInterpolator implements ControlValueInterpolator
+public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolator
 {
-	private static Log log = LogFactory.getLog( SpringAndDamperInterpolator.class.getName() );
-
-	// initial values
-//	public static final float FORCE_SCALE = 10.0f;
-//	public static final float DAMPING_FACTOR = 1.0f;
-//	public static final float INTEGRATION_TIMESTEP = 0.1f;
+	private static Log log = LogFactory.getLog( SpringAndDamperDoubleInterpolator.class.getName() );
 
 	// Kinda happy (but issues with settling)
-	public static final float FORCE_SCALE = 0.1f;
-	public static final float DAMPING_FACTOR = 0.5f;
-	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
+	public static final double FORCE_SCALE = 0.1;
+	public static final double DAMPING_FACTOR = 0.5;
+	public static final double INTEGRATION_TIMESTEP_FOR_48K = 0.03;
 
-//	public static final float FORCE_SCALE = 0.0005f;
-//	public static final float DAMPING_FACTOR = 0.05f;
-//	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.5f;
-
-	public static final float MIN_VALUE_DELTA_DB = -120.0f;
-//	public static final float MIN_VALUE_DELTA = AudioMath.dbToLevelF( MIN_VALUE_DELTA_DB );
-	public static final float MIN_VALUE_DELTA = 2 * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
-	public static final float MIN_VELOCITY = 0.00001f;
+	public static final double MIN_VALUE_DELTA_DB = -120.0;
+	public static final double MIN_VALUE_DELTA = AudioMath.dbToLevel( MIN_VALUE_DELTA_DB );
+//	public static final double MIN_VALUE_DELTA = AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D;
+	public static final double MIN_VELOCITY = 0.00001;
 
 	private class State
 	{
-		float x;
-		float v;
+		double x;
+		double v;
 	};
 
 	private class Derivative
 	{
-		float dx;
-		float dv;
+		double dx;
+		double dv;
 	};
 
-	private float deltaTimestep;
+	private double deltaTimestep;
 
 	private final State curState = new State();
 	private final State evaluateState = new State();
@@ -78,12 +69,12 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	private final float lowerBound;
 	private final float upperBound;
 
-	private float desPos = 0.0f;
+	private double desPos = 0.0f;
 
-	public SpringAndDamperInterpolator( final float lowerBound, final float upperBound )
+	public SpringAndDamperDoubleInterpolator( final float lowerBound, final float upperBound )
 	{
-		curState.x = 0.0f;
-		curState.v = 0.0f;
+		curState.x = 0.0;
+		curState.v = 0.0;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
@@ -97,7 +88,8 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		if( curState.v == 0.0 && curState.x == desPos )
 		{
 //			log.debug("Filling as steady state");
-			Arrays.fill( output, outputIndex, lastIndex, curState.x );
+			final float curStateFloat = (float)curState.x;
+			Arrays.fill( output, outputIndex, lastIndex, curStateFloat );
 		}
 		else
 		{
@@ -106,17 +98,18 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 			for( int curIndex = outputIndex ; curIndex < lastIndex ; ++curIndex )
 			{
 				integrate( curState, 0, deltaTimestep );
-//				if( curState.x > upperBound )
+				final float curStateFloat = (float)curState.x;
+//				if( curStateFloat > upperBound )
 //				{
 //					output[ curIndex ] = upperBound;
 //				}
-//				else if( curState.x < lowerBound )
+//				else if( curStateFloat < lowerBound )
 //				{
 //					output[ curIndex ] = lowerBound;
 //				}
 //				else
 //				{
-					output[ curIndex ] = curState.x;
+					output[ curIndex ] = curStateFloat;
 //				}
 			}
 		}
@@ -131,9 +124,9 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	@Override
 	public final void checkForDenormal()
 	{
-		final float delta = desPos - curState.x;
-		final float absX = (delta < 0.0f ? -delta : delta );
-		final float absV = (curState.v < 0.0f ? -curState.v : curState.v );
+		final double delta = desPos - curState.x;
+		final double absX = (delta < 0.0 ? -delta : delta );
+		final double absV = (curState.v < 0.0 ? -curState.v : curState.v );
 
 		if( curState.x != desPos )
 		{
@@ -146,7 +139,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 
 			// Nudge by two bits towards desired value
 			final int sigNum = (delta < 0 ? -2 : 2 );
-			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D;
 		}
 
 //		if( absX < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
@@ -155,7 +148,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 				absV <= MIN_VELOCITY )
 		{
 			curState.x = desPos;
-			curState.v = 0.0f;
+			curState.v = 0.0;
 //			log.debug("Damped to pos(" + MathFormatter.slowFloatPrint( desPos, 8, true ) +
 //					") v=0");
 		}
@@ -177,12 +170,12 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	public final void hardSetValue( final float value )
 	{
 		curState.x = value;
-		curState.v = 0.0f;
+		curState.v = 0.0;
 	}
 
 	private final void evaluate( final State initial,
-			final float t,
-			final float dt,
+			final double t,
+			final double dt,
 			final Derivative d,
 			final Derivative o )
 	{
@@ -194,29 +187,29 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 //		log.debug("Acceleration is " + output.dv );
 	}
 
-	private final float acceleration( final State state,
-			final float t )
+	private final double acceleration( final State state,
+			final double t )
 	{
-		final float k = FORCE_SCALE;
-		final float b = DAMPING_FACTOR;
-		final float posDiff = state.x - desPos;
+		final double k = FORCE_SCALE;
+		final double b = DAMPING_FACTOR;
+		final double posDiff = state.x - desPos;
 //		log.debug("PosDiff is " + posDiff );
 		return -k * posDiff - b*state.v;
 	}
 
 	private final void integrate( final State state,
-			final float t,
-			final float dt )
+			final double t,
+			final double dt )
 	{
-		evaluate( state, t, 0.0f, integrateDerivative, a );
-		evaluate( state, t, dt*0.5f, a, b );
-		evaluate( state, t, dt*0.5f, b, c );
+		evaluate( state, t, 0.0, integrateDerivative, a );
+		evaluate( state, t, dt*0.5, a, b );
+		evaluate( state, t, dt*0.5, b, c );
 		evaluate( state, t, dt, c, d );
 
-		final float dxdt = 1.0f / 6.0f *
-				(a.dx + 2.0f*(b.dx + c.dx) + d.dx );
-		final float dvdt = 1.0f / 6.0f *
-				(a.dv + 2.0f*(b.dv + c.dv) + d.dv );
+		final double dxdt = 1.0 / 6.0 *
+				(a.dx + 2.0*(b.dx + c.dx) + d.dx );
+		final double dvdt = 1.0 / 6.0 *
+				(a.dv + 2.0*(b.dv + c.dv) + d.dv );
 
 		state.x = (state.x + dxdt * dt);
 		state.v = (state.v + dvdt * dt);

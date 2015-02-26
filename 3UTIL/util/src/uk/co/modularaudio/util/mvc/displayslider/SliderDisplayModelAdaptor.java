@@ -31,25 +31,25 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeL
 public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChangeListener
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayModelAdaptor.class.getName() );
-	
-	private Object source = null;
-	private SliderDisplayModel sdm = null;
-	private SliderDisplayController sdc = null;
-	
-	private SliderIntToFloatConverter sitfc = null;
-	
-	private ArrayList<ChangeListener> cls = new ArrayList<ChangeListener>();
-	
-	private ChangeEvent changeEvent = null;
 
-	public SliderDisplayModelAdaptor( Object source, SliderDisplayModel model, SliderDisplayController controller )
+	private final Object source;
+	private final SliderDisplayModel sdm;
+	private final SliderDisplayController sdc;
+
+	private final SliderIntToFloatConverter sitfc;
+
+	private final ArrayList<ChangeListener> cls = new ArrayList<ChangeListener>();
+
+	private final ChangeEvent changeEvent;
+
+	public SliderDisplayModelAdaptor( final Object source, final SliderDisplayModel model, final SliderDisplayController controller )
 	{
 		this.source = source;
 		this.sdm = model;
 		this.sdc = controller;
 		sitfc = sdm.getSliderIntToFloatConverter();
 		sdm.addChangeListener( this );
-		
+
 		changeEvent = new ChangeEvent( source );
 	}
 
@@ -61,7 +61,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	}
 
 	@Override
-	public void setMinimum( int newMinimum )
+	public void setMinimum( final int newMinimum )
 	{
 		// N.A.
 	}
@@ -74,7 +74,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	}
 
 	@Override
-	public void setMaximum( int newMaximum )
+	public void setMaximum( final int newMaximum )
 	{
 		// N.A.
 	}
@@ -82,29 +82,31 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	@Override
 	public int getValue()
 	{
-		int retVal = sitfc.floatValueToSliderIntValue( sdm, sdm.getValue() );
+		final int retVal = sitfc.floatValueToSliderIntValue( sdm, sdm.getValue() );
 //		log.debug("GetValue called - returning " + retVal );
 		return retVal;
 	}
 
 	@Override
-	public void setValue( int newValue )
+	public void setValue( final int newValue )
 	{
 //		log.debug("SetValue called with " + newValue );
 		float newFloatValue = sitfc.sliderIntValueToFloatValue( sdm, newValue );
-		if( newFloatValue < sdm.getMinValue() )
+		final float minValue = sdm.getMinValue();
+		final float maxValue = sdm.getMaxValue();
+		if( newFloatValue < minValue )
 		{
-			newFloatValue = sdm.getMinValue();
+			newFloatValue = minValue;
 		}
-		else if( newFloatValue > sdm.getMaxValue() )
+		else if( newFloatValue > maxValue )
 		{
-			newFloatValue = sdm.getMaxValue();
+			newFloatValue = maxValue;
 		}
 		sdc.setValue( source, newFloatValue );
 	}
 
 	@Override
-	public void setValueIsAdjusting( boolean b )
+	public void setValueIsAdjusting( final boolean b )
 	{
 	}
 
@@ -121,35 +123,35 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	}
 
 	@Override
-	public void setExtent( int newExtent )
+	public void setExtent( final int newExtent )
 	{
 	}
 
 	@Override
-	public void setRangeProperties( int value, int extent, int min, int max,
-			boolean adjusting )
+	public void setRangeProperties( final int value, final int extent, final int min, final int max,
+			final boolean adjusting )
 	{
 	}
 
 	@Override
-	public void addChangeListener( ChangeListener x )
+	public void addChangeListener( final ChangeListener x )
 	{
 		cls.add( x );
 	}
 
 	@Override
-	public void removeChangeListener( ChangeListener x )
+	public void removeChangeListener( final ChangeListener x )
 	{
 		cls.remove( x );
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 //		log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
 		for( int i = 0 ; i < cls.size() ; ++i )
 		{
-			ChangeListener cl = cls.get(i);
+			final ChangeListener cl = cls.get(i);
 			cl.stateChanged( changeEvent );
 		}
 	}

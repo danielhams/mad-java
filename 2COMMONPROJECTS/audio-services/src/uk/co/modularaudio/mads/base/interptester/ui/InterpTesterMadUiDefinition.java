@@ -39,41 +39,60 @@ public class InterpTesterMadUiDefinition
 	private static final Span SPAN = new Span(2,4);
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		InterpTesterMadDefinition.CONSUMER_CHAN1_LEFT,
-		InterpTesterMadDefinition.CONSUMER_CHAN1_RIGHT,
-		InterpTesterMadDefinition.PRODUCER_OUT_LEFT,
-		InterpTesterMadDefinition.PRODUCER_OUT_RIGHT
+		InterpTesterMadDefinition.CONSUMER_AUDIO,
+		InterpTesterMadDefinition.CONSUMER_CV,
+		InterpTesterMadDefinition.PRODUCER_CV_RAW,
+		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
+		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
+		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER,
+		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS,
+		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE,
+		InterpTesterMadDefinition.PRODUCER_AUDIO,
+		InterpTesterMadDefinition.PRODUCER_CV
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {
-		new Point( 150, 40 ),
-		new Point( 170, 40 ),
-		new Point( 300, 40 ),
-		new Point( 320, 40 )
+		new Point( 150, 80 ),
+		new Point( 190, 80 ),
+
+		new Point( 150, 160 ),
+		new Point( 190, 160 ),
+		new Point( 230, 160 ),
+		new Point( 270, 160 ),
+		new Point( 310, 160 ),
+		new Point( 350, 160 ),
+
+
+		new Point( 150, 240 ),
+		new Point( 190, 240 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"Slider",
-		"Interpolator",
-		"ValueChase"
+		"Model Choice",
+		"ValueChase",
+		"Value",
+		"Perf Table"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
-		ControlType.SLIDER,
 		ControlType.COMBO,
-		ControlType.SLIDER
+		ControlType.SLIDER,
+		ControlType.SLIDER,
+		ControlType.CUSTOM
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		InterpTesterSliderUiJComponent.class,
-		InterpTesterCVInterpolatorUiJComponent.class,
-		InterpTesterValueChaseMillisSliderUiJComponent.class
+		InterpTesterModelChoiceUiJComponent.class,
+		InterpTesterValueChaseMillisSliderUiJComponent.class,
+		InterpTesterValueSliderUiJComponent.class,
+		InterpTesterPerfTableUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 116, 30, 418, 30 ),		// Fader Slider
-		new Rectangle( 236,  3, 110, 30 ),		// Interpolator
-		new Rectangle( 356,  3, 190, 30 )		// Value Chase
+		new Rectangle(  16, 30, 208,  30 ),		// Model Choice
+		new Rectangle(  16, 66,  80, 220 ),		// Value Chase
+		new Rectangle( 106, 66,  80, 220 ),		// Value
+		new Rectangle( 230, 30, 300, 256 )		// Perf table
 	};
 
 	private static final Class<InterpTesterMadUiInstance> INSTANCE_CLASS = InterpTesterMadUiInstance.class;

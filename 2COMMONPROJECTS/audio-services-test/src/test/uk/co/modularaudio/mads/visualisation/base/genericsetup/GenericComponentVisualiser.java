@@ -57,13 +57,14 @@ public class GenericComponentVisualiser
 {
 //	private static Log log = LogFactory.getLog( GenericComponentVisualiser.class.getName() );
 
-	private GenericApplicationContext gac = null;
-	public MadComponentService componentService = null;
-	public MadComponentUiService componentUiService = null;
-	public GuiComponentFactoryService guiComponentFactoryService = null;
+	private GenericApplicationContext gac;
+	public MadComponentService componentService;
+	public MadComponentUiService componentUiService;
+	public GuiComponentFactoryService guiComponentFactoryService;
 
 	//	public final static Color panelBackgroundColor = new Color( 0.3f, 0.1f, 0.1f );
-	public final static Color panelBackgroundColor = new Color( 0.25f, 0.25f, 0.25f );
+	//	public final static Color panelBackgroundColor = new Color( 0.25f, 0.25f, 0.25f );
+	public final static Color panelBackgroundColor = new Color( 57, 63, 63 );
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{

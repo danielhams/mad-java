@@ -34,11 +34,20 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
 	// Indexes into the channels
-	public final static int CONSUMER_CHAN1_LEFT = 0;
-	public final static int CONSUMER_CHAN1_RIGHT = 1;
-	public final static int PRODUCER_OUT_LEFT = 2;
-	public final static int PRODUCER_OUT_RIGHT = 3;
-	public final static int NUM_CHANNELS = 4;
+	public final static int CONSUMER_AUDIO = 0;
+	public final static int CONSUMER_CV = 1;
+
+	public final static int PRODUCER_CV_RAW = 2;
+	public final static int PRODUCER_CV_LINEAR = 3;
+	public final static int PRODUCER_CV_HALFHANN = 4;
+	public final static int PRODUCER_CV_SPRINGDAMPER = 5;
+	public final static int PRODUCER_CV_LOWPASS = 6;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 7;
+
+	public final static int PRODUCER_AUDIO = 8;
+	public final static int PRODUCER_CV = 9;
+
+	public final static int NUM_CHANNELS = 10;
 
 	public static final String DEFINITION_ID = "interptester";
 
@@ -49,25 +58,57 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	private final static String CLASS_DESC = "A tester of control interpolation";
 
 	// These must match the channel indexes given above
-	private final static String[] CHAN_NAMES = new String[] { "Input Channel Left",
-		"Input Channel Right",
-		"Output Wave Left",
-		"Output Wave Right" };
+	private final static String[] CHAN_NAMES = new String[] {
+		"Audio In",
+		"CV In",
+		"Raw Control CV Out",
+		"Linear Interpolation CV Out",
+		"Half Hann CV Out",
+		"Spring Damper CV Out",
+		"Low Pass CV Out",
+		"Spring Damper Double CV Out",
+		"Audio Out",
+		"CV Out"
+	};
 
-	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
+	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
 		MadChannelType.AUDIO,
-		MadChannelType.AUDIO };
+		MadChannelType.CV
+	};
 
-	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
+	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
+		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER };
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER
+	};
 
-	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
-		MadChannelPosition.STEREO_RIGHT,
-		MadChannelPosition.STEREO_LEFT,
-		MadChannelPosition.STEREO_RIGHT };
+	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO
+	};
 
 	public InterpTesterMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException

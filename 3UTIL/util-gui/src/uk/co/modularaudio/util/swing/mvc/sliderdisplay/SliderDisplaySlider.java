@@ -28,31 +28,53 @@ import javax.swing.SwingConstants;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModelAdaptor;
+import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 
 public class SliderDisplaySlider extends JSlider
 {
 //	private static Log log = LogFactory.getLog( SliderDisplaySlider.class.getName() );
-	
+
 	private static final long serialVersionUID = 7532750303295733460L;
-	
-	public SliderDisplaySlider( SliderDisplayModel model,
-			SliderDisplayController controller,
-			DisplayOrientation displayOrientation,
-			Color foregroundColor,
-			boolean opaque )
+
+	private final SliderDisplayController controller;
+	private SliderDisplayModel sdm;
+
+	public SliderDisplaySlider( final SliderDisplayModel model,
+			final SliderDisplayController controller,
+			final DisplayOrientation displayOrientation,
+			final Color foregroundColor,
+			final boolean opaque )
 	{
 		super( ( displayOrientation == DisplayOrientation.HORIZONTAL ? SwingConstants.HORIZONTAL : SwingConstants.VERTICAL  ) );
 		this.setOpaque( opaque );
 
+		this.controller = controller;
+		this.sdm = model;
+
 		this.setModel( new SliderDisplayModelAdaptor( this, model, controller ) );
 
-		int sliderMajorTickSpacing = model.getSliderMajorTickSpacing();
+		final int sliderMajorTickSpacing = model.getSliderMajorTickSpacing();
 //		log.debug("Setting major tick spacing to " + sliderMajorTickSpacing + " with " + model.getNumSliderSteps() + " steps");
 		this.setMajorTickSpacing( sliderMajorTickSpacing );
 		this.setForeground( foregroundColor );
 		// Results in ticks you can't change the colour of :-/ thanks gtk look and feel
 //		this.setPaintTicks( true );
 		this.setPaintTicks( false );
+	}
+
+	public void changeModel( final SliderDisplayModel newModel )
+	{
+		this.sdm = newModel;
+		this.setModel( new SliderDisplayModelAdaptor( this, newModel, controller ) );
+
+		final int sliderMajorTickSpacing = newModel.getSliderMajorTickSpacing();
+		this.setMajorTickSpacing( sliderMajorTickSpacing );
+	}
+
+	public int getInitialValue()
+	{
+		final SliderIntToFloatConverter itfc = sdm.getSliderIntToFloatConverter();
+		return itfc.floatValueToSliderIntValue( sdm, sdm.getInitialValue() );
 	}
 }

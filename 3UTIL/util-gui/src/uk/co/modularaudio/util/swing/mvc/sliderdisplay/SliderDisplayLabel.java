@@ -28,19 +28,18 @@ import javax.swing.JLabel;
 public class SliderDisplayLabel extends JLabel
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayLabel.class.getName() );
-	
+
 	private static final long serialVersionUID = 476235141676357358L;
-	
-	public SliderDisplayLabel( String startLabelText, Color labelColor, boolean opaque )
+
+	public SliderDisplayLabel( final String startLabelText, final Color labelColor, final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.setText( startLabelText );
 		this.setForeground( labelColor );
 		this.setBorder( BorderFactory.createEmptyBorder( 2, 2, 2, 2 ) );
-		
+
 		this.validate();
 //		Dimension minSize = getPreferredSize();
 //		setMinimumSize( minSize );
 	}
-
 }

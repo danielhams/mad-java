@@ -38,46 +38,47 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 public class SliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayTextbox.class.getName() );
-	
+
 	private static final long serialVersionUID = -493606535649144832L;
-	
-	private SliderDisplayModel model = null;
-	private SliderDisplayController controller = null;
-	
-	private JTextField textField = null;
-	private JLabel unitsLabel = null;
-	
-	private int numSigPlaces = -1;
-	private int numDecPlaces = -1;
-	private String unitsStr = null;
-	private int unitsStrLength = -1;
 
-	private StringBuilder valueStringBuilder = null;
+	private SliderDisplayModel model;
+	private final SliderDisplayController controller;
 
-	public SliderDisplayTextbox( SliderDisplayModel model, SliderDisplayController controller, Color unitsColor, boolean opaque )
+	private final JTextField textField;
+	private JLabel unitsLabel;
+
+	private int numSigPlaces;
+	private int numDecPlaces;
+	private String unitsStr;
+	private int unitsStrLength;
+	private int numCharactersForString;
+
+	private final StringBuilder valueStringBuilder;
+
+	public SliderDisplayTextbox( final SliderDisplayModel model,
+			final SliderDisplayController controller,
+			final Color unitsColor,
+			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = model;
 		this.controller = controller;
-		
-		MigLayoutStringHelper lh = new MigLayoutStringHelper();
+
+		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "insets 0, gap 0" );
 		setLayout( lh.createMigLayout() );
-		
+
 		textField = new JTextField();
 //		textField.setOpaque( opaque );
-		
-		this.numSigPlaces = model.getDisplayNumSigPlaces();
-		this.numDecPlaces = model.getDisplayNumDecPlaces();
-		this.unitsStr = model.getDisplayUnitsStr();
-		this.unitsStrLength = unitsStr.length();
-		int numCharactersForString = numSigPlaces + numDecPlaces;
-		numCharactersForString = (numCharactersForString > 1 ? numCharactersForString - 1 : 1 );
-//		log.debug("Setting num columns " + numCharactersForString );
-		textField.setColumns( numCharactersForString );
-		
+
+		extractModelVars( model );
+
+		valueStringBuilder = new StringBuilder( numCharactersForString );
+
+		completeModelSetup( model );
+
 		this.add( textField, " grow 0, shrink 0");
-		
+
 		if( unitsStrLength > 0 )
 		{
 			unitsLabel = new JLabel();
@@ -89,24 +90,41 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 //			unitsLabel.setMinimumSize( minimumSize );
 			this.add( unitsLabel, "grow 0, shrink 0" );
 		}
-		valueStringBuilder = new StringBuilder( numCharactersForString );
-		
-		float curValue = model.getInitialValue();
-		
+
 		textField.setHorizontalAlignment( JTextField.RIGHT );
-		
+
+		final float curValue = model.getInitialValue();
 		setCurrentValueNoPropogate( curValue );
-		
+
 		model.addChangeListener( this );
-		
+
 		textField.addActionListener( this );
-		
+
 		this.validate();
-		Dimension minimumSize = this.getPreferredSize();
+		final Dimension minimumSize = this.getPreferredSize();
 		this.setMinimumSize( minimumSize );
 	}
-	
-	private void setCurrentValueNoPropogate( float value )
+
+	private void extractModelVars( final SliderDisplayModel model )
+	{
+		this.numSigPlaces = model.getDisplayNumSigPlaces();
+		this.numDecPlaces = model.getDisplayNumDecPlaces();
+		this.unitsStr = model.getDisplayUnitsStr();
+		this.unitsStrLength = unitsStr.length();
+		numCharactersForString = numSigPlaces + numDecPlaces;
+		numCharactersForString = (numCharactersForString > 1 ? numCharactersForString - 1 : 1 );
+	}
+
+	private void completeModelSetup( final SliderDisplayModel model )
+	{
+//		log.debug("Setting num columns " + numCharactersForString );
+		textField.setColumns( numCharactersForString );
+
+		final float curValue = model.getInitialValue();
+		setCurrentValueNoPropogate( curValue );
+	}
+
+	private void setCurrentValueNoPropogate( final float value )
 	{
 		valueStringBuilder.setLength( 0 );
 		MathFormatter.fastFloatPrint( valueStringBuilder, value, numDecPlaces, false );
@@ -114,7 +132,7 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	}
 
 	@Override
-	public void receiveValueChange( Object source, float newValue )
+	public void receiveValueChange( final Object source, final float newValue )
 	{
 		if( source != this )
 		{
@@ -124,12 +142,12 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 //		log.debug("ActionPerformed in textbox with source " + e.getSource().getClass().getSimpleName() );
 		if( e.getSource() == textField )
 		{
-			String valueStr = textField.getText();
+			final String valueStr = textField.getText();
 			boolean validValue = false;
 			float valueAsFloat = 0.0f;
 			try
@@ -144,14 +162,14 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 					}
 				}
 			}
-			catch(NumberFormatException nfe )
+			catch(final NumberFormatException nfe )
 			{
 			}
 
 			float valueToSet;
 			if( validValue )
 			{
-				String truncToPrecisionStr = MathFormatter.slowFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
+				final String truncToPrecisionStr = MathFormatter.slowFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
 				valueToSet = Float.parseFloat( truncToPrecisionStr );
 			}
 			else
@@ -159,9 +177,18 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 				valueToSet = model.getValue();
 			}
 			setCurrentValueNoPropogate( valueToSet );
-			
+
 			controller.setValue( this, valueToSet );
-			
+
 		}
+	}
+
+	public void changeModel( final SliderDisplayModel newModel )
+	{
+		model.removeChangeListener( this );
+		this.model = newModel;
+		extractModelVars( newModel );
+		completeModelSetup( newModel );
+		model.addChangeListener( this );
 	}
 }

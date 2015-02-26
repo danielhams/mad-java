@@ -27,13 +27,12 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
-import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -48,24 +47,31 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( InterpTesterMadInstance.class.getName() );
 
-	private ControlValueInterpolator ampInterpolator;
-
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
-	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
-	private final LinearInterpolator lInterpolator = new LinearInterpolator();
+	private final LinearInterpolator liInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
 	private final LowPassInterpolator lpInterpolator = new LowPassInterpolator();
-
-	private final ControlValueInterpolator[] interpolators = new ControlValueInterpolator[6];
+	private final SpringAndDamperDoubleInterpolator sddInterpolator = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private int sampleRate;
 	private float desValueChaseMillis = CPTValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
 
-	private final byte[] lChannelMask;
-	private final byte[] rChannelMask;
+//	private final byte[] lChannelMask;
+	private int framesBetweenUiEvents;
+	private int numFramesToNextUiEvent;
+
+	private long lastNoneNanos;
+	private long lastLinNanos;
+	private long lastHHNanos;
+	private long lastSDNanos;
+	private long lastLPNanos;
+	private long lastSDDNanos;
+
+	private boolean uiActive;
 
 	public InterpTesterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -75,23 +81,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
-		interpolators[0] = noneInterpolator;
-		interpolators[1] = sorInterpolator;
-		interpolators[2] = lInterpolator;
-		interpolators[3] = hhInterpolator;
-		interpolators[4] = sdInterpolator;
-		interpolators[5] = lpInterpolator;
-		ampInterpolator = interpolators[0];
-
-		final MadChannelConnectedFlags lMaskCcf = new MadChannelConnectedFlags( InterpTesterMadDefinition.NUM_CHANNELS );
-		lMaskCcf.set( InterpTesterMadDefinition.CONSUMER_CHAN1_LEFT );
-		lMaskCcf.set( InterpTesterMadDefinition.PRODUCER_OUT_LEFT );
-		lChannelMask = lMaskCcf.createMaskForSetChannels();
-
-		final MadChannelConnectedFlags rMaskCcf = new MadChannelConnectedFlags( InterpTesterMadDefinition.NUM_CHANNELS );
-		rMaskCcf.set( InterpTesterMadDefinition.CONSUMER_CHAN1_RIGHT );
-		rMaskCcf.set( InterpTesterMadDefinition.PRODUCER_OUT_RIGHT );
-		rChannelMask = rMaskCcf.createMaskForSetChannels();
+//		final MadChannelConnectedFlags lMaskCcf = new MadChannelConnectedFlags( InterpTesterMadDefinition.NUM_CHANNELS );
+//		lMaskCcf.set( InterpTesterMadDefinition.CONSUMER_CHAN1_LEFT );
+//		lMaskCcf.set( InterpTesterMadDefinition.PRODUCER_OUT_LEFT );
+//		lChannelMask = lMaskCcf.createMaskForSetChannels();
 	}
 
 	@Override
@@ -100,11 +93,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		sorInterpolator.reset( sampleRate, desValueChaseMillis );
-		lInterpolator.reset( sampleRate, desValueChaseMillis );
+		liInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
 		sdInterpolator.reset( sampleRate, desValueChaseMillis );
 		lpInterpolator.reset( sampleRate, desValueChaseMillis );
+		sddInterpolator.reset( sampleRate, desValueChaseMillis );
+
+		framesBetweenUiEvents = timingParameters.getSampleFramesPerFrontEndPeriod() * 10;
+		numFramesToNextUiEvent = 0;
 	}
 
 	@Override
@@ -121,44 +117,108 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 			final int frameOffset,
 			final int numFrames  )
 	{
-		/*
-		final boolean in1LConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_LEFT );
-		final boolean in1RConnected = channelConnectedFlags.get( CPTMadDefinition.CONSUMER_CHAN1_RIGHT );
+//		final boolean lConnected = channelConnectedFlags.logicalAnd( lChannelMask );
 
-		final boolean outLConnected = channelConnectedFlags.get( CPTMadDefinition.PRODUCER_OUT_LEFT );
-		final boolean outRConnected = channelConnectedFlags.get( CPTMadDefinition.PRODUCER_OUT_RIGHT );
-		*/
-
-		final boolean lConnected = channelConnectedFlags.logicalAnd( lChannelMask );
-		final boolean rConnected = channelConnectedFlags.logicalAnd( rChannelMask );
-
-		// Now mix them together with the precomputed amps
-		// only if we have at least one input and output connected
-//		if( (outLConnected && in1LConnected)
-//			||
-//			(outRConnected && in1RConnected)
-//			)
-		if( lConnected || rConnected )
+		if( numFramesToNextUiEvent <= 0 && uiActive )
 		{
-			final float[] in1LBuffer = channelBuffers[ InterpTesterMadDefinition.CONSUMER_CHAN1_LEFT ].floatBuffer;
-			final float[] in1RBuffer = channelBuffers[ InterpTesterMadDefinition.CONSUMER_CHAN1_RIGHT ].floatBuffer;
-			final float[] outLBuffer = channelBuffers[ InterpTesterMadDefinition.PRODUCER_OUT_LEFT ].floatBuffer;
-			final float[] outRBuffer = channelBuffers[ InterpTesterMadDefinition.PRODUCER_OUT_RIGHT ].floatBuffer;
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_NONE_NANOS,
+					lastNoneNanos,
+					null );
 
-			// Use the temporary area as a place to put generate control values
-			final float[] tmpArea = tempQueueEntryStorage.temporaryFloatArray;
 
-			ampInterpolator.generateControlValues( tmpArea, 0, numFrames );
-			int curIndex = frameOffset;
-			for( int i = 0 ; i < numFrames ; i++, curIndex++ )
-			{
-				outLBuffer[ curIndex ] = in1LBuffer[ curIndex ] * tmpArea[i];
-				outRBuffer[ curIndex ] = in1RBuffer[ curIndex ] * tmpArea[i];
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_LIN_NANOS,
+					lastLinNanos,
+					null );
 
-			}
-			// And dampen any values that are just noise.
-			ampInterpolator.checkForDenormal();
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_HH_NANOS,
+					lastHHNanos,
+					null );
+
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_SD_NANOS,
+					lastSDNanos,
+					null );
+
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_LP_NANOS,
+					lastLPNanos,
+					null );
+
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_SDD_NANOS,
+					lastSDDNanos,
+					null );
+
+			numFramesToNextUiEvent = framesBetweenUiEvents;
 		}
+
+
+		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
+
+		final float[] rawBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW ].floatBuffer;
+
+		long before = System.nanoTime();
+		noneInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		noneInterpolator.checkForDenormal();
+		long after = System.nanoTime();
+		lastNoneNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, rawBuf, frameOffset, numFrames );
+
+		final float[] linearBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LINEAR ].floatBuffer;
+
+		before = System.nanoTime();
+		liInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		liInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastLinNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, linearBuf, frameOffset, numFrames );
+
+		final float[] hhBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN ].floatBuffer;
+
+		before = System.nanoTime();
+		hhInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		hhInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastHHNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, hhBuf, frameOffset, numFrames );
+
+		final float[] sdBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER ].floatBuffer;
+
+		before = System.nanoTime();
+		sdInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		sdInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastSDNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, sdBuf, frameOffset, numFrames );
+
+		final float[] lpBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LOWPASS ].floatBuffer;
+
+		before = System.nanoTime();
+		lpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		lpInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastLPNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, lpBuf, frameOffset, numFrames );
+
+		final float[] sddBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE ].floatBuffer;
+
+		before = System.nanoTime();
+		sddInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		sddInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastSDDNanos = after - before;
+		System.arraycopy( tmpBuffer, 0, sddBuf, frameOffset, numFrames );
+
+		numFramesToNextUiEvent -= numFrames;
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
@@ -166,30 +226,28 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	public void setDesiredAmp( final float amp )
 	{
 //		log.trace( "Received amp change: " + amp );
-//		ampInterpolator.notifyOfNewValue( amp );
 
 		// Set them all
 		noneInterpolator.notifyOfNewValue( amp );
-		sorInterpolator.notifyOfNewValue( amp );
-		lInterpolator.notifyOfNewValue( amp );
+		liInterpolator.notifyOfNewValue( amp );
 		hhInterpolator.notifyOfNewValue( amp );
 		sdInterpolator.notifyOfNewValue( amp );
 		lpInterpolator.notifyOfNewValue( amp );
-	}
-
-	public void setInterpolatorByIndex( final int interpolatorIndex )
-	{
-		ampInterpolator = interpolators[interpolatorIndex];
-		log.debug("Changed to " + ampInterpolator.getClass().getSimpleName() );
+		sddInterpolator.notifyOfNewValue( amp );
 	}
 
 	public void setChaseMillis( final float chaseMillis )
 	{
 		desValueChaseMillis = chaseMillis;
-		sorInterpolator.reset( sampleRate, chaseMillis );
-		lInterpolator.reset( sampleRate, chaseMillis );
+		liInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
 		sdInterpolator.reset( sampleRate, chaseMillis );
 		lpInterpolator.reset( sampleRate, chaseMillis );
+		sddInterpolator.reset( sampleRate, chaseMillis );
+	}
+
+	public void setUiActive( final boolean active )
+	{
+		this.uiActive = active;
 	}
 }

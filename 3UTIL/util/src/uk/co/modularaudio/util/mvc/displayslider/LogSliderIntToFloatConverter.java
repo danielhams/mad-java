@@ -22,39 +22,38 @@ package uk.co.modularaudio.util.mvc.displayslider;
 
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
-public class LogSliderIntToFloatConverter implements
-		SliderIntToFloatConverter
+public class LogSliderIntToFloatConverter implements SliderIntToFloatConverter
 {
 	private float maxMappedValue = 0.0f;
-	
-	public LogSliderIntToFloatConverter( float maxMappedValue )
+
+	public LogSliderIntToFloatConverter( final float maxMappedValue )
 	{
 		this.maxMappedValue = maxMappedValue;
 	}
 
 	@Override
-	public int floatValueToSliderIntValue( SliderDisplayModel sdm, float inValue )
+	public int floatValueToSliderIntValue( final SliderDisplayModel sdm, final float inValue )
 	{
-		int numSteps = sdm.getNumSliderSteps();
-		float minValue = sdm.getMinValue();
-		float maxValue = sdm.getMaxValue();
-		float diffValue = maxValue - minValue;
-		float normalisedInVal = (inValue - minValue) / diffValue;
-		float normalisedFloatVal = NormalisedValuesMapper.logMinMaxMapF( normalisedInVal, 0.0f, maxMappedValue );
-		int intVal = (int)( numSteps * normalisedFloatVal );
+		final int numSteps = sdm.getNumSliderSteps();
+		final float minValue = sdm.getMinValue();
+		final float maxValue = sdm.getMaxValue();
+		final float diffValue = maxValue - minValue;
+		final float normalisedInVal = (inValue - minValue) / diffValue;
+		final float normalisedFloatVal = NormalisedValuesMapper.logMinMaxMapF( normalisedInVal, 0.0f, maxMappedValue );
+		final int intVal = (int)( numSteps * normalisedFloatVal );
 		return intVal;
 	}
 
 	@Override
-	public float sliderIntValueToFloatValue( SliderDisplayModel sdm, int sliderIntValue )
+	public float sliderIntValueToFloatValue( final SliderDisplayModel sdm, final int sliderIntValue )
 	{
-		int numSteps = sdm.getNumSliderSteps();
-		float minValue = sdm.getMinValue();
-		float maxValue = sdm.getMaxValue();
-		float diffValue = maxValue - minValue;
-		
-		float normalisedSliderVal = sliderIntValue / (float)numSteps;
-		float normalisedOutVal = NormalisedValuesMapper.expMinMaxMapF( normalisedSliderVal, 0.0f, maxMappedValue );
+		final int numSteps = sdm.getNumSliderSteps();
+		final float minValue = sdm.getMinValue();
+		final float maxValue = sdm.getMaxValue();
+		final float diffValue = maxValue - minValue;
+
+		final float normalisedSliderVal = sliderIntValue / (float)numSteps;
+		final float normalisedOutVal = NormalisedValuesMapper.expMinMaxMapF( normalisedSliderVal, 0.0f, maxMappedValue );
 		return minValue + (normalisedOutVal * diffValue);
 	}
 
