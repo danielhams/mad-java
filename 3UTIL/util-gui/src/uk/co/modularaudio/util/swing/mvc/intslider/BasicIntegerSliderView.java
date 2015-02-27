@@ -28,20 +28,20 @@ import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
 public class BasicIntegerSliderView extends JSlider
 {
 	private static final long serialVersionUID = -3261152245183932001L;
-	
-//	private static Log log = LogFactory.getLog( BasicIntegerSliderView.class.getName() );
-	
-//	private BasicIntegerSliderModel ism = null;
-	private BasicIntegerSliderController isc = null;
-	private BasicIntegerSliderModelAdaptor sma = null;
 
-	public BasicIntegerSliderView( BasicIntegerSliderModel ism, BasicIntegerSliderController isc )
+//	private static Log log = LogFactory.getLog( BasicIntegerSliderView.class.getName() );
+
+//	private BasicIntegerSliderModel ism;
+	private BasicIntegerSliderController isc;
+	private BasicIntegerSliderModelAdaptor sma;
+
+	public BasicIntegerSliderView( final BasicIntegerSliderModel ism, final BasicIntegerSliderController isc )
 	{
 		this.isc = isc;
 		this.setModelAndController( ism, isc );
 	}
 
-	public void setModelAndController( BasicIntegerSliderModel ism, BasicIntegerSliderController isc )
+	public void setModelAndController( final BasicIntegerSliderModel ism, final BasicIntegerSliderController isc )
 	{
 		if( sma != null )
 		{
@@ -50,8 +50,8 @@ public class BasicIntegerSliderView extends JSlider
 		this.isc = isc;
 		sma = new BasicIntegerSliderModelAdaptor( ism, isc, this );
 	}
-	
-	public void setModel( BasicIntegerSliderModel ism )
+
+	public void setModel( final BasicIntegerSliderModel ism )
 	{
 		if( sma != null )
 		{

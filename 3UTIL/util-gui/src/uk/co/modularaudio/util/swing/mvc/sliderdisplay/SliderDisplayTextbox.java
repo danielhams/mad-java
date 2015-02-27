@@ -127,7 +127,18 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	private void setCurrentValueNoPropogate( final float value )
 	{
 		valueStringBuilder.setLength( 0 );
-		MathFormatter.fastFloatPrint( valueStringBuilder, value, numDecPlaces, false );
+		if( value == Float.NEGATIVE_INFINITY )
+		{
+			valueStringBuilder.append( "-Inf" );
+		}
+		else if( value == Float.POSITIVE_INFINITY )
+		{
+			valueStringBuilder.append( "Inf" );
+		}
+		else
+		{
+			MathFormatter.fastFloatPrint( valueStringBuilder, value, numDecPlaces, false );
+		}
 		textField.setText( valueStringBuilder.toString() );
 	}
 

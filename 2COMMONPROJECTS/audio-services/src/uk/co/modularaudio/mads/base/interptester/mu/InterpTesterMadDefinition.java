@@ -37,17 +37,20 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int CONSUMER_AUDIO = 0;
 	public final static int CONSUMER_CV = 1;
 
-	public final static int PRODUCER_CV_RAW = 2;
-	public final static int PRODUCER_CV_LINEAR = 3;
-	public final static int PRODUCER_CV_HALFHANN = 4;
-	public final static int PRODUCER_CV_SPRINGDAMPER = 5;
-	public final static int PRODUCER_CV_LOWPASS = 6;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 7;
+	public final static int PRODUCER_CV_RAW_NOTS = 2;
+	public final static int PRODUCER_CV_HALFHANN_NOTS = 3;
 
-	public final static int PRODUCER_AUDIO = 8;
-	public final static int PRODUCER_CV = 9;
+	public final static int PRODUCER_CV_RAW = 4;
+	public final static int PRODUCER_CV_LINEAR = 5;
+	public final static int PRODUCER_CV_HALFHANN = 6;
+	public final static int PRODUCER_CV_SPRINGDAMPER = 7;
+	public final static int PRODUCER_CV_LOWPASS = 8;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 9;
 
-	public final static int NUM_CHANNELS = 10;
+	public final static int PRODUCER_AUDIO = 10;
+	public final static int PRODUCER_CV = 11;
+
+	public final static int NUM_CHANNELS = 12;
 
 	public static final String DEFINITION_ID = "interptester";
 
@@ -61,6 +64,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	private final static String[] CHAN_NAMES = new String[] {
 		"Audio In",
 		"CV In",
+		"Raw Control NoTS CV Out",
+		"Half Hann NoTS CV Out",
 		"Raw Control CV Out",
 		"Linear Interpolation CV Out",
 		"Half Hann CV Out",
@@ -73,6 +78,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
 		MadChannelType.AUDIO,
+		MadChannelType.CV,
+		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -94,10 +101,14 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,

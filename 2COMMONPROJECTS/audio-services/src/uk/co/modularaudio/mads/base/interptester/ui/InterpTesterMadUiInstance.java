@@ -128,6 +128,7 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 //		log.debug("Received new value: " + MathFormatter.slowFloatPrint( newValue, 5, true ) );
 		final int intBits = Float.floatToIntBits( newValue );
 		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP, intBits );
+		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP_NOTS, intBits );
 	}
 
 	public void sendUiActive( final boolean active )

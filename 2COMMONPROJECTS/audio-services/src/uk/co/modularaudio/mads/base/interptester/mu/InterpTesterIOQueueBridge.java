@@ -32,16 +32,18 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 	private static Log log = LogFactory.getLog( InterpTesterIOQueueBridge.class.getName() );
 
 	public static final int COMMAND_AMP = 0;
-	public static final int COMMAND_CHASE_MILLIS = 1;
+	public static final int COMMAND_AMP_NOTS = 1;
+	public static final int COMMAND_CHASE_MILLIS = 2;
 
-	public static final int COMMAND_TO_UI_NONE_NANOS = 2;
-	public static final int COMMAND_TO_UI_LIN_NANOS = 3;
-	public static final int COMMAND_TO_UI_HH_NANOS = 4;
-	public static final int COMMAND_TO_UI_SD_NANOS = 5;
-	public static final int COMMAND_TO_UI_LP_NANOS = 6;
-	public static final int COMMAND_TO_UI_SDD_NANOS = 7;
+	public static final int COMMAND_TO_UI_NONE_NANOS = 3;
+	public static final int COMMAND_TO_UI_LIN_NANOS = 4;
+	public static final int COMMAND_TO_UI_HH_NANOS = 5;
+	public static final int COMMAND_TO_UI_SD_NANOS = 6;
+	public static final int COMMAND_TO_UI_LP_NANOS = 7;
+	public static final int COMMAND_TO_UI_SDD_NANOS = 8;
 
-	public static final int COMMAND_UIACTIVE = 8;
+	public static final int COMMAND_UIACTIVE = 9;
+
 
 	public InterpTesterIOQueueBridge()
 	{
@@ -61,6 +63,14 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
 				final float amp = Float.intBitsToFloat( lower32Bits );
 				instance.setDesiredAmp( amp );
+				break;
+			}
+			case COMMAND_AMP_NOTS:
+			{
+				final long value = queueEntry.value;
+				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
+				final float amp = Float.intBitsToFloat( lower32Bits );
+				instance.setDesiredAmpNoTs( amp );
 				break;
 			}
 			case COMMAND_CHASE_MILLIS:

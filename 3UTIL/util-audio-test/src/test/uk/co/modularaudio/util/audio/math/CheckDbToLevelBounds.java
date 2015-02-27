@@ -32,20 +32,20 @@ import uk.co.modularaudio.util.math.MathFormatter;
 public class CheckDbToLevelBounds extends TestCase
 {
 	private static Log log = LogFactory.getLog( CheckDbToLevelBounds.class.getName() );
-	
+
 //	public void testBoundsOfConversion() throws Exception
 //	{
 //		float curAmp = 1.0f;
-//		
+//
 //		for( int i = 0 ; i < 10 ; i++ )
 //		{
 //			curAmp = 1.0f / (i+1);
 //			float dbLevel = (float) AudioMath.levelToDb( curAmp );
 //			log.debug("For amp " + MathFormatter.floatPrint( curAmp, 3 ) + " db level is " + MathFormatter.floatPrint( dbLevel, 3 ) );
 //		}
-//		
+//
 //		log.debug("For amp +0.00001f db level is " + MathFormatter.floatPrint( (float)AudioMath.levelToDb( 0.00001f ) ) );
-//		
+//
 //		log.debug("And now the other way"  );
 //
 //		for( int i = 0 ; i < 10 ; i++ )
@@ -55,20 +55,20 @@ public class CheckDbToLevelBounds extends TestCase
 //			log.debug("For db level " + MathFormatter.floatPrint( dbLevel, 3 ) + " amp is " + MathFormatter.floatPrint( amp, 3  ) );
 //		}
 //	}
-//	
+//
 //	public void testDbToLevelComputer() throws Exception
 //	{
 //		FirstDbToLevelComputer dbComputer = new FirstDbToLevelComputer( 1000 );
-//		
+//
 //		float dbForSliderHalfway = dbComputer.toDbFromNormalisedLevel( 0.5f );
 //		log.debug("DBTL for slider halfway is " + MathFormatter.floatPrint( dbForSliderHalfway, 3 ) );
-//		
+//
 //		float amp = (float)AudioMath.dbToLevel( dbForSliderHalfway );
 //		log.debug("DBTL Which is " + MathFormatter.floatPrint( amp, 3 ) + " as a amplification multiplier.");
-//		
+//
 //		float fiveDbAsNormalisedSliderLevel = dbComputer.toNormalisedSliderLevelFromDb( 5.0f );
 //		log.debug("DBTL Five DB as normalised slider level is " + fiveDbAsNormalisedSliderLevel );
-//		
+//
 //		float dbForZero = dbComputer.toDbFromNormalisedLevel( 0.0f );
 //		log.debug("DBTL DB for zero is " + dbForZero );
 //		float zeroDbAmp = (float)AudioMath.dbToLevel( dbForZero );
@@ -77,41 +77,44 @@ public class CheckDbToLevelBounds extends TestCase
 
 	public void testMixdownToLevelComputer() throws Exception
 	{
-		MixdownSliderDbToLevelComputer dbComputer = new MixdownSliderDbToLevelComputer( 1000 );
-		
-		float dbForSliderHalfway = dbComputer.toDbFromNormalisedLevel( 0.5f );
+		final MixdownSliderDbToLevelComputer dbComputer = new MixdownSliderDbToLevelComputer( 1000 );
+
+		final float dbForSliderHalfway = dbComputer.toDbFromNormalisedLevel( 0.5f );
 		log.debug("MDTOL DB for slider halfway is " + MathFormatter.slowFloatPrint( dbForSliderHalfway, 3, true ) );
 
-		float dbForSliderAllway = dbComputer.toDbFromNormalisedLevel( 1.0f );
+		final float dbForSliderAllway = dbComputer.toDbFromNormalisedLevel( 1.0f );
 		log.debug("MDTOL DB for slider all the way is " + MathFormatter.slowFloatPrint( dbForSliderAllway, 3, true ) );
 
-		float dbForSliderNoway = dbComputer.toDbFromNormalisedLevel( 0.0f );
+		final float dbForSliderNoway = dbComputer.toDbFromNormalisedLevel( 0.0f );
 		log.debug("MDTOL DB for slider no way is " + MathFormatter.slowFloatPrint( dbForSliderNoway, 3, true ) );
 
-		float dbForSliderPoint1 = dbComputer.toDbFromNormalisedLevel( 0.1f );
+		final float dbForSliderPoint1 = dbComputer.toDbFromNormalisedLevel( 0.1f );
 		log.debug("MDTOL DB for slider point1 is " + MathFormatter.slowFloatPrint( dbForSliderPoint1, 3, true ) );
-		
-		float fiveDbAsNormalisedSliderLevel = dbComputer.toNormalisedSliderLevelFromDb( 5.0f );
+
+		final float fiveDbAsNormalisedSliderLevel = dbComputer.toNormalisedSliderLevelFromDb( 5.0f );
 		log.debug("MDTOL Five DB as normalised slider level is " + fiveDbAsNormalisedSliderLevel );
-		
-		float amp = (float)AudioMath.dbToLevel( dbForSliderHalfway );
+
+		final float amp = (float)AudioMath.dbToLevel( dbForSliderHalfway );
 		log.debug("MDTOL Halfway slider db is " + MathFormatter.slowFloatPrint( amp, 3, true ) + " as a amplification multiplier.");
-		
-		float dbForZero = dbComputer.toDbFromNormalisedLevel( 0.0f );
+
+		final float dbForZero = dbComputer.toDbFromNormalisedLevel( 0.0f );
 		log.debug("MDTOL DB for zero is " + dbForZero );
-		float zeroDbAmp = (float)AudioMath.dbToLevel( dbForZero );
+		final float zeroDbAmp = (float)AudioMath.dbToLevel( dbForZero );
 		log.debug("MDTOL Which is " + MathFormatter.slowFloatPrint( zeroDbAmp, 3, true ) );
-		
-		float dbForFull = dbComputer.toDbFromNormalisedLevel( 1.0f );
+
+		final float dbForFull = dbComputer.toDbFromNormalisedLevel( 1.0f );
 		log.debug("Db for full value is " + dbForFull );
-		
-		float normValFor50 = dbComputer.toNormalisedSliderLevelFromDb( -50 );
+
+		final float normaValForZero = dbComputer.toNormalisedSliderLevelFromDb( 0.0f );
+		log.debug("MDTOL nvf0 = " + normaValForZero );
+
+		final float normValFor50 = dbComputer.toNormalisedSliderLevelFromDb( -50.0f );
 		log.debug("MDTOL nvf50 = " + normValFor50 );
 
-		float normValFor90 = dbComputer.toNormalisedSliderLevelFromDb( -90 );
+		final float normValFor90 = dbComputer.toNormalisedSliderLevelFromDb( -90.0f );
 		log.debug("MDTOL nvf90 = " + normValFor90 );
-		
-		double thresAsDb = AudioMath.levelToDb( 0.037 );
+
+		final double thresAsDb = AudioMath.levelToDb( 0.037 );
 		log.debug("0.037 as db is " + thresAsDb );
 	}
 

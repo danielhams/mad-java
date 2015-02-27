@@ -35,28 +35,28 @@ import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
 public class BasicIntegerSliderModelAdaptor implements IntegerSliderModelListener, ChangeListener
 {
 	private static Log log = LogFactory.getLog( BasicIntegerSliderModelAdaptor.class.getName() );
-	
-	private BasicIntegerSliderModel ism = null;
-	private BasicIntegerSliderController isc = null;
-	private BasicIntegerSliderView isv = null;
-	
-	public BasicIntegerSliderModelAdaptor(BasicIntegerSliderModel ism,
-			BasicIntegerSliderController isc,
-			BasicIntegerSliderView isv )
+
+	private final BasicIntegerSliderModel ism;
+	private final BasicIntegerSliderController isc;
+	private final BasicIntegerSliderView isv;
+
+	public BasicIntegerSliderModelAdaptor(final BasicIntegerSliderModel ism,
+			final BasicIntegerSliderController isc,
+			final BasicIntegerSliderView isv )
 	{
 		this.ism = ism;
 		this.isc = isc;
 		this.isv = isv;
 
 		updateValues();
-		
+
 		// Register us as a listener
 		ism.addListener( this );
-		
+
 		// Add a listener to the slider that calls the controller
 		isv.addChangeListener( this );
 	}
-	
+
 	private void updateValues()
 	{
 		isv.setMinimum( ism.getMinVaue() );
@@ -65,28 +65,28 @@ public class BasicIntegerSliderModelAdaptor implements IntegerSliderModelListene
 	}
 
 	@Override
-	public void valueChanged( IntegerSliderModelListenerEvent e )
+	public void valueChanged( final IntegerSliderModelListenerEvent e )
 	{
 //		log.debug("Got a value changed from ism");
 		updateValues();
 	}
 
 	@Override
-	public void boundsChanged(IntegerSliderModelListenerEvent e)
+	public void boundsChanged(final IntegerSliderModelListenerEvent e)
 	{
 //		log.debug("Got a bounds changed from ism");
 		updateValues();
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e)
+	public void stateChanged(final ChangeEvent e)
 	{
 //		log.debug("Got a state changed from slider: " + e.toString() );
 		try
 		{
 			isc.setValue( isv.getValue() );
 		}
-		catch (ValueOutOfRangeException e1)
+		catch (final ValueOutOfRangeException e1)
 		{
 			e1.printStackTrace();
 		}
@@ -96,7 +96,7 @@ public class BasicIntegerSliderModelAdaptor implements IntegerSliderModelListene
 	{
 		log.debug("Destroying basic integer slider model adaptor");
 		ism.removeListener( this );
-		
+
 		isv.removeChangeListener( this );
 	}
 }

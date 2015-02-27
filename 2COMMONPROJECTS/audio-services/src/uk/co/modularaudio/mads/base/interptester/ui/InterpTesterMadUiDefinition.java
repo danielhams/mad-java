@@ -41,6 +41,8 @@ public class InterpTesterMadUiDefinition
 	private static final int[] CHAN_INDEXES = new int[] {
 		InterpTesterMadDefinition.CONSUMER_AUDIO,
 		InterpTesterMadDefinition.CONSUMER_CV,
+		InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_RAW,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
@@ -55,6 +57,9 @@ public class InterpTesterMadUiDefinition
 		new Point( 150, 80 ),
 		new Point( 190, 80 ),
 
+		new Point( 150, 120 ),
+		new Point( 190, 120 ),
+
 		new Point( 150, 160 ),
 		new Point( 190, 160 ),
 		new Point( 230, 160 ),
@@ -63,8 +68,8 @@ public class InterpTesterMadUiDefinition
 		new Point( 350, 160 ),
 
 
-		new Point( 150, 240 ),
-		new Point( 190, 240 )
+		new Point( 150, 200 ),
+		new Point( 190, 200 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

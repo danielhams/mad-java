@@ -1,0 +1,113 @@
+package test.uk.co.modularaudio.util.audio.mvc.displayslider;
+
+import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.util.audio.mvc.displayslider.MixdownSliderIntToFloatConverter;
+import uk.co.modularaudio.util.math.MathFormatter;
+
+public class TestMixdownSliderIntToFloatConverter
+{
+	private static Log log = LogFactory.getLog( TestMixdownSliderIntToFloatConverter.class.getName() );
+
+	public TestMixdownSliderIntToFloatConverter()
+	{
+	}
+
+	public void go() throws IOException
+	{
+		final MixdownSliderIntToFloatConverter intToFloatConverter = new MixdownSliderIntToFloatConverter(
+				10.0f,
+				-30.0f,
+				-30.0f,
+				-120.0f );
+
+		intToFloatTests( intToFloatConverter );
+
+		floatToIntTests( intToFloatConverter );
+
+	}
+
+	private void intToFloatTests( final MixdownSliderIntToFloatConverter intToFloatConverter )
+	{
+		final int numCompressedSteps = intToFloatConverter.getNumCompressedSteps();
+		final int numLinearSteps = intToFloatConverter.getNumLinearSteps();
+		final int numTotalSteps = intToFloatConverter.getNumTotalSteps();
+
+		log.debug("IntToFloatConverter - NCS(" + numCompressedSteps + ") NLS(" + numLinearSteps + ") NTS(" + numTotalSteps + ")");
+		final int[] testIntVals = new int[] {
+				0,
+				1,
+				numCompressedSteps - 1,
+				numCompressedSteps,
+				numCompressedSteps + 1,
+				numCompressedSteps + 1 + (30 * 4)
+		};
+
+		for( final int i : testIntVals )
+		{
+			final float sliderFloatVal = intToFloatConverter.sliderIntValueToFloatValue( null, i );
+			if( sliderFloatVal == Float.NEGATIVE_INFINITY )
+			{
+				log.debug("IntToFloat " + i + " to -INF" );
+			}
+			else
+			{
+				log.debug("IntToFloat " + i + " to " +
+						MathFormatter.fastFloatPrint( sliderFloatVal, 5, true ) );
+			}
+		}
+	}
+
+	private void floatToIntTests( final MixdownSliderIntToFloatConverter intToFloatConverter )
+	{
+		final float[] testFloatVals = new float[] {
+				10.0f,
+				5.0f,
+				1.0f,
+				0.0f,
+				-1.0f,
+				-5.0f,
+				-10.0f,
+				-15.0f,
+				-29.0f,
+				-30.0f,
+				-31.0f,
+				-50.0f,
+				-69.0f,
+				-70.0f,
+				-71.0f,
+				-80.0f,
+				-90.0f,
+				-120.0f,
+				-1000.0f,
+				Float.NEGATIVE_INFINITY
+		};
+
+		for( final float f : testFloatVals )
+		{
+			final int sliderIntVal = intToFloatConverter.floatValueToSliderIntValue( null, f );
+			if( f == Float.NEGATIVE_INFINITY )
+			{
+				log.debug("FloatToInt -Inf as int: " +
+						sliderIntVal );
+			}
+			else
+			{
+				log.debug("FloatToInt " + MathFormatter.fastFloatPrint( f, 5, true ) + " as int: " +
+						sliderIntVal );
+			}
+		}
+	}
+
+	public static void main( final String[] args )
+		throws IOException
+	{
+		final TestMixdownSliderIntToFloatConverter t = new TestMixdownSliderIntToFloatConverter();
+		t.go();
+
+	}
+
+}

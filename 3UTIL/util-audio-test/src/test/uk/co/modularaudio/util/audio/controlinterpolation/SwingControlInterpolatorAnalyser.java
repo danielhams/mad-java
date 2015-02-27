@@ -56,9 +56,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
 
 	private final static String SRC_DIR = "control_interpolation_events";
-	private final static String SRC_FILE = "zero_to_one_events.txt";
+//	private final static String SRC_FILE = "zero_to_one_events.txt";
 //	private final static String SRC_FILE = "zero_to_one_multi_events.txt";
-//	private final static String SRC_FILE = "zero_to_one_and_back_multi_events.txt";
+	private final static String SRC_FILE = "zero_to_one_and_back_multi_events.txt";
 
 	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
 	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_5chan_processed.wav";
@@ -297,7 +297,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 				try
 				{
 					scia.setVisible( true );
-					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
+//					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
 					scia.go();
 				}
 				catch( final Exception e )
