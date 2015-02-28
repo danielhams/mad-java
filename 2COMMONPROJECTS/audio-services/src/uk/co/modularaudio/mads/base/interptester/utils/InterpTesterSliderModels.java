@@ -40,9 +40,9 @@ public class InterpTesterSliderModels
 //		cbm.addElement( "Time (1->5000 ms)" );
 
 		// Cross fader
-		models[0] = new SliderDisplayModel( -1.0f, 1.0f, 0.0f,
-				1000,
-				100,
+		models[0] = new SliderDisplayModel( 0.0f, 1.0f, 0.0f,
+				128,
+				1,
 				new SimpleSliderIntToFloatConverter(),
 				3,
 				3,

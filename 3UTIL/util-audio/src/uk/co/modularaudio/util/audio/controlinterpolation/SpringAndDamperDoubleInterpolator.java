@@ -30,6 +30,7 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolator
 {
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( SpringAndDamperDoubleInterpolator.class.getName() );
 
 	// Kinda happy (but issues with settling)
@@ -66,8 +67,8 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 
 	private final Derivative integrateDerivative = new Derivative();
 
-	private final float lowerBound;
-	private final float upperBound;
+	private float lowerBound;
+	private float upperBound;
 
 	private double desPos = 0.0f;
 
@@ -78,6 +79,12 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
+	}
+
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	{
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 	}
 
 	@Override
@@ -99,18 +106,18 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 			{
 				integrate( curState, 0, deltaTimestep );
 				final float curStateFloat = (float)curState.x;
-//				if( curStateFloat > upperBound )
-//				{
-//					output[ curIndex ] = upperBound;
-//				}
-//				else if( curStateFloat < lowerBound )
-//				{
-//					output[ curIndex ] = lowerBound;
-//				}
-//				else
-//				{
+				if( curStateFloat > upperBound )
+				{
+					output[ curIndex ] = upperBound;
+				}
+				else if( curStateFloat < lowerBound )
+				{
+					output[ curIndex ] = lowerBound;
+				}
+				else
+				{
 					output[ curIndex ] = curStateFloat;
-//				}
+				}
 			}
 		}
 	}
@@ -142,8 +149,6 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D;
 		}
 
-//		if( absX < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-//				absV < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 		if( absX <= MIN_VALUE_DELTA &&
 				absV <= MIN_VELOCITY )
 		{

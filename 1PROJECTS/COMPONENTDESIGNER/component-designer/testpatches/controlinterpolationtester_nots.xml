@@ -15,9 +15,9 @@
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Model Choice" value="Mixer"/>
-        <rackControl name="ValueChase" value="6.283"/>
-        <rackControl name="Value" value="-Infinity"/>
+        <rackControl name="Model Choice" value="Cross Fader"/>
+        <rackControl name="ValueChase" value="6.6088"/>
+        <rackControl name="Value" value="-0.013999999"/>
         <rackControl name="Perf Table" value=""/>
     </rackComponent>
     <rackComponent name="ForLP" definitionId="audio_cv_converter">
@@ -27,7 +27,7 @@
     </rackComponent>
     <rackComponent name="Frequency Filter 16" definitionId="frequency_filter">
         <rackPosition column="0" row="15"/>
-        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Filter Type" value="None"/>
         <rackControl name="Toggle 24 dB" value="true"/>
         <rackControl name="Knee" value="83.08"/>
         <rackControl name="Bandwidth" value="440.00"/>
@@ -41,7 +41,7 @@
     <rackComponent name="Mixer (Three Stereo Lanes) 9" definitionId="mixer3">
         <rackPosition column="0" row="11"/>
         <rackControl name="Master Lane" value="824:50"/>
-        <rackControl name="Mixer Lane 0" value="824:50:MS"/>
+        <rackControl name="Mixer Lane 0" value="824:50:M "/>
         <rackControl name="Mixer Lane 1" value="824:50:  "/>
         <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>

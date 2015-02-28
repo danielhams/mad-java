@@ -49,8 +49,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 //	private static final float VALUE_CHASE_MILLIS = 20.0f;
 //	private static final float VALUE_CHASE_MILLIS = 10.0f;
-	private static final float VALUE_CHASE_MILLIS = 5.33f;
-//	private static final float VALUE_CHASE_MILLIS = 3.7f;
+//	private static final float VALUE_CHASE_MILLIS = 7.33f;
+//	private static final float VALUE_CHASE_MILLIS = 5.33f;
+	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
@@ -71,7 +72,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	public static final int VIS_WIDTH = 1024;
 //	public static final int VIS_HEIGHT = 75;
 //	public static final int VIS_SAMPLES_PER_PIXEL=10;
-	public static final int VIS_SAMPLES_PER_PIXEL=2;
+	public static final int VIS_SAMPLES_PER_PIXEL=4;
+//	public static final int VIS_SAMPLES_PER_PIXEL=2;
 //	public static final int VIS_SAMPLES_PER_PIXEL=1;
 	private static final float DIFF_FOR_7BIT_CONTROLLER = 1.0f / 128.0f;
 
@@ -161,6 +163,13 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		{
 			final TestEvent te = events[i];
 			log.debug("Event(" + i + ") - " + te.toString() );
+
+			// Map to 7bit quantities
+			final float sbQuat = te.getEventValue() * 127.0f;
+			final int sbQuantInt = (int)sbQuat;
+			log.debug("Quat(" + sbQuantInt + ")");
+
+			te.setEventValue( sbQuantInt / 127.0f );
 		}
 
 		// Set the initial value from the first event

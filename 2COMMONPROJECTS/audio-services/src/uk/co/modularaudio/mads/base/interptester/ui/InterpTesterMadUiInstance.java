@@ -41,6 +41,8 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 
 	private final InterpTesterSliderModels sliderModels = new InterpTesterSliderModels();
 
+	private float lastFloat;
+
 	public InterpTesterMadUiInstance( final InterpTesterMadInstance instance,
 			final InterpTesterMadUiDefinition uiDefinition )
 	{
@@ -126,6 +128,7 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	public void setValue( final float newValue )
 	{
 //		log.debug("Received new value: " + MathFormatter.slowFloatPrint( newValue, 5, true ) );
+
 		final int intBits = Float.floatToIntBits( newValue );
 		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP, intBits );
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP_NOTS, intBits );

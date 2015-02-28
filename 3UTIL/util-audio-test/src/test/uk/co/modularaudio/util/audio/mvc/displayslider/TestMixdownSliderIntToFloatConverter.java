@@ -40,6 +40,7 @@ public class TestMixdownSliderIntToFloatConverter
 		final int[] testIntVals = new int[] {
 				0,
 				1,
+				numCompressedSteps / 2,
 				numCompressedSteps - 1,
 				numCompressedSteps,
 				numCompressedSteps + 1,

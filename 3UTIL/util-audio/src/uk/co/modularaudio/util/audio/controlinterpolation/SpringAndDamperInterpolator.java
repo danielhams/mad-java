@@ -30,24 +30,15 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class SpringAndDamperInterpolator implements ControlValueInterpolator
 {
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( SpringAndDamperInterpolator.class.getName() );
 
 	// initial values
-//	public static final float FORCE_SCALE = 10.0f;
-//	public static final float DAMPING_FACTOR = 1.0f;
-//	public static final float INTEGRATION_TIMESTEP = 0.1f;
-
-	// Kinda happy (but issues with settling)
 	public static final float FORCE_SCALE = 0.1f;
 	public static final float DAMPING_FACTOR = 0.5f;
 	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
 
-//	public static final float FORCE_SCALE = 0.0005f;
-//	public static final float DAMPING_FACTOR = 0.05f;
-//	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.5f;
-
 	public static final float MIN_VALUE_DELTA_DB = -120.0f;
-//	public static final float MIN_VALUE_DELTA = AudioMath.dbToLevelF( MIN_VALUE_DELTA_DB );
 	public static final float MIN_VALUE_DELTA = 2 * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
 	public static final float MIN_VELOCITY = 0.00001f;
 
@@ -75,8 +66,8 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 
 	private final Derivative integrateDerivative = new Derivative();
 
-	private final float lowerBound;
-	private final float upperBound;
+	private float lowerBound;
+	private float upperBound;
 
 	private float desPos = 0.0f;
 
@@ -87,6 +78,12 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
+	}
+
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	{
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 	}
 
 	@Override
@@ -106,18 +103,18 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 			for( int curIndex = outputIndex ; curIndex < lastIndex ; ++curIndex )
 			{
 				integrate( curState, 0, deltaTimestep );
-//				if( curState.x > upperBound )
-//				{
-//					output[ curIndex ] = upperBound;
-//				}
-//				else if( curState.x < lowerBound )
-//				{
-//					output[ curIndex ] = lowerBound;
-//				}
-//				else
-//				{
+				if( curState.x > upperBound )
+				{
+					output[ curIndex ] = upperBound;
+				}
+				else if( curState.x < lowerBound )
+				{
+					output[ curIndex ] = lowerBound;
+				}
+				else
+				{
 					output[ curIndex ] = curState.x;
-//				}
+				}
 			}
 		}
 	}
@@ -149,8 +146,6 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
 		}
 
-//		if( absX < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-//				absV < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 		if( absX <= MIN_VALUE_DELTA &&
 				absV <= MIN_VELOCITY )
 		{

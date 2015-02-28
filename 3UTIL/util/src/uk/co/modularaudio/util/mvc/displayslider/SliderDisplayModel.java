@@ -27,21 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 public class SliderDisplayModel
 {
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( SliderDisplayModel.class.getName() );
-
-//	private float minValue = 0.0f;
-//	private float maxValue = 1.0f;
-//	private float initialValue = 0.0f;
-//	private int numSliderSteps = 100;
-//	private int sliderMajorTickSpacing = 10;
-//
-//	private SliderIntToFloatConverter sliderIntToFloatConverter = new SimpleSliderIntToFloatConverter();
-//	private int displayNumSigPlaces = 3;
-//	private int displayNumDecPlaces = 2;
-//
-//	private String displayUnitsStr = "";
-//
-//	private float currentValue = initialValue;
 
 	private final float minValue;
 	private float maxValue;
@@ -64,12 +51,6 @@ public class SliderDisplayModel
 
 	private final ArrayList<ValueChangeListener> changeListeners = new ArrayList<SliderDisplayModel.ValueChangeListener>();
 
-//	public SliderDisplayModel()
-//	{
-//		log.warn("Using default model values - this is probably not what you want.");
-//		// Uses default values above.
-//	}
-//
 	public SliderDisplayModel( final float minValue,
 			final float maxValue,
 			final float initialValue,
@@ -153,14 +134,6 @@ public class SliderDisplayModel
 //		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
 		final boolean wasDifferent = ( currentValue != newFloatValue );
 		currentValue = newFloatValue;
-//		if( currentValue > maxValue )
-//		{
-//			currentValue = maxValue;
-//		}
-//		if( currentValue < minValue )
-//		{
-//			currentValue = minValue;
-//		}
 		if( wasDifferent )
 		{
 			notifyOfChange( source );
