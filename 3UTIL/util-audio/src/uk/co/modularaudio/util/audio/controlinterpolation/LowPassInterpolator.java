@@ -87,4 +87,9 @@ public class LowPassInterpolator implements ControlValueInterpolator
 			lpFilter.filter( tmpArray, 0, TMP_LENGTH, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
 		}
 	}
+
+	@Override
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	{
+	}
 }

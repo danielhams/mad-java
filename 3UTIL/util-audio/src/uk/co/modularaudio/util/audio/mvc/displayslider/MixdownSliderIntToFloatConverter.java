@@ -67,10 +67,12 @@ public class MixdownSliderIntToFloatConverter implements SliderIntToFloatConvert
 		this.linearDynamicRange = linearHighestDb - linearLowestDb;
 		this.compressedDynamicRange = compressedHighestDb - compressedLowestDb;
 
-		// Use one step per db in compressed and four times that
+		// Use ten steps per db in compressed and four times that
 		// for the non-compression section
-		numCompressedSteps = (int)compressedDynamicRange;
-		numLinearSteps = (int)(linearDynamicRange * 4);
+		// Increase the number of steps by ten for each segment
+		numCompressedSteps = ((int)compressedDynamicRange) * 10;
+		numLinearSteps = ((int)(linearDynamicRange * 4)) * 10;
+
 		// Add one extra step to represent -INF
 		numTotalSteps = numLinearSteps + numCompressedSteps + 1;
 	}

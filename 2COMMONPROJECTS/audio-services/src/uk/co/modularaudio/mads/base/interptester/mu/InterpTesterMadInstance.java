@@ -27,6 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
+import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
+import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
@@ -43,6 +45,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
@@ -267,5 +270,26 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	public void setUiActive( final boolean active )
 	{
 		this.uiActive = active;
+	}
+
+	public void setModelIndex( final int value )
+	{
+		final InterpTesterSliderModels sms = new InterpTesterSliderModels();
+		final SliderDisplayModel sdm = sms.getModelAt( value );
+		final SliderModelValueConverter smvc = sms.getValueConverterAt( value );
+		final float minModelValue = sdm.getMinValue();
+		final float maxModelValue = sdm.getMaxValue();
+
+		final float minValue = (smvc == null ? minModelValue : smvc.convertValue( minModelValue ) );
+		final float maxValue = (smvc == null ? maxModelValue : smvc.convertValue( maxModelValue ) );
+
+		log.trace("Resetting min max values to " + minValue + " " + maxValue );
+
+		noneInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		liInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		hhInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		sdInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		lpInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
 	}
 }

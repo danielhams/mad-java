@@ -148,4 +148,9 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 		haveValWaiting = false;
 		curWindowPos = lastWindowPos;
 	}
+
+	@Override
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	{
+	}
 }

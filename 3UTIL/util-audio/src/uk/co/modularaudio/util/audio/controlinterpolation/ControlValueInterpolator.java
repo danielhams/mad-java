@@ -31,4 +31,6 @@ public interface ControlValueInterpolator
 	void checkForDenormal();
 
 	void hardSetValue( float value );
+
+	void resetLowerUpperBounds( float lowerBound, float upperBound );
 }

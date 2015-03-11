@@ -149,7 +149,8 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	public void receiveValueChange( final Object source, final float newValue )
 	{
 //		log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
-		for( int i = 0 ; i < cls.size() ; ++i )
+		int numChangeListeners = cls.size();
+		for( int i = 0 ; i < numChangeListeners ; ++i )
 		{
 			final ChangeListener cl = cls.get(i);
 			cl.stateChanged( changeEvent );

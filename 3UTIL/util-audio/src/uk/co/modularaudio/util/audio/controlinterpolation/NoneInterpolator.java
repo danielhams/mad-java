@@ -62,4 +62,9 @@ public class NoneInterpolator implements ControlValueInterpolator
 		this.curVal = value;
 		this.desVal = value;
 	}
+
+	@Override
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	{
+	}
 }
