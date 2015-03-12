@@ -90,7 +90,7 @@ public class TestCreateMixerLane extends TestCase
 
 		final LaneMixerPanelUiInstance<Mixer3MadDefinition, Mixer3MadInstance, Mixer3MadUiInstance> lanePanel =
 				new LaneMixerPanelUiInstance<Mixer3MadDefinition, Mixer3MadInstance, Mixer3MadUiInstance>(
-						mixerDef, mixerAui, mixerUi, 0 );
+						mixerDef, mixerAui, mixerUi, 1 );
 		testPanel.add( lanePanel, "grow" );
 		testPanel.setBackground( GenericComponentVisualiser.panelBackgroundColor );
 
