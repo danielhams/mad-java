@@ -56,6 +56,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	@Override
 	public int getMinimum()
 	{
+//		log.trace( "getMinimum called" );
 //		return sitfc.floatValueToSliderIntValue( sdm, sdm.getMinValue() );
 		return 0;
 	}
@@ -63,6 +64,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	@Override
 	public void setMinimum( final int newMinimum )
 	{
+//		log.trace( "setMinimum called" );
 		// N.A.
 	}
 
@@ -70,6 +72,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	public int getMaximum()
 	{
 //		return sitfc.floatValueToSliderIntValue( sdm, sdm.getMaxValue() );
+//		log.trace( "getMaximum called" );
 		return sdm.getNumSliderSteps();
 	}
 
@@ -77,6 +80,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	public void setMaximum( final int newMaximum )
 	{
 		// N.A.
+//		log.trace( "setMaximum called" );
 	}
 
 	@Override
@@ -90,8 +94,9 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	@Override
 	public void setValue( final int newValue )
 	{
-//		log.debug("SetValue called with " + newValue );
+//		log.trace("SetValue called with " + newValue );
 		float newFloatValue = sitfc.sliderIntValueToFloatValue( sdm, newValue );
+//		log.trace("Converted to float value is " + newFloatValue );
 		final float minValue = sdm.getMinValue();
 		final float maxValue = sdm.getMaxValue();
 		if( newFloatValue < minValue )
@@ -108,29 +113,34 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	@Override
 	public void setValueIsAdjusting( final boolean b )
 	{
+//		log.trace( "setValueIsAdjusting called" );
 	}
 
 	@Override
 	public boolean getValueIsAdjusting()
 	{
+//		log.trace( "getValueIsAdjusting" );
 		return false;
 	}
 
 	@Override
 	public int getExtent()
 	{
+//		log.trace( "getExtent called" );
 		return 0;
 	}
 
 	@Override
 	public void setExtent( final int newExtent )
 	{
+//		log.trace( "setExtent called" );
 	}
 
 	@Override
 	public void setRangeProperties( final int value, final int extent, final int min, final int max,
 			final boolean adjusting )
 	{
+//		log.trace( "setRangeProperties called" );
 	}
 
 	@Override
@@ -149,7 +159,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 	public void receiveValueChange( final Object source, final float newValue )
 	{
 //		log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
-		int numChangeListeners = cls.size();
+		final int numChangeListeners = cls.size();
 		for( int i = 0 ; i < numChangeListeners ; ++i )
 		{
 			final ChangeListener cl = cls.get(i);

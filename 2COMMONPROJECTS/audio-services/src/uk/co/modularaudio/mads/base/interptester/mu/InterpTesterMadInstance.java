@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
-import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -274,9 +273,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	public void setModelIndex( final int value )
 	{
-		final InterpTesterSliderModels sms = new InterpTesterSliderModels();
-		final SliderDisplayModel sdm = sms.getModelAt( value );
-		final SliderModelValueConverter smvc = sms.getValueConverterAt( value );
+		final SliderDisplayModel sdm = InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( value );
+		final SliderModelValueConverter smvc = InterpTesterMadDefinition.SLIDER_MODELS.getValueConverterAt( value );
 		final float minModelValue = sdm.getMinValue();
 		final float maxModelValue = sdm.getMaxValue();
 

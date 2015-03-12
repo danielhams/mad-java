@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
-import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -48,8 +47,6 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 
 	private final InterpTesterMadUiInstance uiInstance;
 
-	private final InterpTesterSliderModels sliderModels;
-
 	private SliderModelValueConverter valueConverter;
 
 	public InterpTesterValueSliderUiJComponent( final InterpTesterMadDefinition definition,
@@ -57,7 +54,7 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 			final InterpTesterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( uiInstance.getSliderModels().getModelAt( 0 ),
+		super( InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( 0 ),
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
@@ -66,7 +63,6 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 				Color.BLACK,
 				false );
 		this.uiInstance = uiInstance;
-		this.sliderModels = uiInstance.getSliderModels();
 		uiInstance.setModelChangeReceiver( this );
 	}
 
@@ -137,8 +133,8 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 	@Override
 	public void receiveNewModelIndex( final int selectedIndex )
 	{
-		final SliderDisplayModel newModel = sliderModels.getModelAt( selectedIndex );
-		valueConverter = sliderModels.getValueConverterAt( selectedIndex );
+		final SliderDisplayModel newModel = InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( selectedIndex );
+		valueConverter = InterpTesterMadDefinition.SLIDER_MODELS.getValueConverterAt( selectedIndex );
 		changeModel( newModel );
 	}
 }

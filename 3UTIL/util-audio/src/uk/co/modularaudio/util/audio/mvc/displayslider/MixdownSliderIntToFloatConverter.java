@@ -92,7 +92,7 @@ public class MixdownSliderIntToFloatConverter implements SliderIntToFloatConvert
 
 	public float toDbFromSliderInt( final int sliderIntValue )
 	{
-		if( sliderIntValue == 0 )
+		if( sliderIntValue <= 0 )
 		{
 			return Float.NEGATIVE_INFINITY;
 		}
@@ -133,7 +133,7 @@ public class MixdownSliderIntToFloatConverter implements SliderIntToFloatConvert
 			else
 			{
 				final float scaledValue = amountOverLowest / compressedDynamicRange;
-				final float linearStepValue = scaledValue * numCompressedSteps;
+				final float linearStepValue = Math.round( scaledValue * numCompressedSteps);
 	//			log.debug("Return an int of " + MathFormatter.fastFloatPrint( linearStepValue, 5, true ) );
 				return (int)linearStepValue + 1;
 			}
@@ -143,7 +143,7 @@ public class MixdownSliderIntToFloatConverter implements SliderIntToFloatConvert
 			// How much over the lowest linear db value is it?
 			final float amountOverLowest = db - linearLowestDb;
 			final float scaledValue = amountOverLowest / linearDynamicRange;
-			final float linearStepValue = scaledValue * numLinearSteps;
+			final float linearStepValue = Math.round(scaledValue * numLinearSteps);
 //			log.debug("Return an int of " + MathFormatter.fastFloatPrint( linearStepValue, 5, true ) );
 			return 1 + numCompressedSteps + (int)linearStepValue;
 		}

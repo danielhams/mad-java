@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterIOQueueBridge;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
-import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -38,8 +37,6 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 
 	private ModelChangeReceiver modelChangeReceiver;
 	private PerfDataReceiver perfDataReceiver;
-
-	private final InterpTesterSliderModels sliderModels = new InterpTesterSliderModels();
 
 	public InterpTesterMadUiInstance( final InterpTesterMadInstance instance,
 			final InterpTesterMadUiDefinition uiDefinition )
@@ -137,10 +134,5 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	{
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_UIACTIVE, (active ? 1 : 0 ) );
 
-	}
-
-	public InterpTesterSliderModels getSliderModels()
-	{
-		return sliderModels;
 	}
 }
