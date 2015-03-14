@@ -96,7 +96,8 @@ public class InterpTesterMadUiDefinition
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle(  16, 30, 208,  30 ),		// Model Choice
 		new Rectangle(  16, 66,  80, 220 ),		// Value Chase
-		new Rectangle( 106, 66,  80, 220 ),		// Value
+//		new Rectangle( 106, 66,  80, 220 ),		// Value
+		new Rectangle( 106, 66, 120, 220 ),		// Value
 		new Rectangle( 230, 30, 300, 256 )		// Perf table
 	};
 

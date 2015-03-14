@@ -21,7 +21,6 @@
 package uk.co.modularaudio.mads.base.interptester.mu;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
@@ -34,8 +33,6 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
-	public static final InterpTesterSliderModels SLIDER_MODELS = new InterpTesterSliderModels();
-
 	// Indexes into the channels
 	public final static int CONSUMER_AUDIO = 0;
 	public final static int CONSUMER_CV = 1;

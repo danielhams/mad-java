@@ -23,8 +23,6 @@ package uk.co.modularaudio.mads.base.interptester.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mvc.displayslider.MixdownSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class InterpTesterSliderModels
@@ -39,119 +37,40 @@ public class InterpTesterSliderModels
 
 	public InterpTesterSliderModels()
 	{
-//		 float minValue,
-//			float maxValue,
-//			float initialValue,
-//			int numSliderSteps,
-//			int sliderMajorTickSpacing,
-//			SliderIntToFloatConverter sliderIntToFloatConverter,
-//			int displayNumSigPlaces,
-//			int displayNumDecPlaces,
-//			String displayUnitsStr
-
-//		cbm.addElement( "Cross Fader" );
-//		cbm.addElement( "Mixer" );
-//		cbm.addElement( "Speed" );
-//		cbm.addElement( "Frequency" );
-//		cbm.addElement( "Left Right" );
-//		cbm.addElement( "Compression Threshold" );
-//		cbm.addElement( "Compression Ratio" );
-//		cbm.addElement( "Output Gain" );
-//		cbm.addElement( "Time (1->5000 ms)" );
-
 		// Cross fader
-		models[0] = new SliderDisplayModel( 0.0f, 1.0f, 0.0f,
-				128,
-				1,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[0] = new CrossFaderSliderModel();
 		valueConverters[0] = null;
 
-		// Mixer fader
-
-		final MixdownSliderIntToFloatConverter mixdownIntToFloatConverter = new MixdownSliderIntToFloatConverter();
-		final int numTotalSteps = mixdownIntToFloatConverter.getNumTotalSteps();
-
-		models[1] = new SliderDisplayModel( Float.NEGATIVE_INFINITY, mixdownIntToFloatConverter.getLinearHighestDb(),
-				0.0f,
-				numTotalSteps,
-				1,
-				mixdownIntToFloatConverter,
-				3,
-				3,
-				"dB");
+		// Mixer fader and converter
+		models[1] = new MixdownSliderModel();
 		valueConverters[1] = new DbToLevelValueConverter();
 
 		// Speed
-		models[2] = new SliderDisplayModel( -1.5f, 1.5f, 1.0f,
-				3000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[2] = new PlaybackSpeedSliderModel();
 		valueConverters[2] = null;
 
 		// Frequency
-		models[3] = new SliderDisplayModel( 0.0f, 22000.0f, 400.0f,
-				22000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				5,
-				3,
-				"val");
+		models[3] = new OscillatorFrequencySliderModel();
 		valueConverters[3] = null;
 
 		// Left Right
-		models[4] = new SliderDisplayModel( -1.0f, 1.0f, 0.0f,
-				2000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[4] = new LeftRightPanSliderModel();
 		valueConverters[4] = null;
 
 		// Compression Threshold
-		models[5] = new SliderDisplayModel( -36.0f, 0.0f, 0.0f,
-				3600,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[5] = new CompressionThresholdSliderModel();
 		valueConverters[5] = null;
 
 		// Compression Ratio
-		models[6] = new SliderDisplayModel( 1.0f, 20.0f, 2.0f,
-				1900,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[6] = new CompressionRatioSliderModel();
 		valueConverters[6] = null;
 
 		// Compression Output Gain
-		models[7] = new SliderDisplayModel( -12.0f, 12.0f, 0.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[7] = new CompressionOutputGainSliderModel();
 		valueConverters[7] = null;
 
 		// Time (1->5000 ms)
-		models[8] = new SliderDisplayModel( 1.0f, 5000.0f, 60.0f,
-				49990,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
+		models[8] = new LogarithmicTimeMillisSliderModel();
 		valueConverters[8] = null;
 	}
 

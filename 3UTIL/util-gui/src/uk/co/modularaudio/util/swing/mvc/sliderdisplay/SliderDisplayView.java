@@ -232,7 +232,7 @@ public class SliderDisplayView extends JPanel
 				@Override
 				public void receiveDoubleClick()
 				{
-					slider.setValue( slider.getInitialValue() );
+					controller.setValue( this, controller.getModel().getInitialValue() );
 				}
 			} );
 		}

@@ -18,33 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.util.mvc.displayslider;
+package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
-
-public class SliderDisplayController
+public interface PanSliderChangeReceiver
 {
-//	private static Log log = LogFactory.getLog( SliderDisplayController.class.getName() );
 
-	private SliderDisplayModel sdm;
+	void receivePanChange( float newValue );
 
-	public SliderDisplayController( final SliderDisplayModel sdm )
-	{
-		this.sdm = sdm;
-	}
-
-	public void setValue( final Object source, final float newFloatValue )
-	{
-//		log.debug("Controller received setValue from " + source.getClass().getSimpleName() );
-		sdm.setValue( source, newFloatValue );
-	}
-
-	public void changeModel( final SliderDisplayModel newModel )
-	{
-		this.sdm = newModel;
-	}
-
-	public SliderDisplayModel getModel()
-	{
-		return sdm;
-	}
 }

@@ -200,6 +200,15 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 		this.model = newModel;
 		extractModelVars( newModel );
 		completeModelSetup( newModel );
+
+		if( unitsStrLength > 0 )
+		{
+			unitsLabel.setText( unitsStr );
+		}
+
 		model.addChangeListener( this );
+		validate();
+		final Dimension minimumSize = this.getPreferredSize();
+		this.setMinimumSize( minimumSize );
 	}
 }

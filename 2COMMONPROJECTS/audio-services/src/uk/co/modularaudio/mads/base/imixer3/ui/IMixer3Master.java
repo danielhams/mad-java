@@ -18,33 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.util.mvc.displayslider;
+package uk.co.modularaudio.mads.base.imixer3.ui;
 
+import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
+import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadInstance;
+import uk.co.modularaudio.mads.base.imixern.ui.master.MasterMixerPanelUiInstance;
 
-public class SliderDisplayController
+public class IMixer3Master extends MasterMixerPanelUiInstance<IMixer3MadDefinition, IMixer3MadInstance, IMixer3MadUiInstance>
 {
-//	private static Log log = LogFactory.getLog( SliderDisplayController.class.getName() );
+	private static final long serialVersionUID = 7431791158964357287L;
 
-	private SliderDisplayModel sdm;
-
-	public SliderDisplayController( final SliderDisplayModel sdm )
+	public IMixer3Master( final IMixer3MadDefinition definition,
+			final IMixer3MadInstance instance,
+			final IMixer3MadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		this.sdm = sdm;
+		super( definition, instance, uiInstance, controlIndex );
 	}
 
-	public void setValue( final Object source, final float newFloatValue )
-	{
-//		log.debug("Controller received setValue from " + source.getClass().getSimpleName() );
-		sdm.setValue( source, newFloatValue );
-	}
-
-	public void changeModel( final SliderDisplayModel newModel )
-	{
-		this.sdm = newModel;
-	}
-
-	public SliderDisplayModel getModel()
-	{
-		return sdm;
-	}
 }

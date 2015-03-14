@@ -26,21 +26,21 @@ import java.awt.event.MouseListener;
 public class SliderDoubleClickMouseListener implements MouseListener
 {
 //	private static Log log = LogFactory.getLog( SliderDoubleClickMouseListener.class.getName() );
-	
+
 	public interface SliderDoubleClickReceiver
 	{
 		public void receiveDoubleClick();
 	}
-	
-	private SliderDoubleClickReceiver sourceSliderReceiver = null;
-	
-	public SliderDoubleClickMouseListener( SliderDoubleClickReceiver sourceSliderReceiver )
+
+	private final SliderDoubleClickReceiver sourceSliderReceiver;
+
+	public SliderDoubleClickMouseListener( final SliderDoubleClickReceiver sourceSliderReceiver )
 	{
 		this.sourceSliderReceiver = sourceSliderReceiver;
 	}
 
 	@Override
-	public void mouseClicked( MouseEvent e )
+	public void mouseClicked( final MouseEvent e )
 	{
 		if( e.getClickCount() == 2 && !e.isConsumed() )
 		{
@@ -49,22 +49,22 @@ public class SliderDoubleClickMouseListener implements MouseListener
 	}
 
 	@Override
-	public void mousePressed( MouseEvent e )
+	public void mousePressed( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseReleased( MouseEvent e )
+	public void mouseReleased( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseEntered( MouseEvent e )
+	public void mouseEntered( final MouseEvent e )
 	{
 	}
 
 	@Override
-	public void mouseExited( MouseEvent e )
+	public void mouseExited( final MouseEvent e )
 	{
 	}
 

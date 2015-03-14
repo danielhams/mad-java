@@ -22,16 +22,13 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class HalfHannWindowInterpolator implements ControlValueInterpolator
 {
-	private static Log log = LogFactory.getLog( HalfHannWindowInterpolator.class.getName() );
+//	private static Log log = LogFactory.getLog( HalfHannWindowInterpolator.class.getName() );
 
 	private HannFftWindow fullHannWindow;
 	private float[] hannBuffer;
@@ -51,7 +48,7 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	public void reset( final int sampleRate, final float valueChaseMillis )
 	{
 		final int halfWindowLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, valueChaseMillis );
-		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
+//		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
 		fullHannWindow = new HannFftWindow( halfWindowLength * 2 );
 		final float[] hwAmps = fullHannWindow.getAmps();
 		hannBuffer = new float[halfWindowLength];

@@ -18,33 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.util.mvc.displayslider;
+package uk.co.modularaudio.mads.base.imixer3.ui;
 
+import uk.co.modularaudio.mads.base.imixern.mu.MixerNInstanceConfiguration;
+import uk.co.modularaudio.mads.base.imixern.ui.MixerNUiInstanceConfiguration;
 
-public class SliderDisplayController
+public class IMixer3UiInstanceConfiguration extends MixerNUiInstanceConfiguration
 {
-//	private static Log log = LogFactory.getLog( SliderDisplayController.class.getName() );
-
-	private SliderDisplayModel sdm;
-
-	public SliderDisplayController( final SliderDisplayModel sdm )
+	public IMixer3UiInstanceConfiguration( final MixerNInstanceConfiguration instanceConfiguration )
 	{
-		this.sdm = sdm;
-	}
-
-	public void setValue( final Object source, final float newFloatValue )
-	{
-//		log.debug("Controller received setValue from " + source.getClass().getSimpleName() );
-		sdm.setValue( source, newFloatValue );
-	}
-
-	public void changeModel( final SliderDisplayModel newModel )
-	{
-		this.sdm = newModel;
-	}
-
-	public SliderDisplayModel getModel()
-	{
-		return sdm;
+		super( instanceConfiguration,
+				IMixer3Lane.class,
+				IMixer3Master.class );
 	}
 }

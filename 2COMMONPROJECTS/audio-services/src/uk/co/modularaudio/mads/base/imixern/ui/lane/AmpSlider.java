@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.mixern.ui.lane;
+package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
 import java.awt.Color;
 import java.awt.Font;

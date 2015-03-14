@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
+import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -49,7 +50,6 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
-	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( InterpTesterMadInstance.class.getName() );
 
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
@@ -77,6 +77,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private long lastSDDNanos;
 
 	private boolean uiActive;
+
+	private final InterpTesterSliderModels sliderModels = new InterpTesterSliderModels();
 
 	public InterpTesterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -273,8 +275,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	public void setModelIndex( final int value )
 	{
-		final SliderDisplayModel sdm = InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( value );
-		final SliderModelValueConverter smvc = InterpTesterMadDefinition.SLIDER_MODELS.getValueConverterAt( value );
+		final SliderDisplayModel sdm = sliderModels.getModelAt( value );
+		final SliderModelValueConverter smvc = sliderModels.getValueConverterAt( value );
 		final float minModelValue = sdm.getMinValue();
 		final float maxModelValue = sdm.getMaxValue();
 
@@ -289,5 +291,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sdInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		lpInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
+	}
+
+	public InterpTesterSliderModels getModels()
+	{
+		return sliderModels;
 	}
 }

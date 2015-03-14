@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
+import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -49,12 +50,14 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 
 	private SliderModelValueConverter valueConverter;
 
+	private final InterpTesterSliderModels sliderModels;
+
 	public InterpTesterValueSliderUiJComponent( final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
 			final InterpTesterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( 0 ),
+		super( instance.getModels().getModelAt( 0 ),
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
@@ -64,6 +67,7 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 				false );
 		this.uiInstance = uiInstance;
 		uiInstance.setModelChangeReceiver( this );
+		this.sliderModels = instance.getModels();
 	}
 
 	@Override
@@ -133,8 +137,8 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 	@Override
 	public void receiveNewModelIndex( final int selectedIndex )
 	{
-		final SliderDisplayModel newModel = InterpTesterMadDefinition.SLIDER_MODELS.getModelAt( selectedIndex );
-		valueConverter = InterpTesterMadDefinition.SLIDER_MODELS.getValueConverterAt( selectedIndex );
+		final SliderDisplayModel newModel = sliderModels.getModelAt( selectedIndex );
+		valueConverter = sliderModels.getValueConverterAt( selectedIndex );
 		changeModel( newModel );
 	}
 }
