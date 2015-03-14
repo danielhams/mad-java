@@ -25,7 +25,7 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mvc.displayslider.MixdownSliderIntToFloatConverter;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderIntToFloatConverter;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 public class TestMixdownSliderIntToFloatConverter

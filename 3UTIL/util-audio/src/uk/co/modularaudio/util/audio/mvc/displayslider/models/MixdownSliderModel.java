@@ -1,6 +1,5 @@
-package uk.co.modularaudio.mads.base.interptester.utils;
+package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
-import uk.co.modularaudio.util.audio.mvc.displayslider.MixdownSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class MixdownSliderModel extends SliderDisplayModel

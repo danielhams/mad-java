@@ -23,6 +23,15 @@ package uk.co.modularaudio.mads.base.interptester.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionOutputGainSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionRatioSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionThresholdSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CrossFaderSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LeftRightPanSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.OscillatorFrequencySliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.PlaybackSpeedSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class InterpTesterSliderModels

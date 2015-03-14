@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.interptester.utils;
+package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
 import uk.co.modularaudio.util.mvc.displayslider.LogSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;

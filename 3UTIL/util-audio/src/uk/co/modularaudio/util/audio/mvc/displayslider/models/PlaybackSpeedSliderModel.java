@@ -1,19 +1,19 @@
-package uk.co.modularaudio.mads.base.interptester.utils;
+package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
 import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class CompressionThresholdSliderModel extends SliderDisplayModel
+public class PlaybackSpeedSliderModel extends SliderDisplayModel
 {
 
-	public CompressionThresholdSliderModel()
+	public PlaybackSpeedSliderModel()
 	{
-		super(  -36.0f, 0.0f, 0.0f,
-				3600,
+		super(  -1.5f, 1.5f, 1.0f,
+				300,
 				100,
 				new SimpleSliderIntToFloatConverter(),
 				3,
 				3,
-				"dB" );
+				"val" );
 	}
 }
