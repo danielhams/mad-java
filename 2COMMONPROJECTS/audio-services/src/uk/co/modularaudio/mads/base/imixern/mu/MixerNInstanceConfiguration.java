@@ -35,8 +35,6 @@ public class MixerNInstanceConfiguration
 	private final int numInputChannels;
 	private final int numOutputChannels;
 	private final MadChannelType channelType = MadChannelType.AUDIO;
-	private final int[] inputChannelIndexes;
-	private final int[] outputChannelIndexes;
 	private final int totalNumChannels;
 
 	private final String[] channelNames;
@@ -60,29 +58,30 @@ public class MixerNInstanceConfiguration
 		channelPositions = new MadChannelPosition[ totalNumChannels ];
 
 		int curChannelCounter = 0;
-		inputChannelIndexes = new int[ numInputChannels ];
+		channelNames[ curChannelCounter ] = "Output Wave Left";
+		channelTypes[ curChannelCounter ] = channelType;
+		channelDirections[ curChannelCounter ] = MadChannelDirection.PRODUCER;
+		channelPositions[ curChannelCounter ] = MadChannelPosition.STEREO_LEFT;
+		curChannelCounter++;
+
+		channelNames[ curChannelCounter ] = "Output Wave Right";
+		channelTypes[ curChannelCounter ] = channelType;
+		channelDirections[ curChannelCounter ] = MadChannelDirection.PRODUCER;
+		channelPositions[ curChannelCounter ] = MadChannelPosition.STEREO_RIGHT;
+		curChannelCounter++;
+
 		for( int il = 0 ; il < numMixerLanes ; il++ )
 		{
-			for( int ic = 0 ; ic < numChannelsPerLane ; ic++ )
-			{
-				inputChannelIndexes[ (il * numChannelsPerLane) + ic ] = curChannelCounter;
-				channelNames[ curChannelCounter ] = "Lane " + (il + 1) + " Channel " + (ic + 1);
-				channelTypes[ curChannelCounter ] = channelType;
-				channelDirections[ curChannelCounter ] = MadChannelDirection.CONSUMER;
-				channelPositions[ curChannelCounter ] = MadChannelPosition.MONO;
-				curChannelCounter++;
-			}
-		}
-		outputChannelIndexes = new int[ numOutputChannels ];
-		for( int c = 0 ; c < numOutputChannels ; c++ )
-		{
-			outputChannelIndexes[ c ] = curChannelCounter;
-
-			channelNames[ curChannelCounter ] = "Output Channel " + ( c + 1);
+			channelNames[ curChannelCounter ] = "Lane " + (il + 1) + " Input Wave Left";
 			channelTypes[ curChannelCounter ] = channelType;
-			channelDirections[ curChannelCounter ] = MadChannelDirection.PRODUCER;
-			channelPositions[ curChannelCounter ] = MadChannelPosition.MONO;
+			channelDirections[ curChannelCounter ] = MadChannelDirection.CONSUMER;
+			channelPositions[ curChannelCounter ] = MadChannelPosition.STEREO_LEFT;
+			curChannelCounter++;
 
+			channelNames[ curChannelCounter ] = "Lane " + (il + 1) + " Input Wave Right";
+			channelTypes[ curChannelCounter ] = channelType;
+			channelDirections[ curChannelCounter ] = MadChannelDirection.CONSUMER;
+			channelPositions[ curChannelCounter ] = MadChannelPosition.STEREO_RIGHT;
 			curChannelCounter++;
 		}
 	}
@@ -105,16 +104,6 @@ public class MixerNInstanceConfiguration
 	public MadChannelType getChannelType()
 	{
 		return channelType;
-	}
-
-	public int getIndexForInputLaneChannel( final int l, final int c )
-	{
-		return inputChannelIndexes[ (l * numChannelsPerLane) + c ];
-	}
-
-	public int getIndexForOutputChannel( final int c )
-	{
-		return outputChannelIndexes[ c];
 	}
 
 	public int getNumTotalChannels()

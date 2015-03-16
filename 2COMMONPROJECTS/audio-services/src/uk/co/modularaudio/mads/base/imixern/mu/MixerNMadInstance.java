@@ -35,21 +35,13 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D,I>> extends MadInstance<D,I>
 {
 //	private static Log log = LogFactory.getLog( MixerNMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 2;
-
 	private final MixerNInstanceConfiguration instanceConfiguration;
-
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
-
-	private long sampleRate;
 
 	private int sampleFramesPerFrontEndPeriod = 0;
 	private int numSamplesProcessed = 0;
@@ -59,12 +51,12 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	private final MasterProcessor<D,I> masterProcessor;
 	private final MixerMuteAndSoloMachine<D,I> muteAndSoloMachine;
 
-	private int leftOutputChannelIndex = -1;
-	private int rightOutputChannelIndex = -1;
+	private final int leftOutputChannelIndex = 0;
+	private final int rightOutputChannelIndex = 1;
 
 	private final Limiter limiterRt = new Limiter( 0.99, 5 );
 
-	public boolean active;
+	private boolean active;
 
 	@SuppressWarnings("unchecked")
 	public MixerNMadInstance( final String instanceName,
@@ -79,9 +71,9 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		channelLaneProcessors = new LaneProcessor[ numInputLanes ];
 		for( int i = 0 ; i < numInputLanes ; i++ )
 		{
-			channelLaneProcessors[ i ] = new LaneProcessor<D,I>( (I)this, instanceConfiguration, i, curValueRatio, newValueRatio );
+			channelLaneProcessors[ i ] = new LaneProcessor<D,I>( (I)this, instanceConfiguration, i );
 		}
-		masterProcessor = new MasterProcessor<D,I>( (I)this, instanceConfiguration, curValueRatio, newValueRatio );
+		masterProcessor = new MasterProcessor<D,I>( (I)this, instanceConfiguration );
 
 		muteAndSoloMachine = new MixerMuteAndSoloMachine<D,I>( (I)this, channelLaneProcessors );
 	}
@@ -91,22 +83,15 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 	{
-		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-		curValueRatio = 1.0f - newValueRatio;
-
-		for( int i = 0 ; i < numInputLanes ; i++ )
-		{
-			channelLaneProcessors[ i ].resetCurNewValues( curValueRatio, newValueRatio );
-		}
-		masterProcessor.resetCurNewValues( curValueRatio, newValueRatio );
-
-		leftOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 0 );
-		rightOutputChannelIndex = instanceConfiguration.getIndexForOutputChannel( 1 );
-
 		sampleFramesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 		numSamplesProcessed = 0;
+
+		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		for( final LaneProcessor<D, I> lp : channelLaneProcessors )
+		{
+			lp.setSampleRate( sampleRate );
+		}
+		masterProcessor.setSampleRate( sampleRate );
 	}
 
 	@Override
@@ -175,6 +160,13 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		// Finally, run a limiter over the output to curb any clipping.
 		limiterRt.filter( leftOutputFloats, frameOffset, numFrames );
 		limiterRt.filter( rightOutputFloats, frameOffset, numFrames );
+
+		// And do our once per call denormal checks
+		for( int il = 0 ; il < numInputLanes ; il++ )
+		{
+			channelLaneProcessors[il].checkForDenormal();
+		}
+		masterProcessor.checkForDenormal();
 
 //		debugTimestamp( "Done ", emitTimestamp );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

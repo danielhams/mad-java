@@ -20,10 +20,12 @@
 
 package uk.co.modularaudio.mads.base.imixern.mu;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.audio.math.MixdownSliderDbToLevelComputer;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
 public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
@@ -32,105 +34,74 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 
 	private final I instance;
 
-	private float curValueRatio;
-	private float newValueRatio;
-
-	private final int numChannelsPerLane;
-
-	private final int[] outputChannelIndexes;
-
 	private float desiredAmpMultiplier = 0.5f;
 
 	private float desiredLeftAmpMultiplier = 0.5f;
-	private float currentLeftAmpMultiplier = 0.5f;
 	private float desiredRightAmpMultiplier = 0.5f;
-	private float currentRightAmpMultiplier = 0.5f;
 
 	private float desiredPanValue;
 
 	private float leftMeterLevel;
 	private float rightMeterLevel;
 
+	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator(
+			0.0f,
+			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
+	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator(
+			0.0f,
+			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
+
 	public MasterProcessor( final I instance,
-			final MixerNInstanceConfiguration channelConfiguration,
-			final float curValueRatio,
-			final float newValueRatio )
+			final MixerNInstanceConfiguration channelConfiguration )
 	{
 		this.instance = instance;
-
-		this.curValueRatio = curValueRatio;
-		this.newValueRatio = newValueRatio;
-
-		numChannelsPerLane = channelConfiguration.getNumChannelsPerLane();
-		outputChannelIndexes = new int[ numChannelsPerLane ];
-
-		for( int cn = 0 ; cn < numChannelsPerLane ; cn++ )
-		{
-			outputChannelIndexes[ cn ] = channelConfiguration.getIndexForOutputChannel( cn );
-		}
 	}
 
 	public void processMasterOutput( final ThreadSpecificTemporaryEventStorage tses,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
-			final int position,
-			final int length )
+			final int frameOffset,
+			final int numFrames )
 	{
-		if( currentLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-		{
-			currentLeftAmpMultiplier = 0.0f;
-		}
-
-		if( currentRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-		{
-			currentRightAmpMultiplier = 0.0f;
-		}
+		final float[] tmpBuffer = tses.temporaryFloatArray;
 
 		// First left
-		int outputChannelIndex = outputChannelIndexes[ 0 ];
-		float[] outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
-		for( int s = position ; s < position + length ; s++ )
+		leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		final float[] leftOutputFloats = channelBuffers[ 0 ].floatBuffer;
+		for( int s = 0 ; s < numFrames ; ++s )
 		{
-			currentLeftAmpMultiplier = (currentLeftAmpMultiplier * curValueRatio ) + (desiredLeftAmpMultiplier * newValueRatio );
-
-			float outputFloat = outputFloats[ s ] * currentLeftAmpMultiplier;
-			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
-
-			if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-			{
-				outputFloat = 0.0f;
-			}
+			final float oneFloat = leftOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+			final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 			if( absFloat > leftMeterLevel )
 			{
 				leftMeterLevel = absFloat;
 			}
 
-			outputFloats[ s ] = outputFloat;
+			leftOutputFloats[ frameOffset + s ] = oneFloat;
 		}
-		// And right
-		outputChannelIndex = outputChannelIndexes[ 1 ];
-		outputFloats = channelBuffers[ outputChannelIndex ].floatBuffer;
-		for( int s = position ; s < position + length ; s++ )
+
+		rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		final float[] rightOutputFloats = channelBuffers[ 1 ].floatBuffer;
+		for( int s = 0 ; s < numFrames ; ++s )
 		{
-			currentRightAmpMultiplier = (currentRightAmpMultiplier * curValueRatio ) + (desiredRightAmpMultiplier * newValueRatio );
-
-			float outputFloat = outputFloats[ s ] * currentRightAmpMultiplier;
-			final float absFloat = (outputFloat < 0.0f ? -outputFloat : outputFloat );
-
-			if( absFloat < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-			{
-				outputFloat = 0.0f;
-			}
+			final float oneFloat = rightOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+			final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 			if( absFloat > rightMeterLevel )
 			{
 				rightMeterLevel = absFloat;
 			}
 
-			outputFloats[ s ] = outputFloat;
+			rightOutputFloats[ frameOffset + s ] = oneFloat;
 		}
-}
+	}
+
+	public void checkForDenormal()
+	{
+		leftAmpInterpolator.checkForDenormal();
+		rightAmpInterpolator.checkForDenormal();
+	}
 
 	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
 	{
@@ -144,12 +115,6 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 	{
 		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
-	}
-
-	public void resetCurNewValues( final float curValueRatio2, final float newValueRatio2 )
-	{
-		this.curValueRatio = curValueRatio2;
-		this.newValueRatio = newValueRatio2;
 	}
 
 	public void setMasterPan( final float panValue )
@@ -166,5 +131,24 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		float rightAmp = (desiredPanValue > 0.0f ? 1.0f : (1.0f + desiredPanValue) );
 		rightAmp = NormalisedValuesMapper.expMapF( rightAmp );
 		desiredRightAmpMultiplier = desiredAmpMultiplier * rightAmp;
+
+		if( desiredLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			desiredLeftAmpMultiplier = 0.0f;
+		}
+
+		if( desiredRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			desiredRightAmpMultiplier = 0.0f;
+		}
+
+		leftAmpInterpolator.notifyOfNewValue( desiredLeftAmpMultiplier );
+		rightAmpInterpolator.notifyOfNewValue( desiredRightAmpMultiplier );
+	}
+
+	public void setSampleRate( final int sampleRate )
+	{
+		leftAmpInterpolator.reset( sampleRate, 1.0f );
+		rightAmpInterpolator.reset( sampleRate, 1.0f );
 	}
 }

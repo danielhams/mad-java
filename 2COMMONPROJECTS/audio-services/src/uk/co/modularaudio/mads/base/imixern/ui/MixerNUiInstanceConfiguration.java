@@ -50,10 +50,7 @@ public class MixerNUiInstanceConfiguration
 	{
 		final int numMixerLanes = instanceConfiguration.getNumMixerLanes();
 		final int numTotalChannels = instanceConfiguration.getNumTotalChannels();
-		final int numInputChannels = instanceConfiguration.getNumInputChannels();
 		final int numInputLanes = instanceConfiguration.getNumInputLanes();
-		final int numChannelsPerLane = numInputChannels / numInputLanes;
-		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
 
 		//Setup chan indexes and positions
 
@@ -63,28 +60,33 @@ public class MixerNUiInstanceConfiguration
 		int curChannelIndex = 0;
 		for( int il = 0 ; il < numInputLanes ; il++ )
 		{
-			for( int ic = 0 ; ic < numChannelsPerLane ; ic++ )
-			{
-				chanIndexes[ curChannelIndex ] = instanceConfiguration.getIndexForInputLaneChannel( il, ic );
-				chanPosis[ curChannelIndex ] = new Point( INPUT_LANES_START.x + (il * LANE_TO_LANE_INCREMENT) +
-						(ic * CHANNEL_TO_CHANNEL_INCREMENT ),
-						INPUT_LANES_START.y );
-				curChannelIndex++;
-			}
-		}
+			chanIndexes[ curChannelIndex ] = (il + 1) * 2;
+			chanPosis[ curChannelIndex ] = new Point( INPUT_LANES_START.x + (il * LANE_TO_LANE_INCREMENT),
+					INPUT_LANES_START.y );
+			curChannelIndex++;
+
+			chanIndexes[ curChannelIndex ] = ((il + 1) * 2) + 1;
+			chanPosis[ curChannelIndex ] = new Point( INPUT_LANES_START.x + (il * LANE_TO_LANE_INCREMENT) +
+						CHANNEL_TO_CHANNEL_INCREMENT,
+					INPUT_LANES_START.y );
+			curChannelIndex++;
+}
 
 		final Point lastInputChannelPos = chanPosis[ curChannelIndex - 1 ];
 
-		for( int oc = 0 ; oc < numOutputChannels ; oc++ )
-		{
-			chanIndexes[ curChannelIndex ] = instanceConfiguration.getIndexForOutputChannel( oc );
-			chanPosis[ curChannelIndex ] = new Point( lastInputChannelPos.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
-					(2 * CHANNEL_TO_CHANNEL_INCREMENT) +
-					(oc * CHANNEL_TO_CHANNEL_INCREMENT ),
-					OUTPUT_CHANNELS_Y );
+		chanIndexes[ curChannelIndex ] = 0;
+		chanPosis[ curChannelIndex ] = new Point( lastInputChannelPos.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
+				(2 * CHANNEL_TO_CHANNEL_INCREMENT),
+				OUTPUT_CHANNELS_Y );
 
-			curChannelIndex++;
-		}
+		curChannelIndex++;
+
+		chanIndexes[ curChannelIndex ] = 1;
+		chanPosis[ curChannelIndex ] = new Point( lastInputChannelPos.x + INPUT_TO_OUTPUT_CHANNEL_INCREMENT +
+					(2 * CHANNEL_TO_CHANNEL_INCREMENT) + CHANNEL_TO_CHANNEL_INCREMENT,
+				OUTPUT_CHANNELS_Y );
+
+		curChannelIndex++;
 
 		// Now the controls.
 		// We put the master IO first then the other channels get appropriate
