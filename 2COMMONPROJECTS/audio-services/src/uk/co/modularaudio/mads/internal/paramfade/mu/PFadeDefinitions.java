@@ -34,7 +34,7 @@ public class PFadeDefinitions
 	public final static int FADE_2_MILLIS = 2;
 	public final static int FADE_1_MILLIS = 1;
 
-	public final static int FADE_MILLIS = FADE_5_MILLIS;
+	public final static int FADE_MILLIS = FADE_10_MILLIS;
 
 	protected static final Set<MadParameterDefinition> PARAM_DEFS;
 	public static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition("numchannels", "Num Channels");

@@ -29,5 +29,6 @@ public class FadeDefinitions
 	public final static int FADE_2_MILLIS = 2;
 	public final static int FADE_1_MILLIS = 1;
 
-	public final static int FADE_MILLIS = FADE_5_MILLIS;
+//	public final static int FADE_MILLIS = FADE_5_MILLIS;
+	public final static int FADE_MILLIS = FADE_10_MILLIS;
 }

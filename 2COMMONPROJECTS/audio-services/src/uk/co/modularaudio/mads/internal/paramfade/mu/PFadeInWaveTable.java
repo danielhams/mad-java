@@ -20,21 +20,25 @@
 
 package uk.co.modularaudio.mads.internal.paramfade.mu;
 
+import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class PFadeInWaveTable extends RawLookupTable
 {
 	public PFadeInWaveTable( final DataRate dataRate, final int millisForFadeIn)
 	{
-		super( dataRate.calculateSamplesForLatency( millisForFadeIn), false);
+		super( calculateHalfWindowLength( dataRate.getValue(), millisForFadeIn ), false);
 
-		final int genLength = capacity - 1;
-		for( int i = 0 ; i < capacity ; i++ )
-		{
-			final float normalisedVal = (float)i / (float)genLength;
-			floatBuffer[i] = normalisedVal * normalisedVal;
-		}
+		final HannFftWindow fullHannWindow = new HannFftWindow( capacity * 2 );
+		final float[] hwAmps = fullHannWindow.getAmps();
+
+		System.arraycopy( hwAmps, 0, floatBuffer, 0, capacity );
 	}
 
+	private final static int calculateHalfWindowLength( final int sampleRate, final float windowLengthMillis )
+	{
+		return AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, windowLengthMillis );
+	}
 }

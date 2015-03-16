@@ -20,24 +20,27 @@
 
 package uk.co.modularaudio.mads.internal.fade.mu;
 
+import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.lang.ArrayUtils;
 
 public class FadeOutWaveTable extends RawLookupTable
 {
-	public FadeOutWaveTable(DataRate dataRate, int millisForFadeOut)
+	public FadeOutWaveTable( final DataRate dataRate, final int millisForFadeIn)
 	{
-		super( dataRate.calculateSamplesForLatency( millisForFadeOut), false);
-		
-		// Now loop over the length drawing in our lookup table
+		super( calculateHalfWindowLength( dataRate.getValue(), millisForFadeIn ), false);
 
-		// We will use simple linear fade for now
-		int genLength = capacity - 1;
-		for( int i = 0; i < capacity ; i++ )
-		{
-			float normalisedVal = (float)i / (float)genLength;
-			floatBuffer[i] = 1.0f - ( normalisedVal * normalisedVal );
-		}
+		final HannFftWindow fullHannWindow = new HannFftWindow( capacity * 2 );
+		final float[] hwAmps = fullHannWindow.getAmps();
+
+		System.arraycopy( hwAmps, 0, floatBuffer, 0, capacity );
+		ArrayUtils.reverse( floatBuffer );
 	}
 
+	private final static int calculateHalfWindowLength( final int sampleRate, final float windowLengthMillis )
+	{
+		return AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, windowLengthMillis );
+	}
 }
