@@ -23,6 +23,7 @@ package uk.co.modularaudio.mads.base.crossfader.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -33,8 +34,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, CrossFaderMadInstance>
@@ -43,16 +42,10 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 	private static final int VALUE_CHASE_MILLIS = 10;
 
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 1.0f;
+	private int sampleRate;
 
-	private long sampleRate = -1;
-
-	private float instanceRealAmpA = 0.0f;
-	private float instanceRealAmpB = 0.0f;
-
-	private float desiredAmpA = 1.0f;
-	private float desiredAmpB = 1.0f;
+	private final SpringAndDamperDoubleInterpolator ampAInterpolator = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final SpringAndDamperDoubleInterpolator ampBInterpolator = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	public CrossFaderMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -69,8 +62,8 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-		curValueRatio = 1.0f - newValueRatio;
+		ampAInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
+		ampBInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
 	}
 
 	@Override
@@ -103,6 +96,14 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			(outRConnected && (in1RConnected || in2RConnected))
 				)
 		{
+			final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
+
+			final int ampABufferIndex = 0;
+			final int ampBBufferIndex = numFrames;
+
+			ampAInterpolator.generateControlValues( tmpBuffer, ampABufferIndex, numFrames );
+			ampBInterpolator.generateControlValues( tmpBuffer, ampBBufferIndex, numFrames );
+
 			final MadChannelBuffer in1Lcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT ];
 			final float[] in1LBuffer = in1Lcb.floatBuffer;
 			final MadChannelBuffer in1Rcb = channelBuffers[ CrossFaderMadDefinition.CONSUMER_CHAN1_RIGHT ];
@@ -116,33 +117,25 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			final MadChannelBuffer outRcb = channelBuffers[ CrossFaderMadDefinition.PRODUCER_OUT_RIGHT ];
 			final float[] outRBuffer = outRcb.floatBuffer;
 
-			final int lastFrameIndex = frameOffset + numFrames;
-			for( int i = frameOffset ; i < lastFrameIndex ; i++ )
+			for( int i = 0 ; i < numFrames ; i++ )
 			{
-				final float in1lval = in1LBuffer[ i ];
-				final float in2lval = in2LBuffer[ i ];
-				final float lVal = (in1lval * instanceRealAmpA) + (in2lval * instanceRealAmpB);
-				outLBuffer[ i ] = lVal;
+				final float ampA = tmpBuffer[ampABufferIndex+i];
+				final float ampB = tmpBuffer[ampBBufferIndex+i];
 
-				final float in1rval = in1RBuffer[ i ];
-				final float in2rval = in2RBuffer[ i ];
+				final float in1lval = in1LBuffer[ frameOffset + i ];
+				final float in2lval = in2LBuffer[ frameOffset + i ];
+				final float lVal = (in1lval * ampA) + (in2lval * ampB);
+				outLBuffer[ frameOffset + i ] = lVal;
 
-				final float rVal = (in1rval * instanceRealAmpA) + (in2rval * instanceRealAmpB);
-				outRBuffer[ i ] = rVal;
+				final float in1rval = in1RBuffer[ frameOffset + i ];
+				final float in2rval = in2RBuffer[ frameOffset + i ];
 
-				// Fade between the values
-				instanceRealAmpA = ((instanceRealAmpA * curValueRatio) + (desiredAmpA * newValueRatio));
-				instanceRealAmpB = ((instanceRealAmpB * curValueRatio) + (desiredAmpB * newValueRatio));
-				// And dampen any values that are just noise.
-				if( instanceRealAmpA > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpA < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					instanceRealAmpA = 0.0f;
-				}
-				if( instanceRealAmpB > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && instanceRealAmpB < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					instanceRealAmpB = 0.0f;
-				}
+				final float rVal = (in1rval * ampA) + (in2rval * ampB);
+				outRBuffer[ frameOffset + i ] = rVal;
 			}
+
+			ampAInterpolator.checkForDenormal();
+			ampBInterpolator.checkForDenormal();
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -150,7 +143,7 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 	public void setDesiredAmps( final float ampA, final float ampB )
 	{
-		this.desiredAmpA = ampA;
-		this.desiredAmpB = ampB;
+		ampAInterpolator.notifyOfNewValue( ampA );
+		ampBInterpolator.notifyOfNewValue( ampB );
 	}
 }
