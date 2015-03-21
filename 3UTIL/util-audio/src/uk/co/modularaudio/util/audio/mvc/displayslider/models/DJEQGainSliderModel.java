@@ -20,23 +20,20 @@
 
 package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class MixdownSliderModel extends SliderDisplayModel
+public class DJEQGainSliderModel extends SliderDisplayModel
 {
-
-	private final static MixdownSliderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new MixdownSliderIntToFloatConverter();
-
-	public MixdownSliderModel()
+	public DJEQGainSliderModel()
 	{
-		super( Float.NEGATIVE_INFINITY, INT_TO_FLOAT_CONVERTER.getLinearHighestDb(),
+		super( -10.0f, 10.0f,
 				0.0f,
-				INT_TO_FLOAT_CONVERTER.getNumTotalSteps(),
+				2000,
 				1,
-				INT_TO_FLOAT_CONVERTER,
+				new SimpleSliderIntToFloatConverter(),
 				3,
 				3,
 				"dB" );
 	}
-
 }

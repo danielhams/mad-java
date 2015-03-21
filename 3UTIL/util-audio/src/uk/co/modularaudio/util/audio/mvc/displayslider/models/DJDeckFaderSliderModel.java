@@ -22,12 +22,12 @@ package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class MixdownSliderModel extends SliderDisplayModel
+public class DJDeckFaderSliderModel extends SliderDisplayModel
 {
 
-	private final static MixdownSliderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new MixdownSliderIntToFloatConverter();
+	private final static DJDeckFaderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new DJDeckFaderIntToFloatConverter();
 
-	public MixdownSliderModel()
+	public DJDeckFaderSliderModel()
 	{
 		super( Float.NEGATIVE_INFINITY, INT_TO_FLOAT_CONVERTER.getLinearHighestDb(),
 				0.0f,

@@ -39,8 +39,10 @@ public class ModelComboUiJComponent extends PacComboBox<String>
 		this.setOpaque( false );
 
 		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		cbm.addElement( "Cross Fader" );
-		cbm.addElement( "Mixer" );
+		cbm.addElement( "DJ Cross Fader" );
+		cbm.addElement( "DJ EQ Gain" );
+		cbm.addElement( "DJ Deck Fader" );
+		cbm.addElement( "Mastering Mixer Fader" );
 		cbm.addElement( "Speed" );
 		cbm.addElement( "Frequency" );
 		cbm.addElement( "Left Right" );

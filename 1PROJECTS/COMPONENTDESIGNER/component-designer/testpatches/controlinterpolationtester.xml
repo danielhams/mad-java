@@ -15,9 +15,9 @@
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Model Choice" value="Mixer"/>
+        <rackControl name="Model Choice" value="DJ EQ Gain"/>
         <rackControl name="ValueChase" value="4.6522"/>
-        <rackControl name="Value" value="-Infinity"/>
+        <rackControl name="Value" value="0.0"/>
         <rackControl name="Perf Table" value=""/>
     </rackComponent>
     <rackComponent name="Frequency Filter 8" definitionId="frequency_filter">
@@ -72,7 +72,7 @@
     <rackComponent name="Spectral Roll 6" definitionId="spectral_roll">
         <rackPosition column="0" row="7"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Amp Scale" value="16384"/>
+        <rackControl name="Amp Scale" value="8192"/>
         <rackControl name="Freq Scale" value="Log"/>
         <rackControl name="Resolution" value="Log-Log"/>
     </rackComponent>

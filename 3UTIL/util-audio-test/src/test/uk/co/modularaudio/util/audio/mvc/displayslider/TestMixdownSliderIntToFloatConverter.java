@@ -38,11 +38,7 @@ public class TestMixdownSliderIntToFloatConverter
 
 	public void go() throws IOException
 	{
-		final MixdownSliderIntToFloatConverter intToFloatConverter = new MixdownSliderIntToFloatConverter(
-				10.0f,
-				-30.0f,
-				-30.0f,
-				-120.0f );
+		final MixdownSliderIntToFloatConverter intToFloatConverter = new MixdownSliderIntToFloatConverter();
 
 		intToFloatTests( intToFloatConverter );
 
@@ -102,7 +98,7 @@ public class TestMixdownSliderIntToFloatConverter
 				-71.0f,
 				-80.0f,
 				-90.0f,
-				-120.0f,
+				-120.0f,		// This should get rounded down to -INF since -90.0dB is the lowest value
 				-1000.0f,
 				Float.NEGATIVE_INFINITY
 		};

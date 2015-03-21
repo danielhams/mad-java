@@ -26,7 +26,9 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionOutputGainSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionRatioSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionThresholdSliderModel;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.CrossFaderSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJCrossFaderSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJEQGainSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.LeftRightPanSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
@@ -39,48 +41,36 @@ public class InterpTesterSliderModels
 	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( InterpTesterSliderModels.class.getName() );
 
-	private final SliderDisplayModel[] models = new SliderDisplayModel[9];
-	private final SliderModelValueConverter[] valueConverters = new SliderModelValueConverter[9];
-	{
+	private final SliderDisplayModel[] models = {
+			new DJCrossFaderSliderModel(),
+			new DJEQGainSliderModel(),
+			new DJDeckFaderSliderModel(),
+			new MixdownSliderModel(),
+			new PlaybackSpeedSliderModel(),
+			new OscillatorFrequencySliderModel(),
+			new LeftRightPanSliderModel(),
+			new CompressionThresholdSliderModel(),
+			new CompressionRatioSliderModel(),
+			new CompressionOutputGainSliderModel(),
+			new LogarithmicTimeMillisSliderModel()
+	};
+
+	private final SliderModelValueConverter[] valueConverters =	{
+			null,
+			new DbToLevelValueConverter(),
+			new DbToLevelValueConverter(),
+			new DbToLevelValueConverter(),
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
 	};
 
 	public InterpTesterSliderModels()
 	{
-		// Cross fader
-		models[0] = new CrossFaderSliderModel();
-		valueConverters[0] = null;
-
-		// Mixer fader and converter
-		models[1] = new MixdownSliderModel();
-		valueConverters[1] = new DbToLevelValueConverter();
-
-		// Speed
-		models[2] = new PlaybackSpeedSliderModel();
-		valueConverters[2] = null;
-
-		// Frequency
-		models[3] = new OscillatorFrequencySliderModel();
-		valueConverters[3] = null;
-
-		// Left Right
-		models[4] = new LeftRightPanSliderModel();
-		valueConverters[4] = null;
-
-		// Compression Threshold
-		models[5] = new CompressionThresholdSliderModel();
-		valueConverters[5] = null;
-
-		// Compression Ratio
-		models[6] = new CompressionRatioSliderModel();
-		valueConverters[6] = null;
-
-		// Compression Output Gain
-		models[7] = new CompressionOutputGainSliderModel();
-		valueConverters[7] = null;
-
-		// Time (1->5000 ms)
-		models[8] = new LogarithmicTimeMillisSliderModel();
-		valueConverters[8] = null;
 	}
 
 	public SliderDisplayModel getModelAt( final int index )

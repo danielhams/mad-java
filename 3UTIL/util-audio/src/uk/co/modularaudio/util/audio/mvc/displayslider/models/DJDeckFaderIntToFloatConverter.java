@@ -20,20 +20,23 @@
 
 package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class CrossFaderSliderModel extends SliderDisplayModel
+
+
+public class DJDeckFaderIntToFloatConverter extends LogarithmicDbFaderIntToFloatConverter
 {
-	public CrossFaderSliderModel()
-	{
-		super( -1.0f, 1.0f, 0.0f,
-				128,
-				1,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val");
-	}
+//	private static Log log = LogFactory.getLog( DJDeckFaderIntToFloatConverter.class.getName() );
 
+	public final static float DEFAULT_LIN_HIGHEST_DB = 0.0f;
+	public final static float DEFAULT_LIN_LOWEST_DB = -30.0f;
+	public final static float DEFAULT_COM_HIGHEST_DB = -30.0f;
+	public final static float DEFAULT_COM_LOWEST_DB = -90.0f;
+
+	public DJDeckFaderIntToFloatConverter()
+	{
+		super( DEFAULT_LIN_HIGHEST_DB,
+				DEFAULT_LIN_LOWEST_DB,
+				DEFAULT_COM_HIGHEST_DB,
+				DEFAULT_COM_LOWEST_DB );
+	}
 }
