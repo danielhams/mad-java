@@ -34,8 +34,8 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	private static Log log = LogFactory.getLog( SpringAndDamperInterpolator.class.getName() );
 
 	// initial values
-	public static final float FORCE_SCALE = 0.1f;
-	public static final float DAMPING_FACTOR = 0.5f;
+	public static final float FORCE_SCALE = 0.025f;
+	public static final float DAMPING_FACTOR = 0.25f;
 	public static final float INTEGRATION_TIMESTEP_FOR_48K = 0.03f;
 
 	public static final float MIN_VALUE_DELTA_DB = -120.0f;
@@ -80,6 +80,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
 	}
 
+	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
 		this.lowerBound = lowerBound;

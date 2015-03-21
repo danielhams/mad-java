@@ -48,10 +48,10 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalyser.class.getName() );
 
 //	private static final float VALUE_CHASE_MILLIS = 20.0f;
-//	private static final float VALUE_CHASE_MILLIS = 10.0f;
+	private static final float VALUE_CHASE_MILLIS = 10.0f;
 //	private static final float VALUE_CHASE_MILLIS = 7.33f;
 //	private static final float VALUE_CHASE_MILLIS = 5.33f;
-	private static final float VALUE_CHASE_MILLIS = 3.7f;
+//	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
@@ -61,8 +61,11 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	private final static String SRC_FILE = "zero_to_one_multi_events.txt";
 	private final static String SRC_FILE = "zero_to_one_and_back_multi_events.txt";
 
-	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
-	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_5chan_processed.wav";
+//	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovements_48k_1chan.wav";
+//	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_5chan_processed.wav";
+
+	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovementsandmixxresponse_48k_1chan.wav";
+	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovementsandmixxresponse_48k_5chan_interpout.wav";
 
 //	public static final int VIS_WIDTH = 100;
 //	public static final int VIS_WIDTH = 200;
@@ -306,7 +309,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 				try
 				{
 					scia.setVisible( true );
-//					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
+					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
 					scia.go();
 				}
 				catch( final Exception e )

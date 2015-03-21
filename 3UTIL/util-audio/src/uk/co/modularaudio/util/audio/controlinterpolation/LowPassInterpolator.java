@@ -34,8 +34,8 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	private int sampleRate;
 	private final ButterworthFilter lpFilter = new ButterworthFilter();
 
-//	private static final float LP_FREQ = 30.0f;
-	private static final float LP_FREQ = 65.0f;
+	private static final float LP_FREQ = 30.0f;
+//	private static final float LP_FREQ = 65.0f;
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;
