@@ -32,9 +32,9 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstan
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class SoundfilePlayerSpeedSliderUiJComponent extends PacPlaybackSpeedSlider
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,

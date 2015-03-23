@@ -39,29 +39,29 @@ import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.Satelli
 public class SliderDisplayTester
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayTester.class.getName() );
-	
+
 	private JFrame frame = null;
 	private JPanel panel = null;
-	
+
 	private SliderDisplayView staticValueDisplay;
 
 	public SliderDisplayTester()
 	{
 		frame = new JFrame();
-		Dimension size = new Dimension( 400, 400 );
+		final Dimension size = new Dimension( 400, 400 );
 		frame.setPreferredSize( size );
 //		frame.setMinimumSize( size );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		
+
 		panel = new JPanel();
 //		String layoutStr = "insets 0, gap 0, fill";
-		String layoutStr = "fill";
-		MigLayout l = new MigLayout( layoutStr );
+		final String layoutStr = "fill";
+		final MigLayout l = new MigLayout( layoutStr );
 		panel.setLayout( l );
 		panel.setBackground( Color.green );
 		frame.add( panel );
 	}
-	
+
 	public void go() throws Exception
 	{
 //		SliderDisplayModel attackModel = new SliderDisplayModel( 0.0f,
@@ -83,9 +83,9 @@ public class SliderDisplayTester
 //				"A:",
 //				9.0f,
 //				true );
-//		
+//
 //		panel.add( attackSliderDisplay, "grow" );
-//		
+//
 //		SliderDisplayModel decayModel = new SliderDisplayModel( 0.0f,
 //				10.0f,
 //				0.0f,
@@ -107,7 +107,7 @@ public class SliderDisplayTester
 //				true );
 //
 //		panel.add( decaySliderDisplay, "grow, wrap" );
-//		
+//
 //		float maxFrequency = 22050.0f;
 //		SliderDisplayModel frequencyModel = new SliderDisplayModel( 0.0f,
 //				maxFrequency,
@@ -126,10 +126,10 @@ public class SliderDisplayTester
 //				SatelliteOrientation.RIGHT,
 //				"Frequency:",
 //				9.0f, true );
-//		
+//
 //		panel.add( frequencySliderDisplay, "spanx 2, grow, wrap" );
-		
-		SliderDisplayModel staticValueModel = new SliderDisplayModel( 0.01f,
+
+		final SliderDisplayModel staticValueModel = new SliderDisplayModel( 0.01f,
 				10.0f,
 				1.0f,
 				1000,
@@ -138,18 +138,18 @@ public class SliderDisplayTester
 				2,
 				2,
 				"Hz" );
-		SliderDisplayController staticValueController = new SliderDisplayController( staticValueModel );
+		final SliderDisplayController staticValueController = new SliderDisplayController( staticValueModel );
 		staticValueDisplay = new SliderDisplayView( staticValueModel,
 				staticValueController,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
 				"Frequency:",
-				Color.black,
-				Color.black,
+				Color.white,
+				Color.white,
 				true );
 		panel.add( staticValueDisplay, "spanx 2, grow" );
-				
+
 		frame.setSize( 200, 200 );
 		frame.setVisible( true );
 	}
@@ -157,7 +157,7 @@ public class SliderDisplayTester
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 		throws Exception
 	{
 		SwingUtilities.invokeAndWait( new Runnable()
@@ -169,10 +169,10 @@ public class SliderDisplayTester
 				{
 					UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 					UIManager.put( "Slider.paintValue",  Boolean.FALSE );
-					SliderDisplayTester t = new SliderDisplayTester();
+					final SliderDisplayTester t = new SliderDisplayTester();
 					t.go();
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();

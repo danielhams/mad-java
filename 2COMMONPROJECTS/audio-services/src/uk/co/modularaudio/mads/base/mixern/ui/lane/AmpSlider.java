@@ -25,8 +25,8 @@ import java.awt.Font;
 
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
-import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
 {

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.swing.mvc;
+package uk.co.modularaudio.util.swing.mvc.sliderdisplay;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

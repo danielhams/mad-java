@@ -34,17 +34,17 @@ import uk.co.modularaudio.util.mvc.combo.ComboModelListenerEvent;
 public class IdStringComboModel<A extends IdStringComboItem> implements ComboModel<A>
 {
 //	private static Log log = LogFactory.getLog( IdStringComboModel.class.getName() );
-	
+
 	protected List<A> theList = new ArrayList<A>();
-	protected int currentlySelectedItemIndex = -1;
-	
+	protected int currentlySelectedItemIndex;
+
 	protected List<ComboModelListener<A>> listeners = new ArrayList<ComboModelListener<A>>();
 	protected Map<String, A> idToElementMap = new HashMap<String, A> ();
-	
-	public IdStringComboModel( Collection<A> startupItems )
+
+	public IdStringComboModel( final Collection<A> startupItems )
 	{
 		theList.addAll( startupItems );
-		for( A ci : startupItems )
+		for( final A ci : startupItems )
 		{
 			idToElementMap.put( ci.getId(), ci );
 		}
@@ -57,7 +57,7 @@ public class IdStringComboModel<A extends IdStringComboItem> implements ComboMod
 	}
 
 	@Override
-	public A getElementAt(int i)
+	public A getElementAt(final int i)
 	{
 		return theList.get( i );
 	}
@@ -67,7 +67,7 @@ public class IdStringComboModel<A extends IdStringComboItem> implements ComboMod
 	{
 		return currentlySelectedItemIndex;
 	}
-	
+
 	@Override
 	public A getSelectedElement()
 	{
@@ -82,36 +82,36 @@ public class IdStringComboModel<A extends IdStringComboItem> implements ComboMod
 	}
 
 	@Override
-	public void addListener(ComboModelListener<A> listener)
+	public void addListener(final ComboModelListener<A> listener)
 	{
 		listeners.add( listener );
 	}
 
 	@Override
-	public void removeListener(ComboModelListener<A> listener)
+	public void removeListener(final ComboModelListener<A> listener)
 	{
 		listeners.remove( listener );
 	}
 
 	@Override
-	public int getItemIndex(IdStringComboItem item)
+	public int getItemIndex(final IdStringComboItem item)
 	{
 		return theList.indexOf( item );
 	}
-	
-	public void setSelectedItemByIndex( int index )
+
+	public void setSelectedItemByIndex( final int index )
 		throws IndexOutOfBoundsException
 	{
 		if( index >= 0 && index < theList.size() )
 		{
 			if( currentlySelectedItemIndex != index )
 			{
-				ComboModelListenerEvent listChangedEvent = new ComboModelListenerEvent(
+				final ComboModelListenerEvent listChangedEvent = new ComboModelListenerEvent(
 						EventType.SELECTION_CHANGED, currentlySelectedItemIndex, index );
-						
+
 				currentlySelectedItemIndex = index;
-				
-				for( ComboModelListener<A> l : listeners )
+
+				for( final ComboModelListener<A> l : listeners )
 				{
 					l.selectionChanged( listChangedEvent );
 				}
@@ -130,7 +130,7 @@ public class IdStringComboModel<A extends IdStringComboItem> implements ComboMod
 	}
 
 	@Override
-	public A getElementById(String selectedElementId)
+	public A getElementById(final String selectedElementId)
 	{
 		return idToElementMap.get( selectedElementId );
 	}

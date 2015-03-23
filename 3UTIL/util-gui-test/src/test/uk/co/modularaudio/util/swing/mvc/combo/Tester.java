@@ -34,37 +34,38 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.mvc.combo.ComboModelListener;
 import uk.co.modularaudio.util.mvc.combo.ComboModelListenerEvent;
 import uk.co.modularaudio.util.mvc.combo.idstring.IdStringComboItem;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.mvc.combo.ComboView;
 import uk.co.modularaudio.util.swing.mvc.combo.idstring.IdStringComboViewListCellRenderer;
 
 public class Tester
 {
 	private static Log log = LogFactory.getLog( Tester.class.getName() );
-	
+
 	private JFrame frame = null;
-	
+
 	public Tester()
 	{
 		frame = new JFrame();
 		frame.setMinimumSize( new Dimension( 300, 100 ) );
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	}
-	
+
 	public void go() throws Exception
 	{
-		List<IdStringComboItem> sampleItems = new ArrayList<IdStringComboItem>();
+		final List<IdStringComboItem> sampleItems = new ArrayList<IdStringComboItem>();
 		sampleItems.add( new IdStringComboItem( "thin", "Nasty, thin, toilet paper" ) );
 		sampleItems.add( new IdStringComboItem( "sand", "Harsh, sandpaper like bog roll" ) );
 
 		final RealComboModel rcm = new RealComboModel( sampleItems );
-		RealComboController rcc = new RealComboController( rcm );
+		final RealComboController rcc = new RealComboController( rcm );
 		// Now check the model is indeed updated
 		debugModel( rcm );
 
-		ComboModelListener<IdStringComboItem> myListener = new ComboModelListener<IdStringComboItem>()
+		final ComboModelListener<IdStringComboItem> myListener = new ComboModelListener<IdStringComboItem>()
 		{
 			@Override
-			public void contentsChanged(ComboModelListenerEvent e)
+			public void contentsChanged(final ComboModelListenerEvent e)
 			{
 				log.debug("Contents changed event: " + e.toString() );
 				// Now debug it
@@ -72,48 +73,52 @@ public class Tester
 			}
 
 			@Override
-			public void intervalAdded(ComboModelListenerEvent e)
+			public void intervalAdded(final ComboModelListenerEvent e)
 			{
 				log.debug("Interval added event: " + e.toString() );
 			}
 
 			@Override
-			public void intervalRemoved(ComboModelListenerEvent e)
+			public void intervalRemoved(final ComboModelListenerEvent e)
 			{
 				log.debug("Interval removed event: " + e.toString() );
 			}
 
 			@Override
-			public void selectionChanged(ComboModelListenerEvent e)
+			public void selectionChanged(final ComboModelListenerEvent e)
 			{
 				log.debug("Selection changed event: " + e.toString() );
-				int selectionIndex = e.getIndex0();
-				IdStringComboItem item = rcm.getElementAt( selectionIndex );
+				final int selectionIndex = e.getIndex0();
+				final IdStringComboItem item = rcm.getElementAt( selectionIndex );
 				log.debug("The id of the selection is now: " + item.getId() );
 			}
 		};
 		rcm.addListener( myListener );
-		IdStringComboViewListCellRenderer<IdStringComboItem> cr = new IdStringComboViewListCellRenderer<IdStringComboItem>( new DefaultListCellRenderer() );
-		ComboView<IdStringComboItem> comboView = new ComboView<IdStringComboItem>( rcm, rcc, cr );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		msh.addLayoutConstraint( "fill" );
+		frame.setLayout( msh.createMigLayout() );
+
+		final IdStringComboViewListCellRenderer<IdStringComboItem> cr = new IdStringComboViewListCellRenderer<IdStringComboItem>( new DefaultListCellRenderer() );
+		final ComboView<IdStringComboItem> comboView = new ComboView<IdStringComboItem>( rcm, rcc, cr );
 		comboView.setEditable( false );
-		frame.add( comboView );
-		JLabel testLabel = new JLabel("Hmmphg");
-		frame.add( testLabel );
+		frame.add( comboView, "grow" );
+		final JLabel testLabel = new JLabel("Hmmphg");
+		frame.add( testLabel, "" );
 		frame.setVisible( true );
 	}
-	
-	public void debugModel( RealComboModel rcm )
+
+	public void debugModel( final RealComboModel rcm )
 	{
-		int numElements = rcm.getNumElements();
+		final int numElements = rcm.getNumElements();
 		for( int i = 0 ; i < numElements ; i++ )
 		{
-			IdStringComboItem eci = rcm.getElementAt( i );
+			final IdStringComboItem eci = rcm.getElementAt( i );
 			log.debug("Got an item: " + eci.getId() + " " + eci.getDisplayString() );
 		}
-		int selectedItemIndex = rcm.getSelectedItemIndex();
+		final int selectedItemIndex = rcm.getSelectedItemIndex();
 		if( selectedItemIndex != -1 )
 		{
-			IdStringComboItem selectedItem = rcm.getElementAt( selectedItemIndex );
+			final IdStringComboItem selectedItem = rcm.getElementAt( selectedItemIndex );
 			log.debug("And the currently selected item is " + selectedItem.getId() + " " + selectedItem.getDisplayString() );
 		}
 		else
@@ -125,10 +130,10 @@ public class Tester
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 		throws Exception
 	{
-		Tester t = new Tester();
+		final Tester t = new Tester();
 		t.go();
 	}
 

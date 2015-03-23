@@ -18,22 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.util.swing.mvc.sliderdisplay;
+package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
 import java.awt.Color;
 
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDoubleClickMouseListener.RotaryDoubleClickReceiver;
 
-public class SliderDisplayView extends JPanel
+public class RotaryDisplayView extends JPanel
 {
 	private static final long serialVersionUID = 3201519946309189476L;
-//	private static Log log = LogFactory.getLog( SliderDisplayView.class.getName() );
+//	private static Log log = LogFactory.getLog( RotaryDisplayView.class.getName() );
 
 	public enum DisplayOrientation
 	{
@@ -51,40 +52,58 @@ public class SliderDisplayView extends JPanel
 
 	private int numColumns = 1;
 
-	private final SliderDisplayLabel label;
-	private final SliderDisplaySlider slider;
-	private final SliderDisplayTextbox textbox;
+	private final RotaryDisplayLabel label;
+	private final RotaryDisplayKnob knob;
+	private final RotaryDisplayTextbox textbox;
 
-	public SliderDisplayView( final SliderDisplayModel model,
-			final SliderDisplayController controller,
+	public RotaryDisplayView( final RotaryDisplayModel model,
+			final RotaryDisplayController controller,
+			final KnobType knobType,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
 			final String labelText,
 			final Color labelColor,
 			final Color unitsColor,
+			final Color backgroundColor,
+			final Color foregroundColor,
+			final Color knobColor,
+			final Color outlineColor,
+			final Color indicatorColor,
 			final boolean opaque )
 	{
 		this( model,
 				controller,
+				knobType,
 				labelOrientation,
 				displayOrientation,
 				textboxOrientation,
 				labelText,
 				labelColor,
 				unitsColor,
+				backgroundColor,
+				foregroundColor,
+				knobColor,
+				outlineColor,
+				indicatorColor,
 				opaque,
 				false );
 	}
 
-	public SliderDisplayView( final SliderDisplayModel model,
-			final SliderDisplayController controller,
+	public RotaryDisplayView( final RotaryDisplayModel model,
+			final RotaryDisplayController controller,
+			final KnobType knobType,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
 			final String labelText,
 			final Color labelColor,
 			final Color unitsColor,
+			final Color backgroundColor,
+			final Color foregroundColor,
+			final Color knobColor,
+			final Color outlineColor,
+			final Color indicatorColor,
 			final boolean opaque,
 			final boolean doubleClickToReset )
 	{
@@ -122,9 +141,18 @@ public class SliderDisplayView extends JPanel
 		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
 
-		label = new SliderDisplayLabel( labelText, labelColor, opaque );
-		slider = new SliderDisplaySlider( model, controller, displayOrientation, labelColor, opaque );
-		textbox = new SliderDisplayTextbox( model, controller, unitsColor, opaque );
+		label = new RotaryDisplayLabel( labelText, labelColor, opaque );
+		knob = new RotaryDisplayKnob( model,
+				controller,
+				knobType,
+				displayOrientation,
+				backgroundColor,
+				foregroundColor,
+				knobColor,
+				outlineColor,
+				indicatorColor,
+				opaque );
+		textbox = new RotaryDisplayTextbox( model, controller, unitsColor, opaque );
 
 		// Any needed components at top
 		if( labelOrientation == SatelliteOrientation.ABOVE )
@@ -146,28 +174,28 @@ public class SliderDisplayView extends JPanel
 			this.add( textbox, "align center" );
 		}
 
-		// Main slider
+		// Main knob
 		if( numColumns == 2 )
 		{
 			if( displayOrientation == DisplayOrientation.HORIZONTAL )
 			{
-				this.add( slider, "center, grow, shrink 100, pushx, wrap");
+				this.add( knob, "center, grow, shrink 100, push, wrap");
 			}
 			else
 			{
-				this.add( slider, "center, grow, shrink 100, pushy, wrap");
+				this.add( knob, "center, grow, shrink 100, push, wrap");
 			}
 		}
 		else
 		{
 			if( displayOrientation == DisplayOrientation.HORIZONTAL )
 			{
-//				log.debug("Adding slider with center pushx 50 shrink 100");
-				this.add( slider, "center, growx 50, pushx 50, shrink 100" );
+//				log.debug("Adding slider with center push 50 shrink 100");
+				this.add( knob, "center, grow 50, push 50, shrink 100" );
 			}
 			else
 			{
-				this.add( slider, "center, pushy 50, shrink 100" );
+				this.add( knob, "center, push 50, shrink 100" );
 			}
 		}
 
@@ -225,7 +253,7 @@ public class SliderDisplayView extends JPanel
 
 		if( doubleClickToReset )
 		{
-			addDoubleClickReceiver( new SliderDoubleClickReceiver()
+			addDoubleClickReceiver( new RotaryDoubleClickReceiver()
 			{
 
 				@Override
@@ -237,15 +265,15 @@ public class SliderDisplayView extends JPanel
 		}
 	}
 
-	public void addDoubleClickReceiver( final SliderDoubleClickReceiver receiver )
+	public void addDoubleClickReceiver( final RotaryDoubleClickReceiver receiver )
 	{
-		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
-		slider.addMouseListener( doubleClickMouseListener );
+		final RotaryDoubleClickMouseListener doubleClickMouseListener = new RotaryDoubleClickMouseListener( receiver );
+		knob.addMouseListener( doubleClickMouseListener );
 	}
 
-	public void changeModel( final SliderDisplayModel newModel )
+	public void changeModel( final RotaryDisplayModel newModel )
 	{
-		slider.changeModel( newModel );
+		knob.changeModel( newModel );
 		textbox.changeModel( newModel );
 	}
 }

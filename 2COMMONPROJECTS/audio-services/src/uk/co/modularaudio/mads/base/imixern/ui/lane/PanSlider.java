@@ -27,8 +27,8 @@ import java.util.Hashtable;
 import javax.swing.JLabel;
 
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
-import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener;
+import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class PanSlider extends PacSlider implements SliderDoubleClickReceiver
 {
