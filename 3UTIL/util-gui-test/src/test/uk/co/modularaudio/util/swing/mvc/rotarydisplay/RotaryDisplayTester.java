@@ -34,9 +34,7 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDoubleClickMouseListener.RotaryDoubleClickReceiver;
 
 public class RotaryDisplayTester
 {
@@ -98,9 +96,8 @@ public class RotaryDisplayTester
 				KnobType.BIPOLAR,
 //				KnobType.UNIPOLAR,
 				SatelliteOrientation.BELOW,
-				DisplayOrientation.HORIZONTAL,
-				SatelliteOrientation.ABOVE,
-				"",
+				SatelliteOrientation.RIGHT,
+				"label",
 				Color.white,
 				Color.white,
 				backgroundColor,
@@ -108,16 +105,9 @@ public class RotaryDisplayTester
 				knobColor,
 				outlineColor,
 				indicatorColor,
-				false );
-		staticValueDisplay.addDoubleClickReceiver( new RotaryDoubleClickReceiver()
-		{
+				false,
+				true );
 
-			@Override
-			public void receiveDoubleClick()
-			{
-				staticValueModel.setValue( this, staticValueModel.getInitialValue() );
-			}
-		} );
 		panel.add( staticValueDisplay, "spanx 2, grow" );
 
 		frame.setSize( 200, 200 );

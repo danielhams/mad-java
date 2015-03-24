@@ -43,6 +43,8 @@ import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.ui.CvSurfaceMadUiDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.ui.DCTrapMadUiDefinition;
+import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
+import uk.co.modularaudio.mads.base.djeq.ui.DJEQMadUiDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.ui.EnvelopeMadUiDefinition;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
@@ -197,6 +199,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
 
 		classToUiDefinition.put( IMixer3MadDefinition.class, IMixer3MadUiDefinition.class );
+
+		classToUiDefinition.put( DJEQMadDefinition.class, DJEQMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

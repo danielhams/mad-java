@@ -42,6 +42,8 @@ import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
+import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
+import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
 import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
@@ -203,6 +205,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
 
 		defClassToInsClassMap.put( IMixer3MadDefinition.class, IMixer3MadInstance.class );
+
+		defClassToInsClassMap.put( DJEQMadDefinition.class, DJEQMadInstance.class );
 	}
 
 	@Override

@@ -23,10 +23,13 @@ package uk.co.modularaudio.util.audio.gui.mad.helper;
 import java.awt.Rectangle;
 import java.lang.reflect.Constructor;
 
-import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -34,7 +37,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 @SuppressWarnings("rawtypes")
 public class InternalMadUiControlDefinition extends MadUiControlDefinition
 {
-//	private static Log log = LogFactory.getLog( InternalMadUiControlDefinition.class.getName() );
+	private static Log log = LogFactory.getLog( InternalMadUiControlDefinition.class.getName() );
 
 	private final Class actualUiControlClass;
 
@@ -78,6 +81,7 @@ public class InternalMadUiControlDefinition extends MadUiControlDefinition
 		catch (final Exception e)
 		{
 			final String msg = "Exception caught instantiating real control: " + e.toString();
+			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
 	}

@@ -33,18 +33,14 @@ import java.awt.geom.Line2D;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryIntToFloatConverter;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.DisplayOrientation;
 
 public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 {
-	private static Log log = LogFactory.getLog( RotaryDisplayKnob.class.getName() );
+//	private static Log log = LogFactory.getLog( RotaryDisplayKnob.class.getName() );
 
 	private static final long serialVersionUID = -187035163013499473L;
 
@@ -55,12 +51,9 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 	};
 
 	private RotaryDisplayModel sdm;
-	private final RotaryDisplayController controller;
 
 	private final KnobType knobType;
 
-	private final DisplayOrientation displayOrientation;
-	private final Color backgroundColor;
 	private final Color foregroundColor;
 	private final Color knobColor;
 	private final Color outlineColor;
@@ -86,7 +79,6 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 	public RotaryDisplayKnob( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
 			final KnobType knobType,
-			final DisplayOrientation displayOrientation,
 			final Color backgroundColor,
 			final Color foregroundColor,
 			final Color knobColor,
@@ -94,11 +86,8 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 			final Color indicatorColor,
 			final boolean opaque )
 	{
-		this.controller = controller;
 		this.sdm = model;
 		this.knobType = knobType;
-		this.displayOrientation = displayOrientation;
-		this.backgroundColor = backgroundColor;
 		this.foregroundColor = foregroundColor;
 		this.knobColor = knobColor;
 		this.outlineColor = outlineColor;

@@ -25,7 +25,7 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 public class DJDeckFaderSliderModel extends SliderDisplayModel
 {
 
-	private final static DJDeckFaderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new DJDeckFaderIntToFloatConverter();
+	public final static DJDeckFaderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new DJDeckFaderIntToFloatConverter();
 
 	public DJDeckFaderSliderModel()
 	{
