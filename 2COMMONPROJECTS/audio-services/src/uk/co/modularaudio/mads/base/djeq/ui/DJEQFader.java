@@ -44,6 +44,8 @@ public class DJEQFader extends PacPanel
 {
 	private static final long serialVersionUID = -4624215012389837804L;
 
+	private final DJEQMadUiInstance uiInstance;
+
 	private final DJDeckFaderSliderModel sdm;
 	private final SliderDisplayController sdc;
 
@@ -52,11 +54,15 @@ public class DJEQFader extends PacPanel
 
 	private final StereoAmpMeter sam;
 
+	private boolean previouslyShowing;
+
 	public DJEQFader( final DJEQMadDefinition definition,
 			final DJEQMadInstance instance,
 			final DJEQMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		this.uiInstance = uiInstance;
+
 		setOpaque( false );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
@@ -101,6 +107,8 @@ public class DJEQFader extends PacPanel
 			}
 		} );
 
+		uiInstance.setStereoAmpMeter( sam );
+
 	}
 
 	@Override
@@ -125,6 +133,15 @@ public class DJEQFader extends PacPanel
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
+		final boolean showing = isShowing();
+
+		if( previouslyShowing != showing )
+		{
+			uiInstance.sendUiActive( showing );
+			previouslyShowing = showing;
+		}
+
+		sam.receiveDisplayTick( currentGuiTime );
 	}
 
 	@Override

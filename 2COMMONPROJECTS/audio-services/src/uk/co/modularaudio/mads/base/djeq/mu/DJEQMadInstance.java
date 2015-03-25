@@ -27,6 +27,7 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
+import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -52,6 +53,12 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	private final static float HP_CROSSOVER_FREQ = 2500.0f;
 
 	private int sampleRate;
+	private int sampleFramesPerFrontEndPeriod;
+
+	private boolean active;
+	private int numSamplesProcessed;
+	private float curLeftMeterReading;
+	private float curRightMeterReading;
 
 	private final SpringAndDamperDoubleInterpolator highSad = new SpringAndDamperDoubleInterpolator( 0.0f, MAX_EQ_OVERDRIVE );
 	private final SpringAndDamperDoubleInterpolator midSad = new SpringAndDamperDoubleInterpolator( 0.0f, MAX_EQ_OVERDRIVE );
@@ -68,6 +75,8 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	private final ButterworthFilter24DB rightNonLpFilter = new ButterworthFilter24DB();
 	private final ButterworthFilter24DB rightMpFilter = new ButterworthFilter24DB();
 	private final ButterworthFilter24DB rightHpFilter = new ButterworthFilter24DB();
+
+	private final Limiter limiterRt = new Limiter( 0.99, 5 );
 
 	public DJEQMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -89,6 +98,10 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 			throws MadProcessingException
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleFramesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+		numSamplesProcessed = 0;
+		curLeftMeterReading = 0.0f;
+		curRightMeterReading = 0.0f;
 
 		highSad.reset( sampleRate, VALUE_CHASE_MILLIS );
 		midSad.reset( sampleRate, VALUE_CHASE_MILLIS );
@@ -211,6 +224,55 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 			rightOutputBuffer[frameOffset+i] += tmpBuffer[tmpSamples2Offset + i] * tmpBuffer[hiCvOffset+i] * tmpBuffer[faderCvOffset+i];
 		}
 
+		int currentSampleIndex = 0;
+		while( currentSampleIndex < numFrames )
+		{
+			if( active && numSamplesProcessed >= sampleFramesPerFrontEndPeriod )
+			{
+				final long emitFrameTime = periodStartFrameTime + frameOffset + currentSampleIndex;
+
+				emitMeterReading( tempQueueEntryStorage,
+						emitFrameTime,
+						curLeftMeterReading,
+						curRightMeterReading );
+
+				curLeftMeterReading = 0.0f;
+				curRightMeterReading = 0.0f;
+
+				numSamplesProcessed = 0;
+			}
+
+			final int numFramesAvail = numFrames - currentSampleIndex;
+			final int numLeftForPeriod = ( active ? sampleFramesPerFrontEndPeriod - numSamplesProcessed : numFramesAvail );
+			final int numThisRound = (numLeftForPeriod < numFramesAvail ? numLeftForPeriod : numFramesAvail );
+
+			// Update meter reading with left/right
+			final int lastIndex = currentSampleIndex + numThisRound;
+			for( int s = 0 ; s < numThisRound ; ++s )
+			{
+				final int meterSampleIndex = frameOffset + currentSampleIndex + s;
+				final float lFloat = leftOutputBuffer[ meterSampleIndex ];
+				final float lAbsFloat = ( lFloat < 0.0f ? -lFloat : lFloat );
+				if( lAbsFloat > curLeftMeterReading )
+				{
+					curLeftMeterReading = lAbsFloat;
+				}
+				final float rFloat = rightOutputBuffer[ meterSampleIndex ];
+				final float rAbsFloat = ( rFloat < 0.0f ? -rFloat : rFloat );
+				if( rAbsFloat > curRightMeterReading )
+				{
+					curRightMeterReading = rAbsFloat;
+				}
+			}
+
+			currentSampleIndex = lastIndex;
+			numSamplesProcessed += numThisRound;
+		}
+
+		// Finally run a limiter on the output
+		limiterRt.filter( leftOutputBuffer, frameOffset, numFrames );
+		limiterRt.filter( rightOutputBuffer, frameOffset, numFrames );
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -232,5 +294,24 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	public void setDesiredFaderAmp( final float ampVal )
 	{
 		faderSad.notifyOfNewValue( ampVal );
+	}
+
+	public void emitMeterReading( final ThreadSpecificTemporaryEventStorage tses,
+			final long frameTime,
+			final float leftReading,
+			final float rightReading )
+	{
+		if( active )
+		{
+			final int lFloatIntBits = Float.floatToIntBits( leftReading );
+			final int rFloatIntBits = Float.floatToIntBits( rightReading );
+			final long joinedParts = ((long)lFloatIntBits << 32) | rFloatIntBits;
+			localBridge.queueTemporalEventToUi( tses, frameTime, DJEQIOQueueBridge.COMMAND_OUT_METER_READINGS, joinedParts, null );
+		}
+	}
+
+	public void setActive( final boolean active )
+	{
+		this.active = active;
 	}
 }

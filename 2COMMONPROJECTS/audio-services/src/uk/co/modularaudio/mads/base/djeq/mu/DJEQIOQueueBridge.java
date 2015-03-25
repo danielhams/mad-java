@@ -31,10 +31,13 @@ public class DJEQIOQueueBridge extends MadLocklessQueueBridge<DJEQMadInstance>
 {
 	private static Log log = LogFactory.getLog( DJEQIOQueueBridge.class.getName() );
 
-	public static final int COMMAND_IN_HP_AMP = 0;
-	public static final int COMMAND_IN_BP_AMP = 1;
-	public static final int COMMAND_IN_LP_AMP = 2;
-	public static final int COMMAND_IN_FADER_AMP = 3;
+	public static final int COMMAND_IN_ACTIVE = 0;
+	public static final int COMMAND_IN_HP_AMP = 1;
+	public static final int COMMAND_IN_BP_AMP = 2;
+	public static final int COMMAND_IN_LP_AMP = 3;
+	public static final int COMMAND_IN_FADER_AMP = 4;
+
+	public static final int COMMAND_OUT_METER_READINGS = 5;
 
 	public DJEQIOQueueBridge()
 	{
@@ -49,6 +52,12 @@ public class DJEQIOQueueBridge extends MadLocklessQueueBridge<DJEQMadInstance>
 //		log.debug("Received queued event : " + queueEntry.command);
 		switch( queueEntry.command )
 		{
+			case COMMAND_IN_ACTIVE:
+			{
+				final boolean active = (queueEntry.value == 1);
+				instance.setActive( active );
+				break;
+			}
 			case COMMAND_IN_HP_AMP:
 			{
 				final int lower32Bits = (int)queueEntry.value;

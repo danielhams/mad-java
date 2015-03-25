@@ -33,6 +33,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<DJEQMadDefinition, DJEQMadInstance>
 	implements IOQueueEventUiConsumer<DJEQMadInstance>
@@ -49,6 +50,8 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 
 	private float curLowAmp = 1.0f;
 	private boolean curLowKilled = false;
+
+	private StereoAmpMeter meter;
 
 	public DJEQMadUiInstance( final DJEQMadInstance instance,
 			final DJEQMadUiDefinition uiDefinition )
@@ -84,6 +87,20 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 	{
 		switch( nextOutgoingEntry.command )
 		{
+			case DJEQIOQueueBridge.COMMAND_OUT_METER_READINGS:
+			{
+				final long timestamp = nextOutgoingEntry.frameTime;
+				final long val = nextOutgoingEntry.value;
+				final int lower32 = (int)(val & 0xFFFFFFFF);
+				final int upper32 = (int)((val >> 32) & 0xFFFFFFFF);
+				final float rMeter = Float.intBitsToFloat( lower32 );
+				final float lMeter = Float.intBitsToFloat( upper32 );
+				final float lMeterDb = AudioMath.levelToDbF( lMeter );
+				final float rMeterDb = AudioMath.levelToDbF( rMeter );
+				meter.receiveMeterReadingInDb( timestamp, 0, lMeterDb );
+				meter.receiveMeterReadingInDb( timestamp, 1, rMeterDb );
+				break;
+			}
 			default:
 			{
 				final String msg = "Unknown command to guI: " + nextOutgoingEntry.command;
@@ -178,4 +195,13 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 		sendTemporalValueToInstance( DJEQIOQueueBridge.COMMAND_IN_FADER_AMP, lValue );
 	}
 
+	public void setStereoAmpMeter( final StereoAmpMeter meter )
+	{
+		this.meter = meter;
+	}
+
+	public void sendUiActive( final boolean active )
+	{
+		sendCommandValueToInstance( DJEQIOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0) );
+	}
 }
