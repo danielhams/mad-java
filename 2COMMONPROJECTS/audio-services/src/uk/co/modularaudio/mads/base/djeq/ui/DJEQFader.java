@@ -22,6 +22,9 @@ package uk.co.modularaudio.mads.base.djeq.ui;
 
 import java.awt.Component;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -43,6 +46,8 @@ public class DJEQFader extends PacPanel
 	implements IMadUiControlInstance<DJEQMadDefinition, DJEQMadInstance, DJEQMadUiInstance>
 {
 	private static final long serialVersionUID = -4624215012389837804L;
+
+	private static Log log = LogFactory.getLog( DJEQFader.class.getName() );
 
 	private final DJEQMadUiInstance uiInstance;
 
@@ -120,12 +125,24 @@ public class DJEQFader extends PacPanel
 	@Override
 	public String getControlValue()
 	{
-		return "";
+		return Float.toString( sdm.getValue() );
 	}
 
 	@Override
 	public void receiveControlValue( final String value )
 	{
+		if( value != null && value.length() > 0 )
+		{
+			try
+			{
+				final float floatVal = Float.parseFloat( value );
+				sdc.setValue( this, floatVal );
+			}
+			catch( final NumberFormatException nfe )
+			{
+				log.warn("Failed parsing DJEQFader value: " + value );
+			}
+		}
 	}
 
 	@Override

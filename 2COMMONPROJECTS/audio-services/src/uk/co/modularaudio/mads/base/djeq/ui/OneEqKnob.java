@@ -20,18 +20,23 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
 
 public class OneEqKnob extends PacPanel
 {
 	private static final long serialVersionUID = 537398070381235844L;
+
+	private static Log log = LogFactory.getLog( OneEqKnob.class.getName() );
 
 	private final RotaryDisplayModel rdm;
 	private final RotaryDisplayController rdc;
@@ -85,5 +90,28 @@ public class OneEqKnob extends PacPanel
 	public RotaryDisplayModel getModel()
 	{
 		return rdm;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return Float.toString( rdm.getValue() );
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		if( value != null && value.length() > 0 )
+		{
+			try
+			{
+				final float newFloatValue = Float.parseFloat( value );
+				rdc.setValue( this, newFloatValue );
+			}
+			catch( final NumberFormatException nfe )
+			{
+				log.warn("Failed to parse OneEqKnob value: " + value );
+			}
+		}
 	}
 }

@@ -11,17 +11,17 @@
     </rackComponent>
     <rackComponent name="DJ EQ 2" definitionId="djeq">
         <rackPosition column="0" row="4"/>
-        <rackControl name="HighLane" value=""/>
-        <rackControl name="MidLane" value=""/>
-        <rackControl name="LowLane" value=""/>
-        <rackControl name="Fader" value=""/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="-20.65:true"/>
+        <rackControl name="LowLane" value="0.0:true"/>
+        <rackControl name="Fader" value="-6.0"/>
     </rackComponent>
     <rackComponent name="DJ EQ 3" definitionId="djeq">
         <rackPosition column="3" row="4"/>
-        <rackControl name="HighLane" value=""/>
-        <rackControl name="MidLane" value=""/>
-        <rackControl name="LowLane" value=""/>
-        <rackControl name="Fader" value=""/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 7" definitionId="imixer3">
         <rackPosition column="1" row="7"/>

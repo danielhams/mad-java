@@ -102,4 +102,28 @@ public class DJEQOneEqLane extends PacPanel
 	{
 		return killToggle;
 	}
+
+	@Override
+	public String getControlValue()
+	{
+		final String knobValue = knob.getControlValue();
+		final String killValue = killToggle.getControlValue();
+		return knobValue + ":" + killValue;
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		if( value != null && value.length() > 0 )
+		{
+			final int colonIndex = value.indexOf( ':' );
+			if( colonIndex > 0 )
+			{
+				final String knobValue = value.substring( 0, colonIndex );
+				final String killValue = value.substring( colonIndex + 1 );
+				knob.receiveControlValue( knobValue );
+				killToggle.receiveControlValue( killValue );
+			}
+		}
+	}
 }
