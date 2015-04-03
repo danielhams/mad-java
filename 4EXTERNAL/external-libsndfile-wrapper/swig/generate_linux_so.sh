@@ -14,7 +14,8 @@ rm -rf ../src/uk/co/modularaudio/libsndfilewrapper/swig
 echo done
 echo
 
-mkdir ../src/uk/co/modularaudio/libsndfilewrapper/swig
+mkdir -p ../src/uk/co/modularaudio/libsndfilewrapper/swig
+mkdir -p ../lib
 
 echo Generating Shared Library Source File
 swig -I/usr/include -java -package uk.co.modularaudio.libsndfilewrapper.swig -outdir ../src/uk/co/modularaudio/libsndfilewrapper/swig libsndfile.i

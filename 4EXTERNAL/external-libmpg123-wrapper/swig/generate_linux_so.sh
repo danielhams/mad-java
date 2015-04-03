@@ -14,7 +14,8 @@ rm -rf ../src/uk/co/modularaudio/libmpg123wrapper/swig
 echo done
 echo
 
-mkdir ../src/uk/co/modularaudio/libmpg123wrapper/swig
+mkdir -p ../src/uk/co/modularaudio/libmpg123wrapper/swig
+mkdir -p ../lib
 
 echo Generating Shared Library Source File
 swig -I/usr/include -java -package uk.co.modularaudio.libmpg123wrapper.swig -outdir ../src/uk/co/modularaudio/libmpg123wrapper/swig libmpg123.i
