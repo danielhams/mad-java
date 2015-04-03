@@ -105,7 +105,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 			{
 				isCompressedFormat = true;
 			}
-			this.numFloatsPerFrame = numBytesPerFrame / 2;
+			this.numFloatsPerFrame = numChannels;
 			this.sampleSizeInBits = rawFormat.getSampleSizeInBits();
 			if( sampleSizeInBits <= 0 )
 			{
@@ -122,7 +122,7 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 				// about extreme quality.
 				this.frameRate = sampleRate;
 				this.numBytesPerFrame = 4;
-				this.numFloatsPerFrame = numBytesPerFrame / 2;
+				this.numFloatsPerFrame = numChannels;
 				this.sampleSizeInBits = 16;
 				this.encoding = Encoding.PCM_SIGNED;
 				this.bigEndian = false;
@@ -388,6 +388,10 @@ public class BrokenAudioDataFetcher implements IAudioDataFetcher
 					FloatToByteConverter.byteToFloatConversion( tmpByteBuf, 0, destBuf, destOffset + curOutputPointer, numFloatsRead, isBigEndian );
 					curOutputPointer += numFloatsRead;
 					numBytesRead += bytesRead;
+				}
+				else
+				{
+					endOfFile = true;
 				}
 			}
 		}

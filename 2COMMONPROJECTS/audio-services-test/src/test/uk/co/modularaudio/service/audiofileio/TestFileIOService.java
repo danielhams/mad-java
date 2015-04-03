@@ -27,46 +27,51 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
 import uk.co.modularaudio.service.audiofileio.DynamicMetadata;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
-import uk.co.modularaudio.service.audiofileio.impl.AudioFileIOServiceImpl;
+import uk.co.modularaudio.service.brokenaudiofileio.BrokenAudioFileIOService;
 
 public class TestFileIOService extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestFileIOService.class.getName());
-	
+
 	private static final int TMP_ARRAY_SIZE = 1024;
-	
+
 	public void testReadingAFile() throws Exception
 	{
 		log.debug("Here we go.");
-		
-		AudioFileIOServiceImpl testService = new AudioFileIOServiceImpl();
-		
+
+		final BrokenAudioFileIOService testService = new BrokenAudioFileIOService();
+
 		testService.init();
-		
-		AudioFileIOService serviceInterface = testService;
-		
+
+		final AudioFileIOService serviceInterface = testService;
+
 //		String fileToRead = "/music/Samples/House/VocalStabs/haha.flac";
 //		String fileToRead = "/home/dan/tmp/TestExampleBeats96000.wav";
 //		String fileToRead = "/home/dan/tmp/TestExampleBeats48000.mp3";
-		String fileToRead = "/home/dan/tmp/974684_She_Came_Along_feat__Kid_Cudi_Sharam_s_Ecstasy_Of_Ibiza_Edit.wav";
+		final String fileToRead = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200911/974684_She_Came_Along_feat__Kid_Cudi_Sharam_s_Ecstasy_Of_Ibiza_Edit.mp3";
 
-		StaticMetadata sm = serviceInterface.sniffFileFormatOfFile( fileToRead );
-		
-		AudioFileHandleAtom readAtom = serviceInterface.openForRead( fileToRead );
-		
-		DynamicMetadata metadata = serviceInterface.readMetadata( readAtom );
+		final AudioFileFormat sniffedFormat = serviceInterface.sniffFileFormatOfFile( fileToRead );
+
+		assert( sniffedFormat != AudioFileFormat.UNKNOWN );
+
+		final AudioFileHandleAtom readAtom = serviceInterface.openForRead( fileToRead );
+
+		final StaticMetadata sm = readAtom.getStaticMetadata();
+
+		final DynamicMetadata metadata = serviceInterface.readMetadata( readAtom );
 		log.debug("Found the title: " + metadata.title );
 
-		int numChannels = sm.numChannels;
+		final int numChannels = sm.numChannels;
 
-		float[] destArray = new float[ TMP_ARRAY_SIZE ];
-		
+		final float[] destArray = new float[ TMP_ARRAY_SIZE ];
+
 		serviceInterface.readFloats( readAtom, destArray, 0,  TMP_ARRAY_SIZE / numChannels, 0 );
-		
+
 		serviceInterface.closeHandle(  readAtom );
-		
+
 		testService.destroy();
 	}
 }

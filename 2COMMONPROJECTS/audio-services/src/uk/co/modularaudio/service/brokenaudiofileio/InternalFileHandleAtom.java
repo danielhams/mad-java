@@ -18,12 +18,13 @@
  *
  */
 
-package uk.co.modularaudio.service.audiofileio.impl;
+package uk.co.modularaudio.service.brokenaudiofileio;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.util.audio.fileio.IAudioDataFetcher;
@@ -32,13 +33,18 @@ public class InternalFileHandleAtom implements AudioFileHandleAtom
 {
 	private static Log log = LogFactory.getLog( InternalFileHandleAtom.class.getName() );
 
+	protected final BrokenAudioFileIOService service;
 	protected final AudioFileDirection direction;
 	protected final StaticMetadata staticMetadata;
 
 	protected final IAudioDataFetcher internalDataFetcher;
 
-	public InternalFileHandleAtom( final AudioFileDirection direction, final StaticMetadata staticMetadata, final IAudioDataFetcher dataFetcher )
+	public InternalFileHandleAtom( final BrokenAudioFileIOService service,
+			final AudioFileDirection direction,
+			final StaticMetadata staticMetadata,
+			final IAudioDataFetcher dataFetcher )
 	{
+		this.service = service;
 		this.direction = direction;
 		this.staticMetadata = staticMetadata;
 		this.internalDataFetcher = dataFetcher;
@@ -56,7 +62,7 @@ public class InternalFileHandleAtom implements AudioFileHandleAtom
 		return staticMetadata;
 	}
 
-	public int read( final float[] destFloats, final int destPosition, final int numFrames, final long frameReadOffset )
+	protected int read( final float[] destFloats, final int destPosition, final int numFrames, final long frameReadOffset )
 	{
 		try
 		{
@@ -74,8 +80,14 @@ public class InternalFileHandleAtom implements AudioFileHandleAtom
 		}
 	}
 
-	public void close()
+	protected void close()
 	{
 		internalDataFetcher.close();
+	}
+
+	@Override
+	public AudioFileIOService getAudioFileIOService()
+	{
+		return service;
 	}
 }

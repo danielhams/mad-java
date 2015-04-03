@@ -23,6 +23,8 @@ package uk.co.modularaudio.service.audiofileio;
 import java.io.IOException;
 import java.util.Set;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -37,28 +39,28 @@ public interface AudioFileIOService
 		OGG,
 		MP3
 	};
-	
+
 	public enum AudioFileDirection
 	{
 		ENCODE,
 		DECODE
 	};
-	
+
 	Set<AudioFileFormat> listSupportedEncodingFormats();
 	Set<AudioFileFormat> listSupportedDecodingFormats();
 
-	StaticMetadata sniffFileFormatOfFile( String path ) throws DatastoreException, RecordNotFoundException;
-	
+	AudioFileFormat sniffFileFormatOfFile( String path ) throws DatastoreException, RecordNotFoundException, UnsupportedAudioFileException;
+
 	AudioFileHandleAtom openForWrite( String path ) throws DatastoreException,  IOException;
-	
+
 	AudioFileHandleAtom openForRead( String path ) throws DatastoreException, IOException;
-	
+
 	void closeHandle( AudioFileHandleAtom handle ) throws DatastoreException, IOException;
-	
+
 	void readFloats( AudioFileHandleAtom handle, float[] destFloats, int destPosition, int numFrames, long frameReadOffset ) throws DatastoreException, IOException;
-	
+
 	void writeFloats( AudioFileHandleAtom handle, float[] srcFloats, long writePosition, int numFrames ) throws DatastoreException, IOException;
-	
+
 	// Some metadata methods I won't implement in Java
 	DynamicMetadata readMetadata( AudioFileHandleAtom handle ) throws DatastoreException, IOException;
 	void writeMetadata( AudioFileHandleAtom handle, DynamicMetadata outDynamicMetadata ) throws DatastoreException, IOException ;

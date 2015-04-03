@@ -28,13 +28,18 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenLongObjectHashMap;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.library.CuePoint;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
@@ -54,7 +59,7 @@ public class SampleCache
 	private static Log log = LogFactory.getLog( SampleCache.class.getName() );
 
 	private final BlockBufferingConfiguration blockBufferingConfiguration;
-	private final AudioFileIOService audioFileIOService;
+	private final AudioFileIORegistryService audioFileIORegistryService;
 
 	// Various maps for internal maintenance that go from
 	// Client -> SampleCacheEntry						(used when determining which blocks all clients need)
@@ -76,10 +81,10 @@ public class SampleCache
 	private final ArrayList<TwoTuple<BufferFillCompletionListener,SampleCacheClient>> listenersToNotifyOnNextCompletion =
 			new ArrayList<TwoTuple<BufferFillCompletionListener,SampleCacheClient>>();
 
-	public SampleCache( final AudioFileIOService audioFileIOService,
+	public SampleCache( final AudioFileIORegistryService audioFileIORegistryService,
 			final BlockBufferingConfiguration blockBufferingConfiguration )
 	{
-		this.audioFileIOService = audioFileIOService;
+		this.audioFileIORegistryService = audioFileIORegistryService;
 		this.blockBufferingConfiguration = blockBufferingConfiguration;
 		temperatureBufferBlockMap = new TemperatureBufferBlockMap( blockBufferingConfiguration );
 	}
@@ -133,8 +138,12 @@ public class SampleCache
 			if( sce == null )
 			{
 				final String location = libraryEntry.getLocation();
-				final StaticMetadata sm = audioFileIOService.sniffFileFormatOfFile( location );
-				final AudioFileHandleAtom afha = audioFileIOService.openForRead( location );
+				final AudioFileFormat foundFormat = audioFileIORegistryService.sniffFileFormatOfFile( location );
+				final AudioFileIOService formatDecoderService =
+						audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( foundFormat,
+								AudioFileDirection.DECODE );
+				final AudioFileHandleAtom afha = formatDecoderService.openForRead( location );
+				final StaticMetadata sm = afha.getStaticMetadata();
 				final long numFloats = libraryEntry.getTotalNumFloats();
 				final long numFrames = libraryEntry.getTotalNumFrames();
 				assert numFrames == sm.numFrames;
@@ -149,6 +158,14 @@ public class SampleCache
 
 			currentSampleCacheEntries.add( sce );
 
+		}
+		catch( final UnsupportedAudioFileException uafe )
+		{
+			// We shouldn't be able to get here - the file format sniff should fail before they are allowed to add a client.
+			// In theory :-)
+			final String msg = "Unsupported audio file exception caught adding client to sample cache: " + uafe.toString();
+			log.error( msg, uafe );
+			throw new DatastoreException( msg, uafe );
 		}
 		finally
 		{
@@ -166,7 +183,7 @@ public class SampleCache
 		try
 		{
 			cacheAccessMutex.lock();
-			final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( internalClient.getLibraryEntry().getLibraryEntryId() );
+			final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntry.getLibraryEntryId() );
 			if( sce == null )
 			{
 				throw new RecordNotFoundException( "No such cache entry for clients library entry");
@@ -176,12 +193,14 @@ public class SampleCache
 
 			final int curCount = sce.getReferenceCount();
 
+
 			if( curCount == 0 )
 			{
 				libraryEntryToSampleCacheEntryMap.removeKey( libraryEntry.getLibraryEntryId() );
 				try
 				{
-					audioFileIOService.closeHandle( sce.getAudioFileHandleAtom() );
+					final AudioFileHandleAtom afha = sce.getAudioFileHandleAtom();
+					afha.getAudioFileIOService().closeHandle( afha );
 				}
 				catch( final IOException ioe )
 				{
@@ -647,6 +666,7 @@ public class SampleCache
 		final int numFramesLeftToRead = (int)(libraryEntry.getTotalNumFrames() - frameReadOffset);
 		final int numFrames = ( numFramesLeftToRead < blockLengthInFrames ? numFramesLeftToRead : blockLengthInFrames );
 		final AudioFileHandleAtom audioFileHandleAtom = sce.getAudioFileHandleAtom();
+		final AudioFileIOService audioFileIOService = audioFileHandleAtom.getAudioFileIOService();
 		final float[] cacheBuffer = blockToUse.blockData.getBuffer();
 		//		log.debug( "Asking for " + numFrames + " frames at frame position " + frameReadOffset );
 		audioFileIOService.readFloats( audioFileHandleAtom, cacheBuffer, destPosition, numFrames, frameReadOffset );

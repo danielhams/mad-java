@@ -21,20 +21,31 @@
 package uk.co.modularaudio.service.audiofileio;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.format.SampleBits;
 
 public class StaticMetadata
 {
-	public StaticMetadata( final AudioFileFormat format, final int numChannels, final int sampleRate, final long numFrames, final String path )
+	public StaticMetadata( final AudioFileFormat format,
+			final DataRate dataRate,
+			final SampleBits sampleBits,
+			final int numChannels,
+			final long numFrames,
+			final String path )
 	{
 		this.format = format;
+		this.dataRate = dataRate;
+		this.sampleBits = sampleBits;
 		this.numChannels = numChannels;
-		this.sampleRate = sampleRate;
 		this.numFrames = numFrames;
+		this.numFloats = numFrames * numChannels;
 		this.path = path;
 	}
 	public final AudioFileFormat format;
+	public final DataRate dataRate;
+	public final SampleBits sampleBits;
 	public final int numChannels;
-	public final int sampleRate;
 	public final long numFrames;
+	public final long numFloats;
 	public final String path;
 }

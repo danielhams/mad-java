@@ -28,7 +28,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.library.LibraryEntry;
@@ -56,7 +56,7 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 	private static final String CONFIG_KEY_BLOCK_BUFFER_MIN_SECS_AFTER = SampleCachingServiceImpl.class.getSimpleName() +".BlockBufferMinSecsAfter";
 
 	private LibraryService libraryService;
-	private AudioFileIOService audioFileIOService;
+	private AudioFileIORegistryService audioFileIORegistryService;
 	private ConfigurationService configurationService;
 
 	private boolean enabled;
@@ -82,7 +82,7 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 				minSecsBeforePosition,
 				minSecsAfterPosition );
 
-		sampleCache = new SampleCache( audioFileIOService, blockBufferingConfiguration );
+		sampleCache = new SampleCache( audioFileIORegistryService, blockBufferingConfiguration );
 		sampleCache.init( enabled );
 	}
 
@@ -97,9 +97,9 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 		this.libraryService = libraryService;
 	}
 
-	public void setAudioFileIOService( final AudioFileIOService audioFileIOService )
+	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
 	{
-		this.audioFileIOService = audioFileIOService;
+		this.audioFileIORegistryService = audioFileIORegistryService;
 	}
 
 	public void setConfigurationService( final ConfigurationService configurationService )

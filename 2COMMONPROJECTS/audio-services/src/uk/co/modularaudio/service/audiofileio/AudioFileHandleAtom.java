@@ -26,4 +26,5 @@ public interface AudioFileHandleAtom
 {
 	public AudioFileDirection getDirection();
 	public StaticMetadata getStaticMetadata();
+	public AudioFileIOService getAudioFileIOService();
 }

@@ -1,0 +1,4 @@
+/bin/
+/src/uk/co/modularaudio/libsndfilewrapper/swig/
+/swig/libsndfile_wrap*
+/lib/

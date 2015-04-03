@@ -18,12 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.service.audiofileio.impl;
+package uk.co.modularaudio.service.brokenaudiofileio;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,30 +35,52 @@ import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.DynamicMetadata;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.util.audio.fileio.IAudioDataFetcher;
 import uk.co.modularaudio.util.audio.fileio.IAudioDataFetcher.DetectedFormat;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.format.SampleBits;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFileIOService
+public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFileIOService
 {
-	private static Log log = LogFactory.getLog( AudioFileIOServiceImpl.class.getName() );
+	private static Log log = LogFactory.getLog( BrokenAudioFileIOService.class.getName() );
+
+	private AudioFileIORegistryService audioFileIORegistryService;
 
 	private final Set<AudioFileFormat> encodingFormats = new HashSet<AudioFileFormat>();
 	private final Set<AudioFileFormat> decodingFormats = new HashSet<AudioFileFormat>();
 
 	private final AudioDataFetcherFactory audioDataFetcherFactory = new AudioDataFetcherFactory();
 
+	public BrokenAudioFileIOService()
+	{
+//		decodingFormats.add( AudioFileFormat.WAV );
+		decodingFormats.add( AudioFileFormat.MP3 );
+	}
+
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( audioFileIORegistryService == null )
+		{
+			throw new ComponentConfigurationException( "Missing service dependencies. Please check configuration." );
+		}
+		audioFileIORegistryService.registerAudioFileIOService( this );
 	}
 
 	@Override
 	public void destroy()
 	{
+		audioFileIORegistryService.unregisterAudioFileIOService( this );
+	}
+
+	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
+	{
+		this.audioFileIORegistryService = audioFileIORegistryService;
 	}
 
 	@Override
@@ -72,8 +96,8 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 	}
 
 	@Override
-	public StaticMetadata sniffFileFormatOfFile( final String path )
-			throws DatastoreException, RecordNotFoundException
+	public AudioFileFormat sniffFileFormatOfFile( final String path )
+			throws DatastoreException, RecordNotFoundException, UnsupportedAudioFileException
 	{
 		AudioFileFormat format = AudioFileFormat.UNKNOWN;
 		try
@@ -100,13 +124,12 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 					format = AudioFileFormat.UNKNOWN;
 				}
 			}
-			final int numChannels = dataFetcher.getNumChannels();
-			final int sampleRate = dataFetcher.getSampleRate();
-			final long numFloats = dataFetcher.getNumTotalFloats();
-			final long numFrames = numFloats / numChannels;
-			final StaticMetadata retVal = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
 			dataFetcher.close();
-			return retVal;
+			return format;
+		}
+		catch( final UnsupportedAudioFileException uafe )
+		{
+			throw uafe;
 		}
 		catch (final Exception e)
 		{
@@ -153,13 +176,22 @@ public class AudioFileIOServiceImpl implements ComponentWithLifecycle, AudioFile
 				}
 			}
 
+			final DataRate dataRate = DataRate.fromFrequency( dataFetcher.getSampleRate() );
+			final SampleBits sampleBits = SampleBits.SAMPLE_FLOAT;
 			final int numChannels = dataFetcher.getNumChannels();
-			final int sampleRate = dataFetcher.getSampleRate();
 			final long numFloats = dataFetcher.getNumTotalFloats();
 			final long numFrames = numFloats / numChannels;
-			final StaticMetadata sm = new StaticMetadata( format, numChannels, sampleRate, numFrames, path );
+			final StaticMetadata sm = new StaticMetadata( format,
+					dataRate,
+					sampleBits,
+					numChannels,
+					numFrames,
+					path );
 
-			retVal = new InternalFileHandleAtom( AudioFileDirection.DECODE, sm, dataFetcher );
+			retVal = new InternalFileHandleAtom( this,
+					AudioFileDirection.DECODE,
+					sm,
+					dataFetcher );
 			if( log.isTraceEnabled() )
 			{
 				log.trace( "Opened file handle " + path + " for reading");

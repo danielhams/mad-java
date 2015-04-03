@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="external-libsndfile-wrapper/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/audio-services"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/common-services"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/external-libs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/external-libsndfile-wrapper"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-audio"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-external"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-native"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

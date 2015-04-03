@@ -32,8 +32,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.service.library.CuePoint;
 import uk.co.modularaudio.service.library.LibraryEntry;
@@ -58,7 +62,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	private String databaseTablePrefix;
 
 	private HibernateSessionService hibernateSessionService;
-	private AudioFileIOService audioFileIOService;
+	private AudioFileIORegistryService audioFileIORegistryService;
 
 	public LibraryServiceImpl()
 	{
@@ -83,7 +87,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( hibernateSessionService == null || audioFileIOService == null )
+		if( hibernateSessionService == null || audioFileIORegistryService == null )
 		{
 			throw new ComponentConfigurationException( "Missing dependencies. Cannot init()");
 		}
@@ -108,12 +112,17 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final String title = fileForEntry.getName();
 			final String location = fileForEntry.getAbsolutePath();
 
+			final AudioFileFormat foundFormat = audioFileIORegistryService.sniffFileFormatOfFile( location );
+
+			final AudioFileIOService formatDecoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( foundFormat, AudioFileDirection.DECODE );
+
 			// This will let us test if it's a valid file format
-			final StaticMetadata sm = audioFileIOService.sniffFileFormatOfFile( location );
+			final AudioFileHandleAtom fileHandle = formatDecoderService.openForRead( location );
+			final StaticMetadata sm = fileHandle.getStaticMetadata();
 
 			final int numChannels = sm.numChannels;
 			final long numFrames = sm.numFrames;
-			final int sampleRate = sm.sampleRate;
+			final int sampleRate = sm.dataRate.getValue();
 
 			newEntry = new LibraryEntry( -1, cueList, numChannels, sampleRate, numFrames, title, location );
 			hibernateSession.save( trackStartCuePoint );
@@ -173,9 +182,9 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 		this.hibernateSessionService = hibernateSessionService;
 	}
 
-	public void setAudioFileIOService( final AudioFileIOService audioFileIOService )
+	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
 	{
-		this.audioFileIOService = audioFileIOService;
+		this.audioFileIORegistryService = audioFileIORegistryService;
 	}
 
 }

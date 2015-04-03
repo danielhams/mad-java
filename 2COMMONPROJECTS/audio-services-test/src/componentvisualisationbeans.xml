@@ -30,22 +30,25 @@
 	<bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
 	</bean>
 	<bean id="sampleCachingController" class="uk.co.modularaudio.controller.samplecaching.impl.SampleCachingControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
+        <property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
 		<property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
 	</bean>
 	<bean id="componentService" class="uk.co.modularaudio.service.madcomponent.impl.MadComponentServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
 	<bean id="componentUiService" class="uk.co.modularaudio.service.madcomponentui.impl.MadComponentUiServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
-	<bean id="audioFileIOService" class="uk.co.modularaudio.service.audiofileio.impl.AudioFileIOServiceImpl" init-method="init" destroy-method="destroy">
-	</bean>
+    <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="brokenAudioFileIOService" class="uk.co.modularaudio.service.brokenaudiofileio.BrokenAudioFileIOService" init-method="init" destroy-method="destroy">
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
 	<bean id="libraryService" class="uk.co.modularaudio.service.library.impl.LibraryServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
-		<property name="audioFileIOService"><ref bean="audioFileIOService"></ref></property>
+		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
 	</bean>
 	<bean id="sampleCachingService" class="uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="libraryService"><ref bean="libraryService"></ref></property>
-		<property name="audioFileIOService"><ref bean="audioFileIOService"></ref></property>
+		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
 	<bean id="blockResamplerService" class="uk.co.modularaudio.service.blockresampler.impl.BlockResamplerServiceImpl" init-method="init" destroy-method="destroy">
