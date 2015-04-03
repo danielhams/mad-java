@@ -188,7 +188,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			if( sndfilePtr != null )
 			{
 				final int closeSuccess = libsndfile.sf_close( sndfilePtr );
-				if( closeSuccess == 0 )
+				if( closeSuccess != 0 )
 				{
 					log.error("Failed in libsndfile close during cleanup");
 				}
@@ -206,14 +206,64 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		final LibSndfileAtom realAtom = (LibSndfileAtom)handle;
 		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = realAtom.sndfilePtr;
 		final int closeSuccess = libsndfile.sf_close( sndfilePtr );
-		if( closeSuccess == 0 )
+		if( closeSuccess != 0 )
 		{
-			throw new IOException("Failed libsndfile close of open audio file handle.");
+			final String errMsg = libsndfile.sf_error_number( closeSuccess );
+			throw new IOException("Failed libsndfile close of open audio file handle: " + errMsg);
 		}
 	}
 
 	@Override
 	public void readFloats( final AudioFileHandleAtom handle,
+			final float[] destFloats,
+			final int destPosition,
+			final int numFrames,
+			final long frameReadOffset )
+		throws DatastoreException, IOException
+	{
+		final LibSndfileAtom realAtom = (LibSndfileAtom)handle;
+		if( realAtom.direction != AudioFileDirection.DECODE )
+		{
+			throw new DatastoreException( "readFloat called on encoding audio file atom." );
+		}
+
+		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = realAtom.sndfilePtr;
+
+		if( realAtom.currentHandleFrameOffset != frameReadOffset )
+		{
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Current frame offset requires a seek from " + realAtom.currentHandleFrameOffset + " to " + frameReadOffset );
+			}
+
+			final long actualOffset = libsndfile.sf_seek( sndfilePtr, frameReadOffset, SEEK_SET );
+
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Actual offset is now " + actualOffset);
+			}
+
+			if( actualOffset != frameReadOffset )
+			{
+				final String msg = "The seek didn't produce expected offset - asked for " + frameReadOffset + " and got " +
+						actualOffset;
+				throw new IOException( msg );
+			}
+			realAtom.currentHandleFrameOffset = frameReadOffset;
+		}
+
+		final long numFramesRead = libsndfile.CustomSfReadfFloatOffset( sndfilePtr, destFloats, destPosition, numFrames );
+		if( numFramesRead != numFrames )
+		{
+			final String msg = "Reading after the seek didn't produce the expected num frames " +
+					"asked for " + numFrames + " and read " + numFramesRead;
+			throw new IOException( msg );
+		}
+
+		realAtom.currentHandleFrameOffset += numFrames;
+	}
+
+	public void oldReadFloats( final AudioFileHandleAtom handle,
 			final float[] destFloats,
 			final int destPosition,
 			final int numFrames,

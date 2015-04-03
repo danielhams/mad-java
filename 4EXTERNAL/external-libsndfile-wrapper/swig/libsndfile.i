@@ -16,3 +16,22 @@
 %}
 
 %include "sndfile.h"
+
+/*
+ * A method for bulk reading into a java float array so
+ * we're not going item by item.
+ */
+%native (HandRolled) void HandRolled(int, jstring jstr);
+%{
+    JNIEXPORT void JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_HandRolled(JNIEnv *, jclass, jint, jstring);
+%}
+
+%native (CustomSfReadfFloat) jlong CustomSfReadfFloat( SNDFILE sndfile, jfloatArray floatArray, jlong numFrames);
+%{
+    JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_CustomSfReadfFloat(JNIEnv *, jclass, SNDFILE *, jfloatArray, jlong );
+%}
+
+%native (CustomSfReadfFloatOffset) jlong CustomSfReadfFloatOffset( SNDFILE sndfile, jfloatArray floatArray, jint outputOffset, jlong numFrames);
+%{
+    JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_CustomSfReadfFloatOffset(JNIEnv *, jclass, SNDFILE *, jfloatArray, jint, jlong );
+%}

@@ -7,9 +7,15 @@
 %array_class(double, CArrayDouble);
 %array_class(int, CArrayInt);
 %array_class(short, CArrayShort);
+%array_class(long, CArrayLong);
+%array_class(long long, CArrayLongLong);
+%array_class(unsigned char, CArrayUnsignedChar);
 
-/* converts the sf_count_t (__int64 typedef) to a long */
+%apply long long { off_t };
+
+/* converts standard int types */
 %include "stdint.i"
+%include "windows.i"
 
 %{
 #include "mpg123.h"
