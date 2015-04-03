@@ -62,12 +62,12 @@ public class InternalFileHandleAtom implements AudioFileHandleAtom
 		return staticMetadata;
 	}
 
-	protected int read( final float[] destFloats, final int destPosition, final int numFrames, final long frameReadOffset )
+	protected int readFrames( final float[] destFloats, final int destPositionFrames, final int numFrames, final long frameReadOffset )
 	{
 		try
 		{
 			return internalDataFetcher.read( destFloats,
-					destPosition,
+					destPositionFrames * staticMetadata.numChannels,
 					frameReadOffset * staticMetadata.numChannels,
 					numFrames * staticMetadata.numChannels )
 					/ staticMetadata.numChannels;

@@ -214,9 +214,9 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	}
 
 	@Override
-	public void readFloats( final AudioFileHandleAtom handle,
+	public void readFrames( final AudioFileHandleAtom handle,
 			final float[] destFloats,
-			final int destPosition,
+			final int destPositionFrames,
 			final int numFrames,
 			final long frameReadOffset )
 		throws DatastoreException, IOException
@@ -252,7 +252,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			realAtom.currentHandleFrameOffset = frameReadOffset;
 		}
 
-		final long numFramesRead = libsndfile.CustomSfReadfFloatOffset( sndfilePtr, destFloats, destPosition, numFrames );
+		final long numFramesRead = libsndfile.CustomSfReadFramesOffset( sndfilePtr, realAtom.sfInfo.getChannels(), destFloats, destPositionFrames, numFrames );
 		if( numFramesRead != numFrames )
 		{
 			final String msg = "Reading after the seek didn't produce the expected num frames " +
@@ -332,7 +332,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	}
 
 	@Override
-	public void writeFloats( final AudioFileHandleAtom handle, final float[] srcFloats, final long writePosition, final int numFrames )
+	public void writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats, final long writePosition, final int numFrames )
 			throws DatastoreException, IOException
 	{
 		throw new DatastoreException("NI");

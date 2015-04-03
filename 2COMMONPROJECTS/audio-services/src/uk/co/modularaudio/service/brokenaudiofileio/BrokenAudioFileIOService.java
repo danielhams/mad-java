@@ -218,12 +218,15 @@ public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFi
 	}
 
 	@Override
-	public void readFloats( final AudioFileHandleAtom handle, final float[] destFloats,
-			final int destPosition, final int numFrames, final long frameReadOffset )
+	public void readFrames( final AudioFileHandleAtom handle,
+			final float[] destFloats,
+			final int destPositionFrames,
+			final int numFrames,
+			final long frameReadOffset )
 			throws DatastoreException, IOException
 	{
 		final InternalFileHandleAtom ifh = (InternalFileHandleAtom)handle;
-		final int numRead = ifh.read( destFloats, destPosition, numFrames, frameReadOffset );
+		final int numRead = ifh.readFrames( destFloats, destPositionFrames, numFrames, frameReadOffset );
 		if( numRead != numFrames )
 		{
 			if( log.isErrorEnabled() )
@@ -234,7 +237,7 @@ public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFi
 	}
 
 	@Override
-	public void writeFloats( final AudioFileHandleAtom handle, final float[] srcFloats,
+	public void writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats,
 			final long writePosition, final int numFrames )
 			throws DatastoreException, IOException
 	{

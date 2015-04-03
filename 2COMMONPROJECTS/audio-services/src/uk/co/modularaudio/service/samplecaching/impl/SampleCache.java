@@ -661,7 +661,7 @@ public class SampleCache
 		final SampleCacheBlock blockToUse = temperatureBufferBlockMap.getWarmOrFreeBlockCopyID( blockMapIndex );
 		final int numChannels = libraryEntry.getNumChannels();
 		final int blockLengthInFrames = blockBufferingConfiguration.blockLengthInFloats / numChannels;
-		final int destPosition = 0;
+		final int destPositionFrames = 0;
 		final int frameReadOffset = blockLengthInFrames * blockNumber;
 		final int numFramesLeftToRead = (int)(libraryEntry.getTotalNumFrames() - frameReadOffset);
 		final int numFrames = ( numFramesLeftToRead < blockLengthInFrames ? numFramesLeftToRead : blockLengthInFrames );
@@ -669,7 +669,7 @@ public class SampleCache
 		final AudioFileIOService audioFileIOService = audioFileHandleAtom.getAudioFileIOService();
 		final float[] cacheBuffer = blockToUse.blockData.getBuffer();
 		//		log.debug( "Asking for " + numFrames + " frames at frame position " + frameReadOffset );
-		audioFileIOService.readFloats( audioFileHandleAtom, cacheBuffer, destPosition, numFrames, frameReadOffset );
+		audioFileIOService.readFrames( audioFileHandleAtom, cacheBuffer, destPositionFrames, numFrames, frameReadOffset );
 		blockToUse.blockData.setNumReadableFloatsInBlock( numFrames * numChannels );
 		temperatureBufferBlockMap.setBlockMakeHot( blockMapIndex, blockToUse );
 		return blockToUse;

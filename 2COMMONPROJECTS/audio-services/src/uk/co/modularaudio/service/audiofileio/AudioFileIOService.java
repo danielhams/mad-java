@@ -57,9 +57,9 @@ public interface AudioFileIOService
 
 	void closeHandle( AudioFileHandleAtom handle ) throws DatastoreException, IOException;
 
-	void readFloats( AudioFileHandleAtom handle, float[] destFloats, int destPosition, int numFrames, long frameReadOffset ) throws DatastoreException, IOException;
+	void readFrames( AudioFileHandleAtom handle, float[] destFloats, int destPositionFrames, int numFrames, long frameReadOffset ) throws DatastoreException, IOException;
 
-	void writeFloats( AudioFileHandleAtom handle, float[] srcFloats, long writePosition, int numFrames ) throws DatastoreException, IOException;
+	void writeFrames( AudioFileHandleAtom handle, float[] srcFloats, long srcPositionFrames, int numFrames ) throws DatastoreException, IOException;
 
 	// Some metadata methods I won't implement in Java
 	DynamicMetadata readMetadata( AudioFileHandleAtom handle ) throws DatastoreException, IOException;

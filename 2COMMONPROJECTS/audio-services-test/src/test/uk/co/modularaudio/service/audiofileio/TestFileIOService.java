@@ -68,7 +68,7 @@ public class TestFileIOService extends TestCase
 
 		final float[] destArray = new float[ TMP_ARRAY_SIZE ];
 
-		serviceInterface.readFloats( readAtom, destArray, 0,  TMP_ARRAY_SIZE / numChannels, 0 );
+		serviceInterface.readFrames( readAtom, destArray, 0,  TMP_ARRAY_SIZE / numChannels, 0 );
 
 		serviceInterface.closeHandle(  readAtom );
 

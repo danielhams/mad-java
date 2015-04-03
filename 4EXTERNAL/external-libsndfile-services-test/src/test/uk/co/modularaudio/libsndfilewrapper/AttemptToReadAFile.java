@@ -1,7 +1,10 @@
 package test.uk.co.modularaudio.libsndfilewrapper;
 
+import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.libsndfilewrapper.LibSndfileWrapperLoader;
 import uk.co.modularaudio.libsndfilewrapper.swig.CArrayFloat;
 import uk.co.modularaudio.libsndfilewrapper.swig.SF_INFO;
@@ -120,9 +123,13 @@ public class AttemptToReadAFile
 		{
 			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
 
-			final long numFramesRead = libsndfile.CustomSfReadfFloat( sndfilePtr, buffer, numFramesThisRound );
+			final long numFramesRead = libsndfile.CustomSfReadFramesOffset( sndfilePtr, numChannels, buffer, 0, numFramesThisRound );
 
-			assert (numFramesRead == numFramesThisRound);
+			if( numFramesRead != numFramesThisRound )
+			{
+				log.error("Failed reading frames: " + numFramesRead );
+				throw new IOException("Read error");
+			}
 
 			final int numFloatsThisRound = (int) (numFramesThisRound * numChannels);
 
