@@ -187,7 +187,11 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		{
 			if( sndfilePtr != null )
 			{
-				libsndfile.sf_close( sndfilePtr );
+				final int closeSuccess = libsndfile.sf_close( sndfilePtr );
+				if( closeSuccess == 0 )
+				{
+					log.error("Failed in libsndfile close during cleanup");
+				}
 			}
 		}
 	}
@@ -195,9 +199,17 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	@Override
 	public void closeHandle( final AudioFileHandleAtom handle ) throws DatastoreException, IOException
 	{
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Closing open file handle \"" + handle.getStaticMetadata().path + "\"");
+		}
 		final LibSndfileAtom realAtom = (LibSndfileAtom)handle;
 		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = realAtom.sndfilePtr;
-		libsndfile.sf_close( sndfilePtr );
+		final int closeSuccess = libsndfile.sf_close( sndfilePtr );
+		if( closeSuccess == 0 )
+		{
+			throw new IOException("Failed libsndfile close of open audio file handle.");
+		}
 	}
 
 	@Override
@@ -214,15 +226,22 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			throw new DatastoreException( "readFloat called on encoding audio file atom." );
 		}
 		final int numChannels = realAtom.staticMetadata.numChannels;
-		final int numFloatsToRead = numFrames * numChannels;
 
 		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = realAtom.sndfilePtr;
 
 		if( realAtom.currentHandleFrameOffset != frameReadOffset )
 		{
-			log.trace("Current frame offset requires a seek from " + realAtom.currentHandleFrameOffset + " to " + frameReadOffset );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Current frame offset requires a seek from " + realAtom.currentHandleFrameOffset + " to " + frameReadOffset );
+			}
+
 			final long actualOffset = libsndfile.sf_seek( sndfilePtr, frameReadOffset, SEEK_SET );
-			log.trace("Actual offset is now " + actualOffset);
+
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Actual offset is now " + actualOffset);
+			}
 
 			if( actualOffset != frameReadOffset )
 			{

@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.library.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +34,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
-import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
@@ -102,6 +103,8 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	public LibraryEntry addFileToLibrary( final File fileForEntry ) throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException
 	{
 		LibraryEntry newEntry = null;
+		AudioFileIOService formatDecoderService = null;
+		AudioFileHandleAtom fileHandle = null;
 		try
 		{
 			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
@@ -114,10 +117,11 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 
 			final AudioFileFormat foundFormat = audioFileIORegistryService.sniffFileFormatOfFile( location );
 
-			final AudioFileIOService formatDecoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( foundFormat, AudioFileDirection.DECODE );
+			formatDecoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( foundFormat, AudioFileDirection.DECODE );
 
-			// This will let us test if it's a valid file format
-			final AudioFileHandleAtom fileHandle = formatDecoderService.openForRead( location );
+			// This will let us test if it's a valid file and give us the metadata to do the initial
+			// DB population
+			fileHandle = formatDecoderService.openForRead( location );
 			final StaticMetadata sm = fileHandle.getStaticMetadata();
 
 			final int numChannels = sm.numChannels;
@@ -139,6 +143,20 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final String msg = "Exception caught attempting to add file to library:" + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
+		}
+		finally
+		{
+			if( fileHandle != null )
+			{
+				try
+				{
+					formatDecoderService.closeHandle( fileHandle );
+				}
+				catch( final IOException e )
+				{
+					throw new DatastoreException( "IOException closing initial audio file handle: " + e.toString(), e );
+				}
+			}
 		}
 		return newEntry;
 	}
