@@ -35,7 +35,9 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	private static Set<AudioFileFormat> ENCODING_FORMATS = new HashSet<AudioFileFormat>();
 	private static Set<AudioFileFormat> DECODING_FORMATS = new HashSet<AudioFileFormat>();
 
-	private final static int SEEK_SET = 0;
+	public final static int SEEK_SET = 0;
+	public final static int SEEK_CUR = 1;
+	public final static int SEEK_END = 2;
 
 	static
 	{
@@ -252,7 +254,10 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			realAtom.currentHandleFrameOffset = frameReadOffset;
 		}
 
-		final long numFramesRead = libsndfile.CustomSfReadFramesOffset( sndfilePtr, realAtom.sfInfo.getChannels(), destFloats, destPositionFrames, numFrames );
+		final int numChannels = realAtom.getStaticMetadata().numChannels;
+		final int destPositionFloats = destPositionFrames * numChannels;
+		final int numFloats = numFrames * numChannels;
+		final long numFramesRead = libsndfile.CustomSfReadFloatsOffset( sndfilePtr, destFloats, destPositionFloats, numFloats );
 		if( numFramesRead != numFrames )
 		{
 			final String msg = "Reading after the seek didn't produce the expected num frames " +

@@ -14,23 +14,21 @@ JNIEXPORT void Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_Hand
     (*env)->ReleaseStringUTFChars(env,jstr,0);
 }
 
-JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_CustomSfReadFramesOffset(
+JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_CustomSfReadFloatsOffset(
     JNIEnv * env,
-    jclass class, SNDFILE * sndfile, jint numChannels, jfloatArray floatArray, jint outputFramesOffset, jlong numFrames)
+    jclass class, SNDFILE * sndfile, jfloatArray floatArray, jint outputFloatsOffset, jlong numToRead)
 {
     jlong retVal;
     jsize arrayLength = (*env)->GetArrayLength(env,floatArray);
 
-    int outputFloatOffset = outputFramesOffset*numChannels;
-
-    if( (arrayLength - outputFloatOffset) < (numFrames*numChannels) )
+    if( (arrayLength - outputFloatsOffset) < numToRead )
     {
         return 0;
     }
 
     jfloat * arrayBody = (*env)->GetFloatArrayElements(env,floatArray,NULL);
 
-    retVal = sf_readf_float( sndfile, &(arrayBody[outputFloatOffset]), numFrames );
+    retVal = sf_read_float( sndfile, &(arrayBody[outputFloatsOffset]), numToRead );
 
     // Release and free any copy of the elements
     (*env)->ReleaseFloatArrayElements(env,floatArray,arrayBody,0);

@@ -122,16 +122,15 @@ public class AttemptToReadAFile
 		while( numFramesLeft > 0 )
 		{
 			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
+			final int numFloatsThisRound = (int)(numFramesThisRound * numChannels);
 
-			final long numFramesRead = libsndfile.CustomSfReadFramesOffset( sndfilePtr, numChannels, buffer, 0, numFramesThisRound );
+			final long numFloatsRead = libsndfile.CustomSfReadFloatsOffset( sndfilePtr, buffer, 0, numFloatsThisRound );
 
-			if( numFramesRead != numFramesThisRound )
+			if( numFloatsRead != numFloatsThisRound )
 			{
-				log.error("Failed reading frames: " + numFramesRead );
+				log.error("Failed reading frames: " + numFloatsRead );
 				throw new IOException("Read error");
 			}
-
-			final int numFloatsThisRound = (int) (numFramesThisRound * numChannels);
 
 			waveWriter.writeFloats( buffer, numFloatsThisRound );
 
