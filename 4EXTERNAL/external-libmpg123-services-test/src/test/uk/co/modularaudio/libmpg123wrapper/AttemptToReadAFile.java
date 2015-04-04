@@ -7,12 +7,14 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.libmpg123wrapper.LibMpg123WrapperLoader;
 import uk.co.modularaudio.libmpg123wrapper.swig.CArrayInt;
-import uk.co.modularaudio.libmpg123wrapper.swig.CArrayLong;
 import uk.co.modularaudio.libmpg123wrapper.swig.SWIGTYPE_p_int;
-import uk.co.modularaudio.libmpg123wrapper.swig.SWIGTYPE_p_long;
 import uk.co.modularaudio.libmpg123wrapper.swig.SWIGTYPE_p_mpg123_handle_struct;
 import uk.co.modularaudio.libmpg123wrapper.swig.libmpg123;
 import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_errors;
+import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_param_flags;
+import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_parms;
+import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 
 public class AttemptToReadAFile
 {
@@ -24,30 +26,38 @@ public class AttemptToReadAFile
 
 	private final static int SEEK_SET = 0;
 
-	public AttemptToReadAFile()
-	{
-	}
-
-	public void go() throws Exception
-	{
 //	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/depeche_mode/a_broken_frame/a_photograph_of_you.ogg";
 //	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/ORB - The Orb's Adventures Beyond The Ultraworld/CD 1/02 - Earth Orbit Two- Earth (Gaia).flac";
 	final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200911/974684_She_Came_Along_feat__Kid_Cudi_Sharam_s_Ecstasy_Of_Ibiza_Edit.mp3";
 
+	private final Limiter limiter = new Limiter( 0.98f, 25 );
+
+	public AttemptToReadAFile() throws IOException
+	{
 		LibMpg123WrapperLoader.loadIt();
-
 		final int initSuccess = libmpg123.mpg123_init();
-
 		if( initSuccess != mpg123_errors.MPG123_OK.swigValue() )
 		{
 			final String msg = "Failed mpg123 init: " + initSuccess;
 			log.error( msg );
 			throw new IOException( msg );
 		}
+	}
+
+	public void go() throws Exception
+	{
+		libmpg123.HandRolled( 25, "SomeString" );
 
 		final CArrayInt errorInt = new CArrayInt( 1 );
 		final SWIGTYPE_p_int error = errorInt.cast();
 		final SWIGTYPE_p_mpg123_handle_struct handle = libmpg123.mpg123_new( null, error );
+		final int errorValue = errorInt.getitem( 0 );
+		if( errorValue != 0 )
+		{
+			throw new IOException("Error thrown in mpg123_new: " + errorValue );
+		}
+
+		libmpg123.mpg123_param( handle, mpg123_parms.MPG123_ADD_FLAGS, mpg123_param_flags.MPG123_FORCE_FLOAT.swigValue(), 0.0f );
 
 		final int openSuccess = libmpg123.mpg123_open( handle, filePath );
 
@@ -56,22 +66,20 @@ public class AttemptToReadAFile
 			throw new IOException("Failed during mpg123_open");
 		}
 
-		final CArrayLong rateLong = new CArrayLong( 1 );
-		final SWIGTYPE_p_long rate = rateLong.cast();
-		final CArrayInt channelsInt = new CArrayInt( 1 );
-		final SWIGTYPE_p_int channels = channelsInt.cast();
-		final CArrayInt encodingInt = new CArrayInt( 1 );
-		final SWIGTYPE_p_int encoding = encodingInt.cast();
+		final int formatCheck = libmpg123.CheckFormat( handle );
 
-		final int getFormatSuccess = libmpg123.mpg123_getformat( handle, rate, channels, encoding );
-
-		if( getFormatSuccess != mpg123_errors.MPG123_OK.swigValue() )
+		if( formatCheck != mpg123_errors.MPG123_OK.swigValue() )
 		{
-			throw new IOException("Failed during mpg123_getformat");
+			final String msg = "Failed format check";
+			log.error( msg );
+			throw new IOException( msg );
 		}
 
-		log.debug( "Got back rate(" + rateLong.getitem( 0 ) + ") channels(" +
-				channelsInt.getitem( 0 ) + ") encoding(" + encodingInt.getitem( 0 ) + ")");
+		final long cSampleRate = libmpg123.GetFormatSampleRate( handle );
+		final int cChannels = libmpg123.GetFormatChannels( handle );
+
+		log.debug( "Custom JNI Methods say sample rate is (" + cSampleRate +") and channels(" +
+				cChannels + ")");
 
 		log.debug( "Opened " + filePath + " for reading" );
 
@@ -84,7 +92,7 @@ public class AttemptToReadAFile
 
 		final long seekResult = libmpg123.mpg123_seek( handle, 0, SEEK_SET );
 
-		if( seekResult != 0 )
+		if( seekResult != mpg123_errors.MPG123_OK.swigValue() )
 		{
 			throw new IOException("Failed seek to start");
 		}
@@ -92,76 +100,70 @@ public class AttemptToReadAFile
 		final long totalFrames = libmpg123.mpg123_length( handle );
 		log.debug("Have " + totalFrames + " frames");
 
+		final WaveFileWriter waveWriter = new WaveFileWriter( "/tmp/javalibmpg123reader.wave",
+				2,
+				(int)cSampleRate,
+				(short)16 );
 
-//		final SWIGTYPE_p_unsigned_char outMemory;
-//
-//		final int rv = libmpg123.mpg123_decode( handle, null, 0, outmemory, outmemsize, done );
-//
-//		if( rv == mpg123_errors.MPG123_DONE.swigValue() )
-//		{
-//			log.debug("We are done");
-//		}
+		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / cChannels;
 
-//		final SF_INFO sf = new SF_INFO();
-//
-//
-//		log.trace( "Beginning" );
-//
-//		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = libsndfile.sf_open(
-//				filePath,
-//				libsndfile.SFM_READ,
-//				sf );
-//
-//		if( sndfilePtr == null )
-//		{
-//			throw new DatastoreException( "Unknown format (returned null)" );
-//		}
-//
-//		final int sampleRate = sf.getSamplerate();
-//		final long numFrames = sf.getFrames();
-//		final int numChannels = sf.getChannels();
-//		log.trace( "Apparently have opened the file with (" +
-//				sampleRate + ") (" +
-//				numFrames + ") (" +
-//				numChannels + ")" );
-//
-//		final WaveFileWriter waveWriter = new WaveFileWriter( "/tmp/javalibsndfilereader.wave",
-//				2,
-//				sampleRate,
-//				(short)16 );
-//
-//		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / numChannels;
-//
-//		long numFramesLeft = numFrames;
-//
-//		final CArrayFloat cArrayFloat = new CArrayFloat( BUFFER_LENGTH_FLOATS );
-//		final SWIGTYPE_p_float floatPtr = cArrayFloat.cast();
-//
-//		while( numFramesLeft > 0 )
-//		{
-//			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft );
-//
-//			final long numFramesRead = libsndfile.sf_readf_float( sndfilePtr, floatPtr, numFramesThisRound );
-//
-//			assert( numFramesRead == numFramesThisRound );
-//
-//			final int numFloatsThisRound = (int)(numFramesThisRound * numChannels);
-//			for( int i = 0 ; i < numFloatsThisRound ; ++i )
-//			{
-//				buffer[i] = cArrayFloat.getitem( i );
-//			}
-//
-//			waveWriter.writeFloats( buffer, numFloatsThisRound );
-//
-//			numFramesLeft -= numFramesThisRound;
-//
-////			break;
-//		}
-//
-//
-//		libsndfile.sf_close( sndfilePtr );
-//
-//		waveWriter.close();
+		long numFramesLeft = totalFrames;
+
+		final CArrayInt doneArray = new CArrayInt( 1 );
+		final SWIGTYPE_p_int donePtr = doneArray.cast();
+
+		while( numFramesLeft > 0 )
+		{
+			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft );
+			final int numFloatsThisRound = (int)(numFramesThisRound * cChannels);
+
+//			log.trace( "Asking for " + numFloatsThisRound + " floats this round" );
+
+			final int rv = libmpg123.DecodeData( handle, buffer, 0, numFloatsThisRound, donePtr );
+
+			final int numFloatsRead = doneArray.getitem( 0 );
+
+			if( rv == mpg123_errors.MPG123_DONE.swigValue() )
+			{
+				log.trace( "Hit DONE with " + numFloatsRead );
+			}
+			else if( rv != mpg123_errors.MPG123_OK.swigValue() )
+			{
+				throw new IOException("Failed during DecodeData: " + rv);
+			}
+			else
+			{
+				if( numFloatsRead != numFloatsThisRound &&
+						rv != mpg123_errors.MPG123_DONE.swigValue() )
+				{
+					throw new IOException("Failed to get as many floats as we asked for: asked(" +
+							numFloatsThisRound + ") got(" + numFloatsRead + ")");
+				}
+			}
+
+			final int numFramesRead = numFloatsRead / cChannels;
+			assert( numFramesRead == numFramesThisRound );
+
+			limiter.filter( buffer, 0, numFloatsRead );
+
+			waveWriter.writeFloats( buffer, numFloatsThisRound );
+
+			numFramesLeft -= numFramesThisRound;
+
+			if( rv == mpg123_errors.MPG123_DONE.swigValue() )
+			{
+				log.trace("Finishing early");
+				break;
+			}
+		}
+
+		final int closeRv = libmpg123.mpg123_close( handle );
+		if( closeRv != mpg123_errors.MPG123_OK.swigValue() )
+		{
+			throw new IOException("Failed during close: " + closeRv );
+		}
+
+		waveWriter.close();
 
 		log.trace( "Done" );
 	}

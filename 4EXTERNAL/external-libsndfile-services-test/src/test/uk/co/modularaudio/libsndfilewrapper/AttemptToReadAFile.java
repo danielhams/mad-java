@@ -84,6 +84,8 @@ public class AttemptToReadAFile
 
 		waveWriter.close();
 
+		sf.delete();
+
 		final long a = System.nanoTime();
 		final long diff = a - b;
 		log.trace( "Slow Done in " + diff + " nanos or " + (diff / 1000.0f) + " micros or " + (diff / 1000000.0f)
@@ -140,6 +142,8 @@ public class AttemptToReadAFile
 		libsndfile.sf_close( sndfilePtr );
 
 		waveWriter.close();
+
+		sf.delete();
 
 		final long a = System.nanoTime();
 		final long diff = a - b;

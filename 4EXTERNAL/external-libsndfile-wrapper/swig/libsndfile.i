@@ -26,7 +26,7 @@
     JNIEXPORT void JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_HandRolled(JNIEnv *, jclass, jint, jstring);
 %}
 
-%native (CustomSfReadFloatsOffset) jlong CustomSfReadFloatsOffset( SNDFILE sndfile, jfloatArray floatArray, jint outputFloatsOffset, jlong numFrames);
+%native (CustomSfReadFloatsOffset) jlong CustomSfReadFloatsOffset( SNDFILE sndfile, jfloatArray floatArray, jint outputFloatsOffset, jlong numFloats);
 %{
     JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libsndfilewrapper_swig_libsndfileJNI_CustomSfReadFloatsOffset(JNIEnv *, jclass, SNDFILE *, jfloatArray, jint, jlong );
 %}

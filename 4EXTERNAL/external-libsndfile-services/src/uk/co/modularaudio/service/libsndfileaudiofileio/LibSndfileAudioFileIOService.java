@@ -107,6 +107,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			{
 				libsndfile.sf_close( sndfilePtr );
 			}
+			sfInfo.delete();
 		}
 
 		return retVal;
@@ -195,6 +196,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 					log.error("Failed in libsndfile close during cleanup");
 				}
 			}
+			sfInfo.delete();
 		}
 	}
 
@@ -213,6 +215,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			final String errMsg = libsndfile.sf_error_number( closeSuccess );
 			throw new IOException("Failed libsndfile close of open audio file handle: " + errMsg);
 		}
+		realAtom.sfInfo.delete();
 	}
 
 	@Override
@@ -257,11 +260,11 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		final int numChannels = realAtom.getStaticMetadata().numChannels;
 		final int destPositionFloats = destPositionFrames * numChannels;
 		final int numFloats = numFrames * numChannels;
-		final long numFramesRead = libsndfile.CustomSfReadFloatsOffset( sndfilePtr, destFloats, destPositionFloats, numFloats );
-		if( numFramesRead != numFrames )
+		final long numFloatsRead = libsndfile.CustomSfReadFloatsOffset( sndfilePtr, destFloats, destPositionFloats, numFloats );
+		if( numFloatsRead != numFloats )
 		{
-			final String msg = "Reading after the seek didn't produce the expected num frames " +
-					"asked for " + numFrames + " and read " + numFramesRead;
+			final String msg = "Reading after the seek didn't produce the expected num floats " +
+					"asked for " + numFloats + " and read " + numFloatsRead;
 			throw new IOException( msg );
 		}
 

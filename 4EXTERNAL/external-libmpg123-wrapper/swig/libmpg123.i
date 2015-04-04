@@ -27,3 +27,23 @@
 %{
     JNIEXPORT void JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_HandRolled(JNIEnv *, jclass, jint, jstring);
 %}
+
+%native (CheckFormat) jint CheckFormat(mpg123_handle * handle);
+%{
+    JNIEXPORT jint JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_CheckFormat(JNIEnv *, jclass, mpg123_handle *);
+%}
+
+%native (GetFormatSampleRate) jlong GetFormatSampleRate(mpg123_handle * handle);
+%{
+    JNIEXPORT jlong JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_GetFormatSampleRate(JNIEnv *, jclass, mpg123_handle *);
+%}
+
+%native (GetFormatChannels) jint GetFormatChannels(mpg123_handle * handle);
+%{
+    JNIEXPORT jint JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_GetFormatChannels(JNIEnv *, jclass, mpg123_handle *);
+%}
+
+%native (DecodeData) jint DecodeData(mpg123_handle * handle, jfloatArray floatArray, jint outputFloatsOffset, jint numFloats, int * done);
+%{
+    JNIEXPORT jint JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_DecodeData(JNIEnv *, jclass, mpg123_handle *, jfloatArray, jint, jint, int * );
+%}
