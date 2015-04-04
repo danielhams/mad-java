@@ -1,4 +1,5 @@
 /bin/
 /src/uk/co/modularaudio/libmpg123wrapper/swig/
 /swig/libmpg123_wrap*
+/swig/libmpg123_jnibulk.o
 /lib/

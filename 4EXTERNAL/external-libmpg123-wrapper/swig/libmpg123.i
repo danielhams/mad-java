@@ -22,3 +22,8 @@
 %}
 
 %include "mpg123.h"
+
+%native (HandRolled) void HandRolled(int, jstring jstr);
+%{
+    JNIEXPORT void JNICALL Java_uk_co_modularaudio_libmpg123wrapper_swig_libmpg123JNI_HandRolled(JNIEnv *, jclass, jint, jstring);
+%}
