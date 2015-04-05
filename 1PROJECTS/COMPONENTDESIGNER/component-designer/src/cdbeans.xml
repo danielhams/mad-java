@@ -126,9 +126,6 @@
 	</bean>
     <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
     </bean>
-    <bean id="brokenAudioFileIOService" class="uk.co.modularaudio.service.brokenaudiofileio.BrokenAudioFileIOService" init-method="init" destroy-method="destroy">
-        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
-    </bean>
     <bean id="libSndfileAudioFileIOService" class="uk.co.modularaudio.service.libsndfileaudiofileio.LibSndfileAudioFileIOService" init-method="init" destroy-method="destroy">
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
     </bean>

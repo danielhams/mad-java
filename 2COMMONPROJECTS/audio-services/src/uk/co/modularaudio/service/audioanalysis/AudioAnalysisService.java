@@ -24,13 +24,13 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.unitOfWork.ProgressListener;
 
 public interface AudioAnalysisService
 {
 	// Method blocks until analysis is complete.
 	AnalysedData analyseFile( String pathToFile, ProgressListener progressListener )
-		throws IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException, DatastoreException;
+		throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException;
 }

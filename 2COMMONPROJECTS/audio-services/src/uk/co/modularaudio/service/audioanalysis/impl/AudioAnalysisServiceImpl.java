@@ -21,33 +21,33 @@
 package uk.co.modularaudio.service.audioanalysis.impl;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
-import uk.co.modularaudio.service.audioanalysis.AudioAnalysisException;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.AnalysisListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.BeatDetectionListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainDetectionListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.ScrollingThumbnailGeneratorListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailGeneratorListener;
-import uk.co.modularaudio.service.audiodatafetcher.AudioDataFetcherFactory;
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
+import uk.co.modularaudio.service.audiofileio.StaticMetadata;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
-import uk.co.modularaudio.util.audio.fileio.IAudioDataFetcher;
 import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -76,7 +76,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private static final String CONFIG_KEY_SCROLLING_RMS_COLOR = "ScrollingThumbnailRmsColor";
 
 	private ConfigurationService configurationService;
-	private AudioDataFetcherFactory audioDataFetcherFactory;
+	private AudioFileIORegistryService audioFileIORegistryService;
 	private HashedStorageService hashedStorageService;
 
 	private String staticThumbnailRootDir;
@@ -198,72 +198,85 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 	@Override
 	public AnalysedData analyseFile(final String pathToFile, final ProgressListener progressListener)
-			throws IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException, DatastoreException
+			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException
 	{
 		final AnalysedData analysedData = new AnalysedData();
 
 		// Create the hashed ref our listeners might be interested in
 		final HashedRef fileHashedRef = hashedStorageService.getHashedRefForFilename( pathToFile );
 
-		// Get the data fetcher for the file and then loop around fetching chunks of the file and feeding it to the analysers
-		// Then at the end
-		final File file = new File( pathToFile );
-		final DataRate dataRate = DataRate.SR_44100;
-		final int numChannels = 2;
-		final IAudioDataFetcher dataFetcher = audioDataFetcherFactory.getFetcherForFile( file );
-		final AudioFormat desiredAudioFormat = new AudioFormat( dataRate.getValue(), 16, numChannels, true, true );
+		final AudioFileFormat fileFormat = audioFileIORegistryService.sniffFileFormatOfFile( pathToFile );
 
-		dataFetcher.open( desiredAudioFormat,  file );
+		final AudioFileIOService decoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( fileFormat,
+				AudioFileDirection.DECODE );
 
-		final long totalFloats = dataFetcher.getNumTotalFloats();
-		if( log.isDebugEnabled() )
+		AudioFileHandleAtom fha = null;
+
+		try
 		{
-			log.debug("Beginning audio analysis on file " + file.getName() + " with " + totalFloats + " total floating point samples");
-		}
+			fha = decoderService.openForRead( pathToFile );
 
-		for( final AnalysisListener al : analysisListeners )
-		{
-			al.start( dataRate, numChannels, totalFloats );
-		}
-		int percentageComplete = 0;
-		for( long curPos = 0 ; curPos < totalFloats ; curPos += analysisBufferSize )
-		{
-			int numRead = dataFetcher.read( analysisBuffer, 0, curPos, analysisBufferSize );
-
-			if( numRead <= 0 )
+			final StaticMetadata sm = fha.getStaticMetadata();
+			final DataRate dataRate = sm.dataRate;
+			final int numChannels = sm.numChannels;
+			final long totalFloats = sm.numFloats;
+			if( log.isDebugEnabled() )
 			{
-				// Pad with empty samples
-				numRead = analysisBufferSize;
-				Arrays.fill( analysisBuffer, 0, analysisBufferSize, 0.0f );
-				curPos = totalFloats;
+				log.debug("Beginning audio analysis on file " + pathToFile + " with " + totalFloats + " total floating point samples");
 			}
-			if( numRead > 0 )
+			for( final AnalysisListener al : analysisListeners )
 			{
-				for( final AnalysisListener al : analysisListeners )
+				al.start( dataRate, numChannels, totalFloats );
+			}
+			int percentageComplete = 0;
+			for( long curPos = 0 ; curPos < totalFloats ; curPos += analysisBufferSize )
+			{
+				final int numFramesRead = decoderService.readFrames( fha,
+						analysisBuffer,
+						0,
+						analysisBufferSize / numChannels,
+						curPos / numChannels );
+				int numRead = numFramesRead * numChannels;
+
+				if( numRead <= 0 )
 				{
-					al.receiveData( analysisBuffer, numRead );
+					// Pad with empty samples
+					numRead = analysisBufferSize;
+					Arrays.fill( analysisBuffer, 0, analysisBufferSize, 0.0f );
+					curPos = totalFloats;
+				}
+				if( numRead > 0 )
+				{
+					for( final AnalysisListener al : analysisListeners )
+					{
+						al.receiveData( analysisBuffer, numRead );
+					}
+				}
+				final int newPercentageComplete = (int)( ((float)curPos / (float)totalFloats) * 100.0);
+				if( newPercentageComplete != percentageComplete )
+				{
+					percentageComplete = newPercentageComplete;
+					progressListener.receivePercentageComplete( "Distance in file: ", percentageComplete );
 				}
 			}
-			final int newPercentageComplete = (int)( ((float)curPos / (float)totalFloats) * 100.0);
-			if( newPercentageComplete != percentageComplete )
+
+			for( final AnalysisListener al : analysisListeners )
 			{
-				percentageComplete = newPercentageComplete;
-				progressListener.receivePercentageComplete( "Distance in file: ", percentageComplete );
+				al.end();
+				al.updateAnalysedData( analysedData, fileHashedRef );
 			}
 		}
-
-		for( final AnalysisListener al : analysisListeners )
+		finally
 		{
-			al.end();
-			al.updateAnalysedData( analysedData, fileHashedRef );
+			decoderService.closeHandle( fha );
 		}
 
 		return analysedData;
 	}
 
-	public void setAudioDataFetcherFactory(final AudioDataFetcherFactory audioDataFetcherFactory)
+	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
 	{
-		this.audioDataFetcherFactory = audioDataFetcherFactory;
+		this.audioFileIORegistryService = audioFileIORegistryService;
 	}
 
 	public void setConfigurationService(final ConfigurationService configurationService)

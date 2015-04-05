@@ -12,5 +12,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util-gui"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/external-libmpg123-services"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/external-libsndfile-services"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
