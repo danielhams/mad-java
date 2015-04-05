@@ -138,16 +138,6 @@ fetchOneLibraryDirectRename "https://oss.sonatype.org/content/repositories/relea
 # jtransforms
 fetchOneLibraryDirectRename "http://search.maven.org/remotecontent?filepath=com/github/wendykierp/JTransforms/3.0/JTransforms-3.0.jar" "JTransforms-3.0.jar"
 
-# javazoom mp3
-fetchAndExtractOneLibrary "http://www.javazoom.net/mp3spi/sources/mp3spi1.9.5.zip" "mp3spi1.9.5.zip" "zip"
-copyNeededLib "MpegAudioSPI1.9.5/mp3spi1.9.5.jar"
-copyNeededLib "MpegAudioSPI1.9.5/lib/jl1.0.1.jar"
-copyNeededLib "MpegAudioSPI1.9.5/lib/tritonus_share.jar"
-
-# jflac spi
-fetchAndExtractOneLibrary "http://kent.dl.sourceforge.net/project/jflac/jflac/jflac-1.3/jflac-1.3.zip" "jflac-1.3.zip" "zip"
-copyNeededLib "jflac-1.3/dist/jflac-1.3.jar"
-
 # Jaxbi RI
 fetchAndExtractOneLibrary "https://jaxb.java.net/2.2.11/jaxb-ri-2.2.11.zip" "jaxb-ri-2.2.11.zip" "zip"
 copyNeededLib "jaxb-ri/lib/jaxb-api.jar"
