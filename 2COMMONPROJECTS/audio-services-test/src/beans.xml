@@ -2,7 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans xmlns="http://www.springframework.org/schema/beans">
     <bean id="configurationService" class="uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl" init-method="init" destroy-method="destroy">
-        <property name="propertyFile"><value>/example.properties</value></property>
+        <property name="configResourcePath"><value>/example.properties</value></property>
     </bean>
 	<bean id="classificationService" class="uk.co.modularaudio.service.madclassification.impl.MadClassificationServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
@@ -20,15 +20,30 @@
     </bean>
 	<bean id="timingService" class="uk.co.modularaudio.service.timing.impl.TimingServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>
-	<bean id="renderingService" class="uk.co.modularaudio.service.rendering.impl.RenderingServiceImpl" init-method="init" destroy-method="destroy">
+	<bean id="renderingPlanService" class="uk.co.modularaudio.service.renderingplan.impl.RenderingPlanServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="graphService"><ref bean="graphService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
 	</bean>
-	<bean id="advancedComponentsFrontController" class="test.uk.co.modularaudio.service.stubs.FakeAdvancedComponentsFrontController" init-method="init" destroy-method="destroy">
-	</bean>
+    <bean id="advancedComponentsFrontController" class="test.uk.co.modularaudio.service.stubs.FakeAdvancedComponentsFrontController" init-method="init" destroy-method="destroy">
+    </bean>
 	<bean id="internalComponentsFactory" class="uk.co.modularaudio.mads.internal.InternalComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="advancedComponentsFrontController"><ref bean="advancedComponentsFrontController"></ref></property>
 	</bean>
+    <bean id="audioAnalysisService" class="uk.co.modularaudio.service.audioanalysis.impl.AudioAnalysisServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="hashedStorageService"><ref bean="hashedStorageService"></ref></property>
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
+    <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="hashedStorageService" class="uk.co.modularaudio.service.hashedstorage.impl.HashedStorageServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="libSndfileAudioFileIOService" class="uk.co.modularaudio.service.libsndfileaudiofileio.LibSndfileAudioFileIOService" init-method="init" destroy-method="destroy">
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
+    <bean id="libMpg123AudioFileIOService" class="uk.co.modularaudio.service.libmpg123audiofileio.LibMpg123AudioFileIOService" init-method="init" destroy-method="destroy">
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
 </beans>

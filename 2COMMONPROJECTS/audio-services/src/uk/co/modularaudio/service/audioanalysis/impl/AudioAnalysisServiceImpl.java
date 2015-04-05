@@ -105,6 +105,13 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( configurationService == null ||
+				audioFileIORegistryService == null ||
+				hashedStorageService == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check configuration" );
+		}
+
 		// Fetch our configuration data
 		// (1) Static thumb nail storage directory
 		// (2) Scrolling thumb nail storage directory
@@ -268,7 +275,10 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		}
 		finally
 		{
-			decoderService.closeHandle( fha );
+			if( fha != null )
+			{
+				decoderService.closeHandle( fha );
+			}
 		}
 
 		return analysedData;

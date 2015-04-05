@@ -72,7 +72,7 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		final String outputPath = computeWarehouseRefPath( warehouse, hashedRef );
 		final File outputFile = new File( outputPath );
 		final File enclosingDir = outputFile.getParentFile();
-		if( !enclosingDir.mkdirs() )
+		if( !enclosingDir.exists() && !enclosingDir.mkdirs() )
 		{
 			throw new IOException("Failed during enclosing directory creation");
 		}

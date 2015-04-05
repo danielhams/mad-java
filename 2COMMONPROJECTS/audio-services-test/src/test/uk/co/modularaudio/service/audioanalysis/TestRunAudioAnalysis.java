@@ -28,7 +28,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.BasicConfigurator;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
@@ -44,26 +43,26 @@ import uk.co.modularaudio.util.unitOfWork.ProgressListener;
 public class TestRunAudioAnalysis
 {
 	private static Log log = LogFactory.getLog( TestRunAudioAnalysis.class.getName() );
-	
+
 	private GenericApplicationContext gac = null;
-	
+
 	private AudioAnalysisService aas = null;
-	
+
 	public TestRunAudioAnalysis() throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
 	{
 		// Setup components
-		List<SpringContextHelper> schs = new ArrayList<SpringContextHelper>();
+		final List<SpringContextHelper> schs = new ArrayList<SpringContextHelper>();
 //		schs.add();
-		SpringComponentHelper sch = new SpringComponentHelper( schs );
+		final SpringComponentHelper sch = new SpringComponentHelper( schs );
 		gac = sch.makeAppContext();
 		aas = gac.getBean( "audioAnalysisService", AudioAnalysisService.class );
-		
+
 		// Now do the tests
-		ProgressListener pl = new ProgressListener()
+		final ProgressListener pl = new ProgressListener()
 		{
-			
+
 			@Override
-			public void receivePercentageComplete(String statusMessage, int percentageComplete)
+			public void receivePercentageComplete(final String statusMessage, final int percentageComplete)
 			{
 				log.debug( statusMessage + " - percentage complete: " + percentageComplete );
 			}
@@ -86,15 +85,14 @@ public class TestRunAudioAnalysis
 //		log.debug("Analysed data 8 contains: " + analysedData8.toString() );
 //		AnalysedData analysedData9 = aas.analyseFile( "/media/663099F83099D003/Music/Mp3Repository/20131121/4820093_Black_Deep_Original_Mix.mp3", pl );
 //		log.debug("Analysed data 9 contains: " + analysedData9.toString() );
-		AnalysedData analysedData10 = aas.analyseFile( "/media/663099F83099D003/Music/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3", pl );
+		final AnalysedData analysedData10 = aas.analyseFile( "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3", pl );
 		log.debug("Analysed data 10 contains: " + analysedData10.toString() );
-		
+
 	}
-	
-	public static void main( String args[] ) throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
+
+	public static void main( final String args[] ) throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
 	{
-		BasicConfigurator.configure();
-		TestRunAudioAnalysis traa = new TestRunAudioAnalysis();
+		final TestRunAudioAnalysis traa = new TestRunAudioAnalysis();
 		log.debug("Run completed on " + traa.toString() );
 	}
 }
