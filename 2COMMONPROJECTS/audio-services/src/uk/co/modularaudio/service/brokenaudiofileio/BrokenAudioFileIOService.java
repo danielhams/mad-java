@@ -69,13 +69,13 @@ public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFi
 		{
 			throw new ComponentConfigurationException( "Missing service dependencies. Please check configuration." );
 		}
-		audioFileIORegistryService.registerAudioFileIOService( this );
+//		audioFileIORegistryService.registerAudioFileIOService( this );
 	}
 
 	@Override
 	public void destroy()
 	{
-		audioFileIORegistryService.unregisterAudioFileIOService( this );
+//		audioFileIORegistryService.unregisterAudioFileIOService( this );
 	}
 
 	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
@@ -218,7 +218,7 @@ public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFi
 	}
 
 	@Override
-	public void readFrames( final AudioFileHandleAtom handle,
+	public int readFrames( final AudioFileHandleAtom handle,
 			final float[] destFloats,
 			final int destPositionFrames,
 			final int numFrames,
@@ -234,13 +234,15 @@ public class BrokenAudioFileIOService implements ComponentWithLifecycle, AudioFi
 				log.error("Oops - asked for " + numFrames + " received " + numRead);
 			}
 		}
+		return numRead;
 	}
 
 	@Override
-	public void writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats,
+	public int writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats,
 			final long writePosition, final int numFrames )
 			throws DatastoreException, IOException
 	{
+		return 0;
 	}
 
 	@Override

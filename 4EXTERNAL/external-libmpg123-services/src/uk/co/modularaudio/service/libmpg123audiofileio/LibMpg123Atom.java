@@ -1,38 +1,43 @@
-package uk.co.modularaudio.service.libsndfileaudiofileio;
+package uk.co.modularaudio.service.libmpg123audiofileio;
 
-import uk.co.modularaudio.libsndfilewrapper.swig.SF_INFO;
-import uk.co.modularaudio.libsndfilewrapper.swig.SWIGTYPE_p_SNDFILE_tag;
+import uk.co.modularaudio.libmpg123wrapper.swig.CArrayInt;
+import uk.co.modularaudio.libmpg123wrapper.swig.SWIGTYPE_p_int;
+import uk.co.modularaudio.libmpg123wrapper.swig.SWIGTYPE_p_mpg123_handle_struct;
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 
-public class LibSndfileAtom implements AudioFileHandleAtom
+public class LibMpg123Atom implements AudioFileHandleAtom
 {
-//	private static Log log = LogFactory.getLog( LibSndfileAtom.class.getName() );
+//	private static Log log = LogFactory.getLog( LibMpg123Atom.class.getName() );
 
 	protected final static int CARRAY_BUFFER_LENGTH = 4096;
 
-	protected final LibSndfileAudioFileIOService service;
+	protected final LibMpg123AudioFileIOService service;
 	protected final AudioFileDirection direction;
 	protected final StaticMetadata staticMetadata;
 
-	protected SF_INFO sfInfo;
-	protected SWIGTYPE_p_SNDFILE_tag sndfilePtr;
-
 	protected long currentHandleFrameOffset;
 
-	public LibSndfileAtom( final LibSndfileAudioFileIOService service,
+	protected SWIGTYPE_p_mpg123_handle_struct handle;
+
+	protected long currentPosition;
+	protected CArrayInt doneArray;
+	protected SWIGTYPE_p_int donePtr;
+
+	public LibMpg123Atom( final LibMpg123AudioFileIOService service,
 			final AudioFileDirection direction,
 			final StaticMetadata staticMetadata,
-			final SF_INFO sfInfo,
-			final SWIGTYPE_p_SNDFILE_tag sndfilePtr )
+			final SWIGTYPE_p_mpg123_handle_struct handle  )
 	{
 		this.service = service;
 		this.direction = direction;
 		this.staticMetadata = staticMetadata;
-		this.sfInfo = sfInfo;
-		this.sndfilePtr = sndfilePtr;
+		this.handle = handle;
+
+		doneArray = new CArrayInt(1);
+		donePtr = doneArray.cast();
 	}
 
 	@Override

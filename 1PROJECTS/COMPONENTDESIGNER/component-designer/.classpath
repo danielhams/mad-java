@@ -12,6 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/external-libs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/component-designer-services"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/external-libsndfile-services"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/external-libsndfile-wrapper"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/external-libmpg123-services"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

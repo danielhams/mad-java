@@ -219,7 +219,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	}
 
 	@Override
-	public void readFrames( final AudioFileHandleAtom handle,
+	public int readFrames( final AudioFileHandleAtom handle,
 			final float[] destFloats,
 			final int destPositionFrames,
 			final int numFrames,
@@ -269,78 +269,12 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		}
 
 		realAtom.currentHandleFrameOffset += numFrames;
-	}
 
-	public void oldReadFloats( final AudioFileHandleAtom handle,
-			final float[] destFloats,
-			final int destPosition,
-			final int numFrames,
-			final long frameReadOffset )
-		throws DatastoreException, IOException
-	{
-		final LibSndfileAtom realAtom = (LibSndfileAtom)handle;
-		if( realAtom.direction != AudioFileDirection.DECODE )
-		{
-			throw new DatastoreException( "readFloat called on encoding audio file atom." );
-		}
-		final int numChannels = realAtom.staticMetadata.numChannels;
-
-		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = realAtom.sndfilePtr;
-
-		if( realAtom.currentHandleFrameOffset != frameReadOffset )
-		{
-			if( log.isTraceEnabled() )
-			{
-				log.trace("Current frame offset requires a seek from " + realAtom.currentHandleFrameOffset + " to " + frameReadOffset );
-			}
-
-			final long actualOffset = libsndfile.sf_seek( sndfilePtr, frameReadOffset, SEEK_SET );
-
-			if( log.isTraceEnabled() )
-			{
-				log.trace("Actual offset is now " + actualOffset);
-			}
-
-			if( actualOffset != frameReadOffset )
-			{
-				final String msg = "The seek didn't produce expected offset - asked for " + frameReadOffset + " and got " +
-						actualOffset;
-				throw new IOException( msg );
-			}
-			realAtom.currentHandleFrameOffset = frameReadOffset;
-		}
-
-		int numFloatsLeft = numFrames * numChannels;
-		int outputPosition = destPosition;
-
-		while( numFloatsLeft > 0 )
-		{
-			final int numFloatsThisRound = (numFloatsLeft > LibSndfileAtom.CARRAY_BUFFER_LENGTH ? LibSndfileAtom.CARRAY_BUFFER_LENGTH :
-				numFloatsLeft );
-
-			final long numFloatsReadLong = libsndfile.sf_read_float( sndfilePtr, realAtom.floatPtr, numFloatsThisRound );
-			final int numFloatsRead = (int)numFloatsReadLong;
-			if( numFloatsRead != numFloatsReadLong )
-			{
-				throw new IOException( "Num floats read exceeded int" );
-			}
-			for( int i = 0 ; i < numFloatsRead ; ++i )
-			{
-				destFloats[ outputPosition++ ] = realAtom.cArrayFloat.getitem( i );
-			}
-			if( numFloatsRead != numFloatsThisRound )
-			{
-				final String msg = "Reading after the seek didn't produce the expected num floats " +
-						"asked for " + numFloatsThisRound + " and read " + numFloatsRead;
-				throw new IOException( msg );
-			}
-			numFloatsLeft -= numFloatsRead;
-		}
-		realAtom.currentHandleFrameOffset += numFrames;
+		return numFrames;
 	}
 
 	@Override
-	public void writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats, final long writePosition, final int numFrames )
+	public int writeFrames( final AudioFileHandleAtom handle, final float[] srcFloats, final long writePosition, final int numFrames )
 			throws DatastoreException, IOException
 	{
 		throw new DatastoreException("NI");

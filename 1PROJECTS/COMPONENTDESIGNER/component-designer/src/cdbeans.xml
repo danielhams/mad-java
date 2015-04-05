@@ -132,6 +132,9 @@
     <bean id="libSndfileAudioFileIOService" class="uk.co.modularaudio.service.libsndfileaudiofileio.LibSndfileAudioFileIOService" init-method="init" destroy-method="destroy">
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
     </bean>
+    <bean id="libMpg123AudioFileIOService" class="uk.co.modularaudio.service.libmpg123audiofileio.LibMpg123AudioFileIOService" init-method="init" destroy-method="destroy">
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
 	<bean id="sampleCachingService" class="uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="libraryService"><ref bean="libraryService"></ref></property>
 		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
