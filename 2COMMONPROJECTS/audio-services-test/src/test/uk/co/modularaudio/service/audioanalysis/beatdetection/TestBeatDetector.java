@@ -24,8 +24,6 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.BasicConfigurator;
-
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetectionRT;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.beatdetection.BeatDetector;
 import uk.co.modularaudio.util.audio.oscillatortable.Oscillator;
@@ -37,25 +35,20 @@ import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveTableType;
 public class TestBeatDetector extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestBeatDetector.class.getName() );
-	
-	static
-	{
-		BasicConfigurator.configure();
-	}
-	
+
 	public void testBeatDetector() throws Exception
 	{
-		int sampleRate = 44100;
-		OscillatorFactory of = OscillatorFactory.getInstance( "wavetablecache" );
-		Oscillator osc = of.createOscillator( OscillatorWaveTableType.SINGLE, OscillatorInterpolationType.LINEAR, OscillatorWaveShape.SINE );
-		
-		float[] input = new float[1024];
+		final int sampleRate = 44100;
+		final OscillatorFactory of = OscillatorFactory.getInstance( "wavetablecache" );
+		final Oscillator osc = of.createOscillator( OscillatorWaveTableType.SINGLE, OscillatorInterpolationType.LINEAR, OscillatorWaveShape.SINE );
+
+		final float[] input = new float[1024];
 		for( int i = 0 ; i < 1024 ; i++ )
 		{
 			input[i] = 0.0f;
 		}
 
-		float[] oneval = new float[1];
+		final float[] oneval = new float[1];
 		for( int i = 0 ; i < 512 ; i++ )
 		{
 //			float amp = 128.0f / (128 * (i + 1));
@@ -66,9 +59,9 @@ public class TestBeatDetector extends TestCase
 		{
 			log.debug("input["+i+"]=" + input[i]);
 		}
-		float[] output = new float[1024];
-		BeatDetectionRT rt = new BeatDetectionRT( 1, 1024 );
-		BeatDetector bd = new BeatDetector();
+		final float[] output = new float[1024];
+		final BeatDetectionRT rt = new BeatDetectionRT( 1, 1024 );
+		final BeatDetector bd = new BeatDetector();
 		bd.detect( rt, input, output );
 		log.debug("Found bpm= " + rt.getBpm() + " " + rt.getConfidence());
 		bd.detect( rt, input, output );

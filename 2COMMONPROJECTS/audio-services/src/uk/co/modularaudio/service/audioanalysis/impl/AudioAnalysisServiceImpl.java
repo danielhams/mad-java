@@ -35,7 +35,6 @@ import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.AnalysisListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.BeatDetectionListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainDetectionListener;
-import uk.co.modularaudio.service.audioanalysis.impl.analysers.ScrollingThumbnailGeneratorListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailGeneratorListener;
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
@@ -67,14 +66,6 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private static final String CONFIG_KEY_STATIC_THUMB_WIDTH = "StaticThumbnailWidth";
 	private static final String CONFIG_KEY_STATIC_THUMB_HEIGHT = "StaticThumbnailHeight";
 
-	private static final String CONFIG_KEY_ZI_SCROLLING_THUMB_ROOT = "ZiScrollingThumbnailRootDir";
-	private static final String CONFIG_KEY_ZO_SCROLLING_THUMB_ROOT = "ZoScrollingThumbnailRootDir";
-	private static final String CONFIG_KEY_SCROLLING_THUMB_SPP_ZI = "ScrollingThumbnailSamplesPerPixelZoomedIn";
-	private static final String CONFIG_KEY_SCROLLING_THUMB_SPP_ZO = "ScrollingThumbnailSamplesPerPixelZoomedOut";
-	private static final String CONFIG_KEY_SCROLLING_THUMB_HEIGHT = "ScrollingThumbnailHeight";
-	private static final String CONFIG_KEY_SCROLLING_MINMAX_COLOR = "ScrollingThumbnailMinMaxColor";
-	private static final String CONFIG_KEY_SCROLLING_RMS_COLOR = "ScrollingThumbnailRmsColor";
-
 	private ConfigurationService configurationService;
 	private AudioFileIORegistryService audioFileIORegistryService;
 	private HashedStorageService hashedStorageService;
@@ -85,17 +76,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private Color staticMinMaxColor;
 	private Color staticRmsColor;
 
-	private String ziScrollingThumbnailRootDir;
-	private String zoScrollingThumbnailRootDir;
-	private int scrollingThumbnailSamplesPerPixelZoomedIn;
-	private int scrollingThumbnailSamplesPerPixelZoomedOut;
-	private int scrollingThumbnailHeight;
-	private Color scrollingMinMaxColor;
-	private Color scrollingRmsColor;
-
 	private HashedWarehouse staticThumbnailWarehouse;
-	private HashedWarehouse ziScrollingThumbnailWarehouse;
-	private HashedWarehouse zoScrollingThumbnailWarehouse;
 
 	private int analysisBufferSize;
 	private float[] analysisBuffer;
@@ -129,22 +110,6 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			staticRmsColor = configurationService.getSingleColorValue(
 					getClass().getSimpleName() + "." + CONFIG_KEY_STATIC_RMS_COLOR );
 
-			// Scrolling thumbnail config
-			ziScrollingThumbnailRootDir = configurationService.getSingleStringValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_ZI_SCROLLING_THUMB_ROOT );
-			zoScrollingThumbnailRootDir = configurationService.getSingleStringValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_ZO_SCROLLING_THUMB_ROOT );
-			scrollingThumbnailSamplesPerPixelZoomedIn = configurationService.getSingleIntValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_SCROLLING_THUMB_SPP_ZI );
-			scrollingThumbnailSamplesPerPixelZoomedOut = configurationService.getSingleIntValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_SCROLLING_THUMB_SPP_ZO );
-			scrollingThumbnailHeight = configurationService.getSingleIntValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_SCROLLING_THUMB_HEIGHT );
-			scrollingMinMaxColor = configurationService.getSingleColorValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_SCROLLING_MINMAX_COLOR );
-			scrollingRmsColor = configurationService.getSingleColorValue(
-					getClass().getSimpleName() + "." + CONFIG_KEY_SCROLLING_RMS_COLOR );
-
 			// Our internal buffer size
 			analysisBufferSize = configurationService.getSingleIntValue(
 					getClass().getSimpleName() + "." + CONFIG_KEY_ANALYSIS_BUFFER_SIZE );
@@ -160,8 +125,6 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		try
 		{
 			staticThumbnailWarehouse = hashedStorageService.initStorage( staticThumbnailRootDir );
-			ziScrollingThumbnailWarehouse = hashedStorageService.initStorage( ziScrollingThumbnailRootDir );
-			zoScrollingThumbnailWarehouse = hashedStorageService.initStorage( zoScrollingThumbnailRootDir );
 		}
 		catch (final IOException e)
 		{
@@ -176,19 +139,10 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		// and then initialise the list of listeners.
 		final BeatDetectionListener bdl = new BeatDetectionListener();
 		analysisListeners.add( bdl );
+
 		final GainDetectionListener gdl = new GainDetectionListener();
 		analysisListeners.add( gdl );
-		final ScrollingThumbnailGeneratorListener scgl = new ScrollingThumbnailGeneratorListener(
-				scrollingThumbnailSamplesPerPixelZoomedIn,
-				scrollingThumbnailSamplesPerPixelZoomedOut,
-				scrollingThumbnailHeight,
-				scrollingMinMaxColor,
-				scrollingRmsColor,
-				hashedStorageService,
-				ziScrollingThumbnailWarehouse,
-				zoScrollingThumbnailWarehouse );
 
-		analysisListeners.add( scgl );
 		final StaticThumbnailGeneratorListener stgl = new StaticThumbnailGeneratorListener( staticThumbnailWidth,
 				staticThumbnailHeight,
 				staticMinMaxColor,

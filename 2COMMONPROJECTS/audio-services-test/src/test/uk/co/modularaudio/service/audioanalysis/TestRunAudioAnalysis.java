@@ -44,9 +44,9 @@ public class TestRunAudioAnalysis
 {
 	private static Log log = LogFactory.getLog( TestRunAudioAnalysis.class.getName() );
 
-	private GenericApplicationContext gac = null;
+	private final GenericApplicationContext gac;
 
-	private AudioAnalysisService aas = null;
+	private final AudioAnalysisService aas;
 
 	public TestRunAudioAnalysis() throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
 	{
@@ -67,24 +67,8 @@ public class TestRunAudioAnalysis
 				log.debug( statusMessage + " - percentage complete: " + percentageComplete );
 			}
 		};
-//		AnalysedData analysedData = aas.analyseFile( "testfiles/wavs/hc.wav", pl );
-//		log.debug("Analysed data contains: " + analysedData.toString() );
-//		AnalysedData analysedData2 = aas.analyseFile( "testfiles/wavs/examplebeats.wav", pl );
-//		log.debug("Analysed data 2 contains: " + analysedData2.toString() );
-//		AnalysedData analysedData3 = aas.analyseFile( "testfiles/wavs/hc.mp3", pl );
-//		log.debug("Analysed data 3 contains: " + analysedData3.toString() );
-//		AnalysedData analysedData4 = aas.analyseFile( "testfiles/wavs/sr.mp3", pl );
-//		log.debug("Analysed data 4 contains: " + analysedData4.toString() );
-//		AnalysedData analysedData5 = aas.analyseFile( "testfiles/wavs/ds.wav", pl );
-//		log.debug("Analysed data 5 contains: " + analysedData5.toString() );
-//		AnalysedData analysedData6 = aas.analyseFile( "testfiles/wavs/tfiy.mp3", pl );
-//		log.debug("Analysed data 6 contains: " + analysedData6.toString() );
-//		AnalysedData analysedData7 = aas.analyseFile( "testfiles/wavs/freqshift112.mp3", pl );
-//		log.debug("Analysed data 7 contains: " + analysedData7.toString() );
-//		AnalysedData analysedData8 = aas.analyseFile( "/media/663099F83099D003/Music/Mp3Repository/20131121/4569954_Collision_Original_Mix.mp3", pl );
-//		log.debug("Analysed data 8 contains: " + analysedData8.toString() );
-//		AnalysedData analysedData9 = aas.analyseFile( "/media/663099F83099D003/Music/Mp3Repository/20131121/4820093_Black_Deep_Original_Mix.mp3", pl );
-//		log.debug("Analysed data 9 contains: " + analysedData9.toString() );
+		final AnalysedData analysedData1 = aas.analyseFile( "/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3", pl );
+		log.debug("Analysed data 1 contains: " + analysedData1.toString() );
 		final AnalysedData analysedData10 = aas.analyseFile( "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3", pl );
 		log.debug("Analysed data 10 contains: " + analysedData10.toString() );
 
