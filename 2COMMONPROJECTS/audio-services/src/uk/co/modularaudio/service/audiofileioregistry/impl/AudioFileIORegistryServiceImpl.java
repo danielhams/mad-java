@@ -55,22 +55,31 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	@Override
 	public void registerAudioFileIOService( final AudioFileIOService audioFileIOService )
 	{
-		log.trace("Received a register of an audio file io service \"" + audioFileIOService.getClass().getSimpleName() + "\"");
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Received a register of an audio file io service \"" + audioFileIOService.getClass().getSimpleName() + "\"");
+		}
 		final Set<AudioFileFormat> encFormats = audioFileIOService.listSupportedEncodingFormats();
 		final Set<AudioFileFormat> decFormats = audioFileIOService.listSupportedDecodingFormats();
 
 		for( final AudioFileFormat serviceFormat : encFormats )
 		{
 			formatToEncodingServiceMap.put( serviceFormat, audioFileIOService );
-			log.trace("Set service \"" + audioFileIOService.getClass().getSimpleName() + "\" as encoding handler for format: " +
-					serviceFormat );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Set service \"" + audioFileIOService.getClass().getSimpleName() + "\" as encoding handler for format: " +
+						serviceFormat );
+			}
 		}
 
 		for( final AudioFileFormat serviceFormat : decFormats )
 		{
 			formatToDecodingServiceMap.put( serviceFormat, audioFileIOService );
-			log.trace("Set service \"" + audioFileIOService.getClass().getSimpleName() + "\" as decoding handler for format: " +
-					serviceFormat );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Set service \"" + audioFileIOService.getClass().getSimpleName() + "\" as decoding handler for format: " +
+						serviceFormat );
+			}
 		}
 
 		services.add( audioFileIOService );
@@ -79,7 +88,10 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	@Override
 	public void unregisterAudioFileIOService( final AudioFileIOService audioFileIOService )
 	{
-		log.trace("Received an unregister of an audio file io service \"" + audioFileIOService.getClass().getSimpleName() + "\"");
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Received an unregister of an audio file io service \"" + audioFileIOService.getClass().getSimpleName() + "\"");
+		}
 		final Set<AudioFileFormat> encFormatsToRemove = new HashSet<AudioFileFormat>();
 		for( final Map.Entry<AudioFileFormat, AudioFileIOService> e : formatToEncodingServiceMap.entrySet() )
 		{
@@ -91,8 +103,11 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 		for( final AudioFileFormat efr : encFormatsToRemove )
 		{
 			formatToEncodingServiceMap.remove( efr );
-			log.trace("Removed service \"" + audioFileIOService.getClass().getSimpleName() + "\" as encoding handler for " +
-					efr );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Removed service \"" + audioFileIOService.getClass().getSimpleName() + "\" as encoding handler for " +
+						efr );
+			}
 		}
 
 		final Set<AudioFileFormat> decFormatsToRemove = new HashSet<AudioFileFormat>();
@@ -106,8 +121,11 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 		for( final AudioFileFormat dfr : decFormatsToRemove )
 		{
 			formatToDecodingServiceMap.remove( dfr );
-			log.trace("Removed service \"" + audioFileIOService.getClass().getSimpleName() + "\" as decoding handler for " +
-					dfr );
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Removed service \"" + audioFileIOService.getClass().getSimpleName() + "\" as decoding handler for " +
+						dfr );
+			}
 		}
 
 		services.remove( audioFileIOService );
@@ -154,8 +172,11 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 			{
 				final AudioFileFormat foundFormat = oneService.sniffFileFormatOfFile( path );
 				retVal = foundFormat;
-				log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" recognised format as " +
-						foundFormat.toString() );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" recognised format as " +
+							foundFormat.toString() );
+				}
 				if( retVal != AudioFileFormat.UNKNOWN )
 				{
 					return retVal;
@@ -163,13 +184,19 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 			}
 			catch( final RecordNotFoundException rnfe )
 			{
-				log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw rnfe for file " +
-						path );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw rnfe for file " +
+							path );
+				}
 			}
 			catch( final UnsupportedAudioFileException uafe )
 			{
-				log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
-						path );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
+							path );
+				}
 			}
 		}
 		if( retVal == AudioFileFormat.UNKNOWN )
@@ -215,8 +242,11 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 			}
 			catch( final UnsupportedAudioFileException uafe )
 			{
-				log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
-						path );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
+							path );
+				}
 			}
 		}
 		if( retVal == null )

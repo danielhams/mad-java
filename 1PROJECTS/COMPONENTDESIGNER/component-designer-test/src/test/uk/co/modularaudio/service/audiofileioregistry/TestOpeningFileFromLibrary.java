@@ -77,6 +77,8 @@ public class TestOpeningFileFromLibrary
 		t.commit();
 		hsc.releaseThreadSessionNoException();
 
+		Thread.sleep( SLEEP_AFTER_FIRST_OPEN_MILLIS );
+
 		hsc.getThreadSession();
 		tls = ThreadLocalSessionResource.getSessionResource();
 		t = tls.beginTransaction();
@@ -91,7 +93,7 @@ public class TestOpeningFileFromLibrary
 		t.commit();
 		hsc.releaseThreadSessionNoException();
 
-		Thread.sleep( SLEEP_AFTER_FIRST_OPEN_MILLIS );
+		Thread.sleep( SLEEP_AFTER_SECOND_OPEN_MILLIS );
 
 		scs.unregisterCacheClientForFile( scc );
 		scs.unregisterCacheClientForFile( scc2 );

@@ -140,6 +140,10 @@ public class SampleCache
 			else
 			{
 				// Already have a cache entry, don't need the audio file handle
+				if( log.isTraceEnabled() )
+				{
+					log.trace( "Already have a sample cache entry for " + fileHandle.getStaticMetadata().path + " closing duplicate" );
+				}
 				final AudioFileIOService afis = fileHandle.getAudioFileIOService();
 				afis.closeHandle( fileHandle );
 			}

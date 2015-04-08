@@ -88,8 +88,10 @@ public class CPTMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiIn
 	public void setInterpolator( final int interpolatorIndex )
 	{
 		sendTemporalValueToInstance( CPTIOQueueBridge.COMMAND_INTERPOLATOR, interpolatorIndex );
-		log.debug("Sent change to interpolator " + interpolatorIndex );
-
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Sent change to interpolator " + interpolatorIndex );
+		}
 	}
 
 	public void setChaseValueMillis( final float chaseMillis )

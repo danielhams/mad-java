@@ -148,10 +148,7 @@ public class AllocationCacheForImageType
 				throw new DatastoreException( msg );
 			}
 		}
-//		new BufferedImage( stdAllocImageWidth,
-//				stdAllocImageHeight,
-//				allocationBufferType.getJavaBufferedImageType() );
-//		GraphicsConfiguration
+
 		return bufferedImage;
 	}
 
@@ -258,7 +255,10 @@ public class AllocationCacheForImageType
 				// Create a custom assignment
 				widthToAlloc = imageWidthToUse;
 				heightToAlloc = imageHeightToUse;
-				log.debug( "Allocating image larger than cache dimensions: " + imageWidthToUse + ", " + imageHeightToUse );
+				if( log.isDebugEnabled() )
+				{
+					log.debug( "Allocating image larger than cache dimensions: " + imageWidthToUse + ", " + imageHeightToUse );
+				}
 			}
 
 			// Allocate raw image

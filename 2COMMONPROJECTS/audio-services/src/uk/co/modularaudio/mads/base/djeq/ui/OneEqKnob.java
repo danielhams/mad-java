@@ -110,7 +110,10 @@ public class OneEqKnob extends PacPanel
 			}
 			catch( final NumberFormatException nfe )
 			{
-				log.warn("Failed to parse OneEqKnob value: " + value );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Failed to parse OneEqKnob value: " + value );
+				}
 			}
 		}
 	}

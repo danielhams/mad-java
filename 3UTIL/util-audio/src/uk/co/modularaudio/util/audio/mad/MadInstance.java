@@ -372,9 +372,15 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final int numWritten = commandToUiQueue.write( tempQueueEntryStorage.commandEventsToUi, 0, numCommands );
 			if( numWritten != numCommands )
 			{
-				log.warn("Overflow in postProcess command write of " + instanceName );
-				log.debug("Queue readable is " + commandToUiQueue.getNumReadable() );
-				log.debug("Queue writeable is " + commandToUiQueue.getNumWriteable() );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Overflow in postProcess command write of " + instanceName );
+				}
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Queue readable is " + commandToUiQueue.getNumReadable() );
+					log.debug("Queue writeable is " + commandToUiQueue.getNumWriteable() );
+				}
 			}
 		}
 		final int numTemporals = tempQueueEntryStorage.numTemporalEventsToUi;
@@ -383,9 +389,15 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final int numWritten = temporalToUiQueue.write( tempQueueEntryStorage.temporalEventsToUi, 0, numTemporals );
 			if( numWritten != numTemporals )
 			{
-				log.warn("Overflow in postProcess command write of " + instanceName );
-				log.debug("Queue readable is " + temporalToUiQueue.getNumReadable() );
-				log.debug("Queue writeable is " + temporalToUiQueue.getNumWriteable() );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Overflow in postProcess command write of " + instanceName );
+				}
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Queue readable is " + temporalToUiQueue.getNumReadable() );
+					log.debug("Queue writeable is " + temporalToUiQueue.getNumWriteable() );
+				}
 			}
 		}
 

@@ -24,9 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
@@ -41,7 +38,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 {
 	private static final long serialVersionUID = -725580571613103896L;
 
-	private static Log log = LogFactory.getLog( SoundfilePlayerWaveOverviewUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( SoundfilePlayerWaveOverviewUiJComponent.class.getName() );
 
 	private final static int WAVE_OVERVIEW_INTRO_PIXELS = 5;
 	private final static int WAVE_OVERVIEW_BORDER_PIXELS = 3;

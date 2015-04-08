@@ -1,6 +1,8 @@
 package uk.co.modularaudio.service.libmpg123audiofileio;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,17 +38,17 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 
 	private AudioFileIORegistryService audioFileIORegistryService;
 
-	private static Set<AudioFileFormat> ENCODING_FORMATS = new HashSet<AudioFileFormat>();
-	private static Set<AudioFileFormat> DECODING_FORMATS = new HashSet<AudioFileFormat>();
+	private final static Set<AudioFileFormat> ENCODING_FORMATS = Collections.unmodifiableSet(
+			new HashSet<AudioFileFormat>( Arrays.asList( new AudioFileFormat[] {
+			} ) ) );
+	private final static Set<AudioFileFormat> DECODING_FORMATS = Collections.unmodifiableSet(
+			new HashSet<AudioFileFormat>( Arrays.asList( new AudioFileFormat[] {
+					AudioFileFormat.MP3
+			} ) ) );
 
 	public final static int SEEK_SET = 0;
 	public final static int SEEK_CUR = 1;
 	public final static int SEEK_END = 2;
-
-	static
-	{
-		DECODING_FORMATS.add( AudioFileFormat.MP3 );
-	}
 
 	public LibMpg123AudioFileIOService()
 	{
@@ -171,7 +173,10 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 				final int closeSuccess = libmpg123.mpg123_close( handle );
 				if( closeSuccess != mpg123_errors.MPG123_OK.swigValue() )
 				{
-					log.error("Failed during non-mp3 close: " + closeSuccess );
+					if( log.isErrorEnabled() )
+					{
+						log.error("Failed during non-mp3 close: " + closeSuccess );
+					}
 				}
 				libmpg123.mpg123_delete( handle );
 			}
@@ -185,7 +190,10 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 		final int closeSuccess = libmpg123.mpg123_close( handle );
 		if( closeSuccess != mpg123_errors.MPG123_OK.swigValue() )
 		{
-			log.error("Failed during handle close: " + closeSuccess );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Failed during handle close: " + closeSuccess );
+			}
 		}
 		libmpg123.mpg123_delete( handle );
 	}

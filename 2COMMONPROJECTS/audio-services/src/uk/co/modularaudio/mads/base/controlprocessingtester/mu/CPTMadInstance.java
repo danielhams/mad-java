@@ -180,7 +180,10 @@ public class CPTMadInstance extends MadInstance<CPTMadDefinition, CPTMadInstance
 	public void setInterpolatorByIndex( final int interpolatorIndex )
 	{
 		ampInterpolator = interpolators[interpolatorIndex];
-		log.debug("Changed to " + ampInterpolator.getClass().getSimpleName() );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Changed to " + ampInterpolator.getClass().getSimpleName() );
+		}
 	}
 
 	public void setChaseMillis( final float chaseMillis )

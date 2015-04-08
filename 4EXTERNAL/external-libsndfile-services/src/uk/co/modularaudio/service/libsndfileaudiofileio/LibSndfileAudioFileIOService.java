@@ -1,6 +1,8 @@
 package uk.co.modularaudio.service.libsndfileaudiofileio;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,20 +34,20 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 
 	private AudioFileIORegistryService audioFileIORegistryService;
 
-	private static Set<AudioFileFormat> ENCODING_FORMATS = new HashSet<AudioFileFormat>();
-	private static Set<AudioFileFormat> DECODING_FORMATS = new HashSet<AudioFileFormat>();
+	private final static Set<AudioFileFormat> ENCODING_FORMATS = Collections.unmodifiableSet(
+			new HashSet<AudioFileFormat>( Arrays.asList( new AudioFileFormat[] {
+			} ) ) );
+	private final static Set<AudioFileFormat> DECODING_FORMATS = Collections.unmodifiableSet(
+			new HashSet<AudioFileFormat>( Arrays.asList( new AudioFileFormat[] {
+					AudioFileFormat.WAV,
+					AudioFileFormat.OGG,
+					AudioFileFormat.FLAC,
+					AudioFileFormat.AIFF
+			} ) ) );
 
 	public final static int SEEK_SET = 0;
 	public final static int SEEK_CUR = 1;
 	public final static int SEEK_END = 2;
-
-	static
-	{
-		DECODING_FORMATS.add( AudioFileFormat.WAV );
-		DECODING_FORMATS.add( AudioFileFormat.OGG );
-		DECODING_FORMATS.add( AudioFileFormat.FLAC );
-		DECODING_FORMATS.add( AudioFileFormat.AIFF );
-	}
 
 	public LibSndfileAudioFileIOService()
 	{

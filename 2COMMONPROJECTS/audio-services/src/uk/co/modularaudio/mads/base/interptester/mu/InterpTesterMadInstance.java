@@ -283,7 +283,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		final float minValue = (smvc == null ? minModelValue : smvc.convertValue( minModelValue ) );
 		final float maxValue = (smvc == null ? maxModelValue : smvc.convertValue( maxModelValue ) );
 
-		log.trace("Resetting min max values to " + minValue + " " + maxValue );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Resetting min max values to " + minValue + " " + maxValue );
+		}
 
 		noneInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		liInterpolator.resetLowerUpperBounds( minValue, maxValue );

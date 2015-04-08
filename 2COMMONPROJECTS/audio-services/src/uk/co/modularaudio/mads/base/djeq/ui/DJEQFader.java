@@ -140,7 +140,10 @@ public class DJEQFader extends PacPanel
 			}
 			catch( final NumberFormatException nfe )
 			{
-				log.warn("Failed parsing DJEQFader value: " + value );
+				if( log.isWarnEnabled() )
+				{
+					log.warn("Failed parsing DJEQFader value: " + value );
+				}
 			}
 		}
 	}
