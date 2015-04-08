@@ -145,13 +145,13 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	}
 
 	@Override
-	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException
+	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		throw new DatastoreException("NI");
 	}
 
 	@Override
-	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException
+	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		if( log.isDebugEnabled() )
 		{
@@ -168,6 +168,10 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			final int format = sfInfo.getFormat();
 
 			final AudioFileFormat aff = decodeLibsndfileFormat( format );
+			if( aff == AudioFileFormat.UNKNOWN )
+			{
+				throw new UnsupportedAudioFileException("File format unsupported.");
+			}
 			final SampleBits sb = SampleBits.SAMPLE_FLOAT;
 			final DataRate dataRate = DataRate.fromFrequency( sfInfo.getSamplerate() );
 			final int numChannels = sfInfo.getChannels();

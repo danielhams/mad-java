@@ -213,13 +213,13 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 	}
 
 	@Override
-	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException
+	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		throw new DatastoreException("NI");
 	}
 
 	@Override
-	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException
+	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		if( log.isDebugEnabled() )
 		{
@@ -250,10 +250,6 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 
 			return atom;
 
-		}
-		catch( final UnsupportedAudioFileException e )
-		{
-			throw new DatastoreException( e );
 		}
 		catch( final UnknownDataRateException e )
 		{
