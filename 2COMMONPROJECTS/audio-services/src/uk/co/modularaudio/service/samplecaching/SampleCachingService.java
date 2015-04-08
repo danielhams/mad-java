@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.service.samplecaching;
 
+import java.io.IOException;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -29,8 +31,10 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public interface SampleCachingService
 {
-	SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException;
-	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException;
+	SampleCacheClient registerCacheClientForFile( String path )
+		throws DatastoreException, NoSuchHibernateSessionException, IOException, UnsupportedAudioFileException;
+	void unregisterCacheClientForFile( SampleCacheClient client )
+		throws DatastoreException, RecordNotFoundException;
 
 	RealtimeMethodReturnCodeEnum readSamplesForCacheClient( SampleCacheClient client, float[] outputSamples, int outputFramePos, int numFrames );
 

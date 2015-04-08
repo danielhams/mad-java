@@ -80,7 +80,8 @@ public interface AdvancedComponentsFrontController
 	 * for filling an internal library with metadata.</p>
 	 * @see SampleCachingService#registerCacheClientForFile(String)
 	 */
-	SampleCacheClient registerCacheClientForFile( String path ) throws DatastoreException, UnsupportedAudioFileException;
+	SampleCacheClient registerCacheClientForFile( String path )
+		throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	/**
 	 * <p>Register to receive a callback once the thread that fills the sample
@@ -96,7 +97,7 @@ public interface AdvancedComponentsFrontController
 	void unregisterCacheClientForFile( SampleCacheClient client ) throws DatastoreException, RecordNotFoundException, IOException;
 
 	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
-			throws DatastoreException, UnsupportedAudioFileException;
+			throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
 			final BlockResamplingMethod cubic );

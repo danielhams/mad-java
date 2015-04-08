@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.service.blockresampler;
 
+import java.io.IOException;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
@@ -30,8 +32,8 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public interface BlockResamplerService
 {
 	BlockResamplingClient createResamplingClient( String pathToFile, BlockResamplingMethod resamplingMethod )
-		throws DatastoreException, UnsupportedAudioFileException;
-			 
+		throws DatastoreException, IOException, UnsupportedAudioFileException;
+
 	BlockResamplingClient promoteSampleCacheClientToResamplingClient( SampleCacheClient sampleCacheClient,
 			BlockResamplingMethod cubic );
 

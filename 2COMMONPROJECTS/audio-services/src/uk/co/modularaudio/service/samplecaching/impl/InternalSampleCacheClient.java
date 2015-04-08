@@ -33,13 +33,16 @@ public class InternalSampleCacheClient implements SampleCacheClient
 
 	private int lastReadBlockNumber;
 
-	public InternalSampleCacheClient( final LibraryEntry libraryEntry, final long currentFramePosition, final long intendedFramePosition )
+	public InternalSampleCacheClient( final LibraryEntry libraryEntry,
+			final long currentFramePosition,
+			final long intendedFramePosition )
 	{
 		this.libraryEntry = libraryEntry;
 		this.currentFramePosition.set( currentFramePosition );
 		this.intendedFramePosition.set( intendedFramePosition );
 	}
 
+	@Override
 	public LibraryEntry getLibraryEntry()
 	{
 		return libraryEntry;

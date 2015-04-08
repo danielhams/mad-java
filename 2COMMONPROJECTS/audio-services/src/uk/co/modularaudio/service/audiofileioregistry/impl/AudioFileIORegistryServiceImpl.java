@@ -1,5 +1,6 @@
 package uk.co.modularaudio.service.audiofileioregistry.impl;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
@@ -177,5 +179,30 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	@Override
 	public void destroy()
 	{
+	}
+
+	@Override
+	public AudioFileHandleAtom openFileForRead( final String path )
+		throws DatastoreException, UnsupportedAudioFileException, IOException
+	{
+		AudioFileHandleAtom retVal = null;
+		for( final AudioFileIOService oneService : services )
+		{
+			try
+			{
+				retVal = oneService.openForRead( path );
+				break;
+			}
+			catch( final UnsupportedAudioFileException uafe )
+			{
+				log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
+						path );
+			}
+		}
+		if( retVal == null )
+		{
+			throw new UnsupportedAudioFileException("Could not determine type of file \"" + path + "\"");
+		}
+		return retVal;
 	}
 }

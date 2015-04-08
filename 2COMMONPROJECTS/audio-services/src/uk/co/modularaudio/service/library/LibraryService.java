@@ -20,10 +20,7 @@
 
 package uk.co.modularaudio.service.library;
 
-import java.io.File;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -32,8 +29,15 @@ import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 public interface LibraryService
 {
 	// CRUD on library entries
-	LibraryEntry addFileToLibrary( File fileForEntry )
-			throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException;
-	LibraryEntry findLibraryEntryByFile( File file )
-			throws RecordNotFoundException, NoSuchHibernateSessionException, DatastoreException;
+//	LibraryEntry addFileToLibrary( File fileForEntry )
+//			throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException;
+//	LibraryEntry findLibraryEntryByFile( File file )
+//			throws RecordNotFoundException, NoSuchHibernateSessionException, DatastoreException;
+
+	// Library entries using an already opening FileHandleAtom
+
+	LibraryEntry addAudioFileToLibrary( AudioFileHandleAtom audioFileHandle )
+		throws DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException;
+	LibraryEntry findLibraryEntryByAudioFile( AudioFileHandleAtom audioFileHandle )
+		throws DatastoreException, RecordNotFoundException, NoSuchHibernateSessionException;
 }

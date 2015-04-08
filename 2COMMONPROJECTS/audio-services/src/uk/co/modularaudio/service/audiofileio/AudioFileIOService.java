@@ -51,9 +51,9 @@ public interface AudioFileIOService
 
 	AudioFileFormat sniffFileFormatOfFile( String path ) throws DatastoreException, RecordNotFoundException, UnsupportedAudioFileException;
 
-	AudioFileHandleAtom openForWrite( String path ) throws DatastoreException,  IOException;
+	AudioFileHandleAtom openForWrite( String path ) throws DatastoreException,  IOException, UnsupportedAudioFileException;
 
-	AudioFileHandleAtom openForRead( String path ) throws DatastoreException, IOException;
+	AudioFileHandleAtom openForRead( String path ) throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	void closeHandle( AudioFileHandleAtom handle ) throws DatastoreException, IOException;
 

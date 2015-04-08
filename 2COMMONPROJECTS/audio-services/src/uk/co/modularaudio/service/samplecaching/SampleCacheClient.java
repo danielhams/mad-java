@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.service.samplecaching;
 
+import uk.co.modularaudio.service.library.LibraryEntry;
+
 public interface SampleCacheClient
 {
 	public void setCurrentFramePosition( long newFramePosition );
@@ -27,4 +29,6 @@ public interface SampleCacheClient
 	public long getTotalNumFrames();
 	public int getNumChannels();
 	public int getSampleRate();
+
+	public LibraryEntry getLibraryEntry();
 }

@@ -28,18 +28,12 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenLongObjectHashMap;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
-import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
-import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
-import uk.co.modularaudio.service.audiofileio.StaticMetadata;
-import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.library.CuePoint;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
@@ -59,7 +53,6 @@ public class SampleCache
 	private static Log log = LogFactory.getLog( SampleCache.class.getName() );
 
 	private final BlockBufferingConfiguration blockBufferingConfiguration;
-	private final AudioFileIORegistryService audioFileIORegistryService;
 
 	// Various maps for internal maintenance that go from
 	// Client -> SampleCacheEntry						(used when determining which blocks all clients need)
@@ -81,10 +74,8 @@ public class SampleCache
 	private final ArrayList<TwoTuple<BufferFillCompletionListener,SampleCacheClient>> listenersToNotifyOnNextCompletion =
 			new ArrayList<TwoTuple<BufferFillCompletionListener,SampleCacheClient>>();
 
-	public SampleCache( final AudioFileIORegistryService audioFileIORegistryService,
-			final BlockBufferingConfiguration blockBufferingConfiguration )
+	public SampleCache( final BlockBufferingConfiguration blockBufferingConfiguration )
 	{
-		this.audioFileIORegistryService = audioFileIORegistryService;
 		this.blockBufferingConfiguration = blockBufferingConfiguration;
 		temperatureBufferBlockMap = new TemperatureBufferBlockMap( blockBufferingConfiguration );
 	}
@@ -126,7 +117,8 @@ public class SampleCache
 		}
 	}
 
-	public void addClient( final InternalSampleCacheClient internalClient )
+	public void addClient( final InternalSampleCacheClient internalClient,
+			final AudioFileHandleAtom fileHandle )
 			throws DatastoreException, RecordNotFoundException, IOException
 	{
 		final LibraryEntry libraryEntry = internalClient.getLibraryEntry();
@@ -137,35 +129,25 @@ public class SampleCache
 
 			if( sce == null )
 			{
-				final String location = libraryEntry.getLocation();
-				final AudioFileFormat foundFormat = audioFileIORegistryService.sniffFileFormatOfFile( location );
-				final AudioFileIOService formatDecoderService =
-						audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( foundFormat,
-								AudioFileDirection.DECODE );
-				final AudioFileHandleAtom afha = formatDecoderService.openForRead( location );
-				final StaticMetadata sm = afha.getStaticMetadata();
 				final long numFloats = libraryEntry.getTotalNumFloats();
-				final long numFrames = libraryEntry.getTotalNumFrames();
-				assert numFrames == sm.numFrames;
+
 				final int numBlockDivisor = (int)(numFloats / blockBufferingConfiguration.blockLengthInFloats);
 				final int extraSamples = (int)(numFloats % blockBufferingConfiguration.blockLengthInFloats);
 				final int numCacheBlocks = numBlockDivisor + (extraSamples > 0 ? 1 : 0 );
-				sce = new SampleCacheEntry( libraryEntry, afha, numCacheBlocks );
+				sce = new SampleCacheEntry( libraryEntry, fileHandle, numCacheBlocks );
 				libraryEntryToSampleCacheEntryMap.put( libraryEntry.getLibraryEntryId(), sce );
+			}
+			else
+			{
+				// Already have a cache entry, don't need the audio file handle
+				final AudioFileIOService afis = fileHandle.getAudioFileIOService();
+				afis.closeHandle( fileHandle );
 			}
 
 			sce.addReference( internalClient );
 
 			currentSampleCacheEntries.add( sce );
 
-		}
-		catch( final UnsupportedAudioFileException uafe )
-		{
-			// We shouldn't be able to get here - the file format sniff should fail before they are allowed to add a client.
-			// In theory :-)
-			final String msg = "Unsupported audio file exception caught adding client to sample cache: " + uafe.toString();
-			log.error( msg, uafe );
-			throw new DatastoreException( msg, uafe );
 		}
 		finally
 		{

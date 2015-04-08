@@ -54,8 +54,8 @@ public interface SampleCachingController
 	 * @see SampleCachingService#registerCacheClientForFile(String)
 	 * @see LibraryService#addFileToLibrary(java.io.File)
 	 */
-	SampleCacheClient registerCacheClientForFile( String path ) throws NoSuchHibernateSessionException, DatastoreException,
-			UnsupportedAudioFileException;
+	SampleCacheClient registerCacheClientForFile( String path )
+		throws DatastoreException, NoSuchHibernateSessionException, IOException, UnsupportedAudioFileException;
 
 	/**
 	 * <p>Register to receive a callback once the thread that fills the sample
@@ -76,7 +76,7 @@ public interface SampleCachingController
 	 * @see BlockResamplerService#createResamplingClient(String, BlockResamplingMethod)
 	 */
 	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
-			throws DatastoreException, UnsupportedAudioFileException;
+			throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	/**
 	 * <p>Promote a regular sample caching client into one that can

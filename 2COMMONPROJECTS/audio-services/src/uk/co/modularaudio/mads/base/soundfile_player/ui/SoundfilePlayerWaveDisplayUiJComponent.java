@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -73,8 +72,6 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	private RollPainter<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer> rollPainter;
 
 	private BlockResamplingClient rss;
-
-	private final static Color CURRENT_POSITION_COLOUR = new Color( 0.4f, 0.2f, 0.2f );
 
 	public SoundfilePlayerWaveDisplayUiJComponent(
 			final SoundfilePlayerMadDefinition definition,
@@ -178,10 +175,10 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		}
 		else
 		{
-			g.setColor( Color.BLACK );
+			g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 			g.fillRect(0, 0, displayWidth, displayHeight );
 		}
-		g.setColor( CURRENT_POSITION_COLOUR );
+		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_CURRENT_POSITION_COLOUR );
 		g.drawLine( displayWidthMinusOneOverTwo,  0, displayWidthMinusOneOverTwo, displayHeight );
 	}
 

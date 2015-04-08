@@ -64,7 +64,7 @@ public class SingleSampleRuntime
 
 	public SingleSampleRuntime( final AdvancedComponentsFrontController advancedComponentsFrontController,
 			final String filename )
-			throws DatastoreException, UnsupportedAudioFileException
+			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 //		this.advancedComponentsFrontController = advancedComponentsFrontController;
 		this.blockResamplerService = advancedComponentsFrontController.getBlockResamplerService();

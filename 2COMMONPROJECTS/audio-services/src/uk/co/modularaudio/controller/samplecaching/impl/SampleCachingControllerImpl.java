@@ -69,8 +69,7 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 
 	@Override
 	public SampleCacheClient registerCacheClientForFile( final String path )
-			throws NoSuchHibernateSessionException, DatastoreException,
-			UnsupportedAudioFileException
+			throws DatastoreException, NoSuchHibernateSessionException, IOException, UnsupportedAudioFileException
 	{
 		return sampleCachingService.registerCacheClientForFile( path );
 	}
@@ -97,7 +96,7 @@ public class SampleCachingControllerImpl implements ComponentWithLifecycle, Samp
 
 	@Override
 	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
-			throws DatastoreException, UnsupportedAudioFileException
+			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		return blockResamplerService.createResamplingClient( pathToFile, resamplingMethod );
 	}

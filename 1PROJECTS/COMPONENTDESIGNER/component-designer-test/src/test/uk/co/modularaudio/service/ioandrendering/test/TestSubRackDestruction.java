@@ -37,16 +37,16 @@ public class TestSubRackDestruction
 {
 //	private static Log log = LogFactory.getLog( TestSubRackDestruction.class.getName() );
 
-	private ComponentDesigner componentDesigner = null;
-	private GenericApplicationContext applicationContext = null;
+	private final ComponentDesigner componentDesigner;
+	private GenericApplicationContext applicationContext;
 
-	private ComponentDesignerFrontController componentDesignerFrontController = null;
-//	private RenderingController renderingController = null;
-//	private UserPreferencesController userPreferencesController = null;
-//	private RackController rackController = null;
-	private RackService rackService = null;
-//	private GraphService graphService = null;
-	private MadComponentService componentService = null;
+	private ComponentDesignerFrontController componentDesignerFrontController;
+//	private RenderingController renderingController;
+//	private UserPreferencesController userPreferencesController;
+//	private RackController rackController;
+	private RackService rackService;
+//	private GraphService graphService;
+	private MadComponentService componentService;
 
 	public TestSubRackDestruction()
 	{
@@ -68,11 +68,11 @@ public class TestSubRackDestruction
 //		graphService = applicationContext.getBean( GraphService.class );
 		componentService = applicationContext.getBean( MadComponentService.class );
 
-		RackDataModel rootRack = rackService.createNewRackDataModel( "Root Rack", "", 16, 16, true );
+		final RackDataModel rootRack = rackService.createNewRackDataModel( "Root Rack", "", 16, 16, true );
 
-		MadDefinition<?,?> subRackDef = componentService.findDefinitionById( SubRackMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> subRackDef = componentService.findDefinitionById( SubRackMadDefinition.DEFINITION_ID );
 
-		FastMap<MadParameterDefinition,String> emptyParamValues = new FastMap<MadParameterDefinition,String>();
+		final FastMap<MadParameterDefinition,String> emptyParamValues = new FastMap<MadParameterDefinition,String>();
 
 		rackService.createComponent( rootRack, subRackDef, emptyParamValues, "Sub Rack" );
 
@@ -90,10 +90,10 @@ public class TestSubRackDestruction
 	/**
 	 * @param args
 	 */
-	public static void main( String[] args )
+	public static void main( final String[] args )
 		throws Exception
 	{
-		TestSubRackDestruction tester = new TestSubRackDestruction();
+		final TestSubRackDestruction tester = new TestSubRackDestruction();
 		tester.go();
 	}
 

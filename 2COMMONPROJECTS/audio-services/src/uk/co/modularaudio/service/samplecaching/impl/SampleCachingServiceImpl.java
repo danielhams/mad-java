@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.service.samplecaching.impl;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -28,6 +28,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
@@ -82,7 +83,7 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 				minSecsBeforePosition,
 				minSecsAfterPosition );
 
-		sampleCache = new SampleCache( audioFileIORegistryService, blockBufferingConfiguration );
+		sampleCache = new SampleCache( blockBufferingConfiguration );
 		sampleCache.init( enabled );
 	}
 
@@ -109,25 +110,26 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 
 	@Override
 	public SampleCacheClient registerCacheClientForFile( final String path )
-		throws NoSuchHibernateSessionException, DatastoreException, UnsupportedAudioFileException
+		throws NoSuchHibernateSessionException, DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		InternalSampleCacheClient internalClient = null;
+
+		final AudioFileHandleAtom afha = audioFileIORegistryService.openFileForRead( path );
 		try
 		{
 			// Find or add to library
-			final File sampleFile = new File( path );
 			LibraryEntry libraryEntry = null;
 			try
 			{
-				libraryEntry = libraryService.findLibraryEntryByFile( sampleFile );
+				libraryEntry = libraryService.findLibraryEntryByAudioFile( afha );
 			}
 			catch(final RecordNotFoundException rnfe )
 			{
-				libraryEntry = libraryService.addFileToLibrary( sampleFile );
+				libraryEntry = libraryService.addAudioFileToLibrary( afha );
 			}
 
 			internalClient = new InternalSampleCacheClient( libraryEntry, 0L, 0L );
-			sampleCache.addClient( internalClient );
+			sampleCache.addClient( internalClient, afha );
 		}
 		catch (final Exception e)
 		{

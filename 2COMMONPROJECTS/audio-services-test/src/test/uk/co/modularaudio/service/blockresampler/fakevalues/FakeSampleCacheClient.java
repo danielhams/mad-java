@@ -20,13 +20,14 @@
 
 package test.uk.co.modularaudio.service.blockresampler.fakevalues;
 
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 
 public class FakeSampleCacheClient implements SampleCacheClient
 {
 	private long currentFramePosition = 0;
 	private long intendedFramePosition = 0;
-	
+
 	public FakeSampleCacheClient()
 	{
 	}
@@ -37,13 +38,13 @@ public class FakeSampleCacheClient implements SampleCacheClient
 	}
 
 	@Override
-	public void setCurrentFramePosition(long newFramePosition)
+	public void setCurrentFramePosition(final long newFramePosition)
 	{
 		currentFramePosition = newFramePosition;
 	}
 
 	@Override
-	public void setIntendedFramePosition(long newIntendedPosition)
+	public void setIntendedFramePosition(final long newIntendedPosition)
 	{
 		intendedFramePosition = newIntendedPosition;
 	}
@@ -69,6 +70,12 @@ public class FakeSampleCacheClient implements SampleCacheClient
 	public int getSampleRate()
 	{
 		return 44100;
+	}
+
+	@Override
+	public LibraryEntry getLibraryEntry()
+	{
+		return null;
 	}
 
 }

@@ -118,7 +118,8 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile( final String path ) throws DatastoreException, UnsupportedAudioFileException
+	public SampleCacheClient registerCacheClientForFile( final String path )
+		throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		// Hibernate session needed so added to internal library
 		Session sessionResource = null;
@@ -204,7 +205,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 
 	@Override
 	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
-			throws DatastoreException, UnsupportedAudioFileException
+			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		// Hibernate session needed so added to internal library
 		Session sessionResource = null;

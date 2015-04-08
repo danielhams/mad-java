@@ -32,13 +32,13 @@ public class TestUsingIOAndRendering
 {
 	private static Log log = LogFactory.getLog( TestUsingIOAndRendering.class.getName() );
 
-	private ComponentDesigner componentDesigner = null;
-	private GenericApplicationContext applicationContext = null;
+	private final ComponentDesigner componentDesigner;
+	private GenericApplicationContext applicationContext;
 
-	private ComponentDesignerFrontController componentDesignerFrontController = null;
-//	private RenderingController renderingController = null;
-//	private UserPreferencesController userPreferencesController = null;
-//	private RackController rackController = null;
+	private ComponentDesignerFrontController componentDesignerFrontController;
+//	private RenderingController renderingController;
+//	private UserPreferencesController userPreferencesController;
+//	private RackController rackController;
 
 	public TestUsingIOAndRendering()
 	{
@@ -57,7 +57,7 @@ public class TestUsingIOAndRendering
 //		userPreferencesController = applicationContext.getBean( UserPreferencesController.class );
 //		rackController = applicationContext.getBean( RackController.class );
 
-		boolean testSuccess = componentDesignerFrontController.testUserPreferencesChanges();
+		final boolean testSuccess = componentDesignerFrontController.testUserPreferencesChanges();
 //		boolean testSuccess = true;
 
 		if( !testSuccess )
@@ -67,7 +67,7 @@ public class TestUsingIOAndRendering
 		else
 		{
 			componentDesignerFrontController.toggleRendering();
-			boolean audioEngineStarted = componentDesignerFrontController.startAudioEngine();
+			final boolean audioEngineStarted = componentDesignerFrontController.startAudioEngine();
 			if( audioEngineStarted )
 			{
 
@@ -75,7 +75,7 @@ public class TestUsingIOAndRendering
 				{
 					Thread.sleep( 10000 );
 				}
-				catch( InterruptedException ie )
+				catch( final InterruptedException ie )
 				{
 				}
 
@@ -91,10 +91,10 @@ public class TestUsingIOAndRendering
 	/**
 	 * @param args
 	 */
-	public static void main( String[] args )
+	public static void main( final String[] args )
 		throws Exception
 	{
-		TestUsingIOAndRendering tester = new TestUsingIOAndRendering();
+		final TestUsingIOAndRendering tester = new TestUsingIOAndRendering();
 		tester.go();
 	}
 

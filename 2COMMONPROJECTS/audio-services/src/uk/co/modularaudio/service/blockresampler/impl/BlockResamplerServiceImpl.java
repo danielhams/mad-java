@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.blockresampler.impl;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -648,7 +649,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 	@Override
 	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
-			throws DatastoreException, UnsupportedAudioFileException
+			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		SampleCacheClient scc;
 		try

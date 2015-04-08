@@ -1,9 +1,11 @@
 package uk.co.modularaudio.service.audiofileioregistry;
 
+import java.io.IOException;
 import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
@@ -23,4 +25,7 @@ public interface AudioFileIORegistryService
 		throws DatastoreException, RecordNotFoundException, UnsupportedAudioFileException;
 	Set<AudioFileFormat> listSupportedEncodingFormats();
 	Set<AudioFileFormat> listSupportedDecodingFormats();
+
+	AudioFileHandleAtom openFileForRead( String path )
+		throws DatastoreException, IOException, UnsupportedAudioFileException;
 }
