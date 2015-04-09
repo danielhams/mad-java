@@ -64,4 +64,31 @@ public class MoogFilter
 			out[i] = out4;
 		}
 	}
+
+	public void filter( final float[] cutoff, final int cutoffOffset,
+			final float[] res, final int resOffset,
+			final float[] in, final int inPos,
+			final float[] out, final int outPos,
+			final int length )
+	{
+		for( int i = 0 ; i < length ; ++i )
+		{
+			float input = in[ inPos + i ];
+			final float f = cutoff[ cutoffOffset + i ] * 1.16f;
+			final float oneMinusF = (1.0f - f);
+			final float f2 = f * f;
+			final float fb = res[ resOffset + i ] * (1.0f - 0.15f * f2 );
+			input = input - (out4 * fb);
+			input = input * 0.35013f * f2 * f2;
+			out1 = input + (0.3f * in1) + (oneMinusF * out1);
+			in1 = input;
+			out2 = out1 + (0.3f * in2) + (oneMinusF * out2);
+			in2  = out1;
+			out3 = out2 + (0.3f * in3) + (oneMinusF * out3);
+			in3 = out2;
+			out4 = out3 + (0.3f * in4) + (oneMinusF * out4);
+			in4 = out3;
+			out[ outPos + i ] = out4;
+		}
+	}
 }

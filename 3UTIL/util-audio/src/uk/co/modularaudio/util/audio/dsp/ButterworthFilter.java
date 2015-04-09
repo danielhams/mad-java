@@ -163,7 +163,8 @@ public class ButterworthFilter
 		}
 	}
 
-	public final void filterWithFreq( final float[] input, final int offset, final int length, final float[] freqs,
+	public final void filterWithFreq( final float[] input, final int offset, final int length,
+			final float[] freqs, final int freqsOffset,
 			final float bw, final FrequencyFilterMode mode, final float sr )
 	{
 		if( mode == FrequencyFilterMode.NONE )
@@ -173,11 +174,41 @@ public class ButterworthFilter
 
 		for (int i = 0; i < length; i++)
 		{
-			float freq = freqs[i];
+			float freq = freqs[ freqsOffset + i];
 			if (freq < 1.0f)
 			{
 				freq = 1.0f;
 			}
+			recompute( mode, sr, freq, bw );
+
+			w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
+			final float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
+
+			input[offset + i] = result;
+
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = w;
+		}
+	}
+
+	public final void filterWithFreqAndBw( final float[] input, final int offset, final int length,
+			final float[] freqs, final int freqsOffset,
+			final float[] bws, final int bwsOffset,
+			final FrequencyFilterMode mode, final float sr )
+	{
+		if( mode == FrequencyFilterMode.NONE )
+		{
+			return;
+		}
+
+		for (int i = 0; i < length; i++)
+		{
+			float freq = freqs[ freqsOffset + i];
+			if (freq < 1.0f)
+			{
+				freq = 1.0f;
+			}
+			final float bw = bws[ bwsOffset + i];
 			recompute( mode, sr, freq, bw );
 
 			w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];

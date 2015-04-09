@@ -23,43 +23,48 @@ package uk.co.modularaudio.mads.base.moogfilter.mu;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.MoogFilter;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,MoogFilterMadInstance>
 {
-//	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
+
+	public final static float CUTOFF_MIN = 0.0f;
+	public final static float CUTOFF_MAX = 1.0f;
+	public final static float Q_MIN = 0.1f;
+	public final static float Q_MAX = 4.0f;
+	public final static float Q_DEFAULT = 0.1f;
 
 	private int sampleRate = -1;
-	private static final int VALUE_CHASE_MILLIS = 1;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
+	private static final int CUTOFF_VALUE_CHASE_MILLIS = 20;
+	private static final int Q_VALUE_CHASE_MILLIS = 10;
 
-	public FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
-	public float desiredFrequency = 400.0f;
-	public float desiredQ = 1.0f;
-
-	protected float curFrequency = 400.0f;
-	protected float curQ = 1.0f;
+	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
+	private float desiredCutoff = 400.0f;
+	private float desiredQ = 1.0f;
 
 	protected MoogFilter leftFilter = new MoogFilter();
 	protected MoogFilter rightFilter = new MoogFilter();
 
-	private float[] tmpFreq;
-	private float[] tmpQ;
+	private final SpringAndDamperDoubleInterpolator cutoffSad = new SpringAndDamperDoubleInterpolator( CUTOFF_MIN, CUTOFF_MAX );
+	private final SpringAndDamperDoubleInterpolator qSad = new SpringAndDamperDoubleInterpolator( Q_MIN, Q_MAX );
 
 	public MoogFilterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -77,15 +82,14 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-
-			final int numFramesPerPeriod = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
-			tmpFreq = new float[ numFramesPerPeriod ];
-			tmpQ = new float[ numFramesPerPeriod ];
 
 			leftFilter.reset();
 			rightFilter.reset();
+
+			cutoffSad.reset( sampleRate, CUTOFF_VALUE_CHASE_MILLIS );
+			cutoffSad.hardSetValue( desiredCutoff );
+			qSad.reset( sampleRate, Q_VALUE_CHASE_MILLIS );
+			qSad.hardSetValue( desiredQ );
 		}
 		catch (final Exception e)
 		{
@@ -99,53 +103,60 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
+		final float[] tmpArray = tempQueueEntryStorage.temporaryFloatArray;
+
 		final boolean inLConnected = channelConnectedFlags.get( MoogFilterMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_LEFT ];
-		final float[] inLfloats = (inLConnected ? inLcb.floatBuffer : null );
+		final float[] inLfloats = inLcb.floatBuffer;
 		final boolean inRConnected = channelConnectedFlags.get( MoogFilterMadDefinition.CONSUMER_IN_RIGHT );
 		final MadChannelBuffer inRcb = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_RIGHT ];
-		final float[] inRfloats = (inRConnected ? inRcb.floatBuffer : null );
+		final float[] inRfloats = inRcb.floatBuffer;
 //		boolean inCvFreqConnected = channelConnectedFlags.get(  MoogFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
 //		MadChannelBuffer inFreq = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
 //		float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
 
 		final boolean outLConnected = channelConnectedFlags.get( MoogFilterMadDefinition.PRODUCER_OUT_LEFT );
 		final MadChannelBuffer outLcb = channelBuffers[ MoogFilterMadDefinition.PRODUCER_OUT_LEFT ];
-		final float[] outLfloats = (outLConnected ? outLcb.floatBuffer : null );
+		final float[] outLfloats = outLcb.floatBuffer;
 		final boolean outRConnected = channelConnectedFlags.get( MoogFilterMadDefinition.PRODUCER_OUT_RIGHT );
 		final MadChannelBuffer outRcb = channelBuffers[ MoogFilterMadDefinition.PRODUCER_OUT_RIGHT ];
-		final float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
+		final float[] outRfloats = outRcb.floatBuffer;
+
+		final int cutoffOffset = 0;
+		final int qOffset = numFrames;
 
 		if( inLConnected || inRConnected )
 		{
-			for( int s = 0 ; s < numFrames ; ++s )
-			{
-				curFrequency = (curFrequency * curValueRatio) + (desiredFrequency * newValueRatio);
-				curQ = (curQ * curValueRatio) + (desiredQ * newValueRatio);
-				tmpFreq[s] = curFrequency / (sampleRate /2.0f);
-				tmpQ[s] = curQ;
-			}
+			cutoffSad.generateControlValues( tmpArray, cutoffOffset, numFrames );
+			cutoffSad.checkForDenormal();
+			qSad.generateControlValues( tmpArray, qOffset, numFrames );
+			qSad.checkForDenormal();
 		}
 
-		if( !inLConnected && outLConnected )
+		if( outLConnected )
 		{
-			Arrays.fill( outLfloats, 0.0f );
-		}
-		else if( inLConnected && outLConnected )
-		{
-			if( desiredFilterMode != FrequencyFilterMode.NONE )
+			if( !inLConnected )
 			{
-				leftFilter.filter( tmpFreq, tmpQ, inLfloats, 0, outLfloats, 0, numFrames);
+				Arrays.fill( outLfloats, 0.0f );
 			}
 			else
 			{
-				System.arraycopy(inLfloats, 0, outLfloats, 0, numFrames);
+				if( desiredFilterMode == FrequencyFilterMode.NONE )
+				{
+					System.arraycopy(inLfloats, frameOffset, outLfloats, frameOffset, numFrames);
+				}
+				else
+				{
+					leftFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inLfloats, frameOffset, outLfloats, frameOffset, numFrames);
+				}
 			}
 		}
 
@@ -155,24 +166,39 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		}
 		else if( inRConnected && outRConnected )
 		{
-			if( desiredFilterMode != FrequencyFilterMode.NONE )
+			if( desiredFilterMode == FrequencyFilterMode.NONE )
 			{
-				rightFilter.filter( tmpFreq, tmpQ, inRfloats, 0, outRfloats, 0, numFrames);
+				System.arraycopy(inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
 			}
 			else
 			{
-				System.arraycopy(inRfloats, 0, outRfloats, 0, numFrames);
+				rightFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
 			}
 		}
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	protected void recomputeFilterParameters()
+	public void setDesiredFilterMode( final FrequencyFilterMode mode )
 	{
-		if( desiredFilterMode != FrequencyFilterMode.NONE )
+		this.desiredFilterMode = mode;
+	}
+
+	public void setDesiredCutoff( final float cutoff )
+	{
+		this.desiredCutoff = cutoff;
+		if( desiredCutoff < CUTOFF_MIN )
 		{
-//			leftFilterRt.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
-//			rightFilterRt.recompute(sampleRate, desiredFilterMode, desiredFrequency, desiredQ);
+			desiredCutoff = CUTOFF_MIN;
 		}
+		cutoffSad.notifyOfNewValue( desiredCutoff );
+//		log.debug("Setting desired cutoff to " + desiredCutoff );
+	}
+
+	public void setDesiredQ( final float Q )
+	{
+		this.desiredQ = Q;
+		qSad.notifyOfNewValue( Q );
+//		log.debug("Setting desired Q to " + Q );
 	}
 }

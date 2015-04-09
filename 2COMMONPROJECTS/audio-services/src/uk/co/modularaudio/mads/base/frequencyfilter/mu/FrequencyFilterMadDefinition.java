@@ -39,9 +39,7 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 	public final static int CONSUMER_IN_CV_FREQUENCY = 2;
 	public final static int PRODUCER_OUT_LEFT = 3;
 	public final static int PRODUCER_OUT_RIGHT = 4;
-	public final static int PRODUCER_COMPLEMENT_LEFT = 5;
-	public final static int PRODUCER_COMPLEMENT_RIGHT = 6;
-	public final static int NUM_CHANNELS = 7;
+	public final static int NUM_CHANNELS = 5;
 
 	public static final String DEFINITION_ID = "frequency_filter";
 
@@ -56,15 +54,11 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		"Input Wave Right",
 		"Input CV Frequency",
 		"Output Wave Left",
-		"Output Wave Right",
-		"Complement Wave Left",
-		"Complement Wave Right" };
+		"Output Wave Right"};
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
-		MadChannelType.AUDIO,
-		MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
 
@@ -72,20 +66,16 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
 	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
 		MadChannelPosition.MONO,
 		MadChannelPosition.STEREO_LEFT,
-		MadChannelPosition.STEREO_RIGHT,
-		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
-	public FrequencyFilterMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public FrequencyFilterMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,
 				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),

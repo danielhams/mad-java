@@ -195,4 +195,73 @@ public class ButterworthFilter24DB
 			feedbackDelaySamples[3] = 0.0f;
 		}
 	}
+
+	public final void filterWithFreqAndBw( final float[] input, final int offset, final int length,
+			final float[] freqs, final int freqsOffset,
+			final float[] bws, final int bwsOffset,
+			final FrequencyFilterMode mode, final float sr )
+	{
+		if( mode == FrequencyFilterMode.NONE )
+		{
+			return;
+		}
+
+		for (int i = 0; i < length; i++)
+		{
+			float freq = freqs[ freqsOffset + i];
+			if (freq < 1.0f)
+			{
+				freq = 1.0f;
+			}
+			final float bw = bws[ bwsOffset + i];
+			recompute( mode, sr, freq, bw );
+
+			final float w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
+			float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
+			if( result < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+					result > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			{
+				result = 0.0f;
+			}
+
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = w;
+
+			// And second pass (for 24 db)
+			final float we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
+			float resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
+			if( resulte < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+					resulte > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			{
+				resulte = 0.0f;
+			}
+
+			feedbackDelaySamples[3] = feedbackDelaySamples[2];
+			feedbackDelaySamples[2] = we;
+
+			input[offset + i] = resulte;
+		}
+
+		if( feedbackDelaySamples[0] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[0] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			feedbackDelaySamples[0] = 0.0f;
+		}
+		if( feedbackDelaySamples[1] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[1] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			feedbackDelaySamples[1] = 0.0f;
+		}
+		if( feedbackDelaySamples[2] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[2] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			feedbackDelaySamples[2] = 0.0f;
+		}
+		if( feedbackDelaySamples[3] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[3] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		{
+			feedbackDelaySamples[3] = 0.0f;
+		}
+	}
+
 }

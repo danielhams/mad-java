@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Frequency Filter 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Frequency Filter 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Frequency Filter 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Frequency Filter 1" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Frequency Filter 1" definitionId="frequency_filter">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Filter Type" value="None"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
+        <rackControl name="Knee" value="1220.14"/>
+        <rackControl name="Bandwidth" value="5537.69"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 3" definitionId="spectral_roll">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="4096"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Frequency Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Frequency Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 3" consumerChannelName="Input Wave"/>
+</rack>

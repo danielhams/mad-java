@@ -54,7 +54,7 @@ public class FrequencyFilterIOQueueBridge extends MadLocklessQueueBridge<Frequen
 				// float
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
-				instance.desiredFilterMode = FrequencyFilterMode.values()[ truncVal ];
+				instance.setDesiredFilterMode( FrequencyFilterMode.values()[ truncVal ] );
 				break;
 			}
 			case COMMAND_FREQUENCY:
@@ -63,7 +63,7 @@ public class FrequencyFilterIOQueueBridge extends MadLocklessQueueBridge<Frequen
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float floatVal = Float.intBitsToFloat( truncVal );
-				instance.desiredFrequency = floatVal;
+				instance.setDesiredFrequency( floatVal );
 				break;
 			}
 			case COMMAND_BANDWIDTH:
@@ -72,7 +72,7 @@ public class FrequencyFilterIOQueueBridge extends MadLocklessQueueBridge<Frequen
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float floatVal = Float.intBitsToFloat( truncVal );
-				instance.desiredBandwidth = floatVal;
+				instance.setDesiredBandwidth( floatVal );
 				break;
 			}
 			case COMMAND_DBTOGGLE:
@@ -80,7 +80,7 @@ public class FrequencyFilterIOQueueBridge extends MadLocklessQueueBridge<Frequen
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final boolean bVal = ( truncVal == 0 ? false : true );
-				instance.desired24dB = bVal;
+				instance.setDesired24dB( bVal );
 				break;
 			}
 			default:

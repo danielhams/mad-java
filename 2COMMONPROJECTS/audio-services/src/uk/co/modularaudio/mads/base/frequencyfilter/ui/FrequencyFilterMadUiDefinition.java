@@ -43,9 +43,7 @@ public class FrequencyFilterMadUiDefinition
 		FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT,
 		FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
 		FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT,
-		FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT,
-		FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_LEFT,
-		FrequencyFilterMadDefinition.PRODUCER_COMPLEMENT_RIGHT
+		FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
@@ -53,9 +51,7 @@ public class FrequencyFilterMadUiDefinition
 		new Point( 220, 60 ),
 		new Point( 250, 60 ),
 		new Point( 200, 100 ),
-		new Point( 220, 100 ),
-		new Point( 240, 100 ),
-		new Point( 260, 100 )
+		new Point( 220, 100 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
