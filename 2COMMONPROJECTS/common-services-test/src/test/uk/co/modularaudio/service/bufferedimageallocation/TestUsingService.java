@@ -37,8 +37,8 @@ public class TestUsingService extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestUsingService.class.getName() );
 
-	private ConfigurationServiceImpl configurationService = null;
-	private BufferedImageAllocationServiceImpl bufferedImageAllocationService = null;
+	private ConfigurationServiceImpl configurationService;
+	private BufferedImageAllocationServiceImpl bufferedImageAllocationService;
 
 	@Override
 	protected void setUp() throws Exception
@@ -119,66 +119,4 @@ public class TestUsingService extends TestCase
 		}
 
 	}
-
-//	public void testAllocatingOne() throws Exception
-//	{
-//		log.debug("Will attempt to allocate nice large image.");
-//
-//		AllocationMatch allocationMatchToUse = new AllocationMatch();
-//		TiledBufferedImage eightByThreeImage = bufferedImageAllocationService.allocateBufferedImage( "TUS",
-//				allocationMatchToUse,
-//				AllocationLifetime.LONG,
-//				AllocationBufferType.TYPE_INT_ARGB,
-//				800,
-//				300 );
-//
-//		log.debug("After 800x300 alloc");
-//
-//		TiledBufferedImage threeByEightImage = bufferedImageAllocationService.allocateBufferedImage( "TUS",
-//				allocationMatchToUse,
-//				AllocationLifetime.LONG,
-//				AllocationBufferType.TYPE_INT_ARGB,
-//				300,
-//				800 );
-//
-//		log.debug("After 300x800 alloc");
-//
-//		TiledBufferedImage halfImage = bufferedImageAllocationService.allocateBufferedImage( "TUS",
-//				allocationMatchToUse,
-//				AllocationLifetime.LONG,
-//				AllocationBufferType.TYPE_INT_ARGB,
-//				1024,
-//				2048 );
-//
-//		log.debug("After 1024x2048 alloc");
-//
-//		TiledBufferedImage twoFourEightImage = bufferedImageAllocationService.allocateBufferedImage( "TUS",
-//				allocationMatchToUse,
-//				AllocationLifetime.LONG,
-//				AllocationBufferType.TYPE_INT_ARGB,
-//				2048,
-//				2048 );
-//
-//		log.debug("After 2048x2048 alloc");
-//
-//		TiledBufferedImage fourNineSixImage = bufferedImageAllocationService.allocateBufferedImage( "TUS",
-//				allocationMatchToUse,
-//				AllocationLifetime.SHORT,
-//				AllocationBufferType.TYPE_INT_ARGB,
-//				4096,
-//				4096 );
-//
-//		log.debug("After 4096x4096 alloc");
-//
-//		StringStreamUtils.readStringBlock( System.in );
-//
-//		bufferedImageAllocationService.freeBufferedImage( fourNineSixImage );
-//		bufferedImageAllocationService.freeBufferedImage( twoFourEightImage );
-//		bufferedImageAllocationService.freeBufferedImage( halfImage );
-//		bufferedImageAllocationService.freeBufferedImage( threeByEightImage );
-//		bufferedImageAllocationService.freeBufferedImage( eightByThreeImage );
-//
-//		StringStreamUtils.readStringBlock( System.in );
-//	}
-
 }

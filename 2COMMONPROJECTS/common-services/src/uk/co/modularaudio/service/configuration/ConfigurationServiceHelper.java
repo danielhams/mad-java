@@ -21,7 +21,6 @@
 package uk.co.modularaudio.service.configuration;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -81,7 +80,8 @@ public final class ConfigurationServiceHelper
 	}
 
 	public static long checkForLongKey( final ConfigurationService configurationService,
-			final String key, final HashMap<String, String> errors)
+			final String key,
+			final Map<String, String> errors)
 	{
 		try
 		{

@@ -39,6 +39,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -69,10 +70,21 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	private OscillatorFactory oscillatorFactory;
 	private BlockResamplerService blockResamplerService;
 	private SampleCachingService sampleCachingService;
+	private JobExecutorService jobExecutorService;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( configurationService == null ||
+				hibernateSessionController == null ||
+				sampleCachingController == null ||
+				blockResamplerService == null ||
+				sampleCachingService == null ||
+				jobExecutorService == null )
+		{
+			throw new ComponentConfigurationException( "Controller missing dependencies. Check configuration" );
+		}
+
 		// Now fetch our music root
 		// Grab the music root from the config file
 		final Map<String,String> errors = new HashMap<String,String>();
@@ -115,6 +127,16 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public void setSampleCachingService(final SampleCachingService sampleCachingService)
 	{
 		this.sampleCachingService = sampleCachingService;
+	}
+
+	public void setConfigurationService( final ConfigurationService configurationService )
+	{
+		this.configurationService = configurationService;
+	}
+
+	public void setJobExecutorService( final JobExecutorService jobExecutorService )
+	{
+		this.jobExecutorService = jobExecutorService;
 	}
 
 	@Override
@@ -178,11 +200,6 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public String getSampleSelectionMusicRoot()
 	{
 		return samplePlayerSelectionRoot;
-	}
-
-	public void setConfigurationService( final ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
 	}
 
 	@Override

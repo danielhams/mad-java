@@ -19,6 +19,7 @@
         <property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
         <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
+        <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
 	</bean>
 	<bean id="guiController" class="uk.co.modularaudio.componentdesigner.controller.gui.impl.GuiControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiService"><ref bean="guiService"></ref></property>
@@ -150,7 +151,7 @@
 	</bean>
 	<bean id="jnaJackAudioProvider" class="uk.co.modularaudio.service.jnajackaudioprovider.JNAJackAudioProvider" init-method="init" destroy-method="destroy">
 		<property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService"></ref></property>
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="timingService"><ref bean="timingService"></ref></property>
 		<property name="appRenderingService"><ref bean="appRenderingService"></ref></property>
 	</bean>
@@ -158,8 +159,8 @@
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="audioProviderRegistryService"><ref bean="audioProviderRegistryService"></ref></property>
 	</bean>
-	<bean id="classificationService" class="uk.co.modularaudio.service.madclassification.impl.MadClassificationServiceImpl" init-method="init" destroy-method="destroy">
-	</bean>
+    <bean id="classificationService" class="uk.co.modularaudio.service.madclassification.impl.MadClassificationServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
 	<bean id="bufferedImageAllocationService" class="uk.co.modularaudio.service.bufferedimageallocation.impl.BufferedImageAllocationServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
@@ -177,4 +178,7 @@
 	<bean id="hibernateSessionController" class="uk.co.modularaudio.controller.hibsession.impl.HibernateSessionControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"/></property>
 	</bean>
+    <bean id="jobExecutorService" class="uk.co.modularaudio.service.jobexecutor.impl.JobExecutorServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+    </bean>
 </beans>
