@@ -27,6 +27,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -84,6 +85,11 @@ public interface AdvancedComponentsFrontController
 		throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	/**
+	 * <p>Get the thread pool used for executing background jobs.</p>
+	 */
+	JobExecutorService getJobExecutorService();
+
+	/**
 	 * <p>Register to receive a callback once the thread that fills the sample
 	 * cache has completed the initial population pass.</p>
 	 * @see SampleCachingService#registerForBufferFillCompletion(SampleCacheClient, BufferFillCompletionListener)
@@ -104,4 +110,5 @@ public interface AdvancedComponentsFrontController
 
 	void destroyResamplingClient( final BlockResamplingClient resamplingClient )
 			throws DatastoreException, RecordNotFoundException;
+
 }

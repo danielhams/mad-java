@@ -30,6 +30,7 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.dsp.DcTrapFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -73,6 +74,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final BlockResamplerService blockResamplerService;
 	private final SampleCachingService sampleCachingService;
+	private final JobExecutorService jobExecutorService;
 
 	private BlockResamplingClient resampledSample = null;
 
@@ -96,6 +98,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		advancedComponentsFrontController = creationContext.getAdvancedComponentsFrontController();
 		blockResamplerService = advancedComponentsFrontController.getBlockResamplerService();
 		sampleCachingService = advancedComponentsFrontController.getSampleCachingService();
+		jobExecutorService = advancedComponentsFrontController.getJobExecutorService();
 
 		leftDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
 		rightDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
@@ -316,5 +319,10 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	protected void addJobForSampleCachingService()
 	{
 		sampleCachingService.addJobToCachePopulationThread();
+	}
+
+	public JobExecutorService getJobExecutorService()
+	{
+		return jobExecutorService;
 	}
 }

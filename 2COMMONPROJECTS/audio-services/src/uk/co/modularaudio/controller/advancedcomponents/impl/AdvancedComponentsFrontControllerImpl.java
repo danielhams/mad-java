@@ -221,6 +221,12 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
+	public JobExecutorService getJobExecutorService()
+	{
+		return jobExecutorService;
+	}
+
+	@Override
 	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
 			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{

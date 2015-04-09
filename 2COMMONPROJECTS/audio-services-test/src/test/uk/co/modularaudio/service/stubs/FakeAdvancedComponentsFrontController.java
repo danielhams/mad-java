@@ -28,6 +28,7 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -114,5 +115,11 @@ public class FakeAdvancedComponentsFrontController
 			final BufferFillCompletionListener completionListener )
 	{
 		completionListener.notifyBufferFilled( client );
+	}
+
+	@Override
+	public JobExecutorService getJobExecutorService()
+	{
+		return null;
 	}
 }

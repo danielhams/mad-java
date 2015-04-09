@@ -80,7 +80,7 @@ public class JobExecutorServiceImpl implements JobExecutorService, ComponentWith
 
 		if( !firstThreadStarted )
 		{
-			tpe.shutdown();;
+			tpe.shutdown();
 
 			final String msg = "Failed to prestart initial thread";
 			log.error( msg );

@@ -30,9 +30,11 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerIOQueueBridge;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.LoadNewSoundFileRunnable;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.SoundFileLoadCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
-import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
@@ -47,11 +49,12 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 public class SoundfilePlayerMadUiInstance extends
 		AbstractNoNameChangeNonConfigurableMadUiInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance> implements
 		IOQueueEventUiConsumer<SoundfilePlayerMadInstance>,
-		BufferFillCompletionListener
+		SoundFileLoadCompletionListener
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerMadUiInstance.class.getName() );
 
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
+	private final JobExecutorService jobExecutorService;
 	private final String musicRoot;
 
 	private final ArrayList<SoundfileSampleEventListener> sampleEventListeners = new ArrayList<SoundfileSampleEventListener>();
@@ -71,6 +74,7 @@ public class SoundfilePlayerMadUiInstance extends
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 
 		advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
+		jobExecutorService = instance.getJobExecutorService();
 
 		musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
 	}
@@ -169,18 +173,10 @@ public class SoundfilePlayerMadUiInstance extends
 
 	public void setFileInfo( final String filename )
 	{
-		try
-		{
-			final SampleCacheClient sampleCacheClient = advancedComponentsFrontController.registerCacheClientForFile( filename );
-			log.debug("Registering for buffer fill completion");
-			advancedComponentsFrontController.registerForBufferFillCompletion( sampleCacheClient, this );
-		}
-		catch ( final Exception e )
-		{
-			final String msg = "Exception caught attempting to create sample cache client for file " + filename +
-					": " + e.toString();
-			log.error( msg, e );
-		}
+		final LoadNewSoundFileRunnable loadRunnable = new LoadNewSoundFileRunnable( advancedComponentsFrontController,
+				filename,
+				this );
+		jobExecutorService.submitJob( loadRunnable );
 	}
 
 	public void sendActive( final boolean active )
@@ -267,6 +263,12 @@ public class SoundfilePlayerMadUiInstance extends
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );
 
+	}
+
+	@Override
+	public void notifyLoadFailure()
+	{
+		log.debug("Received notification that the file load failed");
 	}
 
 	public void addLifecycleListener( final InstanceLifecycleListener ll )
