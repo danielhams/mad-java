@@ -60,6 +60,8 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	private float desiredBandwidth = BW_DEFAULT_VAL;
 	private boolean desired24dB = false;
 
+	private boolean was24dB = false;
+
 	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator(
 			FREQ_MIN_VAL, FREQ_MAX_VAL );
 	private final SpringAndDamperDoubleInterpolator bwSad = new SpringAndDamperDoubleInterpolator( BW_MIN_VAL, BW_MAX_VAL );
@@ -90,6 +92,8 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 		leftChannelButterworth.clear();
 		leftChannel24db.clear();
+		rightChannelButterworth.clear();
+		rightChannel24db.clear();
 	}
 
 	@Override
@@ -134,6 +138,15 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			freqSad.checkForDenormal();
 			bwSad.generateControlValues( tmpBuffer, bwOffset, numFrames );
 			bwSad.checkForDenormal();
+		}
+
+		if( desired24dB != was24dB )
+		{
+			leftChannel24db.clear();
+			rightChannel24db.clear();
+			leftChannelButterworth.clear();
+			rightChannelButterworth.clear();
+			was24dB = desired24dB;
 		}
 
 		if( !inLConnected )

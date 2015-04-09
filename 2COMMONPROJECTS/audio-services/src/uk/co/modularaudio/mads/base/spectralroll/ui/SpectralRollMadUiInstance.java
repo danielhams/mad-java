@@ -89,6 +89,8 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
 		dataRate = ratesAndLatency.getAudioChannelSetting().getDataRate();
 		initialiseBuffers();
+
+		peakAmpAccumulator.reset();
 	}
 
 	private void initialiseBuffers()

@@ -23,9 +23,6 @@ package uk.co.modularaudio.mads.base.moogfilter.mu;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
@@ -44,7 +41,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,MoogFilterMadInstance>
 {
-	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
 	public final static float CUTOFF_MIN = 0.0f;
 	public final static float CUTOFF_MAX = 1.0f;
