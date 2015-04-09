@@ -35,8 +35,11 @@ import uk.co.modularaudio.mads.subrack.jpanel.PatchTabCloseListener;
 import uk.co.modularaudio.mads.subrack.jpanel.SubRackPatchPanel;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
+import uk.co.modularaudio.mads.subrack.ui.runnable.LoadNewSubrackRunnable;
+import uk.co.modularaudio.mads.subrack.ui.runnable.SubrackLoadCompletionListener;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
@@ -53,22 +56,24 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.table.Span;
 
 public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefinition, SubRackMadInstance>
+	implements SubrackLoadCompletionListener
 {
 	private static Log log = LogFactory.getLog( SubRackMadUiInstance.class.getName() );
 
-	private SubRackMadUiDefinition srUiDefinition = null;
+	private SubRackMadUiDefinition srUiDefinition;
 
-	private boolean havePassedNoshowTick = false;
+	private boolean havePassedNoshowTick;
 
-	private RackService rackService = null;
-	private GuiService guiService = null;
-	private RackMarshallingService rackMarshallingService = null;
-	private RackDataModel subRackDataModel = null;
+	private final RackService rackService;
+	private final GuiService guiService;
+	private final RackMarshallingService rackMarshallingService;
+	private final JobExecutorService jobExecutorService;
+	private RackDataModel subRackDataModel;
 
-	private RackModelRenderingComponent guiRackPanel = null;
-	private SubRackPatchPanel patchPanel = null;
+	private RackModelRenderingComponent guiRackPanel;
+	private SubRackPatchPanel patchPanel;
 
-	private String currentPatchDir = null;
+	private String currentPatchDir;
 
 	private final HashSet<PatchTabCloseListener> patchTabCloseListeners = new HashSet<PatchTabCloseListener>();
 
@@ -80,6 +85,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		this.rackService = instance.rackService;
 		this.guiService = instance.guiService;
 		this.rackMarshallingService = instance.rackMarshallingService;
+		this.jobExecutorService = instance.jobExecutorService;
 
 		this.currentPatchDir = instance.currentPatchDir;
 
@@ -234,17 +240,9 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 			currentPatchDir = d.getAbsolutePath();
 			if( f != null )
 			{
-				final RackDataModel oldPatch = subRackDataModel;
-				if( log.isDebugEnabled() )
-				{
-					log.debug("Attempting to load patch from file " + f.getAbsolutePath() );
-				}
-				subRackDataModel = rackMarshallingService.loadRackFromFile( f.getAbsolutePath() );
-				patchPanel.setRackDataModel( subRackDataModel );
-				instance.setSubRackDataModel( subRackDataModel, false );
+				final Runnable r = new LoadNewSubrackRunnable( rackMarshallingService, f.getAbsolutePath(), this );
 
-				// And destroy the old one
-				rackService.destroyRackDataModel( oldPatch );
+				jobExecutorService.submitJob( r );
 			}
 		}
 	}
@@ -303,5 +301,37 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 	public RackService getRackService()
 	{
 		return rackService;
+	}
+
+	@Override
+	public void notifyLoadCompleted( final RackDataModel newRackDataModel )
+	{
+		final RackDataModel oldPatch = subRackDataModel;
+		try
+		{
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Rack load completed - replacing existing model with new one" );
+			}
+			subRackDataModel = newRackDataModel;
+			patchPanel.setRackDataModel( subRackDataModel );
+			instance.setSubRackDataModel( subRackDataModel, false );
+
+			// And destroy the old one
+			rackService.destroyRackDataModel( oldPatch );
+		}
+		catch( final DatastoreException | MAConstraintViolationException | RecordNotFoundException e )
+		{
+			final String msg = "An exception was thrown updating to the new rack data model: " + e.toString();
+			log.error( msg, e );
+
+			subRackDataModel = oldPatch;
+		}
+	}
+
+	@Override
+	public void notifyLoadFailure()
+	{
+		log.error( "Received notification that the rack load failed" );
 	}
 }

@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.subrack.SubRackCreationContext;
 import uk.co.modularaudio.service.gui.GuiService;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
@@ -61,6 +62,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	public final MadGraphService graphService;
 	public final RackMarshallingService rackMarshallingService;
 	public final GuiService guiService;
+	public final JobExecutorService jobExecutorService;
 	public final String currentPatchDir;
 
 	private RackDataModel subRackDataModel;
@@ -79,6 +81,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		this.graphService = creationContext.getGraphService();
 		this.rackMarshallingService = creationContext.getRackMarshallingService();
 		this.guiService = creationContext.getGuiService();
+		this.jobExecutorService = creationContext.getJobExecutorService();
 		this.currentPatchDir = creationContext.getCurrentPatchDir();
 
 		subRackDataModel = rackService.createNewSubRackDataModel( instanceName,
@@ -128,7 +131,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		log.error( "Subracks should never be scheduled!" );
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;

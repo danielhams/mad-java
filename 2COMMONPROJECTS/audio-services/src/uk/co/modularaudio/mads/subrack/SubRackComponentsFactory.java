@@ -28,6 +28,7 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiService;
+import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
@@ -39,23 +40,24 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 
 public class SubRackComponentsFactory extends AbstractMadComponentFactory
 {
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
+	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
 			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
-	
-	private final static String CLASS_SIMPLE_NAME = SubRackComponentsFactory.class.getSimpleName();
-	
-	private static final String CONFIG_KEY_DEFAULT_PATCH_DIR = CLASS_SIMPLE_NAME + ".DefaultPatchDir";
-	
-	private ConfigurationService configurationService = null;
 
-	private SubRackCreationContext creationContext = null;
-	
-	private MadGraphService graphService = null;
-	private RackService rackService = null;
-	private RackMarshallingService rackMarshallingService = null;
-	private GuiService guiService = null;
-	private String defaultPatchDir = null;
-	
+	private final static String CLASS_SIMPLE_NAME = SubRackComponentsFactory.class.getSimpleName();
+
+	private static final String CONFIG_KEY_DEFAULT_PATCH_DIR = CLASS_SIMPLE_NAME + ".DefaultPatchDir";
+
+	private ConfigurationService configurationService;
+
+	private SubRackCreationContext creationContext;
+
+	private MadGraphService graphService;
+	private RackService rackService;
+	private RackMarshallingService rackMarshallingService;
+	private GuiService guiService;
+	private JobExecutorService jobExecutorService;
+	private String defaultPatchDir;
+
 	public SubRackComponentsFactory()
 	{
 		defClassToInsClassMap.put( SubRackMadDefinition.class, SubRackMadInstance.class );
@@ -77,8 +79,18 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( configurationService == null ||
+				graphService == null ||
+				rackService == null ||
+				rackMarshallingService == null ||
+				guiService == null ||
+				jobExecutorService == null )
+		{
+			throw new ComponentConfigurationException( "Factory missing dependencies. Check configuration" );
+		}
+
 		// Grab the music root from the config file
-		Map<String, String> errors = new HashMap<String, String>();
+		final Map<String, String> errors = new HashMap<String, String>();
 		defaultPatchDir = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_DEFAULT_PATCH_DIR, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
 
@@ -86,34 +98,40 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 				graphService,
 				rackMarshallingService,
 				guiService,
+				jobExecutorService,
 				defaultPatchDir );
 
 		super.init();
 	}
 
-	public void setConfigurationService( ConfigurationService configurationService )
+	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
 	}
 
-	public void setGraphService( MadGraphService graphService )
+	public void setGraphService( final MadGraphService graphService )
 	{
 		this.graphService = graphService;
 	}
 
-	public void setRackService( RackService rackService )
+	public void setRackService( final RackService rackService )
 	{
 		this.rackService = rackService;
 	}
 
 	public void setRackMarshallingService(
-			RackMarshallingService rackMarshallingService )
+			final RackMarshallingService rackMarshallingService )
 	{
 		this.rackMarshallingService = rackMarshallingService;
 	}
 
-	public void setGuiService( GuiService guiService )
+	public void setGuiService( final GuiService guiService )
 	{
 		this.guiService = guiService;
+	}
+
+	public void setJobExecutorService( final JobExecutorService jobExecutorService )
+	{
+		this.jobExecutorService = jobExecutorService;
 	}
 }

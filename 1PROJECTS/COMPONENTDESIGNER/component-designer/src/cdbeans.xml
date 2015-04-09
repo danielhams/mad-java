@@ -112,6 +112,7 @@
 		<property name="rackService"><ref bean="rackService"></ref></property>
 		<property name="rackMarshallingService"><ref bean="rackMarshallingService"></ref></property>
 		<property name="guiService"><ref bean="guiService"></ref></property>
+		<property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
 	</bean>
 	<bean id="subRackComponentsUiFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsUiFactory" init-method="init" destroy-method="destroy">
