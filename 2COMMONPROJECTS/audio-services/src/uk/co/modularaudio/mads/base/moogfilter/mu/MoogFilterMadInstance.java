@@ -57,14 +57,12 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	private static final float CUTOFF_START_VAL = 0.007043739f;
 	private static final float CUTOFF_RANGE = 1.0f - CUTOFF_START_VAL;
 	private static final float Q_START_VAL = 3.0f;
-	private static final float Q_RANGE = 4.0f - Q_START_VAL;
+	private static final float Q_RANGE = Q_MAX - Q_START_VAL;
 
 	// Instance related vars
 	int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
-	private float desiredNormalisedCutoff = 1.0f;
-	private float desiredNormalisedQ = 0.0f;
 	private float desiredCutoff = 1.0f;
 	private float desiredQ = 0.0f;
 
@@ -110,6 +108,32 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	{
 	}
 
+	private void processCutoffCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
+			final float[] cutoffOutFloats, final int cutoffOutOffset,
+			final int numFrames )
+	{
+		for( int i = 0 ; i < numFrames ; ++i )
+		{
+			final float inCutoffValue = cvCutoffFloats[ cvCutoffOffset + i ];
+			final float mappedCutoffValue = CUTOFF_START_VAL + (inCutoffValue * CUTOFF_RANGE);
+			cutoffOutFloats[ cutoffOutOffset + i] = mappedCutoffValue;
+		}
+	}
+
+	private void processQCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
+			final float [] cvQFloats, final int cvQOffset,
+			final float[] qOutFloats, final int qOutOffset,
+			final int numFrames )
+	{
+		for( int i = 0 ; i < numFrames ; ++i )
+		{
+			final float inCutoffValue = cvCutoffFloats[ cvCutoffOffset + i ];
+			final float inQValue = cvQFloats[ cvQOffset + i];
+			final float mappedQValue = (Q_START_VAL + (inCutoffValue * Q_RANGE)) * inQValue;
+			qOutFloats[ qOutOffset + i ] = mappedQValue;
+		}
+	}
+
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final MadTimingParameters timingParameters,
@@ -127,9 +151,12 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		final boolean inRConnected = channelConnectedFlags.get( MoogFilterMadDefinition.CONSUMER_IN_RIGHT );
 		final MadChannelBuffer inRcb = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_RIGHT ];
 		final float[] inRfloats = inRcb.floatBuffer;
-//		boolean inCvFreqConnected = channelConnectedFlags.get(  MoogFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY  );
-//		MadChannelBuffer inFreq = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY ];
-//		float[] inCvFreqFloats = (inCvFreqConnected ? inFreq.floatBuffer : null );
+		final boolean inCvCutoffConnected = channelConnectedFlags.get(  MoogFilterMadDefinition.CONSUMER_IN_CV_CUTOFF );
+		final MadChannelBuffer inCutoff = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_CV_CUTOFF ];
+		final float[] inCvCutoffFloats = inCutoff.floatBuffer;
+		final boolean inCvQConnected = channelConnectedFlags.get(  MoogFilterMadDefinition.CONSUMER_IN_CV_Q );
+		final MadChannelBuffer inQ = channelBuffers[ MoogFilterMadDefinition.CONSUMER_IN_CV_Q ];
+		final float[] inCvQFloats = inQ.floatBuffer;
 
 		final boolean outLConnected = channelConnectedFlags.get( MoogFilterMadDefinition.PRODUCER_OUT_LEFT );
 		final MadChannelBuffer outLcb = channelBuffers[ MoogFilterMadDefinition.PRODUCER_OUT_LEFT ];
@@ -143,10 +170,54 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 
 		if( inLConnected || inRConnected )
 		{
-			cutoffSad.generateControlValues( tmpArray, cutoffOffset, numFrames );
-			cutoffSad.checkForDenormal();
-			qSad.generateControlValues( tmpArray, qOffset, numFrames );
-			qSad.checkForDenormal();
+			if( inCvCutoffConnected )
+			{
+				processCutoffCv( inCvCutoffFloats, frameOffset,
+						tmpArray, cutoffOffset,
+						numFrames );
+				if( inCvQConnected )
+				{
+					processQCv( tmpArray, cutoffOffset,
+							inCvQFloats, frameOffset,
+							tmpArray, qOffset,
+							numFrames );
+				}
+				else // !inCvQConnected
+				{
+					qSad.generateControlValues( tmpArray, qOffset, numFrames );
+					qSad.checkForDenormal();
+					processQCv( tmpArray, cutoffOffset,
+							tmpArray, qOffset,
+							tmpArray, qOffset,
+							numFrames );
+				}
+			}
+			else // !inCvCutoffConnected
+			{
+				cutoffSad.generateControlValues( tmpArray, cutoffOffset, numFrames );
+				cutoffSad.checkForDenormal();
+
+				processCutoffCv( tmpArray, cutoffOffset,
+						tmpArray, cutoffOffset,
+						numFrames );
+
+				if( inCvQConnected )
+				{
+					processQCv( tmpArray, cutoffOffset,
+							inCvQFloats, frameOffset,
+							tmpArray, qOffset,
+							numFrames );
+				}
+				else // !inCvQConnected
+				{
+					qSad.generateControlValues( tmpArray, qOffset, numFrames );
+					qSad.checkForDenormal();
+					processQCv( tmpArray, cutoffOffset,
+							tmpArray, qOffset,
+							tmpArray, qOffset,
+							numFrames );
+				}
+			}
 		}
 
 		if( outLConnected )
@@ -195,31 +266,15 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		this.desiredFilterMode = mode;
 	}
 
-	private static final float mapUserQToFilterQ( final float normQ, final float normCutoff )
-	{
-		return normQ * ((normCutoff * Q_RANGE) + Q_START_VAL);
-	}
-
-	private void recomputeParams()
-	{
-		// Scaled user supplied values into something sensible for the actual filter
-		desiredCutoff = (desiredNormalisedCutoff * CUTOFF_RANGE) + CUTOFF_START_VAL;
-		desiredQ = mapUserQToFilterQ( desiredNormalisedQ, desiredNormalisedCutoff );
-
-		// Feed these values to the interpolators
-		cutoffSad.notifyOfNewValue( desiredCutoff );
-		qSad.notifyOfNewValue( desiredQ );
-	}
-
 	public void setDesiredNormalisedCutoff( final float cutoff )
 	{
-		this.desiredNormalisedCutoff = cutoff;
-		recomputeParams();
+		this.desiredCutoff = cutoff;
+		cutoffSad.notifyOfNewValue( desiredCutoff );
 	}
 
 	public void setDesiredNormalisedQ( final float Q )
 	{
-		this.desiredNormalisedQ = Q;
-		recomputeParams();
+		this.desiredQ = Q;
+		qSad.notifyOfNewValue( desiredQ );
 	}
 }
