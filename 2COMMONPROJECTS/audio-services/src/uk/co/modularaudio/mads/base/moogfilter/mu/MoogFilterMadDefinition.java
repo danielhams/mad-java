@@ -36,10 +36,11 @@ public class MoogFilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 	// Indexes into the channels
 	public final static int CONSUMER_IN_LEFT = 0;
 	public final static int CONSUMER_IN_RIGHT = 1;
-	public final static int CONSUMER_IN_CV_FREQUENCY = 2;
-	public final static int PRODUCER_OUT_LEFT = 3;
-	public final static int PRODUCER_OUT_RIGHT = 4;
-	public final static int NUM_CHANNELS = 5;
+	public final static int CONSUMER_IN_CV_CUTOFF = 2;
+	public final static int CONSUMER_IN_CV_Q = 3;
+	public final static int PRODUCER_OUT_LEFT = 4;
+	public final static int PRODUCER_OUT_RIGHT = 5;
+	public final static int NUM_CHANNELS = 6;
 
 	public final static String DEFINITION_ID = "moog_filter";
 
@@ -52,12 +53,14 @@ public class MoogFilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 	// These must match the channel indexes given above
 	private final static String[] CHAN_NAMES = new String[] { "Input Wave Left",
 		"Input Wave Right",
-		"Input CV Frequency",
+		"Input CV Cutoff",
+		"Input CV Q",
 		"Output Wave Left",
 		"Output Wave Right" };
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
 		MadChannelType.AUDIO,
+		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.AUDIO,
 		MadChannelType.AUDIO };
@@ -65,11 +68,13 @@ public class MoogFilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
 		MadChannelDirection.CONSUMER,
+		MadChannelDirection.CONSUMER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER };
 
 	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT,
+		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };

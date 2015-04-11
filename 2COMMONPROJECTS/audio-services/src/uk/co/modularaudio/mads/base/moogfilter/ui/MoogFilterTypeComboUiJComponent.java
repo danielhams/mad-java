@@ -20,7 +20,10 @@
 
 package uk.co.modularaudio.mads.base.moogfilter.ui;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
@@ -39,8 +42,19 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private final Map<FrequencyFilterMode, String> modeToNameMap = new HashMap<FrequencyFilterMode, String>();
-	private final Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
+	private final static Map<String, FrequencyFilterMode> nameToModeMap = createNameToModeMap();
+
+	private final static Map<String, FrequencyFilterMode> createNameToModeMap()
+	{
+		final Map<String, FrequencyFilterMode> mm = new HashMap<String, FrequencyFilterMode>();
+		mm.put( "None", FrequencyFilterMode.NONE );
+		mm.put( "Low Pass", FrequencyFilterMode.LP );
+		return Collections.unmodifiableMap( mm );
+	}
+
+	private final static List<String> modes = Arrays.asList(new String[] {
+			"None",
+			"Low Pass" } );
 
 	private final MoogFilterMadUiInstance uiInstance;
 
@@ -53,23 +67,10 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 
 		this.setOpaque( false );
 
-		// Only low pass works for the moment.
-		filterNameToModeMap.put( "None", FrequencyFilterMode.NONE );
-		filterNameToModeMap.put( "Low Pass", FrequencyFilterMode.LP );
-//		filterNameToModeMap.put( "High Pass", FrequencyFilterMode.HP );
-//		filterNameToModeMap.put( "Band Pass", FrequencyFilterMode.BP );
-//		filterNameToModeMap.put( "Band Reject", FrequencyFilterMode.BR );
-		for( final String name : filterNameToModeMap.keySet() )
-		{
-			modeToNameMap.put( filterNameToModeMap.get( name ), name );
-		}
-
 		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 
-		final FrequencyFilterMode[] modeValues = FrequencyFilterMode.values();
-		for( final FrequencyFilterMode mode : modeValues )
+		for( final String modeName : modes )
 		{
-			final String modeName = modeToNameMap.get( mode );
 			cbm.addElement( modeName );
 		}
 
@@ -99,7 +100,7 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 		if( previousIndex != newIndex )
 		{
 			final String name = (String) getSelectedItem();
-			final FrequencyFilterMode modeToUse = filterNameToModeMap.get( name );
+			final FrequencyFilterMode modeToUse = nameToModeMap.get( name );
 			uiInstance.sendFilterModeChange( modeToUse );
 		}
 	}

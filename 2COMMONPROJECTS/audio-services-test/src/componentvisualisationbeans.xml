@@ -66,12 +66,13 @@
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"/></property>
 	</bean>
 	<bean id="advancedComponentsFrontController" class="uk.co.modularaudio.controller.advancedcomponents.impl.AdvancedComponentsFrontControllerImpl" init-method="init" destroy-method="destroy">
-		<property name="hibernateSessionController"><ref bean="hibernateSessionController"></ref></property>
-		<property name="sampleCachingController"><ref bean="sampleCachingController"></ref></property>
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
-		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
-		<property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
-	</bean>
+        <property name="hibernateSessionController"><ref bean="hibernateSessionController"></ref></property>
+        <property name="sampleCachingController"><ref bean="sampleCachingController"></ref></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
+        <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
+        <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
+    </bean>
 	<bean id="baseComponentsFactory" class="uk.co.modularaudio.mads.base.BaseComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
@@ -115,6 +116,8 @@
 		<property name="rackMarshallingService"><ref bean="rackMarshallingService"></ref></property>
 		<property name="guiService"><ref bean="guiService"></ref></property>
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
+        <property name="jobExecutorService"><ref bean="jobExecutorService"></ref>
+    </property>
 	</bean>
 	<bean id="subRackComponentsUiFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsUiFactory" init-method="init" destroy-method="destroy">
 		<property name="componentUiService"><ref bean="componentUiService"></ref></property>
@@ -127,4 +130,7 @@
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
 	</bean>
+    <bean id="jobExecutorService" class="uk.co.modularaudio.service.jobexecutor.impl.JobExecutorServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+    </bean>
 </beans>
