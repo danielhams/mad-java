@@ -27,35 +27,38 @@ import javax.swing.JComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.interptester.ui.ValueSlider;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLogSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
-public class MoogFilterFrequencySliderUiControlInstance extends PacLogSlider
+public class MoogFilterCutoffSliderUiControlInstance extends ValueSlider
 	implements IMadUiControlInstance<MoogFilterMadDefinition, MoogFilterMadInstance, MoogFilterMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( MoogFilterFrequencySliderUiControlInstance.class.getName() );
+	private static Log log = LogFactory.getLog( MoogFilterCutoffSliderUiControlInstance.class.getName() );
 
 	private static final long serialVersionUID = 6068897521037173787L;
 
 	private final MoogFilterMadUiInstance uiInstance;
 
-	public MoogFilterFrequencySliderUiControlInstance(
+	public MoogFilterCutoffSliderUiControlInstance(
 			final MoogFilterMadDefinition definition,
 			final MoogFilterMadInstance instance,
 			final MoogFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 40.0f, 22050.0f, 440.0f, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Freq:",
+		super( uiInstance.getCutoffSliderModel(),
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				"Cutoff:",
 				Color.BLACK,
-				"Hz",
-				Color.BLACK,
+				Color.black,
 				false );
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
@@ -69,11 +72,8 @@ public class MoogFilterFrequencySliderUiControlInstance extends PacLogSlider
 
 	private void passChangeToInstanceData( final float value )
 	{
-//		log.debug("Passing change to instance data: " + value );
-		// float valueToPass = value / 1000.0f;
-		// float valueToPass = value / 10.0f;
 		final float valueToPass = value;
-		uiInstance.sendFrequencyChange( valueToPass );
+		uiInstance.sendCutoffChange( valueToPass );
 	}
 
 	@Override
@@ -81,7 +81,6 @@ public class MoogFilterFrequencySliderUiControlInstance extends PacLogSlider
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -100,7 +99,6 @@ public class MoogFilterFrequencySliderUiControlInstance extends PacLogSlider
 	{
 		try
 		{
-//			log.debug("Received control value " + value );
 			final float asFloat = Float.parseFloat( value );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );

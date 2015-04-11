@@ -56,7 +56,7 @@ public class MoogFilterMadUiDefinition
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Filter Type",
-		"Frequency",
+		"Cutoff",
 		"Q"
 	};
 
@@ -68,9 +68,8 @@ public class MoogFilterMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		MoogFilterTypeComboUiJComponent.class,
-		MoogFilterFrequencySliderUiControlInstance.class,
+		MoogFilterCutoffSliderUiControlInstance.class,
 		MoogFilterQSliderUiControlInstance.class
-//		OldFrequencyFilterBandwidthSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {

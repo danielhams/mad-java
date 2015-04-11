@@ -27,6 +27,7 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.MoogFilter;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -43,19 +44,29 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 {
 //	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
-	public final static float CUTOFF_MIN = 0.0f;
-	public final static float CUTOFF_MAX = 1.0f;
-	public final static float Q_MIN = 0.1f;
-	public final static float Q_MAX = 4.0f;
-	public final static float Q_DEFAULT = 0.1f;
-
-	private int sampleRate = -1;
+	// Parameters for the spring and dampers
 	private static final int CUTOFF_VALUE_CHASE_MILLIS = 20;
 	private static final int Q_VALUE_CHASE_MILLIS = 10;
 
+	private final static float CUTOFF_MIN = 0.0f;
+	private final static float CUTOFF_MAX = 1.0f;
+	private final static float Q_MIN = 0.1f;
+	private final static float Q_MAX = 4.0f;
+
+	// Parameters for the mapping from user visible vals to internal sensible filter values
+	private static final float CUTOFF_START_VAL = 0.007043739f;
+	private static final float CUTOFF_RANGE = 1.0f - CUTOFF_START_VAL;
+	private static final float Q_START_VAL = 3.0f;
+	private static final float Q_RANGE = 4.0f - Q_START_VAL;
+
+	// Instance related vars
+	int sampleRate = DataRate.CD_QUALITY.getValue();
+
 	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
-	private float desiredCutoff = 400.0f;
-	private float desiredQ = 1.0f;
+	private float desiredNormalisedCutoff = 1.0f;
+	private float desiredNormalisedQ = 0.0f;
+	private float desiredCutoff = 1.0f;
+	private float desiredQ = 0.0f;
 
 	protected MoogFilter leftFilter = new MoogFilter();
 	protected MoogFilter rightFilter = new MoogFilter();
@@ -157,19 +168,22 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 			}
 		}
 
-		if( !inRConnected && outRConnected )
+		if( outRConnected )
 		{
-			Arrays.fill( outRfloats, 0.0f );
-		}
-		else if( inRConnected && outRConnected )
-		{
-			if( desiredFilterMode == FrequencyFilterMode.NONE )
+			if( !inRConnected )
 			{
-				System.arraycopy(inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
+				Arrays.fill( outRfloats, 0.0f );
 			}
 			else
 			{
-				rightFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
+				if( desiredFilterMode == FrequencyFilterMode.NONE )
+				{
+					System.arraycopy(inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
+				}
+				else
+				{
+					rightFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
+				}
 			}
 		}
 
@@ -181,21 +195,31 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		this.desiredFilterMode = mode;
 	}
 
-	public void setDesiredCutoff( final float cutoff )
+	private static final float mapUserQToFilterQ( final float normQ, final float normCutoff )
 	{
-		this.desiredCutoff = cutoff;
-		if( desiredCutoff < CUTOFF_MIN )
-		{
-			desiredCutoff = CUTOFF_MIN;
-		}
-		cutoffSad.notifyOfNewValue( desiredCutoff );
-//		log.debug("Setting desired cutoff to " + desiredCutoff );
+		return normQ * ((normCutoff * Q_RANGE) + Q_START_VAL);
 	}
 
-	public void setDesiredQ( final float Q )
+	private void recomputeParams()
 	{
-		this.desiredQ = Q;
-		qSad.notifyOfNewValue( Q );
-//		log.debug("Setting desired Q to " + Q );
+		// Scaled user supplied values into something sensible for the actual filter
+		desiredCutoff = (desiredNormalisedCutoff * CUTOFF_RANGE) + CUTOFF_START_VAL;
+		desiredQ = mapUserQToFilterQ( desiredNormalisedQ, desiredNormalisedCutoff );
+
+		// Feed these values to the interpolators
+		cutoffSad.notifyOfNewValue( desiredCutoff );
+		qSad.notifyOfNewValue( desiredQ );
+	}
+
+	public void setDesiredNormalisedCutoff( final float cutoff )
+	{
+		this.desiredNormalisedCutoff = cutoff;
+		recomputeParams();
+	}
+
+	public void setDesiredNormalisedQ( final float Q )
+	{
+		this.desiredNormalisedQ = Q;
+		recomputeParams();
 	}
 }

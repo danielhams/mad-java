@@ -33,7 +33,7 @@ public class MoogFilterIOQueueBridge extends MadLocklessQueueBridge<MoogFilterMa
 	private static Log log = LogFactory.getLog( MoogFilterIOQueueBridge.class.getName() );
 
 	public static final int COMMAND_FILTER_MODE = 0;
-	public static final int COMMAND_FREQUENCY = 1;
+	public static final int COMMAND_CUTOFF = 1;
 	public static final int COMMAND_Q = 2;
 
 	public MoogFilterIOQueueBridge()
@@ -56,15 +56,13 @@ public class MoogFilterIOQueueBridge extends MadLocklessQueueBridge<MoogFilterMa
 				instance.setDesiredFilterMode( FrequencyFilterMode.values()[ truncVal ] );
 				break;
 			}
-			case COMMAND_FREQUENCY:
+			case COMMAND_CUTOFF:
 			{
 				// float
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float floatVal = Float.intBitsToFloat( truncVal );
-				// Moog algo expects 0.0f -> 1.0f
-				final float cutoff = floatVal / 22050.0f;
-				instance.setDesiredCutoff( cutoff );
+				instance.setDesiredNormalisedCutoff( floatVal );
 				break;
 			}
 			case COMMAND_Q:
@@ -73,7 +71,7 @@ public class MoogFilterIOQueueBridge extends MadLocklessQueueBridge<MoogFilterMa
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float floatVal = Float.intBitsToFloat( truncVal );
-				instance.setDesiredQ( floatVal );
+				instance.setDesiredNormalisedQ( floatVal );
 				break;
 			}
 			default:

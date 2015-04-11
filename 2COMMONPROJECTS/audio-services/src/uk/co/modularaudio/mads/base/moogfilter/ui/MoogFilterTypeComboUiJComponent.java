@@ -53,10 +53,11 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 
 		this.setOpaque( false );
 
+		// Only low pass works for the moment.
 		filterNameToModeMap.put( "None", FrequencyFilterMode.NONE );
 		filterNameToModeMap.put( "Low Pass", FrequencyFilterMode.LP );
-		filterNameToModeMap.put( "High Pass", FrequencyFilterMode.HP );
-		filterNameToModeMap.put( "Band Pass", FrequencyFilterMode.BP );
+//		filterNameToModeMap.put( "High Pass", FrequencyFilterMode.HP );
+//		filterNameToModeMap.put( "Band Pass", FrequencyFilterMode.BP );
 //		filterNameToModeMap.put( "Band Reject", FrequencyFilterMode.BR );
 		for( final String name : filterNameToModeMap.keySet() )
 		{
@@ -90,7 +91,6 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override

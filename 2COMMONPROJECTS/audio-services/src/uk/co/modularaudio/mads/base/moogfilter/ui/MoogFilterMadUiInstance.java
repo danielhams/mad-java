@@ -20,15 +20,28 @@
 
 package uk.co.modularaudio.mads.base.moogfilter.ui;
 
+import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterIOQueueBridge;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
-import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterIOQueueBridge;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<MoogFilterMadDefinition, MoogFilterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( MoogFilterMadUiInstance.class.getName() );
+
+	private final SliderDisplayModel cutoffSliderModel = new SliderDisplayModel(
+			0.0f,
+			1.0f,
+			0.5f,
+			1000,
+			100,
+			new SimpleSliderIntToFloatConverter(),
+			3,
+			2,
+			"" );
 
 	public MoogFilterMadUiInstance( final MoogFilterMadInstance instance,
 			final MoogFilterMadUiDefinition uiDefinition )
@@ -41,13 +54,18 @@ public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurable
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_FILTER_MODE, desiredFilterMode.ordinal() );
 	}
 
-	public void sendFrequencyChange( final float desiredFrequency )
+	public void sendCutoffChange( final float desiredCutoff )
 	{
-		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_FREQUENCY, Float.floatToIntBits( desiredFrequency ) );
+		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_CUTOFF, Float.floatToIntBits( desiredCutoff ) );
 	}
 
 	public void sendBandwidthChange( final float desiredBandwidth )
 	{
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_Q, Float.floatToIntBits( desiredBandwidth ) );
+	}
+
+	public SliderDisplayModel getCutoffSliderModel()
+	{
+		return cutoffSliderModel;
 	}
 }

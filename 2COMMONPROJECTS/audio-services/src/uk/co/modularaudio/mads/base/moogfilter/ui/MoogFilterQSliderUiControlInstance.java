@@ -52,7 +52,7 @@ public class MoogFilterQSliderUiControlInstance extends PacLogSlider
 			final MoogFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( MoogFilterMadInstance.Q_MIN, MoogFilterMadInstance.Q_MAX, MoogFilterMadInstance.Q_DEFAULT,
+		super( 0.0f, 1.0f, 0.5f,
 				SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
 				Color.BLACK,
 				"",
@@ -70,9 +70,6 @@ public class MoogFilterQSliderUiControlInstance extends PacLogSlider
 
 	private void passChangeToInstanceData( final float value )
 	{
-//		log.debug("Passing change to instance data: " + value );
-		// float valueToPass = value / 1000.0f;
-		// float valueToPass = value / 10.0f;
 		final float valueToPass = value;
 		uiInstance.sendBandwidthChange( valueToPass );
 	}
@@ -82,7 +79,6 @@ public class MoogFilterQSliderUiControlInstance extends PacLogSlider
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -101,7 +97,6 @@ public class MoogFilterQSliderUiControlInstance extends PacLogSlider
 	{
 		try
 		{
-//			log.debug("Received control value " + value );
 			final float asFloat = Float.parseFloat( value );
 			model.setValue( this, asFloat );
 			receiveValueChange( this, asFloat );
