@@ -61,6 +61,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	};
 
 	private static final float VALUE_CHASE_MILLIS = 0.5f;
+
 	private float curValueRatio = 0.0f;
 	private float newValueRatio = 1.0f;
 

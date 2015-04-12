@@ -23,6 +23,10 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Point;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
@@ -38,10 +42,14 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 {
 	private static final long serialVersionUID = -725580571613103896L;
 
-//	private static Log log = LogFactory.getLog( SoundfilePlayerWaveOverviewUiJComponent.class.getName() );
+	private static Log log = LogFactory.getLog( SoundfilePlayerWaveOverviewUiJComponent.class.getName() );
 
 	private final static int WAVE_OVERVIEW_INTRO_PIXELS = 5;
 	private final static int WAVE_OVERVIEW_BORDER_PIXELS = 3;
+
+	private final SoundfilePlayerMadUiInstance uiInstance;
+
+	private final WaveOverviewPositionClickListener waveOverviewPositionClickListener;
 
 	private long currentSampleNumFrames;
 	private int desiredPositionOffset;
@@ -59,10 +67,16 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		this.uiInstance = uiInstance;
+
 		setBackground( Color.ORANGE );
 		setOpaque( true );
 
 		uiInstance.addSampleEventListener( this );
+
+		waveOverviewPositionClickListener = new WaveOverviewPositionClickListener( this );
+
+		this.addMouseListener( waveOverviewPositionClickListener );
 	}
 
 	@Override
@@ -111,9 +125,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void receiveSampleChangeEvent( final BlockResamplingClient newSample )
 	{
-//		log.debug("Received notification of sample change to " +
-//				newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
+		log.debug("Received notification of sample change to " +
+				newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
 		currentSampleNumFrames = newSample.getTotalNumFrames();
+		log.debug("The number of sample frames is " + currentSampleNumFrames );
 	}
 
 	private void recomputeDesiredPositionOffset( final long newPosition )
@@ -147,5 +162,12 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		this.lastOverviewWidth = lastWidth - (2 * WAVE_OVERVIEW_INTRO_PIXELS) - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
 		this.lastOverviewHeight = lastHeight - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
 //		log.debug("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
+	}
+
+	public void handleOverviewClickAtPoint( final Point point )
+	{
+		final int clickX = point.x;
+		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS) / (float)lastOverviewWidth;
+		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
 	}
 }

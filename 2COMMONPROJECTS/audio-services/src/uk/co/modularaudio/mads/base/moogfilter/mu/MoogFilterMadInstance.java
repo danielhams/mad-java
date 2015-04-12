@@ -45,7 +45,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 //	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
 	// Parameters for the spring and dampers
-	private static final int CUTOFF_VALUE_CHASE_MILLIS = 20;
+	private static final int CUTOFF_VALUE_CHASE_MILLIS = 10;
 	private static final int Q_VALUE_CHASE_MILLIS = 10;
 
 	private final static float CUTOFF_MIN = 0.0f;
@@ -108,7 +108,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	{
 	}
 
-	private void processCutoffCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
+	private static final void processCutoffCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
 			final float[] cutoffOutFloats, final int cutoffOutOffset,
 			final int numFrames )
 	{
@@ -120,7 +120,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		}
 	}
 
-	private void processQCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
+	private static final void processQCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
 			final float [] cvQFloats, final int cvQOffset,
 			final float[] qOutFloats, final int qOutOffset,
 			final int numFrames )

@@ -276,4 +276,29 @@ public class SoundfilePlayerMadUiInstance extends
 		lifecycleListeners.add( ll );
 	}
 
+	public void receiveOverviewPositionRequest( final float normalisedPosition )
+	{
+		if( currentResampledSample != null )
+		{
+			log.debug( "Received overview position request of " + normalisedPosition );
+			final long totalNumFrames = currentResampledSample.getTotalNumFrames();
+			log.debug( "Current sample has " + totalNumFrames + " frames");
+			final int sampleRate = currentResampledSample.getSampleCacheClient().getLibraryEntry().getSampleRate();
+			final int oneSecFrames = sampleRate;
+			final double normSongPosDouble = ((double)normalisedPosition) * totalNumFrames;
+			long newSongPos = (long)normSongPosDouble;
+			if( newSongPos < -oneSecFrames )
+			{
+				newSongPos = -oneSecFrames;
+			}
+			if( newSongPos > (totalNumFrames + oneSecFrames) )
+			{
+				newSongPos = totalNumFrames + oneSecFrames;
+			}
+			log.debug("New song pos is " + newSongPos);
+
+			sendTemporalValueToInstance( SoundfilePlayerIOQueueBridge.COMMAND_IN_POSITION_JUMP, newSongPos );
+		}
+	}
+
 }

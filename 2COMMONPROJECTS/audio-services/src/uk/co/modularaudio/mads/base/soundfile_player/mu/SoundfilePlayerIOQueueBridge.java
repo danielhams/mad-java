@@ -44,6 +44,8 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 	public static final int COMMAND_IN_SHUTTLE_FFWD_END = 10;
 	public static final int COMMAND_IN_SHUTTLE_SET_POSITION_END = 11;
 
+	public static final int COMMAND_IN_POSITION_JUMP = 12;
+
 	public static final int COMMAND_OUT_RECYCLE_SAMPLE = 16;
 
 	public static final int COMMAND_OUT_STATE_CHANGE = 17;
@@ -51,12 +53,13 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 	public static final int COMMAND_OUT_FRAME_POSITION_ABS = 19;
 	public static final int COMMAND_OUT_FRAME_POSITION_DELTA = 20;
 
+
 	public SoundfilePlayerIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( SoundfilePlayerMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long periodTimestamp, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SoundfilePlayerMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
@@ -114,6 +117,19 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 					instance.addJobForSampleCachingService();
 
 					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, lastFrameNum, curSample );
+				}
+				break;
+			}
+			case COMMAND_IN_POSITION_JUMP:
+			{
+				final long newPosition = queueEntry.value;
+				final BlockResamplingClient curSample = instance.getResampledSample();
+				if( curSample != null )
+				{
+					instance.resetFramePosition( newPosition );
+					instance.addJobForSampleCachingService();
+
+					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, newPosition, curSample );
 				}
 				break;
 			}
