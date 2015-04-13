@@ -36,6 +36,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
+import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance.InstanceLifecycleListener;
@@ -54,6 +55,7 @@ public class SoundfilePlayerMadUiInstance extends
 	private static Log log = LogFactory.getLog( SoundfilePlayerMadUiInstance.class.getName() );
 
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
+	private final SampleCachingService sampleCachingService;
 	private final JobExecutorService jobExecutorService;
 	private final String musicRoot;
 
@@ -68,15 +70,20 @@ public class SoundfilePlayerMadUiInstance extends
 
 	protected List<InstanceLifecycleListener> lifecycleListeners = new ArrayList<InstanceLifecycleListener>();
 
+	private final PositionJumpCacheRefresher positionJumpCacheRefresher;
+
 	public SoundfilePlayerMadUiInstance( final SoundfilePlayerMadInstance instance,
 			final SoundfilePlayerMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 
 		advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
+		sampleCachingService = advancedComponentsFrontController.getSampleCachingService();
 		jobExecutorService = instance.getJobExecutorService();
 
 		musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
+
+		positionJumpCacheRefresher = new PositionJumpCacheRefresher( sampleEventListeners );
 	}
 
 	@Override
@@ -135,6 +142,21 @@ public class SoundfilePlayerMadUiInstance extends
 						sampleEventListeners.get(i).receiveAbsPositionEvent( queueEvent.value );
 					}
 				}
+				break;
+			}
+			case SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE:
+			{
+				final BlockResamplingClient rs = (BlockResamplingClient)queueEvent.object;
+				if( rs == currentResampledSample )
+				{
+					for( int i = 0 ; i < sampleEventListeners.size() ; ++i )
+					{
+						sampleEventListeners.get(i).receiveAbsPositionEvent( queueEvent.value );
+					}
+				}
+				// And queue a lambda to be called after the sample caching service finishes it's
+				// current pass
+				sampleCachingService.registerForBufferFillCompletion( rs.getSampleCacheClient(), positionJumpCacheRefresher );
 				break;
 			}
 			case SoundfilePlayerIOQueueBridge.COMMAND_OUT_STATE_CHANGE:
@@ -262,7 +284,6 @@ public class SoundfilePlayerMadUiInstance extends
 			BlockResamplingMethod.CUBIC );
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );
-
 	}
 
 	@Override

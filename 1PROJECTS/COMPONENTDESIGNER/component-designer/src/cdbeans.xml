@@ -46,7 +46,6 @@
 	</bean>
 	<bean id="libraryService" class="uk.co.modularaudio.service.library.impl.LibraryServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
-		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
 	</bean>
 	<bean id="componentService" class="uk.co.modularaudio.service.madcomponent.impl.MadComponentServiceImpl" init-method="init" destroy-method="destroy">
 	</bean>

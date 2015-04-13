@@ -284,4 +284,10 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	{
 	}
 
+	@Override
+	public void receiveCacheRefreshCompletionEvent()
+	{
+		this.repaint();
+	}
+
 }

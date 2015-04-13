@@ -27,4 +27,6 @@ public interface SoundfileSampleEventListener
 	void receiveSampleChangeEvent( BlockResamplingClient newSample );
 	void receiveDeltaPositionEvent( long newPosition );
 	void receiveAbsPositionEvent( long newPosition );
+
+	void receiveCacheRefreshCompletionEvent();
 }

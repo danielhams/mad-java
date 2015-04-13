@@ -85,7 +85,7 @@ public interface AdvancedComponentsFrontController
 		throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	/**
-	 * <p>Get the thread pool used for executing background jobs.</p>
+	 * <p>Get the service that allows execution of background jobs.</p>
 	 */
 	JobExecutorService getJobExecutorService();
 

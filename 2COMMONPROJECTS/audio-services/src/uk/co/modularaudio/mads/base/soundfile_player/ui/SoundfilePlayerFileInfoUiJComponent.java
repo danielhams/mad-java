@@ -39,32 +39,32 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 	SoundfileSampleEventListener
 {
 	private static final long serialVersionUID = 8010334395193476516L;
-	
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 	private final SampleCachingService sampleCachingService;
-	
-	public SoundfilePlayerFileInfoUiJComponent( SoundfilePlayerMadDefinition definition,
-			SoundfilePlayerMadInstance instance,
-			SoundfilePlayerMadUiInstance uiInstance,
-			int controlIndex )
+
+	public SoundfilePlayerFileInfoUiJComponent( final SoundfilePlayerMadDefinition definition,
+			final SoundfilePlayerMadInstance instance,
+			final SoundfilePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( true );
 
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
 //		this.setBackground( Color.WHITE );
 //		this.setBorder( new LineBorder( Color.BLACK ) );
-		
+
 		this.uiInstance = uiInstance;
 		sampleCachingService = instance.getAdvancedComponentsFrontController().getSampleCachingService();
-		
+
 		uiInstance.addSampleEventListener( this );
 		setText("");
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -83,17 +83,17 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 	}
 
 	@Override
-	public void receiveSampleChangeEvent( BlockResamplingClient newSample )
+	public void receiveSampleChangeEvent( final BlockResamplingClient newSample )
 	{
 		if( newSample != null )
 		{
-			SampleCacheClient sampleCacheClient = newSample.getSampleCacheClient();
-			StringBuilder sb = new StringBuilder();
+			final SampleCacheClient sampleCacheClient = newSample.getSampleCacheClient();
+			final StringBuilder sb = new StringBuilder();
 			sb.append("\"");
-			String fileTitle = sampleCachingService.getSampleFileTitleForCacheClient(sampleCacheClient);
+			final String fileTitle = sampleCachingService.getSampleFileTitleForCacheClient(sampleCacheClient);
 			sb.append( fileTitle );
 			sb.append("\"");
-			String displayText = sb.toString();
+			final String displayText = sb.toString();
 			setText(displayText);
 		}
 		else
@@ -103,12 +103,12 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 	}
 
 	@Override
-	public void receiveDeltaPositionEvent(long newPosition)
+	public void receiveDeltaPositionEvent(final long newPosition)
 	{
 	}
 
 	@Override
-	public void receiveAbsPositionEvent(long newPosition)
+	public void receiveAbsPositionEvent(final long newPosition)
 	{
 	}
 
@@ -116,5 +116,10 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void receiveCacheRefreshCompletionEvent()
+	{
 	}
 }

@@ -69,22 +69,22 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 	private int sampleRate;
 
-	private DcTrapFilter leftDcTrap = null;
-	private DcTrapFilter rightDcTrap = null;
+	private final DcTrapFilter leftDcTrap;
+	private final DcTrapFilter rightDcTrap;
 
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final BlockResamplerService blockResamplerService;
 	private final SampleCachingService sampleCachingService;
 	private final JobExecutorService jobExecutorService;
 
-	private BlockResamplingClient resampledSample = null;
+	private BlockResamplingClient resampledSample;
 
-	private long lastEmittedPosition = 0;
+	private long lastEmittedPosition;
 
 	private PlayingState currentState = PlayingState.STOPPED;
 	private PlayingState desiredState = PlayingState.STOPPED;
 
-	private int numSamplesTillNextEvent = 0;
+	private int numSamplesTillNextEvent;
 
 	private float desiredPlaySpeed = 1.0f;
 	private float playSpeed = 1.0f;

@@ -170,4 +170,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS) / (float)lastOverviewWidth;
 		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
 	}
+
+	@Override
+	public void receiveCacheRefreshCompletionEvent()
+	{
+		// Do nothing. Overview should already be displaying the thumbnail.
+	}
 }

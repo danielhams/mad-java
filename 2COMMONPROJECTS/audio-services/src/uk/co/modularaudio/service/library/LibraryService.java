@@ -28,12 +28,6 @@ import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 
 public interface LibraryService
 {
-	// CRUD on library entries
-//	LibraryEntry addFileToLibrary( File fileForEntry )
-//			throws UnsupportedAudioFileException, DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException;
-//	LibraryEntry findLibraryEntryByFile( File file )
-//			throws RecordNotFoundException, NoSuchHibernateSessionException, DatastoreException;
-
 	// Library entries using an already opening FileHandleAtom
 
 	LibraryEntry addAudioFileToLibrary( AudioFileHandleAtom audioFileHandle )

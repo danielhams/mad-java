@@ -52,6 +52,7 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 	public static final int COMMAND_OUT_CURRENT_SAMPLE = 18;
 	public static final int COMMAND_OUT_FRAME_POSITION_ABS = 19;
 	public static final int COMMAND_OUT_FRAME_POSITION_DELTA = 20;
+	public static final int COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE = 21;
 
 
 	public SoundfilePlayerIOQueueBridge()
@@ -129,7 +130,7 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 					instance.resetFramePosition( newPosition );
 					instance.addJobForSampleCachingService();
 
-					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS, newPosition, curSample );
+					queueTemporalEventToUi(tses, periodTimestamp, COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE, newPosition, curSample );
 				}
 				break;
 			}
