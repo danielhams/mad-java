@@ -1,62 +1,49 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Moog Filter 1" rackComponentChannelInstanceName="Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Moog Filter 1" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Moog Filter 1" rackComponentChannelInstanceName="Output Wave Left"/>
-    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Moog Filter 1" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="Band Limited Oscillator 4" definitionId="band_limited_oscillator">
-        <rackPosition column="0" row="5"/>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="1"/>
         <rackControl name="Frequency" value="200"/>
         <rackControl name="Shape" value="Sine"/>
         <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
-    <rackComponent name="Band Limited Oscillator 8" definitionId="band_limited_oscillator">
-        <rackPosition column="2" row="5"/>
-        <rackControl name="Frequency" value="200"/>
-        <rackControl name="Shape" value="Sine"/>
-        <rackControl name="Pulsewidth" value="100"/>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 4" definitionId="imixer3">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Master Lane" value="824:50"/>
+        <rackControl name="Mixer Lane 0" value="824:50:  "/>
+        <rackControl name="Mixer Lane 1" value="0:50:  "/>
+        <rackControl name="Mixer Lane 2" value="0:50:  "/>
     </rackComponent>
-    <rackComponent name="CutoffLFORate" definitionId="static_value">
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 6" definitionId="imixer3">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="Master Lane" value="602:50"/>
+        <rackControl name="Mixer Lane 0" value="824:50:  "/>
+        <rackControl name="Mixer Lane 1" value="0:50:  "/>
+        <rackControl name="Mixer Lane 2" value="0:50:  "/>
+    </rackComponent>
+    <rackComponent name="Moog Filter 3" definitionId="moog_filter">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Value" value="0.5"/>
-    </rackComponent>
-    <rackComponent name="Moog Filter 1" definitionId="moog_filter">
-        <rackPosition column="0" row="0"/>
         <rackControl name="Filter Type" value="Low Pass"/>
         <rackControl name="Cutoff" value="1.00"/>
-        <rackControl name="Q" value="0.00"/>
+        <rackControl name="Q" value="1.00"/>
     </rackComponent>
-    <rackComponent name="QLFORate" definitionId="static_value">
+    <rackComponent name="Oscilloscope 5" definitionId="oscilloscope">
         <rackPosition column="2" row="4"/>
-        <rackControl name="Value" value="0.1"/>
-    </rackComponent>
-    <rackComponent name="Scale And Offset 5" definitionId="scale_and_offset">
-        <rackPosition column="0" row="7"/>
-        <rackControl name="Scale" value="0.5"/>
-        <rackControl name="Offset" value="0.5"/>
-    </rackComponent>
-    <rackComponent name="Scale And Offset 6" definitionId="scale_and_offset">
-        <rackPosition column="2" row="7"/>
-        <rackControl name="Scale" value="0.5"/>
-        <rackControl name="Offset" value="0.5"/>
-    </rackComponent>
-    <rackComponent name="Scale And Offset 9" definitionId="scale_and_offset">
-        <rackPosition column="0" row="8"/>
-        <rackControl name="Scale" value="0.3"/>
-        <rackControl name="Offset" value="0.7"/>
-    </rackComponent>
-    <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
-        <rackPosition column="2" row="0"/>
-        <rackControl name="Resolution" value="4096"/>
-        <rackControl name="Frequency Scale" value="Log"/>
-        <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="TriggerType" value="On Rise"/>
+        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Recapture" value="false"/>
     </rackComponent>
-    <rackLink producerRackComponentName="Band Limited Oscillator 4" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 5" consumerChannelName="Input CV"/>
-    <rackLink producerRackComponentName="Band Limited Oscillator 8" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 6" consumerChannelName="Input CV"/>
-    <rackLink producerRackComponentName="CutoffLFORate" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 4" consumerChannelName="Input Frequency CV"/>
-    <rackLink producerRackComponentName="Moog Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="QLFORate" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 8" consumerChannelName="Input Frequency CV"/>
-    <rackLink producerRackComponentName="Scale And Offset 5" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 9" consumerChannelName="Input CV"/>
+    <rackComponent name="Static Value 2" definitionId="static_value">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Value" value="120.0"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 5" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" producerChannelName="Output Wave Left" consumerRackComponentName="Moog Filter 3" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" producerChannelName="Output Wave Left" consumerRackComponentName="Oscilloscope 5" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Moog Filter 3" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Moog Filter 3" producerChannelName="Output Wave Left" consumerRackComponentName="Oscilloscope 5" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Static Value 2" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>
 </rack>

@@ -23,9 +23,13 @@ package uk.co.modularaudio.mads.base.moogfilter.mu;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
+import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.dsp.MoogFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -42,16 +46,26 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,MoogFilterMadInstance>
 {
-//	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
 	// Parameters for the spring and dampers
 	private static final int CUTOFF_VALUE_CHASE_MILLIS = 10;
 	private static final int Q_VALUE_CHASE_MILLIS = 10;
+	private static final int AMP_CORR_CHASE_MILLIS = Q_VALUE_CHASE_MILLIS;
 
 	private final static float CUTOFF_MIN = 0.0f;
 	private final static float CUTOFF_MAX = 1.0f;
-	private final static float Q_MIN = 0.1f;
+	private final static float Q_MIN = 0.0f;
 	private final static float Q_MAX = 4.0f;
+
+	private static final float AMP_AT_ZERO = 1.0f;
+	private static final float AMP_AT_ONE_QUARTER = 1.0f / 0.548f;
+	private static final float AMP_AT_TWO_QUARTER = 1.0f / 0.380f;
+	private static final float AMP_AT_THREE_QUARTER = 1.0f / 0.2907f;
+	private static final float AMP_AT_ONE = 1.0f / 0.235f;
+
+	private final static float AMP_CORR_MIN = 0.0f;
+	private final static float AMP_CORR_MAX = AMP_AT_ONE;
 
 	// Parameters for the mapping from user visible vals to internal sensible filter values
 	private static final float CUTOFF_START_VAL = 0.007043739f;
@@ -65,12 +79,16 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
 	private float desiredCutoff = 1.0f;
 	private float desiredQ = 0.0f;
+	private float desiredAmp = 1.0f;
 
 	protected MoogFilter leftFilter = new MoogFilter();
 	protected MoogFilter rightFilter = new MoogFilter();
 
 	private final SpringAndDamperDoubleInterpolator cutoffSad = new SpringAndDamperDoubleInterpolator( CUTOFF_MIN, CUTOFF_MAX );
 	private final SpringAndDamperDoubleInterpolator qSad = new SpringAndDamperDoubleInterpolator( Q_MIN, Q_MAX );
+	private final SpringAndDamperDoubleInterpolator ampSad = new SpringAndDamperDoubleInterpolator( AMP_CORR_MIN, AMP_CORR_MAX );
+
+	private final Limiter outputLimiter = new Limiter( 0.99f, 20 );
 
 	public MoogFilterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -96,6 +114,8 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 			cutoffSad.hardSetValue( desiredCutoff );
 			qSad.reset( sampleRate, Q_VALUE_CHASE_MILLIS );
 			qSad.hardSetValue( desiredQ );
+			ampSad.reset( sampleRate, AMP_CORR_CHASE_MILLIS );
+			ampSad.hardSetValue( desiredAmp );
 		}
 		catch (final Exception e)
 		{
@@ -108,16 +128,25 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	{
 	}
 
+	private static final float mapCutoffValue( final float inValue )
+	{
+		return CUTOFF_START_VAL + (inValue * CUTOFF_RANGE);
+	}
+
 	private static final void processCutoffCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
 			final float[] cutoffOutFloats, final int cutoffOutOffset,
 			final int numFrames )
 	{
 		for( int i = 0 ; i < numFrames ; ++i )
 		{
-			final float inCutoffValue = cvCutoffFloats[ cvCutoffOffset + i ];
-			final float mappedCutoffValue = CUTOFF_START_VAL + (inCutoffValue * CUTOFF_RANGE);
-			cutoffOutFloats[ cutoffOutOffset + i] = mappedCutoffValue;
+			cutoffOutFloats[ cutoffOutOffset + i] = mapCutoffValue( cvCutoffFloats[ cvCutoffOffset + i] );
 		}
+	}
+
+	private static final float mapQValue( final float inCutoff,
+			final float inQ )
+	{
+		return (Q_START_VAL + (inCutoff * Q_RANGE)) * inQ;
 	}
 
 	private static final void processQCv( final float[] cvCutoffFloats, final int cvCutoffOffset,
@@ -127,10 +156,58 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	{
 		for( int i = 0 ; i < numFrames ; ++i )
 		{
-			final float inCutoffValue = cvCutoffFloats[ cvCutoffOffset + i ];
-			final float inQValue = cvQFloats[ cvQOffset + i];
-			final float mappedQValue = (Q_START_VAL + (inCutoffValue * Q_RANGE)) * inQValue;
-			qOutFloats[ qOutOffset + i ] = mappedQValue;
+			qOutFloats[ qOutOffset + i ] = mapQValue( cvCutoffFloats[ cvCutoffOffset + i],
+					cvQFloats[ cvQOffset + i] );
+		}
+	}
+
+	private static final float mapQToAmpValue( final float inQ )
+	{
+		// Four point linear interpolation to some empirical values
+		// Not ideal but a first stab
+		if( inQ <= 0.25f )
+		{
+			// f(0.0) = 1.0
+			// f(0.25) = 0.548
+			final float normVal = inQ / 0.25f;
+			return (AMP_AT_ZERO * (1.0f - normVal)) + (AMP_AT_ONE_QUARTER * normVal);
+		}
+		else if( inQ <= 0.5f )
+		{
+			final float normVal = (inQ - 0.25f) / 0.25f;
+			return (AMP_AT_ONE_QUARTER * (1.0f - normVal)) + (AMP_AT_TWO_QUARTER * normVal);
+		}
+		else if( inQ <= 0.75f )
+		{
+			final float normVal = (inQ - 0.5f) / 0.25f;
+			return (AMP_AT_TWO_QUARTER * (1.0f - normVal)) + (AMP_AT_THREE_QUARTER * normVal);
+		}
+		else
+		{
+			final float normVal = (inQ - 0.75f) / 0.25f;
+			return (AMP_AT_THREE_QUARTER * (1.0f - normVal)) + (AMP_AT_ONE * normVal);
+		}
+	}
+
+	private final static void generateAmpsFromQ( final float[] qArray,
+			final int qOffset,
+			final float[] ampArray,
+			final int ampOffset,
+			final int numFrames )
+	{
+		for( int i = 0 ; i < numFrames ; ++i )
+		{
+			ampArray[ ampOffset + i ] = mapQToAmpValue( qArray[ qOffset + i ]  );
+		}
+	}
+
+	private final static void applyAmps( final float[] outFloats, final int outOffset,
+			final float[] ampArray, final int ampOffset,
+			final int numFrames )
+	{
+		for( int i = 0 ; i < numFrames ; ++i )
+		{
+			outFloats[ outOffset + i ] *= ampArray[ ampOffset + i ];
 		}
 	}
 
@@ -167,6 +244,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 
 		final int cutoffOffset = 0;
 		final int qOffset = numFrames;
+		final int ampOffset = numFrames * 2;
 
 		if( inLConnected || inRConnected )
 		{
@@ -181,6 +259,10 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 							inCvQFloats, frameOffset,
 							tmpArray, qOffset,
 							numFrames );
+
+					generateAmpsFromQ( tmpArray, qOffset,
+							tmpArray, ampOffset,
+							numFrames );
 				}
 				else // !inCvQConnected
 				{
@@ -190,6 +272,9 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 							tmpArray, qOffset,
 							tmpArray, qOffset,
 							numFrames );
+
+					ampSad.generateControlValues( tmpArray, ampOffset, numFrames );
+					ampSad.checkForDenormal();
 				}
 			}
 			else // !inCvCutoffConnected
@@ -207,6 +292,10 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 							inCvQFloats, frameOffset,
 							tmpArray, qOffset,
 							numFrames );
+
+					generateAmpsFromQ( tmpArray, qOffset,
+							tmpArray, ampOffset,
+							numFrames );
 				}
 				else // !inCvQConnected
 				{
@@ -216,6 +305,9 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 							tmpArray, qOffset,
 							tmpArray, qOffset,
 							numFrames );
+
+					ampSad.generateControlValues( tmpArray, ampOffset, numFrames );
+					ampSad.checkForDenormal();
 				}
 			}
 		}
@@ -235,8 +327,10 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 				else
 				{
 					leftFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inLfloats, frameOffset, outLfloats, frameOffset, numFrames);
+					applyAmps( outLfloats, frameOffset, tmpArray, ampOffset, numFrames );
 				}
 			}
+			outputLimiter.filter( outLfloats, frameOffset, numFrames );
 		}
 
 		if( outRConnected )
@@ -254,8 +348,10 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 				else
 				{
 					rightFilter.filter( tmpArray, cutoffOffset, tmpArray, qOffset, inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
+					applyAmps( outRfloats, frameOffset, tmpArray, ampOffset, numFrames );
 				}
 			}
+			outputLimiter.filter( outRfloats, frameOffset, numFrames );
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -269,12 +365,19 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	public void setDesiredNormalisedCutoff( final float cutoff )
 	{
 		this.desiredCutoff = cutoff;
+//		final float mappedCutoff = mapCutoffValue( desiredCutoff );
+//		log.debug("Setting cutoff to " + mappedCutoff );
 		cutoffSad.notifyOfNewValue( desiredCutoff );
 	}
 
 	public void setDesiredNormalisedQ( final float Q )
 	{
 		this.desiredQ = Q;
+//		final float mappedQ = mapQValue( desiredCutoff, desiredQ );
+//		log.debug("Setting Q to " + mappedQ );
 		qSad.notifyOfNewValue( desiredQ );
+
+		desiredAmp = mapQToAmpValue( desiredQ );
+		ampSad.notifyOfNewValue( desiredAmp );
 	}
 }
