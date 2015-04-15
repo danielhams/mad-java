@@ -2,3 +2,4 @@ bin/*
 componentdesignersql.*
 /bin
 .javacomponentdesigner*
+/thumbnails/

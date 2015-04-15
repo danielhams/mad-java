@@ -21,10 +21,7 @@
 package uk.co.modularaudio.util.hibernate;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.commons.logging.Log;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -32,19 +29,16 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class HibernateQueryBuilder
 {
-	private final Map<String, String> parameters = new HashMap<String, String>();
-	private final Log log;
 	private Query queryResult;
 	private boolean isSqlQuery = false;
+	private int numParametersSet = 0;
 
-	public HibernateQueryBuilder( final Log log )
+	public HibernateQueryBuilder()
 	{
-		this.log = log;
 	}
 
-	public HibernateQueryBuilder( final Log log, final boolean isSQLQuery )
+	public HibernateQueryBuilder( final boolean isSQLQuery )
 	{
-		this.log = log;
 		this.isSqlQuery = isSQLQuery;
 	}
 
@@ -63,12 +57,11 @@ public class HibernateQueryBuilder
 
 	public Query buildQuery() throws DatastoreException
 	{
-		if (parameters != null && parameters.size() > 0 && queryResult.getNamedParameters().length != parameters.size())
+		if( queryResult.getNamedParameters().length != numParametersSet )
 		{
 			throw new DatastoreException( "The number of declared arguments is different form the number of argument passed to the query" );
 		}
 
-		HibernateDebugger.translateQuery( queryResult.getQueryString(), log, parameters );
 		return queryResult;
 	}
 
@@ -79,18 +72,18 @@ public class HibernateQueryBuilder
 			throw new DatastoreException( "Init your query before trying to build with parameters" );
 		}
 
-		parameters.put( fieldName, value );
+		numParametersSet++;
 		queryResult.setString( fieldName, value );
 	}
 
-	public void setLong( final String fieldName, final Long value ) throws DatastoreException
+	public void setLong( final String fieldName, final long value ) throws DatastoreException
 	{
 		if( queryResult == null )
 		{
 			throw new DatastoreException( "Init your query before trying to build with parameters" );
 		}
 
-		parameters.put( fieldName, value.toString() );
+		numParametersSet++;
 		queryResult.setLong( fieldName, value );
 	}
 
@@ -101,7 +94,18 @@ public class HibernateQueryBuilder
 			throw new DatastoreException( "Init your query before trying to build with parameters" );
 		}
 
-		parameters.put( fieldName, value.toString() );
+		numParametersSet++;
 		queryResult.setDate( fieldName, value );
+	}
+
+	public void setInt( final String fieldName, final int value ) throws DatastoreException
+	{
+		if( queryResult == null )
+		{
+			throw new DatastoreException( "Init your query before trying to build with parameters" );
+		}
+
+		numParametersSet++;
+		queryResult.setInteger( fieldName, value );
 	}
 }

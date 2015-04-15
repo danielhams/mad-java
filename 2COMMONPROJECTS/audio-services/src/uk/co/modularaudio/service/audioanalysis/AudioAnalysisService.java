@@ -24,13 +24,20 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.unitOfWork.ProgressListener;
+import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 
 public interface AudioAnalysisService
 {
 	// Method blocks until analysis is complete.
-	AnalysedData analyseFile( String pathToFile, ProgressListener progressListener )
+	// Not really intended for clients, but handy for testing.
+	AnalysedData analyseFile( String pathToFile,
+			AnalysisFillCompletionListener analysisListener )
 		throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException;
+
+	AnalysedData analyseLibraryEntryFile( LibraryEntry libraryEntry,
+			AnalysisFillCompletionListener analysisListener )
+		throws DatastoreException, NoSuchHibernateSessionException;
 }

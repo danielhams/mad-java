@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisException;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
@@ -38,7 +39,6 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
-import uk.co.modularaudio.util.unitOfWork.ProgressListener;
 
 public class TestRunAudioAnalysis
 {
@@ -58,20 +58,39 @@ public class TestRunAudioAnalysis
 		aas = gac.getBean( "audioAnalysisService", AudioAnalysisService.class );
 
 		// Now do the tests
-		final ProgressListener pl = new ProgressListener()
+		final AnalysisFillCompletionListener acl = new AnalysisFillCompletionListener()
 		{
+			@Override
+			public void receivePercentageComplete(final int percentageComplete)
+			{
+				log.debug( "Percentage complete: " + percentageComplete );
+			}
 
 			@Override
-			public void receivePercentageComplete(final String statusMessage, final int percentageComplete)
+			public void receiveAnalysedData( final AnalysedData analysedData )
 			{
-				log.debug( statusMessage + " - percentage complete: " + percentageComplete );
+				log.debug("Received data: " + analysedData.toString() );
+
+			}
+
+			@Override
+			public void notifyAnalysisFailure()
+			{
+				log.debug("Received analysis failure");
+
 			}
 		};
-		final AnalysedData analysedData1 = aas.analyseFile( "/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3", pl );
+		final AnalysedData analysedData1 = aas.analyseFile(
+				"/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3",
+				acl );
 		log.debug("Analysed data 1 contains: " + analysedData1.toString() );
-		final AnalysedData analysedData2 = aas.analyseFile( "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20120504/3350150_Party_Party_Harvey_McKay_Remix.mp3", pl );
+		final AnalysedData analysedData2 = aas.analyseFile(
+				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20120504/3350150_Party_Party_Harvey_McKay_Remix.mp3",
+				acl );
 		log.debug("Analysed data 2 contains: " + analysedData2.toString() );
-		final AnalysedData analysedData10 = aas.analyseFile( "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3", pl );
+		final AnalysedData analysedData10 = aas.analyseFile(
+				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3",
+				acl );
 		log.debug("Analysed data 10 contains: " + analysedData10.toString() );
 
 	}

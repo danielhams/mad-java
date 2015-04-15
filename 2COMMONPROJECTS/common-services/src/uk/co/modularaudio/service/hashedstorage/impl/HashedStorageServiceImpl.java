@@ -29,6 +29,8 @@ import java.io.InputStream;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
+import uk.co.modularaudio.util.atomicio.AtomicFileUtilities;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -38,6 +40,8 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 	private static final int STORAGE_BUFFER_LENGTH = 4096;
 
 //	private static Log log = LogFactory.getLog( HashedStorageServiceImpl.class.getName() );
+
+	private static AtomicFileUtilities atomicFileUtils = FileUtilities.getAtomicFileUtilities();
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -76,13 +80,18 @@ public class HashedStorageServiceImpl implements ComponentWithLifecycle, HashedS
 		{
 			throw new IOException("Failed during enclosing directory creation");
 		}
-		final FileOutputStream fos = new FileOutputStream( outputPath );
+		// Place into a temporary file until completely written
+		final File tmpFile = File.createTempFile( "hashedstorage", ".tmp", enclosingDir );
+		final String tmpFilePath = tmpFile.getAbsolutePath();
+		final FileOutputStream fos = new FileOutputStream( tmpFilePath );
 		int numRead = 0;
 		while( (numRead = contents.read( storageBuf ) ) > 0 )
 		{
 			fos.write( storageBuf, 0, numRead );
 		}
 		fos.close();
+		// Now atomically move it over to the required filename
+		atomicFileUtils.moveFile( tmpFilePath, outputPath );
 	}
 
 	private String computeWarehouseRefPath(final HashedWarehouse warehouse, final HashedRef hashedRef)

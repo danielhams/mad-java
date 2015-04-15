@@ -20,25 +20,83 @@
 
 package uk.co.modularaudio.service.audioanalysis;
 
+import java.util.Date;
+
 public class AnalysedData
 {
+	private int analysisId;
+	private Date creationTimestamp;
+	private int libraryEntryId;
+
 	// Beat related data
-	private float detectedBpm = 0.0f;
-	private long[] detectedBeatPositions = new long[0];
-	
+	private float detectedBpm;
+
 	// Gain related data
-	private float detectedPeak = 0.0f;
-	private float autoGainAdjustment = 0.0f;
-	
-	// Scrolling thumbnails
-	private String pathToZiScrollingThumbnail = null;
-	private String pathToZoScrollingThumbnail = null;
-	
-	// Static thumbnail
-	private String pathToStaticThumbnail = null;
-	
+	private float detectedPeak;
+	private float autoGainAdjustment;
+
+	// Static overview thumbnail
+	private String pathToStaticThumbnail;
+
 	public AnalysedData()
 	{
+	}
+
+	public AnalysedData( final int analysisId,
+			final int libraryId,
+			final float detectedBpm,
+			final float detectedPeak,
+			final float autoGainAdjustment,
+			final String pathToStaticThumbnail )
+	{
+		super();
+		this.analysisId = analysisId;
+		this.libraryEntryId = libraryId;
+		this.detectedBpm = detectedBpm;
+		this.detectedPeak = detectedPeak;
+		this.autoGainAdjustment = autoGainAdjustment;
+		this.pathToStaticThumbnail = pathToStaticThumbnail;
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder sb = new StringBuilder();
+		sb.append( "\nDetected Bpm: " + detectedBpm );
+		sb.append( "\nDetected Peak: " + detectedPeak );
+		sb.append( "\nAuto Gain Adjustment: " + autoGainAdjustment );
+		sb.append( "\nStaticThumbnail Path: " + pathToStaticThumbnail );
+		return sb.toString();
+	}
+
+	public int getAnalysisId()
+	{
+		return analysisId;
+	}
+
+	public void setAnalysisId( final int analysisId )
+	{
+		this.analysisId = analysisId;
+	}
+
+	public Date getCreationTimestamp()
+	{
+		return creationTimestamp;
+	}
+
+	public void setCreationTimestamp( final Date creationTimestamp )
+	{
+		this.creationTimestamp = creationTimestamp;
+	}
+
+	public int getLibraryEntryId()
+	{
+		return libraryEntryId;
+	}
+
+	public void setLibraryEntryId( final int libraryEntryId )
+	{
+		this.libraryEntryId = libraryEntryId;
 	}
 
 	public float getDetectedBpm()
@@ -46,9 +104,9 @@ public class AnalysedData
 		return detectedBpm;
 	}
 
-	public long[] getDetectedBeatPositions()
+	public void setDetectedBpm( final float detectedBpm )
 	{
-		return detectedBeatPositions;
+		this.detectedBpm = detectedBpm;
 	}
 
 	public float getDetectedPeak()
@@ -56,69 +114,27 @@ public class AnalysedData
 		return detectedPeak;
 	}
 
+	public void setDetectedPeak( final float detectedPeak )
+	{
+		this.detectedPeak = detectedPeak;
+	}
+
 	public float getAutoGainAdjustment()
 	{
 		return autoGainAdjustment;
 	}
 
-	public String getPathToZiScrollingThumbnail()
+	public void setAutoGainAdjustment( final float autoGainAdjustment )
 	{
-		return pathToZiScrollingThumbnail;
-	}
-
-	public String getPathToZoScrollingThumbnail()
-	{
-		return pathToZoScrollingThumbnail;
+		this.autoGainAdjustment = autoGainAdjustment;
 	}
 
 	public String getPathToStaticThumbnail()
 	{
 		return pathToStaticThumbnail;
 	}
-	
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-		sb.append( "\nDetected Bpm: " + detectedBpm );
-		sb.append( "\nDetected Peak: " + detectedPeak );
-		sb.append( "\nAuto Gain Adjustment: " + autoGainAdjustment );
-		sb.append( "\nZiScrollingThumbnail Path: " + pathToZiScrollingThumbnail );
-		sb.append( "\nZoScrollingThumbnail Path: " + pathToZoScrollingThumbnail );
-		sb.append( "\nStaticThumbnail Path: " + pathToStaticThumbnail );
-		return sb.toString();
-	}
 
-	public void setDetectedBpm(float detectedBpm)
-	{
-		this.detectedBpm = detectedBpm;
-	}
-
-	public void setDetectedBeatPositions(long[] detectedBeatPositions)
-	{
-		this.detectedBeatPositions = detectedBeatPositions;
-	}
-
-	public void setDetectedPeak(float detectedPeak)
-	{
-		this.detectedPeak = detectedPeak;
-	}
-
-	public void setAutoGainAdjustment(float autoGainAdjustment)
-	{
-		this.autoGainAdjustment = autoGainAdjustment;
-	}
-
-	public void setPathToZiScrollingThumbnail(String pathToZiScrollingThumbnail)
-	{
-		this.pathToZiScrollingThumbnail = pathToZiScrollingThumbnail;
-	}
-
-	public void setPathToZoScrollingThumbnail(String pathToZoScrollingThumbnail)
-	{
-		this.pathToZoScrollingThumbnail = pathToZoScrollingThumbnail;
-	}
-
-	public void setPathToStaticThumbnail(String pathToStaticThumbnail)
+	public void setPathToStaticThumbnail( final String pathToStaticThumbnail )
 	{
 		this.pathToStaticThumbnail = pathToStaticThumbnail;
 	}

@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.atomicio;
 
-import java.io.IOException;
-
 import uk.co.modularaudio.util.atomicio.unix.UnixAtomicFileUtilities;
 import uk.co.modularaudio.util.atomicio.windows.WindowsAtomicFileUtilities;
 import uk.co.modularaudio.util.os.OperatingSystemIdentifiers;
@@ -32,7 +30,7 @@ import uk.co.modularaudio.util.os.OperatingSystemIdentifiers;
  */
 public class FileUtilities
 {
-	public static AtomicFileUtilities getAtomicFileUtilities() throws IOException
+	public static AtomicFileUtilities getAtomicFileUtilities()
 	{
 		AtomicFileUtilities retVal = null;
 
@@ -54,7 +52,7 @@ public class FileUtilities
 		}
 		else
 		{
-			throw new IOException( "Unknown OS type: " + hostString );
+			throw new RuntimeException( "Unknown OS type: " + hostString );
 		}
 
 		return (retVal);

@@ -34,4 +34,7 @@ public interface LibraryService
 		throws DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException;
 	LibraryEntry findLibraryEntryByAudioFile( AudioFileHandleAtom audioFileHandle )
 		throws DatastoreException, RecordNotFoundException, NoSuchHibernateSessionException;
+
+	LibraryEntry findLibraryEntryById( int libraryEntryId )
+		throws DatastoreException, RecordNotFoundException, NoSuchHibernateSessionException;
 }

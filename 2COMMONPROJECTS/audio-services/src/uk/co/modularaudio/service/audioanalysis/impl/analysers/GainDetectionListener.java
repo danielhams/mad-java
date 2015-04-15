@@ -29,12 +29,12 @@ public class GainDetectionListener implements AnalysisListener
 //	private static Log log = LogFactory.getLog( GainDetectionListener.class.getName() );
 
 	@Override
-	public void start( DataRate dataRate, int numChannels, long totalFloatsLength )
+	public void start( final DataRate dataRate, final int numChannels, final long totalFrames )
 	{
 	}
 
 	@Override
-	public void receiveData(float[] data, int numRead )
+	public void receiveFrames(final float[] data, final int numFrames )
 	{
 	}
 
@@ -44,7 +44,7 @@ public class GainDetectionListener implements AnalysisListener
 	}
 
 	@Override
-	public void updateAnalysedData(AnalysedData analysedData, HashedRef hashedRef )
+	public void updateAnalysedData(final AnalysedData analysedData, final HashedRef hashedRef )
 	{
 	}
 

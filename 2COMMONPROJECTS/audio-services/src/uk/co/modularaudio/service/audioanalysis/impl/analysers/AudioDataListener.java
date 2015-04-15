@@ -24,7 +24,7 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 
 public interface AudioDataListener
 {
-	void start( DataRate dataRate, int numChannels, long totalFloatsLength );
-	void receiveData( float[] data, int numRead );
+	void start( DataRate dataRate, int numChannels, long totalFrames );
+	void receiveFrames( float[] data, int numFrames );
 	void end();
 }

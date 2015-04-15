@@ -34,12 +34,16 @@ import org.hibernate.Transaction;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
+import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -70,6 +74,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	private OscillatorFactory oscillatorFactory;
 	private BlockResamplerService blockResamplerService;
 	private SampleCachingService sampleCachingService;
+	private AudioAnalysisService audioAnalysisService;
 	private JobExecutorService jobExecutorService;
 
 	@Override
@@ -80,6 +85,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 				sampleCachingController == null ||
 				blockResamplerService == null ||
 				sampleCachingService == null ||
+				audioAnalysisService == null ||
 				jobExecutorService == null )
 		{
 			throw new ComponentConfigurationException( "Controller missing dependencies. Check configuration" );
@@ -282,5 +288,55 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	{
 		// No hibernate session needed.
 		sampleCachingController.destroyResamplingClient( resamplingClient );
+	}
+
+	@Override
+	public AnalysedData registerForLibraryEntryAnalysis( final LibraryEntry libraryEntry,
+			final AnalysisFillCompletionListener analysisListener ) throws DatastoreException
+	{
+		// Hibernate session needed so added to internal database table
+		Session sessionResource = null;
+		Transaction t = null;
+		try
+		{
+			hibernateSessionController.getThreadSession();
+			sessionResource = ThreadLocalSessionResource.getSessionResource();
+			t = sessionResource.beginTransaction();
+
+			final AnalysedData retVal = audioAnalysisService.analyseLibraryEntryFile( libraryEntry,
+					analysisListener );
+
+			t.commit();
+			t = null;
+			return retVal;
+		}
+		catch (final NoSuchHibernateSessionException e)
+		{
+			final String msg = "Error in using hibernate session: " + e.toString();
+			throw new DatastoreException( msg, e );
+		}
+		finally
+		{
+			if( t != null )
+			{
+				t.rollback();
+			}
+			try
+			{
+				if( sessionResource != null )
+				{
+					hibernateSessionController.releaseThreadSession();
+				}
+			}
+			catch (final NoSuchHibernateSessionException e)
+			{
+				// Nothing to clean up
+			}
+		}
+	}
+
+	public void setAudioAnalysisService( final AudioAnalysisService audioAnalysisService )
+	{
+		this.audioAnalysisService = audioAnalysisService;
 	}
 }

@@ -20,6 +20,7 @@
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
         <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
         <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
+        <property name="audioAnalysisService"><ref bean="audioAnalysisService"></ref></property>
 	</bean>
 	<bean id="guiController" class="uk.co.modularaudio.componentdesigner.controller.gui.impl.GuiControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiService"><ref bean="guiService"></ref></property>
@@ -135,7 +136,7 @@
     </bean>
 	<bean id="sampleCachingService" class="uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="libraryService"><ref bean="libraryService"></ref></property>
-		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
 		<property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
 	<bean id="blockResamplerService" class="uk.co.modularaudio.service.blockresampler.impl.BlockResamplerServiceImpl" init-method="init" destroy-method="destroy">
@@ -180,5 +181,13 @@
 	</bean>
     <bean id="jobExecutorService" class="uk.co.modularaudio.service.jobexecutor.impl.JobExecutorServiceImpl" init-method="init" destroy-method="destroy">
         <property name="configurationService"><ref bean="configurationService"></ref></property>
+    </bean>
+    <bean id="hashedStorageService" class="uk.co.modularaudio.service.hashedstorage.impl.HashedStorageServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="audioAnalysisService" class="uk.co.modularaudio.service.audioanalysis.impl.AudioAnalysisServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+        <property name="hashedStorageService"><ref bean="hashedStorageService"></ref></property>
+        <property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
     </bean>
 </beans>

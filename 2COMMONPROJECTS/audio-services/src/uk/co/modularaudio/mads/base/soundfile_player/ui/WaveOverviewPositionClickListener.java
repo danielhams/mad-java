@@ -23,13 +23,8 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class WaveOverviewPositionClickListener implements MouseListener
 {
-	private static Log log = LogFactory.getLog( WaveOverviewPositionClickListener.class.getName() );
-
 	private final SoundfilePlayerWaveOverviewUiJComponent waveOverviewComponent;
 
 	public WaveOverviewPositionClickListener( final SoundfilePlayerWaveOverviewUiJComponent waveOverviewComponent )
@@ -40,7 +35,6 @@ public class WaveOverviewPositionClickListener implements MouseListener
 	@Override
 	public void mouseClicked( final MouseEvent me )
 	{
-		log.debug("mouseClicked" + me.toString());
 		waveOverviewComponent.handleOverviewClickAtPoint( me.getPoint() );
 	}
 

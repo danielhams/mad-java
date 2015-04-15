@@ -30,8 +30,11 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerIOQueueBridge;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.GetAnalysisRunnable;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.LoadNewSoundFileRunnable;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.SoundFileLoadCompletionListener;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -50,7 +53,8 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 public class SoundfilePlayerMadUiInstance extends
 		AbstractNoNameChangeNonConfigurableMadUiInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance> implements
 		IOQueueEventUiConsumer<SoundfilePlayerMadInstance>,
-		SoundFileLoadCompletionListener
+		SoundFileLoadCompletionListener,
+		AnalysisFillCompletionListener
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerMadUiInstance.class.getName() );
 
@@ -284,6 +288,14 @@ public class SoundfilePlayerMadUiInstance extends
 			BlockResamplingMethod.CUBIC );
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );
+
+		// And now submit a job to retrieve analysisData for the
+		// file (bpm, gain + thumbnail)
+
+		final GetAnalysisRunnable getAnalysisRunnable = new GetAnalysisRunnable( advancedComponentsFrontController,
+				currentResampledSample.getSampleCacheClient().getLibraryEntry(),
+				this );
+		jobExecutorService.submitJob( getAnalysisRunnable );
 	}
 
 	@Override
@@ -320,6 +332,24 @@ public class SoundfilePlayerMadUiInstance extends
 
 			sendTemporalValueToInstance( SoundfilePlayerIOQueueBridge.COMMAND_IN_POSITION_JUMP, newSongPos );
 		}
+	}
+
+	@Override
+	public void receiveAnalysedData( final AnalysedData analysedData )
+	{
+		log.debug("Received analysed data: " + analysedData.toString());
+	}
+
+	@Override
+	public void notifyAnalysisFailure()
+	{
+		log.debug("Received analysis failure");
+	}
+
+	@Override
+	public void receivePercentageComplete( final int percentageComplete )
+	{
+		log.debug("Received analysis percent complete: " + percentageComplete );
 	}
 
 }

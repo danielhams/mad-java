@@ -23,17 +23,20 @@ package uk.co.modularaudio.service.audioanalysis.impl;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.AnalysisListener;
-import uk.co.modularaudio.service.audioanalysis.impl.analysers.BeatDetectionListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainDetectionListener;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailGeneratorListener;
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
@@ -46,16 +49,23 @@ import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
+import uk.co.modularaudio.service.hibsession.HibernateSessionService;
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.unitOfWork.ProgressListener;
+import uk.co.modularaudio.util.hibernate.HibernateQueryBuilder;
+import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
+import uk.co.modularaudio.util.hibernate.ReflectionUtils;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
+import uk.co.modularaudio.util.hibernate.component.ComponentWithHibernatePersistence;
+import uk.co.modularaudio.util.hibernate.component.HibernatePersistedBeanDefinition;
 
-public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAnalysisService
+public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAnalysisService,
+	ComponentWithHibernatePersistence
 {
-
 	private static Log log = LogFactory.getLog( AudioAnalysisServiceImpl.class.getName() );
 
 	private static final String CONFIG_KEY_ANALYSIS_BUFFER_SIZE = "BufferSize";
@@ -66,9 +76,14 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private static final String CONFIG_KEY_STATIC_THUMB_WIDTH = "StaticThumbnailWidth";
 	private static final String CONFIG_KEY_STATIC_THUMB_HEIGHT = "StaticThumbnailHeight";
 
+	private String databaseTablePrefix;
+
 	private ConfigurationService configurationService;
 	private AudioFileIORegistryService audioFileIORegistryService;
 	private HashedStorageService hashedStorageService;
+	private HibernateSessionService hibernateSessionService;
+
+	private final ReentrantLock analysisLock = new ReentrantLock();
 
 	private String staticThumbnailRootDir;
 	private int staticThumbnailWidth;
@@ -79,16 +94,30 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private HashedWarehouse staticThumbnailWarehouse;
 
 	private int analysisBufferSize;
-	private float[] analysisBuffer;
+	private int analysisBufferFrames;
 
-	private final ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>( 10 );
+	private final List<HibernatePersistedBeanDefinition> hibernateBeanDefs = new ArrayList<HibernatePersistedBeanDefinition>();
+
+	public AudioAnalysisServiceImpl()
+	{
+		hibernateBeanDefs.add( new HibernatePersistedBeanDefinition( ReflectionUtils.getClassPackageAsPath( this ) +
+				"/hbm/AnalysedData.hbm.xml",
+				databaseTablePrefix ) );
+	}
+
+	@Override
+	public List<HibernatePersistedBeanDefinition> listHibernatePersistedBeanDefinitions()
+	{
+		return hibernateBeanDefs;
+	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 		if( configurationService == null ||
 				audioFileIORegistryService == null ||
-				hashedStorageService == null )
+				hashedStorageService == null ||
+				hibernateSessionService == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check configuration" );
 		}
@@ -132,13 +161,18 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			log.error( msg, e);
 			throw new ComponentConfigurationException( msg, e );
 		}
+	}
 
-		// Initialise our buffer
-		analysisBuffer = new float[ analysisBufferSize ];
+	@Override
+	public void destroy()
+	{
+	}
 
-		// and then initialise the list of listeners.
-		final BeatDetectionListener bdl = new BeatDetectionListener();
-		analysisListeners.add( bdl );
+	@Override
+	public AnalysedData analyseFile(final String pathToFile, final AnalysisFillCompletionListener progressListener)
+			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException
+	{
+		final ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>();
 
 		final GainDetectionListener gdl = new GainDetectionListener();
 		analysisListeners.add( gdl );
@@ -150,17 +184,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 				hashedStorageService,
 				staticThumbnailWarehouse );
 		analysisListeners.add( stgl );
-	}
 
-	@Override
-	public void destroy()
-	{
-	}
-
-	@Override
-	public AnalysedData analyseFile(final String pathToFile, final ProgressListener progressListener)
-			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException
-	{
 		final AnalysedData analysedData = new AnalysedData();
 
 		// Create the hashed ref our listeners might be interested in
@@ -170,6 +194,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 		final AudioFileIOService decoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( fileFormat,
 				AudioFileDirection.DECODE );
+
+		final float[] analysisBuffer = new float[ analysisBufferSize ];
 
 		AudioFileHandleAtom fha = null;
 
@@ -181,44 +207,55 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			final DataRate dataRate = sm.dataRate;
 			final int numChannels = sm.numChannels;
 			final long totalFloats = sm.numFloats;
+			final long totalFrames = sm.numFrames;
 			if( log.isDebugEnabled() )
 			{
-				log.debug("Beginning audio analysis on file " + pathToFile + " with " + totalFloats + " total floating point samples");
+				log.debug("Beginning audio analysis on file " + pathToFile +
+						" with " + totalFloats + " total floats and " +
+						totalFrames + " frames");
 			}
+
+			analysisBufferFrames = analysisBufferSize / numChannels;
+
 			for( final AnalysisListener al : analysisListeners )
 			{
-				al.start( dataRate, numChannels, totalFloats );
+				al.start( dataRate, numChannels, totalFrames );
 			}
 			int percentageComplete = 0;
-			for( long curPos = 0 ; curPos < totalFloats ; curPos += analysisBufferSize )
+
+			long framesLeft = totalFrames;
+			long curFramePos = 0;
+			while( framesLeft > 0 )
 			{
+				final int framesThisRound = (int)(framesLeft > analysisBufferFrames ? analysisBufferFrames : framesLeft );
+
 				final int numFramesRead = decoderService.readFrames( fha,
 						analysisBuffer,
 						0,
-						analysisBufferSize / numChannels,
-						curPos / numChannels );
-				int numRead = numFramesRead * numChannels;
+						framesThisRound,
+						curFramePos );
 
-				if( numRead <= 0 )
+//				log.debug("Read " + numFramesRead + " at pos " + curFramePos );
+
+				if( numFramesRead != framesThisRound )
 				{
-					// Pad with empty samples
-					numRead = analysisBufferSize;
-					Arrays.fill( analysisBuffer, 0, analysisBufferSize, 0.0f );
-					curPos = totalFloats;
+					throw new DatastoreException("Failed reading frames - asked(" +
+							framesThisRound + ") received(" + numFramesRead +")");
 				}
-				if( numRead > 0 )
+
+				for( final AnalysisListener al : analysisListeners )
 				{
-					for( final AnalysisListener al : analysisListeners )
-					{
-						al.receiveData( analysisBuffer, numRead );
-					}
+					al.receiveFrames( analysisBuffer, numFramesRead );
 				}
-				final int newPercentageComplete = (int)( ((float)curPos / (float)totalFloats) * 100.0);
+
+				final int newPercentageComplete = (int)((curFramePos / (float)totalFrames) * 100.0f);
 				if( newPercentageComplete != percentageComplete )
 				{
 					percentageComplete = newPercentageComplete;
-					progressListener.receivePercentageComplete( "Distance in file: ", percentageComplete );
+					progressListener.receivePercentageComplete( percentageComplete );
 				}
+				curFramePos += numFramesRead;
+				framesLeft -= numFramesRead;
 			}
 
 			for( final AnalysisListener al : analysisListeners )
@@ -252,4 +289,65 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	{
 		this.hashedStorageService = hashedStorageService;
 	}
+
+	public void setDatabaseTablePrefix( final String databaseTablePrefix )
+	{
+		this.databaseTablePrefix = databaseTablePrefix;
+	}
+
+	public void setHibernateSessionService( final HibernateSessionService hibernateSessionService )
+	{
+		this.hibernateSessionService = hibernateSessionService;
+	}
+
+	private AnalysedData internalAnalyseFile( final Session session, final LibraryEntry libraryEntry,
+			final AnalysisFillCompletionListener analysisListener )
+		throws DatastoreException
+	{
+		AnalysedData retVal = null;
+		try
+		{
+			retVal = analyseFile( libraryEntry.getLocation(),
+					analysisListener );
+			retVal.setLibraryEntryId( libraryEntry.getLibraryEntryId() );
+			session.save( retVal );
+		}
+		catch( final IOException | RecordNotFoundException | UnsupportedAudioFileException e )
+		{
+			final String msg = "Exception caught during audio file analysis: " + e.toString();
+			log.error( msg, e );
+			throw new DatastoreException( msg, e );
+		}
+
+		return retVal;
+	}
+
+	@Override
+	public AnalysedData analyseLibraryEntryFile( final LibraryEntry libraryEntry,
+			final AnalysisFillCompletionListener analysisListener )
+			throws DatastoreException, NoSuchHibernateSessionException
+	{
+		analysisLock.lock();
+		try
+		{
+			final Session session = ThreadLocalSessionResource.getSessionResource();
+			final HibernateQueryBuilder qb = new HibernateQueryBuilder();
+			qb.initQuery( session, "from AnalysedData where libraryEntryId = :libraryEntryId" );
+			qb.setInt( "libraryEntryId", libraryEntry.getLibraryEntryId() );
+
+			final Query q = qb.buildQuery();
+			AnalysedData retVal = (AnalysedData)q.uniqueResult();
+			if( retVal == null )
+			{
+				retVal = internalAnalyseFile( session, libraryEntry,
+						analysisListener );
+			}
+			return retVal;
+		}
+		finally
+		{
+			analysisLock.unlock();
+		}
+	}
+
 }

@@ -57,14 +57,9 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 
 	private HibernateSessionService hibernateSessionService;
 
-	public LibraryServiceImpl()
-	{
-	}
-
 	private final List<HibernatePersistedBeanDefinition> hibernateBeanDefs = new ArrayList<HibernatePersistedBeanDefinition>();
 
-	@Override
-	public List<HibernatePersistedBeanDefinition> listHibernatePersistedBeanDefinitions()
+	public LibraryServiceImpl()
 	{
 		hibernateBeanDefs.add( new HibernatePersistedBeanDefinition( ReflectionUtils.getClassPackageAsPath( this ) +
 				"/hbm/LibraryEntry.hbm.xml",
@@ -73,7 +68,11 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 		hibernateBeanDefs.add( new HibernatePersistedBeanDefinition( ReflectionUtils.getClassPackageAsPath( this ) +
 				"/hbm/CuePoint.hbm.xml",
 				databaseTablePrefix ) );
+	}
 
+	@Override
+	public List<HibernatePersistedBeanDefinition> listHibernatePersistedBeanDefinitions()
+	{
 		return hibernateBeanDefs;
 	}
 
@@ -106,7 +105,6 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 	public LibraryEntry addAudioFileToLibrary( final AudioFileHandleAtom audioFileHandle )
 			throws DatastoreException, MAConstraintViolationException, NoSuchHibernateSessionException
 	{
-		LibraryEntry newEntry = null;
 		try
 		{
 			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
@@ -126,7 +124,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final long numFrames = sm.numFrames;
 			final int sampleRate = sm.dataRate.getValue();
 
-			newEntry = new LibraryEntry( -1, cueList, numChannels, sampleRate, numFrames, title, location );
+			final LibraryEntry newEntry = new LibraryEntry( -1, cueList, numChannels, sampleRate, numFrames, title, location );
 			hibernateSession.save( trackStartCuePoint );
 			hibernateSession.save( newEntry );
 			return newEntry;
@@ -142,17 +140,16 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
-		return newEntry;
+		return null;
 	}
 
 	@Override
 	public LibraryEntry findLibraryEntryByAudioFile( final AudioFileHandleAtom audioFileHandle )
 			throws DatastoreException, RecordNotFoundException, NoSuchHibernateSessionException
 	{
-		LibraryEntry retVal = null;
 		try
 		{
-			final HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder( log );
+			final HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
 			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
 			final String hqlString = "from LibraryEntry where location = :location";
 			queryBuilder.initQuery( hibernateSession, hqlString );
@@ -160,11 +157,39 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final String locationToFind = sm.path;
 			queryBuilder.setString( "location", locationToFind );
 			final Query q = queryBuilder.buildQuery();
-			retVal = (LibraryEntry)q.uniqueResult();
+			final LibraryEntry retVal = (LibraryEntry)q.uniqueResult();
 			if( retVal == null )
 			{
 				throw new RecordNotFoundException();
 			}
+			return retVal;
+		}
+		catch( final HibernateException he )
+		{
+			final String msg = "HibernateException caught finding file in library: " + he.toString();
+			HibernateExceptionHandler.rethrowAsDatastoreLogAll( he, log, msg );
+		}
+		return null;
+	}
+
+	@Override
+	public LibraryEntry findLibraryEntryById( final int libraryEntryId )
+			throws DatastoreException, RecordNotFoundException, NoSuchHibernateSessionException
+	{
+		try
+		{
+			final HibernateQueryBuilder queryBuilder = new HibernateQueryBuilder();
+			final Session hibernateSession = ThreadLocalSessionResource.getSessionResource();
+			final String hqlString = "from LibraryEntry where libraryEntryId = :id";
+			queryBuilder.initQuery( hibernateSession, hqlString );
+			queryBuilder.setInt( "id", libraryEntryId );
+			final Query q = queryBuilder.buildQuery();
+			final LibraryEntry retVal = (LibraryEntry)q.uniqueResult();
+			if( retVal == null )
+			{
+				throw new RecordNotFoundException();
+			}
+			return retVal;
 		}
 		catch( final HibernateException he )
 		{
@@ -172,7 +197,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			HibernateExceptionHandler.rethrowAsDatastoreLogAll( he, log, msg );
 		}
 
-		return retVal;
+		return null;
 	}
 
 }

@@ -23,9 +23,6 @@ package uk.co.modularaudio.mads.base.moogfilter.mu;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
@@ -46,7 +43,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,MoogFilterMadInstance>
 {
-	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
 	// Parameters for the spring and dampers
 	private static final int CUTOFF_VALUE_CHASE_MILLIS = 10;
@@ -103,24 +100,17 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			leftFilter.reset();
-			rightFilter.reset();
+		leftFilter.reset();
+		rightFilter.reset();
 
-			cutoffSad.reset( sampleRate, CUTOFF_VALUE_CHASE_MILLIS );
-			cutoffSad.hardSetValue( desiredCutoff );
-			qSad.reset( sampleRate, Q_VALUE_CHASE_MILLIS );
-			qSad.hardSetValue( desiredQ );
-			ampSad.reset( sampleRate, AMP_CORR_CHASE_MILLIS );
-			ampSad.hardSetValue( desiredAmp );
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		cutoffSad.reset( sampleRate, CUTOFF_VALUE_CHASE_MILLIS );
+		cutoffSad.hardSetValue( desiredCutoff );
+		qSad.reset( sampleRate, Q_VALUE_CHASE_MILLIS );
+		qSad.hardSetValue( desiredQ );
+		ampSad.reset( sampleRate, AMP_CORR_CHASE_MILLIS );
+		ampSad.hardSetValue( desiredAmp );
 	}
 
 	@Override
@@ -365,16 +355,12 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	public void setDesiredNormalisedCutoff( final float cutoff )
 	{
 		this.desiredCutoff = cutoff;
-//		final float mappedCutoff = mapCutoffValue( desiredCutoff );
-//		log.debug("Setting cutoff to " + mappedCutoff );
 		cutoffSad.notifyOfNewValue( desiredCutoff );
 	}
 
 	public void setDesiredNormalisedQ( final float Q )
 	{
 		this.desiredQ = Q;
-//		final float mappedQ = mapQValue( desiredCutoff, desiredQ );
-//		log.debug("Setting Q to " + mappedQ );
 		qSad.notifyOfNewValue( desiredQ );
 
 		desiredAmp = mapQToAmpValue( desiredQ );

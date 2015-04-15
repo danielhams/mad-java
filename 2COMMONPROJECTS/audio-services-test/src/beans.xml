@@ -35,6 +35,7 @@
         <property name="configurationService"><ref bean="configurationService"></ref></property>
         <property name="hashedStorageService"><ref bean="hashedStorageService"></ref></property>
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+        <property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
     </bean>
     <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
     </bean>
@@ -45,5 +46,14 @@
     </bean>
     <bean id="libMpg123AudioFileIOService" class="uk.co.modularaudio.service.libmpg123audiofileio.LibMpg123AudioFileIOService" init-method="init" destroy-method="destroy">
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+    </bean>
+    <bean id="hibernateSessionService" class="uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"/></property>
+    </bean>
+    <bean id="hibernateSessionController" class="uk.co.modularaudio.controller.hibsession.impl.HibernateSessionControllerImpl" init-method="init" destroy-method="destroy">
+        <property name="hibernateSessionService"><ref bean="hibernateSessionService"/></property>
+    </bean>
+    <bean id="libraryService" class="uk.co.modularaudio.service.library.impl.LibraryServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
     </bean>
 </beans>

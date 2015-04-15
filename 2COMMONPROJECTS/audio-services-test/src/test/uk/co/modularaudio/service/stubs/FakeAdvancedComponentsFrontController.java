@@ -25,10 +25,13 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
+import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -119,6 +122,13 @@ public class FakeAdvancedComponentsFrontController
 
 	@Override
 	public JobExecutorService getJobExecutorService()
+	{
+		return null;
+	}
+
+	@Override
+	public AnalysedData registerForLibraryEntryAnalysis( final LibraryEntry libraryEntry,
+			final AnalysisFillCompletionListener analysisListener ) throws DatastoreException
 	{
 		return null;
 	}

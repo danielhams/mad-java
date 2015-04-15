@@ -44,93 +44,89 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	private static final int BORDER_WIDTH = 0;
 
 	private static Log log = LogFactory.getLog( StaticThumbnailGeneratorListener.class.getName() );
-	
-	private int requiredWidth = -1;
-	private int requiredHeight = -1;
-	
-	private Color minMaxColor = null;
-	private Color rmsColor = null;
-	
-	private HashedStorageService hashedStorageService = null;
-	private HashedWarehouse hashedWarehouse = null;
-	
-	private int outIndex = 0;
-	private float[] thumbnailValues = null;
-	private int numChannels = -1;
-//	private long totalNumFloats = -1;
-	private float stepsPerPixel = 0.0f;
-	
-	private long currentIndex = 0;
-//	private float currentRemainder = 0.0f;
-	
-	private BufferedImage bufferedImage = null;
-	private Graphics2D og2d = null;
-	
-	public StaticThumbnailGeneratorListener( int requiredWidth,
-			int requiredHeight,
-			Color minMaxColor,
-			Color rmsColor,
-			HashedStorageService hashedStorageService,
-			HashedWarehouse warehouse )
+
+	private final int requiredWidth;
+	private final int requiredHeight;
+
+	private final Color minMaxColor;
+	private final Color rmsColor;
+
+	private final HashedStorageService hashedStorageService;
+	private final HashedWarehouse hashedWarehouse;
+
+	private int outIndex;
+	private float[] thumbnailValues;
+	private int numChannels;
+	private float framesPerPixel;
+
+	private double currentIndex;
+
+	private final BufferedImage bufferedImage;
+	private final Graphics2D og2d;
+
+	private float minValue = 0.0f;
+	private float maxValue = 0.0f;
+	private float sumSq = 0.0f;
+
+	public StaticThumbnailGeneratorListener( final int requiredWidth,
+			final int requiredHeight,
+			final Color minMaxColor,
+			final Color rmsColor,
+			final HashedStorageService hashedStorageService,
+			final HashedWarehouse warehouse )
 	{
 		this.requiredWidth = requiredWidth;
 		this.requiredHeight = requiredHeight;
 		this.minMaxColor = minMaxColor;
 		this.rmsColor = rmsColor;
-		
+
 		this.hashedStorageService = hashedStorageService;
 		this.hashedWarehouse = warehouse;
-		
+
 		bufferedImage = new BufferedImage( requiredWidth, requiredHeight, BufferedImage.TYPE_INT_ARGB );
 		og2d = bufferedImage.createGraphics();
 	}
 
 	@Override
-	public void start(DataRate dataRate, int numChannels, long totalFloatsLength )
+	public void start(final DataRate dataRate, final int numChannels, final long totalFrames )
 	{
 		this.numChannels = numChannels;
-//		this.totalNumFloats = totalFloatsLength;
+
 		// 3 floats per sample - min and max and rms
-		thumbnailValues = new float[ requiredWidth * 3 ];
-		this.stepsPerPixel = (totalFloatsLength + 0.0f) / (thumbnailValues.length + 0.0f);
+		final int numPixels = requiredWidth;
+		thumbnailValues = new float[ numPixels * 3 ];
+		this.framesPerPixel = (totalFrames + 0.0f) / (numPixels + 0.0f);
 		outIndex = 0;
 		currentIndex = 0;
 		minValue = 0.0f;
 		maxValue = 0.0f;
 		sumSq = 0.0f;
 	}
-	
-	private float minValue = 0.0f;
-	private float maxValue = 0.0f;
-	private float sumSq = 0.0f;
 
 	@Override
-	public void receiveData( float[] data, int numRead )
+	public void receiveFrames( final float[] data, final int numFrames )
 	{
-		for( int i = 0 ; i < numRead ; i += numChannels )
+		for( int f = 0 ; f < numFrames ; ++f )
 		{
-			for( int j = 0 ; j < 1 ; j++ )
+			final float curSample = data[f*numChannels];
+			if( curSample > maxValue )
 			{
-				float curSample = data[i + j];
-				if( curSample > maxValue )
-				{
-					maxValue = curSample;
-				}
-				if( curSample < minValue )
-				{
-					minValue = curSample;
-				}
-				// The times two just makes the rms more "visible"
-				sumSq = sumSq + ((curSample * curSample) * 2);
+				maxValue = curSample;
 			}
-			currentIndex += numChannels;
-			float curIndRatio = (currentIndex + 0.0f) / (stepsPerPixel + 0.0f);
-			if( curIndRatio > (outIndex + 3)  && outIndex < (thumbnailValues.length - 4))
+			if( curSample < minValue )
+			{
+				minValue = curSample;
+			}
+			// The times two just makes the rms more "visible"
+			sumSq = sumSq + ((curSample * curSample) * 2);
+			currentIndex++;
+			if( currentIndex >= framesPerPixel )
 			{
 				thumbnailValues[ outIndex++ ] = minValue;
 				thumbnailValues[ outIndex++ ] = maxValue;
-				thumbnailValues[ outIndex++ ] = (float)Math.sqrt( (double)(sumSq / (double)stepsPerPixel ) );
+				thumbnailValues[ outIndex++ ] = (float)Math.sqrt( sumSq / framesPerPixel );
 				minValue = maxValue = sumSq = 0.0f;
+				currentIndex -= framesPerPixel;
 			}
 		}
 	}
@@ -139,72 +135,72 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	public void end()
 	{
 		log.debug("End called. Should generate buffered image.");
-		
-		int width = requiredWidth - (2 * BORDER_WIDTH);
-		int height = requiredHeight - (2 * BORDER_WIDTH );
-		
-		Graphics2D g2d = (Graphics2D)og2d.create( BORDER_WIDTH, BORDER_WIDTH, width, height );
+
+		final int width = requiredWidth - (2 * BORDER_WIDTH);
+		final int height = requiredHeight - (2 * BORDER_WIDTH );
+
+		final Graphics2D g2d = (Graphics2D)og2d.create( BORDER_WIDTH, BORDER_WIDTH, width, height );
 
 //		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		g2d.setColor( Color.BLACK );
 		g2d.fillRect( 0, 0, width, height );
-		
+
 		g2d.setColor( minMaxColor );
 
 		int curDataCount = 0;
-		
+
 		for( int i = 0 ; i < width ; i++ )
 		{
-			float minSample = thumbnailValues[ curDataCount++ ];
-			float maxSample = thumbnailValues[ curDataCount++ ];
+			final float minSample = thumbnailValues[ curDataCount++ ];
+			final float maxSample = thumbnailValues[ curDataCount++ ];
 			curDataCount++;
 //			float rms = thumbnailValues[ curDataCount++ ];
 
 			// lSample goes from +1.0 to -1.0
 			// We need it to go from 0 to height
-			int curX = i;
-			int startY = (int)( ((minSample + 1.0) / 2.0) * (double)height);
-			int endY = (int)( ((maxSample + 1.0)  / 2.0) * (double)height);
+			final int curX = i;
+			final int startY = (int)( ((minSample + 1.0) / 2.0) * height);
+			final int endY = (int)( ((maxSample + 1.0)  / 2.0) * height);
 			g2d.drawLine( curX, startY, curX, endY );
 		}
-		
+
 		g2d.setColor( rmsColor );
-		
+
 		curDataCount = 0;
 		for( int i = 0 ; i < width ; i++ )
 		{
 //			float minSample = thumbnailValues[ curDataCount++ ];
 //			float maxSample = thumbnailValues[ curDataCount++ ];
 			curDataCount+=2;
-			float rms = thumbnailValues[ curDataCount++ ];
+			final float rms = thumbnailValues[ curDataCount++ ];
 
 			// lSample goes from +1.0 to -1.0
 			// We need it to go from 0 to height
-			int curX = i;
-			int startY = (int)( ((rms + 1.0) / 2.0) * (double)height);
-			int endY = (int)( ((-rms + 1.0)  / 2.0) * (double)height);
+			final int curX = i;
+			final int startY = (int)( ((rms + 1.0) / 2.0) * height);
+			final int endY = (int)( ((-rms + 1.0)  / 2.0) * height);
 			g2d.drawLine( curX, startY, curX, endY );
 		}
 	}
 
 	@Override
-	public void updateAnalysedData(AnalysedData analysedData, HashedRef hashedRef )
+	public void updateAnalysedData(final AnalysedData analysedData, final HashedRef hashedRef )
 	{
 		try
 		{
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			ImageOutputStream ios = ImageIO.createImageOutputStream( os );
+			final ByteArrayOutputStream os = new ByteArrayOutputStream();
+			final ImageOutputStream ios = ImageIO.createImageOutputStream( os );
 
 			ImageIO.write( bufferedImage, "png", ios );
-			InputStream contents = new ByteArrayInputStream( os.toByteArray() );
+			final InputStream contents = new ByteArrayInputStream( os.toByteArray() );
 			// Now save this generated thumb nail onto disk then pass the path to this in the analysed data
 			hashedStorageService.storeContentsInWarehouse( hashedWarehouse, hashedRef, contents );
-			
+
 			analysedData.setPathToStaticThumbnail( hashedStorageService.getPathToHashedRef( hashedWarehouse, hashedRef ) );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
-			String msg = "Exception caught serialising static thumb nail: " + e.toString();
+			final String msg = "Exception caught serialising static thumb nail: " + e.toString();
 			log.error( msg, e );
 		}
 	}
