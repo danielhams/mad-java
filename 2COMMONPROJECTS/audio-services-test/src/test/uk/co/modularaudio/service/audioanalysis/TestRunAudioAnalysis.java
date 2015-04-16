@@ -79,15 +79,21 @@ public class TestRunAudioAnalysis
 				log.debug("Received analysis failure");
 
 			}
+
+			@Override
+			public void receiveAnalysisBegin()
+			{
+				log.debug("Received analysis begin");
+			}
 		};
-		final AnalysedData analysedData1 = aas.analyseFile(
-				"/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3",
-				acl );
-		log.debug("Analysed data 1 contains: " + analysedData1.toString() );
-		final AnalysedData analysedData2 = aas.analyseFile(
-				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20120504/3350150_Party_Party_Harvey_McKay_Remix.mp3",
-				acl );
-		log.debug("Analysed data 2 contains: " + analysedData2.toString() );
+//		final AnalysedData analysedData1 = aas.analyseFile(
+//				"/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3",
+//				acl );
+//		log.debug("Analysed data 1 contains: " + analysedData1.toString() );
+//		final AnalysedData analysedData2 = aas.analyseFile(
+//				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20120504/3350150_Party_Party_Harvey_McKay_Remix.mp3",
+//				acl );
+//		log.debug("Analysed data 2 contains: " + analysedData2.toString() );
 		final AnalysedData analysedData10 = aas.analyseFile(
 				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3",
 				acl );

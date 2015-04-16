@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.audioanalysis.impl;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private int analysisBufferSize;
 	private int analysisBufferFrames;
 
+	private boolean isHalting;
+
 	private final List<HibernatePersistedBeanDefinition> hibernateBeanDefs = new ArrayList<HibernatePersistedBeanDefinition>();
 
 	public AudioAnalysisServiceImpl()
@@ -166,6 +169,15 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	@Override
 	public void destroy()
 	{
+		analysisLock.lock();
+		try
+		{
+			isHalting = true;
+		}
+		finally
+		{
+			analysisLock.unlock();
+		}
 	}
 
 	@Override
@@ -214,6 +226,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 						" with " + totalFloats + " total floats and " +
 						totalFrames + " frames");
 			}
+
+			progressListener.receiveAnalysisBegin();
 
 			analysisBufferFrames = analysisBufferSize / numChannels;
 
@@ -330,6 +344,10 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		analysisLock.lock();
 		try
 		{
+			if( isHalting )
+			{
+				throw new DatastoreException("No more analysis jobs allowed - shutting down");
+			}
 			final Session session = ThreadLocalSessionResource.getSessionResource();
 			final HibernateQueryBuilder qb = new HibernateQueryBuilder();
 			qb.initQuery( session, "from AnalysedData where libraryEntryId = :libraryEntryId" );
@@ -337,7 +355,26 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 			final Query q = qb.buildQuery();
 			AnalysedData retVal = (AnalysedData)q.uniqueResult();
-			if( retVal == null )
+
+			boolean needsAnalysis = false;
+			if( retVal != null )
+			{
+				// Check the thumbnail exists
+				final File tn = new File( retVal.getPathToStaticThumbnail() );
+				if( !tn.exists() || !tn.canRead() )
+				{
+					// Delete the existing DB entry
+					session.delete( retVal );
+					session.flush();
+					needsAnalysis = true;
+				}
+			}
+			else
+			{
+				needsAnalysis = true;
+			}
+
+			if( needsAnalysis )
 			{
 				retVal = internalAnalyseFile( session, libraryEntry,
 						analysisListener );

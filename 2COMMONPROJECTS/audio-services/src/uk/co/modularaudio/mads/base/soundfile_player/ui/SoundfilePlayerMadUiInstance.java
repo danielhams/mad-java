@@ -373,4 +373,13 @@ public class SoundfilePlayerMadUiInstance extends
 		}
 	}
 
+	@Override
+	public void receiveAnalysisBegin()
+	{
+		for( final AnalysisFillCompletionListener al : analysisFillListeners )
+		{
+			al.receiveAnalysisBegin();
+		}
+	}
+
 }

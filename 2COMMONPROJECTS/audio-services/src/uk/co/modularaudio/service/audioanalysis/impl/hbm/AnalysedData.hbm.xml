@@ -15,7 +15,7 @@
     			<column name="CREATION_TIMESTAMP" sql-type="timestamp" default="CURRENT_TIMESTAMP" not-null="true"/>
     		</property>
 
-            <property name="libraryEntryId" column="LIBRARY_ENTRY_ID" type="int"/>
+            <property name="libraryEntryId" column="LIBRARY_ENTRY_ID" type="int" unique="true"/>
             
             <property name="detectedBpm" column="DETECTED_BPM" type="float"/>
             <property name="detectedPeak" column="DETECTED_PEAK" type="float"/>

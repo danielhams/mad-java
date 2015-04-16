@@ -41,12 +41,12 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 
 public class StaticThumbnailGeneratorListener implements AnalysisListener
 {
-	private static final int BORDER_WIDTH = 0;
+	private static final int BORDER_WIDTH = 1;
 
 	private static Log log = LogFactory.getLog( StaticThumbnailGeneratorListener.class.getName() );
 
-	private final int requiredWidth;
-	private final int requiredHeight;
+	private final int usableWidth;
+	private final int usableHeight;
 
 	private final Color minMaxColor;
 	private final Color rmsColor;
@@ -75,8 +75,8 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 			final HashedStorageService hashedStorageService,
 			final HashedWarehouse warehouse )
 	{
-		this.requiredWidth = requiredWidth;
-		this.requiredHeight = requiredHeight;
+		this.usableWidth = requiredWidth - (2 * BORDER_WIDTH);
+		this.usableHeight = requiredHeight - (2 * BORDER_WIDTH);
 		this.minMaxColor = minMaxColor;
 		this.rmsColor = rmsColor;
 
@@ -93,7 +93,7 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 		this.numChannels = numChannels;
 
 		// 3 floats per sample - min and max and rms
-		final int numPixels = requiredWidth;
+		final int numPixels = usableWidth;
 		thumbnailValues = new float[ numPixels * 3 ];
 		this.framesPerPixel = (totalFrames + 0.0f) / (numPixels + 0.0f);
 		outIndex = 0;
@@ -136,50 +136,45 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	{
 		log.debug("End called. Should generate buffered image.");
 
-		final int width = requiredWidth - (2 * BORDER_WIDTH);
-		final int height = requiredHeight - (2 * BORDER_WIDTH );
-
-		final Graphics2D g2d = (Graphics2D)og2d.create( BORDER_WIDTH, BORDER_WIDTH, width, height );
+		final Graphics2D g2d = (Graphics2D)og2d.create( BORDER_WIDTH, BORDER_WIDTH, usableWidth, usableHeight );
 
 //		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		g2d.setColor( Color.BLACK );
-		g2d.fillRect( 0, 0, width, height );
+		g2d.fillRect( 0, 0, usableWidth, usableHeight );
 
 		g2d.setColor( minMaxColor );
 
 		int curDataCount = 0;
+		final int oneSideHeight = (usableHeight - 1) / 2;
+		final int zeroYValue = oneSideHeight;
 
-		for( int i = 0 ; i < width ; i++ )
+		for( int i = 0 ; i < usableWidth ; i++ )
 		{
 			final float minSample = thumbnailValues[ curDataCount++ ];
 			final float maxSample = thumbnailValues[ curDataCount++ ];
 			curDataCount++;
-//			float rms = thumbnailValues[ curDataCount++ ];
 
 			// lSample goes from +1.0 to -1.0
-			// We need it to go from 0 to height
 			final int curX = i;
-			final int startY = (int)( ((minSample + 1.0) / 2.0) * height);
-			final int endY = (int)( ((maxSample + 1.0)  / 2.0) * height);
-			g2d.drawLine( curX, startY, curX, endY );
+			final int minY = zeroYValue + (int)( minSample * oneSideHeight);
+			final int maxY = zeroYValue + (int)( maxSample * oneSideHeight);
+			g2d.drawLine( curX, minY, curX, maxY );
 		}
 
 		g2d.setColor( rmsColor );
 
 		curDataCount = 0;
-		for( int i = 0 ; i < width ; i++ )
+		for( int i = 0 ; i < usableWidth ; i++ )
 		{
-//			float minSample = thumbnailValues[ curDataCount++ ];
-//			float maxSample = thumbnailValues[ curDataCount++ ];
 			curDataCount+=2;
 			final float rms = thumbnailValues[ curDataCount++ ];
 
 			// lSample goes from +1.0 to -1.0
 			// We need it to go from 0 to height
 			final int curX = i;
-			final int startY = (int)( ((rms + 1.0) / 2.0) * height);
-			final int endY = (int)( ((-rms + 1.0)  / 2.0) * height);
-			g2d.drawLine( curX, startY, curX, endY );
+			final int minY = zeroYValue + (int)( rms * oneSideHeight );
+			final int maxY = zeroYValue + (int)( -rms * oneSideHeight );
+			g2d.drawLine( curX, minY, curX, maxY );
 		}
 	}
 

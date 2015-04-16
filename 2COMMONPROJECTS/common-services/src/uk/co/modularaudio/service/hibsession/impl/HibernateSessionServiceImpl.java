@@ -199,8 +199,14 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	@Override
 	public void destroy()
 	{
+		log.debug("destroy() called");
 		if( sessionFactory != null)
 		{
+			if( sessionsInUse.size() > 0 )
+			{
+				log.error("Some sessions are still in use! Will attempt to close them");
+			}
+
 			for( final Session usedSession : sessionsInUse )
 			{
 				usedSession.close();

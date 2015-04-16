@@ -284,7 +284,9 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 		if( useSystemLookAndFeel )
 		{
-			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+			final String systemLookAndFeelClassName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+			log.debug("Using the system look and feel class name " + systemLookAndFeelClassName );
+			UIManager.setLookAndFeel( systemLookAndFeelClassName );
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
 
