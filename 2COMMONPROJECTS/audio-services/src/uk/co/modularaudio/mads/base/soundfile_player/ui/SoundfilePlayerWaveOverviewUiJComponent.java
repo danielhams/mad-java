@@ -24,12 +24,19 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
@@ -38,7 +45,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
-	SoundfileSampleEventListener
+	SoundfileSampleEventListener, AnalysisFillCompletionListener
 {
 	private static final long serialVersionUID = -725580571613103896L;
 
@@ -61,6 +68,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	private int lastOverviewWidth;
 	private int lastOverviewHeight;
 
+	private int internalPercentComplete = -1;
+
+	private BufferedImage staticThumbnail;
+
 	public SoundfilePlayerWaveOverviewUiJComponent(
 			final SoundfilePlayerMadDefinition definition,
 			final SoundfilePlayerMadInstance instance,
@@ -77,6 +88,8 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		waveOverviewPositionClickListener = new WaveOverviewPositionClickListener( this );
 
 		this.addMouseListener( waveOverviewPositionClickListener );
+
+		uiInstance.addAnalysisFillListener( this );
 	}
 
 	@Override
@@ -110,13 +123,38 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void paintComponent(final Graphics g)
 	{
+		final int xWaveOffset = WAVE_OVERVIEW_BORDER_PIXELS + WAVE_OVERVIEW_INTRO_PIXELS;
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 		g.fillRect( 1, 1, lastWidth-1, lastHeight-1 );
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BORDER_COLOR );
 		g.drawRect( 0, 0, lastWidth, lastHeight );
 
+		if( staticThumbnail != null )
+		{
+			g.drawImage( staticThumbnail,
+					xWaveOffset,
+					WAVE_OVERVIEW_BORDER_PIXELS,
+					null );
+		}
+		else
+		{
+			g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_WAVE_BG_COLOR );
+			g.fillRect( xWaveOffset, WAVE_OVERVIEW_BORDER_PIXELS, lastOverviewWidth, lastOverviewHeight );
+			if( internalPercentComplete >= 0 )
+			{
+//				log.debug("Drawing with percent complete at " + internalPercentComplete );
+				g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_WAVE_FG_COLOR );
+				final int yOffset = WAVE_OVERVIEW_BORDER_PIXELS + (lastOverviewHeight / 2);
+				final int widthOfLine = (lastOverviewWidth * internalPercentComplete) / 100;
+				g.drawLine( xWaveOffset,
+						yOffset,
+						xWaveOffset + widthOfLine,
+						yOffset );
+			}
+		}
+
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_CURRENT_POSITION_COLOUR );
-		final int actualPos = WAVE_OVERVIEW_BORDER_PIXELS + WAVE_OVERVIEW_INTRO_PIXELS + desiredPositionOffset;
+		final int actualPos = xWaveOffset + desiredPositionOffset;
 		g.drawLine( actualPos, WAVE_OVERVIEW_BORDER_PIXELS, actualPos, lastOverviewHeight );
 
 		displayedPositionOffset = desiredPositionOffset;
@@ -129,6 +167,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 				newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
 		currentSampleNumFrames = newSample.getTotalNumFrames();
 		log.debug("The number of sample frames is " + currentSampleNumFrames );
+
+		internalPercentComplete = -1;
+		staticThumbnail = null;
+//		repaint();
 	}
 
 	private void recomputeDesiredPositionOffset( final long newPosition )
@@ -174,6 +216,44 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void receiveCacheRefreshCompletionEvent()
 	{
-		// Do nothing. Overview should already be displaying the thumbnail.
+		repaint();
+	}
+
+	@Override
+	public void receiveAnalysedData( final AnalysedData analysedData )
+	{
+		// Pull in the image file just generated as the thumbnail
+		internalPercentComplete = -1;
+
+		final String pathToThumbnail = analysedData.getPathToStaticThumbnail();
+
+		try
+		{
+			staticThumbnail = ImageIO.read( new File( pathToThumbnail ) );
+		}
+		catch( final IOException e )
+		{
+			final String msg = "Exception caught loading static thumbnail: " + e.toString();
+			log.error( msg, e );
+		}
+
+		repaint();
+	}
+
+	@Override
+	public void notifyAnalysisFailure()
+	{
+		// Clear any state where we were waiting for analysis data
+		internalPercentComplete = -1;
+		repaint();
+	}
+
+	@Override
+	public void receivePercentageComplete( final int percentageComplete )
+	{
+		// Set the internal variable to non-negative to indicate
+		// we are processing something
+		internalPercentComplete  = percentageComplete;
+		repaint();
 	}
 }

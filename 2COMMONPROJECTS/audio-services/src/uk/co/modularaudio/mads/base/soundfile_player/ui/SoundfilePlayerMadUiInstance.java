@@ -76,6 +76,8 @@ public class SoundfilePlayerMadUiInstance extends
 
 	private final PositionJumpCacheRefresher positionJumpCacheRefresher;
 
+	protected List<AnalysisFillCompletionListener> analysisFillListeners = new ArrayList<AnalysisFillCompletionListener>();
+
 	public SoundfilePlayerMadUiInstance( final SoundfilePlayerMadInstance instance,
 			final SoundfilePlayerMadUiDefinition uiDefinition )
 	{
@@ -195,6 +197,16 @@ public class SoundfilePlayerMadUiInstance extends
 	public void removeFileInfoReceiver( final SoundfileSampleEventListener fiReceiver )
 	{
 		sampleEventListeners.remove( fiReceiver );
+	}
+
+	public void addAnalysisFillListener( final AnalysisFillCompletionListener al )
+	{
+		analysisFillListeners.add( al );
+	}
+
+	public void removeAnalysisFillListener( final AnalysisFillCompletionListener al )
+	{
+		analysisFillListeners.remove( al );
 	}
 
 	public void setFileInfo( final String filename )
@@ -337,19 +349,28 @@ public class SoundfilePlayerMadUiInstance extends
 	@Override
 	public void receiveAnalysedData( final AnalysedData analysedData )
 	{
-		log.debug("Received analysed data: " + analysedData.toString());
+		for( final AnalysisFillCompletionListener al : analysisFillListeners )
+		{
+			al.receiveAnalysedData( analysedData );
+		}
 	}
 
 	@Override
 	public void notifyAnalysisFailure()
 	{
-		log.debug("Received analysis failure");
+		for( final AnalysisFillCompletionListener al : analysisFillListeners )
+		{
+			al.notifyAnalysisFailure();
+		}
 	}
 
 	@Override
 	public void receivePercentageComplete( final int percentageComplete )
 	{
-		log.debug("Received analysis percent complete: " + percentageComplete );
+		for( final AnalysisFillCompletionListener al : analysisFillListeners )
+		{
+			al.receivePercentageComplete( percentageComplete );
+		}
 	}
 
 }
