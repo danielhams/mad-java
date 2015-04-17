@@ -30,6 +30,7 @@ import java.util.List;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
@@ -284,9 +285,26 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 		if( useSystemLookAndFeel )
 		{
-			final String systemLookAndFeelClassName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-			log.debug("Using the system look and feel class name " + systemLookAndFeelClassName );
-			UIManager.setLookAndFeel( systemLookAndFeelClassName );
+			final String gtkLookAndFeelClassName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+			boolean foundGtkLaf = false;
+
+			final LookAndFeelInfo lafis[] = UIManager.getInstalledLookAndFeels();
+
+			for( final LookAndFeelInfo lafi : lafis )
+			{
+				final String lc = lafi.getClassName();
+				if( lc.equals( gtkLookAndFeelClassName ) )
+				{
+					foundGtkLaf = true;
+					break;
+				}
+			}
+
+			if( foundGtkLaf )
+			{
+				log.debug("Found installed GTK laf. Will set active");
+				UIManager.setLookAndFeel( gtkLookAndFeelClassName );
+			}
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
 
