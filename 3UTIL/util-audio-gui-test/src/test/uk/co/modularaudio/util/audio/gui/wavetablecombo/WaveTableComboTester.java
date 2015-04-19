@@ -37,37 +37,37 @@ import uk.co.modularaudio.util.audio.lookuptable.valuemapping.StandardValueMappi
 public class WaveTableComboTester
 {
 	public static Log log = LogFactory.getLog( WaveTableComboTester.class.getName() );
-	
-	private WaveTableComboModel model = null;
-	private WaveTableComboView view = null;
-	private WaveTableComboController controller = null;
-	
+
+	private final WaveTableComboModel model;
+	private final WaveTableComboView view;
+	private final WaveTableComboController controller;
+
 	public WaveTableComboTester()
 	{
-		ArrayList<WaveTableComboItem> startupItems = new ArrayList<WaveTableComboItem>();
-		WaveTableComboItem linItem = new WaveTableComboItem( "linear",
+		final ArrayList<WaveTableComboItem> startupItems = new ArrayList<WaveTableComboItem>();
+		final WaveTableComboItem linItem = new WaveTableComboItem( "linear",
 				"Linear Mapping",
 				StandardValueMappingWaveTables.getLinearAttackMappingWaveTable(),
 				false );
 		startupItems.add( linItem );
-		
-		WaveTableComboItem expItem = new WaveTableComboItem( "exp",
+
+		final WaveTableComboItem expItem = new WaveTableComboItem( "exp",
 				"Exponential Mapping",
 				StandardValueMappingWaveTables.getExpAttackMappingWaveTable(),
 				false );
 		startupItems.add( expItem );
-		
+
 		model = new WaveTableComboModel( startupItems );
 		controller = new WaveTableComboController( model );
 		view = new WaveTableComboView( model, controller );
 	}
-	
+
 	public void go()
 	{
-		JFrame frame = new JFrame("Test sample editor");
+		final JFrame frame = new JFrame("Test sample editor");
 //		Dimension size = new Dimension( 640, 960);
 //		Dimension size = new Dimension( 960, 640);
-		Dimension size = new Dimension( 50, 45);
+		final Dimension size = new Dimension( 50, 45);
 		frame.setPreferredSize( size);
 		frame.setMinimumSize( size);
 
@@ -75,10 +75,10 @@ public class WaveTableComboTester
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.setVisible( true );
 	}
-	
-	public static void main( String[] args )
+
+	public static void main( final String[] args )
 	{
-		WaveTableComboTester pstt = new WaveTableComboTester();
+		final WaveTableComboTester pstt = new WaveTableComboTester();
 		pstt.go();
 	}
 }

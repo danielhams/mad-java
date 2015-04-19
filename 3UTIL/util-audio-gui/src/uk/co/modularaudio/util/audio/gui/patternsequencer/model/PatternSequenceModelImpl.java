@@ -29,39 +29,40 @@ import uk.co.modularaudio.util.audio.midi.MidiUtils;
 public class PatternSequenceModelImpl implements PatternSequenceModel
 {
 //	private static Log log = LogFactory.getLog( PatternSequenceModelImpl.class.getName() );
-	
-	protected int numSteps = -1;
-	protected PatternSequenceStep[] stepNotes = null;
-	
-	private Set<PatternSequenceModelListener> listeners = new HashSet<PatternSequenceModelListener>();
-	
+
+	protected final int numSteps;
+	protected final PatternSequenceStep[] stepNotes;
+
+	private final Set<PatternSequenceModelListener> listeners = new HashSet<PatternSequenceModelListener>();
+
 	protected float defaultAmplitude = 1.0f;
 	protected boolean defaultContinuation = false;
-	
-	public PatternSequenceModelImpl( int numSteps )
+
+	public PatternSequenceModelImpl( final int numSteps )
 	{
 		this.numSteps = numSteps;
-		initialiseStepsArray( numSteps );
+		stepNotes = initialiseStepsArray( numSteps );
 	}
 
-	protected void initialiseStepsArray( int numSteps )
+	protected PatternSequenceStep[] initialiseStepsArray( final int numSteps )
 	{
-		stepNotes = new PatternSequenceStep[ numSteps ];
+		final PatternSequenceStep[] initNotes = new PatternSequenceStep[ numSteps ];
 		for( int i = 0; i < numSteps ; i++ )
 		{
-			stepNotes[ i ] = new PatternSequenceStep();
+			initNotes[ i ] = new PatternSequenceStep();
 		}
+		return initNotes;
 	}
 
 	@Override
-	public void setNoteAtStep( int stepNum, MidiNote note )
+	public void setNoteAtStep( final int stepNum, final MidiNote note )
 	{
 		stepNotes[ stepNum ].note = note;
 		emitNoteRefreshEvent( stepNum, stepNum );
 	}
 
 	@Override
-	public void setNoteAtStepWithAmp( int stepNum, MidiNote note, boolean isContinuation, float amp )
+	public void setNoteAtStepWithAmp( final int stepNum, final MidiNote note, final boolean isContinuation, final float amp )
 	{
 		stepNotes[ stepNum ].note = note;
 		stepNotes[ stepNum ].isContinuation = isContinuation;
@@ -70,7 +71,7 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public void setAmpAndContinuationAtStep( int stepNum, boolean isContinuation, float amp )
+	public void setAmpAndContinuationAtStep( final int stepNum, final boolean isContinuation, final float amp )
 	{
 		stepNotes[ stepNum ].isContinuation = isContinuation;
 		stepNotes[ stepNum ].amp = amp;
@@ -78,13 +79,13 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public PatternSequenceStep getNoteAtStep( int stepNum )
+	public PatternSequenceStep getNoteAtStep( final int stepNum )
 	{
 		return stepNotes[ stepNum ];
 	}
 
 	@Override
-	public void unsetNoteAtStep( int stepNum )
+	public void unsetNoteAtStep( final int stepNum )
 	{
 		stepNotes[ stepNum ].note = null;
 		stepNotes[ stepNum ].isContinuation = false;
@@ -105,13 +106,13 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public void addListener( PatternSequenceModelListener listener )
+	public void addListener( final PatternSequenceModelListener listener )
 	{
 		listeners.add( listener );
 	}
 
 	@Override
-	public void removeListener( PatternSequenceModelListener listener )
+	public void removeListener( final PatternSequenceModelListener listener )
 	{
 		listeners.remove( listener );
 	}
@@ -129,7 +130,7 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public void setCurrentAmplitude( float newAmplitude )
+	public void setCurrentAmplitude( final float newAmplitude )
 	{
 		defaultAmplitude = newAmplitude;
 	}
@@ -141,7 +142,7 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public void setContinuationState( boolean newState )
+	public void setContinuationState( final boolean newState )
 	{
 		defaultContinuation = newState;
 	}
@@ -153,13 +154,13 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 	}
 
 	@Override
-	public void initFromPersistenceString( String persistenceString )
+	public void initFromPersistenceString( final String persistenceString )
 	{
 		PatternSequencePersistenceHelper.fromString( persistenceString, this );
 	}
 
 	@Override
-	public void transpose( PatternSequenceModelTranspose transposition )
+	public void transpose( final PatternSequenceModelTranspose transposition )
 	{
 		switch( transposition )
 		{
@@ -185,12 +186,12 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 			}
 		}
 	}
-	
-	private void internalTranspose( int num )
+
+	private void internalTranspose( final int num )
 	{
 		for( int i = 0 ; i < numSteps ; i++ )
 		{
-			MidiNote mn = stepNotes[ i ].note;
+			final MidiNote mn = stepNotes[ i ].note;
 			if( mn != null )
 			{
 				int midiNum = mn.getMidiNumber();
@@ -198,32 +199,32 @@ public class PatternSequenceModelImpl implements PatternSequenceModel
 				if( midiNum < 0 ) midiNum = 0;
 				if( midiNum > 128 ) midiNum = 128;
 				// Ignore null, we just fetched the midinum
-				MidiNote newNote = MidiUtils.getMidiNoteFromNumberReturnNull( midiNum );
+				final MidiNote newNote = MidiUtils.getMidiNoteFromNumberReturnNull( midiNum );
 				stepNotes[i].note = newNote;
 			}
 		}
 		emitNoteRefreshEvent( 0, numSteps );
 	}
 
-	protected void emitNoteRefreshEvent( int firstStep, int lastStep )
+	protected void emitNoteRefreshEvent( final int firstStep, final int lastStep )
 	{
-		for( PatternSequenceModelListener l : listeners )
+		for( final PatternSequenceModelListener l : listeners )
 		{
 			l.receiveStepnoteChange( firstStep, lastStep );
 		}
 	}
 
-	protected void emitNoteAmpRefreshEvent( int firstStep, int lastStep )
+	protected void emitNoteAmpRefreshEvent( final int firstStep, final int lastStep )
 	{
-		for( PatternSequenceModelListener l : listeners )
+		for( final PatternSequenceModelListener l : listeners )
 		{
 			l.receiveStepNoteAndAmpChange( firstStep, lastStep );
 		}
 	}
 
-	protected void emitAmpRefreshEvent( int firstStep, int lastStep )
+	protected void emitAmpRefreshEvent( final int firstStep, final int lastStep )
 	{
-		for( PatternSequenceModelListener l : listeners )
+		for( final PatternSequenceModelListener l : listeners )
 		{
 			l.receiveStepAmpChange( firstStep, lastStep );
 		}

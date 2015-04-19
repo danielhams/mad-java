@@ -36,27 +36,27 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceM
 public class PatternSequencerTableTester
 {
 	public static Log log = LogFactory.getLog( PatternSequencerTableTester.class.getName() );
-	
-	private PatternSequencer patternSequencer = null;
-	
+
+	private final PatternSequencer patternSequencer;
+
 	public PatternSequencerTableTester()
 	{
-		Dimension tableDimensions = new Dimension( PatternSequenceDefines.DEFAULT_PATTERN_LENGTH, PatternSequenceDefines.DEFAULT_NUM_KEYS );
-		PatternSequenceModel dataModel = new PatternSequenceModelImpl( tableDimensions.width );
-		Dimension blockDimensions = new Dimension( 15, 8 );
+		final Dimension tableDimensions = new Dimension( PatternSequenceDefines.DEFAULT_PATTERN_LENGTH, PatternSequenceDefines.DEFAULT_NUM_KEYS );
+		final PatternSequenceModel dataModel = new PatternSequenceModelImpl( tableDimensions.width );
+		final Dimension blockDimensions = new Dimension( 15, 8 );
 
-		float backLevel = 0.3f;
-		Color backgroundColour = new Color( backLevel, backLevel, backLevel );
-		Color gridColour = new Color( 0.5f, backLevel, backLevel );
-		Color blockColour = new Color( 0.95f, 0.2f, 0.2f );
-		
+		final float backLevel = 0.3f;
+		final Color backgroundColour = new Color( backLevel, backLevel, backLevel );
+		final Color gridColour = new Color( 0.5f, backLevel, backLevel );
+		final Color blockColour = new Color( 0.95f, 0.2f, 0.2f );
+
 		patternSequencer = new PatternSequencer( dataModel, blockDimensions, backgroundColour, gridColour, blockColour );
 	}
-	
+
 	public void go()
 	{
-		JFrame frame = new JFrame("Test pattern sequencer");
-		Dimension size = new Dimension(320,200);
+		final JFrame frame = new JFrame("Test pattern sequencer");
+		final Dimension size = new Dimension(320,200);
 		frame.setPreferredSize( size);
 		frame.setMinimumSize( size);
 
@@ -64,10 +64,10 @@ public class PatternSequencerTableTester
 		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		frame.setVisible( true );
 	}
-	
-	public static void main( String[] args )
+
+	public static void main( final String[] args )
 	{
-		PatternSequencerTableTester pstt = new PatternSequencerTableTester();
+		final PatternSequencerTableTester pstt = new PatternSequencerTableTester();
 		pstt.go();
 	}
 }
