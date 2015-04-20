@@ -2,6 +2,8 @@ package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,7 +27,7 @@ public class TestShowMadToggleButton
 
 	public TestShowMadToggleButton()
 	{
-		tdb = new MadToggleButton( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, true )
+		tdb = new MadToggleButton( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", true )
 		{
 			private static final long serialVersionUID = -359196738631950261L;
 
@@ -40,6 +42,16 @@ public class TestShowMadToggleButton
 		otherButton.setMinimumSize( new Dimension( 75,30 ) );
 		final Font f = otherButton.getFont();
 		log.debug("Regular button font size = " + f.toString() );
+
+		otherButton.addActionListener( new ActionListener() {
+
+			@Override
+			public void actionPerformed( final ActionEvent e )
+			{
+				log.debug("Received action event: " + e.toString() );
+			}
+
+		});
 	}
 
 	public void go() throws Exception

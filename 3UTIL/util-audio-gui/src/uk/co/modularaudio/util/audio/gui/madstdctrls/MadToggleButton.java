@@ -12,35 +12,36 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 
 	private static Log log = LogFactory.getLog( MadToggleButton.class.getName() );
 
-	public MadToggleButton( final MadButtonColours colours, final boolean defaultValue )
+	private boolean isOn = false;
+
+	public MadToggleButton( final MadButtonColours colours, final String text, final boolean defaultValue )
 	{
-		super( colours );
-		pushedState = (defaultValue ? ButtonState.IN_NO_MOUSE : ButtonState.OUT_NO_MOUSE );
+		super( colours, text );
+		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
+		isOn = defaultValue;
 	}
 
 	public String getControlValue()
 	{
-		final boolean isSelected = (pushedState == ButtonState.IN_MOUSE ||
-				pushedState == ButtonState.IN_NO_MOUSE );
-		return Boolean.toString( isSelected );
+		return Boolean.toString( isOn );
 	}
 
 	public void receiveControlValue( final String strValue )
 	{
-		final boolean isSelected = Boolean.parseBoolean( strValue );
+		isOn = Boolean.parseBoolean( strValue );
 		switch( pushedState )
 		{
 			case IN_NO_MOUSE:
 			case OUT_NO_MOUSE:
 			{
-				pushedState = (isSelected ? ButtonState.IN_NO_MOUSE : ButtonState.OUT_NO_MOUSE );
+				pushedState = (isOn ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
 				break;
 			}
 			case IN_MOUSE:
 			case OUT_MOUSE:
 			default:
 			{
-				pushedState = (isSelected ? ButtonState.IN_MOUSE : ButtonState.OUT_MOUSE );
+				pushedState = (isOn ? MadButtonState.IN_MOUSE : MadButtonState.OUT_MOUSE );
 				break;
 			}
 		}
@@ -66,12 +67,12 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 		{
 			case OUT_NO_MOUSE:
 			{
-				pushedState = ButtonState.OUT_MOUSE;
+				pushedState = MadButtonState.OUT_MOUSE;
 				break;
 			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = ButtonState.IN_MOUSE;
+				pushedState = MadButtonState.IN_MOUSE;
 				break;
 			}
 			default:
@@ -79,6 +80,7 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 				log.error( "Oops - state issue" );
 			}
 		}
+//		log.debug("mouseEntered repaint");
 		repaint();
 	}
 
@@ -89,12 +91,12 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 		{
 			case OUT_MOUSE:
 			{
-				pushedState = ButtonState.OUT_NO_MOUSE;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
 				break;
 			}
 			case IN_MOUSE:
 			{
-				pushedState = ButtonState.IN_NO_MOUSE;
+				pushedState = MadButtonState.IN_NO_MOUSE;
 				break;
 			}
 			default:
@@ -102,32 +104,37 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 				log.error( "Oops - state issue" );
 			}
 		}
+//		log.debug("mouseExited repaint");
 		repaint();
 	}
 
 	@Override
 	public void mousePressed( final MouseEvent arg0 )
 	{
+//		log.debug("Mouse press beginning");
 		switch( pushedState )
 		{
 			case IN_MOUSE:
 			{
-				pushedState = ButtonState.OUT_MOUSE;
+				pushedState = MadButtonState.OUT_MOUSE;
 				break;
 			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = ButtonState.OUT_NO_MOUSE;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
+				isOn = true;
 				break;
 			}
 			case OUT_MOUSE:
 			{
-				pushedState = ButtonState.IN_MOUSE;
+				pushedState = MadButtonState.IN_MOUSE;
+				isOn = false;
 				break;
 			}
 			case OUT_NO_MOUSE:
 			{
-				pushedState = ButtonState.IN_NO_MOUSE;
+				pushedState = MadButtonState.IN_NO_MOUSE;
+				isOn = false;
 				break;
 			}
 			default:
@@ -139,6 +146,8 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 		{
 			requestFocusInWindow();
 		}
+
+//		log.debug("mousePressed repaint");
 		repaint();
 	}
 
@@ -147,5 +156,28 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 	{
 		// We only change state on press and stay in that
 		// state until next click
+		final boolean previousValue = isOn;
+		switch( pushedState )
+		{
+			case IN_MOUSE:
+			case IN_NO_MOUSE:
+			{
+				isOn = true;
+				break;
+			}
+			case OUT_MOUSE:
+			case OUT_NO_MOUSE:
+			default:
+			{
+				isOn = false;
+				break;
+			}
+		}
+		if( isOn != previousValue )
+		{
+			receiveUpdateEvent( previousValue, isOn );
+		}
+//		log.debug("moseReleased repaint");
+		repaint();
 	}
 }

@@ -6,16 +6,27 @@ import java.awt.event.MouseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class MadButton extends AbstractMadButton implements MouseListener
+public abstract class MadButton extends AbstractMadButton implements MouseListener
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
 	private static Log log = LogFactory.getLog( MadButton.class.getName() );
 
-	public MadButton( final MadButtonColours colours )
+	public MadButton( final MadButtonColours colours, final String text )
 	{
-		super( colours );
+		super( colours, text );
 	}
+
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	public void receiveControlValue( final String strValue )
+	{
+	}
+
+	public abstract void receiveClick();
 
 	@Override
 	public MouseListener getMouseListener()
@@ -35,12 +46,12 @@ public class MadButton extends AbstractMadButton implements MouseListener
 		{
 			case OUT_NO_MOUSE:
 			{
-				pushedState = ButtonState.OUT_MOUSE;
+				pushedState = MadButtonState.OUT_MOUSE;
 				break;
 			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = ButtonState.IN_MOUSE;
+				pushedState = MadButtonState.IN_MOUSE;
 				break;
 			}
 			default:
@@ -58,12 +69,12 @@ public class MadButton extends AbstractMadButton implements MouseListener
 		{
 			case OUT_MOUSE:
 			{
-				pushedState = ButtonState.OUT_NO_MOUSE;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
 				break;
 			}
 			case IN_MOUSE:
 			{
-				pushedState = ButtonState.IN_NO_MOUSE;
+				pushedState = MadButtonState.IN_NO_MOUSE;
 				break;
 			}
 			default:
@@ -81,22 +92,22 @@ public class MadButton extends AbstractMadButton implements MouseListener
 		{
 			case IN_MOUSE:
 			{
-				pushedState = ButtonState.OUT_MOUSE;
+				pushedState = MadButtonState.OUT_MOUSE;
 				break;
 			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = ButtonState.OUT_NO_MOUSE;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
 				break;
 			}
 			case OUT_MOUSE:
 			{
-				pushedState = ButtonState.IN_MOUSE;
+				pushedState = MadButtonState.IN_MOUSE;
 				break;
 			}
 			case OUT_NO_MOUSE:
 			{
-				pushedState = ButtonState.IN_NO_MOUSE;
+				pushedState = MadButtonState.IN_NO_MOUSE;
 				break;
 			}
 			default:
@@ -118,22 +129,22 @@ public class MadButton extends AbstractMadButton implements MouseListener
 		{
 			case IN_MOUSE:
 			{
-				pushedState = ButtonState.OUT_MOUSE;
+				pushedState = MadButtonState.OUT_MOUSE;
 				break;
 			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = ButtonState.OUT_NO_MOUSE;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
 				break;
 			}
 			case OUT_MOUSE:
 			{
-				pushedState = ButtonState.IN_MOUSE;
+				pushedState = MadButtonState.IN_MOUSE;
 				break;
 			}
 			case OUT_NO_MOUSE:
 			{
-				pushedState = ButtonState.IN_NO_MOUSE;
+				pushedState = MadButtonState.IN_NO_MOUSE;
 				break;
 			}
 			default:
@@ -142,5 +153,6 @@ public class MadButton extends AbstractMadButton implements MouseListener
 			}
 		}
 		repaint();
+		receiveClick();
 	}
 }

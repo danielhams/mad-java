@@ -1,27 +1,26 @@
 package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
-import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseListener;
+import java.awt.font.FontRenderContext;
+import java.awt.font.GlyphVector;
 
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public abstract class AbstractMadButton extends JLabel implements FocusListener
+public abstract class AbstractMadButton extends JPanel implements FocusListener
 {
 	private static final long serialVersionUID = -7622401208667882019L;
 
-	private static Log log = LogFactory.getLog( AbstractMadButton.class.getName() );
+//	private static Log log = LogFactory.getLog( AbstractMadButton.class.getName() );
 
-	protected enum ButtonState
+	protected enum MadButtonState
 	{
 		OUT_NO_MOUSE,
 		OUT_MOUSE,
@@ -37,19 +36,28 @@ public abstract class AbstractMadButton extends JLabel implements FocusListener
 
 	protected final MadButtonColours colours;
 
-	protected ButtonState pushedState = ButtonState.OUT_NO_MOUSE;
+	protected MadButtonState pushedState = MadButtonState.OUT_NO_MOUSE;
+
+	protected String text = "";
+
+	protected int fontHeight = 0;
+	protected FontMetrics fm;
 
 	public AbstractMadButton( final MadButtonColours colours )
 	{
+		this( colours, null );
+	}
+
+	public AbstractMadButton( final MadButtonColours colours, final String textContent )
+	{
 		this.colours = colours;
+		this.text = textContent;
 		setOpaque( false );
 
-		this.setForeground( colours.getForegroundTextUnselected() );
 		this.setFont( MadControlConstants.RACK_FONT );
 
-		this.setText("Kill A");
-		this.setHorizontalAlignment( SwingConstants.CENTER );
-		this.setVerticalAlignment( SwingConstants.CENTER );
+		fm = this.getFontMetrics( MadControlConstants.RACK_FONT );
+		fontHeight = fm.getHeight();
 
 		setFocusable( true );
 
@@ -59,15 +67,14 @@ public abstract class AbstractMadButton extends JLabel implements FocusListener
 
 	protected abstract MouseListener getMouseListener();
 
-	private final static void paintButton( final Graphics2D g2d,
-			final Color outlineColour,
+	private final void paintButton( final Graphics2D g2d,
+			final MadButtonStateColours stateColours,
 			final GradientPaint gp,
-			final Color highlight,
 			final int width,
 			final int height )
 	{
 		// outline
-		g2d.setColor( outlineColour );
+		g2d.setColor( stateColours.getControlOutline() );
 		g2d.fillRoundRect( 0, 0, width, height, OUTLINE_ARC_WIDTH, OUTLINE_ARC_HEIGHT );
 
 		// Background with gradient
@@ -75,86 +82,53 @@ public abstract class AbstractMadButton extends JLabel implements FocusListener
 		g2d.fillRoundRect( 1, 1, width-2, height-2, INSIDE_ARC_WIDTH, INSIDE_ARC_HEIGHT );
 
 		// Highlight
-
-		g2d.setColor( highlight );
+		g2d.setColor( stateColours.getHighlight() );
 		g2d.drawLine( 2, 1, width-3, 1 );
+
+		if( text != null )
+		{
+			g2d.setColor( stateColours.getForegroundText() );
+			final Rectangle stringBounds = fm.getStringBounds( text, g2d ).getBounds();
+			final FontRenderContext frc = g2d.getFontRenderContext();
+			final GlyphVector glyphVector = getFont().createGlyphVector( frc, text );
+			final Rectangle visualBounds = glyphVector.getVisualBounds().getBounds();
+
+			final int stringWidth = stringBounds.width;
+			final int textLeft = (width - stringWidth) / 2;
+
+			final int textBottom = (height - visualBounds.height) / 2 - visualBounds.y;
+
+			g2d.drawString( text, textLeft, textBottom );
+		}
 	}
 
 
 	@Override
-	public void paint( final Graphics g )
+	public void paintComponent( final Graphics g )
 	{
 		final int width = getWidth();
 		final int height = getHeight();
 		final Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-		GradientPaint bgGrad;
-		Color hilight;
-		Color foreground;
+//		log.debug("Paint called we are in state " + pushedState.toString() );
 
-		log.debug("Paint called we are in state " + pushedState.toString() );
+		final MadButtonStateColours stateColours = colours.getColoursForState( pushedState );
 
-		switch( pushedState )
-		{
-			case OUT_MOUSE:
-			{
-				bgGrad = new GradientPaint( 0, 0,
-						colours.getNoMouseUnselectedGradStart().brighter(),
-						0, height,
-						colours.getNoMouseUnselectedGradEnd().brighter() );
-				hilight = colours.getButtonHighlightUnselected().brighter();
-				foreground = colours.getForegroundTextUnselected();
-				break;
-			}
-			case IN_NO_MOUSE:
-			{
-				bgGrad = new GradientPaint( 0, 0,
-						colours.getNoMouseSelectedGradStart().brighter(),
-						0, height,
-						colours.getNoMouseSelectedGradEnd().brighter() );
-				hilight = colours.getNoMouseSelectedGradStart().brighter();
-				foreground = colours.getForegroundTextSelected();
-				break;
-			}
-			case IN_MOUSE:
-			{
-				bgGrad = new GradientPaint( 0, 0,
-						colours.getNoMouseSelectedGradStart(),
-						0, height,
-						colours.getNoMouseSelectedGradEnd() );
-				hilight = colours.getNoMouseSelectedGradStart();
-				foreground = colours.getForegroundTextSelected();
-				break;
-			}
-			case OUT_NO_MOUSE:
-			default:
-			{
-				bgGrad = new GradientPaint( 0, 0,
-						colours.getNoMouseUnselectedGradStart(),
-						0, height,
-						colours.getNoMouseUnselectedGradEnd() );
-				hilight = colours.getButtonHighlightUnselected();
-				foreground = colours.getForegroundTextUnselected();
-				break;
-			}
-		}
+		final GradientPaint bgGrad = new GradientPaint( 0, 0,
+				stateColours.getContentGradStart(),
+				0, height,
+				stateColours.getContentGradEnd() );
 
 		paintButton( g2d,
-				colours.getControlOutline(),
+				stateColours,
 				bgGrad,
-				hilight,
 				width, height );
 
-		setForeground( foreground );
-
-		super.paint( g );
-
-		// highlight
-
+		// Focus outline
 		if( hasFocus() )
 		{
-			g2d.setColor( colours.getButtonFocusColour() );
+			g2d.setColor( stateColours.getFocus() );
 			g2d.drawRect( 5, 5, width-10, height-10 );
 		}
 	}
@@ -162,12 +136,14 @@ public abstract class AbstractMadButton extends JLabel implements FocusListener
 	@Override
 	public void focusGained( final FocusEvent arg0 )
 	{
+//		log.debug("Gained focus repaint");
 		repaint();
 	}
 
 	@Override
 	public void focusLost( final FocusEvent arg0 )
 	{
+//		log.debug("Lost focus repaint");
 		repaint();
 	}
 }

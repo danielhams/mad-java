@@ -2,6 +2,8 @@ package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,12 +27,30 @@ public class TestShowMadButton
 
 	public TestShowMadButton()
 	{
-		tdb = new MadButton( MadControlConstants.STD_BUTTON_COLOURS );
+		tdb = new MadButton( MadControlConstants.STD_BUTTON_COLOURS, "Kill A" )
+		{
+			private static final long serialVersionUID = 4471589131574821185L;
+
+			@Override
+			public void receiveClick()
+			{
+				log.debug("Received click!");
+			}
+		};
 		tdb.setMinimumSize( new Dimension( 75, 30 ) );
 		otherButton = new JButton("Kill B");
 		otherButton.setMinimumSize( new Dimension( 75,30 ) );
 		final Font f = otherButton.getFont();
 		log.debug("Regular button font size = " + f.toString() );
+
+		otherButton.addActionListener( new ActionListener() {
+
+			@Override
+			public void actionPerformed( final ActionEvent arg0 )
+			{
+				log.debug("Received action performed");
+			}
+		} );
 	}
 
 	public void go() throws Exception
