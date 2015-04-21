@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import java.awt.Font;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
@@ -30,11 +28,12 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLabel;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
+public class SoundfilePlayerFileInfoUiJComponent extends MadLabel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
 	SoundfileSampleEventListener
 {
@@ -48,19 +47,14 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		super( MadControlConstants.STD_LABEL_COLOURS, "" );
 		this.setOpaque( true );
-
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
-//		this.setBackground( Color.WHITE );
-//		this.setBorder( new LineBorder( Color.BLACK ) );
+		setFont( MadControlConstants.LABEL_FONT );
 
 		this.uiInstance = uiInstance;
 		sampleCachingService = instance.getAdvancedComponentsFrontController().getSampleCachingService();
 
 		uiInstance.addSampleEventListener( this );
-		setText("");
 	}
 
 	@Override
@@ -120,6 +114,17 @@ public class SoundfilePlayerFileInfoUiJComponent extends PacLabel
 
 	@Override
 	public void receiveCacheRefreshCompletionEvent()
+	{
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
 	{
 	}
 }

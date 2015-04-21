@@ -20,10 +20,6 @@
 
 package uk.co.modularaudio.mads.subrack.ui;
 
-import java.awt.Font;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
@@ -32,37 +28,31 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SubRackChoosePatchButtonUiJComponent extends PacButton
+public class SubRackChoosePatchButtonUiJComponent extends MadButton
 	implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private static final long serialVersionUID = -6066972568143292726L;
-	
+
 	private static Log log = LogFactory.getLog( SubRackChoosePatchButtonUiJComponent.class.getName() );
-	
-	private SubRackMadUiInstance uiInstance = null;
 
-	public SubRackChoosePatchButtonUiJComponent( SubRackMadDefinition definition,
-			SubRackMadInstance instance,
-			SubRackMadUiInstance uiInstance,
-			SubRackChoosePatchButtonUiControlDefinition def )
+	private final SubRackMadUiInstance uiInstance;
+
+	public SubRackChoosePatchButtonUiJComponent( final SubRackMadDefinition definition,
+			final SubRackMadInstance instance,
+			final SubRackMadUiInstance uiInstance,
+			final SubRackChoosePatchButtonUiControlDefinition def )
 	{
-		setOpaque( false );
-
+		super( MadControlConstants.STD_BUTTON_COLOURS, "/\\" );
 		this.uiInstance = uiInstance;
-
-//		Font f = getFont().deriveFont( 9.0f );
-		Font f = getFont();
-		setFont( f );
-		setMargin( new Insets( 0, 0, 0, 0 ) );
-		setText( "/\\" );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -75,20 +65,6 @@ public class SubRackChoosePatchButtonUiJComponent extends PacButton
 	}
 
 	@Override
-	public void receiveEvent( ActionEvent e )
-	{
-		try
-		{
-			uiInstance.choosePatch( this );
-		}
-		catch (Exception e1)
-		{
-			String msg = "Exception caught choosing new patch: " + e1.toString();
-			log.error( msg, e1 );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 	}
@@ -97,6 +73,20 @@ public class SubRackChoosePatchButtonUiJComponent extends PacButton
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void receiveClick()
+	{
+		try
+		{
+			uiInstance.choosePatch( this );
+		}
+		catch (final Exception e1)
+		{
+			final String msg = "Exception caught choosing new patch: " + e1.toString();
+			log.error( msg, e1 );
+		}
 	}
 
 }

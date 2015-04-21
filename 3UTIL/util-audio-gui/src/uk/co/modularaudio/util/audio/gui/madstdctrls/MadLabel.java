@@ -18,9 +18,26 @@
  *
  */
 
-package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
-public class MadCtrlTestingConstants
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+
+public class MadLabel extends JLabel
 {
-	public final static boolean USE_LAF = true;
+	private static final long serialVersionUID = 6138681925643386194L;
+
+	public MadLabel( final MadLabelColours colours, final String text )
+	{
+		super( text );
+
+		this.setBackground( colours.getBackground() );
+		this.setForeground( colours.getForeground() );
+		final Color borderColor = colours.getBorder();
+
+		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
+	}
+
 }

@@ -21,30 +21,21 @@
 package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Insets;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
-
-public abstract class MuteSoloToggleButton extends PacToggleButton
+public abstract class MuteSoloToggleButton extends MadToggleButton
 {
 	private static final long serialVersionUID = -576319205878844394L;
 
 	public MuteSoloToggleButton( final String label )
 	{
-		super( false );
-		setOpaque( true );
-		this.setText( label );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, label, false );
+
 		final Dimension tinySize = new Dimension( 36, 15 );
 		this.setPreferredSize( tinySize );
 		this.setMinimumSize( tinySize );
 		this.setMaximumSize( tinySize );
-
-//		Font f = this.getFont().deriveFont( 8f );
-		final Font f = this.getFont();
-		this.setFont( f );
-
-		this.setMargin( new Insets( 0, 0, 0, 0 ) );
 	}
 
 	@Override

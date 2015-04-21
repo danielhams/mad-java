@@ -18,9 +18,17 @@
  *
  */
 
-package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
-public class MadCtrlTestingConstants
+import java.awt.Color;
+
+interface MadLabelColours
 {
-	public final static boolean USE_LAF = true;
+
+	Color getBackground();
+
+	Color getForeground();
+
+	Color getBorder();
+
 }

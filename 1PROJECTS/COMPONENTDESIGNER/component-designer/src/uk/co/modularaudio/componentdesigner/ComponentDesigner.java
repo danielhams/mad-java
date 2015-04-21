@@ -302,7 +302,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 			if( foundGtkLaf )
 			{
-				log.debug("Found installed GTK laf. Will set active");
+				log.debug("Found available GTK laf. Will set active");
 				UIManager.setLookAndFeel( gtkLookAndFeelClassName );
 			}
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );

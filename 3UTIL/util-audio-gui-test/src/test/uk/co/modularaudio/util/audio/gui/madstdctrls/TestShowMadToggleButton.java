@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.Dimension;
@@ -27,7 +47,7 @@ public class TestShowMadToggleButton
 
 	public TestShowMadToggleButton()
 	{
-		tdb = new MadToggleButton( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", true )
+		tdb = new MadToggleButton( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false )
 		{
 			private static final long serialVersionUID = -359196738631950261L;
 
@@ -38,7 +58,7 @@ public class TestShowMadToggleButton
 			}
 		};
 		tdb.setMinimumSize( new Dimension( 75, 30 ) );
-		otherButton = new JToggleButton( "Kill B", true );
+		otherButton = new JToggleButton( "Kill B", false );
 		otherButton.setMinimumSize( new Dimension( 75,30 ) );
 		final Font f = otherButton.getFont();
 		log.debug("Regular button font size = " + f.toString() );
@@ -52,6 +72,9 @@ public class TestShowMadToggleButton
 			}
 
 		});
+
+		tdb.setSelected( true );
+		otherButton.setSelected( true );
 	}
 
 	public void go() throws Exception

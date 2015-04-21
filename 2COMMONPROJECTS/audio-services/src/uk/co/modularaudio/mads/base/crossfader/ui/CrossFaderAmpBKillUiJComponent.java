@@ -20,52 +20,39 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
-import java.awt.Font;
-
 import javax.swing.JComponent;
-import javax.swing.event.ChangeEvent;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
-		implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
+public class CrossFaderAmpBKillUiJComponent extends MadToggleButton
+	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
 	private final CrossFaderMadUiInstance uiInstance;
 
 	public CrossFaderAmpBKillUiJComponent(
-			CrossFaderMadDefinition definition,
-			CrossFaderMadInstance instance,
-			CrossFaderMadUiInstance uiInstance,
-			int controlIndex )
+			final CrossFaderMadDefinition definition,
+			final CrossFaderMadInstance instance,
+			final CrossFaderMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		// Default value
-		super( false );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill B", false );
 
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-//		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
-		setFont( f );
-		this.setText( "Kill B" );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
 		return this;
-	}
-
-	public void stateChanged( ChangeEvent e )
-	{
-		CrossFaderAmpBKillUiJComponent shuci = (CrossFaderAmpBKillUiJComponent)e.getSource();
-		shuci.passChangeToInstanceData( shuci.isSelected() );
 	}
 
 	private void passChangeToInstanceData( final boolean selected )
@@ -83,15 +70,6 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
-	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 	}
@@ -100,5 +78,11 @@ public class CrossFaderAmpBKillUiJComponent extends PacToggleButton
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
+	{
+		passChangeToInstanceData( newValue );
 	}
 }

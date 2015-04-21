@@ -20,18 +20,17 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
-import java.awt.Font;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
+public class CrossFaderAmpAKillUiJComponent extends MadToggleButton
 	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
@@ -45,14 +44,9 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 			final int controlIndex )
 	{
 		// Default value
-		super( false );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false );
 
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
-		this.setText( "Kill A" );
 	}
 
 	@Override
@@ -76,15 +70,6 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
-	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 	}
@@ -93,5 +78,11 @@ public class CrossFaderAmpAKillUiJComponent extends PacToggleButton
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
+	{
+		passChangeToInstanceData( newValue );
 	}
 }

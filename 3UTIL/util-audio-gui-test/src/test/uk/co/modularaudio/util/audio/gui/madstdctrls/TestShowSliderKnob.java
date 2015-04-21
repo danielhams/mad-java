@@ -20,89 +20,94 @@
 
 package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadButton;
 import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadSliderKnobImage;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class TestShowMadButton
+public class TestShowSliderKnob
 {
-	private static Log log = LogFactory.getLog( TestShowMadButton.class.getName() );
+	private static Log log = LogFactory.getLog( TestShowSliderKnob.class.getName() );
 
-	private final MadButton tdb;
-	private final JButton otherButton;
-
-	public TestShowMadButton()
+	private class KnobContainer extends JPanel
 	{
-		tdb = new MadButton( MadControlConstants.STD_BUTTON_COLOURS, "Kill A" )
+		private final MadSliderKnobImage knob;
+		private final BufferedImage knobImage;
+
+		public KnobContainer( final MadSliderKnobImage knob )
 		{
-			private static final long serialVersionUID = 4471589131574821185L;
+			setOpaque( false );
+			setBackground( Color.RED );
+			this.knob = knob;
+			this.knobImage = knob.getKnobImage();
 
-			@Override
-			public void receiveClick()
-			{
-				log.debug("Received click!");
-			}
-		};
-		tdb.setMinimumSize( new Dimension( 75, 30 ) );
-		otherButton = new JButton("Kill B");
-		otherButton.setMinimumSize( new Dimension( 75,30 ) );
-		final Font f = otherButton.getFont();
-		log.debug("Regular button font size = " + f.toString() );
+			this.setMinimumSize( new Dimension( knobImage.getWidth(), knobImage.getHeight() ) );
+		}
 
-		otherButton.addActionListener( new ActionListener() {
+		@Override
+		public void paint( final Graphics g )
+		{
+			g.drawImage( knobImage, 0, 0, null );
+		}
+	}
 
-			@Override
-			public void actionPerformed( final ActionEvent arg0 )
-			{
-				log.debug("Received action performed");
-			}
-		} );
+	private final KnobContainer horizontalKnobContainer;
+	private final KnobContainer verticalKnobContainer;
+
+	public TestShowSliderKnob()
+	{
+		horizontalKnobContainer = new KnobContainer(
+				new MadSliderKnobImage( MadControlConstants.STD_SLIDER_COLOURS,
+						SwingConstants.HORIZONTAL ) );
+		verticalKnobContainer = new KnobContainer(
+				new MadSliderKnobImage( MadControlConstants.STD_SLIDER_COLOURS,
+						SwingConstants.VERTICAL ) );
 	}
 
 	public void go() throws Exception
 	{
 
 		final JFrame f = new JFrame();
+//		f.getContentPane().setBackground( Color.RED );
+
 		final MigLayoutStringHelper msg = new MigLayoutStringHelper();
+//		msg.addLayoutConstraint( "debug" );
 		msg.addLayoutConstraint( "fill" );
 		msg.addLayoutConstraint( "insets 0" );
 		msg.addLayoutConstraint( "gap 0" );
 		msg.addColumnConstraint( "[][grow][]" );
-		msg.addRowConstraint( "[][grow][][grow][]" );
+		msg.addRowConstraint( "[][grow][grow][]" );
 		f.setLayout( msg.createMigLayout() );
 
 		f.add( new JLabel("TL"), "center");
 		f.add( new JLabel("TM"), "center");
 		f.add( new JLabel("TR"), "center,wrap");
+
 		f.add( new JLabel("ML"), "center");
-		f.add( tdb, "grow" );
+		f.add( horizontalKnobContainer, "grow" );
+		f.add( new JLabel("MR"), "center,wrap");
+
+		f.add( new JLabel("ML"), "center");
+		f.add( verticalKnobContainer, "grow" );
 		f.add( new JLabel("MR"), "center,wrap");
 
 		f.add( new JLabel("BL"), "center");
 		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
-
-		f.add( new JLabel("SML"), "center");
-		f.add( otherButton, "grow" );
-		f.add( new JLabel("SMR"), "center,wrap");
-
-		f.add( new JLabel("BL"), "center");
-		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
+		f.add( new JLabel("BR"), "center");
 
 		f.pack();
 
@@ -125,7 +130,7 @@ public class TestShowMadButton
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowMadButton t = new TestShowMadButton();
+		final TestShowSliderKnob t = new TestShowSliderKnob();
 		t.go();
 	}
 

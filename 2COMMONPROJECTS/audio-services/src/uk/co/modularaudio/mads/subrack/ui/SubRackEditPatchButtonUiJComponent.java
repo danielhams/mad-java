@@ -20,46 +20,39 @@
 
 package uk.co.modularaudio.mads.subrack.ui;
 
-import java.awt.Font;
-import java.awt.Insets;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.jpanel.PatchTabCloseListener;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SubRackEditPatchButtonUiJComponent extends PacToggleButton
+public class SubRackEditPatchButtonUiJComponent extends MadToggleButton
 	implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>, PatchTabCloseListener
 {
 	private static final long serialVersionUID = -6066972568143292726L;
-	
-	private SubRackMadUiInstance uiInstance = null;
 
-	public SubRackEditPatchButtonUiJComponent( SubRackMadDefinition definition,
-			SubRackMadInstance instance,
-			SubRackMadUiInstance uiInstance,
-			SubRackEditPatchButtonUiControlDefinition def )
+//	private static Log log = LogFactory.getLog( SubRackEditPatchButtonUiJComponent.class.getName() );
+
+	private final SubRackMadUiInstance uiInstance;
+
+	public SubRackEditPatchButtonUiJComponent( final SubRackMadDefinition definition,
+			final SubRackMadInstance instance,
+			final SubRackMadUiInstance uiInstance,
+			final SubRackEditPatchButtonUiControlDefinition def )
 	{
-		super( false );
-		setOpaque( false );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Edit", false );
 
 		this.uiInstance = uiInstance;
 		uiInstance.addPatchTabCloseListener( this );
-
-//		Font f = getFont().deriveFont( 9.0f );
-		Font f = getFont();
-		setFont( f );
-		setMargin( new Insets( 0, 0, 0, 0 ) );
-		setText( "Edit" );
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -72,14 +65,10 @@ public class SubRackEditPatchButtonUiJComponent extends PacToggleButton
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
 //		log.debug("Received update event(" + newValue + ")");
-		if( previousValue != newValue )
-		{
-			uiInstance.makeSubRackFrameVisible( newValue );
-		}
-		
+		uiInstance.makeSubRackFrameVisible( newValue );
 	}
 
 	@Override
@@ -88,9 +77,7 @@ public class SubRackEditPatchButtonUiJComponent extends PacToggleButton
 		if( this.isSelected() )
 		{
 //			log.debug("Received tab close signal, will deselect edit button");
-			previousValue = false;
 			this.setSelected( false );
-			updateColours();
 		}
 	}
 

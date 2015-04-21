@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.subrack.ui;
 
-import java.awt.Font;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
@@ -29,11 +27,12 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLabel;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SubRackShowPatchNameUiJComponent extends PacLabel
+public class SubRackShowPatchNameUiJComponent extends MadLabel
 		implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private static final long serialVersionUID = 7488560789053700984L;
@@ -46,17 +45,12 @@ public class SubRackShowPatchNameUiJComponent extends PacLabel
 			final SubRackMadUiInstance uiInstance,
 			final SubRackShowPatchNameUiControlDefinition def )
 	{
+		super( MadControlConstants.STD_LABEL_COLOURS, "" );
+		setOpaque( true );
+		setFont( MadControlConstants.LABEL_FONT );
+
 		this.instance = instance;
-		this.rackService = uiInstance.getRackService();
-
-		this.setOpaque( true );
-
-//		Font f = getFont().deriveFont( 9.0f );
-		final Font f = getFont();
-		setFont( f );
-
-//		this.setBackground( Color.WHITE );
-//		this.setBorder( new LineBorder( Color.BLACK ) );
+		this.rackService = instance.rackService;
 	}
 
 	@Override
@@ -115,4 +109,14 @@ public class SubRackShowPatchNameUiJComponent extends PacLabel
 		return true;
 	}
 
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+	}
 }

@@ -20,18 +20,16 @@
 
 package uk.co.modularaudio.service.guicompfactory.impl.components;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
-
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentNameChangeListener;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 
-public class ComponentNameLabel extends JLabel implements RackComponentNameChangeListener
+public class ComponentNameLabel extends MadLabel implements RackComponentNameChangeListener
 {
 	private static final long serialVersionUID = 3688660710324108889L;
 
@@ -40,13 +38,13 @@ public class ComponentNameLabel extends JLabel implements RackComponentNameChang
 
 	public ComponentNameLabel( final RackComponent rackComponent, final Component parentForRefresh )
 	{
-		this.parentForRefresh = parentForRefresh;
+		super( MadControlConstants.STD_LABEL_COLOURS, rackComponent.getComponentName() );
+		setFont( MadControlConstants.LABEL_SMALL_FONT );
 		setOpaque( true );
-		setFont( this.getFont().deriveFont( 9f ) );
-		setText( rackComponent.getComponentName() );
+
+		this.parentForRefresh = parentForRefresh;
 		bounds = new Rectangle( 3, 3, 100, 15 );
 		setBounds( bounds );
-		setBorder( new LineBorder( Color.BLACK, 1 ) );
 		rackComponent.addNameChangeListener( this );
 	}
 

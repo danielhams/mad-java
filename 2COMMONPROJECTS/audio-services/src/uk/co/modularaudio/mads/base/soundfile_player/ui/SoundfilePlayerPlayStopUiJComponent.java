@@ -20,53 +20,48 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import java.awt.Font;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SoundfilePlayerPlayStopUiJComponent extends NoDisplayPacToggleButton
+public class SoundfilePlayerPlayStopUiJComponent extends MadToggleButton
 		implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
-	
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
-	public SoundfilePlayerPlayStopUiJComponent( SoundfilePlayerMadDefinition definition,
-			SoundfilePlayerMadInstance instance,
-			SoundfilePlayerMadUiInstance uiInstance,
-			int controlIndex )
+	public SoundfilePlayerPlayStopUiJComponent( final SoundfilePlayerMadDefinition definition,
+			final SoundfilePlayerMadInstance instance,
+			final SoundfilePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		// Default value
-		super( false );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Play/Stop", false );
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-//		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
-		setFont( f );
-		this.setText( "Play/Stop" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
-		SoundfilePlayerMadInstance.PlayingState desiredState = (selected ?
+		final SoundfilePlayerMadInstance.PlayingState desiredState = (selected ?
 				SoundfilePlayerMadInstance.PlayingState.PLAYING :
 				SoundfilePlayerMadInstance.PlayingState.STOPPED );
 		uiInstance.sendPlayingStateChange(desiredState);
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,16 +69,19 @@ public class SoundfilePlayerPlayStopUiJComponent extends NoDisplayPacToggleButto
 	}
 
 	@Override
-	public void receiveUpdateEvent( boolean previousValue, boolean newValue )
+	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
+		passChangeToInstanceData( newValue );
 	}
 
 	@Override
 	public void destroy()
 	{
+	}
+
+	@Override
+	public boolean needsDisplayProcessing()
+	{
+		return false;
 	}
 }

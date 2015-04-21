@@ -20,19 +20,17 @@
 
 package uk.co.modularaudio.mads.base.frequencyfilter.ui;
 
-import java.awt.Font;
-import java.awt.Insets;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
+public class FrequencyFilterDbToggleUiJComponent extends MadToggleButton
 	implements IMadUiControlInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
 	private static final long serialVersionUID = 28004477652791854L;
@@ -45,15 +43,8 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 			final FrequencyFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		// Default value
-		super( false );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Toggle 24dB", false );
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
-		this.setText( "Toggle 24db" );
-		this.setMargin( new Insets( 0, 0, 0, 0 ) );
 	}
 
 	@Override
@@ -73,10 +64,7 @@ public class FrequencyFilterDbToggleUiJComponent extends PacToggleButton
 	@Override
 	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
-		if( previousValue != newValue )
-		{
-			uiInstance.send24dBChange( this.isSelected() );
-		}
+		uiInstance.send24dBChange( this.isSelected() );
 	}
 
 	@Override

@@ -20,57 +20,60 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class SoundfilePlayerRWDUiJComponent extends NoDisplayPacButton
+public class SoundfilePlayerRWDUiJComponent extends MadButton
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
-	
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
-	public SoundfilePlayerRWDUiJComponent( SoundfilePlayerMadDefinition definition,
-			SoundfilePlayerMadInstance instance,
-			SoundfilePlayerMadUiInstance uiInstance,
-			int controlIndex )
+	public SoundfilePlayerRWDUiJComponent( final SoundfilePlayerMadDefinition definition,
+			final SoundfilePlayerMadInstance instance,
+			final SoundfilePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
+		super( MadControlConstants.STD_BUTTON_COLOURS, "|<" );
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-//		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
-		setFont( f );
-		this.setText( "|<" );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
 	@Override
-	public void doDisplayProcessing(ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
 	}
 
 	@Override
-	public void receiveEvent( ActionEvent e )
+	public void destroy()
 	{
-		uiInstance.sendFullRewind();
 	}
 
 	@Override
-	public void destroy()
+	public boolean needsDisplayProcessing()
 	{
+		return false;
+	}
+
+	@Override
+	public void receiveClick()
+	{
+		uiInstance.sendFullRewind();
+
 	}
 }

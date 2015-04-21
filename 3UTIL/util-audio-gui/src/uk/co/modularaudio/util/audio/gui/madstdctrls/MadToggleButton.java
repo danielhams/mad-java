@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.event.MouseEvent;
@@ -12,13 +32,26 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 
 	private static Log log = LogFactory.getLog( MadToggleButton.class.getName() );
 
-	private boolean isOn = false;
+	protected boolean isOn = false;
 
 	public MadToggleButton( final MadButtonColours colours, final String text, final boolean defaultValue )
 	{
 		super( colours, text );
 		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
 		isOn = defaultValue;
+	}
+
+	public void setSelected( final boolean selected )
+	{
+		final boolean previousValue = isOn;
+		isOn = selected;
+		setupPushedState();
+		receiveUpdateEvent( previousValue, isOn );
+	}
+
+	public boolean isSelected()
+	{
+		return isOn;
 	}
 
 	public String getControlValue()
@@ -28,7 +61,11 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 
 	public void receiveControlValue( final String strValue )
 	{
-		isOn = Boolean.parseBoolean( strValue );
+		setSelected( Boolean.parseBoolean( strValue ) );
+	}
+
+	private void setupPushedState()
+	{
 		switch( pushedState )
 		{
 			case IN_NO_MOUSE:

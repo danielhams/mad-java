@@ -71,6 +71,7 @@
         <property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
         <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
         <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
+        <property name="audioAnalysisService"><ref bean="audioAnalysisService"></ref></property>
     </bean>
 	<bean id="baseComponentsFactory" class="uk.co.modularaudio.mads.base.BaseComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>
@@ -131,5 +132,13 @@
 	</bean>
     <bean id="jobExecutorService" class="uk.co.modularaudio.service.jobexecutor.impl.JobExecutorServiceImpl" init-method="init" destroy-method="destroy">
         <property name="configurationService"><ref bean="configurationService"></ref></property>
+    </bean>
+    <bean id="hashedStorageService" class="uk.co.modularaudio.service.hashedstorage.impl.HashedStorageServiceImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="audioAnalysisService" class="uk.co.modularaudio.service.audioanalysis.impl.AudioAnalysisServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
+        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
+        <property name="hashedStorageService"><ref bean="hashedStorageService"></ref></property>
+        <property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
     </bean>
 </beans>

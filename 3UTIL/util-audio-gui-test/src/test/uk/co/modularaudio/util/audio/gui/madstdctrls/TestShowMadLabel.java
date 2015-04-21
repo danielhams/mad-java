@@ -21,11 +21,7 @@
 package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -34,43 +30,20 @@ import javax.swing.UIManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadButton;
 import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class TestShowMadButton
+public class TestShowMadLabel
 {
-	private static Log log = LogFactory.getLog( TestShowMadButton.class.getName() );
+	private static Log log = LogFactory.getLog( TestShowMadLabel.class.getName() );
 
-	private final MadButton tdb;
-	private final JButton otherButton;
+	private final MadLabel tml;
 
-	public TestShowMadButton()
+	public TestShowMadLabel()
 	{
-		tdb = new MadButton( MadControlConstants.STD_BUTTON_COLOURS, "Kill A" )
-		{
-			private static final long serialVersionUID = 4471589131574821185L;
-
-			@Override
-			public void receiveClick()
-			{
-				log.debug("Received click!");
-			}
-		};
-		tdb.setMinimumSize( new Dimension( 75, 30 ) );
-		otherButton = new JButton("Kill B");
-		otherButton.setMinimumSize( new Dimension( 75,30 ) );
-		final Font f = otherButton.getFont();
-		log.debug("Regular button font size = " + f.toString() );
-
-		otherButton.addActionListener( new ActionListener() {
-
-			@Override
-			public void actionPerformed( final ActionEvent arg0 )
-			{
-				log.debug("Received action performed");
-			}
-		} );
+		tml = new MadLabel( MadControlConstants.STD_LABEL_COLOURS, "A label" );
+		tml.setMinimumSize( new Dimension( 75, 30 ) );
 	}
 
 	public void go() throws Exception
@@ -89,20 +62,12 @@ public class TestShowMadButton
 		f.add( new JLabel("TM"), "center");
 		f.add( new JLabel("TR"), "center,wrap");
 		f.add( new JLabel("ML"), "center");
-		f.add( tdb, "grow" );
+		f.add( tml, "grow" );
 		f.add( new JLabel("MR"), "center,wrap");
 
 		f.add( new JLabel("BL"), "center");
 		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
-
-		f.add( new JLabel("SML"), "center");
-		f.add( otherButton, "grow" );
-		f.add( new JLabel("SMR"), "center,wrap");
-
-		f.add( new JLabel("BL"), "center");
-		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
+		f.add( new JLabel("BR"), "center");
 
 		f.pack();
 
@@ -125,7 +90,7 @@ public class TestShowMadButton
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowMadButton t = new TestShowMadButton();
+		final TestShowMadLabel t = new TestShowMadLabel();
 		t.go();
 	}
 

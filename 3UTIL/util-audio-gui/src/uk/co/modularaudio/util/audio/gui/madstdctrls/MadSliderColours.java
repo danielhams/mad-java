@@ -18,9 +18,37 @@
  *
  */
 
-package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
-public class MadCtrlTestingConstants
+import java.awt.Color;
+
+public interface MadSliderColours
 {
-	public final static boolean USE_LAF = true;
+
+	Color getControlOutline();
+
+	Color getBackgroundGradStart();
+
+	Color getBackgroundGradEnd();
+
+	Color getBarrelGradStart();
+
+	Color getBarrelGradEnd();
+
+	Color getDialGradStart();
+
+	Color getDialGradEnd();
+
+	Color getDimpleDark();
+
+	Color getDimpleLight();
+
+	Color getValleyPerimeter();
+
+	Color getValleyPlain();
+
+	Color getSideShade();
+
+	Color getSideLight();
+
 }

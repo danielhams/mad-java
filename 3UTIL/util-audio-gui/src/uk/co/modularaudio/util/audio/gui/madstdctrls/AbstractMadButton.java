@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.FontMetrics;
@@ -32,7 +52,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 	private static final int OUTLINE_ARC_HEIGHT = OUTLINE_ARC_WIDTH;
 
 	private static final int INSIDE_ARC_WIDTH = 1;
-	private static final int INSIDE_ARC_HEIGHT = OUTLINE_ARC_WIDTH;
+	private static final int INSIDE_ARC_HEIGHT = INSIDE_ARC_WIDTH;
 
 	protected final MadButtonColours colours;
 
@@ -91,7 +111,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 			final Rectangle stringBounds = fm.getStringBounds( text, g2d ).getBounds();
 			final FontRenderContext frc = g2d.getFontRenderContext();
 			final GlyphVector glyphVector = getFont().createGlyphVector( frc, text );
-			final Rectangle visualBounds = glyphVector.getVisualBounds().getBounds();
+			final Rectangle visualBounds = glyphVector.getLogicalBounds().getBounds();
 
 			final int stringWidth = stringBounds.width;
 			final int textLeft = (width - stringWidth) / 2;
@@ -101,7 +121,6 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 			g2d.drawString( text, textLeft, textBottom );
 		}
 	}
-
 
 	@Override
 	public void paintComponent( final Graphics g )
@@ -113,7 +132,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 
 //		log.debug("Paint called we are in state " + pushedState.toString() );
 
-		final MadButtonStateColours stateColours = colours.getColoursForState( pushedState );
+		final MadButtonStateColours stateColours = colours.getButtonColoursForState( pushedState );
 
 		final GradientPaint bgGrad = new GradientPaint( 0, 0,
 				stateColours.getContentGradStart(),

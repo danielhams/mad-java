@@ -68,7 +68,6 @@ public class GenericComponentVisualiser
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		//		FontResetter.setUIFontFromString( "Serif", Font.PLAIN, 10 );
 		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 	}
@@ -110,7 +109,7 @@ public class GenericComponentVisualiser
 		testFrame.add( testPanel );
 		testPanel.setBackground( panelBackgroundColor );
 
-		final RackComponent rackComponent = new RackComponent( "Test", aui, auui );
+		final RackComponent rackComponent = new RackComponent( "ComponentyQuickWithLongName", aui, auui );
 		final AbstractGuiAudioComponent frontComponent = guiComponentFactoryService.createFrontGuiComponent( rackComponent );
 		final AbstractGuiAudioComponent backComponent = guiComponentFactoryService.createBackGuiComponent( rackComponent );
 

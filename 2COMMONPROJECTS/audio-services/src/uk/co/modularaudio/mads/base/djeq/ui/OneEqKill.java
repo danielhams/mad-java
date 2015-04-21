@@ -20,9 +20,10 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
+import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
 
-public class OneEqKill extends PacToggleButton
+public class OneEqKill extends MadToggleButton
 {
 	private static final long serialVersionUID = -5705961814474040293L;
 
@@ -35,8 +36,7 @@ public class OneEqKill extends PacToggleButton
 
 	public OneEqKill( )
 	{
-		super( false );
-		setText( "Kill" );
+		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill", false );
 	}
 
 	@Override

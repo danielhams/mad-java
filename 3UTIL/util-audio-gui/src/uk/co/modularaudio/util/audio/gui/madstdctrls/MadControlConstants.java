@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package uk.co.modularaudio.util.audio.gui.madstdctrls;
 
 import java.awt.Color;
@@ -23,15 +43,155 @@ public class MadControlConstants
 
 	public final static Color CONTROL_FOCUS = CONTROL_FLAT_BACKGROUND.brighter();
 
+	public final static Color CONTROL_LABEL_BACKGROUND = Color.decode( "#393f3f" );
+	public final static Color CONTROL_LABEL_FOREGROUND = Color.decode( "#ffffff" );
+	public final static Color CONTROL_LABEL_BORDER = Color.decode( "#000000" );
+
+	public final static Color CONTROL_SLIDER_OUTLINE = Color.decode( "#1b1c1c" );
+	public final static Color CONTROL_SLIDER_BACK_GRAD_START = Color.decode( "#414848" );
+	public final static Color CONTROL_SLIDER_BACK_GRAD_END = Color.decode( "#3b4242" );
+	public final static Color CONTROL_SLIDER_BARREL_GRAD_START = Color.decode( "#363b3b" );
+	public final static Color CONTROL_SLIDER_BARREL_GRAD_END = Color.decode( "#313636" );
+	public final static Color CONTROL_SLIDER_DIAL_GRAD_START = Color.decode( "#404747" );
+	public final static Color CONTROL_SLIDER_DIAL_GRAD_END = Color.decode( "#343a3a" );
+	public final static Color CONTROL_SLIDER_DIMPLE_DARK = Color.decode( "#2c2f2f" );
+	public final static Color CONTROL_SLIDER_DIMPLE_LIGHT = Color.decode( "#3a4141" );
+
+	public final static Color CONTROL_SLIDER_VALLEY_PERIMETER = Color.decode( "#282b2b" );
+	public final static Color CONTROL_SLIDER_VALLEY_PLAIN = Color.decode( "#323737" );
+
+	public final static Color CONTROL_SLIDER_SIDE_SHADE = Color.decode( "#353b3b" );
+	public final static Color CONTROL_SLIDER_SIDE_LIGHT = Color.decode( "#3c4343" );
+
 	public final static Font RACK_FONT = getRackFont();
+	public final static Font LABEL_FONT = getLabelFont();
+	public final static Font LABEL_SMALL_FONT = getLabelSmallFont();
 
 	public final static Font getRackFont()
 	{
 		return new Font( "SansSerif", Font.PLAIN, 11 );
 	}
 
+	public final static Font getLabelFont()
+	{
+		return new Font( "SansSerif", Font.PLAIN, 11 );
+	}
+
+	public final static Font getLabelSmallFont()
+	{
+		return new Font( "Dialog", Font.PLAIN, 9 );
+	}
+
 	public final static MadButtonColours STD_BUTTON_COLOURS = new StdButtonColours();
 	public final static MadButtonColours STD_TOGGLE_BUTTON_COLOURS = new StdToggleButtonColours();
+
+	public final static MadLabelColours STD_LABEL_COLOURS = new StdLabelColours();
+
+	public final static MadSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
+
+	private static class StdSliderColours implements MadSliderColours
+	{
+
+		@Override
+		public Color getControlOutline()
+		{
+			return CONTROL_SLIDER_OUTLINE;
+		}
+
+		@Override
+		public Color getBackgroundGradStart()
+		{
+			return CONTROL_SLIDER_BACK_GRAD_START;
+		}
+
+		@Override
+		public Color getBackgroundGradEnd()
+		{
+			return CONTROL_SLIDER_BACK_GRAD_END;
+		}
+
+		@Override
+		public Color getBarrelGradStart()
+		{
+			return CONTROL_SLIDER_BARREL_GRAD_START;
+		}
+
+		@Override
+		public Color getBarrelGradEnd()
+		{
+			return CONTROL_SLIDER_BARREL_GRAD_END;
+		}
+
+		@Override
+		public Color getDialGradStart()
+		{
+			return CONTROL_SLIDER_DIAL_GRAD_START;
+		}
+
+		@Override
+		public Color getDialGradEnd()
+		{
+			return CONTROL_SLIDER_DIAL_GRAD_END;
+		}
+
+		@Override
+		public Color getDimpleDark()
+		{
+			return CONTROL_SLIDER_DIMPLE_DARK;
+		}
+
+		@Override
+		public Color getDimpleLight()
+		{
+			return CONTROL_SLIDER_DIMPLE_LIGHT;
+		}
+
+		@Override
+		public Color getValleyPerimeter()
+		{
+			return CONTROL_SLIDER_VALLEY_PERIMETER;
+		}
+
+		@Override
+		public Color getValleyPlain()
+		{
+			return CONTROL_SLIDER_VALLEY_PLAIN;
+		}
+
+		@Override
+		public Color getSideShade()
+		{
+			return CONTROL_SLIDER_SIDE_SHADE;
+		}
+
+		@Override
+		public Color getSideLight()
+		{
+			return CONTROL_SLIDER_SIDE_LIGHT;
+		}
+	};
+
+	private static class StdLabelColours implements MadLabelColours
+	{
+
+		@Override
+		public Color getBackground()
+		{
+			return CONTROL_LABEL_BACKGROUND;
+		}
+
+		@Override
+		public Color getForeground()
+		{
+			return CONTROL_LABEL_FOREGROUND;
+		}
+
+		@Override
+		public Color getBorder()
+		{
+			return CONTROL_LABEL_BORDER;
+		}
+	};
 
 	private static class StdButtonColours implements MadButtonColours
 	{
@@ -200,7 +360,7 @@ public class MadControlConstants
 		}
 
 		@Override
-		public MadButtonStateColours getColoursForState( final MadButtonState state )
+		public MadButtonStateColours getButtonColoursForState( final MadButtonState state )
 		{
 			return stateToColoursMap[ state.ordinal() ];
 		}
@@ -373,7 +533,7 @@ public class MadControlConstants
 		}
 
 		@Override
-		public MadButtonStateColours getColoursForState( final MadButtonState state )
+		public MadButtonStateColours getButtonColoursForState( final MadButtonState state )
 		{
 			return stateToColoursMap[ state.ordinal() ];
 		}
