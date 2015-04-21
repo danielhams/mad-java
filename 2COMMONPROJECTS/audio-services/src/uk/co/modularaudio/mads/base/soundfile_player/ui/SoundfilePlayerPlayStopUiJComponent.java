@@ -27,10 +27,10 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstan
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class SoundfilePlayerPlayStopUiJComponent extends MadToggleButton
+public class SoundfilePlayerPlayStopUiJComponent extends LWTCToggleButton
 		implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
@@ -42,7 +42,7 @@ public class SoundfilePlayerPlayStopUiJComponent extends MadToggleButton
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Play/Stop", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Play/Stop", false );
 		this.uiInstance = uiInstance;
 	}
 

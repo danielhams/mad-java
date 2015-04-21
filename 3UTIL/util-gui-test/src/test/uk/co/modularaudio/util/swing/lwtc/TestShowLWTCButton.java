@@ -25,9 +25,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -35,30 +35,30 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class TestShowMadToggleButton
+public class TestShowLWTCButton
 {
-	private static Log log = LogFactory.getLog( TestShowMadToggleButton.class.getName() );
+	private static Log log = LogFactory.getLog( TestShowLWTCButton.class.getName() );
 
-	private final MadToggleButton tdb;
-	private final JToggleButton otherButton;
+	private final LWTCButton tdb;
+	private final JButton otherButton;
 
-	public TestShowMadToggleButton()
+	public TestShowLWTCButton()
 	{
-		tdb = new MadToggleButton( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false )
+		tdb = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS, "Kill A" )
 		{
-			private static final long serialVersionUID = -359196738631950261L;
+			private static final long serialVersionUID = 4471589131574821185L;
 
 			@Override
-			public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
+			public void receiveClick()
 			{
-				log.debug("Received update event from " + previousValue + " to " + newValue );
+				log.debug("Received click!");
 			}
 		};
 		tdb.setMinimumSize( new Dimension( 75, 30 ) );
-		otherButton = new JToggleButton( "Kill B", false );
+		otherButton = new JButton("Kill B");
 		otherButton.setMinimumSize( new Dimension( 75,30 ) );
 		final Font f = otherButton.getFont();
 		log.debug("Regular button font size = " + f.toString() );
@@ -66,15 +66,11 @@ public class TestShowMadToggleButton
 		otherButton.addActionListener( new ActionListener() {
 
 			@Override
-			public void actionPerformed( final ActionEvent e )
+			public void actionPerformed( final ActionEvent arg0 )
 			{
-				log.debug("Received action event: " + e.toString() );
+				log.debug("Received action performed");
 			}
-
-		});
-
-		tdb.setSelected( true );
-		otherButton.setSelected( true );
+		} );
 	}
 
 	public void go() throws Exception
@@ -125,11 +121,11 @@ public class TestShowMadToggleButton
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( MadCtrlTestingConstants.USE_LAF )
+		if( LWTCCtrlTestingConstants.USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowMadToggleButton t = new TestShowMadToggleButton();
+		final TestShowLWTCButton t = new TestShowLWTCButton();
 		t.go();
 	}
 

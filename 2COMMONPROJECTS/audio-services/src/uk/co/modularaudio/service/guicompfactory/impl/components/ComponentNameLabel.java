@@ -26,10 +26,10 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentNameChangeListener;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class ComponentNameLabel extends MadLabel implements RackComponentNameChangeListener
+public class ComponentNameLabel extends LWTCLabel implements RackComponentNameChangeListener
 {
 	private static final long serialVersionUID = 3688660710324108889L;
 
@@ -38,8 +38,8 @@ public class ComponentNameLabel extends MadLabel implements RackComponentNameCha
 
 	public ComponentNameLabel( final RackComponent rackComponent, final Component parentForRefresh )
 	{
-		super( MadControlConstants.STD_LABEL_COLOURS, rackComponent.getComponentName() );
-		setFont( MadControlConstants.LABEL_SMALL_FONT );
+		super( LWTCControlConstants.STD_LABEL_COLOURS, rackComponent.getComponentName() );
+		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 		setOpaque( true );
 
 		this.parentForRefresh = parentForRefresh;

@@ -18,9 +18,17 @@
  *
  */
 
-package test.uk.co.modularaudio.util.swing.lwtc;
+package uk.co.modularaudio.util.swing.lwtc;
 
-public class MadCtrlTestingConstants
+import java.awt.Color;
+
+interface LWTCLabelColours
 {
-	public final static boolean USE_LAF = true;
+
+	Color getBackground();
+
+	Color getForeground();
+
+	Color getBorder();
+
 }

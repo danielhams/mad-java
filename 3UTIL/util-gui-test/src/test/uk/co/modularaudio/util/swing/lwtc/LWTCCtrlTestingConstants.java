@@ -18,37 +18,9 @@
  *
  */
 
-package uk.co.modularaudio.util.swing.lwtc;
+package test.uk.co.modularaudio.util.swing.lwtc;
 
-import java.awt.Color;
-
-public interface MadSliderColours
+public class LWTCCtrlTestingConstants
 {
-
-	Color getControlOutline();
-
-	Color getBackgroundGradStart();
-
-	Color getBackgroundGradEnd();
-
-	Color getBarrelGradStart();
-
-	Color getBarrelGradEnd();
-
-	Color getDialGradStart();
-
-	Color getDialGradEnd();
-
-	Color getDimpleDark();
-
-	Color getDimpleLight();
-
-	Color getValleyPerimeter();
-
-	Color getValleyPlain();
-
-	Color getSideShade();
-
-	Color getSideLight();
-
+	public final static boolean USE_LAF = true;
 }

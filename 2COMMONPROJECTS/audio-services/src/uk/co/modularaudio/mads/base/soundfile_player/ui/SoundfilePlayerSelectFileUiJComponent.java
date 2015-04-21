@@ -30,10 +30,10 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstan
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadButton;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class SoundfilePlayerSelectFileUiJComponent extends MadButton
+public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
@@ -48,7 +48,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends MadButton
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( MadControlConstants.STD_BUTTON_COLOURS, "/\\" );
+		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\" );
 		this.uiInstance = uiInstance;
 		this.lastUsedDirectory = uiInstance.getMusicRoot();
 	}

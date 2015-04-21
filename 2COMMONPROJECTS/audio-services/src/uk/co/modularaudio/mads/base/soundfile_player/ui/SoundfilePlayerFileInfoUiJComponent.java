@@ -30,10 +30,10 @@ import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class SoundfilePlayerFileInfoUiJComponent extends MadLabel
+public class SoundfilePlayerFileInfoUiJComponent extends LWTCLabel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
 	SoundfileSampleEventListener
 {
@@ -47,9 +47,9 @@ public class SoundfilePlayerFileInfoUiJComponent extends MadLabel
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( MadControlConstants.STD_LABEL_COLOURS, "" );
+		super( LWTCControlConstants.STD_LABEL_COLOURS, "" );
 		this.setOpaque( true );
-		setFont( MadControlConstants.LABEL_FONT );
+		setFont( LWTCControlConstants.LABEL_FONT );
 
 		this.uiInstance = uiInstance;
 		sampleCachingService = instance.getAdvancedComponentsFrontController().getSampleCachingService();

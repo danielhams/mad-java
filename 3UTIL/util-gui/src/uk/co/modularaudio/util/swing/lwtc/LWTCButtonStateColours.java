@@ -22,22 +22,17 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-
-public class MadLabel extends JLabel
+public interface LWTCButtonStateColours
 {
-	private static final long serialVersionUID = 6138681925643386194L;
+	Color getControlOutline();
 
-	public MadLabel( final MadLabelColours colours, final String text )
-	{
-		super( text );
+	Color getContentGradStart();
 
-		this.setBackground( colours.getBackground() );
-		this.setForeground( colours.getForeground() );
-		final Color borderColor = colours.getBorder();
+	Color getContentGradEnd();
 
-		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
-	}
+	Color getHighlight();
 
+	Color getFocus();
+
+	Color getForegroundText();
 }

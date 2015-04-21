@@ -31,10 +31,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public class MadSliderKnobImage
+public class LWTCSliderKnobImage
 {
 	private static final int OUTLINE_ARC_WIDTH = 8;
 	private static final int OUTLINE_ARC_HEIGHT = OUTLINE_ARC_WIDTH;
@@ -57,11 +54,11 @@ public class MadSliderKnobImage
 	public final static Dimension H_KNOB_SIZE = new Dimension( H_KNOB_WIDTH, H_KNOB_HEIGHT );
 	public final static Dimension V_KNOB_SIZE = new Dimension( V_KNOB_WIDTH, V_KNOB_HEIGHT );
 
-	private static Log log = LogFactory.getLog( MadSliderKnobImage.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderKnobImage.class.getName() );
 
 	private final BufferedImage bi;
 
-	public MadSliderKnobImage( final MadSliderColours colours, final int orientation )
+	public LWTCSliderKnobImage( final LWTCSliderColours colours, final int orientation )
 	{
 		bi = generateImageForKnob( colours, orientation );
 	}
@@ -71,7 +68,7 @@ public class MadSliderKnobImage
 		return bi;
 	}
 
-	private BufferedImage generateImageForKnob( final MadSliderColours sliderColours,
+	private BufferedImage generateImageForKnob( final LWTCSliderColours sliderColours,
 			final int orientation )
 	{
 		int iwidth, iheight, width, height;

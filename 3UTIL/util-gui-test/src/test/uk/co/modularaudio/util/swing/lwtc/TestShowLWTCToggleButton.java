@@ -20,15 +20,14 @@
 
 package test.uk.co.modularaudio.util.swing.lwtc;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -36,78 +35,78 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadSliderKnobImage;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class TestShowSliderKnob
+public class TestShowLWTCToggleButton
 {
-	private static Log log = LogFactory.getLog( TestShowSliderKnob.class.getName() );
+	private static Log log = LogFactory.getLog( TestShowLWTCToggleButton.class.getName() );
 
-	private class KnobContainer extends JPanel
+	private final LWTCToggleButton tdb;
+	private final JToggleButton otherButton;
+
+	public TestShowLWTCToggleButton()
 	{
-		private final MadSliderKnobImage knob;
-		private final BufferedImage knobImage;
-
-		public KnobContainer( final MadSliderKnobImage knob )
+		tdb = new LWTCToggleButton( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false )
 		{
-			setOpaque( false );
-			setBackground( Color.RED );
-			this.knob = knob;
-			this.knobImage = knob.getKnobImage();
+			private static final long serialVersionUID = -359196738631950261L;
 
-			this.setMinimumSize( new Dimension( knobImage.getWidth(), knobImage.getHeight() ) );
-		}
+			@Override
+			public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
+			{
+				log.debug("Received update event from " + previousValue + " to " + newValue );
+			}
+		};
+		tdb.setMinimumSize( new Dimension( 75, 30 ) );
+		otherButton = new JToggleButton( "Kill B", false );
+		otherButton.setMinimumSize( new Dimension( 75,30 ) );
+		final Font f = otherButton.getFont();
+		log.debug("Regular button font size = " + f.toString() );
 
-		@Override
-		public void paint( final Graphics g )
-		{
-			g.drawImage( knobImage, 0, 0, null );
-		}
-	}
+		otherButton.addActionListener( new ActionListener() {
 
-	private final KnobContainer horizontalKnobContainer;
-	private final KnobContainer verticalKnobContainer;
+			@Override
+			public void actionPerformed( final ActionEvent e )
+			{
+				log.debug("Received action event: " + e.toString() );
+			}
 
-	public TestShowSliderKnob()
-	{
-		horizontalKnobContainer = new KnobContainer(
-				new MadSliderKnobImage( MadControlConstants.STD_SLIDER_COLOURS,
-						SwingConstants.HORIZONTAL ) );
-		verticalKnobContainer = new KnobContainer(
-				new MadSliderKnobImage( MadControlConstants.STD_SLIDER_COLOURS,
-						SwingConstants.VERTICAL ) );
+		});
+
+		tdb.setSelected( true );
+		otherButton.setSelected( true );
 	}
 
 	public void go() throws Exception
 	{
 
 		final JFrame f = new JFrame();
-//		f.getContentPane().setBackground( Color.RED );
-
 		final MigLayoutStringHelper msg = new MigLayoutStringHelper();
-//		msg.addLayoutConstraint( "debug" );
 		msg.addLayoutConstraint( "fill" );
 		msg.addLayoutConstraint( "insets 0" );
 		msg.addLayoutConstraint( "gap 0" );
 		msg.addColumnConstraint( "[][grow][]" );
-		msg.addRowConstraint( "[][grow][grow][]" );
+		msg.addRowConstraint( "[][grow][][grow][]" );
 		f.setLayout( msg.createMigLayout() );
 
 		f.add( new JLabel("TL"), "center");
 		f.add( new JLabel("TM"), "center");
 		f.add( new JLabel("TR"), "center,wrap");
-
 		f.add( new JLabel("ML"), "center");
-		f.add( horizontalKnobContainer, "grow" );
-		f.add( new JLabel("MR"), "center,wrap");
-
-		f.add( new JLabel("ML"), "center");
-		f.add( verticalKnobContainer, "grow" );
+		f.add( tdb, "grow" );
 		f.add( new JLabel("MR"), "center,wrap");
 
 		f.add( new JLabel("BL"), "center");
 		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center");
+		f.add( new JLabel("BR"), "center,wrap");
+
+		f.add( new JLabel("SML"), "center");
+		f.add( otherButton, "grow" );
+		f.add( new JLabel("SMR"), "center,wrap");
+
+		f.add( new JLabel("BL"), "center");
+		f.add( new JLabel("BM"), "center");
+		f.add( new JLabel("BR"), "center,wrap");
 
 		f.pack();
 
@@ -126,11 +125,11 @@ public class TestShowSliderKnob
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( MadCtrlTestingConstants.USE_LAF )
+		if( LWTCCtrlTestingConstants.USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowSliderKnob t = new TestShowSliderKnob();
+		final TestShowLWTCToggleButton t = new TestShowLWTCToggleButton();
 		t.go();
 	}
 

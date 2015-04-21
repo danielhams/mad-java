@@ -30,10 +30,10 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadButton;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class SubRackSavePatchButtonUiJComponent extends MadButton
+public class SubRackSavePatchButtonUiJComponent extends LWTCButton
 	implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private static final long serialVersionUID = -6066972568143292726L;
@@ -47,7 +47,7 @@ public class SubRackSavePatchButtonUiJComponent extends MadButton
 			final SubRackMadUiInstance uiInstance,
 			final SubRackSavePatchButtonUiControlDefinition def )
 	{
-		super( MadControlConstants.STD_BUTTON_COLOURS, "Save" );
+		super( LWTCControlConstants.STD_BUTTON_COLOURS, "Save" );
 
 		this.uiInstance = uiInstance;
 	}

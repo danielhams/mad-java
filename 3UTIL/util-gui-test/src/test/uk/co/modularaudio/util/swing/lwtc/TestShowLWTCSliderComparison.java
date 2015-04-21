@@ -25,6 +25,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.BoundedRangeModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,20 +39,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadSliderKnobImage;
-import uk.co.modularaudio.util.swing.lwtc.MadSliderPainter;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCSliderKnobImage;
+import uk.co.modularaudio.util.swing.lwtc.LWTCSliderPainter;
 
-public class TestShowSliderComparison
+public class TestShowLWTCSliderComparison
 {
-	private static Log log = LogFactory.getLog( TestShowSliderComparison.class.getName() );
+	private static Log log = LogFactory.getLog( TestShowLWTCSliderComparison.class.getName() );
 
 	private class KnobContainer extends JPanel
 	{
-		private final MadSliderPainter painter;
+		private static final long serialVersionUID = -1641593209314808151L;
+		private final LWTCSliderPainter painter;
 		private final int orientation;
 
-		public KnobContainer( final MadSliderPainter painter, final int orientation )
+		public KnobContainer( final LWTCSliderPainter painter, final int orientation )
 		{
 			this.orientation = orientation;
 			setOpaque( false );
@@ -58,13 +61,13 @@ public class TestShowSliderComparison
 			Dimension minSize;
 			if( orientation == SwingConstants.HORIZONTAL )
 			{
-				minSize = new Dimension(MadSliderKnobImage.H_KNOB_SIZE.width,
-						MadSliderKnobImage.H_KNOB_SIZE.height + 3 );
+				minSize = new Dimension(LWTCSliderKnobImage.H_KNOB_SIZE.width,
+						LWTCSliderKnobImage.H_KNOB_SIZE.height + 3 );
 			}
 			else
 			{
-				minSize = new Dimension(MadSliderKnobImage.V_KNOB_SIZE.width + 3,
-						MadSliderKnobImage.V_KNOB_SIZE.height );
+				minSize = new Dimension(LWTCSliderKnobImage.V_KNOB_SIZE.width + 3,
+						LWTCSliderKnobImage.V_KNOB_SIZE.height );
 			}
 //			log.debug("Setting min size to " + minSize.toString() );
 			setMinimumSize( minSize );
@@ -77,16 +80,17 @@ public class TestShowSliderComparison
 			final int width = getWidth();
 			final int height = getHeight();
 			final Graphics2D g2d = (Graphics2D)g;
-			painter.paintSlider( g2d, orientation, width, height );
+			painter.paintSlider( g2d, orientation, width, height,
+					new DefaultBoundedRangeModel());
 		}
 	}
 
 	private final KnobContainer horizontalKnobContainer;
 	private final KnobContainer verticalKnobContainer;
 
-	public TestShowSliderComparison()
+	public TestShowLWTCSliderComparison()
 	{
-		final MadSliderPainter painter = new MadSliderPainter( MadControlConstants.STD_SLIDER_COLOURS );
+		final LWTCSliderPainter painter = new LWTCSliderPainter( LWTCControlConstants.STD_SLIDER_COLOURS );
 		horizontalKnobContainer = new KnobContainer( painter,
 						SwingConstants.HORIZONTAL );
 		verticalKnobContainer = new KnobContainer( painter,
@@ -98,6 +102,9 @@ public class TestShowSliderComparison
 
 		final JSlider testSwingJSlider = new JSlider( orientation );
 		testSwingJSlider.setOpaque( false );
+
+		final BoundedRangeModel defaultSwingSliderModel = testSwingJSlider.getModel();
+		log.debug("Default swing slider model is " + defaultSwingSliderModel.toString() );
 
 		final JFrame f = new JFrame();
 //		f.getContentPane().setBackground( Color.YELLOW );
@@ -172,15 +179,15 @@ public class TestShowSliderComparison
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( MadCtrlTestingConstants.USE_LAF )
+		if( LWTCCtrlTestingConstants.USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
-		final TestShowSliderComparison vt = new TestShowSliderComparison();
+		final TestShowLWTCSliderComparison vt = new TestShowLWTCSliderComparison();
 		vt.go( SwingConstants.VERTICAL );
 
-		final TestShowSliderComparison ht = new TestShowSliderComparison();
+		final TestShowLWTCSliderComparison ht = new TestShowLWTCSliderComparison();
 		ht.go( SwingConstants.HORIZONTAL );
 }
 

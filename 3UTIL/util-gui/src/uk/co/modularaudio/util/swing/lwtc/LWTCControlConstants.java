@@ -23,9 +23,9 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.Color;
 import java.awt.Font;
 
-import uk.co.modularaudio.util.swing.lwtc.AbstractMadButton.MadButtonState;
+import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
 
-public class MadControlConstants
+public class LWTCControlConstants
 {
 	public final static Color CONTROL_OUTLINE = Color.decode( "#000000" ); // Black
 	public final static Color CONTROL_FLAT_BACKGROUND = Color.decode( "#393f3f" );  // Dark grey
@@ -82,14 +82,14 @@ public class MadControlConstants
 		return new Font( "Dialog", Font.PLAIN, 9 );
 	}
 
-	public final static MadButtonColours STD_BUTTON_COLOURS = new StdButtonColours();
-	public final static MadButtonColours STD_TOGGLE_BUTTON_COLOURS = new StdToggleButtonColours();
+	public final static LWTCButtonColours STD_BUTTON_COLOURS = new StdButtonColours();
+	public final static LWTCButtonColours STD_TOGGLE_BUTTON_COLOURS = new StdToggleButtonColours();
 
-	public final static MadLabelColours STD_LABEL_COLOURS = new StdLabelColours();
+	public final static LWTCLabelColours STD_LABEL_COLOURS = new StdLabelColours();
 
-	public final static MadSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
+	public final static LWTCSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
 
-	private static class StdSliderColours implements MadSliderColours
+	private static class StdSliderColours implements LWTCSliderColours
 	{
 
 		@Override
@@ -171,7 +171,7 @@ public class MadControlConstants
 		}
 	};
 
-	private static class StdLabelColours implements MadLabelColours
+	private static class StdLabelColours implements LWTCLabelColours
 	{
 
 		@Override
@@ -193,15 +193,15 @@ public class MadControlConstants
 		}
 	};
 
-	private static class StdButtonColours implements MadButtonColours
+	private static class StdButtonColours implements LWTCButtonColours
 	{
-		private final MadButtonStateColours[] stateToColoursMap;
+		private final LWTCButtonStateColours[] stateToColoursMap;
 
 		public StdButtonColours()
 		{
-			stateToColoursMap = new MadButtonStateColours[ MadButtonState.values().length ];
+			stateToColoursMap = new LWTCButtonStateColours[ MadButtonState.values().length ];
 
-			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -240,7 +240,7 @@ public class MadControlConstants
 					return CONTROL_BUTTON_OUT_GRAD_END;
 				}
 			};
-			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -279,7 +279,7 @@ public class MadControlConstants
 					return CONTROL_BUTTON_OUT_GRAD_END.brighter();
 				}
 			};
-			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -318,7 +318,7 @@ public class MadControlConstants
 					return CONTROL_BUTTON_IN_GRAD_END;
 				}
 			};
-			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -360,21 +360,21 @@ public class MadControlConstants
 		}
 
 		@Override
-		public MadButtonStateColours getButtonColoursForState( final MadButtonState state )
+		public LWTCButtonStateColours getButtonColoursForState( final MadButtonState state )
 		{
 			return stateToColoursMap[ state.ordinal() ];
 		}
 	};
 
-	private static class StdToggleButtonColours implements MadButtonColours
+	private static class StdToggleButtonColours implements LWTCButtonColours
 	{
-		private final MadButtonStateColours[] stateToColoursMap;
+		private final LWTCButtonStateColours[] stateToColoursMap;
 
 		public StdToggleButtonColours()
 		{
-			stateToColoursMap = new MadButtonStateColours[ MadButtonState.values().length ];
+			stateToColoursMap = new LWTCButtonStateColours[ MadButtonState.values().length ];
 
-			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -413,7 +413,7 @@ public class MadControlConstants
 					return CONTROL_BUTTON_OUT_GRAD_END;
 				}
 			};
-			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -452,7 +452,7 @@ public class MadControlConstants
 					return CONTROL_BUTTON_OUT_GRAD_END.brighter();
 				}
 			};
-			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -491,7 +491,7 @@ public class MadControlConstants
 					return CONTROL_FLAT_BACKGROUND;
 				}
 			};
-			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new MadButtonStateColours()
+			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
 			{
 
 				@Override
@@ -533,7 +533,7 @@ public class MadControlConstants
 		}
 
 		@Override
-		public MadButtonStateColours getButtonColoursForState( final MadButtonState state )
+		public LWTCButtonStateColours getButtonColoursForState( final MadButtonState state )
 		{
 			return stateToColoursMap[ state.ordinal() ];
 		}

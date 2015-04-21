@@ -29,10 +29,10 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class SubRackShowPatchNameUiJComponent extends MadLabel
+public class SubRackShowPatchNameUiJComponent extends LWTCLabel
 		implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
 	private static final long serialVersionUID = 7488560789053700984L;
@@ -45,9 +45,9 @@ public class SubRackShowPatchNameUiJComponent extends MadLabel
 			final SubRackMadUiInstance uiInstance,
 			final SubRackShowPatchNameUiControlDefinition def )
 	{
-		super( MadControlConstants.STD_LABEL_COLOURS, "" );
+		super( LWTCControlConstants.STD_LABEL_COLOURS, "" );
 		setOpaque( true );
-		setFont( MadControlConstants.LABEL_FONT );
+		setFont( LWTCControlConstants.LABEL_FONT );
 
 		this.instance = instance;
 		this.rackService = instance.rackService;

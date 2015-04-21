@@ -27,10 +27,10 @@ import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstanc
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class FrequencyFilterDbToggleUiJComponent extends MadToggleButton
+public class FrequencyFilterDbToggleUiJComponent extends LWTCToggleButton
 	implements IMadUiControlInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
 	private static final long serialVersionUID = 28004477652791854L;
@@ -43,7 +43,7 @@ public class FrequencyFilterDbToggleUiJComponent extends MadToggleButton
 			final FrequencyFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Toggle 24dB", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Toggle 24dB", false );
 		this.uiInstance = uiInstance;
 	}
 

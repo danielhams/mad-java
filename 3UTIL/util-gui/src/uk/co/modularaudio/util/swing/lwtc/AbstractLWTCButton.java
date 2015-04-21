@@ -34,7 +34,7 @@ import java.awt.font.GlyphVector;
 
 import javax.swing.JPanel;
 
-public abstract class AbstractMadButton extends JPanel implements FocusListener
+public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 {
 	private static final long serialVersionUID = -7622401208667882019L;
 
@@ -54,7 +54,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 	private static final int INSIDE_ARC_WIDTH = 1;
 	private static final int INSIDE_ARC_HEIGHT = INSIDE_ARC_WIDTH;
 
-	protected final MadButtonColours colours;
+	protected final LWTCButtonColours colours;
 
 	protected MadButtonState pushedState = MadButtonState.OUT_NO_MOUSE;
 
@@ -63,20 +63,20 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 	protected int fontHeight = 0;
 	protected FontMetrics fm;
 
-	public AbstractMadButton( final MadButtonColours colours )
+	public AbstractLWTCButton( final LWTCButtonColours colours )
 	{
 		this( colours, null );
 	}
 
-	public AbstractMadButton( final MadButtonColours colours, final String textContent )
+	public AbstractLWTCButton( final LWTCButtonColours colours, final String textContent )
 	{
 		this.colours = colours;
 		this.text = textContent;
 		setOpaque( false );
 
-		this.setFont( MadControlConstants.RACK_FONT );
+		this.setFont( LWTCControlConstants.RACK_FONT );
 
-		fm = this.getFontMetrics( MadControlConstants.RACK_FONT );
+		fm = this.getFontMetrics( LWTCControlConstants.RACK_FONT );
 		fontHeight = fm.getHeight();
 
 		setFocusable( true );
@@ -88,7 +88,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 	protected abstract MouseListener getMouseListener();
 
 	private final void paintButton( final Graphics2D g2d,
-			final MadButtonStateColours stateColours,
+			final LWTCButtonStateColours stateColours,
 			final GradientPaint gp,
 			final int width,
 			final int height )
@@ -132,7 +132,7 @@ public abstract class AbstractMadButton extends JPanel implements FocusListener
 
 //		log.debug("Paint called we are in state " + pushedState.toString() );
 
-		final MadButtonStateColours stateColours = colours.getButtonColoursForState( pushedState );
+		final LWTCButtonStateColours stateColours = colours.getButtonColoursForState( pushedState );
 
 		final GradientPaint bgGrad = new GradientPaint( 0, 0,
 				stateColours.getContentGradStart(),

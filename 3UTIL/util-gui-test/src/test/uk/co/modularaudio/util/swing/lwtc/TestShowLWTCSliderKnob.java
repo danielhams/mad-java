@@ -20,49 +20,85 @@
 
 package test.uk.co.modularaudio.util.swing.lwtc;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCSliderKnobImage;
 
-public class TestShowMadLabel
+public class TestShowLWTCSliderKnob
 {
-	private static Log log = LogFactory.getLog( TestShowMadLabel.class.getName() );
+//	private static Log log = LogFactory.getLog( TestShowLWTCSliderKnob.class.getName() );
 
-	private final MadLabel tml;
-
-	public TestShowMadLabel()
+	private class KnobContainer extends JPanel
 	{
-		tml = new MadLabel( MadControlConstants.STD_LABEL_COLOURS, "A label" );
-		tml.setMinimumSize( new Dimension( 75, 30 ) );
+		private static final long serialVersionUID = -3198915514341179594L;
+		private final BufferedImage knobImage;
+
+		public KnobContainer( final LWTCSliderKnobImage knob )
+		{
+			setOpaque( false );
+			setBackground( Color.RED );
+			this.knobImage = knob.getKnobImage();
+
+			this.setMinimumSize( new Dimension( knobImage.getWidth(), knobImage.getHeight() ) );
+		}
+
+		@Override
+		public void paint( final Graphics g )
+		{
+			g.drawImage( knobImage, 0, 0, null );
+		}
+	}
+
+	private final KnobContainer horizontalKnobContainer;
+	private final KnobContainer verticalKnobContainer;
+
+	public TestShowLWTCSliderKnob()
+	{
+		horizontalKnobContainer = new KnobContainer(
+				new LWTCSliderKnobImage( LWTCControlConstants.STD_SLIDER_COLOURS,
+						SwingConstants.HORIZONTAL ) );
+		verticalKnobContainer = new KnobContainer(
+				new LWTCSliderKnobImage( LWTCControlConstants.STD_SLIDER_COLOURS,
+						SwingConstants.VERTICAL ) );
 	}
 
 	public void go() throws Exception
 	{
 
 		final JFrame f = new JFrame();
+//		f.getContentPane().setBackground( Color.RED );
+
 		final MigLayoutStringHelper msg = new MigLayoutStringHelper();
+//		msg.addLayoutConstraint( "debug" );
 		msg.addLayoutConstraint( "fill" );
 		msg.addLayoutConstraint( "insets 0" );
 		msg.addLayoutConstraint( "gap 0" );
 		msg.addColumnConstraint( "[][grow][]" );
-		msg.addRowConstraint( "[][grow][][grow][]" );
+		msg.addRowConstraint( "[][grow][grow][]" );
 		f.setLayout( msg.createMigLayout() );
 
 		f.add( new JLabel("TL"), "center");
 		f.add( new JLabel("TM"), "center");
 		f.add( new JLabel("TR"), "center,wrap");
+
 		f.add( new JLabel("ML"), "center");
-		f.add( tml, "grow" );
+		f.add( horizontalKnobContainer, "grow" );
+		f.add( new JLabel("MR"), "center,wrap");
+
+		f.add( new JLabel("ML"), "center");
+		f.add( verticalKnobContainer, "grow" );
 		f.add( new JLabel("MR"), "center,wrap");
 
 		f.add( new JLabel("BL"), "center");
@@ -86,11 +122,11 @@ public class TestShowMadLabel
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( MadCtrlTestingConstants.USE_LAF )
+		if( LWTCCtrlTestingConstants.USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowMadLabel t = new TestShowMadLabel();
+		final TestShowLWTCSliderKnob t = new TestShowLWTCSliderKnob();
 		t.go();
 	}
 

@@ -26,15 +26,15 @@ import java.awt.event.MouseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class MadToggleButton extends AbstractMadButton implements MouseListener
+public abstract class LWTCToggleButton extends AbstractLWTCButton implements MouseListener
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
-	private static Log log = LogFactory.getLog( MadToggleButton.class.getName() );
+	private static Log log = LogFactory.getLog( LWTCToggleButton.class.getName() );
 
 	protected boolean isOn = false;
 
-	public MadToggleButton( final MadButtonColours colours, final String text, final boolean defaultValue )
+	public LWTCToggleButton( final LWTCButtonColours colours, final String text, final boolean defaultValue )
 	{
 		super( colours, text );
 		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );

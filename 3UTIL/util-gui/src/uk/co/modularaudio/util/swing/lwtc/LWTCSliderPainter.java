@@ -23,35 +23,44 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public class MadSliderPainter
+public class LWTCSliderPainter
 {
-	private static Log log = LogFactory.getLog( MadSliderPainter.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderPainter.class.getName() );
 
-	private final MadSliderKnobImage horizKnobImage;
-	private final MadSliderKnobImage vertKnobImage;
-	private final MadSliderGuideImages guideImages;
+	private final LWTCSliderKnobImage horizKnobImage;
+	private final LWTCSliderKnobImage vertKnobImage;
+	private final LWTCSliderGuideImages guideImages;
 
-	public MadSliderPainter( final MadSliderColours colours )
+	public LWTCSliderPainter( final LWTCSliderColours colours )
 	{
-		horizKnobImage = new MadSliderKnobImage( colours, SwingConstants.HORIZONTAL );
-		vertKnobImage = new MadSliderKnobImage( colours, SwingConstants.VERTICAL );
-		guideImages = new MadSliderGuideImages( colours );
+		horizKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.HORIZONTAL );
+		vertKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.VERTICAL );
+		guideImages = new LWTCSliderGuideImages( colours );
 	}
 
-	public void paintSlider( final Graphics2D g2d, final int orientation, final int width, final int height )
+	public void paintSlider( final Graphics2D g2d,
+			final int orientation,
+			final int width, final int height,
+			final BoundedRangeModel model )
 	{
 		final int xCenter = (width / 2);
 		final int yCenter = (height / 2);
+
+
+		final int curValue = model.getValue();
+		final int minValue = model.getMinimum();
+		final int maxValue = model.getMaximum();
+		final int range = maxValue - minValue;
+		final float normalisedPos = (curValue - minValue) / (float)range;
+
 		switch( orientation )
 		{
 			case SwingConstants.HORIZONTAL:
 			{
-				final int sliderHeight = MadSliderKnobImage.H_KNOB_HEIGHT;
+				final int sliderHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT;
 				final int yOffset = yCenter - (sliderHeight / 2) + 5;
 				g2d.drawImage( guideImages.getHorizStartGuideImage(),
 						2, yOffset, null );
@@ -60,17 +69,16 @@ public class MadSliderPainter
 				g2d.drawImage( guideImages.getHorizGuideImage(),
 						4, yOffset, width - 8, 7, null );
 
-				// Quick hack for now
-				final int center = width / 2;
+				final int pixelPositionsAvailable = width - (3*2) - LWTCSliderKnobImage.H_KNOB_WIDTH + 1;
+				final int pixelOffset = (int)(3 + (pixelPositionsAvailable * normalisedPos ));
 				final BufferedImage hKnobImage = horizKnobImage.getKnobImage();
-				final int xOffset = center - (hKnobImage.getWidth() / 2);
-				g2d.drawImage( hKnobImage, xOffset, yOffset - 4, null );
+				g2d.drawImage( hKnobImage, pixelOffset, yOffset - 4, null );
 				break;
 			}
 			case SwingConstants.VERTICAL:
 			default:
 			{
-				final int sliderWidth = MadSliderKnobImage.V_KNOB_WIDTH;
+				final int sliderWidth = LWTCSliderKnobImage.V_KNOB_WIDTH;
 				final int xOffset = xCenter - (sliderWidth / 2) + 5;
 				g2d.drawImage( guideImages.getVertStartGuideImage(),
 						xOffset, 2, null );
@@ -81,11 +89,11 @@ public class MadSliderPainter
 //				g2d.drawImage( guideImages.getVertGuideImage(),
 //						xOffset, 4, null );
 
-				// Quick hack for now
-				final int center = height / 2;
+				final int pixelPositionsAvailable = height - (3*2) - LWTCSliderKnobImage.V_KNOB_HEIGHT + 1;
+				final int pixelOffset = (int)(pixelPositionsAvailable * normalisedPos );
+				final int reversedOffset = pixelPositionsAvailable - pixelOffset + 3;
 				final BufferedImage vKnobImage = vertKnobImage.getKnobImage();
-				final int yOffset = center - (vKnobImage.getHeight() / 2);
-				g2d.drawImage( vKnobImage, xOffset - 4, yOffset, null );
+				g2d.drawImage( vKnobImage, xOffset - 4, reversedOffset, null );
 				break;
 			}
 		}

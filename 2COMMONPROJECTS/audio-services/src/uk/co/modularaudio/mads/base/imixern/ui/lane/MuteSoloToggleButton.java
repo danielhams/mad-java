@@ -22,16 +22,16 @@ package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
 import java.awt.Dimension;
 
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public abstract class MuteSoloToggleButton extends MadToggleButton
+public abstract class MuteSoloToggleButton extends LWTCToggleButton
 {
 	private static final long serialVersionUID = -576319205878844394L;
 
 	public MuteSoloToggleButton( final String label )
 	{
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, label, false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, label, false );
 
 		final Dimension tinySize = new Dimension( 36, 15 );
 		this.setPreferredSize( tinySize );

@@ -27,10 +27,10 @@ import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class CrossFaderAmpBKillUiJComponent extends MadToggleButton
+public class CrossFaderAmpBKillUiJComponent extends LWTCToggleButton
 	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
@@ -44,7 +44,7 @@ public class CrossFaderAmpBKillUiJComponent extends MadToggleButton
 			final int controlIndex )
 	{
 		// Default value
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill B", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill B", false );
 
 		this.uiInstance = uiInstance;
 	}

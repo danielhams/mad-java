@@ -25,12 +25,9 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public class MadSliderGuideImages
+public class LWTCSliderGuideImages
 {
-	private static Log log = LogFactory.getLog( MadSliderGuideImages.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderGuideImages.class.getName() );
 
 	private final static int PLAIN_SIZE = 3;
 	private final static int PERIMETER_SIZE = 1;
@@ -66,7 +63,7 @@ public class MadSliderGuideImages
 	private final BufferedImage vertGuideImage;
 	private final BufferedImage vertEndGuideImage;
 
-	public MadSliderGuideImages( final MadSliderColours colours )
+	public LWTCSliderGuideImages( final LWTCSliderColours colours )
 	{
 		horizStartGuideImage = buildHsgi( colours );
 		horizGuideImage = buildHgi( colours );
@@ -77,7 +74,7 @@ public class MadSliderGuideImages
 		vertEndGuideImage = buildVegi( colours );
 	}
 
-	private BufferedImage buildVsgi( final MadSliderColours colours )
+	private BufferedImage buildVsgi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( VERT_SG_WIDTH, VERT_SG_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();
@@ -104,7 +101,7 @@ public class MadSliderGuideImages
 		return i;
 	}
 
-	private BufferedImage buildVgi( final MadSliderColours colours )
+	private BufferedImage buildVgi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( VERT_G_WIDTH, VERT_G_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();
@@ -124,7 +121,7 @@ public class MadSliderGuideImages
 		return i;
 	}
 
-	private BufferedImage buildVegi( final MadSliderColours colours )
+	private BufferedImage buildVegi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( VERT_EG_WIDTH, VERT_EG_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();
@@ -153,7 +150,7 @@ public class MadSliderGuideImages
 		return i;
 	}
 
-	private BufferedImage buildHsgi( final MadSliderColours colours )
+	private BufferedImage buildHsgi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( HORIZ_SG_WIDTH, HORIZ_SG_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();
@@ -180,7 +177,7 @@ public class MadSliderGuideImages
 		return i;
 	}
 
-	private BufferedImage buildHgi( final MadSliderColours colours )
+	private BufferedImage buildHgi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( HORIZ_G_WIDTH, HORIZ_G_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();
@@ -200,7 +197,7 @@ public class MadSliderGuideImages
 		return i;
 	}
 
-	private BufferedImage buildHegi( final MadSliderColours colours )
+	private BufferedImage buildHegi( final LWTCSliderColours colours )
 	{
 		final BufferedImage i = new BufferedImage( HORIZ_EG_WIDTH, HORIZ_EG_HEIGHT, BufferedImage.TYPE_INT_ARGB );
 		final Graphics2D g2d = i.createGraphics();

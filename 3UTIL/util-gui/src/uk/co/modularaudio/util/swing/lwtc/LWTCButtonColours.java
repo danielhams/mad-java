@@ -20,9 +20,9 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
-import uk.co.modularaudio.util.swing.lwtc.AbstractMadButton.MadButtonState;
+import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
 
-public interface MadButtonColours
+public interface LWTCButtonColours
 {
-	MadButtonStateColours getButtonColoursForState( MadButtonState state );
+	LWTCButtonStateColours getButtonColoursForState( MadButtonState state );
 }

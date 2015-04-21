@@ -28,10 +28,10 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class SubRackEditPatchButtonUiJComponent extends MadToggleButton
+public class SubRackEditPatchButtonUiJComponent extends LWTCToggleButton
 	implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>, PatchTabCloseListener
 {
 	private static final long serialVersionUID = -6066972568143292726L;
@@ -45,7 +45,7 @@ public class SubRackEditPatchButtonUiJComponent extends MadToggleButton
 			final SubRackMadUiInstance uiInstance,
 			final SubRackEditPatchButtonUiControlDefinition def )
 	{
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Edit", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Edit", false );
 
 		this.uiInstance = uiInstance;
 		uiInstance.addPatchTabCloseListener( this );

@@ -21,56 +21,26 @@
 package test.uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.MadButton;
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class TestShowMadButton
+public class TestShowLWTCLabel
 {
-	private static Log log = LogFactory.getLog( TestShowMadButton.class.getName() );
+//	private static Log log = LogFactory.getLog( TestShowLWTCLabel.class.getName() );
 
-	private final MadButton tdb;
-	private final JButton otherButton;
+	private final LWTCLabel tml;
 
-	public TestShowMadButton()
+	public TestShowLWTCLabel()
 	{
-		tdb = new MadButton( MadControlConstants.STD_BUTTON_COLOURS, "Kill A" )
-		{
-			private static final long serialVersionUID = 4471589131574821185L;
-
-			@Override
-			public void receiveClick()
-			{
-				log.debug("Received click!");
-			}
-		};
-		tdb.setMinimumSize( new Dimension( 75, 30 ) );
-		otherButton = new JButton("Kill B");
-		otherButton.setMinimumSize( new Dimension( 75,30 ) );
-		final Font f = otherButton.getFont();
-		log.debug("Regular button font size = " + f.toString() );
-
-		otherButton.addActionListener( new ActionListener() {
-
-			@Override
-			public void actionPerformed( final ActionEvent arg0 )
-			{
-				log.debug("Received action performed");
-			}
-		} );
+		tml = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "A label" );
+		tml.setMinimumSize( new Dimension( 75, 30 ) );
 	}
 
 	public void go() throws Exception
@@ -89,20 +59,12 @@ public class TestShowMadButton
 		f.add( new JLabel("TM"), "center");
 		f.add( new JLabel("TR"), "center,wrap");
 		f.add( new JLabel("ML"), "center");
-		f.add( tdb, "grow" );
+		f.add( tml, "grow" );
 		f.add( new JLabel("MR"), "center,wrap");
 
 		f.add( new JLabel("BL"), "center");
 		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
-
-		f.add( new JLabel("SML"), "center");
-		f.add( otherButton, "grow" );
-		f.add( new JLabel("SMR"), "center,wrap");
-
-		f.add( new JLabel("BL"), "center");
-		f.add( new JLabel("BM"), "center");
-		f.add( new JLabel("BR"), "center,wrap");
+		f.add( new JLabel("BR"), "center");
 
 		f.pack();
 
@@ -121,11 +83,11 @@ public class TestShowMadButton
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( MadCtrlTestingConstants.USE_LAF )
+		if( LWTCCtrlTestingConstants.USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 		}
-		final TestShowMadButton t = new TestShowMadButton();
+		final TestShowLWTCLabel t = new TestShowLWTCLabel();
 		t.go();
 	}
 

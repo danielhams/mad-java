@@ -20,10 +20,10 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
-import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
-import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 
-public class OneEqKill extends MadToggleButton
+public class OneEqKill extends LWTCToggleButton
 {
 	private static final long serialVersionUID = -5705961814474040293L;
 
@@ -36,7 +36,7 @@ public class OneEqKill extends MadToggleButton
 
 	public OneEqKill( )
 	{
-		super( MadControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill", false );
 	}
 
 	@Override
