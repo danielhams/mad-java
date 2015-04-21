@@ -52,7 +52,11 @@ public class LWTCSliderKnobImage
 	public final static int V_KNOB_HEIGHT = 29;
 
 	public final static Dimension H_KNOB_SIZE = new Dimension( H_KNOB_WIDTH, H_KNOB_HEIGHT );
+	public final static Dimension H_SLIDER_MIN_SIZE = new Dimension( H_KNOB_WIDTH + 6,
+			H_KNOB_HEIGHT + 6 );
 	public final static Dimension V_KNOB_SIZE = new Dimension( V_KNOB_WIDTH, V_KNOB_HEIGHT );
+	public final static Dimension V_SLIDER_MIN_SIZE = new Dimension( V_KNOB_WIDTH + 6,
+			V_KNOB_HEIGHT + 6);
 
 //	private static Log log = LogFactory.getLog( LWTCSliderKnobImage.class.getName() );
 

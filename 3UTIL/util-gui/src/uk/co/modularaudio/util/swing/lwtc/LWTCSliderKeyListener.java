@@ -25,12 +25,9 @@ import java.awt.event.KeyListener;
 
 import javax.swing.BoundedRangeModel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCSliderKeyListener implements KeyListener
 {
-	private static Log log = LogFactory.getLog( LWTCSliderKeyListener.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderKeyListener.class.getName() );
 
 	private final BoundedRangeModel model;
 	private final LWTCSlider slider;

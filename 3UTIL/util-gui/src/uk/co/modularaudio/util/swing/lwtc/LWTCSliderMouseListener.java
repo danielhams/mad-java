@@ -27,12 +27,9 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCSliderMouseListener implements MouseListener, MouseMotionListener
 {
-	private static Log log = LogFactory.getLog( LWTCSliderMouseListener.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderMouseListener.class.getName() );
 
 	private final LWTCSlider slider;
 	private final int orientation;
@@ -54,8 +51,6 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	@Override
 	public void mouseDragged( final MouseEvent me )
 	{
-//		log.debug("Mouse dragged: " + me.toString() );
-
 		if( inDrag )
 		{
 			int curCoord;
@@ -112,20 +107,48 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	@Override
 	public void mousePressed( final MouseEvent me )
 	{
-//		log.debug("Mouse click: " + me.toString() );
-		if( mouseInKnob( me.getX(), me.getY() ) )
+		if( !slider.hasFocus() )
+		{
+			slider.grabFocus();
+		}
+
+		final int xCoord = me.getX();
+		final int yCoord = me.getY();
+		if( mouseInKnob( xCoord, yCoord ) )
 		{
 			final int curValue = model.getValue();
 			if( orientation == SwingConstants.HORIZONTAL )
 			{
-				startCoord = me.getX();
+				startCoord = xCoord;
 			}
 			else
 			{
-				startCoord = me.getY();
+				startCoord = yCoord;
 			}
 			startModelValue = curValue;
 			inDrag = true;
+		}
+		else
+		{
+			// Work out direction and move model
+			// by major tick spacing in that direction
+			final int curValue = model.getValue();
+			final int range = model.getMaximum() - model.getMinimum();
+			final float normValue = ( (curValue - model.getMinimum()) / (float)range );
+
+			float normClick;
+			if( orientation == SwingConstants.HORIZONTAL )
+			{
+				normClick = (xCoord - 3) / (float)(slider.getWidth() - 6);
+			}
+			else
+			{
+				normClick = 1.0f - ((yCoord - 3) / (float)(slider.getHeight() - 6));
+			}
+			final int sign = (int)Math.signum( normClick - normValue );
+
+			final int numToAdd = sign * slider.getMajorTickSpacing();
+			model.setValue( model.getValue() + numToAdd );
 		}
 	}
 

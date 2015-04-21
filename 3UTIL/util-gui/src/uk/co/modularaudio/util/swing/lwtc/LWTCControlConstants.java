@@ -63,6 +63,8 @@ public class LWTCControlConstants
 	public final static Color CONTROL_SLIDER_SIDE_SHADE = Color.decode( "#353b3b" );
 	public final static Color CONTROL_SLIDER_SIDE_LIGHT = Color.decode( "#3c4343" );
 
+	public final static Color CONTROL_SLIDER_FOCUS = Color.decode( "#aaaaaa" );
+
 	public final static Font RACK_FONT = getRackFont();
 	public final static Font LABEL_FONT = getLabelFont();
 	public final static Font LABEL_SMALL_FONT = getLabelSmallFont();
@@ -168,6 +170,12 @@ public class LWTCControlConstants
 		public Color getSideLight()
 		{
 			return CONTROL_SLIDER_SIDE_LIGHT;
+		}
+
+		@Override
+		public Color getFocus()
+		{
+			return CONTROL_SLIDER_FOCUS;
 		}
 	};
 

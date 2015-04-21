@@ -22,6 +22,8 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultBoundedRangeModel;
@@ -30,14 +32,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCSlider extends JPanel
 {
 	private static final long serialVersionUID = 5316903589300941235L;
 
-	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
 
 	private final int orientation;
 	private final BoundedRangeModel model;
@@ -68,8 +67,8 @@ public class LWTCSlider extends JPanel
 		this.painter = new LWTCSliderPainter( LWTCControlConstants.STD_SLIDER_COLOURS );
 
 		this.setMinimumSize( orientation == SwingConstants.HORIZONTAL ?
-				LWTCSliderKnobImage.H_KNOB_SIZE :
-				LWTCSliderKnobImage.V_KNOB_SIZE );
+				LWTCSliderKnobImage.H_SLIDER_MIN_SIZE :
+				LWTCSliderKnobImage.V_SLIDER_MIN_SIZE );
 
 		this.addKeyListener( new LWTCSliderKeyListener( model, this ) );
 
@@ -89,6 +88,22 @@ public class LWTCSlider extends JPanel
 				repaint();
 			}
 		} );
+
+		this.addFocusListener( new FocusListener()
+		{
+
+			@Override
+			public void focusLost( final FocusEvent arg0 )
+			{
+				repaint();
+			}
+
+			@Override
+			public void focusGained( final FocusEvent arg0 )
+			{
+				repaint();
+			}
+		} );
 	}
 
 	@Override
@@ -97,11 +112,28 @@ public class LWTCSlider extends JPanel
 		final Graphics2D g2d = (Graphics2D)g;
 		final int width = getWidth();
 		final int height = getHeight();
+		if( hasFocus() )
+		{
+			g2d.setColor( LWTCControlConstants.STD_SLIDER_COLOURS.getFocus() );
+			if( orientation == SwingConstants.HORIZONTAL )
+			{
+				final int boxHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT + 4;
+				final int yStartOffset = (height - boxHeight) / 2;
+				g2d.drawRect( 0, yStartOffset, width - 1, boxHeight );
+			}
+			else
+			{
+				final int boxWidth = LWTCSliderKnobImage.V_KNOB_WIDTH + 4;
+				final int xStartOffset = (width - boxWidth) / 2;
+				g2d.drawRect( xStartOffset, 0, boxWidth, height - 1 );
+			}
+		}
 		painter.paintSlider( g2d,
 				orientation,
 				width,
 				height,
 				model );
+
 	}
 
 	public int getMajorTickSpacing()

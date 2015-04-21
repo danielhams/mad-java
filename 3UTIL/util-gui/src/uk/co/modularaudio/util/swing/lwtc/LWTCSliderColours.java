@@ -51,4 +51,6 @@ public interface LWTCSliderColours
 
 	Color getSideLight();
 
+	Color getFocus();
+
 }
