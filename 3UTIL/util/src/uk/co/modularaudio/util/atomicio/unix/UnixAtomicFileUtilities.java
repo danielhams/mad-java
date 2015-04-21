@@ -55,6 +55,14 @@ public class UnixAtomicFileUtilities implements AtomicFileUtilities
 		{
 			mvLocation = "/bin/mv";
 		}
+		else if(hostString.equals( OperatingSystemIdentifiers.OS_MACOSX ))
+		{
+			mvLocation = "/bin/mv";
+		}
+		else
+		{
+			throw new RuntimeException("Unknown host OS: " + hostString );
+		}
 	}
 
 	/**

@@ -48,8 +48,7 @@ public class ThreadUtils
 		String hostString = System.getProperty("os.name");
 		
 		if(hostString.equals(OperatingSystemIdentifiers.OS_SOLARIS) ||
-				hostString.equals(OperatingSystemIdentifiers.OS_LINUX) ||
-				hostString.equals(OperatingSystemIdentifiers.OS_MACOSX))
+				hostString.equals(OperatingSystemIdentifiers.OS_LINUX))
 		{
 			platformSupportsRenice = true;
 		}

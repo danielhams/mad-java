@@ -26,5 +26,5 @@ public class OperatingSystemIdentifiers
 	public final static String OS_WINDOWSNT = "Windows NT";
 	public final static String OS_WINDOWSXP = "Windows XP";
 	public final static String OS_LINUX = "Linux";
-	public final static String OS_MACOSX = "Mac OSX";
+	public final static String OS_MACOSX = "Mac OS X";
 }

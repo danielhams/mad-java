@@ -45,6 +45,10 @@ public class FileUtilities
 		{
 			retVal = new UnixAtomicFileUtilities( hostString );
 		}
+		else if (hostString.equals( OperatingSystemIdentifiers.OS_MACOSX))
+		{
+			retVal = new UnixAtomicFileUtilities( hostString );
+		}
 		else if (hostString.equals( OperatingSystemIdentifiers.OS_WINDOWSNT )
 				|| hostString.equals( OperatingSystemIdentifiers.OS_WINDOWSXP ))
 		{
