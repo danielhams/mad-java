@@ -27,10 +27,10 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.MadLabel;
 
 public class SubRackShowPatchNameUiJComponent extends MadLabel
 		implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,27 +26,65 @@ import java.awt.event.MouseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class MadButton extends AbstractMadButton implements MouseListener
+public abstract class MadToggleButton extends AbstractMadButton implements MouseListener
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
-	private static Log log = LogFactory.getLog( MadButton.class.getName() );
+	private static Log log = LogFactory.getLog( MadToggleButton.class.getName() );
 
-	public MadButton( final MadButtonColours colours, final String text )
+	protected boolean isOn = false;
+
+	public MadToggleButton( final MadButtonColours colours, final String text, final boolean defaultValue )
 	{
 		super( colours, text );
+		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
+		isOn = defaultValue;
+	}
+
+	public void setSelected( final boolean selected )
+	{
+		final boolean previousValue = isOn;
+		isOn = selected;
+		setupPushedState();
+		receiveUpdateEvent( previousValue, isOn );
+	}
+
+	public boolean isSelected()
+	{
+		return isOn;
 	}
 
 	public String getControlValue()
 	{
-		return "";
+		return Boolean.toString( isOn );
 	}
 
 	public void receiveControlValue( final String strValue )
 	{
+		setSelected( Boolean.parseBoolean( strValue ) );
 	}
 
-	public abstract void receiveClick();
+	private void setupPushedState()
+	{
+		switch( pushedState )
+		{
+			case IN_NO_MOUSE:
+			case OUT_NO_MOUSE:
+			{
+				pushedState = (isOn ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
+				break;
+			}
+			case IN_MOUSE:
+			case OUT_MOUSE:
+			default:
+			{
+				pushedState = (isOn ? MadButtonState.IN_MOUSE : MadButtonState.OUT_MOUSE );
+				break;
+			}
+		}
+	}
+
+	public abstract void receiveUpdateEvent( boolean previousValue, boolean newValue );
 
 	@Override
 	public MouseListener getMouseListener()
@@ -79,6 +117,7 @@ public abstract class MadButton extends AbstractMadButton implements MouseListen
 				log.error( "Oops - state issue" );
 			}
 		}
+//		log.debug("mouseEntered repaint");
 		repaint();
 	}
 
@@ -102,12 +141,14 @@ public abstract class MadButton extends AbstractMadButton implements MouseListen
 				log.error( "Oops - state issue" );
 			}
 		}
+//		log.debug("mouseExited repaint");
 		repaint();
 	}
 
 	@Override
 	public void mousePressed( final MouseEvent arg0 )
 	{
+//		log.debug("Mouse press beginning");
 		switch( pushedState )
 		{
 			case IN_MOUSE:
@@ -118,16 +159,19 @@ public abstract class MadButton extends AbstractMadButton implements MouseListen
 			case IN_NO_MOUSE:
 			{
 				pushedState = MadButtonState.OUT_NO_MOUSE;
+				isOn = true;
 				break;
 			}
 			case OUT_MOUSE:
 			{
 				pushedState = MadButtonState.IN_MOUSE;
+				isOn = false;
 				break;
 			}
 			case OUT_NO_MOUSE:
 			{
 				pushedState = MadButtonState.IN_NO_MOUSE;
+				isOn = false;
 				break;
 			}
 			default:
@@ -139,40 +183,38 @@ public abstract class MadButton extends AbstractMadButton implements MouseListen
 		{
 			requestFocusInWindow();
 		}
+
+//		log.debug("mousePressed repaint");
 		repaint();
 	}
 
 	@Override
 	public void mouseReleased( final MouseEvent arg0 )
 	{
+		// We only change state on press and stay in that
+		// state until next click
+		final boolean previousValue = isOn;
 		switch( pushedState )
 		{
 			case IN_MOUSE:
-			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
-			}
 			case IN_NO_MOUSE:
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
+				isOn = true;
 				break;
 			}
 			case OUT_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
-			}
 			case OUT_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
 			default:
 			{
-				log.error( "Oops - state issue" );
+				isOn = false;
+				break;
 			}
 		}
+		if( isOn != previousValue )
+		{
+			receiveUpdateEvent( previousValue, isOn );
+		}
+//		log.debug("moseReleased repaint");
 		repaint();
-		receiveClick();
 	}
 }

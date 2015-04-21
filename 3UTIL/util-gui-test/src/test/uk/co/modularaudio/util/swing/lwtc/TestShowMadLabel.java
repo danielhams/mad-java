@@ -18,7 +18,7 @@
  *
  */
 
-package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
+package test.uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Dimension;
 
@@ -30,9 +30,9 @@ import javax.swing.UIManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.MadLabel;
 
 public class TestShowMadLabel
 {

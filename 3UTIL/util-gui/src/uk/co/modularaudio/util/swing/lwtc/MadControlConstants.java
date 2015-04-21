@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 import java.awt.Font;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.AbstractMadButton.MadButtonState;
+import uk.co.modularaudio.util.swing.lwtc.AbstractMadButton.MadButtonState;
 
 public class MadControlConstants
 {

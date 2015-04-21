@@ -18,37 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-public interface MadSliderColours
+public interface MadButtonStateColours
 {
-
 	Color getControlOutline();
 
-	Color getBackgroundGradStart();
+	Color getContentGradStart();
 
-	Color getBackgroundGradEnd();
+	Color getContentGradEnd();
 
-	Color getBarrelGradStart();
+	Color getHighlight();
 
-	Color getBarrelGradEnd();
+	Color getFocus();
 
-	Color getDialGradStart();
-
-	Color getDialGradEnd();
-
-	Color getDimpleDark();
-
-	Color getDimpleLight();
-
-	Color getValleyPerimeter();
-
-	Color getValleyPlain();
-
-	Color getSideShade();
-
-	Color getSideLight();
-
+	Color getForegroundText();
 }

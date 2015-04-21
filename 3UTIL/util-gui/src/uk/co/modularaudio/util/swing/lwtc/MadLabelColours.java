@@ -18,21 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-public interface MadButtonStateColours
+interface MadLabelColours
 {
-	Color getControlOutline();
 
-	Color getContentGradStart();
+	Color getBackground();
 
-	Color getContentGradEnd();
+	Color getForeground();
 
-	Color getHighlight();
+	Color getBorder();
 
-	Color getFocus();
-
-	Color getForegroundText();
 }

@@ -18,17 +18,26 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-interface MadLabelColours
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+
+public class MadLabel extends JLabel
 {
+	private static final long serialVersionUID = 6138681925643386194L;
 
-	Color getBackground();
+	public MadLabel( final MadLabelColours colours, final String text )
+	{
+		super( text );
 
-	Color getForeground();
+		this.setBackground( colours.getBackground() );
+		this.setForeground( colours.getForeground() );
+		final Color borderColor = colours.getBorder();
 
-	Color getBorder();
+		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
+	}
 
 }

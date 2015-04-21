@@ -18,11 +18,9 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package test.uk.co.modularaudio.util.swing.lwtc;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.AbstractMadButton.MadButtonState;
-
-public interface MadButtonColours
+public class MadCtrlTestingConstants
 {
-	MadButtonStateColours getButtonColoursForState( MadButtonState state );
+	public final static boolean USE_LAF = true;
 }

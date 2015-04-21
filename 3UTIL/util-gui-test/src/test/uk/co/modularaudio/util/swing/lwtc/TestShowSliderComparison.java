@@ -18,7 +18,7 @@
  *
  */
 
-package test.uk.co.modularaudio.util.audio.gui.madstdctrls;
+package test.uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,10 +36,10 @@ import javax.swing.UIManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadSliderKnobImage;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadSliderPainter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.MadSliderKnobImage;
+import uk.co.modularaudio.util.swing.lwtc.MadSliderPainter;
 
 public class TestShowSliderComparison
 {
@@ -108,29 +108,50 @@ public class TestShowSliderComparison
 		msg.addLayoutConstraint( "fill" );
 		msg.addLayoutConstraint( "insets 0" );
 		msg.addLayoutConstraint( "gap 0" );
-		msg.addColumnConstraint( "[][grow][grow][]" );
-		msg.addRowConstraint( "[][grow][]" );
+		if( orientation == SwingConstants.VERTICAL )
+		{
+			msg.addColumnConstraint( "[][grow][grow][]" );
+			msg.addRowConstraint( "[][grow][]" );
+		}
+		else
+		{
+			msg.addColumnConstraint( "[][grow][]" );
+			msg.addRowConstraint( "[][grow][grow][]" );
+		}
 		f.setLayout( msg.createMigLayout() );
 
 		f.add( new JLabel("o"), "center");
 		f.add( new JLabel("o"), "center");
-		f.add( new JLabel("o"), "center");
+		if( orientation == SwingConstants.VERTICAL )
+		{
+			f.add( new JLabel("o"), "center");
+		}
 		f.add( new JLabel("o"), "center,wrap");
 
 		f.add( new JLabel("o"), "center");
 		if( orientation == SwingConstants.VERTICAL )
 		{
 			f.add( verticalKnobContainer, "center, grow" );
+			f.add( testSwingJSlider, "center, grow" );
 		}
 		else
 		{
 			f.add( horizontalKnobContainer, "center, grow" );
 		}
-		f.add( testSwingJSlider, "center, grow" );
 		f.add( new JLabel("o"), "center,wrap");
 
+		if( orientation == SwingConstants.HORIZONTAL )
+		{
+			f.add( new JLabel("o"), "center");
+			f.add( testSwingJSlider, "center, grow" );
+			f.add( new JLabel("o"), "center, wrap");
+		}
+
 		f.add( new JLabel("o"), "center");
-		f.add( new JLabel("o"), "center");
+		if( orientation == SwingConstants.VERTICAL )
+		{
+			f.add( new JLabel("o"), "center");
+		}
 		f.add( new JLabel("o"), "center");
 		f.add( new JLabel("o"), "center");
 

@@ -28,10 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadButton;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.MadButton;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
 
 public class SubRackChoosePatchButtonUiJComponent extends MadButton
 	implements IMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>

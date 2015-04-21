@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

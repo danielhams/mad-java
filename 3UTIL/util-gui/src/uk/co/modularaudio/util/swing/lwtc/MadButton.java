@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -26,65 +26,27 @@ import java.awt.event.MouseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public abstract class MadToggleButton extends AbstractMadButton implements MouseListener
+public abstract class MadButton extends AbstractMadButton implements MouseListener
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
-	private static Log log = LogFactory.getLog( MadToggleButton.class.getName() );
+	private static Log log = LogFactory.getLog( MadButton.class.getName() );
 
-	protected boolean isOn = false;
-
-	public MadToggleButton( final MadButtonColours colours, final String text, final boolean defaultValue )
+	public MadButton( final MadButtonColours colours, final String text )
 	{
 		super( colours, text );
-		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
-		isOn = defaultValue;
-	}
-
-	public void setSelected( final boolean selected )
-	{
-		final boolean previousValue = isOn;
-		isOn = selected;
-		setupPushedState();
-		receiveUpdateEvent( previousValue, isOn );
-	}
-
-	public boolean isSelected()
-	{
-		return isOn;
 	}
 
 	public String getControlValue()
 	{
-		return Boolean.toString( isOn );
+		return "";
 	}
 
 	public void receiveControlValue( final String strValue )
 	{
-		setSelected( Boolean.parseBoolean( strValue ) );
 	}
 
-	private void setupPushedState()
-	{
-		switch( pushedState )
-		{
-			case IN_NO_MOUSE:
-			case OUT_NO_MOUSE:
-			{
-				pushedState = (isOn ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
-				break;
-			}
-			case IN_MOUSE:
-			case OUT_MOUSE:
-			default:
-			{
-				pushedState = (isOn ? MadButtonState.IN_MOUSE : MadButtonState.OUT_MOUSE );
-				break;
-			}
-		}
-	}
-
-	public abstract void receiveUpdateEvent( boolean previousValue, boolean newValue );
+	public abstract void receiveClick();
 
 	@Override
 	public MouseListener getMouseListener()
@@ -117,7 +79,6 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 				log.error( "Oops - state issue" );
 			}
 		}
-//		log.debug("mouseEntered repaint");
 		repaint();
 	}
 
@@ -141,14 +102,12 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 				log.error( "Oops - state issue" );
 			}
 		}
-//		log.debug("mouseExited repaint");
 		repaint();
 	}
 
 	@Override
 	public void mousePressed( final MouseEvent arg0 )
 	{
-//		log.debug("Mouse press beginning");
 		switch( pushedState )
 		{
 			case IN_MOUSE:
@@ -159,19 +118,16 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 			case IN_NO_MOUSE:
 			{
 				pushedState = MadButtonState.OUT_NO_MOUSE;
-				isOn = true;
 				break;
 			}
 			case OUT_MOUSE:
 			{
 				pushedState = MadButtonState.IN_MOUSE;
-				isOn = false;
 				break;
 			}
 			case OUT_NO_MOUSE:
 			{
 				pushedState = MadButtonState.IN_NO_MOUSE;
-				isOn = false;
 				break;
 			}
 			default:
@@ -183,38 +139,40 @@ public abstract class MadToggleButton extends AbstractMadButton implements Mouse
 		{
 			requestFocusInWindow();
 		}
-
-//		log.debug("mousePressed repaint");
 		repaint();
 	}
 
 	@Override
 	public void mouseReleased( final MouseEvent arg0 )
 	{
-		// We only change state on press and stay in that
-		// state until next click
-		final boolean previousValue = isOn;
 		switch( pushedState )
 		{
 			case IN_MOUSE:
+			{
+				pushedState = MadButtonState.OUT_MOUSE;
+				break;
+			}
 			case IN_NO_MOUSE:
 			{
-				isOn = true;
+				pushedState = MadButtonState.OUT_NO_MOUSE;
 				break;
 			}
 			case OUT_MOUSE:
-			case OUT_NO_MOUSE:
-			default:
 			{
-				isOn = false;
+				pushedState = MadButtonState.IN_MOUSE;
 				break;
 			}
+			case OUT_NO_MOUSE:
+			{
+				pushedState = MadButtonState.IN_NO_MOUSE;
+				break;
+			}
+			default:
+			{
+				log.error( "Oops - state issue" );
+			}
 		}
-		if( isOn != previousValue )
-		{
-			receiveUpdateEvent( previousValue, isOn );
-		}
-//		log.debug("moseReleased repaint");
 		repaint();
+		receiveClick();
 	}
 }

@@ -18,26 +18,37 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.gui.madstdctrls;
+package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-
-public class MadLabel extends JLabel
+public interface MadSliderColours
 {
-	private static final long serialVersionUID = 6138681925643386194L;
 
-	public MadLabel( final MadLabelColours colours, final String text )
-	{
-		super( text );
+	Color getControlOutline();
 
-		this.setBackground( colours.getBackground() );
-		this.setForeground( colours.getForeground() );
-		final Color borderColor = colours.getBorder();
+	Color getBackgroundGradStart();
 
-		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
-	}
+	Color getBackgroundGradEnd();
+
+	Color getBarrelGradStart();
+
+	Color getBarrelGradEnd();
+
+	Color getDialGradStart();
+
+	Color getDialGradEnd();
+
+	Color getDimpleDark();
+
+	Color getDimpleLight();
+
+	Color getValleyPerimeter();
+
+	Color getValleyPlain();
+
+	Color getSideShade();
+
+	Color getSideLight();
 
 }

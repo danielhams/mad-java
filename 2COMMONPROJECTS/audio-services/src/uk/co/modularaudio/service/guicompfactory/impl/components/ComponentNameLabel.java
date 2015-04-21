@@ -26,8 +26,8 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentNameChangeListener;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadLabel;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.MadLabel;
 
 public class ComponentNameLabel extends MadLabel implements RackComponentNameChangeListener
 {

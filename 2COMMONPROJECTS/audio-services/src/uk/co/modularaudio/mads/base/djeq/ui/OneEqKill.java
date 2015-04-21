@@ -20,8 +20,8 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadControlConstants;
-import uk.co.modularaudio.util.audio.gui.madstdctrls.MadToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.MadControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.MadToggleButton;
 
 public class OneEqKill extends MadToggleButton
 {
