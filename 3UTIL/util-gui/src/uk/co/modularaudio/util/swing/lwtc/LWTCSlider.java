@@ -42,39 +42,63 @@ public class LWTCSlider extends JPanel
 	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
 
 	private final int orientation;
-	private final BoundedRangeModel model;
-	private final int majorTickSpacing;
+	protected BoundedRangeModel model;
+	private int majorTickSpacing;
 
 	private final LWTCSliderPainter painter;
 
 	private final LWTCSliderMouseListener mouseListener;
+	private final LWTCSliderKeyListener keyListener;
+	private final ValueChangeListener valueChangeListener;
+	private final FocusChangeListener focusChangeListener;
 
 	private int numUsablePixels;
 
 	private class ValueChangeListener implements ChangeListener
 	{
-		private final BoundedRangeModel model;
+		private BoundedRangeModel model;
 		private int lastValueReceived;
 
 		public ValueChangeListener( final BoundedRangeModel model )
 		{
 			this.model = model;
 			lastValueReceived = model.getValue();
+			model.addChangeListener( this );
 		}
 
 		@Override
 		public void stateChanged( final ChangeEvent ce )
 		{
-			if( ce.getSource() == model )
-			{
-				final int newValue = model.getValue();
-				modelValueChangeDeltaRepaint( lastValueReceived, newValue );
-				lastValueReceived = newValue;
-			}
+			final int newValue = model.getValue();
+			modelValueChangeDeltaRepaint( lastValueReceived, newValue );
+			lastValueReceived = newValue;
+		}
+
+		public void setModel( final BoundedRangeModel newModel )
+		{
+			model.removeChangeListener( this );
+			lastValueReceived = newModel.getValue();
+			model = newModel;
+			model.addChangeListener( this );
 		}
 	};
 
-	private final ValueChangeListener valueChangeListener;
+	private class FocusChangeListener implements FocusListener
+	{
+		@Override
+		public void focusLost( final FocusEvent arg0 )
+		{
+			log.debug("Focus lost repaint");
+			repaint();
+		}
+
+		@Override
+		public void focusGained( final FocusEvent arg0 )
+		{
+			log.debug("Focus gained repaint");
+			repaint();
+		}
+	};
 
 	public LWTCSlider()
 	{
@@ -88,7 +112,7 @@ public class LWTCSlider extends JPanel
 
 	public LWTCSlider( final int orientation, final BoundedRangeModel model )
 	{
-		this.setOpaque( false );
+		this.setOpaque( true );
 
 		this.orientation = orientation;
 		this.model = model;
@@ -100,7 +124,8 @@ public class LWTCSlider extends JPanel
 				LWTCSliderKnobImage.H_SLIDER_MIN_SIZE :
 				LWTCSliderKnobImage.V_SLIDER_MIN_SIZE );
 
-		this.addKeyListener( new LWTCSliderKeyListener( model, this ) );
+		keyListener = new LWTCSliderKeyListener( model, this );
+		this.addKeyListener( keyListener );
 
 		this.setFocusable( true );
 
@@ -111,23 +136,9 @@ public class LWTCSlider extends JPanel
 
 		valueChangeListener = new ValueChangeListener( model );
 
-		model.addChangeListener( valueChangeListener );
+		focusChangeListener = new FocusChangeListener();
 
-		this.addFocusListener( new FocusListener()
-		{
-
-			@Override
-			public void focusLost( final FocusEvent arg0 )
-			{
-				repaint();
-			}
-
-			@Override
-			public void focusGained( final FocusEvent arg0 )
-			{
-				repaint();
-			}
-		} );
+		this.addFocusListener( focusChangeListener );
 	}
 
 	@Override
@@ -136,6 +147,12 @@ public class LWTCSlider extends JPanel
 		final Graphics2D g2d = (Graphics2D)g;
 		final int width = getWidth();
 		final int height = getHeight();
+
+		if( isOpaque() )
+		{
+			super.paintComponent( g );
+		}
+
 		if( hasFocus() )
 		{
 			g2d.setColor( LWTCControlConstants.STD_SLIDER_COLOURS.getFocus() );
@@ -163,6 +180,11 @@ public class LWTCSlider extends JPanel
 	public int getMajorTickSpacing()
 	{
 		return majorTickSpacing;
+	}
+
+	public void setMajorTickSpacing( final int majorTickSpacing )
+	{
+		this.majorTickSpacing = majorTickSpacing;
 	}
 
 	private final void modelValueChangeDeltaRepaint( final int prevValue, final int newValue )
@@ -242,5 +264,13 @@ public class LWTCSlider extends JPanel
 	public void setValue( final int value )
 	{
 		model.setValue( value );
+	}
+
+	public void setModel( final BoundedRangeModel newModel )
+	{
+		valueChangeListener.setModel( newModel );
+		mouseListener.setModel( newModel );
+		keyListener.setModel( newModel );
+		this.model = newModel;
 	}
 }

@@ -100,49 +100,53 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	@Override
 	public void mouseEntered( final MouseEvent arg0 )
 	{
-		switch( pushedState )
+		if( arg0.getModifiers() == 0 )
 		{
-			case OUT_NO_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			repaint();
 		}
-//		log.debug("mouseEntered repaint");
-		repaint();
 	}
 
 	@Override
 	public void mouseExited( final MouseEvent arg0 )
 	{
-		switch( pushedState )
+		if( arg0.getModifiers() == 0 )
 		{
-			case OUT_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				break;
+				case OUT_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					break;
+				}
+				case IN_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			repaint();
 		}
-//		log.debug("mouseExited repaint");
-		repaint();
 	}
 
 	@Override

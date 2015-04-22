@@ -33,7 +33,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 
 	private final LWTCSlider slider;
 	private final int orientation;
-	private final BoundedRangeModel model;
+	private BoundedRangeModel model;
 
 	private int startCoord;
 	private int startModelValue;
@@ -221,5 +221,10 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 		{
 			inDrag = false;
 		}
+	}
+
+	public void setModel( final BoundedRangeModel newModel )
+	{
+		this.model = newModel;
 	}
 }

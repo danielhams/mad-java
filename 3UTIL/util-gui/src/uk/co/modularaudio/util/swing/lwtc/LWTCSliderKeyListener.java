@@ -29,7 +29,7 @@ public class LWTCSliderKeyListener implements KeyListener
 {
 //	private static Log log = LogFactory.getLog( LWTCSliderKeyListener.class.getName() );
 
-	private final BoundedRangeModel model;
+	private BoundedRangeModel model;
 	private final LWTCSlider slider;
 
 	public LWTCSliderKeyListener( final BoundedRangeModel model,
@@ -94,6 +94,11 @@ public class LWTCSliderKeyListener implements KeyListener
 	public void keyTyped( final KeyEvent arg0 )
 	{
 //		log.debug("Key typed: " + arg0.toString() );
+	}
+
+	public void setModel( final BoundedRangeModel newModel )
+	{
+		this.model = newModel;
 	}
 
 }

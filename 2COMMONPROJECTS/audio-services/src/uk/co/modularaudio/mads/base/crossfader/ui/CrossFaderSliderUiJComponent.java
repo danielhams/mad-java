@@ -20,16 +20,20 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JComponent;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
 
-public class CrossFaderSliderUiJComponent extends PacSlider
+public class CrossFaderSliderUiJComponent extends LWTCSlider
 	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
 	private static final long serialVersionUID = 6068897521037173787L;
@@ -42,16 +46,22 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 			final CrossFaderMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super();
+		super( SwingConstants.HORIZONTAL,
+				new DefaultBoundedRangeModel(
+						0, 0,
+						-1000, 1000 ) );
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
-		this.setOrientation( HORIZONTAL );
-		setFont( this.getFont().deriveFont( 9f ) );
-		this.setPaintLabels( true );
-		this.setMinimum( -1000 );
-		this.setMaximum( 1000 );
-		// Default value
-		this.setValue( 0 );
+
+		model.addChangeListener( new ChangeListener()
+		{
+
+			@Override
+			public void stateChanged( final ChangeEvent e )
+			{
+				passChangeToInstanceData( model.getValue() );
+			}
+		} );
 	}
 
 	@Override
@@ -76,15 +86,6 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 	}
 
 	@Override
-	public void processValueChange( final int previousValue, final int newValue )
-	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 		// Nothing needed
@@ -94,5 +95,18 @@ public class CrossFaderSliderUiJComponent extends PacSlider
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return Integer.toString( model.getValue() );
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		final int pos = Integer.parseInt( value );
+		model.setValue( pos );
 	}
 }

@@ -55,58 +55,65 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	}
 
 	@Override
-	public void mouseClicked( final MouseEvent arg0 )
+	public void mouseClicked( final MouseEvent me )
 	{
 	}
 
 	@Override
-	public void mouseEntered( final MouseEvent arg0 )
+	public void mouseEntered( final MouseEvent me )
 	{
-		switch( pushedState )
+		log.debug("Mouse entered event with " + me.toString() );
+		if( me.getModifiers() == 0 )
 		{
-			case OUT_NO_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			repaint();
 		}
-		repaint();
 	}
 
 	@Override
-	public void mouseExited( final MouseEvent arg0 )
+	public void mouseExited( final MouseEvent me )
 	{
-		switch( pushedState )
+		if( me.getModifiers() == 0 )
 		{
-			case OUT_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				break;
+				case OUT_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					break;
+				}
+				case IN_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			repaint();
 		}
-		repaint();
 	}
 
 	@Override
-	public void mousePressed( final MouseEvent arg0 )
+	public void mousePressed( final MouseEvent me )
 	{
 		switch( pushedState )
 		{
@@ -143,7 +150,7 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	}
 
 	@Override
-	public void mouseReleased( final MouseEvent arg0 )
+	public void mouseReleased( final MouseEvent me )
 	{
 		switch( pushedState )
 		{
