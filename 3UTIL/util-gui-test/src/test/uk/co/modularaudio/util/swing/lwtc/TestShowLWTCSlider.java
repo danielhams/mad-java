@@ -36,6 +36,10 @@ public class TestShowLWTCSlider
 {
 //	private static Log log = LogFactory.getLog( TestShowLWTCSlider.class.getName() );
 
+	private JSlider testSwingJSlider;
+	private LWTCSlider testLWTCSlider;
+	private Thread t;
+
 	public TestShowLWTCSlider()
 	{
 	}
@@ -43,10 +47,10 @@ public class TestShowLWTCSlider
 	public void go( final int orientation ) throws Exception
 	{
 
-		final JSlider testSwingJSlider = new JSlider( orientation );
+		testSwingJSlider = new JSlider( orientation );
 		testSwingJSlider.setOpaque( false );
 
-		final LWTCSlider testLWTCSlider = new LWTCSlider( orientation );
+		testLWTCSlider = new LWTCSlider( orientation );
 
 		final JFrame f = new JFrame();
 //		f.getContentPane().setBackground( Color.YELLOW );
@@ -117,6 +121,61 @@ public class TestShowLWTCSlider
 				f.setVisible( true );
 			}
 		} );
+
+	}
+
+	public void startThread()
+	{
+		t = new Thread( new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				// 60 fps
+//				final int millis = 16;
+				// 500 fps
+				final int millis = 2;
+
+				int value = 0;
+				int dir = 1;
+
+//				for( int i = 0 ; i < 60 * 30 ; ++i )
+				while( true )
+				{
+					testLWTCSlider.setValue( value );
+//					testSwingJSlider.setValue( value );
+					value += dir * 1;
+					if( value > 100 )
+					{
+						value = 100;
+						dir = -1;
+					}
+					else if( value < 0 )
+					{
+						value = 0;
+						dir = 1;
+					}
+					try
+					{
+						Thread.sleep( millis );
+					}
+					catch( final InterruptedException e )
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+		} );
+		t.start();
+	}
+
+	public void joinThread() throws Exception
+	{
+		t.stop();
+		t.join();
 	}
 
 	public static void main( final String[] args ) throws Exception
@@ -131,6 +190,15 @@ public class TestShowLWTCSlider
 
 		final TestShowLWTCSlider ht = new TestShowLWTCSlider();
 		ht.go( SwingConstants.HORIZONTAL );
-}
+
+//		vt.startThread();
+//		ht.startThread();
+//
+//		// 30 secs test
+//		Thread.sleep( 30000 );
+//
+//		vt.joinThread();
+//		ht.joinThread();
+	}
 
 }

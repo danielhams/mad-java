@@ -76,7 +76,8 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			final int range = model.getMaximum() - model.getMinimum();
 			final float valuesPerPixel = range / (float)pixelsAvailable;
 			final float diffInValueSteps = valuesPerPixel * diffFromStart;
-			model.setValue( (int)(startModelValue + diffInValueSteps ) );
+			final int attemptedValue = (int)(startModelValue + diffInValueSteps );
+			model.setValue( attemptedValue );
 		}
 	}
 
@@ -148,7 +149,10 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			final int sign = (int)Math.signum( normClick - normValue );
 
 			final int numToAdd = sign * slider.getMajorTickSpacing();
-			model.setValue( model.getValue() + numToAdd );
+
+			final int prevValue = model.getValue();
+			final int attemptedValue = prevValue + numToAdd;
+			model.setValue( attemptedValue );
 		}
 	}
 

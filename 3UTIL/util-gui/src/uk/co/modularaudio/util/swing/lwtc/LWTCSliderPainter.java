@@ -61,39 +61,40 @@ public class LWTCSliderPainter
 			case SwingConstants.HORIZONTAL:
 			{
 				final int sliderHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT;
-				final int yOffset = yCenter - (sliderHeight / 2) + 5;
+				final int yOffset = yCenter - (sliderHeight / 2) + 1;
+				final int barOffset = yOffset + 4;
 				g2d.drawImage( guideImages.getHorizStartGuideImage(),
-						2, yOffset, null );
+						2, barOffset, null );
 				g2d.drawImage( guideImages.getHorizEndGuideImage(),
-						width - 4, yOffset, null );
+						width - 4, barOffset, null );
 				g2d.drawImage( guideImages.getHorizGuideImage(),
-						4, yOffset, width - 8, 7, null );
+						4, barOffset, width - 8, 7, null );
 
 				final int pixelPositionsAvailable = width - (3*2) - LWTCSliderKnobImage.H_KNOB_WIDTH + 1;
-				final int pixelOffset = (int)(3 + (pixelPositionsAvailable * normalisedPos ));
+				final int pixelOffset = (int)(2 + (pixelPositionsAvailable * normalisedPos ));
 				final BufferedImage hKnobImage = horizKnobImage.getKnobImage();
-				g2d.drawImage( hKnobImage, pixelOffset, yOffset - 4, null );
+				g2d.drawImage( hKnobImage, pixelOffset+1, yOffset, null );
+//				g2d.drawRect( pixelOffset, yOffset, LWTCSliderKnobImage.H_KNOB_WIDTH, LWTCSliderKnobImage.H_KNOB_HEIGHT );
 				break;
 			}
 			case SwingConstants.VERTICAL:
 			default:
 			{
 				final int sliderWidth = LWTCSliderKnobImage.V_KNOB_WIDTH;
-				final int xOffset = xCenter - (sliderWidth / 2) + 5;
+				final int xOffset = xCenter - (sliderWidth / 2) + 1;
+				final int barOffset = xOffset + 4;
 				g2d.drawImage( guideImages.getVertStartGuideImage(),
-						xOffset, 2, null );
+						barOffset, 2, null );
 				g2d.drawImage( guideImages.getVertEndGuideImage(),
-						xOffset, height - 4, null );
+						barOffset, height - 4, null );
 				g2d.drawImage( guideImages.getVertGuideImage(),
-						xOffset, 4, 7, height - 8, null );
-//				g2d.drawImage( guideImages.getVertGuideImage(),
-//						xOffset, 4, null );
+						barOffset, 4, 7, height - 8, null );
 
 				final int pixelPositionsAvailable = height - (3*2) - LWTCSliderKnobImage.V_KNOB_HEIGHT + 1;
 				final int pixelOffset = (int)(pixelPositionsAvailable * normalisedPos );
 				final int reversedOffset = pixelPositionsAvailable - pixelOffset + 3;
 				final BufferedImage vKnobImage = vertKnobImage.getKnobImage();
-				g2d.drawImage( vKnobImage, xOffset - 4, reversedOffset, null );
+				g2d.drawImage( vKnobImage, xOffset, reversedOffset, null );
 				break;
 			}
 		}

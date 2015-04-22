@@ -32,11 +32,14 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class LWTCSlider extends JPanel
 {
 	private static final long serialVersionUID = 5316903589300941235L;
 
-//	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
+	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
 
 	private final int orientation;
 	private final BoundedRangeModel model;
@@ -45,6 +48,33 @@ public class LWTCSlider extends JPanel
 	private final LWTCSliderPainter painter;
 
 	private final LWTCSliderMouseListener mouseListener;
+
+	private int numUsablePixels;
+
+	private class ValueChangeListener implements ChangeListener
+	{
+		private final BoundedRangeModel model;
+		private int lastValueReceived;
+
+		public ValueChangeListener( final BoundedRangeModel model )
+		{
+			this.model = model;
+			lastValueReceived = model.getValue();
+		}
+
+		@Override
+		public void stateChanged( final ChangeEvent ce )
+		{
+			if( ce.getSource() == model )
+			{
+				final int newValue = model.getValue();
+				modelValueChangeDeltaRepaint( lastValueReceived, newValue );
+				lastValueReceived = newValue;
+			}
+		}
+	};
+
+	private final ValueChangeListener valueChangeListener;
 
 	public LWTCSlider()
 	{
@@ -79,15 +109,9 @@ public class LWTCSlider extends JPanel
 		this.addMouseListener( mouseListener );
 		this.addMouseMotionListener( mouseListener );
 
-		model.addChangeListener( new ChangeListener()
-		{
+		valueChangeListener = new ValueChangeListener( model );
 
-			@Override
-			public void stateChanged( final ChangeEvent arg0 )
-			{
-				repaint();
-			}
-		} );
+		model.addChangeListener( valueChangeListener );
 
 		this.addFocusListener( new FocusListener()
 		{
@@ -139,5 +163,84 @@ public class LWTCSlider extends JPanel
 	public int getMajorTickSpacing()
 	{
 		return majorTickSpacing;
+	}
+
+	private final void modelValueChangeDeltaRepaint( final int prevValue, final int newValue )
+	{
+//		log.debug("modelValueChangeDeltaRepaint(" + prevValue + ", " + newValue +")");
+
+		final int width = getWidth();
+		final int height = getHeight();
+
+		final int prevStartPos = modelValueToSliderStart( prevValue );
+		final int newStartPos = modelValueToSliderStart( newValue );
+
+		int minPos, maxPos;
+
+		if( prevStartPos < newStartPos )
+		{
+			minPos = prevStartPos;
+			maxPos = newStartPos;
+		}
+		else
+		{
+			minPos = newStartPos;
+			maxPos = prevStartPos;
+		}
+		int rangeStart, rangeEnd;
+		if( orientation == SwingConstants.HORIZONTAL )
+		{
+			rangeStart = minPos;
+			rangeEnd = maxPos + LWTCSliderKnobImage.H_KNOB_WIDTH;
+			final int xBegin = 3 + rangeStart;
+			final int yBegin = (height - LWTCSliderKnobImage.H_KNOB_HEIGHT) / 2;
+			final int rpWidth = (rangeEnd - rangeStart) + 1;
+			final int rpHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT;
+			repaint( xBegin, yBegin, rpWidth, rpHeight );
+//			log.debug("Deltarepaint(" + xBegin + ", " + yBegin + ")-(" + rpWidth + ", " +
+//					rpHeight + ")");
+		}
+		else
+		{
+			rangeStart = minPos;
+			rangeEnd = maxPos + LWTCSliderKnobImage.V_KNOB_HEIGHT;
+			final int xBegin = (width - LWTCSliderKnobImage.V_KNOB_WIDTH) / 2;
+			final int yBegin = (height - maxPos) - LWTCSliderKnobImage.V_KNOB_HEIGHT - 3;
+			final int rpWidth = LWTCSliderKnobImage.V_KNOB_WIDTH;
+			final int rpHeight = (maxPos - minPos) + LWTCSliderKnobImage.V_KNOB_HEIGHT + 1;
+			repaint( xBegin, yBegin, rpWidth, rpHeight );
+//			log.debug("Deltarepaint(" + xBegin + ", " + yBegin + ")-(" + rpWidth + ", " +
+//					rpHeight + ")");
+		}
+	}
+
+	private final int modelValueToSliderStart( final int modelValue )
+	{
+		final int min = model.getMinimum();
+		final int max = model.getMaximum();
+		final int range = max - min;
+		final float normalisedValue = (modelValue-min) / (float)range;
+
+		return (int)(normalisedValue * numUsablePixels);
+	}
+
+	@Override
+	public void setBounds( final int x, final int y, final int width, final int height )
+	{
+		super.setBounds( x, y, width, height );
+
+		if( orientation == SwingConstants.HORIZONTAL )
+		{
+			numUsablePixels = width - (2*3) - LWTCSliderKnobImage.H_KNOB_WIDTH;
+		}
+		else
+		{
+			numUsablePixels = height - (2*3) - LWTCSliderKnobImage.V_KNOB_HEIGHT;
+		}
+	}
+
+	public void setValue( final int value )
+	{
+		model.setValue( value );
 	}
 }
