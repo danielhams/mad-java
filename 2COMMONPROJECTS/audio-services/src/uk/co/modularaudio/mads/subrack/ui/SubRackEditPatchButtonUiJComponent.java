@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.mads.subrack.ui;
 
+import java.awt.event.MouseEvent;
+
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.subrack.jpanel.PatchTabCloseListener;
@@ -69,6 +71,11 @@ public class SubRackEditPatchButtonUiJComponent extends LWTCToggleButton
 	{
 //		log.debug("Received update event(" + newValue + ")");
 		uiInstance.makeSubRackFrameVisible( newValue );
+		// Synthesise mouse exit so the button returns to an appropriate state.
+		if( previousValue == false || newValue == true )
+		{
+			mouseExited( new MouseEvent( this, 0, 0, 0, 0, 0, 0, 0, 0, false, 0 ) );
+		}
 	}
 
 	@Override
