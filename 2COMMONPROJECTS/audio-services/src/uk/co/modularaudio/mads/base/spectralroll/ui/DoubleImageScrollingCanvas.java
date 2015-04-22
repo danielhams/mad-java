@@ -56,7 +56,9 @@ public class DoubleImageScrollingCanvas
 	private float smallestVal = Float.MAX_VALUE;
 	private float largestVal = Float.MIN_VALUE;
 
+	private int[][] prevColourArray;
 	private final int[] pixelColourArray = new int[3];
+	private final int[] mixColourArray = new int[3];
 
 	public DoubleImageScrollingCanvas( final SpectralRollMadUiInstance uiInstance,
 			final int canvasWidth, final int canvasHeight )
@@ -137,6 +139,10 @@ public class DoubleImageScrollingCanvas
 			final BufferedImage spectrumCanvas,
 			final int pixelIndex )
 	{
+		if( prevColourArray == null || prevColourArray.length != canvasHeight )
+		{
+			prevColourArray = new int[canvasHeight][3];
+		}
 		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
@@ -166,11 +172,29 @@ public class DoubleImageScrollingCanvas
 //			rgb = newColourFor( scaledVal );
 			setPixelColourArrayFor( scaledVal );
 
-			for( int p = 0 ; p < PIXEL_WIDTH ; p++ )
+			for( int p = 0 ; p < PIXEL_WIDTH ; ++p )
 			{
-//				spectrumCanvas.setRGB( pixelIndex + p, pixelYStartIndex, rgb);
-				raster.setPixel( pixelIndex + p, pixelYStartIndex, pixelColourArray );
+				final float ratio = ( p == (PIXEL_WIDTH - 1) ?
+						1.0f : (p+1/(float)PIXEL_WIDTH) );
+//				log.debug("For p = " + p + " ratio is " + ratio );
+
+				for( int c = 0 ; c < 3 ; ++c )
+				{
+					mixColourArray[c] = (int)((prevColourArray[i][c] * (1.0f-ratio)) +
+							pixelColourArray[c] * ratio);
+				}
+				raster.setPixel( pixelIndex + p, pixelYStartIndex, mixColourArray );
 			}
+			for( int c = 0 ; c < 3 ; ++c )
+			{
+				prevColourArray[i][c] = pixelColourArray[c];
+			}
+
+//			for( int p = 0 ; p < PIXEL_WIDTH ; ++p )
+//			{
+//				if( p == 0 ) continue;
+//				raster.setPixel( pixelIndex + p, pixelYStartIndex, pixelColourArray );
+//			}
 		}
 //		log.debug( "SV(" + smallestVal + ") LV(" + largestVal + ")");
 	}

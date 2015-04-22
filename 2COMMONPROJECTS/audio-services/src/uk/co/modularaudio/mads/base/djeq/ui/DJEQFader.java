@@ -36,11 +36,11 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderM
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplaySlider;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayTextbox;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayTextbox;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDoubleClickMouseListener;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class DJEQFader extends PacPanel
 	implements IMadUiControlInstance<DJEQMadDefinition, DJEQMadInstance, DJEQMadUiInstance>
@@ -54,7 +54,7 @@ public class DJEQFader extends PacPanel
 	private final DJDeckFaderSliderModel sdm;
 	private final SliderDisplayController sdc;
 
-	private final SliderDisplaySlider sds;
+	private final LWTCSliderDisplaySlider sds;
 	private final SliderDisplayTextbox sdt;
 
 	private final StereoAmpMeter sam;
@@ -80,7 +80,7 @@ public class DJEQFader extends PacPanel
 		sdm = new DJDeckFaderSliderModel();
 		sdc = new SliderDisplayController( sdm );
 
-		sds = new SliderDisplaySlider( sdm, sdc, DisplayOrientation.VERTICAL, DJEQColorDefines.FOREGROUND_COLOR, false );
+		sds = new LWTCSliderDisplaySlider( sdm, sdc, DisplayOrientation.VERTICAL, DJEQColorDefines.FOREGROUND_COLOR, false );
 		this.add( sds, "growy, pushy 100" );
 
 

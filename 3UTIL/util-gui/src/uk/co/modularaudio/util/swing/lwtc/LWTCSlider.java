@@ -88,14 +88,12 @@ public class LWTCSlider extends JPanel
 		@Override
 		public void focusLost( final FocusEvent arg0 )
 		{
-			log.debug("Focus lost repaint");
 			repaint();
 		}
 
 		@Override
 		public void focusGained( final FocusEvent arg0 )
 		{
-			log.debug("Focus gained repaint");
 			repaint();
 		}
 	};

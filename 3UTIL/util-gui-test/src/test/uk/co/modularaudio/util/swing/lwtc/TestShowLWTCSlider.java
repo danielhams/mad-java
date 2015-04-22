@@ -21,6 +21,7 @@
 package test.uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,11 +47,12 @@ public class TestShowLWTCSlider
 
 	public void go( final int orientation ) throws Exception
 	{
-
+		final boolean opaque = true;
 		testSwingJSlider = new JSlider( orientation );
-		testSwingJSlider.setOpaque( false );
+		testSwingJSlider.setOpaque( opaque );
 
 		testLWTCSlider = new LWTCSlider( orientation );
+		testLWTCSlider.setOpaque( opaque );
 
 		final JFrame f = new JFrame();
 //		f.getContentPane().setBackground( Color.YELLOW );
@@ -110,6 +112,10 @@ public class TestShowLWTCSlider
 
 		f.pack();
 
+		final Dimension currentSize = f.getSize();
+		final Dimension doubleSize = new Dimension( currentSize.width*2, currentSize.height*2 );
+		f.setMinimumSize( doubleSize );
+
 		f.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
 		SwingUtilities.invokeLater( new Runnable()
@@ -135,7 +141,7 @@ public class TestShowLWTCSlider
 				// 60 fps
 //				final int millis = 16;
 				// 500 fps
-				final int millis = 2;
+				final int millis = 8;
 
 				int value = 0;
 				int dir = 1;
@@ -143,8 +149,8 @@ public class TestShowLWTCSlider
 //				for( int i = 0 ; i < 60 * 30 ; ++i )
 				while( true )
 				{
-					testLWTCSlider.setValue( value );
-//					testSwingJSlider.setValue( value );
+//					testLWTCSlider.setValue( value );
+					testSwingJSlider.setValue( value );
 					value += dir * 1;
 					if( value > 100 )
 					{
@@ -191,14 +197,15 @@ public class TestShowLWTCSlider
 		final TestShowLWTCSlider ht = new TestShowLWTCSlider();
 		ht.go( SwingConstants.HORIZONTAL );
 
-//		vt.startThread();
-//		ht.startThread();
-//
-//		// 30 secs test
-//		Thread.sleep( 30000 );
-//
-//		vt.joinThread();
-//		ht.joinThread();
+		vt.startThread();
+		ht.startThread();
+
+		// n secs test
+		final int millis = 60 * 1000;
+		Thread.sleep( millis );
+
+		vt.joinThread();
+		ht.joinThread();
 	}
 
 }

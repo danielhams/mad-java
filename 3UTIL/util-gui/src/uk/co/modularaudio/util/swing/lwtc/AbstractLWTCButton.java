@@ -105,6 +105,13 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 		g2d.setColor( stateColours.getHighlight() );
 		g2d.drawLine( 2, 1, width-3, 1 );
 
+		// Focus outline
+		if( hasFocus() )
+		{
+			g2d.setColor( stateColours.getFocus() );
+			g2d.drawRect( 5, 5, width-10, height-10 );
+		}
+
 		if( text != null )
 		{
 			g2d.setColor( stateColours.getForegroundText() );
@@ -143,13 +150,6 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 				stateColours,
 				bgGrad,
 				width, height );
-
-		// Focus outline
-		if( hasFocus() )
-		{
-			g2d.setColor( stateColours.getFocus() );
-			g2d.drawRect( 5, 5, width-10, height-10 );
-		}
 	}
 
 	@Override

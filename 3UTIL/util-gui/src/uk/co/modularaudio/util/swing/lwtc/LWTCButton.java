@@ -62,7 +62,6 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	@Override
 	public void mouseEntered( final MouseEvent me )
 	{
-		log.debug("Mouse entered event with " + me.toString() );
 		if( me.getModifiers() == 0 )
 		{
 			switch( pushedState )
