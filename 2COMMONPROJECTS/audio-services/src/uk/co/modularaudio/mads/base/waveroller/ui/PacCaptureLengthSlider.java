@@ -29,9 +29,9 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.SatelliteOrientation;
 
 public abstract class PacCaptureLengthSlider extends JPanel implements ValueChangeListener
 {
@@ -48,6 +48,9 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
+			final Color bgColor,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
 			final String labelText,
 			final Color labelColor,
 			final Color unitsColor,
@@ -65,7 +68,18 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 				unitsStr );
 
 		this.controller = new SliderDisplayController( model );
-		this.view = new SliderDisplayView( model, controller, labelOrientation, displayOrientation, textboxOrientation, labelText, labelColor, unitsColor, opaque );
+		this.view = new SliderDisplayView( model,
+				controller,
+				labelOrientation,
+				displayOrientation,
+				textboxOrientation,
+				bgColor,
+				textboxBgColor,
+				textboxFgColor,
+				labelText,
+				labelColor,
+				unitsColor,
+				opaque );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );

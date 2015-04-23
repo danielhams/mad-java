@@ -36,6 +36,7 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderM
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayTextbox;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
@@ -80,14 +81,23 @@ public class DJEQFader extends PacPanel
 		sdm = new DJDeckFaderSliderModel();
 		sdc = new SliderDisplayController( sdm );
 
-		sds = new LWTCSliderDisplaySlider( sdm, sdc, DisplayOrientation.VERTICAL, DJEQColorDefines.FOREGROUND_COLOR, false );
+		sds = new LWTCSliderDisplaySlider( sdm, sdc,
+				DisplayOrientation.VERTICAL,
+				DJEQColorDefines.BACKGROUND_COLOR,
+				DJEQColorDefines.FOREGROUND_COLOR,
+				false );
 		this.add( sds, "growy, pushy 100" );
 
 
 		sam = new StereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
 		this.add( sam, "growy, wrap");
 
-		sdt = new SliderDisplayTextbox( sdm, sdc, DJEQColorDefines.UNITS_COLOR, false );
+		sdt = new SliderDisplayTextbox( sdm, sdc,
+				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
+				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
+				DJEQColorDefines.BACKGROUND_COLOR,
+				DJEQColorDefines.UNITS_COLOR,
+				false );
 		this.add( sdt, "growy 0, align center, spanx 2" );
 
 		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( new SliderDoubleClickReceiver()

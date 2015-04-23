@@ -25,15 +25,18 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCTextField;
 
 public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
@@ -44,8 +47,8 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 	private RotaryDisplayModel model;
 	private final RotaryDisplayController controller;
 
-	private final JTextField textField;
-	private JLabel unitsLabel;
+	private final LWTCTextField textField;
+	private LWTCLabel unitsLabel;
 
 	private int numSigPlaces;
 	private int numDecPlaces;
@@ -53,27 +56,33 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 	private int unitsStrLength;
 	private int numCharactersForString;
 
-	private final StringBuilder valueStringBuilder;
-
 	public RotaryDisplayTextbox( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
+			final Color bgColor,
 			final Color unitsColor,
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = model;
 		this.controller = controller;
+		this.setBackground( bgColor );
+		this.setForeground( unitsColor );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
-		lh.addLayoutConstraint( "insets 0, gap 0" );
+//		lh.addLayoutConstraint( "debug" );
+		lh.addLayoutConstraint( "insets 0" );
+		lh.addLayoutConstraint( "gap 0" );
 		setLayout( lh.createMigLayout() );
 
-		textField = new JTextField();
-//		textField.setOpaque( opaque );
+		textField = new LWTCTextField();
+		// Never see through
+		textField.setOpaque( true );
+		textField.setBackground( textboxBgColor );
+		textField.setForeground( textboxFgColor );
 
 		extractModelVars( model );
-
-		valueStringBuilder = new StringBuilder( numCharactersForString );
 
 		completeModelSetup( model );
 
@@ -81,13 +90,13 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 
 		if( unitsStrLength > 0 )
 		{
-			unitsLabel = new JLabel();
+			unitsLabel = new LWTCLabel( unitsStr );
 			unitsLabel.setOpaque( opaque );
-			unitsLabel.setText( unitsStr );
-			unitsLabel.setForeground(unitsColor);
-//			unitsLabel.validate();
-//			Dimension minimumSize = this.getPreferredSize();
-//			unitsLabel.setMinimumSize( minimumSize );
+			unitsLabel.setBackground( bgColor );
+			unitsLabel.setForeground( unitsColor );
+			unitsLabel.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+			unitsLabel.setVerticalAlignment( SwingConstants.CENTER );
+			unitsLabel.setBorder( null );
 			this.add( unitsLabel, "grow 0, shrink 0" );
 		}
 
@@ -126,20 +135,22 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	private void setCurrentValueNoPropogate( final float value )
 	{
-		valueStringBuilder.setLength( 0 );
+		String newText;
 		if( value == Float.NEGATIVE_INFINITY )
 		{
-			valueStringBuilder.append( "-Inf" );
+			newText = "-Inf";
 		}
 		else if( value == Float.POSITIVE_INFINITY )
 		{
-			valueStringBuilder.append( "Inf" );
+			newText = "Inf";
 		}
 		else
 		{
-			MathFormatter.fastFloatPrint( valueStringBuilder, value, numDecPlaces, false );
+			final StringBuilder sb = new StringBuilder( numCharactersForString );
+			MathFormatter.fastFloatPrintSb( sb, value, numDecPlaces, false );
+			newText = sb.toString();
 		}
-		textField.setText( valueStringBuilder.toString() );
+		textField.setText( newText );
 	}
 
 	@Override

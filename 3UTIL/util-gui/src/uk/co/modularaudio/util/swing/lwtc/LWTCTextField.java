@@ -20,30 +20,31 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
-import java.awt.Color;
-
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
+import javax.swing.JTextField;
 
-public class LWTCLabel extends JLabel
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class LWTCTextField extends JTextField
 {
-	private static final long serialVersionUID = 6138681925643386194L;
+	private static final long serialVersionUID = 4565693484660743678L;
 
-	public LWTCLabel( final LWTCLabelColours colours, final String text )
+	private static Log log = LogFactory.getLog( LWTCTextField.class.getName() );
+
+	public LWTCTextField( final LWTCTextFieldColours colours )
 	{
-		super( text );
+		super();
 		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
 
 		this.setBackground( colours.getBackground() );
 		this.setForeground( colours.getForeground() );
-		final Color borderColor = colours.getBorder();
-
-		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
+		this.setFont( LWTCControlConstants.RACK_FONT );
+		this.setBorder( BorderFactory.createLineBorder( LWTCControlConstants.CONTROL_OUTLINE, 1 ) );
 	}
 
-	public LWTCLabel( final String text )
+	public LWTCTextField()
 	{
-		this( LWTCControlConstants.STD_LABEL_COLOURS, text);
+		this( LWTCControlConstants.STD_TEXTFIELD_COLOURS );
 	}
-
 }

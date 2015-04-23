@@ -22,24 +22,25 @@ package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class SliderDisplayLabel extends JLabel
+public class SliderDisplayLabel extends LWTCLabel
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayLabel.class.getName() );
 
 	private static final long serialVersionUID = 476235141676357358L;
 
-	public SliderDisplayLabel( final String startLabelText, final Color labelColor, final boolean opaque )
+	public SliderDisplayLabel( final Color bgColor,
+			final String startLabelText,
+			final Color labelColor,
+			final boolean opaque )
 	{
+		super( startLabelText );
 		this.setOpaque( opaque );
-		this.setText( startLabelText );
+		this.setFont( LWTCControlConstants.LABEL_FONT );
+		this.setBorder( null );
 		this.setForeground( labelColor );
-		this.setBorder( BorderFactory.createEmptyBorder( 2, 2, 2, 2 ) );
-
-		this.validate();
-//		Dimension minSize = getPreferredSize();
-//		setMinimumSize( minSize );
+		this.setBackground( bgColor );
 	}
 }

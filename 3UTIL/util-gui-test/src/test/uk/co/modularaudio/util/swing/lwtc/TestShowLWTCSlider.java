@@ -47,7 +47,7 @@ public class TestShowLWTCSlider
 
 	public void go( final int orientation ) throws Exception
 	{
-		final boolean opaque = true;
+		final boolean opaque = false;
 		testSwingJSlider = new JSlider( orientation );
 		testSwingJSlider.setOpaque( opaque );
 
@@ -140,7 +140,7 @@ public class TestShowLWTCSlider
 			{
 				// 60 fps
 //				final int millis = 16;
-				// 500 fps
+				// 120 fps
 				final int millis = 8;
 
 				int value = 0;
@@ -149,8 +149,8 @@ public class TestShowLWTCSlider
 //				for( int i = 0 ; i < 60 * 30 ; ++i )
 				while( true )
 				{
-//					testLWTCSlider.setValue( value );
-					testSwingJSlider.setValue( value );
+					testLWTCSlider.setValue( value );
+//					testSwingJSlider.setValue( value );
 					value += dir * 1;
 					if( value > 100 )
 					{

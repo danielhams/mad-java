@@ -49,8 +49,6 @@ public class SliderDisplayView extends JPanel
 		LEFT
 	};
 
-	private int numColumns = 1;
-
 	private final SliderDisplayLabel label;
 	private final LWTCSliderDisplaySlider slider;
 	private final SliderDisplayTextbox textbox;
@@ -60,6 +58,9 @@ public class SliderDisplayView extends JPanel
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
+			final Color bgColor,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
 			final String labelText,
 			final Color labelColor,
 			final Color unitsColor,
@@ -70,6 +71,9 @@ public class SliderDisplayView extends JPanel
 				labelOrientation,
 				displayOrientation,
 				textboxOrientation,
+				bgColor,
+				textboxBgColor,
+				textboxFgColor,
 				labelText,
 				labelColor,
 				unitsColor,
@@ -82,6 +86,9 @@ public class SliderDisplayView extends JPanel
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
+			final Color bgColor,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
 			final String labelText,
 			final Color labelColor,
 			final Color unitsColor,
@@ -89,136 +96,98 @@ public class SliderDisplayView extends JPanel
 			final boolean doubleClickToReset )
 	{
 		this.setOpaque( opaque );
+		this.setBackground( bgColor );
 
-		// If the label orientation or textbox orientation is left/right
-		// we use a two column mode
-		numColumns = 1 + ( labelOrientation == SatelliteOrientation.LEFT || textboxOrientation == SatelliteOrientation.LEFT ? 1 : 0 ) +
-				(labelOrientation == SatelliteOrientation.RIGHT || textboxOrientation == SatelliteOrientation.RIGHT ? 1 : 0 );
+		final int numOnLeft = ( labelOrientation == SatelliteOrientation.LEFT ? 1 : 0 ) +
+				(textboxOrientation == SatelliteOrientation.LEFT ? 1 : 0 );
+		final int numAbove = ( labelOrientation == SatelliteOrientation.ABOVE ? 1 : 0 ) +
+				(textboxOrientation == SatelliteOrientation.ABOVE ? 1 : 0 );
+
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 
 //		lh.addLayoutConstraint( "debug" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "gap 0" );
-		if( numColumns == 1 )
-		{
-			lh.addLayoutConstraint( "flowy" );
-			if( labelOrientation == SatelliteOrientation.ABOVE || textboxOrientation == SatelliteOrientation.ABOVE )
-			{
-				lh.addRowConstraint( "[fill]" );
-				lh.addRowConstraint( "[]" );
-			}
-			else
-			{
-				lh.addRowConstraint( "[]" );
-			}
-			if( labelOrientation == SatelliteOrientation.BELOW || textboxOrientation == SatelliteOrientation.BELOW )
-			{
-				lh.addRowConstraint( "[fill]" );
-			}
-		}
-
 		lh.addLayoutConstraint( "fill" );
 
 		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
 
-		label = new SliderDisplayLabel( labelText, labelColor, opaque );
-		slider = new LWTCSliderDisplaySlider( model, controller, displayOrientation, labelColor, opaque );
-		textbox = new SliderDisplayTextbox( model, controller, unitsColor, opaque );
+		label = new SliderDisplayLabel( bgColor, labelText, labelColor, opaque );
+		slider = new LWTCSliderDisplaySlider( model,
+				controller,
+				displayOrientation,
+				bgColor,
+				labelColor,
+				opaque );
+		textbox = new SliderDisplayTextbox( model, controller,
+				textboxBgColor,
+				textboxFgColor,
+				bgColor,
+				unitsColor,
+				opaque );
 
-		// Any needed components at top
+		int curColCounter = 0;
+		int curRowCounter = 0;
+
+		final int displayCol = numOnLeft;
+		final int displayRow = numAbove;
+
+		// Above
 		if( labelOrientation == SatelliteOrientation.ABOVE )
 		{
-			this.add( label, "center, bottom, grow 0" );
+			this.add( label, "cell " + displayCol + " " + curRowCounter + ", center, bottom, grow 0" );
+			curRowCounter++;
 		}
+
 		if( textboxOrientation == SatelliteOrientation.ABOVE )
 		{
-			this.add( textbox, "center, grow 0" );
+			this.add( textbox, "cell " + displayCol + " " + curRowCounter + ", center, grow 0" );
+			curRowCounter++;
 		}
 
 		// Left
 		if( labelOrientation == SatelliteOrientation.LEFT )
 		{
-			this.add( label, "alignx right, aligny center" );
+			this.add( label, "cell " + curColCounter + " " + curRowCounter + ", alignx right, aligny center" );
+			curColCounter++;
 		}
+
 		if( textboxOrientation == SatelliteOrientation.LEFT )
 		{
-			this.add( textbox, "align center" );
+			this.add( textbox, "cell " + curColCounter + " " + curRowCounter + ", align center" );
+			curColCounter++;
 		}
 
-		// Main slider
-		if( numColumns == 2 )
-		{
-			if( displayOrientation == DisplayOrientation.HORIZONTAL )
-			{
-				this.add( slider, "center, grow, shrink 100, pushx, wrap");
-			}
-			else
-			{
-				this.add( slider, "center, grow, shrink 100, pushy, wrap");
-			}
-		}
-		else
-		{
-			if( displayOrientation == DisplayOrientation.HORIZONTAL )
-			{
-//				log.debug("Adding slider with center pushx 50 shrink 100");
-				this.add( slider, "center, growx 50, pushx 50, shrink 100" );
-			}
-			else
-			{
-				this.add( slider, "center, pushy 50, shrink 100" );
-			}
-		}
+		this.add( slider, "cell " + displayCol + " " + displayRow + ", center, grow, shrink 100, push, wrap");
+		curColCounter++;
 
-		// Now right
+		// Right
 		if( textboxOrientation == SatelliteOrientation.RIGHT )
 		{
-			if( numColumns > 1 )
-			{
-//				log.debug("Adding textbox with pushx100 shrink 0 align center and wrap");
-				this.add( textbox, "align center, pushx 0, shrink 0, wrap" );
-			}
-			else
-			{
-//				log.debug("Adding textbox with grow 0 shrink 0 align center");
-				this.add( textbox, "align center, pushx 100, shrink 0" );
-			}
-		}
-		if( labelOrientation == SatelliteOrientation.RIGHT )
-		{
-			if( numColumns > 1 )
-			{
-				this.add( label, "align left, grow 0, wrap" );
-			}
-			else
-			{
-				this.add( label, "align left, grow 0" );
-			}
+			this.add( textbox, "cell " + curColCounter + " " + displayRow + ", align center, pushx 0, shrink 0");
+			curColCounter++;
 		}
 
-		// And bottom
+		if( labelOrientation == SatelliteOrientation.RIGHT )
+		{
+			this.add( label, "cell " + curColCounter + " " + displayRow + ", align left, grow 0" );
+			curColCounter++;
+		}
+
+		curRowCounter++;
+
+		// Bottom
 		if( textboxOrientation == SatelliteOrientation.BELOW )
 		{
-			if( numColumns > 1 )
-			{
-				this.add( textbox, "align center, grow 0, spanx " + numColumns );
-			}
-			else
-			{
-				this.add( textbox, "align center, grow 0" );
-			}
+			this.add( textbox, "cell " + displayCol + " " + curRowCounter + ", align center, grow 0" );
+			curRowCounter++;
 		}
+
 		if( labelOrientation == SatelliteOrientation.BELOW )
 		{
-			if( numColumns > 1 )
-			{
-				this.add( label, "center, top, growx, spanx " + numColumns );
-			}
-			else
-			{
-				this.add( label, "center, top, growx" );
-			}
+			this.add( label, "cell " + displayCol + " " + curRowCounter + ", align center, top, grow 0" );
+			curRowCounter++;
 		}
 
 		this.validate();

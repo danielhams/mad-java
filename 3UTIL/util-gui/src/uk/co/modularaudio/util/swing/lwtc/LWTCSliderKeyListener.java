@@ -40,10 +40,10 @@ public class LWTCSliderKeyListener implements KeyListener
 	}
 
 	@Override
-	public void keyPressed( final KeyEvent arg0 )
+	public void keyPressed( final KeyEvent me )
 	{
-		final int keyCode = arg0.getKeyCode();
-		final int modMask = arg0.getModifiers();
+		final int keyCode = me.getKeyCode();
+		final int modMask = me.getModifiers();
 		final int majorTickSpacing = slider.getMajorTickSpacing();
 		if( modMask != 0 )
 		{
@@ -56,6 +56,7 @@ public class LWTCSliderKeyListener implements KeyListener
 			{
 				final int curValue = model.getValue();
 				model.setValue( curValue - 1 );
+				me.consume();
 				break;
 			}
 			case KeyEvent.VK_RIGHT:
@@ -63,18 +64,21 @@ public class LWTCSliderKeyListener implements KeyListener
 			{
 				final int curValue = model.getValue();
 				model.setValue( curValue + 1 );
+				me.consume();
 				break;
 			}
 			case KeyEvent.VK_PAGE_DOWN:
 			{
 				final int curValue = model.getValue();
 				model.setValue( curValue - majorTickSpacing );
+				me.consume();
 				break;
 			}
 			case KeyEvent.VK_PAGE_UP:
 			{
 				final int curValue = model.getValue();
 				model.setValue( curValue + majorTickSpacing );
+				me.consume();
 				break;
 			}
 			default:
@@ -85,13 +89,13 @@ public class LWTCSliderKeyListener implements KeyListener
 	}
 
 	@Override
-	public void keyReleased( final KeyEvent arg0 )
+	public void keyReleased( final KeyEvent me )
 	{
 //		log.debug("Key released: " + arg0.toString() );
 	}
 
 	@Override
-	public void keyTyped( final KeyEvent arg0 )
+	public void keyTyped( final KeyEvent me )
 	{
 //		log.debug("Key typed: " + arg0.toString() );
 	}

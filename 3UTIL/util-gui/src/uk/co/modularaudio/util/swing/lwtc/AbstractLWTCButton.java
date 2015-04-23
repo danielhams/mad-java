@@ -70,6 +70,7 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 
 	public AbstractLWTCButton( final LWTCButtonColours colours, final String textContent )
 	{
+		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
 		this.colours = colours;
 		this.text = textContent;
 		setOpaque( false );

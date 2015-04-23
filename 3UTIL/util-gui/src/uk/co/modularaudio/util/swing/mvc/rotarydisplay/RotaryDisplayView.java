@@ -58,6 +58,8 @@ public class RotaryDisplayView extends JPanel
 			final Color unitsColor,
 			final Color backgroundColor,
 			final Color foregroundColor,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
 			final Color knobColor,
 			final Color outlineColor,
 			final Color indicatorColor,
@@ -73,6 +75,8 @@ public class RotaryDisplayView extends JPanel
 				unitsColor,
 				backgroundColor,
 				foregroundColor,
+				textboxBgColor,
+				textboxFgColor,
 				knobColor,
 				outlineColor,
 				indicatorColor,
@@ -90,6 +94,8 @@ public class RotaryDisplayView extends JPanel
 			final Color unitsColor,
 			final Color backgroundColor,
 			final Color foregroundColor,
+			final Color textboxBgColor,
+			final Color textboxFgColor,
 			final Color knobColor,
 			final Color outlineColor,
 			final Color indicatorColor,
@@ -113,7 +119,7 @@ public class RotaryDisplayView extends JPanel
 		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
 
-		label = new RotaryDisplayLabel( labelText, labelColor, opaque );
+		label = new RotaryDisplayLabel( backgroundColor, labelText, labelColor, opaque );
 		knob = new RotaryDisplayKnob( model,
 				controller,
 				knobType,
@@ -123,7 +129,12 @@ public class RotaryDisplayView extends JPanel
 				outlineColor,
 				indicatorColor,
 				opaque );
-		textbox = new RotaryDisplayTextbox( model, controller, unitsColor, opaque );
+		textbox = new RotaryDisplayTextbox( model, controller,
+				textboxBgColor,
+				textboxFgColor,
+				backgroundColor,
+				unitsColor,
+				opaque );
 
 		int curColCounter = 0;
 		int curRowCounter = 0;

@@ -32,6 +32,7 @@ import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
@@ -102,6 +103,8 @@ public class RotaryDisplayTester
 				Color.white,
 				backgroundColor,
 				foregroundColor,
+				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
+				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
 				knobColor,
 				outlineColor,
 				indicatorColor,

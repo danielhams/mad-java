@@ -26,6 +26,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
 
+import uk.co.modularaudio.util.swing.lwtc.LWTCSliderImageCache.ImagesForColours;
+
 public class LWTCSliderPainter
 {
 //	private static Log log = LogFactory.getLog( LWTCSliderPainter.class.getName() );
@@ -36,9 +38,11 @@ public class LWTCSliderPainter
 
 	public LWTCSliderPainter( final LWTCSliderColours colours )
 	{
-		horizKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.HORIZONTAL );
-		vertKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.VERTICAL );
-		guideImages = new LWTCSliderGuideImages( colours );
+		final LWTCSliderImageCache imageCache = LWTCSliderImageCache.getInstance();
+		final ImagesForColours sliderImages = imageCache.getImagesForColours( colours );
+		horizKnobImage = sliderImages.horizKnobImage;
+		vertKnobImage = sliderImages.vertKnobImage;
+		guideImages = sliderImages.guideImages;
 	}
 
 	public void paintSlider( final Graphics2D g2d,

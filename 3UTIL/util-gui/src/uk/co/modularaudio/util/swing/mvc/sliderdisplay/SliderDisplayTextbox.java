@@ -53,8 +53,6 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	private int unitsStrLength;
 	private int numCharactersForString;
 
-	private final StringBuilder valueStringBuilder;
-
 	public SliderDisplayTextbox( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final Color unitsColor,
@@ -72,8 +70,6 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 //		textField.setOpaque( opaque );
 
 		extractModelVars( model );
-
-		valueStringBuilder = new StringBuilder( numCharactersForString );
 
 		completeModelSetup( model );
 
@@ -126,20 +122,22 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	private void setCurrentValueNoPropogate( final float value )
 	{
-		valueStringBuilder.setLength( 0 );
+		String newText;
 		if( value == Float.NEGATIVE_INFINITY )
 		{
-			valueStringBuilder.append( "-Inf" );
+			newText = "-Inf";
 		}
 		else if( value == Float.POSITIVE_INFINITY )
 		{
-			valueStringBuilder.append( "Inf" );
+			newText = "Inf";
 		}
 		else
 		{
-			MathFormatter.fastFloatPrint( valueStringBuilder, value, numDecPlaces, false );
+			final StringBuilder sb = new StringBuilder( numCharactersForString );
+			MathFormatter.fastFloatPrintSb( sb, value, numDecPlaces, false );
+			newText = sb.toString();
 		}
-		textField.setText( valueStringBuilder.toString() );
+		textField.setText( newText );
 	}
 
 	@Override

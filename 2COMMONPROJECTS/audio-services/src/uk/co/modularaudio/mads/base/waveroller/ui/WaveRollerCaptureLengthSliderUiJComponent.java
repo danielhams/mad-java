@@ -32,8 +32,9 @@ import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.SatelliteOrientation;
 
 public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthSlider
 	implements IMadUiControlInstance<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>,
@@ -55,6 +56,9 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
+				Color.BLACK,
+				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
+				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
 				"Capture Time:",
 				Color.WHITE,
 				Color.WHITE,

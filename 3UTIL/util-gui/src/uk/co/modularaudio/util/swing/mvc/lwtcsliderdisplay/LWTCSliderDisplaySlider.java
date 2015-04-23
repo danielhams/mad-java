@@ -43,6 +43,7 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 	public LWTCSliderDisplaySlider( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final DisplayOrientation displayOrientation,
+			final Color bgColor,
 			final Color foregroundColor,
 			final boolean opaque )
 	{
@@ -59,6 +60,7 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 //		log.debug("Setting major tick spacing to " + sliderMajorTickSpacing + " with " + model.getNumSliderSteps() + " steps");
 		this.setMajorTickSpacing( sliderMajorTickSpacing );
 		this.setForeground( foregroundColor );
+		this.setBackground( bgColor );
 	}
 
 	public void changeModel( final SliderDisplayModel newModel )

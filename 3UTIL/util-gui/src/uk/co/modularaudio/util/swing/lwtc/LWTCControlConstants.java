@@ -65,6 +65,9 @@ public class LWTCControlConstants
 
 	public final static Color CONTROL_SLIDER_FOCUS = Color.decode( "#aaaaaa" );
 
+	public final static Color CONTROL_TEXTBOX_BACKGROUND = Color.decode( "#ffffff");
+	public final static Color CONTROL_TEXTBOX_FOREGROUND = Color.decode( "#393f3f");
+
 	public final static Font RACK_FONT = getRackFont();
 	public final static Font LABEL_FONT = getLabelFont();
 	public final static Font LABEL_SMALL_FONT = getLabelSmallFont();
@@ -90,6 +93,23 @@ public class LWTCControlConstants
 	public final static LWTCLabelColours STD_LABEL_COLOURS = new StdLabelColours();
 
 	public final static LWTCSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
+	public final static LWTCTextFieldColours STD_TEXTFIELD_COLOURS = new StdTextfieldColours();
+
+	private static class StdTextfieldColours implements LWTCTextFieldColours
+	{
+
+		@Override
+		public Color getBackground()
+		{
+			return CONTROL_TEXTBOX_BACKGROUND;
+		}
+
+		@Override
+		public Color getForeground()
+		{
+			return CONTROL_TEXTBOX_FOREGROUND;
+		}
+	};
 
 	private static class StdSliderColours implements LWTCSliderColours
 	{

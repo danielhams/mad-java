@@ -33,8 +33,9 @@ import uk.co.modularaudio.mads.base.waveroller.ui.PacCaptureLengthSlider;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.SatelliteOrientation;
 
 public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
 	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>,
@@ -56,6 +57,9 @@ public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
+				Color.BLACK,
+				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
+				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
 				"Capture Time:",
 				Color.WHITE,
 				Color.WHITE,

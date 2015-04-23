@@ -26,8 +26,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
@@ -40,8 +38,8 @@ public class LWTCSliderDisplayTester
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayTester.class.getName() );
 
-	private JFrame frame = null;
-	private JPanel panel = null;
+	private final JFrame frame;
+	private final JPanel panel;
 
 	private SliderDisplayView staticValueDisplay;
 
@@ -58,7 +56,7 @@ public class LWTCSliderDisplayTester
 		final String layoutStr = "fill";
 		final MigLayout l = new MigLayout( layoutStr );
 		panel.setLayout( l );
-		panel.setBackground( Color.green );
+		panel.setBackground( Color.BLACK );
 		frame.add( panel );
 	}
 
@@ -135,16 +133,19 @@ public class LWTCSliderDisplayTester
 				1000,
 				100,
 				new SimpleSliderIntToFloatConverter(),
-				2,
+				3,
 				2,
 				"Hz" );
 		final SliderDisplayController staticValueController = new SliderDisplayController( staticValueModel );
 		staticValueDisplay = new SliderDisplayView( staticValueModel,
 				staticValueController,
-				SatelliteOrientation.LEFT,
-				DisplayOrientation.HORIZONTAL,
-				SatelliteOrientation.RIGHT,
-				"Frequency:",
+				SatelliteOrientation.BELOW,
+				DisplayOrientation.VERTICAL,
+				SatelliteOrientation.BELOW,
+				Color.BLACK,
+				Color.WHITE,
+				Color.BLACK,
+				"Freq",
 				Color.white,
 				Color.white,
 				true );
@@ -167,8 +168,8 @@ public class LWTCSliderDisplayTester
 			{
 				try
 				{
-					UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-					UIManager.put( "Slider.paintValue",  Boolean.FALSE );
+//					UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+//					UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 					final LWTCSliderDisplayTester t = new LWTCSliderDisplayTester();
 					t.go();
 				}

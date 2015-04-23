@@ -110,6 +110,7 @@ public class LWTCSlider extends JPanel
 
 	public LWTCSlider( final int orientation, final BoundedRangeModel model )
 	{
+		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
 		this.setOpaque( true );
 
 		this.orientation = orientation;

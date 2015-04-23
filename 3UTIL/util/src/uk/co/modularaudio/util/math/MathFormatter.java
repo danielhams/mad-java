@@ -70,10 +70,34 @@ public class MathFormatter
 		return retVal;
 	}
 
-	public static void fastFloatPrint( final StringBuilder outputStringBuilder, final float f, final int numDecimals, final boolean echoPlus )
+	public static void fastFloatPrintSb( final StringBuilder sb,
+			final float f, final int numDecimals, final boolean echoPlus )
 	{
-//		outputStringBuilder.append( slowFloatPrint( f, numDecimals, echoPlus ) );
-		outputStringBuilder.append( fastFloatPrint( f, numDecimals, echoPlus ) );
+		final int minDigits = numDecimals + 1;
+		int asInt = (int)(f * Math.pow( 10, numDecimals) );
+		final boolean negative = asInt < 0;
+		asInt = (negative ? -asInt : asInt );
+
+		for( int i = 0 ; i < minDigits || asInt > 0 ; i++ )
+		{
+			final int curDigit = asInt % 10;
+			asInt = asInt / 10;
+			if( i == numDecimals && numDecimals > 0)
+			{
+				sb.append( '.' );
+			}
+			sb.append( Integer.toString( curDigit ) );
+		}
+		if( negative )
+		{
+			sb.append( '-' );
+		}
+		else if( echoPlus )
+		{
+			sb.append( '+' );
+		}
+		// Now back again
+		sb.reverse();
 	}
 
 	public static String fastFloatPrint( final float f, final int numDecimals, final boolean echoPlus )

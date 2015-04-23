@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
@@ -78,6 +79,8 @@ public class OneEqKnob extends PacPanel
 				DJEQColorDefines.UNITS_COLOR,
 				DJEQColorDefines.BACKGROUND_COLOR,
 				DJEQColorDefines.FOREGROUND_COLOR,
+				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
+				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
 				DJEQColorDefines.KNOB_COLOR,
 				DJEQColorDefines.OUTLINE_COLOR,
 				DJEQColorDefines.INDICATOR_COLOR,
