@@ -178,6 +178,7 @@ public class TestShowLWTCSlider
 		t.start();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void joinThread() throws Exception
 	{
 		t.stop();

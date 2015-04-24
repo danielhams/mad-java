@@ -22,13 +22,11 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenIntObjectHashMap;
 
 public class LWTCSliderImageCache
 {
-	private static Log log = LogFactory.getLog( LWTCSliderImageCache.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderImageCache.class.getName() );
 
 	private static LWTCSliderImageCache instance = new LWTCSliderImageCache();
 

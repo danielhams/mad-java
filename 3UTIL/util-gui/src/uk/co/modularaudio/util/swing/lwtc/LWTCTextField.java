@@ -23,14 +23,9 @@ package uk.co.modularaudio.util.swing.lwtc;
 import javax.swing.BorderFactory;
 import javax.swing.JTextField;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCTextField extends JTextField
 {
 	private static final long serialVersionUID = 4565693484660743678L;
-
-	private static Log log = LogFactory.getLog( LWTCTextField.class.getName() );
 
 	public LWTCTextField( final LWTCTextFieldColours colours )
 	{

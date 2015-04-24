@@ -32,14 +32,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCSlider extends JPanel
 {
 	private static final long serialVersionUID = 5316903589300941235L;
 
-	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
 
 	private final int orientation;
 	protected BoundedRangeModel model;
