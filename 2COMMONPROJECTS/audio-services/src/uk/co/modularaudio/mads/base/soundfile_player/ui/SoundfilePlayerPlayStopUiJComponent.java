@@ -42,7 +42,7 @@ public class SoundfilePlayerPlayStopUiJComponent extends LWTCToggleButton
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Play/Stop", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Play/Stop", true, false );
 		this.uiInstance = uiInstance;
 	}
 

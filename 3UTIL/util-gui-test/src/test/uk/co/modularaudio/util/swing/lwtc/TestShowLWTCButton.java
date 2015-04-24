@@ -47,7 +47,7 @@ public class TestShowLWTCButton
 
 	public TestShowLWTCButton()
 	{
-		tdb = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS, "Kill A" )
+		tdb = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS, "Kill A", false )
 		{
 			private static final long serialVersionUID = 4471589131574821185L;
 

@@ -79,6 +79,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			final int attemptedValue = (int)(startModelValue + diffInValueSteps );
 			model.setValue( attemptedValue );
 		}
+		me.consume();
 	}
 
 	@Override
@@ -154,6 +155,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			final int attemptedValue = prevValue + numToAdd;
 			model.setValue( attemptedValue );
 		}
+		me.consume();
 	}
 
 	private boolean mouseInKnob( final int x, final int y )
@@ -221,6 +223,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 		{
 			inDrag = false;
 		}
+		me.consume();
 	}
 
 	public void setModel( final BoundedRangeModel newModel )

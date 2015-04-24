@@ -44,7 +44,7 @@ public class CrossFaderAmpBKillUiJComponent extends LWTCToggleButton
 			final int controlIndex )
 	{
 		// Default value
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill B", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill B", true, false );
 
 		this.uiInstance = uiInstance;
 	}

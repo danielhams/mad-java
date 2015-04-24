@@ -47,7 +47,7 @@ public class TestShowLWTCToggleButton
 
 	public TestShowLWTCToggleButton()
 	{
-		tdb = new LWTCToggleButton( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false )
+		tdb = new LWTCToggleButton( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill A", false, false )
 		{
 			private static final long serialVersionUID = -359196738631950261L;
 

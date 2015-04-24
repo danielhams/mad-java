@@ -52,8 +52,10 @@ public class DJEQOneEqLane extends PacPanel
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 //		msh.addLayoutConstraint( "debug" );
 		msh.addLayoutConstraint( "fill" );
-		msh.addLayoutConstraint( "insets 0" );
-		msh.addLayoutConstraint( "gap 5" );
+		msh.addLayoutConstraint( "insets 3" );
+		msh.addLayoutConstraint( "gap 3" );
+
+		msh.addRowConstraint( "[grow][]" );
 
 		setLayout( msh.createMigLayout() );
 
@@ -63,7 +65,7 @@ public class DJEQOneEqLane extends PacPanel
 
 		killToggle = new OneEqKill();
 
-		add( killToggle, "alignx center, aligny bottom, width 75px, height 30px" );
+		add( killToggle, "alignx center, aligny top, width 75px, height 30px" );
 	}
 
 	@Override

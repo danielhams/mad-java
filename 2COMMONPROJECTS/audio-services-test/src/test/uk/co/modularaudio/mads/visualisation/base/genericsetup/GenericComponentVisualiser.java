@@ -31,7 +31,6 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import net.miginfocom.swing.MigLayout;
@@ -68,8 +67,8 @@ public class GenericComponentVisualiser
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
+//		UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
+//		UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 	}
 
 	public void setUp() throws Exception

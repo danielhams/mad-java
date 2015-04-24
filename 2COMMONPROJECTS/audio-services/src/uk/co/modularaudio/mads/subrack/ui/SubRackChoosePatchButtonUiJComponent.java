@@ -47,7 +47,7 @@ public class SubRackChoosePatchButtonUiJComponent extends LWTCButton
 			final SubRackMadUiInstance uiInstance,
 			final SubRackChoosePatchButtonUiControlDefinition def )
 	{
-		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\" );
+		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\", false );
 		this.uiInstance = uiInstance;
 	}
 

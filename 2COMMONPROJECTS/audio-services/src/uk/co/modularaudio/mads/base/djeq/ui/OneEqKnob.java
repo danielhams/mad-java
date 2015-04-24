@@ -48,10 +48,10 @@ public class OneEqKnob extends PacPanel
 		setOpaque( false );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
 		msh.addLayoutConstraint( "insets 0" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
-//		msh.addLayoutConstraint( "debug" );
 
 		setLayout( msh.createMigLayout() );
 
@@ -86,6 +86,8 @@ public class OneEqKnob extends PacPanel
 				DJEQColorDefines.INDICATOR_COLOR,
 				false,
 				true );
+
+		rdv.setDiameter( 33 );
 
 		this.add( rdv, "grow" );
 	}

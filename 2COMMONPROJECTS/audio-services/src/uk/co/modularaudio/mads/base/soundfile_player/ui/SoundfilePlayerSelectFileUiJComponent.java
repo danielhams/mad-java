@@ -48,7 +48,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\" );
+		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\", false );
 		this.uiInstance = uiInstance;
 		this.lastUsedDirectory = uiInstance.getMusicRoot();
 	}

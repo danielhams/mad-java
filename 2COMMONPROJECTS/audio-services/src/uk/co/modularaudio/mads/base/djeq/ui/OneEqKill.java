@@ -36,7 +36,7 @@ public class OneEqKill extends LWTCToggleButton
 
 	public OneEqKill( )
 	{
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Kill", true, false );
 	}
 
 	@Override

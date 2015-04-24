@@ -32,9 +32,13 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 
 	private static Log log = LogFactory.getLog( LWTCButton.class.getName() );
 
-	public LWTCButton( final LWTCButtonColours colours, final String text )
+	private final boolean isImmediate;
+
+	public LWTCButton( final LWTCButtonColours colours, final String text,
+			final boolean isImmediate )
 	{
 		super( colours, text );
+		this.isImmediate = isImmediate;
 	}
 
 	public String getControlValue()
@@ -62,53 +66,49 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	@Override
 	public void mouseEntered( final MouseEvent me )
 	{
-		if( me.getModifiers() == 0 )
+		switch( pushedState )
 		{
-			switch( pushedState )
+			case OUT_NO_MOUSE:
 			{
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
+				pushedState = MadButtonState.OUT_MOUSE;
+				break;
 			}
-			repaint();
+			case IN_NO_MOUSE:
+			{
+				pushedState = MadButtonState.IN_MOUSE;
+				break;
+			}
+			default:
+			{
+				log.error( "Oops - state issue" );
+			}
 		}
+		repaint();
+		me.consume();
 	}
 
 	@Override
 	public void mouseExited( final MouseEvent me )
 	{
-		if( me.getModifiers() == 0 )
+		switch( pushedState )
 		{
-			switch( pushedState )
+			case OUT_MOUSE:
 			{
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
+				pushedState = MadButtonState.OUT_NO_MOUSE;
+				break;
 			}
-			repaint();
+			case IN_MOUSE:
+			{
+				pushedState = MadButtonState.IN_NO_MOUSE;
+				break;
+			}
+			default:
+			{
+				log.error( "Oops - state issue" );
+			}
 		}
+		repaint();
+		me.consume();
 	}
 
 	@Override
@@ -146,6 +146,11 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 			requestFocusInWindow();
 		}
 		repaint();
+		if( isImmediate )
+		{
+			receiveClick();
+		}
+		me.consume();
 	}
 
 	@Override
@@ -179,6 +184,10 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 			}
 		}
 		repaint();
-		receiveClick();
+		if( !isImmediate )
+		{
+			receiveClick();
+		}
+		me.consume();
 	}
 }

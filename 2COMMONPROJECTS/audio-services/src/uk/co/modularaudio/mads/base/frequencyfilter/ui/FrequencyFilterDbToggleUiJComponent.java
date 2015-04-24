@@ -43,7 +43,7 @@ public class FrequencyFilterDbToggleUiJComponent extends LWTCToggleButton
 			final FrequencyFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Toggle 24dB", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Toggle 24dB", true, false );
 		this.uiInstance = uiInstance;
 	}
 

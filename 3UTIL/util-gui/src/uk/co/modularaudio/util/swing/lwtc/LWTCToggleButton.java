@@ -32,11 +32,17 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 
 	private static Log log = LogFactory.getLog( LWTCToggleButton.class.getName() );
 
-	protected boolean isOn = false;
+	protected boolean isImmediate;
 
-	public LWTCToggleButton( final LWTCButtonColours colours, final String text, final boolean defaultValue )
+	protected boolean isOn;
+
+	public LWTCToggleButton( final LWTCButtonColours colours,
+			final String text,
+			final boolean isImmediate,
+			final boolean defaultValue )
 	{
 		super( colours, text );
+		this.isImmediate = isImmediate;
 		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
 		isOn = defaultValue;
 	}
@@ -93,66 +99,61 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	}
 
 	@Override
-	public void mouseClicked( final MouseEvent arg0 )
+	public void mouseClicked( final MouseEvent me )
 	{
 	}
 
 	@Override
-	public void mouseEntered( final MouseEvent arg0 )
+	public void mouseEntered( final MouseEvent me )
 	{
-		if( arg0.getModifiers() == 0 )
+		switch( pushedState )
 		{
-			switch( pushedState )
+			case OUT_NO_MOUSE:
 			{
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "menter oops - state issue" );
-				}
+				pushedState = MadButtonState.OUT_MOUSE;
+				break;
 			}
-			repaint();
+			case IN_NO_MOUSE:
+			{
+				pushedState = MadButtonState.IN_MOUSE;
+				break;
+			}
+			default:
+			{
+				log.error( "menter oops - state issue" );
+			}
 		}
+		repaint();
+		me.consume();
 	}
 
 	@Override
-	public void mouseExited( final MouseEvent arg0 )
+	public void mouseExited( final MouseEvent me )
 	{
-		if( arg0.getModifiers() == 0 )
+		switch( pushedState )
 		{
-			switch( pushedState )
+			case OUT_MOUSE:
 			{
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "mexit oops - state issue" );
-				}
+				pushedState = MadButtonState.OUT_NO_MOUSE;
+				break;
 			}
-			repaint();
+			case IN_MOUSE:
+			{
+				pushedState = MadButtonState.IN_NO_MOUSE;
+				break;
+			}
+			default:
+			{
+				log.error( "mexit oops - state issue" );
+			}
 		}
+		repaint();
+		me.consume();
 	}
 
 	@Override
-	public void mousePressed( final MouseEvent arg0 )
+	public void mousePressed( final MouseEvent me )
 	{
-//		log.debug("Mouse press beginning");
 		switch( pushedState )
 		{
 			case IN_MOUSE:
@@ -188,12 +189,16 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 			requestFocusInWindow();
 		}
 
+		if( isImmediate )
+		{
+			doStateSwitch();
+		}
 //		log.debug("mousePressed repaint");
 		repaint();
+		me.consume();
 	}
 
-	@Override
-	public void mouseReleased( final MouseEvent arg0 )
+	private void doStateSwitch()
 	{
 		// We only change state on press and stay in that
 		// state until next click
@@ -218,7 +223,17 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 		{
 			receiveUpdateEvent( previousValue, isOn );
 		}
+	}
+
+	@Override
+	public void mouseReleased( final MouseEvent me )
+	{
 //		log.debug("mouseReleased repaint");
+		if( !isImmediate )
+		{
+			doStateSwitch();
+		}
 		repaint();
+		me.consume();
 	}
 }

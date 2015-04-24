@@ -154,14 +154,14 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 	}
 
 	@Override
-	public void focusGained( final FocusEvent arg0 )
+	public void focusGained( final FocusEvent fe )
 	{
 //		log.debug("Gained focus repaint");
 		repaint();
 	}
 
 	@Override
-	public void focusLost( final FocusEvent arg0 )
+	public void focusLost( final FocusEvent fe )
 	{
 //		log.debug("Lost focus repaint");
 		repaint();

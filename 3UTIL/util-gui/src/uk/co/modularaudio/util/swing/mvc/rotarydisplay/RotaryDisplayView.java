@@ -224,4 +224,9 @@ public class RotaryDisplayView extends JPanel
 		knob.changeModel( newModel );
 		textbox.changeModel( newModel );
 	}
+
+	public void setDiameter( final int diameter )
+	{
+		knob.setDiameter( diameter );
+	}
 }

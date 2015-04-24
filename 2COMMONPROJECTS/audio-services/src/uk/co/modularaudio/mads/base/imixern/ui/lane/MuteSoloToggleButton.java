@@ -31,7 +31,7 @@ public abstract class MuteSoloToggleButton extends LWTCToggleButton
 
 	public MuteSoloToggleButton( final String label )
 	{
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, label, false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, label, true, false );
 
 		final Dimension tinySize = new Dimension( 36, 15 );
 		this.setPreferredSize( tinySize );

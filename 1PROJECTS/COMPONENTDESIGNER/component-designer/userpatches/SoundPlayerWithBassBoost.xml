@@ -7,15 +7,15 @@
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/usersubrackpatches/bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
     </rackComponent>
+    <rackComponent name="DJ EQ 6" definitionId="djeq">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="5"/>
-        <rackControl name="Master Lane" value="824:50"/>
-        <rackControl name="Mixer Lane 0" value="824:50:  "/>
-        <rackControl name="Mixer Lane 1" value="0:50:  "/>
-        <rackControl name="Mixer Lane 2" value="0:50:  "/>
-    </rackComponent>
-    <rackComponent name="SFP Preamp" definitionId="imixer3">
-        <rackPosition column="2" row="0"/>
         <rackControl name="Master Lane" value="824:50"/>
         <rackControl name="Mixer Lane 0" value="824:50:  "/>
         <rackControl name="Mixer Lane 1" value="0:50:  "/>
@@ -28,7 +28,7 @@
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="SpeedSlider" value="100.0"/>
+        <rackControl name="SpeedSlider" value="100.05"/>
         <rackControl name="Rewind" value=""/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="FastForward" value=""/>
@@ -51,8 +51,8 @@
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Roll 6" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
-    <rackLink producerRackComponentName="SFP Preamp" producerChannelName="Output Wave Left" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
-    <rackLink producerRackComponentName="SFP Preamp" producerChannelName="Output Wave Right" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="SFP Preamp" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="SFP Preamp" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Right"/>
 </rack>

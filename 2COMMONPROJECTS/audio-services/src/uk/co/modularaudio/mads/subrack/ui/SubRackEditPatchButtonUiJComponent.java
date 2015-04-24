@@ -47,7 +47,7 @@ public class SubRackEditPatchButtonUiJComponent extends LWTCToggleButton
 			final SubRackMadUiInstance uiInstance,
 			final SubRackEditPatchButtonUiControlDefinition def )
 	{
-		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Edit", false );
+		super( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS, "Edit", false, false );
 
 		this.uiInstance = uiInstance;
 		uiInstance.addPatchTabCloseListener( this );

@@ -76,6 +76,8 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 
 	private final RotaryDisplayMouseListener mouseListener;
 
+	private int diameter = -1;
+
 	public RotaryDisplayKnob( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
 			final KnobType knobType,
@@ -118,7 +120,7 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 	}
 
 	@Override
-	public void paint( final Graphics g )
+	public void paintComponent( final Graphics g )
 	{
 		final Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
@@ -128,7 +130,16 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 		final int height = getHeight() - 1;
 		final float wo2 = width / 2.0f;
 		final float ho2 = height / 2.0f;
-		final float min = (width < height ? width : height);
+		final float min;
+		if( diameter == -1 )
+		{
+			min = (width < height ? width : height);
+		}
+		else
+		{
+			min = diameter;
+		}
+//		log.debug( "Using min of " + min );
 		final float mino2 = min/2.0f;
 		final float innerIndicatorLength = mino2 * 0.65f;
 
@@ -199,5 +210,9 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 		repaint();
 	}
 
+	public void setDiameter( final int diameter )
+	{
+		this.diameter = diameter;
+	}
 
 }

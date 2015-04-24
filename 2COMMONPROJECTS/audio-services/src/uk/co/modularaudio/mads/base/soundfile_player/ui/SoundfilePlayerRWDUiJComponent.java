@@ -42,7 +42,7 @@ public class SoundfilePlayerRWDUiJComponent extends LWTCButton
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( LWTCControlConstants.STD_BUTTON_COLOURS, "|<" );
+		super( LWTCControlConstants.STD_BUTTON_COLOURS, "|<", true );
 		this.uiInstance = uiInstance;
 	}
 
