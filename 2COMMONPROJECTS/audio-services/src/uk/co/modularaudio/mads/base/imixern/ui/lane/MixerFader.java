@@ -20,9 +20,6 @@
 
 package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
@@ -35,7 +32,7 @@ public class MixerFader extends LWTCSliderDisplaySlider
 {
 	private static final long serialVersionUID = -3900834931841855564L;
 
-	private static Log log = LogFactory.getLog( MixerFader.class.getName() );
+//	private static Log log = LogFactory.getLog( MixerFader.class.getName() );
 
 	public MixerFader( final MixdownSliderModel model,
 			final SliderDisplayController controller,

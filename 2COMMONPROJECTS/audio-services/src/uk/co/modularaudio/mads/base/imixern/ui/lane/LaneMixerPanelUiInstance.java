@@ -25,10 +25,6 @@ import java.awt.Color;
 import javax.swing.JComponent;
 
 import net.miginfocom.swing.MigLayout;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.djeq.ui.DJEQColorDefines;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
@@ -57,7 +53,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 {
 	private static final long serialVersionUID = -3862457210177904367L;
 
-	private static Log log = LogFactory.getLog( LaneMixerPanelUiInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( LaneMixerPanelUiInstance.class.getName() );
 
 	public final static LWTCSliderViewColors SLIDER_COLORS = getSliderColors();
 

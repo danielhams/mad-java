@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
@@ -94,7 +95,7 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 			unitsLabel.setForeground( colours.labelColor );
 			unitsLabel.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 			unitsLabel.setVerticalAlignment( SwingConstants.CENTER );
-			unitsLabel.setBorder( null );
+			unitsLabel.setBorder( new EmptyBorder( 2,2,2,2 ) );
 			this.add( unitsLabel, "grow 0, shrink 0" );
 		}
 

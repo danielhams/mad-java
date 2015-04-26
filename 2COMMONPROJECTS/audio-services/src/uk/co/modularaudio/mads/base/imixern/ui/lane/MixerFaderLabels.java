@@ -30,9 +30,6 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
 import uk.co.modularaudio.util.audio.math.MixdownSliderDbToLevelComputer;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
@@ -44,7 +41,7 @@ public class MixerFaderLabels extends JPanel
 {
 	private static final long serialVersionUID = 8804239906450285191L;
 
-	private static Log log = LogFactory.getLog( MixerFaderLabels.class.getName() );
+//	private static Log log = LogFactory.getLog( MixerFaderLabels.class.getName() );
 
 	private static final float[] valuesToLabel = new float[] {
 		10,
