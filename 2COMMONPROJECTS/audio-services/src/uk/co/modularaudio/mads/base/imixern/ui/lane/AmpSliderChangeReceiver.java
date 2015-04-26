@@ -23,6 +23,6 @@ package uk.co.modularaudio.mads.base.imixern.ui.lane;
 public interface AmpSliderChangeReceiver
 {
 
-	void receiveAmpSliderChange( float newValue );
+	void receiveAmpSliderChange( Object source, float newValue );
 
 }

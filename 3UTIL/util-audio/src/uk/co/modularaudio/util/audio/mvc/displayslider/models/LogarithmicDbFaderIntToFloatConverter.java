@@ -23,8 +23,6 @@ package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 
-
-
 public class LogarithmicDbFaderIntToFloatConverter implements SliderIntToFloatConverter
 {
 	private final float linearHighestDb;

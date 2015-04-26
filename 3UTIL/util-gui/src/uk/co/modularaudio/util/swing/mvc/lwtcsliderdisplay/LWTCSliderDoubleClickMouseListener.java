@@ -23,7 +23,7 @@ package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class SliderDoubleClickMouseListener implements MouseListener
+public class LWTCSliderDoubleClickMouseListener implements MouseListener
 {
 //	private static Log log = LogFactory.getLog( SliderDoubleClickMouseListener.class.getName() );
 
@@ -34,7 +34,7 @@ public class SliderDoubleClickMouseListener implements MouseListener
 
 	private final SliderDoubleClickReceiver sourceSliderReceiver;
 
-	public SliderDoubleClickMouseListener( final SliderDoubleClickReceiver sourceSliderReceiver )
+	public LWTCSliderDoubleClickMouseListener( final SliderDoubleClickReceiver sourceSliderReceiver )
 	{
 		this.sourceSliderReceiver = sourceSliderReceiver;
 	}

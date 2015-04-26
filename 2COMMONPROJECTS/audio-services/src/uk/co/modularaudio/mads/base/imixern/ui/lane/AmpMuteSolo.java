@@ -50,7 +50,7 @@ public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
 		this.setBackground( Color.cyan );
 
 		this.setOpaque( false );
-		final MigLayout compLayout = new MigLayout("insets 5, gap 0, fill");
+		final MigLayout compLayout = new MigLayout("insets 5, gap 0, fill, center");
 		this.setLayout( compLayout );
 
 		muteButton = new MuteSoloToggleButton( "m" )
@@ -63,7 +63,7 @@ public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
 				muteButtonClick( value );
 			}
 		};
-		this.add( muteButton, "align right, shrink" );
+		this.add( muteButton, "bottom, alignx center, shrink, wrap" );
 		soloButton = new MuteSoloToggleButton( "s" )
 		{
 			private static final long serialVersionUID = 1L;
@@ -74,7 +74,7 @@ public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
 				soloButtonClick( value );
 			}
 		};
-		this.add( soloButton, "align left, shrink" );
+		this.add( soloButton, "top, alignx center, shrink" );
 
 		this.validate();
 	}
@@ -99,7 +99,7 @@ public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
 		soloButton.setSelected( solod );
 	}
 
-	public void receiveControlValue( final String muteSoloSetting )
+	public void receiveControlValue( final Object source, final String muteSoloSetting )
 	{
 		if( muteSoloSetting != null && muteSoloSetting.length() >= 2 )
 		{

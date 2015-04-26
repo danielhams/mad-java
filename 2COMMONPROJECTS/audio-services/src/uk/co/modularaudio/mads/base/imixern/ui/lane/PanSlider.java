@@ -38,13 +38,13 @@ public class PanSlider extends PacSlider implements SliderDoubleClickReceiver
 
 //	private static Log log = LogFactory.getLog( PanSlider.class.getName() );
 
-	private final PanSliderChangeReceiver changeReceiver;
+	private final PanChangeReceiver changeReceiver;
 
 	private final SliderDoubleClickMouseListener sliderDoubleClickMouseListener;
 
 	private final Hashtable<Integer, JLabel> panLabels;
 
-	public PanSlider( final PanSliderChangeReceiver changeReceiver, final Color foregroundColour )
+	public PanSlider( final PanChangeReceiver changeReceiver, final Color foregroundColour )
 	{
 		this.setOpaque( false );
 		this.setOrientation( HORIZONTAL );

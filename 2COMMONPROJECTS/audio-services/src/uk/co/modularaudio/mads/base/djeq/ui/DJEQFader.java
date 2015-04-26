@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 
 import org.apache.commons.logging.Log;
@@ -38,10 +39,11 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeL
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayTextbox;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class DJEQFader extends PacPanel
 	implements IMadUiControlInstance<DJEQMadDefinition, DJEQMadInstance, DJEQMadUiInstance>
@@ -50,13 +52,36 @@ public class DJEQFader extends PacPanel
 
 	private static Log log = LogFactory.getLog( DJEQFader.class.getName() );
 
+	private final static LWTCSliderViewColors SLIDER_COLORS = getSliderColours();
+
+	private final static LWTCSliderViewColors getSliderColours()
+	{
+		final Color bgColor = DJEQColorDefines.BACKGROUND_COLOR;
+		final Color fgColor = DJEQColorDefines.FOREGROUND_COLOR;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = DJEQColorDefines.LABEL_COLOR;
+		final Color unitsColor = DJEQColorDefines.UNITS_COLOR;
+
+		return new LWTCSliderViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+	}
+
 	private final DJEQMadUiInstance uiInstance;
 
 	private final DJDeckFaderSliderModel sdm;
 	private final SliderDisplayController sdc;
 
 	private final LWTCSliderDisplaySlider sds;
-	private final SliderDisplayTextbox sdt;
+	private final LWTCSliderDisplayTextbox sdt;
 
 	private final StereoAmpMeter sam;
 
@@ -81,10 +106,10 @@ public class DJEQFader extends PacPanel
 		sdm = new DJDeckFaderSliderModel();
 		sdc = new SliderDisplayController( sdm );
 
+
 		sds = new LWTCSliderDisplaySlider( sdm, sdc,
 				DisplayOrientation.VERTICAL,
-				DJEQColorDefines.BACKGROUND_COLOR,
-				DJEQColorDefines.FOREGROUND_COLOR,
+				SLIDER_COLORS,
 				false );
 		this.add( sds, "growy, pushy 100" );
 
@@ -92,15 +117,12 @@ public class DJEQFader extends PacPanel
 		sam = new StereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
 		this.add( sam, "growy, wrap");
 
-		sdt = new SliderDisplayTextbox( sdm, sdc,
-				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
-				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
-				DJEQColorDefines.BACKGROUND_COLOR,
-				DJEQColorDefines.UNITS_COLOR,
+		sdt = new LWTCSliderDisplayTextbox( sdm, sdc,
+				SLIDER_COLORS,
 				false );
 		this.add( sdt, "growy 0, align center, spanx 2" );
 
-		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( new SliderDoubleClickReceiver()
+		final LWTCSliderDoubleClickMouseListener doubleClickMouseListener = new LWTCSliderDoubleClickMouseListener( new SliderDoubleClickReceiver()
 		{
 
 			@Override

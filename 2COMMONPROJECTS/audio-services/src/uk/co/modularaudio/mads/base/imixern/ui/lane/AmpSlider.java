@@ -20,87 +20,93 @@
 
 package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
-import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
+import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
+import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
+import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
-public class AmpSlider extends PacSlider implements SliderDoubleClickReceiver
+public class AmpSlider<D extends MixerNMadDefinition<D,I>, I extends MixerNMadInstance<D,I>>
+	extends JPanel
 {
-	private static final long serialVersionUID = -5719433475892570967L;
+	private static final long serialVersionUID = 4413604865297302014L;
 
-//	private static Log log = LogFactory.getLog( AmpSlider.class.getName() );
+//	private static Log log = LogFactory.getLog( AmpSliderAndMeter.class.getName() );
 
-	private AmpSliderChangeReceiver changeReceiver;
+	private final MixdownSliderModel faderModel;
+	private final SliderDisplayController faderController;
+	private final MixerFader mixerFader;
+	private final MixerFaderLabels mixerFaderLabels;
 
-	private final AmpSliderLevelsAndLabels ampSliderModel;
-	private final DbToLevelComputer sliderDbToLevelComputer;
-
-	private final SliderDoubleClickMouseListener ampSliderMouseListener;
-
-	public AmpSlider( final Color foregroundColour )
+	public AmpSlider( final MixerNMadUiInstance<D,I> uiInstance,
+			final BufferedImageAllocator bia,
+			final boolean showClipBox,
+			final LWTCSliderViewColors colors )
 	{
-
 		this.setOpaque( false );
-		this.setOrientation( VERTICAL );
-		final Font f = this.getFont().deriveFont( 9.5f );
-//		Font f = this.getFont();
 
-		ampSliderModel = AmpSliderLevelsAndLabels.getInstance( f, foregroundColour );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "inset 0" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
 
-		setMinimum( 0 );
-		setMaximum( AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS );
+		this.setLayout( msh.createMigLayout() );
 
-		setMajorTickSpacing( 100 );
-//		setPaintTicks( true );
-		setPaintLabels( true );
+		faderModel = new MixdownSliderModel();
+		faderController = new SliderDisplayController( faderModel );
+		mixerFader = new MixerFader( faderModel,
+				faderController,
+				DisplayOrientation.VERTICAL,
+				colors,
+				false );
+		this.add( mixerFader, "growy" );
 
-		sliderDbToLevelComputer  = ampSliderModel.getDbToLevelComputer();
-
-		setLabelTable( ampSliderModel.getLabels() );
-
-		setFont( f );
-		setForeground( foregroundColour );
-
-		setValue( 0 );
-
-		ampSliderMouseListener = new SliderDoubleClickMouseListener( this );
-
-		this.addMouseListener( ampSliderMouseListener );
+		mixerFaderLabels = new MixerFaderLabels( faderModel,
+				colors.labelColor,
+				false );
+		this.add( mixerFaderLabels, "growy" );
 	}
 
-	@Override
-	public void processValueChange( final int previousValue, final int newValue )
+	public String getControlValue()
 	{
-		if( changeReceiver != null )
+		return Float.toString( faderModel.getValue() );
+	}
+
+	public void receiveControlValue( final Object source, final String value )
+	{
+		if( source != this )
 		{
-			final float floatVal = (float)newValue / AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
-//			log.debug("Sending slider value of " + floatVal );
-			changeReceiver.receiveAmpSliderChange( floatVal );
+			faderController.setValue( source, Float.parseFloat( value ) );
 		}
-	}
-
-	@Override
-	public void receiveDoubleClick()
-	{
-		// Reset to zero DB
-		final float sliderVal = sliderDbToLevelComputer.toNormalisedSliderLevelFromDb( 0.0f ) * AmpSliderLevelsAndLabels.AMP_SLIDER_NUM_STEPS;
-//		log.debug("Resetting to 0dB (" + sliderVal + ")");
-		this.setValue( (int)sliderVal );
-	}
-
-	public AmpSliderLevelsAndLabels getSliderLevelsAndLabels()
-	{
-		return ampSliderModel;
 	}
 
 	public void setChangeReceiver( final AmpSliderChangeReceiver changeReceiver )
 	{
-		this.changeReceiver = changeReceiver;
-		final int valueToBroadcast = getValue();
-		processValueChange( valueToBroadcast, valueToBroadcast );
+		faderModel.addChangeListener( new ValueChangeListener()
+		{
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				changeReceiver.receiveAmpSliderChange( source, newValue );
+			}
+		} );
+	}
+
+	public MixdownSliderModel getFaderModel()
+	{
+		return faderModel;
+	}
+
+	public SliderDisplayController getFaderController()
+	{
+		return faderController;
 	}
 }

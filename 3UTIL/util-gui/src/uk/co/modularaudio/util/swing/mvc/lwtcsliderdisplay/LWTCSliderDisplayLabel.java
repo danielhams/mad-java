@@ -18,11 +18,26 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.imixern.ui.lane;
+package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
-public interface PanSliderChangeReceiver
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
+
+public class LWTCSliderDisplayLabel extends LWTCLabel
 {
+//	private static Log log = LogFactory.getLog( SliderDisplayLabel.class.getName() );
 
-	void receivePanChange( float newValue );
+	private static final long serialVersionUID = 476235141676357358L;
 
+	public LWTCSliderDisplayLabel( final LWTCSliderViewColors colours,
+			final String startLabelText,
+			final boolean opaque )
+	{
+		super( startLabelText );
+		this.setOpaque( opaque );
+		this.setFont( LWTCControlConstants.LABEL_FONT );
+		this.setBorder( null );
+		this.setBackground( colours.bgColor );
+		this.setForeground( colours.labelColor );
+	}
 }

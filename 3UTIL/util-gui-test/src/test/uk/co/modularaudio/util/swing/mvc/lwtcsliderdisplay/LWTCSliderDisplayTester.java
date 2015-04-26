@@ -26,13 +26,17 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
 import net.miginfocom.swing.MigLayout;
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class LWTCSliderDisplayTester
 {
@@ -41,7 +45,7 @@ public class LWTCSliderDisplayTester
 	private final JFrame frame;
 	private final JPanel panel;
 
-	private SliderDisplayView staticValueDisplay;
+	private LWTCSliderDisplayView staticValueDisplay;
 
 	public LWTCSliderDisplayTester()
 	{
@@ -56,100 +60,54 @@ public class LWTCSliderDisplayTester
 		final String layoutStr = "fill";
 		final MigLayout l = new MigLayout( layoutStr );
 		panel.setLayout( l );
-		panel.setBackground( Color.BLACK );
+		panel.setBackground( Color.GRAY );
 		frame.add( panel );
 	}
 
 	public void go() throws Exception
 	{
-//		SliderDisplayModel attackModel = new SliderDisplayModel( 0.0f,
-//				10.0f,
-//				0.0f,
-//				1000,
-//				100,
-//				new SimpleSliderIntToFloatConverter(),
-//				2,
-//				2,
-//				"ms");
-//		SliderDisplayController attackController = new SliderDisplayController( attackModel );
-//		SliderDisplayView attackSliderDisplay = new SliderDisplayView(
-//				attackModel,
-//				attackController,
-//				SatelliteOrientation.LEFT,
-//				DisplayOrientation.VERTICAL,
-//				SatelliteOrientation.BELOW,
-//				"A:",
-//				9.0f,
-//				true );
-//
-//		panel.add( attackSliderDisplay, "grow" );
-//
-//		SliderDisplayModel decayModel = new SliderDisplayModel( 0.0f,
-//				10.0f,
-//				0.0f,
-//				1000,
-//				100,
-//				new SimpleSliderIntToFloatConverter(),
-//				2,
-//				2,
-//				"ms");
-//		SliderDisplayController decayController = new SliderDisplayController( decayModel );
-//		SliderDisplayView decaySliderDisplay = new SliderDisplayView(
-//				decayModel,
-//				decayController,
-//				SatelliteOrientation.LEFT,
-//				DisplayOrientation.VERTICAL,
-//				SatelliteOrientation.BELOW,
-//				"D:",
-//				9.0f,
-//				true );
-//
-//		panel.add( decaySliderDisplay, "grow, wrap" );
-//
-//		float maxFrequency = 22050.0f;
-//		SliderDisplayModel frequencyModel = new SliderDisplayModel( 0.0f,
-//				maxFrequency,
-//				0.0f,
-//				1000,
-//				100,
-//				new FrequencySliderIntToFloatConverter( maxFrequency ),
-//				5,
-//				2,
-//				"Hz");
-//		SliderDisplayController frequencyController = new SliderDisplayController( frequencyModel );
-//		SliderDisplayView frequencySliderDisplay = new SliderDisplayView( frequencyModel,
-//				frequencyController,
-//				SatelliteOrientation.LEFT,
-//				DisplayOrientation.HORIZONTAL,
-//				SatelliteOrientation.RIGHT,
-//				"Frequency:",
-//				9.0f, true );
-//
-//		panel.add( frequencySliderDisplay, "spanx 2, grow, wrap" );
+		final SliderDisplayModel mixerModel = new MixdownSliderModel();
+		final SliderDisplayController mixerController = new SliderDisplayController( mixerModel );
 
-		final SliderDisplayModel staticValueModel = new SliderDisplayModel( 0.01f,
-				10.0f,
-				1.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				2,
-				"Hz" );
-		final SliderDisplayController staticValueController = new SliderDisplayController( staticValueModel );
-		staticValueDisplay = new SliderDisplayView( staticValueModel,
-				staticValueController,
+		final Color bgColor = Color.BLACK;
+		final Color fgColor = Color.YELLOW;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = Color.ORANGE;
+		final Color unitsColor = Color.PINK;
+
+		final LWTCSliderViewColors colours = new LWTCSliderViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+
+		staticValueDisplay = new LWTCSliderDisplayView( mixerModel,
+				mixerController,
 				SatelliteOrientation.BELOW,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
-				Color.BLACK,
-				Color.WHITE,
-				Color.BLACK,
-				"Freq",
-				Color.white,
-				Color.white,
-				true );
+				colours,
+				"Volume",
+				false );
 		panel.add( staticValueDisplay, "spanx 2, grow" );
+
+		final SliderDoubleClickReceiver dcr = new SliderDoubleClickReceiver()
+		{
+			@Override
+			public void receiveDoubleClick()
+			{
+				mixerModel.setValue( this, mixerModel.getInitialValue() );
+
+			}
+		};
+
+		staticValueDisplay.addDoubleClickReceiver( dcr );
 
 		frame.setSize( 200, 200 );
 		frame.setVisible( true );

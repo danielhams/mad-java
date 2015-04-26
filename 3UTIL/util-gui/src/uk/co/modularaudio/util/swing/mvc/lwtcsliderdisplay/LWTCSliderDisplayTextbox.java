@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +37,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCTextField;
 
-public class SliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
+public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
 //	private static Log log = LogFactory.getLog( SliderDisplayTextbox.class.getName() );
 
@@ -56,19 +55,16 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	private int unitsStrLength;
 	private int numCharactersForString;
 
-	public SliderDisplayTextbox( final SliderDisplayModel model,
+	public LWTCSliderDisplayTextbox( final SliderDisplayModel model,
 			final SliderDisplayController controller,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
-			final Color bgColor,
-			final Color unitsColor,
+			final LWTCSliderViewColors colours,
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = model;
 		this.controller = controller;
-		this.setBackground( bgColor );
-		this.setForeground( unitsColor );
+		this.setBackground( colours.bgColor );
+		this.setForeground( colours.fgColor );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 //		lh.addLayoutConstraint( "debug" );
@@ -79,8 +75,10 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 		textField = new LWTCTextField();
 		// Never see through
 		textField.setOpaque( true );
-		textField.setBackground( textboxBgColor );
-		textField.setForeground( textboxFgColor );
+		textField.setBackground( colours.textboxBgColor );
+		textField.setForeground( colours.textboxFgColor );
+		textField.setSelectionColor( colours.selectionColor );
+		textField.setSelectedTextColor( colours.selectedTextColor );
 
 		extractModelVars( model );
 
@@ -92,8 +90,8 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 		{
 			unitsLabel = new LWTCLabel( unitsStr );
 			unitsLabel.setOpaque( opaque );
-			unitsLabel.setBackground( bgColor );
-			unitsLabel.setForeground( unitsColor );
+			unitsLabel.setBackground( colours.bgColor );
+			unitsLabel.setForeground( colours.unitsColor );
 			unitsLabel.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 			unitsLabel.setVerticalAlignment( SwingConstants.CENTER );
 			unitsLabel.setBorder( null );
@@ -156,11 +154,8 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	@Override
 	public void receiveValueChange( final Object source, final float newValue )
 	{
-		if( source != this )
-		{
-//			log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
-			setCurrentValueNoPropogate( newValue );
-		}
+//		log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
+		setCurrentValueNoPropogate( newValue );
 	}
 
 	@Override
@@ -174,14 +169,21 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 			float valueAsFloat = 0.0f;
 			try
 			{
-				valueAsFloat = Float.parseFloat( valueStr );
-				if( !Float.isInfinite( valueAsFloat ) )
+				if( valueStr.equals("-Inf"))
 				{
-					if( valueAsFloat >= model.getMinValue() &&
-							valueAsFloat <= model.getMaxValue() )
-					{
-						validValue = true;
-					}
+					valueAsFloat = Float.NEGATIVE_INFINITY;
+					validValue = true;
+				}
+				else if( valueStr.equals("Inf") ||
+						valueStr.equals("+Inf"))
+				{
+					valueAsFloat = Float.POSITIVE_INFINITY;
+					validValue = true;
+				}
+				else
+				{
+					valueAsFloat = Float.parseFloat( valueStr );
+					validValue = true;
 				}
 			}
 			catch(final NumberFormatException nfe )
@@ -198,10 +200,9 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 			{
 				valueToSet = model.getValue();
 			}
-			setCurrentValueNoPropogate( valueToSet );
+//			setCurrentValueNoPropogate( valueToSet );
 
 			controller.setValue( this, valueToSet );
-
 		}
 	}
 

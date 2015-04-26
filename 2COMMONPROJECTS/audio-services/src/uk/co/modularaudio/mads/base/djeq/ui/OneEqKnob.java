@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
+import java.awt.Color;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,12 +34,45 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
 public class OneEqKnob extends PacPanel
 {
 	private static final long serialVersionUID = 537398070381235844L;
 
 	private static Log log = LogFactory.getLog( OneEqKnob.class.getName() );
+
+	private final static RotaryViewColors KNOB_COLORS = getKnobColors();
+
+	private final static RotaryViewColors getKnobColors()
+	{
+		final Color bgColor = DJEQColorDefines.BACKGROUND_COLOR;
+		final Color fgColor = DJEQColorDefines.FOREGROUND_COLOR;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color knobOutlineColor = DJEQColorDefines.OUTLINE_COLOR;
+		final Color knobFillColor = DJEQColorDefines.KNOB_COLOR;
+		final Color knobExtentColor = DJEQColorDefines.EXTENT_COLOR;
+		final Color knobIndicatorColor = DJEQColorDefines.INDICATOR_COLOR;
+		final Color labelColor = DJEQColorDefines.LABEL_COLOR;
+		final Color unitsColor = DJEQColorDefines.UNITS_COLOR;
+
+		return new RotaryViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				knobOutlineColor,
+				knobFillColor,
+				knobExtentColor,
+				knobIndicatorColor,
+				labelColor,
+				unitsColor );
+
+	}
 
 	private final RotaryDisplayModel rdm;
 	private final RotaryDisplayController rdc;
@@ -75,15 +110,7 @@ public class OneEqKnob extends PacPanel
 				SatelliteOrientation.ABOVE,
 				SatelliteOrientation.RIGHT,
 				label,
-				DJEQColorDefines.LABEL_COLOR,
-				DJEQColorDefines.UNITS_COLOR,
-				DJEQColorDefines.BACKGROUND_COLOR,
-				DJEQColorDefines.FOREGROUND_COLOR,
-				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
-				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
-				DJEQColorDefines.KNOB_COLOR,
-				DJEQColorDefines.OUTLINE_COLOR,
-				DJEQColorDefines.INDICATOR_COLOR,
+				KNOB_COLORS,
 				false,
 				true );
 

@@ -33,9 +33,10 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
 public class RotaryDisplayTester
 {
@@ -75,22 +76,34 @@ public class RotaryDisplayTester
 				new SimpleRotaryIntToFloatConverter(),
 				3,
 				3,
-				"" );
+				"unit" );
 		final RotaryDisplayController staticValueController = new RotaryDisplayController( staticValueModel );
 
-//		final Color labelColor,
-//		final Color unitsColor,
-//		final Color backgroundColor,
-//		final Color foregroundColor,
-//		final Color knobColor,
-//		final Color outlineColor,
-//		final Color indicatorColor,
+		final Color bgColor = new Color(72,72,72);
+		final Color fgColor = new Color(100,100,100);
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color knobFillColor = new Color(62,69,69);
+		final Color knobOutlineColor = new Color(27,29,29);
+		final Color knobExtentColor = new Color( 80, 80, 80 );
+		final Color knobIndicatorColor = new Color(0,255,0);
+		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
+		final Color unitsColor = fgColor;
 
-		final Color backgroundColor = new Color(72,72,72);
-		final Color foregroundColor = new Color(100,100,100);
-		final Color knobColor = new Color(62,69,69);
-		final Color outlineColor = new Color(27,29,29);
-		final Color indicatorColor = new Color(0,255,0);
+		final RotaryViewColors colours = new RotaryViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				knobOutlineColor,
+				knobFillColor,
+				knobExtentColor,
+				knobIndicatorColor,
+				labelColor,
+				unitsColor );
 
 		staticValueDisplay = new RotaryDisplayView( staticValueModel,
 				staticValueController,
@@ -99,15 +112,7 @@ public class RotaryDisplayTester
 				SatelliteOrientation.BELOW,
 				SatelliteOrientation.RIGHT,
 				"label",
-				Color.white,
-				Color.white,
-				backgroundColor,
-				foregroundColor,
-				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
-				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
-				knobColor,
-				outlineColor,
-				indicatorColor,
+				colours,
 				false,
 				true );
 

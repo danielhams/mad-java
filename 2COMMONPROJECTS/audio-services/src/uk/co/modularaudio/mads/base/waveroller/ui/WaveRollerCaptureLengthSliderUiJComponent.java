@@ -33,16 +33,40 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthSlider
 	implements IMadUiControlInstance<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>,
 		WaveRollerCaptureTimeProducer
 {
+	private static final long serialVersionUID = 2538907435465770032L;
+
 	private static Log log = LogFactory.getLog( WaveRollerCaptureLengthSliderUiJComponent.class.getName() );
 
-	private static final long serialVersionUID = 2538907435465770032L;
+	public static final LWTCSliderViewColors SLIDER_COLORS = getSliderColors();
+
+	private static final LWTCSliderViewColors getSliderColors()
+	{
+		final Color bgColor = Color.black;
+		final Color fgColor = Color.white;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
+		final Color unitsColor = labelColor;
+
+		return new LWTCSliderViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+	}
 
 	private WaveRollerDataListener dataListener;
 
@@ -56,12 +80,8 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
-				Color.BLACK,
-				LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND,
-				LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND,
+				SLIDER_COLORS,
 				"Capture Time:",
-				Color.WHITE,
-				Color.WHITE,
 				false );
 //		this.uiInstance = uiInstance;
 

@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
-import java.awt.Color;
-
 import javax.swing.SwingConstants;
 
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
@@ -29,7 +27,7 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModelAdaptor;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 
 public class LWTCSliderDisplaySlider extends LWTCSlider
 {
@@ -43,8 +41,7 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 	public LWTCSliderDisplaySlider( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final DisplayOrientation displayOrientation,
-			final Color bgColor,
-			final Color foregroundColor,
+			final LWTCSliderViewColors colours,
 			final boolean opaque )
 	{
 		super( ( displayOrientation == DisplayOrientation.HORIZONTAL ? SwingConstants.HORIZONTAL : SwingConstants.VERTICAL ) );
@@ -59,8 +56,8 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 		final int sliderMajorTickSpacing = model.getSliderMajorTickSpacing();
 //		log.debug("Setting major tick spacing to " + sliderMajorTickSpacing + " with " + model.getNumSliderSteps() + " steps");
 		this.setMajorTickSpacing( sliderMajorTickSpacing );
-		this.setForeground( foregroundColor );
-		this.setBackground( bgColor );
+		this.setBackground( colours.bgColor );
+		this.setForeground( colours.fgColor );
 	}
 
 	public void changeModel( final SliderDisplayModel newModel )

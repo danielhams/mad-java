@@ -129,15 +129,19 @@ public class SliderDisplayModel
 		return currentValue;
 	}
 
-	public void setValue( final Object source, final float newFloatValue )
+	public void setValue( final Object source, float newFloatValue )
 	{
 //		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
-		final boolean wasDifferent = ( currentValue != newFloatValue );
-		currentValue = newFloatValue;
-		if( wasDifferent )
+		if( newFloatValue > maxValue )
 		{
-			notifyOfChange( source );
+			newFloatValue = maxValue;
 		}
+		else if( newFloatValue < minValue )
+		{
+			newFloatValue = minValue;
+		}
+		currentValue = newFloatValue;
+		notifyOfChange( source );
 	}
 
 	private void notifyOfChange( final Object source )
@@ -145,10 +149,7 @@ public class SliderDisplayModel
 		for( int i = 0 ; i < changeListeners.size() ; ++i )
 		{
 			final ValueChangeListener cl = changeListeners.get( i );
-			if( cl != source )
-			{
-				cl.receiveValueChange( source, currentValue );
-			}
+			cl.receiveValueChange( source, currentValue );
 		}
 	}
 

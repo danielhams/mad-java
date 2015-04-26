@@ -22,7 +22,6 @@ package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -50,54 +49,42 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 		BIPOLAR
 	};
 
-	private RotaryDisplayModel sdm;
+	protected RotaryDisplayModel sdm;
 
-	private final KnobType knobType;
+	protected final KnobType knobType;
 
-	private final Color foregroundColor;
-	private final Color knobColor;
-	private final Color outlineColor;
-	private final Color indicatorColor;
+	protected RotaryViewColors colours;
 
-//	private final static Color ERASE_COLOR = new Color( 0.0f, 0.0f, 0.0f, 1.0f );
-
-	private final Stroke lineStroke = new BasicStroke( 2.0f,
+	protected final Stroke lineStroke = new BasicStroke( 2.0f,
 			BasicStroke.CAP_ROUND,
 			BasicStroke.JOIN_ROUND );
 
-	private final float arcStartDegrees = -120.0f;
-	private final float arcExtentDegress = -300.0f;
+	protected final float arcStartDegrees = -120.0f;
+	protected final float arcExtentDegress = -300.0f;
 
-	private final Ellipse2D.Double ellipse = new Ellipse2D.Double();
+	protected final Ellipse2D.Double ellipse = new Ellipse2D.Double();
 
-	private final Arc2D.Double arc = new Arc2D.Double();
+	protected final Arc2D.Double arc = new Arc2D.Double();
 
-	private final Line2D.Double line2d = new Line2D.Double();
+	protected final Line2D.Double line2d = new Line2D.Double();
 
-	private final RotaryDisplayMouseListener mouseListener;
+	protected final RotaryDisplayMouseListener mouseListener;
 
-	private int diameter = -1;
+	protected int diameter = -1;
 
 	public RotaryDisplayKnob( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
 			final KnobType knobType,
-			final Color backgroundColor,
-			final Color foregroundColor,
-			final Color knobColor,
-			final Color outlineColor,
-			final Color indicatorColor,
+			final RotaryViewColors colours,
 			final boolean opaque )
 	{
 		this.sdm = model;
 		this.knobType = knobType;
-		this.foregroundColor = foregroundColor;
-		this.knobColor = knobColor;
-		this.outlineColor = outlineColor;
-		this.indicatorColor = indicatorColor;
+		this.colours = colours;
 		this.setOpaque( opaque );
 
-		this.setForeground( foregroundColor );
-		this.setBackground( backgroundColor );
+		this.setForeground( colours.fgColor );
+		this.setBackground( colours.bgColor );
 
 		sdm.addChangeListener( this );
 
@@ -145,15 +132,15 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 
 		// Draw knob circle
 		ellipse.setFrame( wo2-mino2, ho2-mino2, min, min );
-		g2d.setColor( knobColor );
+		g2d.setColor( colours.knobFillColor );
 		g2d.fill( ellipse );
 
 		// Draw outline
-		g2d.setColor( outlineColor );
+		g2d.setColor( colours.knobOutlineColor );
 		g2d.draw( ellipse );
 
 		// Draw extent indicator
-		g2d.setColor( foregroundColor );
+		g2d.setColor( colours.knobExtentColor );
 		g2d.setStroke( lineStroke );
 
 		arc.setArcByCenter( wo2, ho2, innerIndicatorLength, arcStartDegrees, arcExtentDegress, Arc2D.OPEN );
@@ -176,7 +163,7 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 //		log.debug("So we have (" + rotatedX + ", " + rotatedY + ")");
 
 		// Draw the current position indicator
-		g2d.setColor( indicatorColor );
+		g2d.setColor( colours.knobIndicatorColor );
 		line2d.setLine( wo2, ho2, wo2 - (rotatedX * innerIndicatorLength), ho2 + (rotatedY * innerIndicatorLength) );
 		g2d.draw( line2d );
 

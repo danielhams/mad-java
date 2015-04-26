@@ -140,12 +140,8 @@ public class RotaryDisplayModel
 		{
 			newFloatValue = minValue;
 		}
-		final boolean wasDifferent = ( currentValue != newFloatValue );
 		currentValue = newFloatValue;
-		if( wasDifferent )
-		{
-			notifyOfChange( source );
-		}
+		notifyOfChange( source );
 	}
 
 	private void notifyOfChange( final Object source )
@@ -153,10 +149,7 @@ public class RotaryDisplayModel
 		for( int i = 0 ; i < changeListeners.size() ; ++i )
 		{
 			final ValueChangeListener cl = changeListeners.get( i );
-			if( cl != source )
-			{
-				cl.receiveValueChange( source, currentValue );
-			}
+			cl.receiveValueChange( source, currentValue );
 		}
 	}
 

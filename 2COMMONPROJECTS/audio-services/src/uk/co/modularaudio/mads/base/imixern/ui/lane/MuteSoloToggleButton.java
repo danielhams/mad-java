@@ -42,7 +42,10 @@ public abstract class MuteSoloToggleButton extends LWTCToggleButton
 	@Override
 	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
-		receiveToggleEvent( newValue );
+		if( newValue != previousValue )
+		{
+			receiveToggleEvent( newValue );
+		}
 	}
 
 	public abstract void receiveToggleEvent( boolean value );

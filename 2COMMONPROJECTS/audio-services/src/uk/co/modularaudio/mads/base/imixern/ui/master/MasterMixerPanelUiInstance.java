@@ -29,39 +29,70 @@ import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.AmpSliderAndMeter;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.AmpSlider;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.AmpSliderChangeReceiver;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.PanSlider;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.PanSliderChangeReceiver;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.PanChangeReceiver;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.PanControl;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.StereoAmpMeter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		I extends MixerNMadInstance<D, I>,
 		U extends MixerNMadUiInstance<D, I>>
 	extends PacPanel
 	implements IMadUiControlInstance<D,I,U>,
-	AmpSliderChangeReceiver, MeterValueReceiver, PanSliderChangeReceiver
+	AmpSliderChangeReceiver, MeterValueReceiver, PanChangeReceiver
 {
+	private static final long serialVersionUID = 24665241385474657L;
+
 //	private static Log log = LogFactory.getLog( ChannelMasterMixerPanelUiInstance.class.getName() );
 
-	private static final long serialVersionUID = 24665241385474657L;
+	public final static LWTCSliderViewColors SLIDER_COLORS = getSliderColors();
+
+	private final static LWTCSliderViewColors getSliderColors()
+	{
+		final Color bgColor = MixerNMadUiDefinition.MASTER_BG_COLOR;
+		final Color fgColor = MixerNMadUiDefinition.MASTER_FG_COLOR;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = MixerNMadUiDefinition.MASTER_FG_COLOR;
+		final Color unitsColor = MixerNMadUiDefinition.MASTER_FG_COLOR;
+
+		return new LWTCSliderViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+	}
+
+	private final AmpSlider<D,I> ampSlider;
+	private final StereoAmpMeter<D,I> stereoAmpMeter;
+	private final RotaryDisplayModel panModel;
+	private final PanControl panControl;
 
 	private final U uiInstance;
 
-	private final PanSlider panSlider;
-
-	private final AmpSliderAndMeter<D,I> ampSliderAndMeter;
-
-	private final DbToLevelComputer dBToLevelComputer;
-
 	private boolean previouslyShowing;
+
+	private final LWTCSliderDisplayTextbox ampSliderTextbox;
 
 	public MasterMixerPanelUiInstance( final D definition,
 			final I instance,
@@ -74,28 +105,49 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		this.setBackground( MixerNMadUiDefinition.MASTER_BG_COLOR );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
-		msh.addRowConstraint( "[grow 0][fill][grow 0]" );
-		msh.addLayoutConstraint( "insets 0" );
+		msh.addRowConstraint( "[][fill]" );
+
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "insets 5" );
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
-//		msh.addLayoutConstraint( "debug" );
 
 		final MigLayout compLayout = msh.createMigLayout();
 		this.setLayout( compLayout );
 
-		panSlider = new PanSlider( this, Color.BLACK );
-		this.add( panSlider, "growx, growy 0, wrap" );
+		panModel = new RotaryDisplayModel(
+				-1.0f, 1.0f, 0.0f,
+				256, 32,
+				new SimpleRotaryIntToFloatConverter(),
+				3, 2, "dB" );
+		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
+		panControl = new PanControl( panModel, panController, this, LaneMixerPanelUiInstance.ROTARY_COLORS );
+		this.add( panControl, "cell 0 0, spanx 2, pushx 50, width 33, height 33, growy 0, align center" );
 
-		ampSliderAndMeter = new AmpSliderAndMeter<D,I>( uiInstance,
+		ampSlider = new AmpSlider<D,I>(
+				uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
-				Color.BLACK );
+				SLIDER_COLORS );
 
-		dBToLevelComputer = ampSliderAndMeter.getDbToLevelComputer();
+		this.add( ampSlider, "cell 0 1, grow, pushy 100" );
 
-		this.add( ampSliderAndMeter, "growx, growy" );
+		ampSlider.setChangeReceiver( this );
 
-		ampSliderAndMeter.setChangeReceiver( this );
+
+		stereoAmpMeter = new StereoAmpMeter<D,I>( uiInstance,
+				uiInstance.getUiDefinition().getBufferedImageAllocator(),
+				true );
+
+		this.add( stereoAmpMeter, "cell 1 1, grow, pushy 100" );
+
+		ampSliderTextbox = new LWTCSliderDisplayTextbox(
+				ampSlider.getFaderModel(),
+				ampSlider.getFaderController(),
+				SLIDER_COLORS,
+				isOpaque() );
+
+		this.add( ampSliderTextbox, "cell 0 2, spanx 2, grow 0" );
 
 		uiInstance.registerMasterMeterReceiver( this );
 	}
@@ -113,7 +165,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 			previouslyShowing = showing;
 		}
 
-		ampSliderAndMeter.receiveDisplayTick( currentGuiTime );
+		stereoAmpMeter.receiveDisplayTick( currentGuiTime );
 	}
 
 	@Override
@@ -123,19 +175,17 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void receiveAmpSliderChange( final float newValue )
+	public void receiveAmpSliderChange( final Object source, final float newValue )
 	{
-		// Now translate this into dB and then into amplitude
-		final float dbForValue = dBToLevelComputer.toDbFromNormalisedLevel( newValue );
-//		log.debug("Using db " + dbForValue );
-		final float ampForDb = (float)AudioMath.dbToLevel( dbForValue );
+		// Now translate this into amplitude
+		final float ampForDb = (float)AudioMath.dbToLevel( newValue );
 		uiInstance.sendMasterAmp( ampForDb );
 	}
 
 	@Override
 	public String getControlValue()
 	{
-		return ampSliderAndMeter.getControlValue() + ":" + panSlider.getControlValue();
+		return ampSlider.getControlValue() + ":" + panModel.getValue();
 	}
 
 	@Override
@@ -144,8 +194,8 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		final String[] vals = value.split( ":" );
 		if( vals.length == 2 )
 		{
-			ampSliderAndMeter.receiveControlValue( vals[0] );
-			panSlider.receiveControlValue( vals[1] );
+			ampSlider.receiveControlValue( this, vals[0] );
+			panModel.setValue( this, Float.parseFloat( vals[1] ) );
 		}
 	}
 
@@ -153,7 +203,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
 	{
 		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		ampSliderAndMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
+		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
 	@Override
@@ -171,7 +221,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	@Override
 	public void destroy()
 	{
-		ampSliderAndMeter.destroy();
+		stereoAmpMeter.destroy();
 	}
 
 	@Override

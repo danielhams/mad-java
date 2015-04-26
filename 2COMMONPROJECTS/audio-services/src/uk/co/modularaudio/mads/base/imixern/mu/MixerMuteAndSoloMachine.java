@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 
 public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
 {
-//	private static Log log = LogFactory.getLog( Channel8MixerMuteAndSoloMachine.class.getName() );
+//	private static Log log = LogFactory.getLog( MixerMuteAndSoloMachine.class.getName() );
 
 	private final I instance;
 	private final LaneProcessor<D,I>[] channelLaneProcessors;
@@ -81,6 +81,7 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 
 	private void updateLaneProcessors( final ThreadSpecificTemporaryEventStorage tses, final long timestamp )
 	{
+//		log.debug("in updateLaneProcessors there are " + numChannelsInSolo + " channels in solo");
 		final boolean soloMode = ( numChannelsInSolo > 0 );
 		if( soloMode )
 		{
@@ -93,7 +94,6 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 				instance.emitLaneSoloStatus( tses, timestamp, i, channelSolod );
 				instance.emitLaneMuteStatus( tses, timestamp, i, channelMuteValues[ i ] );
 			}
-
 		}
 		else
 		{

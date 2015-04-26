@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
-import java.awt.Color;
-
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
@@ -31,16 +29,15 @@ public class RotaryDisplayLabel extends LWTCLabel
 
 	private static final long serialVersionUID = 8040805978937306636L;
 
-	public RotaryDisplayLabel( final Color bgColor,
-			final String startLabelText,
-			final Color labelColor,
+	public RotaryDisplayLabel( final String startLabelText,
+			final RotaryViewColors colours,
 			final boolean opaque )
 	{
 		super( startLabelText );
 		this.setOpaque( opaque );
 		this.setFont( LWTCControlConstants.LABEL_FONT );
 		this.setBorder( null );
-		this.setForeground( labelColor );
-		this.setBackground( bgColor );
+		this.setForeground( colours.labelColor );
+		this.setBackground( colours.bgColor );
 	}
 }

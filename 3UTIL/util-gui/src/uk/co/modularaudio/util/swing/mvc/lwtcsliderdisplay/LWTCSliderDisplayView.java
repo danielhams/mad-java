@@ -20,17 +20,15 @@
 
 package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.SliderDoubleClickMouseListener.SliderDoubleClickReceiver;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
-public class SliderDisplayView extends JPanel
+public class LWTCSliderDisplayView extends JPanel
 {
 	private static final long serialVersionUID = 3201519946309189476L;
 //	private static Log log = LogFactory.getLog( SliderDisplayView.class.getName() );
@@ -49,21 +47,17 @@ public class SliderDisplayView extends JPanel
 		LEFT
 	};
 
-	private final SliderDisplayLabel label;
+	private final LWTCSliderDisplayLabel label;
 	private final LWTCSliderDisplaySlider slider;
-	private final SliderDisplayTextbox textbox;
+	private final LWTCSliderDisplayTextbox textbox;
 
-	public SliderDisplayView( final SliderDisplayModel model,
+	public LWTCSliderDisplayView( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
-			final Color bgColor,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
+			final LWTCSliderViewColors colours,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
 			final boolean opaque )
 	{
 		this( model,
@@ -71,32 +65,24 @@ public class SliderDisplayView extends JPanel
 				labelOrientation,
 				displayOrientation,
 				textboxOrientation,
-				bgColor,
-				textboxBgColor,
-				textboxFgColor,
+				colours,
 				labelText,
-				labelColor,
-				unitsColor,
 				opaque,
 				false );
 	}
 
-	public SliderDisplayView( final SliderDisplayModel model,
+	public LWTCSliderDisplayView( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
-			final Color bgColor,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
+			final LWTCSliderViewColors colours,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
 			final boolean opaque,
 			final boolean doubleClickToReset )
 	{
 		this.setOpaque( opaque );
-		this.setBackground( bgColor );
+		this.setBackground( colours.bgColor );
 
 		final int numOnLeft = ( labelOrientation == SatelliteOrientation.LEFT ? 1 : 0 ) +
 				(textboxOrientation == SatelliteOrientation.LEFT ? 1 : 0 );
@@ -113,18 +99,17 @@ public class SliderDisplayView extends JPanel
 		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
 
-		label = new SliderDisplayLabel( bgColor, labelText, labelColor, opaque );
+		label = new LWTCSliderDisplayLabel( colours,
+				labelText,
+				opaque );
 		slider = new LWTCSliderDisplaySlider( model,
 				controller,
 				displayOrientation,
-				bgColor,
-				labelColor,
+				colours,
 				opaque );
-		textbox = new SliderDisplayTextbox( model, controller,
-				textboxBgColor,
-				textboxFgColor,
-				bgColor,
-				unitsColor,
+		textbox = new LWTCSliderDisplayTextbox( model,
+				controller,
+				colours,
 				opaque );
 
 		int curColCounter = 0;
@@ -208,7 +193,7 @@ public class SliderDisplayView extends JPanel
 
 	public void addDoubleClickReceiver( final SliderDoubleClickReceiver receiver )
 	{
-		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
+		final LWTCSliderDoubleClickMouseListener doubleClickMouseListener = new LWTCSliderDoubleClickMouseListener( receiver );
 		slider.addMouseListener( doubleClickMouseListener );
 	}
 

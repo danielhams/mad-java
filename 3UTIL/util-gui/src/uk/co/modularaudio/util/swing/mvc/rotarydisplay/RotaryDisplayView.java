@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import net.miginfocom.swing.MigLayout;
@@ -54,15 +52,7 @@ public class RotaryDisplayView extends JPanel
 			final SatelliteOrientation labelOrientation,
 			final SatelliteOrientation textboxOrientation,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
-			final Color backgroundColor,
-			final Color foregroundColor,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
-			final Color knobColor,
-			final Color outlineColor,
-			final Color indicatorColor,
+			final RotaryViewColors colours,
 			final boolean opaque )
 	{
 		this( model,
@@ -71,15 +61,7 @@ public class RotaryDisplayView extends JPanel
 				labelOrientation,
 				textboxOrientation,
 				labelText,
-				labelColor,
-				unitsColor,
-				backgroundColor,
-				foregroundColor,
-				textboxBgColor,
-				textboxFgColor,
-				knobColor,
-				outlineColor,
-				indicatorColor,
+				colours,
 				opaque,
 				false );
 	}
@@ -90,15 +72,7 @@ public class RotaryDisplayView extends JPanel
 			final SatelliteOrientation labelOrientation,
 			final SatelliteOrientation textboxOrientation,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
-			final Color backgroundColor,
-			final Color foregroundColor,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
-			final Color knobColor,
-			final Color outlineColor,
-			final Color indicatorColor,
+			final RotaryViewColors colours,
 			final boolean opaque,
 			final boolean doubleClickToReset )
 	{
@@ -119,21 +93,15 @@ public class RotaryDisplayView extends JPanel
 		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
 
-		label = new RotaryDisplayLabel( backgroundColor, labelText, labelColor, opaque );
+		label = new RotaryDisplayLabel( labelText, colours, opaque );
 		knob = new RotaryDisplayKnob( model,
 				controller,
 				knobType,
-				backgroundColor,
-				foregroundColor,
-				knobColor,
-				outlineColor,
-				indicatorColor,
+				colours,
 				opaque );
-		textbox = new RotaryDisplayTextbox( model, controller,
-				textboxBgColor,
-				textboxFgColor,
-				backgroundColor,
-				unitsColor,
+		textbox = new RotaryDisplayTextbox( model,
+				controller,
+				colours,
 				opaque );
 
 		int curColCounter = 0;

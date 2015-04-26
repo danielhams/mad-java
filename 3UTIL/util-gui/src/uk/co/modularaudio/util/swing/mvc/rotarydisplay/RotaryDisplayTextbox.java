@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,17 +57,14 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	public RotaryDisplayTextbox( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
-			final Color textboxBgColor,
-			final Color textboxFgColor,
-			final Color bgColor,
-			final Color unitsColor,
+			final RotaryViewColors colours,
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = model;
 		this.controller = controller;
-		this.setBackground( bgColor );
-		this.setForeground( unitsColor );
+		this.setBackground( colours.bgColor );
+		this.setForeground( colours.unitsColor );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 //		lh.addLayoutConstraint( "debug" );
@@ -79,8 +75,10 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 		textField = new LWTCTextField();
 		// Never see through
 		textField.setOpaque( true );
-		textField.setBackground( textboxBgColor );
-		textField.setForeground( textboxFgColor );
+		textField.setBackground( colours.textboxBgColor );
+		textField.setForeground( colours.textboxFgColor );
+		textField.setSelectionColor( colours.selectionColor );
+		textField.setSelectedTextColor( colours.selectedTextColor );
 
 		extractModelVars( model );
 
@@ -92,8 +90,8 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 		{
 			unitsLabel = new LWTCLabel( unitsStr );
 			unitsLabel.setOpaque( opaque );
-			unitsLabel.setBackground( bgColor );
-			unitsLabel.setForeground( unitsColor );
+			unitsLabel.setBackground( colours.bgColor );
+			unitsLabel.setForeground( colours.labelColor );
 			unitsLabel.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 			unitsLabel.setVerticalAlignment( SwingConstants.CENTER );
 			unitsLabel.setBorder( null );

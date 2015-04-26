@@ -64,7 +64,7 @@ public class AmpMeterLevelMarks extends JComponent
 	}
 
 	@Override
-	public void paint( final Graphics og )
+	public void paintComponent( final Graphics og )
 	{
 		final Graphics2D g = (Graphics2D)og;
 		g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );

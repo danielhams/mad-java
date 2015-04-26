@@ -31,6 +31,7 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUi
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.image.ImageFactory;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.table.Span;
 
 public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
@@ -40,7 +41,9 @@ public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
 {
 
 	public static final Color LANE_BG_COLOR = new Color( 57, 63, 63 );
+	public static final Color LANE_FG_COLOR = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
 	public static final Color MASTER_BG_COLOR = new Color( 0.6f, 0.6f, 0.6f );
+	public static final Color MASTER_FG_COLOR = Color.black;
 
 	public MixerNMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,

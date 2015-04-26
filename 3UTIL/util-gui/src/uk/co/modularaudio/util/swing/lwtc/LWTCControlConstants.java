@@ -63,10 +63,12 @@ public class LWTCControlConstants
 	public final static Color CONTROL_SLIDER_SIDE_SHADE = Color.decode( "#353b3b" );
 	public final static Color CONTROL_SLIDER_SIDE_LIGHT = Color.decode( "#3c4343" );
 
-	public final static Color CONTROL_SLIDER_FOCUS = Color.decode( "#aaaaaa" );
+	public final static Color CONTROL_SLIDER_FOCUS = Color.decode( "#888888" );
 
-	public final static Color CONTROL_TEXTBOX_BACKGROUND = Color.decode( "#ffffff");
+	public final static Color CONTROL_TEXTBOX_BACKGROUND = Color.decode( "#bababa");
 	public final static Color CONTROL_TEXTBOX_FOREGROUND = Color.decode( "#393f3f");
+	public final static Color CONTROL_TEXTBOX_SELECTION = CONTROL_TEXTBOX_FOREGROUND;
+	public final static Color CONTROL_TEXTBOX_SELECTED_TEXT = CONTROL_TEXTBOX_BACKGROUND;
 
 	public final static Font RACK_FONT = getRackFont();
 	public final static Font LABEL_FONT = getLabelFont();

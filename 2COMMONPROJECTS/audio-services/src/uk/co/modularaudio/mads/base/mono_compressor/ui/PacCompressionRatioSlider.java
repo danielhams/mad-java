@@ -76,8 +76,6 @@ public abstract class PacCompressionRatioSlider extends JPanel implements ValueC
 
 		// Finally subscribe to the mode so that derived classes can handle the value change
 		model.addChangeListener( this );
-		controller.setValue( this, 0 );
-		controller.setValue( this, model.getInitialValue() );
 	}
 
 	@Override
