@@ -33,6 +33,7 @@ public class SliderDisplayModel
 	private final float minValue;
 	private float maxValue;
 	private final float initialValue;
+	private final float defaultValue;
 	private final int numSliderSteps;
 	private final int sliderMajorTickSpacing;
 
@@ -54,6 +55,7 @@ public class SliderDisplayModel
 	public SliderDisplayModel( final float minValue,
 			final float maxValue,
 			final float initialValue,
+			final float defaultValue,
 			final int numSliderSteps,
 			final int sliderMajorTickSpacing,
 			final SliderIntToFloatConverter sliderIntToFloatConverter,
@@ -64,6 +66,7 @@ public class SliderDisplayModel
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.initialValue = initialValue;
+		this.defaultValue = defaultValue;
 		this.numSliderSteps = numSliderSteps;
 		this.sliderMajorTickSpacing = sliderMajorTickSpacing;
 		this.sliderIntToFloatConverter = sliderIntToFloatConverter;
@@ -87,6 +90,11 @@ public class SliderDisplayModel
 	public float getInitialValue()
 	{
 		return initialValue;
+	}
+
+	public float getDefaultValue()
+	{
+		return defaultValue;
 	}
 
 	public int getNumSliderSteps()

@@ -51,7 +51,7 @@ public class EnvelopeSustainSliderUiJComponent extends PacSustainSlider
 			final EnvelopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.0f, 1.0f, -1.0f,
+		super( 0.0f, 1.0f, -1.0f, -1.0f,
 				"",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.VERTICAL,

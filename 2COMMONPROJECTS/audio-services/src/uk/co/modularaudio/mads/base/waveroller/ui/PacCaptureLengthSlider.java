@@ -43,6 +43,7 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 	public PacCaptureLengthSlider( final float minValue,
 			final float maxValue,
 			final float initialValue,
+			final float defaultValue,
 			final String unitsStr,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
@@ -55,6 +56,7 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 		this.model = new SliderDisplayModel( minValue,
 				maxValue,
 				initialValue,
+				defaultValue,
 				5000,
 				1000,
 				new SimpleSliderIntToFloatConverter(),
@@ -82,8 +84,6 @@ public abstract class PacCaptureLengthSlider extends JPanel implements ValueChan
 
 		// Finally subscribe to the mode so that derived classes can handle the value change
 		model.addChangeListener( this );
-		controller.setValue( this, 0 );
-		controller.setValue( this, model.getInitialValue() );
 	}
 
 	@Override

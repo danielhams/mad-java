@@ -44,43 +44,43 @@ public class RPFrame extends JFrame implements ActionListener
 {
 	private static final long serialVersionUID = -6805016213201375423L;
 //	private static Log log = LogFactory.getLog( RPFrame.class.getName() );
-	
-	private RPPlayStopToggleButton playStopToggle;
-	
-	private RPSpeedSlider speedSlider;
-	private RPDebuggingDrawable debuggingDrawable;
-	private RPCanvas canvas;
-	
+
+	private final RPPlayStopToggleButton playStopToggle;
+
+	private final RPSpeedSlider speedSlider;
+	private final RPDebuggingDrawable debuggingDrawable;
+	private final RPCanvas canvas;
+
 	private Timer timer;
-	
+
 	public RPFrame() throws DatastoreException
 	{
 		setTitle("RollPainterTester");
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		this.setMinimumSize(  new Dimension(RPConstants.RP_CANVAS_WIDTH * 3, RPConstants.RP_CANVAS_HEIGHT + 20) );
-		
-		MigLayoutStringHelper lh = new MigLayoutStringHelper();
+
+		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 //		lh.addLayoutConstraint( "debug" );
 		lh.addLayoutConstraint( "fill" );
 		lh.addLayoutConstraint( "insets 0" );
 		lh.addLayoutConstraint( "gap 0" );
 
 		lh.addRowConstraint( "[][fill]" );
-		MigLayout layout = lh.createMigLayout();
+		final MigLayout layout = lh.createMigLayout();
 		setLayout( layout );
-		
-		
-		SliderDisplayModel model = new SliderDisplayModel( -20.0f, 20.0f, 0.0f, 40, 1, new SimpleSliderIntToFloatConverter(), 3, 0, "pixels");
-		SliderDisplayController controller = new SliderDisplayController( model );
-		SliderDisplayView.SatelliteOrientation labelOrientation = SatelliteOrientation.LEFT;
-		SliderDisplayView.DisplayOrientation displayOrientation = DisplayOrientation.HORIZONTAL;
-		SliderDisplayView.SatelliteOrientation textboxOrientation = SatelliteOrientation.RIGHT;
-		String labelText = "Pixels To Scroll";
-		Color labelColor = Color.BLACK;
-		Color unitsColor = Color.BLACK;
-		boolean opaque = true;
-		
+
+
+		final SliderDisplayModel model = new SliderDisplayModel( -20.0f, 20.0f, 0.0f, 0.0f, 40, 1, new SimpleSliderIntToFloatConverter(), 3, 0, "pixels");
+		final SliderDisplayController controller = new SliderDisplayController( model );
+		final SliderDisplayView.SatelliteOrientation labelOrientation = SatelliteOrientation.LEFT;
+		final SliderDisplayView.DisplayOrientation displayOrientation = DisplayOrientation.HORIZONTAL;
+		final SliderDisplayView.SatelliteOrientation textboxOrientation = SatelliteOrientation.RIGHT;
+		final String labelText = "Pixels To Scroll";
+		final Color labelColor = Color.BLACK;
+		final Color unitsColor = Color.BLACK;
+		final boolean opaque = true;
+
 		speedSlider = new RPSpeedSlider( model, controller, labelOrientation, displayOrientation, textboxOrientation, labelText, labelColor, unitsColor, opaque );
 		canvas = new RPCanvas();
 		playStopToggle = new RPPlayStopToggleButton(canvas);
@@ -90,10 +90,10 @@ public class RPFrame extends JFrame implements ActionListener
 		add( playStopToggle, "" );
 		add( speedSlider, "wrap" );
 		add( debuggingDrawable, "grow, pushy, spanx 2");
-		
+
 		validate();
 	}
-	
+
 	public void startCallbacks()
 	{
 		timer = new Timer( 1000 / RPConstants.RP_FPS, this );
@@ -101,7 +101,7 @@ public class RPFrame extends JFrame implements ActionListener
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 //		log.debug("Callback!");
 		canvas.receivedCallbackTick();

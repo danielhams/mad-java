@@ -52,8 +52,10 @@ public class MoogFilterQSliderUiControlInstance extends PacLogSlider
 			final MoogFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.0f, 1.0f, 0.5f,
-				SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
+		super( 0.0f, 1.0f, 0.5f, 0.5f,
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT, "Q:",
 				Color.BLACK,
 				"",
 				Color.BLACK,

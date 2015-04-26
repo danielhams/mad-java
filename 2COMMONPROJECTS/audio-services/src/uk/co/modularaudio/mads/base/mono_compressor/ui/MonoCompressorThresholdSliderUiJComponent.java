@@ -50,7 +50,7 @@ public class MonoCompressorThresholdSliderUiJComponent extends PacThresholdSlide
 			final MonoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -36.0f, 0.0f, 0.0f,
+		super( -36.0f, 0.0f, 0.0f, 0.0f,
 				"dB",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

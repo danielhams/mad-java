@@ -54,12 +54,12 @@ public class StereoCompressorMadUiInstance
 
 	public float guiDesiredAttackMillis = 0.0f;
 
-	private MeterValueReceiver sourceSignalValueReceiver = null;
-	private MeterValueReceiver outSignalValueReceiver = null;
-	private ThresholdValueReceiver thresholdValueReceiver = null;
+	private MeterValueReceiver sourceSignalValueReceiver;
+	private MeterValueReceiver outSignalValueReceiver;
+	private ThresholdValueReceiver thresholdValueReceiver;
 	private float lastThresholdDb = Float.NEGATIVE_INFINITY;
-	private MeterValueReceiver envSignalValueReceiver = null;
-	private MeterValueReceiver attenuationSignalValueReceiver = null;
+	private MeterValueReceiver envSignalValueReceiver;
+	private MeterValueReceiver attenuationSignalValueReceiver;
 
 	// One every second at 44.1
 	// Should be reset on "startup"

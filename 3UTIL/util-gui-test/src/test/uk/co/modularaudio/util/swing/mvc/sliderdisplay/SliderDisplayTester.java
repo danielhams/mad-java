@@ -132,6 +132,7 @@ public class SliderDisplayTester
 		final SliderDisplayModel staticValueModel = new SliderDisplayModel( 0.01f,
 				10.0f,
 				1.0f,
+				1.0f,
 				1000,
 				100,
 				new SimpleSliderIntToFloatConverter(),

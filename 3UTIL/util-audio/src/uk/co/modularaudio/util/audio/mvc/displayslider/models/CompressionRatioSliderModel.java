@@ -28,6 +28,7 @@ public class CompressionRatioSliderModel extends SliderDisplayModel
 	public CompressionRatioSliderModel()
 	{
 		super(  1.0f, 20.0f, 2.0f,
+				2.0f,
 				1900,
 				100,
 				new SimpleSliderIntToFloatConverter(),

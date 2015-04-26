@@ -28,6 +28,7 @@ public class CompressionOutputGainSliderModel extends SliderDisplayModel
 	public CompressionOutputGainSliderModel()
 	{
 		super(  -12.0f, 12.0f, 0.0f,
+				0.0f,
 				1000,
 				100,
 				new SimpleSliderIntToFloatConverter(),

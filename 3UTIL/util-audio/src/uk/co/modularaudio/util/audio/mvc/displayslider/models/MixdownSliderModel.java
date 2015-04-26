@@ -30,6 +30,7 @@ public class MixdownSliderModel extends SliderDisplayModel
 	public MixdownSliderModel()
 	{
 		super( Float.NEGATIVE_INFINITY, INT_TO_FLOAT_CONVERTER.getLinearHighestDb(),
+				Float.NEGATIVE_INFINITY,
 				0.0f,
 				INT_TO_FLOAT_CONVERTER.getNumTotalSteps(),
 				1,

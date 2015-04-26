@@ -36,18 +36,18 @@ public class StereoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private StereoCompressorMadUiInstance uiInstance = null;
+	private final StereoCompressorMadUiInstance uiInstance;
 
-	public StereoCompressorLookaheadCheckboxUiJComponent(  StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public StereoCompressorLookaheadCheckboxUiJComponent(  final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		super();
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
 //		Font f = this.getFont().deriveFont( 9f );
-		Font f = this.getFont();
+		final Font f = this.getFont();
 		setFont( f );
 		this.setText( "4ms Lookahead" );
 		// Default value
@@ -55,18 +55,19 @@ public class StereoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 		this.setSelected( false );
 	}
 
+	@Override
 	public JComponent getControl()
 	{
 		return this;
 	}
 
-	private void passChangeToInstanceData( boolean selected )
+	private void passChangeToInstanceData( final boolean selected )
 	{
 		uiInstance.sendLookahead( selected );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
@@ -74,7 +75,7 @@ public class StereoCompressorLookaheadCheckboxUiJComponent extends PacCheckBox
 	}
 
 	@Override
-	public void receiveUpdate( boolean statusBefore, boolean newStatus )
+	public void receiveUpdate( final boolean statusBefore, final boolean newStatus )
 	{
 		if( statusBefore != newStatus )
 		{

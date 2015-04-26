@@ -49,7 +49,7 @@ public class ScaleAndOffsetScaleUiJComponent extends ValueSlider
 			final ScaleAndOffsetMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -500.0f, 500.0f, 1.0f,
+		super( -500.0f, 500.0f, 1.0f, 1.0f,
 				"",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,

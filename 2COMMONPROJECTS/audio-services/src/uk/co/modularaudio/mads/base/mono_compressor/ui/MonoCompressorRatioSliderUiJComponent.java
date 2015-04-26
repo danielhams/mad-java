@@ -50,7 +50,7 @@ public class MonoCompressorRatioSliderUiJComponent extends PacCompressionRatioSl
 			final MonoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 20.0f, 2.0f,
+		super( 1.0f, 20.0f, 2.0f, 2.0f,
 				"",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

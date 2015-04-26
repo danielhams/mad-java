@@ -43,14 +43,14 @@ public class StereoCompressorRatioSliderUiJComponent extends PacCompressionRatio
 
 	private static final long serialVersionUID = 2538907435465770032L;
 
-	private StereoCompressorMadUiInstance uiInstance = null;
+	private final StereoCompressorMadUiInstance uiInstance;
 
 	public StereoCompressorRatioSliderUiJComponent( final StereoCompressorMadDefinition definition,
 			final StereoCompressorMadInstance instance,
 			final StereoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 20.0f, 2.0f,
+		super( 1.0f, 20.0f, 2.0f, 0.0f,
 				"",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

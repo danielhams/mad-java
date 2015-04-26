@@ -39,27 +39,27 @@ public class StereoCompressorOutSignalMeterUiComponent extends PacPanel
 
 //	private static Log log = LogFactory.getLog( StereoCompressorOutSignalMeterUiComponent.class.getName() );
 
-	private OutSignalStereoAmpMeter stereoAmpMeter = null;
+	private final OutSignalStereoAmpMeter stereoAmpMeter;
 
-	public StereoCompressorOutSignalMeterUiComponent( StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public StereoCompressorOutSignalMeterUiComponent( final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( false );
 //		this.setBackground( Color.GREEN );
-		
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
+
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
-		
+
 		stereoAmpMeter = new OutSignalStereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
 		this.add( stereoAmpMeter, "grow" );
-		
+
 		uiInstance.registerOutSignalMeterValueReceiver( this );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -79,15 +79,15 @@ public class StereoCompressorOutSignalMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentFrameTime, int channelNum, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentFrameTime, final int channelNum, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		stereoAmpMeter.receiveMeterReadingInDb( currentFrameTime, channelNum, meterReadingDb );		
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		stereoAmpMeter.receiveMeterReadingInDb( currentFrameTime, channelNum, meterReadingDb );
 	}
 
 	@Override

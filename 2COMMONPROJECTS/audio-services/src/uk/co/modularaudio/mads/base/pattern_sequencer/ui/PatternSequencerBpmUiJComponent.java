@@ -49,7 +49,7 @@ public class PatternSequencerBpmUiJComponent extends ValueSlider
 			final PatternSequencerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 20.0f, 200.0f, 120.0f,
+		super( 20.0f, 200.0f, 120.0f, 120.0f,
 				"",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,

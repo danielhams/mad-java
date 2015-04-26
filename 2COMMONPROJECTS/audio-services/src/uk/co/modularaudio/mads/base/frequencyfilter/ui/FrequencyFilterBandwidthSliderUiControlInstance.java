@@ -52,7 +52,11 @@ public class FrequencyFilterBandwidthSliderUiControlInstance extends PacLogSlide
 			final FrequencyFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 40.0f, 22050.0f, 440.0f, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "BW:",
+		super( 40.0f, 22050.0f, 440.0f, 440.0f,
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				"BW:",
 				Color.WHITE,
 				"Hz",
 				Color.WHITE,

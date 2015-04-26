@@ -102,7 +102,7 @@ public class LWTCSliderDisplayTester
 			@Override
 			public void receiveDoubleClick()
 			{
-				mixerModel.setValue( this, mixerModel.getInitialValue() );
+				mixerModel.setValue( this, mixerModel.getDefaultValue() );
 
 			}
 		};

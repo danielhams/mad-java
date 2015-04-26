@@ -28,6 +28,7 @@ public class DJCrossFaderSliderModel extends SliderDisplayModel
 	public DJCrossFaderSliderModel()
 	{
 		super( -1.0f, 1.0f, 0.0f,
+				0.0f,
 				128,
 				1,
 				new SimpleSliderIntToFloatConverter(),

@@ -52,7 +52,7 @@ public class MixerFader extends LWTCSliderDisplaySlider
 			@Override
 			public void receiveDoubleClick()
 			{
-				controller.setValue( this, model.getInitialValue() );
+				controller.setValue( this, model.getDefaultValue() );
 			}
 		};
 

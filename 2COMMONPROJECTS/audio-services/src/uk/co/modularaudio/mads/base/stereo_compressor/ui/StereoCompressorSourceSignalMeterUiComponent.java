@@ -39,28 +39,28 @@ public class StereoCompressorSourceSignalMeterUiComponent extends PacPanel
 
 //	private static Log log = LogFactory.getLog( StereoCompressorSourceSignalMeterUiComponent.class.getName() );
 
-	private SourceSignalStereoAmpMeter stereoAmpMeter = null;
+	private final SourceSignalStereoAmpMeter stereoAmpMeter;
 
-	public StereoCompressorSourceSignalMeterUiComponent( StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+	public StereoCompressorSourceSignalMeterUiComponent( final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( false );
 //		this.setBackground( Color.GREEN );
-		
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
+
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
-		
+
 		stereoAmpMeter = new SourceSignalStereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), false );
 		this.add( stereoAmpMeter, "grow" );
-		
+
 		uiInstance.registerSourceSignalMeterValueReceiver( this );
 		uiInstance.registerThresholdValueReceiver( this );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
@@ -80,15 +80,15 @@ public class StereoCompressorSourceSignalMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentFrameTime, int channelNum, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentFrameTime, final int channelNum, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		stereoAmpMeter.receiveMeterReadingInDb( currentFrameTime, channelNum, meterReadingDb );		
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		stereoAmpMeter.receiveMeterReadingInDb( currentFrameTime, channelNum, meterReadingDb );
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class StereoCompressorSourceSignalMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveNewDbValue( float newThresholdDb )
+	public void receiveNewDbValue( final float newThresholdDb )
 	{
 		stereoAmpMeter.setThresholdDb( newThresholdDb );
 	}

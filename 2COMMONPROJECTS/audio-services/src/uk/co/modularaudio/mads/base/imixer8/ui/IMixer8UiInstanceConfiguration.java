@@ -18,21 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.soundfile_player.ui;
+package uk.co.modularaudio.mads.base.imixer8.ui;
 
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
+import uk.co.modularaudio.mads.base.imixern.mu.MixerNInstanceConfiguration;
+import uk.co.modularaudio.mads.base.imixern.ui.MixerNUiInstanceConfiguration;
 
-public abstract class NoDisplayPacToggleButton extends PacToggleButton
+public class IMixer8UiInstanceConfiguration extends MixerNUiInstanceConfiguration
 {
-	private static final long serialVersionUID = -2783077334347985133L;
-
-	public NoDisplayPacToggleButton( boolean defaultValue )
+	public IMixer8UiInstanceConfiguration( final MixerNInstanceConfiguration instanceConfiguration )
 	{
-		super( defaultValue );
-	}
-
-	public boolean needsDisplayProcessing()
-	{
-		return false;
+		super( instanceConfiguration,
+				IMixer8Lane.class,
+				IMixer8Master.class );
 	}
 }

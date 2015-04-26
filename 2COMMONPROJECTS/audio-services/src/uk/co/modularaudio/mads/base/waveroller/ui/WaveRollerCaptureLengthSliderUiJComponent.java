@@ -75,7 +75,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 			final WaveRollerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 5000.0f, 1500.0f,
+		super( 1.0f, 5000.0f, 1500.0f, 1500f,
 				"ms",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,

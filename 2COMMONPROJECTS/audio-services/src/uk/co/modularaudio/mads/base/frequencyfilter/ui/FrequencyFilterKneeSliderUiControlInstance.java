@@ -55,6 +55,7 @@ public class FrequencyFilterKneeSliderUiControlInstance extends PacLogSlider
 		super( 40.0f,
 				22050.0f,
 				440.0f,
+				440.0f,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,

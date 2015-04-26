@@ -39,37 +39,37 @@ public class StereoCompressorAttenuationMeterUiComponent extends PacPanel
 
 //	private static Log log = LogFactory.getLog( StereoCompressorAttenuationMeterUiComponent.class.getName() );
 
-	private AttenuationMeterAndLabels attenuationMeter = null;
+	private final AttenuationMeterAndLabels attenuationMeter;
 
-	private StereoCompressorMadUiInstance uiInstance = null;
+	private final StereoCompressorMadUiInstance uiInstance;
 
 	private boolean previouslyShowing;
-	
-	public StereoCompressorAttenuationMeterUiComponent( StereoCompressorMadDefinition definition,
-			StereoCompressorMadInstance instance,
-			StereoCompressorMadUiInstance uiInstance,
-			int controlIndex )
+
+	public StereoCompressorAttenuationMeterUiComponent( final StereoCompressorMadDefinition definition,
+			final StereoCompressorMadInstance instance,
+			final StereoCompressorMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		this.setOpaque( false );
 //		this.setBackground( Color.GREEN );
 
 		this.uiInstance = uiInstance;
-		
-		MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
+
+		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
-		
+
 		attenuationMeter = new AttenuationMeterAndLabels( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator() );
 		this.add( attenuationMeter, "grow" );
-		
+
 		uiInstance.registerAttenuationSignalMeterValueReceiver( this );
 	}
 
 	@Override
-	public void doDisplayProcessing( ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		boolean showing = isShowing();
+		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
 		{
@@ -93,14 +93,14 @@ public class StereoCompressorAttenuationMeterUiComponent extends PacPanel
 	}
 
 	@Override
-	public void receiveControlValue( String value )
+	public void receiveControlValue( final String value )
 	{
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( long currentFrameTime, int channelNum, float meterReadingLevel )
+	public void receiveMeterReadingLevel( final long currentFrameTime, final int channelNum, final float meterReadingLevel )
 	{
-		float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
+		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
 		attenuationMeter.receiveMeterReadingInDb( currentFrameTime, channelNum, meterReadingDb );
 	}
 

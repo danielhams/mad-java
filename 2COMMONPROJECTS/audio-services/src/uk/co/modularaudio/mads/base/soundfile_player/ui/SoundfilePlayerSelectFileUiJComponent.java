@@ -40,7 +40,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
-	private String lastUsedDirectory = null;
+	private String lastUsedDirectory;
 	private String currentFilename = "";
 
 	public SoundfilePlayerSelectFileUiJComponent( final SoundfilePlayerMadDefinition definition,

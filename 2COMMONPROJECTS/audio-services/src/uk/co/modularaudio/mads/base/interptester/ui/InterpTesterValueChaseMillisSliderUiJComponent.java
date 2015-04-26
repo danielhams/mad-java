@@ -57,6 +57,7 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 		super( new SliderDisplayModel( 1.0f,
 				10.0f,
 				DEFAULT_CHASE_MILLIS,
+				DEFAULT_CHASE_MILLIS,
 				5000,
 				1000,
 				new SimpleSliderIntToFloatConverter(),

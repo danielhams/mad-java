@@ -27,9 +27,9 @@ import javax.swing.JComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -50,7 +50,7 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 			final EnvelopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.0f, EnvelopeDefaults.MAX_TIMESCALE_MILLIS, -1.0f,
+		super( 0.0f, EnvelopeDefaults.MAX_TIMESCALE_MILLIS, EnvelopeDefaults.TIMESCALE_MILLIS, EnvelopeDefaults.TIMESCALE_MILLIS,
 				"",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
@@ -61,8 +61,6 @@ public class EnvelopeTimescaleSliderUiJComponent extends PacTimescaleSlider
 				false );
 		this.setBackground( Color.ORANGE );
 		this.uiInstance = uiInstance;
-
-		model.setValue( EnvelopeDefaults.class, EnvelopeDefaults.TIMESCALE_MILLIS );
 	}
 
 	@Override

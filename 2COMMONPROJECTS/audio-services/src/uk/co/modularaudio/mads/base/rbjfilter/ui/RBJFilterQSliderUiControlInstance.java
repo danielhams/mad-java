@@ -53,7 +53,11 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 			final RBJFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.1f, 10.0f, RBJFilter.ZERO_RESONANCE, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Q:",
+		super( 0.1f, 10.0f, RBJFilter.ZERO_RESONANCE,
+				RBJFilter.ZERO_RESONANCE,
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT, "Q:",
 				Color.BLACK,
 				"",
 				Color.BLACK,

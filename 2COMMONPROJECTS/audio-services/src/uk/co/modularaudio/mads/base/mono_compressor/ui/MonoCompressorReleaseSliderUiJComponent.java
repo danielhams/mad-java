@@ -51,7 +51,7 @@ public class MonoCompressorReleaseSliderUiJComponent extends PacADSRSlider
 			final MonoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 10.0f, 1000.0f, 1.0f,
+		super( 10.0f, 1000.0f, 1.0f, 1.0f,
 				"ms",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

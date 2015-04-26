@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
@@ -29,34 +27,36 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public abstract class PacPlaybackSpeedSlider extends JPanel implements ValueChangeListener
 {
 	private static final long serialVersionUID = 2783504281404548759L;
 
-	protected SliderDisplayView view;
+	protected LWTCSliderDisplayView view;
 	protected SliderDisplayModel model;
 	protected SliderDisplayController controller;
 
 	public PacPlaybackSpeedSlider( final float minValue,
 			final float maxValue,
 			final float initialValue,
+			final float defaultValue,
 			final String unitsStr,
 			final SatelliteOrientation labelOrientation,
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
+			final LWTCSliderViewColors colors,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = new SliderDisplayModel( minValue,
 				maxValue,
 				initialValue,
+				defaultValue,
 				2000,
 				500,
 				new SimpleSliderIntToFloatConverter(),
@@ -65,7 +65,14 @@ public abstract class PacPlaybackSpeedSlider extends JPanel implements ValueChan
 				unitsStr );
 
 		this.controller = new SliderDisplayController( model );
-		this.view = new SliderDisplayView( model, controller, labelOrientation, displayOrientation, textboxOrientation, labelText, labelColor, unitsColor, opaque );
+		this.view = new LWTCSliderDisplayView( model,
+				controller,
+				labelOrientation,
+				displayOrientation,
+				textboxOrientation,
+				colors,
+				labelText,
+				opaque );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );

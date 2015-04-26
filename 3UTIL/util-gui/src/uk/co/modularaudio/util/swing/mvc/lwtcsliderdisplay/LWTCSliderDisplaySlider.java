@@ -25,7 +25,6 @@ import javax.swing.SwingConstants;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModelAdaptor;
-import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 
@@ -36,7 +35,6 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 	private static final long serialVersionUID = 7532750303295733460L;
 
 	private final SliderDisplayController controller;
-	private SliderDisplayModel sdm;
 
 	public LWTCSliderDisplaySlider( final SliderDisplayModel model,
 			final SliderDisplayController controller,
@@ -49,7 +47,6 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 		this.setOpaque( opaque );
 
 		this.controller = controller;
-		this.sdm = model;
 
 		this.setModel( new SliderDisplayModelAdaptor( this, model, controller ) );
 
@@ -62,16 +59,9 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 
 	public void changeModel( final SliderDisplayModel newModel )
 	{
-		this.sdm = newModel;
 		this.setModel( new SliderDisplayModelAdaptor( this, newModel, controller ) );
 
 		final int sliderMajorTickSpacing = newModel.getSliderMajorTickSpacing();
 		this.setMajorTickSpacing( sliderMajorTickSpacing );
-	}
-
-	public int getInitialValue()
-	{
-		final SliderIntToFloatConverter itfc = sdm.getSliderIntToFloatConverter();
-		return itfc.floatValueToSliderIntValue( sdm, sdm.getInitialValue() );
 	}
 }

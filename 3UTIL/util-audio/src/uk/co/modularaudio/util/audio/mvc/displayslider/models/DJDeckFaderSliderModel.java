@@ -30,6 +30,7 @@ public class DJDeckFaderSliderModel extends SliderDisplayModel
 	public DJDeckFaderSliderModel()
 	{
 		super( Float.NEGATIVE_INFINITY, INT_TO_FLOAT_CONVERTER.getLinearHighestDb(),
+				Float.NEGATIVE_INFINITY,
 				0.0f,
 				INT_TO_FLOAT_CONVERTER.getNumTotalSteps(),
 				1,

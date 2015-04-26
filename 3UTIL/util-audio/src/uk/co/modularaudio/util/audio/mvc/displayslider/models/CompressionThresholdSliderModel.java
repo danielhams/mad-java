@@ -29,6 +29,7 @@ public class CompressionThresholdSliderModel extends SliderDisplayModel
 	public CompressionThresholdSliderModel()
 	{
 		super(  -36.0f, 0.0f, 0.0f,
+				0.0f,
 				3600,
 				100,
 				new SimpleSliderIntToFloatConverter(),

@@ -57,6 +57,8 @@ import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinit
 import uk.co.modularaudio.mads.base.frequencyfilter.ui.FrequencyFilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
 import uk.co.modularaudio.mads.base.imixer3.ui.IMixer3MadUiDefinition;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
+import uk.co.modularaudio.mads.base.imixer8.ui.IMixer8MadUiDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterMadUiDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
@@ -199,6 +201,7 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
 
 		classToUiDefinition.put( IMixer3MadDefinition.class, IMixer3MadUiDefinition.class );
+		classToUiDefinition.put( IMixer8MadDefinition.class, IMixer8MadUiDefinition.class );
 
 		classToUiDefinition.put( DJEQMadDefinition.class, DJEQMadUiDefinition.class );
 	}

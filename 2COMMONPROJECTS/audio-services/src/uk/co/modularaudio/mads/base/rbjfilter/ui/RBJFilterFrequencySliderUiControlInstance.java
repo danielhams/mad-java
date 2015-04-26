@@ -52,7 +52,12 @@ public class RBJFilterFrequencySliderUiControlInstance extends PacLogSlider
 			final RBJFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 40.0f, 22050.0f, 440.0f, SatelliteOrientation.LEFT, DisplayOrientation.HORIZONTAL, SatelliteOrientation.RIGHT, "Freq:",
+		super( 40.0f, 22050.0f, 440.0f,
+				440.0f,
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				"Freq:",
 				Color.BLACK,
 				"Hz",
 				Color.BLACK,

@@ -128,7 +128,7 @@ public class DJEQFader extends PacPanel
 			@Override
 			public void receiveDoubleClick()
 			{
-				sdc.setValue( this, sdc.getModel().getInitialValue() );
+				sdc.setValue( this, sdc.getModel().getDefaultValue() );
 			}
 		} );
 		sds.addMouseListener( doubleClickMouseListener );

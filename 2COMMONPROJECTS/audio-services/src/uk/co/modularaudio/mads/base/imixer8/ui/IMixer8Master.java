@@ -18,21 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.soundfile_player.ui;
+package uk.co.modularaudio.mads.base.imixer8.ui;
 
-import java.awt.event.ActionEvent;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadInstance;
+import uk.co.modularaudio.mads.base.imixern.ui.master.MasterMixerPanelUiInstance;
 
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
-
-public abstract class NoDisplayPacButton extends PacButton
+public class IMixer8Master extends MasterMixerPanelUiInstance<IMixer8MadDefinition, IMixer8MadInstance, IMixer8MadUiInstance>
 {
-	private static final long serialVersionUID = 3628977573392786294L;
+	private static final long serialVersionUID = 7431791158964357287L;
 
-	@Override
-	public abstract void receiveEvent( ActionEvent e );
-
-	public boolean needsDisplayProcessing()
+	public IMixer8Master( final IMixer8MadDefinition definition,
+			final IMixer8MadInstance instance,
+			final IMixer8MadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		return false;
+		super( definition, instance, uiInstance, controlIndex );
 	}
+
 }

@@ -71,7 +71,7 @@ public class SoundfileDisplaySampleFactory implements
 	private float previousMinValue;
 	private float previousMaxValue;
 
-	private SampleCacheClient scc = null;
+	private SampleCacheClient scc;
 
 	private final MinMaxSampleAcceptor minMaxSampleAcceptor = new MinMaxSampleAcceptor();
 
@@ -107,10 +107,10 @@ public class SoundfileDisplaySampleFactory implements
 		long numPixelsCanOutput = numReadable / numSamplesPerPixel;
 		numPixelsCanOutput = (numPixelsCanOutput > displayWidth ? displayWidth : numPixelsCanOutput );
 		final int numPixelsCanOutputInt = (int)numPixelsCanOutput;
-		if( numPixelsCanOutputInt != 0 )
-		{
+//		if( numPixelsCanOutputInt != 0 )
+//		{
 //			log.debug("Returning " + numPixelsCanOutputInt + " pixels available for output");
-		}
+//		}
 		return numPixelsCanOutputInt;
 	}
 

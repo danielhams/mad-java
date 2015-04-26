@@ -28,6 +28,7 @@ public class LogarithmicTimeMillisSliderModel extends SliderDisplayModel
 	public LogarithmicTimeMillisSliderModel()
 	{
 		super( 1.0f, 5000.0f, 60.0f,
+				60.0f,
 				4999,
 				100,
 				new LogSliderIntToFloatConverter( 5000.0f ),

@@ -50,7 +50,7 @@ public class MonoCompressorMakeupGainSliderUiJComponent extends PacCompressionRa
 			final MonoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -12.0f, 12.0f, 0.0f,
+		super( -12.0f, 12.0f, 0.0f, 0.0f,
 				"dB",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

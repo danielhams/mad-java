@@ -90,7 +90,6 @@ public abstract class ValueSlider extends JPanel implements ValueChangeListener
 		view.changeModel( newModel );
 
 		model.addChangeListener( this );
-		controller.setValue( this, 0 );
 		controller.setValue( this, model.getInitialValue() );
 
 	}

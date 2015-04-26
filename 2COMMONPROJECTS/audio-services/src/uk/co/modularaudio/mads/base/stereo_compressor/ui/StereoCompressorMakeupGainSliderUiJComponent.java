@@ -43,14 +43,14 @@ public class StereoCompressorMakeupGainSliderUiJComponent extends PacCompression
 
 	private static final long serialVersionUID = 2538907435465770032L;
 
-	private StereoCompressorMadUiInstance uiInstance = null;
+	private final StereoCompressorMadUiInstance uiInstance;
 
 	public StereoCompressorMakeupGainSliderUiJComponent( final StereoCompressorMadDefinition definition,
 			final StereoCompressorMadInstance instance,
 			final StereoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -12.0f, 12.0f, 0.0f,
+		super( -12.0f, 12.0f, 0.0f, 0.0f,
 				"dB",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

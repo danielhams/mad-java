@@ -44,14 +44,14 @@ public class StereoCompressorAttackSliderUiJComponent extends PacADSRSlider
 
 	private static final long serialVersionUID = 7923855236169668204L;
 
-	private StereoCompressorMadUiInstance uiInstance = null;
+	private final StereoCompressorMadUiInstance uiInstance;
 
 	public StereoCompressorAttackSliderUiJComponent( final StereoCompressorMadDefinition definition,
 			final StereoCompressorMadInstance instance,
 			final StereoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 100.0f, 1.0f,
+		super( 1.0f, 100.0f, 1.0f, 1.0f,
 				"ms",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

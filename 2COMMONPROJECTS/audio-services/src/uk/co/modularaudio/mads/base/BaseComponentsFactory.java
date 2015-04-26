@@ -56,6 +56,8 @@ import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinit
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadInstance;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadInstance;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
@@ -205,6 +207,7 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
 
 		defClassToInsClassMap.put( IMixer3MadDefinition.class, IMixer3MadInstance.class );
+		defClassToInsClassMap.put( IMixer8MadDefinition.class, IMixer8MadInstance.class );
 
 		defClassToInsClassMap.put( DJEQMadDefinition.class, DJEQMadInstance.class );
 	}

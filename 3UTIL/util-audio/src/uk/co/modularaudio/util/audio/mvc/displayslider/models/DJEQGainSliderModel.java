@@ -27,7 +27,7 @@ public class DJEQGainSliderModel extends SliderDisplayModel
 {
 	public DJEQGainSliderModel()
 	{
-		super( -10.0f, 10.0f,
+		super( -10.0f, 10.0f, 0.0f,
 				0.0f,
 				2000,
 				1,

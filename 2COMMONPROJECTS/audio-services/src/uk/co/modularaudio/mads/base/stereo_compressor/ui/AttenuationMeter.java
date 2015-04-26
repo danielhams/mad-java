@@ -48,24 +48,25 @@ public class AttenuationMeter extends PacPanel
 
 	private static Log log = LogFactory.getLog( AttenuationMeter.class.getName() );
 
-	private float currentMeterValueDb = 0.0f;
-	private float previouslyPaintedMeterValueDb = 0.0f;
+	private float currentMeterValueDb;
+	private float previouslyPaintedMeterValueDb;
 
-	private long maxValueTimestamp = 0;
-	private float currentMinValueDb = 0.0f;
-	private float previouslyPaintedMinValueDb = 0.0f;
+	private long maxValueTimestamp;
+	private float currentMinValueDb;
+	private float previouslyPaintedMinValueDb;
 
 	private final StereoCompressorMadUiInstance uiInstance;
 
-	private DbToLevelComputer dbToLevelComputer = null;
+	private final DbToLevelComputer dbToLevelComputer;
 
-	private BufferedImageAllocator bufferedImageAllocator = null;
-	private TiledBufferedImage tiledBufferedImage = null;
-	private BufferedImage outBufferedImage = null;
-	private Graphics outBufferedImageGraphics = null;
+	private final BufferedImageAllocator bufferedImageAllocator;
+	private TiledBufferedImage tiledBufferedImage;
+	private BufferedImage outBufferedImage;
+	private Graphics outBufferedImageGraphics;
 
 	private int componentWidth = -1;
 	private int componentHeight = -1;
+
 	public AttenuationMeter( final StereoCompressorMadUiInstance uiInstance,
 			final DbToLevelComputer dbToLevelComputer, final BufferedImageAllocator bia )
 	{

@@ -50,7 +50,7 @@ public class StereoGateThresholdSliderUiJComponent extends PacThresholdSlider
 			final StereoGateMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -60.0f, 0.0f, -1.0f,
+		super( -60.0f, 0.0f, -1.0f, -1.0f,
 				"dB",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,

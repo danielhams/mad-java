@@ -18,22 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.mvc.displayslider.models;
+package uk.co.modularaudio.mads.base.imixer8.ui;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
+import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadInstance;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 
-public class LeftRightPanSliderModel extends SliderDisplayModel
+public class IMixer8Lane extends LaneMixerPanelUiInstance<IMixer8MadDefinition, IMixer8MadInstance, IMixer8MadUiInstance>
 {
-	public LeftRightPanSliderModel()
+	private static final long serialVersionUID = 7431791158964357287L;
+
+	public IMixer8Lane( final IMixer8MadDefinition definition,
+			final IMixer8MadInstance instance,
+			final IMixer8MadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		super(  -1.0f, 1.0f, 0.0f,
-				0.0f,
-				2000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val" );
+		super( definition, instance, uiInstance, controlIndex );
 	}
+
 }

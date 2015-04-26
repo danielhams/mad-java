@@ -54,7 +54,7 @@ public class EnvelopeAttackSliderUiJComponent extends PacADSRSlider
 			final EnvelopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 0.0f, 10.0f, 4.0f,
+		super( 0.0f, 10.0f, 4.0f, 4.0f,
 				"ms",
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.VERTICAL,

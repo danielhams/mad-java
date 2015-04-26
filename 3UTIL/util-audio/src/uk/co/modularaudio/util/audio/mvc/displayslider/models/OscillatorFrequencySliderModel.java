@@ -28,6 +28,7 @@ public class OscillatorFrequencySliderModel extends SliderDisplayModel
 	public OscillatorFrequencySliderModel()
 	{
 		super( 40.0f, 22050.0f, 440.0f,
+				440.0f,
 				1000,
 				100,
 				new LogSliderIntToFloatConverter( 22050.0f ),

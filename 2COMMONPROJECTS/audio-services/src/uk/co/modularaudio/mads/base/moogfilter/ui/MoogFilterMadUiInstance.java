@@ -36,6 +36,7 @@ public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurable
 			0.0f,
 			1.0f,
 			0.5f,
+			0.5f,
 			1000,
 			100,
 			new SimpleSliderIntToFloatConverter(),
