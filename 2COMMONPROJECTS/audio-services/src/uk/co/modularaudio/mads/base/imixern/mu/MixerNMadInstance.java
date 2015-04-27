@@ -75,7 +75,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		}
 		masterProcessor = new MasterProcessor<D,I>( (I)this, instanceConfiguration );
 
-		muteAndSoloMachine = new MixerMuteAndSoloMachine<D,I>( (I)this, channelLaneProcessors );
+		muteAndSoloMachine = new MixerMuteAndSoloMachine<D,I>( channelLaneProcessors );
 	}
 
 	@Override
@@ -214,28 +214,6 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			joinedParts = (floatIntBits << 32 ) | (1);
 			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER, joinedParts, null );
 		}
-	}
-
-	protected void emitLaneMuteStatus( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
-			final int laneNumber,
-			final boolean muted )
-			throws BufferOverflowException
-	{
-		final long muteBits = (muted ? 1 : 0 );
-		final long joinedParts = (muteBits << 32 ) | laneNumber;
-		localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_LANE_MUTE_SET, joinedParts, null );
-	}
-
-	protected void emitLaneSoloStatus( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
-			final int laneNumber,
-			final boolean solod )
-			throws BufferOverflowException
-	{
-		final long soloBits = (solod ? 1 : 0 );
-		final long joinedParts = (soloBits << 32 ) | laneNumber;
-		localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_LANE_SOLO_SET, joinedParts, null );
 	}
 
 	protected void setLaneAmp( final int laneNum, final float ampValue )

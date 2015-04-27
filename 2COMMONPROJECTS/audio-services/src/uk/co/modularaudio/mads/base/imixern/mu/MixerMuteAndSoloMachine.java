@@ -28,7 +28,6 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 {
 //	private static Log log = LogFactory.getLog( MixerMuteAndSoloMachine.class.getName() );
 
-	private final I instance;
 	private final LaneProcessor<D,I>[] channelLaneProcessors;
 
 	private final int numChannels;
@@ -37,10 +36,8 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 	private final boolean[] channelSoloValues;
 	private int numChannelsInSolo;
 
-	public MixerMuteAndSoloMachine( final I instance,
-			final LaneProcessor<D,I>[] channelLaneProcessors )
+	public MixerMuteAndSoloMachine( final LaneProcessor<D,I>[] channelLaneProcessors )
 	{
-		this.instance = instance;
 		this.channelLaneProcessors = channelLaneProcessors;
 
 		numChannels = channelLaneProcessors.length;
@@ -90,9 +87,6 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 			{
 				final boolean channelSolod = channelSoloValues[ i ];
 				channelLaneProcessors[ i ].setLaneActive( channelSolod );
-
-				instance.emitLaneSoloStatus( tses, timestamp, i, channelSolod );
-				instance.emitLaneMuteStatus( tses, timestamp, i, channelMuteValues[ i ] );
 			}
 		}
 		else
@@ -102,9 +96,6 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 			{
 				final boolean channelMuted = channelMuteValues[ i ];
 				channelLaneProcessors[ i ].setLaneActive( !channelMuted );
-
-				instance.emitLaneMuteStatus( tses, timestamp, i, channelMuted );
-				instance.emitLaneSoloStatus( tses, timestamp, i, false );
 			}
 		}
 	}

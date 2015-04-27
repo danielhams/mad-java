@@ -20,33 +20,20 @@
 
 package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
-
-public class MixdownSliderModel extends SliderDisplayModel
+public class MixdownMeterIntToFloatConverter extends LogarithmicDbFaderIntToFloatConverter
 {
+//	private static Log log = LogFactory.getLog( MixdownSliderIntToFloatConverter.class.getName() );
 
-	private final static MixdownSliderIntToFloatConverter INT_TO_FLOAT_CONVERTER = new MixdownSliderIntToFloatConverter();
+	public final static float DEFAULT_LIN_HIGHEST_DB = 0.0f;
+	public final static float DEFAULT_LIN_LOWEST_DB = -30.0f;
+	public final static float DEFAULT_COM_HIGHEST_DB = -30.0f;
+	public final static float DEFAULT_COM_LOWEST_DB = -90.0f;
 
-	public MixdownSliderModel()
+	public MixdownMeterIntToFloatConverter()
 	{
-		super( Float.NEGATIVE_INFINITY, INT_TO_FLOAT_CONVERTER.getLinearHighestDb(),
-				Float.NEGATIVE_INFINITY,
-				0.0f,
-				INT_TO_FLOAT_CONVERTER.getNumTotalSteps(),
-				1,
-				INT_TO_FLOAT_CONVERTER,
-				3,
-				3,
-				"dB" );
-	}
-
-	@Override
-	public void setValue( final Object source, float newFloatValue )
-	{
-		if( newFloatValue < INT_TO_FLOAT_CONVERTER.getCompressedLowestDb() )
-		{
-			newFloatValue = Float.NEGATIVE_INFINITY;
-		}
-		super.setValue( source, newFloatValue );
+		super( DEFAULT_LIN_HIGHEST_DB,
+				DEFAULT_LIN_LOWEST_DB,
+				DEFAULT_COM_HIGHEST_DB,
+				DEFAULT_COM_LOWEST_DB );
 	}
 }

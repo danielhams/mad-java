@@ -118,6 +118,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void destroy()
 	{
+		// Do nothing
 	}
 
 	@Override
@@ -162,10 +163,16 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void receiveSampleChangeEvent( final BlockResamplingClient newSample )
 	{
-		log.debug("Received notification of sample change to " +
-				newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received notification of sample change to " +
+					newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
+		}
 		currentSampleNumFrames = newSample.getTotalNumFrames();
-		log.debug("The number of sample frames is " + currentSampleNumFrames );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("The number of sample frames is " + currentSampleNumFrames );
+		}
 	}
 
 	private void recomputeDesiredPositionOffset( final long newPosition )
@@ -198,7 +205,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 
 		this.lastOverviewWidth = lastWidth - (2 * WAVE_OVERVIEW_INTRO_PIXELS) - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
 		this.lastOverviewHeight = lastHeight - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
-		log.debug("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
+		}
 	}
 
 	public void handleOverviewClickAtPoint( final Point point )
@@ -206,7 +216,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final int clickX = point.x;
 		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS - WAVE_OVERVIEW_BORDER_PIXELS) /
 				(float)lastOverviewWidth;
-		log.debug("Received click at " + point.x + " normalised to " + normalisedPosition );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received click at " + point.x + " normalised to " + normalisedPosition );
+		}
 		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
 	}
 

@@ -56,6 +56,7 @@ public class LWTCControlConstants
 	public final static Color CONTROL_SLIDER_DIAL_GRAD_END = Color.decode( "#343a3a" );
 	public final static Color CONTROL_SLIDER_DIMPLE_DARK = Color.decode( "#2c2f2f" );
 	public final static Color CONTROL_SLIDER_DIMPLE_LIGHT = Color.decode( "#3a4141" );
+	public final static Color CONTROL_SLIDER_INDICATOR = Color.decode( "#00ff00" );
 
 	public final static Color CONTROL_SLIDER_VALLEY_PERIMETER = Color.decode( "#282b2b" );
 	public final static Color CONTROL_SLIDER_VALLEY_PLAIN = Color.decode( "#323737" );
@@ -97,7 +98,7 @@ public class LWTCControlConstants
 	public final static LWTCSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
 	public final static LWTCTextFieldColours STD_TEXTFIELD_COLOURS = new StdTextfieldColours();
 
-	private static class StdTextfieldColours implements LWTCTextFieldColours
+	public static class StdTextfieldColours implements LWTCTextFieldColours
 	{
 
 		@Override
@@ -113,7 +114,7 @@ public class LWTCControlConstants
 		}
 	};
 
-	private static class StdSliderColours implements LWTCSliderColours
+	public static class StdSliderColours implements LWTCSliderColours
 	{
 
 		@Override
@@ -199,9 +200,15 @@ public class LWTCControlConstants
 		{
 			return CONTROL_SLIDER_FOCUS;
 		}
+
+		@Override
+		public Color getIndicatorColor()
+		{
+			return CONTROL_SLIDER_INDICATOR;
+		}
 	};
 
-	private static class StdLabelColours implements LWTCLabelColours
+	public static class StdLabelColours implements LWTCLabelColours
 	{
 
 		@Override
@@ -223,7 +230,7 @@ public class LWTCControlConstants
 		}
 	};
 
-	private static class StdButtonColours implements LWTCButtonColours
+	public static class StdButtonColours implements LWTCButtonColours
 	{
 		private final LWTCButtonStateColours[] stateToColoursMap;
 
@@ -396,7 +403,7 @@ public class LWTCControlConstants
 		}
 	};
 
-	private static class StdToggleButtonColours implements LWTCButtonColours
+	public static class StdToggleButtonColours implements LWTCButtonColours
 	{
 		private final LWTCButtonStateColours[] stateToColoursMap;
 

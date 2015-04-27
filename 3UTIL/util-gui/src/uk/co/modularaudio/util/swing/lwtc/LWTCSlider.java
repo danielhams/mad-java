@@ -42,7 +42,7 @@ public class LWTCSlider extends JPanel
 	protected BoundedRangeModel model;
 	private int majorTickSpacing;
 
-	private final LWTCSliderPainter painter;
+	private LWTCSliderPainter painter;
 
 	private final LWTCSliderMouseListener mouseListener;
 	private final LWTCSliderKeyListener keyListener;
@@ -97,24 +97,32 @@ public class LWTCSlider extends JPanel
 
 	public LWTCSlider()
 	{
-		this( SwingConstants.HORIZONTAL, new DefaultBoundedRangeModel( 50, 0, 0, 100 ) );
+		this( SwingConstants.HORIZONTAL, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
+				LWTCControlConstants.STD_SLIDER_COLOURS );
 	}
 
 	public LWTCSlider( final int orientation )
 	{
-		this( orientation, new DefaultBoundedRangeModel( 50, 0, 0, 100 ) );
+		this( orientation, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
+				LWTCControlConstants.STD_SLIDER_COLOURS );
 	}
 
 	public LWTCSlider( final int orientation, final BoundedRangeModel model )
 	{
-		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
+		this( orientation, model, LWTCControlConstants.STD_SLIDER_COLOURS );
+	}
+
+	public LWTCSlider( final int orientation, final BoundedRangeModel model,
+			final LWTCSliderColours sliderColours )
+	{
+		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 		this.setOpaque( true );
 
 		this.orientation = orientation;
 		this.model = model;
 		this.majorTickSpacing = 10;
 
-		this.painter = new LWTCSliderPainter( LWTCControlConstants.STD_SLIDER_COLOURS );
+		setSliderColours( sliderColours );
 
 		this.setMinimumSize( orientation == SwingConstants.HORIZONTAL ?
 				LWTCSliderKnobImage.H_SLIDER_MIN_SIZE :
@@ -135,6 +143,12 @@ public class LWTCSlider extends JPanel
 		focusChangeListener = new FocusChangeListener();
 
 		this.addFocusListener( focusChangeListener );
+	}
+
+	public void setSliderColours( final LWTCSliderColours sliderColours )
+	{
+		this.painter = new LWTCSliderPainter( sliderColours );
+
 	}
 
 	@Override
@@ -213,7 +227,7 @@ public class LWTCSlider extends JPanel
 			final int xBegin = 3 + rangeStart;
 			final int yBegin = (height - LWTCSliderKnobImage.H_KNOB_HEIGHT) / 2;
 			final int rpWidth = (rangeEnd - rangeStart) + 1;
-			final int rpHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT;
+			final int rpHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT + 1;
 			repaint( xBegin, yBegin, rpWidth, rpHeight );
 //			log.debug("Deltarepaint(" + xBegin + ", " + yBegin + ")-(" + rpWidth + ", " +
 //					rpHeight + ")");
@@ -224,7 +238,7 @@ public class LWTCSlider extends JPanel
 			rangeEnd = maxPos + LWTCSliderKnobImage.V_KNOB_HEIGHT;
 			final int xBegin = (width - LWTCSliderKnobImage.V_KNOB_WIDTH) / 2;
 			final int yBegin = (height - maxPos) - LWTCSliderKnobImage.V_KNOB_HEIGHT - 3;
-			final int rpWidth = LWTCSliderKnobImage.V_KNOB_WIDTH;
+			final int rpWidth = LWTCSliderKnobImage.V_KNOB_WIDTH + 1;
 			final int rpHeight = (maxPos - minPos) + LWTCSliderKnobImage.V_KNOB_HEIGHT + 1;
 			repaint( xBegin, yBegin, rpWidth, rpHeight );
 //			log.debug("Deltarepaint(" + xBegin + ", " + yBegin + ")-(" + rpWidth + ", " +

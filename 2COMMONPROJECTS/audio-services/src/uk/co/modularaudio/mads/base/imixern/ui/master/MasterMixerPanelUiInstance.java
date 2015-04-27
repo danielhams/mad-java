@@ -29,13 +29,13 @@ import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.AmpSlider;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.AmpSliderChangeReceiver;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderAndMarks;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderChangeReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.PanChangeReceiver;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.PanControl;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.StereoAmpMeter;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LanePanControl;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -54,7 +54,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		U extends MixerNMadUiInstance<D, I>>
 	extends PacPanel
 	implements IMadUiControlInstance<D,I,U>,
-	AmpSliderChangeReceiver, MeterValueReceiver, PanChangeReceiver
+	LaneFaderChangeReceiver, MeterValueReceiver, PanChangeReceiver
 {
 	private static final long serialVersionUID = 24665241385474657L;
 
@@ -66,6 +66,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	{
 		final Color bgColor = MixerNMadUiDefinition.MASTER_BG_COLOR;
 		final Color fgColor = MixerNMadUiDefinition.MASTER_FG_COLOR;
+		final Color indicatorColor = MixerNMadUiDefinition.MASTER_INDICATOR_COLOR;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
@@ -75,6 +76,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 
 		return new LWTCSliderViewColors( bgColor,
 				fgColor,
+				indicatorColor,
 				textboxBgColor,
 				textboxFgColor,
 				selectionColor,
@@ -83,10 +85,10 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 				unitsColor );
 	}
 
-	private final AmpSlider<D,I> ampSlider;
-	private final StereoAmpMeter<D,I> stereoAmpMeter;
+	private final LaneFaderAndMarks<D,I> faderAndMarks;
+	private final LaneStereoAmpMeter<D,I> stereoAmpMeter;
 	private final RotaryDisplayModel panModel;
-	private final PanControl panControl;
+	private final LanePanControl panControl;
 
 	private final U uiInstance;
 
@@ -121,29 +123,30 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
-		panControl = new PanControl( panModel, panController, this, LaneMixerPanelUiInstance.ROTARY_COLORS );
+		panControl = new LanePanControl( panModel, panController, this, LaneMixerPanelUiInstance.ROTARY_COLORS );
 		this.add( panControl, "cell 0 0, spanx 2, pushx 50, width 33, height 33, growy 0, align center" );
+		panControl.setDiameter( 31 );
 
-		ampSlider = new AmpSlider<D,I>(
+		faderAndMarks = new LaneFaderAndMarks<D,I>(
 				uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
 				SLIDER_COLORS );
 
-		this.add( ampSlider, "cell 0 1, grow, pushy 100" );
+		this.add( faderAndMarks, "cell 0 1, grow, pushy 100" );
 
-		ampSlider.setChangeReceiver( this );
+		faderAndMarks.setChangeReceiver( this );
 
 
-		stereoAmpMeter = new StereoAmpMeter<D,I>( uiInstance,
+		stereoAmpMeter = new LaneStereoAmpMeter<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true );
 
 		this.add( stereoAmpMeter, "cell 1 1, grow, pushy 100" );
 
 		ampSliderTextbox = new LWTCSliderDisplayTextbox(
-				ampSlider.getFaderModel(),
-				ampSlider.getFaderController(),
+				faderAndMarks.getFaderModel(),
+				faderAndMarks.getFaderController(),
 				SLIDER_COLORS,
 				isOpaque() );
 
@@ -175,7 +178,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void receiveAmpSliderChange( final Object source, final float newValue )
+	public void receiveFaderAmpChange( final Object source, final float newValue )
 	{
 		// Now translate this into amplitude
 		final float ampForDb = (float)AudioMath.dbToLevel( newValue );
@@ -185,7 +188,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	@Override
 	public String getControlValue()
 	{
-		return ampSlider.getControlValue() + ":" + panModel.getValue();
+		return faderAndMarks.getControlValue() + ":" + panModel.getValue();
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		final String[] vals = value.split( ":" );
 		if( vals.length == 2 )
 		{
-			ampSlider.receiveControlValue( this, vals[0] );
+			faderAndMarks.receiveControlValue( this, vals[0] );
 			panModel.setValue( this, Float.parseFloat( vals[1] ) );
 		}
 	}

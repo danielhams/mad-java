@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
-public class AmpSlider<D extends MixerNMadDefinition<D,I>, I extends MixerNMadInstance<D,I>>
+public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends MixerNMadInstance<D,I>>
 	extends JPanel
 {
 	private static final long serialVersionUID = 4413604865297302014L;
@@ -43,9 +43,9 @@ public class AmpSlider<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIn
 	private final MixdownSliderModel faderModel;
 	private final SliderDisplayController faderController;
 	private final MixerFader mixerFader;
-	private final MixerFaderLabels mixerFaderLabels;
+	private final MixerFaderMarks mixerFaderLabels;
 
-	public AmpSlider( final MixerNMadUiInstance<D,I> uiInstance,
+	public LaneFaderAndMarks( final MixerNMadUiInstance<D,I> uiInstance,
 			final BufferedImageAllocator bia,
 			final boolean showClipBox,
 			final LWTCSliderViewColors colors )
@@ -69,7 +69,7 @@ public class AmpSlider<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIn
 				false );
 		this.add( mixerFader, "growy" );
 
-		mixerFaderLabels = new MixerFaderLabels( faderModel,
+		mixerFaderLabels = new MixerFaderMarks( faderModel,
 				colors.labelColor,
 				false );
 		this.add( mixerFaderLabels, "growy" );
@@ -88,14 +88,14 @@ public class AmpSlider<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIn
 		}
 	}
 
-	public void setChangeReceiver( final AmpSliderChangeReceiver changeReceiver )
+	public void setChangeReceiver( final LaneFaderChangeReceiver changeReceiver )
 	{
 		faderModel.addChangeListener( new ValueChangeListener()
 		{
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				changeReceiver.receiveAmpSliderChange( source, newValue );
+				changeReceiver.receiveFaderAmpChange( source, newValue );
 			}
 		} );
 	}

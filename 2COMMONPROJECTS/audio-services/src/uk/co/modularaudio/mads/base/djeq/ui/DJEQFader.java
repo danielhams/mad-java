@@ -58,6 +58,7 @@ public class DJEQFader extends PacPanel
 	{
 		final Color bgColor = DJEQColorDefines.BACKGROUND_COLOR;
 		final Color fgColor = DJEQColorDefines.FOREGROUND_COLOR;
+		final Color indicatorColor = DJEQColorDefines.INDICATOR_COLOR;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
@@ -67,6 +68,7 @@ public class DJEQFader extends PacPanel
 
 		return new LWTCSliderViewColors( bgColor,
 				fgColor,
+				indicatorColor,
 				textboxBgColor,
 				textboxFgColor,
 				selectionColor,

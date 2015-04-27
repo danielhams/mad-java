@@ -99,8 +99,9 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	}
 
 	@Override
-	public void mouseClicked( final MouseEvent me )
+	public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
 	{
+		// Do nothing
 	}
 
 	@Override

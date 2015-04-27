@@ -47,8 +47,6 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 
 	// Outgoing messages
 	public static final int COMMAND_OUT_LANE_METER = 7;
-	public static final int COMMAND_OUT_LANE_MUTE_SET = 8;
-	public static final int COMMAND_OUT_LANE_SOLO_SET = 9;
 
 	public static final int COMMAND_OUT_MASTER_METER = 10;
 

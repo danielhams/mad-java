@@ -53,4 +53,6 @@ public interface LWTCSliderColours
 
 	Color getFocus();
 
+	Color getIndicatorColor();
+
 }

@@ -41,12 +41,12 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 		this.isImmediate = isImmediate;
 	}
 
-	public String getControlValue()
+	public String getControlValue() // NOPMD by dan on 27/04/15 12:22
 	{
 		return "";
 	}
 
-	public void receiveControlValue( final String strValue )
+	public void receiveControlValue( final String strValue ) // NOPMD by dan on 27/04/15 12:22
 	{
 	}
 
@@ -59,8 +59,9 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	}
 
 	@Override
-	public void mouseClicked( final MouseEvent me )
+	public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
 	{
+		// Do nothing
 	}
 
 	@Override

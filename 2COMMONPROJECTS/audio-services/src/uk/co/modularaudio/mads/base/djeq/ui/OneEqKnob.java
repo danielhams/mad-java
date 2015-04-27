@@ -114,7 +114,7 @@ public class OneEqKnob extends PacPanel
 				false,
 				true );
 
-		rdv.setDiameter( 33 );
+		rdv.setDiameter( 31 );
 
 		this.add( rdv, "grow" );
 	}

@@ -129,26 +129,6 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				}
 				break;
 			}
-			case MixerNIOQueueBridge.COMMAND_OUT_LANE_MUTE_SET:
-			{
-//				long value = nextOutgoingEntry.value;
-//				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-//				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-//				boolean muted = (upper32Bits != 0);
-
-//				laneMeterReceiversMap.get( laneChanNum ).receiveMuteSet( nextOutgoingEntry.frameTime, muted );
-				break;
-			}
-			case MixerNIOQueueBridge.COMMAND_OUT_LANE_SOLO_SET:
-			{
-//				long value = nextOutgoingEntry.value;
-//				int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-//				int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-//				boolean solod = (upper32Bits != 0);
-
-//				laneMeterReceiversMap.get( laneChanNum ).receiveSoloSet( nextOutgoingEntry.frameTime, solod );
-				break;
-			}
 			case MixerNIOQueueBridge.COMMAND_IN_LANE_AMP:
 			case MixerNIOQueueBridge.COMMAND_IN_LANE_MUTE:
 			case MixerNIOQueueBridge.COMMAND_IN_LANE_PAN:

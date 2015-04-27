@@ -62,10 +62,10 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 
 	private ZoomDataListener dataListener;
 
-	public SoundfilePlayerZoomToggleGroupUiJComponent( SoundfilePlayerMadDefinition definition,
-			SoundfilePlayerMadInstance instance,
-			SoundfilePlayerMadUiInstance uiInstance,
-			int controlIndex )
+	public SoundfilePlayerZoomToggleGroupUiJComponent( final SoundfilePlayerMadDefinition definition,
+			final SoundfilePlayerMadInstance instance,
+			final SoundfilePlayerMadUiInstance uiInstance,
+			final int controlIndex )
 	{
 		setOpaque(false);
 
@@ -78,7 +78,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 		toggleGroup = new PacToggleGroup( TOGGLE_LABELS, 1)
 		{
 			@Override
-			public void receiveUpdateEvent(int previousSelection, int newSelection)
+			public void receiveUpdateEvent(final int previousSelection, final int newSelection)
 			{
 				if( dataListener != null )
 				{
@@ -118,7 +118,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	}
 
 	@Override
-	public void receiveControlValue(String value)
+	public void receiveControlValue(final String value)
 	{
 		if( log.isDebugEnabled() )
 		{

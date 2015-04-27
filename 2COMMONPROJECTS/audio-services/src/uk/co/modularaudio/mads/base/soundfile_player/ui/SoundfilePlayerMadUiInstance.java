@@ -325,9 +325,15 @@ public class SoundfilePlayerMadUiInstance extends
 	{
 		if( currentResampledSample != null )
 		{
-			log.debug( "Received overview position request of " + normalisedPosition );
+			if( log.isDebugEnabled() )
+			{
+				log.debug( "Received overview position request of " + normalisedPosition );
+			}
 			final long totalNumFrames = currentResampledSample.getTotalNumFrames();
-			log.debug( "Current sample has " + totalNumFrames + " frames");
+			if( log.isDebugEnabled() )
+			{
+				log.debug( "Current sample has " + totalNumFrames + " frames");
+			}
 			final int sampleRate = currentResampledSample.getSampleCacheClient().getLibraryEntry().getSampleRate();
 			final int oneSecFrames = sampleRate;
 			final double normSongPosDouble = ((double)normalisedPosition) * totalNumFrames;
@@ -340,7 +346,10 @@ public class SoundfilePlayerMadUiInstance extends
 			{
 				newSongPos = totalNumFrames + oneSecFrames;
 			}
-			log.debug("New song pos is " + newSongPos);
+			if( log.isDebugEnabled() )
+			{
+				log.debug("New song pos is " + newSongPos);
+			}
 
 			sendTemporalValueToInstance( SoundfilePlayerIOQueueBridge.COMMAND_IN_POSITION_JUMP, newSongPos );
 		}

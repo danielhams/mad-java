@@ -40,4 +40,13 @@ public class DJDeckFaderSliderModel extends SliderDisplayModel
 				"dB" );
 	}
 
+	@Override
+	public void setValue( final Object source, float newFloatValue )
+	{
+		if( newFloatValue < INT_TO_FLOAT_CONVERTER.getCompressedLowestDb() )
+		{
+			newFloatValue = Float.NEGATIVE_INFINITY;
+		}
+		super.setValue( source, newFloatValue );
+	}
 }

@@ -42,8 +42,10 @@ public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
 
 	public static final Color LANE_BG_COLOR = new Color( 57, 63, 63 );
 	public static final Color LANE_FG_COLOR = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
+	public static final Color LANE_INDICATOR_COLOR = Color.decode( "#00ff00" );
 	public static final Color MASTER_BG_COLOR = new Color( 0.6f, 0.6f, 0.6f );
 	public static final Color MASTER_FG_COLOR = Color.black;
+	public static final Color MASTER_INDICATOR_COLOR = Color.decode( "#00ff00" );
 
 	public MixerNMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,

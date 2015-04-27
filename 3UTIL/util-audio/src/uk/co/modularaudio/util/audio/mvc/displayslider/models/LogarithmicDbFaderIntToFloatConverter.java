@@ -50,14 +50,13 @@ public class LogarithmicDbFaderIntToFloatConverter implements SliderIntToFloatCo
 		this.linearDynamicRange = linearHighestDb - linearLowestDb;
 		this.compressedDynamicRange = compressedHighestDb - compressedLowestDb;
 
-		// Use ten steps per db in compressed and four times that
+		// Use less steps per db in compressed than
 		// for the non-compression section
-		// Increase the number of steps by ten for each segment
-		numCompressedSteps = ((int)compressedDynamicRange) * 10;
-		numLinearSteps = ((int)(linearDynamicRange * 4)) * 10;
+		numCompressedSteps = ((int)compressedDynamicRange) * 2;
+		numLinearSteps = ((int)(linearDynamicRange * 4)) * 2;
 
-		// Add one extra step to represent -INF
-		numTotalSteps = numLinearSteps + numCompressedSteps + 1;
+		// Add extra steps to represent -INF and linearHighestDb
+		numTotalSteps = numLinearSteps + numCompressedSteps + 2;
 	}
 
 	@Override

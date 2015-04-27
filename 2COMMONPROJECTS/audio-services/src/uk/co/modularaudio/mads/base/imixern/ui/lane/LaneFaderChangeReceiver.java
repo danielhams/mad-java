@@ -20,9 +20,9 @@
 
 package uk.co.modularaudio.mads.base.imixern.ui.lane;
 
-public interface AmpSliderChangeReceiver
+public interface LaneFaderChangeReceiver
 {
 
-	void receiveAmpSliderChange( Object source, float newValue );
+	void receiveFaderAmpChange( Object source, float newValue );
 
 }

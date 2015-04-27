@@ -25,20 +25,20 @@ import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderIntToFloatConverter;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterIntToFloatConverter;
 import uk.co.modularaudio.util.math.MathFormatter;
 
-public class TestMixdownSliderIntToFloatConverter
+public class TestMixdownMeterIntToFloatConverter
 {
-	private static Log log = LogFactory.getLog( TestMixdownSliderIntToFloatConverter.class.getName() );
+	private static Log log = LogFactory.getLog( TestMixdownMeterIntToFloatConverter.class.getName() );
 
-	public TestMixdownSliderIntToFloatConverter()
+	public TestMixdownMeterIntToFloatConverter()
 	{
 	}
 
 	public void go() throws IOException
 	{
-		final MixdownSliderIntToFloatConverter intToFloatConverter = new MixdownSliderIntToFloatConverter();
+		final MixdownMeterIntToFloatConverter intToFloatConverter = new MixdownMeterIntToFloatConverter();
 
 		intToFloatTests( intToFloatConverter );
 
@@ -46,7 +46,7 @@ public class TestMixdownSliderIntToFloatConverter
 
 	}
 
-	private void intToFloatTests( final MixdownSliderIntToFloatConverter intToFloatConverter )
+	private void intToFloatTests( final MixdownMeterIntToFloatConverter intToFloatConverter )
 	{
 		final int numCompressedSteps = intToFloatConverter.getNumCompressedSteps();
 		final int numLinearSteps = intToFloatConverter.getNumLinearSteps();
@@ -69,12 +69,9 @@ public class TestMixdownSliderIntToFloatConverter
 		}
 	}
 
-	private void floatToIntTests( final MixdownSliderIntToFloatConverter intToFloatConverter )
+	private void floatToIntTests( final MixdownMeterIntToFloatConverter intToFloatConverter )
 	{
 		final float[] testFloatVals = new float[] {
-				10.0f,
-				5.0f,
-				1.0f,
 				0.0f,
 				-1.0f,
 				-5.0f,
@@ -113,7 +110,7 @@ public class TestMixdownSliderIntToFloatConverter
 	public static void main( final String[] args )
 		throws IOException
 	{
-		final TestMixdownSliderIntToFloatConverter t = new TestMixdownSliderIntToFloatConverter();
+		final TestMixdownMeterIntToFloatConverter t = new TestMixdownMeterIntToFloatConverter();
 		t.go();
 
 	}

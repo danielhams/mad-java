@@ -71,6 +71,7 @@ public class LWTCSliderDisplayTester
 
 		final Color bgColor = Color.BLACK;
 		final Color fgColor = Color.YELLOW;
+		final Color indicatorColor = Color.RED;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
@@ -80,6 +81,7 @@ public class LWTCSliderDisplayTester
 
 		final LWTCSliderViewColors colours = new LWTCSliderViewColors( bgColor,
 				fgColor,
+				indicatorColor,
 				textboxBgColor,
 				textboxFgColor,
 				selectionColor,

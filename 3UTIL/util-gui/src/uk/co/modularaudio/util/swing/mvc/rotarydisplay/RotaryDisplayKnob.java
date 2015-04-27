@@ -111,10 +111,13 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 	{
 		final Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+		g2d.setRenderingHint( RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE );
 		g2d.setComposite( AlphaComposite.SrcOver );
 
-		final int width = getWidth() - 1;
-		final int height = getHeight() - 1;
+//		final int width = getWidth() - 1;
+//		final int height = getHeight() - 1;
+		final int width = getWidth();
+		final int height = getHeight();
 		final float wo2 = width / 2.0f;
 		final float ho2 = height / 2.0f;
 		final float min;

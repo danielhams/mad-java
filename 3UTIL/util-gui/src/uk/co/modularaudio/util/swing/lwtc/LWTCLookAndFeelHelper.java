@@ -29,7 +29,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class LWTCLookAndFeelHelper
+public final class LWTCLookAndFeelHelper
 {
 	private static Log log = LogFactory.getLog( LWTCLookAndFeelHelper.class.getName() );
 	private static LWTCLookAndFeelHelper instance = new LWTCLookAndFeelHelper();
@@ -56,10 +56,8 @@ public class LWTCLookAndFeelHelper
 		return instance;
 	}
 
-	public void updateComponentLaf( final JComponent component )
+	public ComponentUI getComponentUi( final JComponent component )
 	{
-		final ComponentUI cui = uiDefaults.getUI( component );
-		cui.installUI( component );
-
+		return uiDefaults.getUI( component );
 	}
 }

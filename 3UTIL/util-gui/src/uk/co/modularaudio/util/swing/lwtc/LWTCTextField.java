@@ -30,12 +30,13 @@ public class LWTCTextField extends JTextField
 	public LWTCTextField( final LWTCTextFieldColours colours )
 	{
 		super();
-		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
+		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 
 		this.setBackground( colours.getBackground() );
 		this.setForeground( colours.getForeground() );
 		this.setFont( LWTCControlConstants.RACK_FONT );
-		this.setBorder( BorderFactory.createLineBorder( LWTCControlConstants.CONTROL_OUTLINE, 1 ) );
+		this.setBorder( BorderFactory.createCompoundBorder( BorderFactory.createLineBorder( LWTCControlConstants.CONTROL_OUTLINE ),
+				BorderFactory.createEmptyBorder( 1, 1, 1, 1 ) ) );
 	}
 
 	public LWTCTextField()

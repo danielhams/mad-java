@@ -78,7 +78,6 @@ public class LWTCSliderPainter
 				final int pixelOffset = (int)(2 + (pixelPositionsAvailable * normalisedPos ));
 				final BufferedImage hKnobImage = horizKnobImage.getKnobImage();
 				g2d.drawImage( hKnobImage, pixelOffset+1, yOffset, null );
-//				g2d.drawRect( pixelOffset, yOffset, LWTCSliderKnobImage.H_KNOB_WIDTH, LWTCSliderKnobImage.H_KNOB_HEIGHT );
 				break;
 			}
 			case SwingConstants.VERTICAL:

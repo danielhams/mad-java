@@ -194,6 +194,24 @@ public class LWTCSliderKnobImage
 			}
 		}
 
+		// If an indicator color is set, draw the indicator line.
+		final Color indicatorColor = sliderColours.getIndicatorColor();
+		if( indicatorColor != null )
+		{
+			g2d.setColor( indicatorColor );
+			if( orientation == SwingConstants.VERTICAL )
+			{
+				final int x = startX + 5;
+				final int y = startY + 3;
+				g2d.drawLine( x, y, x+3, y );
+			}
+			else
+			{
+				final int x = startX + 3;
+				final int y = startY + 5;
+				g2d.drawLine( x, y, x, y+3 );
+			}
+		}
 
 		return ti;
 	}

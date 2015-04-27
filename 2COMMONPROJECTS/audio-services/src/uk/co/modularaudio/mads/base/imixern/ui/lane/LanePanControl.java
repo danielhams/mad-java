@@ -28,7 +28,7 @@ import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDoubleClickMouseLis
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDoubleClickMouseListener.RotaryDoubleClickReceiver;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
-public class PanControl extends RotaryDisplayKnob implements RotaryDoubleClickReceiver
+public class LanePanControl extends RotaryDisplayKnob implements RotaryDoubleClickReceiver
 {
 	private static final long serialVersionUID = -6056016804015326734L;
 
@@ -36,7 +36,7 @@ public class PanControl extends RotaryDisplayKnob implements RotaryDoubleClickRe
 
 	// private static Log log = LogFactory.getLog( PanSlider.class.getName() );
 
-	public PanControl( final RotaryDisplayModel model,
+	public LanePanControl( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
 			final PanChangeReceiver changeReceiver,
 			final RotaryViewColors colors )

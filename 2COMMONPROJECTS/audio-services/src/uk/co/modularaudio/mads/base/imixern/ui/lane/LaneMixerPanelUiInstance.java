@@ -23,7 +23,6 @@ package uk.co.modularaudio.mads.base.imixern.ui.lane;
 import java.awt.Color;
 
 import javax.swing.JComponent;
-
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.mads.base.djeq.ui.DJEQColorDefines;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
@@ -49,7 +48,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		U extends MixerNMadUiInstance<D,I>>
 	extends PacPanel
 	implements IMadUiControlInstance<D,I,U>,
-	AmpSliderChangeReceiver, MeterValueReceiver, PanChangeReceiver
+	LaneFaderChangeReceiver, MeterValueReceiver, PanChangeReceiver
 {
 	private static final long serialVersionUID = -3862457210177904367L;
 
@@ -61,6 +60,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	{
 		final Color bgColor = MixerNMadUiDefinition.LANE_BG_COLOR;
 		final Color fgColor = MixerNMadUiDefinition.LANE_FG_COLOR;
+		final Color indicatorColor = MixerNMadUiDefinition.LANE_INDICATOR_COLOR;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
@@ -70,6 +70,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 		return new LWTCSliderViewColors( bgColor,
 				fgColor,
+				indicatorColor,
 				textboxBgColor,
 				textboxFgColor,
 				selectionColor,
@@ -111,13 +112,11 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 	private final int laneNumber;
 
-	private final AmpSlider<D,I> ampSlider;
-	private final StereoAmpMeter<D,I> ampMeters;
+	private final LaneFaderAndMarks<D,I> faderAndMeter;
+	private final LaneStereoAmpMeter<D,I> ampMeters;
 	private final RotaryDisplayModel panModel;
-	private final PanControl panControl;
-	private final AmpMuteSolo<D,I,U> ampMuteSolo;
-
-//	private final DbToLevelComputer dBToLevelComputer;
+	private final LanePanControl panControl;
+	private final LaneMuteSolo<D,I,U> muteSolo;
 
 	private final U uiInstance;
 
@@ -152,30 +151,31 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
-		panControl = new PanControl( panModel, panController, this, ROTARY_COLORS );
+		panControl = new LanePanControl( panModel, panController, this, ROTARY_COLORS );
 		this.add( panControl, "cell 0 0, pushx 50, width 33, height 33, growy 0, align center" );
+		panControl.setDiameter( 31 );
 
-		ampMuteSolo = new AmpMuteSolo<D,I,U>( this );
-		this.add( ampMuteSolo, "cell 1 0, pushx 50, growy 0, align center" );
+		muteSolo = new LaneMuteSolo<D,I,U>( this );
+		this.add( muteSolo, "cell 1 0, pushx 50, growy 0, align center" );
 
-		ampSlider = new AmpSlider<D,I>( uiInstance,
+		faderAndMeter = new LaneFaderAndMarks<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
 				SLIDER_COLORS );
 
-		this.add( ampSlider, "cell 0 1, grow, pushy 100" );
+		this.add( faderAndMeter, "cell 0 1, grow, pushy 100" );
 
-		ampSlider.setChangeReceiver( this );
+		faderAndMeter.setChangeReceiver( this );
 
-		ampMeters = new StereoAmpMeter<D,I>( uiInstance,
+		ampMeters = new LaneStereoAmpMeter<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true );
 
 		this.add( ampMeters, "cell 1 1, grow, pushy 100" );
 
 		ampSliderTextbox = new LWTCSliderDisplayTextbox(
-				ampSlider.getFaderModel(),
-				ampSlider.getFaderController(),
+				faderAndMeter.getFaderModel(),
+				faderAndMeter.getFaderController(),
 				SLIDER_COLORS,
 				isOpaque() );
 
@@ -199,7 +199,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	}
 
 	@Override
-	public void receiveAmpSliderChange( final Object source, final float newValue )
+	public void receiveFaderAmpChange( final Object source, final float newValue )
 	{
 		// Now translate this into amplitude
 		final float ampForDb = (float)AudioMath.dbToLevel( newValue );
@@ -209,7 +209,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	@Override
 	public String getControlValue()
 	{
-		return ampSlider.getControlValue() + ":" + panModel.getValue() + ":" + ampMuteSolo.getControlValue();
+		return faderAndMeter.getControlValue() + ":" + panModel.getValue() + ":" + muteSolo.getControlValue();
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		final String[] vals = value.split( ":" );
 		if( vals.length > 0 )
 		{
-			ampSlider.receiveControlValue( this, vals[0] );
+			faderAndMeter.receiveControlValue( this, vals[0] );
 		}
 		if( vals.length > 1 )
 		{
@@ -226,7 +226,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		}
 		if( vals.length > 2 )
 		{
-			ampMuteSolo.receiveControlValue( this, vals[2] );
+			muteSolo.receiveControlValue( this, vals[2] );
 		}
 	}
 
@@ -253,14 +253,14 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	public void receiveMuteSet( final long currentTimestamp, final boolean muted )
 	{
 //		log.debug("Lane " + laneNumber + " received mute set(" + muted + ")");
-		ampMuteSolo.receiveMuteSet( muted );
+		muteSolo.receiveMuteSet( muted );
 	}
 
 	@Override
 	public void receiveSoloSet( final long currentTimestamp, final boolean solod )
 	{
 //		log.debug("Lane " + laneNumber + " received solo set(" + solod + ")");
-		ampMuteSolo.receiveSoloSet( solod );
+		muteSolo.receiveSoloSet( solod );
 	}
 
 	@Override

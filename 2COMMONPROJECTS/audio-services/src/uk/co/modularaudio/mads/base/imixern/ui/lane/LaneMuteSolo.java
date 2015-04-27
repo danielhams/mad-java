@@ -29,7 +29,7 @@ import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 
-public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
+public class LaneMuteSolo<D extends MixerNMadDefinition<D, I>,
 		I extends MixerNMadInstance<D, I>,
 		U extends MixerNMadUiInstance<D, I>>
 	extends JPanel
@@ -43,7 +43,7 @@ public class AmpMuteSolo<D extends MixerNMadDefinition<D, I>,
 	private final MuteSoloToggleButton muteButton;
 	private final MuteSoloToggleButton soloButton;
 
-	public AmpMuteSolo( final LaneMixerPanelUiInstance<D,I,U> channelLaneMixerPanelUiInstance )
+	public LaneMuteSolo( final LaneMixerPanelUiInstance<D,I,U> channelLaneMixerPanelUiInstance )
 	{
 		laneMixerUiInstance = channelLaneMixerPanelUiInstance;
 

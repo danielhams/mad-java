@@ -32,7 +32,8 @@ import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
-import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterIntToFloatConverter;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterModel;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
 import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
@@ -49,25 +50,16 @@ public class AmpMeter<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIns
 	private static final float GREEN_THRESHOLD_DB = -6.0f;
 	private static final float ORANGE_THRESHOLD_DB = -3.0f;
 
-	private final MixerNMadUiInstance<D, I> uiInstance;
-
-	private final float greenThresholdLevel;
-	private final float orangeThreholdLevel;
-
 	private static final long serialVersionUID = -7723883774839586874L;
 
 	private static Log log = LogFactory.getLog( AmpMeter.class.getName() );
 
-	private boolean showClipBox = false;
+	private final MixerNMadUiInstance<D, I> uiInstance;
 
-	private float currentMeterValueDb = Float.NEGATIVE_INFINITY;
-	private float previouslyPaintedMeterValueDb = Float.NEGATIVE_INFINITY;
+	private final boolean showClipBox;
 
-	private long maxValueTimestamp = 0;
-	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
-	private float previouslyPaintedMaxValueDb = Float.NEGATIVE_INFINITY;
-
-	private final DbToLevelComputer dbToLevelComputer;
+	public static final MixdownMeterModel METER_MODEL = new MixdownMeterModel();
+	public static final MixdownMeterIntToFloatConverter INT_TO_FLOAT_CONVERTER = new MixdownMeterIntToFloatConverter();
 
 	private final BufferedImageAllocator bufferedImageAllocator;
 	private TiledBufferedImage tiledBufferedImage;
@@ -77,18 +69,37 @@ public class AmpMeter<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIns
 	private int componentWidth;
 	private int componentHeight;
 
+	private final float numTotalSteps;
+	private final float greenThresholdLevel;
+	private final float orangeThresholdLevel;
+	private int numPixelsInMeter;
+	private int meterHeightOffset;
+	private int numGreenPixels;
+	private int numOrangePixels;
+	private int numRedPixels;
+
+	private float currentMeterValueDb = Float.NEGATIVE_INFINITY;
+	private float previouslyPaintedMeterValueDb = Float.POSITIVE_INFINITY;
+
+	private long maxValueTimestamp = 0;
+	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
+	private float previouslyPaintedMaxValueDb = Float.POSITIVE_INFINITY;
+
 	public AmpMeter( final MixerNMadUiInstance<D,I>	uiInstance,
-			final DbToLevelComputer dbToLevelComputer,
 			final BufferedImageAllocator bia,
 			final boolean showClipBox )
 	{
 		this.setOpaque( true );
 		this.uiInstance = uiInstance;
-		this.dbToLevelComputer = dbToLevelComputer;
+
 		this.bufferedImageAllocator = bia;
 
-		greenThresholdLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( GREEN_THRESHOLD_DB );
-		orangeThreholdLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( ORANGE_THRESHOLD_DB );
+		numTotalSteps = INT_TO_FLOAT_CONVERTER.getNumTotalSteps();
+
+		greenThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( GREEN_THRESHOLD_DB )
+				/ numTotalSteps;
+		orangeThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( ORANGE_THRESHOLD_DB )
+				/ numTotalSteps;
 
 		setBackground( Color.black );
 		final Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
@@ -129,84 +140,64 @@ public class AmpMeter<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIns
 
 	private void refillMeterImage()
 	{
-//		log.debug("Repainting it.");
 		if( outBufferedImage != null )
 		{
-
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
 
 			final int meterWidth = PREFERRED_METER_WIDTH;
-			final int totalMeterHeight = componentHeight - 2;
 
-			final int meterHeight = (showClipBox ? totalMeterHeight - meterWidth : totalMeterHeight );
-			final int meterHeightOffset = ( showClipBox ? meterWidth : 0 );
-
-			float levelValue = 0.0f;
-			if( currentMeterValueDb != Float.NEGATIVE_INFINITY )
-			{
-				levelValue = dbToLevelComputer.toNormalisedSliderLevelFromDb( currentMeterValueDb );
-			}
+			final int sliderIntValue = INT_TO_FLOAT_CONVERTER.floatValueToSliderIntValue( METER_MODEL, currentMeterValueDb );
+			final float normalisedlevelValue = (sliderIntValue / numTotalSteps);
+			final int numPixelsHigh = (int)(normalisedlevelValue * numPixelsInMeter);
 
 			outBufferedImageGraphics.setColor( Color.GREEN );
-			final float greenVal = (levelValue >= greenThresholdLevel ? greenThresholdLevel : levelValue );
-			int greenBarHeightInPixels = (int)(greenVal * meterHeight );
-			greenBarHeightInPixels = (greenBarHeightInPixels > (meterHeight) ? (meterHeight) : (greenBarHeightInPixels < 0 ? 0 : greenBarHeightInPixels ));
-			final int greenStartY = meterHeight - greenBarHeightInPixels + 1 + meterHeightOffset;
+			final int greenBarHeightInPixels = (numPixelsHigh > numGreenPixels ? numGreenPixels : numPixelsHigh );
+
+			final int greenStartY = numPixelsInMeter - greenBarHeightInPixels + 1 + meterHeightOffset;
 			outBufferedImageGraphics.fillRect( 3, greenStartY, meterWidth - 4, greenBarHeightInPixels );
 
-			if( currentMeterValueDb > GREEN_THRESHOLD_DB )
+			int pixelsLeft = numPixelsHigh - greenBarHeightInPixels;
+
+			final int orangeBarHeightInPixels = (pixelsLeft > numOrangePixels ? numOrangePixels : pixelsLeft );
+
+			final int orangeStartY = greenStartY - orangeBarHeightInPixels;
+			if( orangeBarHeightInPixels > 0 )
 			{
-				outBufferedImageGraphics.setColor( Color.orange );
-				final float orangeVal = (levelValue >= orangeThreholdLevel ? orangeThreholdLevel : levelValue );
-				int orangeBarHeightInPixels = (int)(orangeVal * meterHeight );
-				orangeBarHeightInPixels = (orangeBarHeightInPixels > (meterHeight) ? (meterHeight) : (orangeBarHeightInPixels < 0 ? 0 : orangeBarHeightInPixels ));
-				// Take off the green
-				orangeBarHeightInPixels -= greenBarHeightInPixels;
-				final int orangeStartY = greenStartY - orangeBarHeightInPixels;
-	//			int orangeEndY = greenStartY;
+				outBufferedImageGraphics.setColor( Color.ORANGE );
 				outBufferedImageGraphics.fillRect( 3, orangeStartY, meterWidth - 4, orangeBarHeightInPixels );
-
-				if( currentMeterValueDb > ORANGE_THRESHOLD_DB )
-				{
-					outBufferedImageGraphics.setColor( Color.RED );
-					final float redVal = levelValue;
-					int redBarHeightInPixels = (int)(redVal * meterHeight );
-					redBarHeightInPixels = (redBarHeightInPixels > (meterHeight) ? (meterHeight) : (redBarHeightInPixels < 0 ? 0 : redBarHeightInPixels ));
-					// Take off the green and orange
-					redBarHeightInPixels = redBarHeightInPixels - (greenBarHeightInPixels + orangeBarHeightInPixels );
-					final int redStartY = orangeStartY - redBarHeightInPixels;
-	//				int redEndY = orangeStartY;
-					outBufferedImageGraphics.fillRect( 3, redStartY, meterWidth - 4, redBarHeightInPixels );
-
-				}
 			}
 
-			float maxLevelValue = 0.0f;
-			final Color maxDbColor = getColorForDb( currentMaxValueDb );
-			if( currentMaxValueDb != Float.NEGATIVE_INFINITY )
+			pixelsLeft -= orangeBarHeightInPixels;
+			final int redBarHeightInPixels = (pixelsLeft > numRedPixels ? numRedPixels : pixelsLeft );
+
+			if( redBarHeightInPixels > 0 )
 			{
-				maxLevelValue = dbToLevelComputer.toNormalisedSliderLevelFromDb( currentMaxValueDb );
+				outBufferedImageGraphics.setColor( Color.RED );
+				final int redStartY = orangeStartY - redBarHeightInPixels;
+				outBufferedImageGraphics.fillRect( 3, redStartY, meterWidth - 4, redBarHeightInPixels );
 			}
+
+			pixelsLeft -= redBarHeightInPixels;
+
+			// Slightly larger bar across the top for the sticky max db
+			final float maxNormalisedValue = ( currentMaxValueDb >= 0.0f ? 1.0f :
+				INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( currentMaxValueDb ) /	numTotalSteps );
+			final int maxBarPixelsHigh = (int)(maxNormalisedValue * numPixelsInMeter);
+			final Color maxDbColor = getColorForDb( currentMaxValueDb );
 			outBufferedImageGraphics.setColor( maxDbColor );
 
-			int maxValueHeightInPixels = (int)(maxLevelValue * meterHeight);
-			maxValueHeightInPixels = (maxValueHeightInPixels > (meterHeight) ? (meterHeight) : (maxValueHeightInPixels < 0 ? 0 : maxValueHeightInPixels ));
-			final int yReverser = meterHeight + 1;
-			final int maxStartY = yReverser - maxValueHeightInPixels + meterHeightOffset;
+			final int yReverser = numPixelsInMeter + 1;
+			final int maxStartY = yReverser - maxBarPixelsHigh + meterHeightOffset;
 			outBufferedImageGraphics.drawLine( 1, maxStartY, meterWidth, maxStartY );
 
 			if( showClipBox )
 			{
-				if( currentMaxValueDb >= 1.0f )
+				if( currentMaxValueDb >= 0.0f )
 				{
 					// Should already be the right colour
-	//				g.setColor( getColorForDb( 0.0f ) );
 					outBufferedImageGraphics.fillRect( 1, 1, meterWidth, meterWidth - 1 );
 				}
-			}
-			else
-			{
 			}
 		}
 	}
@@ -284,6 +275,7 @@ public class AmpMeter<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIns
 			outBufferedImageGraphics = outBufferedImage.createGraphics();
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0, 0, componentWidth, componentHeight );
+
 		}
 		catch (final DatastoreException e)
 		{
@@ -294,5 +286,12 @@ public class AmpMeter<D extends MixerNMadDefinition<D,I>, I extends MixerNMadIns
 		}
 		componentWidth = width;
 		componentHeight = height;
+
+		numPixelsInMeter = (showClipBox ? componentHeight - 2 - PREFERRED_METER_WIDTH :
+			componentHeight - 2);
+		meterHeightOffset = ( showClipBox ? PREFERRED_METER_WIDTH : 0 );
+		numGreenPixels = (int)(numPixelsInMeter * greenThresholdLevel);
+		numOrangePixels = (int)((numPixelsInMeter * orangeThresholdLevel) - numGreenPixels);
+		numRedPixels = numPixelsInMeter - numGreenPixels - numOrangePixels;
 	}
 }

@@ -30,20 +30,19 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.audio.math.DbToLevelComputer;
-import uk.co.modularaudio.util.audio.math.MixdownSliderDbToLevelComputer;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.math.MathFormatter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSliderKnobImage;
 
-public class MixerFaderLabels extends JPanel
+public class MixerFaderMarks extends JPanel
 {
 	private static final long serialVersionUID = 8804239906450285191L;
 
 //	private static Log log = LogFactory.getLog( MixerFaderLabels.class.getName() );
 
-	private static final float[] valuesToLabel = new float[] {
+	private static final float[] VALUES_TO_LABEL = new float[] {
 		10,
 		5,
 		0,
@@ -56,15 +55,17 @@ public class MixerFaderLabels extends JPanel
 		Float.NEGATIVE_INFINITY
 	};
 
-	private static final DbToLevelComputer dbToLevelComputer = new MixdownSliderDbToLevelComputer( 1000 );
+	private final MixdownSliderModel model;
 
 	private final FontMetrics fm;
 	private final int fontHeight;
 
-	public MixerFaderLabels( final MixdownSliderModel faderModel,
+	public MixerFaderMarks( final MixdownSliderModel model,
 			final Color foregroundColour,
 			final boolean opaque )
 	{
+		this.model = model;
+
 		setOpaque( opaque );
 		setForeground( foregroundColour );
 		setMinimumSize( new Dimension( 30, 30 ) );
@@ -80,7 +81,7 @@ public class MixerFaderLabels extends JPanel
 		final Graphics2D g2d = (Graphics2D)g;
 		final int width = getWidth();
 		final int height = getHeight();
-		final int heightForMarks = height - LWTCSliderKnobImage.V_KNOB_HEIGHT;
+		final int heightForMarks = height - (LWTCSliderKnobImage.V_KNOB_HEIGHT-1) - 6;
 		final int knobOffset = LWTCSliderKnobImage.V_KNOB_HEIGHT / 2;
 		if( isOpaque() )
 		{
@@ -91,17 +92,18 @@ public class MixerFaderLabels extends JPanel
 		g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 		g2d.setColor( getForeground() );
 		g2d.setFont( getFont() );
+		final SliderIntToFloatConverter intToFloatConverter = model.getSliderIntToFloatConverter();
+		final float numModelSteps = model.getNumSliderSteps();
 
-		for( final float levelToMark : valuesToLabel )
+		for( final float levelToMark : VALUES_TO_LABEL )
 		{
-			final float normalisedLevel = dbToLevelComputer.toNormalisedSliderLevelFromDb( levelToMark );
-			final float yValForMark = normalisedLevel * heightForMarks;
+			final int sliderIntValue = intToFloatConverter.floatValueToSliderIntValue( model, levelToMark );
+			final float normalisedLevel = sliderIntValue / numModelSteps;
+			final float yValForMark = 3 + normalisedLevel * heightForMarks;
 
-//			final int offsetY = (height - 2) - ( (int)yValForMark );
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
-			// Draw a black line at the appropriate height
-			g.drawLine( 0, offsetY, 1, offsetY );
-//			g.drawLine( width - 2, offsetY, width - 1, offsetY );
+			// Draw a marker line at the appropriate height
+			g.drawLine( 0, offsetY, 2, offsetY );
 
 			String labelStr = null;
 			if( levelToMark == Float.NEGATIVE_INFINITY )
@@ -110,7 +112,7 @@ public class MixerFaderLabels extends JPanel
 			}
 			else
 			{
-				labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
+				labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, (levelToMark != 0)  );
 			}
 			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );

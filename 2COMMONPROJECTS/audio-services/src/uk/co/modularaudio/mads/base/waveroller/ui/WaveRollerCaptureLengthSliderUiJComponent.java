@@ -51,6 +51,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 	{
 		final Color bgColor = Color.black;
 		final Color fgColor = Color.white;
+		final Color indicatorColor = null;
 		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
@@ -60,6 +61,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent extends PacCaptureLengthS
 
 		return new LWTCSliderViewColors( bgColor,
 				fgColor,
+				indicatorColor,
 				textboxBgColor,
 				textboxFgColor,
 				selectionColor,

@@ -22,10 +22,13 @@ package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
 import java.awt.Color;
 
-public class LWTCSliderViewColors
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+
+public class LWTCSliderViewColors extends LWTCControlConstants.StdSliderColours
 {
 	public final Color bgColor;
 	public final Color fgColor;
+	public final Color knobIndicatorColor;
 	public final Color textboxBgColor;
 	public final Color textboxFgColor;
 	public final Color selectionColor;
@@ -36,6 +39,7 @@ public class LWTCSliderViewColors
 	public LWTCSliderViewColors(
 			final Color bgColor,
 			final Color fgColor,
+			final Color knobIndicatorColor,
 			final Color textboxBgColor,
 			final Color textboxFgColor,
 			final Color selectionColor,
@@ -43,13 +47,21 @@ public class LWTCSliderViewColors
 			final Color labelColor,
 			final Color unitsColor )
 	{
+		super();
 		this.bgColor = bgColor;
 		this.fgColor = fgColor;
+		this.knobIndicatorColor = knobIndicatorColor;
 		this.textboxBgColor = textboxBgColor;
 		this.textboxFgColor = textboxFgColor;
 		this.selectionColor = selectionColor;
 		this.selectedTextColor = selectedTextColor;
 		this.labelColor = labelColor;
 		this.unitsColor = unitsColor;
+	}
+
+	@Override
+	public Color getIndicatorColor()
+	{
+		return knobIndicatorColor;
 	}
 }

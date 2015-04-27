@@ -42,7 +42,7 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 {
 	private static final long serialVersionUID = 28004477652791854L;
 
-	private final static Map<String, FrequencyFilterMode> nameToModeMap = createNameToModeMap();
+	private final static Map<String, FrequencyFilterMode> NAME_TO_MODE_MAP = createNameToModeMap();
 
 	private final static Map<String, FrequencyFilterMode> createNameToModeMap()
 	{
@@ -52,7 +52,7 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 		return Collections.unmodifiableMap( mm );
 	}
 
-	private final static List<String> modes = Arrays.asList(new String[] {
+	private final static List<String> MODES = Arrays.asList(new String[] {
 			"None",
 			"Low Pass" } );
 
@@ -69,7 +69,7 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 
 		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
 
-		for( final String modeName : modes )
+		for( final String modeName : MODES )
 		{
 			cbm.addElement( modeName );
 		}
@@ -100,7 +100,7 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 		if( previousIndex != newIndex )
 		{
 			final String name = (String) getSelectedItem();
-			final FrequencyFilterMode modeToUse = nameToModeMap.get( name );
+			final FrequencyFilterMode modeToUse = NAME_TO_MODE_MAP.get( name );
 			uiInstance.sendFilterModeChange( modeToUse );
 		}
 	}

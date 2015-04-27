@@ -27,40 +27,41 @@ import org.apache.commons.logging.LogFactory;
 public class GenericDbToLevelComputer implements DbToLevelComputer
 {
 	private static Log log = LogFactory.getLog( GenericDbToLevelComputer.class.getName() );
-	
+
 	private float linearHighestDb = 0.0f;
 	private float linearLowestDb = 0.0f;
 	private float compressedHighestDb = 0.0f;
 	private float compressedLowestDb = 0.0f;
-	
+
 	private int numTotalSteps = -1;
 	private int numLinearSteps = -1;
 	private int numCompressedSteps = -1;
-	
+
 	private float linearDynamicRange = 0.0f;
 	private float compressedDynamicRange = 0.0f;
-	
-	public GenericDbToLevelComputer( float linearHighestDb,
-			float linearLowestDb,
-			float compressedHighestDb,
-			float compressedLowestDb,
-			int numTotalSteps )
+
+	public GenericDbToLevelComputer( final float linearHighestDb,
+			final float linearLowestDb,
+			final float compressedHighestDb,
+			final float compressedLowestDb,
+			final int numTotalSteps )
 	{
 		this.linearHighestDb = linearHighestDb;
 		this.linearLowestDb = linearLowestDb;
 		this.compressedHighestDb = compressedHighestDb;
 		this.compressedLowestDb = compressedLowestDb;
-		
+
 		this.linearDynamicRange = linearHighestDb - linearLowestDb;
 		this.compressedDynamicRange = compressedHighestDb - compressedLowestDb;
-		
+
 		this.numTotalSteps = numTotalSteps;
 		this.numLinearSteps = (int)(0.7f * numTotalSteps);
 		// Leave one last step for INF attenuation
 		this.numCompressedSteps = numTotalSteps - numLinearSteps - 1;
 	}
 
-	public float toDbFromNormalisedLevel( float level )
+	@Override
+	public float toDbFromNormalisedLevel( final float level )
 	{
 		// Slider is from 0 -> 1
 		// special case 0
@@ -72,7 +73,7 @@ public class GenericDbToLevelComputer implements DbToLevelComputer
 		{
 			// Take off one step for -INF
 			int scaledIntVal = (int)(level * numTotalSteps) - 1;
-			
+
 			if( scaledIntVal < numCompressedSteps )
 			{
 				// Map to compressed values
@@ -82,35 +83,58 @@ public class GenericDbToLevelComputer implements DbToLevelComputer
 			{
 				// Take off num compressed values, and map to linear values
 				scaledIntVal -= numCompressedSteps;
-				float outputDb = linearLowestDb + ( ((float)scaledIntVal / numLinearSteps) * linearDynamicRange);
+				final float outputDb = linearLowestDb + ( ((float)scaledIntVal / numLinearSteps) * linearDynamicRange);
 				return outputDb;
 			}
 		}
 	}
-	
-	public float toNormalisedSliderLevelFromDb( float db )
+
+	@Override
+	public float toNormalisedSliderLevelFromDb( final float db )
 	{
-		if( db == Float.NEGATIVE_INFINITY )
+		if( db < compressedLowestDb )
 		{
 			return 0.0f;
 		}
 		else if( db < compressedHighestDb )
 		{
 			// How much over the lowest db value is it?
-			float amountOverLowest = db - compressedLowestDb;
-			float scaledValue = amountOverLowest / compressedDynamicRange;
-			float linearStepValue = scaledValue * numCompressedSteps;
-			float normalisedValue = linearStepValue / numTotalSteps;
+			final float amountOverLowest = db - compressedLowestDb;
+			final float scaledValue = amountOverLowest / compressedDynamicRange;
+			final float linearStepValue = scaledValue * numCompressedSteps;
+			final float normalisedValue = linearStepValue / (numTotalSteps-1);
 			return normalisedValue;
 		}
 		else
 		{
 			// How much over the lowest db value is it?
-			float amountOverLowest = db - linearLowestDb;
-			float scaledValue = amountOverLowest / linearDynamicRange;
-			float linearStepValue = scaledValue * numLinearSteps;
-			float normalisedValue = (linearStepValue + numCompressedSteps) / numTotalSteps;
+			final float amountOverLowest = db - linearLowestDb;
+			final float scaledValue = amountOverLowest / linearDynamicRange;
+			final float linearStepValue = scaledValue * numLinearSteps;
+			final float normalisedValue = (linearStepValue + numCompressedSteps) / (numTotalSteps-1);
 			return normalisedValue;
+		}
+	}
+
+	public float toStepFromDb( final float db )
+	{
+		if( db < compressedLowestDb )
+		{
+			return 0.0f;
+		}
+		else if( db < compressedHighestDb )
+		{
+			// How much over the lowest db value is it?
+			final float amountOverLowest = db - compressedLowestDb;
+			final float scaledValue = amountOverLowest / compressedDynamicRange;
+			return 1 + (scaledValue * numCompressedSteps);
+		}
+		else
+		{
+			// How much over the lowest db value is it?
+			final float amountOverLowest = db - linearLowestDb;
+			final float scaledValue = amountOverLowest / linearDynamicRange;
+			return 1 + numCompressedSteps + (scaledValue * numLinearSteps);
 		}
 	}
 }

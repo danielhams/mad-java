@@ -32,7 +32,7 @@ public class LWTCLabel extends JLabel
 	public LWTCLabel( final LWTCLabelColours colours, final String text )
 	{
 		super( text );
-		LWTCLookAndFeelHelper.getInstance().updateComponentLaf( this );
+		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 
 		this.setBackground( colours.getBackground() );
 		this.setForeground( colours.getForeground() );

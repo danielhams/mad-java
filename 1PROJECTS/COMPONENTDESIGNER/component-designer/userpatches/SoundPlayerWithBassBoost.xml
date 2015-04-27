@@ -30,7 +30,7 @@
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="100.05"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Wave Roller" definitionId="wave_roller">
