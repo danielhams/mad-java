@@ -28,7 +28,7 @@ public interface ControlValueInterpolator
 
 	void notifyOfNewValue( float value );
 
-	void checkForDenormal();
+	boolean checkForDenormal();
 
 	void hardSetValue( float value );
 

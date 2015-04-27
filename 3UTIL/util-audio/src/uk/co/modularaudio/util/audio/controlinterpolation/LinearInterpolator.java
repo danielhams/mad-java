@@ -127,11 +127,16 @@ public class LinearInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void checkForDenormal()
+	public boolean checkForDenormal()
 	{
 		if( curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 		{
 			curVal = 0.0f;
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 

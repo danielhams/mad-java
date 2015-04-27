@@ -127,7 +127,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public final void checkForDenormal()
+	public final boolean checkForDenormal()
 	{
 		final float delta = desPos - curState.x;
 		final float absX = (delta < 0.0f ? -delta : delta );
@@ -154,6 +154,11 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 			curState.v = 0.0f;
 //			log.debug("Damped to pos(" + MathFormatter.slowFloatPrint( desPos, 8, true ) +
 //					") v=0");
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 //		else
 //		{

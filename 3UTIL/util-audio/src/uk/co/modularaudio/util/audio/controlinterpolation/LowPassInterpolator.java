@@ -71,8 +71,9 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void checkForDenormal()
+	public boolean checkForDenormal()
 	{
+		return false;
 	}
 
 	@Override

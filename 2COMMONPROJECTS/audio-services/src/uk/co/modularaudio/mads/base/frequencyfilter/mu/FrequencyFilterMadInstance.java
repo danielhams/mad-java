@@ -132,12 +132,21 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		final int freqOffset = 0;
 		final int bwOffset = numFrames;
 
+		// Start off true, set to false if one denormals (already converged enough)
+		boolean isSteadyState = true;
+
 		if( inLConnected || inRConnected )
 		{
-			freqSad.generateControlValues( tmpBuffer, freqOffset, numFrames );
-			freqSad.checkForDenormal();
-			bwSad.generateControlValues( tmpBuffer, bwOffset, numFrames );
-			bwSad.checkForDenormal();
+			if( !freqSad.checkForDenormal() || !bwSad.checkForDenormal() )
+			{
+				isSteadyState = false;
+			}
+
+			if( !isSteadyState )
+			{
+				freqSad.generateControlValues( tmpBuffer, freqOffset, numFrames );
+				bwSad.generateControlValues( tmpBuffer, bwOffset, numFrames );
+			}
 		}
 
 		if( desired24dB != was24dB )
@@ -160,24 +169,42 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
 
-			final float[] whichFreq = (inCvFreqConnected ? inCvFreqFloats : tmpBuffer);
-			final int whichFreqOffset = (inCvFreqConnected ? frameOffset : freqOffset );
-
-			if( desired24dB )
+			if( inCvFreqConnected || !isSteadyState)
 			{
-				leftChannel24db.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
-						whichFreq, whichFreqOffset,
-						tmpBuffer, bwOffset,
-						desiredFilterMode, sampleRate );
+				final float[] srcFreqs = (inCvFreqConnected ? inCvFreqFloats : tmpBuffer );
+				final int srcFreqOffset = (inCvFreqConnected ? numFrames : freqOffset );
+				if( desired24dB )
+				{
+					leftChannel24db.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset,
+							tmpBuffer, bwOffset,
+							desiredFilterMode, sampleRate );
+				}
+				else
+				{
+					leftChannelButterworth.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset,
+							tmpBuffer, bwOffset,
+							desiredFilterMode, sampleRate );
+				}
 			}
 			else
 			{
-				leftChannelButterworth.filterWithFreqAndBw( outLfloats, frameOffset, numFrames,
-						whichFreq, whichFreqOffset,
-						tmpBuffer, bwOffset,
-						desiredFilterMode, sampleRate );
+				if( desired24dB )
+				{
+					leftChannel24db.filter( outLfloats, frameOffset, numFrames,
+							desiredFrequency, desiredBandwidth,
+							desiredFilterMode, sampleRate );
+				}
+				else
+				{
+					leftChannelButterworth.filter( outLfloats, frameOffset, numFrames,
+							desiredFrequency, desiredBandwidth,
+							desiredFilterMode, sampleRate );
+				}
 			}
 		}
+
 
 		if( !inRConnected )
 		{
@@ -190,22 +217,39 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
 
-			final float[] whichFreq = (inCvFreqConnected ? inCvFreqFloats : tmpBuffer);
-			final int whichFreqOffset = (inCvFreqConnected ? frameOffset : freqOffset );
-
-			if( desired24dB )
+			if( inCvFreqConnected || !isSteadyState)
 			{
-				rightChannel24db.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
-						whichFreq, whichFreqOffset,
-						tmpBuffer, bwOffset,
-						desiredFilterMode, sampleRate );
+				final float[] srcFreqs = (inCvFreqConnected ? inCvFreqFloats : tmpBuffer );
+				final int srcFreqOffset = (inCvFreqConnected ? numFrames : freqOffset );
+				if( desired24dB )
+				{
+					rightChannel24db.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset,
+							tmpBuffer, bwOffset,
+							desiredFilterMode, sampleRate );
+				}
+				else
+				{
+					rightChannelButterworth.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
+							srcFreqs, srcFreqOffset,
+							tmpBuffer, bwOffset,
+							desiredFilterMode, sampleRate );
+				}
 			}
 			else
 			{
-				rightChannelButterworth.filterWithFreqAndBw( outRfloats, frameOffset, numFrames,
-						whichFreq, whichFreqOffset,
-						tmpBuffer, bwOffset,
-						desiredFilterMode, sampleRate );
+				if( desired24dB )
+				{
+					rightChannel24db.filter( outRfloats, frameOffset, numFrames,
+							desiredFrequency, desiredBandwidth,
+							desiredFilterMode, sampleRate );
+				}
+				else
+				{
+					rightChannelButterworth.filter( outRfloats, frameOffset, numFrames,
+							desiredFrequency, desiredBandwidth,
+							desiredFilterMode, sampleRate );
+				}
 			}
 		}
 
