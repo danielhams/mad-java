@@ -31,6 +31,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.service.library.CuePoint;
@@ -114,6 +115,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 
 			final StaticMetadata sm = audioFileHandle.getStaticMetadata();
 			final String audioFilePath = sm.path;
+			final AudioFileFormat format = sm.format;
 
 			final File fileForEntry = new File( audioFilePath );
 
@@ -124,7 +126,14 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final long numFrames = sm.numFrames;
 			final int sampleRate = sm.dataRate.getValue();
 
-			final LibraryEntry newEntry = new LibraryEntry( -1, cueList, numChannels, sampleRate, numFrames, title, location );
+			final LibraryEntry newEntry = new LibraryEntry( -1,
+					cueList,
+					numChannels,
+					sampleRate,
+					numFrames,
+					title,
+					format.name(),
+					location );
 			hibernateSession.save( trackStartCuePoint );
 			hibernateSession.save( newEntry );
 			return newEntry;

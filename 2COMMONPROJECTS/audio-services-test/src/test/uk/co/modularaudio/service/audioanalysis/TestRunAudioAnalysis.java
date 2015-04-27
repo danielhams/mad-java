@@ -30,15 +30,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
+import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisException;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
+import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
+import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
+import uk.co.modularaudio.service.library.LibraryEntry;
+import uk.co.modularaudio.service.library.LibraryService;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
+import uk.co.modularaudio.util.springhibernate.SpringHibernateContextHelper;
 
 public class TestRunAudioAnalysis
 {
@@ -47,15 +58,25 @@ public class TestRunAudioAnalysis
 	private final GenericApplicationContext gac;
 
 	private final AudioAnalysisService aas;
+	private final AudioFileIORegistryService afirs;
+	private final LibraryService ls;
+	private final HibernateSessionController hsc;
 
-	public TestRunAudioAnalysis() throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
+	public TestRunAudioAnalysis()
+		throws RecordNotFoundException, DatastoreException, IOException,
+		AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException,
+		NoSuchHibernateSessionException, MAConstraintViolationException
 	{
 		// Setup components
 		final List<SpringContextHelper> schs = new ArrayList<SpringContextHelper>();
-//		schs.add();
+		schs.add( new SpringHibernateContextHelper());
 		final SpringComponentHelper sch = new SpringComponentHelper( schs );
 		gac = sch.makeAppContext();
+		gac.start();
 		aas = gac.getBean( "audioAnalysisService", AudioAnalysisService.class );
+		afirs = gac.getBean( "audioFileIORegistryService", AudioFileIORegistryService.class );
+		ls = gac.getBean( "libraryService", LibraryService.class );
+		hsc = gac.getBean( "hibernateSessionController", HibernateSessionController.class );
 
 		// Now do the tests
 		final AnalysisFillCompletionListener acl = new AnalysisFillCompletionListener()
@@ -86,22 +107,43 @@ public class TestRunAudioAnalysis
 				log.debug("Received analysis begin");
 			}
 		};
-//		final AnalysedData analysedData1 = aas.analyseFile(
-//				"/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 99 master.mp3",
-//				acl );
-//		log.debug("Analysed data 1 contains: " + analysedData1.toString() );
-//		final AnalysedData analysedData2 = aas.analyseFile(
-//				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20120504/3350150_Party_Party_Harvey_McKay_Remix.mp3",
-//				acl );
-//		log.debug("Analysed data 2 contains: " + analysedData2.toString() );
-		final AnalysedData analysedData10 = aas.analyseFile(
-				"/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3",
-				acl );
-		log.debug("Analysed data 10 contains: " + analysedData10.toString() );
+
+		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3";
+
+		final AudioFileFormat format = afirs.sniffFileFormatOfFile( filePath );
+
+		final AudioFileIOService decoderService = afirs.getAudioFileIOServiceForFormatAndDirection( format,
+				AudioFileDirection.DECODE );
+
+		final AudioFileHandleAtom afha = decoderService.openForRead( filePath );
+
+		LibraryEntry le = null;
+
+		hsc.getThreadSession();
+
+		try
+		{
+			le = ls.findLibraryEntryByAudioFile( afha );
+		}
+		catch( final RecordNotFoundException rnfe )
+		{
+			le = ls.addAudioFileToLibrary( afha );
+		}
+
+		final AnalysedData analysedData = aas.analyseFileHandleAtom( le, afha, acl );
+
+		hsc.releaseThreadSession();
+
+		gac.destroy();
+
+		log.debug("Analysed data contains: " + analysedData.toString() );
 
 	}
 
-	public static void main( final String args[] ) throws RecordNotFoundException, DatastoreException, IOException, AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException
+	public static void main( final String args[] )
+		throws RecordNotFoundException, DatastoreException, IOException,
+		AudioAnalysisException, UnsupportedAudioFileException, UnknownDataRateException,
+		NoSuchHibernateSessionException, MAConstraintViolationException
 	{
 		final TestRunAudioAnalysis traa = new TestRunAudioAnalysis();
 		log.debug("Run completed on " + traa.toString() );

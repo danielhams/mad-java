@@ -172,13 +172,13 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 			{
 				final AudioFileFormat foundFormat = oneService.sniffFileFormatOfFile( path );
 				retVal = foundFormat;
-				if( log.isTraceEnabled() )
-				{
-					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" recognised format as " +
-							foundFormat.toString() );
-				}
 				if( retVal != AudioFileFormat.UNKNOWN )
 				{
+					if( log.isTraceEnabled() )
+					{
+						log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" recognised format as " +
+								foundFormat.toString() );
+					}
 					return retVal;
 				}
 			}

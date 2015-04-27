@@ -4,3 +4,4 @@ audio-services-test.properties
 audio-services-test.script
 /thumbnails/
 /wavetablecache/
+componentdesignersql.*

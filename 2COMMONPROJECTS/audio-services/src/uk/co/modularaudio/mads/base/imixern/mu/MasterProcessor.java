@@ -97,7 +97,7 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		}
 	}
 
-	public void checkForDenormal()
+	public final void checkForDenormal()
 	{
 		leftAmpInterpolator.checkForDenormal();
 		rightAmpInterpolator.checkForDenormal();

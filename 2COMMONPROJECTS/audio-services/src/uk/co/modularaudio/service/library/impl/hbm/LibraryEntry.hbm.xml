@@ -21,7 +21,8 @@
 			<property name="totalNumFloats" column="TOTAL_NUM_FLOATS" type="long"/>
             
     		<property name="title" column="TITLE" length="1024" unique="false"/>
-    		<property name="location" column="LOCATION" length="1024" unique="true"/>
+            <property name="format" column="FORMAT" length="20" unique="false"/>
+            <property name="location" column="LOCATION" length="1024" unique="true"/>
 
             <list name="cuePoints" cascade="all" lazy="false">
 				<key column="LIBRARY_ENTRY_ID"/>

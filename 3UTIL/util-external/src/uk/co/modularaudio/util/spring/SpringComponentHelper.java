@@ -121,7 +121,6 @@ public class SpringComponentHelper
 						InputSource aBiSource = null;
 						try
 						{
-							//							aBiStream = thisClass.getClassLoader().getResourceAsStream( additionalBeansFilename );
 							aBiStream = thisClass.getResourceAsStream( additionalBeansFilename );
 
 							if( aBiStream != null )

@@ -133,7 +133,7 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 		}
 	}
 
-	public void checkForDenormal()
+	public final void checkForDenormal()
 	{
 		leftAmpInterpolator.checkForDenormal();
 		rightAmpInterpolator.checkForDenormal();

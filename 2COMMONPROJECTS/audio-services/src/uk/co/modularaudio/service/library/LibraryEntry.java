@@ -34,20 +34,22 @@ public class LibraryEntry
 	private long totalNumFrames;
 	private long totalNumFloats;
 	private String title;
+	private String format;
 	private String location;
-	
+
 	public LibraryEntry()
 	{
-		this( -1, new ArrayList<CuePoint>(), 0, 0, 0, "", "");
+		this( -1, new ArrayList<CuePoint>(), 0, 0, 0, "", "", "");
 	}
 
-	public LibraryEntry( int libraryEntryId,
-			List<CuePoint> cuePoints,
-			int numChannels,
-			int sampleRate,
-			long totalNumFrames,
-			String title,
-			String location )
+	public LibraryEntry( final int libraryEntryId,
+			final List<CuePoint> cuePoints,
+			final int numChannels,
+			final int sampleRate,
+			final long totalNumFrames,
+			final String title,
+			final String format,
+			final String location )
 	{
 		this.libraryEntryId = libraryEntryId;
 		this.cuePoints = cuePoints;
@@ -56,10 +58,11 @@ public class LibraryEntry
 		this.totalNumFrames = totalNumFrames;
 		this.totalNumFloats = totalNumFrames * numChannels;
 		this.title = title;
+		this.format = format;
 		this.location = location;
 	}
 
-	public void setLibraryEntryId( int libraryEntryId )
+	public void setLibraryEntryId( final int libraryEntryId )
 	{
 		this.libraryEntryId = libraryEntryId;
 	}
@@ -69,37 +72,37 @@ public class LibraryEntry
 		return creationTimestamp;
 	}
 
-	public void setCreationTimestamp( Date creationTimestamp )
+	public void setCreationTimestamp( final Date creationTimestamp )
 	{
 		this.creationTimestamp = creationTimestamp;
 	}
-	
-	public void setTitle( String newTitle )
+
+	public void setTitle( final String newTitle )
 	{
 		this.title = newTitle;
 	}
-	
-	public void setLocation( String newLocation )
+
+	public void setLocation( final String newLocation )
 	{
 		this.location = newLocation;
 	}
-	
-	public void setNumChannels( int numChannels )
+
+	public void setNumChannels( final int numChannels )
 	{
 		this.numChannels = numChannels;
 	}
-	
-	public void setTotalNumFrames( long totalNumFrames )
+
+	public void setTotalNumFrames( final long totalNumFrames )
 	{
 		this.totalNumFrames = totalNumFrames;
 	}
-	
-	public void setTotalNumFloats( long totalNumFloats )
+
+	public void setTotalNumFloats( final long totalNumFloats )
 	{
 		this.totalNumFloats = totalNumFloats;
 	}
-	
-	public void setCuePoints( List<CuePoint> cuePoints )
+
+	public void setCuePoints( final List<CuePoint> cuePoints )
 	{
 		this.cuePoints = cuePoints;
 	}
@@ -128,7 +131,7 @@ public class LibraryEntry
 	{
 		return totalNumFloats;
 	}
-	
+
 	public String getTitle()
 	{
 		return title;
@@ -138,8 +141,8 @@ public class LibraryEntry
 	{
 		return location;
 	}
-	
-	public void setSampleRate( int sampleRate )
+
+	public void setSampleRate( final int sampleRate )
 	{
 		this.sampleRate = sampleRate;
 	}
@@ -147,6 +150,16 @@ public class LibraryEntry
 	public int getSampleRate()
 	{
 		return sampleRate;
+	}
+
+	public String getFormat()
+	{
+		return format;
+	}
+
+	public void setFormat( final String format )
+	{
+		this.format = format;
 	}
 
 }

@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -33,9 +34,11 @@ public interface AudioAnalysisService
 {
 	// Method blocks until analysis is complete.
 	// Not really intended for clients, but handy for testing.
-	AnalysedData analyseFile( String pathToFile,
-			AnalysisFillCompletionListener analysisListener )
-		throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException;
+	public AnalysedData analyseFileHandleAtom(
+			final LibraryEntry libraryEntry,
+			final AudioFileHandleAtom afha,
+			final AnalysisFillCompletionListener progressListener)
+			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException;
 
 	AnalysedData analyseLibraryEntryFile( LibraryEntry libraryEntry,
 			AnalysisFillCompletionListener analysisListener )

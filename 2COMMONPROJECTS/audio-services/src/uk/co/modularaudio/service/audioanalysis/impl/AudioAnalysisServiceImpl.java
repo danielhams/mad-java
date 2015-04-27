@@ -181,7 +181,10 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	}
 
 	@Override
-	public AnalysedData analyseFile(final String pathToFile, final AnalysisFillCompletionListener progressListener)
+	public AnalysedData analyseFileHandleAtom(
+			final LibraryEntry libraryEntry,
+			final AudioFileHandleAtom afha,
+			final AnalysisFillCompletionListener progressListener)
 			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException
 	{
 		final ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>();
@@ -200,90 +203,74 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		final AnalysedData analysedData = new AnalysedData();
 
 		// Create the hashed ref our listeners might be interested in
+		final String pathToFile = libraryEntry.getLocation();
 		final HashedRef fileHashedRef = hashedStorageService.getHashedRefForFilename( pathToFile );
-
-		final AudioFileFormat fileFormat = audioFileIORegistryService.sniffFileFormatOfFile( pathToFile );
-
-		final AudioFileIOService decoderService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( fileFormat,
-				AudioFileDirection.DECODE );
 
 		final float[] analysisBuffer = new float[ analysisBufferSize ];
 
-		AudioFileHandleAtom fha = null;
+		final AudioFileIOService decoderService = afha.getAudioFileIOService();
 
-		try
+		final StaticMetadata sm = afha.getStaticMetadata();
+		final DataRate dataRate = sm.dataRate;
+		final int numChannels = sm.numChannels;
+		final long totalFloats = sm.numFloats;
+		final long totalFrames = sm.numFrames;
+		if( log.isDebugEnabled() )
 		{
-			fha = decoderService.openForRead( pathToFile );
+			log.debug("Beginning audio analysis on file " + pathToFile +
+					" with " + totalFloats + " total floats and " +
+					totalFrames + " frames");
+		}
 
-			final StaticMetadata sm = fha.getStaticMetadata();
-			final DataRate dataRate = sm.dataRate;
-			final int numChannels = sm.numChannels;
-			final long totalFloats = sm.numFloats;
-			final long totalFrames = sm.numFrames;
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Beginning audio analysis on file " + pathToFile +
-						" with " + totalFloats + " total floats and " +
-						totalFrames + " frames");
-			}
+		progressListener.receiveAnalysisBegin();
 
-			progressListener.receiveAnalysisBegin();
+		analysisBufferFrames = analysisBufferSize / numChannels;
 
-			analysisBufferFrames = analysisBufferSize / numChannels;
+		for( final AnalysisListener al : analysisListeners )
+		{
+			al.start( dataRate, numChannels, totalFrames );
+		}
+		int percentageComplete = 0;
 
-			for( final AnalysisListener al : analysisListeners )
-			{
-				al.start( dataRate, numChannels, totalFrames );
-			}
-			int percentageComplete = 0;
+		long framesLeft = totalFrames;
+		long curFramePos = 0;
+		while( framesLeft > 0 )
+		{
+			final int framesThisRound = (int)(framesLeft > analysisBufferFrames ? analysisBufferFrames : framesLeft );
 
-			long framesLeft = totalFrames;
-			long curFramePos = 0;
-			while( framesLeft > 0 )
-			{
-				final int framesThisRound = (int)(framesLeft > analysisBufferFrames ? analysisBufferFrames : framesLeft );
-
-				final int numFramesRead = decoderService.readFrames( fha,
-						analysisBuffer,
-						0,
-						framesThisRound,
-						curFramePos );
+			final int numFramesRead = decoderService.readFrames( afha,
+					analysisBuffer,
+					0,
+					framesThisRound,
+					curFramePos );
 
 //				log.debug("Read " + numFramesRead + " at pos " + curFramePos );
 
-				if( numFramesRead != framesThisRound )
-				{
-					throw new DatastoreException("Failed reading frames - asked(" +
-							framesThisRound + ") received(" + numFramesRead +")");
-				}
-
-				for( final AnalysisListener al : analysisListeners )
-				{
-					al.receiveFrames( analysisBuffer, numFramesRead );
-				}
-
-				final int newPercentageComplete = (int)((curFramePos / (float)totalFrames) * 100.0f);
-				if( newPercentageComplete != percentageComplete )
-				{
-					percentageComplete = newPercentageComplete;
-					progressListener.receivePercentageComplete( percentageComplete );
-				}
-				curFramePos += numFramesRead;
-				framesLeft -= numFramesRead;
+			if( numFramesRead != framesThisRound )
+			{
+				throw new DatastoreException("Failed reading frames - asked(" +
+						framesThisRound + ") received(" + numFramesRead +")");
 			}
 
 			for( final AnalysisListener al : analysisListeners )
 			{
-				al.end();
-				al.updateAnalysedData( analysedData, fileHashedRef );
+				al.receiveFrames( analysisBuffer, numFramesRead );
 			}
-		}
-		finally
-		{
-			if( fha != null )
+
+			final int newPercentageComplete = (int)((curFramePos / (float)totalFrames) * 100.0f);
+			if( newPercentageComplete != percentageComplete )
 			{
-				decoderService.closeHandle( fha );
+				percentageComplete = newPercentageComplete;
+				progressListener.receivePercentageComplete( percentageComplete );
 			}
+			curFramePos += numFramesRead;
+			framesLeft -= numFramesRead;
+		}
+
+		for( final AnalysisListener al : analysisListeners )
+		{
+			al.end();
+			al.updateAnalysedData( analysedData, fileHashedRef );
 		}
 
 		return analysedData;
@@ -314,15 +301,21 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		this.hibernateSessionService = hibernateSessionService;
 	}
 
-	private AnalysedData internalAnalyseFile( final Session session, final LibraryEntry libraryEntry,
+	private AnalysedData internalAnalyseLibraryEntry( final Session session, final LibraryEntry libraryEntry,
 			final AnalysisFillCompletionListener analysisListener )
 		throws DatastoreException
 	{
 		AnalysedData retVal = null;
+		AudioFileIOService ioService = null;
+		AudioFileHandleAtom afha = null;
 		try
 		{
-			retVal = analyseFile( libraryEntry.getLocation(),
-					analysisListener );
+			final String formatString = libraryEntry.getFormat();
+			final AudioFileFormat format = AudioFileFormat.valueOf( formatString );
+			ioService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( format, AudioFileDirection.DECODE );
+			afha = ioService.openForRead( libraryEntry.getLocation() );
+			retVal = analyseFileHandleAtom( libraryEntry, afha,	analysisListener );
+
 			retVal.setLibraryEntryId( libraryEntry.getLibraryEntryId() );
 			session.save( retVal );
 		}
@@ -331,6 +324,22 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			final String msg = "Exception caught during audio file analysis: " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
+		}
+		finally
+		{
+			if( afha != null )
+			{
+				try
+				{
+					ioService.closeHandle( afha );
+				}
+				catch( final IOException ioe )
+				{
+					final String msg = "IOException caught closing analysis file handle atom: " +
+							ioe.toString();
+					throw new DatastoreException( msg );
+				}
+			}
 		}
 
 		return retVal;
@@ -376,7 +385,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 			if( needsAnalysis )
 			{
-				retVal = internalAnalyseFile( session, libraryEntry,
+				retVal = internalAnalyseLibraryEntry( session, libraryEntry,
 						analysisListener );
 			}
 			return retVal;
