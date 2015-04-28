@@ -20,192 +20,42 @@
 
 package uk.co.modularaudio.mads.base.djeq.ui;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
-import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
-import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
-public class DJEQFader extends PacPanel
-	implements IMadUiControlInstance<DJEQMadDefinition, DJEQMadInstance, DJEQMadUiInstance>
+public class DJEQFader extends LWTCSliderDisplaySlider
 {
-	private static final long serialVersionUID = -4624215012389837804L;
+	private static final long serialVersionUID = -3900834931841855564L;
 
-	private static Log log = LogFactory.getLog( DJEQFader.class.getName() );
+//	private static Log log = LogFactory.getLog( MixerFader.class.getName() );
 
-	private final static LWTCSliderViewColors SLIDER_COLORS = getSliderColours();
-
-	private final static LWTCSliderViewColors getSliderColours()
+	public DJEQFader( final DJDeckFaderSliderModel model,
+			final SliderDisplayController controller,
+			final DisplayOrientation displayOrientation,
+			final LWTCSliderViewColors colors,
+			final boolean opaque )
 	{
-		final Color bgColor = DJEQColorDefines.BACKGROUND_COLOR;
-		final Color fgColor = DJEQColorDefines.FOREGROUND_COLOR;
-		final Color indicatorColor = DJEQColorDefines.INDICATOR_COLOR;
-		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
-		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
-		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
-		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
-		final Color labelColor = DJEQColorDefines.LABEL_COLOR;
-		final Color unitsColor = DJEQColorDefines.UNITS_COLOR;
+		super( model,
+				controller,
+				displayOrientation,
+				colors,
+				opaque );
 
-		return new LWTCSliderViewColors( bgColor,
-				fgColor,
-				indicatorColor,
-				textboxBgColor,
-				textboxFgColor,
-				selectionColor,
-				selectedTextColor,
-				labelColor,
-				unitsColor );
-	}
-
-	private final DJEQMadUiInstance uiInstance;
-
-	private final DJDeckFaderSliderModel sdm;
-	private final SliderDisplayController sdc;
-
-	private final LWTCSliderDisplaySlider sds;
-	private final LWTCSliderDisplayTextbox sdt;
-
-	private final StereoAmpMeter sam;
-
-	private boolean previouslyShowing;
-
-	public DJEQFader( final DJEQMadDefinition definition,
-			final DJEQMadInstance instance,
-			final DJEQMadUiInstance uiInstance,
-			final int controlIndex )
-	{
-		this.uiInstance = uiInstance;
-
-		setOpaque( false );
-
-		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
-//		msh.addLayoutConstraint( "debug" );
-		msh.addLayoutConstraint( "fill" );
-		msh.addLayoutConstraint( "insets 0" );
-		msh.addLayoutConstraint( "gap 0" );
-		setLayout( msh.createMigLayout() );
-
-		sdm = new DJDeckFaderSliderModel();
-		sdc = new SliderDisplayController( sdm );
-
-
-		sds = new LWTCSliderDisplaySlider( sdm, sdc,
-				DisplayOrientation.VERTICAL,
-				SLIDER_COLORS,
-				false );
-		this.add( sds, "growy, pushy 100" );
-
-
-		sam = new StereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
-		this.add( sam, "growy, wrap");
-
-		sdt = new LWTCSliderDisplayTextbox( sdm, sdc,
-				SLIDER_COLORS,
-				false );
-		this.add( sdt, "growy 0, align center, spanx 2" );
-
-		final LWTCSliderDoubleClickMouseListener doubleClickMouseListener = new LWTCSliderDoubleClickMouseListener( new SliderDoubleClickReceiver()
+		final SliderDoubleClickReceiver dcr = new SliderDoubleClickReceiver()
 		{
 
 			@Override
 			public void receiveDoubleClick()
 			{
-				sdc.setValue( this, sdc.getModel().getDefaultValue() );
+				controller.setValue( this, model.getDefaultValue() );
 			}
-		} );
-		sds.addMouseListener( doubleClickMouseListener );
+		};
 
-		sdm.addChangeListener( new ValueChangeListener()
-		{
-
-			@Override
-			public void receiveValueChange( final Object source, final float newValue )
-			{
-				final float realAmp = AudioMath.dbToLevelF( newValue );
-				uiInstance.setFaderAmp( realAmp );
-			}
-		} );
-
-		uiInstance.setStereoAmpMeter( sam );
-
-	}
-
-	@Override
-	public boolean needsDisplayProcessing()
-	{
-		return true;
-	}
-
-	@Override
-	public String getControlValue()
-	{
-		return Float.toString( sdm.getValue() );
-	}
-
-	@Override
-	public void receiveControlValue( final String value )
-	{
-		if( value != null && value.length() > 0 )
-		{
-			try
-			{
-				final float floatVal = Float.parseFloat( value );
-				sdc.setValue( this, floatVal );
-			}
-			catch( final NumberFormatException nfe )
-			{
-				if( log.isWarnEnabled() )
-				{
-					log.warn("Failed parsing DJEQFader value: " + value );
-				}
-			}
-		}
-	}
-
-	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime )
-	{
-		final boolean showing = isShowing();
-
-		if( previouslyShowing != showing )
-		{
-			uiInstance.sendUiActive( showing );
-			previouslyShowing = showing;
-		}
-
-		sam.receiveDisplayTick( currentGuiTime );
-	}
-
-	@Override
-	public Component getControl()
-	{
-		return this;
-	}
-
-	@Override
-	public void destroy()
-	{
+		this.addMouseListener( new LWTCSliderDoubleClickMouseListener( dcr ) );
 	}
 }

@@ -51,7 +51,7 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 	private float curLowAmp = 1.0f;
 	private boolean curLowKilled = false;
 
-	private StereoAmpMeter meter;
+	private LaneStereoAmpMeter meter;
 
 	public DJEQMadUiInstance( final DJEQMadInstance instance,
 			final DJEQMadUiDefinition uiDefinition )
@@ -195,7 +195,7 @@ public class DJEQMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiI
 		sendTemporalValueToInstance( DJEQIOQueueBridge.COMMAND_IN_FADER_AMP, lValue );
 	}
 
-	public void setStereoAmpMeter( final StereoAmpMeter meter )
+	public void setStereoAmpMeter( final LaneStereoAmpMeter meter )
 	{
 		this.meter = meter;
 	}

@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class DJEQOneEqLane extends PacPanel
+public class DJEQOneEQLane extends PacPanel
 	implements IMadUiControlInstance<DJEQMadDefinition,DJEQMadInstance,DJEQMadUiInstance>
 {
 	private static final long serialVersionUID = -112893137724675530L;
@@ -41,7 +41,7 @@ public class DJEQOneEqLane extends PacPanel
 
 	private final OneEqKill killToggle;
 
-	public DJEQOneEqLane( final DJEQMadDefinition definition,
+	public DJEQOneEQLane( final DJEQMadDefinition definition,
 			final DJEQMadInstance instance,
 			final DJEQMadUiInstance uiInstance,
 			final int controlIndex,

@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 
 
-public class DJEQMidEQLane extends DJEQOneEqLane implements ValueChangeListener
+public class DJEQMidEQLane extends DJEQOneEQLane implements ValueChangeListener
 {
 	private static final long serialVersionUID = 4164721930545400401L;
 

@@ -70,14 +70,14 @@ public class DJEQMadUiDefinition
 		DJEQHighEQLane.class,
 		DJEQMidEQLane.class,
 		DJEQLowEQLane.class,
-		DJEQFader.class
+		DJEQFaderMarksMeter.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(   6,  26, 130,  90 ),
-		new Rectangle(   6, 116, 130,  90 ),
-		new Rectangle(   6, 206, 130,  90 ),
-		new Rectangle( 142,  26, 100, 270 )
+		new Rectangle(   6,  26, 126,  90 ),
+		new Rectangle(   6, 116, 126,  90 ),
+		new Rectangle(   6, 206, 126,  90 ),
+		new Rectangle( 138,  26, 104, 270 )
 	};
 
 	private static final Class<DJEQMadUiInstance> INSTANCE_CLASS = DJEQMadUiInstance.class;
