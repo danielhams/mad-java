@@ -112,8 +112,8 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 	private final int laneNumber;
 
-	private final LaneFaderAndMarks<D,I> faderAndMeter;
-	private final LaneStereoAmpMeter<D,I> ampMeters;
+	private final LaneFaderAndMarks<D,I> faderAndMarks;
+	private final LaneStereoAmpMeter<D,I> stereoAmpMeter;
 	private final RotaryDisplayModel panModel;
 	private final LanePanControl panControl;
 	private final LaneMuteSolo<D,I,U> muteSolo;
@@ -158,24 +158,24 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		muteSolo = new LaneMuteSolo<D,I,U>( this );
 		this.add( muteSolo, "cell 1 0, pushx 50, growy 0, align center" );
 
-		faderAndMeter = new LaneFaderAndMarks<D,I>( uiInstance,
+		faderAndMarks = new LaneFaderAndMarks<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
 				SLIDER_COLORS );
 
-		this.add( faderAndMeter, "cell 0 1, grow, pushy 100" );
+		this.add( faderAndMarks, "cell 0 1, grow, pushy 100" );
 
-		faderAndMeter.setChangeReceiver( this );
+		faderAndMarks.setChangeReceiver( this );
 
-		ampMeters = new LaneStereoAmpMeter<D,I>( uiInstance,
+		stereoAmpMeter = new LaneStereoAmpMeter<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true );
 
-		this.add( ampMeters, "cell 1 1, grow, pushy 100" );
+		this.add( stereoAmpMeter, "cell 1 1, grow, pushy 100" );
 
 		ampSliderTextbox = new LWTCSliderDisplayTextbox(
-				faderAndMeter.getFaderModel(),
-				faderAndMeter.getFaderController(),
+				faderAndMarks.getFaderModel(),
+				faderAndMarks.getFaderController(),
 				SLIDER_COLORS,
 				isOpaque() );
 
@@ -189,7 +189,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		ampMeters.receiveDisplayTick( currentGuiTime );
+		stereoAmpMeter.receiveDisplayTick( currentGuiTime );
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	@Override
 	public String getControlValue()
 	{
-		return faderAndMeter.getControlValue() + ":" + panModel.getValue() + ":" + muteSolo.getControlValue();
+		return faderAndMarks.getControlValue() + ":" + panModel.getValue() + ":" + muteSolo.getControlValue();
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		final String[] vals = value.split( ":" );
 		if( vals.length > 0 )
 		{
-			faderAndMeter.receiveControlValue( this, vals[0] );
+			faderAndMarks.receiveControlValue( this, vals[0] );
 		}
 		if( vals.length > 1 )
 		{
@@ -234,7 +234,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
 	{
 		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		ampMeters.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
+		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
 	public void setMuteValue( final boolean muteValue )
@@ -266,7 +266,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	@Override
 	public void destroy()
 	{
-		ampMeters.destroy();
+		stereoAmpMeter.destroy();
 	}
 
 	@Override

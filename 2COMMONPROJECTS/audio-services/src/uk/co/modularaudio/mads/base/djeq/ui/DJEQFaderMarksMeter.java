@@ -202,5 +202,6 @@ public class DJEQFaderMarksMeter extends PacPanel
 	@Override
 	public void destroy()
 	{
+		sam.destroy();
 	}
 }
