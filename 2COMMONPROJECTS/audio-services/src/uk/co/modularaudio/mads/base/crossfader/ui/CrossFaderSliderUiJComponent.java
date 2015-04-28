@@ -31,6 +31,7 @@ import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
 
 public class CrossFaderSliderUiJComponent extends LWTCSlider
@@ -49,7 +50,9 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 		super( SwingConstants.HORIZONTAL,
 				new DefaultBoundedRangeModel(
 						0, 0,
-						-1000, 1000 ) );
+						-1000, 1000 ),
+						LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS );
+
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );
 

@@ -96,6 +96,7 @@ public class LWTCControlConstants
 	public final static LWTCLabelColours STD_LABEL_COLOURS = new StdLabelColours();
 
 	public final static LWTCSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
+	public final static LWTCSliderColours STD_SLIDER_NOMARK_COLOURS = new StdSliderNoMarkColours();
 	public final static LWTCTextFieldColours STD_TEXTFIELD_COLOURS = new StdTextfieldColours();
 
 	public static class StdTextfieldColours implements LWTCTextFieldColours
@@ -207,6 +208,15 @@ public class LWTCControlConstants
 			return CONTROL_SLIDER_INDICATOR;
 		}
 	};
+
+	public static class StdSliderNoMarkColours extends StdSliderColours
+	{
+		@Override
+		public Color getIndicatorColor()
+		{
+			return null;
+		}
+	}
 
 	public static class StdLabelColours implements LWTCLabelColours
 	{

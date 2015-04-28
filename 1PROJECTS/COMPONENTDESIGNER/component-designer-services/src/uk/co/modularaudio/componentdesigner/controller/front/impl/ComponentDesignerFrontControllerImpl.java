@@ -230,7 +230,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 			else
 			{
 				previousLoggingThreshold  = ca.getThreshold();
-				ca.setThreshold( Level.ERROR );
+				ca.setThreshold( Level.WARN );
 			}
 		}
 	}
