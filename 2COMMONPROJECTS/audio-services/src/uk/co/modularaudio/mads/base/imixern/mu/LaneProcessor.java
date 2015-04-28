@@ -92,37 +92,73 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 
 			if( leftConnected )
 			{
-				leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
-
-				for( int s = 0 ; s < numFrames ; ++s )
+				if( !leftAmpInterpolator.checkForDenormal() )
 				{
-					final float oneFloat = leftInputChannel[frameOffset + s] * tmpBuffer[s];
-					final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+					leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 
-					if( absFloat > currentLeftMeterReading )
+					for( int s = 0 ; s < numFrames ; ++s )
 					{
-						currentLeftMeterReading = absFloat;
-					}
+						final float oneFloat = leftInputChannel[frameOffset + s] * tmpBuffer[s];
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-					leftMasterOutputChannel[frameOffset + s] += oneFloat;
+						if( absFloat > currentLeftMeterReading )
+						{
+							currentLeftMeterReading = absFloat;
+						}
+
+						leftMasterOutputChannel[frameOffset + s] += oneFloat;
+					}
+				}
+				else
+				{
+					for( int s = 0 ; s < numFrames ; ++s )
+					{
+						final float oneFloat = leftInputChannel[frameOffset + s] * desiredLeftAmpMultiplier;
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+						if( absFloat > currentLeftMeterReading )
+						{
+							currentLeftMeterReading = absFloat;
+						}
+
+						leftMasterOutputChannel[frameOffset + s] += oneFloat;
+					}
 				}
 			}
 
 			if( rightConnected )
 			{
-				rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
-
-				for( int s = 0 ; s < numFrames ; ++s )
+				if( !rightAmpInterpolator.checkForDenormal() )
 				{
-					final float oneFloat = rightInputChannel[frameOffset + s] * tmpBuffer[s];
-					final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+					rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 
-					if( absFloat > currentRightMeterReading )
+					for( int s = 0 ; s < numFrames ; ++s )
 					{
-						currentRightMeterReading = absFloat;
-					}
+						final float oneFloat = rightInputChannel[frameOffset + s] * tmpBuffer[s];
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-					rightMasterOutputChannel[frameOffset + s] += oneFloat;
+						if( absFloat > currentRightMeterReading )
+						{
+							currentRightMeterReading = absFloat;
+						}
+
+						rightMasterOutputChannel[frameOffset + s] += oneFloat;
+					}
+				}
+				else
+				{
+					for( int s = 0 ; s < numFrames ; ++s )
+					{
+						final float oneFloat = rightInputChannel[frameOffset + s] * desiredRightAmpMultiplier;
+						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+						if( absFloat > currentRightMeterReading )
+						{
+							currentRightMeterReading = absFloat;
+						}
+
+						rightMasterOutputChannel[frameOffset + s] += oneFloat;
+					}
 				}
 			}
 		}
@@ -131,12 +167,6 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 			currentLeftMeterReading = 0.0f;
 			currentRightMeterReading = 0.0f;
 		}
-	}
-
-	public final void checkForDenormal()
-	{
-		leftAmpInterpolator.checkForDenormal();
-		rightAmpInterpolator.checkForDenormal();
 	}
 
 	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long meterTimestamp )

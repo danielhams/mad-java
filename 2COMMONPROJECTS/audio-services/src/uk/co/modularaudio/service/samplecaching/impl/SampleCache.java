@@ -220,10 +220,10 @@ public class SampleCache
 		final int clientLastReadBlockNumber = client.getLastReadBlockNumber();
 
 		final int libraryEntryId = libraryEntry.getLibraryEntryId();
-		//		if( log.isDebugEnabled() )
-		//		{
-		//			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead );
-		//		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead + " frames");
+//		}
 
 		final int leNumChannels = libraryEntry.getNumChannels();
 		final long leTotalNumFrames = libraryEntry.getTotalNumFrames();
@@ -282,7 +282,6 @@ public class SampleCache
 		long rawFloatPosition = SampleCache.frameToRawFloat( readFramePosition, leNumChannels );
 		int blockNumber = (int)(rawFloatPosition / blockBufferingConfiguration.blockLengthInFloats );
 		boolean clientChangedBlocks = blockNumber != clientLastReadBlockNumber;
-		client.setLastReadBlockNumber( blockNumber );
 		int readFloatsOffset = (int)(rawFloatPosition % blockBufferingConfiguration.blockLengthInFloats );
 
 		final OpenLongObjectHashMap<SampleCacheBlock> blockIdToSampleCacheBlockMap = sce.getAtomicSampleCacheBlocksMap().get();
@@ -315,10 +314,10 @@ public class SampleCache
 			int floatsReadableFromPositionInBlock = numFloatsInBlock - readFloatsOffset;
 
 			final int numFloatsThisRound = (totalNumFloatsToRead < floatsReadableFromPositionInBlock ? totalNumFloatsToRead : floatsReadableFromPositionInBlock);
-			//			if( log.isDebugEnabled() )
-			//			{
-			//				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset + " writing to pos " + curOutputFloatPos );
-			//			}
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset + " writing to pos " + curOutputFloatPos );
+//			}
 
 			final float[] curBlockBuffer = curBlockData.getBuffer();
 
@@ -345,10 +344,13 @@ public class SampleCache
 
 		if( clientChangedBlocks )
 		{
-			//			if( log.isDebugEnabled() )
-			//			{
-			//				log.debug("Client changed blocks, will wake population thread");
-			//			}
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Client " + client.hashCode() + " for " +
+//						client.getLibraryEntry().getTitle() +
+//						" changed blocks, will wake population thread");
+//			}
+			client.setLastReadBlockNumber( blockNumber );
 			cachePopulatorThread.addOneJobToDo();
 		}
 

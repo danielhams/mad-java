@@ -65,42 +65,72 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 	{
 		final float[] tmpBuffer = tses.temporaryFloatArray;
 
-		// First left
-		leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 		final float[] leftOutputFloats = channelBuffers[ 0 ].floatBuffer;
-		for( int s = 0 ; s < numFrames ; ++s )
+		if( !leftAmpInterpolator.checkForDenormal() )
 		{
-			final float oneFloat = leftOutputFloats[ frameOffset + s ] * tmpBuffer[s];
-			final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-			if( absFloat > leftMeterLevel )
+			// First left
+			leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				leftMeterLevel = absFloat;
-			}
+				final float oneFloat = leftOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-			leftOutputFloats[ frameOffset + s ] = oneFloat;
+				if( absFloat > leftMeterLevel )
+				{
+					leftMeterLevel = absFloat;
+				}
+
+				leftOutputFloats[ frameOffset + s ] = oneFloat;
+			}
+		}
+		else
+		{
+			for( int s = 0 ; s < numFrames ; ++s )
+			{
+				final float oneFloat = leftOutputFloats[ frameOffset + s ] * desiredLeftAmpMultiplier;
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > leftMeterLevel )
+				{
+					leftMeterLevel = absFloat;
+				}
+
+				leftOutputFloats[ frameOffset + s ] = oneFloat;
+			}
 		}
 
-		rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 		final float[] rightOutputFloats = channelBuffers[ 1 ].floatBuffer;
-		for( int s = 0 ; s < numFrames ; ++s )
+		if( !rightAmpInterpolator.checkForDenormal() )
 		{
-			final float oneFloat = rightOutputFloats[ frameOffset + s ] * tmpBuffer[s];
-			final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-			if( absFloat > rightMeterLevel )
+			rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				rightMeterLevel = absFloat;
+				final float oneFloat = rightOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > rightMeterLevel )
+				{
+					rightMeterLevel = absFloat;
+				}
+
+				rightOutputFloats[ frameOffset + s ] = oneFloat;
 			}
-
-			rightOutputFloats[ frameOffset + s ] = oneFloat;
 		}
-	}
+		else
+		{
+			for( int s = 0 ; s < numFrames ; ++s )
+			{
+				final float oneFloat = rightOutputFloats[ frameOffset + s ] * desiredRightAmpMultiplier;
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-	public final void checkForDenormal()
-	{
-		leftAmpInterpolator.checkForDenormal();
-		rightAmpInterpolator.checkForDenormal();
+				if( absFloat > rightMeterLevel )
+				{
+					rightMeterLevel = absFloat;
+				}
+
+				rightOutputFloats[ frameOffset + s ] = oneFloat;
+			}
+		}
 	}
 
 	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )

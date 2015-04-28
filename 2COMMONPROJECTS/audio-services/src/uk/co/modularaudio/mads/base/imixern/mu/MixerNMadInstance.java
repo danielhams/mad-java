@@ -161,13 +161,6 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		limiterRt.filter( leftOutputFloats, frameOffset, numFrames );
 		limiterRt.filter( rightOutputFloats, frameOffset, numFrames );
 
-		// And do our once per call denormal checks
-		for( int il = 0 ; il < numInputLanes ; il++ )
-		{
-			channelLaneProcessors[il].checkForDenormal();
-		}
-		masterProcessor.checkForDenormal();
-
 //		debugTimestamp( "Done ", emitTimestamp );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
