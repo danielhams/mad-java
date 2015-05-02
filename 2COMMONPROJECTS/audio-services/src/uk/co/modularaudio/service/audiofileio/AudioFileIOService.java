@@ -46,6 +46,8 @@ public interface AudioFileIOService
 		DECODE
 	};
 
+	int getFormatSniffPriority();
+
 	Set<AudioFileFormat> listSupportedEncodingFormats();
 	Set<AudioFileFormat> listSupportedDecodingFormats();
 
@@ -64,6 +66,4 @@ public interface AudioFileIOService
 	// Some metadata methods I won't implement in Java
 	DynamicMetadata readMetadata( AudioFileHandleAtom handle ) throws DatastoreException, IOException;
 	void writeMetadata( AudioFileHandleAtom handle, DynamicMetadata outDynamicMetadata ) throws DatastoreException, IOException ;
-	// .. readMetadata
-	// .. writeMetadata
 }

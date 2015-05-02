@@ -304,4 +304,11 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		this.audioFileIORegistryService = audioFileIORegistryService;
 	}
 
+	@Override
+	public int getFormatSniffPriority()
+	{
+		// Top priority since we recognise most file formats
+		return 0;
+	}
+
 }

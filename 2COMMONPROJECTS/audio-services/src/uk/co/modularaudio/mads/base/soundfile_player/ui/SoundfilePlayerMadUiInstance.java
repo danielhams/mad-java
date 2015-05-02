@@ -211,9 +211,10 @@ public class SoundfilePlayerMadUiInstance extends
 
 	public void setFileInfo( final String filename )
 	{
-		final LoadNewSoundFileRunnable loadRunnable = new LoadNewSoundFileRunnable( advancedComponentsFrontController,
-				filename,
-				this );
+		final LoadNewSoundFileRunnable loadRunnable =
+				new LoadNewSoundFileRunnable( advancedComponentsFrontController,
+						filename,
+						this );
 		jobExecutorService.submitJob( loadRunnable );
 	}
 

@@ -32,6 +32,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.dsp.DcTrapFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -44,8 +45,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDefinition,SoundfilePlayerMadInstance>
@@ -60,10 +59,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		PLAYING
 	};
 
-	private static final float VALUE_CHASE_MILLIS = 0.5f;
-
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 1.0f;
+	public static final float PLAYBACK_SPEED_MAX = 1.5f;
 
 	private int numSamplesPerFrontEndPeriod = -1;
 
@@ -87,7 +83,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private int numSamplesTillNextEvent;
 
 	private float desiredPlaySpeed = 1.0f;
-	private float playSpeed = 1.0f;
+	private final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator(
+			-PLAYBACK_SPEED_MAX, PLAYBACK_SPEED_MAX );
 
 	public SoundfilePlayerMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -114,10 +111,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioForMillisAtSampleRate( sampleRate, VALUE_CHASE_MILLIS );
-		curValueRatio = 1.0f - newValueRatio;
-		curValueRatio = curValueRatio / 2.0f;
-		newValueRatio = 1.0f - curValueRatio;
+		speedSad.hardSetValue( desiredPlaySpeed );
 
 		numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
 
@@ -146,6 +140,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		final MadChannelBuffer rb = channelBuffers[ SoundfilePlayerMadDefinition.PRODUCER_RIGHT ];
 		final boolean rightConnected = channelConnectedFlags.get( SoundfilePlayerMadDefinition.PRODUCER_RIGHT );
 		final float[] rfb = rb.floatBuffer;
+
+		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
+		Arrays.fill( tmpBuffer, BlockResamplerService.MAGIC_FLOAT );
 
 		if( desiredState != currentState )
 		{
@@ -194,12 +191,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		{
 			if( active && numSamplesTillNextEvent <= 0 )
 			{
-				playSpeed = (playSpeed * curValueRatio) + (desiredPlaySpeed * newValueRatio);
-				if( playSpeed > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && playSpeed < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
-				{
-					playSpeed = 0.0f;
-				}
-
 				// Emit position event
 				final long eventFrameTime = periodStartFrameTime + curOutputPos;
 				final long curSamplePos = resampledSample.getFramePosition();
@@ -219,11 +210,22 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 				numThisRound = numFrames;
 			}
 //			log.debug("Doing " + numThisRound + " frames");
+			if( !speedSad.checkForDenormal() )
+			{
+				speedSad.generateControlValues( tmpBuffer, 0, numThisRound );
+			}
+			else
+			{
+				tmpBuffer[0] = desiredPlaySpeed;
+			}
 
-			blockResamplerService.sampleClientFetchFramesResample( tempQueueEntryStorage.temporaryFloatArray,
+			blockResamplerService.sampleClientFetchFramesResample(
+					tempQueueEntryStorage.temporaryFloatArray,
+//					numThisRound + 10,
+					4000,
 					resampledSample,
 					sampleRate,
-					playSpeed,
+					tmpBuffer[0],
 					lfb,
 					rfb,
 					frameOffset + curOutputPos,
@@ -235,8 +237,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			curOutputPos += numThisRound;
 		}
 
-		leftDcTrap.filter( lfb, frameOffset, numFrames );
-		rightDcTrap.filter( rfb, frameOffset, numFrames );
+//		leftDcTrap.filter( lfb, frameOffset, numFrames );
+//		rightDcTrap.filter( rfb, frameOffset, numFrames );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -275,8 +277,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		{
 			try
 			{
-//				SampleCacheClient scc = resampledSample.getSampleCacheClient();
-//				advancedComponentsFrontController.unregisterCacheClientForFile(scc);
 				blockResamplerService.destroyResamplingClient(resampledSample);
 			}
 			catch( final Exception e )
@@ -309,6 +309,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	public void setDesiredPlaySpeed( final float newSpeed )
 	{
 		desiredPlaySpeed = newSpeed;
+		speedSad.notifyOfNewValue( newSpeed );
 	}
 
 	public void resetFramePosition( final long newFramePosition )

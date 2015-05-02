@@ -211,7 +211,7 @@ public class SampleCache
 
 	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( final InternalSampleCacheClient client,
 			final float[] outputSamples,
-			int outputFramePos,
+			final int outputArrayPos,
 			long readFramePosition,
 			int numFramesToRead )
 	{
@@ -220,18 +220,19 @@ public class SampleCache
 		final int clientLastReadBlockNumber = client.getLastReadBlockNumber();
 
 		final int libraryEntryId = libraryEntry.getLibraryEntryId();
-//		if( log.isDebugEnabled() )
-//		{
-//			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead + " frames");
-//		}
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead + " frames");
+		}
 
 		final int leNumChannels = libraryEntry.getNumChannels();
 		final long leTotalNumFrames = libraryEntry.getTotalNumFrames();
 
-		int curOutputFloatPos = outputFramePos * leNumChannels;
 		int totalNumFloatsToRead = numFramesToRead * leNumChannels;
 
 		final long lastFramePositon = readFramePosition + numFramesToRead;
+
+		int curOutputFloatPos = outputArrayPos;
 
 		// Handling of pre or post frame values. We don't throw an error
 		// we just return zeros for unknown frames - it's the caller's
@@ -250,7 +251,7 @@ public class SampleCache
 			totalNumFloatsToRead -= numZeroFloats;
 			readFramePosition += numZeroFramesToFill;
 			numFramesToRead -= numZeroFramesToFill;
-			outputFramePos += numZeroFramesToFill;
+
 			//			if( log.isDebugEnabled() )
 			//			{
 			//				log.debug("This leaves " + numFramesToRead + " frames to be read");
@@ -266,9 +267,7 @@ public class SampleCache
 			final long numZeroFrames = lastFramePositon - leTotalNumFrames;
 			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
 			final int numZeroFloats = numZeroFramesToFill * leNumChannels;
-			final int zerosFrameOffset = outputFramePos + (numFramesToRead - numZeroFramesToFill);
-			final int zerosFloatOffset = curOutputFloatPos + (zerosFrameOffset * leNumChannels);
-			Arrays.fill( outputSamples, zerosFloatOffset, zerosFloatOffset + numZeroFloats, 0.0f );
+			Arrays.fill( outputSamples, curOutputFloatPos, curOutputFloatPos + numZeroFloats, 0.0f );
 			totalNumFloatsToRead -= numZeroFloats;
 			numFramesToRead -= numZeroFramesToFill;
 			if( numFramesToRead == 0 )
@@ -703,10 +702,10 @@ public class SampleCache
 		try
 		{
 			cacheAccessMutex.lock();
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Adding " + client.getLibraryEntry().getLocation() + " to listeners to notify list");
-			}
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Adding " + client.getLibraryEntry().getLocation() + " to listeners to notify list");
+//			}
 			listenersToNotifyOnNextCompletion.add( new TwoTuple<BufferFillCompletionListener, SampleCacheClient>( completionListener, client ) );
 			cachePopulatorThread.addOneJobToDo();
 		}

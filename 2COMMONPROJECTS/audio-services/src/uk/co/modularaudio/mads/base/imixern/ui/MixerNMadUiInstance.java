@@ -193,6 +193,17 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	public void sendUiActive( final boolean active )
 	{
 		sendCommandValueToInstance( MixerNIOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0 ) );
+		if( active )
+		{
+			// Reset meters to zero so they start as intended
+			for( int i = 0 ; i < laneMeterReceiversMap.length ; ++i )
+			{
+				laneMeterReceiversMap[i].receiveMeterReadingLevel( 0, 0, 0.0f );
+				laneMeterReceiversMap[i].receiveMeterReadingLevel( 0, 1, 0.0f );
+			}
+			masterMeterReceiver.receiveMeterReadingLevel( 0, 0, 0.0f );
+			masterMeterReceiver.receiveMeterReadingLevel( 0, 1, 0.0f );
+		}
 	}
 
 	public void sendLanePan( final int laneNumber, final float panValue )

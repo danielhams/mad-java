@@ -24,7 +24,7 @@ import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 
 public interface BlockResamplingClient
 {
-	long getFramePosition(); 
+	long getFramePosition();
 	void setFramePosition(long newPosition);
 
 	void setFpOffset(float newFpOffset);
@@ -33,5 +33,4 @@ public interface BlockResamplingClient
 	long getTotalNumFrames();
 
 	SampleCacheClient getSampleCacheClient();
-
 }

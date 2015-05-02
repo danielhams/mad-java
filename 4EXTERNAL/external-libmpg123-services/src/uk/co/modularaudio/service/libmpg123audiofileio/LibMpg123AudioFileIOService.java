@@ -326,17 +326,19 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 		{
 			log.trace("Hit DONE.");
 		}
+		else if( rv == mpg123_errors.MPG123_NEW_FORMAT.swigValue() )
+		{
+			log.warn("mpg123 warns of new format... but continuing");
+		}
 		else if( rv != mpg123_errors.MPG123_OK.swigValue() )
 		{
 			throw new IOException( "Failed during decode data: " + rv );
 		}
-		else
+
+		if( numFloatsRead != numFloats )
 		{
-			if( numFloatsRead != numFloats )
-			{
-				throw new IOException("Failed to read as many floats as we asked " +
-						" for - asked(" + numFloats + ") read(" + numFloatsRead + ")");
-			}
+			throw new IOException("Failed to read as many floats as we asked " +
+					" for - asked(" + numFloats + ") read(" + numFloatsRead + ")");
 		}
 
 		final int numFramesRead = numFloatsRead / numChannels;
@@ -369,6 +371,12 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 	public void setAudioFileIORegistryService( final AudioFileIORegistryService audioFileIORegistryService )
 	{
 		this.audioFileIORegistryService = audioFileIORegistryService;
+	}
+
+	@Override
+	public int getFormatSniffPriority()
+	{
+		return 1;
 	}
 
 }

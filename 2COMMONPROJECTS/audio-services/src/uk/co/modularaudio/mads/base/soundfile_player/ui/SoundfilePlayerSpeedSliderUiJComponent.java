@@ -50,7 +50,10 @@ public class SoundfilePlayerSpeedSliderUiJComponent extends PacPlaybackSpeedSlid
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -150.0f, 150.0f, 100.0f, 100.0f,
+		super( -SoundfilePlayerMadInstance.PLAYBACK_SPEED_MAX,
+				SoundfilePlayerMadInstance.PLAYBACK_SPEED_MAX,
+				1.0f,
+				1.0f,
 				"%",
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
@@ -72,7 +75,7 @@ public class SoundfilePlayerSpeedSliderUiJComponent extends PacPlaybackSpeedSlid
 
 	private void passChangeToInstanceData( final float newValue )
 	{
-		uiInstance.sendPlayingSpeed(newValue/100.0f);
+		uiInstance.sendPlayingSpeed(newValue);
 	}
 
 	@Override

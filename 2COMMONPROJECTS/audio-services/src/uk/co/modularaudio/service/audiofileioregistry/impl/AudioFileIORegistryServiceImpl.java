@@ -21,9 +21,11 @@
 package uk.co.modularaudio.service.audiofileioregistry.impl;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -50,7 +52,31 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	private final Map<AudioFileFormat, AudioFileIOService> formatToDecodingServiceMap =
 			new HashMap<AudioFileFormat, AudioFileIOService>();
 
-	private final Set<AudioFileIOService> services = new HashSet<AudioFileIOService>();
+
+	private class AudioFileIOServiceComparator implements Comparator<AudioFileIOService>
+	{
+
+		@Override
+		public int compare( final AudioFileIOService o1, final AudioFileIOService o2 )
+		{
+			final int o1p = o1.getFormatSniffPriority();
+			final int o2p = o2.getFormatSniffPriority();
+
+			if( o1p == o2p )
+			{
+				return o1.getClass().getName().compareTo( o2.getClass().getName() );
+			}
+			else
+			{
+				return o1p - o2p;
+			}
+		}
+	}
+
+	private final AudioFileIOServiceComparator afisc = new AudioFileIOServiceComparator();
+
+	private final PriorityQueue<AudioFileIOService> services =
+			new PriorityQueue<AudioFileIOService>( 2, afisc );
 
 	@Override
 	public void registerAudioFileIOService( final AudioFileIOService audioFileIOService )
@@ -232,27 +258,18 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	public AudioFileHandleAtom openFileForRead( final String path )
 		throws DatastoreException, UnsupportedAudioFileException, IOException
 	{
-		AudioFileHandleAtom retVal = null;
-		for( final AudioFileIOService oneService : services )
+		AudioFileFormat format;
+		AudioFileIOService fis;
+		try
 		{
-			try
-			{
-				retVal = oneService.openForRead( path );
-				break;
-			}
-			catch( final UnsupportedAudioFileException uafe )
-			{
-				if( log.isTraceEnabled() )
-				{
-					log.trace("Service \"" + oneService.getClass().getSimpleName() + "\" threw uafe for file " +
-							path );
-				}
-			}
+			format = sniffFileFormatOfFile( path );
+			fis = getAudioFileIOServiceForFormatAndDirection( format, AudioFileDirection.DECODE );
 		}
-		if( retVal == null )
+		catch( final RecordNotFoundException e )
 		{
-			throw new UnsupportedAudioFileException("Could not determine type of file \"" + path + "\"");
+			throw new IOException( e );
 		}
-		return retVal;
+
+		return fis.openForRead( path );
 	}
 }

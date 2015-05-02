@@ -39,8 +39,8 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class FakeSampleCachingService implements ComponentWithLifecycle, SampleCachingService
 {
 	private static Log log = LogFactory.getLog( FakeSampleCachingService.class.getName() );
-	
-	private FakeSampleCacheClient theClient = new FakeSampleCacheClient();
+
+	private final FakeSampleCacheClient theClient = new FakeSampleCacheClient();
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -53,7 +53,7 @@ public class FakeSampleCachingService implements ComponentWithLifecycle, SampleC
 	}
 
 	@Override
-	public SampleCacheClient registerCacheClientForFile(String path)
+	public SampleCacheClient registerCacheClientForFile(final String path)
 			throws NoSuchHibernateSessionException, DatastoreException,
 			UnsupportedAudioFileException
 	{
@@ -61,26 +61,26 @@ public class FakeSampleCachingService implements ComponentWithLifecycle, SampleC
 	}
 
 	@Override
-	public void unregisterCacheClientForFile(SampleCacheClient client)
+	public void unregisterCacheClientForFile(final SampleCacheClient client)
 			throws DatastoreException, RecordNotFoundException
 	{
 	}
 
 	@Override
 	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient(
-			SampleCacheClient client,
-			float[] outputSamples,
-			int outputFramePos,
-			int numFrames)
+			final SampleCacheClient client,
+			final float[] outputSamples,
+			final int outputFloatPos,
+			final int numFrames)
 	{
-		FakeSampleCacheClient scc = (FakeSampleCacheClient)client;
-		long curPos = scc.getCurrentFramePosition();
+		final FakeSampleCacheClient scc = (FakeSampleCacheClient)client;
+		final long curPos = scc.getCurrentFramePosition();
 		log.debug("Faking frames from " + curPos + " of length " + numFrames );
-		
+
 		for( int i = 0 ; i < numFrames ; ++i )
 		{
-			int leftOutputIndex = (outputFramePos + i) * 2;
-			int rightOutputIndex = leftOutputIndex + 1;
+			final int leftOutputIndex = outputFloatPos + (i * 2);
+			final int rightOutputIndex = leftOutputIndex + 1;
 			float value = (curPos + i);
 			if( value < 0 )
 			{
@@ -90,11 +90,11 @@ public class FakeSampleCachingService implements ComponentWithLifecycle, SampleC
 			{
 				value = 0;
 			}
-			
+
 			outputSamples[ leftOutputIndex ] = value;
 			outputSamples[ rightOutputIndex ] = value;
 		}
-		
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -105,21 +105,21 @@ public class FakeSampleCachingService implements ComponentWithLifecycle, SampleC
 
 	@Override
 	public RealtimeMethodReturnCodeEnum readSamplesInBlocksForCacheClient(
-			SampleCacheClient client, long framePosition, int numFrames,
-			SampleAcceptor sampleAcceptor)
+			final SampleCacheClient client, final long framePosition, final int numFrames,
+			final SampleAcceptor sampleAcceptor)
 	{
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
 	}
 
 	@Override
-	public String getSampleFileTitleForCacheClient( SampleCacheClient sampleCacheClient )
+	public String getSampleFileTitleForCacheClient( final SampleCacheClient sampleCacheClient )
 	{
 		return "BANANAS FOR YOU MY DEAR";
 	}
 
 	@Override
-	public void registerForBufferFillCompletion(SampleCacheClient client,
-			BufferFillCompletionListener completionListener)
+	public void registerForBufferFillCompletion(final SampleCacheClient client,
+			final BufferFillCompletionListener completionListener)
 	{
 		// Just call back immediately
 		completionListener.notifyBufferFilled(client);

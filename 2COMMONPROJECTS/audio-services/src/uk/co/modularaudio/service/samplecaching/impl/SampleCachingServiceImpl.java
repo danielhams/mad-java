@@ -163,11 +163,11 @@ public class SampleCachingServiceImpl implements ComponentWithLifecycle, SampleC
 	@Override
 	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( final SampleCacheClient client,
 			final float[] outputSamples,
-			final int outputFramePos,
+			final int outputArrayPos,
 			final int numFrames )
 	{
 		final InternalSampleCacheClient iscc = (InternalSampleCacheClient)client;
-		return sampleCache.readSamplesForCacheClient( iscc, outputSamples, outputFramePos, iscc.getCurrentFramePosition(), numFrames );
+		return sampleCache.readSamplesForCacheClient( iscc, outputSamples, outputArrayPos, iscc.getCurrentFramePosition(), numFrames );
 	}
 
 	@Override

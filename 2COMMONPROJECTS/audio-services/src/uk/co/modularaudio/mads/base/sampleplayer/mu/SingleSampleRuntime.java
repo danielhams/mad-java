@@ -355,6 +355,7 @@ public class SingleSampleRuntime
 			case PLAYING:
 			{
 				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
+						0,
 						playingSample,
 						outputSampleRate,
 						playbackSpeed,
@@ -372,6 +373,7 @@ public class SingleSampleRuntime
 			case SOFT_FADE:
 			{
 				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
+						0,
 						playingSample,
 						outputSampleRate,
 						playbackSpeed,
@@ -399,6 +401,7 @@ public class SingleSampleRuntime
 				if( numFramesLeftToOutput > 0 )
 				{
 					blockResamplerService.sampleClientFetchFramesResample( tmpBuffer,
+							0,
 							fadeOutSample,
 							outputSampleRate,
 							fadeOutSampleSpeed,
@@ -441,6 +444,7 @@ public class SingleSampleRuntime
 
 				// Now add on top normal playing samples
 				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
+						0,
 						playingSample,
 						outputSampleRate,
 						playbackSpeed,

@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.NTBlockResamplingClient;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -61,6 +62,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 	@Override
 	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( final float[] tmpBuffer,
+			final int tmpBufferOffset,
 			final BlockResamplingClient resamplingClient,
 			final int outputSampleRate,
 			final float playbackSpeed,
@@ -71,6 +73,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final boolean addToOutput )
 	{
 		return sampleClientUnifiedFetchAndResample( tmpBuffer,
+				tmpBufferOffset,
 				(InternalResamplingClient)resamplingClient,
 				outputSampleRate,
 				playbackSpeed,
@@ -84,6 +87,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 	@Override
 	public RealtimeMethodReturnCodeEnum sampleClientFetchFramesResampleWithAmps( final float[] tmpBuffer,
+			final int tmpBufferOffset,
 			final BlockResamplingClient resamplingClient,
 			final int outputSampleRate,
 			final float playbackSpeed,
@@ -95,6 +99,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final boolean addToOutput )
 	{
 		return sampleClientUnifiedFetchAndResample( tmpBuffer,
+				tmpBufferOffset,
 				(InternalResamplingClient)resamplingClient,
 				outputSampleRate,
 				playbackSpeed,
@@ -107,6 +112,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	}
 
 	private RealtimeMethodReturnCodeEnum sampleClientUnifiedFetchAndResample( final float[] tmpBuffer,
+		final int tmpBufferOffset,
 		final InternalResamplingClient resamplingClient,
 		final int outputSampleRate,
 		float playbackSpeed,
@@ -141,14 +147,14 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		final float curFpOffset = resamplingClient.getFpOffset();
 //		log.debug("curFramePosition(" + curFramePosition + ") and startFpOffset(" + MathFormatter.slowDoublePrint(curFpOffset, 3, false ) + ")");
 
-		final float fpNumFramesNeeded = (numFramesRequired * playbackSpeed);
+		final float fpNumFramesNeeded = (numFramesRequired * playbackSpeed) + (isForwards ? curFpOffset : 1.0f-curFpOffset);
 		final int intNumFramesNeeded = (int)Math.ceil(fpNumFramesNeeded);
 
-//		log.debug("Resample at frame(" + curFramePosition +") and fpoffset(" + startFpOffset +") need " + numRequired + " frames at speed " + playbackSpeed + " will read " + intNumFramesNeeded );
+//		log.debug("Resample at frame(" + curFramePosition +") and fpoffset(" + curFpOffset +") need " + fpNumFramesNeeded +
+//				" frames at speed " + playbackSpeed + " will read " + intNumFramesNeeded );
 
 		// Read needed first sample for cubic interpolation and two samples at the end
 		final int numFramesWithCubicSamples = intNumFramesNeeded + 3;
-		final int tmpBufferFramePosForRead = 0;
 
 		long adjustedFramePosition;
 		float adjustedFpOffset;
@@ -191,7 +197,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 		final RealtimeMethodReturnCodeEnum retCode = sampleCachingService.readSamplesForCacheClient( sampleCacheClient,
 				tmpBuffer,
-				tmpBufferFramePosForRead,
+				tmpBufferOffset,
 				numFramesWithCubicSamples );
 
 		if( retCode != RealtimeMethodReturnCodeEnum.SUCCESS )
@@ -203,19 +209,31 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			return retCode;
 		}
 
+		final int numFloats = numFramesWithCubicSamples * 2;
+		checkFloatsForMagic( "readSamples", tmpBuffer, tmpBufferOffset, numFloats );
+
 		// Split up into two streams of samples in the temporary buffer
-		final int leftNonInterleavedIndex = numFramesWithCubicSamples + numFramesWithCubicSamples;
-		final int rightNonInterleavedIndex = leftNonInterleavedIndex + numFramesWithCubicSamples;
+		final int leftNonInterleavedIndex =
+				tmpBufferOffset + numFramesWithCubicSamples + numFramesWithCubicSamples;
+		final int rightNonInterleavedIndex =
+				leftNonInterleavedIndex + numFramesWithCubicSamples;
 		deinterleaveFetchedSamples( tmpBuffer,
+				tmpBufferOffset,
 				numFramesWithCubicSamples,
 				leftNonInterleavedIndex,
 				rightNonInterleavedIndex);
+
+		checkFloatsForMagic( "deinterleave left", tmpBuffer, leftNonInterleavedIndex, numFramesWithCubicSamples );
+		checkFloatsForMagic( "deinterleave right", tmpBuffer, rightNonInterleavedIndex, numFramesWithCubicSamples );
 
 		if( !isForwards )
 		{
 			ArrayUtils.reverse( tmpBuffer, leftNonInterleavedIndex, numFramesWithCubicSamples );
 			ArrayUtils.reverse( tmpBuffer, rightNonInterleavedIndex, numFramesWithCubicSamples );
 		}
+
+		checkFloatsForMagic( "reverse left", tmpBuffer, leftNonInterleavedIndex, numFramesWithCubicSamples );
+		checkFloatsForMagic( "reverse right", tmpBuffer, rightNonInterleavedIndex, numFramesWithCubicSamples );
 
 		final BlockResamplingMethod resamplingMethod = resamplingClient.getResamplingMethod();
 
@@ -234,6 +252,9 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			interpolate( resamplingMethod, tmpBuffer, rightNonInterleavedIndex, adjustedFpOffset,
 					outputRightFloats, outputPos, numFramesRequired, playbackSpeed, haveAmps, amps );
 		}
+
+		checkFloatsForMagic( "interpolate left", outputLeftFloats, outputPos, numFramesRequired );
+		checkFloatsForMagic( "interpolate right", outputRightFloats, outputPos, numFramesRequired );
 
 		final int overflowInt = (int)fpNumFramesNeeded;
         final float overflowFpOffset = fpNumFramesNeeded - overflowInt;
@@ -272,24 +293,41 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	private void deinterleaveFetchedSamples(final float[] tmpBuffer, final int numFramesWithCubicSamples,
+	private static void checkFloatsForMagic( final String bufSource, final float[] buffer, final int offset, final int length )
+	{
+		for( int i = 0 ; i < length ; ++i )
+		{
+			if( Math.abs(buffer[ offset + i ])  >= BlockResamplerService.EXCESSIVE_FLOAT )
+			{
+				log.error("Magic float error from " + bufSource);
+			}
+		}
+	}
+
+	private void deinterleaveFetchedSamples(final float[] tmpBuffer,
+			final int tmpBufferOffset,
+			final int numFramesWithCubicSamples,
 			final int leftNonInterleavedIndex, final int rightNonInterleavedIndex)
 	{
 		for( int s = 0 ; s < numFramesWithCubicSamples ; ++s )
 		{
-			final int readOffset = (s * 2);
+			final int readOffset = tmpBufferOffset + (s * 2);
 			tmpBuffer[ leftNonInterleavedIndex + s ] = tmpBuffer[ readOffset ];
 			tmpBuffer[ rightNonInterleavedIndex + s ] = tmpBuffer[ readOffset + 1 ];
 		}
 	}
 
-	private void interpolate( final BlockResamplingMethod resamplingMethod, final float[] sourceBuffer, final int sourceIndex, final float sourceFrac,
-		final float[] output, final int outputPos, final int numFramesRequired, final float playbackSpeed, final boolean haveAmps, final float[] amps )
+	private void interpolate( final BlockResamplingMethod resamplingMethod,
+			final float[] sourceBuffer,
+			final int sourceIndex,
+			final float sourceFrac,
+			final float[] output,
+			final int outputPos,
+			final int numFramesRequired,
+			final float playbackSpeed,
+			final boolean haveAmps,
+			final float[] amps )
 	{
-		if( outputPos + numFramesRequired > output.length )
-		{
-			log.error("Badly computed length for interpolate!");
-		}
 		if( haveAmps )
 		{
 			switch( resamplingMethod )
@@ -424,6 +462,17 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final float y3 = sourceBuffer[ sourceIndex + 3 ];
 //			log.debug("CubicInterpolate between y0(" + y0 + ") y1(" + y1 + ") y2(" + y2 + ") y3(" + y3 + ")");
 
+			if( Math.abs(y0) >= BlockResamplerService.EXCESSIVE_FLOAT ||
+					Math.abs(y1) >= BlockResamplerService.EXCESSIVE_FLOAT ||
+					Math.abs(y2) >= BlockResamplerService.EXCESSIVE_FLOAT ||
+					Math.abs(y3) >= BlockResamplerService.EXCESSIVE_FLOAT )
+			{
+				log.error("Failed on frame " + s + " with vals " + y0 +
+						" " + y1 +
+						" " + y2 +
+						" " + y3 );
+			}
+
 			final float fracSq = frac * frac;
 
 //			float a0 = y3 - y2 - y0 + y1;
@@ -456,6 +505,14 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		{
 			final float y0 = sourceBuffer[ sourceIndex ];
 			final float y1 = sourceBuffer[ sourceIndex + 1 ];
+
+			if( Math.abs(y0) >= BlockResamplerService.EXCESSIVE_FLOAT ||
+					Math.abs(y1) >= BlockResamplerService.EXCESSIVE_FLOAT )
+			{
+				log.error("Failed on frame " + s + " with vals " + y0 +
+						" " + y1 );
+			}
+
 
 			output[ outputPos + s ] = (y0 * (1.0f - frac)) + (y1 * frac);
 			// Update source position using speed
@@ -677,6 +734,203 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	public void destroyResamplingClient( final BlockResamplingClient resamplingClient ) throws DatastoreException, RecordNotFoundException
 	{
 		final InternalResamplingClient brc = (InternalResamplingClient)resamplingClient;
+		final SampleCacheClient scc = brc.getSampleCacheClient();
+		sampleCachingService.unregisterCacheClientForFile(scc);
+	}
+
+	@Override
+	public RealtimeMethodReturnCodeEnum fetchAndResample( final NTBlockResamplingClient resamplingClient,
+			final int outputSampleRate,
+			float playbackSpeed,
+			final float[] outputLeftFloats, final float[] outputRightFloats,
+			final int outputPos, final int numFramesRequired,
+			final float[] tmpBuffer, final int tmpBufferOffset )
+	{
+		final boolean isForwards = (playbackSpeed >= 0.0f );
+		log.debug("Playing " + (isForwards ? "forwards" : "backwards") + " at speed " + playbackSpeed );
+
+		final NTInternalResamplingClient realClient = (NTInternalResamplingClient)resamplingClient;
+		final SampleCacheClient scc = realClient.getSampleCacheClient();
+
+		final int sourceSampleRate = scc.getSampleRate();
+		if( sourceSampleRate != outputSampleRate )
+		{
+			final float speedMultiplier = sourceSampleRate / (float)outputSampleRate;
+			playbackSpeed *= speedMultiplier;
+			log.debug("Sample rates differ - adjusted playback speed to " + playbackSpeed );
+		}
+
+		long prevSamplePos = realClient.getFramePosition();
+		float prevSampleFpOffset = realClient.getFpOffset();
+		log.debug("Prev sample pos(" + prevSamplePos + ":" + prevSampleFpOffset +")");
+
+		final long firstSamplePos;
+		float firstSampleFpOffset;
+		long samplesOffset;
+
+		if( isForwards )
+		{
+			firstSampleFpOffset = prevSampleFpOffset + playbackSpeed;
+			final int extraInt = (int)Math.floor(firstSampleFpOffset);
+			firstSamplePos = prevSamplePos + extraInt;
+			firstSampleFpOffset -= extraInt;
+		}
+		else
+		{
+			firstSampleFpOffset = prevSampleFpOffset + playbackSpeed;
+			final int extraInt = (int)Math.floor(firstSampleFpOffset);
+			firstSamplePos = prevSamplePos + extraInt;
+			firstSampleFpOffset -= extraInt;
+		}
+
+		final float dx = playbackSpeed * numFramesRequired;
+
+		log.debug("So first sample pos(" + firstSamplePos + ":" + firstSampleFpOffset +") and our delta is " + dx );
+
+		playbackSpeed = (playbackSpeed < 0.0f ? -playbackSpeed : playbackSpeed );
+		// For cubic, we use one frame before and (up to) 3 frames after (4 in total)
+		// 3 because the fp offset means we can span an extra one - it's easier to
+		// just always read one extra than worry about calculating the exact number
+		final int numFileFramesRequired = 4 +
+				(int)((numFramesRequired * playbackSpeed) + firstSampleFpOffset);
+
+//		log.debug("We require " + numFileFramesRequired + " frames from the file");
+
+		samplesOffset = (isForwards ?
+				firstSamplePos - 1 :
+				((firstSamplePos + 1) - numFileFramesRequired) );
+
+//		log.debug("We'll start reading from index " + samplesOffset );
+
+		scc.setCurrentFramePosition( samplesOffset );
+
+		final int fileReadBufferOffset = tmpBufferOffset;
+
+		final RealtimeMethodReturnCodeEnum fileReadRc = sampleCachingService.readSamplesForCacheClient(
+				scc,
+				tmpBuffer,
+				fileReadBufferOffset,
+				numFileFramesRequired );
+
+		if( fileReadRc != RealtimeMethodReturnCodeEnum.SUCCESS )
+		{
+			return fileReadRc;
+		}
+
+		checkFloatsForMagic( "postReadSamples", tmpBuffer, fileReadBufferOffset, numFileFramesRequired * 2 );
+
+		// De-interleave
+		final int leftDeinterleaveOffset = fileReadBufferOffset + numFileFramesRequired + numFileFramesRequired + 1000;
+		final int rightDeinterleaveOffset = leftDeinterleaveOffset + numFileFramesRequired + numFileFramesRequired + 1000;
+		deinterleaveFetchedSamples( tmpBuffer,
+				fileReadBufferOffset,
+				numFileFramesRequired,
+				leftDeinterleaveOffset, rightDeinterleaveOffset );
+		checkFloatsForMagic( "leftdeint", tmpBuffer, leftDeinterleaveOffset, numFileFramesRequired );
+		checkFloatsForMagic( "rightdeint", tmpBuffer, rightDeinterleaveOffset, numFileFramesRequired );
+
+//		checkFloatsForLargeDis( "leftdeint", tmpBuffer, leftDeinterleaveOffset, numFileFramesRequired );
+//		checkFloatsForLargeDis( "rightdeint", tmpBuffer, rightDeinterleaveOffset, numFileFramesRequired );
+
+		// Reverse the samples if we are going backwards
+		if( !isForwards )
+		{
+			ArrayUtils.reverse( tmpBuffer, leftDeinterleaveOffset, numFileFramesRequired );
+			ArrayUtils.reverse( tmpBuffer, rightDeinterleaveOffset, numFileFramesRequired );
+		}
+
+		// Now turn these into the output by resampling
+		// we need to start from the current sample and offset to make
+		// the fetch work
+		realClient.setFpOffset( isForwards ?
+				firstSampleFpOffset :
+				1.0f - firstSampleFpOffset );
+		final RealtimeMethodReturnCodeEnum rsRc = realClient.resample( tmpBuffer, leftDeinterleaveOffset,
+				tmpBuffer, rightDeinterleaveOffset,
+				outputLeftFloats, outputPos,
+				outputRightFloats, outputPos,
+				playbackSpeed,
+				numFramesRequired,
+				numFileFramesRequired );
+		if( rsRc != RealtimeMethodReturnCodeEnum.SUCCESS )
+		{
+			return rsRc;
+		}
+
+		checkFloatsForMagic( "leftResample", outputLeftFloats, outputPos, numFramesRequired );
+		checkFloatsForMagic( "rightResample", outputRightFloats, outputPos, numFramesRequired );
+
+		// Update our position
+		prevSampleFpOffset += dx;
+		final int extraInt = (int)Math.floor(prevSampleFpOffset);
+		prevSamplePos += extraInt;
+		prevSampleFpOffset -= extraInt;
+		log.debug("Updating to new position of " + prevSamplePos + ":" + prevSampleFpOffset +")");
+
+		realClient.setFramePosition( prevSamplePos );
+		realClient.setFpOffset( prevSampleFpOffset );
+
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	private static void checkFloatsForLargeDis( final String srcString, final float[] buffer, final int offset,
+			final int length )
+	{
+		float prevVal = buffer[offset];
+
+		for( int i = 0 ; i < length ; ++i )
+		{
+			final float curVal = buffer[offset +i];
+			final float diff = curVal - prevVal;
+			if( Math.abs(diff) >= 0.2f )
+			{
+				log.error("Arg, major discontinuity from " + srcString );
+			}
+			prevVal = curVal;
+		}
+	}
+
+	@Override
+	public RealtimeMethodReturnCodeEnum fetchAndResampleVarispeed( final NTBlockResamplingClient resamplingClient,
+			final int outputSampleRate,
+			final float[] playbackSpeeds,
+			final float[] outputLeftFloats, final float[] outputRightFloats,
+			final int outputPos, final int numFramesRequired,
+			final float[] tmpBuffer, final int tmpBufferOffset )
+	{
+		// Need to break it up into sections of "forward" or "backward"
+		// so we can read a bunch of samples at once and work on them.
+
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	@Override
+	public NTBlockResamplingClient createNTResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+			throws DatastoreException, IOException, UnsupportedAudioFileException
+	{
+		SampleCacheClient scc;
+		try
+		{
+			scc = sampleCachingService.registerCacheClientForFile(pathToFile);
+			final NTInternalResamplingClient brc = new NTInternalResamplingClient( scc,
+					resamplingMethod,
+					-1,
+					0.0f);
+			return brc;
+		}
+		catch( final NoSuchHibernateSessionException nshe )
+		{
+			final String msg = "Missing hibernate session during register of sample cache client: " + nshe.toString();
+			log.error( msg, nshe );
+			throw new DatastoreException( msg, nshe );
+		}
+	}
+
+	@Override
+	public void destroyNTResamplingClient( final NTBlockResamplingClient resamplingClient )
+			throws DatastoreException, RecordNotFoundException
+	{
+		final NTInternalResamplingClient brc = (NTInternalResamplingClient)resamplingClient;
 		final SampleCacheClient scc = brc.getSampleCacheClient();
 		sampleCachingService.unregisterCacheClientForFile(scc);
 	}

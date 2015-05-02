@@ -60,8 +60,8 @@ public abstract class PacPlaybackSpeedSlider extends JPanel implements ValueChan
 				2000,
 				500,
 				new SimpleSliderIntToFloatConverter(),
-				4,
-				0,
+				2,
+				2,
 				unitsStr );
 
 		this.controller = new SliderDisplayController( model );

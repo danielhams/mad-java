@@ -69,7 +69,7 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		final List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -92,43 +92,43 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 		readWriteOneFile( inputFile2, outputFile2 );
 	}
 
-	private void readWriteOneFile( String inputFilename, String outputFilename )
+	private void readWriteOneFile( final String inputFilename, final String outputFilename )
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
 			RecordNotFoundException
 	{
 		log.debug( "Will attempt to read a file from start to end." );
 
-		int blockLengthInFloats = bbc.blockLengthInFloats;
-		int numChannels = 2;
+		final int blockLengthInFloats = bbc.blockLengthInFloats;
+		final int numChannels = 2;
 
-		int numBlocksToCopy = 20;
+		final int numBlocksToCopy = 20;
 //		int numBlocksToCopy = 200;
 
-		int numFloatsToRead = (blockLengthInFloats * numBlocksToCopy) + 20;
-		int numFramesToRead = numFloatsToRead / numChannels;
+		final int numFloatsToRead = (blockLengthInFloats * numBlocksToCopy) + 20;
+		final int numFramesToRead = numFloatsToRead / numChannels;
 
-		int outputFrameLength = 2048;
-		float[] outputFrameFloats = new float[ (outputFrameLength + 3) * numChannels ];
+		final int outputFrameLength = 2048;
+		final float[] outputFrameFloats = new float[ (outputFrameLength + 3) * numChannels ];
 
 //		int outputFrameIndex = 0;
 //		int numOutputFrames = 32;
 //		float playbackSpeed = 1.0f;
 
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
 		Thread.sleep( 200 );
 
-		int sampleRate = 44100;
-		WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
+		final int sampleRate = 44100;
+		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
 
-		long totalNumFrames = scc1.getTotalNumFrames();
+		final long totalNumFrames = scc1.getTotalNumFrames();
 		long numToRead = ( totalNumFrames < numFramesToRead ? totalNumFrames : numFramesToRead );
 		// Use an offset to verify block boundary reads
 		long readFramePosition = 0;
 		scc1.setCurrentFramePosition( readFramePosition );
 		while( numToRead > 0 )
 		{
-			boolean isFirstFrame = (readFramePosition == 0);
-			int numFramesThisRound = (int)(outputFrameLength < numToRead ? outputFrameLength : numToRead );
+			final boolean isFirstFrame = (readFramePosition == 0);
+			final int numFramesThisRound = (int)(outputFrameLength < numToRead ? outputFrameLength : numToRead );
 			int numFramesWithInterpolationFrames = numFramesThisRound;
 			int readArrayFramePosition = 0;
 			if( isFirstFrame )
@@ -141,7 +141,8 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 				numFramesWithInterpolationFrames += 3;
 				scc1.setCurrentFramePosition( readFramePosition - 1 );
 			}
-			RealtimeMethodReturnCodeEnum retCode = scsi.readSamplesForCacheClient( scc1, outputFrameFloats, readArrayFramePosition, numFramesWithInterpolationFrames );
+			final RealtimeMethodReturnCodeEnum retCode = scsi.readSamplesForCacheClient( scc1,
+					outputFrameFloats, readArrayFramePosition * numChannels, numFramesWithInterpolationFrames );
 			if( retCode == RealtimeMethodReturnCodeEnum.SUCCESS )
 			{
 				waveFileWriter.writeFloats( outputFrameFloats, 2, numFramesThisRound * numChannels );
