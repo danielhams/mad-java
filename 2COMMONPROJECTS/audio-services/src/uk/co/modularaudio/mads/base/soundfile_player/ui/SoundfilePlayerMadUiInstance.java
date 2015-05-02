@@ -35,8 +35,8 @@ import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.LoadNewSoundFil
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.SoundFileLoadCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -297,7 +297,8 @@ public class SoundfilePlayerMadUiInstance extends
 	public void notifyBufferFilled( final SampleCacheClient sampleCacheClient )
 	{
 		log.debug("Received notification that the buffer is filled. Promoting to resampler client.");
-		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient( sampleCacheClient,
+		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient(
+				sampleCacheClient,
 			BlockResamplingMethod.CUBIC );
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );

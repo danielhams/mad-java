@@ -25,9 +25,6 @@ import java.awt.Font;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -49,7 +46,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 		"-"
 	};
 
-	private static Log log = LogFactory.getLog( SoundfilePlayerZoomToggleGroupUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( SoundfilePlayerZoomToggleGroupUiJComponent.class.getName() );
 
 	private final PacToggleGroup toggleGroup;
 
@@ -103,10 +100,10 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	@Override
 	public void setZoomDataListener( final ZoomDataListener dataListener )
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Received data listener - will set zoom millis to " + currentZoomMillis );
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Received data listener - will set zoom millis to " + currentZoomMillis );
+//		}
 		this.dataListener = dataListener;
 		dataListener.setZoomMillis( currentZoomMillis );
 	}
@@ -120,10 +117,10 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	@Override
 	public void receiveControlValue(final String value)
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Receiving control value " + value );
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Receiving control value " + value );
+//		}
 		final int intValue = Integer.valueOf(value);
 		toggleGroup.setSelectedItemIndex( intValue );
 		this.currentZoomMillis = ZOOM_MILLIS[intValue];

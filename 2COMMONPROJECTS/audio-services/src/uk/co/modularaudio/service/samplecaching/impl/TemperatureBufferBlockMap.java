@@ -97,7 +97,7 @@ public class TemperatureBufferBlockMap
 
 		if( retVal == null )
 		{
-			String msg = "Failed to find hot block to move to warm queue with ID " + blockID;
+			final String msg = "Failed to find hot block to move to warm queue with ID " + blockID;
 			log.error( msg );
 			throw new BlockNotAvailableException( msg );
 		}
@@ -129,7 +129,7 @@ public class TemperatureBufferBlockMap
 		hotBlocks.add( blockToUse );
 	}
 
-	public void reheatBlock( SampleCacheBlock curBlock )
+	public void reheatBlock( final SampleCacheBlock curBlock )
 	{
 		warmBlocks.remove( curBlock );
 		assert curBlock.useStatus.get() == SampleCacheBlockEnum.WARM;
@@ -145,7 +145,7 @@ public class TemperatureBufferBlockMap
 		{
 			retVal = warmBlocks.remove();
 		}
-		catch( NoSuchElementException nsee )
+		catch( final NoSuchElementException nsee )
 		{
 			throw new BlockNotAvailableException();
 		}

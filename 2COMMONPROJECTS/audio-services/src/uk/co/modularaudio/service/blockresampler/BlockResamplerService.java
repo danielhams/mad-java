@@ -31,7 +31,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public interface BlockResamplerService
 {
-	public final static float MAGIC_FLOAT = 999999999f;
+	public final static float MAGIC_FLOAT = 9999f;
 	public final static float EXCESSIVE_FLOAT = 10.0f;
 
 	BlockResamplingClient createResamplingClient( String pathToFile,
@@ -42,55 +42,23 @@ public interface BlockResamplerService
 			BlockResamplingMethod cubic );
 
 	void destroyResamplingClient( BlockResamplingClient resamplingClient )
-			throws DatastoreException, RecordNotFoundException;
-
-	RealtimeMethodReturnCodeEnum sampleClientFetchFramesResample( float[] tmpBuffer,
-			int tmpBufferOffset,
-			BlockResamplingClient resamplingClient,
-			int outputSampleRate,
-			float playbackSpeed,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
-			int numRequired,
-			boolean addToOutput );
-
-	RealtimeMethodReturnCodeEnum sampleClientFetchFramesResampleWithAmps( float[] tmpBuffer,
-			int tmpBufferOffset,
-			BlockResamplingClient resamplingClient,
-			int outputSampleRate,
-			float playbackSpeed,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
-			int numRequired,
-			float[] requiredAmps,
-			boolean addToOutput );
-
-	NTBlockResamplingClient createNTResamplingClient( String pathToFile,
-			BlockResamplingMethod resamplingMethod )
-		throws DatastoreException, IOException, UnsupportedAudioFileException;
-
-	void destroyNTResamplingClient( NTBlockResamplingClient resamplingClient )
 		throws DatastoreException, RecordNotFoundException;
 
 
-	RealtimeMethodReturnCodeEnum fetchAndResample( NTBlockResamplingClient resamplingClient,
+	RealtimeMethodReturnCodeEnum fetchAndResample( BlockResamplingClient resamplingClient,
 			int outputSampleRate,
 			float playbackSpeed,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
+			float[] outputLeftFloats, int outputLeftOffset,
+			float[] outputRightFloats, int outputRightOffset,
 			int numFramesRequired,
 			float[] tmpBuffer,
 			int tmpBufferOffset );
 
-	RealtimeMethodReturnCodeEnum fetchAndResampleVarispeed( NTBlockResamplingClient resamplingClient,
+	RealtimeMethodReturnCodeEnum fetchAndResampleVarispeed( BlockResamplingClient resamplingClient,
 			int outputSampleRate,
 			float[] playbackSpeeds,
-			float[] outputLeftFloats,
-			float[] outputRightFloats,
-			int outputPos,
+			float[] outputLeftFloats, int outputLeftOffset,
+			float[] outputRightFloats, int outputRightOffset,
 			int numFramesRequired,
 			float[] tmpBuffer,
 			int tmpBufferOffset );

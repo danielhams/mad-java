@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSampleState.Event;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -354,17 +354,22 @@ public class SingleSampleRuntime
 			}
 			case PLAYING:
 			{
-				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
-						0,
+				blockResamplerService.fetchAndResample(
 						playingSample,
 						outputSampleRate,
 						playbackSpeed,
-						audioOutLeftFloats,
-						audioOutRightFloats,
-						periodStartIndex,
+						audioOutLeftFloats, periodStartIndex,
+						audioOutRightFloats, periodStartIndex,
 						length,
-						ampFloats,
-						false );
+						tmpBuffer,
+						0 );
+
+				for( int i = 0 ; i < length ; ++i )
+				{
+					final float amp = ampFloats[periodStartIndex+i];
+					audioOutLeftFloats[periodStartIndex+i] *= amp;
+					audioOutRightFloats[periodStartIndex+i] *= amp;
+				}
 
 				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
@@ -372,17 +377,23 @@ public class SingleSampleRuntime
 			}
 			case SOFT_FADE:
 			{
-				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
-						0,
+				blockResamplerService.fetchAndResample(
 						playingSample,
 						outputSampleRate,
 						playbackSpeed,
-						audioOutLeftFloats,
-						audioOutRightFloats,
-						periodStartIndex,
+						audioOutLeftFloats, periodStartIndex,
+						audioOutRightFloats, periodStartIndex,
 						length,
-						ampFloats,
-						false );
+						tmpBuffer,
+						0 );
+
+				for( int i = 0 ; i < length ; ++i )
+				{
+					final float amp = ampFloats[periodStartIndex+i];
+					audioOutLeftFloats[periodStartIndex+i] *= amp;
+					audioOutRightFloats[periodStartIndex+i] *= amp;
+				}
+
 				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
 				if( playingSampleLastAmp == 0.0f )
@@ -400,16 +411,15 @@ public class SingleSampleRuntime
 
 				if( numFramesLeftToOutput > 0 )
 				{
-					blockResamplerService.sampleClientFetchFramesResample( tmpBuffer,
-							0,
+					blockResamplerService.fetchAndResample(
 							fadeOutSample,
 							outputSampleRate,
 							fadeOutSampleSpeed,
-							audioOutLeftFloats,
-							audioOutRightFloats,
-							periodStartIndex,
+							audioOutLeftFloats, periodStartIndex,
+							audioOutRightFloats, periodStartIndex,
 							numFramesToOutput,
-							false );
+							tmpBuffer,
+							0 );
 
 					// Apply hard fade out amps
 					for( int s = 0 ; s < numFramesToOutput ; s++ )
@@ -442,18 +452,28 @@ public class SingleSampleRuntime
 					}
 				}
 
-				// Now add on top normal playing samples
-				blockResamplerService.sampleClientFetchFramesResampleWithAmps( tmpBuffer,
-						0,
-						playingSample,
-						outputSampleRate,
-						playbackSpeed,
-						audioOutLeftFloats,
-						audioOutRightFloats,
-						periodStartIndex,
-						length,
-						ampFloats,
-						true );
+				// Pull the normal playing samples to the side
+				final int tmpLeftOutputIndex = 0;
+				final int tmpRightOutputIndex = tmpLeftOutputIndex + length;
+				final int tmpBufferOtherIndex = tmpRightOutputIndex + length;
+
+				blockResamplerService.fetchAndResample(
+					playingSample,
+					outputSampleRate,
+					playbackSpeed,
+					audioOutLeftFloats, tmpLeftOutputIndex,
+					audioOutRightFloats, tmpRightOutputIndex,
+					length,
+					tmpBuffer,
+					tmpBufferOtherIndex );
+
+				// Add in over the top
+				for( int i = 0 ; i < length ; ++ i )
+				{
+					audioOutLeftFloats[periodStartIndex+i] += tmpBuffer[tmpLeftOutputIndex+i];
+					audioOutRightFloats[periodStartIndex+i] += tmpBuffer[tmpRightOutputIndex+i];
+				}
+
 				playingSampleSpeed = playbackSpeed;
 				playingSampleLastAmp = ampFloats[ periodEndIndex - 1 ];
 				break;

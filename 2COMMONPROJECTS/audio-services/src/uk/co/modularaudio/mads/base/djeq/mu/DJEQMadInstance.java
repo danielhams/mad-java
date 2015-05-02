@@ -43,7 +43,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInstance>
 {
-//	private static Log log = LogFactory.getLog( EnvelopeMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( DJEQMadInstance.class.getName() );
 
 	private final static float VALUE_CHASE_MILLIS = 10.0f;
 
@@ -86,11 +86,11 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
-		highSad.notifyOfNewValue( 1.0f );
-		midSad.notifyOfNewValue( 1.0f );
-		lowSad.notifyOfNewValue( 1.0f );
+		highSad.hardSetValue( 1.0f );
+		midSad.hardSetValue( 1.0f );
+		lowSad.hardSetValue( 1.0f );
 
-		faderSad.notifyOfNewValue( 1.0f );
+		faderSad.hardSetValue( 0.0f );
 	}
 
 	@Override

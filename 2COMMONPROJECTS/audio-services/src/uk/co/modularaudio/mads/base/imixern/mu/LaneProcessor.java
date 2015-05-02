@@ -39,10 +39,10 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 	private final int leftIndex;
 	private final int rightIndex;
 
-	private float desiredAmpMultiplier = 0.5f;
+	private float desiredAmpMultiplier = 0.0f;
 
-	private float desiredLeftAmpMultiplier = 0.5f;
-	private float desiredRightAmpMultiplier = 0.5f;
+	private float desiredLeftAmpMultiplier = 0.0f;
+	private float desiredRightAmpMultiplier = 0.0f;
 
 	private float desiredPanValue;
 
@@ -67,6 +67,9 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 		this.laneNumber = laneNumber;
 		leftIndex = (laneNumber + 1) * 2;
 		rightIndex = leftIndex + 1;
+
+		leftAmpInterpolator.hardSetValue( 0.0f );
+		rightAmpInterpolator.hardSetValue( 0.0f );
 	}
 
 	public void processLaneMixToOutput( final ThreadSpecificTemporaryEventStorage tses,

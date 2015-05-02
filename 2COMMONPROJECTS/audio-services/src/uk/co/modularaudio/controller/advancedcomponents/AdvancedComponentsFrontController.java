@@ -27,8 +27,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
@@ -108,13 +108,14 @@ public interface AdvancedComponentsFrontController
 	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
 			throws DatastoreException, IOException, UnsupportedAudioFileException;
 
-	BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
-			final BlockResamplingMethod cubic );
+	BlockResamplingClient promoteSampleCacheClientToResamplingClient( SampleCacheClient sampleCacheClient,
+			BlockResamplingMethod cubic );
 
 	void destroyResamplingClient( final BlockResamplingClient resamplingClient )
 			throws DatastoreException, RecordNotFoundException;
 
 	AnalysedData registerForLibraryEntryAnalysis( LibraryEntry libraryEntry,
 			AnalysisFillCompletionListener analysisListener ) throws DatastoreException;
+
 
 }

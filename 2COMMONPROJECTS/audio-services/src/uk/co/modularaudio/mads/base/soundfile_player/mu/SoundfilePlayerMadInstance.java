@@ -142,7 +142,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		final float[] rfb = rb.floatBuffer;
 
 		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
-		Arrays.fill( tmpBuffer, BlockResamplerService.MAGIC_FLOAT );
 
 		if( desiredState != currentState )
 		{
@@ -219,26 +218,23 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 				tmpBuffer[0] = desiredPlaySpeed;
 			}
 
-			blockResamplerService.sampleClientFetchFramesResample(
-					tempQueueEntryStorage.temporaryFloatArray,
-//					numThisRound + 10,
-					4000,
+			blockResamplerService.fetchAndResample(
 					resampledSample,
 					sampleRate,
 					tmpBuffer[0],
-					lfb,
-					rfb,
-					frameOffset + curOutputPos,
+					lfb, frameOffset + curOutputPos,
+					rfb, frameOffset + curOutputPos,
 					numThisRound,
-					false );
+					tmpBuffer,
+					numThisRound );
 
 			numStillToOutput -= numThisRound;
 			numSamplesTillNextEvent -= numThisRound;
 			curOutputPos += numThisRound;
 		}
 
-//		leftDcTrap.filter( lfb, frameOffset, numFrames );
-//		rightDcTrap.filter( rfb, frameOffset, numFrames );
+		leftDcTrap.filter( lfb, frameOffset, numFrames );
+		rightDcTrap.filter( rfb, frameOffset, numFrames );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -277,7 +273,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		{
 			try
 			{
-				blockResamplerService.destroyResamplingClient(resampledSample);
+				blockResamplerService.destroyResamplingClient( resampledSample );
 			}
 			catch( final Exception e )
 			{

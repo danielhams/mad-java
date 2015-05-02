@@ -36,9 +36,8 @@ import org.springframework.context.support.GenericApplicationContext;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
-import uk.co.modularaudio.service.blockresampler.NTBlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
@@ -92,11 +91,11 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 //	private final static float PLAYBACK_SPEED = 0.1f;
 //	float playbackSpeed = 0.01f;
 
-	private final static float PLAYBACK_DIRECTION = -1.0f;
+	public final static float PLAYBACK_DIRECTION = -1.0f;
 
-	private final static float NUM_SECONDS = 10.0f;
+	public final static float NUM_SECONDS = 10.0f;
 
-	private final static int OUTPUT_SAMPLE_RATE = 48000;
+	public final static int OUTPUT_SAMPLE_RATE = 48000;
 
 	public TestBlockResamplingServiceWriteFile()
 	{
@@ -135,12 +134,23 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		newReadWriteOneFile( inputFile, newOutputFile );
 	}
 
+	public float updatePlaybackSpeed( final float currentSpeed )
+	{
+		final float absSpeed = currentSpeed * PLAYBACK_DIRECTION;
+		if( absSpeed > 0.25f )
+		{
+			return (absSpeed - 0.01f) * PLAYBACK_DIRECTION;
+		}
+		else
+		{
+			return currentSpeed;
+		}
+	}
+
 	private void readWriteOneFile( final String inputFilename, final String outputFilename )
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
 			RecordNotFoundException
 	{
-		log.debug( "Will attempt to read a file from start to end." );
-
 		final ThreadSpecificTemporaryEventStorage tempEventStorage = new ThreadSpecificTemporaryEventStorage( 8192 );
 		// Fill temp storage with crap to show up any issues with boundary cases
 		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
@@ -177,15 +187,15 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		Thread.sleep( 200 );
 
-//		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
-//			2,
-//			outputSampleRate,
-//			(short) 16 );
-		// Only use 1 channel while I'm debugging
 		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
-				1,
-				outputSampleRate,
-				(short) 16 );
+			2,
+			outputSampleRate,
+			(short) 16 );
+//		// Only use 1 channel while I'm debugging
+//		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
+//				1,
+//				outputSampleRate,
+//				(short) 16 );
 
 		long numToOutput = numFramesToOutput;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
@@ -193,16 +203,16 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		while (numToOutput > 0)
 		{
 			final int numFramesThisRound = (int) (outputFrameLength < numToOutput ? outputFrameLength : numToOutput);
-			final RealtimeMethodReturnCodeEnum retCode = brsi.sampleClientFetchFramesResample( tempEventStorage.temporaryFloatArray,
-					4000,
+
+			final RealtimeMethodReturnCodeEnum retCode = brsi.fetchAndResample(
 					brc,
 					outputSampleRate,
 					playbackSpeed,
-					outputLeftFloats,
-					outputRightFloats,
-					0,
+					outputLeftFloats, 0,
+					outputRightFloats, 0,
 					numFramesThisRound,
-					false );
+					tempEventStorage.temporaryFloatArray,
+					4000 );
 
 			limiter.filter( outputLeftFloats, 0, numFramesThisRound );
 			limiter.filter( outputRightFloats, 0, numFramesThisRound );
@@ -211,8 +221,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 			if (retCode == RealtimeMethodReturnCodeEnum.SUCCESS)
 			{
-//				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
-				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
+				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
+//				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
 
 				readFramePosition = readFramePosition + numFramesThisRound;
 				numToOutput -= numFramesThisRound;
@@ -227,14 +237,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 			completionListener.waitForSignal();
 			scsi.dumpSampleCacheToLog();
 
-			if( playbackSpeed > 0.25f )
-			{
-				playbackSpeed -= 0.01f;
-			}
-//			if( playbackSpeed < 1.2f )
-//			{
-//				playbackSpeed += 0.01f;
-//			}
+			playbackSpeed = updatePlaybackSpeed( playbackSpeed );
 		}
 
 //		frontController.unregisterCacheClientForFile( scc1 );
@@ -249,14 +252,12 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
 			RecordNotFoundException
 	{
-		log.debug( "Will attempt to read a file from start to end." );
-
 		final ThreadSpecificTemporaryEventStorage tempEventStorage = new ThreadSpecificTemporaryEventStorage( 8192 );
 		// Fill temp storage with crap to show up any issues with boundary cases
 		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 
 		hsc.getThreadSession();
-		final NTBlockResamplingClient brc = brsi.createNTResamplingClient( inputFilename,
+		final BlockResamplingClient brc = brsi.createResamplingClient( inputFilename,
 				BlockResamplingMethod.CUBIC );
 		final SampleCacheClient scc1 = brc.getSampleCacheClient();
 
@@ -286,14 +287,14 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		Thread.sleep( 200 );
 
-//		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
-//			2,
-//			outputSampleRate,
-//			(short) 16 );
 		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
-				1,
-				outputSampleRate,
-				(short) 16 );
+			2,
+			outputSampleRate,
+			(short) 16 );
+//		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
+//				1,
+//				outputSampleRate,
+//				(short) 16 );
 
 		long numToOutput = numFramesToOutput;
 		long numSoFar = 0;
@@ -311,7 +312,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 					brsi.fetchAndResample( brc,
 							outputSampleRate,
 							playbackSpeed,
-							outputLeftFloats, outputRightFloats, outputPos,
+							outputLeftFloats, outputPos,
+							outputRightFloats, outputPos,
 							numFramesThisRound,
 							tmpBuffer, tmpBufferOffset );
 
@@ -322,8 +324,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 			if (retCode == RealtimeMethodReturnCodeEnum.SUCCESS)
 			{
-//				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
-				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
+				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
+//				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
 
 				readFramePosition = readFramePosition + numFramesThisRound;
 				numToOutput -= numFramesThisRound;
@@ -339,23 +341,16 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 			completionListener.waitForSignal();
 //			scsi.dumpSampleCacheToLog();
 
-			if( playbackSpeed > 0.25f )
-			{
-				playbackSpeed -= 0.01f;
-			}
-//			if( playbackSpeed < 1.2f )
-//			{
-//				playbackSpeed += 0.01f;
-//			}
+			playbackSpeed = updatePlaybackSpeed( playbackSpeed );
 		}
 
-		brsi.destroyNTResamplingClient( brc );
+		brsi.destroyResamplingClient( brc );
 
 		waveFileWriter.close();
 
 		hsc.releaseThreadSessionNoException();
 
-		log.debug( "All done" );
+		log.debug( "All done - output " + numSoFar + " frames" );
 	}
 
 	private void channelToInterleaved( final float[] leftFloats, final float[] rightFloats, final float[] outputFrameFloats, final int numFrames )

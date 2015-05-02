@@ -205,10 +205,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 
 		this.lastOverviewWidth = lastWidth - (2 * WAVE_OVERVIEW_INTRO_PIXELS) - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
 		this.lastOverviewHeight = lastHeight - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
-		if( log.isTraceEnabled() )
-		{
-			log.trace("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
-		}
+//		if( log.isTraceEnabled() )
+//		{
+//			log.trace("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
+//		}
 	}
 
 	public void handleOverviewClickAtPoint( final Point point )
@@ -216,10 +216,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final int clickX = point.x;
 		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS - WAVE_OVERVIEW_BORDER_PIXELS) /
 				(float)lastOverviewWidth;
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Received click at " + point.x + " normalised to " + normalisedPosition );
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Received click at " + point.x + " normalised to " + normalisedPosition );
+//		}
 		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
 	}
 

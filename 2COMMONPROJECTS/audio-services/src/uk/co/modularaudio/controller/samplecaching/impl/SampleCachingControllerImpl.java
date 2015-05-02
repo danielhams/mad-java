@@ -25,8 +25,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;

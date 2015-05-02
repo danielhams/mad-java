@@ -38,8 +38,8 @@ import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -233,7 +233,8 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
-	public BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+	public BlockResamplingClient createResamplingClient( final String pathToFile,
+			final BlockResamplingMethod resamplingMethod )
 			throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		// Hibernate session needed so added to internal library
@@ -275,19 +276,19 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
-	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
-			final BlockResamplingMethod cubic )
-	{
-		// No hibernate session needed.
-		return sampleCachingController.promoteSampleCacheClientToResamplingClient( sampleCacheClient, cubic );
-	}
-
-	@Override
 	public void destroyResamplingClient( final BlockResamplingClient resamplingClient )
 			throws DatastoreException, RecordNotFoundException
 	{
 		// No hibernate session needed.
 		sampleCachingController.destroyResamplingClient( resamplingClient );
+	}
+
+	@Override
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic )
+	{
+		// No hibernate session needed.
+		return sampleCachingController.promoteSampleCacheClientToResamplingClient( sampleCacheClient, cubic );
 	}
 
 	@Override

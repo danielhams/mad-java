@@ -182,6 +182,7 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 	{
 		curState.x = value;
 		curState.v = 0.0;
+		desPos = value;
 	}
 
 	private final void evaluate( final State initial,

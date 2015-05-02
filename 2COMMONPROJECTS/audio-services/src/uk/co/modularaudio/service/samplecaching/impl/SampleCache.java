@@ -220,10 +220,10 @@ public class SampleCache
 		final int clientLastReadBlockNumber = client.getLastReadBlockNumber();
 
 		final int libraryEntryId = libraryEntry.getLibraryEntryId();
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead + " frames");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Need samples for " + libraryEntry.getLocation() + " at frame position " + readFramePosition + " of " + numFramesToRead + " frames");
+//		}
 
 		final int leNumChannels = libraryEntry.getNumChannels();
 		final long leTotalNumFrames = libraryEntry.getTotalNumFrames();

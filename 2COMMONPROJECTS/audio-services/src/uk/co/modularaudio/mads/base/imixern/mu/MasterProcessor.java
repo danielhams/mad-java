@@ -34,10 +34,10 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 
 	private final I instance;
 
-	private float desiredAmpMultiplier = 0.5f;
+	private float desiredAmpMultiplier = 0.0f;
 
-	private float desiredLeftAmpMultiplier = 0.5f;
-	private float desiredRightAmpMultiplier = 0.5f;
+	private float desiredLeftAmpMultiplier = 0.0f;
+	private float desiredRightAmpMultiplier = 0.0f;
 
 	private float desiredPanValue;
 
@@ -55,6 +55,8 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 			final MixerNInstanceConfiguration channelConfiguration )
 	{
 		this.instance = instance;
+		leftAmpInterpolator.hardSetValue( 0.0f );
+		rightAmpInterpolator.hardSetValue( 0.0f );
 	}
 
 	public void processMasterOutput( final ThreadSpecificTemporaryEventStorage tses,

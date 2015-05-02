@@ -25,8 +25,8 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.impl.BlockResamplerServiceImpl;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -107,15 +107,17 @@ public class TestBlockResamplingServiceFakeValues extends TestCase
 		{
 			log.debug("Asking to resample from position(" + brc.getFramePosition() +
 					":" + MathFormatter.slowFloatPrint( brc.getFpOffset(), 4, false) +")" );
-			blockResamplingService.sampleClientFetchFramesResample( tempEventStorage.temporaryFloatArray,
-					1024,
+
+			blockResamplingService.fetchAndResample(
 					brc,
 					outputSampleRate,
 					playbackSpeed,
-					outputLeftValues, outputRightValues,
-					0,
+					outputLeftValues, 0,
+					outputRightValues, 0,
 					numPerIteration,
-					false );
+					tempEventStorage.temporaryFloatArray,
+					0 );
+
 			log.debug("Resampled values at speed " + playbackSpeed + " are: " );
 			valsAsString = printValsAsString(numPerIteration,
 					outputLeftValues);
@@ -129,15 +131,17 @@ public class TestBlockResamplingServiceFakeValues extends TestCase
 		{
 			log.debug("Asking to resample from position(" + brc.getFramePosition() +
 					":" + MathFormatter.slowFloatPrint( brc.getFpOffset(), 4, false) +")" );
-			blockResamplingService.sampleClientFetchFramesResample( tempEventStorage.temporaryFloatArray,
-					0,
+
+			blockResamplingService.fetchAndResample(
 					brc,
 					outputSampleRate,
 					playbackSpeed,
-					outputLeftValues, outputRightValues,
-					0,
+					outputLeftValues, 0,
+					outputRightValues, 0,
 					numPerIteration,
-					false );
+					tempEventStorage.temporaryFloatArray,
+					0 );
+
 			log.debug("Resampled values at speed " + playbackSpeed + " are: " );
 			valsAsString = printValsAsString(numPerIteration,
 					outputLeftValues);

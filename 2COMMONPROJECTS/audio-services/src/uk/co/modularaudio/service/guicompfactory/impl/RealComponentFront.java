@@ -22,8 +22,13 @@ package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
@@ -32,11 +37,18 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 class RealComponentFront extends JPanel
 {
 	private static final long serialVersionUID = 5211955307472576952L;
+	private static Log log = LogFactory.getLog( RealComponentFront.class.getName() );
 
-	public RealComponentFront( final RackComponent rc )
+	private final BufferedImage frontBufferedImage;
+	private final RackComponent rc;
+
+	public RealComponentFront( final ContainerImages ci, final RackComponent rc )
 	{
-		this.setOpaque( false );
+		this.frontBufferedImage = rc.getUiDefinition().getFrontBufferedImage();
+		this.rc = rc;
+		this.setOpaque( true );
 		this.setLayout( null );
+
 		final AbstractMadUiControlInstance<?,?,?>[] uiControls = rc.getUiControlInstances();
 		for( final AbstractMadUiControlInstance<?,?,?> uic : uiControls )
 		{
@@ -51,5 +63,36 @@ class RealComponentFront extends JPanel
 		setMinimumSize( size );
 		setPreferredSize( size );
 
+	}
+
+	@Override
+	public void paintComponent( final Graphics g )
+	{
+		super.paintComponent( g );
+
+		final int imageWidth = frontBufferedImage.getWidth();
+		final int imageHeight = frontBufferedImage.getHeight();
+		final int width = getWidth();
+		// Hack since I duffed up the heights due to border.
+		final int height = getHeight() + 8;
+
+		if( imageWidth != width || imageHeight != height )
+		{
+			final StringBuilder sb = new StringBuilder("Component ");
+			sb.append( rc.getInstance().getDefinition().getId() );
+			sb.append( " has badly sized front image: (" );
+			sb.append( imageWidth );
+			sb.append( ", " );
+			sb.append( imageHeight );
+			sb.append( ") - component size(" );
+			sb.append( width );
+			sb.append( ", " );
+			sb.append( height );
+			sb.append( ")" );
+			final String msg = sb.toString();
+			log.warn( msg );
+		}
+
+		g.drawImage( frontBufferedImage, 0, 0, null );
 	}
 }

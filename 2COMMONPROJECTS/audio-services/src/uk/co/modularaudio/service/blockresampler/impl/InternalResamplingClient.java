@@ -20,9 +20,14 @@
 
 package uk.co.modularaudio.service.blockresampler.impl;
 
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.impl.interpolators.CubicInterpolator;
+import uk.co.modularaudio.service.blockresampler.impl.interpolators.LinearInterpolator;
+import uk.co.modularaudio.service.blockresampler.impl.interpolators.NearestInterpolation;
+import uk.co.modularaudio.service.blockresampler.impl.interpolators.Interpolator;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
+import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 class InternalResamplingClient implements BlockResamplingClient
 {
@@ -31,6 +36,8 @@ class InternalResamplingClient implements BlockResamplingClient
 	private long framePosition;
 	private float fpOffset;
 	private final long totalNumFrames;
+
+	private Interpolator resampler;
 
 	public InternalResamplingClient( final SampleCacheClient sampleCacheClient,
 			final BlockResamplingMethod resamplingMethod,
@@ -42,6 +49,25 @@ class InternalResamplingClient implements BlockResamplingClient
 		this.framePosition = framePosition;
 		this.fpOffset = fpOffset;
 		totalNumFrames = sampleCacheClient.getTotalNumFrames();
+
+		switch( resamplingMethod )
+		{
+			case NEAREST:
+			{
+				resampler = new NearestInterpolation();
+				break;
+			}
+			case LINEAR:
+			{
+				resampler = new LinearInterpolator();
+				break;
+			}
+			case CUBIC:
+			default:
+			{
+				resampler = new CubicInterpolator();
+			}
+		}
 	}
 
 	@Override
@@ -90,5 +116,38 @@ class InternalResamplingClient implements BlockResamplingClient
 	public long getTotalNumFrames()
 	{
 		return totalNumFrames;
+	}
+
+	public RealtimeMethodReturnCodeEnum resample(
+			final float[] leftSourceBuffer, final int leftSourceOffset,
+			final float[] rightSourceBuffer, final int rightSourceOffset,
+			final float[] leftOutputBuffer, final int leftOutputOffset,
+			final float[] rightOutputBuffer, final int rightOutputOffset,
+			final float resampledSpeed, final int numFramesRequired,
+			final int numFramesInSourceBuffers )
+	{
+		int curPos = 1;
+		float localFpPos = fpOffset;
+
+		for( int s = 0 ; s < numFramesRequired ; ++s )
+		{
+			leftOutputBuffer[leftOutputOffset+s] = resampler.interpolate(
+					leftSourceBuffer,
+					leftSourceOffset + curPos,
+					localFpPos );
+
+			rightOutputBuffer[rightOutputOffset+s] = resampler.interpolate(
+					rightSourceBuffer,
+					rightSourceOffset + curPos,
+					localFpPos );
+
+			localFpPos += resampledSpeed;
+			final int extraInt = (int)localFpPos;
+			curPos += extraInt;
+			localFpPos -= extraInt;
+
+		}
+
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 }

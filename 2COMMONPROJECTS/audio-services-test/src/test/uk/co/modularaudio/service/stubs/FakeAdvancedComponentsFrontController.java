@@ -28,8 +28,8 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
@@ -101,13 +101,6 @@ public class FakeAdvancedComponentsFrontController
 	}
 
 	@Override
-	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
-			final BlockResamplingMethod cubic )
-	{
-		return null;
-	}
-
-	@Override
 	public void destroyResamplingClient( final BlockResamplingClient resamplingClient )
 			throws DatastoreException, RecordNotFoundException
 	{
@@ -130,6 +123,14 @@ public class FakeAdvancedComponentsFrontController
 	public AnalysedData registerForLibraryEntryAnalysis( final LibraryEntry libraryEntry,
 			final AnalysisFillCompletionListener analysisListener ) throws DatastoreException
 	{
+		return null;
+	}
+
+	@Override
+	public BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
+			final BlockResamplingMethod cubic )
+	{
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

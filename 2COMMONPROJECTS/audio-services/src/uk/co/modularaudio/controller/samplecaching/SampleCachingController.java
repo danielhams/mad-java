@@ -25,8 +25,8 @@ import java.io.IOException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.library.LibraryService;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
@@ -75,7 +75,8 @@ public interface SampleCachingController
 	 * to output audio at variable speeds.</p>
 	 * @see BlockResamplerService#createResamplingClient(String, BlockResamplingMethod)
 	 */
-	BlockResamplingClient createResamplingClient( final String pathToFile, final BlockResamplingMethod resamplingMethod )
+	BlockResamplingClient createResamplingClient( final String pathToFile,
+			final BlockResamplingMethod resamplingMethod )
 			throws DatastoreException, IOException, UnsupportedAudioFileException;
 
 	/**
@@ -83,8 +84,8 @@ public interface SampleCachingController
 	 * be used with the block resampler service.</p>
 	 * @see BlockResamplerService#promoteSampleCacheClientToResamplingClient(SampleCacheClient, BlockResamplingMethod)
 	 */
-	BlockResamplingClient promoteSampleCacheClientToResamplingClient( final SampleCacheClient sampleCacheClient,
-			final BlockResamplingMethod cubic );
+	BlockResamplingClient promoteSampleCacheClientToResamplingClient( SampleCacheClient sampleCacheClient,
+			BlockResamplingMethod cubic );
 
 	/**
 	 * <p>Unregister and clean up a block resampler service client.</p>
@@ -99,4 +100,5 @@ public interface SampleCachingController
 	 * @see SampleCachingService#dumpSampleCacheToLog()
 	 */
 	void dumpSampleCache();
+
 }
