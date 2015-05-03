@@ -41,7 +41,7 @@ public class LWTCControlConstants
 	public final static Color CONTROL_FOREGROUND_TEXT_UNSELECTED = Color.decode( "#ffffff" );
 	public final static Color CONTROL_FOREGROUND_TEXT_SELECTED = Color.decode( "#ff0000" );
 
-	public final static Color CONTROL_FOCUS = CONTROL_FLAT_BACKGROUND.brighter();
+	public final static Color CONTROL_FOCUS = Color.decode( "#888888" );
 
 	public final static Color CONTROL_LABEL_BACKGROUND = Color.decode( "#393f3f" );
 	public final static Color CONTROL_LABEL_FOREGROUND = Color.decode( "#ffffff" );

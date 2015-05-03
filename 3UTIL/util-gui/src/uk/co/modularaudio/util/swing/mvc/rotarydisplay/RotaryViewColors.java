@@ -33,6 +33,7 @@ public class RotaryViewColors
 	public final Color knobOutlineColor;
 	public final Color knobFillColor;
 	public final Color knobExtentColor;
+	public final Color knobFocusColor;
 	public final Color knobIndicatorColor;
 	public final Color labelColor;
 	public final Color unitsColor;
@@ -48,6 +49,7 @@ public class RotaryViewColors
 			final Color knobFillColor,
 			final Color knobExtentColor,
 			final Color knobIndicatorColor,
+			final Color knobFocusColor,
 			final Color labelColor,
 			final Color unitsColor )
 	{
@@ -61,6 +63,7 @@ public class RotaryViewColors
 		this.knobFillColor = knobFillColor;
 		this.knobExtentColor = knobExtentColor;
 		this.knobIndicatorColor = knobIndicatorColor;
+		this.knobFocusColor = knobFocusColor;
 		this.labelColor = labelColor;
 		this.unitsColor = unitsColor;
 	}

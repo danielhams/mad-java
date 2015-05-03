@@ -212,21 +212,29 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			if( !speedSad.checkForDenormal() )
 			{
 				speedSad.generateControlValues( tmpBuffer, 0, numThisRound );
+				blockResamplerService.fetchAndResampleVarispeed(
+						resampledSample,
+						sampleRate,
+						tmpBuffer, 0,
+						lfb, frameOffset + curOutputPos,
+						rfb, frameOffset + curOutputPos,
+						numThisRound,
+						tmpBuffer,
+						numThisRound );
 			}
 			else
 			{
-				tmpBuffer[0] = desiredPlaySpeed;
+				blockResamplerService.fetchAndResample(
+						resampledSample,
+						sampleRate,
+						desiredPlaySpeed,
+						lfb, frameOffset + curOutputPos,
+						rfb, frameOffset + curOutputPos,
+						numThisRound,
+						tmpBuffer,
+						numThisRound );
 			}
 
-			blockResamplerService.fetchAndResample(
-					resampledSample,
-					sampleRate,
-					tmpBuffer[0],
-					lfb, frameOffset + curOutputPos,
-					rfb, frameOffset + curOutputPos,
-					numThisRound,
-					tmpBuffer,
-					numThisRound );
 
 			numStillToOutput -= numThisRound;
 			numSamplesTillNextEvent -= numThisRound;

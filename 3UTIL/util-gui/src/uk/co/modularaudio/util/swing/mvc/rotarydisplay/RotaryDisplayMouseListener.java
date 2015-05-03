@@ -31,14 +31,19 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 public class RotaryDisplayMouseListener implements MouseMotionListener, MouseListener
 {
 
+	private final RotaryDisplayKnob knob;
 	private final RotaryDisplayModel model;
 	private final RotaryDisplayController controller;
 
 	private float startDragValue;
 	private Point startDragPoint = new Point();
 
-	public RotaryDisplayMouseListener( final RotaryDisplayModel model, final RotaryDisplayController controller )
+	public RotaryDisplayMouseListener(
+			final RotaryDisplayKnob knob,
+			final RotaryDisplayModel model,
+			final RotaryDisplayController controller )
 	{
+		this.knob = knob;
 		this.model = model;
 		this.controller = controller;
 	}
@@ -61,6 +66,10 @@ public class RotaryDisplayMouseListener implements MouseMotionListener, MouseLis
 	@Override
 	public void mousePressed( final MouseEvent e )
 	{
+		if( !knob.hasFocus() )
+		{
+			knob.grabFocus();
+		}
 		final Point screenPoint = e.getLocationOnScreen();
 		startDragPoint = screenPoint;
 		startDragValue = model.getValue();

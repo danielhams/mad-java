@@ -150,4 +150,38 @@ class InternalResamplingClient implements BlockResamplingClient
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
+
+	public RealtimeMethodReturnCodeEnum resampleVarispeed(
+			final float[] leftSourceBuffer, final int leftSourceOffset,
+			final float[] rightSourceBuffer, final int rightSourceOffset,
+			final float[] leftOutputBuffer, final int leftOutputOffset,
+			final float[] rightOutputBuffer, final int rightOutputOffset,
+			final float[] resampledSpeeds, final int speedsOffset, final int speedsMultiplier,
+			final int numFramesRequired,
+			final int numFramesInSourceBuffers )
+	{
+		int curPos = 1;
+		float localFpPos = fpOffset;
+
+		for( int s = 0 ; s < numFramesRequired ; ++s )
+		{
+			leftOutputBuffer[leftOutputOffset+s] = resampler.interpolate(
+					leftSourceBuffer,
+					leftSourceOffset + curPos,
+					localFpPos );
+
+			rightOutputBuffer[rightOutputOffset+s] = resampler.interpolate(
+					rightSourceBuffer,
+					rightSourceOffset + curPos,
+					localFpPos );
+
+			localFpPos += (resampledSpeeds[speedsOffset+s] * speedsMultiplier);
+			final int extraInt = (int)localFpPos;
+			curPos += extraInt;
+			localFpPos -= extraInt;
+
+		}
+
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
 }

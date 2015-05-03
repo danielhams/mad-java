@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.blockresampler.impl;
 
 import java.io.IOException;
+
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.apache.commons.logging.Log;
@@ -220,6 +221,20 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final float[] tmpBuffer,
 			final int tmpBufferOffset )
 	{
+
+		final InternalResamplingClient realClient = (InternalResamplingClient)resamplingClient;
+		final SampleCacheClient scc = realClient.getSampleCacheClient();
+		final int sourceSampleRate = scc.getSampleRate();
+
+		if( sourceSampleRate != outputSampleRate )
+		{
+			final float speedMultiplier = sourceSampleRate / (float)outputSampleRate;
+			for( int m = 0 ; m < numFramesRequired ; ++m )
+			{
+				playbackSpeeds[playbackOffset+m] *=speedMultiplier;
+			}
+		}
+
 		// Need to break it up into sections of "forward" or "backward"
 		// so we can read a bunch of samples at once and work on them.
 		int numLeft = numFramesRequired;
@@ -229,24 +244,11 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		{
 			final int innerPlaybackSpeedOffset = playbackOffset + curOffset;
 			float cumulativeSpeeds = playbackSpeeds[innerPlaybackSpeedOffset];
-			final boolean isNegative = cumulativeSpeeds < 0.0f;
+			final boolean isForwards = cumulativeSpeeds >= 0.0f;
 			final int numToTest = numLeft - 1;
 			int s = 1;
 
-			if( isNegative )
-			{
-				// Look for any positive playback speeds
-				for( ; s <= numToTest ; ++s )
-				{
-					final float nextSpeed = playbackSpeeds[innerPlaybackSpeedOffset + s];
-					if( nextSpeed >= 0.0f )
-					{
-						break;
-					}
-					cumulativeSpeeds += nextSpeed;
-				}
-			}
-			else
+			if( isForwards )
 			{
 				// Look for any negative playback speeds
 				for( ; s <= numToTest ; ++s )
@@ -259,8 +261,110 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 					cumulativeSpeeds += nextSpeed;
 				}
 			}
+			else
+			{
+				// Look for any positive playback speeds
+				for( ; s <= numToTest ; ++s )
+				{
+					final float nextSpeed = playbackSpeeds[innerPlaybackSpeedOffset + s];
+					if( nextSpeed >= 0.0f )
+					{
+						break;
+					}
+					cumulativeSpeeds += nextSpeed;
+				}
+			}
 			final int numThisRound = s;
 
+			// So our "consistent" (in direction) range runs from curOffset -> curOffset + numThisRound
+
+			// Work out how many samples we'll need to read and from where
+			long prevSamplePos = realClient.getFramePosition();
+			float prevSampleFpOffset = realClient.getFpOffset();
+
+			float firstSampleFpOffset = prevSampleFpOffset + playbackSpeeds[innerPlaybackSpeedOffset];
+			final int extraInt = (int)Math.floor(firstSampleFpOffset);
+			final long firstSamplePos = prevSamplePos + extraInt;
+			firstSampleFpOffset -= extraInt;
+
+			final float nonDirectionalFpOffset = ( isForwards ? firstSampleFpOffset : (1.0f - firstSampleFpOffset) );
+
+			final float dx = cumulativeSpeeds;
+			cumulativeSpeeds = (cumulativeSpeeds < 0.0f ? -cumulativeSpeeds : cumulativeSpeeds);
+
+			final int numFileFramesRequired = 3 +
+					(int)Math.ceil(cumulativeSpeeds + nonDirectionalFpOffset);
+
+			final long samplesOffset = (isForwards ?
+					firstSamplePos - 1 :
+					((firstSamplePos+3) - numFileFramesRequired) );
+
+			// Read them into the temporary buffer
+			scc.setCurrentFramePosition( samplesOffset );
+
+			final int fileReadBufferOffset = tmpBufferOffset;
+
+			final RealtimeMethodReturnCodeEnum fileReadRc = sampleCachingService.readSamplesForCacheClient(
+					scc,
+					tmpBuffer,
+					fileReadBufferOffset,
+					numFileFramesRequired );
+
+			if( fileReadRc != RealtimeMethodReturnCodeEnum.SUCCESS )
+			{
+				return fileReadRc;
+			}
+
+//			checkFloatsForMagic( "postReadSamples", tmpBuffer, fileReadBufferOffset, numFileFramesRequired * 2 );
+
+			// De-interleave them
+			final int leftDeinterleaveOffset = fileReadBufferOffset +
+					numFileFramesRequired + numFileFramesRequired;
+			final int rightDeinterleaveOffset = leftDeinterleaveOffset +
+					numFileFramesRequired;
+			deinterleaveFetchedSamples( tmpBuffer,
+					fileReadBufferOffset,
+					numFileFramesRequired,
+					leftDeinterleaveOffset, rightDeinterleaveOffset );
+
+//			checkFloatsForMagic( "leftdeint", tmpBuffer, leftDeinterleaveOffset, numFileFramesRequired );
+//			checkFloatsForMagic( "rightdeint", tmpBuffer, rightDeinterleaveOffset, numFileFramesRequired );
+
+			// If going backwards, reverse them
+			if( !isForwards )
+			{
+				ArrayUtils.reverse( tmpBuffer, leftDeinterleaveOffset, numFileFramesRequired );
+				ArrayUtils.reverse( tmpBuffer, rightDeinterleaveOffset, numFileFramesRequired );
+			}
+
+			// Resample them using the speeds + sample rate difference
+			realClient.setFpOffset( nonDirectionalFpOffset );
+
+			final RealtimeMethodReturnCodeEnum rsRc = realClient.resampleVarispeed(
+					tmpBuffer, leftDeinterleaveOffset,
+					tmpBuffer, rightDeinterleaveOffset,
+					outputLeftFloats, outputLeftOffset + curOffset,
+					outputRightFloats, outputRightOffset + curOffset,
+					playbackSpeeds, innerPlaybackSpeedOffset, (isForwards ? 1 : -1),
+					numThisRound,
+					numFileFramesRequired );
+
+			if( rsRc != RealtimeMethodReturnCodeEnum.SUCCESS )
+			{
+				return rsRc;
+			}
+
+//			checkFloatsForMagic( "leftResample", outputLeftFloats, outputLeftOffset+curOffset, numThisRound );
+//			checkFloatsForMagic( "rightResample", outputRightFloats, outputRightOffset+curOffset, numThisRound );
+
+			// Update the last sample output position
+			prevSampleFpOffset += dx;
+			final int newPosOverflow = (int)Math.floor(prevSampleFpOffset);
+			prevSamplePos += newPosOverflow;
+			prevSampleFpOffset -= newPosOverflow;
+
+			realClient.setFramePosition( prevSamplePos );
+			realClient.setFpOffset( prevSampleFpOffset );
 
 			curOffset += numThisRound;
 			numLeft -= numThisRound;

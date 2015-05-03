@@ -34,7 +34,7 @@ public class RotaryDisplayModel
 	private float maxValue;
 	private final float initialValue;
 	private final int numSliderSteps;
-	private final int sliderMajorTickSpacing;
+	private int majorTickSpacing;
 
 	private final RotaryIntToFloatConverter sliderIntToFloatConverter;
 	private final int displayNumSigPlaces;
@@ -65,7 +65,7 @@ public class RotaryDisplayModel
 		this.maxValue = maxValue;
 		this.initialValue = initialValue;
 		this.numSliderSteps = numSliderSteps;
-		this.sliderMajorTickSpacing = sliderMajorTickSpacing;
+		this.majorTickSpacing = sliderMajorTickSpacing;
 		this.sliderIntToFloatConverter = sliderIntToFloatConverter;
 		this.displayNumSigPlaces = displayNumSigPlaces;
 		this.displayNumDecPlaces = displayNumDecPlaces;
@@ -153,9 +153,14 @@ public class RotaryDisplayModel
 		}
 	}
 
-	public int getSliderMajorTickSpacing()
+	public int getMajorTickSpacing()
 	{
-		return sliderMajorTickSpacing;
+		return majorTickSpacing;
+	}
+
+	public void setMajorTickSpacing( final int majorTickSpacing )
+	{
+		this.majorTickSpacing = majorTickSpacing;
 	}
 
 	public void setMaxValue( final float newTimescaleUpperLimit )

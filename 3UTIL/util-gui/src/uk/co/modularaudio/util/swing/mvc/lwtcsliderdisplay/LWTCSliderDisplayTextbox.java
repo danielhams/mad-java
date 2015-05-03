@@ -36,7 +36,7 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeL
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
-import uk.co.modularaudio.util.swing.lwtc.LWTCTextField;
+import uk.co.modularaudio.util.swing.lwtc.LWTCSpeedyUpdateTextField;
 
 public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
@@ -47,7 +47,7 @@ public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListe
 	private SliderDisplayModel model;
 	private final SliderDisplayController controller;
 
-	private final LWTCTextField textField;
+	private final LWTCSpeedyUpdateTextField textField;
 	private LWTCLabel unitsLabel;
 
 	private int numSigPlaces;
@@ -73,7 +73,7 @@ public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListe
 		lh.addLayoutConstraint( "gap 0" );
 		setLayout( lh.createMigLayout() );
 
-		textField = new LWTCTextField();
+		textField = new LWTCSpeedyUpdateTextField();
 		// Never see through
 		textField.setOpaque( true );
 		textField.setBackground( colours.textboxBgColor );

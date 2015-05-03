@@ -93,6 +93,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		final Color knobFillColor = DJEQColorDefines.KNOB_COLOR;
 		final Color knobExtentColor = DJEQColorDefines.EXTENT_COLOR;
 		final Color knobIndicatorColor = DJEQColorDefines.INDICATOR_COLOR;
+		final Color knobFocusColor = DJEQColorDefines.FOCUS_COLOR;
 		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
 		final Color unitsColor = MixerNMadUiDefinition.LANE_FG_COLOR;
 
@@ -106,6 +107,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 				knobFillColor,
 				knobExtentColor,
 				knobIndicatorColor,
+				knobFocusColor,
 				labelColor,
 				unitsColor );
 	}

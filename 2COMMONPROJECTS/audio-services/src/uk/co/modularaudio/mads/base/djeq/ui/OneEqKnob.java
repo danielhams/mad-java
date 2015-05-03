@@ -56,6 +56,7 @@ public class OneEqKnob extends PacPanel
 		final Color knobFillColor = DJEQColorDefines.KNOB_COLOR;
 		final Color knobExtentColor = DJEQColorDefines.EXTENT_COLOR;
 		final Color knobIndicatorColor = DJEQColorDefines.INDICATOR_COLOR;
+		final Color knobFocusColor = DJEQColorDefines.FOCUS_COLOR;
 		final Color labelColor = DJEQColorDefines.LABEL_COLOR;
 		final Color unitsColor = DJEQColorDefines.UNITS_COLOR;
 
@@ -69,6 +70,7 @@ public class OneEqKnob extends PacPanel
 				knobFillColor,
 				knobExtentColor,
 				knobIndicatorColor,
+				knobFocusColor,
 				labelColor,
 				unitsColor );
 

@@ -26,6 +26,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -35,9 +37,10 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModelAdaptor;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryIntToFloatConverter;
 
-public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
+public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, FocusListener
 {
 //	private static Log log = LogFactory.getLog( RotaryDisplayKnob.class.getName() );
 
@@ -70,7 +73,11 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 
 	protected final RotaryDisplayMouseListener mouseListener;
 
+	protected final RotaryDisplayKnobKeyListener keyListener;
+
 	protected int diameter = -1;
+
+	protected int majorTickSpacing = 10;
 
 	public RotaryDisplayKnob( final RotaryDisplayModel model,
 			final RotaryDisplayController controller,
@@ -86,11 +93,19 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 		this.setForeground( colours.fgColor );
 		this.setBackground( colours.bgColor );
 
+		setFocusable( true );
+
+		addFocusListener( this );
+
 		sdm.addChangeListener( this );
 
-		mouseListener = new RotaryDisplayMouseListener( model, controller );
+		mouseListener = new RotaryDisplayMouseListener( this, model, controller );
 		addMouseListener( mouseListener );
 		addMouseMotionListener( mouseListener );
+
+		keyListener = new RotaryDisplayKnobKeyListener(
+				new RotaryDisplayModelAdaptor( this, sdm, controller ) );
+		this.addKeyListener( keyListener );
 	}
 
 	public void changeModel( final RotaryDisplayModel newModel )
@@ -118,6 +133,13 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 //		final int height = getHeight() - 1;
 		final int width = getWidth();
 		final int height = getHeight();
+
+		if( hasFocus() )
+		{
+			g2d.setColor( colours.knobFocusColor );
+			g2d.drawRect( 0, 0, width, height );
+		}
+
 		final float wo2 = width / 2.0f;
 		final float ho2 = height / 2.0f;
 		final float min;
@@ -205,4 +227,25 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener
 		this.diameter = diameter;
 	}
 
+	@Override
+	public void focusGained( final FocusEvent e )
+	{
+		this.repaint();
+	}
+
+	@Override
+	public void focusLost( final FocusEvent e )
+	{
+		this.repaint();
+	}
+
+	public int getMajorTickSpacing()
+	{
+		return sdm.getMajorTickSpacing();
+	}
+
+	public void setMajorTickSpacing( final int majorTickSpacing )
+	{
+		sdm.setMajorTickSpacing( majorTickSpacing );
+	}
 }

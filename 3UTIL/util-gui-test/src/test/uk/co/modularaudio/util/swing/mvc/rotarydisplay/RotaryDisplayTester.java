@@ -89,6 +89,7 @@ public class RotaryDisplayTester
 		final Color knobOutlineColor = new Color(27,29,29);
 		final Color knobExtentColor = new Color( 80, 80, 80 );
 		final Color knobIndicatorColor = new Color(0,255,0);
+		final Color knobFocusColor = new Color( 100, 100, 100);
 		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
 		final Color unitsColor = fgColor;
 
@@ -102,6 +103,7 @@ public class RotaryDisplayTester
 				knobFillColor,
 				knobExtentColor,
 				knobIndicatorColor,
+				knobFocusColor,
 				labelColor,
 				unitsColor );
 
