@@ -120,4 +120,13 @@ public class ResizableFrontContainer extends AbstractGuiAudioComponent
 	{
 		return null;
 	}
+
+
+	@Override
+	public void setBounds( final int x, final int y, final int width, final int height )
+	{
+		super.setBounds( x, y, width, height );
+		renderedRectangle.width = width;
+		renderedRectangle.height = height;
+	}
 }

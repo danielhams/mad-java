@@ -39,7 +39,7 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 {
 	private static final long serialVersionUID = 5369121173959977190L;
 
-//	private static Log log = LogFactory.getLog( ResizableFrontContainer.class.getName() );
+//	private static Log log = LogFactory.getLog( ResizableBackContainer.class.getName() );
 
 	private final ResizableContainerLeft containerLeft;
 	private final ResizableBackContainerMiddle containerMiddle;
@@ -169,5 +169,13 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void setBounds( final int x, final int y, final int width, final int height )
+	{
+		super.setBounds( x, y, width, height );
+		renderedRectangle.width = width;
+		renderedRectangle.height = height;
 	}
 }

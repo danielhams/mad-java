@@ -29,8 +29,8 @@ public class LayeredPaneDndTableMouseFollowAnimationTimer
 {
 	// 30 Hz update speed
 //	private static final int REPAINT_MILLIS = 1000 / 1;
-	private static final int REPAINT_MILLIS = 1000 / 15;
-//	private static final int REPAINT_MILLIS = 1000 / 20;
+//	private static final int REPAINT_MILLIS = 1000 / 15;
+	private static final int REPAINT_MILLIS = 1000 / 20;
 //	private static final int REPAINT_MILLIS = 1000 / 30;
 //	private static final int REPAINT_MILLIS = 1000 / 60;
 
