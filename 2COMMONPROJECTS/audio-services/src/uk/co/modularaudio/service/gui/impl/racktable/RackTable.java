@@ -40,7 +40,7 @@ public class RackTable
 {
 	private static final long serialVersionUID = -7415174078798644069L;
 
-//	private static Log log = LogFactory.getLog( NewRackTable.class.getName() );
+//	private static Log log = LogFactory.getLog( RackTable.class.getName() );
 
 	protected RackDataModel rackDataModel;
 	private final RackTableDndPolicy dndPolicy;
@@ -103,4 +103,12 @@ public class RackTable
 	{
 		this.forcePaint = forceRepaints;
 	}
+
+
+//	@Override
+//	public void paint( final Graphics g )
+//	{
+//		super.paint( g );
+//		log.debug("RackTable paint called");
+//	}
 }

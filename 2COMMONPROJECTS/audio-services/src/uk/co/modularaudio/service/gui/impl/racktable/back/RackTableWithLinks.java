@@ -38,7 +38,7 @@ public class RackTableWithLinks extends RackTable
 {
 	private static final long serialVersionUID = -2571436979816263062L;
 
-//	private static Log log = LogFactory.getLog( NewRackTableWithLinks.class.getName() );
+//	private static Log log = LogFactory.getLog( RackTableWithLinks.class.getName() );
 
 	private final RackLinksCompositeOverlay rackLinksCompositeOverlay;
 
@@ -67,6 +67,7 @@ public class RackTableWithLinks extends RackTable
 	public void paint(final Graphics g)
 	{
 		layeredTablePaint( g );
+//		log.debug("RackTableWithLink paint called");
 	}
 
 	@Override

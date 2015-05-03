@@ -56,7 +56,7 @@ public interface BlockResamplerService
 
 	RealtimeMethodReturnCodeEnum fetchAndResampleVarispeed( BlockResamplingClient resamplingClient,
 			int outputSampleRate,
-			float[] playbackSpeeds,
+			float[] playbackSpeeds, int playbackOffset,
 			float[] outputLeftFloats, int outputLeftOffset,
 			float[] outputRightFloats, int outputRightOffset,
 			int numFramesRequired,

@@ -132,9 +132,6 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 
 //		log.debug("We require " + numFileFramesRequired + " frames from the file");
 
-//		final long samplesOffset = (isForwards ?
-//				firstSamplePos - 1 :
-//				((firstSamplePos + 1) - numFileFramesRequired) );
 		final long samplesOffset = (isForwards ?
 				firstSamplePos - 1 :
 				((firstSamplePos + 3) - numFileFramesRequired) );
@@ -216,7 +213,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	public RealtimeMethodReturnCodeEnum fetchAndResampleVarispeed(
 			final BlockResamplingClient resamplingClient,
 			final int outputSampleRate,
-			final float[] playbackSpeeds,
+			final float[] playbackSpeeds, final int playbackOffset,
 			final float[] outputLeftFloats, final int outputLeftOffset,
 			final float[] outputRightFloats, final int outputRightOffset,
 			final int numFramesRequired,
@@ -225,6 +222,49 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	{
 		// Need to break it up into sections of "forward" or "backward"
 		// so we can read a bunch of samples at once and work on them.
+		int numLeft = numFramesRequired;
+		int curOffset = 0;
+
+		while( numLeft > 0 )
+		{
+			final int innerPlaybackSpeedOffset = playbackOffset + curOffset;
+			float cumulativeSpeeds = playbackSpeeds[innerPlaybackSpeedOffset];
+			final boolean isNegative = cumulativeSpeeds < 0.0f;
+			final int numToTest = numLeft - 1;
+			int s = 1;
+
+			if( isNegative )
+			{
+				// Look for any positive playback speeds
+				for( ; s <= numToTest ; ++s )
+				{
+					final float nextSpeed = playbackSpeeds[innerPlaybackSpeedOffset + s];
+					if( nextSpeed >= 0.0f )
+					{
+						break;
+					}
+					cumulativeSpeeds += nextSpeed;
+				}
+			}
+			else
+			{
+				// Look for any negative playback speeds
+				for( ; s <= numToTest ; ++s )
+				{
+					final float nextSpeed = playbackSpeeds[innerPlaybackSpeedOffset + s];
+					if( nextSpeed < 0.0f )
+					{
+						break;
+					}
+					cumulativeSpeeds += nextSpeed;
+				}
+			}
+			final int numThisRound = s;
+
+
+			curOffset += numThisRound;
+			numLeft -= numThisRound;
+		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
