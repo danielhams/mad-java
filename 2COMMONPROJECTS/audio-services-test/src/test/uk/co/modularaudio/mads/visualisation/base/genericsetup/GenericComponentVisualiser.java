@@ -68,7 +68,7 @@ public class GenericComponentVisualiser
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		if( false )
+		if( true )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 			UIManager.put( "Slider.paintValue", Boolean.FALSE );

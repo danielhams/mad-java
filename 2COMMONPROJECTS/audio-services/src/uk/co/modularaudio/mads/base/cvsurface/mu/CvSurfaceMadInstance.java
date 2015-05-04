@@ -23,17 +23,17 @@ package uk.co.modularaudio.mads.base.cvsurface.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance>
@@ -41,16 +41,14 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 //	private static Log log = LogFactory.getLog( CvSurfaceMadInstance.class.getName() );
 
 	private static final int VALUE_CHASE_MILLIS = 10;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
 
-	private long sampleRate;
+	private int sampleRate;
 
-	public float desiredX;
-	public float desiredY;
+	private float desiredX;
+	private float desiredY;
 
-	private float actualX;
-	private float actualY;
+	private final SpringAndDamperDoubleInterpolator xSad = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final SpringAndDamperDoubleInterpolator ySad = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	public CvSurfaceMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -59,23 +57,21 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		xSad.hardSetValue( 0.0f );
+		ySad.hardSetValue( 0.0f );
 	}
 
 	@Override
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		xSad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		ySad.reset( sampleRate, VALUE_CHASE_MILLIS );
+
+		xSad.hardSetValue( desiredX );
+		ySad.hardSetValue( desiredY );
 	}
 
 	@Override
@@ -88,28 +84,40 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
-		final boolean outCVXConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVX);
 		final MadChannelBuffer outCVXcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVX ];
-		final float[] outCVXBuffer = (outCVXConnected ? outCVXcb.floatBuffer : null );
-		final boolean outCVYConnected = channelConnectedFlags.get( CvSurfaceMadDefinition.PRODUCER_OUT_CVY );
+		final float[] outCVXBuffer = outCVXcb.floatBuffer;
 		final MadChannelBuffer outCVYcb = channelBuffers[ CvSurfaceMadDefinition.PRODUCER_OUT_CVY ];
-		final float[] outCVYBuffer = (outCVYConnected ? outCVYcb.floatBuffer : null );
+		final float[] outCVYBuffer = outCVYcb.floatBuffer;
+
+		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
+
+		final int xOffset = 0;
+		final int yOffset = numFrames;
+		xSad.checkForDenormal();
+		xSad.generateControlValues( tmpBuffer, xOffset, numFrames );
+		ySad.checkForDenormal();
+		ySad.generateControlValues( tmpBuffer, yOffset, numFrames );
+
 
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
-			actualX = (actualX * curValueRatio) + (desiredX * newValueRatio);
-			actualY = (actualY * curValueRatio) + (desiredY * newValueRatio);
-			if( outCVXConnected )
-			{
-				outCVXBuffer[ s ] = actualX;
-			}
-			if( outCVYConnected )
-			{
-				outCVYBuffer[ s ] = actualY;
-			}
+			outCVXBuffer[ frameOffset + s ] = tmpBuffer[xOffset + s];
+			outCVYBuffer[ frameOffset + s ] = tmpBuffer[yOffset + s];
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void setDesiredX( final float newX )
+	{
+		this.desiredX = newX;
+		xSad.notifyOfNewValue( newX );
+	}
+
+	public void setDesiredY( final float newY )
+	{
+		this.desiredY = newY;
+		ySad.notifyOfNewValue( newY );
 	}
 }

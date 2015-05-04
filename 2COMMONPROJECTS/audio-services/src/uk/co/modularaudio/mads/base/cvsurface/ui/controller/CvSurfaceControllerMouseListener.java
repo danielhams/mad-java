@@ -21,7 +21,6 @@
 package uk.co.modularaudio.mads.base.cvsurface.ui.controller;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -43,7 +42,6 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 
 	private final CvSurfaceMadUiInstance uiInstance;
 	private final CvSurfaceControllerUiJComponent uiComponent;
-	private Rectangle bounds;
 	private int maxX;
 	private int maxY;
 
@@ -125,8 +123,8 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 		if( lastPoint != null )
 		{
 			// Normalise the point from -1 -> 1 on each axis
-			newX = normalise( lastPoint.x, bounds.width - 1 );
-			newY = normalise( lastPoint.y, bounds.height - 1 );
+			newX = normalise( lastPoint.x, uiComponent.getWidth() - 1 );
+			newY = normalise( lastPoint.y, uiComponent.getHeight() - 1 );
 			// Flip the Y
 			newY = -newY;
 //			log.debug("Sending position change: " + lastPoint.x + ", " + lastPoint.y + " " + MathFormatter.floatPrint( newX,  2 ) + ", " + MathFormatter.floatPrint( newY, 2 ) );
@@ -146,12 +144,8 @@ public class CvSurfaceControllerMouseListener implements MouseListener, MouseMot
 
 	private void boundPoint()
 	{
-		if( bounds == null )
-		{
-			bounds = uiComponent.getBounds();
-			maxX = bounds.width - 1;
-			maxY = bounds.height - 1;
-		}
+		maxX = uiComponent.getWidth() - 1;
+		maxY = uiComponent.getHeight() - 1;
 		lastPoint.x = ( lastPoint.x < 0 ? 0 : (lastPoint.x > maxX ? maxX : lastPoint.x ) );
 		lastPoint.y = ( lastPoint.y < 0 ? 0 : (lastPoint.y > maxY ? maxY : lastPoint.y ) );
 	}

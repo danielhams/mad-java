@@ -56,7 +56,7 @@ public class CvSurfaceIOQueueBridge extends MadLocklessQueueBridge<CvSurfaceMadI
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float aa = Float.intBitsToFloat( truncVal );
-				instance.desiredX = aa;
+				instance.setDesiredX( aa );
 				break;
 			}
 			case COMMAND_NEWY:
@@ -65,7 +65,7 @@ public class CvSurfaceIOQueueBridge extends MadLocklessQueueBridge<CvSurfaceMadI
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float ab = Float.intBitsToFloat( truncVal );
-				instance.desiredY = ab;
+				instance.setDesiredY( ab );
 				break;
 			}
 			default:

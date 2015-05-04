@@ -62,7 +62,7 @@ public class CvSurfaceMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  6, 22, 246, 168 )
+		new Rectangle(  6, 36, 544, 270 )
 	};
 
 	private static final Class<CvSurfaceMadUiInstance> INSTANCE_CLASS = CvSurfaceMadUiInstance.class;

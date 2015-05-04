@@ -26,12 +26,6 @@ public class NoAverageComputer implements RunningAverageComputer
 {
 
 	@Override
-	public float computeNewRunningAverage( final float curValue, final float valToAdd )
-	{
-		return 0;
-	}
-
-	@Override
 	public void computeNewRunningAverages( final int currentNumBins,
 			final float[] valuesToAdd, final float[] runningValues )
 	{

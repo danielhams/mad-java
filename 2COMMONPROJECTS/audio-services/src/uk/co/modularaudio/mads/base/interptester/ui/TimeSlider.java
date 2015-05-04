@@ -20,23 +20,21 @@
 
 package uk.co.modularaudio.mads.base.interptester.ui;
 
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
 public abstract class TimeSlider extends JPanel implements ValueChangeListener
 {
 	private static final long serialVersionUID = 2783504281404548759L;
 
-	protected final SliderDisplayView view;
+	protected final LWTCSliderDisplayView view;
 	protected final SliderDisplayModel model;
 	protected final SliderDisplayController controller;
 
@@ -45,21 +43,18 @@ public abstract class TimeSlider extends JPanel implements ValueChangeListener
 			final DisplayOrientation displayOrientation,
 			final SatelliteOrientation textboxOrientation,
 			final String labelText,
-			final Color labelColor,
-			final Color unitsColor,
 			final boolean opaque )
 	{
 		this.setOpaque( opaque );
 		this.model = model;
 		this.controller = new SliderDisplayController( model );
-		this.view = new SliderDisplayView( model,
+		this.view = new LWTCSliderDisplayView( model,
 				controller,
 				labelOrientation,
 				displayOrientation,
 				textboxOrientation,
+				InterpTesterMadUiInstance.SLIDER_COLORS,
 				labelText,
-				labelColor,
-				unitsColor,
 				opaque );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();

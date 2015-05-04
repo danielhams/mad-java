@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.mads.base.interptester.ui;
 
+import java.awt.Color;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,6 +32,8 @@ import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfi
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
@@ -37,6 +41,31 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 
 	private ModelChangeReceiver modelChangeReceiver;
 	private PerfDataReceiver perfDataReceiver;
+
+	public static final LWTCSliderViewColors SLIDER_COLORS = getSliderColors();
+
+	private static final LWTCSliderViewColors getSliderColors()
+	{
+		final Color bgColor = Color.black;
+		final Color fgColor = Color.white;
+		final Color indicatorColor = null;
+		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_BORDER;
+		final Color unitsColor = labelColor;
+
+		return new LWTCSliderViewColors( bgColor,
+				fgColor,
+				indicatorColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+	}
 
 	public InterpTesterMadUiInstance( final InterpTesterMadInstance instance,
 			final InterpTesterMadUiDefinition uiDefinition )

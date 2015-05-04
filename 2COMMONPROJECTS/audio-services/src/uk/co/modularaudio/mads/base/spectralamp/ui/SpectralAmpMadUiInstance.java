@@ -44,6 +44,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.streaming.StreamingWolaProcessor;
@@ -67,6 +68,8 @@ public class SpectralAmpMadUiInstance extends
 	private FrequencyScaleComputer desiredFreqScaleComputer;
 	private AmpScaleComputer desiredAmpScaleComputer;
 	private RunningAverageComputer desiredRunningAverageComputer;
+
+	private PeakHoldComputer peakHoldComputer;
 
 	private StreamingWolaProcessor wolaProcessor;
 	private SpecDataListener specDataListener;
@@ -289,6 +292,16 @@ public class SpectralAmpMadUiInstance extends
 	{
 		this.desiredRunningAverageComputer = desiredRunningAverageComputer;
 		reinitialiseFrequencyProcessor();
+	}
+
+	public void setPeakHoldComputer( final PeakHoldComputer peakHoldComputer )
+	{
+		this.peakHoldComputer = peakHoldComputer;
+	}
+
+	public PeakHoldComputer getPeakHoldComputer()
+	{
+		return peakHoldComputer;
 	}
 
 }

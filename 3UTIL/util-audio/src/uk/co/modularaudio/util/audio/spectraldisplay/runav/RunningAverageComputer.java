@@ -22,9 +22,5 @@ package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 
 public interface RunningAverageComputer
 {
-
-	float computeNewRunningAverage(float curValue, float valToAdd);
-
 	void computeNewRunningAverages(int currentNumBins, float[] valuesToAdd, float[] runningValues );
-
 }

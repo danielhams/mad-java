@@ -22,34 +22,40 @@ package uk.co.modularaudio.mads.base.interptester.ui;
 
 import java.awt.Color;
 
-import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
 public class PerformanceTable extends JPanel implements PerfDataReceiver
 {
 	private static final long serialVersionUID = -6944278603929566358L;
 
-	private final JLabel nonePerf;
-	private final JLabel lPerf;
-	private final JLabel hhPerf;
-	private final JLabel sdPerf;
-	private final JLabel lpPerf;
-	private final JLabel sddPerf;
+	private final LWTCLabel nonePerf;
+	private final LWTCLabel lPerf;
+	private final LWTCLabel hhPerf;
+	private final LWTCLabel sdPerf;
+	private final LWTCLabel lpPerf;
+	private final LWTCLabel sddPerf;
 
-	private class DarkLabel extends JLabel
+	private class DarkLabel extends LWTCLabel
 	{
 		private static final long serialVersionUID = 1744316889663557010L;
 		public DarkLabel( final String text )
 		{
 			super( text );
 			setForeground( Color.BLACK );
+			setBorder( BorderFactory.createEmptyBorder() );
+			setFont( LWTCControlConstants.LABEL_FONT );
 		}
 		public DarkLabel()
 		{
 			super();
 			setForeground( Color.BLACK );
+			setBorder( BorderFactory.createEmptyBorder() );
+			setFont( LWTCControlConstants.LABEL_FONT );
 		}
 	}
 

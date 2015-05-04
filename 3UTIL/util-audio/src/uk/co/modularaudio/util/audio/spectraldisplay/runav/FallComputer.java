@@ -24,22 +24,6 @@ package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 public class FallComputer implements RunningAverageComputer
 {
 	@Override
-	public float computeNewRunningAverage(final float curValue, final float valToAdd)
-	{
-		float newValue = 0.0f;
-		if( valToAdd < curValue )
-		{
-			newValue = (curValue * 0.95f) + (valToAdd * 0.05f);
-		}
-		else
-		{
-			newValue = valToAdd;
-		}
-
-		return newValue;
-	}
-
-	@Override
 	public void computeNewRunningAverages( final int currentNumBins, final float[] newValues, final float[] runningValues)
 	{
 		for( int i = 0 ; i < currentNumBins ; i++ )

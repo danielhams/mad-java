@@ -24,15 +24,6 @@ package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 public class ShortAverageComputer implements RunningAverageComputer
 {
 	@Override
-	public float computeNewRunningAverage(final float curValue, final float valToAdd)
-	{
-		float newValue = 0.0f;
-		newValue = (curValue * 0.5f) + (valToAdd * 0.5f);
-
-		return newValue;
-	}
-
-	@Override
 	public void computeNewRunningAverages( final int currentNumBins, final float[] newValues, final float[] runningValues)
 	{
 		for( int i = 0 ; i < currentNumBins ; i++ )

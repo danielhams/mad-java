@@ -51,7 +51,8 @@ public class SpectralAmpMadUiDefinition
 		"Frequency Scale",
 		"Amp Scale",
 		"Running Average",
-		"Display"
+		"Display",
+		"Peak Reset"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
@@ -59,7 +60,8 @@ public class SpectralAmpMadUiDefinition
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.DISPLAY
+		ControlType.DISPLAY,
+		ControlType.BUTTON
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
@@ -67,15 +69,17 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpFrequencyScaleComboUiJComponent.class,
 		SpectralAmpAmpScaleComboUiJComponent.class,
 		SpectralAmpRunningAverageComboUiJComponent.class,
-		SpectralAmpDisplayUiJComponent.class
+		SpectralAmpDisplayUiJComponent.class,
+		SpectralAmpPeakResetUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  70, 274,  96,  30 ),		// Resolution
-		new Rectangle( 180, 274,  96,  30 ),		// Freq
-		new Rectangle( 290, 274,  96,  30 ),		// Amp
-		new Rectangle( 400, 274,  96,  30 ),		// Runn Av
-		new Rectangle(   6,  34, 544, 230 )			// Display
+		new Rectangle(   8, 274,  96,  30 ),		// Resolution
+		new Rectangle( 118, 274,  96,  30 ),		// Freq
+		new Rectangle( 228, 274,  96,  30 ),		// Amp
+		new Rectangle( 338, 274,  96,  30 ),		// Runn Av
+		new Rectangle(   6,  34, 544, 230 ),		// Display
+		new Rectangle( 450, 274,  96,  30 )			// Peak Reset
 	};
 
 	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;

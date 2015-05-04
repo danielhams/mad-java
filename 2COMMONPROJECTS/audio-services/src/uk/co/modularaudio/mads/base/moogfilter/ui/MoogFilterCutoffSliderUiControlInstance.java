@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.moogfilter.ui;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
@@ -34,8 +32,8 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.math.MathFormatter;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
 public class MoogFilterCutoffSliderUiControlInstance extends ValueSlider
 	implements IMadUiControlInstance<MoogFilterMadDefinition, MoogFilterMadInstance, MoogFilterMadUiInstance>
@@ -57,8 +55,6 @@ public class MoogFilterCutoffSliderUiControlInstance extends ValueSlider
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
 				"Cutoff:",
-				Color.BLACK,
-				Color.black,
 				false );
 		this.uiInstance = uiInstance;
 		this.setOpaque( false );

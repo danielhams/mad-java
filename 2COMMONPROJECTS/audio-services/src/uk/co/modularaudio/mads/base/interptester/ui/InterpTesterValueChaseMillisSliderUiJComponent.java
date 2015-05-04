@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.interptester.ui;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
@@ -34,8 +32,8 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
 public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 	implements IMadUiControlInstance<InterpTesterMadDefinition, InterpTesterMadInstance, InterpTesterMadUiInstance>
@@ -46,7 +44,9 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 
 	private final InterpTesterMadUiInstance uiInstance;
 
+	public final static float MIN_CHASE_MILLIS = 1.0f;
 	public final static float DEFAULT_CHASE_MILLIS = 3.7f;
+	public final static float MAX_CHASE_MILLIS = 20.0f;
 
 	public InterpTesterValueChaseMillisSliderUiJComponent( final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
@@ -54,8 +54,8 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 			final int controlIndex )
 	{
 
-		super( new SliderDisplayModel( 1.0f,
-				10.0f,
+		super( new SliderDisplayModel( MIN_CHASE_MILLIS,
+				MAX_CHASE_MILLIS,
 				DEFAULT_CHASE_MILLIS,
 				DEFAULT_CHASE_MILLIS,
 				5000,
@@ -68,8 +68,6 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
 				"Chase:",
-				Color.BLACK,
-				Color.BLACK,
 				false );
 		this.uiInstance = uiInstance;
 	}

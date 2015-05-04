@@ -24,22 +24,6 @@ package uk.co.modularaudio.util.audio.spectraldisplay.runav;
 public class FastFallComputer implements RunningAverageComputer
 {
 	@Override
-	public float computeNewRunningAverage(final float curValue, final float valToAdd)
-	{
-		float newValue = 0.0f;
-		if( valToAdd < curValue )
-		{
-			newValue = (curValue * 0.7f) + (valToAdd * 0.3f);
-		}
-		else
-		{
-			newValue = valToAdd;
-		}
-
-		return newValue;
-	}
-
-	@Override
 	public void computeNewRunningAverages( final int currentNumBins, final float[] newValues, final float[] runningValues)
 	{
 		for( int i = 0 ; i < currentNumBins ; i++ )

@@ -46,4 +46,8 @@ public class LWTCLabel extends JLabel
 		this( LWTCControlConstants.STD_LABEL_COLOURS, text);
 	}
 
+	public LWTCLabel()
+	{
+		this( LWTCControlConstants.STD_LABEL_COLOURS, "" );
+	}
 }

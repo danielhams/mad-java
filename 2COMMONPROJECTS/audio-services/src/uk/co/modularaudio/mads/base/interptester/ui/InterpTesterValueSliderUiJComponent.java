@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.mads.base.interptester.ui;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
 
 import org.apache.commons.logging.Log;
@@ -35,8 +33,8 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
 public class InterpTesterValueSliderUiJComponent extends ValueSlider
 	implements IMadUiControlInstance<InterpTesterMadDefinition, InterpTesterMadInstance, InterpTesterMadUiInstance>,
@@ -62,8 +60,6 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
 				"Value:",
-				Color.BLACK,
-				Color.BLACK,
 				false );
 		this.uiInstance = uiInstance;
 		uiInstance.setModelChangeReceiver( this );

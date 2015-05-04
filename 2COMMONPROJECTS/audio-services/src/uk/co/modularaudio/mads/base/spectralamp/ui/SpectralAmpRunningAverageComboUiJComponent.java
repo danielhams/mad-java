@@ -37,6 +37,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
 
@@ -46,6 +47,8 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 	private static final long serialVersionUID = -2025091191521837789L;
 
 	private final SpectralAmpMadUiInstance uiInstance;
+
+	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
 
 	private final Map<String, RunningAverageComputer> runAvToCalculatorMap = new HashMap<String, RunningAverageComputer> ();
 	private final Map<RunningAverageComputer, String> calculatorToNameMap = new HashMap<RunningAverageComputer, String> ();
@@ -63,13 +66,15 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 		runAvToCalculatorMap.put( "Long Average", new LongAverageComputer() );
 		runAvToCalculatorMap.put( "Fall", new FallComputer() );
 		runAvToCalculatorMap.put( "Fast Fall", new FastFallComputer() );
+		runAvToCalculatorMap.put( "Peak Hold", peakHoldComputer );
+
 		for( final String name : runAvToCalculatorMap.keySet() )
 		{
 			calculatorToNameMap.put( runAvToCalculatorMap.get( name ), name );
 		}
 
 		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		final String[] names = new String[] { "Off", "Short Average", "Long Average", "Fast Fall", "Fall" };
+		final String[] names = new String[] { "Off", "Short Average", "Long Average", "Fast Fall", "Fall", "Peak Hold" };
 		for( final String name : names )
 		{
 			cbm.addElement( name );
@@ -83,6 +88,8 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 
 		this.setSelectedIndex( -1 );
 		this.setSelectedItem( "Fast Fall" );
+
+		uiInstance.setPeakHoldComputer( peakHoldComputer );
 	}
 
 	@Override
