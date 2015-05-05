@@ -107,49 +107,59 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	@Override
 	public void mouseEntered( final MouseEvent me )
 	{
-		switch( pushedState )
-		{
-			case OUT_NO_MOUSE:
+		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+	    if( (me.getModifiersEx() & onmask) != onmask)
+	    {
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "menter oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "menter oops - state issue" );
-			}
-		}
-		repaint();
-		me.consume();
+			repaint();
+			me.consume();
+	    }
 	}
 
 	@Override
 	public void mouseExited( final MouseEvent me )
 	{
-		switch( pushedState )
-		{
-			case OUT_MOUSE:
+		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+	    if( (me.getModifiersEx() & onmask) != onmask)
+	    {
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				break;
+				case OUT_MOUSE:
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					break;
+				}
+				case IN_MOUSE:
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "mexit oops - state issue" );
+				}
 			}
-			case IN_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "mexit oops - state issue" );
-			}
-		}
-		repaint();
-		me.consume();
+			repaint();
+			me.consume();
+	    }
 	}
 
 	@Override
