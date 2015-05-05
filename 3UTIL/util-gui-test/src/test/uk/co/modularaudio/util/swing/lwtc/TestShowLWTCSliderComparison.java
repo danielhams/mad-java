@@ -90,7 +90,7 @@ public class TestShowLWTCSliderComparison
 
 	public TestShowLWTCSliderComparison()
 	{
-		final LWTCSliderPainter painter = new LWTCSliderPainter( LWTCControlConstants.STD_SLIDER_COLOURS );
+		final LWTCSliderPainter painter = new LWTCSliderPainter( LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS );
 		horizontalKnobContainer = new KnobContainer( painter,
 						SwingConstants.HORIZONTAL );
 		verticalKnobContainer = new KnobContainer( painter,
@@ -107,7 +107,7 @@ public class TestShowLWTCSliderComparison
 		log.debug("Default swing slider model is " + defaultSwingSliderModel.toString() );
 
 		final JFrame f = new JFrame();
-//		f.getContentPane().setBackground( Color.YELLOW );
+
 		f.getContentPane().setBackground( Color.decode("#3a5555") );
 
 		final MigLayoutStringHelper msg = new MigLayoutStringHelper();

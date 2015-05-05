@@ -47,9 +47,10 @@ public class LWTCSlider extends JPanel
 	private final LWTCSliderMouseListener mouseListener;
 	private final LWTCSliderKeyListener keyListener;
 	private final ValueChangeListener valueChangeListener;
-	private final FocusChangeListener focusChangeListener;
 
 	private int numUsablePixels;
+
+	private boolean myHasFocus = false;
 
 	private class ValueChangeListener implements ChangeListener
 	{
@@ -77,21 +78,6 @@ public class LWTCSlider extends JPanel
 			lastValueReceived = newModel.getValue();
 			model = newModel;
 			model.addChangeListener( this );
-		}
-	};
-
-	private class FocusChangeListener implements FocusListener
-	{
-		@Override
-		public void focusLost( final FocusEvent arg0 )
-		{
-			repaint();
-		}
-
-		@Override
-		public void focusGained( final FocusEvent arg0 )
-		{
-			repaint();
 		}
 	};
 
@@ -140,9 +126,23 @@ public class LWTCSlider extends JPanel
 
 		valueChangeListener = new ValueChangeListener( model );
 
-		focusChangeListener = new FocusChangeListener();
+		this.addFocusListener( new FocusListener()
+		{
 
-		this.addFocusListener( focusChangeListener );
+			@Override
+			public void focusLost( final FocusEvent e )
+			{
+				repaint();
+				myHasFocus = false;
+			}
+
+			@Override
+			public void focusGained( final FocusEvent e )
+			{
+				repaint();
+				myHasFocus = true;
+			}
+		});
 	}
 
 	public void setSliderColours( final LWTCSliderColours sliderColours )
@@ -154,16 +154,12 @@ public class LWTCSlider extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
+		super.paintComponent( g );
 		final Graphics2D g2d = (Graphics2D)g;
 		final int width = getWidth();
 		final int height = getHeight();
 
-		if( isOpaque() )
-		{
-			super.paintComponent( g );
-		}
-
-		if( hasFocus() )
+		if( myHasFocus )
 		{
 			g2d.setColor( LWTCControlConstants.STD_SLIDER_COLOURS.getFocus() );
 			if( orientation == SwingConstants.HORIZONTAL )

@@ -34,7 +34,7 @@ public class LWTCSliderPainter
 
 	private final LWTCSliderKnobImage horizKnobImage;
 	private final LWTCSliderKnobImage vertKnobImage;
-	private final LWTCSliderGuideImages guideImages;
+	private final LWTCSliderGuidePainter guidePainter;
 
 	public LWTCSliderPainter( final LWTCSliderColours colours )
 	{
@@ -42,7 +42,7 @@ public class LWTCSliderPainter
 		final ImagesForColours sliderImages = imageCache.getImagesForColours( colours );
 		horizKnobImage = sliderImages.horizKnobImage;
 		vertKnobImage = sliderImages.vertKnobImage;
-		guideImages = sliderImages.guideImages;
+		guidePainter = new LWTCSliderGuidePainter( colours );
 	}
 
 	public void paintSlider( final Graphics2D g2d,
@@ -53,12 +53,13 @@ public class LWTCSliderPainter
 		final int xCenter = (width / 2);
 		final int yCenter = (height / 2);
 
-
 		final int curValue = model.getValue();
 		final int minValue = model.getMinimum();
 		final int maxValue = model.getMaximum();
 		final int range = maxValue - minValue;
 		final float normalisedPos = (curValue - minValue) / (float)range;
+
+		guidePainter.paint( g2d, width, height, orientation );
 
 		switch( orientation )
 		{
@@ -66,14 +67,6 @@ public class LWTCSliderPainter
 			{
 				final int sliderHeight = LWTCSliderKnobImage.H_KNOB_HEIGHT;
 				final int yOffset = yCenter - (sliderHeight / 2) + 1;
-				final int barOffset = yOffset + 4;
-				g2d.drawImage( guideImages.getHorizStartGuideImage(),
-						2, barOffset, null );
-				g2d.drawImage( guideImages.getHorizEndGuideImage(),
-						width - 4, barOffset, null );
-				g2d.drawImage( guideImages.getHorizGuideImage(),
-						4, barOffset, width - 8, 7, null );
-
 				final int pixelPositionsAvailable = width - (3*2) - LWTCSliderKnobImage.H_KNOB_WIDTH + 1;
 				final int pixelOffset = (int)(2 + (pixelPositionsAvailable * normalisedPos ));
 				final BufferedImage hKnobImage = horizKnobImage.getKnobImage();
@@ -85,14 +78,6 @@ public class LWTCSliderPainter
 			{
 				final int sliderWidth = LWTCSliderKnobImage.V_KNOB_WIDTH;
 				final int xOffset = xCenter - (sliderWidth / 2) + 1;
-				final int barOffset = xOffset + 4;
-				g2d.drawImage( guideImages.getVertStartGuideImage(),
-						barOffset, 2, null );
-				g2d.drawImage( guideImages.getVertEndGuideImage(),
-						barOffset, height - 4, null );
-				g2d.drawImage( guideImages.getVertGuideImage(),
-						barOffset, 4, 7, height - 8, null );
-
 				final int pixelPositionsAvailable = height - (3*2) - LWTCSliderKnobImage.V_KNOB_HEIGHT + 1;
 				final int pixelOffset = (int)(pixelPositionsAvailable * normalisedPos );
 				final int reversedOffset = pixelPositionsAvailable - pixelOffset + 3;

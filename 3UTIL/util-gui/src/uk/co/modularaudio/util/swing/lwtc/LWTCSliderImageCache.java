@@ -34,21 +34,18 @@ public class LWTCSliderImageCache
 	{
 		public final LWTCSliderKnobImage horizKnobImage;
 		public final LWTCSliderKnobImage vertKnobImage;
-		public final LWTCSliderGuideImages guideImages;
 
 		public ImagesForColours( final LWTCSliderKnobImage horizKnobImage,
-				final LWTCSliderKnobImage vertKnobImage,
-				final LWTCSliderGuideImages guideImages )
+				final LWTCSliderKnobImage vertKnobImage )
 		{
 			this.horizKnobImage = horizKnobImage;
 			this.vertKnobImage = vertKnobImage;
-			this.guideImages = guideImages;
 		}
 
 		@Override
 		public int hashCode()
 		{
-			return horizKnobImage.hashCode() + vertKnobImage.hashCode() + guideImages.hashCode();
+			return horizKnobImage.hashCode() + vertKnobImage.hashCode();
 		}
 	}
 
@@ -68,9 +65,8 @@ public class LWTCSliderImageCache
 		{
 			final LWTCSliderKnobImage horizKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.HORIZONTAL );
 			final LWTCSliderKnobImage vertKnobImage = new LWTCSliderKnobImage( colours, SwingConstants.VERTICAL );
-			final LWTCSliderGuideImages guideImages = new LWTCSliderGuideImages( colours );
 
-			retVal = new ImagesForColours( horizKnobImage, vertKnobImage, guideImages );
+			retVal = new ImagesForColours( horizKnobImage, vertKnobImage );
 			cache.put( coloursHash, retVal );
 		}
 		return retVal;
