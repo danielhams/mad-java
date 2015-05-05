@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.gui.GuiRackBackActionListener;
 import uk.co.modularaudio.service.gui.GuiService;
@@ -52,6 +51,7 @@ import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 {
@@ -137,11 +137,15 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 
 		// Now setup the panel
 		// add the toolbar the scrollpane and cardpanel to it
-		final MigLayout migLayout = new MigLayout("insets 0, fill");
-		this.setLayout( migLayout );
-		this.add( toolbar, "wrap" );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addLayoutConstraint( "gap 0" );
+
+		this.setLayout( msh.createMigLayout() );
+		this.add( toolbar, "grow, wrap" );
 		this.add( scrollableArea, "grow" );
-		this.validate();
 	}
 
 	@Override

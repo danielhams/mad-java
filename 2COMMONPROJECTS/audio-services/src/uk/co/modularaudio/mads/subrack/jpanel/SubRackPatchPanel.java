@@ -25,7 +25,6 @@ import java.util.HashSet;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.ContainerTab;
@@ -33,6 +32,7 @@ import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class SubRackPatchPanel extends JPanel implements ContainerTab
 {
@@ -52,12 +52,15 @@ public class SubRackPatchPanel extends JPanel implements ContainerTab
 		this.uiInstance = uiInstance;
 		this.rmrc = rmrc;
 		this.rackService = rackService;
-		final MigLayout migLayout = new MigLayout( "insets 0, gap 0, fill");
-		this.setLayout( migLayout );
-		add( rmrc.getJComponent(), "");
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addLayoutConstraint( "gap 0" );
+		this.setLayout( msh.createMigLayout() );
+		add( rmrc.getJComponent(), "grow");
 
 		this.setSize( GuiConstants.GUI_DEFAULT_DIMENSIONS );
-		this.setMinimumSize( GuiConstants.GUI_MINIMUM_DIMENSIONS );
 	}
 
 	public void setRackDataModel( final RackDataModel subRackDataModel ) throws DatastoreException
