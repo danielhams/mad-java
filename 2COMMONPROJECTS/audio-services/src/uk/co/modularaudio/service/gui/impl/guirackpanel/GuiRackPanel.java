@@ -144,7 +144,7 @@ public class GuiRackPanel extends JPanel implements RackModelRenderingComponent
 		msh.addLayoutConstraint( "gap 0" );
 
 		this.setLayout( msh.createMigLayout() );
-		this.add( toolbar, "grow, wrap" );
+		this.add( toolbar, "wrap" );
 		this.add( scrollableArea, "grow" );
 	}
 
