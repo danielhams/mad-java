@@ -69,6 +69,10 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 				{
 					log.debug( "Adding " + pathToLoad + " to buffered image cache" );
 				}
+				if( retVal.getColorModel().hasAlpha() )
+				{
+					log.warn("Image " + pathToLoad + " has alpha, and probably shouldn't");
+				}
 				biCache.put( pathToLoad, retVal );
 			} catch (final IOException ie) {
 				final String msg = "Exception caught loading image " + pathToLoad + ": " + ie.toString();

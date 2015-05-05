@@ -139,9 +139,9 @@ public class TestShowLWTCSlider
 			public void run()
 			{
 				// 60 fps
-//				final int millis = 16;
+				final int millis = 16;
 				// 120 fps
-				final int millis = 8;
+//				final int millis = 8;
 
 				int value = 0;
 				int dir = 1;
@@ -192,20 +192,20 @@ public class TestShowLWTCSlider
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
-		final TestShowLWTCSlider vt = new TestShowLWTCSlider();
-		vt.go( SwingConstants.VERTICAL );
+//		final TestShowLWTCSlider vt = new TestShowLWTCSlider();
+//		vt.go( SwingConstants.VERTICAL );
 
 		final TestShowLWTCSlider ht = new TestShowLWTCSlider();
 		ht.go( SwingConstants.HORIZONTAL );
 
-		vt.startThread();
+//		vt.startThread();
 		ht.startThread();
 
 		// n secs test
-		final int millis = 60 * 1000;
+		final int millis = 120 * 1000;
 		Thread.sleep( millis );
 
-		vt.joinThread();
+///		vt.joinThread();
 		ht.joinThread();
 	}
 

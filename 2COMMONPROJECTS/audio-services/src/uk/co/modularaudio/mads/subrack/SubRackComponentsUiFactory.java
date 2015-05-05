@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class SubRackComponentsUiFactory extends AbstractMadComponentUiFactory
 {
-	private SubRackComponentsFactory subRackComponentsFactory = null;
+	private SubRackComponentsFactory subRackComponentsFactory;
 
 	@Override
 	public void setupTypeToDefinitionClasses() throws DatastoreException
