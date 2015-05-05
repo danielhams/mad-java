@@ -50,6 +50,9 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 
 	private final InterpTesterSliderModels sliderModels;
 
+	private long lastEventCountNanos = 0;
+	private int numEvents = 0;
+
 	public InterpTesterValueSliderUiJComponent( final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
 			final InterpTesterMadUiInstance uiInstance,
@@ -79,6 +82,20 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 			sliderValue = valueConverter.convertValue( sliderValue );
 		}
 		uiInstance.setValue( sliderValue );
+
+		final long curNanos = System.nanoTime();
+
+		final long diff = curNanos - lastEventCountNanos;
+		if( diff > 1000 * 1000 * 1000 )
+		{
+			lastEventCountNanos = curNanos;
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Did " + numEvents + " within the last second");
+			}
+			numEvents = 0;
+		}
+		numEvents++;
 	}
 
 	@Override
