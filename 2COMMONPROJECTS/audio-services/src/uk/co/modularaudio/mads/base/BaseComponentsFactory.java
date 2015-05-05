@@ -62,10 +62,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
-import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
-import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadInstance;
-import uk.co.modularaudio.mads.base.mixer8.mu.Mixer8MadDefinition;
-import uk.co.modularaudio.mads.base.mixer8.mu.Mixer8MadInstance;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadInstance;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
@@ -195,10 +191,6 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadInstance.class );
 
 		defClassToInsClassMap.put( XRunnerMadDefinition.class, XRunnerMadInstance.class );
-
-		defClassToInsClassMap.put( Mixer3MadDefinition.class, Mixer3MadInstance.class );
-
-		defClassToInsClassMap.put( Mixer8MadDefinition.class, Mixer8MadInstance.class );
 
 		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
 

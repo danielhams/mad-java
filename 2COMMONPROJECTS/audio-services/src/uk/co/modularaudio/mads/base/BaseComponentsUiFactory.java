@@ -63,10 +63,6 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.ui.InverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterMadUiDefinition;
-import uk.co.modularaudio.mads.base.mixer3.mu.Mixer3MadDefinition;
-import uk.co.modularaudio.mads.base.mixer3.ui.Mixer3MadUiDefinition;
-import uk.co.modularaudio.mads.base.mixer8.mu.Mixer8MadDefinition;
-import uk.co.modularaudio.mads.base.mixer8.ui.Mixer8MadUiDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.ui.MonoCompressorMadUiDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
@@ -189,10 +185,6 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadUiDefinition.class );
 
 		classToUiDefinition.put( XRunnerMadDefinition.class, XRunnerMadUiDefinition.class );
-
-		classToUiDefinition.put( Mixer3MadDefinition.class, Mixer3MadUiDefinition.class );
-
-		classToUiDefinition.put( Mixer8MadDefinition.class, Mixer8MadUiDefinition.class );
 
 		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
 
