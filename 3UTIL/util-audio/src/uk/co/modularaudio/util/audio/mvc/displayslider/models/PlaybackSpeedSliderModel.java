@@ -33,8 +33,8 @@ public class PlaybackSpeedSliderModel extends SliderDisplayModel
 				300,
 				100,
 				new SimpleSliderIntToFloatConverter(),
-				3,
-				3,
-				"val" );
+				2,
+				2,
+				"%" );
 	}
 }

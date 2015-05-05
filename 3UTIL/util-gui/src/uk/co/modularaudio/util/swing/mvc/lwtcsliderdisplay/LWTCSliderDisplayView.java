@@ -20,7 +20,10 @@
 
 package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
@@ -102,6 +105,8 @@ public class LWTCSliderDisplayView extends JPanel
 		label = new LWTCSliderDisplayLabel( colours,
 				labelText,
 				opaque );
+
+
 		slider = new LWTCSliderDisplaySlider( model,
 				controller,
 				displayOrientation,
@@ -121,6 +126,7 @@ public class LWTCSliderDisplayView extends JPanel
 		// Above
 		if( labelOrientation == SatelliteOrientation.ABOVE )
 		{
+			label.setVerticalAlignment( SwingConstants.BOTTOM );
 			this.add( label, "cell " + displayCol + " " + curRowCounter + ", center, bottom, grow 0" );
 			curRowCounter++;
 		}
@@ -134,6 +140,7 @@ public class LWTCSliderDisplayView extends JPanel
 		// Left
 		if( labelOrientation == SatelliteOrientation.LEFT )
 		{
+			label.setHorizontalAlignment( SwingConstants.RIGHT );
 			this.add( label, "cell " + curColCounter + " " + curRowCounter + ", alignx right, aligny center" );
 			curColCounter++;
 		}
@@ -156,6 +163,7 @@ public class LWTCSliderDisplayView extends JPanel
 
 		if( labelOrientation == SatelliteOrientation.RIGHT )
 		{
+			label.setHorizontalAlignment( SwingConstants.LEFT );
 			this.add( label, "cell " + curColCounter + " " + displayRow + ", align left, grow 0" );
 			curColCounter++;
 		}
@@ -171,6 +179,7 @@ public class LWTCSliderDisplayView extends JPanel
 
 		if( labelOrientation == SatelliteOrientation.BELOW )
 		{
+			label.setVerticalAlignment( SwingConstants.TOP );
 			this.add( label, "cell " + displayCol + " " + curRowCounter + ", align center, top, grow 0" );
 			curRowCounter++;
 		}
@@ -201,5 +210,11 @@ public class LWTCSliderDisplayView extends JPanel
 	{
 		slider.changeModel( newModel );
 		textbox.changeModel( newModel );
+	}
+
+	public void setLabelMinSize( final int width, final int height )
+	{
+		label.setMinimumSize( new Dimension( width, height ) );
+
 	}
 }

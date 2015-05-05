@@ -42,7 +42,6 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	// Maximum to buffer in entirety is five seconds
 	public static final float MAX_CAPTURE_MILLIS = 5000.0f;
 
-	private WaveRollerCaptureTimeProducer captureTimeProducer;
 	private WaveRollerDataListener scopeDataListener;
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
@@ -110,18 +109,13 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	public void setScopeDataListener( final WaveRollerDataListener scopeDataListener )
 	{
 		this.scopeDataListener = scopeDataListener;
-		if( scopeDataListener != null && captureTimeProducer != null )
-		{
-			scopeDataListener.setCaptureTimeProducer(captureTimeProducer);
-		}
 	}
 
-	public void setCaptureTimeProducer( final WaveRollerCaptureTimeProducer captureTimeProducer )
+	public void setCaptureTime( final float captureMillis )
 	{
-		this.captureTimeProducer = captureTimeProducer;
-		if( scopeDataListener != null && captureTimeProducer != null )
+		if( scopeDataListener != null )
 		{
-			scopeDataListener.setCaptureTimeProducer(captureTimeProducer);
+			scopeDataListener.setCaptureTimeMillis( captureMillis );
 		}
 	}
 

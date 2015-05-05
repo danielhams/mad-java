@@ -71,8 +71,8 @@ public class FrequencyFilterMadUiDefinition
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		FrequencyFilterTypeComboUiJComponent.class,
 		FrequencyFilterDbToggleUiJComponent.class,
-		FrequencyFilterKneeSliderUiControlInstance.class,
-		FrequencyFilterBandwidthSliderUiControlInstance.class
+		FrequencyFilterFrequencySliderUiJComponent.class,
+		FrequencyFilterBWSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
@@ -83,6 +83,8 @@ public class FrequencyFilterMadUiDefinition
 	};
 
 	private static final Class<FrequencyFilterMadUiInstance> INSTANCE_CLASS = FrequencyFilterMadUiInstance.class;
+
+	protected final static int SLIDER_LABEL_MIN_WIDTH = 40;
 
 	public FrequencyFilterMadUiDefinition( final BufferedImageAllocator bia,
 			final FrequencyFilterMadDefinition definition,

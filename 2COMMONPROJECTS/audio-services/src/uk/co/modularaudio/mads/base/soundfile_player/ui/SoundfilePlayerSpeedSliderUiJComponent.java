@@ -22,60 +22,66 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
-import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerCaptureLengthSliderUiJComponent;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.PlaybackSpeedSliderModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
-public class SoundfilePlayerSpeedSliderUiJComponent extends PacPlaybackSpeedSlider
+public class SoundfilePlayerSpeedSliderUiJComponent
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
 	SliderDoubleClickReceiver
 {
-	private static Log log = LogFactory.getLog( SoundfilePlayerSpeedSliderUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( SoundfilePlayerSpeedSliderUiJComponent.class.getName() );
 
-	private static final long serialVersionUID = 2538907435465770032L;
-
-	private final SoundfilePlayerMadUiInstance uiInstance;
+	private final PlaybackSpeedSliderModel model;
+	private final SliderDisplayController controller;
+	private final LWTCSliderDisplayView view;
 
 	public SoundfilePlayerSpeedSliderUiJComponent( final SoundfilePlayerMadDefinition definition,
 			final SoundfilePlayerMadInstance instance,
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -SoundfilePlayerMadInstance.PLAYBACK_SPEED_MAX,
-				SoundfilePlayerMadInstance.PLAYBACK_SPEED_MAX,
-				1.0f,
-				1.0f,
-				"%",
+		model = new PlaybackSpeedSliderModel();
+
+		controller = new SliderDisplayController( model );
+
+		view = new LWTCSliderDisplayView(
+				model,
+				controller,
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
-				WaveRollerCaptureLengthSliderUiJComponent.SLIDER_COLORS,
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Speed:",
 				false );
 
 		view.addDoubleClickReceiver(this);
 
-		this.uiInstance = uiInstance;
+		model.addChangeListener( new ValueChangeListener()
+		{
+
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				uiInstance.sendPlayingSpeed( newValue );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final float newValue )
-	{
-		uiInstance.sendPlayingSpeed(newValue);
+		return view;
 	}
 
 	@Override
@@ -93,30 +99,15 @@ public class SoundfilePlayerSpeedSliderUiJComponent extends PacPlaybackSpeedSlid
 	@Override
 	public String getControlValue()
 	{
-		return model.getValue() + "";
+		return Float.toString( model.getValue() );
 	}
 
 	@Override
 	public void receiveControlValue( final String valueStr )
 	{
-		try
-		{
 //			log.debug("Received control value " + value );
-			final float asFloat = Float.parseFloat( valueStr );
-			model.setValue( this, asFloat );
-			receiveValueChange( this, asFloat );
-		}
-		catch( final Exception e )
-		{
-			final String msg = "Failed to parse control value: " + valueStr;
-			log.error( msg, e );
-		}
-	}
-
-	@Override
-	public void receiveValueChange( final Object source, final float newValue )
-	{
-		passChangeToInstanceData( newValue );
+		final float asFloat = Float.parseFloat( valueStr );
+		controller.setValue( this, asFloat );
 	}
 
 	@Override

@@ -32,7 +32,7 @@ public class OscillatorFrequencySliderModel extends SliderDisplayModel
 				1000,
 				100,
 				new LogSliderIntToFloatConverter( 22050.0f ),
-				5,
+				4,
 				3,
 				"hz" );
 	}

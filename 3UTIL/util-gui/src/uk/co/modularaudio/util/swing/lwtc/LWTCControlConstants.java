@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class LWTCControlConstants
 {
@@ -584,5 +585,30 @@ public class LWTCControlConstants
 		{
 			return stateToColoursMap[ state.ordinal() ];
 		}
-	};
+	}
+
+	private static final LWTCSliderViewColors getSliderViewColors()
+	{
+		final Color bgColor = Color.black;
+		final Color fgColor = Color.white;
+		final Color indicatorColor = null;
+		final Color textboxBgColor = CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color labelColor = CONTROL_LABEL_FOREGROUND;
+		final Color unitsColor = labelColor;
+
+		return new LWTCSliderViewColors( bgColor,
+				fgColor,
+				indicatorColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				labelColor,
+				unitsColor );
+	}
+
+	public static final LWTCSliderViewColors SLIDER_VIEW_COLORS = getSliderViewColors();;
 }

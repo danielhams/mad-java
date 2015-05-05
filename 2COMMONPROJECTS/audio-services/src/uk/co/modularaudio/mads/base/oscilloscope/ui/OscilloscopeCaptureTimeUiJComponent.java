@@ -28,10 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.waveroller.ui.PacCaptureLengthSlider;
-import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerCaptureLengthSliderUiJComponent;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
@@ -55,7 +55,7 @@ public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
-				WaveRollerCaptureLengthSliderUiJComponent.SLIDER_COLORS,
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Capture Time:",
 				false );
 //		this.uiInstance = uiInstance;

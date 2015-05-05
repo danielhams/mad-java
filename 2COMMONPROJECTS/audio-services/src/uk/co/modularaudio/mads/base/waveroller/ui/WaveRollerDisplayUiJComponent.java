@@ -264,12 +264,6 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void setCaptureTimeProducer( final WaveRollerCaptureTimeProducer captureTimeProducer)
-	{
-		captureTimeProducer.setScopeDataListener( this );
-	}
-
-	@Override
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
 		currentCaptureMillis = captureMillis;

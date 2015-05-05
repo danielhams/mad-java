@@ -32,7 +32,7 @@ public class LogarithmicTimeMillisSliderModel extends SliderDisplayModel
 				4999,
 				100,
 				new LogSliderIntToFloatConverter( 5000.0f ),
-				5,
+				3,
 				3,
 				"ms" );
 	}

@@ -20,18 +20,13 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
-import java.awt.AlphaComposite;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 
 import javax.swing.SwingConstants;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class LWTCSliderGuidePainter
 {
-	private static Log log = LogFactory.getLog( LWTCSliderGuidePainter.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderGuidePainter.class.getName() );
 
 	private final LWTCSliderColours colours;
 
@@ -41,16 +36,9 @@ public class LWTCSliderGuidePainter
 
 	public final static int SHADING_SIZE = 1;
 
-	public final static int GUIDE_THICKNESS = PLAIN_SIZE +
-	((PERIMETER_SIZE + SHADING_SIZE) * 2);
+	public final static int GUIDE_THICKNESS = PLAIN_SIZE + ((PERIMETER_SIZE + SHADING_SIZE) * 2);
 
 	public static final int GUIDE_OFFSET = 3;
-
-	public final static Composite SIDE_ALPHA_COMPOSITE =
-	AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.75f );
-
-	public final static Composite SIDE_OPAQUE_COMPOSITE =
-	AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 1.0f );
 
 	public LWTCSliderGuidePainter( final LWTCSliderColours colours )
 	{
@@ -59,7 +47,6 @@ public class LWTCSliderGuidePainter
 
 	public void paint( final Graphics2D g2d, final int width, final int height, final int orientation )
 	{
-//		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF );
 		switch( orientation )
 		{
 			case SwingConstants.HORIZONTAL:
