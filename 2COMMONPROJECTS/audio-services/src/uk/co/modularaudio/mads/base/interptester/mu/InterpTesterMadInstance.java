@@ -26,7 +26,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.controlprocessingtester.ui.CPTValueChaseMillisSliderUiJComponent;
 import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
@@ -63,7 +62,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 
 	private int sampleRate;
-	private float desValueChaseMillis = CPTValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
+
+	private float desValueChaseMillis = 10.0f;
 
 //	private final byte[] lChannelMask;
 	private int framesBetweenUiEvents;
