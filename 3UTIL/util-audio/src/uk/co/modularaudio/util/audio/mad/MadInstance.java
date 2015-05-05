@@ -160,6 +160,11 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				-1 );
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
 				queuePullingFrameTime );
+				
+//		if( tempQueueEntryStorage.numTemporalEventsToInstance > 0 )
+//		{
+//			log.debug("preProcess found " + tempQueueEntryStorage.numTemporalEventsToInstance + " temp events waiting");
+//		}
 
 		// Now get the bridge to walk the commands
 		// we'll leave the temporal ones to be

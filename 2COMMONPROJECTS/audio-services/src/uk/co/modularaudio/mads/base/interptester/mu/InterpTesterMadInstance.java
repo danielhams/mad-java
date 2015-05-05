@@ -174,63 +174,55 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
 
 		final float[] rawNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS ].floatBuffer;
-		noneInterpolatorNoTs.generateControlValues( tmpBuffer, 0, numFrames );
-		noneInterpolator.checkForDenormal();
-		System.arraycopy( tmpBuffer, 0, rawNoTsBuf, frameOffset, numFrames );
+		noneInterpolatorNoTs.generateControlValues( rawNoTsBuf, frameOffset, numFrames );
+		noneInterpolatorNoTs.checkForDenormal();
 
 		final float[] hhNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS ].floatBuffer;
-		hhInterpolatorNoTs.generateControlValues( tmpBuffer, 0, numFrames );
+		hhInterpolatorNoTs.generateControlValues( hhNoTsBuf, frameOffset, numFrames );
 		hhInterpolatorNoTs.checkForDenormal();
-		System.arraycopy( tmpBuffer, 0, hhNoTsBuf, frameOffset, numFrames );
 
 
 		final float[] rawBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW ].floatBuffer;
 		long before = System.nanoTime();
-		noneInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		noneInterpolator.generateControlValues( rawBuf, frameOffset, numFrames );
 		noneInterpolator.checkForDenormal();
 		long after = System.nanoTime();
 		lastNoneNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, rawBuf, frameOffset, numFrames );
 
 		final float[] linearBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LINEAR ].floatBuffer;
 		before = System.nanoTime();
-		liInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		liInterpolator.generateControlValues( linearBuf, frameOffset, numFrames );
 		liInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastLinNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, linearBuf, frameOffset, numFrames );
 
 		final float[] hhBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN ].floatBuffer;
 		before = System.nanoTime();
-		hhInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		hhInterpolator.generateControlValues( hhBuf, frameOffset, numFrames );
 		hhInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastHHNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, hhBuf, frameOffset, numFrames );
 
 		final float[] sdBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER ].floatBuffer;
 		before = System.nanoTime();
-		sdInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		sdInterpolator.generateControlValues( sdBuf, frameOffset, numFrames );
 		sdInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastSDNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, sdBuf, frameOffset, numFrames );
 
 		final float[] lpBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LOWPASS ].floatBuffer;
 		before = System.nanoTime();
-		lpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		lpInterpolator.generateControlValues( lpBuf, frameOffset, numFrames );
 		lpInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastLPNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, lpBuf, frameOffset, numFrames );
 
 		final float[] sddBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE ].floatBuffer;
 		before = System.nanoTime();
-		sddInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+		sddInterpolator.generateControlValues( sddBuf, frameOffset, numFrames );
 		sddInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastSDDNanos = after - before;
-		System.arraycopy( tmpBuffer, 0, sddBuf, frameOffset, numFrames );
 
 		numFramesToNextUiEvent -= numFrames;
 
@@ -241,7 +233,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 //		log.trace( "Received amp change: " + amp );
 
-		// Set them all
+		// Set all the TS based interpolators
 		noneInterpolator.notifyOfNewValue( amp );
 		liInterpolator.notifyOfNewValue( amp );
 		hhInterpolator.notifyOfNewValue( amp );
@@ -294,6 +286,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sdInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		lpInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		
+		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 	}
 
 	public InterpTesterSliderModels getModels()
