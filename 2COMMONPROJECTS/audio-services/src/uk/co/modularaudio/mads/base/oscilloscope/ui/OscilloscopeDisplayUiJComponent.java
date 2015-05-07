@@ -343,11 +343,6 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeProducer captureTimeProducer )
-	{
-	}
-
-	@Override
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
 	}

@@ -22,63 +22,63 @@ package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
 import javax.swing.JComponent;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
-import uk.co.modularaudio.mads.base.waveroller.ui.PacCaptureLengthSlider;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisSliderModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
-	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>,
-		OscilloscopeCaptureTimeProducer
+public class OscilloscopeCaptureLengthSliderUiJComponent
+	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( OscilloscopeCaptureTimeUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( OscilloscopeCaptureLengthSliderUiJComponent.class.getName() );
 
-	private static final long serialVersionUID = 2538907435465770032L;
+	private final LogarithmicTimeMillisSliderModel model;
+	private final SliderDisplayController controller;
+	private final LWTCSliderDisplayView view;
 
-	private ScopeDataListener dataListener;
-
-	public OscilloscopeCaptureTimeUiJComponent( final OscilloscopeMadDefinition definition,
+	public OscilloscopeCaptureLengthSliderUiJComponent( final OscilloscopeMadDefinition definition,
 			final OscilloscopeMadInstance instance,
 			final OscilloscopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 5000.0f, 60f, 60f,
-				"ms",
+
+		model = new LogarithmicTimeMillisSliderModel();
+
+		controller = new SliderDisplayController( model );
+
+		view = new LWTCSliderDisplayView(
+				model,
+				controller,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Capture Time:",
-				false );
-//		this.uiInstance = uiInstance;
+				false, true );
 
-		uiInstance.setCaptureTimeProducer( this );
+		model.addChangeListener( new ValueChangeListener()
+		{
+
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				uiInstance.setCaptureTimeMillis( newValue );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final float newValue )
-	{
-		if( dataListener != null )
-		{
-			dataListener.setCaptureTimeMillis( newValue );
-		}
-		else
-		{
-			log.debug("Data listener is null");
-		}
+		return view;
 	}
 
 	@Override
@@ -86,7 +86,6 @@ public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -97,43 +96,14 @@ public class OscilloscopeCaptureTimeUiJComponent extends PacCaptureLengthSlider
 	@Override
 	public String getControlValue()
 	{
-		return model.getValue() + "";
+		return Float.toString( model.getValue() );
 	}
 
 	@Override
 	public void receiveControlValue( final String valueStr )
 	{
-		try
-		{
-//			log.debug("Received control value " + value );
-			final float asFloat = Float.parseFloat( valueStr );
-			model.setValue( this, asFloat );
-			receiveValueChange( this, asFloat );
-		}
-		catch( final Exception e )
-		{
-			final String msg = "Failed to parse control value: " + valueStr;
-			log.error( msg, e );
-		}
-	}
-
-	@Override
-	public void receiveValueChange( final Object source, final float newValue )
-	{
-		passChangeToInstanceData( newValue );
-	}
-
-	@Override
-	public float getCaptureTimeMillis()
-	{
-		return model.getValue();
-	}
-
-	@Override
-	public void setScopeDataListener( final ScopeDataListener dataListener )
-	{
-		this.dataListener = dataListener;
-		dataListener.setCaptureTimeMillis( model.getValue() );
+		final float asFloat = Float.parseFloat( valueStr );
+		controller.setValue( this, asFloat );
 	}
 
 	@Override

@@ -170,9 +170,6 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 			numFramesToNextUiEvent = framesBetweenUiEvents;
 		}
 
-
-		final float[] tmpBuffer = tempQueueEntryStorage.temporaryFloatArray;
-
 		final float[] rawNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS ].floatBuffer;
 		noneInterpolatorNoTs.generateControlValues( rawNoTsBuf, frameOffset, numFrames );
 		noneInterpolatorNoTs.checkForDenormal();
@@ -286,7 +283,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sdInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		lpInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
-		
+
 		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 	}
 

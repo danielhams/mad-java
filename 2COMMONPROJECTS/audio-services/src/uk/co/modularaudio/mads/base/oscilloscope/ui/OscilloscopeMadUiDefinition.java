@@ -71,7 +71,7 @@ public class OscilloscopeMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		OscilloscopeCaptureTimeUiJComponent.class,
+		OscilloscopeCaptureLengthSliderUiJComponent.class,
 		OscilloscopeDisplayUiJComponent.class,
 		OscilloscopeTriggerComboUiJComponent.class,
 		OscilloscopeRepetitionsComboUiJComponent.class,

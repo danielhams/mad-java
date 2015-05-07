@@ -45,7 +45,8 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 		OUT_NO_MOUSE,
 		OUT_MOUSE,
 		IN_NO_MOUSE,
-		IN_MOUSE
+		IN_MOUSE,
+		NUM_STATES
 	};
 
 	private static final int OUTLINE_ARC_WIDTH = 6;
@@ -57,6 +58,9 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 	protected final LWTCButtonColours colours;
 
 	protected MadButtonState pushedState = MadButtonState.OUT_NO_MOUSE;
+
+	protected LWTCButtonStateColours[] coloursForState;
+	protected GradientPaint[] gradientPaintsForState;
 
 	protected String text = "";
 
@@ -72,6 +76,16 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 	{
 		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 		this.colours = colours;
+
+		this.coloursForState = new LWTCButtonStateColours[MadButtonState.NUM_STATES.ordinal()];
+		this.gradientPaintsForState = new GradientPaint[MadButtonState.NUM_STATES.ordinal()];
+		for( int i = 0 ; i < MadButtonState.NUM_STATES.ordinal() ; ++i )
+		{
+			final LWTCButtonStateColours stateColours = colours.getButtonColoursForState( MadButtonState.values()[i] );
+			coloursForState[i] = stateColours;
+			gradientPaintsForState[i] = null;
+		}
+
 		this.text = textContent;
 		setOpaque( false );
 
@@ -140,16 +154,24 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 
 //		log.debug("Paint called we are in state " + pushedState.toString() );
 
-		final LWTCButtonStateColours stateColours = colours.getButtonColoursForState( pushedState );
+		final int stateIndex = pushedState.ordinal();
 
-		final GradientPaint bgGrad = new GradientPaint( 0, 0,
-				stateColours.getContentGradStart(),
-				0, height,
-				stateColours.getContentGradEnd() );
+		final LWTCButtonStateColours stateColours = coloursForState[ stateIndex ];
+
+		GradientPaint gpGrad = gradientPaintsForState[ stateIndex ];
+
+		if( gpGrad == null )
+		{
+			gpGrad = new GradientPaint( 0, 0,
+					stateColours.getContentGradStart(),
+					0, height,
+					stateColours.getContentGradEnd() );
+			gradientPaintsForState[ stateIndex ] = gpGrad;
+		}
 
 		paintButton( g2d,
 				stateColours,
-				bgGrad,
+				gpGrad,
 				width, height );
 	}
 

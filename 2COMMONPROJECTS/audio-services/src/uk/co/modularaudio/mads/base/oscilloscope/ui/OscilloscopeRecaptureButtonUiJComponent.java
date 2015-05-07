@@ -20,24 +20,20 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JComponent;
 
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class OscilloscopeRecaptureButtonUiJComponent extends PacButton
+public class OscilloscopeRecaptureButtonUiJComponent
 	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
 {
-	private static final long serialVersionUID = 6068897521037173787L;
-
-	private final OscilloscopeMadUiInstance uiInstance;
+	private final LWTCButton button;
 
 	public OscilloscopeRecaptureButtonUiJComponent(
 			final OscilloscopeMadDefinition definition,
@@ -45,49 +41,51 @@ public class OscilloscopeRecaptureButtonUiJComponent extends PacButton
 			final OscilloscopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		// Default value
-		super();
+		button = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS,
+				"Recapture",
+				true )
+		{
+			private static final long serialVersionUID = 1L;
 
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-		final Font f = this.getFont();
-		setFont( f );
-		this.setText( "Recapture" );
+			@Override
+			public void receiveClick()
+			{
+				uiInstance.doRecapture();
+			}
+		};
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData()
-	{
-		uiInstance.doRecapture();
-	}
-
-	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
-	{
-		// log.debug("Received display tick");
-	}
-
-	@Override
-	public void receiveEvent( final ActionEvent e )
-	{
-		passChangeToInstanceData();
-	}
-
-	@Override
-	public void destroy()
-	{
+		return button;
 	}
 
 	@Override
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTime )
+	{
+	}
+
+	@Override
+	public void destroy()
+	{
 	}
 }

@@ -237,24 +237,9 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		sendTemporalValueToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_CAPTURE_REPETITIONS, rv.ordinal() );
 	}
 
-	public void setCaptureMillis( final float captureMillis )
-	{
-		currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), captureMillis );
-		currentCaptureBufferLength = (currentCaptureBufferLength < 1 ? 1 : (currentCaptureBufferLength > maxCaptureBufferLength ? maxCaptureBufferLength : currentCaptureBufferLength ) );
-	}
-
 	public void sendScopeData( final OscilloscopeWriteableScopeData dataToPassToInstance )
 	{
 		sendTemporalObjectToInstance( OscilloscopeIOQueueBridge.COMMAND_IN_SCOPE_DATA, dataToPassToInstance );
-	}
-
-	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeUiJComponent captureTimeProducer )
-	{
-		captureTimeProducer.setScopeDataListener( this );
-		if( scopeDataListener != null )
-		{
-			scopeDataListener.setCaptureTimeProducer( captureTimeProducer );
-		}
 	}
 
 	@Override
@@ -263,13 +248,9 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	}
 
 	@Override
-	public void setCaptureTimeProducer( final OscilloscopeCaptureTimeProducer captureTimeProducer )
-	{
-	}
-
-	@Override
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
-		setCaptureMillis( captureMillis );
+		currentCaptureBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.SR_44100.getValue(), captureMillis );
+		currentCaptureBufferLength = (currentCaptureBufferLength < 1 ? 1 : (currentCaptureBufferLength > maxCaptureBufferLength ? maxCaptureBufferLength : currentCaptureBufferLength ) );
 	}
 }
