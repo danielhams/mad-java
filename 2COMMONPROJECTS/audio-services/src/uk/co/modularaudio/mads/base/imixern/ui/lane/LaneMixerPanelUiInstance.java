@@ -65,7 +65,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
 		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
 		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
-		final Color labelColor = LWTCControlConstants.CONTROL_LABEL_FOREGROUND;
+		final Color labelColor = Color.LIGHT_GRAY;
 		final Color unitsColor = MixerNMadUiDefinition.LANE_FG_COLOR;
 
 		return new LWTCSliderViewColors( bgColor,

@@ -30,6 +30,9 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderModel;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
@@ -40,7 +43,7 @@ public class DJEQFaderMarks extends JPanel
 {
 	private static final long serialVersionUID = 8804239906450285191L;
 
-//	private static Log log = LogFactory.getLog( MixerFaderLabels.class.getName() );
+	private static Log log = LogFactory.getLog( DJEQFaderMarks.class.getName() );
 
 	private static final float[] VALUES_TO_LABEL = new float[] {
 		0,
@@ -95,6 +98,9 @@ public class DJEQFaderMarks extends JPanel
 		final SliderIntToFloatConverter intToFloatConverter = model.getSliderIntToFloatConverter();
 		final float numModelSteps = model.getNumSliderSteps();
 
+		int minMarkY = Integer.MAX_VALUE;
+		int maxMarkY = Integer.MIN_VALUE;
+
 		for( final float levelToMark : VALUES_TO_LABEL )
 		{
 			final int sliderIntValue = intToFloatConverter.floatValueToSliderIntValue( model, levelToMark );
@@ -104,6 +110,15 @@ public class DJEQFaderMarks extends JPanel
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
 			// Draw a marker line at the appropriate height
 			g.drawLine( 0, offsetY, 2, offsetY );
+
+			if( offsetY < minMarkY )
+			{
+				minMarkY = offsetY;
+			}
+			else if( offsetY > maxMarkY )
+			{
+				maxMarkY = offsetY;
+			}
 
 			String labelStr = null;
 			if( levelToMark == Float.NEGATIVE_INFINITY )
@@ -116,7 +131,10 @@ public class DJEQFaderMarks extends JPanel
 			}
 			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
-
 		}
+
+		g.drawLine( 0, minMarkY, 0, maxMarkY );
+
+		log.debug("Being painted");
 	}
 }

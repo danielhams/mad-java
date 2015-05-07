@@ -95,6 +95,9 @@ public class MixerFaderMarks extends JPanel
 		final SliderIntToFloatConverter intToFloatConverter = model.getSliderIntToFloatConverter();
 		final float numModelSteps = model.getNumSliderSteps();
 
+		int minMarkY = Integer.MAX_VALUE;
+		int maxMarkY = Integer.MIN_VALUE;
+
 		for( final float levelToMark : VALUES_TO_LABEL )
 		{
 			final int sliderIntValue = intToFloatConverter.floatValueToSliderIntValue( model, levelToMark );
@@ -104,6 +107,15 @@ public class MixerFaderMarks extends JPanel
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
 			// Draw a marker line at the appropriate height
 			g.drawLine( 0, offsetY, 2, offsetY );
+
+			if( offsetY < minMarkY )
+			{
+				minMarkY = offsetY;
+			}
+			else if( offsetY > maxMarkY )
+			{
+				maxMarkY = offsetY;
+			}
 
 			String labelStr = null;
 			if( levelToMark == Float.NEGATIVE_INFINITY )
@@ -118,5 +130,7 @@ public class MixerFaderMarks extends JPanel
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 
 		}
+
+		g.drawLine( 0, minMarkY, 0, maxMarkY );
 	}
 }
