@@ -43,9 +43,6 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	private final MeterValueReceiver[] laneMeterReceiversMap;
 	private MeterValueReceiver masterMeterReceiver;
 
-	private long framesBetweenPeakReset;
-
-
 	public MixerNMadUiInstance( final Span span,
 			final I instance,
 			final MadUiDefinition<D, I> componentUiDefinition )
@@ -63,7 +60,13 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
 
 		// Use the sample rate (i.e. one second between peak reset)
-		framesBetweenPeakReset = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
+		final int framesBetweenPeakReset = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
+
+		for( int i = 0 ; i < laneMeterReceiversMap.length ; ++i )
+		{
+			laneMeterReceiversMap[i].setFramesBetweenPeakReset( framesBetweenPeakReset );
+		}
+		masterMeterReceiver.setFramesBetweenPeakReset( framesBetweenPeakReset );
 	}
 
 	@Override
@@ -146,11 +149,6 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				break;
 			}
 		}
-	}
-
-	public long getFramesBetweenPeakReset()
-	{
-		return framesBetweenPeakReset;
 	}
 
 	public void registerLaneMeterReceiver( final int laneNum, final MeterValueReceiver meterReceiver )

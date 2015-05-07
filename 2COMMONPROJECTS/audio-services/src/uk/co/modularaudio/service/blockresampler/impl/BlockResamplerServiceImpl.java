@@ -68,9 +68,12 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 		{
 			if( Math.abs(buffer[ offset + i ])  >= BlockResamplerService.EXCESSIVE_FLOAT )
 			{
-				log.error("Magic float error from " + bufSource +
-						" at offset " + offset + " and index " + i +
-						" with value " + buffer[ offset + i ] );
+				if( log.isErrorEnabled() )
+				{
+					log.error("Magic float error from " + bufSource +
+							" at offset " + offset + " and index " + i +
+							" with value " + buffer[ offset + i ] );
+				}
 			}
 		}
 	}
@@ -98,7 +101,7 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final float[] tmpBuffer,
 			final int tmpBufferOffset )
 	{
-		final boolean isForwards = (playbackSpeed >= 0.0f );
+		final boolean isForwards = playbackSpeed >= 0.0f;
 
 		final InternalResamplingClient realClient = (InternalResamplingClient)resamplingClient;
 		final SampleCacheClient scc = realClient.getSampleCacheClient();

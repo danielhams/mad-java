@@ -30,6 +30,7 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.mads.base.common.ampmeter.AmpMeter;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterModel;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.imixern.ui.lane;
+package uk.co.modularaudio.mads.base.common.ampmeter;
 
 import java.awt.Color;
 import java.awt.Dimension;

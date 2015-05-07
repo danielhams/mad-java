@@ -238,4 +238,10 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	{
 		return true;
 	}
+
+	@Override
+	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
+	{
+		stereoAmpMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
+	}
 }

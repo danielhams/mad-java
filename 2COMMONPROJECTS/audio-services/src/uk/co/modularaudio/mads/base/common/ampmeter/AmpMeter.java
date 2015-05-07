@@ -18,13 +18,21 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.imixern.ui.lane;
+package uk.co.modularaudio.mads.base.common.ampmeter;
 
-public interface MeterValueReceiver
+public interface AmpMeter
 {
-	public void receiveMeterReadingLevel( long currentTimestamp, int channelNumber, float meterReading );
-	public void receiveMuteSet( long currentTimestamp, boolean muted );
-	public void receiveSoloSet( long currentTimestamp, boolean muted );
+	public static final int PREFERRED_WIDTH = 10;
+	public static final int PREFERRED_METER_WIDTH = PREFERRED_WIDTH - 2;
 
-	public void setFramesBetweenPeakReset( int framesBetweenPeakReset );
+	public static final float GREEN_THRESHOLD_DB = -6.0f;
+	public static final float ORANGE_THRESHOLD_DB = -3.0f;
+
+	void receiveMeterReadingInDb( final long currentTimestamp, final float meterReadingDb );
+
+	void destroy();
+
+	void receiveDisplayTick( long currentGuiTime );
+
+	void setFramesBetweenPeakReset( int framesBetweenPeakReset );
 }

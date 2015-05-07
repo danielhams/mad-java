@@ -283,4 +283,9 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		return true;
 	}
 
+	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
+	{
+		stereoAmpMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
+	}
+
 }

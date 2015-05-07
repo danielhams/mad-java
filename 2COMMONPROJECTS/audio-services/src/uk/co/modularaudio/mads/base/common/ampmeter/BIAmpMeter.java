@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.djeq.ui;
+package uk.co.modularaudio.mads.base.common.ampmeter;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterIntToFloatConverter;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterModel;
@@ -38,19 +39,11 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-public class AmpMeter extends PacPanel
+public class BIAmpMeter	extends PacPanel implements AmpMeter
 {
-	public static final int PREFERRED_WIDTH = 10;
-	public static final int PREFERRED_METER_WIDTH = PREFERRED_WIDTH - 2;
-
-	private static final float GREEN_THRESHOLD_DB = -6.0f;
-	private static final float ORANGE_THRESHOLD_DB = -3.0f;
-
 	private static final long serialVersionUID = -7723883774839586874L;
 
-	private static Log log = LogFactory.getLog( AmpMeter.class.getName() );
-
-	private final DJEQMadUiInstance uiInstance;
+	private static Log log = LogFactory.getLog( BIAmpMeter.class.getName() );
 
 	private final boolean showClipBox;
 
@@ -81,24 +74,24 @@ public class AmpMeter extends PacPanel
 	private float currentMaxValueDb = Float.NEGATIVE_INFINITY;
 	private float previouslyPaintedMaxValueDb = Float.POSITIVE_INFINITY;
 
-	public AmpMeter( final DJEQMadUiInstance uiInstance,
-			final BufferedImageAllocator bia,
+	private int framesBetweenPeakReset = DataRate.SR_44100.getValue();
+
+	public BIAmpMeter( final BufferedImageAllocator bia,
 			final boolean showClipBox )
 	{
 		this.setOpaque( true );
-		this.uiInstance = uiInstance;
 
 		this.bufferedImageAllocator = bia;
 
 		numTotalSteps = INT_TO_FLOAT_CONVERTER.getNumTotalSteps();
 
-		greenThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( GREEN_THRESHOLD_DB )
+		greenThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( AmpMeter.GREEN_THRESHOLD_DB )
 				/ numTotalSteps;
-		orangeThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( ORANGE_THRESHOLD_DB )
+		orangeThresholdLevel = INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( AmpMeter.ORANGE_THRESHOLD_DB )
 				/ numTotalSteps;
 
 		setBackground( Color.black );
-		final Dimension myPreferredSize = new Dimension(PREFERRED_WIDTH,100);
+		final Dimension myPreferredSize = new Dimension(AmpMeter.PREFERRED_WIDTH,100);
 		this.setPreferredSize( myPreferredSize );
 		this.setMinimumSize( myPreferredSize );
 
@@ -111,11 +104,11 @@ public class AmpMeter extends PacPanel
 		{
 			return Color.green;
 		}
-		else if( dbValue > ORANGE_THRESHOLD_DB )
+		else if( dbValue > AmpMeter.ORANGE_THRESHOLD_DB )
 		{
 			return Color.RED;
 		}
-		else if( dbValue > GREEN_THRESHOLD_DB )
+		else if( dbValue > AmpMeter.GREEN_THRESHOLD_DB )
 		{
 			return Color.orange;
 		}
@@ -141,7 +134,7 @@ public class AmpMeter extends PacPanel
 			outBufferedImageGraphics.setColor( Color.BLACK );
 			outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
 
-			final int meterWidth = PREFERRED_METER_WIDTH;
+			final int meterWidth = AmpMeter.PREFERRED_METER_WIDTH;
 
 			final int sliderIntValue = INT_TO_FLOAT_CONVERTER.floatValueToSliderIntValue( METER_MODEL, currentMeterValueDb );
 			final float normalisedlevelValue = (sliderIntValue / numTotalSteps);
@@ -198,6 +191,7 @@ public class AmpMeter extends PacPanel
 		}
 	}
 
+	@Override
 	public void receiveDisplayTick( final long currentTime )
 	{
 		final boolean showing = isShowing();
@@ -206,7 +200,7 @@ public class AmpMeter extends PacPanel
 			currentMaxValueDb = currentMeterValueDb;
 			maxValueTimestamp = currentTime;
 		}
-		else if( (maxValueTimestamp + uiInstance.getFramesBetweenPeakReset() ) < currentTime )
+		else if( (maxValueTimestamp + framesBetweenPeakReset ) < currentTime )
 		{
 			currentMaxValueDb = currentMeterValueDb;
 			maxValueTimestamp = currentTime;
@@ -225,11 +219,13 @@ public class AmpMeter extends PacPanel
 		}
 	}
 
+	@Override
 	public void receiveMeterReadingInDb( final long currentTimestamp, final float meterReadingDb )
 	{
 		currentMeterValueDb = meterReadingDb;
 	}
 
+	@Override
 	public void destroy()
 	{
 		if( tiledBufferedImage != null )
@@ -283,11 +279,17 @@ public class AmpMeter extends PacPanel
 		componentWidth = width;
 		componentHeight = height;
 
-		numPixelsInMeter = (showClipBox ? componentHeight - 2 - PREFERRED_METER_WIDTH :
+		numPixelsInMeter = (showClipBox ? componentHeight - 2 - AmpMeter.PREFERRED_METER_WIDTH :
 			componentHeight - 2);
-		meterHeightOffset = ( showClipBox ? PREFERRED_METER_WIDTH : 0 );
+		meterHeightOffset = ( showClipBox ? AmpMeter.PREFERRED_METER_WIDTH : 0 );
 		numGreenPixels = (int)(numPixelsInMeter * greenThresholdLevel);
 		numOrangePixels = (int)((numPixelsInMeter * orangeThresholdLevel) - numGreenPixels);
 		numRedPixels = numPixelsInMeter - numGreenPixels - numOrangePixels;
+	}
+
+	@Override
+	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
+	{
+		this.framesBetweenPeakReset = framesBetweenPeakReset;
 	}
 }

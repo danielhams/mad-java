@@ -71,7 +71,10 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 				}
 				if( retVal.getColorModel().hasAlpha() )
 				{
-					log.warn("Image " + pathToLoad + " has alpha, and probably shouldn't");
+					if( log.isWarnEnabled() )
+					{
+						log.warn("Image " + pathToLoad + " has alpha, and probably shouldn't");
+					}
 				}
 				biCache.put( pathToLoad, retVal );
 			} catch (final IOException ie) {

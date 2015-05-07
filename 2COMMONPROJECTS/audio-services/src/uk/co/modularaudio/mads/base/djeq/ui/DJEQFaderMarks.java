@@ -30,9 +30,6 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderModel;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
@@ -43,7 +40,7 @@ public class DJEQFaderMarks extends JPanel
 {
 	private static final long serialVersionUID = 8804239906450285191L;
 
-	private static Log log = LogFactory.getLog( DJEQFaderMarks.class.getName() );
+//	private static Log log = LogFactory.getLog( DJEQFaderMarks.class.getName() );
 
 	private static final float[] VALUES_TO_LABEL = new float[] {
 		0,
@@ -134,7 +131,5 @@ public class DJEQFaderMarks extends JPanel
 		}
 
 		g.drawLine( 0, minMarkY, 0, maxMarkY );
-
-		log.debug("Being painted");
 	}
 }

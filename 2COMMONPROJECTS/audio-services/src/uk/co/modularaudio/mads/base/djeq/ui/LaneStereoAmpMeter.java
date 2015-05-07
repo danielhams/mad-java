@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.common.ampmeter.BIAmpMeter;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
@@ -36,9 +37,9 @@ public class LaneStereoAmpMeter extends JPanel
 
 	private static Log log = LogFactory.getLog( LaneStereoAmpMeter.class.getName() );
 
-	private final AmpMeter leftMeter;
+	private final BIAmpMeter leftMeter;
 	private final AmpMeterMarks meterMarks;
-	private final AmpMeter rightMeter;
+	private final BIAmpMeter rightMeter;
 
 	public LaneStereoAmpMeter( final DJEQMadUiInstance uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
@@ -52,12 +53,12 @@ public class LaneStereoAmpMeter extends JPanel
 
 		this.setLayout( msh.createMigLayout() );
 
-		leftMeter = new AmpMeter( uiInstance, bia, showClipBox );
+		leftMeter = new BIAmpMeter( bia, showClipBox );
 		this.add( leftMeter, "gapbottom " +
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx right, growy" );
 		meterMarks = new AmpMeterMarks( Color.BLACK, false );
 		this.add( meterMarks, "growy, growx 0");
-		rightMeter = new AmpMeter( uiInstance, bia, showClipBox );
+		rightMeter = new BIAmpMeter( bia, showClipBox );
 		this.add( rightMeter, "gapbottom "+
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
 		this.validate();
@@ -96,6 +97,12 @@ public class LaneStereoAmpMeter extends JPanel
 	{
 		leftMeter.destroy();
 		rightMeter.destroy();
+	}
+
+	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
+	{
+		leftMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
+		rightMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
 	}
 
 }
