@@ -29,10 +29,10 @@ public class GuiScrollableArea extends JScrollPane
 
 	public GuiScrollableArea()
 	{
-		this.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		this.setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
-		this.getVerticalScrollBar().setUnitIncrement( 16 );
-		this.getHorizontalScrollBar().setUnitIncrement( 16 );
-		this.setAutoscrolls( true );
+		setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		setHorizontalScrollBarPolicy( ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
+		getVerticalScrollBar().setUnitIncrement( 16 );
+		getHorizontalScrollBar().setUnitIncrement( 16 );
+		setAutoscrolls( true );
 	}
 }

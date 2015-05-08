@@ -31,13 +31,13 @@ import java.awt.image.BufferedImage;
 
 public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 {
-	private static final boolean USE_SINGLE_BLIT = false;
-	private static final boolean PAINT_IT_SCALED = false;
+	public static final boolean USE_SINGLE_BLIT = false;
+	public static final boolean PAINT_IT_SCALED = false;
 
-	private static final Color CONTENTS_COLOR = new Color( 0.2f, 0.2f, 0.2f );
-//	private static final Color CONTENTS_COLOR = new Color( 0.6f, 0.6f, 0.6f );
-	private static final Color HIGHLIGHT_COLOR;
-	private static final Color LOWLIGHT_COLOR;
+	public static final Color CONTENTS_COLOR = new Color( 0.2f, 0.2f, 0.2f );
+//	public static final Color CONTENTS_COLOR = new Color( 0.6f, 0.6f, 0.6f );
+	public static final Color HIGHLIGHT_COLOR;
+	public static final Color LOWLIGHT_COLOR;
 
 	static
 	{
@@ -55,6 +55,9 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 
 	private Dimension cachedImageDimension;
 	private BufferedImage cachedImage;
+
+	private BufferedImage oneGridBufferedImage;
+	private BufferedImage singleBlutBufferedImage;
 
 	@Override
 	public void paintEmptyCell(final Graphics g, final int x, final int y, final int width, final int height)
@@ -236,9 +239,6 @@ public class RackSidesEmptyCellPainter implements RackTableEmptyCellPainter
 		g.setColor( LOWLIGHT_COLOR );
 		g.drawLine( leftPixel, 0, leftPixel, height );
 	}
-
-	private BufferedImage oneGridBufferedImage = null;
-	private BufferedImage singleBlutBufferedImage = null;
 
 	@Override
 	public BufferedImage getSingleBlitBufferedImage(final Dimension gridSize, final int numCols, final int numRows)

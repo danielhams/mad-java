@@ -26,13 +26,13 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.mainframe.tabbedpane.MainFrameTabbedPane;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class MainFrameManipulator
 {
@@ -64,7 +64,14 @@ public class MainFrameManipulator
 		menubar = new Menubar( fc, actions );
 
 		contentFrame = new JPanel();
-		contentFrame.setLayout( new MigLayout("insets 0, fill, flowy", "grow, fill", "[] [grow 100, fill]") );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+		msh.addLayoutConstraint( "fill" );
+		msh.addLayoutConstraint( "flowy" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addColumnConstraint( "[grow, fill]" );
+		msh.addRowConstraint( "[][grow 100, fill]" );
+
+		contentFrame.setLayout( msh.createMigLayout() );
 
 		componentDesignerToolbar = new ComponentDesignerToolbar( fc, actions );
 

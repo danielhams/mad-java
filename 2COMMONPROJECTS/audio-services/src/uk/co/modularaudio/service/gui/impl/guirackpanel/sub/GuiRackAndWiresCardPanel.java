@@ -23,6 +23,7 @@ package uk.co.modularaudio.service.gui.impl.guirackpanel.sub;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.service.gui.impl.racktable.RackSidesEmptyCellPainter;
 import uk.co.modularaudio.service.gui.impl.racktable.RackTable;
 import uk.co.modularaudio.service.gui.impl.racktable.back.RackTableWithLinks;
 
@@ -49,7 +50,7 @@ public class GuiRackAndWiresCardPanel extends JPanel
 
 		frontBackCardLayout.show( this, ID_FRONT );
 
-		this.validate();
+		setBackground( RackSidesEmptyCellPainter.LOWLIGHT_COLOR );
 	}
 
 	public void rotateRack()
