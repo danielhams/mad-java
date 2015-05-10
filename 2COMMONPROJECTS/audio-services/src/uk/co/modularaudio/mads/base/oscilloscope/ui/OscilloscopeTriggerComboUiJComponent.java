@@ -20,30 +20,30 @@
 
 package uk.co.modularaudio.mads.base.oscilloscope.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeCaptureTriggerEnum;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
-		implements
-		IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
+public class OscilloscopeTriggerComboUiJComponent
+	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
 {
-	private static final long serialVersionUID = 28004477652791854L;
-
-	private final OscilloscopeMadUiInstance uiInstance;
-
 	private final Map<String, OscilloscopeCaptureTriggerEnum> triggerNameToEnumMap = new HashMap<String, OscilloscopeCaptureTriggerEnum>();
+
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	public OscilloscopeTriggerComboUiJComponent(
 			final OscilloscopeMadDefinition definition,
@@ -51,31 +51,49 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 			final OscilloscopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-
-		this.setOpaque( false );
-
 		triggerNameToEnumMap.put( "None", OscilloscopeCaptureTriggerEnum.NONE );
 		triggerNameToEnumMap.put( "On Rise", OscilloscopeCaptureTriggerEnum.ON_RISE );
 		triggerNameToEnumMap.put( "On Fall", OscilloscopeCaptureTriggerEnum.ON_FALL );
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		model = new DefaultComboBoxModel<String>();
 		for (final String triggerName : triggerNameToEnumMap.keySet())
 		{
-			cbm.addElement( triggerName );
+			model.addElement( triggerName );
 		}
-		this.setModel( cbm );
 
-		final Font f = this.getFont();
-		setFont( f );
+		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
-		this.setSelectedItem( "None" );
+		model.setSelectedItem( "None" );
+
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String name = (String)model.getSelectedItem();
+				final OscilloscopeCaptureTriggerEnum ev = triggerNameToEnumMap.get( name );
+				uiInstance.sendTriggerChoice( ev );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -83,18 +101,6 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String) getSelectedItem();
-			final OscilloscopeCaptureTriggerEnum ev = triggerNameToEnumMap.get( name );
-			uiInstance.sendTriggerChoice( ev );
-		}
 	}
 
 	@Override
@@ -108,4 +114,15 @@ public class OscilloscopeTriggerComboUiJComponent extends PacComboBox<String>
 		return false;
 	}
 
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
+	}
 }

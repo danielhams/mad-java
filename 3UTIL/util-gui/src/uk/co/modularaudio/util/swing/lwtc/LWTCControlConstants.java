@@ -72,6 +72,20 @@ public class LWTCControlConstants
 	public final static Color CONTROL_TEXTBOX_SELECTION = CONTROL_TEXTBOX_FOREGROUND;
 	public final static Color CONTROL_TEXTBOX_SELECTED_TEXT = CONTROL_TEXTBOX_BACKGROUND;
 
+	public static final Color CONTROL_ROTCHO_OUTLINE = Color.decode("#393f3f");
+	public static final Color CONTROL_ROTCHO_CHOICE_BACKGROUND = Color.decode("#292929");
+	public static final Color CONTROL_ROTCHO_INNER_OUTLINE = Color.decode("#1d1d1d");
+	public static final Color CONTROL_ROTCHO_HIGHLIGHT = Color.decode("#575d5d");
+	public static final Color CONTROL_ROTCHO_TOP_SHADOW = Color.decode("#2e3333");
+	public static final Color CONTROL_ROTCHO_BOTTOM_SHADOW = Color.decode("#272b2b");
+	public static final Color CONTROL_ROTCHO_FOCUS = Color.decode("#888888");
+	public static final Color CONTROL_ROTCHO_TEXT_FOREGROUND = Color.decode("#ffffff");
+	public static final Color CONTROL_ROTCHO_GRAD_START = CONTROL_BUTTON_OUT_GRAD_START;
+	public static final Color CONTROL_ROTCHO_GRAD_END = CONTROL_BUTTON_OUT_GRAD_END;
+	public static final Color CONTROL_ROTCHO_FLECHE_ACTIVE = Color.decode( "#cfcfcf" );
+	public static final Color CONTROL_ROTCHO_FLECHE_INACTIVE = Color.decode( "#575d5d" );
+	public static final Color CONTROL_ROTCHO_FLECHE_DOWN = CONTROL_FLAT_BACKGROUND;
+
 	public final static Font RACK_FONT = getRackFont();
 	public final static Font LABEL_FONT = getLabelFont();
 	public final static Font LABEL_SMALL_FONT = getLabelSmallFont();
@@ -99,6 +113,90 @@ public class LWTCControlConstants
 	public final static LWTCSliderColours STD_SLIDER_COLOURS = new StdSliderColours();
 	public final static LWTCSliderColours STD_SLIDER_NOMARK_COLOURS = new StdSliderNoMarkColours();
 	public final static LWTCTextFieldColours STD_TEXTFIELD_COLOURS = new StdTextfieldColours();
+
+	public final static LWTCRotaryChoiceColours STD_ROTARY_CHOICE_COLOURS = new StdRotaryChoiceColours();
+
+	public static class StdRotaryChoiceColours implements LWTCRotaryChoiceColours
+	{
+
+		@Override
+		public Color getControlOutline()
+		{
+			return CONTROL_ROTCHO_OUTLINE;
+		}
+
+		@Override
+		public Color getChoiceBackground()
+		{
+			return CONTROL_ROTCHO_CHOICE_BACKGROUND;
+		}
+
+		@Override
+		public Color getInnerOutline()
+		{
+			return CONTROL_ROTCHO_INNER_OUTLINE;
+		}
+
+		@Override
+		public Color getHighlight()
+		{
+			return CONTROL_ROTCHO_HIGHLIGHT;
+		}
+
+		@Override
+		public Color getTopShadow()
+		{
+			return CONTROL_ROTCHO_TOP_SHADOW;
+		}
+
+		@Override
+		public Color getBottomShadow()
+		{
+			return CONTROL_ROTCHO_BOTTOM_SHADOW;
+		}
+
+		@Override
+		public Color getFocus()
+		{
+			return CONTROL_ROTCHO_FOCUS;
+		}
+
+		@Override
+		public Color getForegroundText()
+		{
+			return CONTROL_ROTCHO_TEXT_FOREGROUND;
+		}
+
+		@Override
+		public Color getContentGradStart()
+		{
+			return CONTROL_ROTCHO_GRAD_START;
+		}
+
+		@Override
+		public Color getContentGradEnd()
+		{
+			return CONTROL_ROTCHO_GRAD_END;
+		}
+
+		@Override
+		public Color getFlecheInactive()
+		{
+			return CONTROL_ROTCHO_FLECHE_INACTIVE;
+		}
+
+		@Override
+		public Color getFlecheActive()
+		{
+			return CONTROL_ROTCHO_FLECHE_ACTIVE;
+		}
+
+		@Override
+		public Color getFlecheDown()
+		{
+			return CONTROL_ROTCHO_FLECHE_DOWN;
+		}
+	};
 
 	public static class StdTextfieldColours implements LWTCTextFieldColours
 	{

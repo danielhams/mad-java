@@ -20,30 +20,33 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.lookuptable.powertable.RawCrossfadePowerTable;
 import uk.co.modularaudio.util.audio.lookuptable.powertable.StandardCrossfadePowerTables;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
+public class CrossFaderPowerCurveUiJComponent
 	implements IMadUiControlInstance<CrossFaderMadDefinition, CrossFaderMadInstance, CrossFaderMadUiInstance>
 {
-	private static final long serialVersionUID = 28004477652791854L;
+//	private static Log log = LogFactory.getLog( CrossFaderPowerCurveUiJComponent.class.getName() );
 
-	private final CrossFaderMadUiInstance uiInstance;
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice rotaryChoice;
 
-	private Map<String, RawCrossfadePowerTable> powerNameToPowerTable = new HashMap<String, RawCrossfadePowerTable>();
+	private final Map<String, RawCrossfadePowerTable> powerNameToPowerTable = new HashMap<String, RawCrossfadePowerTable>();
 
 	public CrossFaderPowerCurveUiJComponent(
 			final CrossFaderMadDefinition definition,
@@ -51,31 +54,49 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 			final CrossFaderMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super();
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-
 		powerNameToPowerTable.put( "Additive", StandardCrossfadePowerTables.getAdditivePowerTable() );
 		powerNameToPowerTable.put( "Equal Power", StandardCrossfadePowerTables.getEqualPowerTable() );
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		model = new DefaultComboBoxModel<String>();
 		for (final String waveName : powerNameToPowerTable.keySet())
 		{
-			cbm.addElement( waveName );
+			model.addElement( waveName );
 		}
-		this.setModel( cbm );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+		rotaryChoice = new LWTCRotaryChoice(
+				LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
+		model.setSelectedItem( "Additive" );
 
-		this.setSelectedItem( "Additive" );
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String name = (String)model.getSelectedItem();
+				final RawCrossfadePowerTable tableToUse = powerNameToPowerTable.get( name );
+				uiInstance.setPowerCurve( tableToUse );
+				uiInstance.recalculateAmps();
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -83,21 +104,6 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			// Figure what they changed, and update the component instance data with
-			// the new table
-			final String name = (String) getSelectedItem();
-			final RawCrossfadePowerTable tableToUse = powerNameToPowerTable.get( name );
-			uiInstance.setPowerCurve( tableToUse );
-			uiInstance.recalculateAmps();
-		}
 	}
 
 	@Override
@@ -109,5 +115,17 @@ public class CrossFaderPowerCurveUiJComponent extends PacComboBox<String>
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }

@@ -20,39 +20,39 @@
 
 package uk.co.modularaudio.mads.base.frequencyfilter.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class FrequencyFilterTypeComboUiJComponent extends PacComboBox<String>
+public class FrequencyFilterTypeComboUiJComponent
 	implements IMadUiControlInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
-	private static final long serialVersionUID = 28004477652791854L;
-
 	private final Map<FrequencyFilterMode, String> modeToNameMap = new HashMap<FrequencyFilterMode, String>();
 	private final Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
 
-	private final FrequencyFilterMadUiInstance uiInstance;
+	private final DefaultComboBoxModel<String> model;
+
+	private final LWTCRotaryChoice rotaryChoice;
 
 	public FrequencyFilterTypeComboUiJComponent( final FrequencyFilterMadDefinition definition,
 			final FrequencyFilterMadInstance instance,
 			final FrequencyFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-
-		this.setOpaque( false );
+		model = new DefaultComboBoxModel<String>();
 
 		filterNameToModeMap.put( "None", FrequencyFilterMode.NONE );
 		filterNameToModeMap.put( "Low Pass", FrequencyFilterMode.LP );
@@ -64,28 +64,47 @@ public class FrequencyFilterTypeComboUiJComponent extends PacComboBox<String>
 			modeToNameMap.put( filterNameToModeMap.get( name ), name );
 		}
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-
 		final FrequencyFilterMode[] modeValues = FrequencyFilterMode.values();
 		for( final FrequencyFilterMode mode : modeValues )
 		{
 			final String modeName = modeToNameMap.get( mode );
-			cbm.addElement( modeName );
+			model.addElement( modeName );
 		}
 
-		this.setModel( cbm );
+		model.setSelectedItem( "Low Pass" );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+		rotaryChoice = new LWTCRotaryChoice(
+				LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
-		this.setSelectedItem( "Low Pass" );
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String itemName = (String)model.getSelectedItem();
+				final FrequencyFilterMode mode = filterNameToModeMap.get( itemName );
+				uiInstance.sendFilterModeChange( mode );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -97,17 +116,6 @@ public class FrequencyFilterTypeComboUiJComponent extends PacComboBox<String>
 	}
 
 	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String) getSelectedItem();
-			final FrequencyFilterMode modeToUse = filterNameToModeMap.get( name );
-			uiInstance.sendFilterModeChange( modeToUse );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 	}
@@ -116,5 +124,17 @@ public class FrequencyFilterTypeComboUiJComponent extends PacComboBox<String>
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }
