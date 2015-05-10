@@ -74,10 +74,10 @@ public class SpectralAmpMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(   8, 274,  96,  30 ),		// Resolution
-		new Rectangle( 118, 274,  96,  30 ),		// Freq
-		new Rectangle( 228, 274,  96,  30 ),		// Amp
-		new Rectangle( 338, 274,  96,  30 ),		// Runn Av
+		new Rectangle(   8, 274,  80,  30 ),		// Resolution
+		new Rectangle( 108, 274,  66,  30 ),		// Freq
+		new Rectangle( 194, 274,  90,  30 ),		// Amp
+		new Rectangle( 304, 274, 126,  30 ),		// Runn Av
 		new Rectangle(   6,  34, 544, 230 ),		// Display
 		new Rectangle( 450, 274,  96,  30 )			// Peak Reset
 	};

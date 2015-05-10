@@ -90,7 +90,8 @@ public class SpectralAmpMadUiInstance extends
 
 	@Override
 	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency,
-			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
 	{
 		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
 		dataRate = ratesAndLatency.getAudioChannelSetting().getDataRate();

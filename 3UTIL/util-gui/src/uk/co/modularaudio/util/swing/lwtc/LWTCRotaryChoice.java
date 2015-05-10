@@ -164,7 +164,7 @@ public class LWTCRotaryChoice extends JPanel
 		if( hasFocus() )
 		{
 			g2d.setColor( colours.getFocus() );
-			g2d.drawRect( 5, 5, textpartWidth-7, height-11 );
+			g2d.drawRect( 5, 5, textpartWidth-8, height-11 );
 		}
 
 		if( text != null )
