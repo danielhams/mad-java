@@ -30,7 +30,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
