@@ -20,30 +20,33 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogLogAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpAmpScaleComboUiJComponent extends PacComboBox<String>
+public class SpectralAmpAmpScaleComboUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	private static final long serialVersionUID = 3571032632219667963L;
+//	private static Log log = LogFactory.getLog( SpectralAmpAmpScaleComboUiJComponent.class.getName() );
 
-	private final SpectralAmpMadUiInstance uiInstance;
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	private final Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
 
@@ -52,32 +55,49 @@ public class SpectralAmpAmpScaleComboUiJComponent extends PacComboBox<String>
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( "Lin" );
+		model.addElement( "Log" );
+		model.addElement( "Log-Log" );
+
+		model.setSelectedItem( "Log" );
+
+		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
 		ampScaleToCalculatorMap.put( "Lin", new LinearAmpScaleComputer() );
 		ampScaleToCalculatorMap.put( "Log", new LogarithmicAmpScaleComputer() );
 		ampScaleToCalculatorMap.put( "Log-Log", new LogLogAmpScaleComputer() );
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( final String waveName : ampScaleToCalculatorMap.keySet() )
+		model.addListDataListener( new ListDataListener()
 		{
-			cbm.addElement( waveName );
-		}
-		this.setModel( cbm );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
 
-		this.setSelectedIndex( -1 );
-		this.setSelectedItem( "Log" );
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String curVal = (String)model.getSelectedItem();
+				final AmpScaleComputer asc = ampScaleToCalculatorMap.get( curVal );
+				uiInstance.setDesiredAmpScaleComputer( asc );
+			}
+		} );
+
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -85,18 +105,6 @@ public class SpectralAmpAmpScaleComboUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-//		log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String)getSelectedItem();
-			final AmpScaleComputer ampScaleComputer = ampScaleToCalculatorMap.get( name );
-			uiInstance.setDesiredAmpScaleComputer( ampScaleComputer );
-		}
 	}
 
 	@Override
@@ -108,5 +116,17 @@ public class SpectralAmpAmpScaleComboUiJComponent extends PacComboBox<String>
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }

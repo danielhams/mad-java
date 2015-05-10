@@ -43,7 +43,10 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
@@ -64,10 +67,10 @@ public class SpectralAmpMadUiInstance extends
 	private BackendToFrontendDataRingBuffer backendRingBuffer;
 
 	// Things the UI sets
-	private int desiredFftSize;
-	private FrequencyScaleComputer desiredFreqScaleComputer;
-	private AmpScaleComputer desiredAmpScaleComputer;
-	private RunningAverageComputer desiredRunningAverageComputer;
+	private int desiredFftSize = 4096;
+	private FrequencyScaleComputer desiredFreqScaleComputer = new LogarithmicFreqScaleComputer();
+	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicAmpScaleComputer();
+	private RunningAverageComputer desiredRunningAverageComputer = new FastFallComputer();
 
 	private PeakHoldComputer peakHoldComputer;
 
@@ -81,6 +84,8 @@ public class SpectralAmpMadUiInstance extends
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 		initialiseBuffers();
+
+		reinitialiseFrequencyProcessor();
 	}
 
 	@Override

@@ -20,17 +20,17 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
@@ -40,13 +40,14 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<String>
+public class SpectralAmpRunningAverageComboUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	private static final long serialVersionUID = -2025091191521837789L;
-
-	private final SpectralAmpMadUiInstance uiInstance;
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
 
@@ -58,8 +59,19 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( "Off" );
+		model.addElement( "Short Average" );
+		model.addElement( "Long Average" );
+		model.addElement( "Fall" );
+		model.addElement( "Fast Fall" );
+		model.addElement( "Peak Hold" );
+
+		model.setSelectedItem( "Fast Fall" );
+
+		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
 		runAvToCalculatorMap.put( "Off", new NoAverageComputer() );
 		runAvToCalculatorMap.put( "Short Average", new ShortAverageComputer() );
@@ -73,29 +85,35 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 			calculatorToNameMap.put( runAvToCalculatorMap.get( name ), name );
 		}
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		final String[] names = new String[] { "Off", "Short Average", "Long Average", "Fast Fall", "Fall", "Peak Hold" };
-		for( final String name : names )
-		{
-			cbm.addElement( name );
-		}
-
-		this.setModel( cbm );
-
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
-
-		this.setSelectedIndex( -1 );
-		this.setSelectedItem( "Fast Fall" );
-
 		uiInstance.setPeakHoldComputer( peakHoldComputer );
+
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String val = (String)model.getSelectedItem();
+				final RunningAverageComputer ac = runAvToCalculatorMap.get( val );
+				uiInstance.setDesiredRunningAverageComputer( ac );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -103,21 +121,6 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-//		log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String)getSelectedItem();
-			if( name != null )
-			{
-				final RunningAverageComputer runAvComputer = runAvToCalculatorMap.get( name );
-				uiInstance.setDesiredRunningAverageComputer( runAvComputer );
-			}
-		}
 	}
 
 	@Override
@@ -129,5 +132,17 @@ public class SpectralAmpRunningAverageComboUiJComponent extends PacComboBox<Stri
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }
