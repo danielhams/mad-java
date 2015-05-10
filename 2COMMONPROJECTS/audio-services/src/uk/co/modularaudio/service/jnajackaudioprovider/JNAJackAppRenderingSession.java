@@ -27,8 +27,10 @@ import org.apache.commons.logging.LogFactory;
 import org.jaudiolibs.jnajack.Jack;
 import org.jaudiolibs.jnajack.JackClient;
 import org.jaudiolibs.jnajack.JackException;
+import org.jaudiolibs.jnajack.JackLatencyCallbackMode;
 import org.jaudiolibs.jnajack.JackMidi;
 import org.jaudiolibs.jnajack.JackPort;
+import org.jaudiolibs.jnajack.JackPort.JackLatencyRange;
 import org.jaudiolibs.jnajack.JackPortFlags;
 import org.jaudiolibs.jnajack.JackPortType;
 import org.jaudiolibs.jnajack.JackProcessCallback;
@@ -64,10 +66,10 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 {
 	private static Log log = LogFactory.getLog( JNAJackAppRenderingSession.class.getName() );
 
-//	private final Jack jack;
+	private final Jack jack;
 	private final JackClient client;
 
-//	private JackLatencyRange latencyRange = new JackLatencyRange();
+	private JackLatencyRange latencyRange = new JackLatencyRange();
 
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
@@ -99,7 +101,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			final JackClient client ) throws DatastoreException
 	{
 		super( appRenderingService, timingService, hardwareConfiguration, errorQueue, errorCallback );
-//		this.jack = jack;
+		this.jack = jack;
 		this.client =client;
 	}
 
@@ -280,10 +282,10 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //		return inNs / 1000000;
 //	}
 //
-//	private long usToMs( long inUs )
-//	{
-//		return inUs / 1000;
-//	}
+	private long usToMs( long inUs )
+	{
+		return inUs / 1000;
+	}
 
 	@Override
 	public boolean process( final JackClient client, final int numFrames )
@@ -291,12 +293,12 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		long periodStartFrameTime;
 		try
 		{
-//			long jackTime = jack.getTime();
-//			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
-//			log.debug("jack time is " + usToMs(jackTime) );
-//			int jackMinLatency = latencyRange.getMin();
-//			int jackMaxLatency = latencyRange.getMax();
-//			log.debug("MinLatency(" + jackMinLatency +") MaxLatency(" + jackMaxLatency + ")");
+			long jackTime = jack.getTime();
+			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
+			log.debug("jack time is " + usToMs(jackTime) );
+			int jackMinLatency = latencyRange.getMin();
+			int jackMaxLatency = latencyRange.getMax();
+			log.debug("MinLatency(" + jackMinLatency +") MaxLatency(" + jackMaxLatency + ")");
 			periodStartFrameTime = client.getLastFrameTime();
 //			log.debug("Period start frame time is " + periodStartFrameTime );
 		}
