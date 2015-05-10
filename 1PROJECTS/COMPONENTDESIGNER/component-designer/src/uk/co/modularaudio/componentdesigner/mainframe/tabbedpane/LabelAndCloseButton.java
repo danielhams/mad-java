@@ -33,18 +33,23 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.service.gui.ContainerTab;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacButton;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 class LabelAndCloseButton extends JPanel
 {
 	private static final long serialVersionUID = 4749639147954010294L;
 
-	private JLabel titleLabel = null;
+	private JLabel titleLabel;
 
 	public LabelAndCloseButton( final ContainerTab subrackTab )
 	{
 		setOpaque( false );
-		final MigLayout layout = new MigLayout("insets 0, gap 0");
-		this.setLayout( layout );
+		MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "insets 2" );
+		msh.addLayoutConstraint( "gap 5" );
+		msh.addLayoutConstraint( "aligny center" );
+		this.setLayout( msh.createMigLayout() );
 		titleLabel = new JLabel( subrackTab.getTitle() );
 		this.add( titleLabel, "");
 		final JButton closeButton = new PacButton()

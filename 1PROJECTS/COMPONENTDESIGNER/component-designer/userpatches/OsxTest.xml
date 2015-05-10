@@ -26,7 +26,7 @@
         <rackControl name="CaptureTime" value="250.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value="false"/>
     </rackComponent>
     <rackComponent name="Oscilloscope 6" definitionId="oscilloscope">
@@ -34,7 +34,7 @@
         <rackControl name="CaptureTime" value="250.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value="false"/>
     </rackComponent>
     <rackComponent name="Oscilloscope 7" definitionId="oscilloscope">
@@ -42,7 +42,7 @@
         <rackControl name="CaptureTime" value="250.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value="false"/>
     </rackComponent>
     <rackComponent name="Oscilloscope 8" definitionId="oscilloscope">
@@ -50,7 +50,7 @@
         <rackControl name="CaptureTime" value="250.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
+        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value="false"/>
     </rackComponent>
     <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
