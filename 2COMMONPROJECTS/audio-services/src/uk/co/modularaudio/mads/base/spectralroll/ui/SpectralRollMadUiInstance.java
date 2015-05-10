@@ -65,7 +65,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	private BackendToFrontendDataRingBuffer backendRingBuffer;
 
 	// Stuff the UI sets
-	private int desiredFftSize = 0;
+	private int desiredFftSize = 4096;
 	private FrequencyScaleComputer desiredFreqScaleComputer = new LogarithmicFreqScaleComputer();
 	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicAmpScaleComputer();
 	private RunningAverageComputer desiredRunningAverageComputer = new FastFallComputer();
@@ -80,6 +80,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 		initialiseBuffers();
+		reinitialiseFrequencyProcessor();
 	}
 
 	@Override

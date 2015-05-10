@@ -20,28 +20,28 @@
 
 package uk.co.modularaudio.mads.base.spectralroll.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
+public class SpectralRollResolutionComboUiJComponent
 	implements IMadUiControlInstance<SpectralRollMadDefinition, SpectralRollMadInstance, SpectralRollMadUiInstance>
 {
-	private static final long serialVersionUID = -1751151942321586686L;
+	private final DefaultComboBoxModel<String> model;
 
-//	private static Log log = LogFactory.getLog( SpectralRollResolutionComboUiJComponent.class.getName());
-
-	private final SpectralRollMadUiInstance uiInstance;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	private final int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
 
@@ -52,33 +52,49 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 			final SpectralRollMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
 
-		for( final int res : resolutionChoices )
+		model = new DefaultComboBoxModel<String>();
+
+		for( final int r : resolutionChoices )
 		{
-			runAvToCalculatorMap.put( res + "", res );
+			final String is = Integer.toString( r );
+			model.addElement( is );
+			runAvToCalculatorMap.put( is, r );
 		}
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( final int res : resolutionChoices )
+		model.setSelectedItem( "4096" );
+
+		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
+
+		model.addListDataListener( new ListDataListener()
 		{
-			cbm.addElement( res + "" );
-		}
-		this.setModel( cbm );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
 
-		this.setSelectedIndex( -1 );
-		this.setSelectedItem( "4096" );
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String curVal = (String)model.getSelectedItem();
+				final int iVal = runAvToCalculatorMap.get( curVal );
+				uiInstance.setDesiredFftSize( iVal );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -86,21 +102,6 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-//		log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String)getSelectedItem();
-			if( name != null )
-			{
-				final Integer resolution = runAvToCalculatorMap.get( name );
-				uiInstance.setDesiredFftSize( resolution );
-			}
-		}
 	}
 
 	@Override
@@ -112,5 +113,17 @@ public class SpectralRollResolutionComboUiJComponent extends PacComboBox<String>
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }

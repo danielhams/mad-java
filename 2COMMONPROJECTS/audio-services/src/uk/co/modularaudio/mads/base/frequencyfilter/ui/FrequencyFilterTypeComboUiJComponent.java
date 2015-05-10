@@ -40,7 +40,6 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 public class FrequencyFilterTypeComboUiJComponent
 	implements IMadUiControlInstance<FrequencyFilterMadDefinition, FrequencyFilterMadInstance, FrequencyFilterMadUiInstance>
 {
-	private final Map<FrequencyFilterMode, String> modeToNameMap = new HashMap<FrequencyFilterMode, String>();
 	private final Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
 
 	private final DefaultComboBoxModel<String> model;
@@ -53,23 +52,17 @@ public class FrequencyFilterTypeComboUiJComponent
 			final int controlIndex )
 	{
 		model = new DefaultComboBoxModel<String>();
+		model.addElement( "None" );
+		model.addElement( "Low Pass" );
+		model.addElement( "High Pass" );
+		model.addElement( "Band Pass" );
+		model.addElement( "Band Reject" );
 
 		filterNameToModeMap.put( "None", FrequencyFilterMode.NONE );
 		filterNameToModeMap.put( "Low Pass", FrequencyFilterMode.LP );
 		filterNameToModeMap.put( "High Pass", FrequencyFilterMode.HP );
 		filterNameToModeMap.put( "Band Pass", FrequencyFilterMode.BP );
 		filterNameToModeMap.put( "Band Reject", FrequencyFilterMode.BR );
-		for( final String name : filterNameToModeMap.keySet() )
-		{
-			modeToNameMap.put( filterNameToModeMap.get( name ), name );
-		}
-
-		final FrequencyFilterMode[] modeValues = FrequencyFilterMode.values();
-		for( final FrequencyFilterMode mode : modeValues )
-		{
-			final String modeName = modeToNameMap.get( mode );
-			model.addElement( modeName );
-		}
 
 		model.setSelectedItem( "Low Pass" );
 

@@ -51,21 +51,19 @@ public class OscilloscopeRepetitionsComboUiJComponent
 			final OscilloscopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		repetitionsNameToEnumMap.put( "Continous", OscilloscopeCaptureRepetitionsEnum.CONTINOUS );
-		repetitionsNameToEnumMap.put( "Once", OscilloscopeCaptureRepetitionsEnum.ONCE );
-
 		model = new DefaultComboBoxModel<String>();
-		for (final String repetitionName : repetitionsNameToEnumMap.keySet())
-		{
-			model.addElement( repetitionName );
-		}
+		model.addElement( "Continuous" );
+		model.addElement( "Once" );
+
+		repetitionsNameToEnumMap.put( "Continuous", OscilloscopeCaptureRepetitionsEnum.CONTINOUS );
+		repetitionsNameToEnumMap.put( "Once", OscilloscopeCaptureRepetitionsEnum.ONCE );
 
 		rotaryChoice = new LWTCRotaryChoice(
 				LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
 				false );
 
-		model.setSelectedItem( "Once" );
+		model.setSelectedItem( "Continuous" );
 
 		model.addListDataListener( new ListDataListener()
 		{

@@ -51,15 +51,14 @@ public class OscilloscopeTriggerComboUiJComponent
 			final OscilloscopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( "None" );
+		model.addElement( "On Rise" );
+		model.addElement( "On Fall" );
+
 		triggerNameToEnumMap.put( "None", OscilloscopeCaptureTriggerEnum.NONE );
 		triggerNameToEnumMap.put( "On Rise", OscilloscopeCaptureTriggerEnum.ON_RISE );
 		triggerNameToEnumMap.put( "On Fall", OscilloscopeCaptureTriggerEnum.ON_FALL );
-
-		model = new DefaultComboBoxModel<String>();
-		for (final String triggerName : triggerNameToEnumMap.keySet())
-		{
-			model.addElement( triggerName );
-		}
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,

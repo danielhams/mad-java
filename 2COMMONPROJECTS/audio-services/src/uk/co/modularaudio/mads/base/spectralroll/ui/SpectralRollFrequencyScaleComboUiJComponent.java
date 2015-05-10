@@ -20,29 +20,30 @@
 
 package uk.co.modularaudio.mads.base.spectralroll.ui;
 
-import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LinearFreqScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<String>
+public class SpectralRollFrequencyScaleComboUiJComponent
 	implements IMadUiControlInstance<SpectralRollMadDefinition, SpectralRollMadInstance, SpectralRollMadUiInstance>
 {
-	private static final long serialVersionUID = 2440031777978859794L;
-
-	private final SpectralRollMadUiInstance uiInstance;
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	private final Map<String, FrequencyScaleComputer> freqScaleToCalculatorMap = new HashMap<String, FrequencyScaleComputer> ();
 
@@ -51,31 +52,47 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 			final SpectralRollMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( "Lin" );
+		model.addElement( "Log" );
+
+		model.setSelectedItem( "Log" );
+
+		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
 		freqScaleToCalculatorMap.put( "Lin", new LinearFreqScaleComputer() );
 		freqScaleToCalculatorMap.put( "Log", new LogarithmicFreqScaleComputer() );
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
-		for( final String waveName : freqScaleToCalculatorMap.keySet() )
+		model.addListDataListener( new ListDataListener()
 		{
-			cbm.addElement( waveName );
-		}
-		this.setModel( cbm );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
 
-		this.setSelectedIndex( -1 );
-		this.setSelectedItem( "Log" );
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String value = (String)model.getSelectedItem();
+				final FrequencyScaleComputer fsc = freqScaleToCalculatorMap.get( value );
+				uiInstance.setDesiredFreqScaleComputer( fsc );
+			}
+		} );
+
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -83,21 +100,6 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-//		log.debug("Received display tick");
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String)getSelectedItem();
-			if( name != null )
-			{
-				final FrequencyScaleComputer freqScaleComputer = freqScaleToCalculatorMap.get( name );
-				uiInstance.setDesiredFreqScaleComputer( freqScaleComputer );
-			}
-		}
 	}
 
 	@Override
@@ -109,5 +111,17 @@ public class SpectralRollFrequencyScaleComboUiJComponent extends PacComboBox<Str
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }
