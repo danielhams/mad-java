@@ -23,6 +23,9 @@ package uk.co.modularaudio.mads.base.oscilloscope.mu;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -38,7 +41,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefinition,OscilloscopeMadInstance>
 {
-//	private static Log log = LogFactory.getLog( OscilloscopeMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( OscilloscopeMadInstance.class.getName() );
 
 	protected int sampleRate;
 
@@ -66,16 +69,10 @@ public class OscilloscopeMadInstance extends MadInstance<OscilloscopeMadDefiniti
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			scopeData = null;
-			oscProc = new OscilloscopeProcessor( this, bufferedScopeData );
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		scopeData = null;
+		oscProc = new OscilloscopeProcessor( this, bufferedScopeData );
+		log.warn("Fix me or delete me!");
 	}
 
 	@Override

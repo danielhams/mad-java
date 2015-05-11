@@ -160,7 +160,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				-1 );
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
 				queuePullingFrameTime );
-				
+
 //		if( tempQueueEntryStorage.numTemporalEventsToInstance > 0 )
 //		{
 //			log.debug("preProcess found " + tempQueueEntryStorage.numTemporalEventsToInstance + " temp events waiting");
@@ -177,15 +177,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		// We don't push the temporal events here - it happens in the processWithEvents call
 
 		return retVal;
-	}
-
-	private static final int computeNumToNextEvent( final long periodStartFrameTime,
-			final long eventFrameTime,
-			final int curFrameIndex )
-	{
-		final long numToNextEvent = (eventFrameTime - periodStartFrameTime) - curFrameIndex;
-		final int numToNextEventInt = (int) numToNextEvent;
-		return numToNextEventInt < 0 ? 0 : numToNextEventInt;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -246,21 +237,24 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 					curEventIndex,
 					curPeriodStartFrameTime );
 
-			int numToNextEventInt = ( curEventIndex == numTemporalEvents ? numLeft :
-				computeNumToNextEvent( periodStartFrameTime,
-						tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime,
-						curFrameIndex )
-						);
-
-//			if( numToNextEventInt == 0 )
-//			{
-//				log.error("Distance to next event is zero!");
-//			}
+			if( curEventIndex > 1 )
+			{
+				log.warn( instanceName + " consumed " + curEventIndex + " temporal events before beginning the period." );
+			}
 
 			// Now loop around doing chunks of DSP until we exhaust
 			// the frames
 			while( numLeft > 0 )
 			{
+				final int numToNextEventInt = ( curEventIndex == numTemporalEvents ? numLeft :
+					(int)(tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime -
+							curPeriodStartFrameTime) );
+
+//				if( numToNextEventInt == 0 )
+//				{
+//					log.error("NTNE is zero in loop");
+//				}
+
 				final int numThisRound = (numToNextEventInt < numLeft ? numToNextEventInt : numLeft);
 //				if( numThisRound == 0 )
 //				{
@@ -294,18 +288,14 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 				curFrameIndex += numThisRound;
 				numLeft -= numThisRound;
 
-				numToNextEventInt = ( curEventIndex == numTemporalEvents ? numFrames :
-					computeNumToNextEvent( periodStartFrameTime,
-							tempQueueEntryStorage.temporalEventsToInstance[curEventIndex].frameTime,
-							curFrameIndex )
-							);
-//				if( numToNextEventInt == 0 )
-//				{
-//					log.error("NTNE is zero in loop");
-//				}
 			}
 
 			// And process any events left over
+			final int numExtra = numTemporalEvents - curEventIndex;
+			if( numExtra > 1 )
+			{
+				log.warn( instanceName + " consumed " + numExtra + " temporal events that fall at the end of the period." );
+			}
 			while( curEventIndex < numTemporalEvents )
 			{
 				localBridge.receiveQueuedEventsToInstance( (MI)this,
