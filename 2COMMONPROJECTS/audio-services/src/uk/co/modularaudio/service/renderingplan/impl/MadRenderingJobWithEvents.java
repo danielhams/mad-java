@@ -46,12 +46,13 @@ public class MadRenderingJobWithEvents extends AbstractMadRenderingJob
 		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
 		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
 		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
+		final int numFrames = timingPeriodData.getNumFramesThisPeriod();
 
 		return madInstance.processWithEvents( tempQueueEntryStorage,
 				timingParameters,
 				periodTimestamp,
 				channelActiveBitset,
 				channelBuffers,
-				timingPeriodData.getNumFramesThisPeriod() );
+				numFrames );
 	}
 }

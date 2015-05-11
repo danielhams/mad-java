@@ -59,8 +59,8 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	private final IOQueueEvent outEvent = new IOQueueEvent();
 
 	// Set during startup and cleared during stop
-	protected MadFrameTimeFactory frameTimeFactory = null;
-	protected long temporalValueFixedLatencyFrames = 0;
+	protected MadFrameTimeFactory frameTimeFactory;
+	protected long temporalValueFixedLatencyFrames;
 
 	public AbstractMadUiInstance( final I instance, final MadUiDefinition<D, I> uiDefinition )
 	{
@@ -223,32 +223,32 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	{
 		outEvent.command = command;
 		outEvent.value = value;
+		long outEventTimestamp;
 		if( frameTimeFactory != null )
 		{
-			final long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
-			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
+			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
 		}
 		else
 		{
-			// The "graph" is probably not running, so just send it
-			localQueueBridge.sendTemporalEventToInstance( instance, 0, outEvent );
+			outEventTimestamp = 0;
 		}
+		localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 	}
 
 	protected void sendTemporalObjectToInstance(final int command, final Object obj)
 	{
 		outEvent.command = command;
 		outEvent.object = obj;
+		long outEventTimestamp;
 		if( frameTimeFactory != null )
 		{
-			final long outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
-			localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
+			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
 		}
 		else
 		{
-			// The "graph" is probably not running, so just send it
-			localQueueBridge.sendTemporalEventToInstance( instance, 0,  outEvent );
+			outEventTimestamp = 0;
 		}
+		localQueueBridge.sendTemporalEventToInstance( instance, outEventTimestamp,  outEvent );
 	}
 
 	protected void sendCommandValueToInstance( final int command, final long value )

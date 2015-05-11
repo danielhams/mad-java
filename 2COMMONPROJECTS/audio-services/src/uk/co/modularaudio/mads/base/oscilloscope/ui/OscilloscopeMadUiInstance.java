@@ -82,7 +82,7 @@ public class OscilloscopeMadUiInstance extends AbstractNoNameChangeNonConfigurab
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		log.warn( "Bad latency nanos calculation - this component needs re-writing anyway" );
+//		log.warn( "Bad latency nanos calculation - this component needs re-writing anyway" );
 		final long newAln = timingParameters.getNanosPerBackEndPeriod() * 3;
 
 		if( newAln != knownAudioIOLatencyNanoseconds )

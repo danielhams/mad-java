@@ -31,9 +31,9 @@ public class CrossFaderMadUiInstance extends NoEventsNoNameChangeNonConfigurable
 {
 //	private static Log log = LogFactory.getLog( CrossFaderMadUiInstance.class.getName() );
 
-	private boolean guiKillA = false;
-	private boolean guiKillB = false;
-	private float guiCrossFaderPosition = 0.0f;
+	private boolean guiKillA;
+	private boolean guiKillB;
+	private float guiCrossFaderPosition;
 
 	private RawCrossfadePowerTable powerCurve = StandardCrossfadePowerTables.getAdditivePowerTable();
 
