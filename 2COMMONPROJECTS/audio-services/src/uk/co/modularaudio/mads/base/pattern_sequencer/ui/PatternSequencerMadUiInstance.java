@@ -37,8 +37,6 @@ public class PatternSequencerMadUiInstance extends AbstractNoNameChangeNonConfig
 {
 	private static Log log = LogFactory.getLog( PatternSequencerMadUiInstance.class.getName() );
 
-	protected long knownAudioIOLatencyNanos;
-
 	public PatternSequencerMadUiInstance( final PatternSequencerMadInstance instance,
 			final PatternSequencerMadUiDefinition uiDefinition )
 	{
@@ -50,11 +48,6 @@ public class PatternSequencerMadUiInstance extends AbstractNoNameChangeNonConfig
 			final MadTimingParameters timingParameters,
 			final long currentGuiTick )
 	{
-		final long newAln = timingParameters.getNanosOutputLatency();
-		if( newAln != knownAudioIOLatencyNanos )
-		{
-			knownAudioIOLatencyNanos = newAln;
-		}
 		localQueueBridge.receiveQueuedEventsToUi( tempEventStorage, instance, this );
 		super.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTick );
 	}

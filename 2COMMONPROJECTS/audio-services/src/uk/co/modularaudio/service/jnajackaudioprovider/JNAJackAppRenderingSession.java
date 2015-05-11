@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.jaudiolibs.jnajack.Jack;
 import org.jaudiolibs.jnajack.JackClient;
 import org.jaudiolibs.jnajack.JackException;
-import org.jaudiolibs.jnajack.JackLatencyCallbackMode;
 import org.jaudiolibs.jnajack.JackMidi;
 import org.jaudiolibs.jnajack.JackPort;
 import org.jaudiolibs.jnajack.JackPort.JackLatencyRange;
@@ -69,7 +68,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	private final Jack jack;
 	private final JackClient client;
 
-	private JackLatencyRange latencyRange = new JackLatencyRange();
+	private final JackLatencyRange latencyRange = new JackLatencyRange();
 
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
@@ -177,8 +176,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			final MadTimingParameters dtp = new MadTimingParameters(
 					dataRate,
 					bufferSize,
-					hardwareConfiguration.getFps(),
-					nanosOutputLatency );
+					hardwareConfiguration.getFps() );
 
 			final HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(dataRate, bufferSize);
 			final HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(oneChannelSetting, nanosOutputLatency, sampleFramesOutputLatency);
@@ -282,7 +280,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //		return inNs / 1000000;
 //	}
 //
-	private long usToMs( long inUs )
+	private long usToMs( final long inUs )
 	{
 		return inUs / 1000;
 	}
@@ -293,13 +291,15 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		long periodStartFrameTime;
 		try
 		{
-			long jackTime = jack.getTime();
-			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
-			log.debug("jack time is " + usToMs(jackTime) );
-			int jackMinLatency = latencyRange.getMin();
-			int jackMaxLatency = latencyRange.getMax();
-			log.debug("MinLatency(" + jackMinLatency +") MaxLatency(" + jackMaxLatency + ")");
+//			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
+//			final int jackMinLatency = latencyRange.getMin();
+//			final int jackMaxLatency = latencyRange.getMax();
+//			log.debug("MinLatency(" + jackMinLatency +") MaxLatency(" + jackMaxLatency + ")");
+
+//			final long jackTime = client.getFrameTime();
 			periodStartFrameTime = client.getLastFrameTime();
+
+//			log.debug("jack time is " + jackTime );
 //			log.debug("Period start frame time is " + periodStartFrameTime );
 		}
 		catch (final JackException e)

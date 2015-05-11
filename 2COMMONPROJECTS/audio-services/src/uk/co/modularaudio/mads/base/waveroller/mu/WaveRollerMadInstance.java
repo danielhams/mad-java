@@ -72,10 +72,11 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 			final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
 			// We will need enough buffer space such to queue samples between GUI frames
-			// this also needs to take into account output latency - as we'll get a "big" period and need to queue
-			// all of that.
+			// that takes into account some amount of output latency
+
 			final long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
-			final long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
+			// Use up to three back end periods
+			final long nanosBeBuffering = timingParameters.getNanosPerBackEndPeriod() * 3;
 			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
 
 			// We have to handle enough per visual frame along with the necessary audio IO latency

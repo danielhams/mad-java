@@ -75,7 +75,8 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 			// this also needs to take into account output latency - as we'll get a "big" period and need to queue
 			// all of that.
 			final long nanosFeBuffering = timingParameters.getNanosPerFrontEndPeriod() * 2;
-			final long nanosBeBuffering = timingParameters.getNanosOutputLatency() * 2;
+			// Up to three back end periods
+			final long nanosBeBuffering = timingParameters.getNanosPerBackEndPeriod() * 3;
 			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
 
 			// We have to handle enough per visual frame along with the necessary audio IO latency
@@ -101,14 +102,14 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartTimestamp ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadTimingParameters timingParameters,
+			final long periodStartTimestamp,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 );
-		final MadChannelBuffer inChannelBuffer = channelBuffers[ AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
-		final float[] in0Floats = (inConnected ? inChannelBuffer.floatBuffer : null );
 
 		if( active )
 		{
@@ -116,6 +117,9 @@ public class AudioAnalyserMadInstance extends MadInstance<AudioAnalyserMadDefini
 			{
 				if( inConnected )
 				{
+					final MadChannelBuffer inChannelBuffer = channelBuffers[ AudioAnalyserMadDefinition.CONSUMER_AUDIO_SIGNAL0 ];
+					final float[] in0Floats = inChannelBuffer.floatBuffer;
+
 					int curSampleIndex = 0;
 					while( curSampleIndex < numFrames )
 					{

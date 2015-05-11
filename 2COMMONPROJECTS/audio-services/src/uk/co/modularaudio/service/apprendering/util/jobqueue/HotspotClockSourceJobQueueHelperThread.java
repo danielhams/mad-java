@@ -72,8 +72,6 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 	@Override
 	protected void doJob()
 	{
-		final long nanosOutputLatency = 1000000;
-
 		final HardwareIOChannelSettings renderingPlanIOSettings = renderingPlan.getPlanChannelSettings();
 		final int configuredSampleRate = renderingPlanIOSettings.getAudioChannelSetting().getDataRate().getValue();
 		final int samplesPerRenderPeriod = renderingPlanIOSettings.getAudioChannelSetting().getChannelBufferLength();
@@ -85,7 +83,11 @@ public class HotspotClockSourceJobQueueHelperThread extends AbstractInterruptabl
 		final int sampleFramesPerFrontEndPeriod = configuredSampleRate / 60;
 
 		final MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
-		timingParameters.reset( nanosPerBackEndPeriod, nanosPerBackEndSample, nanosPerFrontEndPeriod, sampleFramesPerFrontEndPeriod, nanosOutputLatency );
+		timingParameters.reset( nanosPerBackEndPeriod,
+				nanosPerBackEndSample,
+				nanosPerFrontEndPeriod,
+				sampleFramesPerFrontEndPeriod,
+				renderingPlanIOSettings.getAudioChannelSetting().getChannelBufferLength() );
 
 		final MadChannelPeriodData periodData = timingService.getTimingSource().getTimingPeriodData();
 		long periodStartFrameTime = 0;

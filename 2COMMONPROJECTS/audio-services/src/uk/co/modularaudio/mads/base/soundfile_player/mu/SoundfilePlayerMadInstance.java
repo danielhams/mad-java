@@ -182,8 +182,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			return RealtimeMethodReturnCodeEnum.SUCCESS;
 		}
 
-//		float usedPlaySpeed = (currentState == PlayingState.PLAYING ? desiredPlaySpeed : 0.0f );
-
 		int numStillToOutput = numFrames;
 		int curOutputPos = 0;
 		while( numStillToOutput > 0 )

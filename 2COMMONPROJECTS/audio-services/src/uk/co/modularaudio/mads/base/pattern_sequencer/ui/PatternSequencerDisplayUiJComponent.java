@@ -42,7 +42,6 @@ import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceM
 import uk.co.modularaudio.util.audio.gui.patternsequencer.model.PatternSequenceStep;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.thread.NanoTuple;
 
 public class PatternSequencerDisplayUiJComponent extends PacPanel
 	implements IMadUiControlInstance<PatternSequencerMadDefinition, PatternSequencerMadInstance, PatternSequencerMadUiInstance>,
@@ -55,7 +54,6 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 
 
 	private final PatternSequencerMadInstance instance;
-	private PatternSequencerMadUiInstance uiInstance;
 
 	// Stuff for our processing
 	private final PatternSequencer patternSequencer;
@@ -70,12 +68,10 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 			final PatternSequencerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
 		final MigLayout migLayout = new MigLayout("insets 0, fill");
 		this.setLayout( migLayout );
 		this.setOpaque( true );
 		this.instance = instance;
-		this.uiInstance = uiInstance;
 
 		dataModel = instance.getPatternDataModel();
 
@@ -163,10 +159,7 @@ public class PatternSequencerDisplayUiJComponent extends PacPanel
 				try
 				{
 //					log.debug("Waiting for pattern to become used");
-					final NanoTuple nt = new NanoTuple( "PatternUpdateNanoTuple" );
-					nt.resetToCurrent();
-					nt.addNanos( uiInstance.knownAudioIOLatencyNanos );
-					nt.nanoSleepIfNotPassed();
+					Thread.sleep( 10, 0 );
 				}
 				catch (final InterruptedException e)
 				{

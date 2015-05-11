@@ -95,18 +95,20 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartTimestamp ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers ,
-			final int frameOffset , final int numFrames  )
+			final MadTimingParameters timingParameters,
+			final long periodStartTimestamp,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( SpectralRollMadDefinition.CONSUMER_IN);
-		final MadChannelBuffer inCb = channelBuffers[ SpectralRollMadDefinition.CONSUMER_IN ];
-		final float[] inFloats = (inConnected ? inCb.floatBuffer : null );
 
 		if( active )
 		{
+			final MadChannelBuffer inCb = channelBuffers[ SpectralRollMadDefinition.CONSUMER_IN ];
+			final float[] inFloats = inCb.floatBuffer;
+
 			try
 			{
 				if( inConnected )
