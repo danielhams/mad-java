@@ -66,7 +66,7 @@ public class GenericComponentVisualiser
 	//	public final static Color panelBackgroundColor = new Color( 0.25f, 0.25f, 0.25f );
 	public final static Color panelBackgroundColor = new Color( 57, 63, 63 );
 
-	public final static boolean USE_LAF = false;
+	public final static boolean USE_LAF = true;
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{

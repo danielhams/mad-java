@@ -227,6 +227,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 		if( frameTimeFactory != null )
 		{
 			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime() + temporalValueFixedLatencyFrames;
+//			outEventTimestamp = frameTimeFactory.getCurrentUiFrameTime();
 		}
 		else
 		{

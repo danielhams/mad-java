@@ -50,9 +50,14 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	public void setSelected( final boolean selected )
 	{
 		final boolean previousValue = isOn;
+		setSelectedNoPropogate( selected );
+		receiveUpdateEvent( previousValue, isOn );
+	}
+
+	public void setSelectedNoPropogate( final boolean selected )
+	{
 		isOn = selected;
 		setupPushedState();
-		receiveUpdateEvent( previousValue, isOn );
 	}
 
 	public boolean isSelected()

@@ -21,18 +21,18 @@
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 import java.awt.Component;
-import java.awt.Font;
 
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleButton;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacToggleGroup;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCToggleGroup;
 
 public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
@@ -48,7 +48,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 
 //	private static Log log = LogFactory.getLog( SoundfilePlayerZoomToggleGroupUiJComponent.class.getName() );
 
-	private final PacToggleGroup toggleGroup;
+	private final LWTCToggleGroup toggleGroup;
 
 	private final float[] ZOOM_MILLIS = new float[] {
 			1250.0f,
@@ -72,7 +72,10 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 		msh.addLayoutConstraint("insets 0");
 		setLayout( msh.createMigLayout() );
 
-		toggleGroup = new PacToggleGroup( TOGGLE_LABELS, 1)
+		toggleGroup = new LWTCToggleGroup( LWTCControlConstants.STD_TOGGLE_BUTTON_COLOURS,
+				TOGGLE_LABELS,
+				1,
+				false )
 		{
 			@Override
 			public void receiveUpdateEvent(final int previousSelection, final int newSelection)
@@ -86,11 +89,8 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 			}
 		};
 
-		for( final PacToggleButton tb : toggleGroup.getToggleButtons() )
+		for( final LWTCToggleButton tb : toggleGroup.getToggleButtons() )
 		{
-//			Font f = tb.getFont().deriveFont( 8.0f );
-			final Font f = tb.getFont();
-			tb.setFont( f );
 			add( tb, "grow, shrink, wrap");
 		}
 
