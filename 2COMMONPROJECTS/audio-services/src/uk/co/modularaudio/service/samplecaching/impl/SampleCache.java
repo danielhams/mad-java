@@ -299,11 +299,9 @@ public class SampleCache
 			{
 				// No more data in the buffer
 				// Fill in remaining samples with nothing.
-				if( log.isWarnEnabled() )
-				{
-					log.warn("Ran out of cached blocks for " + libraryEntry.getLocation() + " at frame position " + readFramePosition );
-				}
 				Arrays.fill( outputSamples, curOutputFloatPos, curOutputFloatPos + totalNumFloatsToRead, 0.0f );
+				// And force the population thread to wake up and do its thing.
+				clientChangedBlocks = true;
 				break;
 			}
 
