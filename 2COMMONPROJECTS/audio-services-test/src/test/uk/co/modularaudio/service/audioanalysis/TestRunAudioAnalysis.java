@@ -108,7 +108,18 @@ public class TestRunAudioAnalysis
 			}
 		};
 
-		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3";
+//		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4713773_Burning_Bright_feat__Kim_Ann_Foxman_Dense___Pika_Remix.mp3";
+		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4569954_Collision_Original_Mix.mp3";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/03 - Simon From Sydney.mp3";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/ORB - The Orb's Adventures Beyond The Ultraworld/CD 1/02 - Earth Orbit Two- Earth (Gaia).flac";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/ORB - The Orb's Adventures Beyond The Ultraworld/CD 1/01 - Earth Orbit One- Little Fluffy Clouds.flac";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/Bobby McFerrin/Simple Pleasures/07 - Susie-Q.flac";
+//		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4823846_Bengala_Joel_Mull_Remix.mp3";
+//		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20131121/4820093_Black_Deep_Original_Mix.mp3";
+//		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200903/139230_True__The_Faggot_Is_You__Deep_Dish_Poof_Daddy_Remix.mp3";
+//		final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200903/139229_True__The_Faggot_Is_You__Deep_Dish_Poof_Daddy_Dub.mp3";
+//		final String filePath = "/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 101 master.mp3";
 
 		final AudioFileFormat format = afirs.sniffFileFormatOfFile( filePath );
 

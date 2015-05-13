@@ -419,10 +419,6 @@ public class SampleCache
 			{
 				// No more data in the buffer
 				// Fill in remaining samples with nothing.
-				if( log.isWarnEnabled() )
-				{
-					log.warn("Ran out of cached sample data for " + libraryEntry.getLocation() );
-				}
 				sampleAcceptor.acceptEmptySamples( readFramePosition, leNumChannels, totalNumFloatsToRead / leNumChannels );
 				break;
 			}

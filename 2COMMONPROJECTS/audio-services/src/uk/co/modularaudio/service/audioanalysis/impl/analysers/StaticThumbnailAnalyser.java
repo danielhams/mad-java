@@ -34,16 +34,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.impl.AnalysisContext;
+import uk.co.modularaudio.service.audioanalysis.impl.AudioAnalyser;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class StaticThumbnailGeneratorListener implements AnalysisListener
+public class StaticThumbnailAnalyser implements AudioAnalyser
 {
 	private static final int BORDER_WIDTH = 1;
 
-	private static Log log = LogFactory.getLog( StaticThumbnailGeneratorListener.class.getName() );
+	private static final float THUMBNAIL_DB = -6.0f;
+
+	private static Log log = LogFactory.getLog( StaticThumbnailAnalyser.class.getName() );
 
 	private final int usableWidth;
 	private final int usableHeight;
@@ -68,7 +73,9 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	private float maxValue = 0.0f;
 	private float sumSq = 0.0f;
 
-	public StaticThumbnailGeneratorListener( final int requiredWidth,
+	private float maxRmsValue = 0.0f;
+
+	public StaticThumbnailAnalyser( final int requiredWidth,
 			final int requiredHeight,
 			final Color minMaxColor,
 			final Color rmsColor,
@@ -88,7 +95,7 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	}
 
 	@Override
-	public void start(final DataRate dataRate, final int numChannels, final long totalFrames )
+	public void dataStart(final DataRate dataRate, final int numChannels, final long totalFrames )
 	{
 		this.numChannels = numChannels;
 
@@ -124,7 +131,12 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 			{
 				thumbnailValues[ outIndex++ ] = minValue;
 				thumbnailValues[ outIndex++ ] = maxValue;
-				thumbnailValues[ outIndex++ ] = (float)Math.sqrt( sumSq / framesPerPixel );
+				final float rmsVal = (float)Math.sqrt( sumSq / framesPerPixel );
+				if( rmsVal > maxRmsValue )
+				{
+					maxRmsValue = rmsVal;
+				}
+				thumbnailValues[ outIndex++ ] = rmsVal;
 				minValue = maxValue = sumSq = 0.0f;
 				currentIndex -= framesPerPixel;
 			}
@@ -132,9 +144,20 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 	}
 
 	@Override
-	public void end()
+	public void dataEnd( final AnalysisContext context, final AnalysedData analysedData, final HashedRef hashedRef )
 	{
-		log.debug("End called. Should generate buffered image.");
+		log.debug("End called. Will wait for gain analyser to do its thing.");
+
+	}
+
+	@Override
+	public void completeAnalysis( final AnalysisContext context, final AnalysedData analysedData, final HashedRef hashedRef )
+	{
+		final float rmsDb = AudioMath.levelToDbF( maxRmsValue );
+
+		final float adjustedDb = (THUMBNAIL_DB - rmsDb);
+
+		final float adjustmentAbs = AudioMath.dbToLevelF( adjustedDb );
 
 		final Graphics2D g2d = (Graphics2D)og2d.create( BORDER_WIDTH, BORDER_WIDTH, usableWidth, usableHeight );
 
@@ -150,11 +173,14 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 
 		for( int i = 0 ; i < usableWidth ; i++ )
 		{
-			final float minSample = thumbnailValues[ curDataCount++ ];
-			final float maxSample = thumbnailValues[ curDataCount++ ];
+			float minSample = thumbnailValues[ curDataCount++ ] * adjustmentAbs;
+			float maxSample = thumbnailValues[ curDataCount++ ] * adjustmentAbs;
 			curDataCount++;
 
-			// lSample goes from +1.0 to -1.0
+			minSample = (minSample < -1.0f ? -1.0f : minSample );
+			maxSample = (maxSample > 1.0f ? 1.0f : maxSample );
+
+			// assume goes from +1.0 to -1.0
 			final int curX = i;
 			final int minY = zeroYValue + (int)( minSample * oneSideHeight);
 			final int maxY = zeroYValue + (int)( maxSample * oneSideHeight);
@@ -167,7 +193,9 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 		for( int i = 0 ; i < usableWidth ; i++ )
 		{
 			curDataCount+=2;
-			final float rms = thumbnailValues[ curDataCount++ ];
+			float rms = thumbnailValues[ curDataCount++ ] * adjustmentAbs;
+
+			rms = (rms > 1.0f ? 1.0f : rms);
 
 			// lSample goes from +1.0 to -1.0
 			// We need it to go from 0 to height
@@ -176,11 +204,7 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 			final int maxY = zeroYValue + (int)( -rms * oneSideHeight );
 			g2d.drawLine( curX, minY, curX, maxY );
 		}
-	}
 
-	@Override
-	public void updateAnalysedData(final AnalysedData analysedData, final HashedRef hashedRef )
-	{
 		try
 		{
 			final ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -198,5 +222,10 @@ public class StaticThumbnailGeneratorListener implements AnalysisListener
 			final String msg = "Exception caught serialising static thumb nail: " + e.toString();
 			log.error( msg, e );
 		}
+	}
+
+	public float getMaxRmsValue()
+	{
+		return maxRmsValue;
 	}
 }

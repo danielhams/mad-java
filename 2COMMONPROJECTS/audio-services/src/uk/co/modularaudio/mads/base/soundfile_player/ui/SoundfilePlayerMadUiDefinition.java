@@ -88,14 +88,12 @@ public class SoundfilePlayerMadUiDefinition extends
 		new Rectangle(  47,  38, 411,  30 ),		// FileInfo
 		new Rectangle( 458,  38,  30,  30 ),		// SelectFile
 		new Rectangle(   6, 113,  41,  90 ),		// ZoomToggle
-//		new Rectangle(  47,  68, 441, 148 ),		// WaveDisplay
 		new Rectangle(  47,  68, 441, 145 ),		// WaveDisplay
-//		new Rectangle(  47, 216, 441,  30 ),		// WaveOverview
-		new Rectangle(  47, 213, 441,  33 ),		// WaveOverview
+		new Rectangle(  47, 213, 441,  37 ),		// WaveOverview
 		new Rectangle( 500,  22,  50, 264 ),		// SpeedSlider
-		new Rectangle(  47, 246,  45,  30 ),		// Rewind
-		new Rectangle(  92, 246,  91,  30 ),		// PlayStop
-		new Rectangle( 183, 246,  45,  30 )			// FastForward
+		new Rectangle(  47, 250,  45,  30 ),		// Rewind
+		new Rectangle(  92, 250,  91,  30 ),		// PlayStop
+		new Rectangle( 183, 250,  45,  30 )			// FastForward
 	};
 
 	private static final Class<SoundfilePlayerMadUiInstance> INSTANCE_CLASS = SoundfilePlayerMadUiInstance.class;

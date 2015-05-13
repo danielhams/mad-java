@@ -18,12 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.service.audioanalysis.impl.analysers;
+package uk.co.modularaudio.service.audioanalysis.impl;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
+import uk.co.modularaudio.util.audio.format.DataRate;
 
-public interface AnalysisListener extends AudioDataListener
+public interface AudioAnalyser
 {
-	void updateAnalysedData( AnalysedData analysedData, HashedRef hashedRef );
+	void dataStart( DataRate dataRate, int numChannels, long totalFrames );
+	void receiveFrames( float[] data, int numFrames );
+	void dataEnd( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef );
+	void completeAnalysis( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef );
+
 }

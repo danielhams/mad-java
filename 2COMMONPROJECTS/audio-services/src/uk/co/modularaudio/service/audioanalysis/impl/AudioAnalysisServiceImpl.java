@@ -37,9 +37,8 @@ import org.hibernate.Session;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
-import uk.co.modularaudio.service.audioanalysis.impl.analysers.AnalysisListener;
-import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainDetectionListener;
-import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailGeneratorListener;
+import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainAnalyser;
+import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailAnalyser;
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
@@ -187,18 +186,16 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			final AnalysisFillCompletionListener progressListener)
 			throws DatastoreException, IOException, RecordNotFoundException, UnsupportedAudioFileException
 	{
-		final ArrayList<AnalysisListener> analysisListeners = new ArrayList<AnalysisListener>();
+		final GainAnalyser gainAnalyser = new GainAnalyser();
 
-		final GainDetectionListener gdl = new GainDetectionListener();
-		analysisListeners.add( gdl );
-
-		final StaticThumbnailGeneratorListener stgl = new StaticThumbnailGeneratorListener( staticThumbnailWidth,
+		final StaticThumbnailAnalyser thumbnailAnalyser = new StaticThumbnailAnalyser( staticThumbnailWidth,
 				staticThumbnailHeight,
 				staticMinMaxColor,
 				staticRmsColor,
 				hashedStorageService,
 				staticThumbnailWarehouse );
-		analysisListeners.add( stgl );
+
+		final AnalysisContext ac = new AnalysisContext( gainAnalyser, thumbnailAnalyser );
 
 		final AnalysedData analysedData = new AnalysedData();
 
@@ -226,10 +223,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 		analysisBufferFrames = analysisBufferSize / numChannels;
 
-		for( final AnalysisListener al : analysisListeners )
-		{
-			al.start( dataRate, numChannels, totalFrames );
-		}
+		ac.dataStart( dataRate, numChannels, totalFrames );
+
 		int percentageComplete = 0;
 
 		long framesLeft = totalFrames;
@@ -252,10 +247,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 						framesThisRound + ") received(" + numFramesRead +")");
 			}
 
-			for( final AnalysisListener al : analysisListeners )
-			{
-				al.receiveFrames( analysisBuffer, numFramesRead );
-			}
+			ac.receiveFrames( analysisBuffer, numFramesRead );
 
 			final int newPercentageComplete = (int)((curFramePos / (float)totalFrames) * 100.0f);
 			if( newPercentageComplete != percentageComplete )
@@ -267,11 +259,13 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			framesLeft -= numFramesRead;
 		}
 
-		for( final AnalysisListener al : analysisListeners )
-		{
-			al.end();
-			al.updateAnalysedData( analysedData, fileHashedRef );
-		}
+		// Give the analysers a chance to fill in some data
+		ac.dataEnd( analysedData, fileHashedRef );
+
+		// And then a chance to use data filled by other analysers
+		// (i.e. gain computation can use the thumbnail analyser results
+		// to work out appropriate gain values)
+		ac.completeAnalysis( analysedData, fileHashedRef );
 
 		return analysedData;
 	}
