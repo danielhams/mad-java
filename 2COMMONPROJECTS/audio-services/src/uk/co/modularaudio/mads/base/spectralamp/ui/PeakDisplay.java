@@ -138,7 +138,7 @@ public class PeakDisplay
 		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
 
 		// add in previousBinPeaks to the running bin peaks using some weight
-		runAvComputer.computeNewRunningAverages( currentNumBins, previousBinPeaks, runningBinPeaks );
+		runAvComputer.computeNewRunningAverages( currentNumBins, computedBins, runningBinPeaks );
 	}
 
 	private final int[] xPoints = new int[3];

@@ -29,7 +29,6 @@ import org.jaudiolibs.jnajack.JackClient;
 import org.jaudiolibs.jnajack.JackException;
 import org.jaudiolibs.jnajack.JackMidi;
 import org.jaudiolibs.jnajack.JackPort;
-import org.jaudiolibs.jnajack.JackPort.JackLatencyRange;
 import org.jaudiolibs.jnajack.JackPortFlags;
 import org.jaudiolibs.jnajack.JackPortType;
 import org.jaudiolibs.jnajack.JackProcessCallback;
@@ -65,11 +64,11 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 {
 	private static Log log = LogFactory.getLog( JNAJackAppRenderingSession.class.getName() );
 
-	private final Jack jack;
+//	private final Jack jack;
 	private final JackClient client;
 
-	private final JackLatencyRange latencyRange = new JackLatencyRange();
-
+//	private final JackLatencyRange latencyRange = new JackLatencyRange();
+	
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
 	private int numConsumerAudioPorts;
@@ -100,7 +99,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			final JackClient client ) throws DatastoreException
 	{
 		super( appRenderingService, timingService, hardwareConfiguration, errorQueue, errorCallback );
-		this.jack = jack;
+//		this.jack = jack;
 		this.client =client;
 	}
 
@@ -275,30 +274,20 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		errorQueue.queueError( this, ErrorSeverity.FATAL, "JNAJack client shutdown occured" );
 	}
 
-//	private long nsToMs( long inNs )
-//	{
-//		return inNs / 1000000;
-//	}
-//
-	private long usToMs( final long inUs )
-	{
-		return inUs / 1000;
-	}
-
 	@Override
 	public boolean process( final JackClient client, final int numFrames )
 	{
 		long periodStartFrameTime;
+//		int jackMaxLatency;
 		try
 		{
 //			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
-//			final int jackMinLatency = latencyRange.getMin();
-//			final int jackMaxLatency = latencyRange.getMax();
-//			log.debug("MinLatency(" + jackMinLatency +") MaxLatency(" + jackMaxLatency + ")");
+//			jackMaxLatency = latencyRange.getMax();
+//			log.debug("MaxLatency(" + jackMaxLatency + ")");
 
 //			final long jackTime = client.getFrameTime();
 			periodStartFrameTime = client.getLastFrameTime();
-
+			
 //			log.debug("jack time is " + jackTime );
 //			log.debug("Period start frame time is " + periodStartFrameTime );
 		}
