@@ -64,6 +64,12 @@ public class GainAnalyser implements AudioAnalyser
 				") thus delta Db(" + MathFormatter.slowFloatPrint( deltaDb, 5, true ) +
 				") which abs(" + MathFormatter.slowFloatPrint( deltaAbs, 5, true ) + ")");
 
+		final float traktorDb = maxRmsDbValue + 0.5f;
+
+		log.debug("At a guess Traktor says (" + MathFormatter.slowFloatPrint( traktorDb, 5, true ) + ")");
+
+
+		analysedData.setDetectedPeak( maxRmsDbValue );
 		analysedData.setAutoGainAdjustment( deltaDb );
 	}
 

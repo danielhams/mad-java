@@ -64,6 +64,8 @@ public class SoundfileDisplaySampleFactory implements
 	private float captureLengthMillis;
 	private int numSamplesPerPixel;
 
+	private float displayMultiplier;
+
 	private boolean needsFullUpdate;
 
 	private float minValue;
@@ -409,8 +411,13 @@ public class SoundfileDisplaySampleFactory implements
 	{
 		final float multiplier = displayHeight / 2.0f;
 
-		final int yMinVal = (int)(-minValue * multiplier + multiplier);
-		final int yMaxVal = (int)(-maxValue * multiplier + multiplier);
+		final int yMinVal = (int)(-(minValue * displayMultiplier) * multiplier + multiplier);
+		final int yMaxVal = (int)(-(maxValue * displayMultiplier) * multiplier + multiplier);
 		g.drawLine(pixelX, yMinVal, pixelX, yMaxVal);
+	}
+
+	public void setDisplayMultiplier( final float displayMultiplier )
+	{
+		this.displayMultiplier = displayMultiplier;
 	}
 }

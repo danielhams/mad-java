@@ -33,6 +33,8 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstan
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplayBuffer;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplayBufferClearer;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplaySampleFactory;
+import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -43,15 +45,20 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
 	SoundfileSampleEventListener,
-	ZoomDataListener, InstanceLifecycleListener
+	ZoomDataListener,
+	InstanceLifecycleListener,
+	AnalysisFillCompletionListener
 {
 	private static final long serialVersionUID = -580564924377154659L;
+
+	private static final float DESIRED_WAVE_DB = -9.0f;
 
 	private static Log log = LogFactory.getLog( SoundfilePlayerWaveDisplayUiJComponent.class.getName() );
 
@@ -88,6 +95,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		uiInstance.addSampleEventListener( this );
 		uiInstance.setZoomDataListener( this );
 		uiInstance.addLifecycleListener( this );
+		uiInstance.addAnalysisFillListener( this );
 	}
 
 	@Override
@@ -288,6 +296,37 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	public void receiveCacheRefreshCompletionEvent()
 	{
 		this.repaint();
+	}
+
+	@Override
+	public void receiveAnalysisBegin()
+	{
+		rpSampleFactory.setDisplayMultiplier( 1.0f );
+		rpSampleFactory.resetForFullRepaint();
+	}
+
+	@Override
+	public void receivePercentageComplete( final int percentageComplete )
+	{
+	}
+
+	@Override
+	public void notifyAnalysisFailure()
+	{
+		rpSampleFactory.setDisplayMultiplier( 1.0f );
+		rpSampleFactory.resetForFullRepaint();
+	}
+
+	@Override
+	public void receiveAnalysedData( final AnalysedData analysedData )
+	{
+		final float peakRmsDb = analysedData.getDetectedPeak();
+
+		final float adjustmentDb = DESIRED_WAVE_DB - peakRmsDb;
+		final float adjustmentMultiplier = AudioMath.dbToLevelF( adjustmentDb );
+
+		rpSampleFactory.setDisplayMultiplier( adjustmentMultiplier );
+		rpSampleFactory.resetForFullRepaint();
 	}
 
 }
