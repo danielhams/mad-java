@@ -25,6 +25,7 @@ import java.awt.Font;
 
 import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
 public class LWTCControlConstants
 {
@@ -709,4 +710,80 @@ public class LWTCControlConstants
 	}
 
 	public static final LWTCSliderViewColors SLIDER_VIEW_COLORS = getSliderViewColors();;
+
+	public final static Color ROTARY_VIEW_BACKGROUND_COLOR = new Color(72,72,72);
+	public final static Color ROTARY_VIEW_FOREGROUND_COLOR = new Color(110,110,110);
+	public final static Color ROTARY_VIEW_KNOB_COLOR = new Color(62,69,69);
+	public final static Color ROTARY_VIEW_EXTENT_COLOR = new Color( 90, 90, 90 );
+	public final static Color ROTARY_VIEW_OUTLINE_COLOR = new Color(27,29,29);
+	public final static Color ROTARY_VIEW_INDICATOR_COLOR = new Color(0,255,0);
+	public final static Color ROTARY_VIEW_FOCUS_COLOR = new Color(200,200,200);
+
+	public final static RotaryViewColors STD_ROTARY_VIEW_COLORS = getRotaryViewColours();
+
+	private final static RotaryViewColors getRotaryViewColours()
+	{
+		final Color bgColor = ROTARY_VIEW_BACKGROUND_COLOR;
+		final Color fgColor = ROTARY_VIEW_FOREGROUND_COLOR;
+		final Color textboxBgColor = CONTROL_TEXTBOX_BACKGROUND;
+		final Color textboxFgColor = CONTROL_TEXTBOX_FOREGROUND;
+		final Color selectionColor = CONTROL_TEXTBOX_SELECTION;
+		final Color selectedTextColor = CONTROL_TEXTBOX_SELECTED_TEXT;
+		final Color knobOutlineColor = ROTARY_VIEW_OUTLINE_COLOR;
+		final Color knobFillColor = ROTARY_VIEW_KNOB_COLOR;
+		final Color knobExtentColor = ROTARY_VIEW_EXTENT_COLOR;
+		final Color knobIndicatorColor = ROTARY_VIEW_INDICATOR_COLOR;
+		final Color knobFocusColor = ROTARY_VIEW_FOCUS_COLOR;
+		final Color labelColor = CONTROL_LABEL_FOREGROUND;
+		final Color unitsColor = labelColor;
+
+		return new RotaryViewColors( bgColor,
+				fgColor,
+				textboxBgColor,
+				textboxFgColor,
+				selectionColor,
+				selectedTextColor,
+				knobOutlineColor,
+				knobFillColor,
+				knobExtentColor,
+				knobIndicatorColor,
+				knobFocusColor,
+				labelColor,
+				unitsColor );
+
+	}
+
+	public static class StdRotaryViewColor extends RotaryViewColors
+	{
+		public final static Color ibgColor = ROTARY_VIEW_BACKGROUND_COLOR;
+		public final static Color ifgColor = ROTARY_VIEW_FOREGROUND_COLOR;
+		public final static Color itextboxBgColor = CONTROL_TEXTBOX_BACKGROUND;
+		public final static Color itextboxFgColor = CONTROL_TEXTBOX_FOREGROUND;
+		public final static Color iselectionColor = CONTROL_TEXTBOX_SELECTION;
+		public final static Color iselectedTextColor = CONTROL_TEXTBOX_SELECTED_TEXT;
+		public final static Color iknobOutlineColor = ROTARY_VIEW_OUTLINE_COLOR;
+		public final static Color iknobFillColor = ROTARY_VIEW_KNOB_COLOR;
+		public final static Color iknobExtentColor = ROTARY_VIEW_EXTENT_COLOR;
+		public final static Color iknobIndicatorColor = ROTARY_VIEW_INDICATOR_COLOR;
+		public final static Color iknobFocusColor = ROTARY_VIEW_FOCUS_COLOR;
+		public final static Color ilabelColor = CONTROL_LABEL_FOREGROUND;
+		public final static Color iunitsColor = ilabelColor;
+
+		public StdRotaryViewColor()
+		{
+			super( ibgColor,
+					ifgColor,
+					itextboxBgColor,
+					itextboxFgColor,
+					iselectionColor,
+					iselectedTextColor,
+					iknobOutlineColor,
+					iknobFillColor,
+					iknobExtentColor,
+					iknobIndicatorColor,
+					iknobFocusColor,
+					ilabelColor,
+					iunitsColor );
+		}
+	};
 }

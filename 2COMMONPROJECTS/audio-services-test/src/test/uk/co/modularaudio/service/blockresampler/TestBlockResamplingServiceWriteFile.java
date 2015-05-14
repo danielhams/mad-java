@@ -195,7 +195,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
 		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator( -MAX_SPEED, MAX_SPEED );
-		speedSad.reset( outputSampleRate, VALUE_CHASE_MILLIS );
+		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );
 
 		// Use an offset to verify block boundary reads
@@ -307,7 +307,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
 		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator( -MAX_SPEED, MAX_SPEED );
-		speedSad.reset( outputSampleRate, VALUE_CHASE_MILLIS );
+		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );
 
 		// Use an offset to verify block boundary reads

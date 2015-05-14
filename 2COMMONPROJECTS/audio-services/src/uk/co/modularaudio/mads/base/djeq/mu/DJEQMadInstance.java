@@ -45,8 +45,6 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 {
 //	private static Log log = LogFactory.getLog( DJEQMadInstance.class.getName() );
 
-	private final static float VALUE_CHASE_MILLIS = 10.0f;
-
 	private final static float MAX_EQ_OVERDRIVE = AudioMath.dbToLevelF( 10.0f );
 
 	private final static float LP_CROSSOVER_FREQ = 120.0f;
@@ -103,11 +101,11 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 		curLeftMeterReading = 0.0f;
 		curRightMeterReading = 0.0f;
 
-		highSad.reset( sampleRate, VALUE_CHASE_MILLIS );
-		midSad.reset( sampleRate, VALUE_CHASE_MILLIS );
-		lowSad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		highSad.reset( sampleRate );
+		midSad.reset( sampleRate );
+		lowSad.reset( sampleRate );
 
-		faderSad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		faderSad.reset( sampleRate );
 
 		leftLpFilter.clear();
 		leftNonLpFilter.clear();

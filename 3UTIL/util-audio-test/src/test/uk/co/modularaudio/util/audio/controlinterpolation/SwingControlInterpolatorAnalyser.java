@@ -187,11 +187,11 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //		lInterpolator.hardSetValue( firstValue );
 		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 		hhInterpolator.hardSetValue( firstValue );
-		sdInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sdInterpolator.reset( SAMPLE_RATE );
 		sdInterpolator.hardSetValue( firstValue );
 		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 		lpInterpolator.hardSetValue( firstValue );
-		sddInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sddInterpolator.reset( SAMPLE_RATE );
 		sddInterpolator.hardSetValue( firstValue );
 
 		// Pass it to all the visualisers for each interpolation
@@ -253,13 +253,13 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 		hhInterpolator.hardSetValue( samples[0] );
 
-		sdInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sdInterpolator.reset( SAMPLE_RATE );
 		sdInterpolator.hardSetValue( samples[0] );
 
 		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 		lpInterpolator.hardSetValue( samples[0] );
 
-		sddInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		sddInterpolator.reset( SAMPLE_RATE );
 		sddInterpolator.hardSetValue( samples[0] );
 
 		int prevOffset = 0;

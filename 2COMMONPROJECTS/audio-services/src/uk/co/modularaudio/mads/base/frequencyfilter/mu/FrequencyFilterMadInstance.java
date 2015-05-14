@@ -51,8 +51,6 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 	public final static float BW_MAX_VAL = 22050.0f;
 	public final static float BW_DEFAULT_VAL = 500.0f;
 
-	private static final int VALUE_CHASE_MILLIS = 10;
-
 	private int sampleRate;
 
 	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
@@ -85,9 +83,9 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			throws MadProcessingException
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-		freqSad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		freqSad.reset( sampleRate );
 		freqSad.hardSetValue( desiredFrequency );
-		bwSad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		bwSad.reset( sampleRate );
 		bwSad.hardSetValue( desiredBandwidth );
 
 		leftChannelButterworth.clear();

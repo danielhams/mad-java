@@ -180,7 +180,7 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 
 	public void setSampleRate( final int sampleRate )
 	{
-		leftAmpInterpolator.reset( sampleRate, 1.0f );
-		rightAmpInterpolator.reset( sampleRate, 1.0f );
+		leftAmpInterpolator.reset( sampleRate );
+		rightAmpInterpolator.reset( sampleRate );
 	}
 }

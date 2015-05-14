@@ -22,8 +22,6 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Rectangle;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -62,6 +60,9 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 	private static Log log = LogFactory.getLog( SoundfilePlayerWaveDisplayUiJComponent.class.getName() );
 
+	public final static int REQUIRED_WIDTH = 441;
+	public final static int REQUIRED_HEIGHT= 145;
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 
@@ -96,6 +97,8 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		uiInstance.setZoomDataListener( this );
 		uiInstance.addLifecycleListener( this );
 		uiInstance.addAnalysisFillListener( this );
+
+		setupSampleFactory( REQUIRED_WIDTH, REQUIRED_HEIGHT );
 	}
 
 	@Override
@@ -190,12 +193,10 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		g.drawLine( displayWidthMinusOneOverTwo,  0, displayWidthMinusOneOverTwo, displayHeight );
 	}
 
-	@Override
-	public void setBounds( final Rectangle r )
+	private void setupSampleFactory( final int width, final int height )
 	{
-		super.setBounds( r );
-		displayWidth = r.width;
-		displayHeight = r.height;
+		displayWidth = width;
+		displayHeight = height;
 		if( displayWidth % 2 == 0 )
 		{
 			log.warn("WARNING - DISPLAY WIDTH EVEN");

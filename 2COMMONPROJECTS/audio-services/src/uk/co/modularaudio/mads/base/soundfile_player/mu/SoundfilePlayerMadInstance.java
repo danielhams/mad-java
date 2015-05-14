@@ -45,6 +45,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDefinition,SoundfilePlayerMadInstance>
@@ -60,6 +61,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	};
 
 	public static final float PLAYBACK_SPEED_MAX = 1.5f;
+
+	public static final float GAIN_MAX_DB = 20.0f;
 
 	private int numSamplesPerFrontEndPeriod = -1;
 
@@ -85,6 +88,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private float desiredPlaySpeed = 1.0f;
 	private final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator(
 			-PLAYBACK_SPEED_MAX, PLAYBACK_SPEED_MAX );
+	private float desiredGain = 1.0f;
+	private final SpringAndDamperDoubleInterpolator gainSad = new SpringAndDamperDoubleInterpolator(
+			0.0f, AudioMath.dbToLevelF( GAIN_MAX_DB ) );
 
 	public SoundfilePlayerMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -111,7 +117,10 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
+		speedSad.reset( sampleRate );
 		speedSad.hardSetValue( desiredPlaySpeed );
+		gainSad.reset( sampleRate );
+		gainSad.hardSetValue( desiredGain );
 
 		numSamplesTillNextEvent = numSamplesPerFrontEndPeriod;
 
@@ -239,6 +248,15 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			curOutputPos += numThisRound;
 		}
 
+		// Apply gain
+		gainSad.checkForDenormal();
+		gainSad.generateControlValues( tmpBuffer, 0, numFrames );
+		for( int f = 0 ; f < numFrames ; ++f )
+		{
+			lfb[frameOffset + f] *= tmpBuffer[f];
+			rfb[frameOffset + f] *= tmpBuffer[f];
+		}
+
 		leftDcTrap.filter( lfb, frameOffset, numFrames );
 		rightDcTrap.filter( rfb, frameOffset, numFrames );
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -312,6 +330,12 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	{
 		desiredPlaySpeed = newSpeed;
 		speedSad.notifyOfNewValue( newSpeed );
+	}
+
+	public void setDesiredGain( final float newGain )
+	{
+		desiredGain = newGain;
+		gainSad.notifyOfNewValue( newGain );
 	}
 
 	public void resetFramePosition( final long newFramePosition )

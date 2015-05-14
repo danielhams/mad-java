@@ -211,6 +211,7 @@ public class SoundfilePlayerMadUiInstance extends
 
 	public void setFileInfo( final String filename )
 	{
+//		log.debug("A set of the file info is causing the load runnable to be executed");
 		final LoadNewSoundFileRunnable loadRunnable =
 				new LoadNewSoundFileRunnable( advancedComponentsFrontController,
 						filename,
@@ -226,6 +227,11 @@ public class SoundfilePlayerMadUiInstance extends
 	public void sendPlayingSpeed( final float playingSpeed )
 	{
 		sendTemporalValueToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_PLAY_SPEED, Float.floatToIntBits(playingSpeed) );
+	}
+
+	public void sendGain( final float gain )
+	{
+		sendTemporalValueToInstance( SoundfilePlayerIOQueueBridge.COMMAND_IN_GAIN, Float.floatToIntBits( gain ) );
 	}
 
 	public void sendPlayingStateChange( final SoundfilePlayerMadInstance.PlayingState desiredPlayingState )
@@ -296,7 +302,7 @@ public class SoundfilePlayerMadUiInstance extends
 	@Override
 	public void notifyBufferFilled( final SampleCacheClient sampleCacheClient )
 	{
-		log.debug("Received notification that the buffer is filled. Promoting to resampler client.");
+//		log.debug("Received notification that the buffer is filled. Promoting to resampler client.");
 		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient(
 				sampleCacheClient,
 			BlockResamplingMethod.CUBIC );
@@ -327,15 +333,7 @@ public class SoundfilePlayerMadUiInstance extends
 	{
 		if( currentResampledSample != null )
 		{
-			if( log.isDebugEnabled() )
-			{
-				log.debug( "Received overview position request of " + normalisedPosition );
-			}
 			final long totalNumFrames = currentResampledSample.getTotalNumFrames();
-			if( log.isDebugEnabled() )
-			{
-				log.debug( "Current sample has " + totalNumFrames + " frames");
-			}
 			final int sampleRate = currentResampledSample.getSampleCacheClient().getLibraryEntry().getSampleRate();
 			final int oneSecFrames = sampleRate;
 			final double normSongPosDouble = ((double)normalisedPosition) * totalNumFrames;
@@ -347,10 +345,6 @@ public class SoundfilePlayerMadUiInstance extends
 			if( newSongPos > (totalNumFrames + oneSecFrames) )
 			{
 				newSongPos = totalNumFrames + oneSecFrames;
-			}
-			if( log.isDebugEnabled() )
-			{
-				log.debug("New song pos is " + newSongPos);
 			}
 
 			sendTemporalValueToInstance( SoundfilePlayerIOQueueBridge.COMMAND_IN_POSITION_JUMP, newSongPos );
@@ -364,6 +358,7 @@ public class SoundfilePlayerMadUiInstance extends
 		{
 			al.receiveAnalysedData( analysedData );
 		}
+		log.debug("Analysis complete. Gain is " + analysedData.getAutoGainAdjustment() );
 	}
 
 	@Override

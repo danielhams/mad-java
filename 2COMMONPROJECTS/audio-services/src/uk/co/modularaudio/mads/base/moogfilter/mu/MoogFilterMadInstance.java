@@ -46,10 +46,6 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 //	private static Log log = LogFactory.getLog( MoogFilterMadInstance.class.getName() );
 
 	// Parameters for the spring and dampers
-	private static final int CUTOFF_VALUE_CHASE_MILLIS = 10;
-	private static final int Q_VALUE_CHASE_MILLIS = 10;
-	private static final int AMP_CORR_CHASE_MILLIS = Q_VALUE_CHASE_MILLIS;
-
 	private final static float CUTOFF_MIN = 0.0f;
 	private final static float CUTOFF_MAX = 1.0f;
 	private final static float Q_MIN = 0.0f;
@@ -105,11 +101,11 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 		leftFilter.reset();
 		rightFilter.reset();
 
-		cutoffSad.reset( sampleRate, CUTOFF_VALUE_CHASE_MILLIS );
+		cutoffSad.reset( sampleRate );
 		cutoffSad.hardSetValue( desiredCutoff );
-		qSad.reset( sampleRate, Q_VALUE_CHASE_MILLIS );
+		qSad.reset( sampleRate );
 		qSad.hardSetValue( desiredQ );
-		ampSad.reset( sampleRate, AMP_CORR_CHASE_MILLIS );
+		ampSad.reset( sampleRate );
 		ampSad.hardSetValue( desiredAmp );
 	}
 

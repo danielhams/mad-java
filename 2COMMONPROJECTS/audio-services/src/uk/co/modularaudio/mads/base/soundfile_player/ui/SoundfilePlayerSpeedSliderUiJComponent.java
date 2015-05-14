@@ -58,11 +58,11 @@ public class SoundfilePlayerSpeedSliderUiJComponent
 		view = new LWTCSliderDisplayView(
 				model,
 				controller,
-				SatelliteOrientation.ABOVE,
+				SatelliteOrientation.BELOW,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
-				"Speed:",
+				"Speed",
 				false );
 
 		view.addDoubleClickReceiver(this);

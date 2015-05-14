@@ -40,8 +40,6 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 {
 //	private static Log log = LogFactory.getLog( CrossFaderMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 10;
-
 	private int sampleRate;
 
 	private final SpringAndDamperDoubleInterpolator ampAInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
@@ -62,8 +60,8 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		ampAInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
-		ampBInterpolator.reset( sampleRate, VALUE_CHASE_MILLIS );
+		ampAInterpolator.reset( sampleRate );
+		ampBInterpolator.reset( sampleRate );
 	}
 
 	@Override

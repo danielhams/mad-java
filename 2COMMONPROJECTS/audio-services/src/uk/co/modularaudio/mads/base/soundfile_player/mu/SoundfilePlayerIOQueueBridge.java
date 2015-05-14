@@ -46,6 +46,9 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 
 	public static final int COMMAND_IN_POSITION_JUMP = 12;
 
+	public static final int COMMAND_IN_GAIN = 13;
+
+
 	public static final int COMMAND_OUT_RECYCLE_SAMPLE = 16;
 
 	public static final int COMMAND_OUT_STATE_CHANGE = 17;
@@ -80,6 +83,12 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 			{
 				final float value = Float.intBitsToFloat(((int)queueEntry.value));
 				instance.setDesiredPlaySpeed( value );
+				break;
+			}
+			case COMMAND_IN_GAIN:
+			{
+				final float value = Float.intBitsToFloat( ((int)queueEntry.value));
+				instance.setDesiredGain( value );
 				break;
 			}
 			case COMMAND_IN_RESAMPLED_SAMPLE:

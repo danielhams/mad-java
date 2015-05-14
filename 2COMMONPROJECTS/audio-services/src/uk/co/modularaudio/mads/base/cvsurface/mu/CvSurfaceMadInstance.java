@@ -40,8 +40,6 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 {
 //	private static Log log = LogFactory.getLog( CvSurfaceMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 10;
-
 	private int sampleRate;
 
 	private float desiredX;
@@ -67,8 +65,8 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		xSad.reset( sampleRate, VALUE_CHASE_MILLIS );
-		ySad.reset( sampleRate, VALUE_CHASE_MILLIS );
+		xSad.reset( sampleRate );
+		ySad.reset( sampleRate );
 
 		xSad.hardSetValue( desiredX );
 		ySad.hardSetValue( desiredY );

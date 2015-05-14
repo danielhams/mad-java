@@ -24,19 +24,19 @@ import java.awt.Color;
 
 public class RotaryViewColors
 {
-	public final Color bgColor;
-	public final Color fgColor;
-	public final Color textboxBgColor;
-	public final Color textboxFgColor;
-	public final Color selectionColor;
-	public final Color selectedTextColor;
-	public final Color knobOutlineColor;
-	public final Color knobFillColor;
-	public final Color knobExtentColor;
-	public final Color knobFocusColor;
-	public final Color knobIndicatorColor;
-	public final Color labelColor;
-	public final Color unitsColor;
+	public Color bgColor;
+	public Color fgColor;
+	public Color textboxBgColor;
+	public Color textboxFgColor;
+	public Color selectionColor;
+	public Color selectedTextColor;
+	public Color knobOutlineColor;
+	public Color knobFillColor;
+	public Color knobExtentColor;
+	public Color knobFocusColor;
+	public Color knobIndicatorColor;
+	public Color labelColor;
+	public Color unitsColor;
 
 	public RotaryViewColors(
 			final Color bgColor,

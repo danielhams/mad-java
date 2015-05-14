@@ -102,9 +102,9 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		liInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
-		sdInterpolator.reset( sampleRate, desValueChaseMillis );
+		sdInterpolator.reset( sampleRate );
 		lpInterpolator.reset( sampleRate, desValueChaseMillis );
-		sddInterpolator.reset( sampleRate, desValueChaseMillis );
+		sddInterpolator.reset( sampleRate );
 
 		hhInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 
@@ -250,9 +250,9 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		desValueChaseMillis = chaseMillis;
 		liInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
-		sdInterpolator.reset( sampleRate, chaseMillis );
+		sdInterpolator.reset( sampleRate );
 		lpInterpolator.reset( sampleRate, chaseMillis );
-		sddInterpolator.reset( sampleRate, chaseMillis );
+		sddInterpolator.reset( sampleRate );
 
 		hhInterpolatorNoTs.reset( sampleRate, chaseMillis );
 	}
