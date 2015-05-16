@@ -51,8 +51,7 @@ public class TestShowLWTCSlider
 		testSwingJSlider = new JSlider( orientation );
 		testSwingJSlider.setOpaque( opaque );
 
-		testLWTCSlider = new LWTCSlider( orientation );
-		testLWTCSlider.setOpaque( opaque );
+		testLWTCSlider = new LWTCSlider( orientation, opaque );
 
 		final JFrame f = new JFrame();
 //		f.getContentPane().setBackground( Color.YELLOW );

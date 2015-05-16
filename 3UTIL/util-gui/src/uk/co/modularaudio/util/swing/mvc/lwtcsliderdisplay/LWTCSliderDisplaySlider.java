@@ -44,9 +44,9 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 	{
 		super( ( displayOrientation == DisplayOrientation.HORIZONTAL ?
 				SwingConstants.HORIZONTAL :
-				SwingConstants.VERTICAL ) );
+				SwingConstants.VERTICAL ),
+				opaque );
 
-		this.setOpaque( opaque );
 		this.setSliderColours( colours );
 
 		this.controller = controller;

@@ -62,15 +62,15 @@ public class WaveRollerMadDefinition extends AbstractNonConfigurableMadDefinitio
 		MadChannelPosition.MONO
 	};
 
-	public WaveRollerMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public WaveRollerMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,
 				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.BETA ),
 				new WaveRollerIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

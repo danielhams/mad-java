@@ -69,8 +69,8 @@ public class ScaleAndOffsetMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  20,  15, 250,  48 ),		// Scale
-		new Rectangle( 290,  15, 250,  48 )			// Offset
+		new Rectangle(  20,  24, 250,  30 ),		// Scale
+		new Rectangle( 290,  24, 250,  30 )			// Offset
 	};
 
 	private static final Class<ScaleAndOffsetMadUiInstance> INSTANCE_CLASS = ScaleAndOffsetMadUiInstance.class;

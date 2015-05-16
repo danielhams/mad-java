@@ -55,11 +55,11 @@ public class StaticValueMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		StaticValueSliderUiJComponent.class
+		StaticValueValueUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 20, 15, 520, 48 )
+		new Rectangle( 20, 24, 520, 30 )
 	};
 
 	private static final Class<StaticValueMadUiInstance> INSTANCE_CLASS = StaticValueMadUiInstance.class;

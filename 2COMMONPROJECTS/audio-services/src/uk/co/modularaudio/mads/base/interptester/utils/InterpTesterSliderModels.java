@@ -34,6 +34,9 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMil
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.OscillatorFrequencySliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.PlaybackSpeedSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.SAOOffsetSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.SAOScaleSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.SVValueSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class InterpTesterSliderModels
@@ -52,7 +55,10 @@ public class InterpTesterSliderModels
 			new CompressionThresholdSliderModel(),
 			new CompressionRatioSliderModel(),
 			new CompressionOutputGainSliderModel(),
-			new LogarithmicTimeMillisSliderModel()
+			new LogarithmicTimeMillisSliderModel(),
+			new SAOScaleSliderModel(),
+			new SAOOffsetSliderModel(),
+			new SVValueSliderModel()
 	};
 
 	private final SliderModelValueConverter[] valueConverters =	{
@@ -60,6 +66,9 @@ public class InterpTesterSliderModels
 			new DbToLevelValueConverter(),
 			new DbToLevelValueConverter(),
 			new DbToLevelValueConverter(),
+			null,
+			null,
+			null,
 			null,
 			null,
 			null,

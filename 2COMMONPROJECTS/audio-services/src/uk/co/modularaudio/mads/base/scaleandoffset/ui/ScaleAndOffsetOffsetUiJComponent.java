@@ -20,57 +20,61 @@
 
 package uk.co.modularaudio.mads.base.scaleandoffset.ui;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.SAOOffsetSliderModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class ScaleAndOffsetOffsetUiJComponent extends ValueSlider
+public class ScaleAndOffsetOffsetUiJComponent
 	implements IMadUiControlInstance<ScaleAndOffsetMadDefinition, ScaleAndOffsetMadInstance, ScaleAndOffsetMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( ScaleAndOffsetOffsetUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( ScaleAndOffsetScaleUiJComponent.class.getName() );
 
-	private static final long serialVersionUID = 2538907435465770032L;
-
-	private final ScaleAndOffsetMadUiInstance uiInstance;
+	private final SliderDisplayModel model;
+	private final LWTCSliderDisplayView view;
 
 	public ScaleAndOffsetOffsetUiJComponent( final ScaleAndOffsetMadDefinition definition,
 			final ScaleAndOffsetMadInstance instance,
 			final ScaleAndOffsetMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( -500.0f, 500.0f, 0.0f, 0.0f,
-				"",
+		model = new SAOOffsetSliderModel();
+		final SliderDisplayController controller = new SliderDisplayController( model );
+		view = new LWTCSliderDisplayView( model,
+				controller,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Offset:",
-				Color.BLACK,
-				Color.BLACK,
 				false );
-//		this.setBackground( Color.ORANGE );
-		this.uiInstance = uiInstance;
+
+		model.addChangeListener( new ValueChangeListener()
+		{
+
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				uiInstance.sendOffsetChange( newValue );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final float newValue )
-	{
-		uiInstance.sendOffsetChange( newValue );
+		return view;
 	}
 
 	@Override
@@ -78,7 +82,6 @@ public class ScaleAndOffsetOffsetUiJComponent extends ValueSlider
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -89,30 +92,13 @@ public class ScaleAndOffsetOffsetUiJComponent extends ValueSlider
 	@Override
 	public String getControlValue()
 	{
-		return model.getValue() + "";
+		return Float.toString(model.getValue());
 	}
 
 	@Override
 	public void receiveControlValue( final String valueStr )
 	{
-		try
-		{
-//			log.debug("Received control value " + value );
-			final float asFloat = Float.parseFloat( valueStr );
-			model.setValue( this, asFloat );
-			receiveValueChange( this, asFloat );
-		}
-		catch( final Exception e )
-		{
-			final String msg = "Failed to parse control value: " + valueStr;
-			log.error( msg, e );
-		}
-	}
-
-	@Override
-	public void receiveValueChange( final Object source, final float newValue )
-	{
-		passChangeToInstanceData( newValue );
+		model.setValue( this, Float.parseFloat( valueStr ) );
 	}
 
 	@Override

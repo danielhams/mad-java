@@ -81,28 +81,32 @@ public class LWTCSlider extends JPanel
 		}
 	};
 
-	public LWTCSlider()
+	public LWTCSlider( final boolean opaque )
 	{
 		this( SwingConstants.HORIZONTAL, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
-				LWTCControlConstants.STD_SLIDER_COLOURS );
+				LWTCControlConstants.STD_SLIDER_COLOURS,
+				opaque);
 	}
 
-	public LWTCSlider( final int orientation )
+	public LWTCSlider( final int orientation, final boolean opaque )
 	{
 		this( orientation, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
-				LWTCControlConstants.STD_SLIDER_COLOURS );
+				LWTCControlConstants.STD_SLIDER_COLOURS,
+				opaque );
 	}
 
-	public LWTCSlider( final int orientation, final BoundedRangeModel model )
+	public LWTCSlider( final int orientation, final BoundedRangeModel model, final boolean opaque )
 	{
-		this( orientation, model, LWTCControlConstants.STD_SLIDER_COLOURS );
+		this( orientation, model, LWTCControlConstants.STD_SLIDER_COLOURS, opaque );
 	}
 
-	public LWTCSlider( final int orientation, final BoundedRangeModel model,
-			final LWTCSliderColours sliderColours )
+	public LWTCSlider( final int orientation,
+			final BoundedRangeModel model,
+			final LWTCSliderColours sliderColours,
+			final boolean opaque )
 	{
 		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
-		this.setOpaque( true );
+		this.setOpaque( opaque );
 
 		this.orientation = orientation;
 		this.model = model;
@@ -148,7 +152,6 @@ public class LWTCSlider extends JPanel
 	public void setSliderColours( final LWTCSliderColours sliderColours )
 	{
 		this.painter = new LWTCSliderPainter( sliderColours );
-
 	}
 
 	@Override

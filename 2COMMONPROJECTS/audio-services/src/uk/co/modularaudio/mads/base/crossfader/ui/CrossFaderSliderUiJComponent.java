@@ -51,10 +51,10 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 				new DefaultBoundedRangeModel(
 						0, 0,
 						-1000, 1000 ),
-						LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS );
+						LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS,
+						false );
 
 		this.uiInstance = uiInstance;
-		this.setOpaque( false );
 
 		model.addChangeListener( new ChangeListener()
 		{

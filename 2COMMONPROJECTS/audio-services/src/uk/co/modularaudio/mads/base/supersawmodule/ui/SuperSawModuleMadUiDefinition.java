@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinition;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -35,7 +36,7 @@ import uk.co.modularaudio.util.table.Span;
 public class SuperSawModuleMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<SuperSawModuleMadDefinition, SuperSawModuleMadInstance, SuperSawModuleMadUiInstance>
 {
-	private static final Span SPAN = new Span(2, 4);
+	private static final Span SPAN = new Span(1, 4);
 
 	private static final int[] CHAN_INDEXES = new int[] {
 		SuperSawModuleMadDefinition.CONSUMER_CV_IN,
@@ -101,7 +102,7 @@ public class SuperSawModuleMadUiDefinition
 			super( bia,
 					cif,
 					imageRoot,
-					definition.getId(),
+					MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

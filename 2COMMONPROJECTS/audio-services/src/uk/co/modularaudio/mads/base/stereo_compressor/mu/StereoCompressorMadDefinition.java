@@ -101,7 +101,7 @@ public class StereoCompressorMadDefinition extends AbstractNonConfigurableMadDef
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.BETA ),
 				new StereoCompressorIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,
