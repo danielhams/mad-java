@@ -59,9 +59,9 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 	private final HashedStorageService hashedStorageService;
 	private final HashedWarehouse hashedWarehouse;
 
+	private int numChannels;
 	private int outIndex;
 	private float[] thumbnailValues;
-	private int numChannels;
 	private float framesPerPixel;
 
 	private double currentIndex;
@@ -69,11 +69,15 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 	private final BufferedImage bufferedImage;
 	private final Graphics2D og2d;
 
-	private float minValue = 0.0f;
-	private float maxValue = 0.0f;
-	private float sumSq = 0.0f;
+	private float minValue;
+	private float maxValue;
+	private float sumSq;
 
-	private float maxRmsValue = 0.0f;
+	private float absPeakValue;
+	private float maxRmsValue;
+	private long numRmsSamples;
+	private double rmsAccumulator;
+	private float averageRmsValue;
 
 	public StaticThumbnailAnalyser( final int requiredWidth,
 			final int requiredHeight,
@@ -108,6 +112,11 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 		minValue = 0.0f;
 		maxValue = 0.0f;
 		sumSq = 0.0f;
+
+		absPeakValue = 0.0f;
+		maxRmsValue = 0.0f;
+		numRmsSamples = 0;
+		rmsAccumulator = 0.0;
 	}
 
 	@Override
@@ -124,6 +133,11 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 			{
 				minValue = curSample;
 			}
+			final float absSample = ( curSample < 0.0f ? -curSample : curSample );
+			if( absSample > absPeakValue )
+			{
+				absPeakValue = absSample;
+			}
 			// The times two just makes the rms more "visible"
 			sumSq = sumSq + ((curSample * curSample) * 2);
 			currentIndex++;
@@ -136,6 +150,9 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 				{
 					maxRmsValue = rmsVal;
 				}
+				rmsAccumulator += rmsVal;
+				numRmsSamples++;
+
 				thumbnailValues[ outIndex++ ] = rmsVal;
 				minValue = maxValue = sumSq = 0.0f;
 				currentIndex -= framesPerPixel;
@@ -147,7 +164,7 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 	public void dataEnd( final AnalysisContext context, final AnalysedData analysedData, final HashedRef hashedRef )
 	{
 		log.debug("End called. Will wait for gain analyser to do its thing.");
-
+		averageRmsValue = (float)(rmsAccumulator / numRmsSamples);
 	}
 
 	@Override
@@ -227,5 +244,15 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 	public float getMaxRmsValue()
 	{
 		return maxRmsValue;
+	}
+
+	public float getAverageRmsValue()
+	{
+		return averageRmsValue;
+	}
+
+	public float getAbsPeakValue()
+	{
+		return absPeakValue;
 	}
 }

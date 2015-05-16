@@ -358,7 +358,6 @@ public class SoundfilePlayerMadUiInstance extends
 		{
 			al.receiveAnalysedData( analysedData );
 		}
-		log.debug("Analysis complete. Gain is " + analysedData.getAutoGainAdjustment() );
 	}
 
 	@Override

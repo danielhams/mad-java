@@ -17,9 +17,10 @@
 
             <property name="libraryEntryId" column="LIBRARY_ENTRY_ID" type="int" unique="true"/>
             
-            <property name="detectedBpm" column="DETECTED_BPM" type="float"/>
-            <property name="detectedPeak" column="DETECTED_PEAK" type="float"/>
-            <property name="autoGainAdjustment" column="AUTO_GAIN_ADJUSTMENT" type="float"/>
+            <property name="bpm" column="BPM" type="float"/>
+            <property name="absPeakDb" column="ABS_PEAK_DB" type="float"/>
+            <property name="rmsPeakDb" column="RMS_PEAK_DB" type="float"/>
+            <property name="rmsAverageDb" column="RMS_AVERAGE_DB" type="float"/>
             
     		<property name="pathToStaticThumbnail" column="STHUMB_PATH" length="1024" unique="true"/>
 		</class>

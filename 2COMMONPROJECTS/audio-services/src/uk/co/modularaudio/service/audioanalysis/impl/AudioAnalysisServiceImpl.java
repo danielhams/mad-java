@@ -362,7 +362,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			boolean needsAnalysis = false;
 			if( retVal != null )
 			{
-				// Check the thumbnail exists
+				// Check the thumbnail exists, lets us force regeneration
+				// by deleting the thumbnails. Handy for debugging purposes.
 				final File tn = new File( retVal.getPathToStaticThumbnail() );
 				if( !tn.exists() || !tn.canRead() )
 				{

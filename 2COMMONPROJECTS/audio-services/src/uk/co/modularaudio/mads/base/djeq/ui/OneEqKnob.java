@@ -39,40 +39,6 @@ public class OneEqKnob extends PacPanel
 
 	private static Log log = LogFactory.getLog( OneEqKnob.class.getName() );
 
-//	private final static RotaryViewColors KNOB_COLORS = getKnobColors();
-//
-//	private final static RotaryViewColors getKnobColors()
-//	{
-//		final Color bgColor = DJEQColorDefines.BACKGROUND_COLOR;
-//		final Color fgColor = DJEQColorDefines.FOREGROUND_COLOR;
-//		final Color textboxBgColor = LWTCControlConstants.CONTROL_TEXTBOX_BACKGROUND;
-//		final Color textboxFgColor = LWTCControlConstants.CONTROL_TEXTBOX_FOREGROUND;
-//		final Color selectionColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTION;
-//		final Color selectedTextColor = LWTCControlConstants.CONTROL_TEXTBOX_SELECTED_TEXT;
-//		final Color knobOutlineColor = DJEQColorDefines.OUTLINE_COLOR;
-//		final Color knobFillColor = DJEQColorDefines.KNOB_COLOR;
-//		final Color knobExtentColor = DJEQColorDefines.EXTENT_COLOR;
-//		final Color knobIndicatorColor = DJEQColorDefines.INDICATOR_COLOR;
-//		final Color knobFocusColor = DJEQColorDefines.FOCUS_COLOR;
-//		final Color labelColor = DJEQColorDefines.LABEL_COLOR;
-//		final Color unitsColor = DJEQColorDefines.UNITS_COLOR;
-//
-//		return new RotaryViewColors( bgColor,
-//				fgColor,
-//				textboxBgColor,
-//				textboxFgColor,
-//				selectionColor,
-//				selectedTextColor,
-//				knobOutlineColor,
-//				knobFillColor,
-//				knobExtentColor,
-//				knobIndicatorColor,
-//				knobFocusColor,
-//				labelColor,
-//				unitsColor );
-//
-//	}
-
 	private final RotaryDisplayModel rdm;
 	private final RotaryDisplayController rdc;
 	private final RotaryDisplayView rdv;

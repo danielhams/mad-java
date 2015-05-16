@@ -29,11 +29,12 @@ public class AnalysedData
 	private int libraryEntryId;
 
 	// Beat related data
-	private float detectedBpm;
+	private float bpm;
 
 	// Gain related data
-	private float detectedPeak;
-	private float autoGainAdjustment;
+	private float absPeakDb;
+	private float rmsAverageDb;
+	private float rmsPeakDb;
 
 	// Static overview thumbnail
 	private String pathToStaticThumbnail;
@@ -45,16 +46,18 @@ public class AnalysedData
 	public AnalysedData( final int analysisId,
 			final int libraryId,
 			final float detectedBpm,
-			final float detectedPeak,
-			final float autoGainAdjustment,
+			final float absPeakDb,
+			final float rmsAverageDb,
+			final float rmsPeakDb,
 			final String pathToStaticThumbnail )
 	{
 		super();
 		this.analysisId = analysisId;
 		this.libraryEntryId = libraryId;
-		this.detectedBpm = detectedBpm;
-		this.detectedPeak = detectedPeak;
-		this.autoGainAdjustment = autoGainAdjustment;
+		this.bpm = detectedBpm;
+		this.absPeakDb = absPeakDb;
+		this.rmsPeakDb = rmsPeakDb;
+		this.rmsAverageDb = rmsAverageDb;
 		this.pathToStaticThumbnail = pathToStaticThumbnail;
 	}
 
@@ -62,9 +65,10 @@ public class AnalysedData
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder();
-		sb.append( "\nDetected Bpm: " + detectedBpm );
-		sb.append( "\nDetected Peak: " + detectedPeak );
-		sb.append( "\nAuto Gain Adjustment: " + autoGainAdjustment );
+		sb.append( "\nBpm: " + bpm );
+		sb.append( "\nAbs Peak dB: " + absPeakDb );
+		sb.append( "\nRMS Average dB: " + rmsAverageDb );
+		sb.append( "\nRMS Peak dB: " + rmsPeakDb );
 		sb.append( "\nStaticThumbnail Path: " + pathToStaticThumbnail );
 		return sb.toString();
 	}
@@ -99,34 +103,14 @@ public class AnalysedData
 		this.libraryEntryId = libraryEntryId;
 	}
 
-	public float getDetectedBpm()
+	public float getBpm()
 	{
-		return detectedBpm;
+		return bpm;
 	}
 
-	public void setDetectedBpm( final float detectedBpm )
+	public void setBpm( final float detectedBpm )
 	{
-		this.detectedBpm = detectedBpm;
-	}
-
-	public float getDetectedPeak()
-	{
-		return detectedPeak;
-	}
-
-	public void setDetectedPeak( final float detectedPeak )
-	{
-		this.detectedPeak = detectedPeak;
-	}
-
-	public float getAutoGainAdjustment()
-	{
-		return autoGainAdjustment;
-	}
-
-	public void setAutoGainAdjustment( final float autoGainAdjustment )
-	{
-		this.autoGainAdjustment = autoGainAdjustment;
+		this.bpm = detectedBpm;
 	}
 
 	public String getPathToStaticThumbnail()
@@ -137,5 +121,35 @@ public class AnalysedData
 	public void setPathToStaticThumbnail( final String pathToStaticThumbnail )
 	{
 		this.pathToStaticThumbnail = pathToStaticThumbnail;
+	}
+
+	public float getRmsAverageDb()
+	{
+		return rmsAverageDb;
+	}
+
+	public float getRmsPeakDb()
+	{
+		return rmsPeakDb;
+	}
+
+	public void setRmsAverageDb( final float detectedRmsAverageDb )
+	{
+		this.rmsAverageDb = detectedRmsAverageDb;
+	}
+
+	public void setRmsPeakDb( final float detectedRmsPeakDb )
+	{
+		this.rmsPeakDb = detectedRmsPeakDb;
+	}
+
+	public float getAbsPeakDb()
+	{
+		return absPeakDb;
+	}
+
+	public void setAbsPeakDb( final float absPeakDb )
+	{
+		this.absPeakDb = absPeakDb;
 	}
 }

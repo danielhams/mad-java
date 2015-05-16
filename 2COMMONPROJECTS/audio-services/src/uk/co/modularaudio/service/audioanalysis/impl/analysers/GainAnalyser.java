@@ -20,22 +20,16 @@
 
 package uk.co.modularaudio.service.audioanalysis.impl.analysers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.impl.AnalysisContext;
 import uk.co.modularaudio.service.audioanalysis.impl.AudioAnalyser;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.math.MathFormatter;
 
 public class GainAnalyser implements AudioAnalyser
 {
-	private static Log log = LogFactory.getLog( GainAnalyser.class.getName() );
-
-	private final static float REQUIRED_REPLAY_GAIN = -12.0f;
+//	private static Log log = LogFactory.getLog( GainAnalyser.class.getName() );
 
 	@Override
 	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames )
@@ -52,25 +46,16 @@ public class GainAnalyser implements AudioAnalyser
 	{
 		final StaticThumbnailAnalyser thumbnailAnalyser = context.getThumbnailAnalyser();
 		final float maxRmsValue = thumbnailAnalyser.getMaxRmsValue();
+		final float averageRmsValue = thumbnailAnalyser.getAverageRmsValue();
 
 		final float maxRmsDbValue = AudioMath.levelToDbF( maxRmsValue );
+		final float averageRmsDbValue = AudioMath.levelToDbF( averageRmsValue );
 
-		final float deltaDb = REQUIRED_REPLAY_GAIN - maxRmsDbValue;
+		final float absPeakDb = AudioMath.levelToDbF( thumbnailAnalyser.getAbsPeakValue() );
 
-		final float deltaAbs = AudioMath.dbToLevelF( deltaDb );
-
-		log.debug("The max rms value(" + MathFormatter.slowFloatPrint( maxRmsValue, 5, true ) +
-				") and max rms Db(" + MathFormatter.slowFloatPrint( maxRmsDbValue, 5, true ) +
-				") thus delta Db(" + MathFormatter.slowFloatPrint( deltaDb, 5, true ) +
-				") which abs(" + MathFormatter.slowFloatPrint( deltaAbs, 5, true ) + ")");
-
-		final float traktorDb = maxRmsDbValue + 0.5f;
-
-		log.debug("At a guess Traktor says (" + MathFormatter.slowFloatPrint( traktorDb, 5, true ) + ")");
-
-
-		analysedData.setDetectedPeak( maxRmsDbValue );
-		analysedData.setAutoGainAdjustment( deltaDb );
+		analysedData.setAbsPeakDb( absPeakDb );
+		analysedData.setRmsPeakDb( maxRmsDbValue );
+		analysedData.setRmsAverageDb( averageRmsDbValue );
 	}
 
 	@Override

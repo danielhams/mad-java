@@ -321,7 +321,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void receiveAnalysedData( final AnalysedData analysedData )
 	{
-		final float peakRmsDb = analysedData.getDetectedPeak();
+		final float peakRmsDb = analysedData.getRmsPeakDb();
 
 		final float adjustmentDb = DESIRED_WAVE_DB - peakRmsDb;
 		final float adjustmentMultiplier = AudioMath.dbToLevelF( adjustmentDb );
