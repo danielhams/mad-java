@@ -28,6 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
+import uk.co.modularaudio.mads.internal.fade.mu.FadeInWaveTable;
+import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -92,6 +95,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private final SpringAndDamperDoubleInterpolator gainSad = new SpringAndDamperDoubleInterpolator(
 			0.0f, AudioMath.dbToLevelF( GAIN_MAX_DB ) );
 
+	private FadeInWaveTable fadeInWaveTable;
+	private FadeOutWaveTable fadeOutWaveTable;
+
 	public SoundfilePlayerMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
 			final SoundfilePlayerMadDefinition definition,
@@ -106,6 +112,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 		leftDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
 		rightDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
+
 	}
 
 	@Override
@@ -114,7 +121,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
 	{
-		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		final DataRate dataRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate();
+		sampleRate = dataRate.getValue();
 		numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
 		speedSad.reset( sampleRate );
@@ -126,6 +134,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 		leftDcTrap.recomputeR( sampleRate );
 		rightDcTrap.recomputeR( sampleRate );
+
+		fadeInWaveTable = new FadeInWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
+		fadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
 	}
 
 	@Override
