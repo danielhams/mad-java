@@ -61,7 +61,7 @@ public class GenerateReleaseRack
 		for( int i = 0 ; i < numMads ; ++i )
 		{
 			final MadDefinition<?, ?> def = madDefinitions.getElementAt( i );
-			if( true || def.getClassification().getState() == ReleaseState.RELEASED )
+			if( def.getClassification().getState() == ReleaseState.RELEASED )
 			{
 				defsToAdd.add( def );
 
