@@ -20,20 +20,20 @@
 
 package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.LogSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class CompressionOutputGainSliderModel extends SliderDisplayModel
+public class CompressionReleaseSliderModel extends SliderDisplayModel
 {
-	public CompressionOutputGainSliderModel()
+	public CompressionReleaseSliderModel()
 	{
-		super(  -12.0f, 12.0f, 0.0f,
-				0.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				2,
+		super( 10.0f, 1000.0f, 30.0f,
+				30.0f,
+				990,
+				30,
+				new LogSliderIntToFloatConverter( 100.0f ),
 				3,
-				"dB" );
+				2,
+				"ms" );
 	}
 }

@@ -66,7 +66,8 @@ public abstract class ValueSlider extends JPanel implements ValueChangeListener
 				textboxOrientation,
 				InterpTesterMadUiInstance.SLIDER_COLORS,
 				labelText,
-				opaque );
+				opaque,
+				true );
 
 		final MigLayoutStringHelper lh = new MigLayoutStringHelper();
 		lh.addLayoutConstraint( "fill" );
@@ -94,7 +95,7 @@ public abstract class ValueSlider extends JPanel implements ValueChangeListener
 
 		model.addChangeListener( this );
 		controller.setValue( this, model.getInitialValue() );
-
+		view.repaint();
 	}
 
 }

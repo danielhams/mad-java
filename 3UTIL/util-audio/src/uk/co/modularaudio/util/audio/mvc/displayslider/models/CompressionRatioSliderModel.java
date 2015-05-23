@@ -32,8 +32,8 @@ public class CompressionRatioSliderModel extends SliderDisplayModel
 				1900,
 				100,
 				new SimpleSliderIntToFloatConverter(),
+				2,
 				3,
-				3,
-				"val" );
+				"" );
 	}
 }

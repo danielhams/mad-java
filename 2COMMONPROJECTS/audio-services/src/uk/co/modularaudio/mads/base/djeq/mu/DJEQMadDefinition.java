@@ -85,7 +85,7 @@ public class DJEQMadDefinition extends AbstractNonConfigurableMadDefinition<DJEQ
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.ALPHA ),
+						ReleaseState.RELEASED ),
 				new DJEQIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

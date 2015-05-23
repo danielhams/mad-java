@@ -58,7 +58,8 @@ public class ScaleAndOffsetOffsetUiJComponent
 				SatelliteOrientation.RIGHT,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Offset:",
-				false );
+				false,
+				true );
 
 		model.addChangeListener( new ValueChangeListener()
 		{

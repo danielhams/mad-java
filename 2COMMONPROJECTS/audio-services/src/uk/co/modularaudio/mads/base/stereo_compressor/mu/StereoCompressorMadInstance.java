@@ -46,81 +46,81 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 {
 //	private static Log log = LogFactory.getLog( StereoCompressorMadInstance.class.getName() );
 
-	private int framesBetweenMeterReadings = 1000;
+	private int framesBetweenMeterReadings;
 
-	private long lastMeterReadingTimestamp = 0;
-	private float previousInLeftMeterReading = 0.0f;
-	private float previousInRightMeterReading = 0.0f;
-	private float currentInLeftMeterReading = 0.0f;
-	private float currentInRightMeterReading = 0.0f;
+	private long lastMeterReadingTimestamp;
+	private float previousInLeftMeterReading;
+	private float previousInRightMeterReading;
+	private float currentInLeftMeterReading;
+	private float currentInRightMeterReading;
 
-	private float previousOutLeftMeterReading = 0.0f;
-	private float previousOutRightMeterReading = 0.0f;
-	private float currentOutLeftMeterReading = 0.0f;
-	private float currentOutRightMeterReading = 0.0f;
+	private float previousOutLeftMeterReading;
+	private float previousOutRightMeterReading;
+	private float currentOutLeftMeterReading;
+	private float currentOutRightMeterReading;
 
-	private float previousEnvMeterReading = 0.0f;
-	private float currentEnvMeterReading = 0.0f;
+	private float previousEnvMeterReading;
+	private float currentEnvMeterReading;
 
 	private float previousAttenuationMeterReading = 1.0f;
 	// Bit special - we attenuation, so the value goes down
 	private float currentAttenuationMeterReading = 1.0f;
 
 	private static final int VALUE_CHASE_MILLIS = 4;
-	protected float curValueRatio = 0.0f;
+	protected float curValueRatio;
 	protected float newValueRatio = 1.0f;
 
-	protected int sampleRate = -1;
-	protected int periodLength = -1;
+	protected int sampleRate;
+	protected int periodLength;
 
-	protected float desiredThresholdDb = 0.0f;
+	protected float desiredThresholdDb;
 	private float curThresholdDb = 1.0f;
 
 	protected float desiredCompRatio = 0.5f;
 	private float curCompRatio = 0.5f;
 
-	private float leftSquaresSum = 0.0f;
-	private float rightSquaresSum = 0.0f;
+	private float leftSquaresSum;
+	private float rightSquaresSum;
 
 	public ThresholdTypeEnum desiredThresholdType = ThresholdTypeEnum.RMS;
 
-	protected float desiredAttack = 0.0f;
-	protected int attackSamples = 0;
-	protected float desiredRelease = 0.0f;
-	protected int releaseSamples = 0;
+	protected float desiredAttack;
+	protected int attackSamples;
+	protected float desiredRelease;
+	protected int releaseSamples;
 	protected FixedTransitionAdsrEnvelope adsrEnvelope = new FixedTransitionAdsrEnvelope();
-	protected boolean gateOn = false;
+	protected boolean gateOn;
 
 	protected float desiredMakeupGain = 1.0f;
 	private float curMakeupGain = 1.0f;
 
-	protected boolean active = false;
+	protected boolean active;
 
-	private Limiter limiterRt = null;
+	private Limiter limiterRt;
 
-	private float[] internalAbsCompFloats = null;
-	private float[] internalThresholdDbFloats = null;
-	private float[] internalEnvelopeFloats = null;
-	private float[] internalAmpFloats = null;
+	private float[] internalAbsCompFloats;
+	private float[] internalThresholdDbFloats;
+	private float[] internalEnvelopeFloats;
+	private float[] internalAmpFloats;
 
-	public boolean desiredLookahead = false;
+	public boolean desiredLookahead;
 
-	private int numSamplesForLookahead = -1;
-	private float[] emptyPeriodFloats = null;
-	private UnsafeFloatRingBuffer leftAudioRingBuffer = null;
-	private UnsafeFloatRingBuffer rightAudioRingBuffer = null;
+	private int numSamplesForLookahead;
+	private float[] emptyPeriodFloats;
+	private UnsafeFloatRingBuffer leftAudioRingBuffer;
+	private UnsafeFloatRingBuffer rightAudioRingBuffer;
 
-	public StereoCompressorMadInstance( BaseComponentsCreationContext creationContext,
-			String instanceName,
-			StereoCompressorMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	public StereoCompressorMadInstance( final BaseComponentsCreationContext creationContext,
+			final String instanceName,
+			final StereoCompressorMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		try
@@ -147,7 +147,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			limiterRt = new Limiter( 0.99f, 5f );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -159,57 +159,59 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			MadTimingParameters timingParameters ,
-			long currentTimestamp ,
-			MadChannelConnectedFlags channelConnectedFlags ,
-			MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long currentTimestamp,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
-		boolean inWaveLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT );
-		MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT ];
-		float[] inWaveLeftFloats = (inWaveLeftConnected ? inWaveLeftCb.floatBuffer : null );
+		final boolean inWaveLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT );
+		final MadChannelBuffer inWaveLeftCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_WAVE_LEFT ];
+		final float[] inWaveLeftFloats = inWaveLeftCb.floatBuffer;
 
-		boolean inWaveRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_WAVE_RIGHT );
-		MadChannelBuffer inWaveRightCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_WAVE_RIGHT ];
-		float[] inWaveRightFloats = (inWaveRightConnected ? inWaveRightCb.floatBuffer : null );
+		final boolean inWaveRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_WAVE_RIGHT );
+		final MadChannelBuffer inWaveRightCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_WAVE_RIGHT ];
+		final float[] inWaveRightFloats = inWaveRightCb.floatBuffer;
 
-		boolean inCompLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT );
-		MadChannelBuffer inCompLeftCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT ];
-		float[] inCompLeftFloats = (inCompLeftConnected ? inCompLeftCb.floatBuffer : null );
+		final boolean inCompLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT );
+		final MadChannelBuffer inCompLeftCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_COMP_LEFT ];
+		final float[] inCompLeftFloats = inCompLeftCb.floatBuffer;
 
-		boolean inCompRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_COMP_RIGHT );
-		MadChannelBuffer inCompRightCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_COMP_RIGHT ];
-		float[] inCompRightFloats = (inCompRightConnected ? inCompRightCb.floatBuffer : null );
+		final boolean inCompRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.CONSUMER_IN_COMP_RIGHT );
+		final MadChannelBuffer inCompRightCb = channelBuffers[ StereoCompressorMadDefinition.CONSUMER_IN_COMP_RIGHT ];
+		final float[] inCompRightFloats = inCompRightCb.floatBuffer;
 
-		boolean outWaveLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT);
-		MadChannelBuffer outWaveLeftCb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT ];
-		float[] outWaveLeftFloats =( outWaveLeftConnected ? outWaveLeftCb.floatBuffer : null );
+		final boolean outWaveLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT);
+		final MadChannelBuffer outWaveLeftCb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_LEFT ];
+		final float[] outWaveLeftFloats = outWaveLeftCb.floatBuffer;
 
-		boolean outWaveRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_RIGHT );
-		MadChannelBuffer outWaveRightCb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_RIGHT ];
-		float[] outWaveRightFloats  = ( outWaveRightConnected ? outWaveRightCb.floatBuffer : null );
+		final boolean outWaveRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_RIGHT );
+		final MadChannelBuffer outWaveRightCb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_WAVE_RIGHT ];
+		final float[] outWaveRightFloats  = outWaveRightCb.floatBuffer;
 
-		boolean outDryLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_DRY_LEFT );
-		MadChannelBuffer outDryLeftDb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_DRY_LEFT ];
-		float[] outDryLeftFloats = (outDryLeftConnected ? outDryLeftDb.floatBuffer : null );
+		final boolean outDryLeftConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_DRY_LEFT );
+		final MadChannelBuffer outDryLeftDb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_DRY_LEFT ];
+		final float[] outDryLeftFloats = outDryLeftDb.floatBuffer;
 
-		boolean outDryRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_DRY_RIGHT );
-		MadChannelBuffer outDryRightDb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_DRY_RIGHT ];
-		float[] outDryRightFloats = (outDryRightConnected ? outDryRightDb.floatBuffer : null );
+		final boolean outDryRightConnected = channelConnectedFlags.get( StereoCompressorMadDefinition.PRODUCER_OUT_DRY_RIGHT );
+		final MadChannelBuffer outDryRightDb = channelBuffers[ StereoCompressorMadDefinition.PRODUCER_OUT_DRY_RIGHT ];
+		final float[] outDryRightFloats = outDryRightDb.floatBuffer;
 
-		float[] leftCompFloats = (inCompLeftConnected ? inCompLeftFloats : inWaveLeftFloats );
-		float[] rightCompFloats = (inCompRightConnected ? inCompRightFloats : inWaveRightFloats );
+		final float[] leftCompFloats = (inCompLeftConnected ? inCompLeftFloats : inWaveLeftFloats );
+		final float[] rightCompFloats = (inCompRightConnected ? inCompRightFloats : inWaveRightFloats );
 
 		// Fill audio ring buffers (even if not used, user might switch over so lets populate them anyway
-		populateOneChannelAudioRingBuffer( numFrames, inWaveLeftConnected, inWaveLeftFloats, leftAudioRingBuffer );
-		populateOneChannelAudioRingBuffer( numFrames, inWaveRightConnected, inWaveRightFloats, rightAudioRingBuffer );
+		populateOneChannelAudioRingBuffer( frameOffset, numFrames, inWaveLeftConnected, inWaveLeftFloats, leftAudioRingBuffer );
+		populateOneChannelAudioRingBuffer( frameOffset, numFrames, inWaveRightConnected, inWaveRightFloats, rightAudioRingBuffer );
 
 		// Populate the internal buffer with the incoming value(s)
-		populateInternalAbsCompFloats( numFrames, leftCompFloats, rightCompFloats );
+		populateInternalAbsCompFloats( frameOffset, numFrames, leftCompFloats, rightCompFloats );
 
 		// Walk the internal buffer looking for over / under threshold and
 		// filling in the envelope buffer
-		populateEnvelopeAndDbBuffer( numFrames );
+		populateEnvelopeAndDbBuffer( frameOffset, numFrames );
 
 		// Now using the envelope and db values to calculate the necessary amp amounts
 		populateAmpAmounts( numFrames );
@@ -225,7 +227,6 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 				outDryRightConnected, outDryRightFloats );
 
 		// Now create the output values
-//		processOutput( numFrames, outWaveLeftFloats, outWaveRightFloats );
 		if( outWaveLeftConnected )
 		{
 			currentOutLeftMeterReading = processOneChannelOutput( numFrames, outWaveLeftFloats, currentOutLeftMeterReading );
@@ -242,9 +243,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentInLeftMeterReading != previousInLeftMeterReading )
 			{
-
-				long floatIntBits = Float.floatToIntBits( currentInLeftMeterReading );
-				long valueOut = floatIntBits << 32;
+				final long floatIntBits = Float.floatToIntBits( currentInLeftMeterReading );
+				final long valueOut = floatIntBits << 32;
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
 				previousInLeftMeterReading = currentInLeftMeterReading;
 			}
@@ -253,8 +253,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentInRightMeterReading != previousInRightMeterReading )
 			{
-				long floatIntBits = Float.floatToIntBits( currentInRightMeterReading );
-				long valueOut = (floatIntBits << 32) | 1;
+				final long floatIntBits = Float.floatToIntBits( currentInRightMeterReading );
+				final long valueOut = (floatIntBits << 32) | 1;
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_IN_METER, valueOut, null );
 				previousInRightMeterReading = currentInRightMeterReading;
 			}
@@ -263,8 +263,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentOutLeftMeterReading != previousOutLeftMeterReading )
 			{
-				long floatIntBits = Float.floatToIntBits( currentOutLeftMeterReading );
-				long valueOut = floatIntBits << 32;
+				final long floatIntBits = Float.floatToIntBits( currentOutLeftMeterReading );
+				final long valueOut = floatIntBits << 32;
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
 				previousOutLeftMeterReading = currentOutLeftMeterReading;
 			}
@@ -273,8 +273,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentOutRightMeterReading != previousOutRightMeterReading )
 			{
-				long floatIntBits = Float.floatToIntBits( currentOutRightMeterReading );
-				long valueOut = (floatIntBits << 32) | 1;
+				final long floatIntBits = Float.floatToIntBits( currentOutRightMeterReading );
+				final long valueOut = (floatIntBits << 32) | 1;
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_SIGNAL_OUT_METER, valueOut, null );
 				previousOutRightMeterReading = currentOutRightMeterReading;
 			}
@@ -283,8 +283,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentEnvMeterReading != previousEnvMeterReading )
 			{
-				long floatIntBits = Float.floatToIntBits( currentEnvMeterReading );
-				long valueOut = (floatIntBits);
+				final long floatIntBits = Float.floatToIntBits( currentEnvMeterReading );
+				final long valueOut = (floatIntBits);
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE, valueOut, null );
 				previousEnvMeterReading = currentEnvMeterReading;
 			}
@@ -293,8 +293,8 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 			if( currentAttenuationMeterReading != previousAttenuationMeterReading )
 			{
-				long floatIntBits = Float.floatToIntBits( currentAttenuationMeterReading );
-				long valueOut = (floatIntBits);
+				final long floatIntBits = Float.floatToIntBits( currentAttenuationMeterReading );
+				final long valueOut = (floatIntBits);
 				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION, valueOut, null );
 				previousAttenuationMeterReading = currentAttenuationMeterReading;
 			}
@@ -304,14 +304,16 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	private void populateOneChannelAudioRingBuffer( final int numFrames,
+	private void populateOneChannelAudioRingBuffer(
+			final int frameOffset,
+			final int numFrames,
 			final boolean waveConnected,
 			final float[] waveFloats,
 			final UnsafeFloatRingBuffer ringBuffer )
 	{
 		if( waveConnected )
 		{
-			ringBuffer.write( waveFloats, 0, numFrames );
+			ringBuffer.write( waveFloats, frameOffset, numFrames );
 		}
 		else
 		{
@@ -319,17 +321,22 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 		}
 	}
 
-	private void populateInternalAbsCompFloats( final int numFrames, final float[] leftCompFloats, final float[] rightCompFloats )
+	private void populateInternalAbsCompFloats(
+			final int frameOffset,
+			final int numFrames,
+			final float[] leftCompFloats,
+			final float[] rightCompFloats )
 	{
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
-			float leftVal = (leftCompFloats == null ? 0.0f : leftCompFloats[ s ] );
+			final int index = frameOffset + s;
+			float leftVal = (leftCompFloats == null ? 0.0f : leftCompFloats[ index ] );
 			leftVal = (leftVal < 0.0f ? -leftVal : leftVal );
 			if( leftVal > currentInLeftMeterReading )
 			{
 				currentInLeftMeterReading = leftVal;
 			}
-			float rightVal = (rightCompFloats == null ? 0.0f : rightCompFloats[ s ] );
+			float rightVal = (rightCompFloats == null ? 0.0f : rightCompFloats[ index ] );
 			rightVal = (rightVal < 0.0f ? -rightVal : rightVal );
 			if( rightVal > currentInRightMeterReading )
 			{
@@ -349,23 +356,26 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 				absVal = (float)Math.sqrt( absVal );
 			}
 
-			internalAbsCompFloats[ s ] = absVal;
+			internalAbsCompFloats[ index ] = absVal;
 		}
 	}
 
-	private void populateEnvelopeAndDbBuffer( int numFrames )
+	private void populateEnvelopeAndDbBuffer(
+			final int frameOffset,
+			final int numFrames )
 	{
 		float loopThresholdDb = curThresholdDb;
 
 		int startIndex = 0;
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
+			final int index = frameOffset + s;
 			loopThresholdDb = (loopThresholdDb * curValueRatio ) + (desiredThresholdDb * newValueRatio );
 
-			float absCompVal = internalAbsCompFloats[ s ];
-			float dbVal = AudioMath.levelToDbF( absCompVal );
+			final float absCompVal = internalAbsCompFloats[ index ];
+			final float dbVal = AudioMath.levelToDbF( absCompVal );
 
-			internalThresholdDbFloats[ s ] = loopThresholdDb;
+			internalThresholdDbFloats[ index ] = loopThresholdDb;
 
 			if( !gateOn && dbVal > loopThresholdDb )
 			{
@@ -398,7 +408,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 		curThresholdDb = loopThresholdDb;
 	}
 
-	private void populateAmpAmounts( int numFrames )
+	private void populateAmpAmounts( final int numFrames )
 	{
 		float loopCompRatio = curCompRatio;
 		float loopMakeupGain = curMakeupGain;
@@ -408,7 +418,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			loopCompRatio = (loopCompRatio * curValueRatio ) + (desiredCompRatio * newValueRatio );
 			loopMakeupGain = (loopMakeupGain * curValueRatio) + (desiredMakeupGain * newValueRatio );
 
-			float envFloat = internalEnvelopeFloats[ s ];
+			final float envFloat = internalEnvelopeFloats[ s ];
 			if( envFloat > currentEnvMeterReading )
 			{
 				currentEnvMeterReading = envFloat;
@@ -419,16 +429,16 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			// (2) (1 - env) * dbOver;
 			// Which means that when envelope == 0
 			// We still output at full volume
-			float thresholdDb= internalThresholdDbFloats[ s ];
+			final float thresholdDb= internalThresholdDbFloats[ s ];
 
 			float levelAmp;
 			if( envFloat > 0.0f )
 			{
 				// Computing scaled amount
-				float scaledDbPart = (-thresholdDb) * loopCompRatio * envFloat;
-				float origDbPart = (-thresholdDb) * (1.0f - envFloat );
+				final float scaledDbPart = (-thresholdDb) * loopCompRatio * envFloat;
+				final float origDbPart = (-thresholdDb) * (1.0f - envFloat );
 
-				float newAdjustedDb = thresholdDb + scaledDbPart + origDbPart;
+				final float newAdjustedDb = thresholdDb + scaledDbPart + origDbPart;
 //				log.debug("Adjusted db(" + newAdjustedDb +")");
 				levelAmp = AudioMath.dbToLevelF( newAdjustedDb );
 			}
@@ -487,15 +497,15 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			if( inWaveConnected )
 			{
 				// Use audio from the left and right ring buffers
-				int numInRing = ringBuffer.getNumReadable();
+				final int numInRing = ringBuffer.getNumReadable();
 
 				if( numInRing >= numSamplesForLookahead + numFrames )
 				{
 					// Only take enough to leave numSamplesForLookahead in there
-					int numToTake = numInRing - numSamplesForLookahead;
+					final int numToTake = numInRing - numSamplesForLookahead;
 					if( numToTake >= numFrames )
 					{
-						int numToThrowAway = numToTake - numFrames;
+						final int numToThrowAway = numToTake - numFrames;
 						if( outWaveConnected )
 						{
 							if( numToThrowAway > 0 )
@@ -519,7 +529,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 						if( outWaveConnected )
 						{
 							// Fill with zeros, then add on what we should read
-							int numZeros = numFrames - numToTake;
+							final int numZeros = numFrames - numToTake;
 							Arrays.fill( outWaveFloats, 0, numZeros, 0.0f );
 							ringBuffer.read( outWaveFloats, numZeros, numToTake );
 							if( outDryConnected )
@@ -530,7 +540,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 						else if( outDryConnected )
 						{
 							// Fill with zeros, then add on what we should read
-							int numZeros = numFrames - numToTake;
+							final int numZeros = numFrames - numToTake;
 							Arrays.fill( outDryFloats, 0, numZeros, 0.0f );
 							ringBuffer.read( outDryFloats, numZeros, numToTake );
 						}
@@ -555,14 +565,14 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 		}
 	}
 
-	private float processOneChannelOutput( int numFrames,
-			float[] waveFloats,
+	private float processOneChannelOutput( final int numFrames,
+			final float[] waveFloats,
 			float currentOutMeterReading )
 	{
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
-			float sourceVal = waveFloats[ s ];
-			float outFloat = sourceVal * internalAmpFloats[ s ];
+			final float sourceVal = waveFloats[ s ];
+			final float outFloat = sourceVal * internalAmpFloats[ s ];
 			if( outFloat > currentOutMeterReading )
 			{
 				currentOutMeterReading = outFloat;
@@ -574,7 +584,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 		return currentOutMeterReading;
 	}
 
-	protected void setActive( boolean active )
+	protected void setActive( final boolean active )
 	{
 		this.active = active;
 //		numSamplesProcessed = 0;

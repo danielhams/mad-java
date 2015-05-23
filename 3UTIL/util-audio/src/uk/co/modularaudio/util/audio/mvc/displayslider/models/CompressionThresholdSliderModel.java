@@ -33,7 +33,7 @@ public class CompressionThresholdSliderModel extends SliderDisplayModel
 				3600,
 				100,
 				new SimpleSliderIntToFloatConverter(),
-				3,
+				2,
 				3,
 				"dB" );
 	}

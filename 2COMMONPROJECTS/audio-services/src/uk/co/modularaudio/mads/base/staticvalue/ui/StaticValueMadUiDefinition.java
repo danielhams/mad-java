@@ -43,7 +43,7 @@ public class StaticValueMadUiDefinition
 	};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
-		new Point( 140, 30 )
+		new Point( 140, 40 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

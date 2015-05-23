@@ -70,7 +70,7 @@ public class WaveRollerMadDefinition extends AbstractNonConfigurableMadDefinitio
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.BETA ),
+						ReleaseState.RELEASED ),
 				new WaveRollerIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

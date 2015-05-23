@@ -20,58 +20,62 @@
 
 package uk.co.modularaudio.mads.base.stereo_compressor.ui;
 
-import java.awt.Color;
-
 import javax.swing.JComponent;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
-import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionRatioSliderModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class StereoCompressorRatioSliderUiJComponent extends PacCompressionRatioSlider
+public class StereoCompressorRatioSliderUiJComponent
 	implements IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( StereoCompressorRatioSliderUiJComponent.class.getName() );
+///	private static Log log = LogFactory.getLog( StereoCompressorRatioSliderUiJComponent.class.getName() );
 
-	private static final long serialVersionUID = 2538907435465770032L;
-
-	private final StereoCompressorMadUiInstance uiInstance;
+	private final SliderDisplayModel model;
+	private final LWTCSliderDisplayView view;
 
 	public StereoCompressorRatioSliderUiJComponent( final StereoCompressorMadDefinition definition,
 			final StereoCompressorMadInstance instance,
 			final StereoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( 1.0f, 20.0f, 2.0f, 0.0f,
-				"",
+		model = new CompressionRatioSliderModel();
+		final SliderDisplayController controller = new SliderDisplayController( model );
+		view = new LWTCSliderDisplayView(
+				model,
+				controller,
 				SatelliteOrientation.ABOVE,
 				DisplayOrientation.VERTICAL,
 				SatelliteOrientation.BELOW,
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Ratio:",
-				Color.WHITE,
-				Color.WHITE,
-				false );
-//		this.setBackground( Color.ORANGE );
-		this.uiInstance = uiInstance;
+				false,
+				true );
+
+		model.addChangeListener( new ValueChangeListener()
+		{
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				uiInstance.sendRatio( newValue );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final float newValue )
-	{
-		uiInstance.sendOneCurveAsFloat( StereoCompressorIOQueueBridge.COMMAND_IN_RATIO, newValue );
+		return view;
 	}
 
 	@Override
@@ -90,29 +94,18 @@ public class StereoCompressorRatioSliderUiJComponent extends PacCompressionRatio
 	@Override
 	public String getControlValue()
 	{
-		return model.getValue() + "";
+		return Float.toString( model.getValue() );
 	}
 
 	@Override
 	public void receiveControlValue( final String valueStr )
 	{
-		try
-		{
-//			log.debug("Received control value " + value );
-			final float asFloat = Float.parseFloat( valueStr );
-			model.setValue( this, asFloat );
-			receiveValueChange( this, asFloat );
-		}
-		catch( final Exception e )
-		{
-			final String msg = "Failed to parse control value: " + valueStr;
-			log.error( msg, e );
-		}
+		model.setValue( this, Float.parseFloat( valueStr ) );
 	}
 
 	@Override
-	public void receiveValueChange( final Object source, final float newValue )
+	public boolean needsDisplayProcessing()
 	{
-		passChangeToInstanceData( newValue );
+		return false;
 	}
 }

@@ -47,10 +47,10 @@ public class ScaleAndOffsetMadUiDefinition
 	};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
-		new Point(  40, 40 ),
-		new Point( 140, 40 ),
-		new Point( 400, 40 ),
-		new Point( 490, 40 )
+		new Point(  45, 40 ),
+		new Point( 145, 40 ),
+		new Point( 405, 40 ),
+		new Point( 495, 40 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

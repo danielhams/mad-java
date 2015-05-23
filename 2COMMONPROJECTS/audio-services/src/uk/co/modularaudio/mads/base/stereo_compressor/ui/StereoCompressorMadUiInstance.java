@@ -173,10 +173,46 @@ public class StereoCompressorMadUiInstance
 
 	}
 
-	public void sendOneCurve( final int command, final float guiDesiredValue )
+	public void sendThreshold( final float desiredThreshold )
 	{
-		final long value = (Float.floatToIntBits( guiDesiredValue ) );
-		sendTemporalValueToInstance(command, value);
+		final long value = Float.floatToIntBits( desiredThreshold );
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_THRESHOLD, value );
+		thresholdValueReceiver.receiveNewDbValue( desiredThreshold );
+	}
+
+	public void sendRatio( final float desiredRatio )
+	{
+		final long value = Float.floatToIntBits( desiredRatio );
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_RATIO, value );
+	}
+
+	public void sendAttack( final float desiredAttack )
+	{
+		final long value = Float.floatToIntBits( desiredAttack );
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_ATTACK_MILLIS, value );
+	}
+
+	public void sendRelease( final float desiredRelease )
+	{
+		final long value = Float.floatToIntBits( desiredRelease );
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_RELEASE_MILLIS, value );
+	}
+
+	public void sendGain( final float desiredGain )
+	{
+		final long value = Float.floatToIntBits( desiredGain );
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_MAKEUP_GAIN, value );
+	}
+
+	public void sendLookahead( final boolean selected )
+	{
+		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_LOOKAHEAD,
+			(selected ? 1 : 0 ) );
+	}
+
+	public void sendThresholdType( final int thresholdType )
+	{
+		sendTemporalValueToInstance(StereoCompressorIOQueueBridge.COMMAND_IN_THRESHOLD_TYPE, thresholdType);
 	}
 
 	public void registerSourceSignalMeterValueReceiver( final MeterValueReceiver meterValueReceiver )
@@ -221,12 +257,6 @@ public class StereoCompressorMadUiInstance
 		}
 	}
 
-	public void sendLookahead( final boolean selected )
-	{
-		sendTemporalValueToInstance( StereoCompressorIOQueueBridge.COMMAND_IN_LOOKAHEAD,
-			(selected ? 1 : 0 ) );
-	}
-
 	@Override
 	public void receiveStartup(final HardwareIOChannelSettings ratesAndLatency,
 			final MadTimingParameters timingParameters,
@@ -235,10 +265,5 @@ public class StereoCompressorMadUiInstance
 		super.receiveStartup(ratesAndLatency, timingParameters, frameTimeFactory);
 		framesBetweenPeakReset = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( ratesAndLatency.getAudioChannelSetting().getDataRate().getValue(),
 				MILLIS_BETWEEN_PEAK_RESET );
-	}
-
-	public void updateThresholdType( final int thresholdType )
-	{
-		sendTemporalValueToInstance(StereoCompressorIOQueueBridge.COMMAND_IN_THRESHOLD_TYPE, thresholdType);
 	}
 }

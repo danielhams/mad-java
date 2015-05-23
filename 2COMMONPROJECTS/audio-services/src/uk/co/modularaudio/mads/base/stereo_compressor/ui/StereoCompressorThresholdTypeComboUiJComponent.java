@@ -20,25 +20,40 @@
 
 package uk.co.modularaudio.mads.base.stereo_compressor.ui;
 
-import java.awt.Font;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class StereoCompressorThresholdTypeComboUiJComponent extends PacComboBox<ThresholdTypeEnum>
-		implements
-		IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
+public class StereoCompressorThresholdTypeComboUiJComponent
+	implements IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
-	private static final long serialVersionUID = 28004477652791854L;
+	private static final Map<String,ThresholdTypeEnum> dsToEnumMap = createDsToEnumMap();
 
-	private final StereoCompressorMadUiInstance uiInstance;
+	private static final Map<String,ThresholdTypeEnum> createDsToEnumMap()
+	{
+		final HashMap<String,ThresholdTypeEnum> map = new HashMap<String,ThresholdTypeEnum>();
+		for( final ThresholdTypeEnum e : ThresholdTypeEnum.values() )
+		{
+			map.put( e.getDisplayString(), e );
+		}
+
+		return map;
+	}
+
+	private final DefaultComboBoxModel<String> model;
+	private final LWTCRotaryChoice choice;
 
 	public StereoCompressorThresholdTypeComboUiJComponent(
 			final StereoCompressorMadDefinition definition,
@@ -46,26 +61,44 @@ public class StereoCompressorThresholdTypeComboUiJComponent extends PacComboBox<
 			final StereoCompressorMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-
-		final DefaultComboBoxModel<ThresholdTypeEnum> cbm = new DefaultComboBoxModel<ThresholdTypeEnum>();
+		model = new DefaultComboBoxModel<String>();
 		for( final ThresholdTypeEnum e : ThresholdTypeEnum.values() )
 		{
-			cbm.addElement( e );
+			model.addElement( e.getDisplayString() );
 		}
-		this.setModel( cbm );
+		model.setSelectedItem( ThresholdTypeEnum.RMS.getDisplayString() );
 
-//		Font f = this.getFont().deriveFont( 9f );
-		final Font f = this.getFont();
-		setFont( f );
+		choice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
 
-		this.setSelectedItem( ThresholdTypeEnum.RMS );
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
+
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String value = (String)model.getSelectedItem();
+				final ThresholdTypeEnum tte = dsToEnumMap.get( value );
+				uiInstance.sendThresholdType( tte.ordinal() );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return choice;
 	}
 
 	@Override
@@ -77,16 +110,6 @@ public class StereoCompressorThresholdTypeComboUiJComponent extends PacComboBox<
 	}
 
 	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final ThresholdTypeEnum tType = (ThresholdTypeEnum) getSelectedItem();
-			uiInstance.updateThresholdType( tType.ordinal() );
-		}
-	}
-
-	@Override
 	public void destroy()
 	{
 	}
@@ -95,6 +118,18 @@ public class StereoCompressorThresholdTypeComboUiJComponent extends PacComboBox<
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 
 }

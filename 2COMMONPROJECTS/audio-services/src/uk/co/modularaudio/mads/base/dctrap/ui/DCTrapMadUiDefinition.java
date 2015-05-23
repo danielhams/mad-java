@@ -44,8 +44,8 @@ public class DCTrapMadUiDefinition
 	};
 
 	private static final Point[] UI_CHANNEL_POSI = new Point[] {
-		new Point( 20, 30 ),
-		new Point( 80, 30 )
+		new Point( 90, 40 ),
+		new Point( 150, 40 )
 	};
 
 	private static final String[] UI_CONTROL_NAMES = new String[] {

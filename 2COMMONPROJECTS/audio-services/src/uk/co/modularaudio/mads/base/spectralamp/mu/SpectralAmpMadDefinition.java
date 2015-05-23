@@ -67,15 +67,15 @@ public class SpectralAmpMadDefinition extends AbstractNonConfigurableMadDefiniti
 	public static final int SAMPLES_PER_FRAME = 2048;
 	public static final int MIN_SAMPLES_FOR_WOLA = SAMPLES_PER_FRAME / NUM_OVERLAPS;
 
-	public SpectralAmpMadDefinition( BaseComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public SpectralAmpMadDefinition( final BaseComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,
 				new MadClassification( classificationService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.ALPHA ),
+						ReleaseState.RELEASED ),
 				new SpectralAmpIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,
