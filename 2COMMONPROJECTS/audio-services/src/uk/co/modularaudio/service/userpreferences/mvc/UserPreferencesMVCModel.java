@@ -24,10 +24,13 @@ import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSi
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
 
 public class UserPreferencesMVCModel
 {
-//	private static Log log = LogFactory.getLog( UserPreferencesMVCModel.class.getName() );
+	//private static Log log = LogFactory.getLog( UserPreferencesMVCModel.class.getName() );
+
+	private final RenderingCoresMVCModel renderingCoresModel;
 
 	private final GuiFpsMVCModel fpsComboModel;
 
@@ -37,14 +40,14 @@ public class UserPreferencesMVCModel
 	private final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel;
 	private final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel;
 
-	public UserPreferencesMVCModel(
-			final GuiFpsMVCModel fpsComboModel,
-			final AudioSystemDeviceMVCModel inputDeviceComboModel,
+	public UserPreferencesMVCModel( final RenderingCoresMVCModel renderingCoresModel,
+			final GuiFpsMVCModel fpsComboModel, final AudioSystemDeviceMVCModel inputDeviceComboModel,
 			final AudioSystemDeviceMVCModel outputDeviceComboModel,
 			final AudioSystemBufferSizeMVCModel bufferSizeModel,
 			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel,
 			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel )
 	{
+		this.renderingCoresModel = renderingCoresModel;
 		this.fpsComboModel = fpsComboModel;
 		this.inputDeviceComboModel = inputDeviceComboModel;
 		this.outputDeviceComboModel = outputDeviceComboModel;
@@ -53,7 +56,13 @@ public class UserPreferencesMVCModel
 		this.outputMidiDeviceComboModel = outputMidiDeviceComboModel;
 	}
 
-	public GuiFpsMVCModel getFpsComboModel() {
+	public RenderingCoresMVCModel getRenderingCoresModel()
+	{
+		return renderingCoresModel;
+	}
+
+	public GuiFpsMVCModel getFpsComboModel()
+	{
 		return fpsComboModel;
 	}
 

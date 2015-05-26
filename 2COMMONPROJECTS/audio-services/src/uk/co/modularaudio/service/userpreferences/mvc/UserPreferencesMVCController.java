@@ -26,12 +26,15 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputDeviceCom
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputMidiDeviceComboMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
 
 public class UserPreferencesMVCController
 {
 //	private static Log log = LogFactory.getLog( UserPreferencesMVCController.class.getName() );
 
 	private UserPreferencesMVCModel model;
+
+	private final RenderingCoresMVCController renderingCoresController;
 
 	private final GuiFpsComboMVCController fpsComboController;
 
@@ -45,6 +48,8 @@ public class UserPreferencesMVCController
 	{
 		this.model = model;
 
+		renderingCoresController = new RenderingCoresMVCController( model.getRenderingCoresModel(), this );
+
 		fpsComboController = new GuiFpsComboMVCController( model.getFpsComboModel(), this );
 
 		inputDeviceComboController = new InputDeviceComboMVCController( model.getInputDeviceComboModel(), this );
@@ -57,6 +62,11 @@ public class UserPreferencesMVCController
 	public UserPreferencesMVCModel getModel()
 	{
 		return model;
+	}
+
+	public RenderingCoresMVCController getRenderingCoresController()
+	{
+		return renderingCoresController;
 	}
 
 	public GuiFpsComboMVCController getFpsComboController()
@@ -92,6 +102,8 @@ public class UserPreferencesMVCController
 	public void setModel( final UserPreferencesMVCModel newModel )
 	{
 		this.model = newModel;
+
+		renderingCoresController.setModel( model.getRenderingCoresModel() );
 
 		fpsComboController.setModel( model.getFpsComboModel() );
 

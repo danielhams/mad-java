@@ -28,6 +28,7 @@ import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSi
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;
@@ -37,6 +38,9 @@ public class PrefsModelToHardwareIOConfigurationBridge
 {
 	public static HardwareIOConfiguration modelToConfiguration( final UserPreferencesMVCModel audioPrefsModel ) throws DatastoreException
 	{
+		final RenderingCoresMVCModel renderingCoresModel = audioPrefsModel.getRenderingCoresModel();
+		final int numRenderingCores = (int)renderingCoresModel.getValue();
+
 		final GuiFpsMVCModel fpsModel = audioPrefsModel.getFpsComboModel();
 
 		final AudioSystemDeviceMVCModel consumerDeviceComboModel = audioPrefsModel.getOutputDeviceComboModel();
@@ -114,7 +118,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 				producerMidiConfig = producerMidiDevice.getValue();
 			}
 
-			final int numHelperThreads = 2;
+			final int numHelperThreads = numRenderingCores - 1;
 
 			final HardwareIOConfiguration retVal = new HardwareIOConfiguration(
 					numHelperThreads,

@@ -33,25 +33,33 @@ import uk.co.modularaudio.util.mvc.intslider.ValueOutOfRangeException;
 public class BasicIntegerSliderModel implements IntegerSliderModel
 {
 //	private static Log log = LogFactory.getLog( BasicIntegerSliderModel.class.getName() );
-	
+
 	private int minValue = Integer.MIN_VALUE;
 	private int maxValue = Integer.MAX_VALUE;
 	private int value = -1;
-	
-	private Set<IntegerSliderModelListener> listeners = new HashSet<IntegerSliderModelListener>();
-	
+
+	private final Set<IntegerSliderModelListener> listeners = new HashSet<IntegerSliderModelListener>();
+
 	public BasicIntegerSliderModel()
 	{
 	}
 
+	public BasicIntegerSliderModel( final int minValue, final int maxValue,
+			final int startValue )
+	{
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.value = startValue;
+	}
+
 	@Override
-	public void setMaxValue(int maxValue)
+	public void setMaxValue(final int maxValue)
 	{
 		this.maxValue = maxValue;
 	}
 
 	@Override
-	public void setMinValue(int minValue)
+	public void setMinValue(final int minValue)
 	{
 		this.minValue = minValue;
 	}
@@ -69,7 +77,7 @@ public class BasicIntegerSliderModel implements IntegerSliderModel
 	}
 
 	@Override
-	public void setValue(int value) throws ValueOutOfRangeException
+	public void setValue(final int value) throws ValueOutOfRangeException
 	{
 		if( value < minValue || value > maxValue )
 		{
@@ -78,9 +86,9 @@ public class BasicIntegerSliderModel implements IntegerSliderModel
 		else
 		{
 			this.value = value;
-			for( IntegerSliderModelListener l : listeners )
+			for( final IntegerSliderModelListener l : listeners )
 			{
-				IntegerSliderModelListenerEvent e = new IntegerSliderModelListenerEvent( EventType.SELECTION_CHANGED, -1, -1 );
+				final IntegerSliderModelListenerEvent e = new IntegerSliderModelListenerEvent( EventType.SELECTION_CHANGED, -1, -1 );
 				l.valueChanged( e );
 			}
 		}
@@ -93,13 +101,13 @@ public class BasicIntegerSliderModel implements IntegerSliderModel
 	}
 
 	@Override
-	public void addListener(IntegerSliderModelListener listener)
+	public void addListener(final IntegerSliderModelListener listener)
 	{
 		listeners.add( listener );
 	}
 
 	@Override
-	public void removeListener(IntegerSliderModelListener listener)
+	public void removeListener(final IntegerSliderModelListener listener)
 	{
 		listeners.remove( listener );
 	}

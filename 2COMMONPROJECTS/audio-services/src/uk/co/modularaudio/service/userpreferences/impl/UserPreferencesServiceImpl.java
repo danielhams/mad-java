@@ -48,10 +48,12 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputDeviceCom
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputMidiDeviceComboMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSizeMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.format.SampleBits;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
@@ -72,6 +74,8 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 	private final static String CONFIG_KEY_PREFS_FILE = UserPreferencesServiceImpl.class.getSimpleName() + ".UserPreferencesFile";
 
+	private static final String PREFS_FILE_RENDERING_CORES = "RenderingCores";
+	private static final String DEFAULT_RENDERING_CORES_STRING = "1";
 	private static final String PREFS_FILE_GUI_FPS = "GuiFps";
 	private static final String DEFAULT_GUI_FPS_STRING = "30";
 
@@ -90,6 +94,8 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private AudioProviderRegistryService audioProviderRegistryService;
 
 	private UserPreferencesMVCController userPreferences;
+
+	private int renderingCores = -1;
 
 	private int guiFps = -1;
 
@@ -130,6 +136,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		{
 			userPreferencesProperties.load( new FileInputStream( userPreferencesFile ));
 		}
+		renderingCores = Integer.parseInt( userPreferencesProperties.getProperty( PREFS_FILE_RENDERING_CORES, DEFAULT_RENDERING_CORES_STRING ) );
 		guiFps = Integer.parseInt( userPreferencesProperties.getProperty( PREFS_FILE_GUI_FPS, DEFAULT_GUI_FPS_STRING ) );
 		bufferSize = Integer.parseInt( userPreferencesProperties.getProperty(PREFS_FILE_KEY_BUFFER_SIZE, DEFAULT_BUFFER_SIZE_STRING ) );
 		outputDeviceId = userPreferencesProperties.getProperty(PREFS_FILE_KEY_OUTPUT_DEVICE, "");
@@ -220,6 +227,16 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	@Override
 	public void setupPreferencesSelections()
 	{
+		final RenderingCoresMVCController rcc = userPreferences.getRenderingCoresController();
+		try
+		{
+			rcc.setValue( renderingCores );
+		}
+		catch( final ValueOutOfRangeException e2 )
+		{
+			e2.printStackTrace();
+		}
+
 		final GuiFpsComboMVCController fcc = userPreferences.getFpsComboController();
 
 		try
@@ -228,6 +245,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		}
 		catch( final RecordNotFoundException e1 )
 		{
+			e1.printStackTrace();
 		}
 
 		final OutputDeviceComboMVCController odc = userPreferences.getOutputDeviceComboController();
@@ -357,6 +375,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			outputMidiDeviceItems.add( mci );
 		}
 
+		final int maxCores = Runtime.getRuntime().availableProcessors();
+
+		final RenderingCoresMVCModel renderingCoresModel = new RenderingCoresMVCModel( maxCores );
+
 		final GuiFpsMVCModel guiFpsComboModel = new GuiFpsMVCModel( guiFpsItems );
 
 		final AudioSystemDeviceMVCModel inputDeviceComboModel = new AudioSystemDeviceMVCModel( inputDeviceItems );
@@ -366,6 +388,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( outputMidiDeviceItems );
 
 		final UserPreferencesMVCModel model = new UserPreferencesMVCModel(
+				renderingCoresModel,
 				guiFpsComboModel,
 				inputDeviceComboModel,
 				outputDeviceComboModel,
@@ -383,6 +406,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		try
 		{
 			final UserPreferencesMVCModel userPrefsMVCModel = userPreferencesModelController.getModel();
+			final RenderingCoresMVCModel renderingCoresModel = userPrefsMVCModel.getRenderingCoresModel();
 			final GuiFpsMVCModel guiFpsComboModel = userPrefsMVCModel.getFpsComboModel();
 			final GuiFpsComboItem guiFpsItem = guiFpsComboModel.getSelectedElement();
 			final AudioSystemDeviceMVCModel inputDeviceComboModel = userPrefsMVCModel.getInputDeviceComboModel();
@@ -394,6 +418,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPrefsMVCModel.getOutputMidiDeviceComboModel();
 			final AudioSystemMidiDeviceComboItem outputMidiDeviceComboItem = outputMidiDeviceComboModel.getSelectedElement();
 
+			userPreferencesProperties.put( PREFS_FILE_RENDERING_CORES, Integer.toString( renderingCoresModel.getValue() ) );
 			userPreferencesProperties.put( PREFS_FILE_GUI_FPS, guiFpsItem.getId() );
 			userPreferencesProperties.put( PREFS_FILE_KEY_INPUT_DEVICE,
 					(inputDeviceComboItem == null ? "" : inputDeviceComboItem.getId() ));

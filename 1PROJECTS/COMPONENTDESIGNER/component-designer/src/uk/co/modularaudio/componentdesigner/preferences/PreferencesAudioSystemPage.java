@@ -31,6 +31,7 @@ import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputMidiDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputMidiDeviceMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesRenderingCoresView;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class PreferencesAudioSystemPage extends JPanel
@@ -40,6 +41,8 @@ public class PreferencesAudioSystemPage extends JPanel
 //	private static Log log = LogFactory.getLog( PreferencesAudioSystemPage.class.getName() );
 
 	private final UserPreferencesMVCView userPreferencesView;
+
+	private final UserPreferencesRenderingCoresView renderingCoresView;
 
 	private final UserPreferencesGuiFpsMVCView fpsCombo;
 
@@ -62,6 +65,11 @@ public class PreferencesAudioSystemPage extends JPanel
 		final String rowLayoutString = "";
 		final String colLayoutString = "[][fill,grow,shrink]";
 		deviceChoicePanel.setLayout( new MigLayout( dcLayoutString, colLayoutString, rowLayoutString ));
+
+		final JLabel renderingCoresLabel = new JLabel("Rendering Cores:" );
+		deviceChoicePanel.add( renderingCoresLabel, "align right");
+		renderingCoresView = userPreferencesView.getRenderingCoresView();
+		deviceChoicePanel.add( renderingCoresView, "growx, shrink, wrap" );
 
 		final JLabel fpsLabel = new JLabel("Gui FPS:" );
 		deviceChoicePanel.add( fpsLabel, "align right");
