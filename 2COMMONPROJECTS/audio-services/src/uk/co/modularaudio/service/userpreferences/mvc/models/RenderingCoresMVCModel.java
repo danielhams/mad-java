@@ -18,24 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.mvc.displayslider.models;
+package uk.co.modularaudio.service.userpreferences.mvc.models;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
 
-public class SAOOffsetSliderModel extends SliderDisplayModel
+public class RenderingCoresMVCModel extends BasicIntegerSliderModel
 {
-
-	public SAOOffsetSliderModel()
+	public RenderingCoresMVCModel( final int maxCores )
 	{
-		super( -500.0f, 500.0f,
-				0.0f, 0.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				4,
-				2,
-				"" );
+//		super( 1.0f, maxCores,
+//				1.0f, 1.0f,
+//				maxCores - 1,
+//				1,
+//				new SimpleSliderIntToFloatConverter(),
+//				1,
+//				0,
+//				"");
+		super( 1, maxCores-1, 1 );
 	}
 
 }

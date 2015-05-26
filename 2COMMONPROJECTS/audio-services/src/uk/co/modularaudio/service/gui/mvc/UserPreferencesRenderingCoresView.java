@@ -18,24 +18,20 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.mvc.displayslider.models;
+package uk.co.modularaudio.service.gui.mvc;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
+import uk.co.modularaudio.util.swing.mvc.intslider.BasicIntegerSliderView;
 
-public class SAOOffsetSliderModel extends SliderDisplayModel
+public class UserPreferencesRenderingCoresView extends BasicIntegerSliderView
 {
+	private static final long serialVersionUID = 6884061773281858142L;
 
-	public SAOOffsetSliderModel()
+	public UserPreferencesRenderingCoresView(
+			final RenderingCoresMVCModel model,
+			final RenderingCoresMVCController controller )
 	{
-		super( -500.0f, 500.0f,
-				0.0f, 0.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				4,
-				2,
-				"" );
+		super( model,controller );
 	}
-
 }

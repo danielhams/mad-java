@@ -18,24 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.mvc.displayslider.models;
+package uk.co.modularaudio.service.userpreferences.mvc.controllers;
 
-import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
+import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderController;
 
-public class SAOOffsetSliderModel extends SliderDisplayModel
+public class RenderingCoresMVCController extends BasicIntegerSliderController
 {
-
-	public SAOOffsetSliderModel()
+	public RenderingCoresMVCController( final RenderingCoresMVCModel model,
+			final UserPreferencesMVCController userPreferencesMVCController )
 	{
-		super( -500.0f, 500.0f,
-				0.0f, 0.0f,
-				1000,
-				100,
-				new SimpleSliderIntToFloatConverter(),
-				4,
-				2,
-				"" );
+		super( model );
 	}
 
+	public void setModel( final RenderingCoresMVCModel model )
+	{
+		super.setModel( model );
+	}
 }
