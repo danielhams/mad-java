@@ -35,7 +35,6 @@ import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance.FadeType;
 import uk.co.modularaudio.service.apprendering.util.jobqueue.MTRenderingJobQueue;
-import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueHelperThread;
 import uk.co.modularaudio.service.apprendering.util.jobqueue.STRenderingJobQueue;
 import uk.co.modularaudio.service.apprendering.util.session.AppRenderingLifecycleListener;
 import uk.co.modularaudio.service.apprendering.util.structure.AudioSystemTestGraphCreator;
@@ -112,9 +111,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 	private final AtomicReference<RenderingPlan> renderingPlan = new AtomicReference<RenderingPlan>();
 
 	private final AppRenderingJobQueue renderingJobQueue;
-	private final int numHelperThreads;
+
 	private final boolean shouldProfileRenderingJobs;
-	private final RenderingJobQueueHelperThread threads[];
+
 	private final int maxWaitForTransitionMillis;
 
 	private DynamicRenderingPlanGraphListener dynamicRenderingPlanGraphListener;
@@ -133,7 +132,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 	public AppRenderingStructure( final MadComponentService componentService,
 			final MadGraphService graphService,
 			final RenderingPlanService renderingService,
+			final int renderingJobQueueCapacity,
 			final int numHelperThreads,
+			final int tempEventStorageCapacity,
 			final boolean shouldProfileRenderingJobs,
 			final int maxWaitForTransitionMillis )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
@@ -141,6 +142,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		this.componentService = componentService;
 		this.graphService = graphService;
 		this.renderingPlanService = renderingService;
+
+		this.shouldProfileRenderingJobs = shouldProfileRenderingJobs;
+		this.maxWaitForTransitionMillis = maxWaitForTransitionMillis;
 
 		internalRootGraph = graphService.createNewRootGraph( "Component Designer IO Graph" );
 		internalHostingGraph = graphService.createNewParameterisedGraph( "Component Designer Hosting Graph",
@@ -170,11 +174,6 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		{
 			renderingJobQueue = new MTRenderingJobQueue( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
 		}
-
-		this.numHelperThreads = numHelperThreads;
-		this.threads = new RenderingJobQueueHelperThread[ numHelperThreads ];
-		this.shouldProfileRenderingJobs = shouldProfileRenderingJobs;
-		this.maxWaitForTransitionMillis = maxWaitForTransitionMillis;
 	}
 
 	public void destroy() throws DatastoreException
@@ -448,8 +447,6 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 				}
 				else
 				{
-					startThreads();
-
 					dynamicRenderingPlanGraphListener = new DynamicRenderingPlanGraphListener( renderingPlanService,
 							this,
 							internalRootGraph );
@@ -544,7 +541,6 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 					dynamicRenderingPlanGraphListener.destroy();
 					dynamicRenderingPlanGraphListener = null;
 				}
-				stopThreads();
 				break;
 			}
 		}
@@ -756,50 +752,6 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		{
 			final String msg = "RecordNotFoundException caught mapping app graph to hosting graph: " + rnfe.toString();
 			log.error( msg, rnfe );
-		}
-	}
-
-	private void startThreads()
-	{
-		log.debug("Starting helper threads.");
-		for( int i = 0 ; i < numHelperThreads ; i++ )
-		{
-			threads[ i ] = new RenderingJobQueueHelperThread( i + 1, renderingJobQueue, shouldProfileRenderingJobs );
-			threads[ i ].start();
-		}
-	}
-
-	private void stopThreads()
-	{
-		log.debug("Stopping helper threads.");
-		for( int i = 0 ; i < numHelperThreads ; i++ )
-		{
-			threads[ i ].halt();
-		}
-		try
-		{
-			Thread.sleep( 5 );
-		}
-		catch( final InterruptedException ie )
-		{
-		}
-
-		for( int i = 0 ; i < numHelperThreads ; i++ )
-		{
-			try
-			{
-				if( threads[i].isAlive() )
-				{
-					threads[i].forceHalt();
-				}
-				threads[ i ].join();
-			}
-			catch (final Exception e)
-			{
-				final String msg = "Exception caught stopping and joining helper thread: " + e.toString();
-				log.error( msg, e );
-			}
-			threads[ i ] = null;
 		}
 	}
 

@@ -22,6 +22,7 @@ package uk.co.modularaudio.util.audio.mad.hardwareio;
 
 public class HardwareIOConfiguration
 {
+	private final int numHelperThreads;
 	private final int fps;
 	private final AudioHardwareDevice consumerAudioDevice;
 	private final AudioHardwareDevice producerAudioDevice;
@@ -29,19 +30,27 @@ public class HardwareIOConfiguration
 	private final MidiHardwareDevice consumerMidiDevice;
 	private final MidiHardwareDevice producerMidiDevice;
 
-	public HardwareIOConfiguration( final int fps,
+	public HardwareIOConfiguration(
+			final int numHelperThreads,
+			final int fps,
 			final AudioHardwareDevice consumerHardwareStream,
 			final AudioHardwareDevice producerHardwareStream,
 			final int channelBufferLength,
 			final MidiHardwareDevice iConsumerMidiConfiguration,
 			final MidiHardwareDevice iProducerMidiConfiguration )
 	{
+		this.numHelperThreads = numHelperThreads;
 		this.fps = fps;
 		this.consumerAudioDevice = consumerHardwareStream;
 		this.producerAudioDevice = producerHardwareStream;
 		this.channelBufferLength = channelBufferLength;
 		this.consumerMidiDevice = iConsumerMidiConfiguration;
 		this.producerMidiDevice = iProducerMidiConfiguration;
+	}
+
+	public int getNumHelperThreads()
+	{
+		return numHelperThreads;
 	}
 
 	public int getFps()

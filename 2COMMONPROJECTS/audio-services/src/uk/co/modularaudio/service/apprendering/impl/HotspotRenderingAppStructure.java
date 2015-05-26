@@ -47,6 +47,8 @@ public class HotspotRenderingAppStructure extends AppRenderingStructure implemen
 			final MadGraphService graphService,
 			final RenderingPlanService renderingService,
 			final TimingService timingService,
+			final int renderingJobQueueCapacity,
+			final int tempEventStorageCapacity,
 			final boolean shouldProfileRenderingJobs,
 			final int maxWaitForTransitionMillis,
 			final RenderingPlan renderingPlan )
@@ -55,9 +57,12 @@ public class HotspotRenderingAppStructure extends AppRenderingStructure implemen
 		super( componentService,
 				graphService,
 				renderingService,
+				renderingJobQueueCapacity,
 				0,
+				tempEventStorageCapacity,
 				shouldProfileRenderingJobs,
 				maxWaitForTransitionMillis );
+
 		hotspotClockSourceThread = new HotspotClockSourceJobQueueHelperThread( renderingPlan,
 				renderingService,
 				timingService,

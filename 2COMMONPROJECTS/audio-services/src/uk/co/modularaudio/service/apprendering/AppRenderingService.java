@@ -34,7 +34,7 @@ public interface AppRenderingService
 	 * @return
 	 * @throws DatastoreException
 	 */
-	public AppRenderingStructure createAppRenderingStructure()
+	public AppRenderingStructure createAppRenderingStructure( final int numHelperThreads )
 		throws DatastoreException;
 
 	/**

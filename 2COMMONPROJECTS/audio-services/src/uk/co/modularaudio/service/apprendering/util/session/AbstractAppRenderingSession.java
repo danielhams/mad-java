@@ -27,9 +27,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.apprendering.AppRenderingService;
+import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 import uk.co.modularaudio.service.apprendering.util.AppRenderingSession;
 import uk.co.modularaudio.service.apprendering.util.AppRenderingStructure;
 import uk.co.modularaudio.service.apprendering.util.jobqueue.ClockSourceJobQueueProcessing;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueHelperThread;
 import uk.co.modularaudio.service.apprendering.util.session.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
@@ -63,6 +65,9 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	protected final AppRenderingService appRenderingService;
 	protected final AppRenderingStructure appRenderingStructure;
 	protected final TimingService timingService;
+
+	protected int numHelperThreads;
+	protected final RenderingJobQueueHelperThread threads[];
 
 	protected final AppRenderingErrorQueue errorQueue;
 	protected final AppRenderingErrorCallback errorCallback;
@@ -98,11 +103,15 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 		this.appRenderingService = appRenderingService;
 		this.timingService = timingService;
 		this.hardwareConfiguration = hardwareConfiguration;
-		appRenderingStructure = appRenderingService.createAppRenderingStructure();
+		this.numHelperThreads = hardwareConfiguration.getNumHelperThreads();
+
+		appRenderingStructure = appRenderingService.createAppRenderingStructure( numHelperThreads );
 
 		clockSourceJobQueueProcessing = new ClockSourceJobQueueProcessing( appRenderingStructure.getRenderingJobQueue() );
 
 		shouldProfileRenderingJobs = appRenderingService.shouldProfileRenderingJobs();
+
+		this.threads = new RenderingJobQueueHelperThread[ numHelperThreads ];
 
 		this.errorQueue = errorQueue;
 		this.errorCallback = errorCallback;
@@ -146,6 +155,8 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 					log.info("Starting up audio IO with parameters: " + timingParameters.toString() ); // NOPMD by dan on 22/01/15 08:22
 				}
 
+				startThreads();
+
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.PRE_START );
 				doProviderStart();
 				fireLifecycleSignal( hardwareChannelSettings, SignalType.POST_START );
@@ -153,6 +164,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			}
 			catch( final Exception e )
 			{
+				stopThreads();
 				final String msg = "Exception caught starting audio IO: " + e.toString();
 				log.error( msg, e );
 				errorQueue.queueError( this, ErrorSeverity.FATAL, "Exception caught starting rendering" );
@@ -197,6 +209,8 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			final String msg = "Exception caught destroying audio IO: " + e.toString();
 			log.error( msg, e );
 		}
+
+		stopThreads();
 
 		rendering.set( false );
 
@@ -422,6 +436,59 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	protected abstract void doProviderStart() throws DatastoreException;
 	protected abstract void doProviderStop() throws DatastoreException;
 	protected abstract void doProviderDestroy() throws DatastoreException;
+
+	protected abstract void setThreadPriority();
+
+	protected void startThreads()
+	{
+		log.debug("Starting helper threads.");
+		final AppRenderingJobQueue renderingJobQueue = appRenderingStructure.getRenderingJobQueue();
+		for( int i = 0 ; i < numHelperThreads ; i++ )
+		{
+			threads[ i ] = new RenderingJobQueueHelperThread( i + 1,
+					renderingJobQueue,
+					shouldProfileRenderingJobs );
+			threads[ i ].start();
+		}
+	}
+
+	protected void stopThreads()
+	{
+		log.debug("Stopping helper threads.");
+		for( int i = 0 ; i < numHelperThreads ; i++ )
+		{
+			final RenderingJobQueueHelperThread curThread = threads[i];
+			if( curThread == null ) continue;
+			curThread.halt();
+		}
+		try
+		{
+			Thread.sleep( 5 );
+		}
+		catch( final InterruptedException ie )
+		{
+		}
+
+		for( int i = 0 ; i < numHelperThreads ; i++ )
+		{
+			final RenderingJobQueueHelperThread curThread = threads[i];
+			if( curThread == null ) continue;
+			try
+			{
+				if( curThread.isAlive() )
+				{
+					curThread.forceHalt();
+				}
+				curThread.join();
+			}
+			catch (final Exception e)
+			{
+				final String msg = "Exception caught stopping and joining helper thread: " + e.toString();
+				log.error( msg, e );
+			}
+			threads[ i ] = null;
+		}
+	}
 
 	// Used by the providers to do the actual call through to the rendering plan and jobs
 	protected RealtimeMethodReturnCodeEnum doClockSourceProcessing( final int numFrames, final long periodStartFrameTime )

@@ -73,8 +73,9 @@ public class AppRenderingServiceImpl
 	private TimingService timingService;
 
 	private final static String CONFIG_KEY_STARTUP_HOTSPOT = AppRenderingServiceImpl.class.getSimpleName() + ".StartupHotspot";
-	private final static String CONFIG_KEY_NUM_HELPER_THREADS = AppRenderingServiceImpl.class.getSimpleName() + ".NumHelperThreads";
 	private final static String CONFIG_KEY_PROFILE_RENDERING_JOBS = AppRenderingServiceImpl.class.getSimpleName() + ".ProfileRenderingJobs";
+	private final static String CONFIG_KEY_PROFILE_TEMP_EVENT_STORAGE_CAPACITY = AppRenderingServiceImpl.class.getSimpleName() + ".TempEventStorageCapacity";
+	private final static String CONFIG_KEY_PROFILE_RENDERING_JOB_QUEUE_CAPACITY = AppRenderingServiceImpl.class.getSimpleName() + ".RenderingJobQueueCapacity";
 	private final static String CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS = AppRenderingServiceImpl.class.getSimpleName() + ".MaxWaitForTransitionMillis";
 
 	private final static int HOTSPOT_SAMPLES_PER_RENDER_PERIOD = 1024;
@@ -84,8 +85,9 @@ public class AppRenderingServiceImpl
 
 	private boolean doStartupHotspot;
 
-	private int numHelperThreads;
 	private boolean shouldProfileRenderingJobs;
+	private int tempEventStorageCapacity;
+	private int renderingJobQueueCapacity;
 	private int maxWaitForTransitionMillis;
 
 	public AppRenderingServiceImpl()
@@ -112,9 +114,11 @@ public class AppRenderingServiceImpl
 
 		doStartupHotspot = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_STARTUP_HOTSPOT, errors );
 
-		numHelperThreads = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_NUM_HELPER_THREADS, errors );
-
 		shouldProfileRenderingJobs = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_PROFILE_RENDERING_JOBS,
+				errors );
+		tempEventStorageCapacity = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_PROFILE_TEMP_EVENT_STORAGE_CAPACITY,
+				errors );
+		renderingJobQueueCapacity = ConfigurationServiceHelper.checkForIntKey( configurationService, CONFIG_KEY_PROFILE_RENDERING_JOB_QUEUE_CAPACITY,
 				errors );
 
 		maxWaitForTransitionMillis = ConfigurationServiceHelper.checkForIntKey(configurationService, CONFIG_KEY_MAX_WAIT_FOR_TRANSITION_MILLIS, errors);
@@ -185,14 +189,16 @@ public class AppRenderingServiceImpl
 	}
 
 	@Override
-	public AppRenderingStructure createAppRenderingStructure() throws DatastoreException
+	public AppRenderingStructure createAppRenderingStructure( final int numHelperThreads ) throws DatastoreException
 	{
 		try
 		{
 			return new AppRenderingStructure( componentService,
 					graphService,
 					renderingPlanService,
+					renderingJobQueueCapacity,
 					numHelperThreads,
+					tempEventStorageCapacity,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis );
 		}
@@ -231,6 +237,8 @@ public class AppRenderingServiceImpl
 					graphService,
 					renderingPlanService,
 					timingService,
+					renderingJobQueueCapacity,
+					tempEventStorageCapacity,
 					shouldProfileRenderingJobs,
 					maxWaitForTransitionMillis,
 					renderingPlan );

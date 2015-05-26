@@ -30,6 +30,8 @@ import uk.co.modularaudio.service.renderingplan.RenderingJob;
 
 public class MTRenderingJobQueue implements AppRenderingJobQueue
 {
+//	private static Log log = LogFactory.getLog( MTRenderingJobQueue.class.getName() );
+
 	private static final int JOB_FETCH_TIMEOUT_MILLIS = 10;
 
 	private final MTSafeGenericRingBuffer<RenderingJob> mtSafeJobQueue;
@@ -83,12 +85,11 @@ public class MTRenderingJobQueue implements AppRenderingJobQueue
 	@Override
 	public void setBlocking( final boolean shouldBlock )
 	{
-//		internalShouldBlock.set( shouldBlock );
 		internalShouldBlock = shouldBlock;
 		if( !shouldBlock )
 		{
 			internalLock.lock();
-			notEmpty.notifyAll();
+			notEmpty.signalAll();
 			internalLock.unlock();
 		}
 	}

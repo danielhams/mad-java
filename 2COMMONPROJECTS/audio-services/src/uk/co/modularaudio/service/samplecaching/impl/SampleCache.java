@@ -500,7 +500,7 @@ public class SampleCache
 					{
 						if( curBlock == null )
 						{
-							//							log.debug("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
+//							log.debug("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
 							final SampleCacheBlock newlyPopulatedBlock = populateCacheForSampleCacheEntryBlock( sce, le, i, curBlockMapIndex );
 							blocksForCacheEntry.put( curBlockMapIndex, newlyPopulatedBlock );
 						}
@@ -517,7 +517,7 @@ public class SampleCache
 								case WARM:
 								{
 									// Re-warm the cache entry
-									//									log.debug("Will re-warm existing block " + curBlockMapIndex );
+//									log.debug("Will re-warm existing block " + curBlockMapIndex );
 									temperatureBufferBlockMap.reheatBlock( curBlock );
 									break;
 								}
@@ -531,7 +531,7 @@ public class SampleCache
 					}
 					else if( !shouldCacheBlock && curBlock != null && curBlock.useStatus.get() == SampleCacheBlockEnum.HOT )
 					{
-						//						log.debug("Will cool hot block " + curBlockMapIndex );
+//						log.debug("Will cool hot block " + curBlockMapIndex );
 						temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( curBlockMapIndex );
 						hotBlocksToCoolSet.remove( curBlock );
 					}
@@ -543,7 +543,7 @@ public class SampleCache
 			// Now clean up any remaining hot blocks by moving them to "warm"
 			for( final SampleCacheBlock hotBlock : hotBlocksToCoolSet )
 			{
-				//				log.debug("Will set orphaned block " + hotBlock.blockID + " to warm");
+//				log.debug("Will set orphaned block " + hotBlock.blockID + " to warm");
 
 				temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( hotBlock.blockID );
 			}

@@ -58,6 +58,8 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
+import uk.co.modularaudio.util.thread.ThreadUtils;
+import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
 public class JNAJackAppRenderingSession extends AbstractAppRenderingSession implements JackProcessCallback, JackShutdownCallback, JackXrunCallback
@@ -68,7 +70,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	private final JackClient client;
 
 //	private final JackLatencyRange latencyRange = new JackLatencyRange();
-	
+
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
 	private int numConsumerAudioPorts;
@@ -287,7 +289,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 
 //			final long jackTime = client.getFrameTime();
 			periodStartFrameTime = client.getLastFrameTime();
-			
+
 //			log.debug("jack time is " + jackTime );
 //			log.debug("Period start frame time is " + periodStartFrameTime );
 		}
@@ -519,6 +521,19 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	{
 		errorQueue.queueError( this, ErrorSeverity.WARNING, "XRun" );
 //		errorQueue.queueError( this, ErrorSeverity.FATAL, "XRun" );
+	}
+
+	@Override
+	protected void setThreadPriority()
+	{
+		try
+		{
+			ThreadUtils.setCurrentThreadPriority( MAThreadPriority.REALTIME );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
 	}
 
 }

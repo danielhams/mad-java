@@ -114,7 +114,11 @@ public class PrefsModelToHardwareIOConfigurationBridge
 				producerMidiConfig = producerMidiDevice.getValue();
 			}
 
-			final HardwareIOConfiguration retVal = new HardwareIOConfiguration( fps,
+			final int numHelperThreads = 2;
+
+			final HardwareIOConfiguration retVal = new HardwareIOConfiguration(
+					numHelperThreads,
+					fps,
 					consumerChannelConfig,
 					producerChannelConfig,
 					bufferSizeFrames,
