@@ -181,7 +181,6 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			}
 
 			final List<RackControlXmlType> jbRackControlXmls = jbRackComponentXml.getRackControl();
-			//			RackComponent uiComponent = slowLookupByName( retVal, componentName );
 			final AbstractMadUiControlInstance<?,?,?>[] uiControlInstances = rackComponent.getUiControlInstances();
 			for( final RackControlXmlType jbControlType : jbRackControlXmls )
 			{
@@ -210,10 +209,21 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			final String rackChannelName = rackIOLinkXml.getRackChannelName();
 			final String componentName = rackIOLinkXml.getRackComponentName();
 			final String componentChannelName = rackIOLinkXml.getRackComponentChannelInstanceName();
-			final MadChannelInstance rackChannelInstance = mirc.getInstance().getChannelInstanceByName( rackChannelName );
-			final RackComponent rackComponent = slowLookupByName( retVal,  componentName );
-			final MadChannelInstance rackComponentChannelInstance = rackComponent.getInstance().getChannelInstanceByName( componentChannelName );
-			rackService.addRackIOLink( retVal, rackChannelInstance, rackComponent, rackComponentChannelInstance );
+			try
+			{
+				final MadChannelInstance rackChannelInstance = mirc.getInstance().getChannelInstanceByName( rackChannelName );
+				final RackComponent rackComponent = slowLookupByName( retVal,  componentName );
+				final MadChannelInstance rackComponentChannelInstance = rackComponent.getInstance().getChannelInstanceByName( componentChannelName );
+				rackService.addRackIOLink( retVal, rackChannelInstance, rackComponent, rackComponentChannelInstance );
+			}
+			catch( final RecordNotFoundException rnfe )
+			{
+				final String msg = "RecordNotFound caught attempting to add rack IO link: " +
+						" rackChannel(" + rackChannelName +")->(" + componentName + " " +
+						componentChannelName + ")";
+				log.error( msg, rnfe );
+				throw rnfe;
+			}
 		}
 
 		// And the links
@@ -224,11 +234,22 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			final String producerChannelName = rackLinkXml.getProducerChannelName();
 			final String consumerName = rackLinkXml.getConsumerRackComponentName();
 			final String consumerChannelName = rackLinkXml.getConsumerChannelName();
-			final RackComponent producerRackComponent = slowLookupByName( retVal, producerName );
-			final MadChannelInstance producerChannelInstance = producerRackComponent.getInstance().getChannelInstanceByName( producerChannelName );
-			final RackComponent consumerRackComponent = slowLookupByName( retVal, consumerName );
-			final MadChannelInstance consumerChannelInstance = consumerRackComponent.getInstance().getChannelInstanceByName( consumerChannelName );
-			rackService.addRackLink( retVal, producerRackComponent, producerChannelInstance, consumerRackComponent, consumerChannelInstance );
+			try
+			{
+				final RackComponent producerRackComponent = slowLookupByName( retVal, producerName );
+				final MadChannelInstance producerChannelInstance = producerRackComponent.getInstance().getChannelInstanceByName( producerChannelName );
+				final RackComponent consumerRackComponent = slowLookupByName( retVal, consumerName );
+				final MadChannelInstance consumerChannelInstance = consumerRackComponent.getInstance().getChannelInstanceByName( consumerChannelName );
+				rackService.addRackLink( retVal, producerRackComponent, producerChannelInstance, consumerRackComponent, consumerChannelInstance );
+			}
+			catch( final RecordNotFoundException rnfe )
+			{
+				final String msg = "RecordNotFound caught attempting to add rack link: " +
+						" prod(" + producerName + " " + producerChannelName + ")->(" +
+						consumerName + " " + consumerChannelName + ")";
+				log.error( msg, rnfe );
+				throw rnfe;
+			}
 		}
 		return retVal;
 	}

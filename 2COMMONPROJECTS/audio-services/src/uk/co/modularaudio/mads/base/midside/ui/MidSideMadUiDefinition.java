@@ -1,0 +1,74 @@
+package uk.co.modularaudio.mads.base.midside.ui;
+
+import java.awt.Point;
+import java.awt.Rectangle;
+
+import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
+import uk.co.modularaudio.mads.base.midside.mu.MidSideMadInstance;
+import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
+import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
+import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.table.Span;
+
+public class MidSideMadUiDefinition extends
+		AbstractNonConfigurableMadUiDefinition<MidSideMadDefinition, MidSideMadInstance, MidSideMadUiInstance>
+{
+	private static final Span SPAN = new Span(2,1);
+
+	private static final int[] CHAN_INDEXES = new int[] {
+		MidSideMadDefinition.CONSUMER_AUDIO_IN_1,
+		MidSideMadDefinition.CONSUMER_AUDIO_IN_2,
+		MidSideMadDefinition.PRODUCER_AUDIO_OUT_1,
+		MidSideMadDefinition.PRODUCER_AUDIO_OUT_2
+	};
+
+	private static final Point[] CHAN_POSIS = new Point[] {
+		new Point( 150, 40 ),
+		new Point( 170, 40 ),
+		new Point( 300, 40 ),
+		new Point( 320, 40 )
+	};
+
+	private static final String[] CONTROL_NAMES = new String[] {
+		"MidSideType"
+	};
+
+	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.COMBO
+	};
+
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		MidSideTypeUiJComponent.class
+	};
+
+	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle( 210,  6, 190, 30 )		// Mid Side Type
+	};
+
+	private static final Class<MidSideMadUiInstance> INSTANCE_CLASS = MidSideMadUiInstance.class;
+
+	public MidSideMadUiDefinition( final BufferedImageAllocator bia,
+			final MidSideMadDefinition definition,
+			final ComponentImageFactory cif,
+			final String imageRoot )
+			throws DatastoreException
+		{
+			super( bia,
+					cif,
+					imageRoot,
+					MadUIStandardBackgrounds.STD_2X1_METALLIC,
+					definition,
+					SPAN,
+					INSTANCE_CLASS,
+					CHAN_INDEXES,
+					CHAN_POSIS,
+					CONTROL_NAMES,
+					CONTROL_TYPES,
+					CONTROL_CLASSES,
+					CONTROL_BOUNDS );
+		}
+
+}

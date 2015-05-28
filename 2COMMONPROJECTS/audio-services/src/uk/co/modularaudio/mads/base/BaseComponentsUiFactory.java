@@ -63,6 +63,8 @@ import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
 import uk.co.modularaudio.mads.base.inverter.ui.InverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterMadUiDefinition;
+import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
+import uk.co.modularaudio.mads.base.midside.ui.MidSideMadUiDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.mono_compressor.ui.MonoCompressorMadUiDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
@@ -192,6 +194,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( IMixer8MadDefinition.class, IMixer8MadUiDefinition.class );
 
 		classToUiDefinition.put( DJEQMadDefinition.class, DJEQMadUiDefinition.class );
+
+		classToUiDefinition.put( MidSideMadDefinition.class, MidSideMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

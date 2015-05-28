@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+    <rackComponent name="Mid Side Processor 2" definitionId="midside">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="MidSideType" value="Left Right To Mid Side"/>
+    </rackComponent>
+    <rackComponent name="Mid Side Processor 5" definitionId="midside">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="MidSideType" value="Mid Side To Left Right"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 3" definitionId="imixer3">
+        <rackPosition column="0" row="5"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 4" definitionId="imixer3">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-4.832301"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/Albums/LFO - Advance 1996/11 - Forever.flac"/>
+        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Mid Side Processor 2" producerChannelName="Output Wave 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 2" producerChannelName="Output Wave 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mid Side Processor 5" producerChannelName="Output Wave 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 5" producerChannelName="Output Wave 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 4" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 5" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 5" consumerChannelName="Input Wave 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 2" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 2" consumerChannelName="Input Wave 2"/>
+</rack>

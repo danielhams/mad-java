@@ -22,18 +22,30 @@ package uk.co.modularaudio.util.audio.dsp;
 
 public class MidSideProcessor
 {
-	public final static void lrToMs( float[] left, float[] right, float[] mid, float[] side, int length )
+	private MidSideProcessor()
 	{
-		for( int i = 0 ; i < length ; i++ )
+	}
+
+	public final static void lrToMs(
+			final float[] left, final float[] right,
+			final float[] mid, final float[] side,
+			final int frameOffset, final int length )
+	{
+		final int lastIndex = frameOffset + length;
+		for( int i = frameOffset ; i < lastIndex ; i++ )
 		{
 			mid[ i ] = 0.5f * (left[i] + right[i]);
 			side[ i ] = 0.5f * (left[i] - right[i]);
 		}
 	}
-	
-	public final static void msToLr( float[] mid, float[] side, float[] left, float[] right, int length )
+
+	public final static void msToLr(
+			final float[] mid, final float[] side,
+			final float[] left, final float[] right,
+			final int frameOffset, final int length )
 	{
-		for( int i = 0 ; i < length ; i++ )
+		final int lastIndex = frameOffset + length;
+		for( int i = frameOffset ; i < lastIndex ; i++ )
 		{
 			left[ i ] = mid[ i ] + side[ i ];
 			right[ i ] = mid[ i ] - side[ i ];
