@@ -53,7 +53,7 @@ public class SoundfilePlayerGainDialUiJComponent
 	private final RotaryDisplayView view;
 
 	// Look into making this something in the preferences
-	public static final float TARGET_PLAYER_DB = -10.0f;
+	public static final float TARGET_PLAYER_DB = -12.0f;
 
 	private static class GainDialColours extends StdRotaryViewColor
 	{
