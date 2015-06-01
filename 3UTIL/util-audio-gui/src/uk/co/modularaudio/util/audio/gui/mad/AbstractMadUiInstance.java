@@ -164,8 +164,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 
 				// Not necessary as we are resetting the event counts in the following lines
 				//guiTemporaryEventStorage.resetEventsToUi();
-				guiTemporaryEventStorage.numCommandEventsToUi = commandToUiQueue.copyToTemp( guiTemporaryEventStorage.commandEventsToUi,
-						-1 );
+				guiTemporaryEventStorage.numCommandEventsToUi = commandToUiQueue.copyToTemp( guiTemporaryEventStorage.commandEventsToUi );
 				guiTemporaryEventStorage.numTemporalEventsToUi = temporalToUiQueue.copyToTemp( guiTemporaryEventStorage.temporalEventsToUi,
 						currentGuiFrameTime );
 			}

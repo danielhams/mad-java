@@ -155,9 +155,8 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		// This isn't necessary as we're resetting the event counts by the following lines
 		//tempQueueEntryStorage.resetEventsToInstance();
 		final long queuePullingFrameTime = periodStartFrameTime + temporalUiToInstanceFrameOffset;
-//		final long queuePullingFrameTime = periodStartFrameTime;
-		tempQueueEntryStorage.numCommandEventsToInstance = commandToInstanceQueue.copyToTemp( tempQueueEntryStorage.commandEventsToInstance,
-				-1 );
+
+		tempQueueEntryStorage.numCommandEventsToInstance = commandToInstanceQueue.copyToTemp( tempQueueEntryStorage.commandEventsToInstance );
 		tempQueueEntryStorage.numTemporalEventsToInstance = temporalToInstanceQueue.copyToTemp( tempQueueEntryStorage.temporalEventsToInstance,
 				queuePullingFrameTime );
 

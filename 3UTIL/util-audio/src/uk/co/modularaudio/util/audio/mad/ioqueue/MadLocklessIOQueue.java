@@ -36,7 +36,7 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 
 	}
 
-	public int copyToTemp( final IOQueueEvent[] destinationEventStorage, final long queuePullingFrameTime )
+	public final int copyToTemp( final IOQueueEvent[] destinationEventStorage )
 	{
 		final int curReadPosition = readPosition.get();
 		final int curWritePosition = writePosition.get();
@@ -44,36 +44,56 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 
 		if( numReadable > 0 )
 		{
-			final boolean isTimeBased = queuePullingFrameTime != -1;
 			int numCopied = 0;
-			if( isTimeBased )
+			for( int i = 0 ; i < numReadable ; i++ )
 			{
-					boolean done = false;
-					for( int i = 0 ; !done && i < numReadable ; i++ )
-					{
-						int posToCheck = curReadPosition + i;
-						posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
-						if( buffer[ posToCheck].frameTime <= queuePullingFrameTime )
-						{
-							COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
-							numCopied++;
-						}
-						else
-						{
-							// We're done, don't want to process this one.
-							done = true;
-							break;
-						}
-					}
-				}
-			else
+				int posToCheck = curReadPosition + i;
+				posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
+				COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
+				numCopied++;
+			}
+
+			if( numCopied > 0 )
 			{
-				for( int i = 0 ; i < numReadable ; i++ )
+				int newPosition = curReadPosition + numCopied;
+				while( newPosition >= bufferLength ) newPosition -= bufferLength;
+
+				while( !readPosition.compareAndSet( curReadPosition, newPosition ) )
 				{
-					int posToCheck = curReadPosition + i;
-					posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
+				}
+			}
+			return numCopied;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public final int copyToTemp( final IOQueueEvent[] destinationEventStorage, final long queuePullingFrameTime )
+	{
+		final int curReadPosition = readPosition.get();
+		final int curWritePosition = writePosition.get();
+		final int numReadable = calcNumReadable( curReadPosition, curWritePosition );
+
+		if( numReadable > 0 )
+		{
+			int numCopied = 0;
+			boolean done = false;
+			for( int i = 0 ; !done && i < numReadable ; i++ )
+			{
+				int posToCheck = curReadPosition + i;
+				posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
+				if( buffer[ posToCheck].frameTime <= queuePullingFrameTime )
+				{
 					COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
 					numCopied++;
+				}
+				else
+				{
+					// We're done, don't want to process this one.
+					done = true;
+					break;
 				}
 			}
 
