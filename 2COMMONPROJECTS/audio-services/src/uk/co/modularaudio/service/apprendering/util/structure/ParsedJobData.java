@@ -46,7 +46,12 @@ public class ParsedJobData
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder();
-		final String jobStr = String.format( "JobLength(%8d) JobThreadNum(%d) JobName(%s)", jobLength, jobThreadNum, jobName );
+		final String jobStr = String.format(
+				"JobStart(%8d) JobLength(%8d) JobThreadNum(%d) JobName(%s)",
+				jobOffsetFromStart,
+				jobLength,
+				jobThreadNum,
+				jobName );
 		sb.append( jobStr );
 //		sb.append("JobOffsetFromStart(" );
 //		sb.append( jobOffsetFromStart );

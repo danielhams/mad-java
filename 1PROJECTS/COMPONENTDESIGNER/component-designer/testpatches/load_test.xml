@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="39">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="DJ EQ 5" definitionId="djeq">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Eight Stereo Lanes, Interpolated) 14" definitionId="imixer8">
+        <rackPosition column="0" row="16"/>
+        <rackControl name="Master Lane" value="-10.5:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 3" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 4" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 5" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 6" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 7" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 7" definitionId="imixer3">
+        <rackPosition column="0" row="5"/>
+        <rackControl name="Master Lane" value="5.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-6.361006"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/Users/dan/Music/iTunes/iTunes Media/Podcasts/Let's Go Techno by Eric Sneo/Let's Go Techno 107 _ Eric Sneo.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 6" definitionId="spectral_amp">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 10" definitionId="sub_rack">
+        <rackPosition column="0" row="12"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 11" definitionId="sub_rack">
+        <rackPosition column="0" row="13"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 12" definitionId="sub_rack">
+        <rackPosition column="0" row="14"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
+        <rackPosition column="0" row="15"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 3" definitionId="sub_rack">
+        <rackPosition column="0" row="4"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 7" definitionId="sub_rack">
+        <rackPosition column="0" row="9"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 8" definitionId="sub_rack">
+        <rackPosition column="0" row="10"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 9" definitionId="sub_rack">
+        <rackPosition column="0" row="11"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 5" definitionId="wave_roller">
+        <rackPosition column="2" row="8"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="DJ EQ 5" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="DJ EQ 5" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 5" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 10" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 11" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 12" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 13" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 7" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 9" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 5" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 10" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 11" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 12" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 13" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 7" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 9" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Sub Rack 10" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 4 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 10" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 4 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 11" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 5 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 11" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 5 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 12" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 6 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 12" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 6 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 7 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 13" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 7 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp 6" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller 5" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 7" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 7" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 9" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 3 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 9" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 14" consumerChannelName="Lane 3 Input Wave Right"/>
+</rack>

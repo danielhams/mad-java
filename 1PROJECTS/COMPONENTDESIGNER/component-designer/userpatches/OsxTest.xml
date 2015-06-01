@@ -2,17 +2,45 @@
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="39">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Mid Side Processor 5" definitionId="midside">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="MidSideType" value="Left Right To Mid Side"/>
+    </rackComponent>
+    <rackComponent name="Mid Side Processor 6" definitionId="midside">
+        <rackPosition column="2" row="10"/>
+        <rackControl name="MidSideType" value="Mid Side To Left Right"/>
+    </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 7" definitionId="imixer3">
         <rackPosition column="2" row="1"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="-10.0:0.0:  "/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
     </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 73" definitionId="imixer3">
+        <rackPosition column="2" row="6"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Moog Filter 8" definitionId="moog_filter">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Filter Type" value="None"/>
+        <rackControl name="Cutoff" value="0.61"/>
+        <rackControl name="Q" value="1.00"/>
+    </rackComponent>
+    <rackComponent name="Moog Filter 9" definitionId="moog_filter">
+        <rackPosition column="0" row="10"/>
+        <rackControl name="Filter Type" value="None"/>
+        <rackControl name="Cutoff" value="0.88"/>
+        <rackControl name="Q" value="0.68"/>
+    </rackComponent>
     <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-4.3853445"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/Users/dan/Music/iTunes/iTunes Media/SetSources/20130215/3232914_Waiting_Original_Mix.mp3"/>
+        <rackControl name="SelectFile" value="/Users/dan/Music/iTunes/iTunes Media/SetSources/200904/2009-03-22_22h47m18.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -77,9 +105,17 @@
             <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Right"/>
         </rack>
     </rackComponent>
+    <rackLink producerRackComponentName="Mid Side Processor 5" producerChannelName="Output Wave 1" consumerRackComponentName="Moog Filter 8" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 5" producerChannelName="Output Wave 2" consumerRackComponentName="Moog Filter 9" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 6" producerChannelName="Output Wave 1" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Mid Side Processor 6" producerChannelName="Output Wave 2" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 4" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 1"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 73" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 6" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 73" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 6" consumerChannelName="Input Wave 2"/>
+    <rackLink producerRackComponentName="Moog Filter 8" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 73" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Moog Filter 9" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 73" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 5" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 5" consumerChannelName="Input Wave 2"/>
     <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" consumerChannelName="Lane 1 Input Wave Right"/>
 </rack>
