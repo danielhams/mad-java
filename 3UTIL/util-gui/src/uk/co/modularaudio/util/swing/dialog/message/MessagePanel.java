@@ -35,38 +35,38 @@ public class MessagePanel extends JPanel implements ActionListener
 
 //	private static Log log = LogFactory.getLog( MessagePanel.class.getName() );
 
-	private MessageDialog parentDialog = null;
-	
-	private MessageDialogCallback callback = null;
-	
-	private JLabel textLabel = new JLabel();
-	private JButton okButton = new JButton("OK");
-	
-	public MessagePanel( MessageDialog parentDialog )
+	private final MessageDialog parentDialog;
+
+	private MessageDialogCallback callback;
+
+	private final JLabel textLabel = new JLabel();
+	private final JButton okButton = new JButton("OK");
+
+	public MessagePanel( final MessageDialog parentDialog )
 	{
 		this.parentDialog = parentDialog;
 //		okButton.setMaximumSize( new Dimension( 80, 40 ) );
 		okButton.addActionListener( this );
-		
+
 		parentDialog.getRootPane().setDefaultButton( okButton );
-		
-		MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
+
+		final MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
 		this.setLayout( migLayout );
-		
+
 		this.add( textLabel, "grow, shrink, spanx 3, wrap" );
 		this.add( okButton, "growx 0, align center");
 	}
 
-	public void setValues( String message,
-			int messageType,
-			MessageDialogCallback callback )
+	public void setValues( final String message,
+			final int messageType,
+			final MessageDialogCallback callback )
 	{
 		textLabel.setText( message );
 		this.callback = callback;
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 //		log.debug("Received action performed: " + e.toString() );
 		parentDialog.setVisible( false );

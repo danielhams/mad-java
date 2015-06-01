@@ -18,10 +18,27 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.preferences;
+package uk.co.modularaudio.service.userpreferences.mvc.controllers;
 
-public enum PreferencesDialogPageEnum
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserMusicDirMVCModel;
+
+public class UserMusicDirMVCController
 {
-	GENERAL,
-	AUDIO_SYSTEM
+	private UserMusicDirMVCModel model;
+
+	public UserMusicDirMVCController( final UserMusicDirMVCModel userMusicDirModel )
+	{
+		this.model = userMusicDirModel;
+	}
+
+	public void setModel( final UserMusicDirMVCModel userMusicDirModel )
+	{
+		this.model = userMusicDirModel;
+	}
+
+	public void setValue( final Object source, final String userSubRacksDir )
+	{
+		model.setValue( source, userSubRacksDir );
+	}
+
 }

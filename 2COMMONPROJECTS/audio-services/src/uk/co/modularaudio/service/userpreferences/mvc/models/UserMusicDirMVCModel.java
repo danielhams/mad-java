@@ -18,9 +18,41 @@
  *
  */
 
-package uk.co.modularaudio.service.userpreferences.mvc.hardware;
+package uk.co.modularaudio.service.userpreferences.mvc.models;
 
-public interface HardwareProvider
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+public class UserMusicDirMVCModel
 {
+
+	private String userMusicDir;
+
+	private ChangeListener listener;
+
+	public UserMusicDirMVCModel()
+	{
+		userMusicDir = "./";
+	}
+
+	public String getValue()
+	{
+		return userMusicDir;
+	}
+
+	public void setValue( final Object source, final String userMusicDir )
+	{
+		this.userMusicDir = userMusicDir;
+
+		if( listener != null )
+		{
+			listener.stateChanged( new ChangeEvent( source ) );
+		}
+	}
+
+	public void addChangeListener( final ChangeListener changeListener )
+	{
+		this.listener = changeListener;
+	}
 
 }

@@ -58,4 +58,14 @@ public interface UserPreferencesController
 	 * @see UserPreferencesService#createUserPreferencesModel()
 	 */
 	void reloadUserPreferences() throws DatastoreException;
+
+
+	/**
+	 * <p>Check if any changes made to the preferences have
+	 * update the audio engine configuration and will require
+	 * a restart.</p>
+	 * @return if the preferences contained audio engine changes
+	 * @throws DatastoreException
+	 */
+	boolean checkForAudioEnginePrefsChanges() throws DatastoreException;
 }

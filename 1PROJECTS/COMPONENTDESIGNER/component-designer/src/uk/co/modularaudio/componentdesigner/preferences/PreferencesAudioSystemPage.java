@@ -33,6 +33,7 @@ import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputMidiDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesRenderingCoresView;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class PreferencesAudioSystemPage extends JPanel
 {
@@ -56,11 +57,15 @@ public class PreferencesAudioSystemPage extends JPanel
 	{
 		this.userPreferencesView = preferencesDialog.getUserPreferencesView();
 
-		final String migLayoutString = "fill";
-		this.setLayout( new MigLayout( migLayoutString ) );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "fill" );
+
+		this.setLayout( msh.createMigLayout() );
 
 		final JPanel deviceChoicePanel = new JPanel();
-//		String migLayoutString = "debug, center";
+
 		final String dcLayoutString = "center";
 		final String rowLayoutString = "";
 		final String colLayoutString = "[][fill,grow,shrink]";
@@ -85,12 +90,6 @@ public class PreferencesAudioSystemPage extends JPanel
 		deviceChoicePanel.add( outputDeviceLabel, "align right" );
 		outputDeviceCombo = userPreferencesView.getOutputDeviceMVCView();
 		deviceChoicePanel.add( outputDeviceCombo, "growx, shrink, wrap" );
-
-		// Only supporting jack for now, so no issue with buffer size selection
-//		JLabel clockLabel = new JLabel( "Buffer Size:" );
-//		retVal.add( clockLabel, "align right, wrap" );
-//		bufferSizeSlider = userPreferencesView.getBufferSizeMVCView();
-//		retVal.add( bufferSizeSlider, "wrap");
 
 		inputMidiDeviceCombo = userPreferencesView.getInputMidiDeviceMVCView();
 		final JLabel inputMidiLabel = new JLabel( "Midi In" );

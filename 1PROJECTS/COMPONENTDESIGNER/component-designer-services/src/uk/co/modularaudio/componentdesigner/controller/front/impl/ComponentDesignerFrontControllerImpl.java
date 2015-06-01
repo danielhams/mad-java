@@ -543,15 +543,20 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		try
 		{
+			final boolean hadAudioEngineDifferences = userPreferencesController.checkForAudioEnginePrefsChanges();
+
 			userPreferencesController.applyUserPreferencesChanges();
 
-			if( isAudioEngineRunning() )
+			if( hadAudioEngineDifferences && isAudioEngineRunning() )
 			{
 				// And reset the audio IO too
 				stopAudioEngine();
 				Thread.sleep( AUDIO_ENGINE_RESTART_PAUSE_MILLIS );
 			}
-			startAudioEngine();
+			if( !isAudioEngineRunning() )
+			{
+				startAudioEngine();
+			}
 		}
 		catch (final Exception e)
 		{
@@ -565,9 +570,18 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		try
 		{
-			final boolean retVal = callCheckOrStartAudioEngine( false );
+			final boolean hadAudioEngineDifferences = userPreferencesController.checkForAudioEnginePrefsChanges();
 
-			return retVal;
+			if( hadAudioEngineDifferences )
+			{
+				final boolean retVal = callCheckOrStartAudioEngine( false );
+
+				return retVal;
+			}
+			else
+			{
+				return true;
+			}
 		}
 		catch(final DatastoreException de)
 		{

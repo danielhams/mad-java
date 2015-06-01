@@ -28,33 +28,33 @@ import javax.swing.JDialog;
 public class TextInputDialog extends JDialog
 {
 //	private static Log log = LogFactory.getLog( TextInputDialog.class.getName());
-	
+
 	private static final long serialVersionUID = -8249294046151891200L;
-	
-	private TextInputPanel textInputPanel = null;
-	
+
+	private final TextInputPanel textInputPanel;
+
 	public TextInputDialog()
 	{
 		textInputPanel = new TextInputPanel( this );
 		this.setModal( true );
-		
+
 		this.setMinimumSize( new Dimension( 300, 150 ) );
 
 		this.add( textInputPanel );
 		this.pack();
 	}
 
-	public void setValues( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			String initialValue,
-			TextInputDialogCallback callback )
+	public void setValues( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String initialValue,
+			final TextInputDialogCallback callback )
 	{
 		this.setTitle( title );
 		textInputPanel.setValues( message, messageType, initialValue, callback );
 		this.pack();
-		
+
 		this.setLocationRelativeTo( parentComponent );
 	}
 

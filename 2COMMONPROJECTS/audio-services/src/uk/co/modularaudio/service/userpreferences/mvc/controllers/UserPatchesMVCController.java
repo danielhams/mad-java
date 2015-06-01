@@ -18,14 +18,27 @@
  *
  */
 
-package uk.co.modularaudio.service.userpreferences.mvc.hardware;
+package uk.co.modularaudio.service.userpreferences.mvc.controllers;
 
-import uk.co.modularaudio.util.mvc.combo.idstringandvalue.IdStringAndValueComboItem;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserPatchesMVCModel;
 
-public class HardwareProviderComboItem extends IdStringAndValueComboItem<HardwareProvider>
+public class UserPatchesMVCController
 {
-	public HardwareProviderComboItem(String id, String displayString, HardwareProvider hs )
+	private UserPatchesMVCModel model;
+
+	public UserPatchesMVCController( final UserPatchesMVCModel userPatchesModel )
 	{
-		super(id, displayString, hs);
+		this.model = userPatchesModel;
 	}
+
+	public void setModel( final UserPatchesMVCModel userPatchesModel )
+	{
+		this.model = userPatchesModel;
+	}
+
+	public void setValue( final Object source, final String userPatchesDir )
+	{
+		model.setValue( source, userPatchesDir );
+	}
+
 }

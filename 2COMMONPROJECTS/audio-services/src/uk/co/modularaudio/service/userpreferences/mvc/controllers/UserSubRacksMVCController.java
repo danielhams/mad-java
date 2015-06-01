@@ -18,10 +18,27 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.preferences;
+package uk.co.modularaudio.service.userpreferences.mvc.controllers;
 
-public enum PreferencesDialogPageEnum
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserSubRacksMVCModel;
+
+public class UserSubRacksMVCController
 {
-	GENERAL,
-	AUDIO_SYSTEM
+	private UserSubRacksMVCModel model;
+
+	public UserSubRacksMVCController( final UserSubRacksMVCModel userSubRacksModel )
+	{
+		this.model = userSubRacksModel;
+	}
+
+	public void setModel( final UserSubRacksMVCModel userSubRacksModel )
+	{
+		this.model = userSubRacksModel;
+	}
+
+	public void setValue( final Object source, final String userSubRacksDir )
+	{
+		model.setValue( source, userSubRacksDir );
+	}
+
 }

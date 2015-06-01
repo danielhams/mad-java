@@ -27,6 +27,9 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDevic
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputMidiDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserMusicDirMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserPatchesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserSubRacksMVCController;
 
 public class UserPreferencesMVCController
 {
@@ -44,6 +47,10 @@ public class UserPreferencesMVCController
 	private final InputMidiDeviceComboMVCController inputMidiDeviceComboController;
 	private final OutputMidiDeviceComboMVCController outputMidiDeviceComboController;
 
+	private final UserPatchesMVCController userPatchesController;
+	private final UserSubRacksMVCController userSubRacksController;
+	private final UserMusicDirMVCController userMusicDirController;
+
 	public UserPreferencesMVCController( final UserPreferencesMVCModel model )
 	{
 		this.model = model;
@@ -57,6 +64,10 @@ public class UserPreferencesMVCController
 		bufferSizeSliderController = new BufferSizeSliderMVCController( model.getBufferSizeModel(), this );
 		inputMidiDeviceComboController = new InputMidiDeviceComboMVCController( model.getInputMidiDeviceComboModel(), this );
 		outputMidiDeviceComboController = new OutputMidiDeviceComboMVCController( model.getOutputMidiDeviceComboModel(), this );
+
+		userPatchesController = new UserPatchesMVCController( model.getUserPatchesModel() );
+		userSubRacksController = new UserSubRacksMVCController( model.getUserSubRacksModel() );
+		userMusicDirController = new UserMusicDirMVCController( model.getUserMusicDirModel() );
 	}
 
 	public UserPreferencesMVCModel getModel()
@@ -112,6 +123,25 @@ public class UserPreferencesMVCController
 		bufferSizeSliderController.setModel( model.getBufferSizeModel() );
 		inputMidiDeviceComboController.setModel( model.getInputMidiDeviceComboModel() );
 		outputMidiDeviceComboController.setModel( model.getOutputMidiDeviceComboModel() );
+
+		userPatchesController.setModel( model.getUserPatchesModel() );
+		userSubRacksController.setModel( model.getUserSubRacksModel() );
+		userMusicDirController.setModel( model.getUserMusicDirModel() );
+	}
+
+	public UserPatchesMVCController getUserPatchesController()
+	{
+		return userPatchesController;
+	}
+
+	public UserSubRacksMVCController getUserSubRacksController()
+	{
+		return userSubRacksController;
+	}
+
+	public UserMusicDirMVCController getUserMusicDirController()
+	{
+		return userMusicDirController;
 	}
 
 }

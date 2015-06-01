@@ -34,40 +34,40 @@ import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 public class TextInputPanel extends JPanel implements ActionListener
 {
 //	private static Log log = LogFactory.getLog( TextInputPanel.class.getName() );
-	
+
 	private static final long serialVersionUID = -1201231298787690939L;
-	
-	private TextInputDialog parentDialog = null;
-	
-	private TextInputDialogCallback callback = null;
-	
-	private JLabel textLabel = new JLabel();
-	private JTextField textField = new JTextField();
-	private JButton okButton = new JButton("OK");
-	private JButton cancelButton = new JButton("Cancel");
-	
-	public TextInputPanel( TextInputDialog parentDialog )
+
+	private final TextInputDialog parentDialog;
+
+	private TextInputDialogCallback callback;
+
+	private final JLabel textLabel = new JLabel();
+	private final JTextField textField = new JTextField();
+	private final JButton okButton = new JButton("OK");
+	private final JButton cancelButton = new JButton("Cancel");
+
+	public TextInputPanel( final TextInputDialog parentDialog )
 	{
 		this.parentDialog = parentDialog;
 //		okButton.setMaximumSize( new Dimension( 80, 40 ) );
 		okButton.addActionListener( this );
 		cancelButton.addActionListener( this );
-		
+
 		parentDialog.getRootPane().setDefaultButton( okButton );
-		
-		MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
+
+		final MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
 		this.setLayout( migLayout );
-		
+
 		this.add( textLabel, "grow, shrink, spanx 3, wrap" );
 		this.add( textField, "grow, shrink, spanx 3, wrap" );
 		this.add( okButton, "grow 0, align left");
 		this.add( cancelButton, "grow 0, spanx 2, align right" );
 	}
 
-	public void setValues( String message,
-			int messageType,
-			String initialValue,
-			TextInputDialogCallback callback )
+	public void setValues( final String message,
+			final int messageType,
+			final String initialValue,
+			final TextInputDialogCallback callback )
 	{
 		textLabel.setText( message );
 		if( initialValue != null )
@@ -82,13 +82,13 @@ public class TextInputPanel extends JPanel implements ActionListener
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
 //		log.debug("Received action performed: " + e.toString() );
-		Object source = e.getSource();
+		final Object source = e.getSource();
 		if( source == okButton )
 		{
-			String value = textField.getText();
+			final String value = textField.getText();
 			parentDialog.setVisible( false );
 			if( callback != null )
 			{
@@ -104,7 +104,7 @@ public class TextInputPanel extends JPanel implements ActionListener
 
 	public void doFocusSetting()
 	{
-		textField.grabFocus();		
+		textField.grabFocus();
 	}
 
 }

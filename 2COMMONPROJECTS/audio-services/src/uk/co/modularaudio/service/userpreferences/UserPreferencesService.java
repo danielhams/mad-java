@@ -28,9 +28,11 @@ public interface UserPreferencesService
 {
 	public UserPreferencesMVCController getUserPreferencesMVCController() throws DatastoreException;
 
-	public void applyUserPreferencesChanges(UserPreferencesMVCController userPreferencesModelController) throws DatastoreException;
+	public void applyUserPreferencesChanges( final UserPreferencesMVCModel userPreferencesMVCModel ) throws DatastoreException;
 
 	UserPreferencesMVCModel createUserPreferencesModel() throws DatastoreException;
 
 	void setupPreferencesSelections();
+
+	public boolean checkForAudioEnginePrefsChanges( UserPreferencesMVCModel model ) throws DatastoreException;
 }

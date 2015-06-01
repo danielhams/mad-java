@@ -34,52 +34,52 @@ import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 public class YesNoQuestionPanel extends JPanel implements ActionListener
 {
 //	private static Log log = LogFactory.getLog( YesNoQuestionPanel.class.getName() );
-	
+
 	private static final long serialVersionUID = 5562218715267063142L;
-	
-	private YesNoQuestionDialog parentDialog = null;
-	
-	private JLabel textLabel = null;
-	private JPanel buttonPanel = null;
-	
-	private YesNoQuestionDialogCallback callback = null;
-	
-	private HashMap<String,Integer> optionTextToIndexMap = new HashMap<String,Integer>();
-	
-	public YesNoQuestionPanel( YesNoQuestionDialog parentDialog )
+
+	private final YesNoQuestionDialog parentDialog;
+
+	private final JLabel textLabel;
+	private final JPanel buttonPanel;
+
+	private YesNoQuestionDialogCallback callback;
+
+	private final HashMap<String,Integer> optionTextToIndexMap = new HashMap<String,Integer>();
+
+	public YesNoQuestionPanel( final YesNoQuestionDialog parentDialog )
 	{
 		this.parentDialog = parentDialog;
-		
+
 		textLabel = new JLabel();
-		
-		MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
+
+		final MigLayout migLayout = new MigLayout( "fill, insets " + MessageDialog.DEFAULT_BORDER_WIDTH, "", "[growprio 100][growprio 0]");
 		this.setLayout( migLayout );
-		
+
 		this.add( textLabel, "grow, shrink, spanx 3, wrap" );
 		buttonPanel = new JPanel();
-		MigLayout buttonPanelLayout = new MigLayout( "gap 5, insets 0, fillx, align center");
+		final MigLayout buttonPanelLayout = new MigLayout( "gap 5, insets 0, fillx, align center");
 		buttonPanel.setLayout( buttonPanelLayout );
 		this.add( buttonPanel, "growx, align center");
 	}
 
-	public void setValues( String message,
-			int messageType,
-			String[] options,
-			String defaultChoice,
-			YesNoQuestionDialogCallback callback )
+	public void setValues( final String message,
+			final int messageType,
+			final String[] options,
+			final String defaultChoice,
+			final YesNoQuestionDialogCallback callback )
 	{
 		// Reset the response so window close does the appropriate thing
 		textLabel.setText( message );
 		this.callback = callback;
-		
+
 		parentDialog.getRootPane().setDefaultButton( null );
 		buttonPanel.removeAll();
-		
+
 		for( int i = 0 ; i < options.length ; i++ )
 		{
-			String optionText = options[ i ];
+			final String optionText = options[ i ];
 			optionTextToIndexMap.put( optionText, i );
-			JButton optionButton = new JButton( optionText );
+			final JButton optionButton = new JButton( optionText );
 			optionButton.addActionListener( this );
 			buttonPanel.add( optionButton, "align center" );
 			if( defaultChoice != null && optionText.equals( defaultChoice ) )
@@ -90,13 +90,13 @@ public class YesNoQuestionPanel extends JPanel implements ActionListener
 	}
 
 	@Override
-	public void actionPerformed( ActionEvent e )
+	public void actionPerformed( final ActionEvent e )
 	{
-		Object eventSource = e.getSource();
+		final Object eventSource = e.getSource();
 		if( eventSource instanceof JButton )
 		{
-			JButton button = (JButton)eventSource;
-			String optionText = button.getText();
+			final JButton button = (JButton)eventSource;
+			final String optionText = button.getText();
 			parentDialog.setVisible( false );
 			if( callback != null )
 			{

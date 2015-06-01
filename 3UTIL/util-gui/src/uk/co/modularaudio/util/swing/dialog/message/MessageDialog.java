@@ -28,27 +28,27 @@ import javax.swing.JDialog;
 public class MessageDialog extends JDialog
 {
 	private static final long serialVersionUID = -8625393647843389583L;
-	
-	private MessagePanel messagePanel = null;
+
+	private final MessagePanel messagePanel;
 
 	public static final int DEFAULT_BORDER_WIDTH = 10;
-	
+
 	public MessageDialog()
 	{
 		messagePanel = new MessagePanel( this );
 		this.setModal( true );
-		
+
 		this.setMinimumSize( new Dimension( 300, 150 ) );
 
 		this.add( messagePanel );
 		this.pack();
 	}
 
-	public void setValues( Component parentComponent,
-			String message,
-			String title,
-			int messageType,
-			MessageDialogCallback callback )
+	public void setValues( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final MessageDialogCallback callback )
 	{
 		this.setTitle( title );
 		messagePanel.setValues( message, messageType, callback );

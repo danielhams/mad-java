@@ -45,6 +45,8 @@ import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialog;
+import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialog;
@@ -68,6 +70,8 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	private YesNoQuestionDialog yesNoQuestionDialog;
 	private TextInputDialog textInputDialog;
 	private MessageDialog messageDialog;
+
+	private DirectorySelectionDialog directorySelectionDialog;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -110,7 +114,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	public UserPreferencesMVCView getUserPreferencesMVCView( final UserPreferencesMVCController userPrefsModelController )
 			throws DatastoreException
 	{
-		return new UserPreferencesMVCView( userPrefsModelController );
+		return new UserPreferencesMVCView( this, userPrefsModelController );
 	}
 
 	@Override
@@ -252,5 +256,25 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 				messageType,
 				callback );
 		messageDialog.go();
+	}
+
+	private synchronized void checkDsDialog()
+	{
+		if( directorySelectionDialog == null )
+		{
+			directorySelectionDialog = new DirectorySelectionDialog();
+		}
+	}
+
+	@Override
+	public void showDirectorySelectionDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final DirectorySelectionDialogCallback callback )
+	{
+		checkDsDialog();
+		directorySelectionDialog.setValues( parentComponent, message, title, messageType, callback );
+		directorySelectionDialog.go();
 	}
 }

@@ -49,11 +49,17 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDevic
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.OutputMidiDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserMusicDirMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserPatchesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserSubRacksMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSizeMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserMusicDirMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserPatchesMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserSubRacksMVCModel;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.format.SampleBits;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
@@ -85,6 +91,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private static final String PREFS_FILE_KEY_INPUT_MIDI_DEVICE = "InputMidiDeviceId";
 	private static final String PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE = "OutputMidiDeviceId";
 
+	private static final String PREFS_FILE_KEY_USER_PATCHES = "UserPatchesDir";
+	private static final String PREFS_FILE_KEY_USER_SUBRACKS = "UserSubRacksDir";
+	private static final String PREFS_FILE_KEY_USER_MUSICDIR = "UserMusicDir";
+
 	private static final String DEFAULT_BUFFER_SIZE_STRING = "1024";
 
 	private String userPreferencesFilename;
@@ -104,6 +114,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private int bufferSize = -1;
 	private String inputMidiDeviceId;
 	private String outputMidiDeviceId;
+
+	private String userPatchesDir;
+	private String userSubRacksDir;
+	private String userMusicDir;
 
 	@Override
 	public void init() throws ComponentConfigurationException
@@ -143,6 +157,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		inputDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_DEVICE, "" );
 		inputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_MIDI_DEVICE, "" );
 		outputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE, "" );
+
+		userPatchesDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_PATCHES, "./userpatches" );
+		userSubRacksDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_SUBRACKS, "./usersubpatches" );
+		userMusicDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_MUSICDIR, "./music" );
 	}
 
 	@Override
@@ -308,6 +326,15 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			{
 			}
 		}
+
+		final UserPatchesMVCController updc = userPreferences.getUserPatchesController();
+		updc.setValue( this, userPatchesDir );
+
+		final UserSubRacksMVCController usrdc = userPreferences.getUserSubRacksController();
+		usrdc.setValue( this, userSubRacksDir );
+
+		final UserMusicDirMVCController umddc = userPreferences.getUserMusicDirController();
+		umddc.setValue( this, userMusicDir );
 	}
 
 	@Override
@@ -387,6 +414,12 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( inputMidiDeviceItems );
 		final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( outputMidiDeviceItems );
 
+		final UserPatchesMVCModel userPatchesModel = new UserPatchesMVCModel();
+
+		final UserSubRacksMVCModel userSubRacksModel = new UserSubRacksMVCModel();
+
+		final UserMusicDirMVCModel userMusicDirModel = new UserMusicDirMVCModel();
+
 		final UserPreferencesMVCModel model = new UserPreferencesMVCModel(
 				renderingCoresModel,
 				guiFpsComboModel,
@@ -394,28 +427,30 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 				outputDeviceComboModel,
 				bufferSizeModel,
 				inputMidiDeviceComboModel,
-				outputMidiDeviceComboModel );
+				outputMidiDeviceComboModel,
+				userPatchesModel,
+				userSubRacksModel,
+				userMusicDirModel );
 		return model;
 	}
 
 	@Override
-	public void applyUserPreferencesChanges( final UserPreferencesMVCController userPreferencesModelController )
+	public void applyUserPreferencesChanges( final UserPreferencesMVCModel userPreferencesMVCModel )
 			throws DatastoreException
 	{
 		FileOutputStream os = null;
 		try
 		{
-			final UserPreferencesMVCModel userPrefsMVCModel = userPreferencesModelController.getModel();
-			final RenderingCoresMVCModel renderingCoresModel = userPrefsMVCModel.getRenderingCoresModel();
-			final GuiFpsMVCModel guiFpsComboModel = userPrefsMVCModel.getFpsComboModel();
+			final RenderingCoresMVCModel renderingCoresModel = userPreferencesMVCModel.getRenderingCoresModel();
+			final GuiFpsMVCModel guiFpsComboModel = userPreferencesMVCModel.getFpsComboModel();
 			final GuiFpsComboItem guiFpsItem = guiFpsComboModel.getSelectedElement();
-			final AudioSystemDeviceMVCModel inputDeviceComboModel = userPrefsMVCModel.getInputDeviceComboModel();
+			final AudioSystemDeviceMVCModel inputDeviceComboModel = userPreferencesMVCModel.getInputDeviceComboModel();
 			final AudioSystemDeviceComboItem inputDeviceComboItem = inputDeviceComboModel.getSelectedElement();
-			final AudioSystemDeviceMVCModel outputDeviceComboModel = userPrefsMVCModel.getOutputDeviceComboModel();
+			final AudioSystemDeviceMVCModel outputDeviceComboModel = userPreferencesMVCModel.getOutputDeviceComboModel();
 			final AudioSystemDeviceComboItem outputDeviceComboItem = outputDeviceComboModel.getSelectedElement();
-			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = userPrefsMVCModel.getInputMidiDeviceComboModel();
+			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = userPreferencesMVCModel.getInputMidiDeviceComboModel();
 			final AudioSystemMidiDeviceComboItem inputMidiDeviceComboItem = inputMidiDeviceComboModel.getSelectedElement();
-			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPrefsMVCModel.getOutputMidiDeviceComboModel();
+			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPreferencesMVCModel.getOutputMidiDeviceComboModel();
 			final AudioSystemMidiDeviceComboItem outputMidiDeviceComboItem = outputMidiDeviceComboModel.getSelectedElement();
 
 			userPreferencesProperties.put( PREFS_FILE_RENDERING_CORES, Integer.toString( renderingCoresModel.getValue() ) );
@@ -429,12 +464,28 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			userPreferencesProperties.put( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE,
 					(outputMidiDeviceComboItem == null ? "" : outputMidiDeviceComboItem.getId() ));
 
-			final AudioSystemBufferSizeMVCModel bufferSizeModel = userPrefsMVCModel.getBufferSizeModel();
+			final AudioSystemBufferSizeMVCModel bufferSizeModel = userPreferencesMVCModel.getBufferSizeModel();
 
 			final int bufferSizeModelIndex = bufferSizeModel.getValue();
 			final int bufferSize = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModelIndex );
 			userPreferencesProperties.put( PREFS_FILE_KEY_BUFFER_SIZE,
 					bufferSize + "" );
+
+			final UserPatchesMVCModel userPatchesModel = userPreferencesMVCModel.getUserPatchesModel();
+
+			userPreferencesProperties.put( PREFS_FILE_KEY_USER_PATCHES,
+					userPatchesModel.getValue() );
+
+			final UserSubRacksMVCModel userSubRacksModel = userPreferencesMVCModel.getUserSubRacksModel();
+
+			userPreferencesProperties.put( PREFS_FILE_KEY_USER_SUBRACKS,
+					userSubRacksModel.getValue() );
+
+			final UserMusicDirMVCModel userMusicDirModel = userPreferencesMVCModel.getUserMusicDirModel();
+
+			userPreferencesProperties.put( PREFS_FILE_KEY_USER_MUSICDIR,
+					userMusicDirModel.getValue() );
+
 			os = new FileOutputStream( userPreferencesFile );
 			userPreferencesProperties.store( os, "" );
 			os.close();
@@ -461,5 +512,52 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 				}
 			}
 		}
+	}
+
+	@Override
+	public boolean checkForAudioEnginePrefsChanges( final UserPreferencesMVCModel model ) throws DatastoreException
+	{
+		boolean wasDifferent = false;
+		wasDifferent = wasDifferent || (renderingCores != model.getRenderingCoresModel().getValue());
+
+		wasDifferent = wasDifferent || (guiFps != model.getFpsComboModel().getFpsValue());
+
+		final AudioSystemDeviceComboItem iOutputDevice = model.getOutputDeviceComboModel().getSelectedElement();
+		wasDifferent = wasDifferent || (
+				(outputDeviceId == null && iOutputDevice != null )
+				||
+				(outputDeviceId != null && iOutputDevice == null )
+				||
+				(!outputDeviceId.equals(iOutputDevice.getId()))
+				);
+
+		final AudioSystemDeviceComboItem iInputDevice = model.getInputDeviceComboModel().getSelectedElement();
+		wasDifferent = wasDifferent || (
+				(inputDeviceId == null && iInputDevice != null )
+				||
+				(inputDeviceId != null && iInputDevice == null )
+				||
+				(!inputDeviceId.equals(iInputDevice.getId()))
+				);
+
+		final AudioSystemMidiDeviceComboItem iOutputMidi = model.getOutputMidiDeviceComboModel().getSelectedElement();
+		wasDifferent = wasDifferent || (
+				(outputMidiDeviceId == null && iOutputMidi != null )
+				||
+				(outputMidiDeviceId != null && iOutputMidi == null )
+				||
+				(!outputMidiDeviceId.equals(iOutputMidi.getId()))
+				);
+
+		final AudioSystemMidiDeviceComboItem iInputMidi = model.getInputMidiDeviceComboModel().getSelectedElement();
+		wasDifferent = wasDifferent || (
+				(inputMidiDeviceId == null && iInputMidi != null )
+				||
+				(inputMidiDeviceId != null && iInputMidi == null )
+				||
+				(!inputMidiDeviceId.equals(iInputMidi.getId()))
+				);
+
+		return wasDifferent;
 	}
 }

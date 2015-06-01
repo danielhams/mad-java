@@ -65,7 +65,7 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 	private final Derivative c = new Derivative();
 	private final Derivative d = new Derivative();
 
-	private final Derivative integrateDerivative = new Derivative();
+	private final Derivative integrationDerivative = new Derivative();
 
 	private float lowerBound;
 	private float upperBound;
@@ -213,7 +213,7 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 			final double t,
 			final double dt )
 	{
-		evaluate( state, t, 0.0, integrateDerivative, a );
+		evaluate( state, t, 0.0, integrationDerivative, a );
 		evaluate( state, t, dt*0.5, a, b );
 		evaluate( state, t, dt*0.5, b, c );
 		evaluate( state, t, dt, c, d );

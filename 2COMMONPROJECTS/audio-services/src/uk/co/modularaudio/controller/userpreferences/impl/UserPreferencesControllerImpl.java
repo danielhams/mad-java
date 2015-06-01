@@ -75,7 +75,7 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	public void applyUserPreferencesChanges()
 			throws DatastoreException
 	{
-		userPreferencesService.applyUserPreferencesChanges( userPreferencesMVCController );
+		userPreferencesService.applyUserPreferencesChanges( userPreferencesMVCController.getModel() );
 	}
 
 	@Override
@@ -116,5 +116,11 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 		userPreferencesMVCView.setModel( model );
 
 		userPreferencesService.setupPreferencesSelections();
+	}
+
+	@Override
+	public boolean checkForAudioEnginePrefsChanges() throws DatastoreException
+	{
+		return userPreferencesService.checkForAudioEnginePrefsChanges( userPreferencesMVCController.getModel() );
 	}
 }

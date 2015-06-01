@@ -28,7 +28,6 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
-import uk.co.modularaudio.componentdesigner.preferences.newhardware.PreferencesHardwarePage;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.rack.GuiConstants;
@@ -43,13 +42,11 @@ public class PreferencesManipulator
 	// Titles for the tabs
 	private static final String TAB_TITLE_GENERAL = "General";
 	private static final String TAB_TITLE_AUDIO_SYSTEM = "Audio System";
-	private static final String TAB_TITLE_HARDWARE_PAGE = "Audio Hardware";
 
 	private final JTabbedPane tabbedPane;
 
 	private final PreferencesGeneralPage generalPage;
 	private final PreferencesAudioSystemPage audioSystemPage;
-	private final PreferencesHardwarePage hardwarePage;
 
 	public PreferencesManipulator( final ComponentDesignerFrontController fc,
 			final ComponentImageFactory cif,
@@ -63,16 +60,15 @@ public class PreferencesManipulator
 		preferencesDialog.setDefaultCloseOperation( JFrame.HIDE_ON_CLOSE );
 
 		final Map<PreferencesDialogPageEnum, Component> pageToComponentMap = new HashMap<PreferencesDialogPageEnum, Component>();
-		generalPage = new PreferencesGeneralPage();
+		generalPage = new PreferencesGeneralPage( fc, preferencesDialog );
 		pageToComponentMap.put( PreferencesDialogPageEnum.GENERAL, generalPage );
+
 		audioSystemPage = new PreferencesAudioSystemPage( fc, preferencesDialog );
 		pageToComponentMap.put( PreferencesDialogPageEnum.AUDIO_SYSTEM, audioSystemPage );
-		hardwarePage = new PreferencesHardwarePage( fc, preferencesDialog );
-		pageToComponentMap.put( PreferencesDialogPageEnum.HARDWARE_PAGE, hardwarePage );
+
 		tabbedPane = new JTabbedPane();
 		tabbedPane.addTab( TAB_TITLE_GENERAL, generalPage );
 		tabbedPane.addTab( TAB_TITLE_AUDIO_SYSTEM, audioSystemPage );
-		tabbedPane.addTab( TAB_TITLE_HARDWARE_PAGE, hardwarePage );
 		preferencesDialog.setPreferencesTabbedFrame( tabbedPane, pageToComponentMap );
 
 		preferencesDialog.registerCancelAction( actions.getCancelAction() );

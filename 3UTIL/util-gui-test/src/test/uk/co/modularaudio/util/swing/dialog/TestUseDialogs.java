@@ -27,6 +27,8 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialog;
+import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialog;
@@ -37,60 +39,77 @@ import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCal
 public class TestUseDialogs extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestUseDialogs.class.getName() );
-	
+
 	public void testUseTextInput() throws Exception
 	{
-		TextInputDialog tid = new TextInputDialog();
-		
-		TextInputDialogCallback testCallback = new TextInputDialogCallback()
+		final TextInputDialog tid = new TextInputDialog();
+
+		final TextInputDialogCallback testCallback = new TextInputDialogCallback()
 		{
-			
+
 			@Override
-			public void dialogClosedReceiveText( String textOrNull )
+			public void dialogClosedReceiveText( final String textOrNull )
 			{
 				log.debug("JUnit test received callback with: " + textOrNull );
 			}
 		};
 		tid.setValues( null, "Some message", "Some title", JOptionPane.QUESTION_MESSAGE, "initialValue", testCallback );
-		
+
 		tid.go();
 	}
-	
+
 	public void testUseYesNoQuestion() throws Exception
 	{
-		YesNoQuestionDialog ynd = new YesNoQuestionDialog();
-		
-		YesNoQuestionDialogCallback testCallback = new YesNoQuestionDialogCallback()
+		final YesNoQuestionDialog ynd = new YesNoQuestionDialog();
+
+		final YesNoQuestionDialogCallback testCallback = new YesNoQuestionDialogCallback()
 		{
 			@Override
-			public void receiveDialogResultValue( int value )
+			public void receiveDialogResultValue( final int value )
 			{
 				log.debug("JUnit test received yes no callback with " + value );
 			}
 		};
-		String[] options = new String[] { "YesOption", "NoOption", "CancelOption" };
-		String defaultChoice = options[0];
+		final String[] options = new String[] { "YesOption", "NoOption", "CancelOption" };
+		final String defaultChoice = options[0];
 		ynd.setValues( null,  "Some message", "Some title", JOptionPane.YES_NO_CANCEL_OPTION, options, defaultChoice, testCallback );
-		
+
 		ynd.go();
 	}
-	
+
 	public void testMessage() throws Exception
 	{
-		MessageDialog md = new MessageDialog();
-		
-		MessageDialogCallback testCallback = new MessageDialogCallback()
+		final MessageDialog md = new MessageDialog();
+
+		final MessageDialogCallback testCallback = new MessageDialogCallback()
 		{
-			
+
 			@Override
 			public void receiveMessageDialogClosed()
 			{
 				log.debug("JUnit test received message callback closed");
 			}
 		};
-		
+
 		md.setValues( null, "Some message", "Some title", JOptionPane.INFORMATION_MESSAGE, testCallback );
 		md.go();
+	}
+
+	public void testDirectorySelection() throws Exception
+	{
+		final DirectorySelectionDialog dsd = new DirectorySelectionDialog();
+
+		final DirectorySelectionDialogCallback testCallback = new DirectorySelectionDialogCallback()
+		{
+			@Override
+			public void receiveDirectorySelectionDialogClosed( final String dirPath )
+			{
+				log.debug("JUnit test received directory selection callback closed - " + dirPath );
+			}
+		};
+
+		dsd.setValues( null, "Some message", "Some title", JOptionPane.INFORMATION_MESSAGE, testCallback );
+		dsd.go();
 	}
 }
 

@@ -27,6 +27,7 @@ import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCControll
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
@@ -98,11 +99,27 @@ public interface GuiService
 	 * @param message the message to display
 	 * @param title the title for the dialog
 	 * @param messageType the message type
-	 * @param callback a callback procedure that will do called when the dialog closes
+	 * @param callback a callback procedure that will be called when the dialog closes
 	 */
 	void showMessageDialog( Component parentComponent,
 			String message,
 			String title,
 			int messageType,
 			MessageDialogCallback callback );
+
+	/**
+	 * <p>Helper method for displaying a directory selection dialog
+	 * to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (user for centering)
+	 * @param message the message for the dialog
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param callback a callback called with the directory result or null when the dialog closes
+	 */
+	void showDirectorySelectionDialog( Component parentComponent,
+			String message,
+			String title,
+			int messageType,
+			DirectorySelectionDialogCallback callback );
 }

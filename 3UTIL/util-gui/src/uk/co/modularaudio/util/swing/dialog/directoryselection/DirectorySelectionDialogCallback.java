@@ -18,15 +18,9 @@
  *
  */
 
-package uk.co.modularaudio.service.userpreferences.mvc.hardware;
+package uk.co.modularaudio.util.swing.dialog.directoryselection;
 
-
-public class HardwareMVCModel
+public interface DirectorySelectionDialogCallback
 {
-//	private static Log log = LogFactory.getLog( HardwareMVCModel.class.getName() );
-	
-	public HardwareMVCModel()
-	{
-	}
-
+	void receiveDirectorySelectionDialogClosed( String dirPath );
 }

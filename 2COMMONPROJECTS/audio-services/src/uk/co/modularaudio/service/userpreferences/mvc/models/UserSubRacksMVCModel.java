@@ -18,10 +18,41 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.preferences;
+package uk.co.modularaudio.service.userpreferences.mvc.models;
 
-public enum PreferencesDialogPageEnum
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+public class UserSubRacksMVCModel
 {
-	GENERAL,
-	AUDIO_SYSTEM
+
+	private String userSubRacksDir;
+
+	private ChangeListener listener;
+
+	public UserSubRacksMVCModel()
+	{
+		userSubRacksDir = "./";
+	}
+
+	public String getValue()
+	{
+		return userSubRacksDir;
+	}
+
+	public void setValue( final Object source, final String userSubRacksDir )
+	{
+		this.userSubRacksDir = userSubRacksDir;
+
+		if( listener != null )
+		{
+			listener.stateChanged( new ChangeEvent( source ) );
+		}
+	}
+
+	public void addChangeListener( final ChangeListener changeListener )
+	{
+		this.listener = changeListener;
+	}
+
 }

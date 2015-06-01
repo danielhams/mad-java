@@ -30,6 +30,9 @@ import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputMidiDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesOutputMidiDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesRenderingCoresView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesUserMusicDirMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesUserPatchesMVCView;
+import uk.co.modularaudio.service.gui.mvc.UserPreferencesUserSubRacksMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 
@@ -45,7 +48,11 @@ public class UserPreferencesMVCView
 	private final UserPreferencesInputMidiDeviceMVCView inputMidiDeviceMVCView;
 	private final UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceMVCView;
 
-	public UserPreferencesMVCView( final UserPreferencesMVCController userPrefsMVCController )
+	private final UserPreferencesUserPatchesMVCView userPatchesMVCView;
+	private final UserPreferencesUserSubRacksMVCView userSubRacksMVCView;
+	private final UserPreferencesUserMusicDirMVCView userMusicDirMVCView;
+
+	public UserPreferencesMVCView( final GuiService guiService, final UserPreferencesMVCController userPrefsMVCController )
 	{
 		final UserPreferencesMVCModel userPrefsModel = userPrefsMVCController.getModel();
 
@@ -71,6 +78,16 @@ public class UserPreferencesMVCView
 		outputMidiDeviceMVCView = new UserPreferencesOutputMidiDeviceMVCView( userPrefsModel.getOutputMidiDeviceComboModel(),
 				userPrefsMVCController.getOutputMidiDeviceComboController(),
 				new MidiDeviceViewListCellRenderer() );
+
+		userPatchesMVCView = new UserPreferencesUserPatchesMVCView( guiService,
+				userPrefsModel.getUserPatchesModel(),
+				userPrefsMVCController.getUserPatchesController() );
+		userSubRacksMVCView = new UserPreferencesUserSubRacksMVCView( guiService,
+				userPrefsModel.getUserSubRacksModel(),
+				userPrefsMVCController.getUserSubRacksController() );
+		userMusicDirMVCView = new UserPreferencesUserMusicDirMVCView( guiService,
+				userPrefsModel.getUserMusicDirModel(),
+				userPrefsMVCController.getUserMusicDirController() );
 	}
 
 	public UserPreferencesRenderingCoresView getRenderingCoresView()
@@ -108,6 +125,21 @@ public class UserPreferencesMVCView
 		return outputMidiDeviceMVCView;
 	}
 
+	public UserPreferencesUserPatchesMVCView getUserPatchesMVCView()
+	{
+		return userPatchesMVCView;
+	}
+
+	public UserPreferencesUserSubRacksMVCView getUserSubRacksMVCView()
+	{
+		return userSubRacksMVCView;
+	}
+
+	public UserPreferencesUserMusicDirMVCView getUserMusicDirMVCView()
+	{
+		return userMusicDirMVCView;
+	}
+
 	public void setModel( final UserPreferencesMVCModel model )
 	{
 		renderingCoresView.setModel( model.getRenderingCoresModel() );
@@ -118,5 +150,8 @@ public class UserPreferencesMVCView
 		inputMidiDeviceMVCView.setModel( model.getInputMidiDeviceComboModel() );
 		outputMidiDeviceMVCView.setModel( model.getOutputMidiDeviceComboModel() );
 
+		userPatchesMVCView.setModel( model.getUserPatchesModel() );
+		userSubRacksMVCView.setModel( model.getUserSubRacksModel() );
+		userMusicDirMVCView.setModel( model.getUserMusicDirModel() );
 	}
 }

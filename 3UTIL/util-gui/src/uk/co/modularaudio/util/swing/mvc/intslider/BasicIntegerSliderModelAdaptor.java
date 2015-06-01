@@ -23,9 +23,6 @@ package uk.co.modularaudio.util.swing.mvc.intslider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.mvc.intslider.IntegerSliderModelListener;
 import uk.co.modularaudio.util.mvc.intslider.IntegerSliderModelListenerEvent;
 import uk.co.modularaudio.util.mvc.intslider.ValueOutOfRangeException;
@@ -34,7 +31,7 @@ import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
 
 public class BasicIntegerSliderModelAdaptor implements IntegerSliderModelListener, ChangeListener
 {
-	private static Log log = LogFactory.getLog( BasicIntegerSliderModelAdaptor.class.getName() );
+//	private static Log log = LogFactory.getLog( BasicIntegerSliderModelAdaptor.class.getName() );
 
 	private final BasicIntegerSliderModel ism;
 	private final BasicIntegerSliderController isc;
@@ -94,9 +91,7 @@ public class BasicIntegerSliderModelAdaptor implements IntegerSliderModelListene
 
 	public void destroy()
 	{
-		log.debug("Destroying basic integer slider model adaptor");
 		ism.removeListener( this );
-
 		isv.removeChangeListener( this );
 	}
 }

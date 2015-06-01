@@ -18,10 +18,41 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.preferences;
+package uk.co.modularaudio.service.userpreferences.mvc.models;
 
-public enum PreferencesDialogPageEnum
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+public class UserPatchesMVCModel
 {
-	GENERAL,
-	AUDIO_SYSTEM
+
+	private String userPatchesDir;
+
+	private ChangeListener listener;
+
+	public UserPatchesMVCModel()
+	{
+		userPatchesDir = "./";
+	}
+
+	public String getValue()
+	{
+		return userPatchesDir;
+	}
+
+	public void setValue( final Object source, final String userPatchesDir )
+	{
+		this.userPatchesDir = userPatchesDir;
+
+		if( listener != null )
+		{
+			listener.stateChanged( new ChangeEvent( source ) );
+		}
+	}
+
+	public void addChangeListener( final ChangeListener changeListener )
+	{
+		this.listener = changeListener;
+	}
+
 }

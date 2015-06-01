@@ -18,50 +18,52 @@
  *
  */
 
-package uk.co.modularaudio.util.swing.dialog.yesnoquestion;
+package uk.co.modularaudio.util.swing.dialog.directoryselection;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.JFileChooser;
 
-import javax.swing.JDialog;
-
-public class YesNoQuestionDialog extends JDialog
+public class DirectorySelectionDialog extends JFileChooser
 {
-	private static final long serialVersionUID = -2754047150668644731L;
+	private static final long serialVersionUID = -8625393647843389583L;
 
-//	private static Log log = LogFactory.getLog( YesNoQuestionDialog.class.getName() );
+	private Component parentComponent;
+	private DirectorySelectionDialogCallback callback;
 
-	private final YesNoQuestionPanel yesNoQuestionPanel;
+	public static final int DEFAULT_BORDER_WIDTH = 10;
 
-	public YesNoQuestionDialog()
+	public DirectorySelectionDialog()
 	{
-		yesNoQuestionPanel = new YesNoQuestionPanel( this );
-		this.setModal( true );
+		setMinimumSize( new Dimension( 300, 150 ) );
 
-		this.setMinimumSize( new Dimension( 300, 150 ) );
-
-		this.add( yesNoQuestionPanel );
-		this.pack();
+		setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
 	}
 
 	public void setValues( final Component parentComponent,
 			final String message,
 			final String title,
 			final int messageType,
-			final String[] options,
-			final String defaultChoice,
-			final YesNoQuestionDialogCallback callback )
+			final DirectorySelectionDialogCallback callback )
 	{
-		this.setTitle( title );
-		yesNoQuestionPanel.setValues( message, messageType, options, defaultChoice, callback );
-		this.pack();
+		this.parentComponent = parentComponent;
+		this.callback = callback;
 
-		this.setLocationRelativeTo( parentComponent );
+		setDialogTitle( title );
 	}
 
 	public void go()
 	{
-		setVisible( true );
-	}
+		final int retVal = showOpenDialog( parentComponent );
+		String dirPath = null;
+		if( retVal == JFileChooser.APPROVE_OPTION )
+		{
+			dirPath = getSelectedFile().getPath();
+		}
 
+		if( callback != null )
+		{
+			callback.receiveDirectorySelectionDialogClosed( dirPath );
+		}
+	}
 }

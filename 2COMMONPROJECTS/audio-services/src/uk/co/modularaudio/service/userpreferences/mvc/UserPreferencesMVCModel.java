@@ -25,6 +25,9 @@ import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMV
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserMusicDirMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserPatchesMVCModel;
+import uk.co.modularaudio.service.userpreferences.mvc.models.UserSubRacksMVCModel;
 
 public class UserPreferencesMVCModel
 {
@@ -40,12 +43,19 @@ public class UserPreferencesMVCModel
 	private final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel;
 	private final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel;
 
+	private final UserPatchesMVCModel userPatchesModel;
+	private final UserSubRacksMVCModel userSubRacksModel;
+	private final UserMusicDirMVCModel userMusicDirModel;
+
 	public UserPreferencesMVCModel( final RenderingCoresMVCModel renderingCoresModel,
 			final GuiFpsMVCModel fpsComboModel, final AudioSystemDeviceMVCModel inputDeviceComboModel,
 			final AudioSystemDeviceMVCModel outputDeviceComboModel,
 			final AudioSystemBufferSizeMVCModel bufferSizeModel,
 			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel,
-			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel )
+			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel,
+			final UserPatchesMVCModel userPatchesModel,
+			final UserSubRacksMVCModel userSubRacksModel,
+			final UserMusicDirMVCModel userMusicDirModel )
 	{
 		this.renderingCoresModel = renderingCoresModel;
 		this.fpsComboModel = fpsComboModel;
@@ -54,6 +64,10 @@ public class UserPreferencesMVCModel
 		this.bufferSizeModel = bufferSizeModel;
 		this.inputMidiDeviceComboModel = inputMidiDeviceComboModel;
 		this.outputMidiDeviceComboModel = outputMidiDeviceComboModel;
+
+		this.userPatchesModel = userPatchesModel;
+		this.userSubRacksModel = userSubRacksModel;
+		this.userMusicDirModel = userMusicDirModel;
 	}
 
 	public RenderingCoresMVCModel getRenderingCoresModel()
@@ -89,5 +103,20 @@ public class UserPreferencesMVCModel
 	public AudioSystemMidiDeviceMVCModel getOutputMidiDeviceComboModel()
 	{
 		return outputMidiDeviceComboModel;
+	}
+
+	public UserPatchesMVCModel getUserPatchesModel()
+	{
+		return userPatchesModel;
+	}
+
+	public UserSubRacksMVCModel getUserSubRacksModel()
+	{
+		return userSubRacksModel;
+	}
+
+	public UserMusicDirMVCModel getUserMusicDirModel()
+	{
+		return userMusicDirModel;
 	}
 }
