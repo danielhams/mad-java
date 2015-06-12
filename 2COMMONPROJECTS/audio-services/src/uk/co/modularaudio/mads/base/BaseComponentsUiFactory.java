@@ -95,6 +95,8 @@ import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinitio
 import uk.co.modularaudio.mads.base.scaleandoffset.ui.ScaleAndOffsetMadUiDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerMadUiDefinition;
+import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
+import uk.co.modularaudio.mads.base.soundfile_player2.ui.SoundfilePlayer2MadUiDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpMadUiDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
@@ -196,6 +198,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( DJEQMadDefinition.class, DJEQMadUiDefinition.class );
 
 		classToUiDefinition.put( MidSideMadDefinition.class, MidSideMadUiDefinition.class );
+
+		classToUiDefinition.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
