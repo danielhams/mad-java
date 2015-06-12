@@ -60,7 +60,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	public enum PlayingState
 	{
 		STOPPED,
-		PLAYING
+		PLAYING,
+		PLAYING_FADE_IN,
+		PLAYING_FADE_OUT
 	};
 
 	public static final float PLAYBACK_SPEED_MAX = 1.5f;
@@ -97,6 +99,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 	private FadeInWaveTable fadeInWaveTable;
 	private FadeOutWaveTable fadeOutWaveTable;
+	private int fadePosition;
 
 	public SoundfilePlayerMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -137,6 +140,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 		fadeInWaveTable = new FadeInWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
 		fadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
+		fadePosition = 0;
 	}
 
 	@Override
@@ -175,15 +179,23 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 								periodStartFrameTime,
 								SoundfilePlayerMadInstance.PlayingState.STOPPED );
 						log.warn("Unable to flip to playing as no sample available.");
-						break;
+						currentState = PlayingState.STOPPED;
+						desiredState = currentState;
 					}
-					currentState = desiredState;
+					else
+					{
+						currentState = PlayingState.PLAYING_FADE_IN;
+						fadePosition = 0;
+					}
 					break;
 				}
 				case PLAYING:
+				{
+					currentState = PlayingState.PLAYING_FADE_OUT;
+					fadePosition = 0;
+				}
 				default:
 				{
-					currentState = desiredState;
 					break;
 				}
 			}
@@ -270,6 +282,59 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 
 		leftDcTrap.filter( lfb, frameOffset, numFrames );
 		rightDcTrap.filter( rfb, frameOffset, numFrames );
+
+		switch( currentState )
+		{
+			case PLAYING_FADE_IN:
+			{
+				final int numLeftToFade = fadeInWaveTable.capacity - fadePosition;
+
+				final int numThisRound = (numLeftToFade > numFrames ? numFrames : numLeftToFade );
+
+				for( int p = 0 ; p < numThisRound ; ++p, ++fadePosition )
+				{
+					final float fadeValue = fadeInWaveTable.floatBuffer[ fadePosition ];
+					lfb[frameOffset + p] *= fadeValue;
+					rfb[frameOffset + p] *= fadeValue;
+				}
+
+				if( fadePosition == fadeInWaveTable.capacity )
+				{
+					currentState = PlayingState.PLAYING;
+				}
+				break;
+			}
+			case PLAYING_FADE_OUT:
+			{
+				final int numLeftToFade = fadeOutWaveTable.capacity - fadePosition;
+
+				int numThisRound = (numLeftToFade > numFrames ? numFrames : numLeftToFade );
+
+				for( int p = 0 ; p < numThisRound ; ++p, ++fadePosition )
+				{
+					final float fadeValue = fadeOutWaveTable.floatBuffer[ fadePosition ];
+					lfb[frameOffset + p] *= fadeValue;
+					rfb[frameOffset + p] *= fadeValue;
+				}
+
+				while( numThisRound < numFrames )
+				{
+					lfb[frameOffset + numThisRound] = 0.0f;
+					rfb[frameOffset + numThisRound] = 0.0f;
+					numThisRound++;
+				}
+
+				if( fadePosition == fadeOutWaveTable.capacity )
+				{
+					currentState = PlayingState.STOPPED;
+				}
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
