@@ -39,6 +39,7 @@ import uk.co.modularaudio.service.audioproviderregistry.AudioTestResults;
 import uk.co.modularaudio.service.audioproviderregistry.TestRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
@@ -491,12 +492,12 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	}
 
 	// Used by the providers to do the actual call through to the rendering plan and jobs
-	protected RealtimeMethodReturnCodeEnum doClockSourceProcessing( final int numFrames, final long periodStartFrameTime )
+	protected RealtimeMethodReturnCodeEnum doClockSourceProcessing(
+			final long clockCallbackStartTimestamp,
+			final long clockCallbackPostProducer,
+			final int numFrames,
+			final long periodStartFrameTime )
 	{
-		final long ccs = System.nanoTime();
-
-		final long ccpp = System.nanoTime();
-
 		RenderingPlan rp = null;
 		long clockCallbackPostRpFetch = -1;
 		try
@@ -516,11 +517,15 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			log.error( msg, e );
 			return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
 		}
-		final long ccpl = System.nanoTime();
+		final long clockCallbackPostLoop = System.nanoTime();
 
 		if( shouldProfileRenderingJobs )
 		{
-			rp.fillProfilingIfNotFilled(ccs,  ccpp, clockCallbackPostRpFetch,  ccpl );
+			rp.fillProfilingIfNotFilled( numHelperThreads,
+					clockCallbackStartTimestamp,
+					clockCallbackPostProducer,
+					clockCallbackPostRpFetch,
+					clockCallbackPostLoop );
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -548,6 +553,12 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	public void dumpProfileResults()
 	{
 		appRenderingStructure.dumpProfileResults();
+	}
+
+	@Override
+	public RenderingPlanProfileResults getProfileResults() throws DatastoreException
+	{
+		return appRenderingStructure.getProfileResults();
 	}
 
 	/* (non-Javadoc)

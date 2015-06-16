@@ -45,6 +45,7 @@ import uk.co.modularaudio.componentdesigner.mainframe.MainFrameManipulator;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesActions;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesDialog;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesManipulator;
+import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
@@ -84,6 +85,8 @@ public class ComponentDesigner implements ExitSignalReceiver
 	private ConfigurationService configurationService;
 	private ComponentImageFactory componentImageFactory;
 
+	private ProfilingWindow profilingWindow;
+
 	public ComponentDesigner()
 	{
 	}
@@ -93,12 +96,23 @@ public class ComponentDesigner implements ExitSignalReceiver
 	{
 		// Setup the application context and get the necessary references to the gui controller
 		setupApplicationContext( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
+
 		mainFrame = new MainFrame();
+
 		preferencesDialog = new PreferencesDialog( componentDesignerFrontController, mainFrame );
-		mainFrameActions = new MainFrameActions( this, componentDesignerFrontController, mainFrame, preferencesDialog, configurationService );
+
+		profilingWindow = new ProfilingWindow( componentDesignerFrontController );
+
+		mainFrameActions = new MainFrameActions( this, componentDesignerFrontController,
+				mainFrame,
+				preferencesDialog,
+				profilingWindow,
+				configurationService );
+
 		mainFrameManipulator = new MainFrameManipulator( componentDesignerFrontController, componentImageFactory, configurationService, mainFrame, mainFrameActions );
 		preferencesActions = new PreferencesActions( this, componentDesignerFrontController, preferencesDialog, configurationService );
 		preferencesManipulator = new PreferencesManipulator( componentDesignerFrontController, componentImageFactory, configurationService, preferencesDialog, preferencesActions );
+
 	}
 
 	public void setupApplicationContext( final boolean showAlpha , final boolean showBeta,
@@ -200,7 +214,12 @@ public class ComponentDesigner implements ExitSignalReceiver
 	}
 
 	@Override
-	public void signalExit()
+	public void signalPreExit()
+	{
+	}
+
+	@Override
+	public void signalPostExit()
 	{
 		preferencesDialog.setVisible( false );
 		preferencesDialog.dispose();

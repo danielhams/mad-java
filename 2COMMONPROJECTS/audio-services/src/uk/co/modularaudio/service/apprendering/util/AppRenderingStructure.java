@@ -265,7 +265,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 					final long jobLength = jobEndTimestamp - jobStartTimestamp;
 					final int jobThreadNum = jr.getJobThreadExecutor();
 					final String jobName = rj.toString();
-					final ParsedJobData pjd = new ParsedJobData( jobStartTimestamp, jobEndTimestamp, jobOffsetFromStart, jobLength, jobThreadNum, jobName );
+					final ParsedJobData pjd = new ParsedJobData( jobOffsetFromStart, jobLength, jobThreadNum, jobName );
 					jobDataList.add( pjd );
 				}
 
@@ -280,6 +280,30 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 			{
 				log.warn( "Failed to fetch profiling results");
 			}
+		}
+	}
+
+	public RenderingPlanProfileResults getProfileResults() throws DatastoreException
+	{
+		if( !shouldProfileRenderingJobs )
+		{
+			throw new DatastoreException( "Asked for profile results but profiling isn't activated!" );
+		}
+		final RenderingPlan rp = renderingPlan.get();
+		if( rp == null )
+		{
+			throw new DatastoreException( "Asked for profile results but profiling isn't activated!" );
+		}
+		else
+		{
+			final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
+
+			if( !rp.getProfileResultsIfFilled(profileResults) )
+			{
+				log.warn( "Failed to fetch profiling results");
+			}
+
+			return profileResults;
 		}
 	}
 

@@ -39,7 +39,10 @@ import uk.co.modularaudio.componentdesigner.mainframe.actions.SaveAsFileAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.SaveFileAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.ShowPreferencesAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.ToggleLoggingAction;
+import uk.co.modularaudio.componentdesigner.mainframe.actions.WindowAboutAction;
+import uk.co.modularaudio.componentdesigner.mainframe.actions.WindowShowProfilingAction;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesDialog;
+import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
@@ -65,9 +68,12 @@ public class MainFrameActions
 	private final SaveFileAction saveFileAction;
 	private final SaveAsFileAction saveAsFileAction;
 	private final PlayStopAction playStopAction;
-	private final Action exitAction;
+	private final ExitAction exitAction;
 	private final Action showPreferencesAction;
 	private final CheckAudioConfigurationAction checkAudioConfigurationAction;
+
+	private final WindowShowProfilingAction windowShowProfilingAction;
+	private final WindowAboutAction windowAboutAction;
 
 	// A default directory for file options
 	private String defaultDirectory;
@@ -76,6 +82,7 @@ public class MainFrameActions
 			final ComponentDesignerFrontController fcin,
 			final MainFrame mainFrame,
 			final PreferencesDialog preferencesDialog,
+			final ProfilingWindow profilingWindow,
 			final ConfigurationService configurationService )
 	{
 		this.fc = fcin;
@@ -103,9 +110,13 @@ public class MainFrameActions
 		openFileAction = new OpenFileAction( this, fc, mainFrame, defaultDirectory, saveFileAction, playStopAction );
 		revertFileAction = new RevertFileAction( fc );
 		newFileAction = new NewFileAction( this, fc, saveFileAction );
-		exitAction = new ExitAction( this, fc, exitSignalReceiver, saveFileAction );
+		exitAction = new ExitAction( this, fc, saveFileAction );
+		exitAction.addExitSignalReceiver( exitSignalReceiver );
 		showPreferencesAction = new ShowPreferencesAction( fc, mainFrame, preferencesDialog );
 
+		windowShowProfilingAction = new WindowShowProfilingAction( fc, profilingWindow );
+		exitAction.addExitSignalReceiver( windowShowProfilingAction );
+		windowAboutAction = new WindowAboutAction();
 	}
 
 	public int rackNotDirtyOrUserConfirmed()
@@ -181,5 +192,15 @@ public class MainFrameActions
 	public Action getCheckAudioConfigurationAction()
 	{
 		return checkAudioConfigurationAction;
+	}
+
+	public Action getWindowShowProfilingAction()
+	{
+		return windowShowProfilingAction;
+	}
+
+	public Action getWindowAboutAction()
+	{
+		return windowAboutAction;
 	}
 }

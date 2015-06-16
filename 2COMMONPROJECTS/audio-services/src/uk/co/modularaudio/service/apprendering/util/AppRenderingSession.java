@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.apprendering.util;
 
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -39,6 +40,7 @@ public interface AppRenderingSession
 
 	void dumpRenderingPlan() throws DatastoreException;
 	void dumpProfileResults();
+	RenderingPlanProfileResults getProfileResults() throws DatastoreException;
 
 	void setApplicationGraph( MadGraphInstance<?, ?> newGraphToRender ) throws DatastoreException;
 	boolean isApplicationGraphSet();
@@ -47,4 +49,5 @@ public interface AppRenderingSession
 	void activateApplicationGraph() throws MadProcessingException;
 	boolean isApplicationGraphActive();
 	void deactivateApplicationGraph() throws MadProcessingException;
+
 }

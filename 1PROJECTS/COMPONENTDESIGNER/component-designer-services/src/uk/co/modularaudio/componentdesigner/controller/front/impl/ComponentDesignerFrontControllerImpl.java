@@ -52,6 +52,7 @@ import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.rack.RackService;
+import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
@@ -205,6 +206,12 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			appRenderingSession.dumpProfileResults();
 		}
+	}
+
+	@Override
+	public RenderingPlanProfileResults getProfileResults() throws DatastoreException
+	{
+		return appRenderingSession.getProfileResults();
 	}
 
 	@Override

@@ -27,19 +27,16 @@ public class ParsedJobData
 	private final int jobThreadNum;
 	private final String jobName;
 
-	public ParsedJobData( final long jst,
-			final long jet,
-			final long jofs,
-			final long jl,
-			final int jn,
-			final String jobName )
+	public ParsedJobData(
+			final long offsetFromStart,
+			final long length,
+			final int threadNum,
+			final String name )
 	{
-//		this.jobStartTimestamp = jst;
-//		this.jobEndTimestamp = jet;
-		this.jobOffsetFromStart = jofs;
-		this.jobLength = jl;
-		this.jobThreadNum = jn;
-		this.jobName = jobName;
+		this.jobOffsetFromStart = offsetFromStart;
+		this.jobLength = length;
+		this.jobThreadNum = threadNum;
+		this.jobName = name;
 	}
 
 	@Override
@@ -53,15 +50,7 @@ public class ParsedJobData
 				jobThreadNum,
 				jobName );
 		sb.append( jobStr );
-//		sb.append("JobOffsetFromStart(" );
-//		sb.append( jobOffsetFromStart );
-//		sb.append( ") JobLength(" );
-//		sb.append( jobLength );
-//		sb.append( ") JobThreadNum(" );
-//		sb.append( jobThreadNum );
-//		sb.append( ") JobName(" );
-//		sb.append( jobName );
-//		sb.append( ")" );
+
 		return sb.toString();
 	}
 
@@ -70,4 +59,18 @@ public class ParsedJobData
 		return jobOffsetFromStart;
 	}
 
+	public long getJobLength()
+	{
+		return jobLength;
+	}
+
+	public int getJobThreadNum()
+	{
+		return jobThreadNum;
+	}
+
+	public String getJobName()
+	{
+		return jobName;
+	}
 }

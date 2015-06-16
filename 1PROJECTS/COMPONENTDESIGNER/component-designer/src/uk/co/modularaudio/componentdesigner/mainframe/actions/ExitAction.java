@@ -21,6 +21,8 @@
 package uk.co.modularaudio.componentdesigner.mainframe.actions;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
@@ -44,19 +46,23 @@ public class ExitAction extends AbstractAction
 
 	private final ComponentDesignerFrontController fc;
 
-	private final ExitSignalReceiver exitSignalReceiver;
+	private final List<ExitSignalReceiver> exitSignalReceivers = new ArrayList<ExitSignalReceiver>();
+
 	private final SaveFileAction saveFileAction;
 
 	public ExitAction(final MainFrameActions mainFrameActions,
 			final ComponentDesignerFrontController fc,
-			final ExitSignalReceiver exitSignalReceiver,
 			final SaveFileAction saveFileAction )
 	{
 		this.mainFrameActions = mainFrameActions;
 		this.fc = fc;
-		this.exitSignalReceiver = exitSignalReceiver;
 		this.saveFileAction = saveFileAction;
 		this.putValue(NAME, "Exit");
+	}
+
+	public void addExitSignalReceiver( final ExitSignalReceiver er )
+	{
+		exitSignalReceivers.add( er );
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class ExitAction extends AbstractAction
 			fc.toggleRendering();
 		}
 
-		log.debug("ExitAction performed called.");
+		log.debug("ExitAction perform called.");
 		int optionPaneResult = mainFrameActions.rackNotDirtyOrUserConfirmed();
 
 		if( optionPaneResult == JOptionPane.YES_OPTION )
@@ -81,6 +87,10 @@ public class ExitAction extends AbstractAction
 
 		if( optionPaneResult == JOptionPane.NO_OPTION )
 		{
+			for( final ExitSignalReceiver esr : exitSignalReceivers )
+			{
+				esr.signalPreExit();
+			}
 			// Stop the engine
 			if( fc.isAudioEngineRunning() )
 			{
@@ -97,7 +107,10 @@ public class ExitAction extends AbstractAction
 				log.error( msg, e1 );
 			}
 			log.debug("Will signal exit");
-			exitSignalReceiver.signalExit();
+			for( final ExitSignalReceiver esr : exitSignalReceivers )
+			{
+				esr.signalPostExit();
+			}
 		}
 	}
 }

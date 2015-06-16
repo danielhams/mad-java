@@ -18,10 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.componentdesigner.mainframe;
+package uk.co.modularaudio.componentdesigner.mainframe.actions;
 
-public interface ExitSignalReceiver
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+
+public class WindowAboutAction extends AbstractAction
 {
-	void signalPreExit();
-	void signalPostExit();
+	private static final long serialVersionUID = -5903263092723112562L;
+
+	public WindowAboutAction()
+	{
+		this.putValue( NAME, "About" );
+	}
+
+	@Override
+	public void actionPerformed( final ActionEvent e )
+	{
+	}
 }

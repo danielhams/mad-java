@@ -121,14 +121,16 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	}
 
 	@Override
-	public void fillProfilingIfNotFilled( final long clockCallbackStart,
+	public void fillProfilingIfNotFilled(
+			final int numRenderingThreads,
+			final long clockCallbackStart,
 			final long clockCallbackPostProducer,
 			final long clockCallbackPostRpFetch,
 			final long clockCallbackPostLoop )
 	{
 		if( !profileResults.isFilled() )
 		{
-			profileResults.fillIn( clockCallbackStart, clockCallbackPostProducer, clockCallbackPostRpFetch, clockCallbackPostLoop );
+			profileResults.fillIn( numRenderingThreads, clockCallbackStart, clockCallbackPostProducer, clockCallbackPostRpFetch, clockCallbackPostLoop );
 		}
 	}
 

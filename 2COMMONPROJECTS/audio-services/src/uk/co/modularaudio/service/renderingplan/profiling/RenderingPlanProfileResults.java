@@ -30,6 +30,7 @@ public class RenderingPlanProfileResults
 	private int numJobs;
 
 	private HashMap<RenderingJob,JobProfileResult> jobToProfileResultMap;
+	private int numRenderingThreads;
 	private long clockCallbackStart;
 	private long clockCallbackPostProducer;
 	private long clockCallbackPostRpFetch;
@@ -50,11 +51,13 @@ public class RenderingPlanProfileResults
 		}
 	}
 
-	public void fillIn( final long clockCallbackStart,
+	public void fillIn( final int numRenderingThreads,
+			final long clockCallbackStart,
 			final long clockCallbackPostProducer,
 			final long clockCallbackPostRpFetch,
 			final long clockCallbackPostLoop )
 	{
+		this.numRenderingThreads = numRenderingThreads;
 		this.clockCallbackStart = clockCallbackStart;
 		this.clockCallbackPostProducer = clockCallbackPostProducer;
 		this.clockCallbackPostRpFetch = clockCallbackPostRpFetch;
@@ -107,6 +110,7 @@ public class RenderingPlanProfileResults
 
 	public static void copyFromTo( final RenderingPlanProfileResults from, final RenderingPlanProfileResults to )
 	{
+		to.numRenderingThreads = from.numRenderingThreads;
 		to.clockCallbackStart = from.clockCallbackStart;
 		to.clockCallbackPostProducer = from.clockCallbackPostProducer;
 		to.clockCallbackPostRpFetch = from.clockCallbackPostRpFetch;
@@ -117,5 +121,10 @@ public class RenderingPlanProfileResults
 		// Mark the original as able to be filled again
 //		from.filled = new AtomicBoolean( false );
 		from.filled = false;
+	}
+
+	public int getNumRenderingThreads()
+	{
+		return numRenderingThreads;
 	}
 }

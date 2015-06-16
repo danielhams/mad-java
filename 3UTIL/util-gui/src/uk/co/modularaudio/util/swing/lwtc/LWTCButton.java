@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -39,6 +40,14 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	{
 		super( colours, text );
 		this.isImmediate = isImmediate;
+
+		final int minWidth = getFontMetrics( getFont() ).stringWidth( text ) + 30;
+
+		final int minHeight = 30;
+
+		final Dimension minSize = new Dimension( minWidth, minHeight );
+
+		this.setMinimumSize( minSize );
 	}
 
 	public String getControlValue() // NOPMD by dan on 27/04/15 12:22

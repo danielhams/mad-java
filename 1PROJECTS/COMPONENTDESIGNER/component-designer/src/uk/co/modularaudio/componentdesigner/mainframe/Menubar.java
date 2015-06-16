@@ -42,6 +42,9 @@ public class Menubar extends JMenuBar
 	private final JMenuItem fileSaveAsItem;
 	private final JMenuItem fileExitItem;
 
+	private final JMenuItem windowShowProfilingItem;
+	private final JMenuItem windowAboutItem;
+
 	/**
 	 *
 	 */
@@ -74,7 +77,13 @@ public class Menubar extends JMenuBar
 
 		windowMenu = new JMenu();
 		windowMenu.setText( "Window" );
-		windowMenu.add( new JMenuItem( "About" ) );
+
+		windowShowProfilingItem = new JMenuItem( actions.getWindowShowProfilingAction() );
+		windowMenu.add( windowShowProfilingItem );
+
+		windowAboutItem = new JMenuItem( actions.getWindowAboutAction() );
+		windowMenu.add( windowAboutItem );
+
 		this.add( windowMenu );
 	}
 }

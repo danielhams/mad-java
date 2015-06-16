@@ -279,6 +279,7 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 	@Override
 	public boolean process( final JackClient client, final int numFrames )
 	{
+		final long clockCallbackStartTimestamp = System.nanoTime();
 		long periodStartFrameTime;
 //		int jackMaxLatency;
 		try
@@ -311,8 +312,14 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		final int numConsumersUsed = (masterOutBuffers.numAudioBuffers < numConsumerAudioPorts ? masterOutBuffers.numAudioBuffers : numConsumerAudioPorts );
 //		boolean setDestinationBuffers = masterOutBuffersTryPointerMoves(numConsumersUsed);
 
+		final long clockCallbackPostProducerTimestamp = System.nanoTime();
+
 		// Now call the graph processing on all of that
-		final RealtimeMethodReturnCodeEnum rc = doClockSourceProcessing( numFrames, periodStartFrameTime );
+		final RealtimeMethodReturnCodeEnum rc = doClockSourceProcessing(
+				clockCallbackStartTimestamp,
+				clockCallbackPostProducerTimestamp,
+				numFrames,
+				periodStartFrameTime );
 
 		if( rc != RealtimeMethodReturnCodeEnum.SUCCESS )
 		{
