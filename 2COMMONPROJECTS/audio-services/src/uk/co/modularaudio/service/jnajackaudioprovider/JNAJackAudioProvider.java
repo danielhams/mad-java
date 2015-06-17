@@ -65,6 +65,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	private static final String CONFIG_KEY_SHOULD_REGISTER = JNAJackAudioProvider.class.getSimpleName() + ".ShouldRegister";
 
 	private static final int NUM_STEREO_JACK_AUDIO_CHANNELS = 2;
+	private static final int NUM_QUAD_JACK_AUDIO_CHANNELS = 4;
 	private static final int NUM_SURROUND_JACK_AUDIO_CHANNELS = 8;
 
 	private ConfigurationService configurationService;
@@ -144,6 +145,18 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 							"JNAJack " + NUM_SURROUND_JACK_AUDIO_CHANNELS + " Channel Input",
 							DeviceDirection.PRODUCER,
 							NUM_SURROUND_JACK_AUDIO_CHANNELS ));
+
+					consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+							"jnajackout4",
+							"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Output",
+							DeviceDirection.CONSUMER,
+							 NUM_QUAD_JACK_AUDIO_CHANNELS ) );
+
+					producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+							"jnajackin4",
+							"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Input",
+							DeviceDirection.PRODUCER,
+							NUM_QUAD_JACK_AUDIO_CHANNELS ));
 
 					consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
 							"jnajackout2",
