@@ -78,6 +78,9 @@ public class SoundfilePlayer2MadUiInstance extends
 
 	protected List<AnalysisFillCompletionListener> analysisFillListeners = new ArrayList<AnalysisFillCompletionListener>();
 
+	protected float songBpm = 127.0f;
+	protected float desiredBpm = 127.0f;
+
 	public SoundfilePlayer2MadUiInstance( final SoundfilePlayer2MadInstance instance,
 			final SoundfilePlayer2MadUiDefinition uiDefinition )
 	{
@@ -224,9 +227,16 @@ public class SoundfilePlayer2MadUiInstance extends
 		sendCommandValueToInstance(SoundfilePlayer2IOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0 ) );
 	}
 
-	public void sendPlayingSpeed( final float playingSpeed )
+//	public void sendPlayingSpeed( final float playingSpeed )
+//	{
+//		sendTemporalValueToInstance(SoundfilePlayer2IOQueueBridge.COMMAND_IN_PLAY_SPEED, Float.floatToIntBits(playingSpeed) );
+//	}
+
+	private void recomputeAndSendSpeed()
 	{
-		sendTemporalValueToInstance(SoundfilePlayer2IOQueueBridge.COMMAND_IN_PLAY_SPEED, Float.floatToIntBits(playingSpeed) );
+		final float playingSpeed = desiredBpm / songBpm;
+		log.debug("Computed play speed to be " + playingSpeed );
+		sendTemporalValueToInstance( SoundfilePlayer2IOQueueBridge.COMMAND_IN_PLAY_SPEED, Float.floatToIntBits(playingSpeed) );
 	}
 
 	public void sendGain( final float gain )
@@ -387,4 +397,15 @@ public class SoundfilePlayer2MadUiInstance extends
 		}
 	}
 
+	public void setSongBpm( final float songBpm )
+	{
+		this.songBpm = songBpm;
+		recomputeAndSendSpeed();
+	}
+
+	public void setDesiredBpm( final float desiredBpm )
+	{
+		this.desiredBpm = desiredBpm;
+		recomputeAndSendSpeed();
+	}
 }

@@ -22,6 +22,10 @@ package uk.co.modularaudio.mads.base.soundfile_player2.ui;
 
 import javax.swing.JComponent;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerSpeedSliderUiJComponent;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -40,7 +44,7 @@ public class SoundfilePlayer2SpeedSliderUiJComponent
 	implements IMadUiControlInstance<SoundfilePlayer2MadDefinition, SoundfilePlayer2MadInstance, SoundfilePlayer2MadUiInstance>,
 	SliderDoubleClickReceiver
 {
-//	private static Log log = LogFactory.getLog( SoundfilePlayerSpeedSliderUiJComponent.class.getName() );
+	private static Log log = LogFactory.getLog( SoundfilePlayerSpeedSliderUiJComponent.class.getName() );
 
 	private final PlaybackSpeedSliderModel model;
 	private final SliderDisplayController controller;
@@ -69,11 +73,11 @@ public class SoundfilePlayer2SpeedSliderUiJComponent
 
 		model.addChangeListener( new ValueChangeListener()
 		{
-
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				uiInstance.sendPlayingSpeed( newValue );
+//				uiInstance.sendPlayingSpeed( newValue );
+				log.debug("Skipped speed change.");
 			}
 		} );
 	}

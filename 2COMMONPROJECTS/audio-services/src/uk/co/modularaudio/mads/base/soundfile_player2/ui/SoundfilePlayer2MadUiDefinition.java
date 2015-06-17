@@ -50,6 +50,8 @@ public class SoundfilePlayer2MadUiDefinition extends
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Gain",
+		"Song BPM",
+		"Desired BPM",
 		"FileInfo",
 		"SelectFile",
 		"ZoomToggleGroup",
@@ -62,6 +64,8 @@ public class SoundfilePlayer2MadUiDefinition extends
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.ROTARY_BIPOLAR,
+		ControlType.ROTARY_BIPOLAR,
 		ControlType.ROTARY_BIPOLAR,
 		ControlType.DISPLAY,
 		ControlType.BUTTON,
@@ -76,6 +80,8 @@ public class SoundfilePlayer2MadUiDefinition extends
 
 	private static final Class<?>[] COTNROL_CLASSES = new Class<?>[] {
 		SoundfilePlayer2GainDialUiJComponent.class,
+		SoundfilePlayer2SongBpmDialUiJComponent.class,
+		SoundfilePlayer2DesiredBpmDialUiJComponent.class,
 		SoundfilePlayer2FileInfoUiJComponent.class,
 		SoundfilePlayer2SelectFileUiJComponent.class,
 		SoundfilePlayer2ZoomToggleGroupUiJComponent.class,
@@ -88,7 +94,10 @@ public class SoundfilePlayer2MadUiDefinition extends
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 190,   6, 130,  30 ),		// Gain
+//		new Rectangle( 190,   6, 130,  30 ),		// Gain
+		new Rectangle( 110,   6, 130,  30 ),		// Gain
+		new Rectangle( 250,   6, 150,  30 ),		// Song BPM
+		new Rectangle( 410,   6, 150,  30 ),		// Desired BPM
 		new Rectangle(  47,  38, 411,  30 ),		// FileInfo
 		new Rectangle( 458,  38,  30,  30 ),		// SelectFile
 		new Rectangle(   6, 113,  41,  90 ),		// ZoomToggle
@@ -96,7 +105,6 @@ public class SoundfilePlayer2MadUiDefinition extends
 				SoundfilePlayer2WaveDisplayUiJComponent.REQUIRED_WIDTH,
 				SoundfilePlayer2WaveDisplayUiJComponent.REQUIRED_HEIGHT ),		// WaveDisplay
 		new Rectangle(  47, 213, 441,  37 ),		// WaveOverview
-//		new Rectangle( 500,  22,  50, 264 ),		// SpeedSlider
 		new Rectangle( 500,  38,  50, 213 ),		// SpeedSlider
 		new Rectangle(  47, 250,  45,  30 ),		// Rewind
 		new Rectangle(  92, 250,  91,  30 ),		// PlayStop
