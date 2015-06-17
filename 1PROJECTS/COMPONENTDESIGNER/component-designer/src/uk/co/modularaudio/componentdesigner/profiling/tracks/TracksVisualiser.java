@@ -27,11 +27,15 @@ public class TracksVisualiser extends JPanel
 		Color.lightGray
 	};
 
-	private static final int BLOCK_WIDTH = 300;
+	public static final int TRACK_BLOCK_WIDTH = 300;
+
+	// A microsecond per pixel
+	private static final long NUM_NANOS_PER_PIXEL = 1000;
+	private static final int MIN_BLOCK_HEIGHT = 4;
 
 	private final List<TrackBlock> trackBlocks = new ArrayList<TrackBlock>();
 
-	private final Dimension requiredSize = new Dimension( 150, 30 );
+	private final Dimension requiredSize = new Dimension( TRACK_BLOCK_WIDTH, 30 );
 
 	public TracksVisualiser()
 	{
@@ -48,13 +52,9 @@ public class TracksVisualiser extends JPanel
 		removeBlocks();
 
 		// Work out shortest block so we can put labels on them
-		final int requiredWidth = BLOCK_WIDTH * numRenderingThreads;
+		final int requiredWidth = TRACK_BLOCK_WIDTH * numRenderingThreads;
 
-		final long shortestJobLength = shortestJob.getJobLength();
-//		final int shortestJobHeight = getFontMetrics( getFont() ).getHeight();
-		final int shortestJobHeight = 4;
-
-		final float requiredHeightFloat = (totalDuration / (float)shortestJobLength) * shortestJobHeight;
+		final float requiredHeightFloat = (totalDuration / (float)NUM_NANOS_PER_PIXEL);
 		final int requiredHeight = (int)requiredHeightFloat;
 
 		requiredSize.setSize( requiredWidth, requiredHeight );
@@ -69,11 +69,12 @@ public class TracksVisualiser extends JPanel
 			final long jobLength = pjd.getJobLength();
 			final int jobThread = pjd.getJobThreadNum();
 			final String jobName = pjd.getJobName();
-			final int offsetX = jobThread * BLOCK_WIDTH;
-			final float offsetYFloat = (jobOffset / (float)shortestJobLength) * shortestJobHeight;
+			final int offsetX = jobThread * TRACK_BLOCK_WIDTH;
+			final float offsetYFloat = (jobOffset / (float)NUM_NANOS_PER_PIXEL);
 			final int offsetY = (int)offsetYFloat;
-			final float blockHeightFloat = (jobLength / (float)shortestJobLength) * shortestJobHeight;
-			final int blockHeight = (int)blockHeightFloat;
+			final float blockHeightFloat = (jobLength / (float)NUM_NANOS_PER_PIXEL);
+			int blockHeight = (int)blockHeightFloat;
+			blockHeight = (blockHeight < MIN_BLOCK_HEIGHT ? MIN_BLOCK_HEIGHT : blockHeight );
 
 			final StringBuilder sb = new StringBuilder();
 			sb.append( TimestampFormatter.formatNanos( jobOffset ) );
@@ -91,8 +92,10 @@ public class TracksVisualiser extends JPanel
 			final TrackBlock tb = new TrackBlock( sb.toString(), threadColors[jobThread], ttb.toString() );
 			this.add( tb );
 			trackBlocks.add( tb );
-			tb.setBounds( offsetX, offsetY, BLOCK_WIDTH, blockHeight );
+			tb.setBounds( offsetX, offsetY, TRACK_BLOCK_WIDTH, blockHeight );
 		}
+
+		repaint();
 	}
 
 	private void removeBlocks()

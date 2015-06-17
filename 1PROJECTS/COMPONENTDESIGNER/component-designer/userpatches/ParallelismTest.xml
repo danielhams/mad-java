@@ -2,8 +2,36 @@
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="Mixer (Eight Stereo Lanes, Interpolated) 5" definitionId="imixer8">
+    <rackComponent name="DJ EQ 6" definitionId="djeq">
+        <rackPosition column="3" row="8"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 7" definitionId="djeq">
+        <rackPosition column="2" row="8"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 8" definitionId="djeq">
+        <rackPosition column="1" row="8"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 9" definitionId="djeq">
         <rackPosition column="0" row="8"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Eight Stereo Lanes, Interpolated) 5" definitionId="imixer8">
+        <rackPosition column="0" row="12"/>
         <rackControl name="Master Lane" value="-9.875:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:-1.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:-0.24:  "/>
@@ -66,12 +94,20 @@
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Right"/>
-    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Right"/>
-    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Right"/>
-    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Left"/>
-    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Left"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 7" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Left"/>
+    <rackLink producerRackComponentName="DJ EQ 7" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 8" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="DJ EQ 8" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 9" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="DJ EQ 9" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 9" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 9" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 7" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 7" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 8" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 8" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Right"/>
 </rack>

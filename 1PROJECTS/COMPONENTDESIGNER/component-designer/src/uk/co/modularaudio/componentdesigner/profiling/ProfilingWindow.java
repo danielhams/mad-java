@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,9 @@ public class ProfilingWindow extends JFrame
 {
 	private static final long serialVersionUID = 5841688948040826459L;
 
-	private static final Dimension MIN_SIZE = new Dimension( 150 * 3, 256 );
+	private static final Dimension MIN_SIZE = new Dimension(
+			(TracksVisualiser.TRACK_BLOCK_WIDTH * 3) + 60,
+			256 );
 
 	private static Log log = LogFactory.getLog( ProfilingWindow.class.getName() );
 
@@ -51,7 +54,7 @@ public class ProfilingWindow extends JFrame
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 
-		msh.addLayoutConstraint( "debug" );
+//		msh.addLayoutConstraint( "debug" );
 		msh.addLayoutConstraint( "insets 15");
 		msh.addLayoutConstraint( "gap 5");
 		msh.addLayoutConstraint( "fill" );
@@ -70,9 +73,22 @@ public class ProfilingWindow extends JFrame
 			{
 				try
 				{
+					final int scrollPos = scrollPane.getVerticalScrollBar().getValue();
+
 					final RenderingPlanProfileResults pr = fc.getProfileResults();
 
 					processProfilingResults( pr );
+
+					SwingUtilities.invokeLater( new Runnable()
+					{
+
+						@Override
+						public void run()
+						{
+							scrollPane.getVerticalScrollBar().setValue( scrollPos );
+						}
+					} );
+
 				}
 				catch( final DatastoreException de )
 				{
