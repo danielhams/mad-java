@@ -7,9 +7,6 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.componentdesigner.profiling.TimestampFormatter;
 import uk.co.modularaudio.service.apprendering.util.structure.ParsedJobData;
 
@@ -17,7 +14,7 @@ public class TracksVisualiser extends JPanel
 {
 	private static final long serialVersionUID = 8118299559065004280L;
 
-	private static Log log = LogFactory.getLog( TracksVisualiser.class.getName() );
+//	private static Log log = LogFactory.getLog( TracksVisualiser.class.getName() );
 
 	private static final Color[] threadColors = new Color[] {
 		Color.decode( "#ffbbbb" ),
