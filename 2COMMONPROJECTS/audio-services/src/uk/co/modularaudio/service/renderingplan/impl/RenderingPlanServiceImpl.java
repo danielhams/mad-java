@@ -318,7 +318,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 				// Is an "initial" mad parallel job (doesn't need to wait for input, can just go)
 				assert( cardinality == 1 );
 				// We will have to wait for the inital fan to complete.
-				parallelJob.setDependencies( consJobsThatWaitForUs, 1 );
+				parallelJob.setDependencies( consJobsThatWaitForUs, 0 );
 				initialAuJobSet.add(  parallelJob );
 			}
 			else
@@ -333,15 +333,9 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			}
 		}
 
-		final MadParallelRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new MadParallelRenderingJob[ initialAuJobSet.size() ] );
-
-		// Now create the initial fan and final sync jobs and re-write where necessary.
-		final InitialFanParallelRenderingJob initialFanPrj = new InitialFanParallelRenderingJob( initialAuJobs, 1 );
-		allJobSet.add( initialFanPrj );
 		finalSyncPrj.setNumProducersWeWaitFor( finalAuJobSet.size() );
 
-		final RenderingJob[] realInitialJobs = new RenderingJob[1];
-		realInitialJobs[0] = initialFanPrj;
+		final MadParallelRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new MadParallelRenderingJob[ initialAuJobSet.size() ] );
 
 		final RenderingJob[] allJobs = allJobSet.toArray( new RenderingJob[ allJobSet.size() ] );
 
@@ -350,10 +344,9 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		return new RenderingPlanWithFanAndSync( planHardwareSettings,
 				timingSource.getTimingParameters(),
 				planFrameTimeFactory,
-				initialFanPrj,
 				finalSyncPrj,
 				allJobs,
-				realInitialJobs,
+				initialAuJobs,
 				totalNumJobs + 2,
 				allMadInstancesSet,
 				allChannelBuffers );

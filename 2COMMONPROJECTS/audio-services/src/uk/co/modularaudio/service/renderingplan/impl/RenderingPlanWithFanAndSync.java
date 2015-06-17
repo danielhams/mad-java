@@ -39,7 +39,6 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	private final HardwareIOChannelSettings planChannelSettings;
 	private final MadTimingParameters planTimingParameters;
 	private final MadFrameTimeFactory planFrameTimeFactory;
-//	private InitialFanParallelRenderingJob initialFanJob = null;
 	private final FinalSyncParallelRenderingJob finalSyncJob;
 	private final RenderingJob[] allJobs;
 	private final RenderingJob[] initialJobs;
@@ -51,7 +50,6 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	public RenderingPlanWithFanAndSync( final HardwareIOChannelSettings planChannelSettings,
 			final MadTimingParameters planTimingParameters,
 			final MadFrameTimeFactory planFrameTimeFactory,
-			final InitialFanParallelRenderingJob initialFanJob,
 			final FinalSyncParallelRenderingJob finalSyncJob,
 			final RenderingJob[] allJobs,
 			final RenderingJob[] initialJobs,
@@ -62,7 +60,6 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 		this.planChannelSettings = planChannelSettings;
 		this.planTimingParameters = planTimingParameters;
 		this.planFrameTimeFactory = planFrameTimeFactory;
-//		this.initialFanJob = initialFanJob;
 		this.finalSyncJob = finalSyncJob;
 		this.allJobs = allJobs;
 		this.initialJobs = initialJobs;
