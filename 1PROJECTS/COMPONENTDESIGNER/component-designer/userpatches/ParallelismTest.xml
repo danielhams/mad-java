@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Mixer (Eight Stereo Lanes, Interpolated) 5" definitionId="imixer8">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Master Lane" value="-9.875:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:-1.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:-0.24:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.22000001:  "/>
+        <rackControl name="Mixer Lane 3" value="0.0:1.0:  "/>
+        <rackControl name="Mixer Lane 4" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 5" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 6" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 7" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-3.8123646"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/Armin Van Buuren/Armin_van_Buuren_-_A_State_of_Trance_168_30-09-2004/Armin_van_Buuren_-_A_State_of_Trance_168_30-09-2004/01_Armin_van_Buuren_-_A_State_of_Trance_168_30-09-2004.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 2" definitionId="soundfile_player">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Gain" value="-6.2956924"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/Armin Van Buuren/Armin_van_Buuren_-_A_State_of_Trance_169_07-10-2004/Armin_van_Buuren_-_A_State_of_Trance_169_07-10-2004/01_Armin_van_Buuren_-_A_State_of_Trance_169_07-10-2004.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 3" definitionId="soundfile_player">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="Gain" value="-0.0842638"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/DuMonde/DuMonde_Live_on_NYE_at_the_Docks_Toronto-12_31_2005-www_tranceaddict_com.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player 4" definitionId="soundfile_player">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="Gain" value="-7.4887934"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/ErikMitchell/Erik Mitchell - Turbo Tech 015 - 10.25.11.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 2" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 3 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 3" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 4" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Eight Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 4 Input Wave Right"/>
+</rack>
