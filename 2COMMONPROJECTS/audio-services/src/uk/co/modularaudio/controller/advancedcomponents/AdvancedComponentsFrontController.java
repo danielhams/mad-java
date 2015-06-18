@@ -54,10 +54,10 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public interface AdvancedComponentsFrontController
 {
 	/**
-	 * <p>For components that allow selection of samples, this method
+	 * <p>For components that allow selection of sound files, this method
 	 * allows those components to have the same filesystem root.</p>
 	 */
-	String getSampleSelectionMusicRoot();
+	String getSoundfileMusicRoot();
 
 	/**
 	 * <p>The oscillator factory can be used to obtain the various

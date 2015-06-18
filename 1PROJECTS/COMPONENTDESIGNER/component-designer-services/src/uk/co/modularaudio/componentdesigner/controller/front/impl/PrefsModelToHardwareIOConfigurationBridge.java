@@ -23,8 +23,6 @@ package uk.co.modularaudio.componentdesigner.controller.front.impl;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.comboitems.AudioSystemDeviceComboItem;
 import uk.co.modularaudio.service.userpreferences.mvc.comboitems.AudioSystemMidiDeviceComboItem;
-import uk.co.modularaudio.service.userpreferences.mvc.controllers.BufferSizeSliderMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSizeMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
@@ -39,7 +37,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 	public static HardwareIOConfiguration modelToConfiguration( final UserPreferencesMVCModel audioPrefsModel ) throws DatastoreException
 	{
 		final RenderingCoresMVCModel renderingCoresModel = audioPrefsModel.getRenderingCoresModel();
-		final int numRenderingCores = (int)renderingCoresModel.getValue();
+		final int numRenderingCores = renderingCoresModel.getValue();
 
 		final GuiFpsMVCModel fpsModel = audioPrefsModel.getFpsComboModel();
 
@@ -52,8 +50,6 @@ public class PrefsModelToHardwareIOConfigurationBridge
 		final int inputChannelsIndex = producerDeviceComboModel.getSelectedItemIndex();
 		final AudioSystemDeviceComboItem ic = (inputChannelsIndex != -1 ? producerDeviceComboModel.getElementAt( inputChannelsIndex ) : null );
 		final boolean inputChanSelected = ( ic != null ? ic.getValue() != null : false );
-
-		final AudioSystemBufferSizeMVCModel bufferSizeModel = audioPrefsModel.getBufferSizeModel();
 
 		final AudioSystemMidiDeviceMVCModel consumerMidiDeviceComboModel = audioPrefsModel.getOutputMidiDeviceComboModel();
 		final int cmdi = consumerMidiDeviceComboModel.getSelectedItemIndex();
@@ -94,7 +90,6 @@ public class PrefsModelToHardwareIOConfigurationBridge
 			final int fps = fpsModel.getFpsValue();
 			AudioHardwareDevice consumerChannelConfig = null;
 			AudioHardwareDevice producerChannelConfig = null;
-			final int bufferSizeFrames = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModel.getBufferSizeFramesValue() );
 			MidiHardwareDevice consumerMidiConfig = null;
 			MidiHardwareDevice producerMidiConfig = null;
 
@@ -125,7 +120,6 @@ public class PrefsModelToHardwareIOConfigurationBridge
 					fps,
 					consumerChannelConfig,
 					producerChannelConfig,
-					bufferSizeFrames,
 					consumerMidiConfig,
 					producerMidiConfig );
 			return retVal;

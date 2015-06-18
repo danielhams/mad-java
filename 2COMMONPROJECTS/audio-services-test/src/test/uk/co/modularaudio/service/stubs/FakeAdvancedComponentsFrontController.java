@@ -56,7 +56,7 @@ public class FakeAdvancedComponentsFrontController
 	}
 
 	@Override
-	public String getSampleSelectionMusicRoot()
+	public String getSoundfileMusicRoot()
 	{
 		return "/tmp";
 	}

@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.mainframe.MainFrame;
 import uk.co.modularaudio.componentdesigner.mainframe.MainFrameActions;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 
 public class OpenFileAction extends AbstractAction
 {
@@ -46,23 +47,23 @@ public class OpenFileAction extends AbstractAction
 	private static final long serialVersionUID = -8580442441463163408L;
 
 	private final ComponentDesignerFrontController fc;
+	private final UserPreferencesController upc;
 
 	private final MainFrame mainFrame;
-	private final String defaultDirectory;
 	private final SaveFileAction saveFileAction;
 	private final PlayStopAction playStopAction;
 
 	public OpenFileAction( final MainFrameActions mainFrameActions,
 			final ComponentDesignerFrontController fcin,
+			final UserPreferencesController upc,
 			final MainFrame mainFrame,
-			final String defaultDirectory,
 			final SaveFileAction saveFileAction,
 			final PlayStopAction playStopAction )
 	{
 		this.mainFrameActions = mainFrameActions;
 		this.fc = fcin;
+		this.upc = upc;
 		this.mainFrame = mainFrame;
-		this.defaultDirectory = defaultDirectory;
 		this.saveFileAction = saveFileAction;
 		this.playStopAction = playStopAction;
 		this.putValue(NAME, "Open File");
@@ -92,7 +93,8 @@ public class OpenFileAction extends AbstractAction
 					playStopAction.actionPerformed(e);
 				}
 				final JFileChooser openFileChooser = new JFileChooser();
-				openFileChooser.setCurrentDirectory( new File( defaultDirectory ) );
+				final String patchesDir = upc.getUserPreferencesMVCController().getModel().getUserPatchesModel().getValue();
+				openFileChooser.setCurrentDirectory( new File( patchesDir ) );
 
 				final int retVal = openFileChooser.showOpenDialog( mainFrame );
 				if( retVal == JFileChooser.APPROVE_OPTION )

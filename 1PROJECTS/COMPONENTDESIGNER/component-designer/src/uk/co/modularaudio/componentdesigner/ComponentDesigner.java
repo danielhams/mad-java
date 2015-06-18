@@ -46,6 +46,7 @@ import uk.co.modularaudio.componentdesigner.preferences.PreferencesActions;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesDialog;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesManipulator;
 import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
@@ -82,6 +83,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
 	private ComponentDesignerFrontController componentDesignerFrontController;
+	private UserPreferencesController userPreferencesController;
 	private ConfigurationService configurationService;
 	private ComponentImageFactory componentImageFactory;
 
@@ -103,7 +105,9 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 		profilingWindow = new ProfilingWindow( componentDesignerFrontController );
 
-		mainFrameActions = new MainFrameActions( this, componentDesignerFrontController,
+		mainFrameActions = new MainFrameActions( this,
+				componentDesignerFrontController,
+				userPreferencesController,
 				mainFrame,
 				preferencesDialog,
 				profilingWindow,
@@ -141,8 +145,10 @@ public class ComponentDesigner implements ExitSignalReceiver
 			}
 			gac = sch.makeAppContext( BEANS_RESOURCE_PATH, configResourcePath, additionalBeansResources, additionalConfigResources );
 			componentDesignerFrontController = gac.getBean( ComponentDesignerFrontController.class );
+			userPreferencesController = gac.getBean( UserPreferencesController.class );
 			componentImageFactory = gac.getBean( ComponentImageFactory.class );
 			configurationService = gac.getBean( ConfigurationService.class );
+
 		}
 		catch(final Exception e)
 		{

@@ -62,7 +62,6 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 	private int numFramesFadeOut = -1;
 
 	public final AdvancedComponentsFrontController advancedComponentsFrontController;
-	public final String musicRoot;
 
 	public AtomicReference<SingleSampleRuntime> desiredSampleRuntime = new AtomicReference<SingleSampleRuntime>();
 	public SingleSampleRuntime usedSampleRuntime;
@@ -83,8 +82,6 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
 		this.advancedComponentsFrontController = creationContext.getAdvancedComponentsFrontController();
-
-		this.musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
 	}
 
 	@Override
@@ -117,7 +114,7 @@ public class SingleSamplePlayerMadInstance extends MadInstance<SingleSamplePlaye
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 
 		final boolean inGateConnected = channelConnectedFlags.get( SingleSamplePlayerMadDefinition.CONSUMER_GATE_CV );

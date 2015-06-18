@@ -23,7 +23,6 @@ package uk.co.modularaudio.service.gui;
 import uk.co.modularaudio.service.gui.mvc.AudioDeviceViewListCellRenderer;
 import uk.co.modularaudio.service.gui.mvc.GuiFpsViewListCellRenderer;
 import uk.co.modularaudio.service.gui.mvc.MidiDeviceViewListCellRenderer;
-import uk.co.modularaudio.service.gui.mvc.UserPreferencesBufferSizeMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesGuiFpsMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputDeviceMVCView;
 import uk.co.modularaudio.service.gui.mvc.UserPreferencesInputMidiDeviceMVCView;
@@ -44,7 +43,6 @@ public class UserPreferencesMVCView
 	private final UserPreferencesGuiFpsMVCView guiFpsMVCView;
 	private final UserPreferencesInputDeviceMVCView inputDeviceMVCView;
 	private final UserPreferencesOutputDeviceMVCView outputDeviceMVCView;
-	private final UserPreferencesBufferSizeMVCView bufferSizeMVCView;
 	private final UserPreferencesInputMidiDeviceMVCView inputMidiDeviceMVCView;
 	private final UserPreferencesOutputMidiDeviceMVCView outputMidiDeviceMVCView;
 
@@ -70,8 +68,6 @@ public class UserPreferencesMVCView
 		outputDeviceMVCView = new UserPreferencesOutputDeviceMVCView( userPrefsModel.getOutputDeviceComboModel(),
 				userPrefsMVCController.getOutputDeviceComboController(),
 				new AudioDeviceViewListCellRenderer() );
-		bufferSizeMVCView = new UserPreferencesBufferSizeMVCView( userPrefsModel.getBufferSizeModel(),
-				userPrefsMVCController.getBufferSizeSliderController() );
 		inputMidiDeviceMVCView = new UserPreferencesInputMidiDeviceMVCView( userPrefsModel.getInputMidiDeviceComboModel(),
 				userPrefsMVCController.getInputMidiDeviceComboController(),
 				new MidiDeviceViewListCellRenderer() );
@@ -110,11 +106,6 @@ public class UserPreferencesMVCView
 		return outputDeviceMVCView;
 	}
 
-	public UserPreferencesBufferSizeMVCView getBufferSizeMVCView()
-	{
-		return bufferSizeMVCView;
-	}
-
 	public UserPreferencesInputMidiDeviceMVCView getInputMidiDeviceMVCView()
 	{
 		return inputMidiDeviceMVCView;
@@ -146,7 +137,6 @@ public class UserPreferencesMVCView
 		guiFpsMVCView.setModel( model.getFpsComboModel() );
 		inputDeviceMVCView.setModel( model.getInputDeviceComboModel() );
 		outputDeviceMVCView.setModel( model.getOutputDeviceComboModel() );
-		bufferSizeMVCView.setModel( model.getBufferSizeModel() );
 		inputMidiDeviceMVCView.setModel( model.getInputMidiDeviceComboModel() );
 		outputMidiDeviceMVCView.setModel( model.getOutputMidiDeviceComboModel() );
 

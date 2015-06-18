@@ -40,7 +40,6 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
-	private String lastUsedDirectory;
 	private String currentFilename = "";
 
 	public SoundfilePlayerSelectFileUiJComponent( final SoundfilePlayerMadDefinition definition,
@@ -50,7 +49,6 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	{
 		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\", false );
 		this.uiInstance = uiInstance;
-		this.lastUsedDirectory = uiInstance.getMusicRoot();
 	}
 
 	@Override
@@ -102,7 +100,8 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	public void receiveClick()
 	{
 		final JFileChooser openFileChooser = new JFileChooser();
-		openFileChooser.setCurrentDirectory( new File( lastUsedDirectory ) );
+		final String musicDir = uiInstance.advancedComponentsFrontController.getSoundfileMusicRoot();
+		openFileChooser.setCurrentDirectory( new File( musicDir ) );
 		final int retVal = openFileChooser.showOpenDialog( this );
 		if (retVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -112,7 +111,6 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 
 			if (f != null && !f.isDirectory())
 			{
-				lastUsedDirectory = f.getParent();
 				passChangeToInstanceData( f.getAbsolutePath() );
 			}
 		}

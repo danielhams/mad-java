@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.userpreferences.mvc;
 
-import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSizeMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
@@ -39,7 +38,6 @@ public class UserPreferencesMVCModel
 
 	private final AudioSystemDeviceMVCModel inputDeviceComboModel;
 	private final AudioSystemDeviceMVCModel outputDeviceComboModel;
-	private final AudioSystemBufferSizeMVCModel bufferSizeModel;
 	private final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel;
 	private final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel;
 
@@ -50,7 +48,6 @@ public class UserPreferencesMVCModel
 	public UserPreferencesMVCModel( final RenderingCoresMVCModel renderingCoresModel,
 			final GuiFpsMVCModel fpsComboModel, final AudioSystemDeviceMVCModel inputDeviceComboModel,
 			final AudioSystemDeviceMVCModel outputDeviceComboModel,
-			final AudioSystemBufferSizeMVCModel bufferSizeModel,
 			final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel,
 			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel,
 			final UserPatchesMVCModel userPatchesModel,
@@ -61,7 +58,6 @@ public class UserPreferencesMVCModel
 		this.fpsComboModel = fpsComboModel;
 		this.inputDeviceComboModel = inputDeviceComboModel;
 		this.outputDeviceComboModel = outputDeviceComboModel;
-		this.bufferSizeModel = bufferSizeModel;
 		this.inputMidiDeviceComboModel = inputMidiDeviceComboModel;
 		this.outputMidiDeviceComboModel = outputMidiDeviceComboModel;
 
@@ -88,11 +84,6 @@ public class UserPreferencesMVCModel
 	public AudioSystemDeviceMVCModel getOutputDeviceComboModel()
 	{
 		return outputDeviceComboModel;
-	}
-
-	public AudioSystemBufferSizeMVCModel getBufferSizeModel()
-	{
-		return bufferSizeModel;
 	}
 
 	public AudioSystemMidiDeviceMVCModel getInputMidiDeviceComboModel()

@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.userpreferences.mvc;
 
-import uk.co.modularaudio.service.userpreferences.mvc.controllers.BufferSizeSliderMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.GuiFpsComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDeviceComboMVCController;
@@ -43,7 +42,6 @@ public class UserPreferencesMVCController
 
 	private final InputDeviceComboMVCController inputDeviceComboController;
 	private final OutputDeviceComboMVCController outputDeviceComboController;
-	private final BufferSizeSliderMVCController bufferSizeSliderController;
 	private final InputMidiDeviceComboMVCController inputMidiDeviceComboController;
 	private final OutputMidiDeviceComboMVCController outputMidiDeviceComboController;
 
@@ -61,7 +59,6 @@ public class UserPreferencesMVCController
 
 		inputDeviceComboController = new InputDeviceComboMVCController( model.getInputDeviceComboModel(), this );
 		outputDeviceComboController = new OutputDeviceComboMVCController( model.getOutputDeviceComboModel(), this );
-		bufferSizeSliderController = new BufferSizeSliderMVCController( model.getBufferSizeModel(), this );
 		inputMidiDeviceComboController = new InputMidiDeviceComboMVCController( model.getInputMidiDeviceComboModel(), this );
 		outputMidiDeviceComboController = new OutputMidiDeviceComboMVCController( model.getOutputMidiDeviceComboModel(), this );
 
@@ -95,11 +92,6 @@ public class UserPreferencesMVCController
 		return outputDeviceComboController;
 	}
 
-	public BufferSizeSliderMVCController getBufferSizeSliderController()
-	{
-		return bufferSizeSliderController;
-	}
-
 	public InputMidiDeviceComboMVCController getInputMidiDeviceComboController()
 	{
 		return inputMidiDeviceComboController;
@@ -120,7 +112,6 @@ public class UserPreferencesMVCController
 
 		inputDeviceComboController.setModel( model.getInputDeviceComboModel() );
 		outputDeviceComboController.setModel( model.getOutputDeviceComboModel() );
-		bufferSizeSliderController.setModel( model.getBufferSizeModel() );
 		inputMidiDeviceComboController.setModel( model.getInputMidiDeviceComboModel() );
 		outputMidiDeviceComboController.setModel( model.getOutputMidiDeviceComboModel() );
 

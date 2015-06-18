@@ -35,9 +35,9 @@ import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueHe
 import uk.co.modularaudio.service.apprendering.util.session.AppRenderingLifecycleListener.SignalType;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
+import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.audioproviderregistry.AudioTestResults;
 import uk.co.modularaudio.service.audioproviderregistry.TestRenderingErrorCallback;
-import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.profiling.RenderingPlanProfileResults;
 import uk.co.modularaudio.service.timing.TimingService;
@@ -134,7 +134,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			// Some fake values we'll use to start off discovery
 			final DataRate dataRate = DataRate.SR_44100;
 			final long nanosOutputLatency = 10000;
-			final int sampleFramesOutputLatency = hardwareConfiguration.getChannelBufferLength();
+			final int sampleFramesOutputLatency = 1024;
 
 			final HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
 			HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,
@@ -237,7 +237,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 
 		final DataRate dataRate = DataRate.SR_44100;
 		final long nanosOutputLatency = 10000;
-		final int sampleFramesOutputLatency = hardwareConfiguration.getChannelBufferLength();
+		final int sampleFramesOutputLatency = 1024;
 
 		final HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
 		HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,

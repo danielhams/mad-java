@@ -43,13 +43,13 @@ import uk.co.modularaudio.componentdesigner.mainframe.actions.WindowAboutAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.WindowShowProfilingAction;
 import uk.co.modularaudio.componentdesigner.preferences.PreferencesDialog;
 import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class MainFrameActions
 {
 	public static final String MESSAGE_RACK_DIRT_CONFIRM_SAVE = "This rack has not been saved. Do you wish to save it?";
-	public static final String CONFIG_KEY_DEFAULT_DIR = MainFrameActions.class.getSimpleName() + ".DefaultDirectory";
 
 	public static final String TEXT_AUDIO_RECONFIG_WARNING = "The audio devices previously configured are not available. " +
 		"Please choose which devices should be used instead.";
@@ -75,11 +75,9 @@ public class MainFrameActions
 	private final WindowShowProfilingAction windowShowProfilingAction;
 	private final WindowAboutAction windowAboutAction;
 
-	// A default directory for file options
-	private String defaultDirectory;
-
 	public MainFrameActions( final ExitSignalReceiver exitSignalReceiver,
 			final ComponentDesignerFrontController fcin,
+			final UserPreferencesController upc,
 			final MainFrame mainFrame,
 			final PreferencesDialog preferencesDialog,
 			final ProfilingWindow profilingWindow,
@@ -87,27 +85,16 @@ public class MainFrameActions
 	{
 		this.fc = fcin;
 		this.mainFrame = mainFrame;
-		try
-		{
-			defaultDirectory = configurationService.getSingleStringValue( CONFIG_KEY_DEFAULT_DIR );
-		}
-		catch (final RecordNotFoundException e)
-		{
-			if(log.isInfoEnabled())
-			{
-				log.info("Unable to fetch default directory from configuration - if needed set " + CONFIG_KEY_DEFAULT_DIR ); // NOPMD by dan on 01/02/15 09:42
-			}
-			defaultDirectory = "";
-		}
+
 		log.info("Constructing main actions.");
 		dumpGraphAction = new DumpGraphAction( fc );
 		dumpProfileAction = new DumpProfileAction( fc );
 		toggleLoggingAction = new ToggleLoggingAction( fc );
-		saveAsFileAction = new SaveAsFileAction( fc, defaultDirectory, mainFrame );
+		saveAsFileAction = new SaveAsFileAction( fc, upc, mainFrame );
 		saveFileAction = new SaveFileAction( fc, saveAsFileAction );
 		checkAudioConfigurationAction = new CheckAudioConfigurationAction( fc, preferencesDialog, mainFrame );
 		playStopAction = new PlayStopAction( fc, mainFrame, checkAudioConfigurationAction );
-		openFileAction = new OpenFileAction( this, fc, mainFrame, defaultDirectory, saveFileAction, playStopAction );
+		openFileAction = new OpenFileAction( this, fc, upc, mainFrame, saveFileAction, playStopAction );
 		revertFileAction = new RevertFileAction( fc );
 		newFileAction = new NewFileAction( this, fc, saveFileAction );
 		exitAction = new ExitAction( this, fc, saveFileAction );

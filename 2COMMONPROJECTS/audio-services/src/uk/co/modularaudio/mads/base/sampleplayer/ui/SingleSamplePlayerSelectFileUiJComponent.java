@@ -48,7 +48,6 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 
 	private static Log log = LogFactory.getLog( SingleSamplePlayerSelectFileUiJComponent.class.getName() );
 
-	private String lastUsedDirectory;
 	private String lastUsedFilePath;
 
 	private final SingleSamplePlayerMadInstance instance;
@@ -63,7 +62,6 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 	{
 		this.instance = instance;
 
-		this.lastUsedDirectory = instance.musicRoot;
 		this.advancedComponentsFrontController = instance.advancedComponentsFrontController;
 		this.setOpaque( false );
 		setFont( this.getFont().deriveFont( 9f ) );
@@ -125,7 +123,8 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 	public void receiveEvent( final ActionEvent e )
 	{
 		final JFileChooser openFileChooser = new JFileChooser();
-		openFileChooser.setCurrentDirectory( new File( lastUsedDirectory ) );
+		final String musicDir = advancedComponentsFrontController.getSoundfileMusicRoot();
+		openFileChooser.setCurrentDirectory( new File( musicDir ) );
 		final int retVal = openFileChooser.showOpenDialog( this );
 		if (retVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -135,7 +134,6 @@ public class SingleSamplePlayerSelectFileUiJComponent extends PacButton
 
 			if (f != null)
 			{
-				lastUsedDirectory = f.getParent();
 				if( log.isDebugEnabled() )
 				{
 					log.debug( "Attempting to use audio file " + f.getPath() );

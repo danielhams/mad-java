@@ -42,7 +42,6 @@ import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.comboitems.AudioSystemDeviceComboItem;
 import uk.co.modularaudio.service.userpreferences.mvc.comboitems.AudioSystemMidiDeviceComboItem;
 import uk.co.modularaudio.service.userpreferences.mvc.comboitems.GuiFpsComboItem;
-import uk.co.modularaudio.service.userpreferences.mvc.controllers.BufferSizeSliderMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.GuiFpsComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputDeviceComboMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.InputMidiDeviceComboMVCController;
@@ -52,7 +51,6 @@ import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCores
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserMusicDirMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserPatchesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.controllers.UserSubRacksMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemBufferSizeMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.AudioSystemMidiDeviceMVCModel;
 import uk.co.modularaudio.service.userpreferences.mvc.models.GuiFpsMVCModel;
@@ -268,7 +266,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 		final OutputDeviceComboMVCController odc = userPreferences.getOutputDeviceComboController();
 		final InputDeviceComboMVCController idc = userPreferences.getInputDeviceComboController();
-		final BufferSizeSliderMVCController bsdc = userPreferences.getBufferSizeSliderController();
 		final InputMidiDeviceComboMVCController imdc = userPreferences.getInputMidiDeviceComboController();
 		final OutputMidiDeviceComboMVCController omdc = userPreferences.getOutputMidiDeviceComboController();
 
@@ -291,18 +288,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			catch(final RecordNotFoundException e )
 			{
 			}
-		}
-
-		try
-		{
-			// Translate to model index
-			final int modelIndex = BufferSizeSliderMVCController.BUF_SIZE_TO_INDEX_MAP.get( bufferSize );
-			bsdc.setValue( modelIndex );
-		}
-		catch (final ValueOutOfRangeException e)
-		{
-			final String msg = "ValueOutOfRangeException caught setting buffer size: " + e.toString();
-			log.error( msg, e );
 		}
 
 		if( !inputMidiDeviceId.equals( "" ) )
@@ -410,7 +395,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 		final AudioSystemDeviceMVCModel inputDeviceComboModel = new AudioSystemDeviceMVCModel( inputDeviceItems );
 		final AudioSystemDeviceMVCModel outputDeviceComboModel = new AudioSystemDeviceMVCModel( outputDeviceItems );
-		final AudioSystemBufferSizeMVCModel bufferSizeModel = new AudioSystemBufferSizeMVCModel();
 		final AudioSystemMidiDeviceMVCModel inputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( inputMidiDeviceItems );
 		final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = new AudioSystemMidiDeviceMVCModel( outputMidiDeviceItems );
 
@@ -425,7 +409,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 				guiFpsComboModel,
 				inputDeviceComboModel,
 				outputDeviceComboModel,
-				bufferSizeModel,
 				inputMidiDeviceComboModel,
 				outputMidiDeviceComboModel,
 				userPatchesModel,
@@ -463,13 +446,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 					(inputMidiDeviceComboItem == null ? "" : inputMidiDeviceComboItem.getId() ));
 			userPreferencesProperties.put( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE,
 					(outputMidiDeviceComboItem == null ? "" : outputMidiDeviceComboItem.getId() ));
-
-			final AudioSystemBufferSizeMVCModel bufferSizeModel = userPreferencesMVCModel.getBufferSizeModel();
-
-			final int bufferSizeModelIndex = bufferSizeModel.getValue();
-			final int bufferSize = BufferSizeSliderMVCController.INDEX_TO_BUF_SIZE_MAP.get( bufferSizeModelIndex );
-			userPreferencesProperties.put( PREFS_FILE_KEY_BUFFER_SIZE,
-					bufferSize + "" );
 
 			final UserPatchesMVCModel userPatchesModel = userPreferencesMVCModel.getUserPatchesModel();
 

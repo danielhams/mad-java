@@ -35,8 +35,8 @@ import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.LoadNewSoundFil
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.SoundFileLoadCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -58,10 +58,9 @@ public class SoundfilePlayerMadUiInstance extends
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerMadUiInstance.class.getName() );
 
-	private final AdvancedComponentsFrontController advancedComponentsFrontController;
+	protected final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final SampleCachingService sampleCachingService;
 	private final JobExecutorService jobExecutorService;
-	private final String musicRoot;
 
 	private final ArrayList<SoundfileSampleEventListener> sampleEventListeners = new ArrayList<SoundfileSampleEventListener>();
 
@@ -86,8 +85,6 @@ public class SoundfilePlayerMadUiInstance extends
 		advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
 		sampleCachingService = advancedComponentsFrontController.getSampleCachingService();
 		jobExecutorService = instance.getJobExecutorService();
-
-		musicRoot = advancedComponentsFrontController.getSampleSelectionMusicRoot();
 
 		positionJumpCacheRefresher = new PositionJumpCacheRefresher( sampleEventListeners );
 	}
@@ -178,11 +175,6 @@ public class SoundfilePlayerMadUiInstance extends
 				break;
 			}
 		}
-	}
-
-	public String getMusicRoot()
-	{
-		return musicRoot;
 	}
 
 	public void addSampleEventListener( final SoundfileSampleEventListener seListener )

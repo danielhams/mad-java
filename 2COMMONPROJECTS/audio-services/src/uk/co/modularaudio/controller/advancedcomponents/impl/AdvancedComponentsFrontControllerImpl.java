@@ -34,12 +34,13 @@ import org.hibernate.Transaction;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -47,6 +48,8 @@ import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -60,16 +63,15 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 {
 	private static Log log = LogFactory.getLog( AdvancedComponentsFrontControllerImpl.class.getName() );
 
-	private static final String CONFIG_KEY_SAMPLER_MUSIC_ROOT = "AdvancedComponents.SamplerMusicRoot";
 	private static final String CONFIG_KEY_WAVETABLES_CACHE_ROOT = "AdvancedComponents.WavetablesCacheRoot";
 
 	// Internally used service references
 	private ConfigurationService configurationService;
 	private HibernateSessionController hibernateSessionController;
 	private SampleCachingController sampleCachingController;
+	private UserPreferencesController userPreferencesController;
 
 	// Exposed data and services
-	private String samplePlayerSelectionRoot;
 	private String wavetablesCachingRoot;
 	private OscillatorFactory oscillatorFactory;
 	private BlockResamplerService blockResamplerService;
@@ -83,6 +85,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		if( configurationService == null ||
 				hibernateSessionController == null ||
 				sampleCachingController == null ||
+				userPreferencesController == null ||
 				blockResamplerService == null ||
 				sampleCachingService == null ||
 				audioAnalysisService == null ||
@@ -94,7 +97,6 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		// Now fetch our music root
 		// Grab the music root from the config file
 		final Map<String,String> errors = new HashMap<String,String>();
-		samplePlayerSelectionRoot = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_SAMPLER_MUSIC_ROOT, errors );
 		wavetablesCachingRoot = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_WAVETABLES_CACHE_ROOT, errors );
 		ConfigurationServiceHelper.errorCheck( errors );
 
@@ -203,9 +205,20 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	}
 
 	@Override
-	public String getSampleSelectionMusicRoot()
+	public String getSoundfileMusicRoot()
 	{
-		return samplePlayerSelectionRoot;
+		// Always return latest version
+		try
+		{
+			final UserPreferencesMVCController upc = userPreferencesController.getUserPreferencesMVCController();
+			final UserPreferencesMVCModel upm = upc.getModel();
+			return upm.getUserMusicDirModel().getValue();
+		}
+		catch( final DatastoreException de )
+		{
+			log.error("Failed to obtain soundfile music root from user preferences. Returning current dir (nothing)");
+			return "";
+		}
 	}
 
 	@Override
@@ -339,5 +352,10 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public void setAudioAnalysisService( final AudioAnalysisService audioAnalysisService )
 	{
 		this.audioAnalysisService = audioAnalysisService;
+	}
+
+	public void setUserPreferencesController( final UserPreferencesController userPreferencesController )
+	{
+		this.userPreferencesController = userPreferencesController;
 	}
 }

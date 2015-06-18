@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.mads.subrack;
 
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
@@ -34,21 +35,21 @@ public class SubRackCreationContext extends MadCreationContext
 	private final RackMarshallingService rackMarshallingService;
 	private final GuiService guiService;
 	private final JobExecutorService jobExecutorService;
-	private final String currentPatchDir;
+	private final UserPreferencesController userPreferencesController;
 
-	public SubRackCreationContext( 	final RackService rackService,
+	public SubRackCreationContext( final RackService rackService,
 			final MadGraphService graphService,
 			final RackMarshallingService rackMarshallingService,
 			final GuiService guiService,
 			final JobExecutorService jobExecutorService,
-			final String currentPatchDir )
+			final UserPreferencesController userPreferencesController )
 	{
 		this.rackService = rackService;
 		this.graphService = graphService;
 		this.rackMarshallingService = rackMarshallingService;
 		this.guiService = guiService;
 		this.jobExecutorService = jobExecutorService;
-		this.currentPatchDir = currentPatchDir;
+		this.userPreferencesController = userPreferencesController;
 	}
 
 	public RackService getRackService()
@@ -71,14 +72,14 @@ public class SubRackCreationContext extends MadCreationContext
 		return guiService;
 	}
 
-	public String getCurrentPatchDir()
-	{
-		return currentPatchDir;
-	}
-
 	public JobExecutorService getJobExecutorService()
 	{
 		return jobExecutorService;
+	}
+
+	public UserPreferencesController getUserPreferencesController()
+	{
+		return userPreferencesController;
 	}
 
 }

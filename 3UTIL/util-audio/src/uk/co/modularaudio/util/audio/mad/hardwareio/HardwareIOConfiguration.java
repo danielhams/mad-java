@@ -26,7 +26,6 @@ public class HardwareIOConfiguration
 	private final int fps;
 	private final AudioHardwareDevice consumerAudioDevice;
 	private final AudioHardwareDevice producerAudioDevice;
-	private final int channelBufferLength;
 	private final MidiHardwareDevice consumerMidiDevice;
 	private final MidiHardwareDevice producerMidiDevice;
 
@@ -35,7 +34,6 @@ public class HardwareIOConfiguration
 			final int fps,
 			final AudioHardwareDevice consumerHardwareStream,
 			final AudioHardwareDevice producerHardwareStream,
-			final int channelBufferLength,
 			final MidiHardwareDevice iConsumerMidiConfiguration,
 			final MidiHardwareDevice iProducerMidiConfiguration )
 	{
@@ -43,7 +41,6 @@ public class HardwareIOConfiguration
 		this.fps = fps;
 		this.consumerAudioDevice = consumerHardwareStream;
 		this.producerAudioDevice = producerHardwareStream;
-		this.channelBufferLength = channelBufferLength;
 		this.consumerMidiDevice = iConsumerMidiConfiguration;
 		this.producerMidiDevice = iProducerMidiConfiguration;
 	}
@@ -66,11 +63,6 @@ public class HardwareIOConfiguration
 	public AudioHardwareDevice getProducerAudioDevice()
 	{
 		return producerAudioDevice;
-	}
-
-	public int getChannelBufferLength()
-	{
-		return channelBufferLength;
 	}
 
 	public MidiHardwareDevice getConsumerMidiDevice()

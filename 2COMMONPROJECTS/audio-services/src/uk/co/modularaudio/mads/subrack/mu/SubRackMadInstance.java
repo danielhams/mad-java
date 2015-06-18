@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.subrack.SubRackCreationContext;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -63,7 +64,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	public final RackMarshallingService rackMarshallingService;
 	public final GuiService guiService;
 	public final JobExecutorService jobExecutorService;
-	public final String currentPatchDir;
+	public final UserPreferencesController userPreferencesController;
 
 	private RackDataModel subRackDataModel;
 
@@ -82,7 +83,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		this.rackMarshallingService = creationContext.getRackMarshallingService();
 		this.guiService = creationContext.getGuiService();
 		this.jobExecutorService = creationContext.getJobExecutorService();
-		this.currentPatchDir = creationContext.getCurrentPatchDir();
+		this.userPreferencesController = creationContext.getUserPreferencesController();
 
 		subRackDataModel = rackService.createNewSubRackDataModel( instanceName,
 				"",

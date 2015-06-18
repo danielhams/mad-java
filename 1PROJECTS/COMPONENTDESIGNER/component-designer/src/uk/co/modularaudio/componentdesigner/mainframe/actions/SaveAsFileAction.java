@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.mainframe.MainFrame;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.util.audio.gui.mad.service.util.filesaveextension.CDFileSaveAccessory;
 
 public class SaveAsFileAction extends AbstractAction
@@ -40,16 +41,16 @@ public class SaveAsFileAction extends AbstractAction
 	private static final long serialVersionUID = -4249015082380141979L;
 
 	private final ComponentDesignerFrontController fc;
+	private final UserPreferencesController upc;
 
-	private final String defaultDirectory;
 	private final MainFrame mainFrame;
 
 	public SaveAsFileAction( final ComponentDesignerFrontController fcin,
-			final String defaultDirectory,
+			final UserPreferencesController upc,
 			final MainFrame mainFrame )
 	{
 		this.fc = fcin;
-		this.defaultDirectory = defaultDirectory;
+		this.upc = upc;
 		this.mainFrame = mainFrame;
 
 		this.putValue( NAME, "Save File As" );
@@ -66,7 +67,8 @@ public class SaveAsFileAction extends AbstractAction
 			final String rackDataModelName = fc.getRackDataModelName();
 			final CDFileSaveAccessory fileSaveAccessory = new CDFileSaveAccessory( rackDataModelName );
 			saveFileChooser.setAccessory( fileSaveAccessory );
-			saveFileChooser.setCurrentDirectory( new File( defaultDirectory ) );
+			final String patchesDir = upc.getUserPreferencesMVCController().getModel().getUserPatchesModel().getValue();
+			saveFileChooser.setCurrentDirectory( new File( patchesDir ) );
 			final int retVal = saveFileChooser.showSaveDialog( mainFrame );
 			if( retVal == JFileChooser.APPROVE_OPTION )
 			{

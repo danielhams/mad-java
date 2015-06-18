@@ -23,10 +23,10 @@ package uk.co.modularaudio.mads.subrack;
 import java.util.HashMap;
 import java.util.Map;
 
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
-import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
@@ -43,10 +43,6 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
 			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
 
-	private final static String CLASS_SIMPLE_NAME = SubRackComponentsFactory.class.getSimpleName();
-
-	private static final String CONFIG_KEY_DEFAULT_PATCH_DIR = CLASS_SIMPLE_NAME + ".DefaultPatchDir";
-
 	private ConfigurationService configurationService;
 
 	private SubRackCreationContext creationContext;
@@ -56,7 +52,7 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	private RackMarshallingService rackMarshallingService;
 	private GuiService guiService;
 	private JobExecutorService jobExecutorService;
-	private String defaultPatchDir;
+	private UserPreferencesController userPreferencesController;
 
 	public SubRackComponentsFactory()
 	{
@@ -84,22 +80,18 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 				rackService == null ||
 				rackMarshallingService == null ||
 				guiService == null ||
-				jobExecutorService == null )
+				jobExecutorService == null ||
+				userPreferencesController == null )
 		{
 			throw new ComponentConfigurationException( "Factory missing dependencies. Check configuration" );
 		}
-
-		// Grab the music root from the config file
-		final Map<String, String> errors = new HashMap<String, String>();
-		defaultPatchDir = ConfigurationServiceHelper.checkForSingleStringKey( configurationService, CONFIG_KEY_DEFAULT_PATCH_DIR, errors );
-		ConfigurationServiceHelper.errorCheck( errors );
 
 		creationContext = new SubRackCreationContext( rackService,
 				graphService,
 				rackMarshallingService,
 				guiService,
 				jobExecutorService,
-				defaultPatchDir );
+				userPreferencesController );
 
 		super.init();
 	}
@@ -133,5 +125,10 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	public void setJobExecutorService( final JobExecutorService jobExecutorService )
 	{
 		this.jobExecutorService = jobExecutorService;
+	}
+
+	public void setUserPreferencesController( final UserPreferencesController userPreferencesController )
+	{
+		this.userPreferencesController = userPreferencesController;
 	}
 }
