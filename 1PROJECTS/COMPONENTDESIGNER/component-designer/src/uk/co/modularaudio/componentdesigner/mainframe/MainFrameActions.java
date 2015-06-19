@@ -45,7 +45,6 @@ import uk.co.modularaudio.componentdesigner.preferences.PreferencesDialog;
 import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
-import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class MainFrameActions
 {

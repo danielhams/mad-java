@@ -224,7 +224,6 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final float[] tmpBuffer,
 			final int tmpBufferOffset )
 	{
-
 		final InternalResamplingClient realClient = (InternalResamplingClient)resamplingClient;
 		final SampleCacheClient scc = realClient.getSampleCacheClient();
 		final int sourceSampleRate = scc.getSampleRate();

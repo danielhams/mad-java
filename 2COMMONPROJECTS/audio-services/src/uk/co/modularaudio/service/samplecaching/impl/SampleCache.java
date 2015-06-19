@@ -242,20 +242,23 @@ public class SampleCache
 			final long numZeroFrames = -readFramePosition;
 			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
 			final int numZeroFloats = numZeroFramesToFill * leNumChannels;
-			//			if( log.isDebugEnabled() )
-			//			{
-			//				log.debug("Fill in " + numZeroFrames + " frames of zeros ");
-			//			}
+
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Fill in " + numZeroFrames + " frames of zeros ");
+//			}
+
 			Arrays.fill( outputSamples, curOutputFloatPos, curOutputFloatPos + numZeroFloats, 0.0f );
 			curOutputFloatPos += numZeroFloats;
 			totalNumFloatsToRead -= numZeroFloats;
 			readFramePosition += numZeroFramesToFill;
 			numFramesToRead -= numZeroFramesToFill;
 
-			//			if( log.isDebugEnabled() )
-			//			{
-			//				log.debug("This leaves " + numFramesToRead + " frames to be read");
-			//			}
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("This leaves " + numFramesToRead + " frames to be read");
+//			}
+
 			if( numFramesToRead == 0 )
 			{
 				return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -267,7 +270,14 @@ public class SampleCache
 			final long numZeroFrames = lastFramePositon - leTotalNumFrames;
 			final int numZeroFramesToFill = (int)(numZeroFrames > numFramesToRead ? numFramesToRead : numZeroFrames );
 			final int numZeroFloats = numZeroFramesToFill * leNumChannels;
-			Arrays.fill( outputSamples, curOutputFloatPos, curOutputFloatPos + numZeroFloats, 0.0f );
+
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Requested read goes past end of file - need to add " + numZeroFramesToFill + " empty frames to the end.");
+//			}
+
+			final int zerodFloatOffset = (numFramesToRead - numZeroFramesToFill) * leNumChannels;
+			Arrays.fill( outputSamples, curOutputFloatPos + zerodFloatOffset, curOutputFloatPos + (numFramesToRead * leNumChannels), 0.0f );
 			totalNumFloatsToRead -= numZeroFloats;
 			numFramesToRead -= numZeroFramesToFill;
 			if( numFramesToRead == 0 )
@@ -287,11 +297,13 @@ public class SampleCache
 		long blockMapIndex = buildBlockMapIndex( libraryEntryId, blockNumber );
 
 		SampleCacheBlock curBlock = null;
-		//		if( log.isDebugEnabled() )
-		//		{
-		//			log.debug("Reading real samples for output at position " + outputFramePos + " from read frame position " + readFramePosition + " of " + numFramesToRead + " frames");
-		//			log.debug("This begins in block " + blockNumber + " at raw float position " + rawFloatPosition );
-		//		}
+
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Reading real samples for output at position " + outputArrayPos + " from read frame position " + readFramePosition + " of " + numFramesToRead + " frames");
+//			log.debug("This begins in block " + blockNumber + " at raw float position " + rawFloatPosition );
+//		}
+
 		while( totalNumFloatsToRead > 0 )
 		{
 			curBlock = blockIdToSampleCacheBlockMap.get( blockMapIndex );
@@ -311,6 +323,7 @@ public class SampleCache
 			int floatsReadableFromPositionInBlock = numFloatsInBlock - readFloatsOffset;
 
 			final int numFloatsThisRound = (totalNumFloatsToRead < floatsReadableFromPositionInBlock ? totalNumFloatsToRead : floatsReadableFromPositionInBlock);
+
 //			if( log.isDebugEnabled() )
 //			{
 //				log.debug("Doing read of " + numFloatsThisRound + " floats from block " + blockNumber + " readpos " + readFloatsOffset + " writing to pos " + curOutputFloatPos );
