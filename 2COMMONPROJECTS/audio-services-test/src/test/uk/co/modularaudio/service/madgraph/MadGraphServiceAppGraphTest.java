@@ -64,14 +64,14 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	{
 		log.debug("Starting create new app graph test");
 		// 4 audio ins and outs
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
 		log.debug("Got an app graph: " + appGraph.toString() );
-		MadChannelInstance[] channelIns = appGraph.getChannelInstances();
+		final MadChannelInstance[] channelIns = appGraph.getChannelInstances();
 		assertTrue( channelIns.length == 8 );
-		Collection<MadInstance<?,?>> instanceIns = appGraph.getInstances();
+		final Collection<MadInstance<?,?>> instanceIns = appGraph.getInstances();
 		assertTrue( instanceIns.size() == 0 );
-		Collection<MadLink> links = appGraph.getLinks();
+		final Collection<MadLink> links = appGraph.getLinks();
 		assertTrue( links.size() == 0 );
 
 		graphService.destroyGraph( appGraph, true, true );
@@ -80,16 +80,16 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	public void testAddComponentToAppGraph()
 		throws Exception
 	{
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
-		MadDefinitionListModel definitions = componentService.listDefinitionsAvailable();
+		final MadDefinitionListModel definitions = componentService.listDefinitionsAvailable();
 		assertTrue( definitions.getSize() > 0 );
-		MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  firstDefinition, emptyParameterMap, "Test instance" );
+		final MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  firstDefinition, emptyParameterMap, "Test instance" );
 		graphService.addInstanceToGraphWithName(  appGraph, firstInstance, firstInstance.getInstanceName() );
 
-		Collection<MadInstance<?,?>> instanceIns = appGraph.getInstances();
+		final Collection<MadInstance<?,?>> instanceIns = appGraph.getInstances();
 		assertTrue( instanceIns.size() == 1 );
 
 		graphService.destroyGraph( appGraph, true, true );
@@ -98,27 +98,27 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	public void testLinkComponentsInAppGraph()
 			throws Exception
 	{
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
 
-		MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
 		graphService.addInstanceToGraphWithName(  appGraph, firstInstance, firstInstance.getInstanceName() );
 
-		MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
-		MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
+		final MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
 
-		MadInstance<?,?> secondInstance = componentService.createInstanceFromDefinition(  definition,
+		final MadInstance<?,?> secondInstance = componentService.createInstanceFromDefinition(  definition,
 				emptyParameterMap, "Test instance two");
 
 		graphService.addInstanceToGraphWithName( appGraph, secondInstance, secondInstance.getInstanceName() );
 
-		MadChannelInstance[] secondChannelInstances = secondInstance.getChannelInstances();
-		MadChannelInstance secondProducerChannel = secondChannelInstances[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance[] secondChannelInstances = secondInstance.getChannelInstances();
+		final MadChannelInstance secondProducerChannel = secondChannelInstances[ FadeInMadDefinition.PRODUCER ];
 
-		MadLink link = new MadLink( secondProducerChannel, firstConsumerChannel );
+		final MadLink link = new MadLink( secondProducerChannel, firstConsumerChannel );
 
 		graphService.addLink( appGraph,  link );
 
@@ -132,23 +132,23 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	public void testExposedComponentChannelInAppGraph()
 		throws Exception
 	{
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
 
-		FakeGraphListener fgl = new FakeGraphListener();
+		final FakeGraphListener fgl = new FakeGraphListener();
 
 		graphService.addGraphListener( appGraph, fgl );
 
-		MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
 		graphService.addInstanceToGraphWithName(  appGraph, firstInstance, firstInstance.getInstanceName() );
 
-		MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
-		MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
+		final MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
 
-		MadChannelInstance firstGraphConsumerChannel = appGraph.getChannelInstanceByName( "Input Channel 1" );
+		final MadChannelInstance firstGraphConsumerChannel = appGraph.getChannelInstanceByName( "Input Channel 1" );
 
 		// Now connect one of the component sinks to the graph sinks
 		graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph,
@@ -165,14 +165,14 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	public void testExposedSubGraphInAppGraph()
 			throws Exception
 	{
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 4, 4, 4, 4 );
 
-		FakeGraphListener fgl = new FakeGraphListener();
+		final FakeGraphListener fgl = new FakeGraphListener();
 
 		graphService.addGraphListener( appGraph, fgl );
 
-		MadGraphInstance<?,?> subGraph = graphService.createNewParameterisedGraph( "Test Sub Graph",
+		final MadGraphInstance<?,?> subGraph = graphService.createNewParameterisedGraph( "Test Sub Graph",
 				GraphType.SUB_GRAPH, 4, 4, 4, 4, 4, 4 );
 
 		// Now expose all channels we can
@@ -190,32 +190,32 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 	public void testMakeDualLinksFromProducerToConsumersInGraph()
 		throws Exception
 	{
-		MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 0, 0, 0, 0, 0, 0 );
 
-		MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> producerInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Producer Instance" );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> producerInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Producer Instance" );
 		graphService.addInstanceToGraphWithName(  appGraph, producerInstance, producerInstance.getInstanceName() );
 
-		MadChannelInstance[] producerChannelInstances = producerInstance.getChannelInstances();
-		MadChannelInstance producerChannel = producerChannelInstances[ FadeInMadDefinition.PRODUCER ];
+		final MadChannelInstance[] producerChannelInstances = producerInstance.getChannelInstances();
+		final MadChannelInstance producerChannel = producerChannelInstances[ FadeInMadDefinition.PRODUCER ];
 
-		MadInstance<?,?> consumer1Instance = componentService.createInstanceFromDefinition( definition,  emptyParameterMap,  "Consumer 1 Instance" );
+		final MadInstance<?,?> consumer1Instance = componentService.createInstanceFromDefinition( definition,  emptyParameterMap,  "Consumer 1 Instance" );
 		graphService.addInstanceToGraphWithName(appGraph, consumer1Instance, consumer1Instance.getInstanceName() );
-		MadChannelInstance consumer1Channel = consumer1Instance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance consumer1Channel = consumer1Instance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
 
-		MadInstance<?,?> consumer2Instance = componentService.createInstanceFromDefinition( definition,  emptyParameterMap,  "Consumer 2 Instance" );
+		final MadInstance<?,?> consumer2Instance = componentService.createInstanceFromDefinition( definition,  emptyParameterMap,  "Consumer 2 Instance" );
 		graphService.addInstanceToGraphWithName(appGraph, consumer2Instance, consumer2Instance.getInstanceName() );
-		MadChannelInstance consumer2Channel = consumer2Instance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
+		final MadChannelInstance consumer2Channel = consumer2Instance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
 
-		MadLink linkToOne = new MadLink(producerChannel, consumer1Channel);
+		final MadLink linkToOne = new MadLink(producerChannel, consumer1Channel);
 		graphService.addLink(appGraph, linkToOne);
 
 		graphService.dumpGraph(appGraph);
 
-		MadLink linkToTwo = new MadLink( producerChannel, consumer2Channel );
+		final MadLink linkToTwo = new MadLink( producerChannel, consumer2Channel );
 		graphService.addLink( appGraph, linkToTwo );
 
 		graphService.dumpGraph(appGraph);

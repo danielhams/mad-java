@@ -23,6 +23,7 @@ package uk.co.modularaudio.service.madgraph.impl.helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -218,9 +219,6 @@ public class FadeInOutLinkHelper
 			final MadInstance<?,?> instanceToRemove )
 		throws MadProcessingException, DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		final Map<MadChannelInstance, MadChannelInstance> auChannelInstanceToGraphChannelInstanceMap =
-				graph.getAuChannelInstanceToGraphChannelInstanceMap();
-
 		// Any channel instances currently with producer audio links need to be replaced with a fade out
 		final MadChannelInstance[] channelsToCheck = instanceToRemove.getChannelInstances();
 
@@ -233,18 +231,22 @@ public class FadeInOutLinkHelper
 			if( auci.definition.type == MadChannelType.AUDIO && auci.definition.direction == MadChannelDirection.PRODUCER )
 			{
 				// See if it's exposed as a graph channel
-				final MadChannelInstance graphChannelInstance = auChannelInstanceToGraphChannelInstanceMap.get( auci );
-				if( graphChannelInstance != null )
+				final ArrayList<MadChannelInstance> mappedGraphChannels = graph.getGraphChannelsExposedForProducerChannel( auci );
+				if( mappedGraphChannels != null )
 				{
-//					log.debug("Channel instance " + auci.toString() + " is mapped as graph channel - will insert fade out for it");
-					graphChannelPairsToFadeOut.add( graphChannelInstance );
-					graphChannelPairsToFadeOut.add( auci );
+//					log.debug("Channel instance " + auci.toString() + " is mapped as one or more graph channels - will insert fade out for it");
+
+					for( final MadChannelInstance mgci : mappedGraphChannels )
+					{
+						graphChannelPairsToFadeOut.add( mgci );
+						graphChannelPairsToFadeOut.add( auci );
+					}
 				}
 				else
 				{
 //					log.debug("Checking if channel instance " + auci.toString() + " is linked as a producer");
 					// Find if it's exposed as a regular link
-					final ArrayList<MadLink> linksForProducerChannel = graph.findLinksForProducerChannelInstanceReturnNull(auci);
+					final Set<MadLink> linksForProducerChannel = graph.findLinksForProducerChannelInstanceReturnNull(auci);
 					if( linksForProducerChannel != null )
 					{
 						regularLinksToFadeOut.addAll( linksForProducerChannel );

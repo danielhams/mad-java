@@ -45,23 +45,24 @@ public class AbstractGraphTest extends TestCase
 	implements MadFrameTimeFactory
 {
 	private static Log log = LogFactory.getLog( AbstractGraphTest.class.getName());
-	
-	private List<SpringContextHelper> clientHelpers = null;
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
-	
-	protected MadGraphService graphService = null;
-	protected MadComponentService componentService = null;
-	protected InternalComponentsFactory internalComponentsFactory = null;
-	protected MadClassificationService classificationService = null;
-	protected RenderingPlanService renderingPlanService = null;
-	protected AdvancedComponentsFrontController advancedComponentsFrontController = null;
-	
+
+	private List<SpringContextHelper> clientHelpers;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
+
+	protected MadGraphService graphService;
+	protected MadComponentService componentService;
+	protected InternalComponentsFactory internalComponentsFactory;
+	protected MadClassificationService classificationService;
+	protected RenderingPlanService renderingPlanService;
+	protected AdvancedComponentsFrontController advancedComponentsFrontController;
+
+	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
 		log.info( getClass().getSimpleName() + " unit test beginning");
-		
+
 		clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -75,6 +76,7 @@ public class AbstractGraphTest extends TestCase
 		advancedComponentsFrontController = new FakeAdvancedComponentsFrontController();
 	}
 
+	@Override
 	protected void tearDown() throws Exception
 	{
 		log.info( getClass().getSimpleName() + " unit test done");

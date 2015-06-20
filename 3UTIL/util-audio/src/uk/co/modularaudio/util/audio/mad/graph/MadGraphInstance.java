@@ -60,22 +60,10 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	protected final Map<MadInstance<?,?>, String> instanceToNameInGraphMap = new HashMap<MadInstance<?,?>, String>();
 
 	// Mad links between mad instances within the graph
-	protected final Collection<MadLink> instanceLinks = new ArrayList<MadLink>();
-	protected final Map<MadChannelInstance, MadLink> consumerChannelInstanceToLinkMap = new HashMap<MadChannelInstance, MadLink>();
-	protected final Map<MadChannelInstance, ArrayList<MadLink>> producerChannelInstanceToLinksMap =
-			new HashMap<MadChannelInstance, ArrayList<MadLink>>();
-	protected final Map<MadInstance<?,?>, Set<MadLink>> instanceLinksFrom = new HashMap<MadInstance<?,?>, Set<MadLink>>();
-	protected final Map<MadInstance<?,?>, Set<MadLink>> instanceLinksTo = new HashMap<MadInstance<?,?>, Set<MadLink>>();
+	protected GraphLinkMap linkMap = new GraphLinkMap();
 
-	// Mapping from our graph channels to mad instances within the graph
-	protected final Map<MadChannelInstance, MadChannelInstance> graphOutputChannelInstanceToAuChannelInstanceMap =
-			new HashMap<MadChannelInstance, MadChannelInstance>();
-	protected final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelInstanceToAuChannelInstanceMap =
-			new HashMap<MadChannelInstance, ArrayList<MadChannelInstance>>();
-
-	// And back - from the mad instance channels to graph channels
-	protected final Map<MadChannelInstance, MadChannelInstance> auChannelInstanceToGraphChannelInstanceMap =
-			new HashMap<MadChannelInstance, MadChannelInstance>();
+	// Instance within the graph can be mapped to the graph channels for IO
+	protected GraphIOLinkMap ioLinkMap = new GraphIOLinkMap();
 
 	// Listeners
 	protected final Set<MadGraphListener> listeners = new HashSet<MadGraphListener>();
@@ -117,7 +105,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final String msg = "Graph instance does not support the process method. Create a render plan from it, and use that";
 		log.error( msg );
@@ -144,16 +132,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 				&&
 				instances.contains( consumerAui ) )
 		{
-			instanceLinks.add( link );
-			final Set<MadLink> linksFromProducerSet = instanceLinksFrom.get( producerAui );
-			linksFromProducerSet.add( link );
-
-			final Set<MadLink> linksToConsumerSet = instanceLinksTo.get( consumerAui );
-			linksToConsumerSet.add( link );
-
-			// Finally add these channels to our channel instance to link lookup map
-			addProducerChannelInstanceLink( link );
-			addConsumerChannelInstanceLink( link );
+			linkMap.addLink( link );
 		}
 		else
 		{
@@ -162,83 +141,24 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		}
 	}
 
-	private void addProducerChannelInstanceLink( final MadLink link )
-	{
-		final MadChannelInstance auci = link.getProducerChannelInstance();
-		ArrayList<MadLink> foundLinks = producerChannelInstanceToLinksMap.get(auci );
-		if( foundLinks == null )
-		{
-			foundLinks = new ArrayList<MadLink>();
-			producerChannelInstanceToLinksMap.put( auci, foundLinks );
-		}
-		foundLinks.add( link );
-	}
-
-	private void addConsumerChannelInstanceLink( final MadLink link ) throws MAConstraintViolationException
-	{
-		final MadChannelInstance auci = link.getConsumerChannelInstance();
-		if( consumerChannelInstanceToLinkMap.containsKey( auci ) )
-		{
-			throw new MAConstraintViolationException( "ConstraintViolationException attempting to add consumer channel instance link: " + auci.toString() );
-		}
-		else
-		{
-			consumerChannelInstanceToLinkMap.put( auci, link );
-		}
-	}
-
-	private void removeProducerChannelInstanceLink( final MadLink link ) throws RecordNotFoundException
-	{
-		final MadChannelInstance auci = link.getProducerChannelInstance();
-		final ArrayList<MadLink> foundLinks = producerChannelInstanceToLinksMap.get( auci );
-		if( foundLinks == null )
-		{
-			throw new RecordNotFoundException("No such producer channel instance: " + auci.toString() );
-		}
-		else
-		{
-			foundLinks.remove( link );
-		}
-	}
-
-	private void removeConsumerChannelInstanceLink( final MadLink link ) throws RecordNotFoundException
-	{
-		final MadChannelInstance auci = link.getConsumerChannelInstance();
-		if( !consumerChannelInstanceToLinkMap.containsKey( auci ) )
-		{
-			throw new RecordNotFoundException("No such consumer channel instance: " + auci.toString() );
-		}
-		consumerChannelInstanceToLinkMap.remove( auci );
-	}
-
 	public void deleteLink( final MadLink link ) throws RecordNotFoundException
 	{
-		final MadInstance<?,?> producerAui = link.getProducerChannelInstance().instance;
-		final MadInstance<?,?> consumerAui = link.getConsumerChannelInstance().instance;
-		final Set<MadLink> linksFromProducerSet = instanceLinksFrom.get( producerAui );
-		linksFromProducerSet.remove( link );
-		final Set<MadLink> linksToConsumerSet = instanceLinksTo.get( consumerAui );
-		linksToConsumerSet.remove( link );
-
-		removeProducerChannelInstanceLink( link );
-		removeConsumerChannelInstanceLink( link );
-
-		instanceLinks.remove( link );
+		linkMap.deleteLink( link );
 	}
 
 	public Collection<MadLink> getLinks()
 	{
-		return instanceLinks;
+		return linkMap.getLinks();
 	}
 
-	public Set<MadLink> findAllLinksToInstance( final MadInstance<?,?> instance )
+	public Set<MadLink> getProducerInstanceLinks( final MadInstance<?,?> instance )
 	{
-		return instanceLinksTo.get(  instance );
+		return linkMap.getProducerInstanceLinks( instance );
 	}
 
-	public Set<MadLink> findAllLinksFromInstance( final MadInstance<?,?> instance )
+	public Set<MadLink> getConsumerInstanceLinks( final MadInstance<?,?> instance )
 	{
-		return instanceLinksFrom.get(  instance );
+		return linkMap.getConsumerInstanceLinks( instance );
 	}
 
 	public boolean checkCanAddInstanceWithName( final String nameInGraph )
@@ -257,10 +177,6 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		instances.add(  instance );
 		nameToInstanceMap.put( nameInGraph, instance );
 		instanceToNameInGraphMap.put( instance, nameInGraph );
-		final Set<MadLink> linksFrom = new HashSet<MadLink>();
-		instanceLinksFrom.put( instance,  linksFrom );
-		final Set<MadLink> linksTo = new HashSet<MadLink>();
-		instanceLinksTo.put( instance,  linksTo );
 
 		if( instance instanceof MadGraphInstance )
 		{
@@ -272,6 +188,9 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 				subGraphInstance.addGraphListener( gl );
 			}
 		}
+
+		linkMap.addMadInstance( instance );
+		ioLinkMap.addMadInstance( instance );
 	}
 
 	public boolean containsInstance( final MadInstance<?,?> instance )
@@ -312,58 +231,15 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 			}
 			subGraphs.remove( subGraph );
 		}
-		// Remove any graph channels it is connected to
-		directRemoveAudioInstanceFromGraphChannels( instanceToRemove );
 
 		// Remove all links for this component
-		directRemoveInstanceLinks( instanceToRemove );
 		final String nameInGraph = instanceToNameInGraphMap.get( instanceToRemove );
 		nameToInstanceMap.remove( nameInGraph );
 		instanceToNameInGraphMap.remove( instanceToRemove );
 		instances.remove( instanceToRemove );
-		instanceLinksFrom.remove( instanceToRemove );
-		instanceLinksTo.remove( instanceToRemove );
-	}
 
-	private void directRemoveAudioInstanceFromGraphChannels( final MadInstance<?,?> instanceToRemove )
-	{
-		// Need to loop around the mapped mad instance channels looking to see any of them are exposed as graph channels
-		// if they are remove them.
-		// We build a list of what to remove before we remove them so the iterator doesn't become invalid
-		final ArrayList<MadChannelInstance> aucisToRemove = new ArrayList<MadChannelInstance>();
-		for( final Map.Entry<MadChannelInstance, MadChannelInstance> auci2gc : auChannelInstanceToGraphChannelInstanceMap.entrySet() )
-		{
-			final MadChannelInstance auci = auci2gc.getKey();
-			if( auci.instance == instanceToRemove )
-			{
-				aucisToRemove.add( auci );
-			}
-		}
-
-		for( final MadChannelInstance auci : aucisToRemove )
-		{
-			final MadChannelInstance graphChannel = auChannelInstanceToGraphChannelInstanceMap.get( auci );
-
-			if( graphChannel.definition.direction == MadChannelDirection.PRODUCER )
-			{
-				graphOutputChannelInstanceToAuChannelInstanceMap.remove( graphChannel );
-				auChannelInstanceToGraphChannelInstanceMap.remove( auci );
-			}
-			else
-			{
-				final ArrayList<MadChannelInstance> mappedChannelInstances = graphInputChannelInstanceToAuChannelInstanceMap.get( graphChannel );
-				if( !mappedChannelInstances.contains( auci ) )
-				{
-					log.error("Missing channel in consumer list");
-				}
-				mappedChannelInstances.remove( auci );
-				if( mappedChannelInstances.size() == 0 )
-				{
-					graphInputChannelInstanceToAuChannelInstanceMap.remove( graphChannel );
-				}
-				auChannelInstanceToGraphChannelInstanceMap.remove( auci );
-			}
-		}
+		linkMap.removeMadInstance( instanceToRemove );
+		ioLinkMap.removeMadInstance( this, instanceToRemove );
 	}
 
 	public void exposeAudioInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
@@ -380,121 +256,44 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 			final String msg = "Graph channel must match mad instance channel direction when exposing it";
 			throw new MAConstraintViolationException( msg );
 		}
-		// Check if it's already assigned
-//		if( graphConsumerChannelInstanceToAuChannelInstanceMap.get( graphChannelInstance ) != null ||
-//				graphProducerChannelInstanceToAuChannelInstanceMap.get( graphChannelInstance ) 1
+
 		if( graphChannelInstance.definition.direction == MadChannelDirection.PRODUCER )
 		{
-			if( graphOutputChannelInstanceToAuChannelInstanceMap.get( graphChannelInstance ) != null )
-			{
-				final String msg = "The graph channel " + graphChannelInstance.definition.name + " is already mapped";
-				throw new MAConstraintViolationException( msg );
-			}
-			else
-			{
-//				log.debug("Adding output channel instance to mad channel instance map for " + graphChannelInstance.toString() );
-				graphOutputChannelInstanceToAuChannelInstanceMap.put( graphChannelInstance, channelInstanceToExpose);
-				auChannelInstanceToGraphChannelInstanceMap.put( channelInstanceToExpose, graphChannelInstance );
-			}
+			ioLinkMap.mapProducerChannel( graphChannelInstance, channelInstanceToExpose );
 		}
 		else
 		{
-			// Don't need to check if it's already mapped - many can bind
-//			log.debug("Adding input channel instance to mad channel instance map for " + graphChannelInstance.toString() );
-			ArrayList<MadChannelInstance> mappedAuChannels = graphInputChannelInstanceToAuChannelInstanceMap.get( graphChannelInstance );
-			if( mappedAuChannels == null )
-			{
-				mappedAuChannels = new ArrayList<MadChannelInstance>();
-				graphInputChannelInstanceToAuChannelInstanceMap.put( graphChannelInstance, mappedAuChannels );
-			}
-			mappedAuChannels.add( channelInstanceToExpose );
-			auChannelInstanceToGraphChannelInstanceMap.put( channelInstanceToExpose, graphChannelInstance );
+			ioLinkMap.mapConsumerChannel( graphChannelInstance, channelInstanceToExpose );
 		}
 	}
 
 	public void removeAudioInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
 			final MadChannelInstance channelInstanceExposed )
-		throws RecordNotFoundException
+		throws RecordNotFoundException, MAConstraintViolationException
 	{
-		// Check it's really assigned
-		final MadChannelInstance curGraphChan = auChannelInstanceToGraphChannelInstanceMap.get( channelInstanceExposed );
-		if( curGraphChan == null )
+		if( graphChannelInstance.definition.direction == MadChannelDirection.PRODUCER )
 		{
-			final String msg = "The passed mad instance and channel are not currently assigned to the graph channel passed.";
-			throw new RecordNotFoundException( msg );
+			ioLinkMap.unmapProducerChannel( graphChannelInstance, channelInstanceExposed );
 		}
 		else
 		{
-			if( curGraphChan.definition.direction == MadChannelDirection.PRODUCER )
-			{
-//				log.debug("Removing output channel instance to mad channel instance map for " + curGraphChan.toString() );
-				graphOutputChannelInstanceToAuChannelInstanceMap.remove( curGraphChan );
-				auChannelInstanceToGraphChannelInstanceMap.remove( channelInstanceExposed );
-			}
-			else
-			{
-//				log.debug("Removing input channel instance to mad channel instance map for " + curGraphChan.toString() );
-				final ArrayList<MadChannelInstance> mappedChans = graphInputChannelInstanceToAuChannelInstanceMap.get( curGraphChan );
-				if( mappedChans == null )
-				{
-					final String msg = "The passed mad instance and channel are not currently assigned to the graph channel passed.";
-					throw new RecordNotFoundException( msg );
-				}
-				mappedChans.remove( channelInstanceExposed );
-				if( mappedChans.size() == 0 )
-				{
-					graphInputChannelInstanceToAuChannelInstanceMap.remove( curGraphChan );
-				}
-				auChannelInstanceToGraphChannelInstanceMap.remove( channelInstanceExposed );
-			}
+			ioLinkMap.unmapConsumerChannel( graphChannelInstance, channelInstanceExposed );
 		}
 	}
 
 	public Map<MadChannelInstance, MadChannelInstance> getGraphOutputChannelInstanceMap()
 	{
-		return graphOutputChannelInstanceToAuChannelInstanceMap;
+		return ioLinkMap.getGraphProducerChannelInstanceMap();
 	}
 
 	public Map<MadChannelInstance, ArrayList<MadChannelInstance>> getGraphInputChannelInstanceMap()
 	{
-		return graphInputChannelInstanceToAuChannelInstanceMap;
+		return ioLinkMap.getGraphConsumerChannelInstanceMap();
 	}
 
-	public Map<MadChannelInstance, MadChannelInstance> getAuChannelInstanceToGraphChannelInstanceMap()
+	public Set<MadLink> findLinksForProducerChannelInstanceReturnNull( final MadChannelInstance channelInstance )
 	{
-		return auChannelInstanceToGraphChannelInstanceMap;
-	}
-
-	// Private methods
-	private void directRemoveInstanceLinks( final MadInstance<?,?> instance ) throws RecordNotFoundException
-	{
-		final Set<MadLink> linksFrom = instanceLinksFrom.get( instance );
-		final Set<MadLink> linksTo = instanceLinksTo.get( instance );
-		Collection<MadLink> toRemove = new ArrayList<MadLink>( linksFrom );
-		for( final MadLink link : toRemove )
-		{
-			deleteLink( link );
-		}
-
-		toRemove = new ArrayList<MadLink>( linksTo);
-		for( final MadLink link : toRemove )
-		{
-			deleteLink( link );
-		}
-	}
-
-	public MadLink findLinkForConsumerChannelInstanceReturnNull( final MadChannelInstance channelInstance )
-	{
-		MadLink retVal = null;
-		retVal = consumerChannelInstanceToLinkMap.get( channelInstance );
-		return retVal;
-	}
-
-	public ArrayList<MadLink> findLinksForProducerChannelInstanceReturnNull( final MadChannelInstance channelInstance )
-	{
-		ArrayList<MadLink> retVal = null;
-		retVal = producerChannelInstanceToLinksMap.get( channelInstance );
-		return retVal;
+		return linkMap.findProducerChannelInstancesReturnNull( channelInstance );
 	}
 
 	public MadInstance<?,?> getInstanceByName( final String name )
@@ -580,16 +379,20 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		instances.clear();
 		nameToInstanceMap.clear();
 		instanceToNameInGraphMap.clear();
-		instanceLinks.clear();
-		consumerChannelInstanceToLinkMap.clear();
-		producerChannelInstanceToLinksMap.clear();
-		instanceLinksFrom.clear();
-		instanceLinksTo.clear();
-		graphOutputChannelInstanceToAuChannelInstanceMap.clear();
-		graphInputChannelInstanceToAuChannelInstanceMap.clear();
-		auChannelInstanceToGraphChannelInstanceMap.clear();
+		linkMap.clear();
+		ioLinkMap.clear();
 		listeners.clear();
 		subGraphs.clear();
 	}
 
+	public ArrayList<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
+	{
+		return ioLinkMap.getGraphChannelsExposedForProducerChannel( auci );
+	}
+
+	public void debugLinks()
+	{
+		linkMap.debug();
+		ioLinkMap.debug();
+	}
 }

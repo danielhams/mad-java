@@ -110,7 +110,7 @@ public class DirectedDependencyGraphHelper
 			final Set<FlattenedRenderJob> producerComponentsWeWaitFor = new HashSet<FlattenedRenderJob>();
 
 			// Check for the components connected to the sinks of this instance
-			final Set<MadLink> linksTo = graphService.findAllLinksToInstance( graph,  drivingMadInstance );
+			final Set<MadLink> linksTo = graphService.getConsumerInstanceLinks( graph, drivingMadInstance );
 			for( final MadLink link : linksTo )
 			{
 				// Recurse on the source component

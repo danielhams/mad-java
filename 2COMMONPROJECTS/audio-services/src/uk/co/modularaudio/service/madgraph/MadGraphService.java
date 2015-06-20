@@ -87,11 +87,11 @@ public interface MadGraphService
 	public Collection<MadLink> findAllLinks( MadGraphInstance<?,?> graph )
 		throws DatastoreException;
 
-	public Set<MadLink> findAllLinksToInstance( MadGraphInstance<?,?> graph,
+	public Set<MadLink> getProducerInstanceLinks( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
 
-	public Set<MadLink> findAllLinksFromInstance( MadGraphInstance<?,?> graph,
+	public Set<MadLink> getConsumerInstanceLinks( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
 

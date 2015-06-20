@@ -427,17 +427,17 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public Set<MadLink> findAllLinksToInstance( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
+	public Set<MadLink> getProducerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
 			throws DatastoreException
 	{
-		return graph.findAllLinksToInstance( instance );
+		return graph.getProducerInstanceLinks( instance );
 	}
 
 	@Override
-	public Set<MadLink> findAllLinksFromInstance( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
+	public Set<MadLink> getConsumerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
 			throws DatastoreException
 	{
-		return graph.findAllLinksFromInstance( instance );
+		return graph.getConsumerInstanceLinks( instance );
 	}
 
 	@Override

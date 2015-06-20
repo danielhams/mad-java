@@ -154,7 +154,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
-		final Set<MadLink> producerLinks = graphService.findAllLinksFromInstance( graph, madInstance );
+		final Set<MadLink> producerLinks = graphService.getProducerInstanceLinks( graph, madInstance );
 		for( final MadLink link : producerLinks )
 		{
 			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
@@ -179,8 +179,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 //			log.debug("Created buffer for " + producerInstance.toString() + " channel instance: " + producerChannelInstance.toString());
 		}
 
-		final Set<MadLink> consumerLinks = graphService.findAllLinksToInstance( graph, madInstance );
-
+		final Set<MadLink> consumerLinks = graphService.getConsumerInstanceLinks( graph, madInstance );
 		for( final MadLink link : consumerLinks )
 		{
 			final MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
