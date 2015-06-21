@@ -232,9 +232,10 @@ public class FadeInOutLinkHelper
 			if( auci.definition.type == MadChannelType.AUDIO && auci.definition.direction == MadChannelDirection.PRODUCER )
 			{
 				// See if it's exposed as a graph channel
-				final ArrayList<MadChannelInstance> mappedGraphChannels = graph.getGraphChannelsExposedForProducerChannel( auci );
-				if( mappedGraphChannels != null )
+				final boolean channelIsGraphMapped = graph.isProducerChannelExposedOnGraph( auci );
+				if( channelIsGraphMapped )
 				{
+					final ArrayList<MadChannelInstance> mappedGraphChannels = graph.getGraphChannelsExposedForProducerChannel( auci );
 //					log.debug("Channel instance " + auci.toString() + " is mapped as one or more graph channels - will insert fade out for it");
 					for( final MadChannelInstance mgci : mappedGraphChannels )
 					{
@@ -291,88 +292,42 @@ public class FadeInOutLinkHelper
 			final boolean warnAboutMissingChannels )
 		throws MadProcessingException, DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
-		// For each channel we find in the graph, look for a corresponding named channel in
-		// the instance, and create a fade in instance between them
-		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
+		// For each channel in the instance look for a correspondingly named graph channel to
+		// map it to. If the channel is an audio producer channel, add it to the list
+		// of channels we'll fade in on.
+		final MadChannelInstance[] instanceToMapChannels = instanceToMap.getChannelInstances();
 		final ArrayList<MadChannelInstance> channelPairsToBulkFade = new ArrayList<MadChannelInstance>();
-		for( final MadChannelInstance graphChannel : graphChannels )
+		for( final MadChannelInstance instanceChannel : instanceToMapChannels )
 		{
-			final String name = graphChannel.definition.name;
-			final MadChannelInstance madInstanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
+			final String name = instanceChannel.definition.name;
 
-			if( madInstanceChannel != null )
+			final MadChannelInstance matchingGraphChannel = graph.getChannelInstanceByNameReturnNull( name );
+
+			if( matchingGraphChannel != null )
 			{
-				final MadChannelType channelType = graphChannel.definition.type;
-				final MadChannelDirection channelDirection = graphChannel.definition.direction;
-				// Only do fade in on producer channels
+				final MadChannelType channelType = instanceChannel.definition.type;
+				final MadChannelDirection channelDirection = instanceChannel.definition.direction;
+
 				if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
 				{
-					channelPairsToBulkFade.add( graphChannel );
-					channelPairsToBulkFade.add( madInstanceChannel );
+					channelPairsToBulkFade.add( matchingGraphChannel );
+					channelPairsToBulkFade.add( instanceChannel );
 				}
 				else
 				{
-					// We need to map the other channels too, as they may have an influence on the sound being produced (control etc)
-					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, madInstanceChannel );
+					graph.exposeAudioInstanceChannelAsGraphChannel( matchingGraphChannel, instanceChannel );
 				}
 			}
-			else if( warnAboutMissingChannels )
+			else
 			{
 				if( log.isWarnEnabled() )
 				{
-					log.warn( "Unable to map channel name " + name + " to appropriate instance channel" );
+					log.warn( "Unable to map channel name " + name + " to appropriate graph channel" );
 				}
 			}
 		}
 
 		return insertPFadeInInstanceForGraphChannels( graph, channelPairsToBulkFade );
-	}
-
-	public void removeFadeInGraphChannelMap( final PFadeInMadInstance waitInstance,
-			final MadGraphInstance<?,?> graph,
-			final MadInstance<?,?> instanceToMap )
-		throws RecordNotFoundException, MAConstraintViolationException, DatastoreException
-	{
-		// Need to wait until the fade in has happened
-		final long startTime = System.currentTimeMillis();
-		long curTime = 0;
-		while( curTime < startTime + MAX_WAIT_MILLIS && !waitInstance.completed() )
-		{
-			try
-			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
-			}
-			catch (final InterruptedException e)
-			{
-				log.debug("Interrupted caught during fade out / in - can probably ignore.");
-			}
-			curTime = System.currentTimeMillis();
-		}
-		// Basically remove all the fade in instances
-		// and then re-expose the instance channels that map to graph ones
-		graph.removeInstance(waitInstance);
-
-		// Map channels
-		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
-		for( final MadChannelInstance graphChannel : graphChannels )
-		{
-			// Only need to remap the audio ones that are output
-			final String name = graphChannel.definition.name;
-			final MadChannelType channelType = graphChannel.definition.type;
-			final MadChannelDirection channelDirection = graphChannel.definition.direction;
-			if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
-			{
-				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
-				if( instanceChannel != null )
-				{
-					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
-				}
-				else
-				{
-					log.warn("Unable to re-map channel");
-				}
-			}
-		}
 	}
 
 	public void removePFadeInGraphChannelMap( final PFadeInMadInstance waitInstance,
@@ -395,7 +350,8 @@ public class FadeInOutLinkHelper
 			}
 			curTime = System.currentTimeMillis();
 		}
-		// Basically remove all the fade in instances
+
+		// Basically remove the fade in instance
 		// and then re-expose the instance channels that map to graph ones
 		graph.removeInstance(waitInstance);
 
@@ -403,13 +359,12 @@ public class FadeInOutLinkHelper
 		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
 		for( final MadChannelInstance graphChannel : graphChannels )
 		{
-			// Only need to remap the audio ones that are output
-			final String name = graphChannel.definition.name;
-			final MadChannelType channelType = graphChannel.definition.type;
-			final MadChannelDirection channelDirection = graphChannel.definition.direction;
-			if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
+			// Only need to remap the audio ones that are output, others were already mapped
+			if( graphChannel.definition.type == MadChannelType.AUDIO &&
+					graphChannel.definition.direction == MadChannelDirection.PRODUCER )
 			{
-				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull( name );
+				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull(
+						graphChannel.definition.name );
 
 				graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
 			}

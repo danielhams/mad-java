@@ -395,4 +395,9 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		linkMap.debug();
 		ioLinkMap.debug();
 	}
+
+	public boolean isProducerChannelExposedOnGraph( final MadChannelInstance auci )
+	{
+		return ioLinkMap.isProducerChannelExposed( auci );
+	}
 }

@@ -103,7 +103,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			temporalToInstanceQueue = new MadLocklessIOQueue( IOQueueEvent.class, localBridge.getTemporalToInstanceQueueCapacity() );
 			temporalToUiQueue = new MadLocklessIOQueue( IOQueueEvent.class, localBridge.getTemporalToUiQueueCapacity() );
 		}
-
 	}
 
 	private MadChannelInstance[] createChannelInstances()

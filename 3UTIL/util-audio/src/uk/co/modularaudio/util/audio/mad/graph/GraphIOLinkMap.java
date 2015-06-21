@@ -320,4 +320,10 @@ public class GraphIOLinkMap
 					cve );
 		}
 	}
+
+	public boolean isProducerChannelExposed( final MadChannelInstance auci )
+	{
+		final ArrayList<MadChannelInstance> mgcs = madChannelInstanceToGraphProducerMap.get( auci );
+		return (mgcs != null && mgcs.size() > 0 );
+	}
 }
