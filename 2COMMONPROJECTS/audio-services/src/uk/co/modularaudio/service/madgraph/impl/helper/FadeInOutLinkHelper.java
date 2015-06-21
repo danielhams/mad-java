@@ -320,10 +320,10 @@ public class FadeInOutLinkHelper
 			}
 			else
 			{
-				if( log.isWarnEnabled() )
-				{
-					log.warn( "Unable to map channel name " + name + " to appropriate graph channel" );
-				}
+//				if( log.isWarnEnabled() )
+//				{
+//					log.warn( "Unable to map channel name " + name + " to appropriate graph channel" );
+//				}
 			}
 		}
 
