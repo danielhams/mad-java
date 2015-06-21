@@ -103,9 +103,9 @@ public class GraphLinkMap
 		instanceLinks.remove( link );
 	}
 
-	public Set<MadLink> findProducerChannelInstancesReturnNull( final MadChannelInstance channelInstance )
+	public Set<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
 	{
-		return consumerInstanceLinks.get( channelInstance.instance );
+		return producerInstanceLinks.get( channelInstance.instance );
 	}
 
 	public void clear()

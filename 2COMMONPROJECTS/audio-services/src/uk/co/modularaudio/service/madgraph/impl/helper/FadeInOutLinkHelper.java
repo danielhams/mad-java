@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.madgraph.impl.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -222,7 +223,7 @@ public class FadeInOutLinkHelper
 		// Any channel instances currently with producer audio links need to be replaced with a fade out
 		final MadChannelInstance[] channelsToCheck = instanceToRemove.getChannelInstances();
 
-		final ArrayList<MadLink> regularLinksToFadeOut = new ArrayList<MadLink>();
+		final Set<MadLink> regularLinksToFadeOut = new HashSet<MadLink>();
 		final ArrayList<MadChannelInstance> graphChannelPairsToFadeOut = new ArrayList<MadChannelInstance>();
 
 		for( final MadChannelInstance auci : channelsToCheck )
@@ -235,7 +236,6 @@ public class FadeInOutLinkHelper
 				if( mappedGraphChannels != null )
 				{
 //					log.debug("Channel instance " + auci.toString() + " is mapped as one or more graph channels - will insert fade out for it");
-
 					for( final MadChannelInstance mgci : mappedGraphChannels )
 					{
 						graphChannelPairsToFadeOut.add( mgci );
@@ -246,10 +246,11 @@ public class FadeInOutLinkHelper
 				{
 //					log.debug("Checking if channel instance " + auci.toString() + " is linked as a producer");
 					// Find if it's exposed as a regular link
-					final Set<MadLink> linksForProducerChannel = graph.findLinksForProducerChannelInstanceReturnNull(auci);
-					if( linksForProducerChannel != null )
+					final Set<MadLink> linksWithAuciAsProducer = graph.findProducerInstanceLinksReturnNull(auci);
+					if( linksWithAuciAsProducer != null && linksWithAuciAsProducer.size() > 0 )
 					{
-						regularLinksToFadeOut.addAll( linksForProducerChannel );
+//						log.debug("Have links to fade out");
+						regularLinksToFadeOut.addAll( linksWithAuciAsProducer );
 					}
 				}
 			}
@@ -622,7 +623,7 @@ public class FadeInOutLinkHelper
 
 	private PFadeOutMadInstance insertPFadeOutInstanceForChannels( final MadGraphInstance<?, ?> graph,
 			final ArrayList<MadChannelInstance> graphChannelPairsToFadeOut,
-			final ArrayList<MadLink> regularLinksToFadeOut )
+			final Set<MadLink> regularLinksToFadeOut )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		final int totalGraphChannels = graphChannelPairsToFadeOut.size();
@@ -662,10 +663,8 @@ public class FadeInOutLinkHelper
 			graph.addLink( graphToFadeLink );
 			fadeIndex++;
 		}
-		int linkIndex = 0;
-		for( int c = 0 ; c < numFadedRegularChannels ; ++c )
+		for( final MadLink linkToFadeOut : regularLinksToFadeOut )
 		{
-			final MadLink linkToFadeOut = regularLinksToFadeOut.get( linkIndex++ );
 			final MadChannelInstance consumerChannelInstance = linkToFadeOut.getConsumerChannelInstance();
 			final MadChannelInstance producerChannelInstanceToRemove = linkToFadeOut.getProducerChannelInstance();
 			final int producerIndex = pfc.getProducerChannelIndex( fadeIndex );

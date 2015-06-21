@@ -291,9 +291,9 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return ioLinkMap.getGraphConsumerChannelInstanceMap();
 	}
 
-	public Set<MadLink> findLinksForProducerChannelInstanceReturnNull( final MadChannelInstance channelInstance )
+	public Set<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
 	{
-		return linkMap.findProducerChannelInstancesReturnNull( channelInstance );
+		return linkMap.findProducerInstanceLinksReturnNull( channelInstance );
 	}
 
 	public MadInstance<?,?> getInstanceByName( final String name )
