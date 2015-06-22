@@ -281,33 +281,30 @@ public class GraphIOLinkMap
 	{
 		try
 		{
-			final MadChannelInstance[] graphChannels = graph.getChannelInstances();
-			for( final MadChannelInstance gci : graphChannels )
+			final MadChannelInstance[] instanceChannels = instanceToRemove.getChannelInstances();
+			for( final MadChannelInstance mci : instanceChannels )
 			{
-				switch( gci.definition.direction )
+				switch( mci.definition.direction )
 				{
 					case CONSUMER:
 					{
-						final ArrayList<MadChannelInstance> mic = graphConsumerChannelToMadChannelInstanceMap.get( gci );
-						if( mic != null )
+						final MadChannelInstance graphChannel = madChannelInstanceToGraphConsumerMap.get( mci );
+						if( graphChannel != null )
 						{
-							final ArrayList<MadChannelInstance> itr = new ArrayList<MadChannelInstance>( mic );
-							for( final MadChannelInstance mci : itr )
-							{
-								if( mci.instance == instanceToRemove )
-								{
-									unmapConsumerChannel( gci, mci );
-								}
-							}
+							unmapConsumerChannel( graphChannel, mci );
 						}
 						break;
 					}
 					default:
 					{
-						final MadChannelInstance mci = graphProducerChannelToMadChannelInstanceMap.get( gci );
-						if( mci != null && mci.instance == instanceToRemove )
+						final ArrayList<MadChannelInstance> graphChannels = madChannelInstanceToGraphProducerMap.get( mci );
+						if( graphChannels != null )
 						{
-							unmapProducerChannel( gci, mci );
+							final ArrayList<MadChannelInstance> localCopy = new ArrayList<MadChannelInstance>( graphChannels );
+							for( final MadChannelInstance gci : localCopy )
+							{
+								unmapProducerChannel( gci, mci );
+							}
 						}
 						break;
 					}

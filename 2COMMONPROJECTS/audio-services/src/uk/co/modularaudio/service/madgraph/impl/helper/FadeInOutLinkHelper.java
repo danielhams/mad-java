@@ -250,7 +250,7 @@ public class FadeInOutLinkHelper
 					final Set<MadLink> linksWithAuciAsProducer = graph.findProducerInstanceLinksReturnNull(auci);
 					if( linksWithAuciAsProducer != null && linksWithAuciAsProducer.size() > 0 )
 					{
-//						log.debug("Have links to fade out");
+//						log.debug("Have " + linksWithAuciAsProducer.size() + " links to fade out");
 						regularLinksToFadeOut.addAll( linksWithAuciAsProducer );
 					}
 				}

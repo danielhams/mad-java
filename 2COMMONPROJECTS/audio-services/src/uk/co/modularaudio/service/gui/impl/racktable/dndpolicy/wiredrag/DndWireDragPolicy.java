@@ -179,7 +179,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragStartPoint)
 		throws RecordNotFoundException, DatastoreException
 	{
-		log.debug("Drag beginning.");
+//		log.debug("Drag beginning.");
 		regionHintDecorator.setActive( false );
 		// Store the channel from which a drag has begun - we need to be able to show
 		// that a channel can or cannot be the destination based on matching source/sink pairs of the same
@@ -361,7 +361,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
 			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragTablePoint)
 	{
-		log.debug("Wire Drag policy checking if valid drag target with local point: " + dragLocalPoint );
+//		log.debug("Wire Drag policy checking if valid drag target with local point: " + dragLocalPoint );
 		boolean isTarget = false;
 		boolean changed = false;
 
@@ -386,7 +386,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 				if( dragEndRackComponent == dragStartRackComponent ||
 						testDragEndChannelPlug.getClass() != dragStartChannelPlug.getClass() )
 				{
-					log.debug("Failing valid drag target due to same component or different channeltype");
+//					log.debug("Failing valid drag target due to same component or different channeltype");
 				}
 				else
 				{
@@ -401,7 +401,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 
 					if( targetIsMasterIO )
 					{
-						isTarget = isValidIOLinkTarget( table,
+						isTarget = isValidIOLinkSource( table,
 								component,
 								targetRackComponentInstance,
 								channelInstance );
@@ -437,17 +437,19 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		return isTarget;
 	}
 
-	private boolean isValidIOLinkTarget( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
+	private boolean isValidIOLinkSource( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
 			AbstractGuiAudioComponent> table,
 			final AbstractGuiAudioComponent component,
-			final MadInstance<?,?> targetRackComponentInstance,
+			final MadInstance<?,?> sourceRackComponentInstance,
 			final MadChannelInstance channelInstance )
 	{
 		boolean retVal = false;
 
 		final MadChannelDirection channelDirection = channelInstance.definition.direction;
 
-		log.debug("The channel instance direction is " + channelDirection.toString());
+//		log.debug("IVILS The channel instance direction is " + channelDirection.toString());
+//		log.debug("IVILS The target component is " + sourceRackComponentInstance.getInstanceName());
+//		log.debug("IVILS The channel is " + channelInstance.definition.name );
 		if( channelDirection == MadChannelDirection.CONSUMER )
 		{
 			if( dragStartChannelIsSink != null )
@@ -462,81 +464,117 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			}
 			else
 			{
-				// Can't connect source to sink
+				// Can't connect source to sink where the rack plug is a source
 			}
 		}
 		else
 		{
-			// We allow multiple connections to producers,
-			// so find the target position
+			// We allow multiple connections to producers but only one connection from
+			// a consumer.
 
 			if( dragStartChannelIsSource != null)
 			{
-				dragEndChannelIsSink = channelInstance;
-				targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
-						dataModel,
-						component,
-						dragEndRackComponent,
-						dragEndChannelPlug );
-				retVal = true;
+				//  Check the consumer isn't already involved in a connection
+				final RackIOLink existingEndIOLink = checkForExistingChannelIOLink( dragEndChannelPlug, sourceRackComponentInstance );
+				final RackLink existingEndLink = checkForExistingChannelLink( dragEndChannelPlug, sourceRackComponentInstance );
+				if( existingEndIOLink == null && existingEndLink == null )
+				{
+//					log.debug("No existing IO link discovered on drag end");
+					dragEndChannelIsSink = channelInstance;
+					targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
+							dataModel,
+							component,
+							dragEndRackComponent,
+							dragEndChannelPlug );
+					retVal = true;
+				}
+				else
+				{
+//					log.debug("Existing IO link discovered on drag end");
+				}
 			}
 			else
 			{
+				// Can't connect source to sink where the rack plug is a source
+//				log.debug("Cannot connect source to sink for rack IO");
 			}
-
-//			final RackIOLink existingLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
-//
-//			if( existingLink != null )
-//			{
-//				log.debug("Found existing IO link, not valid IO link target");
-//				// Is involved in a link already
-//				retVal = false;
-//			}
-//			else
-//			{
-//				log.debug("No existing IO link, looking for target plug");
-//				// Plug is currently empty, figure out what values to extract as the target
-//				if( channelDirection == MadChannelDirection.PRODUCER )
-//				{
-//					if( dragStartChannelIsSource != null)
-//					{
-//						dragEndChannelIsSink = channelInstance;
-//						targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
-//								dataModel,
-//								component,
-//								dragEndRackComponent,
-//								dragEndChannelPlug );
-//						retVal = true;
-//					}
-//					else
-//					{
-//					}
-//				}
-//				else if( channelDirection == MadChannelDirection.CONSUMER )
-//				{
-//					if( dragStartChannelIsSink != null )
-//					{
-//						dragEndChannelIsSource = channelInstance;
-//						targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
-//								dataModel,
-//								component,
-//								dragEndRackComponent,
-//								dragEndChannelPlug );
-//						retVal = true;
-//					}
-//					else
-//					{
-//					}
-//				}
-//				else
-//				{
-//					log.error("Oops");
-//					dragStartPosition = new Point( 100, 100 );
-//					// At least it won't null pointer everywhere.
-//				}
-//			}
 		}
-		log.debug("The io link target is " + (retVal ? "valid" : "invalid"));
+//		log.debug("The io link source is " + (retVal ? "valid" : "invalid"));
+		return retVal;
+	}
+
+	private boolean isValidIOLinkTarget( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
+			AbstractGuiAudioComponent> table,
+			final AbstractGuiAudioComponent component,
+			final MadInstance<?,?> targetRackComponentInstance,
+			final MadChannelInstance channelInstance )
+	{
+		boolean retVal = false;
+
+		final MadChannelDirection channelDirection = channelInstance.definition.direction;
+
+//		log.debug("IVILT The channel instance direction is " + channelDirection.toString());
+//		log.debug("IVILT The target component is " + targetRackComponentInstance.getInstanceName());
+//		log.debug("IVILT The channel is " + channelInstance.definition.name );
+		if( channelDirection == MadChannelDirection.CONSUMER )
+		{
+			if( dragStartChannelIsSink != null )
+			{
+				// Check the producer isn't already involved in a connection
+				final RackIOLink existingEndIOLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
+				final RackLink existingEndLink = checkForExistingChannelLink( dragEndChannelPlug, targetRackComponentInstance );
+				if( existingEndIOLink == null && existingEndLink == null )
+				{
+					dragEndChannelIsSource = channelInstance;
+					targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
+							dataModel,
+							component,
+							dragEndRackComponent,
+							dragEndChannelPlug );
+					retVal = true;
+				}
+				else
+				{
+//					log.debug("Drag end already involved in a link or IO link.");
+				}
+			}
+			else
+			{
+				// Can't connect source to sink where the rack plug is a source
+			}
+		}
+		else
+		{
+			// We allow multiple connections to producers but only one connection from
+			// a consumer.
+
+			if( dragStartChannelIsSource != null)
+			{
+				//  Check the consumer isn't already involved in a connection
+				final RackIOLink existingStartIOLink = checkForExistingChannelIOLink( dragStartChannelPlug, targetRackComponentInstance );
+				if( existingStartIOLink == null )
+				{
+//					log.debug("No existing IO link discovered on drag start");
+					dragEndChannelIsSink = channelInstance;
+					targetPosition = RackWirePositionHelper.calculateCenterForComponentPlug( (RackTable)table,
+							dataModel,
+							component,
+							dragEndRackComponent,
+							dragEndChannelPlug );
+					retVal = true;
+				}
+				else
+				{
+//					log.debug("Existing IO link discovered on drag start");
+				}
+			}
+			else
+			{
+				// Can't connect source to sink where the rack plug is a source
+//				log.debug("Cannot connect source to sink for rack IO");
+			}
+		}
+//		log.debug("The io link target is " + (retVal ? "valid" : "invalid"));
 		return retVal;
 	}
 
@@ -553,6 +591,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			{
 				log.debug("Found existing channel io link instance");
 				foundLink = testLink;
+				break;
 			}
 		}
 
@@ -588,13 +627,8 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		else
 		{
 			final RackLink existingLink = checkForExistingChannelLink( dragEndChannelPlug, targetRackComponentInstance );
-			if( existingLink != null )
-			{
-				// Is involved in a link already
-				log.debug("Found existing link, not valid link target");
-				retVal = false;
-			}
-			else
+			final RackIOLink existingIOLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
+			if( existingLink == null && existingIOLink == null )
 			{
 				log.debug("No existing link, looking for target plug");
 				// Plug is currently empty, figure out what values to extract as the target
@@ -639,8 +673,14 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 					// At least it won't null pointer everywhere.
 				}
 			}
+			else
+			{
+				// Is involved in a link already
+//				log.debug("Found existing link or IO link, not valid link target");
+				retVal = false;
+			}
 		}
-		log.debug("The link target is " + (retVal ? "valid" : "invalid"));
+//		log.debug("The link target is " + (retVal ? "valid" : "invalid"));
 		return retVal;
 	}
 
@@ -649,7 +689,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragEndPoint)
 		throws RecordNotFoundException, DatastoreException, MAConstraintViolationException
 	{
-		log.debug("Ending drag");
+//		log.debug("Ending drag");
 		final MadChannelInstance sourceChannel = ( dragStartChannelIsSource != null ? dragStartChannelIsSource : dragEndChannelIsSource );
 		final RackComponent source = (dragStartChannelIsSource != null ? dragStartRackComponent : dragEndRackComponent );
 		final MadChannelInstance sinkChannel = ( dragStartChannelIsSink != null ? dragStartChannelIsSink : dragEndChannelIsSink );
@@ -677,7 +717,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 	public void endInvalidDrag(final LayeredPaneDndTable<RackComponent, RackComponentProperties, AbstractGuiAudioComponent> table,
 			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragEndPoint)
 	{
-		log.debug("Ending invalid drag");
+//		log.debug("Ending invalid drag");
 		cleanupAfterDrag( table );
 	}
 
