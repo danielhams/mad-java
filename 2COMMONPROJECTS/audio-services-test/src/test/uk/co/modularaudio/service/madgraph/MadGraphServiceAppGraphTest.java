@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import test.uk.co.modularaudio.service.madgraph.abstractunittest.AbstractGraphTest;
+import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.service.madgraph.GraphType;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -219,6 +220,59 @@ public class MadGraphServiceAppGraphTest extends AbstractGraphTest
 		graphService.addLink( appGraph, linkToTwo );
 
 		graphService.dumpGraph(appGraph);
+
+		graphService.destroyGraph( appGraph, true, true );
+	}
+
+	public void testAddAndRemoveLinksInGraphCheckLinks()
+		throws Exception
+	{
+		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "LinkAddRemoveGraph",
+				GraphType.APP_GRAPH,
+				0, 0,
+				0, 0,
+				0, 0 );
+		final MadDefinition<?,?> def = componentService.findDefinitionById( CrossFaderMadDefinition.DEFINITION_ID );
+
+		final Map<MadParameterDefinition, String> emptyParams = new HashMap<MadParameterDefinition, String>();
+
+		final MadInstance<?,?> pi = componentService.createInstanceFromDefinition( def, emptyParams, "Producer" );
+		graphService.addInstanceToGraphWithName( appGraph, pi, "Producer" );
+
+		final MadChannelInstance[] pcis = pi.getChannelInstances();
+		final MadChannelInstance pci = pcis[ CrossFaderMadDefinition.PRODUCER_OUT_LEFT ];
+
+		final MadInstance<?,?> ci = componentService.createInstanceFromDefinition( def, emptyParams, "Consumer" );
+		graphService.addInstanceToGraphWithName( appGraph, ci, "Consumer" );
+
+		final MadChannelInstance[] ccis = ci.getChannelInstances();
+		final MadChannelInstance cci = ccis[ CrossFaderMadDefinition.CONSUMER_CHAN1_LEFT ];
+
+		final MadLink link = new MadLink( pci, cci );
+
+		appGraph.debugLinks();
+
+		graphService.addLink( appGraph, link );
+
+		appGraph.debugLinks();
+
+		assertTrue( appGraph.getLinks().size() == 1 );
+		assertTrue( appGraph.getProducerInstanceLinks( pi ).size() == 1 );
+		assertTrue( appGraph.getProducerInstanceLinks( ci ).size() == 0 );
+		assertTrue( appGraph.getConsumerInstanceLinks( pi ).size() == 0 );
+		assertTrue( appGraph.getConsumerInstanceLinks( ci ).size() == 1 );
+
+		graphService.dumpGraph( appGraph );
+
+		graphService.deleteLink( appGraph, link );
+
+		graphService.dumpGraph( appGraph );
+
+		assertTrue( appGraph.getLinks().size() == 0 );
+		assertTrue( appGraph.getProducerInstanceLinks( pi ).size() == 0 );
+		assertTrue( appGraph.getProducerInstanceLinks( ci ).size() == 0 );
+		assertTrue( appGraph.getConsumerInstanceLinks( pi ).size() == 0 );
+		assertTrue( appGraph.getConsumerInstanceLinks( ci ).size() == 0 );
 
 		graphService.destroyGraph( appGraph, true, true );
 	}

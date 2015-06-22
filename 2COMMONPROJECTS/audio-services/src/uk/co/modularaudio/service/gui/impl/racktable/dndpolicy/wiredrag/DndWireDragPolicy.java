@@ -432,23 +432,21 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 					// strategy for that, this will have to do
 					if( isValid && !targetIsMasterIO && !sourceIsMasterIO )
 					{
-						if( dragEndChannelIsSink != null )
+						final MadInstance<?,?> consumer = (dragEndChannelIsSink != null
+								?
+								dragEndRackComponent.getInstance()
+								:
+								dragStartRackComponent.getInstance() );
+						final MadInstance<?,?> producer = (dragEndChannelIsSink != null
+								?
+								dragStartRackComponent.getInstance()
+								:
+								dragEndRackComponent.getInstance() );
+
+						if( isTargetParentOfSource( producer, consumer ) )
 						{
-							if( isTargetParentOfSource( dragStartRackComponent.getInstance(),
-									dragEndRackComponent.getInstance() ) )
-							{
-//								log.debug("Target component is parent of source");
-								isValid = false;
-							}
-						}
-						else
-						{
-							if( isTargetParentOfSource( dragEndRackComponent.getInstance(),
-									dragStartRackComponent.getInstance() ) )
-							{
-//								log.debug("Source component is parent of target");
-								isValid = false;
-							}
+							isValid = false;
+//							log.debug("Consumer component is parent of producer");
 						}
 					}
 
@@ -694,7 +692,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			if( testLink.getRackChannelInstance() == channelInstance ||
 				testLink.getRackComponentChannelInstance() == channelInstance )
 			{
-				log.debug("Found existing channel io link instance");
+//				log.debug("Found existing channel io link instance");
 				foundLink = testLink;
 				break;
 			}

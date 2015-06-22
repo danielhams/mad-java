@@ -95,10 +95,24 @@ public class GraphLinkMap
 		assert( instanceLinks.contains( link ) );
 
 		final Set<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
-		consumerLinks.remove( cci );
+		if( consumerLinks.contains( link ) )
+		{
+			consumerLinks.remove( link );
+		}
+		else
+		{
+			log.error("Missing consumer link entry for " + cmi.getInstanceName() + " " + cci.definition.name);
+		}
 
 		final Set<MadLink> producerLinks = producerInstanceLinks.get( pmi );
-		producerLinks.remove( pmi );
+		if( producerLinks.contains( link ) )
+		{
+			producerLinks.remove( link );
+		}
+		else
+		{
+			log.error("Missing producer link entry for " + pmi.getInstanceName() + " " + pci.definition.name);
+		}
 
 		instanceLinks.remove( link );
 	}
