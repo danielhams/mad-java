@@ -23,6 +23,8 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,6 +46,8 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadLink;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -362,7 +366,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			final AbstractGuiAudioComponent component, final Point dragLocalPoint, final Point dragTablePoint)
 	{
 //		log.debug("Wire Drag policy checking if valid drag target with local point: " + dragLocalPoint );
-		boolean isTarget = false;
+		boolean isValid = false;
 		boolean changed = false;
 
 		if( component != null )
@@ -401,25 +405,53 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 
 					if( targetIsMasterIO )
 					{
-						isTarget = isValidIOLinkSource( table,
+						isValid = isValidIOLinkSource( table,
 								component,
 								targetRackComponentInstance,
 								channelInstance );
 					}
 					else if( sourceIsMasterIO )
 					{
-						isTarget = isValidIOLinkTarget( table,
+						isValid = isValidIOLinkTarget( table,
 								component,
 								targetRackComponentInstance,
 								channelInstance );
 					}
 					else
 					{
-						isTarget = isValidLinkTarget( table,
+						isValid = isValidLinkTarget( table,
 								component,
 								targetRackComponentInstance,
 								channelInstance );
 					}
+
+					// Finally, check if the target of the drag is in fact a parent
+					// within the current graph of the source of the drag to
+					// stop loops in the graph.
+					// Ideally I'd like to allow loops, but until I come up with a
+					// strategy for that, this will have to do
+					if( isValid && !targetIsMasterIO && !sourceIsMasterIO )
+					{
+						if( dragEndChannelIsSink != null )
+						{
+							if( isTargetParentOfSource( dragStartRackComponent.getInstance(),
+									dragEndRackComponent.getInstance() ) )
+							{
+//								log.debug("Target component is parent of source");
+								isValid = false;
+							}
+						}
+						else
+						{
+							if( isTargetParentOfSource( dragEndRackComponent.getInstance(),
+									dragStartRackComponent.getInstance() ) )
+							{
+//								log.debug("Source component is parent of target");
+								isValid = false;
+							}
+						}
+					}
+
 				}
 			}
 			else if( dragEndChannelPlug != null )
@@ -431,10 +463,83 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 
 		if( changed )
 		{
-			plugNameTooltipHint.setActive( isTarget );
+			final boolean setTooltipHint =
+					(isValid && !plugNameTooltipHint.isActive())
+					||
+					(!isValid && plugNameTooltipHint.isActive());
+			if( setTooltipHint )
+			{
+				plugNameTooltipHint.setActive( isValid );
+			}
 		}
 
-		return isTarget;
+		return isValid;
+	}
+
+	private boolean isTargetParentOfSource( final MadInstance<?,?> producerInstance,
+			final MadInstance<?,?> consumerInstance )
+	{
+//		log.debug("Would check if " + consumerInstance.getInstanceName() + " is a parent of " +
+//				producerInstance.getInstanceName() );
+
+		final MadGraphInstance<?,?> graph = dataModel.getRackGraph();
+
+		final Set<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( producerInstance );
+		final Set<MadInstance<?,?>> doneInstances = new HashSet<MadInstance<?,?>>();
+
+		for( final MadLink ml : consumerInstanceLinks )
+		{
+//			log.debug("Following link back from " + ml.getConsumerChannelInstance().instance.getInstanceName() +
+//					" to " + ml.getProducerChannelInstance().instance.getInstanceName() );
+			if( recursiveIsTargetParentOfSource( graph,
+					producerInstance,
+					consumerInstance,
+					doneInstances,
+					ml.getProducerChannelInstance().instance ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean recursiveIsTargetParentOfSource( final MadGraphInstance<?,?> graph,
+			final MadInstance<?,?> producerInstance,
+			final MadInstance<?,?> consumerInstance,
+			final Set<MadInstance<?,?>> doneInstances,
+			final MadInstance<?,?> testInstance )
+	{
+		if( doneInstances.contains( testInstance ) )
+		{
+			return false;
+		}
+		else if( testInstance == consumerInstance )
+		{
+			return true;
+		}
+		else
+		{
+			// Pull out all links to the test instance as consumer
+			// and recurse on the producer mad instances
+			final Set<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( testInstance );
+
+			for( final MadLink ml : consumerInstanceLinks )
+			{
+//				log.debug("Following link back from " + ml.getConsumerChannelInstance().instance.getInstanceName() +
+//						" to " + ml.getProducerChannelInstance().instance.getInstanceName() );
+				if( recursiveIsTargetParentOfSource( graph,
+						producerInstance,
+						consumerInstance,
+						doneInstances,
+						ml.getProducerChannelInstance().instance ) )
+				{
+					return true;
+				}
+			}
+			doneInstances.add( testInstance );
+			return false;
+		}
 	}
 
 	private boolean isValidIOLinkSource( final LayeredPaneDndTable<RackComponent, RackComponentProperties,
@@ -630,7 +735,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 			final RackIOLink existingIOLink = checkForExistingChannelIOLink( dragEndChannelPlug, targetRackComponentInstance );
 			if( existingLink == null && existingIOLink == null )
 			{
-				log.debug("No existing link, looking for target plug");
+//				log.debug("No existing link, looking for target plug");
 				// Plug is currently empty, figure out what values to extract as the target
 				if( channelDirection == MadChannelDirection.CONSUMER )
 				{
