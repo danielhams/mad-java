@@ -20,18 +20,16 @@
 
 package uk.co.modularaudio.service.gui.mvc;
 
-import uk.co.modularaudio.service.userpreferences.mvc.controllers.RenderingCoresMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
-import uk.co.modularaudio.util.swing.mvc.intslider.BasicIntegerSliderView;
+import javax.swing.JSpinner;
 
-public class UserPreferencesRenderingCoresView extends BasicIntegerSliderView
+import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
+
+public class UserPreferencesRenderingCoresView extends JSpinner
 {
 	private static final long serialVersionUID = 6884061773281858142L;
 
-	public UserPreferencesRenderingCoresView(
-			final RenderingCoresMVCModel model,
-			final RenderingCoresMVCController controller )
+	public UserPreferencesRenderingCoresView( final RenderingCoresMVCModel model )
 	{
-		super( model,controller );
+		super( model );
 	}
 }

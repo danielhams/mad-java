@@ -20,21 +20,25 @@
 
 package uk.co.modularaudio.service.userpreferences.mvc.models;
 
-import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderModel;
+import javax.swing.SpinnerNumberModel;
 
-public class RenderingCoresMVCModel extends BasicIntegerSliderModel
+public class RenderingCoresMVCModel extends SpinnerNumberModel
 {
+	private static final long serialVersionUID = 2267418391790286214L;
+
 	public RenderingCoresMVCModel( final int maxCores )
 	{
-//		super( 1.0f, maxCores,
-//				1.0f, 1.0f,
-//				maxCores - 1,
-//				1,
-//				new SimpleSliderIntToFloatConverter(),
-//				1,
-//				0,
-//				"");
-		super( 1, maxCores-1, 1 );
+		super( 1, 1, maxCores-1, 1 );
+	}
+
+	public int getIntValue()
+	{
+		return (Integer)(super.getValue());
+	}
+
+	public void setIntValue( final int value )
+	{
+		super.setValue( value );
 	}
 
 }

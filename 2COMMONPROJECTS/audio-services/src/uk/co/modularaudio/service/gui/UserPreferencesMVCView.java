@@ -54,9 +54,7 @@ public class UserPreferencesMVCView
 	{
 		final UserPreferencesMVCModel userPrefsModel = userPrefsMVCController.getModel();
 
-		renderingCoresView = new UserPreferencesRenderingCoresView(
-				userPrefsModel.getRenderingCoresModel(),
-				userPrefsMVCController.getRenderingCoresController() );
+		renderingCoresView = new UserPreferencesRenderingCoresView( userPrefsModel.getRenderingCoresModel() );
 
 		guiFpsMVCView = new UserPreferencesGuiFpsMVCView( userPrefsModel.getFpsComboModel(),
 				userPrefsMVCController.getFpsComboController(),

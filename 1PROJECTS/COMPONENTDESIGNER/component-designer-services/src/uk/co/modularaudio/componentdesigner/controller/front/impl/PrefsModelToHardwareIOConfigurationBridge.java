@@ -37,7 +37,7 @@ public class PrefsModelToHardwareIOConfigurationBridge
 	public static HardwareIOConfiguration modelToConfiguration( final UserPreferencesMVCModel audioPrefsModel ) throws DatastoreException
 	{
 		final RenderingCoresMVCModel renderingCoresModel = audioPrefsModel.getRenderingCoresModel();
-		final int numRenderingCores = renderingCoresModel.getValue();
+		final int numRenderingCores = renderingCoresModel.getIntValue();
 
 		final GuiFpsMVCModel fpsModel = audioPrefsModel.getFpsComboModel();
 

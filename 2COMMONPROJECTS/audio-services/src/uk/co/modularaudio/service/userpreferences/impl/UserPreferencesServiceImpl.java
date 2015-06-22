@@ -68,7 +68,6 @@ import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
-import uk.co.modularaudio.util.mvc.intslider.ValueOutOfRangeException;
 
 public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserPreferencesService
 {
@@ -244,14 +243,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	public void setupPreferencesSelections()
 	{
 		final RenderingCoresMVCController rcc = userPreferences.getRenderingCoresController();
-		try
-		{
-			rcc.setValue( renderingCores );
-		}
-		catch( final ValueOutOfRangeException e2 )
-		{
-			e2.printStackTrace();
-		}
+		rcc.setValue( renderingCores );
 
 		final GuiFpsComboMVCController fcc = userPreferences.getFpsComboController();
 
@@ -436,7 +428,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 			final AudioSystemMidiDeviceMVCModel outputMidiDeviceComboModel = userPreferencesMVCModel.getOutputMidiDeviceComboModel();
 			final AudioSystemMidiDeviceComboItem outputMidiDeviceComboItem = outputMidiDeviceComboModel.getSelectedElement();
 
-			userPreferencesProperties.put( PREFS_FILE_RENDERING_CORES, Integer.toString( renderingCoresModel.getValue() ) );
+			userPreferencesProperties.put( PREFS_FILE_RENDERING_CORES, Integer.toString( renderingCoresModel.getIntValue() ) );
 			userPreferencesProperties.put( PREFS_FILE_GUI_FPS, guiFpsItem.getId() );
 			userPreferencesProperties.put( PREFS_FILE_KEY_INPUT_DEVICE,
 					(inputDeviceComboItem == null ? "" : inputDeviceComboItem.getId() ));
@@ -494,7 +486,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	public boolean checkForAudioEnginePrefsChanges( final UserPreferencesMVCModel model ) throws DatastoreException
 	{
 		boolean wasDifferent = false;
-		wasDifferent = wasDifferent || (renderingCores != model.getRenderingCoresModel().getValue());
+		wasDifferent = wasDifferent || (renderingCores != model.getRenderingCoresModel().getIntValue() );
 
 		wasDifferent = wasDifferent || (guiFps != model.getFpsComboModel().getFpsValue());
 

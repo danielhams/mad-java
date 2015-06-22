@@ -74,7 +74,7 @@ public class PreferencesAudioSystemPage extends JPanel
 		final JLabel renderingCoresLabel = new JLabel("Rendering Cores:" );
 		deviceChoicePanel.add( renderingCoresLabel, "align right");
 		renderingCoresView = userPreferencesView.getRenderingCoresView();
-		deviceChoicePanel.add( renderingCoresView, "growx, shrink, wrap" );
+		deviceChoicePanel.add( renderingCoresView, "grow 0, wrap" );
 
 		final JLabel fpsLabel = new JLabel("Gui FPS:" );
 		deviceChoicePanel.add( fpsLabel, "align right");

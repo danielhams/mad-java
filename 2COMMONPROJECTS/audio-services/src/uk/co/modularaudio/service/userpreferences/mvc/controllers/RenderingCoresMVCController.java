@@ -22,18 +22,24 @@ package uk.co.modularaudio.service.userpreferences.mvc.controllers;
 
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.service.userpreferences.mvc.models.RenderingCoresMVCModel;
-import uk.co.modularaudio.util.mvc.intslider.impl.BasicIntegerSliderController;
 
-public class RenderingCoresMVCController extends BasicIntegerSliderController
+public class RenderingCoresMVCController
 {
+	private RenderingCoresMVCModel model;
+
 	public RenderingCoresMVCController( final RenderingCoresMVCModel model,
 			final UserPreferencesMVCController userPreferencesMVCController )
 	{
-		super( model );
+		this.model = model;
 	}
 
 	public void setModel( final RenderingCoresMVCModel model )
 	{
-		super.setModel( model );
+		this.model = model;
+	}
+
+	public void setValue( final int renderingCores )
+	{
+		model.setIntValue( renderingCores );
 	}
 }
