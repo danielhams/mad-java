@@ -23,9 +23,9 @@ package uk.co.modularaudio.componentdesigner.profiling;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class ProfilingPanel extends JPanel
@@ -35,9 +35,11 @@ public class ProfilingPanel extends JPanel
 //	private static Log log = LogFactory.getLog( ProfilingPanel.class.getName() );
 
 	private final ProfilingLabel totalDurationDisplay;
-	private final JLabel loopDurationDisplay;
-	private final JLabel numRenderingThreadsDisplay;
-	private final JLabel numUsedThreadsDisplay;
+	private final ProfilingLabel loopDurationDisplay;
+	private final ProfilingLabel overheadDurationDisplay;
+	private final ProfilingLabel overheadPercentDisplay;
+	private final ProfilingLabel numRenderingThreadsDisplay;
+	private final ProfilingLabel numUsedThreadsDisplay;
 
 	public ProfilingPanel()
 	{
@@ -54,7 +56,7 @@ public class ProfilingPanel extends JPanel
 
 		this.setBackground( Color.ORANGE );
 
-		final JLabel totalDurationLabel = new ProfilingLabel( "Total Duration:" );
+		final ProfilingLabel totalDurationLabel = new ProfilingLabel( "Total Duration:" );
 		this.add( totalDurationLabel, "cell 0 1, align right");
 		totalDurationDisplay = new ProfilingLabel();
 		final Dimension preferredSize = totalDurationDisplay.getPreferredSize();
@@ -68,26 +70,42 @@ public class ProfilingPanel extends JPanel
 		loopDurationDisplay.setMinimumSize( minDisplaySize );
 		this.add( loopDurationDisplay, "cell 1 2, grow 0");
 
+		final ProfilingLabel overheadDurationLabel = new ProfilingLabel( "Overhead Duration:" );
+		this.add( overheadDurationLabel, "cell 0 3, align right");
+		overheadDurationDisplay = new ProfilingLabel();
+		overheadDurationDisplay.setMinimumSize( minDisplaySize );
+		this.add( overheadDurationDisplay, "cell 1 3, grow 0");
+
+		final ProfilingLabel overheadPercentageLabel = new ProfilingLabel( "Overhead Percentage:" );
+		this.add( overheadPercentageLabel, "cell 0 4, align right");
+		overheadPercentDisplay = new ProfilingLabel();
+		overheadPercentDisplay.setMinimumSize( minDisplaySize );
+		this.add( overheadPercentDisplay, "cell 1 4, grow 0");
+
 		final ProfilingLabel numRenderingThreadsLabel = new ProfilingLabel( "Number Of Rendering Threads:" );
-		this.add( numRenderingThreadsLabel, "cell 0 3, align right");
+		this.add( numRenderingThreadsLabel, "cell 0 5, align right");
 		numRenderingThreadsDisplay = new ProfilingLabel();
 		numRenderingThreadsDisplay.setMinimumSize( minDisplaySize );
-		this.add( numRenderingThreadsDisplay, "cell 1 3, grow 0");
+		this.add( numRenderingThreadsDisplay, "cell 1 5, grow 0");
 
 		final ProfilingLabel numUsedThreadsLabel = new ProfilingLabel( "Number Of Used Threads:" );
-		this.add( numUsedThreadsLabel, "cell 0 4, align right");
+		this.add( numUsedThreadsLabel, "cell 0 6, align right");
 		numUsedThreadsDisplay = new ProfilingLabel();
 		numUsedThreadsDisplay.setMinimumSize( minDisplaySize );
-		this.add( numUsedThreadsDisplay, "cell 1 4, grow 0");
+		this.add( numUsedThreadsDisplay, "cell 1 6, grow 0");
 	}
 
 	public void setData( final long totalDuration,
 			final long loopDuration,
+			final long overheadDuration,
 			final int numRenderingThreads,
 			final int numUniqueThreads )
 	{
 		totalDurationDisplay.setText( TimestampFormatter.formatNanos( totalDuration ) );
 		loopDurationDisplay.setText( TimestampFormatter.formatNanos( loopDuration ) );
+		overheadDurationDisplay.setText( TimestampFormatter.formatNanos( overheadDuration ) );
+		final float percentage = (overheadDuration / (float)totalDuration) * 100.0f;
+		overheadPercentDisplay.setText( MathFormatter.fastFloatPrint( percentage, 2, false ) );
 		numRenderingThreadsDisplay.setText( Integer.toString(numRenderingThreads) );
 		numUsedThreadsDisplay.setText( Integer.toString( numUniqueThreads ) );
 	}
