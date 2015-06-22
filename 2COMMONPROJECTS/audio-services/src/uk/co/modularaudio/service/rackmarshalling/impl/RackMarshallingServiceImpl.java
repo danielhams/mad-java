@@ -53,6 +53,7 @@ import uk.co.modularaudio.service.rackmarshalling.generated.madrack.RackLinkXmlT
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack.RackPositionXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack.RackXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack.SubRackXmlType;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
@@ -81,6 +82,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 	private RackService rackService;
 	private MadComponentService componentService;
+	private UserPreferencesService userPreferencesService;
 
 	private ObjectFactory objectFactory;
 	private JAXBContext jbContext;
@@ -88,7 +90,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	private Marshaller marshaller;
 
 	@Override
-	public RackDataModel loadRackFromFile(final String filename) throws DatastoreException, IOException
+	public RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException
 	{
 		if( log.isDebugEnabled() )
 		{
@@ -96,6 +98,15 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 		try
 		{
+			// If it's relative, tack on the front the user sub racks dir
+			if( (File.separatorChar == '\\' && filename.charAt( 1 ) != ':')
+					||
+				(File.separatorChar == '/' && filename.charAt( 0 ) != '/' )
+				)
+			{
+				final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
+				filename = userSubRackPatchesDir + File.separatorChar + filename;
+			}
 			@SuppressWarnings("unchecked")
 			final
 			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( filename ) );
@@ -467,10 +478,21 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				final MadDefinition<?,?> aud = instance.getDefinition();
 				jbSubRackType.setDefinitionId( aud.getId() );
 
-				final String srp = sraui.getSubRackDataModel().getPath();
+				String srp = sraui.getSubRackDataModel().getPath();
 				if( srp != null && !srp.equals("") && !sraui.isDirty() )
 				{
-					// Is a preset, just persist the id
+					// Is not local, just persist the file path
+
+					// First we'll see if we can make it a relative path
+					final String userSubRackPatchesStr = userPreferencesService.getUserSubRackPatchesDir();
+					final File userSubRackPatchesFile = new File(userSubRackPatchesStr);
+					final String userSubRackPatchesDir = userSubRackPatchesFile.getAbsolutePath();
+
+					if( srp.startsWith( userSubRackPatchesDir ) )
+					{
+						srp = srp.substring( userSubRackPatchesDir.length() + 1 );
+					}
+
 					jbSubRackType.setLocalSubRack( false );
 					jbSubRackType.setLibraryPath( srp );
 				}
@@ -572,6 +594,13 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( rackService == null ||
+				componentService == null ||
+				userPreferencesService == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check configuration" );
+		}
+
 		try
 		{
 			objectFactory = new ObjectFactory();
@@ -595,6 +624,11 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	public void setComponentService(final MadComponentService componentService)
 	{
 		this.componentService = componentService;
+	}
+
+	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
+	{
+		this.userPreferencesService = userPreferencesService;
 	}
 
 }

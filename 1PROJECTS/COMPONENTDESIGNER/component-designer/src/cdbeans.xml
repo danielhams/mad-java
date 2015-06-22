@@ -64,7 +64,8 @@
 	</bean>
 	<bean id="rackMarshallingService" class="uk.co.modularaudio.service.rackmarshalling.impl.RackMarshallingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="rackService"><ref bean="rackService"></ref></property>
-		<property name="componentService"><ref bean="componentService"></ref></property>
+        <property name="componentService"><ref bean="componentService"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
 	</bean>
 	<bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
 	</bean>

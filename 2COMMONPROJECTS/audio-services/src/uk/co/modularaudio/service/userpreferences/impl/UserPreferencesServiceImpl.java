@@ -528,4 +528,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 		return wasDifferent;
 	}
+
+	@Override
+	public String getUserSubRackPatchesDir()
+	{
+		return userSubRacksDir;
+	}
 }
