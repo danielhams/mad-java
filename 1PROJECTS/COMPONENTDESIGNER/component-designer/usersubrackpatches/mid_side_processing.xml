@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Mid Side Processing" cols="4" rows="20">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="InSignal" rackComponentChannelInstanceName="Input Wave 0"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mid Side Processor 18" rackComponentChannelInstanceName="Input Wave 1"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="ToCvConverter" rackComponentChannelInstanceName="Input Channel 1"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="InSignal" rackComponentChannelInstanceName="Input Wave 1"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mid Side Processor 18" rackComponentChannelInstanceName="Input Wave 2"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="ToCvConverter" rackComponentChannelInstanceName="Input Channel 2"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Right"/>
@@ -76,9 +78,7 @@
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Left" consumerRackComponentName="MidSide" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 2"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Right" consumerRackComponentName="MidSide" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 1" consumerRackComponentName="InSignal" consumerChannelName="Input CV 0"/>
     <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="AfterDecode" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="InSignal" consumerChannelName="Input CV 1"/>
     <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="InSignal" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="MidSide" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="OutMixer" consumerChannelName="Lane 1 Input Wave Left"/>

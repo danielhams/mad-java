@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Bass Boost Rack" rackComponentChannelInstanceName="Input Channel 3"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Bass Boost Rack" rackComponentChannelInstanceName="Input Channel 4"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+        <rackPosition column="2" row="4"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 6" definitionId="djeq">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="Fader" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="Output Amp" definitionId="imixer3">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="Master Lane" value="-5.125:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Soundfile Player" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-4.766859"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Wave Roller" definitionId="wave_roller">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 6" consumerChannelName="Input Wave Right"/>
+</rack>

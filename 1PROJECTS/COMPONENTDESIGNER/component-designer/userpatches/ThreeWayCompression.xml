@@ -17,8 +17,8 @@
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="MasterOutReplacer" definitionId="imixer3">
-        <rackPosition column="2" row="7"/>
-        <rackControl name="Master Lane" value="-10.625:0.0"/>
+        <rackPosition column="2" row="10"/>
+        <rackControl name="Master Lane" value="-5.5:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
@@ -27,7 +27,7 @@
         <rackPosition column="2" row="4"/>
     </rackComponent>
     <rackComponent name="Ms20 Frequency Filter 15" definitionId="ms20_filter">
-        <rackPosition column="2" row="11"/>
+        <rackPosition column="2" row="7"/>
         <rackControl name="Filter Type" value="None"/>
         <rackControl name="Frequency" value="781"/>
         <rackControl name="Resonance" value="156"/>
@@ -42,9 +42,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player (Roll Painter) 14" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-3.7263012"/>
+        <rackControl name="Gain" value="-5.7348747"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGTP056_ERIC_SNEO.mp3"/>
+        <rackControl name="SelectFile" value="/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2008-10-16_21h29m33slurpy.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -70,7 +70,7 @@
         <rackControl name="Resolution" value="Log"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
-        <rackPosition column="2" row="13"/>
+        <rackPosition column="2" row="9"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="ThreeWayEqAndCompression" definitionId="sub_rack">
         <rackPosition column="2" row="5"/>

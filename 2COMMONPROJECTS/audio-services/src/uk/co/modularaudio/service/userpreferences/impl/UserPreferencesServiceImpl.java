@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,9 +157,15 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		inputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_MIDI_DEVICE, "" );
 		outputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE, "" );
 
-		userPatchesDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_PATCHES, "./userpatches" );
-		userSubRacksDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_SUBRACKS, "./usersubpatches" );
-		userMusicDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_MUSICDIR, "./music" );
+		final Path currentRelativePath = Paths.get( "" );
+		final String absPathString = currentRelativePath.toAbsolutePath().toString();
+
+		userPatchesDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_PATCHES,
+				absPathString + File.separatorChar + "userpatches" );
+		userSubRacksDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_SUBRACKS,
+				absPathString + File.separatorChar + "usersubpatches" );
+		userMusicDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_MUSICDIR,
+				absPathString + File.separatorChar + "music" );
 	}
 
 	@Override
