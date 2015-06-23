@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.subrack;
 
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 
 public class SubRackCreationContext extends MadCreationContext
@@ -35,21 +35,21 @@ public class SubRackCreationContext extends MadCreationContext
 	private final RackMarshallingService rackMarshallingService;
 	private final GuiService guiService;
 	private final JobExecutorService jobExecutorService;
-	private final UserPreferencesController userPreferencesController;
+	private final UserPreferencesService userPreferencesService;
 
 	public SubRackCreationContext( final RackService rackService,
 			final MadGraphService graphService,
 			final RackMarshallingService rackMarshallingService,
 			final GuiService guiService,
 			final JobExecutorService jobExecutorService,
-			final UserPreferencesController userPreferencesController )
+			final UserPreferencesService userPreferencesService )
 	{
 		this.rackService = rackService;
 		this.graphService = graphService;
 		this.rackMarshallingService = rackMarshallingService;
 		this.guiService = guiService;
 		this.jobExecutorService = jobExecutorService;
-		this.userPreferencesController = userPreferencesController;
+		this.userPreferencesService = userPreferencesService;
 	}
 
 	public RackService getRackService()
@@ -77,9 +77,9 @@ public class SubRackCreationContext extends MadCreationContext
 		return jobExecutorService;
 	}
 
-	public UserPreferencesController getUserPreferencesController()
+	public UserPreferencesService getUserPreferencesService()
 	{
-		return userPreferencesController;
+		return userPreferencesService;
 	}
 
 }

@@ -116,7 +116,7 @@
 		<property name="guiService"><ref bean="guiService"></ref></property>
 		<property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
 		<property name="classificationService"><ref bean="classificationService"></ref></property>
-        <property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
 	</bean>
 	<bean id="subRackComponentsUiFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsUiFactory" init-method="init" destroy-method="destroy">
 		<property name="componentUiService"><ref bean="componentUiService"></ref></property>

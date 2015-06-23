@@ -20,71 +20,78 @@
 
 package uk.co.modularaudio.mads.base.moogfilter.ui;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComboBox;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
+public class MoogFilterTypeComboUiJComponent
 	implements IMadUiControlInstance<MoogFilterMadDefinition, MoogFilterMadInstance, MoogFilterMadUiInstance>
 {
-	private static final long serialVersionUID = 28004477652791854L;
+	private final Map<String, FrequencyFilterMode> filterNameToModeMap = new HashMap<String, FrequencyFilterMode>();
 
-	private final static Map<String, FrequencyFilterMode> NAME_TO_MODE_MAP = createNameToModeMap();
+	private final DefaultComboBoxModel<String> model;
 
-	private final static Map<String, FrequencyFilterMode> createNameToModeMap()
-	{
-		final Map<String, FrequencyFilterMode> mm = new HashMap<String, FrequencyFilterMode>();
-		mm.put( "None", FrequencyFilterMode.NONE );
-		mm.put( "Low Pass", FrequencyFilterMode.LP );
-		return Collections.unmodifiableMap( mm );
-	}
-
-	private final static List<String> MODES = Arrays.asList(new String[] {
-			"None",
-			"Low Pass" } );
-
-	private final MoogFilterMadUiInstance uiInstance;
+	private final LWTCRotaryChoice rotaryChoice;
 
 	public MoogFilterTypeComboUiJComponent( final MoogFilterMadDefinition definition,
 			final MoogFilterMadInstance instance,
 			final MoogFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( "None" );
+		model.addElement( "Low Pass" );
 
-		this.setOpaque( false );
+		filterNameToModeMap.put( "None", FrequencyFilterMode.NONE );
+		filterNameToModeMap.put( "Low Pass", FrequencyFilterMode.LP );
 
-		final DefaultComboBoxModel<String> cbm = new DefaultComboBoxModel<String>();
+		model.setSelectedItem( "Low Pass" );
 
-		for( final String modeName : MODES )
+		rotaryChoice = new LWTCRotaryChoice(
+				LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
+				model,
+				false );
+
+		model.addListDataListener( new ListDataListener()
 		{
-			cbm.addElement( modeName );
-		}
 
-		this.setModel( cbm );
+			@Override
+			public void intervalRemoved( final ListDataEvent e )
+			{
+			}
 
-		setFont( this.getFont().deriveFont( 9f ) );
+			@Override
+			public void intervalAdded( final ListDataEvent e )
+			{
+			}
 
-		this.setSelectedItem( "Low Pass" );
+			@Override
+			public void contentsChanged( final ListDataEvent e )
+			{
+				final String itemName = (String)model.getSelectedItem();
+				final FrequencyFilterMode mode = filterNameToModeMap.get( itemName );
+				uiInstance.sendFilterModeChange( mode );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
+		return rotaryChoice;
 	}
 
 	@Override
@@ -92,17 +99,6 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-	}
-
-	@Override
-	protected void receiveIndexUpdate( final int previousIndex, final int newIndex )
-	{
-		if( previousIndex != newIndex )
-		{
-			final String name = (String) getSelectedItem();
-			final FrequencyFilterMode modeToUse = NAME_TO_MODE_MAP.get( name );
-			uiInstance.sendFilterModeChange( modeToUse );
-		}
 	}
 
 	@Override
@@ -114,5 +110,17 @@ public class MoogFilterTypeComboUiJComponent extends PacComboBox<String>
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return (String)model.getSelectedItem();
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		model.setSelectedItem( value );
 	}
 }

@@ -70,17 +70,19 @@ public class MoogFilterMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		MoogFilterTypeComboUiJComponent.class,
-		MoogFilterCutoffSliderUiControlInstance.class,
-		MoogFilterQSliderUiControlInstance.class
+		MoogFilterFrequencySliderUiJComponent.class,
+		MoogFilterResonanceSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 15, 30, 90, 20 ),
-		new Rectangle( 113, 3, 280, 43 ),
-		new Rectangle( 113, 53, 280, 43 )
+		new Rectangle(  15, 40, 120, 30 ),		// FilterType
+		new Rectangle( 145, 40, 400, 30 ),		// Freq
+		new Rectangle( 145, 90, 400, 30 )		// Q
 	};
 
 	private static final Class<MoogFilterMadUiInstance> INSTANCE_CLASS = MoogFilterMadUiInstance.class;
+
+	protected final static int SLIDER_LABEL_MIN_WIDTH = 40;
 
 	public MoogFilterMadUiDefinition( final BufferedImageAllocator bia,
 			final MoogFilterMadDefinition definition,

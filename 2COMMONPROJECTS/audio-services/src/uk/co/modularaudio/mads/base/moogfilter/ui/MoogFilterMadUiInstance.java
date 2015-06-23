@@ -30,8 +30,6 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<MoogFilterMadDefinition, MoogFilterMadInstance>
 {
-//	private static Log log = LogFactory.getLog( MoogFilterMadUiInstance.class.getName() );
-
 	private final SliderDisplayModel cutoffSliderModel = new SliderDisplayModel(
 			0.0f,
 			1.0f,
@@ -60,7 +58,7 @@ public class MoogFilterMadUiInstance extends NoEventsNoNameChangeNonConfigurable
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_CUTOFF, Float.floatToIntBits( desiredCutoff ) );
 	}
 
-	public void sendBandwidthChange( final float desiredBandwidth )
+	public void sendQChange( final float desiredBandwidth )
 	{
 		sendTemporalValueToInstance( MoogFilterIOQueueBridge.COMMAND_Q, Float.floatToIntBits( desiredBandwidth ) );
 	}

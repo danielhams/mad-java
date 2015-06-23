@@ -28,13 +28,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.subrack.SubRackCreationContext;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.DirtyableRackComponent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDirtyListener;
@@ -64,7 +64,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 	public final RackMarshallingService rackMarshallingService;
 	public final GuiService guiService;
 	public final JobExecutorService jobExecutorService;
-	public final UserPreferencesController userPreferencesController;
+	public final UserPreferencesService userPreferencesService;
 
 	private RackDataModel subRackDataModel;
 
@@ -83,7 +83,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 		this.rackMarshallingService = creationContext.getRackMarshallingService();
 		this.guiService = creationContext.getGuiService();
 		this.jobExecutorService = creationContext.getJobExecutorService();
-		this.userPreferencesController = creationContext.getUserPreferencesController();
+		this.userPreferencesService = creationContext.getUserPreferencesService();
 
 		subRackDataModel = rackService.createNewSubRackDataModel( instanceName,
 				"",

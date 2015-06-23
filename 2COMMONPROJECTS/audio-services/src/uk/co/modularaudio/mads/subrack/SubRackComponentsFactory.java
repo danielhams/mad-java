@@ -23,7 +23,6 @@ package uk.co.modularaudio.mads.subrack;
 import java.util.HashMap;
 import java.util.Map;
 
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
@@ -33,6 +32,7 @@ import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -52,7 +52,7 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	private RackMarshallingService rackMarshallingService;
 	private GuiService guiService;
 	private JobExecutorService jobExecutorService;
-	private UserPreferencesController userPreferencesController;
+	private UserPreferencesService userPreferencesService;
 
 	public SubRackComponentsFactory()
 	{
@@ -81,7 +81,7 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 				rackMarshallingService == null ||
 				guiService == null ||
 				jobExecutorService == null ||
-				userPreferencesController == null )
+				userPreferencesService == null )
 		{
 			throw new ComponentConfigurationException( "Factory missing dependencies. Check configuration" );
 		}
@@ -91,7 +91,7 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 				rackMarshallingService,
 				guiService,
 				jobExecutorService,
-				userPreferencesController );
+				userPreferencesService );
 
 		super.init();
 	}
@@ -127,8 +127,8 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 		this.jobExecutorService = jobExecutorService;
 	}
 
-	public void setUserPreferencesController( final UserPreferencesController userPreferencesController )
+	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
 	{
-		this.userPreferencesController = userPreferencesController;
+		this.userPreferencesService = userPreferencesService;
 	}
 }

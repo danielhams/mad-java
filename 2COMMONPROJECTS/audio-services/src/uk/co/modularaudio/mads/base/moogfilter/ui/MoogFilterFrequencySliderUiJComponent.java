@@ -20,96 +20,59 @@
 
 package uk.co.modularaudio.mads.base.moogfilter.ui;
 
-import javax.swing.JComponent;
+import java.awt.Component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import uk.co.modularaudio.mads.base.interptester.ui.ValueSlider;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.math.MathFormatter;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.MoogFrequencySliderModel;
+import uk.co.modularaudio.util.math.NormalisedValuesMapper;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class MoogFilterCutoffSliderUiControlInstance extends ValueSlider
+public class MoogFilterFrequencySliderUiJComponent
 	implements IMadUiControlInstance<MoogFilterMadDefinition, MoogFilterMadInstance, MoogFilterMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( MoogFilterCutoffSliderUiControlInstance.class.getName() );
+	private final MoogFrequencySliderModel model;
+	private final SliderDisplayController controller;
+	private final LWTCSliderDisplayView view;
 
-	private static final long serialVersionUID = 6068897521037173787L;
-
-	private final MoogFilterMadUiInstance uiInstance;
-
-	public MoogFilterCutoffSliderUiControlInstance(
+	public MoogFilterFrequencySliderUiJComponent(
 			final MoogFilterMadDefinition definition,
 			final MoogFilterMadInstance instance,
 			final MoogFilterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( uiInstance.getCutoffSliderModel(),
+
+		model = new MoogFrequencySliderModel();
+		controller = new SliderDisplayController( model );
+		view = new LWTCSliderDisplayView(
+				model,
+				controller,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
-				"Cutoff:",
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
+				"Freq:",
 				false );
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-	}
 
-	@Override
-	public JComponent getControl()
-	{
-		return this;
-	}
+		view.setLabelMinSize( MoogFilterMadUiDefinition.SLIDER_LABEL_MIN_WIDTH, 30 );
 
-	private void passChangeToInstanceData( final float value )
-	{
-		final float valueToPass = value;
-		uiInstance.sendCutoffChange( valueToPass );
-	}
-
-	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
-	{
-	}
-
-	@Override
-	public void destroy()
-	{
-	}
-
-	@Override
-	public String getControlValue()
-	{
-		return MathFormatter.slowFloatPrint( model.getValue(), 2, false );
-	}
-
-	@Override
-	public void receiveControlValue( final String value )
-	{
-		try
+		model.addChangeListener( new ValueChangeListener()
 		{
-			final float asFloat = Float.parseFloat( value );
-			model.setValue( this, asFloat );
-			receiveValueChange( this, asFloat );
-		}
-		catch( final Exception e )
-		{
-			final String msg = "Failed to parse control value: " + value;
-			log.error( msg, e );
-		}
-	}
-
-	@Override
-	public void receiveValueChange( final Object source, final float newValue )
-	{
-		passChangeToInstanceData( newValue );
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				final float mappedValue = NormalisedValuesMapper.expMapF( newValue );
+				uiInstance.sendCutoffChange( mappedValue );
+			}
+		} );
 	}
 
 	@Override
@@ -117,4 +80,35 @@ public class MoogFilterCutoffSliderUiControlInstance extends ValueSlider
 	{
 		return false;
 	}
+
+	@Override
+	public String getControlValue()
+	{
+		return Float.toString( model.getValue() );
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+		final float val = Float.parseFloat( value );
+		controller.setValue( this, val );
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTime )
+	{
+	}
+
+	@Override
+	public Component getControl()
+	{
+		return view;
+	}
+
+	@Override
+	public void destroy()
+	{
+	}
+
 }

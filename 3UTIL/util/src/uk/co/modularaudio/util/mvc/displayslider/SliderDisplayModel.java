@@ -140,7 +140,7 @@ public class SliderDisplayModel
 	public void setValue( final Object source, final float iNewFloatValue )
 	{
 		float newFloatValue = iNewFloatValue;
-//		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
+//		log.debug("setValue " + newFloatValue + " called from " + source.getClass().getSimpleName() );
 		if( newFloatValue > maxValue )
 		{
 			newFloatValue = maxValue;

@@ -75,8 +75,6 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 {
 	private static Log log = LogFactory.getLog( UserPreferencesServiceImpl.class.getName() );
 
-	private ConfigurationService configurationService;
-
 	private final static String CONFIG_KEY_PREFS_FILE = UserPreferencesServiceImpl.class.getSimpleName() + ".UserPreferencesFile";
 
 	private static final String PREFS_FILE_RENDERING_CORES = "RenderingCores";
@@ -96,11 +94,12 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 
 	private static final String DEFAULT_BUFFER_SIZE_STRING = "1024";
 
+	private ConfigurationService configurationService;
+	private AudioProviderRegistryService audioProviderRegistryService;
+
 	private String userPreferencesFilename;
 	private File userPreferencesFile;
 	private Properties userPreferencesProperties;
-
-	private AudioProviderRegistryService audioProviderRegistryService;
 
 	private UserPreferencesMVCController userPreferences;
 
@@ -121,7 +120,8 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( audioProviderRegistryService == null )
+		if( configurationService == null ||
+				audioProviderRegistryService == null )
 		{
 			final String msg = "UserPreferencesServiceImpl has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );

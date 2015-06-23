@@ -31,7 +31,6 @@ import javax.swing.JFileChooser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.mads.subrack.jpanel.PatchTabCloseListener;
 import uk.co.modularaudio.mads.subrack.jpanel.SubRackPatchPanel;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
@@ -43,8 +42,7 @@ import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
@@ -71,7 +69,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 	private final GuiService guiService;
 	private final RackMarshallingService rackMarshallingService;
 	private final JobExecutorService jobExecutorService;
-	private final UserPreferencesController userPreferencesController;
+	private final UserPreferencesService userPreferencesService;
 	private RackDataModel subRackDataModel;
 
 	private RackModelRenderingComponent guiRackPanel;
@@ -88,7 +86,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		this.guiService = instance.guiService;
 		this.rackMarshallingService = instance.rackMarshallingService;
 		this.jobExecutorService = instance.jobExecutorService;
-		this.userPreferencesController = instance.userPreferencesController;
+		this.userPreferencesService = instance.userPreferencesService;
 
 		try
 		{
@@ -205,9 +203,8 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		final JFileChooser saveFileChooser = new JFileChooser();
 		final CDFileSaveAccessory cdSaveFileNameAccessory = new CDFileSaveAccessory( rackService.getRackName( subRackDataModel ) );
 		saveFileChooser.setAccessory( cdSaveFileNameAccessory );
-		final UserPreferencesMVCController upc = userPreferencesController.getUserPreferencesMVCController();
-		final UserPreferencesMVCModel upm = upc.getModel();
-		final String subRackPatchDir = upm.getUserSubRacksModel().getValue();
+
+		final String subRackPatchDir = userPreferencesService.getUserSubRackPatchesDir();
 		saveFileChooser.setCurrentDirectory( new File( subRackPatchDir ) );
 		final int retVal = saveFileChooser.showSaveDialog( parent );
 		if( retVal == JFileChooser.APPROVE_OPTION )
@@ -233,9 +230,8 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		// the rack from there.
 		// if successfull, pass it to the MI
 		final JFileChooser openFileChooser = new JFileChooser();
-		final UserPreferencesMVCController upc = userPreferencesController.getUserPreferencesMVCController();
-		final UserPreferencesMVCModel upm = upc.getModel();
-		final String subRackPatchDir = upm.getUserSubRacksModel().getValue();
+
+		final String subRackPatchDir = userPreferencesService.getUserSubRackPatchesDir();
 		openFileChooser.setCurrentDirectory( new File( subRackPatchDir ) );
 		final int retVal = openFileChooser.showOpenDialog( parent );
 		if( retVal == JFileChooser.APPROVE_OPTION )
