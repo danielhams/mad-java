@@ -4,10 +4,10 @@
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 2" rackComponentChannelInstanceName="Output Channel 2"/>
     <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-4.766859"/>
+        <rackControl name="Gain" value="-0.48115063"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3"/>
-        <rackControl name="ZoomToggleGroup" value="1"/>
+        <rackControl name="SelectFile" value="/home/dan/Temp/1-01 Amarilli, Mia Bella.wav"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="1.0"/>
@@ -15,9 +15,8 @@
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 2" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 2" definitionId="sub_rack">
         <rackPosition column="0" row="4"/>
-        <rack name="Sub Rack 2" cols="4" rows="19"/>
     </rackComponent>
     <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
