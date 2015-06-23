@@ -118,7 +118,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		}
 	}
 
-	public void reinitialiseFrequencyProcessor()
+	public final void reinitialiseFrequencyProcessor()
 	{
 		try
 		{

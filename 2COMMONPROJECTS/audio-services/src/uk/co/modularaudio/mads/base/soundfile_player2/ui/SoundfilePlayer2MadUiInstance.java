@@ -227,7 +227,10 @@ public class SoundfilePlayer2MadUiInstance extends
 	private void recomputeAndSendSpeed()
 	{
 		final float playingSpeed = desiredBpm / songBpm;
-		log.debug("Computed play speed to be " + playingSpeed );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Computed play speed to be " + playingSpeed );
+		}
 		sendTemporalValueToInstance( SoundfilePlayer2IOQueueBridge.COMMAND_IN_PLAY_SPEED, Float.floatToIntBits(playingSpeed) );
 	}
 

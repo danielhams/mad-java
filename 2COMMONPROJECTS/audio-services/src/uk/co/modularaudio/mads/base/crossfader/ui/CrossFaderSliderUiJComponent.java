@@ -39,8 +39,6 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
-	private final CrossFaderMadUiInstance uiInstance;
-
 	public CrossFaderSliderUiJComponent(
 			final CrossFaderMadDefinition definition,
 			final CrossFaderMadInstance instance,
@@ -54,15 +52,15 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 						LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS,
 						false );
 
-		this.uiInstance = uiInstance;
-
 		model.addChangeListener( new ChangeListener()
 		{
 
 			@Override
 			public void stateChanged( final ChangeEvent e )
 			{
-				passChangeToInstanceData( model.getValue() );
+				final float newValue = (model.getValue()) / 1000.0f;
+				uiInstance.setCrossFaderPosition( newValue );
+				uiInstance.recalculateAmps();
 			}
 		} );
 	}
@@ -73,19 +71,11 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 		return this;
 	}
 
-	private void passChangeToInstanceData( final int value )
-	{
-		final float newValue = (value) / 1000.0f;
-		uiInstance.setCrossFaderPosition( newValue );
-		uiInstance.recalculateAmps();
-	}
-
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override

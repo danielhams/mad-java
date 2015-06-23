@@ -284,8 +284,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			if( currentEnvMeterReading != previousEnvMeterReading )
 			{
 				final long floatIntBits = Float.floatToIntBits( currentEnvMeterReading );
-				final long valueOut = (floatIntBits);
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ENV_VALUE, floatIntBits, null );
 				previousEnvMeterReading = currentEnvMeterReading;
 			}
 
@@ -294,8 +293,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			if( currentAttenuationMeterReading != previousAttenuationMeterReading )
 			{
 				final long floatIntBits = Float.floatToIntBits( currentAttenuationMeterReading );
-				final long valueOut = (floatIntBits);
-				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION, valueOut, null );
+				localBridge.queueTemporalEventToUi( tempQueueEntryStorage, currentTimestamp, StereoCompressorIOQueueBridge.COMMAND_OUT_ATTENUATION, floatIntBits, null );
 				previousAttenuationMeterReading = currentAttenuationMeterReading;
 			}
 

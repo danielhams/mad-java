@@ -40,7 +40,7 @@ public class UnixAtomicFileUtilities implements AtomicFileUtilities
 	protected static Log log = LogFactory.getLog( UnixAtomicFileUtilities.class.getName() );
 
 	private static final int BUF_SIZE = 10 * 1024;
-	private String mvLocation = null;
+	private String mvLocation;
 
 	/**
 	 * Constructor for UnixAtomicFileUtilities.
@@ -186,7 +186,7 @@ public class UnixAtomicFileUtilities implements AtomicFileUtilities
 				throw new IOException( errMsg );
 			}
 		}
-		return (retVal);
+		return retVal;
 	}
 
 }

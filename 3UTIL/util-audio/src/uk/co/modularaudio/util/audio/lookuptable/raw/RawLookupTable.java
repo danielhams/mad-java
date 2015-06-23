@@ -29,14 +29,14 @@ public class RawLookupTable implements LookupTable
 {
 	public float[] floatBuffer = null;
 	public int capacity = -1;
-	
-	public RawLookupTable( float[] dataToUse )
+
+	public RawLookupTable( final float[] dataToUse )
 	{
 		this( dataToUse.length, false );
 		System.arraycopy( dataToUse, 0, floatBuffer, 0, capacity );
 	}
-	
-	public RawLookupTable( int capacity, boolean initialiseToZero )
+
+	public RawLookupTable( final int capacity, final boolean initialiseToZero )
 	{
 		this.capacity = capacity;
 		floatBuffer = new float[ capacity ];
@@ -45,13 +45,13 @@ public class RawLookupTable implements LookupTable
 			Arrays.fill( floatBuffer, 0.0f );
 		}
 	}
-	
+
 	public int getBufferCapacity()
 	{
 		return capacity;
 	}
-	
-	public float getValueAt( int position )
+
+	public float getValueAt( final int position )
 	{
 		if( position >= capacity )
 		{
@@ -62,15 +62,15 @@ public class RawLookupTable implements LookupTable
 			return floatBuffer[position];
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.util.audio.wavetable.WaveTable#getValueAtNormalisedPosition(float)
 	 */
 	@Override
-	public float getValueAtNormalisedPosition( float normalisedPosition )
+	public float getValueAtNormalisedPosition( final float iNormalisedPosition )
 	{
-		normalisedPosition  = ( normalisedPosition < 0.0f ? 0.0f : (normalisedPosition > 1.0f ? 1.0f : normalisedPosition ) );
-		float realPosFloat = normalisedPosition * capacity;
+		final float normalisedPosition  = ( iNormalisedPosition < 0.0f ? 0.0f : (iNormalisedPosition > 1.0f ? 1.0f : iNormalisedPosition ) );
+		final float realPosFloat = normalisedPosition * capacity;
 		return floatBuffer[ (int)realPosFloat ];
 	}
 

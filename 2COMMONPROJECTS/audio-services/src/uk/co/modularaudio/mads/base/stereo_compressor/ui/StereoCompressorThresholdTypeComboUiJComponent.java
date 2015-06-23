@@ -39,7 +39,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 public class StereoCompressorThresholdTypeComboUiJComponent
 	implements IMadUiControlInstance<StereoCompressorMadDefinition, StereoCompressorMadInstance, StereoCompressorMadUiInstance>
 {
-	private static final Map<String,ThresholdTypeEnum> dsToEnumMap = createDsToEnumMap();
+	private static final Map<String,ThresholdTypeEnum> DS_TO_ENUM_MAP = createDsToEnumMap();
 
 	private static final Map<String,ThresholdTypeEnum> createDsToEnumMap()
 	{
@@ -89,7 +89,7 @@ public class StereoCompressorThresholdTypeComboUiJComponent
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String value = (String)model.getSelectedItem();
-				final ThresholdTypeEnum tte = dsToEnumMap.get( value );
+				final ThresholdTypeEnum tte = DS_TO_ENUM_MAP.get( value );
 				uiInstance.sendThresholdType( tte.ordinal() );
 			}
 		} );

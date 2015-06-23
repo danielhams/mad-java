@@ -53,8 +53,9 @@ public class UnsafeGenericRingBuffer<A>
 		return internalRead( readPosition, writePosition, numReadable, target, pos, length );
 	}
 
-	protected int internalRead( int rp, final int wp, final int numReadable, final A[] target, final int pos, final int length )
+	protected int internalRead( final int iRp, final int wp, final int numReadable, final A[] target, final int pos, final int length )
 	{
+		int rp = iRp;
 		if( numReadable < length )
 		{
 			return 0;
@@ -136,12 +137,12 @@ public class UnsafeGenericRingBuffer<A>
 
 	public int getNumReadable()
 	{
-		return( calcNumReadable( readPosition, writePosition ) );
+		return calcNumReadable( readPosition, writePosition );
 	}
 
 	public int getNumWriteable()
 	{
-		return( calcNumWriteable( readPosition, writePosition ) );
+		return calcNumWriteable( readPosition, writePosition );
 	}
 
 	public void clear()
@@ -164,8 +165,9 @@ public class UnsafeGenericRingBuffer<A>
 		return internalReadOneOut( rp, wp, numReadable );
 	}
 
-	protected A internalReadOneOut( int rp, final int wp, final int numReadable )
+	protected A internalReadOneOut( final int iRp, final int wp, final int numReadable )
 	{
+		int rp = iRp;
 		A retVal = null;
 		if( numReadable < 1 )
 		{
@@ -213,22 +215,22 @@ public class UnsafeGenericRingBuffer<A>
 	}
 
 	protected int calcNumReadable( final int curReadPosition, final int curWritePosition )
-		{
-			int retVal = -1;
+	{
+		int retVal = -1;
 
-			if( curWritePosition >= curReadPosition )
-			{
-				// Simple case, reading from start of buffer writing to end of it
-				retVal = curWritePosition - curReadPosition;
-			}
-			else if( curReadPosition > curWritePosition )
-			{
-				// Case we are reading from end of buffer and writing at the start
-				retVal = (bufferLength - curReadPosition) + curWritePosition;
-			}
-	//		log.debug("RingBuffer.cap(" + capacity + ").calcNumReadable(" + curReadPosition + ", " + curWritePosition + ") -> (" + retVal + ")");
-			return retVal;
+		if( curWritePosition >= curReadPosition )
+		{
+			// Simple case, reading from start of buffer writing to end of it
+			retVal = curWritePosition - curReadPosition;
 		}
+		else if( curReadPosition > curWritePosition )
+		{
+			// Case we are reading from end of buffer and writing at the start
+			retVal = bufferLength - curReadPosition + curWritePosition;
+		}
+//		log.debug("RingBuffer.cap(" + capacity + ").calcNumReadable(" + curReadPosition + ", " + curWritePosition + ") -> (" + retVal + ")");
+		return retVal;
+	}
 
 	protected int calcNumWriteable( final int curReadPosition, final int curWritePosition )
 	{
@@ -237,7 +239,7 @@ public class UnsafeGenericRingBuffer<A>
 		if( curWritePosition >= curReadPosition )
 		{
 			// Simple case, reading from start of buffer writing to end of it
-			retVal = (bufferLength - curWritePosition) + curReadPosition;
+			retVal = bufferLength - curWritePosition + curReadPosition;
 		}
 		else if( curReadPosition > curWritePosition )
 		{

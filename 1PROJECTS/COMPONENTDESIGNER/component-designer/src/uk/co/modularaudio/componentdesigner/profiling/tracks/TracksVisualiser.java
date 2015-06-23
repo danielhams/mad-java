@@ -36,7 +36,7 @@ public class TracksVisualiser extends JPanel
 
 //	private static Log log = LogFactory.getLog( TracksVisualiser.class.getName() );
 
-	private static final Color[] threadColors = new Color[] {
+	private static final Color[] THREAD_COLOURS = new Color[] {
 		Color.decode( "#ffbbbb" ),
 		Color.decode( "#bbffbb" ),
 		Color.decode( "#bbbbff" ),
@@ -109,7 +109,7 @@ public class TracksVisualiser extends JPanel
 			ttb.append( " Length " );
 			ttb.append( TimestampFormatter.formatNanos( jobLength ) );
 
-			final TrackBlock tb = new TrackBlock( sb.toString(), threadColors[jobThread], ttb.toString() );
+			final TrackBlock tb = new TrackBlock( sb.toString(), THREAD_COLOURS[jobThread], ttb.toString() );
 			this.add( tb );
 			trackBlocks.add( tb );
 			tb.setBounds( offsetX, offsetY, TRACK_BLOCK_WIDTH, blockHeight );

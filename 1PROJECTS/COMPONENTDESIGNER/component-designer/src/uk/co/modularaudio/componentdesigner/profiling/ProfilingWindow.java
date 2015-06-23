@@ -112,7 +112,10 @@ public class ProfilingWindow extends JFrame
 				}
 				catch( final DatastoreException de )
 				{
-					log.error("Error during profiling data fetch: " + de.toString(),de );
+					if( log.isErrorEnabled() )
+					{
+						log.error("Error during profiling data fetch: " + de.toString(),de );
+					}
 				}
 			}
 		} );

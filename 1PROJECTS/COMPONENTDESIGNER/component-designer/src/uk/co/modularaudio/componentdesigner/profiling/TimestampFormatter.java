@@ -22,7 +22,7 @@ package uk.co.modularaudio.componentdesigner.profiling;
 
 public class TimestampFormatter
 {
-	private static int NUM_CHARS_FOR_NANOS_FORMATTING = 2 + 1 + 3 + 1 + 3 + 1 + 3;
+	private final static int NUM_CHARS_FOR_NANOS_FORMATTING = 2 + 1 + 3 + 1 + 3 + 1 + 3;
 
 	public static String formatNanos( final long nanos )
 	{

@@ -28,40 +28,43 @@ import javax.swing.DefaultComboBoxModel;
 public class SortedItemListModel<A extends Object> extends DefaultComboBoxModel<A>
 {
 	private static final long serialVersionUID = -4859411511141297418L;
-	
+
 	private Comparator<A> comparator;
-	
+
 	// Can't use this - must use comparator
 	@SuppressWarnings("unused")
 	private SortedItemListModel()
 	{
 		super();
 	}
-		
-	public SortedItemListModel( Vector<A> items, Comparator<A> comp)
+
+	public SortedItemListModel( final Vector<A> items, final Comparator<A> comp)
 	{
 		super(items);
 		comparator = comp;
 	}
-	
-	public void addElement( A element )
+
+	@Override
+	public void addElement( final A element )
 	{
 		insertElementAt( element, 0 );
 	}
-	
-	public void insertElementAt( A element, int index )
+
+	@Override
+	public void insertElementAt( final A element, final int iIndex )
 	{
-		int size = getSize();
-		
-		for( index = 0 ; index < size ; index++) 
+		int index = iIndex;
+		final int size = getSize();
+
+		for( index = 0 ; index < size ; index++)
 		{
-			A c = getElementAt(index);
+			final A c = getElementAt(index);
 			if( comparator.compare(c, element) > 0 )
 			{
 				break;
 			}
 		}
-		
+
 		super.insertElementAt( element, index);
 	}
 }

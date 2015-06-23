@@ -67,16 +67,9 @@ public class FileUtilities
 	public static boolean isRelativePath( final String filePath )
 	{
 		final int filePathLength = filePath.length();
-		if( (filePathLength >= 1 && File.separatorChar == '/' && filePath.charAt(0) == '/')
+		return !( (filePathLength >= 1 && File.separatorChar == '/' && filePath.charAt(0) == '/')
 			||
 			(filePathLength >= 2 && File.separatorChar == '\\' && filePath.charAt(1) == ':')
-			)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+			);
 	}
 }

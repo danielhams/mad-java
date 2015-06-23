@@ -230,44 +230,47 @@ public class GraphIOLinkMap
 
 	public void debug()
 	{
-		log.debug("Graph IO link map contains:");
-
-		for( final Map.Entry<MadChannelInstance, MadChannelInstance> gcmc : graphProducerChannelToMadChannelInstanceMap.entrySet() )
+		if( log.isDebugEnabled() )
 		{
-			log.debug("GraphProducerToMadChannel: " + gcmc.getKey().toString() + " " +
-					gcmc.getValue().instance.getInstanceName() + " " + gcmc.getValue().toString() );
-		}
+			log.debug("Graph IO link map contains:");
 
-		for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
-		{
-			final ArrayList<MadChannelInstance> mcs = gpma.getValue();
-			if( mcs != null )
+			for( final Map.Entry<MadChannelInstance, MadChannelInstance> gcmc : graphProducerChannelToMadChannelInstanceMap.entrySet() )
 			{
-				for( final MadChannelInstance ci : mcs )
+				log.debug("GraphProducerToMadChannel: " + gcmc.getKey().toString() + " " +
+						gcmc.getValue().instance.getInstanceName() + " " + gcmc.getValue().toString() );
+			}
+
+			for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
+			{
+				final ArrayList<MadChannelInstance> mcs = gpma.getValue();
+				if( mcs != null )
 				{
-					log.debug("GraphConsumerToMadChannel: " + gpma.getKey().toString() + " " +
-							ci.instance.getInstanceName() + " " + ci.toString() );
+					for( final MadChannelInstance ci : mcs )
+					{
+						log.debug("GraphConsumerToMadChannel: " + gpma.getKey().toString() + " " +
+								ci.instance.getInstanceName() + " " + ci.toString() );
+					}
 				}
 			}
-		}
 
-		for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
-		{
-			final ArrayList<MadChannelInstance> gcs = mcga.getValue();
-			if( gcs != null )
+			for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
 			{
-				for( final MadChannelInstance gi : gcs )
+				final ArrayList<MadChannelInstance> gcs = mcga.getValue();
+				if( gcs != null )
 				{
-					log.debug("MadChannelToGraphProducerChannel: " + mcga.getKey().instance.getInstanceName() + " " + mcga.getKey().toString() + " " +
-							gi.toString() );
+					for( final MadChannelInstance gi : gcs )
+					{
+						log.debug("MadChannelToGraphProducerChannel: " + mcga.getKey().instance.getInstanceName() + " " + mcga.getKey().toString() + " " +
+								gi.toString() );
+					}
 				}
 			}
-		}
 
-		for( final Map.Entry<MadChannelInstance, MadChannelInstance> mcgc : madChannelInstanceToGraphConsumerMap.entrySet() )
-		{
-			log.debug("MadChannelToGraphConsumerChannel: " + mcgc.getKey().instance.getInstanceName() + " " + mcgc.getKey().toString() + " " +
-					mcgc.getValue().toString());
+			for( final Map.Entry<MadChannelInstance, MadChannelInstance> mcgc : madChannelInstanceToGraphConsumerMap.entrySet() )
+			{
+				log.debug("MadChannelToGraphConsumerChannel: " + mcgc.getKey().instance.getInstanceName() + " " + mcgc.getKey().toString() + " " +
+						mcgc.getValue().toString());
+			}
 		}
 	}
 
@@ -321,6 +324,6 @@ public class GraphIOLinkMap
 	public boolean isProducerChannelExposed( final MadChannelInstance auci )
 	{
 		final ArrayList<MadChannelInstance> mgcs = madChannelInstanceToGraphProducerMap.get( auci );
-		return (mgcs != null && mgcs.size() > 0 );
+		return mgcs != null && mgcs.size() > 0;
 	}
 }

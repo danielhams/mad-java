@@ -102,7 +102,7 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( NoteToCvMadDefinition.CONSUMER_NOTE );
 		final boolean outGateConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_GATE_OUT );
@@ -193,9 +193,9 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	protected void setFrequencyGlideMillis( float val )
+	protected void setFrequencyGlideMillis( final float iValue )
 	{
-		val = ( val < 0.0f ? 0.0f : val );
+		final float val = ( iValue < 0.0f ? 0.0f : iValue );
 		freqGlideNewValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, val );
 		freqGlideCurValueRatio = 1.0f - freqGlideNewValueRatio;
 //		log.debug("Setting frequency glide with cur=" + freqGlideCurValueRatio + " and new=" + freqGlideNewValueRatio );

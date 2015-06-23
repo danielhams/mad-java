@@ -101,7 +101,10 @@ public class GraphLinkMap
 		}
 		else
 		{
-			log.error("Missing consumer link entry for " + cmi.getInstanceName() + " " + cci.definition.name);
+			if( log.isErrorEnabled() )
+			{
+				log.error("Missing consumer link entry for " + cmi.getInstanceName() + " " + cci.definition.name);
+			}
 		}
 
 		final Set<MadLink> producerLinks = producerInstanceLinks.get( pmi );
@@ -111,7 +114,10 @@ public class GraphLinkMap
 		}
 		else
 		{
-			log.error("Missing producer link entry for " + pmi.getInstanceName() + " " + pci.definition.name);
+			if( log.isErrorEnabled() )
+			{
+				log.error("Missing producer link entry for " + pmi.getInstanceName() + " " + pci.definition.name);
+			}
 		}
 
 		instanceLinks.remove( link );
@@ -157,30 +163,33 @@ public class GraphLinkMap
 
 	public void debug()
 	{
-		log.debug("Graph link map contains:");
-
-		for( final MadLink link : instanceLinks )
+		if( log.isDebugEnabled() )
 		{
-			log.debug("Link: " + link.toString() );
-		}
+			log.debug("Graph link map contains:");
 
-		for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> cils : consumerInstanceLinks.entrySet() )
-		{
-			log.debug("InstanceLinksFrom: " + cils.getKey().getInstanceName() + " count(" +
-					cils.getValue().size() + ")" );
-			for( final MadLink l : cils.getValue() )
+			for( final MadLink link : instanceLinks )
 			{
-				log.debug( "\t" + l.toString() );
+				log.debug("Link: " + link.toString() );
 			}
-		}
 
-		for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> pils : producerInstanceLinks.entrySet() )
-		{
-			log.debug("InstanceLinksTo: " + pils.getKey().getInstanceName() + " count(" +
-					pils.getValue().size() + ")" );
-			for( final MadLink l : pils.getValue() )
+			for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> cils : consumerInstanceLinks.entrySet() )
 			{
-				log.debug( "\t" + l.toString() );
+				log.debug("InstanceLinksFrom: " + cils.getKey().getInstanceName() + " count(" +
+						cils.getValue().size() + ")" );
+				for( final MadLink l : cils.getValue() )
+				{
+					log.debug( "\t" + l.toString() );
+				}
+			}
+
+			for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> pils : producerInstanceLinks.entrySet() )
+			{
+				log.debug("InstanceLinksTo: " + pils.getKey().getInstanceName() + " count(" +
+						pils.getValue().size() + ")" );
+				for( final MadLink l : pils.getValue() )
+				{
+					log.debug( "\t" + l.toString() );
+				}
 			}
 		}
 	}

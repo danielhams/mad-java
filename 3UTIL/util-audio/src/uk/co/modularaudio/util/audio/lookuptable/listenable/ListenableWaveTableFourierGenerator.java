@@ -25,8 +25,9 @@ import uk.co.modularaudio.util.math.MathDefines;
 
 public class ListenableWaveTableFourierGenerator
 {
-	public static void fillTable( final ListenableWaveTable destTable, final int harms, final ListenableWaveTable amps, float phase )
+	public static void fillTable( final ListenableWaveTable destTable, final int harms, final ListenableWaveTable amps, final float iPhase )
 	{
+		float phase = iPhase;
 		float a;
 		double w;
 		phase *= MathDefines.TWO_PI_F;

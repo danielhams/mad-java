@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.util.audio.dsp;
 
-public class MidSideProcessor
+public final class MidSideProcessor
 {
 	private MidSideProcessor()
 	{

@@ -48,8 +48,9 @@ public class RBJCascadeFilter
 		cy2 = 0;
 	}
 
-	public void recompute( final int sampleRate, final FrequencyFilterMode filterMode, float f0, final float Q )
+	public void recompute( final int sampleRate, final FrequencyFilterMode filterMode, final float iF0, final float Q )
 	{
+		float f0 = iF0;
 		final float maxFreq = (sampleRate / 2.0f) - 10.0f;
 		if( f0 > maxFreq )
 		{

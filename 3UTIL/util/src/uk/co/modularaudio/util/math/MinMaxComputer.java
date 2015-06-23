@@ -22,8 +22,9 @@ package uk.co.modularaudio.util.math;
 
 public class MinMaxComputer
 {
-	public final static void calcMinMaxForFloats( final float[] src, int pos, final int length, final float[] inOutMinMax )
+	public final static void calcMinMaxForFloats( final float[] src, final int iPos, final int length, final float[] inOutMinMax )
 	{
+		int pos = iPos;
 		final int remainder = length % 2;
 		final int endPos = pos + length - remainder;
 		while( pos < endPos )
@@ -67,8 +68,9 @@ public class MinMaxComputer
 		}
 	}
 
-	public final static void calcMinMaxForFloatsWithStride( final float[] src, int pos, final int length, final int stride, final float[] inOutMinMax )
+	public final static void calcMinMaxForFloatsWithStride( final float[] src, final int iPos, final int length, final int stride, final float[] inOutMinMax )
 	{
+		int pos = iPos;
 		final int remainder = length % 2;
 		final int endPos = pos + ((length - remainder) * stride);
 		while( pos < endPos )

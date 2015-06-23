@@ -5,7 +5,7 @@
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
-        <rackPosition column="0" row="5"/>
+        <rackPosition column="0" row="6"/>
     </rackComponent>
     <rackComponent name="Cross Fader 10" definitionId="cross_fader">
         <rackPosition column="0" row="4"/>
@@ -22,17 +22,17 @@
         <rackControl name="Fader" value="0.0"/>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
-        <rackPosition column="0" row="6"/>
-        <rackControl name="Master Lane" value="-2.625:0.0"/>
+        <rackPosition column="0" row="7"/>
+        <rackControl name="Master Lane" value="-19.75:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.7348747"/>
+        <rackControl name="Gain" value="-7.5103173"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2008-10-16_21h29m33slurpy.mp3"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2008-06-06_22h26m20labyrinth.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -50,6 +50,9 @@
         <rackControl name="Display" value=""/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 8" definitionId="sub_rack">
+        <rackPosition column="0" row="5"/>
+    </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="4"/>
         <rackControl name="CaptureTime" value="5000.0"/>
@@ -61,10 +64,12 @@
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp 7" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller 6" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Bass Boost Rack" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
-    <rackLink producerRackComponentName="Cross Fader 10" producerChannelName="Output Wave Left" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
-    <rackLink producerRackComponentName="Cross Fader 10" producerChannelName="Output Wave Right" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Cross Fader 10" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Cross Fader 10" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="DJ EQ 5" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 10" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="DJ EQ 5" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 10" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 5" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 5" consumerChannelName="Input Wave Right"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 1" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 2" consumerRackComponentName="Bass Boost Rack" consumerChannelName="Input Channel 2"/>
 </rack>

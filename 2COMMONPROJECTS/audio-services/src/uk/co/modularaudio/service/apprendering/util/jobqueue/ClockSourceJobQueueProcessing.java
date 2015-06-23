@@ -21,7 +21,7 @@
 package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
-import uk.co.modularaudio.service.apprendering.util.jobqueue.RenderingJobQueueProcessing.Type;
+import uk.co.modularaudio.service.apprendering.util.jobqueue.AbstractRenderingJobQueueProcessing.Type;
 import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.thread.RealtimeMethodErrorContext;

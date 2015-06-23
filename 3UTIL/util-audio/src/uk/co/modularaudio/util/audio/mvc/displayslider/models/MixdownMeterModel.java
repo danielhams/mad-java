@@ -42,8 +42,9 @@ public class MixdownMeterModel extends SliderDisplayModel
 	}
 
 	@Override
-	public void setValue( final Object source, float newFloatValue )
+	public void setValue( final Object source, final float iNewFloatValue )
 	{
+		float newFloatValue = iNewFloatValue;
 		if( newFloatValue < INT_TO_FLOAT_CONVERTER.getCompressedLowestDb() )
 		{
 			newFloatValue = Float.NEGATIVE_INFINITY;

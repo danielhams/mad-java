@@ -55,18 +55,11 @@ public class CrossFaderAmpBKillUiJComponent extends LWTCToggleButton
 		return this;
 	}
 
-	private void passChangeToInstanceData( final boolean selected )
-	{
-		uiInstance.setGuiKillB( selected );
-		uiInstance.recalculateAmps();
-	}
-
 	@Override
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -83,6 +76,7 @@ public class CrossFaderAmpBKillUiJComponent extends LWTCToggleButton
 	@Override
 	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
-		passChangeToInstanceData( newValue );
+		uiInstance.setGuiKillB( newValue );
+		uiInstance.recalculateAmps();
 	}
 }

@@ -755,35 +755,35 @@ public class LWTCControlConstants
 
 	public static class StdRotaryViewColor extends RotaryViewColors
 	{
-		public final static Color ibgColor = ROTARY_VIEW_BACKGROUND_COLOR;
-		public final static Color ifgColor = ROTARY_VIEW_FOREGROUND_COLOR;
-		public final static Color itextboxBgColor = CONTROL_TEXTBOX_BACKGROUND;
-		public final static Color itextboxFgColor = CONTROL_TEXTBOX_FOREGROUND;
-		public final static Color iselectionColor = CONTROL_TEXTBOX_SELECTION;
-		public final static Color iselectedTextColor = CONTROL_TEXTBOX_SELECTED_TEXT;
-		public final static Color iknobOutlineColor = ROTARY_VIEW_OUTLINE_COLOR;
-		public final static Color iknobFillColor = ROTARY_VIEW_KNOB_COLOR;
-		public final static Color iknobExtentColor = ROTARY_VIEW_EXTENT_COLOR;
-		public final static Color iknobIndicatorColor = ROTARY_VIEW_INDICATOR_COLOR;
-		public final static Color iknobFocusColor = ROTARY_VIEW_FOCUS_COLOR;
-		public final static Color ilabelColor = CONTROL_LABEL_FOREGROUND;
-		public final static Color iunitsColor = ilabelColor;
+		public final static Color IBGCOLOR = ROTARY_VIEW_BACKGROUND_COLOR;
+		public final static Color IFGCOLOR = ROTARY_VIEW_FOREGROUND_COLOR;
+		public final static Color ITXTBOXBG = CONTROL_TEXTBOX_BACKGROUND;
+		public final static Color ITXTBOXFG = CONTROL_TEXTBOX_FOREGROUND;
+		public final static Color ITXTBOXSEL = CONTROL_TEXTBOX_SELECTION;
+		public final static Color ITXTBOXSELTEXT = CONTROL_TEXTBOX_SELECTED_TEXT;
+		public final static Color IKNOBOUTLINE = ROTARY_VIEW_OUTLINE_COLOR;
+		public final static Color IKNOBFILL = ROTARY_VIEW_KNOB_COLOR;
+		public final static Color IKNOBEXTENT = ROTARY_VIEW_EXTENT_COLOR;
+		public final static Color IKNOBINDICATOR = ROTARY_VIEW_INDICATOR_COLOR;
+		public final static Color IKNOBFOCUS = ROTARY_VIEW_FOCUS_COLOR;
+		public final static Color ILABELCOLOR = CONTROL_LABEL_FOREGROUND;
+		public final static Color IUNITSCOLOR = ILABELCOLOR;
 
 		public StdRotaryViewColor()
 		{
-			super( ibgColor,
-					ifgColor,
-					itextboxBgColor,
-					itextboxFgColor,
-					iselectionColor,
-					iselectedTextColor,
-					iknobOutlineColor,
-					iknobFillColor,
-					iknobExtentColor,
-					iknobIndicatorColor,
-					iknobFocusColor,
-					ilabelColor,
-					iunitsColor );
+			super( IBGCOLOR,
+					IFGCOLOR,
+					ITXTBOXBG,
+					ITXTBOXFG,
+					ITXTBOXSEL,
+					ITXTBOXSELTEXT,
+					IKNOBOUTLINE,
+					IKNOBFILL,
+					IKNOBEXTENT,
+					IKNOBINDICATOR,
+					IKNOBFOCUS,
+					ILABELCOLOR,
+					IUNITSCOLOR );
 		}
 	};
 }

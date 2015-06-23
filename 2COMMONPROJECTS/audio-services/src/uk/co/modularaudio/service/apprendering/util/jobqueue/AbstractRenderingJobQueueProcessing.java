@@ -25,7 +25,7 @@ import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public abstract class RenderingJobQueueProcessing
+public abstract class AbstractRenderingJobQueueProcessing
 {
 //	private static Log log = LogFactory.getLog( RenderingJobQueueProcessing.class.getName() );
 
@@ -43,7 +43,7 @@ public abstract class RenderingJobQueueProcessing
 	protected long numJobsProcessed;
 	protected final int threadNum;
 
-	public RenderingJobQueueProcessing( final int threadNum, final AppRenderingJobQueue jobQueue, final Type processingType )
+	public AbstractRenderingJobQueueProcessing( final int threadNum, final AppRenderingJobQueue jobQueue, final Type processingType )
 	{
 		this.threadNum = threadNum;
 		this.renderingJobQueue = jobQueue;

@@ -26,8 +26,10 @@ import uk.co.modularaudio.util.audio.oscillatortable.PulseWidthMapper;
 public final class HardKneePulseWidthMapper implements PulseWidthMapper
 {
 	@Override
-	public float adjustPwPos(float pw, float pos)
+	public float adjustPwPos( final float iPw, final float iPos)
 	{
+		float pw = iPw;
+		float pos = iPos;
 		if( pw == 1.0f )
 		{
 			// Full pulse, don't adjust
@@ -38,9 +40,9 @@ public final class HardKneePulseWidthMapper implements PulseWidthMapper
 			// Just in case pulsewidth = 0.0f;
 			pw = AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
 		}
-		
+
 		float retVal;
-		float bend = 0.5f * pw;
+		final float bend = 0.5f * pw;
 		if( pos <= bend )
 		{
 			// normalise it from 0->1
@@ -50,7 +52,7 @@ public final class HardKneePulseWidthMapper implements PulseWidthMapper
 		}
 		else
 		{
-			float upperLength = 1.0f - bend;
+			final float upperLength = 1.0f - bend;
 			// Remove lower bend
 			pos = pos - bend;
 			// remap back to 0 -> 1

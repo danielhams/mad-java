@@ -35,7 +35,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	}
 
 	@Override
-	public void oscillate( final float[] output, final float freq, float phase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
+	public void oscillate( final float[] output, final float freq, final float iPhase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
 	{
 		final float freqDiff = (prevFreq - freq);
 		final float absFreqDiff = ( freqDiff < 0.0f ? -freqDiff : freqDiff );
@@ -46,7 +46,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			prevFreq = freq;
 		}
 		final float incr = freq / sampleRate;
-		phase = ( phase < 0 ? phase + 1 : phase );
+		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -63,9 +63,9 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	}
 
 	@Override
-	public void oscillate( final float[] output, final float freqs[], float phase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
+	public void oscillate( final float[] output, final float freqs[], final float iPhase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
 	{
-		phase = ( phase < 0 ? phase + 1 : phase );
+		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -91,7 +91,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	}
 
 	@Override
-	public void oscillate( final float[] output, final float freq, float phase,
+	public void oscillate( final float[] output, final float freq, final float iPhase,
 			final float[] pulseWidths, final int outputIndex, final int length, final int sampleRate )
 	{
 		if( freq != prevFreq )
@@ -100,7 +100,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			prevFreq = freq;
 		}
 		final float incr = freq / sampleRate;
-		phase = ( phase < 0 ? phase + 1 : phase );
+		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -118,10 +118,10 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	}
 
 	@Override
-	public void oscillate( final float[] output, final float[] freqs, float phase,
+	public void oscillate( final float[] output, final float[] freqs, final float iPhase,
 			final float[] pulseWidths, final int outputIndex, final int length, final int sampleRate )
 	{
-		phase = ( phase < 0 ? phase + 1 : phase );
+		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 

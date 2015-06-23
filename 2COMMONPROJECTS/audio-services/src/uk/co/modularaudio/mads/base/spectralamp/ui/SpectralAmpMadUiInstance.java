@@ -123,7 +123,7 @@ public class SpectralAmpMadUiInstance extends
 		}
 	}
 
-	public void reinitialiseFrequencyProcessor()
+	public final void reinitialiseFrequencyProcessor()
 	{
 		try
 		{

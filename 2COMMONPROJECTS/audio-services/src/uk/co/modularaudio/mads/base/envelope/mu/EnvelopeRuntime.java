@@ -142,21 +142,22 @@ public class EnvelopeRuntime
 	public void outputEnvelope( final Envelope envelope,
 			final float[] outputGate,
 			final float[] outputAmps,
-			int outputOffset,
+			final int outputOffset,
 			final int lastOutputOffset,
 			final int length )
 	{
+		int curOutputOffset = outputOffset;
 		// Output amps
 		if( currentSegment == EnvelopeSegment.OFF )
 		{
-			Arrays.fill( outputAmps, outputOffset, lastOutputOffset, 0.0f );
-			Arrays.fill( outputGate, outputOffset, lastOutputOffset, 0.0f );
+			Arrays.fill( outputAmps, curOutputOffset, lastOutputOffset, 0.0f );
+			Arrays.fill( outputGate, curOutputOffset, lastOutputOffset, 0.0f );
 		}
 		else if( currentSegment == EnvelopeSegment.SUSTAIN )
 		{
 			final float sustainLevel = envelope.getSustainLevel();
-			Arrays.fill( outputAmps, outputOffset, lastOutputOffset, sustainLevel );
-			Arrays.fill( outputGate, outputOffset, lastOutputOffset, 1.0f );
+			Arrays.fill( outputAmps, curOutputOffset, lastOutputOffset, sustainLevel );
+			Arrays.fill( outputGate, curOutputOffset, lastOutputOffset, 1.0f );
 			lastOutputSustainAmp = sustainLevel;
 		}
 		else
@@ -192,13 +193,13 @@ public class EnvelopeRuntime
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition);
 								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
 								final float nonWtVaue = (1.0f - wtValue );
-								outputAmps[ outputOffset + i ] = startAttackAmp * nonWtVaue + wtValue;
+								outputAmps[ curOutputOffset + i ] = startAttackAmp * nonWtVaue + wtValue;
 							}
-							final int lastOutputIndex = outputOffset + samplesThisRound;
-							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
+							final int lastOutputIndex = curOutputOffset + samplesThisRound;
+							Arrays.fill( outputGate, curOutputOffset, lastOutputIndex, 1.0f );
 
 							indexInCurrentSegment += samplesThisRound;
-							outputOffset += samplesThisRound;
+							curOutputOffset += samplesThisRound;
 							samplesLeft -= samplesThisRound;
 							// Make sure final attack sample is one
 							if( indexInCurrentSegment >= samplesForSegment )
@@ -256,14 +257,14 @@ public class EnvelopeRuntime
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition );
 								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
 								final float nonWtValue = (1.0f - wtValue);
-								outputAmps[ outputOffset + i ] = lastOutputAttackAmp * nonWtValue + (sustainLevel * wtValue);
+								outputAmps[ curOutputOffset + i ] = lastOutputAttackAmp * nonWtValue + (sustainLevel * wtValue);
 							}
-							final int lastOutputIndex = outputOffset + samplesThisRound;
-							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
+							final int lastOutputIndex = curOutputOffset + samplesThisRound;
+							Arrays.fill( outputGate, curOutputOffset, lastOutputIndex, 1.0f );
 
 							lastOutputDecayAmp = outputAmps[ lastOutputIndex - 1];
 							indexInCurrentSegment += samplesThisRound;
-							outputOffset += samplesThisRound;
+							curOutputOffset += samplesThisRound;
 							samplesLeft -= samplesThisRound;
 						}
 						else
@@ -286,11 +287,11 @@ public class EnvelopeRuntime
 					case SUSTAIN:
 					{
 						final float sustainLevel = envelope.getSustainLevel();
-						final int lastOutputIndex = outputOffset + samplesLeft;
-						Arrays.fill( outputAmps, outputOffset, lastOutputIndex, sustainLevel );
-						Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
+						final int lastOutputIndex = curOutputOffset + samplesLeft;
+						Arrays.fill( outputAmps, curOutputOffset, lastOutputIndex, sustainLevel );
+						Arrays.fill( outputGate, curOutputOffset, lastOutputIndex, 1.0f );
 						lastOutputSustainAmp = sustainLevel;
-						outputOffset += samplesLeft;
+						curOutputOffset += samplesLeft;
 						samplesLeft -= samplesLeft;
 						break;
 					}
@@ -315,13 +316,13 @@ public class EnvelopeRuntime
 								curPosition = (curPosition > 1.0f ? 1.0f : curPosition );
 								final float wtValue = waveTableForSegment.getValueAtNormalisedPosition( curPosition );
 								final float nonWtValue = (1.0f - wtValue);
-								outputAmps[ outputOffset + i ] = startReleaseAmp * nonWtValue;
+								outputAmps[ curOutputOffset + i ] = startReleaseAmp * nonWtValue;
 							}
-							final int lastOutputIndex = outputOffset + samplesThisRound;
-							Arrays.fill( outputGate, outputOffset, lastOutputIndex, 1.0f );
+							final int lastOutputIndex = curOutputOffset + samplesThisRound;
+							Arrays.fill( outputGate, curOutputOffset, lastOutputIndex, 1.0f );
 							lastOutputReleaseAmp = outputAmps[ lastOutputIndex - 1];
 							indexInCurrentSegment += samplesThisRound;
-							outputOffset += samplesThisRound;
+							curOutputOffset += samplesThisRound;
 							samplesLeft -= samplesThisRound;
 						}
 						else
@@ -333,10 +334,10 @@ public class EnvelopeRuntime
 					}
 					case OFF:
 					{
-						final int lastOutputIndex = outputOffset + samplesLeft;
-						Arrays.fill( outputAmps, outputOffset, lastOutputIndex, 0.0f );
-						Arrays.fill( outputGate, outputOffset, lastOutputIndex, 0.0f );
-						outputOffset += samplesLeft;
+						final int lastOutputIndex = curOutputOffset + samplesLeft;
+						Arrays.fill( outputAmps, curOutputOffset, lastOutputIndex, 0.0f );
+						Arrays.fill( outputGate, curOutputOffset, lastOutputIndex, 0.0f );
+						curOutputOffset += samplesLeft;
 						samplesLeft -= samplesLeft;
 						break;
 					}

@@ -137,7 +137,10 @@ public class OscilloscopeRepetitionsComboUiJComponent
 		}
  		else
 		{
-			log.warn("Attempt to set control to unknown value: " + value);
+			if( log.isWarnEnabled() )
+			{
+				log.warn("Attempt to set control to unknown value: " + value);
+			}
 		}
 	}
 }

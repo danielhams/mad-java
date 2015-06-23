@@ -63,7 +63,7 @@ public class SoundfilePlayerGainDialUiJComponent
 		}
 	};
 
-	private final static GainDialColours dc = new GainDialColours();
+	private final static GainDialColours DC = new GainDialColours();
 
 	public SoundfilePlayerGainDialUiJComponent( final SoundfilePlayerMadDefinition definition,
 			final SoundfilePlayerMadInstance instance,
@@ -91,7 +91,7 @@ public class SoundfilePlayerGainDialUiJComponent
 				SatelliteOrientation.LEFT,
 				SatelliteOrientation.RIGHT,
 				"Gain:",
-				dc,
+				DC,
 				false,
 				true );
 
@@ -167,17 +167,23 @@ public class SoundfilePlayerGainDialUiJComponent
 //		final float averageRmsDb = analysedData.getRmsAverageDb();
 		final float peakRmsDb = analysedData.getRmsPeakDb();
 
-		log.debug("Received analysed data: " + analysedData.toString() );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received analysed data: " + analysedData.toString() );
+		}
 		float adjustmentDb = TARGET_PLAYER_DB - peakRmsDb;
 
 		// Check we're not clipping due to the adjustment. If we are,
 		// set the gain to unity
-		float clippingAmount = (absPeakDb + adjustmentDb);
+		float clippingAmount = absPeakDb + adjustmentDb;
 		if( clippingAmount > 0.0f )
 		{
 			// Add a wee bit of headroom
 			clippingAmount += 1.0f;
-			log.debug("Gain adjustment would introduce clipping. Bringing back by " + clippingAmount );
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Gain adjustment would introduce clipping. Bringing back by " + clippingAmount );
+			}
 			adjustmentDb -= clippingAmount;
 		}
 

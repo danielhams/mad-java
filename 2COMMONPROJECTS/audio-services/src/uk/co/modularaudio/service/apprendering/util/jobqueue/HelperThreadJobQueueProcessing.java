@@ -22,7 +22,7 @@ package uk.co.modularaudio.service.apprendering.util.jobqueue;
 
 import uk.co.modularaudio.service.apprendering.util.AppRenderingJobQueue;
 
-public class HelperThreadJobQueueProcessing extends RenderingJobQueueProcessing
+public class HelperThreadJobQueueProcessing extends AbstractRenderingJobQueueProcessing
 {
 //	private static Log log = LogFactory.getLog( HelperThreadJobQueueProcessing.class.getName() );
 

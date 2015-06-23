@@ -74,7 +74,7 @@ abstract public class Pool
 
 		if (ar != Arbiter.CONTINUE)
 		{
-			log.warn( "PostUse arbiter failure inside useResource");
+			log.warn( "PostUse arbiter failure inside useResource" );
 			// If the resource failed arbitration, remove it
 			this.removeResource(retResource);
 			throw new ResourceNotAvailableException();
@@ -118,8 +118,8 @@ abstract public class Pool
 
 		if (releaseFailure)
 		{
-			this.removeResource(res);
 			// If the resource failed arbitration, remove it.
+			this.removeResource(res);
 			if( log.isWarnEnabled() )
 			{
 				log.warn("(Pre/Post)Release arbitration of " + res.toString() + " failed.");
@@ -129,12 +129,13 @@ abstract public class Pool
 
 	public Resource useResourceWait() throws InterruptedException
 	{
-		return(useResourceWait(0));
+		return useResourceWait(0);
 	}
 
-	public Resource useResourceWait( long waitTime) throws InterruptedException
+	public Resource useResourceWait( final long iWaitTime) throws InterruptedException
 	{
 	    // Need a flag to indicate we should wait forever, or take our time.
+		long waitTime = iWaitTime;
 	    final boolean waitForever = (waitTime == 0 ? true : false);
 	    final boolean doneWaiting = false;
 

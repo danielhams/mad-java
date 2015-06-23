@@ -171,9 +171,10 @@ public class MathFormatter
 		return retVal;
 	}
 
-	public static String floatRadianToDegrees( float radiansIn, final int numDecimalPlaces )
+	public static String floatRadianToDegrees( final float iRadiansIn, final int numDecimalPlaces )
 	{
 		// Normalise to +/- PI
+		float radiansIn = iRadiansIn;
 		while( radiansIn < 0 ) radiansIn += MathDefines.TWO_PI_F;
 		while( radiansIn > MathDefines.TWO_PI_F ) radiansIn -= MathDefines.TWO_PI_F;
 

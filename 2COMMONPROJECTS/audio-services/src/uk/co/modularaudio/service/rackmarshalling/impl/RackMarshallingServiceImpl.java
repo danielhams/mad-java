@@ -91,7 +91,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	private Marshaller marshaller;
 
 	@Override
-	public RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException
+	public RackDataModel loadRackFromFile( final String filename) throws DatastoreException, IOException
 	{
 		if( log.isDebugEnabled() )
 		{
@@ -99,17 +99,18 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 		try
 		{
+			String fullFilename = filename;
 			// If it's relative, tack on the front the user sub racks dir
-			if( FileUtilities.isRelativePath( filename ) )
+			if( FileUtilities.isRelativePath( fullFilename ) )
 			{
 				final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
-				filename = userSubRackPatchesDir + File.separatorChar + filename;
+				fullFilename = userSubRackPatchesDir + File.separatorChar + fullFilename;
 			}
 			@SuppressWarnings("unchecked")
 			final
-			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( filename ) );
+			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( fullFilename ) );
 			final RackXmlType jbRackXml = jbRackElement.getValue();
-			final RackDataModel retVal = loadRackFromStructure( filename, jbRackXml );
+			final RackDataModel retVal = loadRackFromStructure( fullFilename, jbRackXml );
 			retVal.setDirty( false );
 			return retVal;
 		}

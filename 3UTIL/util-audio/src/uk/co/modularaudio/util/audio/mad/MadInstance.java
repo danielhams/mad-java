@@ -180,9 +180,10 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	@SuppressWarnings("unchecked")
 	private int consumeTimestampedEvents( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
 			final int numTemporalEvents,
-			int curEventIndex,
+			final int iCurEventIndex,
 			final long curPeriodStartFrameTime )
 	{
+		int curEventIndex = iCurEventIndex;
 //		log.debug("Start consume from event " + curEventIndex );
 		while( curEventIndex < numTemporalEvents )
 		{
@@ -235,7 +236,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 					curEventIndex,
 					curPeriodStartFrameTime );
 
-			if( curEventIndex > 1 )
+			if( log.isWarnEnabled() && curEventIndex > 1)
 			{
 				log.warn( instanceName + " consumed " + curEventIndex + " temporal events before beginning the period." );
 			}
@@ -290,7 +291,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 			// And process any events left over
 			final int numExtra = numTemporalEvents - curEventIndex;
-			if( numExtra > 1 )
+			if( log.isWarnEnabled() && numExtra > 1 )
 			{
 				log.warn( instanceName + " consumed " + numExtra + " temporal events that fall at the end of the period." );
 			}

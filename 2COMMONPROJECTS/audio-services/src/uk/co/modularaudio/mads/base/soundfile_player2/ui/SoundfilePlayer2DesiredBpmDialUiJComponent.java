@@ -66,7 +66,7 @@ public class SoundfilePlayer2DesiredBpmDialUiJComponent
 		}
 	};
 
-	private final static GainDialColours dc = new GainDialColours();
+	private final static GainDialColours DC = new GainDialColours();
 
 	public SoundfilePlayer2DesiredBpmDialUiJComponent( final SoundfilePlayer2MadDefinition definition,
 			final SoundfilePlayer2MadInstance instance,
@@ -94,7 +94,7 @@ public class SoundfilePlayer2DesiredBpmDialUiJComponent
 				SatelliteOrientation.LEFT,
 				SatelliteOrientation.RIGHT,
 				"DBPM:",
-				dc,
+				DC,
 				false,
 				true );
 
@@ -168,7 +168,10 @@ public class SoundfilePlayer2DesiredBpmDialUiJComponent
 	{
 		final float analysedBpm = analysedData.getBpm();
 
-		log.debug("Received analysed bpm: " + analysedBpm );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Received analysed bpm: " + analysedBpm );
+		}
 
 		model.setValue( this, analysedBpm );
 	}

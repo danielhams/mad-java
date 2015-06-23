@@ -62,22 +62,22 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 		return this;
 	}
 
-	private void passChangeToInstanceData( String filename )
+	private void passChangeToInstanceData( final String filename )
 	{
 		if( currentFilename != null )
 		{
-			if( !FileUtilities.isRelativePath( filename ) )
+			currentFilename = filename;
+			if( !FileUtilities.isRelativePath( currentFilename ) )
 			{
 				final String userMusicDir = acfc.getSoundfileMusicRoot();
-				if( filename.startsWith( userMusicDir ) )
+				if( currentFilename.startsWith( userMusicDir ) )
 				{
-					filename = filename.substring( userMusicDir.length() + 1 );
+					currentFilename = currentFilename.substring( userMusicDir.length() + 1 );
 				}
 			}
-			currentFilename = filename;
 			if( currentFilename.length() > 0 )
 			{
-				uiInstance.setFileInfo( filename );
+				uiInstance.setFileInfo( currentFilename );
 			}
 		}
 	}

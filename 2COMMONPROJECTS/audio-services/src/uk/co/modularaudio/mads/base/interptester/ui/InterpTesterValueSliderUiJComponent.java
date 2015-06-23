@@ -77,13 +77,12 @@ public class InterpTesterValueSliderUiJComponent extends ValueSlider
 		return this;
 	}
 
-	private void passChangeToInstanceData( float sliderValue )
+	private void passChangeToInstanceData( final float iSliderValue )
 	{
-		if( valueConverter != null )
-		{
-			sliderValue = valueConverter.convertValue( sliderValue );
-		}
-		uiInstance.setValue( sliderValue );
+		final float checkedValue = ( valueConverter == null ? iSliderValue :
+			valueConverter.convertValue( iSliderValue ) );
+
+		uiInstance.setValue( checkedValue );
 
 		if( DEBUG_EVENTS_PER_SECOND )
 		{

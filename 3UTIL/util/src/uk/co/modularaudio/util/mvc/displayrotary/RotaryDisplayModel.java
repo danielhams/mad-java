@@ -129,9 +129,10 @@ public class RotaryDisplayModel
 		return currentValue;
 	}
 
-	public void setValue( final Object source, float newFloatValue )
+	public void setValue( final Object source, final float iNewFloatValue )
 	{
 //		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
+		float newFloatValue = iNewFloatValue;
 		if( newFloatValue > maxValue )
 		{
 			newFloatValue = maxValue;

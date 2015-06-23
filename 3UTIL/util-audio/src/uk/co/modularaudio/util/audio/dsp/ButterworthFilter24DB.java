@@ -55,9 +55,10 @@ public class ButterworthFilter24DB
 
 	private final void recompute( final FrequencyFilterMode mode,
 			final float sr,
-			float freq,
+			final float iFreq,
 			final float bw )
 	{
+		float freq = iFreq;
 		if (freq < 10.0f)
 		{
 			freq = 10.0f;
