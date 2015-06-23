@@ -120,7 +120,7 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final File fileForEntry = new File( audioFilePath );
 
 			final String title = fileForEntry.getName();
-			final String location = fileForEntry.getAbsolutePath();
+			final String location = sm.path;
 
 			final int numChannels = sm.numChannels;
 			final long numFrames = sm.numFrames;

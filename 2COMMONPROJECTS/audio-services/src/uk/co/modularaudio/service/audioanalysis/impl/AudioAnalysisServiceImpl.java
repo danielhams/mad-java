@@ -51,6 +51,8 @@ import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
 import uk.co.modularaudio.service.hashedstorage.HashedWarehouse;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.service.library.LibraryEntry;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -82,6 +84,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private AudioFileIORegistryService audioFileIORegistryService;
 	private HashedStorageService hashedStorageService;
 	private HibernateSessionService hibernateSessionService;
+	private UserPreferencesService userPreferencesService;
 
 	private final ReentrantLock analysisLock = new ReentrantLock();
 
@@ -119,7 +122,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		if( configurationService == null ||
 				audioFileIORegistryService == null ||
 				hashedStorageService == null ||
-				hibernateSessionService == null )
+				hibernateSessionService == null ||
+				userPreferencesService == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check configuration" );
 		}
@@ -285,6 +289,11 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		this.hashedStorageService = hashedStorageService;
 	}
 
+	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
+	{
+		this.userPreferencesService = userPreferencesService;
+	}
+
 	public void setDatabaseTablePrefix( final String databaseTablePrefix )
 	{
 		this.databaseTablePrefix = databaseTablePrefix;
@@ -295,7 +304,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 		this.hibernateSessionService = hibernateSessionService;
 	}
 
-	private AnalysedData internalAnalyseLibraryEntry( final Session session, final LibraryEntry libraryEntry,
+	private AnalysedData internalAnalyseLibraryEntry( final Session session,
+			final LibraryEntry libraryEntry,
 			final AnalysisFillCompletionListener analysisListener )
 		throws DatastoreException
 	{
@@ -307,7 +317,14 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			final String formatString = libraryEntry.getFormat();
 			final AudioFileFormat format = AudioFileFormat.valueOf( formatString );
 			ioService = audioFileIORegistryService.getAudioFileIOServiceForFormatAndDirection( format, AudioFileDirection.DECODE );
-			afha = ioService.openForRead( libraryEntry.getLocation() );
+
+			String fileLocation = libraryEntry.getLocation();
+			if( FileUtilities.isRelativePath( fileLocation ) )
+			{
+				final String userMusicDir = userPreferencesService.getUserMusicDir();
+				fileLocation = userMusicDir + File.separatorChar + fileLocation;
+			}
+			afha = ioService.openForRead( fileLocation );
 			retVal = analyseFileHandleAtom( libraryEntry, afha,	analysisListener );
 
 			retVal.setLibraryEntryId( libraryEntry.getLibraryEntryId() );

@@ -25,8 +25,10 @@ import java.io.File;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 
+import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -42,6 +44,8 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 
 	private String currentFilename = "";
 
+	private final AdvancedComponentsFrontController acfc;
+
 	public SoundfilePlayerSelectFileUiJComponent( final SoundfilePlayerMadDefinition definition,
 			final SoundfilePlayerMadInstance instance,
 			final SoundfilePlayerMadUiInstance uiInstance,
@@ -49,6 +53,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	{
 		super( LWTCControlConstants.STD_BUTTON_COLOURS, "/\\", false );
 		this.uiInstance = uiInstance;
+		this.acfc = uiInstance.advancedComponentsFrontController;
 	}
 
 	@Override
@@ -57,12 +62,23 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 		return this;
 	}
 
-	private void passChangeToInstanceData( final String filename )
+	private void passChangeToInstanceData( String filename )
 	{
-		currentFilename = filename;
-		if( currentFilename != null && currentFilename.length() > 0 )
+		if( currentFilename != null )
 		{
-			uiInstance.setFileInfo( filename );
+			if( !FileUtilities.isRelativePath( filename ) )
+			{
+				final String userMusicDir = acfc.getSoundfileMusicRoot();
+				if( filename.startsWith( userMusicDir ) )
+				{
+					filename = filename.substring( userMusicDir.length() + 1 );
+				}
+			}
+			currentFilename = filename;
+			if( currentFilename.length() > 0 )
+			{
+				uiInstance.setFileInfo( filename );
+			}
 		}
 	}
 

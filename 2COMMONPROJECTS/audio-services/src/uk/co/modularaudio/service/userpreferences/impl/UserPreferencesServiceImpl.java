@@ -542,4 +542,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	{
 		return userSubRacksDir;
 	}
+
+	@Override
+	public String getUserMusicDir()
+	{
+		return userMusicDir;
+	}
 }

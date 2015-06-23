@@ -48,4 +48,8 @@ public interface AudioFileIORegistryService
 
 	AudioFileHandleAtom openFileForRead( String path )
 		throws DatastoreException, IOException, UnsupportedAudioFileException;
+
+	// To allow services to use relative paths for files that live under the
+	// user specified music dir.
+	String getUserMusicDir();
 }

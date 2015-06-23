@@ -37,4 +37,6 @@ public interface UserPreferencesService
 	public boolean checkForAudioEnginePrefsChanges( UserPreferencesMVCModel model ) throws DatastoreException;
 
 	public String getUserSubRackPatchesDir();
+
+	public String getUserMusicDir();
 }

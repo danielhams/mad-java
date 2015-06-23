@@ -20,6 +20,7 @@ import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.DynamicMetadata;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.format.SampleBits;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
@@ -145,17 +146,17 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 	}
 
 	@Override
-	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
+	public AudioFileHandleAtom openForWrite( final String absPath ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		throw new DatastoreException("NI");
 	}
 
 	@Override
-	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
+	public AudioFileHandleAtom openForRead( final String absPath ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		if( log.isDebugEnabled() )
 		{
-			log.debug("Attempting to open \"" + path + "\"");
+			log.debug("Attempting to open \"" + absPath + "\"");
 		}
 
 		final SF_INFO sfInfo = new SF_INFO();
@@ -163,7 +164,7 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		SWIGTYPE_p_SNDFILE_tag sndfilePtr = null;
 		try
 		{
-			sndfilePtr = libsndfile.sf_open( path, libsndfile.SFM_READ, sfInfo );
+			sndfilePtr = libsndfile.sf_open( absPath, libsndfile.SFM_READ, sfInfo );
 
 			final int format = sfInfo.getFormat();
 
@@ -177,7 +178,17 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 			final int numChannels = sfInfo.getChannels();
 			final long numFrames = sfInfo.getFrames();
 
-			final StaticMetadata sm = new StaticMetadata( aff, dataRate, sb, numChannels, numFrames, path );
+			String libraryPath = absPath;
+			if( !FileUtilities.isRelativePath( libraryPath ) )
+			{
+				final String userMusicDir = audioFileIORegistryService.getUserMusicDir();
+				if( libraryPath.startsWith( userMusicDir ) )
+				{
+					libraryPath = libraryPath.substring( userMusicDir.length() + 1 );
+				}
+			}
+
+			final StaticMetadata sm = new StaticMetadata( aff, dataRate, sb, numChannels, numFrames, libraryPath );
 
 			final LibSndfileAtom retVal = new LibSndfileAtom( this, AudioFileDirection.DECODE, sm,
 					sfInfo,

@@ -54,6 +54,7 @@ import uk.co.modularaudio.service.rackmarshalling.generated.madrack.RackPosition
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack.RackXmlType;
 import uk.co.modularaudio.service.rackmarshalling.generated.madrack.SubRackXmlType;
 import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
@@ -99,10 +100,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		try
 		{
 			// If it's relative, tack on the front the user sub racks dir
-			if( (File.separatorChar == '\\' && filename.charAt( 1 ) != ':')
-					||
-				(File.separatorChar == '/' && filename.charAt( 0 ) != '/' )
-				)
+			if( FileUtilities.isRelativePath( filename ) )
 			{
 				final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
 				filename = userSubRackPatchesDir + File.separatorChar + filename;

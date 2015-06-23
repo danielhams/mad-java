@@ -24,6 +24,7 @@ import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.DynamicMetadata;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.format.SampleBits;
 import uk.co.modularaudio.util.audio.format.UnknownDataRateException;
@@ -213,23 +214,33 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 	}
 
 	@Override
-	public AudioFileHandleAtom openForWrite( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
+	public AudioFileHandleAtom openForWrite( final String absPath ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		throw new DatastoreException("NI");
 	}
 
 	@Override
-	public AudioFileHandleAtom openForRead( final String path ) throws DatastoreException, IOException, UnsupportedAudioFileException
+	public AudioFileHandleAtom openForRead( final String absPath ) throws DatastoreException, IOException, UnsupportedAudioFileException
 	{
 		if( log.isDebugEnabled() )
 		{
-			log.debug("Attempting to open \"" + path + "\"");
+			log.debug("Attempting to open \"" + absPath + "\"");
+		}
+
+		String libraryPath = absPath;
+		if( !FileUtilities.isRelativePath( libraryPath ) )
+		{
+			final String userMusicDir = audioFileIORegistryService.getUserMusicDir();
+			if( libraryPath.startsWith( userMusicDir ) )
+			{
+				libraryPath = libraryPath.substring( userMusicDir.length() + 1 );
+			}
 		}
 
 		SWIGTYPE_p_mpg123_handle_struct handle = null;
 		try
 		{
-			handle = openHandle( path );
+			handle = openHandle( absPath );
 
 			// Get the metadata needed for the atom
 			final long sampleRate = libmpg123.GetFormatSampleRate( handle );
@@ -241,7 +252,7 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 					SampleBits.SAMPLE_FLOAT,
 					channels,
 					numFrames,
-					path );
+					libraryPath );
 
 			final LibMpg123Atom atom = new LibMpg123Atom( this, AudioFileDirection.DECODE, sm,
 					handle );

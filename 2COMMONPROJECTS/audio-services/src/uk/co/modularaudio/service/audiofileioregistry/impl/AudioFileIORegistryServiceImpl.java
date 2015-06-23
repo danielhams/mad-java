@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.audiofileioregistry.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileDirection;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService.AudioFileFormat;
 import uk.co.modularaudio.service.audiofileioregistry.AudioFileIORegistryService;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
+import uk.co.modularaudio.util.atomicio.FileUtilities;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -47,11 +50,12 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 {
 	private static Log log = LogFactory.getLog( AudioFileIORegistryServiceImpl.class.getName() );
 
+	private UserPreferencesService userPreferencesService;
+
 	private final Map<AudioFileFormat, AudioFileIOService> formatToEncodingServiceMap =
 			new HashMap<AudioFileFormat, AudioFileIOService>();
 	private final Map<AudioFileFormat, AudioFileIOService> formatToDecodingServiceMap =
 			new HashMap<AudioFileFormat, AudioFileIOService>();
-
 
 	private class AudioFileIOServiceComparator implements Comparator<AudioFileIOService>
 	{
@@ -247,6 +251,10 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( userPreferencesService == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check configuration" );
+		}
 	}
 
 	@Override
@@ -262,14 +270,32 @@ public class AudioFileIORegistryServiceImpl implements ComponentWithLifecycle, A
 		AudioFileIOService fis;
 		try
 		{
-			format = sniffFileFormatOfFile( path );
+			String audioFilePath = path;
+			if( FileUtilities.isRelativePath( audioFilePath ) )
+			{
+				final String userMusicDir = userPreferencesService.getUserMusicDir();
+				audioFilePath = userMusicDir + File.separatorChar + path;
+			}
+
+			format = sniffFileFormatOfFile( audioFilePath );
 			fis = getAudioFileIOServiceForFormatAndDirection( format, AudioFileDirection.DECODE );
+
+			return fis.openForRead( audioFilePath );
 		}
 		catch( final RecordNotFoundException e )
 		{
 			throw new IOException( e );
 		}
+	}
 
-		return fis.openForRead( path );
+	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
+	{
+		this.userPreferencesService = userPreferencesService;
+	}
+
+	@Override
+	public String getUserMusicDir()
+	{
+		return userPreferencesService.getUserMusicDir();
 	}
 }

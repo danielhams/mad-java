@@ -34,7 +34,6 @@ import org.hibernate.Transaction;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
@@ -48,8 +47,7 @@ import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
+import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -69,7 +67,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	private ConfigurationService configurationService;
 	private HibernateSessionController hibernateSessionController;
 	private SampleCachingController sampleCachingController;
-	private UserPreferencesController userPreferencesController;
+	private UserPreferencesService userPreferencesService;
 
 	// Exposed data and services
 	private String wavetablesCachingRoot;
@@ -85,11 +83,11 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		if( configurationService == null ||
 				hibernateSessionController == null ||
 				sampleCachingController == null ||
-				userPreferencesController == null ||
 				blockResamplerService == null ||
 				sampleCachingService == null ||
 				audioAnalysisService == null ||
-				jobExecutorService == null )
+				jobExecutorService == null ||
+				userPreferencesService == null )
 		{
 			throw new ComponentConfigurationException( "Controller missing dependencies. Check configuration" );
 		}
@@ -208,17 +206,7 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 	public String getSoundfileMusicRoot()
 	{
 		// Always return latest version
-		try
-		{
-			final UserPreferencesMVCController upc = userPreferencesController.getUserPreferencesMVCController();
-			final UserPreferencesMVCModel upm = upc.getModel();
-			return upm.getUserMusicDirModel().getValue();
-		}
-		catch( final DatastoreException de )
-		{
-			log.error("Failed to obtain soundfile music root from user preferences. Returning current dir (nothing)");
-			return "";
-		}
+		return userPreferencesService.getUserMusicDir();
 	}
 
 	@Override
@@ -354,8 +342,8 @@ public class AdvancedComponentsFrontControllerImpl implements ComponentWithLifec
 		this.audioAnalysisService = audioAnalysisService;
 	}
 
-	public void setUserPreferencesController( final UserPreferencesController userPreferencesController )
+	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
 	{
-		this.userPreferencesController = userPreferencesController;
+		this.userPreferencesService = userPreferencesService;
 	}
 }
