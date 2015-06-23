@@ -161,7 +161,7 @@ public class ProfilingWindow extends JFrame
 		ParsedJobData shortestJob = null;
 
 		final Set<Integer> uniqueThreadSet = new HashSet<Integer>();
-		long cumulativeJobTimes = 0;
+		long dspJobDuration = 0;
 		for( final RenderingJob rj : jobToProfileResultMap.keySet() )
 		{
 			final JobProfileResult jr = jobToProfileResultMap.get( rj );
@@ -169,7 +169,7 @@ public class ProfilingWindow extends JFrame
 			final long jobEndTimestamp = jr.getEndTimestamp();
 			final long jobOffsetFromStart = jobStartTimestamp - clockCallbackStart;
 			final long jobLength = jobEndTimestamp - jobStartTimestamp;
-			cumulativeJobTimes += jobLength;
+			dspJobDuration += jobLength;
 			final int jobThreadNum = jr.getJobThreadExecutor();
 			final String jobName = rj.toString();
 			final ParsedJobData pjd = new ParsedJobData( jobOffsetFromStart, jobLength, jobThreadNum, jobName );
@@ -187,10 +187,11 @@ public class ProfilingWindow extends JFrame
 
 		final int numUniqueThreads = uniqueThreadSet.size();
 
-		final long overheadDuration = (totalDuration * numRenderingThreads) - cumulativeJobTimes;
+		final long overheadDuration = (totalDuration * numRenderingThreads) - dspJobDuration;
 
 		pp.setData( totalDuration,
 				loopDuration,
+				dspJobDuration,
 				overheadDuration,
 				numRenderingThreads,
 				numUniqueThreads );
