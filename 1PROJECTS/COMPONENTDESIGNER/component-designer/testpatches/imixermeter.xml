@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 1" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 1" rackComponentChannelInstanceName="Lane 1 Input Wave Right"/>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 1" definitionId="imixer3">

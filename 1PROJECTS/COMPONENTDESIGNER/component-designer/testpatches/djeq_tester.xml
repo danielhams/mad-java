@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackComponent name="DJ EQ 1" definitionId="djeq">
         <rackPosition column="0" row="0"/>
         <rackControl name="HighLane" value="0.0:false"/>
-        <rackControl name="MidLane" value="0.0:true"/>
-        <rackControl name="LowLane" value="0.0:true"/>
+        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
         <rackControl name="Fader" value="0.0"/>
     </rackComponent>
 </rack>

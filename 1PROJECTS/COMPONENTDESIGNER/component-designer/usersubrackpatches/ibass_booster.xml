@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Bass Boost Rack" cols="4" rows="20">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Bass Boost Rack" cols="4" rows="20">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Low" rackComponentChannelInstanceName="Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Right"/>

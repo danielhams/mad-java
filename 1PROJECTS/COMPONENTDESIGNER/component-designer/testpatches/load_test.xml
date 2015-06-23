@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="39">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="39">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="DJ EQ 5" definitionId="djeq">
@@ -11,7 +11,7 @@
     </rackComponent>
     <rackComponent name="Mixer (Eight Stereo Lanes, Interpolated) 14" definitionId="imixer8">
         <rackPosition column="0" row="16"/>
-        <rackControl name="Master Lane" value="-10.5:0.0"/>
+        <rackControl name="Master Lane" value="-12.625:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
@@ -23,7 +23,7 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 7" definitionId="imixer3">
         <rackPosition column="0" row="5"/>
-        <rackControl name="Master Lane" value="5.0:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
@@ -32,7 +32,7 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="Gain" value="-6.361006"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/Users/dan/Music/iTunes/iTunes Media/Podcasts/Let's Go Techno by Eric Sneo/Let's Go Techno 107 _ Eric Sneo.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 107 Bootshaus master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -50,28 +50,28 @@
         <rackControl name="Display" value=""/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 10" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 10" definitionId="sub_rack">
         <rackPosition column="0" row="12"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 11" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 11" definitionId="sub_rack">
         <rackPosition column="0" row="13"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 12" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 12" definitionId="sub_rack">
         <rackPosition column="0" row="14"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
         <rackPosition column="0" row="15"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 3" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 3" definitionId="sub_rack">
         <rackPosition column="0" row="4"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 7" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 7" definitionId="sub_rack">
         <rackPosition column="0" row="9"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 8" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 8" definitionId="sub_rack">
         <rackPosition column="0" row="10"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/Users/dan/Development/Runnables/./usersubrackpatches/bass_booster.xml" name="Sub Rack 9" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 9" definitionId="sub_rack">
         <rackPosition column="0" row="11"/>
     </rackComponent>
     <rackComponent name="Wave Roller 5" definitionId="wave_roller">

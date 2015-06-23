@@ -1,42 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Bass Boost Rack" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="1" row="5"/>
-        <rack name="Bass Boost Rack" cols="4" rows="20">
-            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Left"/>
-            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Low" rackComponentChannelInstanceName="Input Wave Left"/>
-            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="High" rackComponentChannelInstanceName="Input Wave Right"/>
-            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Low" rackComponentChannelInstanceName="Input Wave Right"/>
-            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Wet Mixdown" rackComponentChannelInstanceName="Output Wave Left"/>
-            <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Wet Mixdown" rackComponentChannelInstanceName="Output Wave Right"/>
-            <rackComponent name="High" definitionId="frequency_filter">
-                <rackPosition column="0" row="0"/>
-                <rackControl name="Filter Type" value="High Pass"/>
-                <rackControl name="Toggle 24 dB" value="true"/>
-                <rackControl name="Knee" value="96.0"/>
-                <rackControl name="Bandwidth" value="500.0"/>
-            </rackComponent>
-            <rackComponent name="Low" definitionId="frequency_filter">
-                <rackPosition column="2" row="0"/>
-                <rackControl name="Filter Type" value="Low Pass"/>
-                <rackControl name="Toggle 24 dB" value="true"/>
-                <rackControl name="Knee" value="96.0"/>
-                <rackControl name="Bandwidth" value="500.0"/>
-            </rackComponent>
-            <rackComponent name="Wet Mixdown" definitionId="imixer3">
-                <rackPosition column="1" row="2"/>
-                <rackControl name="Master Lane" value="0.0:0.0"/>
-                <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-                <rackControl name="Mixer Lane 1" value="5.0:0.0:  "/>
-                <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
-            </rackComponent>
-            <rackLink producerRackComponentName="High" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Left"/>
-            <rackLink producerRackComponentName="High" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 1 Input Wave Right"/>
-            <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Left" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Left"/>
-            <rackLink producerRackComponentName="Low" producerChannelName="Output Wave Right" consumerRackComponentName="Wet Mixdown" consumerChannelName="Lane 2 Input Wave Right"/>
-        </rack>
     </rackComponent>
     <rackComponent name="Cross Fader 8" definitionId="cross_fader">
         <rackPosition column="1" row="4"/>

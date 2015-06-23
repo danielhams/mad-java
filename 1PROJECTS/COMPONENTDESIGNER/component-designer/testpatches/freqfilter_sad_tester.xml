@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Frequency Filter 4" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Frequency Filter 4" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Frequency Filter 4" definitionId="frequency_filter">
         <rackPosition column="2" row="1"/>
-        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Filter Type" value="Band Pass"/>
         <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="47.80"/>
-        <rackControl name="Bandwidth" value="440.00"/>
+        <rackControl name="Knee" value="1058.1812"/>
+        <rackControl name="Bandwidth" value="416.76254"/>
     </rackComponent>
     <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-6.7802324"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 93 master.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 93 master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="SpeedSlider" value="100.0"/>
-        <rackControl name="Rewind" value="false"/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="Rewind" value=""/>
         <rackControl name="PlayStop" value="true"/>
-        <rackControl name="FastForward" value="false"/>
+        <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Roll 2" definitionId="spectral_roll">
         <rackPosition column="0" row="4"/>
@@ -31,7 +32,7 @@
     <rackComponent name="Spectral Roll 3" definitionId="spectral_roll">
         <rackPosition column="2" row="4"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Amp Scale" value="512"/>
+        <rackControl name="Amp Scale" value="4096"/>
         <rackControl name="Freq Scale" value="Log"/>
         <rackControl name="Resolution" value="Log"/>
     </rackComponent>

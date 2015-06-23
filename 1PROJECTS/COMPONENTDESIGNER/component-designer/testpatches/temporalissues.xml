@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Empty Application Rack" cols="4" rows="39">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="39">
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
         <rackPosition column="0" row="1"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="434"/>
+        <rackControl name="Slider" value="-9"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="Oscillator 2" definitionId="oscillator">
@@ -19,6 +19,7 @@
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 3" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Oscillator 2" producerChannelName="Output Wave" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>

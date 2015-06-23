@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Cross Fader 1" rackComponentChannelInstanceName="Input Channel 1 Left"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 2" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">

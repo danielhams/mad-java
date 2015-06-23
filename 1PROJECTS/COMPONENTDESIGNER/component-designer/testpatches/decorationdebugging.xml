@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/pac/0_0_3" name="Empty Application Rack" cols="8" rows="39">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="8" rows="39">
     <rackComponent name="Cross Fader 2" definitionId="cross_fader">
-        <rackPosition column="6" row="0"/>
+        <rackPosition column="2" row="0"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="Slider" value="0"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="Cross Fader 3" definitionId="cross_fader">
-        <rackPosition column="4" row="2"/>
+        <rackPosition column="0" row="2"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="Slider" value="0"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="DC Trap 1" definitionId="dc_trap">
-        <rackPosition column="5" row="1"/>
+        <rackPosition column="0" row="1"/>
     </rackComponent>
     <rackComponent name="DC Trap 5" definitionId="dc_trap">
-        <rackPosition column="5" row="0"/>
+        <rackPosition column="0" row="0"/>
     </rackComponent>
     <rackComponent name="Envelope 4" definitionId="envelope">
-        <rackPosition column="6" row="2"/>
+        <rackPosition column="2" row="1"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Attack From Zero" value="0"/>
         <rackControl name="Attack Wave Choice" value="LINEAR"/>
@@ -34,7 +34,7 @@
         <rackControl name="Scale Slider" value="100.0"/>
     </rackComponent>
     <rackComponent name="Feedback Delay 6" definitionId="feedback_delay">
-        <rackPosition column="4" row="4"/>
+        <rackPosition column="0" row="3"/>
         <rackControl name="Delay" value="100"/>
         <rackControl name="Feedback" value="500"/>
     </rackComponent>

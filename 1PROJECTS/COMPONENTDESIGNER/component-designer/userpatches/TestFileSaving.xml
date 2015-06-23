@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Bass Boost Rack" rackComponentChannelInstanceName="Input Channel 3"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Bass Boost Rack" rackComponentChannelInstanceName="Input Channel 4"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="bass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
     </rackComponent>
     <rackComponent name="DJ EQ 6" definitionId="djeq">
@@ -25,7 +25,7 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="Gain" value="-4.766859"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

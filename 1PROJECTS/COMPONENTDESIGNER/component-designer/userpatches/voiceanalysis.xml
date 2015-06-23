@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Frequency Filter 5" rackComponentChannelInstanceName="Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Frequency Filter 5" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Channel 1"/>
-    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Audio Analyser 7" definitionId="audio_analyser">
         <rackPosition column="0" row="6"/>
         <rackControl name="Display" value=""/>
@@ -13,15 +13,14 @@
         <rackControl name="Filter Type" value="High Pass"/>
         <rackControl name="Toggle 24 dB" value="true"/>
         <rackControl name="Knee" value="54.97"/>
-        <rackControl name="Bandwidth" value="440.00"/>
+        <rackControl name="Bandwidth" value="440.0"/>
     </rackComponent>
-    <rackComponent name="Mixer 4" definitionId="mixer3">
+    <rackComponent name="Mixer 4" definitionId="imixer3">
         <rackPosition column="0" row="2"/>
-        <rackControl name="MasterMixer" value="824:50"/>
-        <rackControl name="LaneMixer0" value="844:50:  "/>
-        <rackControl name="LaneMixer1" value="0:50:  "/>
-        <rackControl name="LaneMixer2" value="0:50:  "/>
-        <rackComponentParameterValue parameterName="NumLanes" value="3"/>
+        <rackControl name="Master Lane" value="-20.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Phase Vocoder Signal Cleaner 6" definitionId="pvoc_signal_cleaner">
         <rackPosition column="2" row="0"/>
@@ -36,6 +35,7 @@
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Roll 3" definitionId="spectral_roll">
         <rackPosition column="2" row="6"/>
@@ -52,9 +52,9 @@
         <rackControl name="Right Scale" value=""/>
     </rackComponent>
     <rackLink producerRackComponentName="Frequency Filter 5" producerChannelName="Output Wave Right" consumerRackComponentName="Phase Vocoder Signal Cleaner 6" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 1" consumerRackComponentName="Audio Analyser 7" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller 7" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 2" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 2" consumerRackComponentName="Spectral Roll 3" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Phase Vocoder Signal Cleaner 6" producerChannelName="Output Wave" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Channel 1"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Audio Analyser 7" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 3" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 7" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Phase Vocoder Signal Cleaner 6" producerChannelName="Output Wave" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Input Wave Left"/>
 </rack>

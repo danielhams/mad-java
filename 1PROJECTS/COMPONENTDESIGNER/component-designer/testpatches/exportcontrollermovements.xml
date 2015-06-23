@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 1" rackComponentChannelInstanceName="Input Controller Note"/>
     <rackComponent name="ControlToAudio" definitionId="audio_cv_converter">
         <rackPosition column="0" row="1"/>

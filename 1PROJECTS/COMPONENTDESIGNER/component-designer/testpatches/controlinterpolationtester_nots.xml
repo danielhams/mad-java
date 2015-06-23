@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Frequency Filter 10" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Frequency Filter 10" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="AmpRack" definitionId="sub_rack">
@@ -63,32 +63,32 @@
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Model Choice" value="Cross Fader"/>
-        <rackControl name="ValueChase" value="10.0"/>
-        <rackControl name="Value" value="0.0"/>
+        <rackControl name="Model Choice" value="DJ Deck Fader"/>
+        <rackControl name="ValueChase" value="7.0"/>
+        <rackControl name="Value" value="-Infinity"/>
         <rackControl name="Perf Table" value=""/>
     </rackComponent>
     <rackComponent name="Frequency Filter 10" definitionId="frequency_filter">
         <rackPosition column="0" row="12"/>
         <rackControl name="Filter Type" value="None"/>
         <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="80.00"/>
-        <rackControl name="Bandwidth" value="440.00"/>
+        <rackControl name="Knee" value="80.0"/>
+        <rackControl name="Bandwidth" value="440.0"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 16" definitionId="imixer3">
         <rackPosition column="0" row="8"/>
-        <rackControl name="Master Lane" value="632:50"/>
-        <rackControl name="Mixer Lane 0" value="1000:50:M "/>
-        <rackControl name="Mixer Lane 1" value="1000:50:M "/>
-        <rackControl name="Mixer Lane 2" value="1000:50:MS"/>
+        <rackControl name="Master Lane" value="-11.375:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:MS"/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:M "/>
     </rackComponent>
     <rackComponent name="NoTsHH" definitionId="oscilloscope">
         <rackPosition column="2" row="4"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 11" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
@@ -97,38 +97,39 @@
         <rackControl name="Amp Scale" value="Log-Log"/>
         <rackControl name="Running Average" value="Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="TsHH" definitionId="oscilloscope">
         <rackPosition column="2" row="6"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackComponent name="TsSd" definitionId="oscilloscope">
         <rackPosition column="2" row="8"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackComponent name="nots HH vs ts SD" definitionId="oscilloscope">
         <rackPosition column="0" row="4"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackComponent name="ts HH vs ts SD" definitionId="oscilloscope">
         <rackPosition column="0" row="6"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackLink producerRackComponentName="AmpRack" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 16" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="AmpRack" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 16" consumerChannelName="Lane 1 Input Wave Right"/>

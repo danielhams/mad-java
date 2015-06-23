@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_1" name="Empty Application Rack" cols="4" rows="39">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="39">
     <rackComponent name="Oscilloscope 3" definitionId="oscilloscope">
         <rackPosition column="2" row="1"/>
         <rackControl name="CaptureTime" value="200.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="TriggerType" value="None"/>
-        <rackControl name="Repetitions" value="Continous"/>
-        <rackControl name="Recapture" value="false"/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="Recapture" value=""/>
     </rackComponent>
     <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
         <rackPosition column="0" row="2"/>

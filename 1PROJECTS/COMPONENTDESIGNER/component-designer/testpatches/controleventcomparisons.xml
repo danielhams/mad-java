@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="Empty Application Rack" cols="4" rows="19">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Lane 3 Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Lane 3 Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 7" rackComponentChannelInstanceName="Output Wave Left"/>
@@ -19,7 +19,7 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="Model Choice" value="Left Right"/>
         <rackControl name="ValueChase" value="8.3"/>
-        <rackControl name="Value" value="-0.628"/>
+        <rackControl name="Value" value="0.029999971"/>
         <rackControl name="Perf Table" value=""/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 2" definitionId="linear_cva">

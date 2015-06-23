@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_2" name="MixxxInvestigation" cols="4" rows="20">
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="MixxxInvestigation" cols="4" rows="20">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ 6" rackComponentChannelInstanceName="Input Wave Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ 6" rackComponentChannelInstanceName="Input Wave Right"/>
-    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Channel 1"/>
-    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="DJ EQ 6" definitionId="djeq">
         <rackPosition column="0" row="0"/>
         <rackControl name="HighLane" value="0.0:false"/>
@@ -11,12 +11,12 @@
         <rackControl name="LowLane" value="0.0:false"/>
         <rackControl name="Fader" value="0.0"/>
     </rackComponent>
-    <rackComponent name="Mixer 4" definitionId="mixer3">
+    <rackComponent name="Mixer 4" definitionId="imixer3">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Master Lane" value="824:50"/>
-        <rackControl name="Mixer Lane 0" value="824:50:  "/>
-        <rackControl name="Mixer Lane 1" value="0:50:  "/>
-        <rackControl name="Mixer Lane 2" value="0:50:  "/>
+        <rackControl name="Master Lane" value="-19.875:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
@@ -25,6 +25,7 @@
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Roll 2" definitionId="spectral_roll">
         <rackPosition column="2" row="2"/>
@@ -40,9 +41,9 @@
         <rackControl name="Display" value=""/>
         <rackControl name="Right Scale" value=""/>
     </rackComponent>
-    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Channel 1"/>
-    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Channel 2"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 1" consumerRackComponentName="Spectral Roll 2" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Channel 1" consumerRackComponentName="Wave Roller 5" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer 4" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 5" consumerChannelName="Input Wave 0"/>
 </rack>
