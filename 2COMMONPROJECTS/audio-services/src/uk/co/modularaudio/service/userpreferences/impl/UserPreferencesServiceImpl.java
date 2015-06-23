@@ -163,7 +163,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		userPatchesDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_PATCHES,
 				absPathString + File.separatorChar + "userpatches" );
 		userSubRacksDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_SUBRACKS,
-				absPathString + File.separatorChar + "usersubpatches" );
+				absPathString + File.separatorChar + "usersubrackpatches" );
 		userMusicDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_MUSICDIR,
 				absPathString + File.separatorChar + "music" );
 	}
