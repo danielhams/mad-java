@@ -125,7 +125,11 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 		}
 		// Make sure it doesn't fall in the HORIZON_INSET region
 		final int x = localPoint.x;
-		return ( x >= PaintedComponentDefines.DRAG_BAR_WIDTH && x < this.getWidth() - PaintedComponentDefines.DRAG_BAR_WIDTH );
+		final int width = this.getWidth();
+		final boolean outsideOfLeft = (x < PaintedComponentDefines.DRAG_BAR_WIDTH );
+		final boolean outsideOfRight = (x > (width - PaintedComponentDefines.DRAG_BAR_WIDTH));
+
+		return (!outsideOfLeft && !outsideOfRight);
 	}
 
 
@@ -151,10 +155,9 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 	@Override
 	public GuiChannelPlug getPlugFromPosition( final Point localPoint )
 	{
-//		log.debug("Asked for plug at position " + localPoint );
-		localPoint.x -= renderedRectangle.x;
-		localPoint.y -= renderedRectangle.y;
-		return realComponentBack.getPlugFromPosition( localPoint );
+		// Have to adjusted the point to get the correct plug positions.
+		final Point adjustedPoint = new Point( localPoint.x - renderedRectangle.x, localPoint.y - renderedRectangle.y );
+		return realComponentBack.getPlugFromPosition( adjustedPoint );
 	}
 
 
