@@ -91,18 +91,12 @@ public class TestSavingAFile extends AbstractGraphTest
 
 		rackService.dumpRack( emptyRack );
 
-//		Rack subRack = rackService.createNewRackDataModel( "SubRack", 20, 20 );
-//		SubRack realSubRack = new SubRack( false,  "", subRack.getName() );
-//		rackService.addNamedContents( "SubRack", realSubRack, realSubRack.getInstance() );
-
-		rackMarshallingService.saveRackToFile( emptyRack,  "test_save_file_output.xml" );
-		/*
-		RackDataModel rackDataModel = rackMarshallingService.loadRackFromFile( "../ComponentDesignerGui/samplefiles/_racktests.xml" );
-		rackService.dumpRack( rackDataModel );
-		*/
+		rackMarshallingService.saveBaseRackToFile( emptyRack,  "test_save_file_output.xml" );
 
 		// Create a rendering plan from it
 		final RenderingPlan testRenderingPlan = renderingPlanService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, this );
 		renderingPlanService.dumpRenderingPlan( testRenderingPlan );
+
+		graphService.destroyGraph( rackModelRootGraph, true, true );
 	}
 }

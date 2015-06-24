@@ -95,15 +95,28 @@ public class RackControllerImpl implements ComponentWithLifecycle, ComponentWith
 	}
 
 	@Override
-	public RackDataModel loadRackFromFile(final String filename) throws DatastoreException, IOException
+	public RackDataModel loadBaseRackFromFile(final String filename) throws DatastoreException, IOException
 	{
-		return rackMarshallingService.loadRackFromFile(filename);
+		return rackMarshallingService.loadBaseRackFromFile(filename);
 	}
 
 	@Override
-	public void saveRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
+	public void saveBaseRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
 	{
-		rackMarshallingService.saveRackToFile(dataModel, filename);
+		rackMarshallingService.saveBaseRackToFile(dataModel, filename);
+		rackService.setRackDirty( dataModel, false );
+	}
+
+	@Override
+	public RackDataModel loadSubRackFromFile(final String filename) throws DatastoreException, IOException
+	{
+		return rackMarshallingService.loadSubRackFromFile(filename);
+	}
+
+	@Override
+	public void saveSubRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
+	{
+		rackMarshallingService.saveSubRackToFile(dataModel, filename);
 		rackService.setRackDirty( dataModel, false );
 	}
 

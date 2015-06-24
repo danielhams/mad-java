@@ -29,7 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
-import uk.co.modularaudio.controller.apprendering.AppRenderingController;
 import uk.co.modularaudio.mads.internal.InternalComponentsFactory;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -59,8 +58,6 @@ public class AbstractGraphTest extends TestCase
 	protected RackService rackService;
 	protected RackMarshallingService rackMarshallingService;
 
-	protected AppRenderingController appRenderingController;
-
 	@Override
 	protected void setUp() throws Exception
 	{
@@ -79,7 +76,6 @@ public class AbstractGraphTest extends TestCase
 		renderingPlanService = gac.getBean( RenderingPlanService.class );
 		rackService = gac.getBean( RackService.class );
 		rackMarshallingService = gac.getBean( RackMarshallingService.class );
-		appRenderingController = gac.getBean( AppRenderingController.class );
 	}
 
 	@Override

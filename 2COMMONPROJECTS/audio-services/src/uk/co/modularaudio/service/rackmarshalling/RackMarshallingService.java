@@ -27,6 +27,8 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface RackMarshallingService
 {
-	public void saveRackToFile( RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
-	public RackDataModel loadRackFromFile( String filename ) throws DatastoreException, IOException;
+	public void saveBaseRackToFile( RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
+	public RackDataModel loadBaseRackFromFile( String filename ) throws DatastoreException, IOException;
+	public void saveSubRackToFile( RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
+	public RackDataModel loadSubRackFromFile( String filename ) throws DatastoreException, IOException;
 }

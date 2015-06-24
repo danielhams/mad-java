@@ -98,7 +98,7 @@ public class GenerateReleaseRack
 			rackService.createComponent( rdm, def, emptyParameterValues, def.getName() + " Example" );
 		}
 
-		rackMarshallingService.saveRackToFile( rdm, "/tmp/releaserack.xml" );
+		rackMarshallingService.saveBaseRackToFile( rdm, "/tmp/releaserack.xml" );
 
 		rackService.destroyRackDataModel( rdm );
 	}

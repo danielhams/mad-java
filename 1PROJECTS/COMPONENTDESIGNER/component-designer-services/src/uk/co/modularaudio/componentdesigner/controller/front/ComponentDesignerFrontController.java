@@ -154,15 +154,16 @@ public interface ComponentDesignerFrontController
 	 */
 	String getRackDataModelName();
 	/**
-	 * <p>Load the main rack from a file on the filesystem.</p>
+	 * <p>Load a rack from a file on the filesystem.</p>
 	 * <p>The main rendering component for the rack will be
 	 * updated appropriately to show any components contained in
-	 * this new rack on successfull load.</p>
+	 * this new rack on successful load.</p>
 	 * @param filename filesystem path of the rack to load
 	 * @throws DatastoreException on unrecoverable error during load
 	 * @throws IOException on filesystem/IO error during load
 	 */
 	void loadRackFromFile( String filename ) throws DatastoreException, IOException;
+
 	/**
 	 * <p>Reverts back to the version of the current stored on the filesystem.</p>
 	 * @throws DatastoreException on unrecoverable error during revert
@@ -177,6 +178,7 @@ public interface ComponentDesignerFrontController
 	 * @throws IOException on filesystem/IO error during save
 	 */
 	void saveRack() throws DatastoreException, FileNotFoundException, IOException;
+
 	/**
 	 * <p>Persists the current rack onto the filesystem as an XML file with the
 	 * supplied filesystem filename and rack name.</p>

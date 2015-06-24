@@ -39,4 +39,6 @@ public interface UserPreferencesService
 	public String getUserSubRackPatchesDir();
 
 	public String getUserMusicDir();
+
+	public String getUserPatchesDir();
 }

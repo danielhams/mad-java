@@ -12,7 +12,7 @@
         <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
         <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
         <property name="audioAnalysisService"><ref bean="audioAnalysisService"></ref></property>
-        <property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
 	</bean>
 	<bean id="rackController" class="uk.co.modularaudio.controller.rack.impl.RackControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="rackService"><ref bean="rackService"></ref></property>
@@ -52,7 +52,8 @@
 	</bean>
 	<bean id="rackMarshallingService" class="uk.co.modularaudio.service.rackmarshalling.impl.RackMarshallingServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="rackService"><ref bean="rackService"></ref></property>
-		<property name="componentService"><ref bean="componentService"></ref></property>
+        <property name="componentService"><ref bean="componentService"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
 	</bean>
 	<bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
 	</bean>
@@ -103,7 +104,7 @@
         <property name="guiService"><ref bean="guiService"></ref></property>
         <property name="classificationService"><ref bean="classificationService"></ref></property>
         <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
-        <property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
     </bean>
     <bean id="subRackComponentsUiFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsUiFactory" init-method="init" destroy-method="destroy">
         <property name="componentUiService"><ref bean="componentUiService"></ref></property>
@@ -117,6 +118,7 @@
         <property name="classificationService"><ref bean="classificationService"></ref></property>
     </bean>
     <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
     </bean>
     <bean id="libSndfileAudioFileIOService" class="uk.co.modularaudio.service.libsndfileaudiofileio.LibSndfileAudioFileIOService" init-method="init" destroy-method="destroy">
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
@@ -166,5 +168,6 @@
         <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
         <property name="hashedStorageService"><ref bean="hashedStorageService"></ref></property>
         <property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
+        <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
     </bean>
 </beans>

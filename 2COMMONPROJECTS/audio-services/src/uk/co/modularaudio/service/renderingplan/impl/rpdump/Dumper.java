@@ -51,9 +51,14 @@ public class Dumper
 		addNewTask.addNewTask( initialTask );
 		try
 		{
+			// Get the initial task to run and add the first jobs to
+			// our job queue.
+			Runnable job = jobQueue.take();
+			job.run();
+
 			while( numDone < numJobsInOnePass )
 			{
-				final Runnable job = jobQueue.take();
+				job = jobQueue.take();
 				job.run();
 				numDone++;
 			}
@@ -62,10 +67,10 @@ public class Dumper
 		{
 			e.printStackTrace();
 		}
-		// Now run the final sync task for completeness
-		for( final Runnable job : jobQueue )
+		// Now run any remaining tasks for completeness
+		for( final Runnable remainingJob : jobQueue )
 		{
-			job.run();
+			remainingJob.run();
 		}
 	}
 }

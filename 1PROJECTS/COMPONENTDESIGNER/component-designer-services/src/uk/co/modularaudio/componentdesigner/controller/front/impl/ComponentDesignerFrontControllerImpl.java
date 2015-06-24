@@ -331,7 +331,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 		absolutePathToFilename = filename;
 
-		final RackDataModel newRack = rackController.loadRackFromFile(filename);
+		final RackDataModel newRack = rackController.loadBaseRackFromFile(filename);
 		if( newRack != null )
 		{
 			final RackDataModel oldModel = userVisibleRack;
@@ -388,7 +388,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	{
 		absolutePathToFilename = filename;
 		rackService.setRackName( userVisibleRack, rackName );
-		rackController.saveRackToFile( userVisibleRack, filename );
+		rackController.saveBaseRackToFile( userVisibleRack, filename );
 	}
 
 	@Override
@@ -406,7 +406,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		}
 		else
 		{
-			rackController.saveRackToFile( userVisibleRack, absolutePathToFilename );
+			rackController.saveBaseRackToFile( userVisibleRack, absolutePathToFilename );
 			rackService.setRackDirty( userVisibleRack, false );
 		}
 	}

@@ -64,15 +64,27 @@ public interface RackController
 
 	/**
 	 * <p>Load a rack from a filesystem file.</p>
-	 * @see RackMarshallingService#loadRackFromFile(String)
+	 * @see RackMarshallingService#loadBaseRackFromFile(String)
 	 */
-	RackDataModel loadRackFromFile(String filename) throws DatastoreException, IOException;
+	RackDataModel loadBaseRackFromFile(String filename) throws DatastoreException, IOException;
+
+	/**
+	 * <p>Load a sub rack from a filesystem file.</p>
+	 * @see RackMarshallingService#loadSubRackFromFile(String)
+	 */
+	RackDataModel loadSubRackFromFile(String filename) throws DatastoreException, IOException;
 
 	/**
 	 * <p>Save a rack to the filesystem file.</p>
 	 * @see RackMarshallingService#saveRackToFile(RackDataModel, String)
 	 */
-	void saveRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
+	void saveBaseRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
+
+	/**
+	 * <p>Save a sub rack to the filesystem file.</p>
+	 * @see RackMarshallingService#saveRackToFile(RackDataModel, String)
+	 */
+	void saveSubRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
 
 	/**
 	 * <p>Perform any clean up needed on a rack.</p>

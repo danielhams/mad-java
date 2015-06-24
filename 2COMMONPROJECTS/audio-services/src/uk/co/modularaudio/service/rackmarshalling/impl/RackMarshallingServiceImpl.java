@@ -91,7 +91,32 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	private Marshaller marshaller;
 
 	@Override
-	public RackDataModel loadRackFromFile( final String filename) throws DatastoreException, IOException
+	public RackDataModel loadBaseRackFromFile( final String filename ) throws DatastoreException, IOException
+	{
+		String fullFilename = filename;
+		// If it's relative, tack on the front the user sub racks dir
+		if( FileUtilities.isRelativePath( fullFilename ) )
+		{
+			final String userPatchesDir = userPreferencesService.getUserPatchesDir();
+			fullFilename = userPatchesDir + File.separatorChar + fullFilename;
+		}
+		return loadRackFromAbsFile( fullFilename );
+	}
+
+	@Override
+	public RackDataModel loadSubRackFromFile( final String filename ) throws DatastoreException, IOException
+	{
+		String fullFilename = filename;
+		// If it's relative, tack on the front the user sub racks dir
+		if( FileUtilities.isRelativePath( fullFilename ) )
+		{
+			final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
+			fullFilename = userSubRackPatchesDir + File.separatorChar + fullFilename;
+		}
+		return loadRackFromAbsFile( fullFilename );
+	}
+
+	private RackDataModel loadRackFromAbsFile( final String filename ) throws DatastoreException, IOException
 	{
 		if( log.isDebugEnabled() )
 		{
@@ -99,18 +124,11 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 		}
 		try
 		{
-			String fullFilename = filename;
-			// If it's relative, tack on the front the user sub racks dir
-			if( FileUtilities.isRelativePath( fullFilename ) )
-			{
-				final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
-				fullFilename = userSubRackPatchesDir + File.separatorChar + fullFilename;
-			}
 			@SuppressWarnings("unchecked")
 			final
-			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( fullFilename ) );
+			JAXBElement<RackXmlType> jbRackElement = (JAXBElement<RackXmlType>)unmarshaller.unmarshal( new File( filename ) );
 			final RackXmlType jbRackXml = jbRackElement.getValue();
-			final RackDataModel retVal = loadRackFromStructure( fullFilename, jbRackXml );
+			final RackDataModel retVal = loadRackFromStructure( filename, jbRackXml );
 			retVal.setDirty( false );
 			return retVal;
 		}
@@ -184,7 +202,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				{
 					// Load the rack structure from the library path
 					final String libraryPath = jbSubRackType.getLibraryPath();
-					final RackDataModel subRackDataModel = loadRackFromFile( libraryPath );
+					final RackDataModel subRackDataModel = loadSubRackFromFile( libraryPath );
 
 					subRackUiInstance.setSubRackDataModel( subRackDataModel, true );
 				}
@@ -322,7 +340,32 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	}
 
 	@Override
-	public void saveRackToFile(final RackDataModel dataModel, final String filename) throws DatastoreException, IOException
+	public void saveBaseRackToFile( final RackDataModel dataModel, final String filename ) throws DatastoreException, IOException
+	{
+		String fullFilename = filename;
+		// If it's relative, tack on the front the user sub racks dir for the save filename
+		if( FileUtilities.isRelativePath( fullFilename ) )
+		{
+			final String userPatchesDir = userPreferencesService.getUserPatchesDir();
+			fullFilename = userPatchesDir + File.separatorChar + fullFilename;
+		}
+		saveRackToAbsFile( dataModel, fullFilename );
+	}
+
+	@Override
+	public void saveSubRackToFile( final RackDataModel dataModel, final String filename ) throws DatastoreException, IOException
+	{
+		String fullFilename = filename;
+		// If it's relative, tack on the front the user sub racks dir for the save filename
+		if( FileUtilities.isRelativePath( fullFilename ) )
+		{
+			final String userSubRackPatchesDir = userPreferencesService.getUserSubRackPatchesDir();
+			fullFilename = userSubRackPatchesDir + File.separatorChar + fullFilename;
+		}
+		saveRackToAbsFile( dataModel, fullFilename );
+	}
+
+	private void saveRackToAbsFile( final RackDataModel dataModel, final String filename ) throws DatastoreException, IOException
 	{
 		dataModel.setPath( filename );
 

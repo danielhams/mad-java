@@ -20,31 +20,22 @@
 
 package test.uk.co.modularaudio.service.rackmarshalling;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import test.uk.co.modularaudio.service.rackmarshalling.abstractunittest.AbstractGraphTest;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 
 public class TestLoadingAFile extends AbstractGraphTest
 {
-	private static Log log = LogFactory.getLog( TestLoadingAFile.class.getName() );
-	
+//	private static Log log = LogFactory.getLog( TestLoadingAFile.class.getName() );
+
 	public void testLoadAFile()
 		throws Exception
 	{
-		log.debug("Started.");
-		
-		String filename = "test_save_file_output.xml";
-		
-		RackDataModel rdm = rackMarshallingService.loadRackFromFile( filename );
-//		MadGraphInstance<?, ?> rackGraph = rackService.getRackGraphInstance( rdm );
+		final String filename = "test_save_file_output.xml";
+
+		final RackDataModel rdm = rackMarshallingService.loadBaseRackFromFile( filename );
+
 		rackService.getRackGraphInstance( rdm );
 		rackService.destroyRackDataModel( rdm );
 
-		/*
-		RackDataModel rackDataModel = rackMarshallingService.loadRackFromFile( "../ComponentDesignerGui/samplefiles/_racktests.xml" );
-		rackService.dumpRack( rackDataModel );
-		*/
 	}
 }

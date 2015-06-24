@@ -548,4 +548,10 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	{
 		return userMusicDir;
 	}
+
+	@Override
+	public String getUserPatchesDir()
+	{
+		return userPatchesDir;
+	}
 }

@@ -50,7 +50,7 @@ public class LoadNewSubrackRunnable implements Runnable
 	{
 		try
 		{
-			final RackDataModel newRackDataModel = rackMarshallingService.loadRackFromFile( fileToLoad );
+			final RackDataModel newRackDataModel = rackMarshallingService.loadSubRackFromFile( fileToLoad );
 			completionListener.notifyLoadCompleted( newRackDataModel );
 		}
 		catch ( final Exception e )

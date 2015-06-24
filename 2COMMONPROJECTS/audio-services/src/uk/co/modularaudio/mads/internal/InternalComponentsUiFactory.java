@@ -29,6 +29,10 @@ import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMa
 import uk.co.modularaudio.mads.internal.audiosystemtester.ui.AudioSystemTesterMadUiDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.ui.BlockingWriteRingMadUiDefinition;
+import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
+import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
+import uk.co.modularaudio.mads.internal.fade.ui.FadeInMadUiDefinition;
+import uk.co.modularaudio.mads.internal.fade.ui.FadeOutMadUiDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiDefinition;
@@ -54,6 +58,8 @@ public class InternalComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( FeedbackLinkProducerMadDefinition.class, FeedbackLinkProducerMadUiDefinition.class );
 		classToUiDefinition.put( AudioSystemTesterMadDefinition.class, AudioSystemTesterMadUiDefinition.class );
 		classToUiDefinition.put( BlockingWriteRingMadDefinition.class, BlockingWriteRingMadUiDefinition.class );
+		classToUiDefinition.put( FadeInMadDefinition.class, FadeInMadUiDefinition.class );
+		classToUiDefinition.put( FadeOutMadDefinition.class, FadeOutMadUiDefinition.class );
 	}
 
 	public void setInternalComponentsFactory( final InternalComponentsFactory internalComponentsFactory )
@@ -93,7 +99,7 @@ public class InternalComponentsUiFactory extends AbstractMadComponentUiFactory
 				componentDefinitionToUiDefinitionMap.put( aud, instanceAsUiDefinition );
 			}
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught setting up UI definitions: " + e.toString();
 			throw new DatastoreException( msg, e );

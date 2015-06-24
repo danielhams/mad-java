@@ -217,7 +217,7 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 					log.debug("Attempting to save patch to file " + f.getAbsolutePath() + " with name " + cdSaveFileNameAccessory.getFileName() );
 				}
 				rackService.setRackName( subRackDataModel, cdSaveFileNameAccessory.getFileName() );
-				rackMarshallingService.saveRackToFile( subRackDataModel, f.getAbsolutePath() );
+				rackMarshallingService.saveSubRackToFile( subRackDataModel, f.getAbsolutePath() );
 				// Only set dirty to false after successful save
 				rackService.setRackDirty( subRackDataModel, false );
 			}

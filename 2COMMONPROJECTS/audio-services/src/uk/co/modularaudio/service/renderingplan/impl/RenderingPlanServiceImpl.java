@@ -241,15 +241,15 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		// Places we keep track of all, initial and final jobs
 		// As we want to insert a FAN job at the front, and a SYNC job at the end.
 		final Set<RenderingJob> allJobSet = new HashSet<RenderingJob>();
-		final Set<MadParallelRenderingJob> initialAuJobSet = new HashSet<MadParallelRenderingJob>();
-		final Set<MadParallelRenderingJob> finalAuJobSet = new HashSet<MadParallelRenderingJob>();
+		final Set<RenderingJob> initialAuJobSet = new HashSet<RenderingJob>();
+		final Set<RenderingJob> finalAuJobSet = new HashSet<RenderingJob>();
 		// We must update the final producersWeWaitFor of the final sync job after we know how many
 
 		final FinalSyncParallelRenderingJob finalSyncPrj = new FinalSyncParallelRenderingJob();
 		allJobSet.add( finalSyncPrj );
 		final Set<MadInstance<?,?>> allMadInstancesSet = new HashSet<MadInstance<?,?>>();
 		final Set<MadChannelBuffer> allChannelBuffersSet = new HashSet<MadChannelBuffer>();
-		int totalNumJobs = 0;
+		int numRenderingJobs = 0;
 
 		final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap =
 				new HashMap<MadChannelInstance, MadChannelBuffer>();
@@ -275,7 +275,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 
 			allJobSet.add( parallelJob );
 
-			totalNumJobs++;
+			numRenderingJobs++;
 		}
 
 		// Second pass, filling in dependencies
@@ -332,9 +332,22 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			}
 		}
 
-		finalSyncPrj.setNumProducersWeWaitFor( finalAuJobSet.size() );
+		if( numRenderingJobs == 0 )
+		{
+			log.warn("Creating a rendering plan without any DSP jobs. Inserting final sync as only initial job");
+			initialAuJobSet.add( finalSyncPrj );
+			finalSyncPrj.setNumProducersWeWaitFor( 0 );
+			numRenderingJobs = 1;
+		}
+		else
+		{
+			final int numFinalJobs = finalAuJobSet.size();
+			finalSyncPrj.setNumProducersWeWaitFor( numFinalJobs );
+			numRenderingJobs = numRenderingJobs + 1;
+		}
 
-		final MadParallelRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new MadParallelRenderingJob[ initialAuJobSet.size() ] );
+
+		final AbstractRenderingJob[] initialAuJobs = initialAuJobSet.toArray( new AbstractRenderingJob[ initialAuJobSet.size() ] );
 
 		final RenderingJob[] allJobs = allJobSet.toArray( new RenderingJob[ allJobSet.size() ] );
 
@@ -346,7 +359,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 				finalSyncPrj,
 				allJobs,
 				initialAuJobs,
-				totalNumJobs + 2,
+				numRenderingJobs,
 				allMadInstancesSet,
 				allChannelBuffers );
 	}

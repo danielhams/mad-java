@@ -6,3 +6,5 @@ audio-services-test.script
 /wavetablecache/
 componentdesignersql.*
 .javacomponentdesigner
+userpatches/*
+usersubrackpatches/*

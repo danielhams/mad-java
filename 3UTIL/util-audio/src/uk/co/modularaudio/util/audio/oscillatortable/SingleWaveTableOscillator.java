@@ -36,7 +36,7 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	public void oscillate( final float[] output, final float freq, final float iPhase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
 	{
 		final float incr = freq / sampleRate;
-		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
+//		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -55,7 +55,7 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	@Override
 	public void oscillate( final float[] output, final float freqs[], final float iPhase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
 	{
-		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
+//		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -77,7 +77,7 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 			final float[] pulseWidths, final int outputIndex, final int length, final int sampleRate )
 	{
 		final float incr = freq / sampleRate;
-		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
+//		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 
@@ -96,7 +96,7 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	@Override
 	public void oscillate( final float[] output, final float[] freqs, final float iPhase, final float[] pulseWidths, final int outputIndex, final int length, final int sampleRate )
 	{
-		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
+//		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
 		float pos = currentPosition;
 

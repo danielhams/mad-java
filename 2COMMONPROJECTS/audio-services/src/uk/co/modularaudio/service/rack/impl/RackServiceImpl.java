@@ -78,6 +78,12 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( graphService == null ||
+				componentService == null ||
+				componentUiService == null )
+		{
+			throw new ComponentConfigurationException("Service missing dependencies. Check configuration");
+		}
 	}
 
 	@Override
