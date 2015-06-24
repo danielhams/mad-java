@@ -67,6 +67,7 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.tuple.TwoTuple;
 
 public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWithPostInitPreShutdown, MadGraphService
 {
@@ -770,7 +771,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 
 				if (producerAuci == null || consumerAucis.size() == 0)
 				{
-					log.debug( "The producer or the consumer wasn't connected to anything. Won't make a new link." );
+//					log.debug( "The producer or the consumer wasn't connected to anything. Won't make a new link." );
 					continue;
 				}
 				else
@@ -920,12 +921,13 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			// Fade in time
 			try
 			{
-				final PFadeInMadInstance pFadeInInstance = fadeInOutLinkHelper.fadeInGraphChannelMap( graph,
+				final TwoTuple<PFadeInMadInstance, PFadeInMadInstance> prodConsFis =
+						fadeInOutLinkHelper.fadeInGraphChannelMap( graph,
 						instanceToMap, warnAboutMissingChannels );
 				fireGraphChanged( graph );
-				fadeInOutLinkHelper.removePFadeInGraphChannelMap( pFadeInInstance, graph, instanceToMap );
+				fadeInOutLinkHelper.removePFadeInGraphChannelMap( prodConsFis, graph, instanceToMap );
 				fireGraphChanged( graph );
-				fadeInOutLinkHelper.finalisePFadeIn( pFadeInInstance );
+				fadeInOutLinkHelper.finalisePFadeIn( prodConsFis );
 			}
 			catch (final MadProcessingException e)
 			{

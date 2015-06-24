@@ -52,6 +52,7 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.tuple.TwoTuple;
 
 public class FadeInOutLinkHelper
 {
@@ -287,16 +288,17 @@ public class FadeInOutLinkHelper
 		graph.removeInstance(instanceToRemove);
 	}
 
-	public PFadeInMadInstance fadeInGraphChannelMap( final MadGraphInstance<?,?> graph,
+	public TwoTuple<PFadeInMadInstance, PFadeInMadInstance> fadeInGraphChannelMap( final MadGraphInstance<?,?> graph,
 			final MadInstance<?,?> instanceToMap,
 			final boolean warnAboutMissingChannels )
 		throws MadProcessingException, DatastoreException, RecordNotFoundException, MAConstraintViolationException
 	{
 		// For each channel in the instance look for a correspondingly named graph channel to
-		// map it to. If the channel is an audio producer channel, add it to the list
+		// map it to. If the channel is an audio channel, add it to the list
 		// of channels we'll fade in on.
 		final MadChannelInstance[] instanceToMapChannels = instanceToMap.getChannelInstances();
-		final ArrayList<MadChannelInstance> channelPairsToBulkFade = new ArrayList<MadChannelInstance>();
+		final ArrayList<MadChannelInstance> producerPairsToBulkFade = new ArrayList<MadChannelInstance>();
+		final ArrayList<MadChannelInstance> consumerPairsToBulkFade = new ArrayList<MadChannelInstance>();
 		for( final MadChannelInstance instanceChannel : instanceToMapChannels )
 		{
 			final String name = instanceChannel.definition.name;
@@ -308,10 +310,24 @@ public class FadeInOutLinkHelper
 				final MadChannelType channelType = instanceChannel.definition.type;
 				final MadChannelDirection channelDirection = instanceChannel.definition.direction;
 
-				if( channelType == MadChannelType.AUDIO && channelDirection == MadChannelDirection.PRODUCER )
+				if( channelType == MadChannelType.AUDIO )
 				{
-					channelPairsToBulkFade.add( matchingGraphChannel );
-					channelPairsToBulkFade.add( instanceChannel );
+					switch( channelDirection )
+					{
+						case PRODUCER:
+						{
+							producerPairsToBulkFade.add( matchingGraphChannel );
+							producerPairsToBulkFade.add( instanceChannel );
+							break;
+						}
+						case CONSUMER:
+						default:
+						{
+							consumerPairsToBulkFade.add( matchingGraphChannel );
+							consumerPairsToBulkFade.add( instanceChannel );
+							break;
+						}
+					}
 				}
 				else
 				{
@@ -327,14 +343,33 @@ public class FadeInOutLinkHelper
 			}
 		}
 
-		return insertPFadeInInstanceForGraphChannels( graph, channelPairsToBulkFade );
+		PFadeInMadInstance producersFadeIn = null;
+		PFadeInMadInstance consumersFadeIn = null;
+
+		if( producerPairsToBulkFade.size() > 0 )
+		{
+			producersFadeIn = insertPFadeInInstanceForGraphChannels( graph,
+					producerPairsToBulkFade,
+					"Producers Fade In");
+		}
+		if( consumerPairsToBulkFade.size() > 0 )
+		{
+			consumersFadeIn = insertPFadeInInstanceForGraphChannels( graph,
+				consumerPairsToBulkFade,
+				"Consumers Fade In");
+		}
+
+		return new TwoTuple<PFadeInMadInstance, PFadeInMadInstance>( producersFadeIn, consumersFadeIn );
 	}
 
-	public void removePFadeInGraphChannelMap( final PFadeInMadInstance waitInstance,
+	public void removePFadeInGraphChannelMap( final TwoTuple<PFadeInMadInstance,PFadeInMadInstance> fiInstance,
 			final MadGraphInstance<?, ?> graph,
 			final MadInstance<?, ?> instanceToMap )
 		throws RecordNotFoundException, MAConstraintViolationException
 	{
+		final PFadeInMadInstance prodInstance = fiInstance.getHead();
+		final PFadeInMadInstance consInstance = fiInstance.getTail();
+		final PFadeInMadInstance waitInstance = (prodInstance == null ? consInstance : prodInstance );
 		// Need to wait until the fade in has happened
 		final long startTime = System.currentTimeMillis();
 		long curTime = 0;
@@ -353,15 +388,21 @@ public class FadeInOutLinkHelper
 
 		// Basically remove the fade in instance
 		// and then re-expose the instance channels that map to graph ones
-		graph.removeInstance(waitInstance);
+		if( prodInstance != null )
+		{
+			graph.removeInstance( prodInstance );
+		}
+		if( consInstance != null )
+		{
+			graph.removeInstance( consInstance );
+		}
 
 		// Map channels
 		final MadChannelInstance[] graphChannels = graph.getChannelInstances();
 		for( final MadChannelInstance graphChannel : graphChannels )
 		{
-			// Only need to remap the audio ones that are output, others were already mapped
-			if( graphChannel.definition.type == MadChannelType.AUDIO &&
-					graphChannel.definition.direction == MadChannelDirection.PRODUCER )
+			// Only need to remap audio ones - others were already mapped
+			if( graphChannel.definition.type == MadChannelType.AUDIO )
 			{
 				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull(
 						graphChannel.definition.name );
@@ -376,9 +417,18 @@ public class FadeInOutLinkHelper
 		componentService.destroyInstance( fadeInInstance );
 	}
 
-	public void finalisePFadeIn( final PFadeInMadInstance pFadeInInstance ) throws DatastoreException, RecordNotFoundException
+	public void finalisePFadeIn( final TwoTuple<PFadeInMadInstance, PFadeInMadInstance> fiInstances ) throws DatastoreException, RecordNotFoundException
 	{
-		componentService.destroyInstance( pFadeInInstance );
+		final PFadeInMadInstance prodIns = fiInstances.getHead();
+		final PFadeInMadInstance consIns = fiInstances.getTail();
+		if( prodIns != null )
+		{
+			componentService.destroyInstance( prodIns );
+		}
+		if( consIns != null )
+		{
+			componentService.destroyInstance( consIns );
+		}
 	}
 
 	public void finaliseFadeOut( final FadeOutMadInstance fadeOutInstance ) throws DatastoreException, RecordNotFoundException
@@ -541,7 +591,8 @@ public class FadeInOutLinkHelper
 
 	private PFadeInMadInstance insertPFadeInInstanceForGraphChannels(
 			final MadGraphInstance<?, ?> graph,
-			final ArrayList<MadChannelInstance> channelPairsToBulkFade )
+			final ArrayList<MadChannelInstance> channelPairsToBulkFade,
+			final String nameInGraph )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		final int totalChannels = channelPairsToBulkFade.size();
@@ -549,8 +600,8 @@ public class FadeInOutLinkHelper
 		final Map<MadParameterDefinition, String> params = new HashMap<MadParameterDefinition, String>();
 		params.put( PFadeDefinitions.NUM_CHANNELS_PARAMETER, numFadedChannels + "");
 		final PFadeInMadInstance retVal = (PFadeInMadInstance)componentService.createInstanceFromDefinition(
-				pfadeInDefinition, params, "Temporary component fade in");
-		graph.addInstanceWithName(retVal, retVal.getInstanceName() );
+				pfadeInDefinition, params, nameInGraph );
+		graph.addInstanceWithName(retVal, nameInGraph );
 		final PFadeConfiguration pfc = retVal.getInstanceConfiguration();
 		final MadChannelInstance[] pfadeChannelInstances = retVal.getChannelInstances();
 
@@ -558,19 +609,46 @@ public class FadeInOutLinkHelper
 		for( int c = 0 ; c < numFadedChannels ; ++c )
 		{
 			final MadChannelInstance graphChannelInstance = channelPairsToBulkFade.get( cpIndex++ );
-			final MadChannelInstance channelInstanceToExpose = channelPairsToBulkFade.get( cpIndex++ );
-			final int producerIndex = pfc.getProducerChannelIndex( c );
-			final int consumerIndex = pfc.getConsumerChannelIndex( c );
+			final MadChannelDirection graphChannelDirection = graphChannelInstance.definition.direction;
 
-			final MadChannelInstance fadeInProducerChannel = pfadeChannelInstances[ producerIndex ];
-			final MadChannelInstance fadeInConsumerChannel = pfadeChannelInstances[ consumerIndex ];
+			switch( graphChannelDirection )
+			{
+				case PRODUCER:
+				{
+					final MadChannelInstance channelInstanceToExpose = channelPairsToBulkFade.get( cpIndex++ );
+					final int producerIndex = pfc.getProducerChannelIndex( c );
+					final int consumerIndex = pfc.getConsumerChannelIndex( c );
 
-			final MadChannelInstance producerChannel = channelInstanceToExpose;
+					final MadChannelInstance fadeInProducerChannel = pfadeChannelInstances[ producerIndex ];
+					final MadChannelInstance fadeInConsumerChannel = pfadeChannelInstances[ consumerIndex ];
 
-			final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
-			graph.addLink( producerLink );
+					final MadChannelInstance producerChannel = channelInstanceToExpose;
 
-			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
+					final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
+					graph.addLink( producerLink );
+
+					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
+					break;
+				}
+				case CONSUMER:
+				default:
+				{
+					final MadChannelInstance channelInstanceToExpose = channelPairsToBulkFade.get( cpIndex++ );
+					final int producerIndex = pfc.getProducerChannelIndex( c );
+					final int consumerIndex = pfc.getConsumerChannelIndex( c );
+
+					final MadChannelInstance fadeInProducerChannel = pfadeChannelInstances[ producerIndex ];
+					final MadChannelInstance fadeInConsumerChannel = pfadeChannelInstances[ consumerIndex ];
+
+					final MadChannelInstance consumerChannel = channelInstanceToExpose;
+
+					final MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
+					graph.addLink( consumerLink );
+
+					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
+					break;
+				}
+			}
 		}
 
 		return retVal;

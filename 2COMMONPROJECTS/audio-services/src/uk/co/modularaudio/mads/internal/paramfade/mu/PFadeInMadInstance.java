@@ -77,7 +77,7 @@ public class PFadeInMadInstance extends MadInstance<PFadeInMadDefinition, PFadeI
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 //		log.trace("Process method called");
 //		log.trace("The channel connected flags are " + channelConnectedFlags.toString() );
@@ -100,11 +100,11 @@ public class PFadeInMadInstance extends MadInstance<PFadeInMadDefinition, PFadeI
 					final float[] inBuffer = in.floatBuffer;
 
 					// Use the fade wave table and our current position to pull out the fade value to use.
-					int chanPos = runningTablePosition;
+					int wtPos = runningTablePosition;
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
 						final float curVal = inBuffer[i];
-						final float currentFadeMultiplier = waveTable.getValueAt( chanPos++ );
+						final float currentFadeMultiplier = waveTable.getValueAt( wtPos++ );
 						outBuffer[i] = curVal * currentFadeMultiplier;
 					}
 				}
@@ -114,6 +114,7 @@ public class PFadeInMadInstance extends MadInstance<PFadeInMadDefinition, PFadeI
 				}
 			}
 		}
+
 		runningTablePosition += numFrames;
 
 		curTablePosition.set( runningTablePosition );

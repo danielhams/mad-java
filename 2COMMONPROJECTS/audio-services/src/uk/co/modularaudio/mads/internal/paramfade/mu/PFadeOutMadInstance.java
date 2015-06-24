@@ -39,7 +39,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFadeOutMadInstance>
 {
-//	private static Log log = LogFactory.getLog( PFadeInMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( PFadeOutMadInstance.class.getName() );
 
 	private final PFadeConfiguration instanceConfiguration;
 
@@ -78,7 +78,7 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-		int frameOffset , final int numFrames  )
+		final int frameOffset , final int numFrames  )
 	{
 //		log.trace("Process method called");
 //		log.trace("The channel connected flags are " + channelConnectedFlags.toString() );
@@ -104,11 +104,11 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 					final float[] inBuffer = in.floatBuffer;
 
 					// Use the fade wave table and our current position to pull out the fade value to use.
-					int chanPos = runningTablePosition;
+					int wtPos = runningTablePosition;
 					for( int i = 0 ; i < numFrames ; i++ )
 					{
 						final float curVal = inBuffer[i];
-						final float currentFadeMultiplier = waveTable.getValueAt( chanPos++ );
+						final float currentFadeMultiplier = waveTable.getValueAt( wtPos++ );
 						outBuffer[i] = curVal * currentFadeMultiplier;
 					}
 //					numFadedChannels++;
@@ -120,8 +120,9 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 				}
 			}
 		}
-//		log.info("Fading " + numFadedChannels + " channels" );
+
 		runningTablePosition += numFrames;
+//		log.info("Fading " + numFadedChannels + " channels" );
 
 		curTablePosition.set( runningTablePosition );
 

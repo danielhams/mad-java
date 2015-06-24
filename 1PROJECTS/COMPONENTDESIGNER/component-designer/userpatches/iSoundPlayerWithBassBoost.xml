@@ -16,29 +16,29 @@
     </rackComponent>
     <rackComponent name="DJ EQ 5" definitionId="djeq">
         <rackPosition column="2" row="0"/>
-        <rackControl name="HighLane" value="0.0:false"/>
-        <rackControl name="MidLane" value="0.0:false"/>
+        <rackControl name="HighLane" value="0.0:true"/>
+        <rackControl name="MidLane" value="0.0:true"/>
         <rackControl name="LowLane" value="0.0:false"/>
         <rackControl name="Fader" value="0.0"/>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="7"/>
-        <rackControl name="Master Lane" value="-20.875:0.0"/>
+        <rackControl name="Master Lane" value="-10.875:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:-0.019999996:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.2297115"/>
+        <rackControl name="Gain" value="-5.3625803"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2008-03-08_13h02m17nice.mp3"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2008-02-14_23h09m57korma.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 7" definitionId="spectral_amp">
@@ -55,7 +55,7 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="4"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="CaptureTime" value="3389.1887"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="Right Scale" value=""/>

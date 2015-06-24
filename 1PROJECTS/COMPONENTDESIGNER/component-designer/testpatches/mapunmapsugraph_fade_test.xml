@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" rackComponentChannelInstanceName="Lane 2 Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" rackComponentChannelInstanceName="Lane 2 Input Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Shape" value="Sine"/>
+        <rackControl name="Pulsewidth" value="100"/>
+    </rackComponent>
+    <rackComponent name="Band Limited Oscillator 7" definitionId="band_limited_oscillator">
+        <rackPosition column="2" row="1"/>
+        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Shape" value="Sine"/>
+        <rackControl name="Pulsewidth" value="100"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 5" definitionId="imixer3">
+        <rackPosition column="0" row="3"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="-10.125:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-11.25:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 6" definitionId="imixer3">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="Master Lane" value="-1.5:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 10" definitionId="spectral_roll">
+        <rackPosition column="2" row="9"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 9" definitionId="spectral_roll">
+        <rackPosition column="0" row="9"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackComponent name="Static Value 2" definitionId="static_value">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Value" value="500.0"/>
+    </rackComponent>
+    <rackComponent name="Static Value 8" definitionId="static_value">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Value" value="100.0"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 8" definitionId="sub_rack">
+        <rackPosition column="2" row="3"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 83" definitionId="sub_rack">
+        <rackPosition column="2" row="4"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 7" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 7" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 5" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 8" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 9" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" producerChannelName="Output Wave Right" consumerRackComponentName="Spectral Roll 10" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Static Value 2" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>
+    <rackLink producerRackComponentName="Static Value 8" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 7" consumerChannelName="Input Frequency CV"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 1" consumerRackComponentName="Sub Rack 83" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Sub Rack 8" producerChannelName="Output Channel 2" consumerRackComponentName="Sub Rack 83" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Sub Rack 83" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 83" producerChannelName="Output Channel 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 6" consumerChannelName="Lane 1 Input Wave Right"/>
+</rack>

@@ -236,9 +236,9 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 					curEventIndex,
 					curPeriodStartFrameTime );
 
-			if( log.isWarnEnabled() && curEventIndex > 1)
+			if( log.isTraceEnabled() && curEventIndex > 1)
 			{
-				log.warn( instanceName + " consumed " + curEventIndex + " temporal events before beginning the period." );
+				log.trace( instanceName + " consumed " + curEventIndex + " temporal events before beginning the period." );
 			}
 
 			// Now loop around doing chunks of DSP until we exhaust

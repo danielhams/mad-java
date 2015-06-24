@@ -160,10 +160,11 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			if( outLConnected )
 			{
-				Arrays.fill( outLfloats, frameOffset, frameOffset + numFrames, 0.0f );
+				Arrays.fill( inLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 		}
-		else if( inLConnected && outLConnected )
+
+		if( outLConnected )
 		{
 			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
 
@@ -208,10 +209,11 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 		{
 			if( outRConnected )
 			{
-				Arrays.fill( outRfloats, frameOffset, frameOffset + numFrames, 0.0f );
+				Arrays.fill( inRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 			}
 		}
-		else if( inRConnected && outRConnected )
+
+		if( outRConnected )
 		{
 			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
 
