@@ -43,6 +43,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
 	private String currentFilename = "";
+	private String currentDirectory;
 
 	private final AdvancedComponentsFrontController acfc;
 
@@ -116,8 +117,13 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	public void receiveClick()
 	{
 		final JFileChooser openFileChooser = new JFileChooser();
-		final String musicDir = uiInstance.advancedComponentsFrontController.getSoundfileMusicRoot();
-		openFileChooser.setCurrentDirectory( new File( musicDir ) );
+
+		if( currentDirectory == null )
+		{
+			currentDirectory = uiInstance.advancedComponentsFrontController.getSoundfileMusicRoot();
+		}
+
+		openFileChooser.setCurrentDirectory( new File( currentDirectory ) );
 		final int retVal = openFileChooser.showOpenDialog( this );
 		if (retVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -127,6 +133,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 
 			if (f != null && !f.isDirectory())
 			{
+				currentDirectory = f.getParentFile().getAbsolutePath();
 				passChangeToInstanceData( f.getAbsolutePath() );
 			}
 		}
