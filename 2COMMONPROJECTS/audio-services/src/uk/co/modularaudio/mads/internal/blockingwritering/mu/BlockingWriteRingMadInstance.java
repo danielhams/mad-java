@@ -77,16 +77,16 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 //		log.trace( "Doing stuff in blocking write ring" );
 		int numAvail = leftRingBuffer.getNumReadable();
 		int numToRead = ( numFrames < numAvail ? numFrames : numAvail );
 		int numToPad = (numToRead < numFrames ? numFrames - numToRead : 0 );
-//		if( numToPad > 0 )
-//		{
-//			log.warn( "Underflowed from blocking ring by " + numToPad + " samples" );
-//		}
+		if( numToPad > 0 )
+		{
+			log.warn( "Underflowed from left blocking ring by " + numToPad + " samples" );
+		}
 
 		final MadChannelBuffer outLeftCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_LEFT ];
 		final float outLeftBuf[] = outLeftCb.floatBuffer;
@@ -109,10 +109,11 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 		numAvail = rightRingBuffer.getNumReadable();
 		numToRead = ( numFrames < numAvail ? numFrames : numAvail );
 		numToPad = (numToRead < numFrames ? numFrames - numToRead : 0 );
-//		if( numToPad > 0 )
-//		{
-//			log.warn( "Underflowed from blocking ring by " + numToPad + " samples" );
-//		}
+		if( numToPad > 0 )
+		{
+			log.warn( "Underflowed from right blocking ring by " + numToPad + " samples" );
+		}
+
 		final MadChannelBuffer outRightCb = channelBuffers[ BlockingWriteRingMadDefinition.PRODUCER_RIGHT ];
 		final float outRightBuf[] = outRightCb.floatBuffer;
 

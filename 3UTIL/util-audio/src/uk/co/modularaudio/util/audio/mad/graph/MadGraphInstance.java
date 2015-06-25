@@ -328,10 +328,10 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 
 	public void addGraphListener( final MadGraphListener listener )
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Adding graph listener " + listener.getName() + " to graph \"" + instanceName + "\"");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Adding graph listener " + listener.getName() + " to graph \"" + instanceName + "\"");
+//		}
 
 		this.listeners.add( listener );
 		for( final MadGraphInstance<?,?> subGraph : subGraphs )
@@ -342,10 +342,11 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 
 	public void removeGraphListener( final MadGraphListener listener )
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Removing graph listener " + listener.getName() + " from graph \"" + instanceName + "\"");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Removing graph listener " + listener.getName() + " from graph \"" + instanceName + "\"");
+//		}
+
 		for( final MadGraphInstance<?,?> subGraph : subGraphs )
 		{
 			subGraph.removeGraphListener( listener );

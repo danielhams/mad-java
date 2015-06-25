@@ -27,6 +27,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer implements BlockingRingBufferInterface
 {
+//	private static Log log = LogFactory.getLog( BlockingWriteRingBuffer.class.getName() );
+
 	private final ReentrantLock internalLock = new ReentrantLock();
 	private final Condition notEmpty = internalLock.newCondition();
 
@@ -38,6 +40,7 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 	@Override
 	public boolean readMaybeBlock(final float[] target, final int pos, final int length) throws BufferUnderflowException, InterruptedException
 	{
+//		log.debug("Attempting to read " + length );
 		final boolean didBlock =  false;
 		internalLock.lock();
 		try
@@ -48,7 +51,7 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 			if( numReadable >= length )
 			{
 				super.internalRead( rp, wp, target, pos, length, true, false );
-				notEmpty.notifyAll();
+				notEmpty.signalAll();
 			}
 		}
 		finally
@@ -61,6 +64,7 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 	@Override
 	public boolean writeMaybeBlock(final float[] source, final int pos, final int length) throws InterruptedException
 	{
+//		log.debug("Writing " + length );
 		boolean didBlock = false;
 		internalLock.lock();
 		try
@@ -75,7 +79,7 @@ public class BlockingWriteRingBuffer extends WriteSemaphoreLocklessRingBuffer im
 				wp = writePosition.get();
 				numWriteable = calcNumWriteable( rp, wp );
 
-				if( numWriteable <= 0 )
+				if( numWriteable < length )
 				{
 					notEmpty.await();
 				}
