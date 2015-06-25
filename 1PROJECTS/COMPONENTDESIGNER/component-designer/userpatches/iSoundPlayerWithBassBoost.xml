@@ -23,7 +23,7 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="7"/>
-        <rackControl name="Master Lane" value="-10.5:0.0"/>
+        <rackControl name="Master Lane" value="-8.125:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:-0.019999996:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>

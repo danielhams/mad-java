@@ -44,6 +44,7 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 	private static Log log = LogFactory.getLog( BlockingWriteRingMadInstance.class.getName() );
 
 	private int periodLength;
+	private int sampleRate;
 
 	private BlockingWriteRingBuffer leftRingBuffer;
 	private BlockingWriteRingBuffer rightRingBuffer;
@@ -61,6 +62,7 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		periodLength = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 
 		leftRingBuffer = new BlockingWriteRingBuffer( periodLength * 8 );
@@ -143,5 +145,10 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 	public BlockingWriteRingBuffer getRightRingBuffer()
 	{
 		return rightRingBuffer;
+	}
+
+	public int getSampleRate()
+	{
+		return sampleRate;
 	}
 }

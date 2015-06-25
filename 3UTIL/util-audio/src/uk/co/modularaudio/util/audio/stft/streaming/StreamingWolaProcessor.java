@@ -22,6 +22,9 @@ package uk.co.modularaudio.util.audio.stft.streaming;
 
 import java.nio.BufferUnderflowException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 import uk.co.modularaudio.util.audio.stft.StftException;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
@@ -30,7 +33,7 @@ import uk.co.modularaudio.util.audio.stft.frame.processing.StftFrameProcessor;
 
 public class StreamingWolaProcessor
 {
-//	private static Log log = LogFactory.getLog( StreamingWolaProcessor.class.getName() );
+	private static Log log = LogFactory.getLog( StreamingWolaProcessor.class.getName() );
 
 	private final UnsafeFloatRingBuffer[] inputRingBuffers;
 	private final UnsafeFloatRingBuffer[] outputRingBuffers;
