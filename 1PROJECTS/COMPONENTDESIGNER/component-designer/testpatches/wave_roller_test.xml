@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Lane 1 Input Wave Right"/>
+    <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 4" definitionId="spectral_amp">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Peak Reset" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Roll 5" definitionId="spectral_roll">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Freq Scale" value="Log"/>
+        <rackControl name="Resolution" value="Log"/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 2" definitionId="wave_roller">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="ScaleChoice" value="-5dB"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackComponent name="Wave Roller 3" definitionId="wave_roller">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="ScaleChoice" value="-5dB"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 4" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Roll 5" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 2" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Right" consumerRackComponentName="Wave Roller 3" consumerChannelName="Input Wave 0"/>
+</rack>

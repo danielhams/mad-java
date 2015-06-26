@@ -41,7 +41,8 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 {
 //	private static Log log = LogFactory.getLog( DCTrapMadInstance.class.getName() );
 
-	private transient DcTrapFilter dcFilter;
+	private DcTrapFilter leftDcFilter;
+	private DcTrapFilter rightDcFilter;
 
 	public DCTrapMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -53,12 +54,13 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-		dcFilter = new DcTrapFilter( sampleRate );
+		leftDcFilter = new DcTrapFilter( sampleRate );
+		rightDcFilter = new DcTrapFilter( sampleRate );
 	}
 
 	@Override
@@ -68,33 +70,48 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long startFrameTime ,
-			final MadChannelConnectedFlags connectedFlags ,
-			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long startFrameTime,
+			final MadChannelConnectedFlags connectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
-		final boolean inWaveConnected = connectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE );
-		final MadChannelBuffer inWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE ];
-		final float[] inWaveFloats = inWaveCb.floatBuffer;
+		final boolean inLeftWaveConnected = connectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE_LEFT );
+		final MadChannelBuffer inLeftWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE_LEFT ];
+		final float[] inLeftWaveFloats = inLeftWaveCb.floatBuffer;
 
-		final boolean outWaveConnected = connectedFlags.get( DCTrapMadDefinition.PRODUCER_OUT_WAVE );
-		final MadChannelBuffer outWaveCb = channelBuffers[ DCTrapMadDefinition.PRODUCER_OUT_WAVE ];
-		final float[] outWaveFloats = outWaveCb.floatBuffer;
+		final boolean inRightWaveConnected = connectedFlags.get( DCTrapMadDefinition.CONSUMER_IN_WAVE_RIGHT );
+		final MadChannelBuffer inRightWaveCb = channelBuffers[ DCTrapMadDefinition.CONSUMER_IN_WAVE_RIGHT ];
+		final float[] inRightWaveFloats = inRightWaveCb.floatBuffer;
+
+		final boolean outLeftWaveConnected = connectedFlags.get( DCTrapMadDefinition.PRODUCER_OUT_WAVE_LEFT );
+		final MadChannelBuffer outLeftWaveCb = channelBuffers[ DCTrapMadDefinition.PRODUCER_OUT_WAVE_LEFT ];
+		final float[] outLeftWaveFloats = outLeftWaveCb.floatBuffer;
+
+		final boolean outRightWaveConnected = connectedFlags.get( DCTrapMadDefinition.PRODUCER_OUT_WAVE_RIGHT );
+		final MadChannelBuffer outRightWaveCb = channelBuffers[ DCTrapMadDefinition.PRODUCER_OUT_WAVE_RIGHT ];
+		final float[] outRightWaveFloats = outRightWaveCb.floatBuffer;
 
 		// Now mix them together with the precomputed amps
-		if( outWaveConnected )
+		if( outLeftWaveConnected )
 		{
-			if( inWaveConnected )
+			if( !inLeftWaveConnected )
 			{
-				System.arraycopy(inWaveFloats, 0, outWaveFloats, 0, numFrames );
-				dcFilter.filter( outWaveFloats, 0,  numFrames );
+				Arrays.fill( inLeftWaveFloats, 0.0f );
 			}
-			else
+			System.arraycopy( inLeftWaveFloats, frameOffset, outLeftWaveFloats, frameOffset, numFrames );
+			leftDcFilter.filter( outLeftWaveFloats, frameOffset, numFrames );
+		}
+		if( outRightWaveConnected )
+		{
+			if( !inRightWaveConnected )
 			{
-				Arrays.fill( outWaveFloats, 0.0f );
+				Arrays.fill( inRightWaveFloats, 0.0f );
 			}
+			System.arraycopy( inRightWaveFloats, frameOffset, outRightWaveFloats, frameOffset, numFrames );
+			rightDcFilter.filter( outRightWaveFloats, frameOffset, numFrames );
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

@@ -28,15 +28,16 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JPanel;
+
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.ui.CvSurfaceMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComponent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class CvSurfaceControllerUiJComponent extends PacComponent
+public class CvSurfaceControllerUiJComponent extends JPanel
 	implements IMadUiControlInstance<CvSurfaceMadDefinition, CvSurfaceMadInstance, CvSurfaceMadUiInstance>
 {
 	private static final long serialVersionUID = -4122830597685469293L;
@@ -137,7 +138,7 @@ public class CvSurfaceControllerUiJComponent extends PacComponent
 	}
 
 	@Override
-	public void paint( final Graphics g )
+	public void paintComponent( final Graphics g )
 	{
 		if( bi != null )
 		{

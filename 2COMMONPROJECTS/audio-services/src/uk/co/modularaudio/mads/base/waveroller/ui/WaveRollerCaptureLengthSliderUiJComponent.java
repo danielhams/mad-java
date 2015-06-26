@@ -61,7 +61,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
-				"Capture Time:",
+				"Zoom:",
 				false, true );
 
 		model.addChangeListener( new ValueChangeListener()

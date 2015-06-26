@@ -62,7 +62,7 @@ public class StaticValueMadDefinition extends AbstractNonConfigurableMadDefiniti
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.BETA ),
 				new StaticValueIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

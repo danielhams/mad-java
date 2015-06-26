@@ -27,17 +27,18 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
+import javax.swing.JPanel;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.envelope.mu.Envelope;
+import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeDefaults;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeRuntime;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacComponent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
@@ -48,7 +49,7 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 
 
-public class EnvelopeDisplayUiJComponent extends PacComponent
+public class EnvelopeDisplayUiJComponent extends JPanel
 	implements IMadUiControlInstance<EnvelopeMadDefinition, EnvelopeMadInstance, EnvelopeMadUiInstance>, EnvelopeValueListener
 {
 	private static final Color DARK_RED_FILL = Color.RED.darker().darker();
@@ -131,7 +132,7 @@ public class EnvelopeDisplayUiJComponent extends PacComponent
 	}
 
 	@Override
-	public void paint( final Graphics g )
+	public void paintComponent( final Graphics g )
 	{
 		final int width = getWidth();
 		final int height = getHeight();

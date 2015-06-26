@@ -506,6 +506,8 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 
 			clockCallbackPostRpFetch = System.nanoTime();
 
+			// We set up the channel period data here so that it's accessible to any threads that
+			// do work on the job queue items
 			final MadChannelPeriodData autpd = timingService.getTimingSource().getTimingPeriodData();
 			autpd.reset( periodStartFrameTime,  numFrames);
 

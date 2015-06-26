@@ -129,7 +129,7 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.BETA ),
 				new InterpTesterIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

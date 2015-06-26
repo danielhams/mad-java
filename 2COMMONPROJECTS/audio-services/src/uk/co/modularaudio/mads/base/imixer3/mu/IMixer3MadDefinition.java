@@ -38,11 +38,11 @@ public class IMixer3MadDefinition extends MixerNMadDefinition<IMixer3MadDefiniti
 	private static Log log = LogFactory.getLog( IMixer3MadDefinition.class.getName() );
 
 	public final static String DEFINITION_ID = "imixer3";
-	private final static String USER_VISIBLE_NAME = "Mixer (Three Stereo Lanes, Interpolated)";
+	private final static String USER_VISIBLE_NAME = "Mixer (Three Stereo Lanes)";
 
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
 
-	private final static String CLASS_NAME="Mixer (Three Stereo Lanes, Interpolated)";
+	private final static String CLASS_NAME="Mixer (Three Stereo Lanes)";
 	private final static String CLASS_DESC="A three lane stereo mixer";
 
 	private final static int NUM_MIXER_LANES = 3;

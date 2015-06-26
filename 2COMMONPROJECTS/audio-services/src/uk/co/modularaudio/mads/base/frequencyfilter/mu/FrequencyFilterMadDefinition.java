@@ -82,7 +82,7 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.BETA ),
+						ReleaseState.RELEASED ),
 				new FrequencyFilterIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

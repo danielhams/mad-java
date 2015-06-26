@@ -75,7 +75,7 @@ public class SoundfilePlayer2MadDefinition extends AbstractNonConfigurableMadDef
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.ALPHA ),
 				new SoundfilePlayer2IOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

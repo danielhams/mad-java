@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.base.waveroller.ui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -73,6 +72,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 
 	private Rectangle bounds;
 	private int imageWidth, imageHeight;
+	private float valueScaleForMargins;
 
 	private WaveRollerBufferSampleFactory bufferSampleFactory;
 	private RollPainter<WaveRollerBuffer, WaveRollerBufferCleaner> rollPainter;
@@ -141,7 +141,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 		}
 		else
 		{
-			g.setColor( Color.black );
+			g.setColor( WaveRollerColours.BACKGROUND_COLOR );
 			final Rectangle b = getBounds();
 			g.fillRect( 0,  0, b.width, b.height );
 		}
@@ -177,7 +177,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 
 		imageWidth = r.width;
 		imageHeight = r.height;
-
+		valueScaleForMargins = (imageHeight - WaveRollerScaleDisplay.SCALE_MARGIN * 2) / (float)imageHeight;
 	}
 
 	@Override
@@ -196,7 +196,12 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 
 		if( imageWidth > 0 && imageHeight > 0 )
 		{
-			bufferSampleFactory = new WaveRollerBufferSampleFactory( bufferImageAllocator, displayRingBuffer, bounds );
+			bufferSampleFactory = new WaveRollerBufferSampleFactory( uiInstance,
+					bufferImageAllocator,
+					displayRingBuffer,
+					bounds,
+					valueScaleForMargins );
+
 			bufferSampleFactory.setCaptureRenderLength( captureRenderLength );
 			try
 			{
@@ -279,4 +284,5 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	{
 		return true;
 	}
+
 }

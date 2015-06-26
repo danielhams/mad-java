@@ -77,7 +77,7 @@ public class ScaleAndOffsetMadDefinition extends AbstractNonConfigurableMadDefin
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.BETA ),
 				new ScaleAndOffsetIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

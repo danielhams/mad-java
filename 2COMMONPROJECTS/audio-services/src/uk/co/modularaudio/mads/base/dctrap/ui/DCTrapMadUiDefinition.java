@@ -39,13 +39,17 @@ public class DCTrapMadUiDefinition
 	private static final Span SPAN = new Span(1,1);
 
 	private static final int[] UI_CHANNEL_INDEXES = new int[] {
-		DCTrapMadDefinition.CONSUMER_IN_WAVE,
-		DCTrapMadDefinition.PRODUCER_OUT_WAVE,
+		DCTrapMadDefinition.CONSUMER_IN_WAVE_LEFT,
+		DCTrapMadDefinition.CONSUMER_IN_WAVE_RIGHT,
+		DCTrapMadDefinition.PRODUCER_OUT_WAVE_LEFT,
+		DCTrapMadDefinition.PRODUCER_OUT_WAVE_RIGHT,
 	};
 
 	private static final Point[] UI_CHANNEL_POSI = new Point[] {
+		new Point( 60, 40 ),
 		new Point( 90, 40 ),
-		new Point( 150, 40 )
+		new Point( 150, 40 ),
+		new Point( 180, 40 )
 	};
 
 	private static final String[] UI_CONTROL_NAMES = new String[] {

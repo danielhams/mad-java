@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 2" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes, Interpolated) 2" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 2" definitionId="imixer3">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="-10.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Tempo Shifting Sound File Player 1" definitionId="tempo_shifting_sound_file_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Name Label" value=""/>
+        <rackControl name="Speed Slider" value="1000"/>
+        <rackControl name="Pitch Slider" value="1000"/>
+        <rackControl name="Play Stop" value="true"/>
+        <rackControl name="Toggle Transients" value="false"/>
+        <rackControl name="Select File" value="false"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Tempo Shifting Sound File Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 2" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Tempo Shifting Sound File Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 2" consumerChannelName="Lane 1 Input Wave Right"/>
+</rack>

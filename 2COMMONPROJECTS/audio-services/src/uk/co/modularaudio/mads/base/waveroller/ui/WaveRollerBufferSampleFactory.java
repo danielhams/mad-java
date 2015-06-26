@@ -32,6 +32,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPaintDefaultUpdateS
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPaintUpdate;
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPaintUpdateType;
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPainterSampleFactory;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
 import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
@@ -40,7 +41,9 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.math.MinMaxComputer;
 
-public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<WaveRollerBuffer,WaveRollerBufferCleaner>
+public class WaveRollerBufferSampleFactory
+	implements RollPainterSampleFactory<WaveRollerBuffer,WaveRollerBufferCleaner>,
+	ScaleChangeListener
 {
 	private static Log log = LogFactory.getLog( WaveRollerBufferSampleFactory.class.getName() );
 
@@ -52,8 +55,8 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 	private final UnsafeFloatRingBuffer displayRingBuffer;
 
 	private final Rectangle displayBounds;
-
-	private final Color valueColor = new Color( 75, 131, 155 );
+	private final float valueScaleForMargins;
+	private float maxDbScaleMultiplier = 1.0f;
 
 	private int lastBufferPos;
 	private int numSamplesPerPixel;
@@ -64,14 +67,17 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 	private final float[] minMaxValues = new float[2];
 	private final float[] previousMinMaxValues = new float[2];
 
-	public WaveRollerBufferSampleFactory( final BufferedImageAllocator bufferImageAllocator,
+	public WaveRollerBufferSampleFactory( final WaveRollerMadUiInstance uiInstance,
+			final BufferedImageAllocator bufferImageAllocator,
 			final UnsafeFloatRingBuffer displayRingBuffer,
-			final Rectangle displayBounds )
+			final Rectangle displayBounds,
+			final float valueScaleForMargins )
 	{
 		this.bufferImageAllocator = bufferImageAllocator;
 		bufferClearer = new WaveRollerBufferCleaner( displayBounds );
 		this.displayRingBuffer = displayRingBuffer;
 		this.displayBounds = displayBounds;
+		this.valueScaleForMargins = valueScaleForMargins;
 		lastBufferPos = displayRingBuffer.readPosition;
 
 		// Not perfect, but needs a value
@@ -79,6 +85,8 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 
 		captureRenderLength = 1;
 		needsFullUpdate = true;
+
+		uiInstance.addScaleChangeListener( this );
 	}
 
 	public void resetForFullRepaint()
@@ -173,10 +181,13 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 	{
 		final float multiplier = (displayBounds.height / 2.0f);
 
-		g.setColor( valueColor );
-		final int yMinVal =  (int)((-minValue * multiplier) + multiplier);
-		final int yMaxVal = (int)((-maxValue * multiplier ) + multiplier);
-		g.drawLine(pixelX,  yMinVal,  pixelX,  yMaxVal );
+		g.setColor( WaveRollerColours.DISPLAY_VALUE_COLOUR );
+		int yMinVal =  (int)(-minValue * multiplier * maxDbScaleMultiplier);
+		int yMaxVal = (int)(-maxValue * multiplier * maxDbScaleMultiplier);
+
+		yMinVal = (int)((yMinVal * valueScaleForMargins) + multiplier);
+		yMaxVal = (int)((yMaxVal * valueScaleForMargins) + multiplier);
+		g.drawLine(pixelX, yMinVal, pixelX, yMaxVal );
 	}
 
 	private int getNumSamplesAvailable()
@@ -375,5 +386,14 @@ public class WaveRollerBufferSampleFactory implements RollPainterSampleFactory<W
 		}
 //			log.debug("Did " + numPixelsDone + " pixels");
 		lastBufferPos = bufferIndex;
+	}
+
+	@Override
+	public void receiveScaleChange( final float newMaxDB )
+	{
+		final float negatedDb = -newMaxDB;
+		final float asLevel = AudioMath.dbToLevelF( negatedDb );
+		maxDbScaleMultiplier = asLevel;
+		resetForFullRepaint();
 	}
 }

@@ -1,0 +1,37 @@
+For release 0.0.3:
+------------------
+
+* Fix mixer names to remove (interpolated) in the name.
+
+* Demote soundfileplayer2 to alpha. I need to fix the metadata service dependencies and work out the proper way to do that stuff.
+
+* Demote static value and scale and offset to beta - there isn't anything to use them yet.
+
+* Demote stereo compressor to alpha since it has broken sub-period event processing.
+
+* Update DcTrap to stereo for completeness, fix frameOffset in processing.
+
+* Fix Wave Roller to include "Scale" selection and put a scale in there.
+
+* Fix Spectral Amp to include "Scale" selection and put amp/freq scales.
+
+* Fix Spectral Roller to include "Scale" selection and put amp/freq scales.
+
+* Fix new component name suggestion to be something that will work. Occasionally fails at the moment as there isn't a proper check.
+
+* Documentation - javadoc, component map and building.
+
+* Create a mechanism for CI / easy(ish) building.
+
+For release 0.0.4:
+------------------
+
+* Fix up sound file metadata handling so we the user can override discovered metadata and we can start to fix up the BPM handling.
+
+
+Oustanding issues:
+------------------
+
+* Component versioning
+* Database versioning + migration
+* Exporting soundfile + metadata library as XML/json

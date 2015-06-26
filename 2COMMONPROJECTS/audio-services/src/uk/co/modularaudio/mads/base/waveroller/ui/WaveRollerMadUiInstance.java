@@ -20,12 +20,16 @@
 
 package uk.co.modularaudio.mads.base.waveroller.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerIOQueueBridge;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
+import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerScaleComboUiJComponent.WaveScale;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -43,6 +47,10 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	public static final float MAX_CAPTURE_MILLIS = 5000.0f;
 
 	private WaveRollerDataListener scopeDataListener;
+
+	private final List<ScaleChangeListener> scaleChangeListeners = new ArrayList<ScaleChangeListener>();
+
+	private float desiredWaveScale = WaveScale.ZERO_DB.getDb();
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
 			final WaveRollerMadUiDefinition uiDefinition )
@@ -122,5 +130,20 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	public void sendUiActive( final boolean active )
 	{
 		sendTemporalValueToInstance( WaveRollerIOQueueBridge.COMMAND_IN_ACTIVE, ( active ? 1 : 0 ) );
+	}
+
+	public void addScaleChangeListener( final ScaleChangeListener scl )
+	{
+		this.scaleChangeListeners.add( scl );
+		scl.receiveScaleChange( desiredWaveScale );
+	}
+
+	public void setDesiredWaveScale( final WaveScale ws )
+	{
+		desiredWaveScale = ws.getDb();
+		for( final ScaleChangeListener scl : scaleChangeListeners )
+		{
+			scl.receiveScaleChange( desiredWaveScale );
+		}
 	}
 }

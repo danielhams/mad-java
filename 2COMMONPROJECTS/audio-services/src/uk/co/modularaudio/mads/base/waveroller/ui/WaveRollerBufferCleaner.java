@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.base.waveroller.ui;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -28,7 +27,6 @@ import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPainterBufferCleare
 
 public class WaveRollerBufferCleaner implements RollPainterBufferClearer<WaveRollerBuffer>
 {
-	private final static Color BACKGROUND_COLOR = Color.BLACK;
 	private final Rectangle bounds;
 
 	public WaveRollerBufferCleaner( final Rectangle bounds )
@@ -48,8 +46,13 @@ public class WaveRollerBufferCleaner implements RollPainterBufferClearer<WaveRol
 //		{
 //			g.setColor( Color.GREEN );
 //		}
-		g.setColor( BACKGROUND_COLOR );
+		g.setColor( WaveRollerColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, bounds.width, bounds.height );
+
+		g.setColor( WaveRollerColours.SCALE_AXIS_DETAIL );
+		g.drawLine( 0, WaveRollerScaleDisplay.SCALE_MARGIN, bounds.width, WaveRollerScaleDisplay.SCALE_MARGIN );
+		final int bottomLineY = bounds.height - 1 - WaveRollerScaleDisplay.SCALE_MARGIN;
+		g.drawLine( 0, bottomLineY, bounds.width, bottomLineY );
 	}
 
 }

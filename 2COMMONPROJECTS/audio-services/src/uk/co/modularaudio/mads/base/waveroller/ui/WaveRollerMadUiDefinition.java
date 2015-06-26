@@ -50,6 +50,7 @@ public class WaveRollerMadUiDefinition
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"CaptureTime",
+		"ScaleChoice",
 		"Left Scale",
 		"Display",
 		"Right Scale"
@@ -57,6 +58,7 @@ public class WaveRollerMadUiDefinition
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.SLIDER,
+		ControlType.COMBO,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY
@@ -64,16 +66,19 @@ public class WaveRollerMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		WaveRollerCaptureLengthSliderUiJComponent.class,
+		WaveRollerScaleComboUiJComponent.class,
 		WaveRollerScaleDisplay.class,
 		WaveRollerDisplayUiJComponent.class,
 		WaveRollerScaleDisplay.class,
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 116,  3, 434,  30 ),		// Capture Time
-		new Rectangle(   6, 36,  40, 110 ),		// Scale Display
-		new Rectangle(  46, 36, 464, 110 ),		// Display
-		new Rectangle( 510, 36,  40, 110 ),		// Scale Display
+//		new Rectangle( 116,  3, 434,  30 ),		// Capture Time
+		new Rectangle( 116,  3, 294,  30 ),		// Capture Time
+		new Rectangle( 440,  3, 110,  30 ),		// Wave Scale Choice
+		new Rectangle(   6, 36,  45, 110 ),		// Scale Display
+		new Rectangle(  51, 36, 454, 110 ),		// Display
+		new Rectangle( 505, 36,  45, 110 ),		// Scale Display
 	};
 
 	private static final Class<WaveRollerMadUiInstance> INSTANCE_CLASS = WaveRollerMadUiInstance.class;

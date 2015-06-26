@@ -35,9 +35,11 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class DCTrapMadDefinition extends AbstractNonConfigurableMadDefinition<DCTrapMadDefinition, DCTrapMadInstance>
 {
 	// Indexes into the channels
-	public final static int CONSUMER_IN_WAVE = 0;
-	public final static int PRODUCER_OUT_WAVE = 1;
-	public final static int NUM_CHANNELS = 2;
+	public final static int CONSUMER_IN_WAVE_LEFT = 0;
+	public final static int CONSUMER_IN_WAVE_RIGHT = 1;
+	public final static int PRODUCER_OUT_WAVE_LEFT = 2;
+	public final static int PRODUCER_OUT_WAVE_RIGHT = 3;
+	public final static int NUM_CHANNELS = 4;
 
 	public final static String DEFINITION_ID = "dc_trap";
 
@@ -46,20 +48,36 @@ public class DCTrapMadDefinition extends AbstractNonConfigurableMadDefinition<DC
 	private final static String CLASSIFICATION_GROUP = MadClassificationService.SOUND_PROCESSING_GROUP_ID;
 	private final static String CLASSIFICATION_ID = "dc_trap";
 	private final static String CLASSIFICATION_NAME = "DC Trap";
-	private final static String CLASSIFICATION_DESC = "A trap to eliminate DC offset";
+	private final static String CLASSIFICATION_DESC = "A stereo trap to eliminate DC offset";
 
 	// These must match the channel indexes given above
-	private final static String[] CHANNEL_NAMES = new String[] { "Input Wave",
-		"Output Wave"};
+	private final static String[] CHANNEL_NAMES = new String[] {
+		"Input Wave Left",
+		"Input Wave Right",
+		"Output Wave Left",
+		"Output Wave Right"
+	};
 
-	private final static MadChannelType[] CHANNEL_TYPES = new MadChannelType[] { MadChannelType.AUDIO,
-		MadChannelType.AUDIO };
+	private final static MadChannelType[] CHANNEL_TYPES = new MadChannelType[] {
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO,
+		MadChannelType.AUDIO
+	};
 
-	private final static MadChannelDirection[] CHANNEL_DIRS = new MadChannelDirection[] { MadChannelDirection.CONSUMER,
-		MadChannelDirection.PRODUCER };
+	private final static MadChannelDirection[] CHANNEL_DIRS = new MadChannelDirection[] {
+		MadChannelDirection.CONSUMER,
+		MadChannelDirection.CONSUMER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER
+	};
 
-	private final static MadChannelPosition[] CHANNEL_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
-		MadChannelPosition.MONO };
+	private final static MadChannelPosition[] CHANNEL_POSI = new MadChannelPosition[] {
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO
+	};
 
 	public DCTrapMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService mcs ) throws RecordNotFoundException, DatastoreException
