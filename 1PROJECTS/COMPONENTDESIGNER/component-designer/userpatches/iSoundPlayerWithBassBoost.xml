@@ -4,7 +4,7 @@
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="0" row="6"/>
     </rackComponent>
     <rackComponent name="Cross Fader 10" definitionId="cross_fader">
@@ -23,14 +23,14 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="7"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Master Lane" value="-10.875:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-6.2935705"/>
+        <rackControl name="Gain" value="-6.29357"/>
         <rackControl name="FileInfo" value=""/>
         <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2007-08-27_20h24m42milk.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
