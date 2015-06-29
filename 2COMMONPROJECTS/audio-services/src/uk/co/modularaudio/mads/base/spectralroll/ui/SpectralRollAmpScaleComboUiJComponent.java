@@ -35,7 +35,6 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogLogAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
@@ -58,7 +57,6 @@ public class SpectralRollAmpScaleComboUiJComponent
 		model = new DefaultComboBoxModel<String>();
 		model.addElement( "Lin" );
 		model.addElement( "Log" );
-		model.addElement( "Log-Log" );
 
 		model.setSelectedItem( "Log" );
 
@@ -68,7 +66,6 @@ public class SpectralRollAmpScaleComboUiJComponent
 
 		ampScaleToCalculatorMap.put( "Lin", new LinearAmpScaleComputer() );
 		ampScaleToCalculatorMap.put( "Log", new LogarithmicAmpScaleComputer() );
-		ampScaleToCalculatorMap.put( "Log-Log", new LogLogAmpScaleComputer() );
 
 		model.addListDataListener( new ListDataListener()
 		{

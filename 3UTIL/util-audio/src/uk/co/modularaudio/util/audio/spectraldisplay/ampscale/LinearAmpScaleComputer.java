@@ -30,4 +30,17 @@ public class LinearAmpScaleComputer implements AmpScaleComputer
 		return valForBin / 500.0f;
 	}
 
+	@Override
+	public int rawToMappedBucket( final int numBuckets, final float maxValue, final float iRawValue )
+	{
+		final float rawValue = (iRawValue >= maxValue ? 1.0f : (iRawValue / maxValue ));
+		return Math.round((numBuckets - 1) * rawValue);
+	}
+
+	@Override
+	public float mappedBucketToRaw( final int numBuckets, final float maxValue, final int bucket )
+	{
+		return (bucket / (float)(numBuckets-1)) * maxValue;
+	}
+
 }

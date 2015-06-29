@@ -33,21 +33,23 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LinearFreqScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpFrequencyScaleComboUiJComponent
+public class SpectralAmpAmpScaleChoiceUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
+//	private static Log log = LogFactory.getLog( SpectralAmpAmpScaleChoiceUiJComponent.class.getName() );
+
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final Map<String, FrequencyScaleComputer> freqScaleToCalculatorMap = new HashMap<String, FrequencyScaleComputer> ();
+	private final Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
 
-	public SpectralAmpFrequencyScaleComboUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpAmpScaleChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
@@ -62,8 +64,8 @@ public class SpectralAmpFrequencyScaleComboUiJComponent
 				model,
 				false );
 
-		freqScaleToCalculatorMap.put( "Lin", new LinearFreqScaleComputer() );
-		freqScaleToCalculatorMap.put( "Log", new LogarithmicFreqScaleComputer() );
+		ampScaleToCalculatorMap.put( "Lin", new LinearAmpScaleComputer() );
+		ampScaleToCalculatorMap.put( "Log", new LogarithmicAmpScaleComputer() );
 
 		model.addListDataListener( new ListDataListener()
 		{
@@ -81,12 +83,11 @@ public class SpectralAmpFrequencyScaleComboUiJComponent
 			@Override
 			public void contentsChanged( final ListDataEvent e )
 			{
-				final String value = (String)model.getSelectedItem();
-				final FrequencyScaleComputer fsc = freqScaleToCalculatorMap.get( value );
-				uiInstance.setDesiredFreqScaleComputer( fsc );
+				final String curVal = (String)model.getSelectedItem();
+				final AmpScaleComputer asc = ampScaleToCalculatorMap.get( curVal );
+				uiInstance.setDesiredAmpScaleComputer( asc );
 			}
 		} );
-
 	}
 
 	@Override

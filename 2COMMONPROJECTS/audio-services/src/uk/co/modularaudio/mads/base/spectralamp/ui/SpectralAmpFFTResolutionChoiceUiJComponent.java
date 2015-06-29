@@ -33,42 +33,40 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogLogAmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpAmpScaleComboUiJComponent
+public class SpectralAmpFFTResolutionChoiceUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-//	private static Log log = LogFactory.getLog( SpectralAmpAmpScaleComboUiJComponent.class.getName() );
-
 	private final DefaultComboBoxModel<String> model;
+
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
+	private final int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
 
-	public SpectralAmpAmpScaleComboUiJComponent( final SpectralAmpMadDefinition definition,
+	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
+
+	public SpectralAmpFFTResolutionChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		model = new DefaultComboBoxModel<String>();
-		model.addElement( "Lin" );
-		model.addElement( "Log" );
-		model.addElement( "Log-Log" );
 
-		model.setSelectedItem( "Log" );
+		model = new DefaultComboBoxModel<String>();
+
+		for( final int r : resolutionChoices )
+		{
+			final String is = Integer.toString( r );
+			model.addElement( is );
+			runAvToCalculatorMap.put( is, r );
+		}
+
+		model.setSelectedItem( "4096" );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
 				false );
-
-		ampScaleToCalculatorMap.put( "Lin", new LinearAmpScaleComputer() );
-		ampScaleToCalculatorMap.put( "Log", new LogarithmicAmpScaleComputer() );
-		ampScaleToCalculatorMap.put( "Log-Log", new LogLogAmpScaleComputer() );
 
 		model.addListDataListener( new ListDataListener()
 		{
@@ -87,11 +85,10 @@ public class SpectralAmpAmpScaleComboUiJComponent
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String curVal = (String)model.getSelectedItem();
-				final AmpScaleComputer asc = ampScaleToCalculatorMap.get( curVal );
-				uiInstance.setDesiredAmpScaleComputer( asc );
+				final int iVal = runAvToCalculatorMap.get( curVal );
+				uiInstance.setDesiredFftSize( iVal );
 			}
 		} );
-
 	}
 
 	@Override

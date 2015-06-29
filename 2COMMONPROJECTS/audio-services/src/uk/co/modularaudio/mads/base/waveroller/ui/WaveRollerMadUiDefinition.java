@@ -66,7 +66,7 @@ public class WaveRollerMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		WaveRollerCaptureLengthSliderUiJComponent.class,
-		WaveRollerScaleComboUiJComponent.class,
+		WaveRollerScaleLimitComboUiJComponent.class,
 		WaveRollerScaleDisplay.class,
 		WaveRollerDisplayUiJComponent.class,
 		WaveRollerScaleDisplay.class,
@@ -75,7 +75,7 @@ public class WaveRollerMadUiDefinition
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 //		new Rectangle( 116,  3, 434,  30 ),		// Capture Time
 		new Rectangle( 116,  3, 294,  30 ),		// Capture Time
-		new Rectangle( 440,  3, 110,  30 ),		// Wave Scale Choice
+		new Rectangle( 438,  3, 112,  30 ),		// Wave Scale Choice
 		new Rectangle(   6, 36,  45, 110 ),		// Scale Display
 		new Rectangle(  51, 36, 454, 110 ),		// Display
 		new Rectangle( 505, 36,  45, 110 ),		// Scale Display

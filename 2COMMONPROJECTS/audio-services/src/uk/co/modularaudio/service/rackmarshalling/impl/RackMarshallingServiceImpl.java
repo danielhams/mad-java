@@ -118,10 +118,10 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 	private RackDataModel loadRackFromAbsFile( final String filename ) throws DatastoreException, IOException
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Load rack from file (" + filename + ")");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Load rack from file (" + filename + ")");
+//		}
 		try
 		{
 			@SuppressWarnings("unchecked")
@@ -143,10 +143,10 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 	private RackDataModel loadRackFromStructure( final String filename, final RackXmlType jbRackXml )
 			throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException, IOException, ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Load rack from structure (" + filename + ")");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Load rack from structure (" + filename + ")");
+//		}
 		final String rackName = jbRackXml.getName();
 		final int numCols = jbRackXml.getCols();
 		final int numRows = jbRackXml.getRows();

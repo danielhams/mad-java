@@ -26,9 +26,6 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -40,11 +37,11 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
 public class WaveRollerScaleDisplay extends JPanel
 	implements IMadUiControlInstance<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>,
-	ScaleChangeListener
+	ScaleLimitChangeListener
 {
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog( WaveRollerScaleDisplay.class.getName() );
+//	private static Log log = LogFactory.getLog( WaveRollerScaleDisplay.class.getName() );
 
 	public final static int SCALE_MARGIN = 10;
 
@@ -52,7 +49,7 @@ public class WaveRollerScaleDisplay extends JPanel
 
 	private final boolean isLeftDisplay;
 
-	private float currentMaxValueDb = 0.0f;
+	private float currentScaleLimitDb = 0.0f;
 
 	private final FontMetrics fm;
 
@@ -61,8 +58,7 @@ public class WaveRollerScaleDisplay extends JPanel
 			final WaveRollerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		log.debug("Created scale display with index " + controlIndex );
-
+//		log.debug("Created scale display with index " + controlIndex );
 		isLeftDisplay = ( controlIndex == 2 );
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
@@ -107,10 +103,10 @@ public class WaveRollerScaleDisplay extends JPanel
 		g.drawLine( llStartX, topScaleY, llEndX, topScaleY );
 
 		// Draw the scale bits
-		final float currentMaxAsAbs = AudioMath.dbToLevelF( currentMaxValueDb );
+		final float currentMaxAsAbs = AudioMath.dbToLevelF( currentScaleLimitDb );
 		final float halfwayDb = AudioMath.levelToDbF( currentMaxAsAbs / 2.0f );
 
-		paintScaleText( g, width, currentMaxValueDb, bottomScaleY );
+		paintScaleText( g, width, currentScaleLimitDb, bottomScaleY );
 
 		paintScaleText( g, width, halfwayDb, midBottomY );
 
@@ -118,7 +114,7 @@ public class WaveRollerScaleDisplay extends JPanel
 
 		paintScaleText( g, width, halfwayDb, topMidY );
 
-		paintScaleText( g, width, currentMaxValueDb, topScaleY );
+		paintScaleText( g, width, currentScaleLimitDb, topScaleY );
 	}
 
 	private final void paintScaleText( final Graphics g,
@@ -175,9 +171,9 @@ public class WaveRollerScaleDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveScaleChange( final float newMaxDB )
+	public void receiveScaleLimitChange( final float newMaxDB )
 	{
-		currentMaxValueDb = newMaxDB;
+		currentScaleLimitDb = newMaxDB;
 		repaint();
 	}
 }

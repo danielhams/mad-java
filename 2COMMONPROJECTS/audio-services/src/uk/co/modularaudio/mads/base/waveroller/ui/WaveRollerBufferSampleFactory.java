@@ -43,7 +43,7 @@ import uk.co.modularaudio.util.math.MinMaxComputer;
 
 public class WaveRollerBufferSampleFactory
 	implements RollPainterSampleFactory<WaveRollerBuffer,WaveRollerBufferCleaner>,
-	ScaleChangeListener
+	ScaleLimitChangeListener
 {
 	private static Log log = LogFactory.getLog( WaveRollerBufferSampleFactory.class.getName() );
 
@@ -389,7 +389,7 @@ public class WaveRollerBufferSampleFactory
 	}
 
 	@Override
-	public void receiveScaleChange( final float newMaxDB )
+	public void receiveScaleLimitChange( final float newMaxDB )
 	{
 		final float negatedDb = -newMaxDB;
 		final float asLevel = AudioMath.dbToLevelF( negatedDb );

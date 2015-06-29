@@ -102,6 +102,25 @@ public class MathFormatter
 
 	public static String fastFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
 	{
+		if( f == Float.NEGATIVE_INFINITY )
+		{
+			return "-Inf";
+		}
+		else if( f == Float.POSITIVE_INFINITY )
+		{
+			if( echoPlus )
+			{
+				return "+Inf";
+			}
+			else
+			{
+				return "Inf";
+			}
+		}
+		else if( f == Float.NaN )
+		{
+			return "NaN";
+		}
 		final int minDigits = numDecimals + 1;
 		int asInt = (int)(f * Math.pow( 10, numDecimals) );
 		final boolean negative = asInt < 0;

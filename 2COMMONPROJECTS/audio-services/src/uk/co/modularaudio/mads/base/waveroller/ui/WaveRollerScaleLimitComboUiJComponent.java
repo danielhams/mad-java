@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class WaveRollerScaleComboUiJComponent extends JPanel
+public class WaveRollerScaleLimitComboUiJComponent extends JPanel
 	implements IMadUiControlInstance<WaveRollerMadDefinition, WaveRollerMadInstance, WaveRollerMadUiInstance>
 {
 	private static final long serialVersionUID = -3615905365787164682L;
@@ -48,7 +48,7 @@ public class WaveRollerScaleComboUiJComponent extends JPanel
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	public enum WaveScale
+	public enum AmpScale
 	{
 		ZERO_DB( "0dB", 0.0f ),
 		M_FIVE_DB( "-5dB", -5.0f ),
@@ -56,7 +56,7 @@ public class WaveRollerScaleComboUiJComponent extends JPanel
 		M_FIFTEEN_DB( "-15dB", -15.0f ),
 		M_TWENTY_DB( "-20dB", -20.0f );
 
-		private WaveScale( final String name, final float db )
+		private AmpScale( final String name, final float db )
 		{
 			this.name = name;
 			this.db = db;
@@ -76,17 +76,17 @@ public class WaveRollerScaleComboUiJComponent extends JPanel
 		private float db;
 	};
 
-	private static final Map<String, WaveScale> NAME_TO_WAVESCALE_MAP = new HashMap<String, WaveScale> ();
+	private static final Map<String, AmpScale> NAME_TO_WAVESCALE_MAP = new HashMap<String, AmpScale> ();
 
 	static
 	{
-		for( final WaveScale ws : WaveScale.values() )
+		for( final AmpScale ws : AmpScale.values() )
 		{
 			NAME_TO_WAVESCALE_MAP.put( ws.getName(), ws );
 		}
 	}
 
-	public WaveRollerScaleComboUiJComponent( final WaveRollerMadDefinition definition,
+	public WaveRollerScaleLimitComboUiJComponent( final WaveRollerMadDefinition definition,
 			final WaveRollerMadInstance instance,
 			final WaveRollerMadUiInstance uiInstance,
 			final int controlIndex )
@@ -109,13 +109,13 @@ public class WaveRollerScaleComboUiJComponent extends JPanel
 		add( label, "align center, right" );
 
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( WaveScale.ZERO_DB.getName() );
-		model.addElement( WaveScale.M_FIVE_DB.getName() );
-		model.addElement( WaveScale.M_TEN_DB.getName() );
-		model.addElement( WaveScale.M_FIFTEEN_DB.getName() );
-		model.addElement( WaveScale.M_TWENTY_DB.getName() );
+		model.addElement( AmpScale.ZERO_DB.getName() );
+		model.addElement( AmpScale.M_FIVE_DB.getName() );
+		model.addElement( AmpScale.M_TEN_DB.getName() );
+		model.addElement( AmpScale.M_FIFTEEN_DB.getName() );
+		model.addElement( AmpScale.M_TWENTY_DB.getName() );
 
-		model.setSelectedItem( WaveScale.ZERO_DB.getName() );
+		model.setSelectedItem( AmpScale.ZERO_DB.getName() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
@@ -138,8 +138,8 @@ public class WaveRollerScaleComboUiJComponent extends JPanel
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String value = (String)model.getSelectedItem();
-				final WaveScale ws = NAME_TO_WAVESCALE_MAP.get( value );
-				uiInstance.setDesiredWaveScale( ws );
+				final AmpScale ws = NAME_TO_WAVESCALE_MAP.get( value );
+				uiInstance.setDesiredAmpScaleLimit( ws );
 			}
 		} );
 

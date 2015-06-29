@@ -33,40 +33,59 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpResolutionComboUiJComponent
+public class SpectralAmpRunningAverageChoiceUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
 	private final DefaultComboBoxModel<String> model;
-
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
+	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
 
-	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
+	private final Map<String, RunningAverageComputer> runAvToCalculatorMap = new HashMap<String, RunningAverageComputer> ();
+	private final Map<RunningAverageComputer, String> calculatorToNameMap = new HashMap<RunningAverageComputer, String> ();
 
-	public SpectralAmpResolutionComboUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpRunningAverageChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
 		model = new DefaultComboBoxModel<String>();
+		model.addElement( "Off" );
+		model.addElement( "Short Average" );
+		model.addElement( "Long Average" );
+		model.addElement( "Fall" );
+		model.addElement( "Fast Fall" );
+		model.addElement( "Peak Hold" );
 
-		for( final int r : resolutionChoices )
-		{
-			final String is = Integer.toString( r );
-			model.addElement( is );
-			runAvToCalculatorMap.put( is, r );
-		}
-
-		model.setSelectedItem( "4096" );
+		model.setSelectedItem( "Fast Fall" );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
 				false );
+
+		runAvToCalculatorMap.put( "Off", new NoAverageComputer() );
+		runAvToCalculatorMap.put( "Short Average", new ShortAverageComputer() );
+		runAvToCalculatorMap.put( "Long Average", new LongAverageComputer() );
+		runAvToCalculatorMap.put( "Fall", new FallComputer() );
+		runAvToCalculatorMap.put( "Fast Fall", new FastFallComputer() );
+		runAvToCalculatorMap.put( "Peak Hold", peakHoldComputer );
+
+		for( final String name : runAvToCalculatorMap.keySet() )
+		{
+			calculatorToNameMap.put( runAvToCalculatorMap.get( name ), name );
+		}
+
+		uiInstance.setPeakHoldComputer( peakHoldComputer );
 
 		model.addListDataListener( new ListDataListener()
 		{
@@ -84,9 +103,9 @@ public class SpectralAmpResolutionComboUiJComponent
 			@Override
 			public void contentsChanged( final ListDataEvent e )
 			{
-				final String curVal = (String)model.getSelectedItem();
-				final int iVal = runAvToCalculatorMap.get( curVal );
-				uiInstance.setDesiredFftSize( iVal );
+				final String val = (String)model.getSelectedItem();
+				final RunningAverageComputer ac = runAvToCalculatorMap.get( val );
+				uiInstance.setDesiredRunningAverageComputer( ac );
 			}
 		} );
 	}

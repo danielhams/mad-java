@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerIOQueueBridge;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
-import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerScaleComboUiJComponent.WaveScale;
+import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerScaleLimitComboUiJComponent.AmpScale;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -48,9 +48,9 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 
 	private WaveRollerDataListener scopeDataListener;
 
-	private final List<ScaleChangeListener> scaleChangeListeners = new ArrayList<ScaleChangeListener>();
+	private final List<ScaleLimitChangeListener> scaleChangeListeners = new ArrayList<ScaleLimitChangeListener>();
 
-	private float desiredWaveScale = WaveScale.ZERO_DB.getDb();
+	private float desiredAmpScaleLimitDb = 0.0f;
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
 			final WaveRollerMadUiDefinition uiDefinition )
@@ -132,18 +132,18 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 		sendTemporalValueToInstance( WaveRollerIOQueueBridge.COMMAND_IN_ACTIVE, ( active ? 1 : 0 ) );
 	}
 
-	public void addScaleChangeListener( final ScaleChangeListener scl )
+	public void addScaleChangeListener( final ScaleLimitChangeListener scl )
 	{
 		this.scaleChangeListeners.add( scl );
-		scl.receiveScaleChange( desiredWaveScale );
+		scl.receiveScaleLimitChange( desiredAmpScaleLimitDb );
 	}
 
-	public void setDesiredWaveScale( final WaveScale ws )
+	public void setDesiredAmpScaleLimit( final AmpScale ws )
 	{
-		desiredWaveScale = ws.getDb();
-		for( final ScaleChangeListener scl : scaleChangeListeners )
+		desiredAmpScaleLimitDb = ws.getDb();
+		for( final ScaleLimitChangeListener scl : scaleChangeListeners )
 		{
-			scl.receiveScaleChange( desiredWaveScale );
+			scl.receiveScaleLimitChange( desiredAmpScaleLimitDb );
 		}
 	}
 }

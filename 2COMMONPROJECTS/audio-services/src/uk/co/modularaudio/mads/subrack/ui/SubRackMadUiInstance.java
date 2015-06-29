@@ -308,10 +308,10 @@ public class SubRackMadUiInstance extends AbstractMadUiInstance<SubRackMadDefini
 		final RackDataModel oldPatch = subRackDataModel;
 		try
 		{
-			if( log.isDebugEnabled() )
-			{
-				log.debug("Rack load completed - replacing existing model with new one" );
-			}
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Rack load completed - replacing existing model with new one" );
+//			}
 			subRackDataModel = newRackDataModel;
 			patchPanel.setRackDataModel( subRackDataModel );
 			instance.setSubRackDataModel( subRackDataModel, false );

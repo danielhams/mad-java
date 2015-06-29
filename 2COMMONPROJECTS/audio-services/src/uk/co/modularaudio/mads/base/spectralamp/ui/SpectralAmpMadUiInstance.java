@@ -20,7 +20,9 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpLimitChoiceUiJComponent.AmpLimit;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
@@ -78,6 +81,10 @@ public class SpectralAmpMadUiInstance extends
 	private SpecDataListener specDataListener;
 	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
+
+	private final List<AmpAxisChangeListener> ampScaleChangeListeners = new ArrayList<>();
+	private float desiredAmpScaleLimitDb = 0.0f;
+	private final List<FreqAxisChangeListener> freqScaleChangeListeners = new ArrayList<>();
 
 	public SpectralAmpMadUiInstance( final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiDefinition uiDefinition )
@@ -286,12 +293,20 @@ public class SpectralAmpMadUiInstance extends
 	{
 		this.desiredAmpScaleComputer = desiredAmpScaleComputer;
 		reinitialiseFrequencyProcessor();
+		for( final AmpAxisChangeListener cl : ampScaleChangeListeners )
+		{
+			cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
+		}
 	}
 
 	public void setDesiredFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
 	{
 		this.desiredFreqScaleComputer = desiredFreqScaleComputer;
 		reinitialiseFrequencyProcessor();
+		for( final FreqAxisChangeListener cl : freqScaleChangeListeners )
+		{
+			cl.receiveFreqScaleComputer( desiredFreqScaleComputer );
+		}
 	}
 
 	public void setDesiredRunningAverageComputer( final RunningAverageComputer desiredRunningAverageComputer )
@@ -310,4 +325,25 @@ public class SpectralAmpMadUiInstance extends
 		return peakHoldComputer;
 	}
 
+	public void addAmpScaleChangeListener( final AmpAxisChangeListener cl )
+	{
+		ampScaleChangeListeners.add( cl );
+		cl.receiveAxisScaleChange( desiredAmpScaleLimitDb );
+		cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
+	}
+
+	public void setDesiredAmpLimit( final AmpLimit al )
+	{
+		this.desiredAmpScaleLimitDb = al.getDb();
+		for( final AmpAxisChangeListener cl : ampScaleChangeListeners )
+		{
+			cl.receiveAxisScaleChange( desiredAmpScaleLimitDb );
+		}
+	}
+
+	public void addFreqScaleChangeListener( final FreqAxisChangeListener cl )
+	{
+		freqScaleChangeListeners.add( cl );
+		cl.receiveFreqScaleComputer( desiredFreqScaleComputer );
+	}
 }

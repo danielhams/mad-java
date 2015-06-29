@@ -41,8 +41,6 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 
 public class PeakDisplay
 {
-	private static final Color RUNNING_PEAK_COLOR = new Color( 209, 139, 46, 255 );
-
 	private static Log log = LogFactory.getLog( PeakDisplay.class.getName() );
 
 	private final int canvasWidth;
@@ -84,8 +82,6 @@ public class PeakDisplay
 
 	public void paint( final Graphics2D g2d )
 	{
-		// Paint the current image one the right so that currentPixelIndex lines up with the right hand side
-		// then paint the other image to it's right lined up
 		if( image != null )
 		{
 			final int currentXOffset = 0;
@@ -93,7 +89,8 @@ public class PeakDisplay
 		}
 		else
 		{
-			g2d.setColor( Color.BLACK );
+			g2d.setColor( SpectralAmpColours.BACKGROUND_COLOR );
+//			g2d.setColor( SpectralAmpColours.RUNNING_PEAK_COLOR );
 			g2d.fillRect( 0, 0, canvasWidth, canvasHeight );
 		}
 	}
@@ -228,7 +225,7 @@ public class PeakDisplay
 
 						if( !drawSolid )
 						{
-							color = RUNNING_PEAK_COLOR;
+							color = SpectralAmpColours.RUNNING_PEAK_COLOR;
 						}
 						else
 						{
