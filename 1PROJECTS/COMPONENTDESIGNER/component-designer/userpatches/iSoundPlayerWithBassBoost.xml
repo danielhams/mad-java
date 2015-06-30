@@ -4,7 +4,7 @@
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Bass Boost Rack" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Bass Boost Rack" definitionId="sub_rack">
         <rackPosition column="0" row="6"/>
     </rackComponent>
     <rackComponent name="Cross Fader 10" definitionId="cross_fader">
@@ -23,16 +23,16 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="7"/>
-        <rackControl name="Master Lane" value="-9.125:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-6.359918"/>
+        <rackControl name="Gain" value="-6.3610053"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/Mixes/2007-08-04_14h57m33omgqtfbbq.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 107 Bootshaus master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -49,16 +49,14 @@
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Freq Scale Axis" value=""/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 8" definitionId="sub_rack">
         <rackPosition column="0" row="5"/>
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="4"/>
-        <rackControl name="CaptureTime" value="492.89487"/>
+        <rackControl name="CaptureTime" value="60.0"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

@@ -30,7 +30,11 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
-import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMaxChoiceUiJComponent.AmpLimit;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMappingChoiceUiJComponent.AmpMapping;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMaxChoiceUiJComponent.AmpMax;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMinChoiceUiJComponent.AmpMin;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpFreqMappingChoiceUiJComponent.FreqMapping;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpRunningAverageChoiceUiJComponent.RunningAverage;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
@@ -46,12 +50,19 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicDbAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicNaturalAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LinearFreqScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.streaming.StreamingWolaProcessor;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
@@ -70,21 +81,41 @@ public class SpectralAmpMadUiInstance extends
 	private BackendToFrontendDataRingBuffer backendRingBuffer;
 
 	// Things the UI sets
-	private int desiredFftSize = 4096;
-	private FrequencyScaleComputer desiredFreqScaleComputer = new LogarithmicFreqScaleComputer();
-	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicNaturalAmpScaleComputer();
-	private RunningAverageComputer desiredRunningAverageComputer = new FastFallComputer();
+	private int desiredFftSize = SpectralAmpFFTResolutionChoiceUiJComponent.DEFAULT_RESOLUTION;
 
-	private PeakHoldComputer peakHoldComputer;
+	// How the frequency scale is computed
+	private final FrequencyScaleComputer linearFreqScaleComputer = new LinearFreqScaleComputer();
+	private final FrequencyScaleComputer logFreqScaleComputer = new LogarithmicFreqScaleComputer();
 
+	private FrequencyScaleComputer desiredFreqScaleComputer = logFreqScaleComputer;
+
+	// How the amplitude scale is computed
+	private final AmpScaleComputer linearAmpScaleComputer = new LinearAmpScaleComputer();
+	private final AmpScaleComputer logAmpScaleComputer = new LogarithmicNaturalAmpScaleComputer();
+	private final AmpScaleComputer logDbAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
+
+	private AmpScaleComputer desiredAmpScaleComputer = logAmpScaleComputer;
+
+	// How the running average is computed
+	private final RunningAverageComputer noAverageComputer = new NoAverageComputer();
+	private final RunningAverageComputer shortAverageComputer = new ShortAverageComputer();
+	private final RunningAverageComputer longAverageComputer = new LongAverageComputer();
+	private final RunningAverageComputer fallComputer = new FallComputer();
+	private final RunningAverageComputer fastFallComputer = new FastFallComputer();
+	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
+
+	private RunningAverageComputer desiredRunningAverageComputer = fastFallComputer;
+
+	// The FFT processor and bits used to pull out the amplitudes
 	private StreamingWolaProcessor wolaProcessor;
 	private SpecDataListener specDataListener;
 	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 	private int currentNumBins = 0;
 
+	private float desiredAmpMinDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
+	private float desiredAmpMaxDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
 	private final List<AmpAxisChangeListener> ampAxisChangeListeners = new ArrayList<>();
-	private float desiredAmpMaxDb = 0.0f;
 	private final List<FreqAxisChangeListener> freqAxisChangeListeners = new ArrayList<>();
 	private final List<RunningAvChangeListener> runAvChangeListeners = new ArrayList<>();
 
@@ -302,26 +333,6 @@ public class SpectralAmpMadUiInstance extends
 		return desiredRunningAverageComputer;
 	}
 
-	public void setDesiredAmpScaleComputer( final AmpScaleComputer desiredAmpScaleComputer )
-	{
-		this.desiredAmpScaleComputer = desiredAmpScaleComputer;
-		reinitialiseFrequencyProcessor();
-		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
-		{
-			cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
-		}
-	}
-
-	public void setDesiredFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
-	{
-		this.desiredFreqScaleComputer = desiredFreqScaleComputer;
-		reinitialiseFrequencyProcessor();
-		for( final FreqAxisChangeListener cl : freqAxisChangeListeners )
-		{
-			cl.receiveFreqScaleComputer( desiredFreqScaleComputer );
-		}
-	}
-
 	public void setDesiredRunningAverageComputer( final RunningAverageComputer desiredRunningAverageComputer )
 	{
 		this.desiredRunningAverageComputer = desiredRunningAverageComputer;
@@ -332,29 +343,34 @@ public class SpectralAmpMadUiInstance extends
 		}
 	}
 
-	public void setPeakHoldComputer( final PeakHoldComputer peakHoldComputer )
+	public void resetPeakHoldComputer()
 	{
-		this.peakHoldComputer = peakHoldComputer;
-	}
-
-	public PeakHoldComputer getPeakHoldComputer()
-	{
-		return peakHoldComputer;
+		peakHoldComputer.reset();
 	}
 
 	public void addAmpAxisChangeListener( final AmpAxisChangeListener cl )
 	{
 		ampAxisChangeListeners.add( cl );
+		cl.receiveAmpMinDbChange( desiredAmpMinDb );
 		cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
 		cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
 	}
 
-	public void setDesiredAmpMax( final AmpLimit al )
+	public void setDesiredAmpMax( final AmpMax al )
 	{
 		this.desiredAmpMaxDb = al.getDb();
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
 			cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
+		}
+	}
+
+	public void setDesiredAmpMin( final AmpMin am )
+	{
+		this.desiredAmpMinDb = am.getDb();
+		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
+		{
+			cl.receiveAmpMinDbChange( desiredAmpMinDb );
 		}
 	}
 
@@ -369,5 +385,105 @@ public class SpectralAmpMadUiInstance extends
 	{
 		runAvChangeListeners.add( racl );
 		racl.receiveRunAvComputer( desiredRunningAverageComputer );
+	}
+
+	public void setDesiredAmpMapping( final AmpMapping mapping )
+	{
+		switch( mapping )
+		{
+			case LINEAR:
+			{
+				desiredAmpScaleComputer = linearAmpScaleComputer;
+				break;
+			}
+			case LOG:
+			default:
+			{
+				desiredAmpScaleComputer = logAmpScaleComputer;
+				break;
+			}
+			case LOG_DB:
+			{
+				desiredAmpScaleComputer = logDbAmpScaleComputer;
+				break;
+			}
+		}
+		// When I'm ready to move over to min/max in the computers
+//		desiredAmpScaleComputer.setAmpMaxDb( desiredAmpMaxDb );
+//		desiredAmpScaleComputer.setAmpMinDb( desiredAmpMinDb );
+
+//		reinitialiseFrequencyProcessor();
+		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
+		{
+			cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
+		}
+	}
+
+	public void setDesiredFreqMapping( final FreqMapping mapping )
+	{
+		switch( mapping )
+		{
+			case LINEAR:
+			{
+				desiredFreqScaleComputer = linearFreqScaleComputer;
+				break;
+			}
+			case LOG:
+			default:
+			{
+				desiredFreqScaleComputer = logFreqScaleComputer;
+				break;
+			}
+		}
+
+//		reinitialiseFrequencyProcessor();
+		for( final FreqAxisChangeListener fl : freqAxisChangeListeners )
+		{
+			fl.receiveFreqScaleComputer( desiredFreqScaleComputer );
+		}
+	}
+
+	public void setDesiredRunningAverage( final RunningAverage runningAverage )
+	{
+		switch( runningAverage )
+		{
+			case OFF:
+			{
+				desiredRunningAverageComputer = noAverageComputer;
+				break;
+			}
+			case SHORT:
+			{
+				desiredRunningAverageComputer = shortAverageComputer;
+				break;
+			}
+			case LONG:
+			{
+				desiredRunningAverageComputer = longAverageComputer;
+				break;
+			}
+			case FALL:
+			{
+				desiredRunningAverageComputer = fallComputer;
+				break;
+			}
+			case FAST_FALL:
+			default:
+			{
+				desiredRunningAverageComputer = fastFallComputer;
+				break;
+			}
+			case PEAK_HOLD:
+			{
+				desiredRunningAverageComputer = peakHoldComputer;
+				break;
+			}
+		}
+
+		for( final RunningAvChangeListener rcl : runAvChangeListeners )
+		{
+			rcl.receiveRunAvComputer( desiredRunningAverageComputer );
+		}
+
 	}
 }

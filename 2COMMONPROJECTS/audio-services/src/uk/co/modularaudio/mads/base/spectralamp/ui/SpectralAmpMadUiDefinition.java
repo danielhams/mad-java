@@ -47,7 +47,8 @@ public class SpectralAmpMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"ScaleChoice",
+		"AmpCeil",
+		"AmpFloor",
 		"Resolution",
 		"Frequency Scale",
 		"Amp Scale",
@@ -64,6 +65,7 @@ public class SpectralAmpMadUiDefinition
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
+		ControlType.COMBO,
 		ControlType.BUTTON,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY,
@@ -72,13 +74,13 @@ public class SpectralAmpMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		SpectralAmpAmpMaxChoiceUiJComponent.class,
+		SpectralAmpAmpMinChoiceUiJComponent.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
-		SpectralAmpFreqScaleChoiceUiJComponent.class,
-		SpectralAmpAmpScaleChoiceUiJComponent.class,
+		SpectralAmpFreqMappingChoiceUiJComponent.class,
+		SpectralAmpAmpMappingChoiceUiJComponent.class,
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class,
 		SpectralAmpAmpAxisDisplay.class,
-//		SpectralAmpDisplayUiJComponent.class,
 		NonBiBackedPeakDisplay.class,
 		SpectralAmpFreqAxisDisplay.class
 	};
@@ -88,7 +90,8 @@ public class SpectralAmpMadUiDefinition
 	public final static int FREQ_AXIS_COMPONENT_HEIGHT = 25;
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 438,   3, 112,  30 ),		// Amp Limit Choice
+		new Rectangle( 238,   3, 150,  30 ),		// Amp Ceil Choice
+		new Rectangle( 400,   3, 150,  30 ),		// Amp Floor Choice
 		new Rectangle(   8, 274,  80,  30 ),		// FFT Resolution
 		new Rectangle( 108, 274,  66,  30 ),		// Freq Scale
 		new Rectangle( 194, 274,  90,  30 ),		// Amp Scale

@@ -33,7 +33,6 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
@@ -47,16 +46,13 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 	private final static int AXIS_LABEL_LINE_HEIGHT = 8;
 
-	public static final int NUM_MARKERS = 5;
+	public static final int NUM_MARKERS = 9;
 
 	private final FontMetrics fm;
 
 	private final SpectralAmpMadUiInstance uiInstance;
 
 	private float currentMaxFreq = DataRate.CD_QUALITY.getValue() / 2.0f;
-
-	// Default is logarithmic
-	private FrequencyScaleComputer currentFreqScaleComputer = new LogarithmicFreqScaleComputer();
 
 	public SpectralAmpFreqAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
@@ -75,6 +71,8 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
+		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
+
 		final int width = getWidth();
 		final int height = getHeight();
 
@@ -105,7 +103,7 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 			g.drawLine( regularX, llStartY, regularX, llEndY );
 
-			final float freq = currentFreqScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
+			final float freq = freqScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
 					currentMaxFreq,
 					regularX );
 
@@ -164,8 +162,6 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	@Override
 	public void receiveFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
 	{
-//		log.debug("Received new freq scale computer: " + desiredFreqScaleComputer.toString());
-		currentFreqScaleComputer = desiredFreqScaleComputer;
 		repaint();
 	}
 

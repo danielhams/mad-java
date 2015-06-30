@@ -76,7 +76,7 @@ public class SpectralAmpPeakResetUiJComponent extends LWTCButton
 	@Override
 	public void receiveClick()
 	{
-		uiInstance.getPeakHoldComputer().reset();
+		uiInstance.resetPeakHoldComputer();
 	}
 
 }

@@ -23,8 +23,10 @@ package uk.co.modularaudio.mads.base.spectralamp.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -33,42 +35,93 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LinearAmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicDbAmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicNaturalAmpScaleComputer;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpAmpScaleChoiceUiJComponent
+public class SpectralAmpAmpMinChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-//	private static Log log = LogFactory.getLog( SpectralAmpAmpScaleChoiceUiJComponent.class.getName() );
+	private static final long serialVersionUID = -3615905365787164682L;
 
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final Map<String, AmpScaleComputer> ampScaleToCalculatorMap = new HashMap<String, AmpScaleComputer> ();
+	public enum AmpMin
+	{
+		M_80_DB( "-80dB", -80.0f ),
+		M_96_DB( "-96dB", -96.0f ),
+		M_100_DB( "-100dB", -100.0f ),
+		M_120_DB( "-120dB", -120.0f ),
+		M_144_DB( "-144dB", -144.0f );
 
-	public SpectralAmpAmpScaleChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+		private AmpMin( final String name, final float db )
+		{
+			this.name = name;
+			this.db = db;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public float getDb()
+		{
+			return db;
+		}
+
+		private String name;
+		private float db;
+	};
+
+	public final static AmpMin DEFAULT_AMP_MIN = AmpMin.M_96_DB;
+
+	private static final Map<String, AmpMin> NAME_TO_WAVESCALE_MAP = new HashMap<String, AmpMin> ();
+
+	static
+	{
+		for( final AmpMin ws : AmpMin.values() )
+		{
+			NAME_TO_WAVESCALE_MAP.put( ws.getName(), ws );
+		}
+	}
+
+	public SpectralAmpAmpMinChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		model = new DefaultComboBoxModel<String>();
-		model.addElement( "Lin" );
-		model.addElement( "Log" );
-		model.addElement( "Log dB" );
+		setOpaque( false );
 
-		model.setSelectedItem( "Log" );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
+
+		msh.addColumnConstraint( "[grow 0][fill]" );
+
+		setLayout( msh.createMigLayout() );
+
+		final LWTCLabel label = new LWTCLabel( "Amp Floor:" );
+		label.setBorder( BorderFactory.createEmptyBorder() );
+		label.setFont( LWTCControlConstants.LABEL_FONT );
+		add( label, "align center, right" );
+
+		model = new DefaultComboBoxModel<String>();
+		model.addElement( AmpMin.M_80_DB.getName() );
+		model.addElement( AmpMin.M_96_DB.getName() );
+		model.addElement( AmpMin.M_100_DB.getName() );
+		model.addElement( AmpMin.M_120_DB.getName() );
+		model.addElement( AmpMin.M_144_DB.getName() );
+
+		model.setSelectedItem( DEFAULT_AMP_MIN.getName() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
 				false );
-
-		ampScaleToCalculatorMap.put( "Lin", new LinearAmpScaleComputer() );
-		ampScaleToCalculatorMap.put( "Log", new LogarithmicNaturalAmpScaleComputer() );
-		ampScaleToCalculatorMap.put( "Log dB", new LogarithmicDbAmpScaleComputer() );
 
 		model.addListDataListener( new ListDataListener()
 		{
@@ -86,17 +139,19 @@ public class SpectralAmpAmpScaleChoiceUiJComponent
 			@Override
 			public void contentsChanged( final ListDataEvent e )
 			{
-				final String curVal = (String)model.getSelectedItem();
-				final AmpScaleComputer asc = ampScaleToCalculatorMap.get( curVal );
-				uiInstance.setDesiredAmpScaleComputer( asc );
+				final String value = (String)model.getSelectedItem();
+				final AmpMin ws = NAME_TO_WAVESCALE_MAP.get( value );
+				uiInstance.setDesiredAmpMin( ws );
 			}
 		} );
+
+		add( rotaryChoice, "grow" );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return rotaryChoice;
+		return this;
 	}
 
 	@Override

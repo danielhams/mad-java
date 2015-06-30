@@ -48,7 +48,7 @@ public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	public enum AmpLimit
+	public enum AmpMax
 	{
 		ZERO_DB( "0dB", 0.0f ),
 		M_FIVE_DB( "-5dB", -5.0f ),
@@ -60,7 +60,7 @@ public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 		M_FIFTY_DB( "-50dB", -50.0f ),
 		M_SIXTY_DB( "-60dB", -60.0f );
 
-		private AmpLimit( final String name, final float db )
+		private AmpMax( final String name, final float db )
 		{
 			this.name = name;
 			this.db = db;
@@ -80,11 +80,13 @@ public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 		private float db;
 	};
 
-	private static final Map<String, AmpLimit> NAME_TO_WAVESCALE_MAP = new HashMap<String, AmpLimit> ();
+	public static final AmpMax DEFAULT_AMP_MAX = AmpMax.ZERO_DB;
+
+	private static final Map<String, AmpMax> NAME_TO_WAVESCALE_MAP = new HashMap<String, AmpMax> ();
 
 	static
 	{
-		for( final AmpLimit ws : AmpLimit.values() )
+		for( final AmpMax ws : AmpMax.values() )
 		{
 			NAME_TO_WAVESCALE_MAP.put( ws.getName(), ws );
 		}
@@ -107,23 +109,23 @@ public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 
 		setLayout( msh.createMigLayout() );
 
-		final LWTCLabel label = new LWTCLabel( "Scale:" );
+		final LWTCLabel label = new LWTCLabel( "Amp Ceiling:" );
 		label.setBorder( BorderFactory.createEmptyBorder() );
 		label.setFont( LWTCControlConstants.LABEL_FONT );
 		add( label, "align center, right" );
 
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( AmpLimit.ZERO_DB.getName() );
-		model.addElement( AmpLimit.M_FIVE_DB.getName() );
-		model.addElement( AmpLimit.M_TEN_DB.getName() );
-		model.addElement( AmpLimit.M_FIFTEEN_DB.getName() );
-		model.addElement( AmpLimit.M_TWENTY_DB.getName() );
-		model.addElement( AmpLimit.M_THIRTY_DB.getName() );
-		model.addElement( AmpLimit.M_FORTY_DB.getName() );
-		model.addElement( AmpLimit.M_FIFTY_DB.getName() );
-		model.addElement( AmpLimit.M_SIXTY_DB.getName() );
+		model.addElement( AmpMax.ZERO_DB.getName() );
+		model.addElement( AmpMax.M_FIVE_DB.getName() );
+		model.addElement( AmpMax.M_TEN_DB.getName() );
+		model.addElement( AmpMax.M_FIFTEEN_DB.getName() );
+		model.addElement( AmpMax.M_TWENTY_DB.getName() );
+		model.addElement( AmpMax.M_THIRTY_DB.getName() );
+		model.addElement( AmpMax.M_FORTY_DB.getName() );
+		model.addElement( AmpMax.M_FIFTY_DB.getName() );
+		model.addElement( AmpMax.M_SIXTY_DB.getName() );
 
-		model.setSelectedItem( AmpLimit.ZERO_DB.getName() );
+		model.setSelectedItem( DEFAULT_AMP_MAX.getName() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
@@ -146,7 +148,7 @@ public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String value = (String)model.getSelectedItem();
-				final AmpLimit ws = NAME_TO_WAVESCALE_MAP.get( value );
+				final AmpMax ws = NAME_TO_WAVESCALE_MAP.get( value );
 				uiInstance.setDesiredAmpMax( ws );
 			}
 		} );

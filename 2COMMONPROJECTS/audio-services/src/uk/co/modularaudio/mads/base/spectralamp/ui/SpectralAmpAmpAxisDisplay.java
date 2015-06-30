@@ -33,7 +33,6 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicDbAmpScaleComputer;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
@@ -49,18 +48,20 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 
 	public static final int NUM_MARKERS = 5;
 
-	private float currentMaxValueDb = 0.0f;
+	private final SpectralAmpMadUiInstance uiInstance;
+
+	private float currentMinValueDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
+	private float currentMaxValueDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
 
 	private final FontMetrics fm;
-
-	// Default is logarithmic
-	private AmpScaleComputer currentAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
 
 	public SpectralAmpAmpAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		this.uiInstance = uiInstance;
+
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
 		fm = getFontMetrics( getFont() );
@@ -71,6 +72,8 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
+		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
+
 		final int width = getWidth();
 		final int height = getHeight();
 
@@ -94,7 +97,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 				SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET -
 				SpectralAmpMadUiDefinition.FREQ_AXIS_COMPONENT_HEIGHT;
 
-		final float valueOfLimit = AudioMath.dbToLevelF( currentMaxValueDb );
+		final float valueOfMax = AudioMath.dbToLevelF( currentMaxValueDb );
 ///		log.debug("Computed value with limit " + valueOfLimit );
 
 		final float floatStepPerBlock = 1.0f / (NUM_MARKERS-1);
@@ -111,8 +114,8 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 			g.drawLine( llStartX, intraYOffset, llEndX, intraYOffset );
 
 			// Work out what the label should be here
-			final float result = currentAmpScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
-					valueOfLimit,
+			final float result = ampScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
+					valueOfMax,
 					regularY );
 
 			final float asDb = AudioMath.levelToDbF( result );
@@ -183,10 +186,15 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	}
 
 	@Override
+	public void receiveAmpMinDbChange( final float newMinDB )
+	{
+		currentMinValueDb = newMinDB;
+		repaint();
+	}
+
+	@Override
 	public void receiveAmpScaleComputer( final AmpScaleComputer desiredAmpScaleComputer )
 	{
-//		log.debug("Received new amp scale computer: " + desiredAmpScaleComputer.toString() );
-		currentAmpScaleComputer = desiredAmpScaleComputer;
 		repaint();
 	}
 }

@@ -36,19 +36,15 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpRunningAverageChoiceUiJComponent
+public class SpectralAmpFreqMappingChoiceUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	public enum RunningAverage
+	public enum FreqMapping
 	{
-		OFF( "Off" ),
-		SHORT( "Short Average" ),
-		LONG( "Long Average" ),
-		FALL( "Fall" ),
-		FAST_FALL( "Fast Fall" ),
-		PEAK_HOLD( "Peak Hold" );
+		LINEAR( "Lin" ),
+		LOG( "Log" );
 
-		private RunningAverage( final String label )
+		private FreqMapping( final String label )
 		{
 			this.label = label;
 		}
@@ -61,37 +57,29 @@ public class SpectralAmpRunningAverageChoiceUiJComponent
 		}
 	};
 
-	public final static RunningAverage DEFAULT_RUNNING_AVERAGE = RunningAverage.FAST_FALL;
+	public final static FreqMapping DEFAULT_FREQ_MAPPING = FreqMapping.LOG;
 
-	private final static Map<String, RunningAverage> LABEL_TO_MAPPING = new HashMap<>();
+	private final static Map<String, FreqMapping> LABEL_TO_MAPPING = new HashMap<>();
 
 	static
 	{
-		LABEL_TO_MAPPING.put( RunningAverage.OFF.getLabel(), RunningAverage.OFF );
-		LABEL_TO_MAPPING.put( RunningAverage.SHORT.getLabel(), RunningAverage.SHORT );
-		LABEL_TO_MAPPING.put( RunningAverage.LONG.getLabel(), RunningAverage.LONG );
-		LABEL_TO_MAPPING.put( RunningAverage.FALL.getLabel(), RunningAverage.FALL );
-		LABEL_TO_MAPPING.put( RunningAverage.FAST_FALL.getLabel(), RunningAverage.FAST_FALL );
-		LABEL_TO_MAPPING.put( RunningAverage.PEAK_HOLD.getLabel(), RunningAverage.PEAK_HOLD );
+		LABEL_TO_MAPPING.put( FreqMapping.LINEAR.getLabel(), FreqMapping.LINEAR );
+		LABEL_TO_MAPPING.put( FreqMapping.LOG.getLabel(), FreqMapping.LOG );
 	}
 
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	public SpectralAmpRunningAverageChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpFreqMappingChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( RunningAverage.OFF.getLabel() );
-		model.addElement( RunningAverage.SHORT.getLabel() );
-		model.addElement( RunningAverage.LONG.getLabel() );
-		model.addElement( RunningAverage.FALL.getLabel() );
-		model.addElement( RunningAverage.FAST_FALL.getLabel() );
-		model.addElement( RunningAverage.PEAK_HOLD.getLabel() );
+		model.addElement( FreqMapping.LINEAR.getLabel() );
+		model.addElement( FreqMapping.LOG.getLabel() );
 
-		model.setSelectedItem( DEFAULT_RUNNING_AVERAGE.getLabel() );
+		model.setSelectedItem( DEFAULT_FREQ_MAPPING.getLabel() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
@@ -113,11 +101,12 @@ public class SpectralAmpRunningAverageChoiceUiJComponent
 			@Override
 			public void contentsChanged( final ListDataEvent e )
 			{
-				final String val = (String)model.getSelectedItem();
-				final RunningAverage ra = LABEL_TO_MAPPING.get( val );
-				uiInstance.setDesiredRunningAverage( ra );
+				final String value = (String)model.getSelectedItem();
+				final FreqMapping freqMapping = LABEL_TO_MAPPING.get( value );
+				uiInstance.setDesiredFreqMapping( freqMapping );
 			}
 		} );
+
 	}
 
 	@Override

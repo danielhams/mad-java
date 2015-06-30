@@ -33,37 +33,62 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LinearFreqScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpFreqScaleChoiceUiJComponent
+public class SpectralAmpAmpMappingChoiceUiJComponent
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
+//	private static Log log = LogFactory.getLog( SpectralAmpAmpMappingChoiceUiJComponent.class.getName() );
+
+	public enum AmpMapping
+	{
+		LINEAR( "Lin" ),
+		LOG( "Log" ),
+		LOG_DB( "Log dB" );
+
+		private AmpMapping( final String label )
+		{
+			this.label = label;
+		}
+
+		private String label;
+
+		public String getLabel()
+		{
+			return label;
+		}
+	};
+
+	public final static AmpMapping DEFAULT_AMP_MAPPING = AmpMapping.LOG;
+
+	private final static Map<String, AmpMapping> LABEL_TO_MAPPING = new HashMap<>();
+
+	static
+	{
+		LABEL_TO_MAPPING.put( AmpMapping.LINEAR.getLabel(), AmpMapping.LINEAR );
+		LABEL_TO_MAPPING.put( AmpMapping.LOG.getLabel(), AmpMapping.LOG );
+		LABEL_TO_MAPPING.put( AmpMapping.LOG_DB.getLabel(), AmpMapping.LOG_DB );
+	}
+
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final Map<String, FrequencyScaleComputer> freqScaleToCalculatorMap = new HashMap<String, FrequencyScaleComputer> ();
-
-	public SpectralAmpFreqScaleChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpAmpMappingChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( "Lin" );
-		model.addElement( "Log" );
+		model.addElement( AmpMapping.LINEAR.getLabel() );
+		model.addElement( AmpMapping.LOG.getLabel() );
+		model.addElement( AmpMapping.LOG_DB.getLabel() );
 
-		model.setSelectedItem( "Log" );
+		model.setSelectedItem( DEFAULT_AMP_MAPPING.getLabel() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
 				false );
-
-		freqScaleToCalculatorMap.put( "Lin", new LinearFreqScaleComputer() );
-		freqScaleToCalculatorMap.put( "Log", new LogarithmicFreqScaleComputer() );
 
 		model.addListDataListener( new ListDataListener()
 		{
@@ -81,12 +106,11 @@ public class SpectralAmpFreqScaleChoiceUiJComponent
 			@Override
 			public void contentsChanged( final ListDataEvent e )
 			{
-				final String value = (String)model.getSelectedItem();
-				final FrequencyScaleComputer fsc = freqScaleToCalculatorMap.get( value );
-				uiInstance.setDesiredFreqScaleComputer( fsc );
+				final String curVal = (String)model.getSelectedItem();
+				final AmpMapping mapping = LABEL_TO_MAPPING.get( curVal );
+				uiInstance.setDesiredAmpMapping( mapping );
 			}
 		} );
-
 	}
 
 	@Override
