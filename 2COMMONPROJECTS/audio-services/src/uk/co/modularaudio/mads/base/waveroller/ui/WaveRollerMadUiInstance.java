@@ -37,6 +37,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisSliderModel;
 
 public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<WaveRollerMadDefinition, WaveRollerMadInstance>
 	implements IOQueueEventUiConsumer<WaveRollerMadInstance>
@@ -51,6 +52,8 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	private final List<ScaleLimitChangeListener> scaleChangeListeners = new ArrayList<ScaleLimitChangeListener>();
 
 	private float desiredAmpScaleLimitDb = 0.0f;
+
+	private float captureMillis = LogarithmicTimeMillisSliderModel.DEFAULT_CAPTURE_MILLIS;
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
 			final WaveRollerMadUiDefinition uiDefinition )
@@ -117,10 +120,12 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 	public void setScopeDataListener( final WaveRollerDataListener scopeDataListener )
 	{
 		this.scopeDataListener = scopeDataListener;
+		scopeDataListener.setCaptureTimeMillis( captureMillis );
 	}
 
 	public void setCaptureTime( final float captureMillis )
 	{
+		this.captureMillis = captureMillis;
 		if( scopeDataListener != null )
 		{
 			scopeDataListener.setCaptureTimeMillis( captureMillis );

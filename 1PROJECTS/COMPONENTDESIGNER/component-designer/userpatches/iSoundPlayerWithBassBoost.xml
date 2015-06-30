@@ -49,14 +49,16 @@
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Freq Scale Axis" value=""/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 8" definitionId="sub_rack">
         <rackPosition column="0" row="5"/>
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="4"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="CaptureTime" value="492.89487"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

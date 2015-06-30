@@ -25,9 +25,10 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class LogarithmicTimeMillisSliderModel extends SliderDisplayModel
 {
+	public static final float DEFAULT_CAPTURE_MILLIS = 60.0f;
 	public LogarithmicTimeMillisSliderModel()
 	{
-		super( 1.0f, 5000.0f, 60.0f,
+		super( 1.0f, 5000.0f, DEFAULT_CAPTURE_MILLIS,
 				60.0f,
 				4999,
 				100,
