@@ -28,7 +28,6 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
-import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -51,8 +50,6 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	private final FontMetrics fm;
 
 	private final SpectralAmpMadUiInstance uiInstance;
-
-	private final float currentMaxFreq = DataRate.CD_QUALITY.getValue() / 2.0f;
 
 	public SpectralAmpFreqAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
