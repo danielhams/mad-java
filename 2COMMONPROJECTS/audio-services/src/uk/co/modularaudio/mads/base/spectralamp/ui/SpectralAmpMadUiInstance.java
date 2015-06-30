@@ -139,9 +139,10 @@ public class SpectralAmpMadUiInstance extends
 
 		// Notify the frequency axis listeners we've started since the
 		// frequency scale depends on the sample rate we're running at
+		desiredFreqScaleComputer.setMaxFrequency( dataRate.getValue() / 2.0f );
 		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
 		{
-			facl.receiveDataRateChange( dataRate );
+			facl.receiveFreqScaleChange();
 		}
 	}
 
@@ -377,8 +378,7 @@ public class SpectralAmpMadUiInstance extends
 	public void addFreqAxisChangeListener( final FreqAxisChangeListener cl )
 	{
 		freqAxisChangeListeners.add( cl );
-		cl.receiveFreqScaleComputer( desiredFreqScaleComputer );
-		cl.receiveDataRateChange( dataRate );
+		cl.receiveFreqScaleChange();
 	}
 
 	public void addRunAvChangeListener( final RunningAvChangeListener racl )
@@ -433,9 +433,11 @@ public class SpectralAmpMadUiInstance extends
 			}
 		}
 
+		desiredFreqScaleComputer.setMaxFrequency( dataRate.getValue() / 2.0f );
+
 		for( final FreqAxisChangeListener fl : freqAxisChangeListeners )
 		{
-			fl.receiveFreqScaleComputer( desiredFreqScaleComputer );
+			fl.receiveFreqScaleChange();
 		}
 	}
 

@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
 
@@ -86,30 +87,38 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 		return sp;
 	}
 
+	private float maxFrequency = DataRate.CD_QUALITY.getValue() / 2.0f;
+
 	@Override
-	public int rawToMappedBucket( final int numBuckets, final float maxFreq, final float rawValue )
+	public void setMaxFrequency( final float f )
+	{
+		this.maxFrequency = f;
+	}
+
+	@Override
+	public int rawToMappedBucketMinMax( final int numBuckets, final float rawValue )
 	{
 		if( rawValue <= 0.0f )
 		{
 			return 0;
 		}
-		else if( rawValue >= maxFreq )
+		else if( rawValue >= maxFrequency )
 		{
 			return numBuckets - 1;
 		}
 		else
 		{
-			final float normalisedValue = rawValue / maxFreq;
-			final float mappedValue = NormalisedValuesMapper.logMinMaxMapF( normalisedValue, 0.0f, maxFreq );
+			final float normalisedValue = rawValue / maxFrequency;
+			final float mappedValue = NormalisedValuesMapper.logMinMaxMapF( normalisedValue, 0.0f, maxFrequency );
 			return Math.round( mappedValue * (numBuckets - 1) );
 		}
 	}
 
 	@Override
-	public float mappedBucketToRaw( final int numBuckets, final float maxFreq, final int bucket )
+	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
 	{
 		final float normalisedValue = bucket / (float)(numBuckets-1);
-		return NormalisedValuesMapper.expMinMaxMapF( normalisedValue, 0.0f, maxFreq ) * maxFreq;
+		return NormalisedValuesMapper.expMinMaxMapF( normalisedValue, 0.0f, maxFrequency ) * maxFrequency;
 	}
 
 }

@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
+import uk.co.modularaudio.util.audio.format.DataRate;
+
 
 public class LinearFreqScaleComputer implements FrequencyScaleComputer
 {
@@ -37,18 +39,25 @@ public class LinearFreqScaleComputer implements FrequencyScaleComputer
 		return( (int)(currentSpectralPoint * fIndex) );
 	}
 
+	private float maxFrequency = DataRate.CD_QUALITY.getValue() / 2.0f;
+
 	@Override
-	public int rawToMappedBucket( final int numBuckets, final float maxFreq, final float rawValue )
+	public void setMaxFrequency( final float f )
 	{
-		final float normalisedValue = rawValue / maxFreq;
+		this.maxFrequency = f;
+	}
+
+	@Override
+	public int rawToMappedBucketMinMax( final int numBuckets, final float rawValue )
+	{
+		final float normalisedValue = rawValue / maxFrequency;
 		return Math.round( (numBuckets-1) * normalisedValue );
 	}
 
 	@Override
-	public float mappedBucketToRaw( final int numBuckets, final float maxFreq, final int bucket )
+	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
 	{
 		final float normalisedValue = (bucket / (float)(numBuckets-1));
-		return normalisedValue * maxFreq;
+		return normalisedValue * maxFrequency;
 	}
-
 }

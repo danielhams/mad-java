@@ -26,8 +26,8 @@ public interface FrequencyScaleComputer
 
 	int spectraBinToDisplayBin( int numBins, int numDisplayPoints, int currentSpectralPoint );
 
-	// Provide methods to and from so that labelling
-	// of axes is straightforward
-	int rawToMappedBucket( int numBuckets, float maxFreq, float rawValue );
-	float mappedBucketToRaw( int numBuckets, float maxFreq, int bucket );
+	// New methods
+	void setMaxFrequency( float f );
+	int rawToMappedBucketMinMax( int numBuckets, float rawValue );
+	float mappedBucketToRawMinMax( int numBuckets, int bucket );
 }

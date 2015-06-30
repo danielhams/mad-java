@@ -52,7 +52,7 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 	private final SpectralAmpMadUiInstance uiInstance;
 
-	private float currentMaxFreq = DataRate.CD_QUALITY.getValue() / 2.0f;
+	private final float currentMaxFreq = DataRate.CD_QUALITY.getValue() / 2.0f;
 
 	public SpectralAmpFreqAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
@@ -103,8 +103,7 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 			g.drawLine( regularX, llStartY, regularX, llEndY );
 
-			final float freq = freqScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
-					currentMaxFreq,
+			final float freq = freqScaleComputer.mappedBucketToRawMinMax( numAxisPixelsToDivide + 1,
 					regularX );
 
 			paintScaleText( g, freq, regularX );
@@ -160,15 +159,8 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
+	public void receiveFreqScaleChange()
 	{
-		repaint();
-	}
-
-	@Override
-	public void receiveDataRateChange( final DataRate dataRate )
-	{
-		currentMaxFreq = dataRate.getValue() / 2.0f;
 		repaint();
 	}
 }

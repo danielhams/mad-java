@@ -33,6 +33,8 @@ public class TestSpectralDisplayMappings extends TestCase
 	private final static float TEST_MAX_DB = 0.0f;
 //	private final static float TEST_MAX_DB = -10.0f;
 
+	private final static float TEST_MAX_FREQ = 24000.0f;
+
 	static
 	{
 		log.debug("Test min DB(" + TEST_MIN_DB + ")" );
@@ -152,15 +154,16 @@ public class TestSpectralDisplayMappings extends TestCase
 		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
 	}
 
-	public void dtestLinearFreqScaleComputations() throws Exception
+	public void testLinearFreqScaleComputations() throws Exception
 	{
 		final LinearFreqScaleComputer lfsc = new LinearFreqScaleComputer();
+		lfsc.setMaxFrequency( TEST_MAX_FREQ );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
-			final float bucketRawValue = lfsc.mappedBucketToRaw( NUM_TEST_BUCKETS, MAX_FREQ, i );
+			final float bucketRawValue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, i );
 
-			final int andBack = lfsc.rawToMappedBucket( NUM_TEST_BUCKETS, MAX_FREQ, bucketRawValue );
+			final int andBack = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, bucketRawValue );
 
 			log.trace("FREQ LINEAR For bucket " + i + " raw value=" +
 					MathFormatter.slowFloatPrint( bucketRawValue, 6, false ) +
@@ -170,15 +173,16 @@ public class TestSpectralDisplayMappings extends TestCase
 		}
 	}
 
-	public void dtestLogFreqScaleComputations() throws Exception
+	public void testLogFreqScaleComputations() throws Exception
 	{
 		final LogarithmicFreqScaleComputer lfsc = new LogarithmicFreqScaleComputer();
+		lfsc.setMaxFrequency( TEST_MAX_FREQ );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
-			final float bucketRawValue = lfsc.mappedBucketToRaw( NUM_TEST_BUCKETS, MAX_FREQ, i );
+			final float bucketRawValue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, i );
 
-			final int andBack = lfsc.rawToMappedBucket( NUM_TEST_BUCKETS, MAX_FREQ, bucketRawValue );
+			final int andBack = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, bucketRawValue );
 
 			log.trace("FREQ LOGARITHMIC For bucket " + i + " raw value=" +
 					MathFormatter.slowFloatPrint( bucketRawValue, 6, false ) +
