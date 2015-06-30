@@ -22,9 +22,12 @@ package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
 public interface FrequencyScaleComputer
 {
-
 	int displayBinToSpectraBin(int numBins, int numDisplayPoints, int currentDisplayPoint);
 
 	int spectraBinToDisplayBin( int numBins, int numDisplayPoints, int currentSpectralPoint );
 
+	// Provide methods to and from so that labelling
+	// of axes is straightforward
+	int rawToMappedBucket( int numBuckets, float maxFreq, float rawValue );
+	float mappedBucketToRaw( int numBuckets, float maxFreq, int bucket );
 }

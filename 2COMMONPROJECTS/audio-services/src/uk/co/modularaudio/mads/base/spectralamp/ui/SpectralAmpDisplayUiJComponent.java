@@ -40,11 +40,13 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 
 	private static final long serialVersionUID = -4063236010563819354L;
 
-	private PeakDisplay peakDisplay;
+	private NTSpectralAmpPeakDisplayUiJComponent peakDisplay;
 
 	private final SpectralAmpMadUiInstance uiInstance;
 
 	private boolean previouslyShowing;
+	private int width;
+	private int height;
 
 	public SpectralAmpDisplayUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
@@ -61,8 +63,19 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 	public void setBounds( final Rectangle bounds )
 	{
 		super.setBounds( bounds );
+		width = bounds.width;
+		height = bounds.height;
+	}
 
-		peakDisplay = new PeakDisplay( this, bounds.width, bounds.height, uiInstance );
+	private void checkPeakDisplayCreated()
+	{
+		if( peakDisplay == null )
+		{
+			peakDisplay = new NTSpectralAmpPeakDisplayUiJComponent( this,
+					width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET,
+					height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET,
+					uiInstance );
+		}
 	}
 
 	@Override
@@ -76,6 +89,7 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
+		checkPeakDisplayCreated();
 		final boolean showing = isShowing();
 
 		if( previouslyShowing != showing )
@@ -96,6 +110,8 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 //		long paintTime = System.nanoTime();
 //		log.debug( "ScAPeakDisplay paint at ts:" + paintTime );
 
+		checkPeakDisplayCreated();
+
 		if( isVisible() && peakDisplay != null )
 		{
 			final Graphics2D g2d = (Graphics2D)g;
@@ -106,6 +122,7 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 	@Override
 	public void processScopeData( final float[] processedAmpsData )
 	{
+		checkPeakDisplayCreated();
 		peakDisplay.processNewAmps( processedAmpsData );
 		// Now repaint
 		repaint();
@@ -129,5 +146,10 @@ public class SpectralAmpDisplayUiJComponent extends PacPanel
 	public boolean needsDisplayProcessing()
 	{
 		return true;
+	}
+
+	@Override
+	public void setNumBins( final int numBins )
+	{
 	}
 }

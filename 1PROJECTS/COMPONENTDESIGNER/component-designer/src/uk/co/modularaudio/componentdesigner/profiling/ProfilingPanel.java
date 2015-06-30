@@ -114,7 +114,7 @@ public class ProfilingPanel extends JPanel
 		jobDurationDisplay.setText( TimestampFormatter.formatNanos( dspJobDuration ) );
 		overheadDurationDisplay.setText( TimestampFormatter.formatNanos( overheadDuration ) );
 		final float percentage = (overheadDuration / (float)totalDuration) * 100.0f;
-		overheadPercentDisplay.setText( MathFormatter.fastFloatPrint( percentage, 2, false ) );
+		overheadPercentDisplay.setText( MathFormatter.slowFloatPrint( percentage, 2, false ) );
 		numRenderingThreadsDisplay.setText( Integer.toString(numRenderingThreads) );
 		numUsedThreadsDisplay.setText( Integer.toString( numUniqueThreads ) );
 	}

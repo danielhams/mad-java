@@ -24,13 +24,16 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 
 
 
-public class LogarithmicAmpScaleComputer implements AmpScaleComputer
+public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 {
 //	private static Log log = LogFactory.getLog( LogarithmicAmpScaleComputer.class.getName() );
 
 	private final static float SCALE_FACTOR = 9.08f;
 
-	public final static float MIN_DB_VALUE = -96.0f;
+//	public final static float MIN_DB_VALUE = -80.0f;
+//	public final static float MIN_DB_VALUE = -96.0f;
+//	public final static float MIN_DB_VALUE = -100.0f;
+	public final static float MIN_DB_VALUE = -120.0f;
 	public final static float MIN_RAW_VALUE = AudioMath.dbToLevelF( MIN_DB_VALUE );
 
 	@Override
@@ -43,10 +46,8 @@ public class LogarithmicAmpScaleComputer implements AmpScaleComputer
 	}
 
 	@Override
-	public int rawToMappedBucket( final int numBuckets, final float maxValue, final float iRawValue )
+	public int rawToMappedBucket( final int numBuckets, final float maxValue, final float rawValue )
 	{
-		final float rawValue = ( iRawValue > maxValue ? 1.0f : (iRawValue / maxValue) );
-
 		if( rawValue >= maxValue )
 		{
 			return (numBuckets-1);
@@ -54,14 +55,17 @@ public class LogarithmicAmpScaleComputer implements AmpScaleComputer
 		else
 		{
 			final float asDb = AudioMath.levelToDbF( rawValue );
+
 			if( asDb < MIN_DB_VALUE )
 			{
 				return 0;
 			}
 			else
 			{
-				final float dbOver = asDb - MIN_DB_VALUE;
-				final float normalisedValue = dbOver / -MIN_DB_VALUE;
+				final float maxDbValue = AudioMath.levelToDbF( maxValue );
+
+				final float normalisedValue = (asDb - MIN_DB_VALUE) / (maxDbValue-MIN_DB_VALUE );
+
 				return 1 + Math.round( normalisedValue * (numBuckets-2) );
 			}
 		}
@@ -73,19 +77,18 @@ public class LogarithmicAmpScaleComputer implements AmpScaleComputer
 		float dbValueInBucket;
 		if( bucket == 0 )
 		{
-			dbValueInBucket = Float.NEGATIVE_INFINITY;
+			return 0.0f;
 		}
 		else
 		{
 			final float normalisedValue = (bucket-1) / (float)(numBuckets-2);
-			dbValueInBucket = MIN_DB_VALUE + (normalisedValue * -MIN_DB_VALUE);
-		}
-		final float rawValue = AudioMath.dbToLevelF( dbValueInBucket );
-		final float finalValue = rawValue * maxValue;
-//		log.debug("With " + numBuckets + " mapped buckets " + bucket + " is db " +
-//				dbValueInBucket + " which is " + MathFormatter.slowFloatPrint( finalValue, 7, false ) );
 
-		return finalValue;
+			final float maxDbValue = AudioMath.levelToDbF( maxValue );
+
+			dbValueInBucket = MIN_DB_VALUE + (normalisedValue * (maxDbValue-MIN_DB_VALUE));
+			final float finalValue = AudioMath.dbToLevelF( dbValueInBucket );
+			return finalValue;
+		}
 	}
 
 }

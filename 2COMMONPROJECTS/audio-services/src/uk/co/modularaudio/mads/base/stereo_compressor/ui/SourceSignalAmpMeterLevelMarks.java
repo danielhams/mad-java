@@ -97,7 +97,7 @@ public class SourceSignalAmpMeterLevelMarks extends JComponent
 			}
 			else
 			{
-				labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
+				labelStr = MathFormatter.slowFloatPrint( levelToMark, 0, false );
 			}
 			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );

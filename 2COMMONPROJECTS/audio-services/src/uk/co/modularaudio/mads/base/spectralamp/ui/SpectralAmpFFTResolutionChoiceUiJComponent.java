@@ -43,7 +43,9 @@ public class SpectralAmpFFTResolutionChoiceUiJComponent
 
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final int[] resolutionChoices = new int[] { 256, 512, 1024, 2048, 4096, 8192, 16384 };
+	private final int[] resolutionChoices = new int[] { 2048, 4096, 8192, 16384 };
+
+	public static final int DEFAULT_RESOLUTION = 4096;
 
 	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
 
@@ -62,7 +64,7 @@ public class SpectralAmpFFTResolutionChoiceUiJComponent
 			runAvToCalculatorMap.put( is, r );
 		}
 
-		model.setSelectedItem( "4096" );
+		model.setSelectedItem( Integer.toString(DEFAULT_RESOLUTION) );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,

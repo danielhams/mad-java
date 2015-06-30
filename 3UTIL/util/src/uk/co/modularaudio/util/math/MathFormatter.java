@@ -33,11 +33,6 @@ public class MathFormatter
 		return slowFloatPrint( f, 2, true );
 	}
 
-	private static String fastFloatPrint( final float f )
-	{
-		return fastFloatPrint( f, 2, true );
-	}
-
 	public static String slowFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
 	{
 		final Formatter formatter = formatterPool.getFormatter();
@@ -70,93 +65,13 @@ public class MathFormatter
 		return retVal;
 	}
 
-	public static void fastFloatPrintSb( final StringBuilder sb,
-			final float f, final int numDecimals, final boolean echoPlus )
-	{
-		final int minDigits = numDecimals + 1;
-		int asInt = (int)(f * Math.pow( 10, numDecimals) );
-		final boolean negative = asInt < 0;
-		asInt = (negative ? -asInt : asInt );
-
-		for( int i = 0 ; i < minDigits || asInt > 0 ; i++ )
-		{
-			final int curDigit = asInt % 10;
-			asInt = asInt / 10;
-			if( i == numDecimals && numDecimals > 0)
-			{
-				sb.append( '.' );
-			}
-			sb.append( Integer.toString( curDigit ) );
-		}
-		if( negative )
-		{
-			sb.append( '-' );
-		}
-		else if( echoPlus )
-		{
-			sb.append( '+' );
-		}
-		// Now back again
-		sb.reverse();
-	}
-
-	public static String fastFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
-	{
-		if( f == Float.NEGATIVE_INFINITY )
-		{
-			return "-Inf";
-		}
-		else if( f == Float.POSITIVE_INFINITY )
-		{
-			if( echoPlus )
-			{
-				return "+Inf";
-			}
-			else
-			{
-				return "Inf";
-			}
-		}
-		else if( f == Float.NaN )
-		{
-			return "NaN";
-		}
-		final int minDigits = numDecimals + 1;
-		int asInt = (int)(f * Math.pow( 10, numDecimals) );
-		final boolean negative = asInt < 0;
-		asInt = (negative ? -asInt : asInt );
-		final StringBuilder inReverse = new StringBuilder(64);
-
-		for( int i = 0 ; i < minDigits || asInt > 0 ; i++ )
-		{
-			final int curDigit = asInt % 10;
-			asInt = asInt / 10;
-			if( i == numDecimals && numDecimals > 0)
-			{
-				inReverse.append( '.' );
-			}
-			inReverse.append( Integer.toString( curDigit ) );
-		}
-		if( negative )
-		{
-			inReverse.append( '-' );
-		}
-		else if( echoPlus )
-		{
-			inReverse.append( '+' );
-		}
-		// Now back again
-		inReverse.reverse();
-		return inReverse.toString();
-	}
-
 	public static String floatArrayPrint( final float[] floats )
 	{
 		final StringBuilder retVal = new StringBuilder();
 
 		for( int i = 0 ; i < floats.length ; i++ )
 		{
-			retVal.append( fastFloatPrint( floats[ i ] ) );
+			retVal.append( slowFloatPrint( floats[ i ] ) );
 			if( i < floats.length - 1 )
 			{
 				retVal.append( ",");

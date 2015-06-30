@@ -124,7 +124,7 @@ public class MixerFaderMarks extends JPanel
 			}
 			else
 			{
-				labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, (levelToMark != 0)  );
+				labelStr = MathFormatter.slowFloatPrint( levelToMark, 0, (levelToMark != 0)  );
 			}
 			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );

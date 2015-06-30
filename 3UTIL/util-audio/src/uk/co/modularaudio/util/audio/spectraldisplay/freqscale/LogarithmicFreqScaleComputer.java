@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.audio.spectraldisplay.freqscale;
 
+import uk.co.modularaudio.util.math.NormalisedValuesMapper;
+
 
 public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 {
@@ -82,6 +84,32 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 		}
 
 		return sp;
+	}
+
+	@Override
+	public int rawToMappedBucket( final int numBuckets, final float maxFreq, final float rawValue )
+	{
+		if( rawValue <= 0.0f )
+		{
+			return 0;
+		}
+		else if( rawValue >= maxFreq )
+		{
+			return numBuckets - 1;
+		}
+		else
+		{
+			final float normalisedValue = rawValue / maxFreq;
+			final float mappedValue = NormalisedValuesMapper.logMinMaxMapF( normalisedValue, 0.0f, maxFreq );
+			return Math.round( mappedValue * (numBuckets - 1) );
+		}
+	}
+
+	@Override
+	public float mappedBucketToRaw( final int numBuckets, final float maxFreq, final int bucket )
+	{
+		final float normalisedValue = bucket / (float)(numBuckets-1);
+		return NormalisedValuesMapper.expMinMaxMapF( normalisedValue, 0.0f, maxFreq ) * maxFreq;
 	}
 
 }

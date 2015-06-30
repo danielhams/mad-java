@@ -33,7 +33,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicDbAmpScaleComputer;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
@@ -45,16 +45,16 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 
 //	private static Log log = LogFactory.getLog( SpectralAmpAmpAxisDisplay.class.getName() );
 
-	private final static int LL_WIDTH = 8;
+	private final static int AXIS_LABEL_LINE_WIDTH = 8;
 
-	private static final int NUM_MARKERS = 5;
+	public static final int NUM_MARKERS = 5;
 
 	private float currentMaxValueDb = 0.0f;
 
 	private final FontMetrics fm;
 
 	// Default is logarithmic
-	private AmpScaleComputer currentAmpScaleComputer = new LogarithmicAmpScaleComputer();
+	private AmpScaleComputer currentAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
 
 	public SpectralAmpAmpAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
@@ -65,7 +65,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 
 		fm = getFontMetrics( getFont() );
 
-		uiInstance.addAmpScaleChangeListener( this );
+		uiInstance.addAmpAxisChangeListener( this );
 	}
 
 	@Override
@@ -81,17 +81,17 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 		// Draw scale margin
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 		final int x = width - 1;
-		final int topScaleY = SpectralAmpMadUiDefinition.SCALES_OFFSET;
+		final int topScaleY = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET;
 		final int bottomScaleY = height -
 				SpectralAmpMadUiDefinition.FREQ_AXIS_COMPONENT_HEIGHT;
 		g.drawLine( x, bottomScaleY, x, topScaleY );
 
-		final int llStartX = width - 1 - LL_WIDTH;
+		final int llStartX = width - 1 - AXIS_LABEL_LINE_WIDTH;
 		final int llEndX = width - 1;
 
 //		log.debug("Current max DB is " + currentMaxValueDb );
 		final int numAxisPixelsToDivide = height - 1 -
-				SpectralAmpMadUiDefinition.SCALES_OFFSET -
+				SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET -
 				SpectralAmpMadUiDefinition.FREQ_AXIS_COMPONENT_HEIGHT;
 
 		final float valueOfLimit = AudioMath.dbToLevelF( currentMaxValueDb );
@@ -133,11 +133,11 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 				?
 				"-Inf"
 				:
-				MathFormatter.fastFloatPrint( scaleFloat, 1, false )
+				MathFormatter.slowFloatPrint( scaleFloat, 1, false )
 			);
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
-		final int charsEndX = width - LL_WIDTH - 2;
+		final int charsEndX = width - AXIS_LABEL_LINE_WIDTH - 2;
 		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
 	}
 
@@ -176,7 +176,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveAxisScaleChange( final float newMaxDB )
+	public void receiveAmpLimitDbChange( final float newMaxDB )
 	{
 		currentMaxValueDb = newMaxDB;
 		repaint();

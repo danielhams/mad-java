@@ -54,7 +54,11 @@ public class SpectralAmpAmpLimitChoiceUiJComponent extends JPanel
 		M_FIVE_DB( "-5dB", -5.0f ),
 		M_TEN_DB( "-10dB", -10.0f ),
 		M_FIFTEEN_DB( "-15dB", -15.0f ),
-		M_TWENTY_DB( "-20dB", -20.0f );
+		M_TWENTY_DB( "-20dB", -20.0f ),
+		M_THIRTY_DB( "-30dB", -30.0f ),
+		M_FORTY_DB( "-40dB", -40.0f ),
+		M_FIFTY_DB( "-50dB", -50.0f ),
+		M_SIXTY_DB( "-60dB", -60.0f );
 
 		private AmpLimit( final String name, final float db )
 		{
@@ -114,6 +118,10 @@ public class SpectralAmpAmpLimitChoiceUiJComponent extends JPanel
 		model.addElement( AmpLimit.M_TEN_DB.getName() );
 		model.addElement( AmpLimit.M_FIFTEEN_DB.getName() );
 		model.addElement( AmpLimit.M_TWENTY_DB.getName() );
+		model.addElement( AmpLimit.M_THIRTY_DB.getName() );
+		model.addElement( AmpLimit.M_FORTY_DB.getName() );
+		model.addElement( AmpLimit.M_FIFTY_DB.getName() );
+		model.addElement( AmpLimit.M_SIXTY_DB.getName() );
 
 		model.setSelectedItem( AmpLimit.ZERO_DB.getName() );
 

@@ -128,7 +128,7 @@ public class WaveRollerScaleDisplay extends JPanel
 				?
 				"-Inf dB"
 				:
-				MathFormatter.fastFloatPrint( scaleFloat, 0, false ) + " dB"
+				MathFormatter.slowFloatPrint( scaleFloat, 0, false ) + " dB"
 			);
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );

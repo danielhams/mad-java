@@ -26,4 +26,6 @@ public interface SpecDataListener
 
 	void processScopeData( float[] computedAmpsData );
 
+	void setNumBins( int numBins );
+
 }

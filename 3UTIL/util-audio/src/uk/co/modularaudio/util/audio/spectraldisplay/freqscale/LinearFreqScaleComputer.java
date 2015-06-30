@@ -37,4 +37,18 @@ public class LinearFreqScaleComputer implements FrequencyScaleComputer
 		return( (int)(currentSpectralPoint * fIndex) );
 	}
 
+	@Override
+	public int rawToMappedBucket( final int numBuckets, final float maxFreq, final float rawValue )
+	{
+		final float normalisedValue = rawValue / maxFreq;
+		return Math.round( (numBuckets-1) * normalisedValue );
+	}
+
+	@Override
+	public float mappedBucketToRaw( final int numBuckets, final float maxFreq, final int bucket )
+	{
+		final float normalisedValue = (bucket / (float)(numBuckets-1));
+		return normalisedValue * maxFreq;
+	}
+
 }

@@ -64,7 +64,7 @@ public class TestMixdownSliderIntToFloatConverter
 			else
 			{
 				log.debug("IntToFloat " + i + " to " +
-						MathFormatter.fastFloatPrint( sliderFloatVal, 5, true ) );
+						MathFormatter.slowFloatPrint( sliderFloatVal, 5, true ) );
 			}
 		}
 	}
@@ -104,7 +104,7 @@ public class TestMixdownSliderIntToFloatConverter
 			}
 			else
 			{
-				log.debug("FloatToInt " + MathFormatter.fastFloatPrint( f, 5, true ) + " as int: " +
+				log.debug("FloatToInt " + MathFormatter.slowFloatPrint( f, 5, true ) + " as int: " +
 						sliderIntVal );
 			}
 		}

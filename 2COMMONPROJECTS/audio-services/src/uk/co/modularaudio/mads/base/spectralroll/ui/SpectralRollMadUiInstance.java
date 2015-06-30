@@ -43,7 +43,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
-import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicAmpScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.LogarithmicDbAmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
@@ -67,7 +67,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	// Stuff the UI sets
 	private int desiredFftSize = 4096;
 	private FrequencyScaleComputer desiredFreqScaleComputer = new LogarithmicFreqScaleComputer();
-	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicAmpScaleComputer();
+	private AmpScaleComputer desiredAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
 	private RunningAverageComputer desiredRunningAverageComputer = new FastFallComputer();
 
 	private StreamingWolaProcessor wolaProcessor;

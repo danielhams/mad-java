@@ -125,13 +125,13 @@ public class NanosecondPeriodicThreadedTimer
 			if( log.isDebugEnabled() )
 			{
 				log.debug("Final adjustment nanos is " + adjustmentNanos + " which is " +
-						MathFormatter.fastFloatPrint( (adjustmentNanos / 1000000.0f), 8, true) +
+						MathFormatter.slowFloatPrint( (adjustmentNanos / 1000000.0f), 8, true) +
 						" ms");
 				log.debug("And average adjusted overshoot is " + averageAdjustedOvershoot + " which is " +
-						MathFormatter.fastFloatPrint( (averageAdjustedOvershoot / 1000000.0f), 8, true) +
+						MathFormatter.slowFloatPrint( (averageAdjustedOvershoot / 1000000.0f), 8, true) +
 						" ms");
 				log.debug("And average regular overshoot is " + averageRegularOvershoot + " which is " +
-						MathFormatter.fastFloatPrint( (averageRegularOvershoot / 1000000.0f), 8, true) +
+						MathFormatter.slowFloatPrint( (averageRegularOvershoot / 1000000.0f), 8, true) +
 						" ms");
 				log.debug("Total calls: " + numCalls );
 				log.debug("Num undershoots: " + numUndershoots );
@@ -157,7 +157,7 @@ public class NanosecondPeriodicThreadedTimer
 		if( log.isDebugEnabled() )
 		{
 			log.debug("Nanos between calls is " + nanosBetweenCalls + " which is " +
-					MathFormatter.fastFloatPrint( (nanosBetweenCalls / 1000000.0f), 8, true ) +
+					MathFormatter.slowFloatPrint( (nanosBetweenCalls / 1000000.0f), 8, true ) +
 					" ms");
 		}
 	}

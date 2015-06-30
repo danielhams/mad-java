@@ -78,11 +78,13 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class,
 		SpectralAmpAmpAxisDisplay.class,
-		SpectralAmpDisplayUiJComponent.class,
+//		SpectralAmpDisplayUiJComponent.class,
+		NonBiBackedPeakDisplay.class,
 		SpectralAmpFreqAxisDisplay.class
 	};
 
-	public final static int SCALES_OFFSET = 10;
+	public final static int SCALES_HEIGHT_OFFSET = 10;
+	public final static int SCALES_WIDTH_OFFSET = 30;
 	public final static int FREQ_AXIS_COMPONENT_HEIGHT = 25;
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {

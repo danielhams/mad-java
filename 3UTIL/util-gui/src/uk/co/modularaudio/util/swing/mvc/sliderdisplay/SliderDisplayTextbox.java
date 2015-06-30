@@ -133,9 +133,7 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 		}
 		else
 		{
-			final StringBuilder sb = new StringBuilder( numCharactersForString );
-			MathFormatter.fastFloatPrintSb( sb, value, numDecPlaces, false );
-			newText = sb.toString();
+			newText = MathFormatter.slowFloatPrint( value, numDecPlaces, false );
 		}
 		textField.setText( newText );
 	}

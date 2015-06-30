@@ -26,15 +26,12 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.LogarithmicFreqScaleComputer;
 import uk.co.modularaudio.util.math.MathFormatter;
@@ -46,13 +43,17 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 
-	private static Log log = LogFactory.getLog( SpectralAmpFreqAxisDisplay.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralAmpFreqAxisDisplay.class.getName() );
 
-	private final static int LL_WIDTH = 8;
+	private final static int AXIS_LABEL_LINE_HEIGHT = 8;
 
-	private final float currentMaxValueDb = 0.0f;
+	public static final int NUM_MARKERS = 5;
 
 	private final FontMetrics fm;
+
+	private final SpectralAmpMadUiInstance uiInstance;
+
+	private float currentMaxFreq = DataRate.CD_QUALITY.getValue() / 2.0f;
 
 	// Default is logarithmic
 	private FrequencyScaleComputer currentFreqScaleComputer = new LogarithmicFreqScaleComputer();
@@ -62,11 +63,13 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		this.uiInstance = uiInstance;
+
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
 		fm = getFontMetrics( getFont() );
 
-		uiInstance.addFreqScaleChangeListener( this );
+		uiInstance.addFreqAxisChangeListener( this );
 	}
 
 	@Override
@@ -81,60 +84,47 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 		// Draw scale margin
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
-		final int x = width - 1;
-		final int bottomScaleY = SpectralAmpMadUiDefinition.SCALES_OFFSET;
-		final int topScaleY = height - SpectralAmpMadUiDefinition.SCALES_OFFSET - 1;
-		g.drawLine( x, bottomScaleY, x, topScaleY );
+		final int y = 0;
+		final int leftScaleX = 0;
+		final int rightScaleX = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
+		g.drawLine( leftScaleX, y, rightScaleX, y );
 
-		// Draw three little lines we'll mark against
-		final int midY = height / 2;
-		final int llStartX = width - 1 - LL_WIDTH;
-		final int llEndX = width - 1;
-		g.drawLine( llStartX, bottomScaleY, llEndX, bottomScaleY );
+		final int llStartY = 0;
+		final int llEndY = AXIS_LABEL_LINE_HEIGHT;
 
-		final int midBottomY = (bottomScaleY + midY) / 2;
-		g.drawLine( llStartX, midBottomY, llEndX, midBottomY );
+		final int numAxisPixelsToDivide = width - 1 -
+				SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET;
 
-		g.drawLine( llStartX, midY, llEndX, midY );
+		final float floatStepPerBlock = 1.0f / (NUM_MARKERS - 1);
 
-		final int topMidY = (topScaleY + midY) / 2;
+		for( int i = 0 ; i < NUM_MARKERS ; ++i )
+		{
+			final float normalisedValue = i * floatStepPerBlock;
 
-		g.drawLine( llStartX, topMidY, llEndX, topMidY );
+			final int regularX = (int)(normalisedValue * numAxisPixelsToDivide);
 
-		g.drawLine( llStartX, topScaleY, llEndX, topScaleY );
+			g.drawLine( regularX, llStartY, regularX, llEndY );
 
-		// Draw the scale bits
-		final float currentMaxAsAbs = AudioMath.dbToLevelF( currentMaxValueDb );
-		final float halfwayDb = AudioMath.levelToDbF( currentMaxAsAbs / 2.0f );
+			final float freq = currentFreqScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
+					currentMaxFreq,
+					regularX );
 
-		paintScaleText( g, width, currentMaxValueDb, bottomScaleY );
+			paintScaleText( g, freq, regularX );
+		}
 
-		paintScaleText( g, width, halfwayDb, midBottomY );
-
-		paintScaleText( g, width, Float.NEGATIVE_INFINITY, midY );
-
-		paintScaleText( g, width, halfwayDb, topMidY );
-
-		paintScaleText( g, width, currentMaxValueDb, topScaleY );
 	}
 
 	private final void paintScaleText( final Graphics g,
-			final int width,
-			final float scaleFloat,
-			final int yOffset )
+			final float displayFloat,
+			final int xOffset )
 	{
 		final int fontHeight = fm.getAscent();
-		final int fontHeightOver2 = fontHeight / 2;
-		final String scaleString = ( scaleFloat == Float.NEGATIVE_INFINITY
-				?
-				"-Inf dB"
-				:
-				MathFormatter.fastFloatPrint( scaleFloat, 0, false ) + " dB"
-			);
-		final char[] bscs = scaleString.toCharArray();
+		final String displayString = MathFormatter.slowFloatPrint( displayFloat, 0, false );
+
+		final char[] bscs = displayString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
-		final int charsEndX = width - LL_WIDTH - 2;
-		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+
+		g.drawChars( bscs, 0, bscs.length, xOffset - (charsWidth / 2), AXIS_LABEL_LINE_HEIGHT + fontHeight );
 	}
 
 	@Override
@@ -174,8 +164,15 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	@Override
 	public void receiveFreqScaleComputer( final FrequencyScaleComputer desiredFreqScaleComputer )
 	{
-		log.debug("Received new freq scale computer: " + desiredFreqScaleComputer.toString());
+//		log.debug("Received new freq scale computer: " + desiredFreqScaleComputer.toString());
 		currentFreqScaleComputer = desiredFreqScaleComputer;
+		repaint();
+	}
+
+	@Override
+	public void receiveDataRateChange( final DataRate dataRate )
+	{
+		currentMaxFreq = dataRate.getValue() / 2.0f;
 		repaint();
 	}
 }

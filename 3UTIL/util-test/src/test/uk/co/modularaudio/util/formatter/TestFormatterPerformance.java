@@ -32,18 +32,18 @@ public class TestFormatterPerformance
 	/**
 	 * @param args
 	 */
-	public static void main( String[] args )
+	public static void main( final String[] args )
 	{
-		float[] testVals = { -13456.455734573457f, 123.634634f, 0.0f, 123f};
-		
-		for( float val : testVals )
+		final float[] testVals = { -13456.455734573457f, 123.634634f, 0.0f, 123f};
+
+		for( final float val : testVals )
 		{
 			String sval = MathFormatter.slowFloatPrint( val, 3, true );
 			log.debug("There we go - for " + val + " got : " + sval );
-			sval = MathFormatter.fastFloatPrint( val, 3, true );
+			sval = MathFormatter.slowFloatPrint( val, 3, true );
 			log.debug("New version - for " + val + " got : " + sval );
 		}
-		
+
 		doIterationTests();
 		doIterationTests();
 
@@ -53,10 +53,10 @@ public class TestFormatterPerformance
 	private static void doIterationTests()
 	{
 		long timeBefore = System.nanoTime();
-		int NUM_ITERS = 100000;
+		final int NUM_ITERS = 100000;
 		for( int i = 0 ; i < NUM_ITERS ; i++ )
 		{
-			String thing = MathFormatter.slowFloatPrint( 1.642673f, 5, true );
+			final String thing = MathFormatter.slowFloatPrint( 1.642673f, 5, true );
 		}
 		long timeAfter = System.nanoTime();
 		long diff = timeAfter - timeBefore;
@@ -66,7 +66,7 @@ public class TestFormatterPerformance
 		timeBefore = System.nanoTime();
 		for( int i = 0 ; i < NUM_ITERS ; i++ )
 		{
-			String thing = MathFormatter.fastFloatPrint( 1.642673f, 5, true );
+			final String thing = MathFormatter.slowFloatPrint( 1.642673f, 5, true );
 		}
 		timeAfter = System.nanoTime();
 		diff = timeAfter - timeBefore;
