@@ -40,7 +40,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpAmpLimitChoiceUiJComponent extends JPanel
+public class SpectralAmpAmpMaxChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
 	private static final long serialVersionUID = -3615905365787164682L;
@@ -90,7 +90,7 @@ public class SpectralAmpAmpLimitChoiceUiJComponent extends JPanel
 		}
 	}
 
-	public SpectralAmpAmpLimitChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpAmpMaxChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
@@ -147,7 +147,7 @@ public class SpectralAmpAmpLimitChoiceUiJComponent extends JPanel
 			{
 				final String value = (String)model.getSelectedItem();
 				final AmpLimit ws = NAME_TO_WAVESCALE_MAP.get( value );
-				uiInstance.setDesiredAmpLimit( ws );
+				uiInstance.setDesiredAmpMax( ws );
 			}
 		} );
 

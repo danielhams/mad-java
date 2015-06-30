@@ -176,7 +176,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveAmpLimitDbChange( final float newMaxDB )
+	public void receiveAmpMaxDbChange( final float newMaxDB )
 	{
 		currentMaxValueDb = newMaxDB;
 		repaint();

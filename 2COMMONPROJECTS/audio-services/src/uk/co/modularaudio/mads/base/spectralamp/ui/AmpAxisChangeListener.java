@@ -4,7 +4,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 
 public interface AmpAxisChangeListener
 {
-	void receiveAmpLimitDbChange( float newMaxDB );
+	void receiveAmpMaxDbChange( float newMaxDB );
 
 	void receiveAmpScaleComputer( AmpScaleComputer desiredAmpScaleComputer );
 }

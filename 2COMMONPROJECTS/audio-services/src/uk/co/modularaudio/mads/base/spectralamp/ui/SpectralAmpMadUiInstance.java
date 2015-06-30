@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
-import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpLimitChoiceUiJComponent.AmpLimit;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMaxChoiceUiJComponent.AmpLimit;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
@@ -84,7 +84,7 @@ public class SpectralAmpMadUiInstance extends
 	private int currentNumBins = 0;
 
 	private final List<AmpAxisChangeListener> ampAxisChangeListeners = new ArrayList<>();
-	private float desiredAmpScaleLimitDb = 0.0f;
+	private float desiredAmpMaxDb = 0.0f;
 	private final List<FreqAxisChangeListener> freqAxisChangeListeners = new ArrayList<>();
 	private final List<RunningAvChangeListener> runAvChangeListeners = new ArrayList<>();
 
@@ -345,16 +345,16 @@ public class SpectralAmpMadUiInstance extends
 	public void addAmpAxisChangeListener( final AmpAxisChangeListener cl )
 	{
 		ampAxisChangeListeners.add( cl );
-		cl.receiveAmpLimitDbChange( desiredAmpScaleLimitDb );
+		cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
 		cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
 	}
 
-	public void setDesiredAmpLimit( final AmpLimit al )
+	public void setDesiredAmpMax( final AmpLimit al )
 	{
-		this.desiredAmpScaleLimitDb = al.getDb();
+		this.desiredAmpMaxDb = al.getDb();
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
-			cl.receiveAmpLimitDbChange( desiredAmpScaleLimitDb );
+			cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
 		}
 	}
 

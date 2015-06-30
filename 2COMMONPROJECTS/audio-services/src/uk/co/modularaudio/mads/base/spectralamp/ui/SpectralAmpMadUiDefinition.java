@@ -71,7 +71,7 @@ public class SpectralAmpMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		SpectralAmpAmpLimitChoiceUiJComponent.class,
+		SpectralAmpAmpMaxChoiceUiJComponent.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
 		SpectralAmpFreqScaleChoiceUiJComponent.class,
 		SpectralAmpAmpScaleChoiceUiJComponent.class,

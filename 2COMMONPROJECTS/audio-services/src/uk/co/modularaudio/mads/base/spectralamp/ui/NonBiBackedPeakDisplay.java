@@ -178,7 +178,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	}
 
 	@Override
-	public void receiveAmpLimitDbChange( final float newMaxDB )
+	public void receiveAmpMaxDbChange( final float newMaxDB )
 	{
 		currentMaxDb = newMaxDB;
 		currentMaxAbs = AudioMath.dbToLevelF( currentMaxDb );
@@ -227,9 +227,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			final int numBins,
 			final boolean drawSolid )
 	{
-		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
-		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
-
 		xPoints[0] = -1;
 		xPoints[1] = -1;
 		xPoints[2] = -1;
@@ -269,11 +266,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 				xPoints[2] = i;
 				final float ampScaledValue = ampScaleComputer.scaleIt( valForBin );
 
-				final int windowY = windowScaleY( magsHeight, ampScaledValue );
-
 				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 				final float bucketMappedValue = ampScaleComputer.rawToMappedBucket( magsHeight, currentMaxAbs, normalisedBinValue );
-//				final float bucketMappedValue = ampScaleComputer.rawToMappedBucket( magsHeight, currentMaxAbs, valForBin );
 
 //				log.debug("For bin " + i + " with value " + valForBin + " the asv(" + ampScaledValue + ") bmv(" + bucketMappedValue + ")");
 				yPoints[2] = magsHeight - (int)bucketMappedValue;
@@ -326,11 +320,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 				}
 			}
 		}
-	}
-
-	private int windowScaleY( final int magsHeight, final float ampScaledVal )
-	{
-		return magsHeight - (int)(ampScaledVal * magsHeight );
 	}
 
 	private Color colorFor( final float val )
