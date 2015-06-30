@@ -20,7 +20,6 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
@@ -39,10 +38,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private final SpectralAmpMadUiInstance uiInstance;
 
 	private AmpScaleComputer ampScaleComputer;
-	private float currentMinDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
-	private float currentMinAbs = AudioMath.dbToLevelF( currentMinDb );
-	private float currentMaxDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
-	private float currentMaxAbs = AudioMath.dbToLevelF( currentMaxDb );
 	private FrequencyScaleComputer freqScaleComputer;
 	private RunningAverageComputer runAvComputer;
 
@@ -181,23 +176,9 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	}
 
 	@Override
-	public void receiveAmpMaxDbChange( final float newMaxDB )
+	public void receiveAmpScaleChange()
 	{
-		currentMaxDb = newMaxDB;
-		currentMaxAbs = AudioMath.dbToLevelF( currentMaxDb );
-	}
-
-	@Override
-	public void receiveAmpMinDbChange( final float newMinDB )
-	{
-		currentMinDb = newMinDB;
-		currentMinAbs = AudioMath.dbToLevelF( currentMinDb );
-	}
-
-	@Override
-	public void receiveAmpScaleComputer( final AmpScaleComputer desiredAmpScaleComputer )
-	{
-		ampScaleComputer = desiredAmpScaleComputer;
+		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 	}
 
 	@Override

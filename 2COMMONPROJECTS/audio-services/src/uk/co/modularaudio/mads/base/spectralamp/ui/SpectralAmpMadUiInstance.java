@@ -351,9 +351,7 @@ public class SpectralAmpMadUiInstance extends
 	public void addAmpAxisChangeListener( final AmpAxisChangeListener cl )
 	{
 		ampAxisChangeListeners.add( cl );
-		cl.receiveAmpMinDbChange( desiredAmpMinDb );
-		cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
-		cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
+		cl.receiveAmpScaleChange();
 	}
 
 	public void setDesiredAmpMax( final AmpMax al )
@@ -362,7 +360,7 @@ public class SpectralAmpMadUiInstance extends
 		this.desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
-			cl.receiveAmpMaxDbChange( desiredAmpMaxDb );
+			cl.receiveAmpScaleChange();
 		}
 	}
 
@@ -372,7 +370,7 @@ public class SpectralAmpMadUiInstance extends
 		this.desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
-			cl.receiveAmpMinDbChange( desiredAmpMinDb );
+			cl.receiveAmpScaleChange();
 		}
 	}
 
@@ -410,13 +408,11 @@ public class SpectralAmpMadUiInstance extends
 				break;
 			}
 		}
-		// When I'm ready to move over to min/max in the computers
 		desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
 
-//		reinitialiseFrequencyProcessor();
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
-			cl.receiveAmpScaleComputer( desiredAmpScaleComputer );
+			cl.receiveAmpScaleChange();
 		}
 	}
 
@@ -437,7 +433,6 @@ public class SpectralAmpMadUiInstance extends
 			}
 		}
 
-//		reinitialiseFrequencyProcessor();
 		for( final FreqAxisChangeListener fl : freqAxisChangeListeners )
 		{
 			fl.receiveFreqScaleComputer( desiredFreqScaleComputer );

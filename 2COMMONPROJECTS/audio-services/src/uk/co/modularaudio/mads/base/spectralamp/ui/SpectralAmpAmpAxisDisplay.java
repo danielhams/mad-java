@@ -50,9 +50,6 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 
 	private final SpectralAmpMadUiInstance uiInstance;
 
-	private float currentMinValueDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
-	private float currentMaxValueDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
-
 	private final FontMetrics fm;
 
 	public SpectralAmpAmpAxisDisplay( final SpectralAmpMadDefinition definition,
@@ -96,9 +93,6 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 		final int numAxisPixelsToDivide = height - 1 -
 				SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET -
 				SpectralAmpMadUiDefinition.FREQ_AXIS_COMPONENT_HEIGHT;
-
-		final float valueOfMax = AudioMath.dbToLevelF( currentMaxValueDb );
-///		log.debug("Computed value with limit " + valueOfLimit );
 
 		final float floatStepPerBlock = 1.0f / (NUM_MARKERS-1);
 
@@ -181,21 +175,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveAmpMaxDbChange( final float newMaxDB )
-	{
-		currentMaxValueDb = newMaxDB;
-		repaint();
-	}
-
-	@Override
-	public void receiveAmpMinDbChange( final float newMinDB )
-	{
-		currentMinValueDb = newMinDB;
-		repaint();
-	}
-
-	@Override
-	public void receiveAmpScaleComputer( final AmpScaleComputer desiredAmpScaleComputer )
+	public void receiveAmpScaleChange()
 	{
 		repaint();
 	}
