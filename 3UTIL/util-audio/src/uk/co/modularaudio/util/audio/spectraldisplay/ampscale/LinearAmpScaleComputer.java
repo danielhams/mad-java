@@ -20,9 +20,15 @@
 
 package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.util.audio.math.AudioMath;
+
 
 public class LinearAmpScaleComputer implements AmpScaleComputer
 {
+	private static Log log = LogFactory.getLog( LinearAmpScaleComputer.class.getName() );
 
 	@Override
 	public float scaleIt(final float valForBin)
@@ -41,6 +47,41 @@ public class LinearAmpScaleComputer implements AmpScaleComputer
 	public float mappedBucketToRaw( final int numBuckets, final float maxValue, final int bucket )
 	{
 		return (bucket / (float)(numBuckets-1)) * maxValue;
+	}
+
+	private float minDb = -96.0f;
+	private float minValue = AudioMath.dbToLevelF( minDb );
+	private float maxDb = 0.0f;
+	private float maxValue = AudioMath.dbToLevelF( maxDb );
+
+	private float rangeDb = maxDb - minDb;
+	private float rangeValue = maxValue - minValue;
+
+	@Override
+	public void setMinMaxDb( final float minValueDb, final float maxValueDb )
+	{
+		this.minDb = minValueDb;
+		minValue = AudioMath.dbToLevelF( minDb );
+		this.maxDb = maxValueDb;
+		maxValue = AudioMath.dbToLevelF( maxDb );
+		this.rangeDb = maxDb - minDb;
+		rangeValue = maxValue - minValue;
+	}
+
+	@Override
+	public int rawToMappedBucketMinMax( final int numBuckets, final float iRawValue )
+	{
+		float rawValue = (iRawValue < minValue ? 0.0f : iRawValue - minValue );
+		rawValue = (rawValue >= rangeValue ? 1.0f : (rawValue / rangeValue ));
+		return Math.round((numBuckets - 1) * rawValue);
+	}
+
+	@Override
+	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
+	{
+		final float normalisedBucketNum = bucket / (float)(numBuckets - 1);
+//		log.debug("For bucket " + bucket + " normBN(" + normalisedBucketNum + ")");
+		return minValue + (normalisedBucketNum * rangeValue);
 	}
 
 }

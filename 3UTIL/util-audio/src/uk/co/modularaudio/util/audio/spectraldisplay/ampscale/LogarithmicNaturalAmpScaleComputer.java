@@ -105,4 +105,69 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 		}
 	}
 
+	private float minDb = -96.0f;
+	private float minValue = AudioMath.dbToLevelF( minDb );
+	private float minNaturalValue = levelToNatural( minValue );
+	private float maxDb = 0.0f;
+	private float maxValue = AudioMath.dbToLevelF( maxDb );
+	private float maxNaturalValue = levelToNatural( maxValue );
+
+	private float rangeDb = maxDb - minDb;
+	private float rangeValue = maxValue - minValue;
+	private float rangeNatural = maxNaturalValue - minNaturalValue;
+
+	@Override
+	public void setMinMaxDb( final float minValueDb, final float maxValueDb )
+	{
+		this.minDb = minValueDb;
+		minValue = AudioMath.dbToLevelF( minDb );
+		minNaturalValue = levelToNatural( minValue );
+		this.maxDb = maxValueDb;
+		maxValue = AudioMath.dbToLevelF( maxDb );
+		maxNaturalValue = levelToNatural( maxValue );
+		this.rangeDb = maxDb - minDb;
+		rangeValue = maxValue - minValue;
+		rangeNatural = maxNaturalValue - minNaturalValue;
+	}
+
+	@Override
+	public int rawToMappedBucketMinMax( final int numBuckets, final float rawValue )
+	{
+		if( rawValue >= maxValue )
+		{
+			return (numBuckets-1);
+		}
+		else if( rawValue <= minValue )
+		{
+			return 0;
+		}
+		else
+		{
+			final float asNatural = levelToNatural( rawValue );
+			final float normalisedValue = (asNatural - minNaturalValue) / rangeNatural;
+
+			return Math.round( normalisedValue * (numBuckets-1) );
+		}
+	}
+
+	@Override
+	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
+	{
+		if( bucket == 0 )
+		{
+			return minValue;
+		}
+		else if( bucket == numBuckets - 1 )
+		{
+			return maxValue;
+		}
+		else
+		{
+			final float normalisedValue = bucket / (float)(numBuckets - 1);
+
+			final float naturalValueInBucket = minNaturalValue + (normalisedValue * rangeNatural);
+			final float finalValue = naturalToLevel( naturalValueInBucket );
+			return finalValue;
+		}
+	}
 }
