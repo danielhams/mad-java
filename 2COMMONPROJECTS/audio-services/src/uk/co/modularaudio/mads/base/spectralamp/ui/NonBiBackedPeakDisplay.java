@@ -277,7 +277,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 				final float ampScaledValue = ampScaleComputer.scaleIt( valForBin );
 
 				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-				final float bucketMappedValue = ampScaleComputer.rawToMappedBucket( magsHeight, currentMaxAbs, normalisedBinValue );
+//				final float bucketMappedValue = ampScaleComputer.rawToMappedBucket( magsHeight, currentMaxAbs, normalisedBinValue );
+				final float bucketMappedValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBinValue );
 
 //				log.debug("For bin " + i + " with value " + valForBin + " the asv(" + ampScaledValue + ") bmv(" + bucketMappedValue + ")");
 				yPoints[2] = magsHeight - (int)bucketMappedValue;

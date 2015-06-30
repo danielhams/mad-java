@@ -60,51 +60,6 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 		return (postExp - 1.0f) / (10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR);
 	}
 
-	@Override
-	public int rawToMappedBucket( final int numBuckets, final float maxValue, final float rawValue )
-	{
-		if( rawValue >= maxValue )
-		{
-			return (numBuckets-1);
-		}
-		else
-		{
-			final float asNatural = levelToNatural( rawValue );
-
-			if( asNatural < MIN_NATURAL_VALUE )
-			{
-				return 0;
-			}
-			else
-			{
-				final float maxNaturalValue = levelToNatural( maxValue );
-
-				final float normalisedValue = (asNatural - MIN_NATURAL_VALUE) / (maxNaturalValue-MIN_NATURAL_VALUE );
-
-				return 1 + Math.round( normalisedValue * (numBuckets-2) );
-			}
-		}
-	}
-
-	@Override
-	public float mappedBucketToRaw( final int numBuckets, final float maxValue, final int bucket )
-	{
-		if( bucket == 0 )
-		{
-			return 0.0f;
-		}
-		else
-		{
-			final float normalisedValue = (bucket-1) / (float)(numBuckets-2);
-
-			final float maxNaturalValue = levelToNatural( maxValue );
-
-			final float naturalValueInBucket = MIN_NATURAL_VALUE + (normalisedValue * (maxNaturalValue-MIN_NATURAL_VALUE));
-			final float finalValue = naturalToLevel( naturalValueInBucket );
-			return finalValue;
-		}
-	}
-
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
 	private float minNaturalValue = levelToNatural( minValue );

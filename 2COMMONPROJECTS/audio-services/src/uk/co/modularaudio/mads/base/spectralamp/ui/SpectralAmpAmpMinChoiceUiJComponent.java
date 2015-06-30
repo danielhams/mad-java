@@ -50,6 +50,7 @@ public class SpectralAmpAmpMinChoiceUiJComponent extends JPanel
 
 	public enum AmpMin
 	{
+		M_70_DB( "-70dB", -70.0f ),
 		M_80_DB( "-80dB", -80.0f ),
 		M_96_DB( "-96dB", -96.0f ),
 		M_100_DB( "-100dB", -100.0f ),
@@ -111,6 +112,7 @@ public class SpectralAmpAmpMinChoiceUiJComponent extends JPanel
 		add( label, "align center, right" );
 
 		model = new DefaultComboBoxModel<String>();
+		model.addElement( AmpMin.M_70_DB.getName() );
 		model.addElement( AmpMin.M_80_DB.getName() );
 		model.addElement( AmpMin.M_96_DB.getName() );
 		model.addElement( AmpMin.M_100_DB.getName() );

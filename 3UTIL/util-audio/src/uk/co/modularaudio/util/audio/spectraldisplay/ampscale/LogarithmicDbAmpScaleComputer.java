@@ -43,52 +43,6 @@ public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 		return val;
 	}
 
-	@Override
-	public int rawToMappedBucket( final int numBuckets, final float maxValue, final float rawValue )
-	{
-		if( rawValue >= maxValue )
-		{
-			return (numBuckets-1);
-		}
-		else
-		{
-			final float asDb = AudioMath.levelToDbF( rawValue );
-
-			if( asDb < MIN_DB_VALUE )
-			{
-				return 0;
-			}
-			else
-			{
-				final float maxDbValue = AudioMath.levelToDbF( maxValue );
-
-				final float normalisedValue = (asDb - MIN_DB_VALUE) / (maxDbValue-MIN_DB_VALUE );
-
-				return 1 + Math.round( normalisedValue * (numBuckets-2) );
-			}
-		}
-	}
-
-	@Override
-	public float mappedBucketToRaw( final int numBuckets, final float maxValue, final int bucket )
-	{
-		float dbValueInBucket;
-		if( bucket == 0 )
-		{
-			return 0.0f;
-		}
-		else
-		{
-			final float normalisedValue = (bucket-1) / (float)(numBuckets-2);
-
-			final float maxDbValue = AudioMath.levelToDbF( maxValue );
-
-			dbValueInBucket = MIN_DB_VALUE + (normalisedValue * (maxDbValue-MIN_DB_VALUE));
-			final float finalValue = AudioMath.dbToLevelF( dbValueInBucket );
-			return finalValue;
-		}
-	}
-
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
 	private float maxDb = 0.0f;

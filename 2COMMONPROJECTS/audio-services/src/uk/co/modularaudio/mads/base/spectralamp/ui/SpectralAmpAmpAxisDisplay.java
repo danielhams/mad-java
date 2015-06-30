@@ -114,8 +114,10 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 			g.drawLine( llStartX, intraYOffset, llEndX, intraYOffset );
 
 			// Work out what the label should be here
-			final float result = ampScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
-					valueOfMax,
+//			final float result = ampScaleComputer.mappedBucketToRaw( numAxisPixelsToDivide + 1,
+//					valueOfMax,
+//					regularY );
+			final float result = ampScaleComputer.mappedBucketToRawMinMax( numAxisPixelsToDivide + 1,
 					regularY );
 
 			final float asDb = AudioMath.levelToDbF( result );

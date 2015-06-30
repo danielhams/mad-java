@@ -26,12 +26,6 @@ public interface AmpScaleComputer
 
 	float scaleIt(float valForBin);
 
-	// Provide methods to and from so that labelling
-	// of axes is straightforward
-	int rawToMappedBucket( int numBuckets, float maxValue, float rawValue );
-	float mappedBucketToRaw( int numBuckets, float maxValue, int bucket );
-
-
 	// Latest methods
 	void setMinMaxDb( float minValueDb, float maxValueDb );
 	int rawToMappedBucketMinMax( int numBuckets, float rawValue );
