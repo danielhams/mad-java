@@ -9,10 +9,6 @@ import java.util.Arrays;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.mahout.math.map.OpenIntObjectHashMap;
-
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
@@ -31,7 +27,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 {
 	private static final long serialVersionUID = -180425607349546323L;
 
-	private static Log log = LogFactory.getLog( NonBiBackedPeakDisplay.class.getName() );
+//	private static Log log = LogFactory.getLog( NonBiBackedPeakDisplay.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;
@@ -51,9 +47,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 	private final int[] dxs = new int[3];
 	private final int[] dys = new int[3];
-
-	// Our colour map
-	private final OpenIntObjectHashMap<Color> colorMap = new OpenIntObjectHashMap<Color>();
 
 	public NonBiBackedPeakDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
@@ -150,14 +143,17 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			g2d.drawLine( lineX, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET, lineX, height );
 		}
 
+		// Move down so we meet up with the axis
 		g2d.translate( 0, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1 );
 
+		g2d.setStroke( singleLineStroke );
 		paintMags( g2d, widthForAmps, heightForAmps, computedBins, currentNumBins, true );
 
 		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
 
 		if( !(runAvComputer instanceof NoAverageComputer ) )
 		{
+			g2d.setStroke( wideLineStroke );
 			paintMags( g2d, widthForAmps, heightForAmps, runningBinPeaks, currentNumBins, false );
 		}
 	}
@@ -225,14 +221,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		int previousBinDrawn = -1;
 
-		if( drawSolid )
-		{
-			g2d.setStroke( singleLineStroke );
-		}
-		else
-		{
-			g2d.setStroke( wideLineStroke );
-		}
 //		log.debug("Mags height is " + magsHeight );
 
 		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
@@ -244,7 +232,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 			if( whichBin != previousBinDrawn )
 			{
-				xPoints[0]= xPoints[1];
+				xPoints[0] = xPoints[1];
 				yPoints[0] = yPoints[1];
 				xPoints[1] = xPoints[2];
 				yPoints[1] = yPoints[2];
@@ -260,6 +248,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 //				log.debug("For bin " + i + " with value " + valForBin + " the nbv(" + normalisedBinValue + ") bmv(" + bucketMappedValue + ")");
 				yPoints[2] = magsHeight - bucketMappedValue;
 
+				// If we're the second point onwards, we need to draw something.
 				if( xPoints[1] != -1 )
 				{
 					dxs[0] = originx;
@@ -269,23 +258,20 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 					dxs[2] = xPoints[2];
 					dys[2] = yPoints[2];
 
+					// Only bother when we've a non-zero thing to draw.
+					// Don't care about the branch hit, unnecessary gui drawing
+					// is really expensive.
 					if( dys[0] > 0 && dys[1] > 0 && dys[2] > 0 )
 					{
 						Color color;
 
-						if( !drawSolid )
-						{
-							color = SpectralAmpColours.RUNNING_PEAK_COLOR;
-						}
-						else
-						{
-							// Calculate a colour from the plotted value
-							color = colorFor( bucketMappedValue / (float)magsHeight );
-//							log.debug("Fetching a colour for ASV(" + ampScaledValue + ") NBV(" + normalisedBinValue + ")");
-						}
-						g2d.setColor( color );
 						if( drawSolid )
 						{
+							// Calculate a colour from the plotted value
+							final float normalisedColourValue = bucketMappedValue / (float)magsHeight;
+							color = PeakDisplayColourCache.getColourForNormalisedValue( normalisedColourValue );
+
+							g2d.setColor( color );
 							// If we decompose into line drawing, draw line, not a polygon
 							g2d.fillPolygon( dxs, dys, 3 );
 							dxs[0] = originx;
@@ -298,6 +284,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 						}
 						else
 						{
+							color = SpectralAmpColours.RUNNING_PEAK_COLOR;
+							g2d.setColor( color );
 							// Running peaks, just draw lines
 							g2d.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2] );
 						}
@@ -306,45 +294,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 					originy = magsHeight;
 				}
 			}
-		}
-	}
-
-	private Color colorFor( final float val )
-	{
-		final int intVal = newColourFor( val );
-		Color retVal = colorMap.get( intVal );
-		if( retVal == null )
-		{
-			retVal = new Color( intVal );
-			colorMap.put( intVal, retVal );
-		}
-		return retVal;
-	}
-
-	private int newColourFor( final float val )
-	{
-		// Is between 0 -> 1
-		// Divide into two sections
-		// 0 -> 0.5 up to 255 grey
-		// 0.5 -> 1.0 from grey to red
-		if( val < 0.0f )
-		{
-			return 0;
-		}
-		else if( val < 0.5f )
-		{
-			final int greyLevel = (int)( (val * 2) * 255);
-			return (greyLevel << 16) |(greyLevel << 8) | (greyLevel );
-		}
-		else if( val <= 1.0f )
-		{
-			final int redAmount = (int)(((val - 0.5f) * 2) * 255);
-			final int greyLevel = 255 - redAmount;
-			return (255 << 16) | (greyLevel << 8) | (greyLevel);
-		}
-		else
-		{
-			return 0xff0000;
 		}
 	}
 }
