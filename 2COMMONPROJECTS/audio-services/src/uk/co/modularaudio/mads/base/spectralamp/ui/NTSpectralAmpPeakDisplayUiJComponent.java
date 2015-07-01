@@ -220,7 +220,7 @@ public class NTSpectralAmpPeakDisplayUiJComponent
 
 						if( !drawSolid )
 						{
-							color = SpectralAmpColours.RUNNING_PEAK_COLOR;
+							color = SpectralAmpColours.RUNNING_PEAK_COLOUR;
 						}
 						else
 						{

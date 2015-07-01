@@ -1,10 +1,11 @@
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
@@ -39,8 +40,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private final float[] previousBinPeaks;
 	private final float[] computedBins;
 
-	private final BasicStroke singleLineStroke;
-	private final BasicStroke wideLineStroke;
+	private final static Stroke SINGLE_LINE_STROKE = new BasicStroke( 1 );
+	private final static Stroke WIDE_LINE_STROKE = new BasicStroke( 2 );
 
 	private int currentNumBins;
 
@@ -51,19 +52,21 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private final int[] dxs = new int[3];
 	private final int[] dys = new int[3];
 
+	private BufferedImage bi;
+	private Graphics2D biG2d;
+
 	public NonBiBackedPeakDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		setOpaque( true );
+		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 		this.uiInstance = uiInstance;
 
 		runningBinPeaks = new float[ SpectralAmpMadDefinition.MAX_NUM_FFT_BINS ];
 		previousBinPeaks = new float[ SpectralAmpMadDefinition.MAX_NUM_FFT_BINS ];
 		computedBins = new float[ SpectralAmpMadDefinition.MAX_NUM_FFT_BINS ];
-
-		singleLineStroke = new BasicStroke( 1 );
-		wideLineStroke = new BasicStroke( 2 );
 
 		uiInstance.addAmpAxisChangeListener( this );
 		uiInstance.addFreqAxisChangeListener( this );
@@ -114,22 +117,37 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 	}
 
-	@Override
-	public void paintComponent( final Graphics g )
+	private void internalPaint( final Graphics2D g2d, final int width, final int height )
 	{
-		final Graphics2D g2d = (Graphics2D)g;
-
-//		g2d.setColor( Color.GRAY );
 		g2d.setColor( SpectralAmpColours.BACKGROUND_COLOR );
+//		g2d.setColor( Color.GREEN );
 
-		final int width = getWidth();
-		final int height = getHeight();
 		g2d.fillRect( 0, 0, width, height );
+
+		final int widthForAmps = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
+		final int heightForAmps = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
+
+		// Move down so we meet up with the axis
+		final int yOffset = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1;
+		g2d.translate( 0, yOffset );
+
+		g2d.setColor( SpectralAmpColours.SPECTRAL_BODY );
+
+		paintMags( g2d, widthForAmps, heightForAmps, computedBins, currentNumBins, true );
+
+		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
+
+		if( !(runAvComputer instanceof NoAverageComputer ) )
+		{
+			g2d.setStroke( WIDE_LINE_STROKE );
+			g2d.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
+			paintMags( g2d, widthForAmps, heightForAmps, runningBinPeaks, currentNumBins, false );
+		}
+		g2d.translate( 0, -yOffset );
 
 		// Draw the axis lines
 		g2d.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
-		final int widthForAmps = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
-		final int heightForAmps = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
+		g2d.setStroke( SINGLE_LINE_STROKE );
 
 		final float vertPixelsPerMarker = heightForAmps / ((float)SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1);
 
@@ -145,19 +163,32 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			final int lineX = (int)(horizPixelsPerMarker * j);
 			g2d.drawLine( lineX, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET, lineX, height );
 		}
+	}
 
-		// Move down so we meet up with the axis
-		g2d.translate( 0, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1 );
+	@Override
+	public void paintComponent( final Graphics g )
+	{
+		final Graphics2D g2d = (Graphics2D)g;
 
-		g2d.setStroke( singleLineStroke );
-		paintMags( g2d, widthForAmps, heightForAmps, computedBins, currentNumBins, true );
+		final int width = getWidth();
+		final int height = getHeight();
 
-		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
+		final boolean USE_BUFFERED_IMAGE = true;
 
-		if( !(runAvComputer instanceof NoAverageComputer ) )
+		if( !USE_BUFFERED_IMAGE )
 		{
-			g2d.setStroke( wideLineStroke );
-			paintMags( g2d, widthForAmps, heightForAmps, runningBinPeaks, currentNumBins, false );
+			internalPaint( g2d, width, height );
+		}
+		else
+		{
+			if( bi == null )
+			{
+				bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+				biG2d = bi.createGraphics();
+			}
+			internalPaint( biG2d, width, height );
+
+			g2d.drawImage( bi, 0, 0, null );
 		}
 	}
 
@@ -270,18 +301,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 					// is really expensive.
 					if( dys[0] > 0 && dys[1] > 0 && dys[2] > 0 )
 					{
-						Color color;
-
 						if( drawSolid )
 						{
-							// Calculate a colour from the plotted value
-							final float normalisedColourValue = (bucketMappedValue / (float)magsHeight);
-
-							color = PeakDisplayColourCache.getColourForNormalisedValue( normalisedColourValue );
-
-							g2d.setColor( color );
-//							g2d.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
-
 							// If we decompose into line drawing, draw line, not a polygon
 							g2d.fillPolygon( dxs, dys, 3 );
 							dxs[0] = originx;
@@ -294,8 +315,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 						}
 						else
 						{
-							color = SpectralAmpColours.RUNNING_PEAK_COLOR;
-							g2d.setColor( color );
 							// Running peaks, just draw lines
 							g2d.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2] );
 						}
