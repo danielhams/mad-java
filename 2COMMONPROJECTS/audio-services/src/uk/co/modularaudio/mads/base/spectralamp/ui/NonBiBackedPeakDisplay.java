@@ -9,6 +9,9 @@ import java.util.Arrays;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
@@ -27,7 +30,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 {
 	private static final long serialVersionUID = -180425607349546323L;
 
-//	private static Log log = LogFactory.getLog( NonBiBackedPeakDisplay.class.getName() );
+	private static Log log = LogFactory.getLog( NonBiBackedPeakDisplay.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;
@@ -224,11 +227,15 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 //		log.debug("Mags height is " + magsHeight );
 
 		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
+		final float maxFrequency = freqScaleComputer.getMaxFrequency();
+		final float freqPerBin = maxFrequency / (numBins - 1);
+
 		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
 		for( int i = 0 ; i < magsWidth ; i++ )
 		{
-			final int whichBin = freqScaleComputer.displayBinToSpectraBin( numBins, magsWidth, i );
+			final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
+			final int whichBin = Math.round( pixelRawFreq / freqPerBin );
 
 			if( whichBin != previousBinDrawn )
 			{
@@ -268,10 +275,13 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 						if( drawSolid )
 						{
 							// Calculate a colour from the plotted value
-							final float normalisedColourValue = bucketMappedValue / (float)magsHeight;
+							final float normalisedColourValue = (bucketMappedValue / (float)magsHeight);
+
 							color = PeakDisplayColourCache.getColourForNormalisedValue( normalisedColourValue );
 
 							g2d.setColor( color );
+//							g2d.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
+
 							// If we decompose into line drawing, draw line, not a polygon
 							g2d.fillPolygon( dxs, dys, 3 );
 							dxs[0] = originx;

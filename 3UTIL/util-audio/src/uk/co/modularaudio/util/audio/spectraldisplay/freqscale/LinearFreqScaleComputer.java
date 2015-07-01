@@ -39,18 +39,35 @@ public class LinearFreqScaleComputer implements FrequencyScaleComputer
 		return( (int)(currentSpectralPoint * fIndex) );
 	}
 
+	private float minFrequency = 0.0f;
 	private float maxFrequency = DataRate.CD_QUALITY.getValue() / 2.0f;
+	private float frequencyRange = maxFrequency - minFrequency;
 
 	@Override
-	public void setMaxFrequency( final float f )
+	public void setMinMaxFrequency( final float minFreq, final float maxFreq )
 	{
-		this.maxFrequency = f;
+		this.minFrequency = minFreq;
+		this.maxFrequency = maxFreq;
+		frequencyRange = maxFreq - minFreq;
+	}
+
+	@Override
+	public float getMinFrequency()
+	{
+		return minFrequency;
+	}
+
+	@Override
+	public float getMaxFrequency()
+	{
+		return maxFrequency;
 	}
 
 	@Override
 	public int rawToMappedBucketMinMax( final int numBuckets, final float rawValue )
 	{
-		final float normalisedValue = rawValue / maxFrequency;
+		float normalisedValue = (rawValue - minFrequency) / frequencyRange;
+		normalisedValue = (normalisedValue < 0.0f ? 0.0f : (normalisedValue > 1.0f ? 1.0f : normalisedValue ));
 		return Math.round( (numBuckets-1) * normalisedValue );
 	}
 
@@ -58,6 +75,6 @@ public class LinearFreqScaleComputer implements FrequencyScaleComputer
 	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
 	{
 		final float normalisedValue = (bucket / (float)(numBuckets-1));
-		return normalisedValue * maxFrequency;
+		return (normalisedValue * frequencyRange) + minFrequency;
 	}
 }

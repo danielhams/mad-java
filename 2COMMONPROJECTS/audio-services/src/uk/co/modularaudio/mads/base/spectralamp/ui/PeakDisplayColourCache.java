@@ -31,7 +31,8 @@ public class PeakDisplayColourCache
 
 	public static Color getColourForNormalisedValue( final float normalisedValue )
 	{
-		final int colourIndex = (int)(normalisedValue * NUM_COLOURS);
+		int colourIndex = (int)(normalisedValue * NUM_COLOURS);
+		colourIndex = (colourIndex >= COLOUR_MAP.length ? COLOUR_MAP.length - 1 : colourIndex );
 		return COLOUR_MAP[ colourIndex ];
 	}
 }

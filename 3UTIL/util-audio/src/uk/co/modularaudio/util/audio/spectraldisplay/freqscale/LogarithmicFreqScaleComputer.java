@@ -87,18 +87,34 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 		return sp;
 	}
 
+	private float minFrequency = 0.0f;
 	private float maxFrequency = DataRate.CD_QUALITY.getValue() / 2.0f;
+	private float frequencyRange = maxFrequency - minFrequency;
 
 	@Override
-	public void setMaxFrequency( final float f )
+	public void setMinMaxFrequency( final float minFreq, final float maxFreq )
 	{
-		this.maxFrequency = f;
+		this.minFrequency = minFreq;
+		this.maxFrequency = maxFreq;
+		frequencyRange = maxFreq - minFreq;
+	}
+
+	@Override
+	public float getMinFrequency()
+	{
+		return minFrequency;
+	}
+
+	@Override
+	public float getMaxFrequency()
+	{
+		return maxFrequency;
 	}
 
 	@Override
 	public int rawToMappedBucketMinMax( final int numBuckets, final float rawValue )
 	{
-		if( rawValue <= 0.0f )
+		if( rawValue <= minFrequency )
 		{
 			return 0;
 		}
@@ -108,8 +124,8 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 		}
 		else
 		{
-			final float normalisedValue = rawValue / maxFrequency;
-			final float mappedValue = NormalisedValuesMapper.logMinMaxMapF( normalisedValue, 0.0f, maxFrequency );
+			final float normalisedValue = (rawValue - minFrequency) / frequencyRange;
+			final float mappedValue = NormalisedValuesMapper.logMinMaxMapF( normalisedValue, 0.0f, frequencyRange );
 			return Math.round( mappedValue * (numBuckets - 1) );
 		}
 	}
@@ -118,7 +134,7 @@ public class LogarithmicFreqScaleComputer implements FrequencyScaleComputer
 	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
 	{
 		final float normalisedValue = bucket / (float)(numBuckets-1);
-		return NormalisedValuesMapper.expMinMaxMapF( normalisedValue, 0.0f, maxFrequency ) * maxFrequency;
+		return (NormalisedValuesMapper.expMinMaxMapF( normalisedValue, 0.0f, frequencyRange ) * frequencyRange) + minFrequency;
 	}
 
 }

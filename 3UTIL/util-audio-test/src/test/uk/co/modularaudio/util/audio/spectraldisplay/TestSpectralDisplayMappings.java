@@ -22,9 +22,6 @@ public class TestSpectralDisplayMappings extends TestCase
 	private final static float MAX_VALUE_DB = -30.0f;
 	private final static float MAX_VALUE = AudioMath.dbToLevelF( MAX_VALUE_DB );
 
-	private final static float MAX_FREQ = 22050.0f;
-
-
 //	private final static float TEST_MIN_DB = -120.0f;
 	private final static float TEST_MIN_DB = -96.0f;
 //	private final static float TEST_MIN_DB = -80.0f;
@@ -33,7 +30,11 @@ public class TestSpectralDisplayMappings extends TestCase
 	private final static float TEST_MAX_DB = 0.0f;
 //	private final static float TEST_MAX_DB = -10.0f;
 
-	private final static float TEST_MAX_FREQ = 24000.0f;
+//	private final static float TEST_MIN_FREQ = 1000.0f;
+//	private final static float TEST_MAX_FREQ = 2000.0f;
+
+	private final static float TEST_MIN_FREQ = 0.0f;
+	private final static float TEST_MAX_FREQ = 22050.0f;
 
 	static
 	{
@@ -157,7 +158,7 @@ public class TestSpectralDisplayMappings extends TestCase
 	public void testLinearFreqScaleComputations() throws Exception
 	{
 		final LinearFreqScaleComputer lfsc = new LinearFreqScaleComputer();
-		lfsc.setMaxFrequency( TEST_MAX_FREQ );
+		lfsc.setMinMaxFrequency( TEST_MIN_FREQ, TEST_MAX_FREQ );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
@@ -171,12 +172,25 @@ public class TestSpectralDisplayMappings extends TestCase
 
 			assertTrue( andBack == i );
 		}
+
+		final float minBucketvalue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, 0 );
+		assertTrue( minBucketvalue == TEST_MIN_FREQ );
+		final float maxBucketvalue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, NUM_TEST_BUCKETS - 1 );
+		assertTrue( maxBucketvalue == TEST_MAX_FREQ );
+
+		final float tooSmallValue = TEST_MIN_FREQ - 100.0f;
+		final int tooSmallBucket = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooSmallValue );
+		assertTrue( tooSmallBucket == 0 );
+
+		final float tooLargeValue = TEST_MAX_FREQ + 100.0f;
+		final int tooLargeBucket = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooLargeValue );
+		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
 	}
 
 	public void testLogFreqScaleComputations() throws Exception
 	{
 		final LogarithmicFreqScaleComputer lfsc = new LogarithmicFreqScaleComputer();
-		lfsc.setMaxFrequency( TEST_MAX_FREQ );
+		lfsc.setMinMaxFrequency( TEST_MIN_FREQ, TEST_MAX_FREQ );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
@@ -190,6 +204,19 @@ public class TestSpectralDisplayMappings extends TestCase
 
 			assertTrue( andBack == i );
 		}
+
+		final float minBucketvalue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, 0 );
+		assertTrue( minBucketvalue == TEST_MIN_FREQ );
+		final float maxBucketvalue = lfsc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, NUM_TEST_BUCKETS - 1 );
+		assertTrue( maxBucketvalue == TEST_MAX_FREQ );
+
+		final float tooSmallValue = TEST_MIN_FREQ - 100.0f;
+		final int tooSmallBucket = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooSmallValue );
+		assertTrue( tooSmallBucket == 0 );
+
+		final float tooLargeValue = TEST_MAX_FREQ + 100.0f;
+		final int tooLargeBucket = lfsc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooLargeValue );
+		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
 	}
 
 }
