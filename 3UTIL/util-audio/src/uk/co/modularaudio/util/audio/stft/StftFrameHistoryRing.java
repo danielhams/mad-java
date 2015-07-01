@@ -18,9 +18,24 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.waveroller.ui;
+package uk.co.modularaudio.util.audio.stft;
 
-public interface ScaleLimitChangeListener
+import uk.co.modularaudio.util.audio.buffer.UnsafeGenericRingBuffer;
+
+public class StftFrameHistoryRing extends UnsafeGenericRingBuffer<StftDataFrame>
 {
-	void receiveScaleLimitChange( float newMaxDB );
+
+	public StftFrameHistoryRing( final int capacity )
+	{
+		super( StftDataFrame.class, capacity );
+	}
+
+	public StftDataFrame getFrame( final int frameNum )
+	{
+		int framePosition = writePosition - frameNum;
+		framePosition = framePosition % bufferLength;
+
+		return buffer[framePosition];
+	}
+
 }

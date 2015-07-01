@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.audio.stft;
 
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -49,7 +47,7 @@ public class WolaProcessor
 	private final int numFramesLookahead;
 
 	// Our forward looking cache
-	private final ArrayList<StftDataFrame> forwardLookingFrames;
+	private final StftFrameHistoryRing frameHistoryRing;
 
 	// Somewhere the frame processor can store it's output
 	// that we will pass to the synthesiser
@@ -78,7 +76,8 @@ public class WolaProcessor
 		// Need to let the frame processor have the parameters before we call this - it might be
 		// dependant on the numOverlaps (particularly in the case of transient processing)
 		numFramesLookahead = frameProcessor.getNumFramesNeeded();
-		forwardLookingFrames = new ArrayList<StftDataFrame>( numFramesLookahead );
+
+		frameHistoryRing = new StftFrameHistoryRing( numFramesLookahead );
 
 		reset();
 	}
@@ -94,26 +93,28 @@ public class WolaProcessor
 
 		StftDataFrame latestFrame = null;
 		// See if we need to re-use an existing frame
-		int numFramesBuffered = forwardLookingFrames.size();
-		if( numFramesBuffered > 0 && numFramesBuffered == numFramesLookahead )
+		int numFramesBuffered = frameHistoryRing.getNumReadable();
+		if( numFramesBuffered == numFramesLookahead )
 		{
-			latestFrame = forwardLookingFrames.remove( forwardLookingFrames.size() - 1 );
+			// Recycle a frame
+			latestFrame = frameHistoryRing.readOneOut();
 		}
+
 		// Build the new pvframe from this step. If "latestFrame" is null, the creator will allocate
 		latestFrame = frameCreator.makeFrameFromNextStep( inputStep, latestFrame );
 
 		// Add to the end of the latest frames
-		forwardLookingFrames.add( 0, latestFrame );
+		frameHistoryRing.writeOne( latestFrame );
 
 		synthStep.calculate( speed, pitch, analysisStepSize );
 
-		frameProcessor.processIncomingFrame( processedFrame, forwardLookingFrames, synthStep );
+		frameProcessor.processIncomingFrame( processedFrame, frameHistoryRing, synthStep );
 
 		if( frameProcessor.isSynthesisingProcessor() )
 		{
 			// If we have enough frames in the look ahead structure we can go ahead
 			// and synthesise the result from the frame processor
-			numFramesBuffered = forwardLookingFrames.size();
+			numFramesBuffered = frameHistoryRing.getNumReadable();
 			if( numFramesBuffered >= numFramesLookahead )
 			{
 				// Now pass this processed frame to the synthesiser
@@ -154,11 +155,12 @@ public class WolaProcessor
 		frameProcessor.reset();
 		frameSynthesiser.reset();
 
-		forwardLookingFrames.clear();
+		frameHistoryRing.clear();
+
 		// Now fill up with empty frames
 		for( int i = 0 ; i < numFramesLookahead ; i++ )
 		{
-			forwardLookingFrames.add( new StftDataFrame( numChannels, numReals, complexArraySize, numBins ) );
+			frameHistoryRing.writeOne( new StftDataFrame( numChannels, numReals, complexArraySize, numBins ) );
 		}
 
 		processedFrame = new StftDataFrame( numChannels, numReals, complexArraySize, numBins );

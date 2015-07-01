@@ -20,9 +20,8 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.util;
 
-import java.util.ArrayList;
-
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftFrameHistoryRing;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.processing.StftFrameProcessor;
 import uk.co.modularaudio.util.audio.stft.frame.processing.StftFrameProcessorVisualDebugger;
@@ -84,10 +83,10 @@ public class SpectralPeakAmpAccumulator implements StftFrameProcessor
 
 	@Override
 	public int processIncomingFrame( final StftDataFrame outputFrame,
-			final ArrayList<StftDataFrame> lookaheadFrames,
+			final StftFrameHistoryRing frameHistoryRing,
 			final StftFrameSynthesisStep synthStep )
 	{
-		final StftDataFrame curFrame = lookaheadFrames.get( 0 );
+		final StftDataFrame curFrame = frameHistoryRing.getFrame( 0 );
 		complexPolarConverter.complexToPolarAmpsOnly( curFrame );
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{

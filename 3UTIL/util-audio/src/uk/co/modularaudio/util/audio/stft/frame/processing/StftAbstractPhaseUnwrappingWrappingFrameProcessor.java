@@ -23,6 +23,7 @@ package uk.co.modularaudio.util.audio.stft.frame.processing;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftFrameHistoryRing;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.synthesis.StftFrameSynthesisStep;
 import uk.co.modularaudio.util.audio.stft.tools.ComplexPolarConverter;
@@ -85,10 +86,10 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 
 	@Override
 	public int processIncomingFrame( final StftDataFrame outputFrame,
-			final ArrayList<StftDataFrame> lookaheadFrames,
+			final StftFrameHistoryRing frameHistoryRing,
 			final StftFrameSynthesisStep synthStep )
 	{
-		final StftDataFrame curFrame = lookaheadFrames.get( 0 );
+		final StftDataFrame curFrame = frameHistoryRing.getFrame( 0 );
 
 		final float[][] complexFrame = curFrame.complexFrame;
 		final float[][] amps = curFrame.amps;
@@ -100,7 +101,7 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 		complexToPolarUnwrapPhase( curFrame, complexFrame, amps, phases, freqs, oldAnalPhases, inputScal, inputFac );
 
 		processUnwrappedIncomingFrame( outputFrame,
-				lookaheadFrames,
+				frameHistoryRing,
 				synthStep );
 
 		for( int chan = 0 ; chan < numChannels ; chan++ )
@@ -117,6 +118,10 @@ public abstract class StftAbstractPhaseUnwrappingWrappingFrameProcessor implemen
 
 	public abstract void processUnwrappedIncomingFrame( StftDataFrame outputFrame,
 			ArrayList<StftDataFrame> lookaheadFrames,
+			StftFrameSynthesisStep synthStep );
+
+	public abstract void processUnwrappedIncomingFrame( StftDataFrame outputFrame,
+			StftFrameHistoryRing frameHistoryRing,
 			StftFrameSynthesisStep synthStep );
 
 	public void processWrappedOutgoingFrame( final StftDataFrame outputFrame,

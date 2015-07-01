@@ -23,6 +23,7 @@ package uk.co.modularaudio.util.audio.stft.frame.processing.identity;
 import java.util.ArrayList;
 
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftFrameHistoryRing;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.processing.StftAbstractPhaseUnwrappingWrappingFrameProcessor;
 import uk.co.modularaudio.util.audio.stft.frame.processing.StftFrameProcessorVisualDebugger;
@@ -32,17 +33,17 @@ import uk.co.modularaudio.util.math.MathDefines;
 public class StftIdentityFrameProcessor extends StftAbstractPhaseUnwrappingWrappingFrameProcessor
 {
 //	private static Log log = LogFactory.getLog( StftIdentityFrameProcessor.class.getName() );
-	
+
 	private StftParameters params = null;
 	private int numChannels = -1;
 	private int numBins = -1;
 	private int fftSize = -1;
-	
+
 //	private PeakFinder peakFinder = null;
-	
+
 	private int[][] peakChannelBuffers = null;
 	private int[][] binToPeakChannelBuffers = null;
-	
+
 	@Override
 	public int getNumFramesNeeded()
 	{
@@ -55,28 +56,30 @@ public class StftIdentityFrameProcessor extends StftAbstractPhaseUnwrappingWrapp
 		return true;
 	}
 
+	@Override
 	public int[][] getPeakChannelBuffers()
 	{
 		return peakChannelBuffers;
 	}
 
+	@Override
 	public int[][] getBinToPeakChannelBuffers()
 	{
 		return binToPeakChannelBuffers;
 	}
 
 	@Override
-	public void processUnwrappedIncomingFrame(StftDataFrame outputFrame,
-			ArrayList<StftDataFrame> lookaheadFrames,
-			StftFrameSynthesisStep synthStep )
+	public void processUnwrappedIncomingFrame(final StftDataFrame outputFrame,
+			final ArrayList<StftDataFrame> lookaheadFrames,
+			final StftFrameSynthesisStep synthStep )
 	{
-		float[][] outputComplexFrame = outputFrame.complexFrame;
-		float[][] outputAmps = outputFrame.amps;
-		float[][] outputPhases = outputFrame.phases;
-		float[][] outputFreqs = outputFrame.freqs;
-		
+		final float[][] outputComplexFrame = outputFrame.complexFrame;
+		final float[][] outputAmps = outputFrame.amps;
+		final float[][] outputPhases = outputFrame.phases;
+		final float[][] outputFreqs = outputFrame.freqs;
+
 		// Simply copy over frame[0]
-		StftDataFrame ifr = lookaheadFrames.get( 0 );
+		final StftDataFrame ifr = lookaheadFrames.get( 0 );
 		for( int i = 0 ; i < numChannels ; i++ )
 		{
 			System.arraycopy( ifr.complexFrame[i], 0, outputComplexFrame[i], 0, fftSize );
@@ -85,22 +88,56 @@ public class StftIdentityFrameProcessor extends StftAbstractPhaseUnwrappingWrapp
 			System.arraycopy( ifr.freqs[i], 0, outputFreqs[i], 0, numBins );
 		}
 		outputFrame.position = ifr.position;
-		
+
 //		float[] analAmps = ifr.amps;
 //		float[] analPhases = ifr.phases;
 //		float[] analFreqs = ifr.freqs;
-		
+
 //		peakFinder.identifyPeaks( analAmps, analPhases, peaksBuffer, binToPeakBuffer );
 //		peakFinder.quickZeroingLeaveBins(binToPeakBuffer, outputAmps, 0, false, false, false);
 
-		float twoPiSynthStepSizeOverSampleRate = (MathDefines.TWO_PI_F * synthStep.getRoundedStepSize()) / params.getSampleRate();
+		final float twoPiSynthStepSizeOverSampleRate = (MathDefines.TWO_PI_F * synthStep.getRoundedStepSize()) / params.getSampleRate();
 
 		processWrappedOutgoingFrame( outputFrame, twoPiSynthStepSizeOverSampleRate, synthStep, true );
-		
+
 	}
 
 	@Override
-	public void setParams(StftParameters params)
+	public void processUnwrappedIncomingFrame(final StftDataFrame outputFrame,
+			final StftFrameHistoryRing frameHistoryRing,
+			final StftFrameSynthesisStep synthStep )
+	{
+		final float[][] outputComplexFrame = outputFrame.complexFrame;
+		final float[][] outputAmps = outputFrame.amps;
+		final float[][] outputPhases = outputFrame.phases;
+		final float[][] outputFreqs = outputFrame.freqs;
+
+		// Simply copy over frame[0]
+		final StftDataFrame ifr = frameHistoryRing.getFrame( 0 );
+		for( int i = 0 ; i < numChannels ; i++ )
+		{
+			System.arraycopy( ifr.complexFrame[i], 0, outputComplexFrame[i], 0, fftSize );
+			System.arraycopy( ifr.amps[i], 0, outputAmps[i], 0, numBins );
+			System.arraycopy( ifr.phases[i], 0, outputPhases[i], 0, numBins );
+			System.arraycopy( ifr.freqs[i], 0, outputFreqs[i], 0, numBins );
+		}
+		outputFrame.position = ifr.position;
+
+//		float[] analAmps = ifr.amps;
+//		float[] analPhases = ifr.phases;
+//		float[] analFreqs = ifr.freqs;
+
+//		peakFinder.identifyPeaks( analAmps, analPhases, peaksBuffer, binToPeakBuffer );
+//		peakFinder.quickZeroingLeaveBins(binToPeakBuffer, outputAmps, 0, false, false, false);
+
+		final float twoPiSynthStepSizeOverSampleRate = (MathDefines.TWO_PI_F * synthStep.getRoundedStepSize()) / params.getSampleRate();
+
+		processWrappedOutgoingFrame( outputFrame, twoPiSynthStepSizeOverSampleRate, synthStep, true );
+
+	}
+
+	@Override
+	public void setParams(final StftParameters params)
 	{
 		super.setParams(params);
 		this.params = params;
@@ -109,7 +146,7 @@ public class StftIdentityFrameProcessor extends StftAbstractPhaseUnwrappingWrapp
 		this.fftSize = params.getNumReals();
 		peakChannelBuffers = new int[ numChannels ][ numBins ];
 		binToPeakChannelBuffers = new int[ numChannels ][ numBins ];
-		
+
 //		peakFinder = new PeakFinder( params );
 	}
 

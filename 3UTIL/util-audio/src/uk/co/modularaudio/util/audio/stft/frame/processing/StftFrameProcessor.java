@@ -20,10 +20,9 @@
 
 package uk.co.modularaudio.util.audio.stft.frame.processing;
 
-import java.util.ArrayList;
-
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
 import uk.co.modularaudio.util.audio.stft.StftException;
+import uk.co.modularaudio.util.audio.stft.StftFrameHistoryRing;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.audio.stft.frame.synthesis.StftFrameSynthesisStep;
 
@@ -61,7 +60,7 @@ public interface StftFrameProcessor
 	 * @throws PvException
 	 */
 	public int processIncomingFrame( StftDataFrame outputFrame,
-			ArrayList<StftDataFrame> lookaheadFrames,
+			StftFrameHistoryRing frameHistoryRing,
 			StftFrameSynthesisStep synthStep );
 
 	/**
