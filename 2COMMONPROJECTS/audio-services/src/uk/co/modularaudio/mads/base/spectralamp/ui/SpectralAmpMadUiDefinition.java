@@ -81,7 +81,7 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class,
 		SpectralAmpAmpAxisDisplay.class,
-		NonBiBackedPeakDisplay.class,
+		SpectralAmpPeakDisplayUiJComponent.class,
 		SpectralAmpFreqAxisDisplay.class
 	};
 
