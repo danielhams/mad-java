@@ -41,6 +41,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 
 public class SpectralAmpPeakDisplayUiJComponent extends JPanel
@@ -252,20 +253,85 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		return pointOffset;
 	}
 
+	private void drawBodyAndRunAv( final Graphics g )
+	{
+		// Start after the origin point
+		int bodyPointOffset = 1;
+		int runAvPointOffset = 0;
+
+		int previousBinDrawn = -1;
+
+		final float maxFrequency = freqScaleComputer.getMaxFrequency();
+		final float freqPerBin = maxFrequency / (currentNumBins - 1);
+
+		for( int i = 0 ; i < magsWidth ; i++ )
+		{
+			final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
+			final int whichBin = Math.round( pixelRawFreq / freqPerBin );
+
+			if( whichBin != previousBinDrawn )
+			{
+				previousBinDrawn = whichBin;
+
+				final float bodyValForBin = computedBins[ whichBin ];
+				final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+				final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+
+//				log.debug("For bin " + i + " with value " + valForBin + " the nbv(" + normalisedBinValue + ") bmv(" + bucketMappedValue + ")");
+
+				polygonXPoints[ bodyPointOffset ] = i;
+				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
+				bodyPointOffset++;
+
+
+				final float runAvValForBin = runningBinPeaks[ whichBin ];
+				final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+				final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
+				polylineXPoints[ runAvPointOffset ] = i;
+				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue + yOffset;
+				polylineExtraXPoints[ runAvPointOffset ] = i;
+				polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
+				runAvPointOffset++;
+			}
+		}
+
+		polygonXPoints[ bodyPointOffset ] = magsWidth - 1;
+		polygonYPoints[ bodyPointOffset ] = height;
+		bodyPointOffset++;
+
+		g.fillPolygon( polygonXPoints, polygonYPoints, bodyPointOffset );
+
+		if( !(runAvComputer instanceof NoAverageComputer) )
+		{
+			g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
+			g.drawPolyline( polylineXPoints, polylineYPoints, runAvPointOffset );
+			g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, runAvPointOffset );
+		}
+	}
+
 	private void internalOptimisedPaint( final Graphics g )
 	{
 		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, width, height );
 		g.setColor( SpectralAmpColours.SPECTRAL_BODY );
 
-		final int numPointsInPolygon = setupPolygons( computedBins, currentNumBins );
-		g.fillPolygon( polygonXPoints, polygonYPoints, numPointsInPolygon );
+		final boolean USE_OPTIMISED_FREQ_LOOP = true;
 
-		g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
+		if( !USE_OPTIMISED_FREQ_LOOP )
+		{
+			final int numPointsInPolygon = setupPolygons( computedBins, currentNumBins );
+			g.fillPolygon( polygonXPoints, polygonYPoints, numPointsInPolygon );
 
-		final int numPointsInPolyline = setupPolyline( runningBinPeaks, currentNumBins );
-		g.drawPolyline( polylineXPoints, polylineYPoints, numPointsInPolyline );
-		g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, numPointsInPolyline );
+			g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
+
+			final int numPointsInPolyline = setupPolyline( runningBinPeaks, currentNumBins );
+			g.drawPolyline( polylineXPoints, polylineYPoints, numPointsInPolyline );
+			g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, numPointsInPolyline );
+		}
+		else
+		{
+			drawBodyAndRunAv( g );
+		}
 
 		paintGridLines( g );
 	}
