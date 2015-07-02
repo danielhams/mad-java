@@ -22,16 +22,10 @@ package uk.co.modularaudio.mads.base.spectralamp.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
@@ -51,7 +45,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 {
 	private static final long serialVersionUID = -180425607349546323L;
 
-	private static Log log = LogFactory.getLog( SpectralAmpPeakDisplayUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralAmpPeakDisplayUiJComponent.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;
@@ -79,12 +73,12 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	// they map to
 	private int[] pixelToBinLookupTable;
 
-	private BufferedImage bi;
-	private Graphics2D biG2d;
-
+	// Where we store our polygon X/Y coords for
+	// the spectral body (a polygon)
 	private int[] polygonXPoints;
 	private int[] polygonYPoints;
 
+	// And the running average (a polyline)
 	private int[] polylineXPoints;
 	private int[] polylineYPoints;
 	// A second poly line one Y below the other to avoid using a wider stroke
@@ -175,80 +169,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		}
 	}
 
-	private int setupPolygons( final float[] bins,
-			final int numBins )
-	{
-		// Start after the origin point
-		int pointOffset = 1;
-
-		int previousBinDrawn = -1;
-
-		final float maxFrequency = freqScaleComputer.getMaxFrequency();
-		final float freqPerBin = maxFrequency / (numBins - 1);
-
-		for( int i = 0 ; i < magsWidth ; i++ )
-		{
-			final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
-			final int whichBin = Math.round( pixelRawFreq / freqPerBin );
-
-			if( whichBin != previousBinDrawn )
-			{
-				previousBinDrawn = whichBin;
-
-				final float valForBin = bins[ whichBin ];
-
-				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-				final int bucketMappedValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBinValue );
-
-				polygonXPoints[ pointOffset ] = i;
-				polygonYPoints[ pointOffset ] = magsHeight - bucketMappedValue + yOffset;
-				pointOffset++;
-			}
-		}
-
-		polygonXPoints[ pointOffset ] = magsWidth - 1;
-		polygonYPoints[ pointOffset ] = height;
-		pointOffset++;
-
-		return pointOffset;
-	}
-
-	private int setupPolyline( final float[] bins,
-			final int numBins )
-	{
-		// Start after the origin point
-		int pointOffset = 0;
-
-		int previousBinDrawn = -1;
-
-		final float maxFrequency = freqScaleComputer.getMaxFrequency();
-		final float freqPerBin = maxFrequency / (numBins - 1);
-
-		for( int i = 0 ; i < magsWidth ; i++ )
-		{
-			final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
-			final int whichBin = Math.round( pixelRawFreq / freqPerBin );
-
-			if( whichBin != previousBinDrawn )
-			{
-				previousBinDrawn = whichBin;
-
-				final float valForBin = bins[ whichBin ];
-
-				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-				final int bucketMappedValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBinValue );
-
-				polylineXPoints[ pointOffset ] = i;
-				polylineYPoints[ pointOffset ] = magsHeight - bucketMappedValue + yOffset;
-				polylineExtraXPoints[ pointOffset ] = i;
-				polylineExtraYPoints[ pointOffset ] = polylineYPoints[ pointOffset ] - 1;
-				pointOffset++;
-			}
-		}
-
-		return pointOffset;
-	}
-
 	private void drawBodyAndRunAv( final Graphics g )
 	{
 		// Start after the origin point
@@ -300,42 +220,11 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		}
 	}
 
-	private void internalOptimisedPaint( final Graphics g )
-	{
-		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
-		g.fillRect( 0, 0, width, height );
-		g.setColor( SpectralAmpColours.SPECTRAL_BODY );
-
-		final boolean USE_OPTIMISED_FREQ_LOOP = true;
-
-		if( !USE_OPTIMISED_FREQ_LOOP )
-		{
-			final int numPointsInPolygon = setupPolygons( computedBins, currentNumBins );
-			g.fillPolygon( polygonXPoints, polygonYPoints, numPointsInPolygon );
-
-			g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
-
-			final int numPointsInPolyline = setupPolyline( runningBinPeaks, currentNumBins );
-			g.drawPolyline( polylineXPoints, polylineYPoints, numPointsInPolyline );
-			g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, numPointsInPolyline );
-		}
-		else
-		{
-			drawBodyAndRunAv( g );
-		}
-
-		paintGridLines( g );
-	}
-
 	@Override
 	public void paint( final Graphics g )
 	{
-		if( bi == null )
+		if( polygonXPoints == null )
 		{
-			bi = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage( width, height );
-//			bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
-			biG2d = bi.createGraphics();
-
 			final int maxPointsInPolygon = (width + 2 );
 
 			polygonXPoints = new int[ maxPointsInPolygon ];
@@ -351,18 +240,13 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			polylineExtraYPoints = new int[ maxPolylinePoints ];
 		}
 
-		final boolean USE_BUFFERED_IMAGE = false;
+		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
+		g.fillRect( 0, 0, width, height );
+		g.setColor( SpectralAmpColours.SPECTRAL_BODY );
 
-		if( !USE_BUFFERED_IMAGE )
-		{
-			internalOptimisedPaint( g );
-		}
-		else
-		{
-			internalOptimisedPaint( biG2d );
+		drawBodyAndRunAv( g );
 
-			g.drawImage( bi, 0, 0, null );
-		}
+		paintGridLines( g );
 	}
 
 	@Override
