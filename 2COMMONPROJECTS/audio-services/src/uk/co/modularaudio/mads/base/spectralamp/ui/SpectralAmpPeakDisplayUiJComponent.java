@@ -75,6 +75,10 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private final float[] previousBinPeaks;
 	private final float[] computedBins;
 
+	// A precomputed list of X pixels to which spectral bin
+	// they map to
+	private int[] pixelToBinLookupTable;
+
 	private BufferedImage bi;
 	private Graphics2D biG2d;
 
@@ -179,8 +183,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		int previousBinDrawn = -1;
 
-//		log.debug("Mags height is " + magsHeight );
-
 		final float maxFrequency = freqScaleComputer.getMaxFrequency();
 		final float freqPerBin = maxFrequency / (numBins - 1);
 
@@ -197,8 +199,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 				final int bucketMappedValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBinValue );
-
-//				log.debug("For bin " + i + " with value " + valForBin + " the nbv(" + normalisedBinValue + ") bmv(" + bucketMappedValue + ")");
 
 				polygonXPoints[ pointOffset ] = i;
 				polygonYPoints[ pointOffset ] = magsHeight - bucketMappedValue + yOffset;
@@ -221,8 +221,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		int previousBinDrawn = -1;
 
-//		log.debug("Mags height is " + magsHeight );
-
 		final float maxFrequency = freqScaleComputer.getMaxFrequency();
 		final float freqPerBin = maxFrequency / (numBins - 1);
 
@@ -239,8 +237,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 				final float normalisedBinValue = valForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 				final int bucketMappedValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBinValue );
-
-//				log.debug("For bin " + i + " with value " + valForBin + " the nbv(" + normalisedBinValue + ") bmv(" + bucketMappedValue + ")");
 
 				polylineXPoints[ pointOffset ] = i;
 				polylineYPoints[ pointOffset ] = magsHeight - bucketMappedValue + yOffset;
@@ -261,29 +257,24 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		int previousBinDrawn = -1;
 
-		final float maxFrequency = freqScaleComputer.getMaxFrequency();
-		final float freqPerBin = maxFrequency / (currentNumBins - 1);
-
 		for( int i = 0 ; i < magsWidth ; i++ )
 		{
-			final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
-			final int whichBin = Math.round( pixelRawFreq / freqPerBin );
+			final int whichBin = pixelToBinLookupTable[i];
 
 			if( whichBin != previousBinDrawn )
 			{
 				previousBinDrawn = whichBin;
 
+				// Computing the spectral body amplitude in screen space
 				final float bodyValForBin = computedBins[ whichBin ];
 				final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 				final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
-
-//				log.debug("For bin " + i + " with value " + valForBin + " the nbv(" + normalisedBinValue + ") bmv(" + bucketMappedValue + ")");
 
 				polygonXPoints[ bodyPointOffset ] = i;
 				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
 				bodyPointOffset++;
 
-
+				// Computing the running average amplitude in screen space
 				final float runAvValForBin = runningBinPeaks[ whichBin ];
 				final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 				final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
@@ -360,7 +351,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			polylineExtraYPoints = new int[ maxPolylinePoints ];
 		}
 
-		final boolean USE_BUFFERED_IMAGE = true;
+		final boolean USE_BUFFERED_IMAGE = false;
 
 		if( !USE_BUFFERED_IMAGE )
 		{
@@ -378,6 +369,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	public void receiveFreqScaleChange( final FrequencyScaleComputer freqScaleComputer )
 	{
 		this.freqScaleComputer = freqScaleComputer;
+		recomputePixelToBinLookup();
 		clear();
 	}
 
@@ -427,14 +419,34 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		vertPixelsPerMarker = magsHeight / ((float)SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1);
 		horizPixelsPerMarker = magsWidth / ((float)SpectralAmpFreqAxisDisplay.NUM_MARKERS - 1);
+
+		pixelToBinLookupTable = new int[ magsWidth ];
+
+		recomputePixelToBinLookup();
 	}
 
 	@Override
 	public void receiveFftSizeChange( final int desiredFftSize )
 	{
-		log.warn("Unsure if we should be doing something here yet");
 		final int numBins = (desiredFftSize / 2) + 1;
 		currentNumBins = numBins;
+		recomputePixelToBinLookup();
 		clear();
+	}
+
+	private void recomputePixelToBinLookup()
+	{
+		if( pixelToBinLookupTable != null && freqScaleComputer != null )
+		{
+			final float maxFrequency = freqScaleComputer.getMaxFrequency();
+			final float freqPerBin = maxFrequency / (currentNumBins - 1);
+
+			for( int i = 0 ; i < magsWidth ; i++ )
+			{
+				final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
+				final int whichBin = Math.round( pixelRawFreq / freqPerBin );
+				pixelToBinLookupTable[ i ] = whichBin;
+			}
+		}
 	}
 }
