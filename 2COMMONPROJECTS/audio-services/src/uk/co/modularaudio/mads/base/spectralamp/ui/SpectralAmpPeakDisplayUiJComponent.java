@@ -59,6 +59,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private RunningAverageComputer runAvComputer;
 
 	// Setup when setBounds is called.
+	private int width;
+	private int height;
 	private int magsWidth;
 	private int magsHeight;
 	private final static int yOffset = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1;
@@ -150,7 +152,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 	}
 
-	private void paintGridLines( final Graphics g, final int width, final int height )
+	private void paintGridLines( final Graphics g )
 	{
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
@@ -168,9 +170,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		}
 	}
 
-	private int setupPolygons( final int width,
-			final int height,
-			final float[] bins,
+	private int setupPolygons( final float[] bins,
 			final int numBins )
 	{
 		// Start after the origin point
@@ -212,9 +212,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		return pointOffset;
 	}
 
-	private int setupPolyline( final int width,
-			final int height,
-			final float[] bins,
+	private int setupPolyline( final float[] bins,
 			final int numBins )
 	{
 		// Start after the origin point
@@ -254,30 +252,27 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		return pointOffset;
 	}
 
-	private void internalOptimisedPaint( final Graphics g, final int width, final int height )
+	private void internalOptimisedPaint( final Graphics g )
 	{
 		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, width, height );
 		g.setColor( SpectralAmpColours.SPECTRAL_BODY );
 
-		final int numPointsInPolygon = setupPolygons( width, height, computedBins, currentNumBins );
+		final int numPointsInPolygon = setupPolygons( computedBins, currentNumBins );
 		g.fillPolygon( polygonXPoints, polygonYPoints, numPointsInPolygon );
 
 		g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
 
-		final int numPointsInPolyline = setupPolyline( width, height, runningBinPeaks, currentNumBins );
+		final int numPointsInPolyline = setupPolyline( runningBinPeaks, currentNumBins );
 		g.drawPolyline( polylineXPoints, polylineYPoints, numPointsInPolyline );
 		g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, numPointsInPolyline );
 
-		paintGridLines( g, width, height );
+		paintGridLines( g );
 	}
 
 	@Override
 	public void paint( final Graphics g )
 	{
-		final int width = getWidth();
-		final int height = getHeight();
-
 		if( bi == null )
 		{
 			bi = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage( width, height );
@@ -303,11 +298,11 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		if( !USE_BUFFERED_IMAGE )
 		{
-			internalOptimisedPaint( g, width, height );
+			internalOptimisedPaint( g );
 		}
 		else
 		{
-			internalOptimisedPaint( biG2d, width, height );
+			internalOptimisedPaint( biG2d );
 
 			g.drawImage( bi, 0, 0, null );
 		}
@@ -358,8 +353,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 		super.setBounds( r );
 
-		final int width = r.width;
-		final int height = r.height;
+		width = r.width;
+		height = r.height;
 
 		magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
 		magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
