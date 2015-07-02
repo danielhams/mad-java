@@ -23,6 +23,7 @@ package uk.co.modularaudio.mads.base.spectralamp.ui;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
@@ -132,11 +133,12 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 	private void paintGridLines( final Graphics g, final int width, final int height )
 	{
-		final int widthForAmps = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
-		final int heightForAmps = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
-		// Draw the axis lines
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
+		final int widthForAmps = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
+		final int heightForAmps = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
+
+		// Draw the axis lines
 		final float vertPixelsPerMarker = heightForAmps / ((float)SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1);
 
 		for( int i = 0 ; i < SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1 ; ++i )
@@ -257,34 +259,32 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 	private void internalOptimisedPaint( final Graphics g, final int width, final int height )
 	{
-		final int numPointsInPolygon = setupPolygons( width, height, computedBins, currentNumBins );
-
 		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, width, height );
 		g.setColor( SpectralAmpColours.SPECTRAL_BODY );
 
+		final int numPointsInPolygon = setupPolygons( width, height, computedBins, currentNumBins );
 		g.fillPolygon( polygonXPoints, polygonYPoints, numPointsInPolygon );
-
-		final int numPointsInPolyline = setupPolyline( width, height, runningBinPeaks, currentNumBins );
 
 		g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
 
+		final int numPointsInPolyline = setupPolyline( width, height, runningBinPeaks, currentNumBins );
 		g.drawPolyline( polylineXPoints, polylineYPoints, numPointsInPolyline );
 		g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, numPointsInPolyline );
 
 		paintGridLines( g, width, height );
 	}
 
-
 	@Override
-	public void paintComponent( final Graphics g )
+	public void paint( final Graphics g )
 	{
 		final int width = getWidth();
 		final int height = getHeight();
 
 		if( bi == null )
 		{
-			bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+			bi = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage( width, height );
+//			bi = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
 			biG2d = bi.createGraphics();
 
 			final int maxPointsInPolygon = (width + 2 );
@@ -302,7 +302,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			polylineExtraYPoints = new int[ maxPolylinePoints ];
 		}
 
-		final boolean USE_BUFFERED_IMAGE = false;
+		final boolean USE_BUFFERED_IMAGE = true;
 
 		if( !USE_BUFFERED_IMAGE )
 		{

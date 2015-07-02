@@ -38,7 +38,7 @@
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">

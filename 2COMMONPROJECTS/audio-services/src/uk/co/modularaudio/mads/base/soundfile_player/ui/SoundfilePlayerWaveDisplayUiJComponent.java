@@ -171,7 +171,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	}
 
 	@Override
-	public void paintComponent(final Graphics g)
+	public void paint(final Graphics g)
 	{
 		if( rollPainter != null )
 		{
