@@ -49,14 +49,14 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 
 	private final FontMetrics fm;
 
-	private final SpectralAmpMadUiInstance uiInstance;
+	private FrequencyScaleComputer freqScaleComputer;
 
 	public SpectralAmpFreqAxisDisplay( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
+		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
@@ -68,8 +68,6 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
-		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
-
 		final int width = getWidth();
 		final int height = getHeight();
 
@@ -156,8 +154,15 @@ public class SpectralAmpFreqAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveFreqScaleChange()
+	public void receiveFreqScaleChange( final FrequencyScaleComputer freqScaleComputer )
 	{
+		this.freqScaleComputer = freqScaleComputer;
 		repaint();
+	}
+
+	@Override
+	public void receiveFftSizeChange( final int desiredFftSize )
+	{
+		// Do nothing. We don't change scale if the fft size changes
 	}
 }

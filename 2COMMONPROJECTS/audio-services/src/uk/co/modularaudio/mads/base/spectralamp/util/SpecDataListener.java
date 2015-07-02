@@ -23,9 +23,5 @@ package uk.co.modularaudio.mads.base.spectralamp.util;
 
 public interface SpecDataListener
 {
-
 	void processScopeData( float[] computedAmpsData );
-
-	void setNumBins( int numBins );
-
 }

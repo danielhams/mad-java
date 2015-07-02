@@ -24,10 +24,14 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
@@ -46,16 +50,27 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 {
 	private static final long serialVersionUID = -180425607349546323L;
 
-//	private static Log log = LogFactory.getLog( NonBiBackedPeakDisplay.class.getName() );
+	private static Log log = LogFactory.getLog( SpectralAmpPeakDisplayUiJComponent.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;
+	private FrequencyScaleComputer freqScaleComputer;
+	private AmpScaleComputer ampScaleComputer;
+	private RunningAverageComputer runAvComputer;
+
+	// Setup when setBounds is called.
+	private int magsWidth;
+	private int magsHeight;
+	private final static int yOffset = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1;
+	private float vertPixelsPerMarker;
+	private float horizPixelsPerMarker;
+
+	// Setup when setNumBins called
+	private int currentNumBins;
 
 	private final float[] runningBinPeaks;
 	private final float[] previousBinPeaks;
 	private final float[] computedBins;
-
-	private int currentNumBins;
 
 	private BufferedImage bi;
 	private Graphics2D biG2d;
@@ -74,9 +89,13 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		this.uiInstance = uiInstance;
+		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
+		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
+		this.runAvComputer = uiInstance.getDesiredRunningAverageComputer();
+
 		setOpaque( true );
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
-		this.uiInstance = uiInstance;
 
 		runningBinPeaks = new float[ SpectralAmpMadDefinition.MAX_NUM_FFT_BINS ];
 		previousBinPeaks = new float[ SpectralAmpMadDefinition.MAX_NUM_FFT_BINS ];
@@ -135,19 +154,13 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		final int widthForAmps = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
-		final int heightForAmps = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
-
 		// Draw the axis lines
-		final float vertPixelsPerMarker = heightForAmps / ((float)SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1);
-
 		for( int i = 0 ; i < SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1 ; ++i )
 		{
-
 			final int lineY = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + (int)(vertPixelsPerMarker * i);
-			g.drawLine( 0, lineY, widthForAmps, lineY );
+			g.drawLine( 0, lineY, magsWidth, lineY );
 		}
-		final float horizPixelsPerMarker = widthForAmps / ((float)SpectralAmpFreqAxisDisplay.NUM_MARKERS - 1);
+
 		for( int j = 1 ; j < SpectralAmpFreqAxisDisplay.NUM_MARKERS ; ++j )
 		{
 			final int lineX = (int)(horizPixelsPerMarker * j);
@@ -160,11 +173,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			final float[] bins,
 			final int numBins )
 	{
-		final int magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
-		final int magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
-
-		final int yOffset = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1;
-
 		// Start after the origin point
 		int pointOffset = 1;
 
@@ -172,11 +180,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 //		log.debug("Mags height is " + magsHeight );
 
-		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 		final float maxFrequency = freqScaleComputer.getMaxFrequency();
 		final float freqPerBin = maxFrequency / (numBins - 1);
-
-		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
 		for( int i = 0 ; i < magsWidth ; i++ )
 		{
@@ -212,11 +217,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			final float[] bins,
 			final int numBins )
 	{
-		final int magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
-		final int magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
-
-		final int yOffset = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + 1;
-
 		// Start after the origin point
 		int pointOffset = 0;
 
@@ -224,11 +224,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 //		log.debug("Mags height is " + magsHeight );
 
-		final FrequencyScaleComputer freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 		final float maxFrequency = freqScaleComputer.getMaxFrequency();
 		final float freqPerBin = maxFrequency / (numBins - 1);
-
-		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
 		for( int i = 0 ; i < magsWidth ; i++ )
 		{
@@ -317,19 +314,24 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	}
 
 	@Override
-	public void receiveFreqScaleChange()
+	public void receiveFreqScaleChange( final FrequencyScaleComputer freqScaleComputer )
 	{
+		this.freqScaleComputer = freqScaleComputer;
 		clear();
 	}
 
 	@Override
-	public void receiveAmpScaleChange()
+	public void receiveAmpScaleChange( final AmpScaleComputer ampScaleComputer )
 	{
+		this.ampScaleComputer = ampScaleComputer;
+		clear();
 	}
 
 	@Override
-	public void receiveRunAvComputer( final RunningAverageComputer desiredRunningAverageComputer )
+	public void receiveRunAvComputer( final RunningAverageComputer runAvComputer )
 	{
+		this.runAvComputer = runAvComputer;
+		clear();
 	}
 
 	@Override
@@ -338,8 +340,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 //		log.debug("Received new scope data.");
 		assert( amps.length == currentNumBins );
 		System.arraycopy( amps, 0, computedBins, 0, currentNumBins );
-
-		final RunningAverageComputer runAvComputer = uiInstance.getDesiredRunningAverageComputer();
 
 		runAvComputer.computeNewRunningAverages( currentNumBins, computedBins, runningBinPeaks );
 
@@ -354,10 +354,26 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	}
 
 	@Override
-	public void setNumBins( final int numBins )
+	public void setBounds( final Rectangle r )
 	{
+		super.setBounds( r );
+
+		final int width = r.width;
+		final int height = r.height;
+
+		magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
+		magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
+
+		vertPixelsPerMarker = magsHeight / ((float)SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1);
+		horizPixelsPerMarker = magsWidth / ((float)SpectralAmpFreqAxisDisplay.NUM_MARKERS - 1);
+	}
+
+	@Override
+	public void receiveFftSizeChange( final int desiredFftSize )
+	{
+		log.warn("Unsure if we should be doing something here yet");
+		final int numBins = (desiredFftSize / 2) + 1;
 		currentNumBins = numBins;
 		clear();
 	}
-
 }

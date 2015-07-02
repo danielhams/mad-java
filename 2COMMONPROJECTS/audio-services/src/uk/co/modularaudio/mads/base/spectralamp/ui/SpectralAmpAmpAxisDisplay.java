@@ -48,7 +48,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 
 	public static final int NUM_MARKERS = 5;
 
-	private final SpectralAmpMadUiInstance uiInstance;
+	private AmpScaleComputer ampScaleComputer;
 
 	private final FontMetrics fm;
 
@@ -57,7 +57,7 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
+		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
@@ -69,8 +69,6 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
-		final AmpScaleComputer ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
-
 		final int width = getWidth();
 		final int height = getHeight();
 
@@ -175,8 +173,9 @@ public class SpectralAmpAmpAxisDisplay extends JPanel
 	}
 
 	@Override
-	public void receiveAmpScaleChange()
+	public void receiveAmpScaleChange( final AmpScaleComputer ampScaleComputer )
 	{
+		this.ampScaleComputer = ampScaleComputer;
 		repaint();
 	}
 }

@@ -20,7 +20,11 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
+import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+
 public interface FreqAxisChangeListener
 {
-	void receiveFreqScaleChange();
+	void receiveFreqScaleChange( FrequencyScaleComputer freqScaleComputer );
+
+	void receiveFftSizeChange( int desiredFftSize );
 }
