@@ -206,9 +206,19 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			}
 		}
 
+		// Close off the polygon
 		polygonXPoints[ bodyPointOffset ] = magsWidth - 1;
 		polygonYPoints[ bodyPointOffset ] = height;
 		bodyPointOffset++;
+
+		// And loop back the extra points in the polyline
+		final int numInOneLine = runAvPointOffset;
+		for( int i = 0 ; i < numInOneLine ; ++i )
+		{
+			polylineXPoints[ runAvPointOffset ] = polylineExtraXPoints[ numInOneLine - i - 1 ];
+			polylineYPoints[ runAvPointOffset ] = polylineExtraYPoints[ numInOneLine - i - 1 ];
+			runAvPointOffset++;
+		}
 
 		g.fillPolygon( polygonXPoints, polygonYPoints, bodyPointOffset );
 
@@ -216,7 +226,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		{
 			g.setColor( SpectralAmpColours.RUNNING_PEAK_COLOUR );
 			g.drawPolyline( polylineXPoints, polylineYPoints, runAvPointOffset );
-			g.drawPolyline( polylineExtraXPoints, polylineExtraYPoints, runAvPointOffset );
 		}
 	}
 
@@ -233,9 +242,10 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 			polygonYPoints[ 0 ] = height;
 
 			final int maxPolylinePoints = width;
-
-			polylineXPoints = new int[ maxPolylinePoints ];
-			polylineYPoints = new int[ maxPolylinePoints ];
+			// We'll use double and copy over the extra points
+			// once we know how many there are
+			polylineXPoints = new int[ maxPolylinePoints * 2 ];
+			polylineYPoints = new int[ maxPolylinePoints * 2 ];
 			polylineExtraXPoints = new int[ maxPolylinePoints ];
 			polylineExtraYPoints = new int[ maxPolylinePoints ];
 		}
