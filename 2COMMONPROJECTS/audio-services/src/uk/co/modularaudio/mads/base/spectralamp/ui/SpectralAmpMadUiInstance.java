@@ -146,13 +146,13 @@ public class SpectralAmpMadUiInstance extends
 			srl.receiveSampleRateChange( dataRate.getValue() );
 		}
 
-		// Notify the frequency axis listeners we've started since the
-		// frequency scale depends on the sample rate we're running at
-		desiredFreqScaleComputer.setMinMaxFrequency( 0.0f, dataRate.getValue() / 2.0f );
-		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
-		{
-			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
-		}
+//		// Notify the frequency axis listeners we've started since the
+//		// frequency scale depends on the sample rate we're running at
+//		desiredFreqScaleComputer.setMinMaxFrequency( 0.0f, dataRate.getValue() / 2.0f );
+//		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
+//		{
+//			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
+//		}
 	}
 
 	private void initialiseBuffers()

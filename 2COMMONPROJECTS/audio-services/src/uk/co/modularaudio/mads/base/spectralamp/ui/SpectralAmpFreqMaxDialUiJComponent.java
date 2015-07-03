@@ -86,6 +86,7 @@ public class SpectralAmpFreqMaxDialUiJComponent
 
 		view.setDiameter( 27 );
 
+		uiInstance.addSampleRateListener( this );
 		uiInstance.addFreqAxisChangeListener( this );
 
 		model.addChangeListener( new ValueChangeListener()
@@ -137,7 +138,20 @@ public class SpectralAmpFreqMaxDialUiJComponent
 	@Override
 	public void receiveSampleRateChange( final int sampleRate )
 	{
-		model.setMaxValue( sampleRate / 2.0f );
+		// A little bit of twisted logic so that when we receive a new sample
+		// and the previous max freq was already at that freq, we move to the changed
+		// value
+		final float newMaxValue = sampleRate / 2.0f;
+		final float oldMaxValue = model.getMaxValue();
+		if( oldMaxValue != newMaxValue )
+		{
+			final float currentValue = model.getValue();
+			model.setMaxValue( sampleRate / 2.0f );
+			if( currentValue == oldMaxValue )
+			{
+				model.setValue( this, newMaxValue );
+			}
+		}
 	}
 
 	@Override
