@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -41,7 +42,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageCompute
 public class SpectralAmpPeakDisplayUiJComponent extends JPanel
 implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>,
 	AmpAxisChangeListener, FreqAxisChangeListener, RunningAvChangeListener,
-	SpecDataListener
+	SpecDataListener, SampleRateListener
 {
 	private static final long serialVersionUID = -180425607349546323L;
 
@@ -52,6 +53,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	private FrequencyScaleComputer freqScaleComputer;
 	private AmpScaleComputer ampScaleComputer;
 	private RunningAverageComputer runAvComputer;
+
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	// Setup when setBounds is called.
 	private int width;
@@ -264,14 +267,12 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 		this.freqScaleComputer = freqScaleComputer;
 		recomputePixelToBinLookup();
-		clear();
 	}
 
 	@Override
 	public void receiveAmpScaleChange( final AmpScaleComputer ampScaleComputer )
 	{
 		this.ampScaleComputer = ampScaleComputer;
-		clear();
 	}
 
 	@Override
@@ -332,8 +333,8 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	{
 		if( pixelToBinLookupTable != null && freqScaleComputer != null )
 		{
-			final float maxFrequency = freqScaleComputer.getMaxFrequency();
-			final float freqPerBin = maxFrequency / (currentNumBins - 1);
+			final float nyquistFrequency = sampleRate / 2.0f;
+			final float freqPerBin = nyquistFrequency / (currentNumBins - 1);
 
 			for( int i = 0 ; i < magsWidth ; i++ )
 			{
@@ -342,5 +343,11 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 				pixelToBinLookupTable[ i ] = whichBin;
 			}
 		}
+	}
+
+	@Override
+	public void receiveSampleRateChange( final int sampleRate )
+	{
+		this.sampleRate = sampleRate;
 	}
 }

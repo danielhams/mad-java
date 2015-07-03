@@ -50,19 +50,23 @@ public class SpectralAmpMadUiDefinition
 		"Amp Ceil",
 		"Amp Floor",
 		"Amp Scale",
-		"Peak Reset",
+		"Frequency Min",
+		"Frequency Max",
+		"Frequency Scale",
 		"Amp Scale Axis",
 		"Display",
 		"Freq Scale Axis",
 		"Resolution",
-		"Frequency Scale",
-		"Running Average"
+		"Running Average",
+		"Peak Reset"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
+		ControlType.SLIDER,
+		ControlType.SLIDER,
 		ControlType.COMBO,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY,
@@ -76,6 +80,8 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpAmpMaxChoiceUiJComponent.class,
 		SpectralAmpAmpMinChoiceUiJComponent.class,
 		SpectralAmpAmpMappingChoiceUiJComponent.class,
+		SpectralAmpFreqMinDialUiJComponent.class,
+		SpectralAmpFreqMaxDialUiJComponent.class,
 		SpectralAmpFreqMappingChoiceUiJComponent.class,
 		SpectralAmpAmpAxisDisplay.class,
 		SpectralAmpPeakDisplayUiJComponent.class,
@@ -91,8 +97,10 @@ public class SpectralAmpMadUiDefinition
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 108,   5, 150,  30 ),		// Amp Ceil Choice
-		new Rectangle( 270,   5, 120,  30 ),		// Amp Floor Choice
+		new Rectangle( 286,   5, 118,  30 ),		// Amp Floor Choice
 		new Rectangle( 430,   5, 120,  30 ),		// Amp Scale
+		new Rectangle(  94,  41, 182,  30 ),		// Freq Min
+		new Rectangle( 292,  41, 122,  30 ),		// Freq Max
 		new Rectangle( 430,  41, 120,  30 ),		// Freq Scale
 		new Rectangle(   6,  77,  45, 192 ),		// Amp Axis Display
 		new Rectangle(  51,  77, 499, 167 ),		// Spectral Display
@@ -103,6 +111,8 @@ public class SpectralAmpMadUiDefinition
 	};
 
 	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;
+
+	public static final float MIN_FREQ_DIFF = 10.0f;
 
 	public SpectralAmpMadUiDefinition( final BufferedImageAllocator bia,
 			final SpectralAmpMadDefinition definition,

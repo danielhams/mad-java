@@ -43,6 +43,8 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 public class SpectralAmpAmpMappingChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
+	private static final long serialVersionUID = -4110818101779866393L;
+
 //	private static Log log = LogFactory.getLog( SpectralAmpAmpMappingChoiceUiJComponent.class.getName() );
 
 	public enum AmpMapping

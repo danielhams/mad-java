@@ -83,6 +83,12 @@ public class SpectralAmpMadUiInstance extends
 	// Things the UI sets
 	private int desiredFftSize = SpectralAmpFFTResolutionChoiceUiJComponent.DEFAULT_RESOLUTION;
 
+	private float desiredAmpMinDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
+	private float desiredAmpMaxDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
+
+	private float desiredFreqMin = SpectralAmpFreqMinDialUiJComponent.DEFAULT_FREQ_MIN;
+	private float desiredFreqMax = SpectralAmpFreqMaxDialUiJComponent.DEFAULT_FREQ_MAX;
+
 	// How the frequency scale is computed
 	private final FrequencyScaleComputer linearFreqScaleComputer = new LinearFreqScaleComputer();
 	private final FrequencyScaleComputer logFreqScaleComputer = new LogarithmicFreqScaleComputer();
@@ -112,11 +118,10 @@ public class SpectralAmpMadUiInstance extends
 	private final float[][] wolaArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 
-	private float desiredAmpMinDb = SpectralAmpAmpMinChoiceUiJComponent.DEFAULT_AMP_MIN.getDb();
-	private float desiredAmpMaxDb = SpectralAmpAmpMaxChoiceUiJComponent.DEFAULT_AMP_MAX.getDb();
 	private final List<AmpAxisChangeListener> ampAxisChangeListeners = new ArrayList<>();
 	private final List<FreqAxisChangeListener> freqAxisChangeListeners = new ArrayList<>();
 	private final List<RunningAvChangeListener> runAvChangeListeners = new ArrayList<>();
+	private final List<SampleRateListener> sampleRateListeners = new ArrayList<>();
 
 	public SpectralAmpMadUiInstance( final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiDefinition uiDefinition )
@@ -135,6 +140,11 @@ public class SpectralAmpMadUiInstance extends
 		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
 		dataRate = ratesAndLatency.getAudioChannelSetting().getDataRate();
 		initialiseBuffers();
+
+		for( final SampleRateListener srl : sampleRateListeners )
+		{
+			srl.receiveSampleRateChange( dataRate.getValue() );
+		}
 
 		// Notify the frequency axis listeners we've started since the
 		// frequency scale depends on the sample rate we're running at
@@ -387,6 +397,12 @@ public class SpectralAmpMadUiInstance extends
 		racl.receiveRunAvComputer( desiredRunningAverageComputer );
 	}
 
+	public void addSampleRateListener( final SampleRateListener srl )
+	{
+		sampleRateListeners.add( srl );
+		srl.receiveSampleRateChange( dataRate.getValue() );
+	}
+
 	public void setDesiredAmpMapping( final AmpMapping mapping )
 	{
 		switch( mapping )
@@ -433,7 +449,7 @@ public class SpectralAmpMadUiInstance extends
 			}
 		}
 
-		desiredFreqScaleComputer.setMinMaxFrequency( 0.0f, dataRate.getValue() / 2.0f );
+		desiredFreqScaleComputer.setMinMaxFrequency( desiredFreqMin, desiredFreqMax );
 
 		for( final FreqAxisChangeListener fl : freqAxisChangeListeners )
 		{
@@ -482,6 +498,25 @@ public class SpectralAmpMadUiInstance extends
 		{
 			rcl.receiveRunAvComputer( desiredRunningAverageComputer );
 		}
+	}
 
+	public void setDesiredMaxFrequency( final float freqMax )
+	{
+		desiredFreqMax = freqMax;
+		desiredFreqScaleComputer.setMinMaxFrequency( desiredFreqMin, desiredFreqMax );
+		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
+		{
+			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
+		}
+	}
+
+	public void setDesiredMinFrequency( final float freqMin )
+	{
+		desiredFreqMin = freqMin;
+		desiredFreqScaleComputer.setMinMaxFrequency( desiredFreqMin, desiredFreqMax );
+		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
+		{
+			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
+		}
 	}
 }

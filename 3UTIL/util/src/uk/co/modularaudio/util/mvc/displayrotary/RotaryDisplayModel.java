@@ -30,7 +30,7 @@ public class RotaryDisplayModel
 	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( RotaryDisplayModel.class.getName() );
 
-	private final float minValue;
+	private float minValue;
 	private float maxValue;
 	private final float initialValue;
 	private final int numSliderSteps;
@@ -131,7 +131,7 @@ public class RotaryDisplayModel
 
 	public void setValue( final Object source, final float iNewFloatValue )
 	{
-//		log.debug("setValue " + newFloatValue + " called from " +source.getClass().getSimpleName() );
+//		log.debug("setValue " + iNewFloatValue + " called from " + source.getClass().getSimpleName() );
 		float newFloatValue = iNewFloatValue;
 		if( newFloatValue > maxValue )
 		{
@@ -164,9 +164,15 @@ public class RotaryDisplayModel
 		this.majorTickSpacing = majorTickSpacing;
 	}
 
-	public void setMaxValue( final float newTimescaleUpperLimit )
+	public void setMaxValue( final float newMaxValue )
 	{
-		maxValue = newTimescaleUpperLimit;
+		maxValue = newMaxValue;
+		notifyOfChange( this );
+	}
+
+	public void setMinValue( final float newMinValue )
+	{
+		minValue = newMinValue;
 		notifyOfChange( this );
 	}
 

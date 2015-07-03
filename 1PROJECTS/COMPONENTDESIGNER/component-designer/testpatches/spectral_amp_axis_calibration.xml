@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Spectral Amp 1" rackComponentChannelInstanceName="Input Wave"/>
     <rackComponent name="Band Limited Oscillator 2" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="2"/>
         <rackControl name="Frequency" value="200"/>
-        <rackControl name="Shape" value="Sine"/>
+        <rackControl name="Shape" value="Square"/>
         <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 5" definitionId="linear_cva">
@@ -17,25 +16,38 @@
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
-        <rackControl name="ScaleChoice" value="0dB"/>
-        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-120dB"/>
+        <rackControl name="Amp Scale" value="Log dB"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Max" value="22050.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
-        <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
-        <rackControl name="Peak Reset" value=""/>
         <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale Axis" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Off"/>
+        <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="Static Value 3" definitionId="static_value">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Value" value="313.0"/>
+        <rackControl name="Value" value="500.0"/>
     </rackComponent>
     <rackComponent name="Static Value 4" definitionId="static_value">
         <rackPosition column="0" row="4"/>
         <rackControl name="Value" value="0.5"/>
     </rackComponent>
+    <rackComponent name="Wave Roller 7" definitionId="wave_roller">
+        <rackPosition column="1" row="5"/>
+        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="ScaleChoice" value="0dB"/>
+        <rackControl name="Left Scale" value=""/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Right Scale" value=""/>
+    </rackComponent>
     <rackLink producerRackComponentName="Band Limited Oscillator 2" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 5" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="Wave Roller 7" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Scale And Offset 6" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 2" consumerChannelName="Input Frequency CV"/>
     <rackLink producerRackComponentName="Static Value 3" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 6" consumerChannelName="Input CV"/>
     <rackLink producerRackComponentName="Static Value 4" producerChannelName="Output CV" consumerRackComponentName="Linear CV Amplifier 5" consumerChannelName="Input CV amplification factor"/>
