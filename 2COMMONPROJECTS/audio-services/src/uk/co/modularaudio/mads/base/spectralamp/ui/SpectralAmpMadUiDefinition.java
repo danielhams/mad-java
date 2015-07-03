@@ -47,16 +47,16 @@ public class SpectralAmpMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"AmpCeil",
-		"AmpFloor",
-		"Resolution",
-		"Frequency Scale",
+		"Amp Ceil",
+		"Amp Floor",
 		"Amp Scale",
-		"Running Average",
 		"Peak Reset",
 		"Amp Scale Axis",
 		"Display",
-		"Freq Scale Axis"
+		"Freq Scale Axis",
+		"Resolution",
+		"Frequency Scale",
+		"Running Average"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
@@ -64,42 +64,42 @@ public class SpectralAmpMadUiDefinition
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.COMBO,
-		ControlType.COMBO,
-		ControlType.BUTTON,
 		ControlType.DISPLAY,
 		ControlType.DISPLAY,
-		ControlType.DISPLAY
+		ControlType.DISPLAY,
+		ControlType.COMBO,
+		ControlType.COMBO,
+		ControlType.BUTTON
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		SpectralAmpAmpMaxChoiceUiJComponent.class,
 		SpectralAmpAmpMinChoiceUiJComponent.class,
-		SpectralAmpFFTResolutionChoiceUiJComponent.class,
-		SpectralAmpFreqMappingChoiceUiJComponent.class,
 		SpectralAmpAmpMappingChoiceUiJComponent.class,
-		SpectralAmpRunningAverageChoiceUiJComponent.class,
-		SpectralAmpPeakResetUiJComponent.class,
+		SpectralAmpFreqMappingChoiceUiJComponent.class,
 		SpectralAmpAmpAxisDisplay.class,
 		SpectralAmpPeakDisplayUiJComponent.class,
-		SpectralAmpFreqAxisDisplay.class
+		SpectralAmpFreqAxisDisplay.class,
+		SpectralAmpFFTResolutionChoiceUiJComponent.class,
+		SpectralAmpRunningAverageChoiceUiJComponent.class,
+		SpectralAmpPeakResetUiJComponent.class
 	};
 
 	public final static int SCALES_HEIGHT_OFFSET = 10;
-	public final static int SCALES_WIDTH_OFFSET = 30;
+	public final static int SCALES_WIDTH_OFFSET = 20;
 	public final static int FREQ_AXIS_COMPONENT_HEIGHT = 25;
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 238,   3, 150,  30 ),		// Amp Ceil Choice
-		new Rectangle( 400,   3, 150,  30 ),		// Amp Floor Choice
-		new Rectangle(   8, 274,  80,  30 ),		// FFT Resolution
-		new Rectangle( 108, 274,  66,  30 ),		// Freq Scale
-		new Rectangle( 194, 274,  90,  30 ),		// Amp Scale
-		new Rectangle( 304, 274, 126,  30 ),		// Runn Average Type
-		new Rectangle( 450, 274,  96,  30 ),		// Peak Reset Button
-		new Rectangle(   6,  36,  45, 228 ),		// Amp Axis Display
-		new Rectangle(  51,  36, 499, 203 ),		// Spectral Display
-		new Rectangle(  51, 239, 499, FREQ_AXIS_COMPONENT_HEIGHT )			// Freq Axis Display
+		new Rectangle( 108,   5, 150,  30 ),		// Amp Ceil Choice
+		new Rectangle( 270,   5, 120,  30 ),		// Amp Floor Choice
+		new Rectangle( 430,   5, 120,  30 ),		// Amp Scale
+		new Rectangle( 430,  41, 120,  30 ),		// Freq Scale
+		new Rectangle(   6,  77,  45, 192 ),		// Amp Axis Display
+		new Rectangle(  51,  77, 499, 167 ),		// Spectral Display
+		new Rectangle(  51, 244, 499, FREQ_AXIS_COMPONENT_HEIGHT ),			// Freq Axis Display
+		new Rectangle(   8, 276, 105,  30 ),		// FFT Resolution
+		new Rectangle( 204, 276, 226,  30 ),		// Runn Average Type
+		new Rectangle( 450, 276,  96,  30 )			// Peak Reset Button
 	};
 
 	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;

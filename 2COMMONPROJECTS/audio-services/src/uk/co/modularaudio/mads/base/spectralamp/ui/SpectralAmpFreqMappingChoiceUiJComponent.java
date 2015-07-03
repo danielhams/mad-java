@@ -23,8 +23,10 @@ package uk.co.modularaudio.mads.base.spectralamp.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -33,12 +35,16 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpFreqMappingChoiceUiJComponent
+public class SpectralAmpFreqMappingChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
+	private static final long serialVersionUID = 3031304840230003405L;
+
 	public enum FreqMapping
 	{
 		LINEAR( "Lin" ),
@@ -75,6 +81,22 @@ public class SpectralAmpFreqMappingChoiceUiJComponent
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
+		setOpaque( false );
+
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
+		msh.addColumnConstraint( "[grow 0][fill]" );
+
+		setLayout( msh.createMigLayout() );
+
+		final LWTCLabel label = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "Scale:" );
+		label.setBorder( BorderFactory.createEmptyBorder() );
+		label.setFont( LWTCControlConstants.LABEL_FONT );
+		add( label, "align center, right" );
+
 		model = new DefaultComboBoxModel<String>();
 		model.addElement( FreqMapping.LINEAR.getLabel() );
 		model.addElement( FreqMapping.LOG.getLabel() );
@@ -106,13 +128,13 @@ public class SpectralAmpFreqMappingChoiceUiJComponent
 				uiInstance.setDesiredFreqMapping( freqMapping );
 			}
 		} );
-
+		this.add( rotaryChoice, "grow");
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return rotaryChoice;
+		return this;
 	}
 
 	@Override

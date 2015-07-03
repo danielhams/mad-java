@@ -106,7 +106,7 @@ public class SpectralAmpAmpMinChoiceUiJComponent extends JPanel
 
 		setLayout( msh.createMigLayout() );
 
-		final LWTCLabel label = new LWTCLabel( "Amp Floor:" );
+		final LWTCLabel label = new LWTCLabel( "Floor:" );
 		label.setBorder( BorderFactory.createEmptyBorder() );
 		label.setFont( LWTCControlConstants.LABEL_FONT );
 		add( label, "align center, right" );
