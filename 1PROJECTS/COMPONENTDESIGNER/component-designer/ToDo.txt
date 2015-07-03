@@ -19,6 +19,8 @@ For release 0.0.3:
 
 * Fix new component name suggestion to be something that will work. Occasionally fails at the moment as there isn't a proper check.
 
+* Make mid sid processing a little more presentable.
+
 * Documentation - javadoc, component map and building.
 
 * Create a mechanism for CI / easy(ish) building.

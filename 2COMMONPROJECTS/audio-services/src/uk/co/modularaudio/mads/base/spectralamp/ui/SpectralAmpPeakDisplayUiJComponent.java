@@ -162,13 +162,13 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		for( int i = 0 ; i < SpectralAmpAmpAxisDisplay.NUM_MARKERS - 1 ; ++i )
 		{
 			final int lineY = SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET + (int)(vertPixelsPerMarker * i);
-			g.drawLine( 0, lineY, magsWidth, lineY );
+			g.drawLine( 0, lineY, magsWidth - 1, lineY );
 		}
 
 		for( int j = 1 ; j < SpectralAmpFreqAxisDisplay.NUM_MARKERS ; ++j )
 		{
 			final int lineX = (int)(horizPixelsPerMarker * j);
-			g.drawLine( lineX, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET, lineX, height );
+			g.drawLine( lineX, SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET, lineX, height - 1 );
 		}
 	}
 
@@ -180,37 +180,88 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 
 		int previousBinDrawn = -1;
 
-		for( int i = 0 ; i < magsWidth ; i++ )
+		for( int i = 0 ; i < magsWidth - 1; i++ )
 		{
 			final int whichBin = pixelToBinLookupTable[i];
 
 			if( whichBin != previousBinDrawn )
 			{
-				previousBinDrawn = whichBin;
+				// Computing the spectral body amplitude
+				// and running average in screen space
+				final int bucketMappedBodyValue;
+				final int bucketMappedRunAvValue;
 
-				// Computing the spectral body amplitude in screen space
-				final float bodyValForBin = computedBins[ whichBin ];
-				final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-				final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+				if( previousBinDrawn == -1 || whichBin == previousBinDrawn + 1 )
+				{
+					final float bodyValForBin = computedBins[ whichBin ];
+					final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+
+					final float runAvValForBin = runningBinPeaks[ whichBin ];
+					final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
+				}
+				else
+				{
+					float maxNormalisedValue = 0.0f;
+					float maxNormalisedRunAvValue = 0.0f;
+					for( int sb = previousBinDrawn + 1 ; sb <= whichBin ; ++sb )
+					{
+						final float bodyValForBin = computedBins[ sb ];
+						final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+						if( normalisedBodyBinValue > maxNormalisedValue )
+						{
+							maxNormalisedValue = normalisedBodyBinValue;
+						}
+						final float runAvValForBin = runningBinPeaks[ sb ];
+						final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+						if( normalisedRunAvBinValue > maxNormalisedRunAvValue )
+						{
+							maxNormalisedRunAvValue = normalisedRunAvBinValue;
+						}
+					}
+					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, maxNormalisedValue );
+					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, maxNormalisedRunAvValue );
+				}
 
 				polygonXPoints[ bodyPointOffset ] = i;
 				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
 				bodyPointOffset++;
 
-				// Computing the running average amplitude in screen space
-				final float runAvValForBin = runningBinPeaks[ whichBin ];
-				final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-				final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
 				polylineXPoints[ runAvPointOffset ] = i;
 				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue + yOffset;
 				polylineExtraXPoints[ runAvPointOffset ] = i;
 				polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
 				runAvPointOffset++;
+
+				previousBinDrawn = whichBin;
 			}
 		}
 
+		// Final pixel is a pain because it isn't necessarily a new bin
+		// but we need a value for it
+		final int finalPixel = magsWidth - 1;
+		final int whichBin = pixelToBinLookupTable[ finalPixel ];
+
+		final float bodyValForBin = computedBins[ whichBin ];
+		final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+		final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+
+		polygonXPoints[ bodyPointOffset ] = finalPixel;
+		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
+		bodyPointOffset++;
+
+		final float runAvValForBin = runningBinPeaks[ whichBin ];
+		final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+		final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
+		polylineXPoints[ runAvPointOffset ] = finalPixel;
+		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue + yOffset;
+		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
+		polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
+		runAvPointOffset++;
+
 		// Close off the polygon
-		polygonXPoints[ bodyPointOffset ] = magsWidth - 1;
+		polygonXPoints[ bodyPointOffset ] = magsWidth;
 		polygonYPoints[ bodyPointOffset ] = height;
 		bodyPointOffset++;
 
@@ -335,12 +386,19 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		{
 			final float nyquistFrequency = sampleRate / 2.0f;
 			final float freqPerBin = nyquistFrequency / (currentNumBins - 1);
+			// We adjust the frequency by half the bin width so
+			// that we don't jump the gun and use a bin too early.
+			final float binStartFreqOffset = freqPerBin / 2;
 
 			for( int i = 0 ; i < magsWidth ; i++ )
 			{
 				final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
-				final int whichBin = Math.round( pixelRawFreq / freqPerBin );
+				float adjustedBinFloat = (pixelRawFreq - binStartFreqOffset) / freqPerBin;
+				adjustedBinFloat = (adjustedBinFloat < 0.0f ? 0.0f : adjustedBinFloat );
+				final int whichBin = Math.round( adjustedBinFloat );
 				pixelToBinLookupTable[ i ] = whichBin;
+//				log.debug("Pixel " + i + " has raw freq " + MathFormatter.slowFloatPrint( pixelRawFreq, 3, false ) + " which we adjust to " +
+//						MathFormatter.slowFloatPrint( adjustedBinFloat, 3, false ) + " which maps to " + whichBin );
 			}
 		}
 	}
