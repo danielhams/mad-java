@@ -108,6 +108,7 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 		uiInstance.addAmpAxisChangeListener( this );
 		uiInstance.addFreqAxisChangeListener( this );
 		uiInstance.addRunAvChangeListener( this );
+		uiInstance.addSampleRateListener( this );
 
 		uiInstance.setSpecDataListener( this );
 	}
@@ -395,10 +396,17 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 				final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
 				float adjustedBinFloat = (pixelRawFreq - binStartFreqOffset) / freqPerBin;
 				adjustedBinFloat = (adjustedBinFloat < 0.0f ? 0.0f : adjustedBinFloat );
-				final int whichBin = Math.round( adjustedBinFloat );
-				pixelToBinLookupTable[ i ] = whichBin;
+				int whichBin = Math.round( adjustedBinFloat );
 //				log.debug("Pixel " + i + " has raw freq " + MathFormatter.slowFloatPrint( pixelRawFreq, 3, false ) + " which we adjust to " +
 //						MathFormatter.slowFloatPrint( adjustedBinFloat, 3, false ) + " which maps to " + whichBin );
+				// We might occasionally get asked to generate this lookup table before
+				// we're notified of the sample rate change. Make sure we're not
+				// filling with rubbish.
+				if( whichBin > currentNumBins - 1 )
+				{
+					whichBin = currentNumBins - 1;
+				}
+				pixelToBinLookupTable[ i ] = whichBin;
 			}
 		}
 	}
@@ -407,5 +415,6 @@ implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstanc
 	public void receiveSampleRateChange( final int sampleRate )
 	{
 		this.sampleRate = sampleRate;
+		recomputePixelToBinLookup();
 	}
 }
