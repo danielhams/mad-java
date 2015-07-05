@@ -28,11 +28,11 @@
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="Log dB"/>
-        <rackControl name="Frequency Min" value="300.0"/>
-        <rackControl name="Frequency Max" value="500.0"/>
+        <rackControl name="Frequency Min" value="100.0"/>
+        <rackControl name="Frequency Max" value="700.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>

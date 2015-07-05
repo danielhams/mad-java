@@ -6,6 +6,9 @@ import java.util.Arrays;
 
 import javax.swing.JPanel;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -22,7 +25,7 @@ public class SpectralPeakGraph extends JPanel
 {
 	private static final long serialVersionUID = 3612260008902851339L;
 
-//	private static Log log = LogFactory.getLog( NewSpectralDisplay.class.getName() );
+	private static Log log = LogFactory.getLog( SpectralPeakGraph.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;
@@ -125,9 +128,10 @@ public class SpectralPeakGraph extends JPanel
 
 		int previousBinDrawn = -1;
 
-		for( int i = 0 ; i < magsWidth - 1; i++ )
+		for( int i = 0 ; i < magsWidth ; i++ )
 		{
 			final int whichBin = pixelToBinLookupTable[i];
+//			log.trace( "For pixel " + i + " will pull values from bin: " + whichBin );
 
 			if( whichBin != previousBinDrawn )
 			{
@@ -185,8 +189,10 @@ public class SpectralPeakGraph extends JPanel
 
 		// Final pixel is a pain because it isn't necessarily a new bin
 		// but we need a value for it
-		final int finalPixel = magsWidth - 1;
+		final int finalPixel = magsWidth;
 		final int whichBin = pixelToBinLookupTable[ finalPixel ];
+
+//		log.debug("Final pixel " + finalPixel + " using bin " + whichBin );
 
 		final float bodyValForBin = computedBins[ whichBin ];
 		final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
@@ -317,7 +323,9 @@ public class SpectralPeakGraph extends JPanel
 		horizPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
 		vertPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
 
-		pixelToBinLookupTable = new int[ magsWidth ];
+		// We make the lookup table one larger than the width so we can overplot on width
+		// so the final pixel(s) are drawn correctly
+		pixelToBinLookupTable = new int[ magsWidth + 1 ];
 
 		recomputePixelToBinLookup();
 	}
@@ -341,17 +349,18 @@ public class SpectralPeakGraph extends JPanel
 			// that we don't jump the gun and use a bin too early.
 			final float binStartFreqOffset = freqPerBin / 2;
 
-			for( int i = 0 ; i < magsWidth ; i++ )
+			for( int i = 0 ; i < magsWidth + 1 ; i++ )
 			{
 				final float pixelRawFreq = freqScaleComputer.mappedBucketToRawMinMax( magsWidth, i );
 				float adjustedBinFloat = (pixelRawFreq - binStartFreqOffset) / freqPerBin;
 				adjustedBinFloat = (adjustedBinFloat < 0.0f ? 0.0f : adjustedBinFloat );
 				int whichBin = Math.round( adjustedBinFloat );
+
 //				log.debug("Pixel " + i + " has raw freq " + MathFormatter.slowFloatPrint( pixelRawFreq, 3, false ) + " which we adjust to " +
 //						MathFormatter.slowFloatPrint( adjustedBinFloat, 3, false ) + " which maps to " + whichBin );
-				// We might occasionally get asked to generate this lookup table before
-				// we're notified of the sample rate change. Make sure we're not
-				// filling with rubbish.
+
+				// In the case we're generating a full spectrum the extra X pixel means we'll go over
+				// the available number of bins, so clamp to that max value
 				if( whichBin > currentNumBins - 1 )
 				{
 					whichBin = currentNumBins - 1;
