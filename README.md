@@ -5,7 +5,9 @@ The application supports the idea of "racks" and "sub racks" allowing the creati
 
 Currently a small number of semi-usable components exist, whilst a number of other audio components are in progress.
 
-# Screenshots
+# 0.0.3 Preview Screenshot
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava003-preview.png">New Updates Coming in 0.0.3</img>
+# 0.0.1 Screenshots
 <img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-playingasoundfile.png">Playing a soundfile</img>
 <img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostrack.png">A rack boosting the bass of a signal</img>
 <img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostwiring.png">The wiring behind the bass booster</img>
