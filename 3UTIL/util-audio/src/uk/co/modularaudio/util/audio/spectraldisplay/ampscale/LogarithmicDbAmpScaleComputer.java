@@ -43,13 +43,13 @@ public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 		return val;
 	}
 
+	private int lastBucketIndex = 199;
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
 	private float maxDb = 0.0f;
 	private float maxValue = AudioMath.dbToLevelF( maxDb );
 
 	private float rangeDb = maxDb - minDb;
-	private float rangeValue = maxValue - minValue;
 
 	@Override
 	public void setMinMaxDb( final float minValueDb, final float maxValueDb )
@@ -59,7 +59,6 @@ public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 		this.maxDb = maxValueDb;
 		maxValue = AudioMath.dbToLevelF( maxDb );
 		this.rangeDb = maxDb - minDb;
-		rangeValue = maxValue - minValue;
 	}
 
 	@Override
@@ -78,7 +77,7 @@ public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 			final float asDb = AudioMath.levelToDbF( rawValue );
 			final float normalisedValue = (asDb - minDb) / rangeDb;
 
-			return Math.round( normalisedValue * (numBuckets-1) );
+			return (int)( (normalisedValue * (numBuckets-1)) + 0.5f);
 		}
 	}
 
@@ -86,6 +85,47 @@ public class LogarithmicDbAmpScaleComputer implements AmpScaleComputer
 	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
 	{
 		final float normalisedValue = bucket / (float)(numBuckets - 1);
+
+		final float dbValueInBucket = minDb + (normalisedValue * rangeDb);
+		final float finalValue = AudioMath.dbToLevelF( dbValueInBucket );
+		return finalValue;
+	}
+
+	@Override
+	public void setParameters( final int numBuckets, final float minValueDb, final float maxValueDb )
+	{
+		this.lastBucketIndex = numBuckets - 1;
+		this.minDb = minValueDb;
+		minValue = AudioMath.dbToLevelF( minDb );
+		this.maxDb = maxValueDb;
+		maxValue = AudioMath.dbToLevelF( maxDb );
+		this.rangeDb = maxDb - minDb;
+	}
+
+	@Override
+	public final int rawToMappedBucket( final float rawValue )
+	{
+		if( rawValue >= maxValue )
+		{
+			return lastBucketIndex;
+		}
+		else if( rawValue <= minValue )
+		{
+			return 0;
+		}
+		else
+		{
+			final float asDb = AudioMath.levelToDbF( rawValue );
+			final float normalisedValue = (asDb - minDb) / rangeDb;
+
+			return (int)( (normalisedValue * lastBucketIndex) + 0.5f);
+		}
+	}
+
+	@Override
+	public final float mappedBucketToRaw( final int bucket )
+	{
+		final float normalisedValue = bucket / (float)lastBucketIndex;
 
 		final float dbValueInBucket = minDb + (normalisedValue * rangeDb);
 		final float finalValue = AudioMath.dbToLevelF( dbValueInBucket );

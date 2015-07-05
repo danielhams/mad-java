@@ -30,4 +30,9 @@ public interface AmpScaleComputer
 	void setMinMaxDb( float minValueDb, float maxValueDb );
 	int rawToMappedBucketMinMax( int numBuckets, float rawValue );
 	float mappedBucketToRawMinMax( int numBuckets, int bucket );
+
+	// Optimised
+	void setParameters( int numBuckets, float minValueDb, float maxValueDb );
+	int rawToMappedBucket( float rawValue );
+	float mappedBucketToRaw( int bucket );
 }

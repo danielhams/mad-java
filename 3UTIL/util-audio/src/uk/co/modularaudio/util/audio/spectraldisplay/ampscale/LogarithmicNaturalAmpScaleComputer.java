@@ -37,6 +37,9 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	public final static float MIN_RAW_VALUE = AudioMath.dbToLevelF( MIN_DB_VALUE );
 	public final static float MIN_NATURAL_VALUE = levelToNatural( MIN_RAW_VALUE );
 
+	private static final float L_TO_N_PRE_LOG_SCALE_FACTOR = 10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+	private static final float N_TO_L_POST_EXP_SCALE_FACTOR = 10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+
 	@Override
 	public float scaleIt(final float valForBin)
 	{
@@ -48,7 +51,7 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 
 	private final static float levelToNatural( final float rawValue )
 	{
-		final float preLog = (rawValue * 10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR) + 1.0f;
+		final float preLog = (rawValue * L_TO_N_PRE_LOG_SCALE_FACTOR) + 1.0f;
 		final float theLog = (float)Math.log(preLog);
 		return theLog / SCALE_FACTOR;
 	}
@@ -57,9 +60,10 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	{
 		final float preExp = natural * SCALE_FACTOR;
 		final float postExp = (float)Math.exp( preExp );
-		return (postExp - 1.0f) / (10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR);
+		return (postExp - 1.0f) / (N_TO_L_POST_EXP_SCALE_FACTOR);
 	}
 
+	private int lastBucketIndex = 199;
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
 	private float minNaturalValue = levelToNatural( minValue );
@@ -67,8 +71,6 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	private float maxValue = AudioMath.dbToLevelF( maxDb );
 	private float maxNaturalValue = levelToNatural( maxValue );
 
-	private float rangeDb = maxDb - minDb;
-	private float rangeValue = maxValue - minValue;
 	private float rangeNatural = maxNaturalValue - minNaturalValue;
 
 	@Override
@@ -80,8 +82,6 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 		this.maxDb = maxValueDb;
 		maxValue = AudioMath.dbToLevelF( maxDb );
 		maxNaturalValue = levelToNatural( maxValue );
-		this.rangeDb = maxDb - minDb;
-		rangeValue = maxValue - minValue;
 		rangeNatural = maxNaturalValue - minNaturalValue;
 	}
 
@@ -101,7 +101,7 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 			final float asNatural = levelToNatural( rawValue );
 			final float normalisedValue = (asNatural - minNaturalValue) / rangeNatural;
 
-			return Math.round( normalisedValue * (numBuckets-1) );
+			return (int)( (normalisedValue * (numBuckets-1)) + 0.5f);
 		}
 	}
 
@@ -119,6 +119,60 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 		else
 		{
 			final float normalisedValue = bucket / (float)(numBuckets - 1);
+
+			final float naturalValueInBucket = minNaturalValue + (normalisedValue * rangeNatural);
+			final float finalValue = naturalToLevel( naturalValueInBucket );
+			return finalValue;
+		}
+	}
+
+	@Override
+	public void setParameters( final int numBuckets, final float minValueDb, final float maxValueDb )
+	{
+		this.lastBucketIndex = numBuckets - 1;
+		this.minDb = minValueDb;
+		minValue = AudioMath.dbToLevelF( minDb );
+		minNaturalValue = levelToNatural( minValue );
+		this.maxDb = maxValueDb;
+		maxValue = AudioMath.dbToLevelF( maxDb );
+		maxNaturalValue = levelToNatural( maxValue );
+		rangeNatural = maxNaturalValue - minNaturalValue;
+	}
+
+	@Override
+	public final int rawToMappedBucket( final float rawValue )
+	{
+		if( rawValue >= maxValue )
+		{
+			return lastBucketIndex;
+		}
+		else if( rawValue <= minValue )
+		{
+			return 0;
+		}
+		else
+		{
+			final float asNatural = levelToNatural( rawValue );
+			final float normalisedValue = (asNatural - minNaturalValue) / rangeNatural;
+
+			return (int)( (normalisedValue * lastBucketIndex) + 0.5f );
+		}
+	}
+
+	@Override
+	public final float mappedBucketToRaw( final int bucket )
+	{
+		if( bucket == 0 )
+		{
+			return minValue;
+		}
+		else if( bucket == lastBucketIndex )
+		{
+			return maxValue;
+		}
+		else
+		{
+			final float normalisedValue = bucket / (float)lastBucketIndex;
 
 			final float naturalValueInBucket = minNaturalValue + (normalisedValue * rangeNatural);
 			final float finalValue = naturalToLevel( naturalValueInBucket );

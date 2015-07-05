@@ -96,6 +96,9 @@ public class SpectralAmpMadUiInstance extends
 	private FrequencyScaleComputer desiredFreqScaleComputer = logFreqScaleComputer;
 
 	// How the amplitude scale is computed
+	// This height will get set when the peak display resizes
+	private int displayPeaksHeight = 100;
+
 	private final AmpScaleComputer linearAmpScaleComputer = new LinearAmpScaleComputer();
 	private final AmpScaleComputer logAmpScaleComputer = new LogarithmicNaturalAmpScaleComputer();
 	private final AmpScaleComputer logDbAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
@@ -367,7 +370,7 @@ public class SpectralAmpMadUiInstance extends
 	public void setDesiredAmpMax( final AmpMax al )
 	{
 		this.desiredAmpMaxDb = al.getDb();
-		this.desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
+		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
 			cl.receiveAmpScaleChange( desiredAmpScaleComputer );
@@ -377,7 +380,7 @@ public class SpectralAmpMadUiInstance extends
 	public void setDesiredAmpMin( final AmpMin am )
 	{
 		this.desiredAmpMinDb = am.getDb();
-		this.desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
+		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
 			cl.receiveAmpScaleChange( desiredAmpScaleComputer );
@@ -424,7 +427,7 @@ public class SpectralAmpMadUiInstance extends
 				break;
 			}
 		}
-		desiredAmpScaleComputer.setMinMaxDb( desiredAmpMinDb, desiredAmpMaxDb );
+		desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
 
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
@@ -518,5 +521,10 @@ public class SpectralAmpMadUiInstance extends
 		{
 			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
 		}
+	}
+
+	public void setDisplayPeaksHeight( final int displayPeaksHeight )
+	{
+		this.displayPeaksHeight = displayPeaksHeight;
 	}
 }

@@ -325,6 +325,9 @@ public class SpectralPeakGraph extends JPanel
 		pixelToBinLookupTable = new int[ magsWidth + 1 ];
 
 		recomputePixelToBinLookup();
+
+		// Inform the uiInstance of our size
+		uiInstance.setDisplayPeaksHeight( magsHeight );
 	}
 
 	@Override

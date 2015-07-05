@@ -37,7 +37,7 @@ public class TestSpectralDisplayMappings extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestSpectralDisplayMappings.class.getName() );
 
-	private final static int NUM_TEST_BUCKETS = 100;
+	private final static int NUM_TEST_BUCKETS = 101;
 
 	private final static float MAX_VALUE_DB = -30.0f;
 	private final static float MAX_VALUE = AudioMath.dbToLevelF( MAX_VALUE_DB );
@@ -56,6 +56,8 @@ public class TestSpectralDisplayMappings extends TestCase
 	private final static float TEST_MIN_FREQ = 0.0f;
 	private final static float TEST_MAX_FREQ = 22050.0f;
 
+	private final static int HALFWAY_BUCKET = (NUM_TEST_BUCKETS - 1) / 2;
+
 	static
 	{
 		log.debug("Test min DB(" + TEST_MIN_DB + ")" );
@@ -67,14 +69,14 @@ public class TestSpectralDisplayMappings extends TestCase
 	public void testLinearAmpScaleComputations() throws Exception
 	{
 		final LinearAmpScaleComputer lasc = new LinearAmpScaleComputer();
-		lasc.setMinMaxDb( TEST_MIN_DB, TEST_MAX_DB );
+		lasc.setParameters( NUM_TEST_BUCKETS, TEST_MIN_DB, TEST_MAX_DB );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
-			final float bucketRawValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, i );
+			final float bucketRawValue = lasc.mappedBucketToRaw( i );
 			final float bucketDbValue = AudioMath.levelToDbF( bucketRawValue );
 
-			final int andBack = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, bucketRawValue );
+			final int andBack = lasc.rawToMappedBucket( bucketRawValue );
 
 			log.trace("AMP LINEAR For bucket " + i + " raw value=(" +
 					MathFormatter.slowFloatPrint( bucketRawValue, 7, false ) +
@@ -85,32 +87,38 @@ public class TestSpectralDisplayMappings extends TestCase
 			assertTrue( andBack == i );
 		}
 
-		final float minBucketValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, 0 );
+		final float minBucketValue = lasc.mappedBucketToRaw( 0 );
 		assertTrue( minBucketValue == AudioMath.dbToLevelF( TEST_MIN_DB ) );
-		final float maxBucketValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, NUM_TEST_BUCKETS - 1 );
+		final float maxBucketValue = lasc.mappedBucketToRaw( NUM_TEST_BUCKETS - 1 );
 		assertTrue( maxBucketValue == AudioMath.dbToLevelF( TEST_MAX_DB ) );
 
 		// Finally make sure that out of bounds values are sensibly mapped
 		final float tooSmallValue = AudioMath.dbToLevelF( TEST_MIN_DB - 20.0f );
-		final int tooSmallBucket = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooSmallValue );
+		final int tooSmallBucket = lasc.rawToMappedBucket( tooSmallValue );
 		assertTrue( tooSmallBucket == 0 );
 
 		final float tooLargeValue = AudioMath.dbToLevelF( TEST_MAX_DB + 20.0f );
-		final int tooLargeBucket = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooLargeValue );
+		final int tooLargeBucket = lasc.rawToMappedBucket( tooLargeValue );
 		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
+
+		if( 101 == NUM_TEST_BUCKETS && TEST_MIN_DB == -96.0F && TEST_MAX_DB == 0.0f )
+		{
+			final float linValueForHalfwayBucket = lasc.mappedBucketToRaw( HALFWAY_BUCKET );
+			assertTrue( Math.abs(linValueForHalfwayBucket - 0.5000079) < 0.00001 );
+		}
 	}
 
 	public void testLogAmpDbScaleComputations() throws Exception
 	{
 		log.debug("Max value DB is " + MAX_VALUE_DB + " which is " + MathFormatter.slowFloatPrint( MAX_VALUE, 7, false ) );
 		final LogarithmicDbAmpScaleComputer lasc = new LogarithmicDbAmpScaleComputer();
-		lasc.setMinMaxDb( TEST_MIN_DB, TEST_MAX_DB );
+		lasc.setParameters( NUM_TEST_BUCKETS, TEST_MIN_DB, TEST_MAX_DB );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
-			final float bucketRawValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, i );
+			final float bucketRawValue = lasc.mappedBucketToRaw( i );
 
-			final int andBack = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, bucketRawValue );
+			final int andBack = lasc.rawToMappedBucket( bucketRawValue );
 
 			final float bucketDbValue = AudioMath.levelToDbF( bucketRawValue );
 
@@ -123,31 +131,37 @@ public class TestSpectralDisplayMappings extends TestCase
 			assertTrue( andBack == i );
 		}
 
-		final float minBucketValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, 0 );
+		final float minBucketValue = lasc.mappedBucketToRaw( 0 );
 		assertTrue( minBucketValue == AudioMath.dbToLevelF( TEST_MIN_DB ) );
-		final float maxBucketValue = lasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, NUM_TEST_BUCKETS - 1 );
+		final float maxBucketValue = lasc.mappedBucketToRaw( NUM_TEST_BUCKETS - 1 );
 		assertTrue( maxBucketValue == AudioMath.dbToLevelF( TEST_MAX_DB ) );
 
 		// Finally make sure that out of bounds values are sensibly mapped
 		final float tooSmallValue = AudioMath.dbToLevelF( TEST_MIN_DB - 20.0f );
-		final int tooSmallBucket = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooSmallValue );
+		final int tooSmallBucket = lasc.rawToMappedBucket( tooSmallValue );
 		assertTrue( tooSmallBucket == 0 );
 
 		final float tooLargeValue = AudioMath.dbToLevelF( TEST_MAX_DB + 20.0f );
-		final int tooLargeBucket = lasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooLargeValue );
+		final int tooLargeBucket = lasc.rawToMappedBucket( tooLargeValue );
 		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
+
+		if( 101 == NUM_TEST_BUCKETS && TEST_MIN_DB == -96.0F && TEST_MAX_DB == 0.0f )
+		{
+			final float logDbValueForHalfwayBucket = lasc.mappedBucketToRaw( HALFWAY_BUCKET );
+			assertTrue( Math.abs(logDbValueForHalfwayBucket - 0.0039811) < 0.00001 );
+		}
 	}
 
 	public void testLogAmpNaturalScaleComputations() throws Exception
 	{
 		final LogarithmicNaturalAmpScaleComputer lnasc = new LogarithmicNaturalAmpScaleComputer();
-		lnasc.setMinMaxDb( TEST_MIN_DB, TEST_MAX_DB );
+		lnasc.setParameters( NUM_TEST_BUCKETS, TEST_MIN_DB, TEST_MAX_DB );
 
 		for( int i = 0 ; i < NUM_TEST_BUCKETS ; ++i )
 		{
-			final float bucketRawValue = lnasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, i );
+			final float bucketRawValue = lnasc.mappedBucketToRaw( i );
 
-			final int andBack = lnasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, bucketRawValue );
+			final int andBack = lnasc.rawToMappedBucket( bucketRawValue );
 
 			final float bucketDbValue = AudioMath.levelToDbF( bucketRawValue );
 
@@ -160,19 +174,25 @@ public class TestSpectralDisplayMappings extends TestCase
 			assertTrue( andBack == i );
 		}
 
-		final float minBucketValue = lnasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, 0 );
+		final float minBucketValue = lnasc.mappedBucketToRaw( 0 );
 		assertTrue( minBucketValue == AudioMath.dbToLevelF( TEST_MIN_DB ) );
-		final float maxBucketValue = lnasc.mappedBucketToRawMinMax( NUM_TEST_BUCKETS, NUM_TEST_BUCKETS - 1 );
+		final float maxBucketValue = lnasc.mappedBucketToRaw( NUM_TEST_BUCKETS - 1 );
 		assertTrue( maxBucketValue == AudioMath.dbToLevelF( TEST_MAX_DB ) );
 
 		// Finally make sure that out of bounds values are sensibly mapped
 		final float tooSmallValue = AudioMath.dbToLevelF( TEST_MIN_DB - 20.0f );
-		final int tooSmallBucket = lnasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooSmallValue );
+		final int tooSmallBucket = lnasc.rawToMappedBucket( tooSmallValue );
 		assertTrue( tooSmallBucket == 0 );
 
 		final float tooLargeValue = AudioMath.dbToLevelF( TEST_MAX_DB + 20.0f );
-		final int tooLargeBucket = lnasc.rawToMappedBucketMinMax( NUM_TEST_BUCKETS, tooLargeValue );
+		final int tooLargeBucket = lnasc.rawToMappedBucket( tooLargeValue );
 		assertTrue( tooLargeBucket == NUM_TEST_BUCKETS - 1 );
+
+		if( 101 == NUM_TEST_BUCKETS && TEST_MIN_DB == -96.0F && TEST_MAX_DB == 0.0f )
+		{
+			final float logNaturalValueForHalfwayBucket = lnasc.mappedBucketToRaw( HALFWAY_BUCKET );
+			assertTrue( Math.abs(logNaturalValueForHalfwayBucket - 0.0143556) < 0.00001 );
+		}
 	}
 
 	public void testLinearFreqScaleComputations() throws Exception
