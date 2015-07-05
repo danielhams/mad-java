@@ -13,9 +13,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="3.4703798"/>
+        <rackControl name="Gain" value="-8.64466"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Regular/the_orb/uforb_disc_1/02uforb.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/LRCNTheBidness/20110416 - 140057- Live The Bidness 072 April 2011 w Shock Osugi Nilicule and LRCN.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -27,7 +27,7 @@
     <rackComponent name="Spectral Amp 6" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Max" value="24000.0"/>
@@ -35,14 +35,14 @@
         <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale Axis" value=""/>
-        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Resolution" value="4096"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">
         <rackPosition column="0" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Max" value="24000.0"/>
@@ -50,19 +50,19 @@
         <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale Axis" value=""/>
-        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Resolution" value="4096"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="Sub Rack 5" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 5" definitionId="sub_rack">
         <rackPosition column="2" row="0"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 6" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 6" definitionId="sub_rack">
         <rackPosition column="2" row="1"/>
     </rackComponent>
     <rackComponent name="Wave Roller 7" definitionId="wave_roller">
         <rackPosition column="0" row="4"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="CaptureTime" value="60.0"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

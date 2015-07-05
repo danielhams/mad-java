@@ -53,9 +53,7 @@ public class SpectralAmpMadUiDefinition
 		"Frequency Min",
 		"Frequency Max",
 		"Frequency Scale",
-		"Amp Scale Axis",
 		"Display",
-		"Freq Scale Axis",
 		"Resolution",
 		"Running Average",
 		"Peak Reset"
@@ -69,8 +67,6 @@ public class SpectralAmpMadUiDefinition
 		ControlType.SLIDER,
 		ControlType.COMBO,
 		ControlType.DISPLAY,
-		ControlType.DISPLAY,
-		ControlType.DISPLAY,
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.BUTTON
@@ -83,9 +79,7 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpFreqMinDialUiJComponent.class,
 		SpectralAmpFreqMaxDialUiJComponent.class,
 		SpectralAmpFreqMappingChoiceUiJComponent.class,
-		SpectralAmpAmpAxisDisplay.class,
-		SpectralAmpPeakDisplayUiJComponent.class,
-		SpectralAmpFreqAxisDisplay.class,
+		NewPeakAndScalesDisplay.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class
@@ -102,9 +96,7 @@ public class SpectralAmpMadUiDefinition
 		new Rectangle(  94,  41, 182,  30 ),		// Freq Min
 		new Rectangle( 292,  41, 122,  30 ),		// Freq Max
 		new Rectangle( 430,  41, 120,  30 ),		// Freq Scale
-		new Rectangle(   6,  77,  45, 192 ),		// Amp Axis Display
-		new Rectangle(  51,  77, 499, 167 ),		// Spectral Display
-		new Rectangle(  51, 244, 499, FREQ_AXIS_COMPONENT_HEIGHT ),			// Freq Axis Display
+		new Rectangle(   6,  77, 544, 192 ),		// Display
 		new Rectangle(   8, 276, 105,  30 ),		// FFT Resolution
 		new Rectangle( 204, 276, 226,  30 ),		// Runn Average Type
 		new Rectangle( 450, 276,  96,  30 )			// Peak Reset Button
