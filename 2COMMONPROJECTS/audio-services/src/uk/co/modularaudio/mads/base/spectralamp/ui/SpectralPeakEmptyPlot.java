@@ -4,16 +4,16 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-public class NewEmptyPlot extends JPanel
+public class SpectralPeakEmptyPlot extends JPanel
 {
 	private static final long serialVersionUID = 7201682973826590002L;
 
 //	private static Log log = LogFactory.getLog( NewEmptyPlot.class.getName() );
 
-	public NewEmptyPlot()
+	public SpectralPeakEmptyPlot()
 	{
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
-		this.setMinimumSize( new Dimension( NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH, NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH ) );
+		this.setMinimumSize( new Dimension( SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH, SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH ) );
 	}
 
 	@Override

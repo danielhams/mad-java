@@ -16,7 +16,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleCom
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 
-public class NewSpectralDisplay extends JPanel
+public class SpectralPeakGraph extends JPanel
 	implements AmpAxisChangeListener, FreqAxisChangeListener, RunningAvChangeListener,
 		SampleRateListener, SpecDataListener
 {
@@ -64,7 +64,7 @@ public class NewSpectralDisplay extends JPanel
 	private int[] polylineExtraXPoints;
 	private int[] polylineExtraYPoints;
 
-	public NewSpectralDisplay( final SpectralAmpMadUiInstance uiInstance )
+	public SpectralPeakGraph( final SpectralAmpMadUiInstance uiInstance )
 	{
 		this.uiInstance = uiInstance;
 		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
@@ -104,13 +104,13 @@ public class NewSpectralDisplay extends JPanel
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
 		// Draw the axis lines
-		for( int i = 0 ; i < NewPeakAndScalesDisplay.NUM_AMP_MARKERS ; ++i )
+		for( int i = 0 ; i < SpectralAmpDisplayUiJComponent.NUM_AMP_MARKERS ; ++i )
 		{
 			final int lineY = (vertPixelsPerMarker * i);
 			g.drawLine( 0, lineY, magsWidth - 1, lineY );
 		}
 
-		for( int j = 0 ; j < NewPeakAndScalesDisplay.NUM_FREQ_MARKERS; ++j )
+		for( int j = 0 ; j < SpectralAmpDisplayUiJComponent.NUM_FREQ_MARKERS; ++j )
 		{
 			final int lineX = horizPixelsPerMarker * j;
 			g.drawLine( lineX, 0, lineX, magsHeight );
@@ -309,13 +309,13 @@ public class NewSpectralDisplay extends JPanel
 //		magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
 //		magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
 
-		magsWidth = NewPeakAndScalesDisplay.getAdjustedWidthOfDisplay( this.width );
-		magsHeight = NewPeakAndScalesDisplay.getAdjustedHeightOfDisplay( this.height );
+		magsWidth = SpectralAmpDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width );
+		magsHeight = SpectralAmpDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height );
 
 		yOffset = this.height - magsHeight;
 
-		horizPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedWidthBetweenMarkers( this.width );
-		vertPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedHeightBetweenMarkers( this.height );
+		horizPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
+		vertPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
 
 		pixelToBinLookupTable = new int[ magsWidth ];
 

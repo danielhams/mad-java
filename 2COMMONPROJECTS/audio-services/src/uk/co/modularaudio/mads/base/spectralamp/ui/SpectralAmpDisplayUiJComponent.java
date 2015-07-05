@@ -11,18 +11,18 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class NewPeakAndScalesDisplay extends JPanel
+public class SpectralAmpDisplayUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
 	private static final long serialVersionUID = -734000347965308505L;
 
-	private final NewAmpScaleLabels ampScaleLabels;
-	private final NewEmptyPlot topEmptyPlot;
-	private final NewAmpAxisMarks ampAxisMarks;
-	private final NewSpectralDisplay spectralDispaly;
-	private final NewEmptyPlot rightEmptyPlot;
-	private final NewFreqAxisMarks freqAxisMarks;
-	private final NewFreqScaleLabels freqScaleLabels;
+	private final SpectralPeakAmpLabels ampScaleLabels;
+	private final SpectralPeakEmptyPlot topEmptyPlot;
+	private final SpectralPeakAmpMarks ampAxisMarks;
+	private final SpectralPeakGraph spectralDispaly;
+	private final SpectralPeakEmptyPlot rightEmptyPlot;
+	private final SpectralPeakFreqMarks freqAxisMarks;
+	private final SpectralPeakFreqLabels freqScaleLabels;
 
 	public static final int AXIS_MARKS_LENGTH = 8;
 	public static final int AMP_LABELS_WIDTH = 36;
@@ -33,7 +33,7 @@ public class NewPeakAndScalesDisplay extends JPanel
 	public static final int NUM_FREQ_MARKERS = 9;
 	public static final int NUM_AMP_MARKERS = 5;
 
-	public NewPeakAndScalesDisplay( final SpectralAmpMadDefinition definition,
+	public SpectralAmpDisplayUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
@@ -62,13 +62,13 @@ public class NewPeakAndScalesDisplay extends JPanel
 		setLayout( msh.createMigLayout() );
 
 
-		ampScaleLabels = new NewAmpScaleLabels( uiInstance );
-		topEmptyPlot = new NewEmptyPlot();
-		ampAxisMarks = new NewAmpAxisMarks();
-		spectralDispaly = new NewSpectralDisplay( uiInstance );
-		rightEmptyPlot = new NewEmptyPlot();
-		freqScaleLabels = new NewFreqScaleLabels( uiInstance );
-		freqAxisMarks = new NewFreqAxisMarks();
+		ampScaleLabels = new SpectralPeakAmpLabels( uiInstance );
+		topEmptyPlot = new SpectralPeakEmptyPlot();
+		ampAxisMarks = new SpectralPeakAmpMarks();
+		spectralDispaly = new SpectralPeakGraph( uiInstance );
+		rightEmptyPlot = new SpectralPeakEmptyPlot();
+		freqScaleLabels = new SpectralPeakFreqLabels( uiInstance );
+		freqAxisMarks = new SpectralPeakFreqMarks();
 
 		// Sizing set using row/column constraints
 		this.add( ampScaleLabels, "cell 0 0, spany 3, growy" );

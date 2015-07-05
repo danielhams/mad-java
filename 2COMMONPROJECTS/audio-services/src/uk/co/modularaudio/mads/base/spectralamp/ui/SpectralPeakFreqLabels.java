@@ -10,7 +10,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleCom
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class NewFreqScaleLabels extends JPanel implements FreqAxisChangeListener
+public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeListener
 {
 	private static final long serialVersionUID = 8208419176860684686L;
 
@@ -27,14 +27,14 @@ public class NewFreqScaleLabels extends JPanel implements FreqAxisChangeListener
 	private int xOffset;
 	private int horizPixelsPerMarker;
 
-	public NewFreqScaleLabels( final SpectralAmpMadUiInstance uiInstance )
+	public SpectralPeakFreqLabels( final SpectralAmpMadUiInstance uiInstance )
 	{
 		this.setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
 		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
-		setMinimumSize( new Dimension( NewPeakAndScalesDisplay.FREQ_LABELS_HEIGHT, NewPeakAndScalesDisplay.FREQ_LABELS_HEIGHT ) );
+		setMinimumSize( new Dimension( SpectralAmpDisplayUiJComponent.FREQ_LABELS_HEIGHT, SpectralAmpDisplayUiJComponent.FREQ_LABELS_HEIGHT ) );
 
 		fm = getFontMetrics( getFont() );
 
@@ -45,16 +45,16 @@ public class NewFreqScaleLabels extends JPanel implements FreqAxisChangeListener
 	{
 		this.realWidth = width;
 		this.realHeight = height;
-		this.width = width - NewPeakAndScalesDisplay.SPECTRAL_DISPLAY_RIGHT_PADDING -
-				NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH -
-				NewPeakAndScalesDisplay.AMP_LABELS_WIDTH;
+		this.width = width - SpectralAmpDisplayUiJComponent.SPECTRAL_DISPLAY_RIGHT_PADDING -
+				SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH -
+				SpectralAmpDisplayUiJComponent.AMP_LABELS_WIDTH;
 
-		magsWidth = NewPeakAndScalesDisplay.getAdjustedWidthOfDisplay( this.width );
+		magsWidth = SpectralAmpDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width );
 
-		xOffset = NewPeakAndScalesDisplay.AMP_LABELS_WIDTH +
-				NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH;
+		xOffset = SpectralAmpDisplayUiJComponent.AMP_LABELS_WIDTH +
+				SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH;
 
-		horizPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedWidthBetweenMarkers( this.width );
+		horizPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class NewFreqScaleLabels extends JPanel implements FreqAxisChangeListener
 		g.translate( xOffset, 0 );
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < NewPeakAndScalesDisplay.NUM_FREQ_MARKERS ; ++i )
+		for( int i = 0 ; i < SpectralAmpDisplayUiJComponent.NUM_FREQ_MARKERS ; ++i )
 		{
 			final int x = horizPixelsPerMarker * i;
 

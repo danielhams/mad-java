@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-public class NewAmpAxisMarks extends JPanel
+public class SpectralPeakAmpMarks extends JPanel
 {
 	private static final long serialVersionUID = 7201682973826590002L;
 
@@ -16,9 +16,9 @@ public class NewAmpAxisMarks extends JPanel
 	private int yOffset;
 	private int vertPixelsPerMarker;
 
-	public NewAmpAxisMarks()
+	public SpectralPeakAmpMarks()
 	{
-		setMinimumSize( new Dimension( NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH, NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH ) );
+		setMinimumSize( new Dimension( SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH, SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH ) );
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class NewAmpAxisMarks extends JPanel
 		g.translate( 0, yOffset );
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < NewPeakAndScalesDisplay.NUM_AMP_MARKERS ; ++i )
+		for( int i = 0 ; i < SpectralAmpDisplayUiJComponent.NUM_AMP_MARKERS ; ++i )
 		{
 			final int y = vertPixelsPerMarker * i;
 			g.drawLine( 0, y, width, y );
@@ -41,11 +41,11 @@ public class NewAmpAxisMarks extends JPanel
 		this.width = width - 1;
 		this.height = height - 1;
 
-		final int magsHeight = NewPeakAndScalesDisplay.getAdjustedHeightOfDisplay( this.height );
+		final int magsHeight = SpectralAmpDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height );
 
 		yOffset = this.height - magsHeight;
 
-		vertPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedHeightBetweenMarkers( this.height );
+		vertPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
 
 	}
 

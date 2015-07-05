@@ -49,7 +49,7 @@ public class SpectralAmpFFTResolutionChoiceUiJComponent extends JPanel
 
 	private final LWTCRotaryChoice rotaryChoice;
 
-	private final int[] resolutionChoices = new int[] { 2048, 4096, 8192, 16384 };
+	private final int[] resolutionChoices = new int[] { 2048, 2048 + 512, 2048 + 1024, 4096, 8192, 16384 };
 
 	public static final int DEFAULT_RESOLUTION = 4096;
 

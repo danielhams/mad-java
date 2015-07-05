@@ -48,7 +48,7 @@ public class SpectralAmpFreqMinDialUiJComponent
 	// Look into making this something in the preferences
 	public static final float TARGET_PLAYER_DB = -12.0f;
 
-	private final static FreqDialColours DC = new FreqDialColours();
+	private final static SpectralAmpDialColours DC = new SpectralAmpDialColours();
 
 	public static final float DEFAULT_FREQ_MIN = 0.0f;
 

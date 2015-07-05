@@ -11,7 +11,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class NewAmpScaleLabels extends JPanel implements AmpAxisChangeListener
+public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListener
 {
 	private static final long serialVersionUID = -4554672067965895575L;
 
@@ -29,14 +29,14 @@ public class NewAmpScaleLabels extends JPanel implements AmpAxisChangeListener
 	private int yOffset;
 	private int vertPixelsPerMarker;
 
-	public NewAmpScaleLabels( final SpectralAmpMadUiInstance uiInstance )
+	public SpectralPeakAmpLabels( final SpectralAmpMadUiInstance uiInstance )
 	{
 		this.setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
 		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
-		setMinimumSize( new Dimension( NewPeakAndScalesDisplay.AMP_LABELS_WIDTH, NewPeakAndScalesDisplay.AMP_LABELS_WIDTH  ) );
+		setMinimumSize( new Dimension( SpectralAmpDisplayUiJComponent.AMP_LABELS_WIDTH, SpectralAmpDisplayUiJComponent.AMP_LABELS_WIDTH  ) );
 
 		fm = getFontMetrics( getFont() );
 
@@ -48,14 +48,14 @@ public class NewAmpScaleLabels extends JPanel implements AmpAxisChangeListener
 		this.realWidth = width;
 		this.realHeight = height;
 		this.width = width - 1;
-		this.height = height - 1 - NewPeakAndScalesDisplay.SPECTRAL_DISPLAY_TOP_PADDING -
-				NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH;
+		this.height = height - 1 - SpectralAmpDisplayUiJComponent.SPECTRAL_DISPLAY_TOP_PADDING -
+				SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH;
 
-		magsHeight = NewPeakAndScalesDisplay.getAdjustedHeightOfDisplay( this.height );
+		magsHeight = SpectralAmpDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height );
 
-		yOffset = NewPeakAndScalesDisplay.SPECTRAL_DISPLAY_TOP_PADDING + (this.height - magsHeight);
+		yOffset = SpectralAmpDisplayUiJComponent.SPECTRAL_DISPLAY_TOP_PADDING + (this.height - magsHeight);
 
-		vertPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedHeightBetweenMarkers( this.height );
+		vertPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class NewAmpScaleLabels extends JPanel implements AmpAxisChangeListener
 		g.translate( 0, yOffset );
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < NewPeakAndScalesDisplay.NUM_AMP_MARKERS ; ++i )
+		for( int i = 0 ; i < SpectralAmpDisplayUiJComponent.NUM_AMP_MARKERS ; ++i )
 		{
 			final int y = vertPixelsPerMarker * i;
 

@@ -5,7 +5,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-public class NewFreqAxisMarks extends JPanel
+public class SpectralPeakFreqMarks extends JPanel
 {
 	private static final long serialVersionUID = -3809469238579090970L;
 
@@ -15,9 +15,9 @@ public class NewFreqAxisMarks extends JPanel
 	private int height;
 	private int horizPixelsPerMarker;
 
-	public NewFreqAxisMarks()
+	public SpectralPeakFreqMarks()
 	{
-		setMinimumSize( new Dimension( NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH, NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH ) );
+		setMinimumSize( new Dimension( SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH, SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH ) );
 	}
 
 	@Override
@@ -25,19 +25,19 @@ public class NewFreqAxisMarks extends JPanel
 	{
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < NewPeakAndScalesDisplay.NUM_FREQ_MARKERS ; ++i )
+		for( int i = 0 ; i < SpectralAmpDisplayUiJComponent.NUM_FREQ_MARKERS ; ++i )
 		{
-			final int x = (horizPixelsPerMarker * i) + NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH;
+			final int x = (horizPixelsPerMarker * i) + SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH;
 			g.drawLine( x, 0, x, height );
 		}
 	}
 
 	private void setupInternalDistances( final int width, final int height )
 	{
-		this.width = width - 1 - NewPeakAndScalesDisplay.AXIS_MARKS_LENGTH - NewPeakAndScalesDisplay.SPECTRAL_DISPLAY_RIGHT_PADDING;
+		this.width = width - 1 - SpectralAmpDisplayUiJComponent.AXIS_MARKS_LENGTH - SpectralAmpDisplayUiJComponent.SPECTRAL_DISPLAY_RIGHT_PADDING;
 		this.height = height - 1;
 
-		horizPixelsPerMarker = NewPeakAndScalesDisplay.getAdjustedWidthBetweenMarkers( this.width );
+		horizPixelsPerMarker = SpectralAmpDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
 	}
 
 	@Override

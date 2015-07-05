@@ -24,9 +24,9 @@ import java.awt.Color;
 
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants.StdRotaryViewColor;
 
-class FreqDialColours extends StdRotaryViewColor
+class SpectralAmpDialColours extends StdRotaryViewColor
 {
-	public FreqDialColours()
+	public SpectralAmpDialColours()
 	{
 		this.labelColor = Color.white;
 		this.knobIndicatorColor = SpectralAmpColours.RUNNING_PEAK_COLOUR;

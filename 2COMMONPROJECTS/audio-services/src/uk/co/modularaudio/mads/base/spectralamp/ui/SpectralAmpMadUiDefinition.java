@@ -79,7 +79,7 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpFreqMinDialUiJComponent.class,
 		SpectralAmpFreqMaxDialUiJComponent.class,
 		SpectralAmpFreqMappingChoiceUiJComponent.class,
-		NewPeakAndScalesDisplay.class,
+		SpectralAmpDisplayUiJComponent.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class
