@@ -6,9 +6,6 @@ import java.util.Arrays;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -25,7 +22,7 @@ public class SpectralPeakGraph extends JPanel
 {
 	private static final long serialVersionUID = 3612260008902851339L;
 
-	private static Log log = LogFactory.getLog( SpectralPeakGraph.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralPeakGraph.class.getName() );
 
 	private boolean previouslyShowing;
 	private final SpectralAmpMadUiInstance uiInstance;

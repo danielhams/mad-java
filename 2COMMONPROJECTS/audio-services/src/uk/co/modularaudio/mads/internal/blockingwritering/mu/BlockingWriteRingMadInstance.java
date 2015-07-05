@@ -85,7 +85,7 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 		int numAvail = leftRingBuffer.getNumReadable();
 		int numToRead = ( numFrames < numAvail ? numFrames : numAvail );
 		int numToPad = (numToRead < numFrames ? numFrames - numToRead : 0 );
-		if( numToPad > 0 )
+		if( log.isWarnEnabled() && numToPad > 0 )
 		{
 			log.warn( "Underflowed from left blocking ring by " + numToPad + " samples" );
 		}
@@ -111,7 +111,7 @@ public class BlockingWriteRingMadInstance extends MadInstance<BlockingWriteRingM
 		numAvail = rightRingBuffer.getNumReadable();
 		numToRead = ( numFrames < numAvail ? numFrames : numAvail );
 		numToPad = (numToRead < numFrames ? numFrames - numToRead : 0 );
-		if( numToPad > 0 )
+		if( log.isWarnEnabled() && numToPad > 0 )
 		{
 			log.warn( "Underflowed from right blocking ring by " + numToPad + " samples" );
 		}

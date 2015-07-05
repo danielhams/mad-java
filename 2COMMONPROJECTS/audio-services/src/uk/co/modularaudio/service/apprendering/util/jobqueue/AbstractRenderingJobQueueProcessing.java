@@ -70,9 +70,10 @@ public abstract class AbstractRenderingJobQueueProcessing
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-	protected final RenderingJob processOneJobReturnFirstDependant( RenderingJob job,
+	protected final RenderingJob processOneJobReturnFirstDependant( final RenderingJob iJob,
 			final boolean shouldProfileRenderingJobs )
 	{
+		RenderingJob job = iJob;
 		job.goWithTimestamps( threadNum, tempQueueEntryStorage );
 
 		final RenderingJob consJobs[] = job.getConsJobsThatWaitForUs();

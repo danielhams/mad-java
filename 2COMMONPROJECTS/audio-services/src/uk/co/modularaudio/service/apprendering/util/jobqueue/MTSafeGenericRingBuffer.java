@@ -127,8 +127,11 @@ public class MTSafeGenericRingBuffer<A>
 		return internalReadOneOut( rp, wp, numReadable );
 	}
 
-	protected A internalReadOneOut( int rp, int wp, int numReadable )
+	protected A internalReadOneOut( final int iRp, final int iWp, final int iNumReadable )
 	{
+		int rp = iRp;
+		int wp = iWp;
+		int numReadable = iNumReadable;
 		A retVal = null;
 		while( true )
 		{

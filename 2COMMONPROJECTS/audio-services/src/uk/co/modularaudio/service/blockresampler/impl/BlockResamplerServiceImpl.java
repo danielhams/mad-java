@@ -94,13 +94,14 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 	@Override
 	public RealtimeMethodReturnCodeEnum fetchAndResample( final BlockResamplingClient resamplingClient,
 			final int outputSampleRate,
-			float playbackSpeed,
+			final float iPlaybackSpeed,
 			final float[] outputLeftFloats, final int outputLeftOffset,
 			final float[] outputRightFloats, final int outputRightOffset,
 			final int numFramesRequired,
 			final float[] tmpBuffer,
 			final int tmpBufferOffset )
 	{
+		float playbackSpeed = iPlaybackSpeed;
 		final boolean isForwards = playbackSpeed >= 0.0f;
 
 		final InternalResamplingClient realClient = (InternalResamplingClient)resamplingClient;

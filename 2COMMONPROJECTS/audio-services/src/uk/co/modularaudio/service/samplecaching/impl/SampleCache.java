@@ -212,9 +212,11 @@ public class SampleCache
 	public RealtimeMethodReturnCodeEnum readSamplesForCacheClient( final InternalSampleCacheClient client,
 			final float[] outputSamples,
 			final int outputArrayPos,
-			long readFramePosition,
-			int numFramesToRead )
+			final long iReadFramePosition,
+			final int iNumFramesToRead )
 	{
+		long readFramePosition = iReadFramePosition;
+		int numFramesToRead = iNumFramesToRead;
 		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 		final LibraryEntry libraryEntry = client.getLibraryEntry();
 		final int clientLastReadBlockNumber = client.getLastReadBlockNumber();
@@ -369,10 +371,12 @@ public class SampleCache
 
 	public RealtimeMethodReturnCodeEnum readSamplesInBlocksForCacheClient(
 			final InternalSampleCacheClient client,
-			long readFramePosition,
-			int numFramesToRead,
+			final long iReadFramePosition,
+			final int iNumFramesToRead,
 			final SampleAcceptor sampleAcceptor)
 	{
+		long readFramePosition = iReadFramePosition;
+		int numFramesToRead = iNumFramesToRead;
 		final RealtimeMethodReturnCodeEnum retVal = RealtimeMethodReturnCodeEnum.SUCCESS;
 		final LibraryEntry libraryEntry = client.getLibraryEntry();
 

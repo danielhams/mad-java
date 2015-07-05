@@ -565,8 +565,9 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 	private float processOneChannelOutput( final int numFrames,
 			final float[] waveFloats,
-			float currentOutMeterReading )
+			final float iCurrentOutMeterReading )
 	{
+		float currentOutMeterReading = iCurrentOutMeterReading;
 		for( int s = 0 ; s < numFrames ; s++ )
 		{
 			final float sourceVal = waveFloats[ s ];
