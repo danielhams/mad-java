@@ -26,15 +26,105 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 
 public class LWTCSpeedyUpdateTextField extends LWTCTextField
 {
 	private static final long serialVersionUID = 9194691044648583845L;
 
-	private boolean haveFocus;
+//	private static Log log = LogFactory.getLog( LWTCSpeedyUpdateTextField.class.getName() );
+
+	private boolean showSpeedyTextField;
 	private String currentText;
 	private char[] currentCharArray;
+
+	private int prevCaretPosition = -1;
+
+	private final LWTCSpeedyUpdateTextFieldEventListener ml;
+
+	private class LWTCSpeedyUpdateTextFieldEventListener implements MouseListener, FocusListener
+	{
+		private final LWTCSpeedyUpdateTextField sutf;
+
+		private boolean hasFocus = false;
+
+		public LWTCSpeedyUpdateTextFieldEventListener( final LWTCSpeedyUpdateTextField sutf )
+		{
+			this.sutf = sutf;
+		};
+
+		@Override
+		public void mouseReleased( final MouseEvent e )
+		{
+			final int modifiers = e.getModifiers();
+			if( modifiers == 0 && sutf.isShowingSpeedyTextField() )
+			{
+				if( hasFocus )
+				{
+					sutf.setupForActualTextbox();
+				}
+			}
+		}
+
+		@Override
+		public void mousePressed( final MouseEvent e )
+		{
+			final int modifiers = e.getModifiers();
+			if( (modifiers & MouseEvent.BUTTON1_MASK) == MouseEvent.BUTTON1_MASK &&
+					sutf.isShowingSpeedyTextField() )
+			{
+				if( hasFocus )
+				{
+					sutf.setupForActualTextbox();
+				}
+			}
+		}
+
+		@Override
+		public void mouseExited( final MouseEvent e )
+		{
+			final int modifiers = e.getModifiers();
+			if( modifiers == 0 && !sutf.isShowingSpeedyTextField() )
+			{
+				if( !hasFocus )
+				{
+					sutf.setupForSpeedyTextbox();
+				}
+			}
+		}
+
+		@Override
+		public void mouseEntered( final MouseEvent e )
+		{
+			final int modifiers = e.getModifiers();
+			if( modifiers == 0 && sutf.isShowingSpeedyTextField() )
+			{
+				if( hasFocus )
+				{
+					sutf.setupForActualTextbox();
+				}
+			}
+		}
+
+		@Override
+		public void mouseClicked( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void focusGained( final FocusEvent e )
+		{
+			hasFocus = true;
+		}
+
+		@Override
+		public void focusLost( final FocusEvent e )
+		{
+			hasFocus = false;
+		}
+	}
 
 	public LWTCSpeedyUpdateTextField()
 	{
@@ -45,32 +135,37 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 	{
 		super( colours );
 
-		this.addFocusListener( new FocusListener()
+		ml = new LWTCSpeedyUpdateTextFieldEventListener( this );
+
+		this.addMouseListener( ml );
+
+		this.addFocusListener( ml );
+	}
+
+	public void setupForSpeedyTextbox()
+	{
+		showSpeedyTextField = true;
+		currentText = getText();
+		currentCharArray = currentText.toCharArray();
+		prevCaretPosition = getCaretPosition();
+		repaint();
+	}
+
+	public void setupForActualTextbox()
+	{
+		showSpeedyTextField = false;
+		updateTextfieldText( currentText );
+		if( prevCaretPosition != -1 && prevCaretPosition < currentText.length() )
 		{
-
-			@Override
-			public void focusLost( final FocusEvent e )
-			{
-				haveFocus = false;
-				currentText = getText();
-				currentCharArray = currentText.toCharArray();
-				repaint();
-			}
-
-			@Override
-			public void focusGained( final FocusEvent e )
-			{
-				haveFocus = true;
-				updateTextfieldText( currentText );
-				repaint();
-			}
-		} );
+			setCaretPosition( prevCaretPosition );
+		}
+		repaint();
 	}
 
 	@Override
 	public void paint( final Graphics g )
 	{
-		if( haveFocus )
+		if( !showSpeedyTextField )
 		{
 			super.paint( g );
 		}
@@ -113,7 +208,7 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 	{
 		currentText = newText;
 		currentCharArray = currentText.toCharArray();
-		if( haveFocus )
+		if( !showSpeedyTextField )
 		{
 			updateTextfieldText( newText );
 		}
@@ -121,5 +216,10 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 		{
 			repaint();
 		}
+	}
+
+	public boolean isShowingSpeedyTextField()
+	{
+		return showSpeedyTextField;
 	}
 }
