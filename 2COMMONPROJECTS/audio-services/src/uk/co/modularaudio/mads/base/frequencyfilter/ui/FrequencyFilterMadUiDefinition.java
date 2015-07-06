@@ -41,7 +41,7 @@ public class FrequencyFilterMadUiDefinition
 	private static final int[] CHAN_INDEXES = new int[] {
 		FrequencyFilterMadDefinition.CONSUMER_IN_LEFT,
 		FrequencyFilterMadDefinition.CONSUMER_IN_RIGHT,
-		FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
+//		FrequencyFilterMadDefinition.CONSUMER_IN_CV_FREQUENCY,
 		FrequencyFilterMadDefinition.PRODUCER_OUT_LEFT,
 		FrequencyFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
@@ -49,7 +49,7 @@ public class FrequencyFilterMadUiDefinition
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 200, 60 ),
 		new Point( 220, 60 ),
-		new Point( 250, 60 ),
+//		new Point( 250, 60 ),
 		new Point( 200, 100 ),
 		new Point( 220, 100 )
 	};

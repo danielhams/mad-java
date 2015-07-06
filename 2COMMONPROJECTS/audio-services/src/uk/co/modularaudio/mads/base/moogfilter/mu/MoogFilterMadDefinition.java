@@ -87,7 +87,7 @@ public class MoogFilterMadDefinition extends AbstractNonConfigurableMadDefinitio
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.ALPHA ),
+						ReleaseState.RELEASED ),
 				new MoogFilterIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

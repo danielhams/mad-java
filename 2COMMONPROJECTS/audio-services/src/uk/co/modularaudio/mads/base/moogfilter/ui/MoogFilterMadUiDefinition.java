@@ -41,8 +41,8 @@ public class MoogFilterMadUiDefinition
 	private static final int[] CHAN_INDEXES = new int[] {
 		MoogFilterMadDefinition.CONSUMER_IN_LEFT,
 		MoogFilterMadDefinition.CONSUMER_IN_RIGHT,
-		MoogFilterMadDefinition.CONSUMER_IN_CV_CUTOFF,
-		MoogFilterMadDefinition.CONSUMER_IN_CV_Q,
+//		MoogFilterMadDefinition.CONSUMER_IN_CV_CUTOFF,
+//		MoogFilterMadDefinition.CONSUMER_IN_CV_Q,
 		MoogFilterMadDefinition.PRODUCER_OUT_LEFT,
 		MoogFilterMadDefinition.PRODUCER_OUT_RIGHT
 	};
@@ -50,8 +50,8 @@ public class MoogFilterMadUiDefinition
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
-		new Point( 200, 40 ),
-		new Point( 220, 40 ),
+//		new Point( 200, 40 ),
+//		new Point( 220, 40 ),
 		new Point( 150, 70 ),
 		new Point( 170, 70 )
 	};

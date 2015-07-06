@@ -75,7 +75,7 @@ public class SpectralRollMadDefinition extends AbstractNonConfigurableMadDefinit
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.ALPHA ),
 				new SpectralRollIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

@@ -9,27 +9,32 @@ For release 0.0.3:
 
 * Demote stereo compressor to alpha since it has broken sub-period event processing.
 
+* Demote spectral roller to alpha (put off the re-work until 0.0.4)
+
 * Update DcTrap to stereo for completeness, fix frameOffset in processing.
 
 * Fix Wave Roller to include "Scale" selection and put a scale in there.
 
 * Fix Spectral Amp to include "Scale" selection and put amp/freq scales.
 
-* Fix Spectral Roller to include "Scale" selection and put amp/freq scales.
-
 * Fix new component name suggestion to be something that will work. Occasionally fails at the moment as there isn't a proper check.
 
 * Make mid sid processing a little more presentable.
 
-* Documentation - javadoc, component map and building.
+* Pass on "released" components to check all is well.
 
-* Create a mechanism for CI / easy(ish) building.
+* Investigate and fix the "updates even when values not changing" bug in the slider / rotary bits.
+
+* Documentation - javadoc, component map and building.
 
 For release 0.0.4:
 ------------------
 
-* Fix up sound file metadata handling so we the user can override discovered metadata and we can start to fix up the BPM handling.
+* Fix spectral roller to include "Scale" selection and put amp/freq scales.
 
+* Create a mechanism for CI / easy(ish) building.
+
+* Fix up sound file metadata handling so we the user can override discovered metadata and we can start to fix up the BPM handling.
 
 Oustanding issues:
 ------------------
