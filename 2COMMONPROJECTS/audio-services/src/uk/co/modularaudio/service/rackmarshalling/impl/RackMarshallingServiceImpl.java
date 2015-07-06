@@ -194,7 +194,7 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 				if( jbSubRackType.isLocalSubRack() )
 				{
 					// Create the rack structure from what's below in the file
-					final RackDataModel subRackDataModel = loadRackFromStructure( subRackInstance.getInstanceName(), jbSubRackType.getRack() );
+					final RackDataModel subRackDataModel = loadRackFromStructure( "", jbSubRackType.getRack() );
 
 					subRackUiInstance.setSubRackDataModel( subRackDataModel, true );
 				}

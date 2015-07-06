@@ -25,6 +25,8 @@ For release 0.0.3:
 
 * Investigate and fix the "updates even when values not changing" bug in the slider / rotary bits.
 
+* Implement fastFloatPrint and check uses of slowFloatPrint.
+
 * Documentation - javadoc, component map and building.
 
 For release 0.0.4:

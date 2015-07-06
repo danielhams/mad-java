@@ -73,11 +73,27 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 					break;
 				}
 			}
-			final int range = model.getMaximum() - model.getMinimum();
+			final int mmaxv = model.getMaximum();
+			final int mminv = model.getMinimum();
+			final int range = mmaxv - mminv;
 			final float valuesPerPixel = range / (float)pixelsAvailable;
 			final float diffInValueSteps = valuesPerPixel * diffFromStart;
-			final int attemptedValue = (int)(startModelValue + diffInValueSteps );
-			model.setValue( attemptedValue );
+			int attemptedValue = (int)(startModelValue + diffInValueSteps );
+
+			if( attemptedValue > mmaxv )
+			{
+				attemptedValue = mmaxv;
+			}
+			else if( attemptedValue < mminv )
+			{
+				attemptedValue = mminv;
+			}
+
+			final int currentValue = model.getValue();
+			if( attemptedValue != currentValue )
+			{
+				model.setValue( attemptedValue );
+			}
 		}
 		me.consume();
 	}

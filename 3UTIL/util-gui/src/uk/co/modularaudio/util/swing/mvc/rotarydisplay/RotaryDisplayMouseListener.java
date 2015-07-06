@@ -30,7 +30,6 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 
 public class RotaryDisplayMouseListener implements MouseMotionListener, MouseListener
 {
-
 	private final RotaryDisplayKnob knob;
 	private final RotaryDisplayModel model;
 	private final RotaryDisplayController controller;
@@ -94,11 +93,25 @@ public class RotaryDisplayMouseListener implements MouseMotionListener, MouseLis
 		float scaledDelta = (yAbsDelta / 100.0f);
 		scaledDelta = (scaledDelta > 1.0f ? 1.0f : scaledDelta );
 
-		final float scaledOffset = (model.getMaxValue() - model.getMinValue()) * scaledDelta * ySigNum;
-		final float newValueToSet = startDragValue - scaledOffset;
+		final float mmaxv = model.getMaxValue();
+		final float mminv = model.getMinValue();
+		final float scaledOffset = (mmaxv - mminv) * scaledDelta * ySigNum;
+		float newValueToSet = startDragValue - scaledOffset;
 
-		controller.setValue( this, newValueToSet );
+		if( newValueToSet > mmaxv )
+		{
+			newValueToSet = mmaxv;
+		}
+		else if( newValueToSet < mminv )
+		{
+			newValueToSet = mminv;
+		}
 
+		final float currentValue = model.getValue();
+		if( currentValue != newValueToSet )
+		{
+			controller.setValue( this, newValueToSet );
+		}
 	}
 
 	@Override
