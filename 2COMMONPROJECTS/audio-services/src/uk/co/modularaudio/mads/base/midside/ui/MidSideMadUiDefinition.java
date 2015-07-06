@@ -65,7 +65,7 @@ public class MidSideMadUiDefinition extends
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 210,  6, 190, 30 )		// Mid Side Type
+		new Rectangle( 180,  22, 190,  30 )		// Mid Side Type
 	};
 
 	private static final Class<MidSideMadUiInstance> INSTANCE_CLASS = MidSideMadUiInstance.class;

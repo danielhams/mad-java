@@ -40,7 +40,7 @@ public class MidSideMadDefinition extends AbstractNonConfigurableMadDefinition<M
 	public final static int PRODUCER_AUDIO_OUT_2 = 3;
 	public final static int NUM_CHANNELS = 4;
 
-	private final static String DEFINITION_ID = "midside";
+	public final static String DEFINITION_ID = "midside";
 
 	private final static String USER_VISIBLE_NAME = "Mid Side Processor";
 
