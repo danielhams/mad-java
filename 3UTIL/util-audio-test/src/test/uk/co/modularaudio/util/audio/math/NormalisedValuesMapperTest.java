@@ -31,28 +31,28 @@ import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 public class NormalisedValuesMapperTest extends TestCase
 {
 	private static Log log = LogFactory.getLog( NormalisedValuesMapperTest.class.getName() );
-	
+
 	public void testExpLogMapping() throws Exception
 	{
-		float minVal = 0.0f;
-		float maxVal = 22050.0f;
-		float[] testvals = new float[] { 0.0f, 1000.0f, 5000.0f, 10000.0f, 17000.0f, 22000.0f };
-		
+		final float minVal = 0.0f;
+		final float maxVal = 22050.0f;
+		final float[] testvals = new float[] { 0.0f, 1000.0f, 5000.0f, 10000.0f, 17000.0f, 22000.0f };
+
 		for( int i = 0 ; i < testvals.length ; i++ )
 		{
-			float testVal = testvals[i];
-			
-			float normalisedTestVal = testVal / maxVal;
-			
-			float mappedExpVal = NormalisedValuesMapper.logMinMaxMapF( normalisedTestVal, minVal, maxVal );
-			
-			log.debug( "TestVal(" + MathFormatter.slowFloatPrint( testVal, 5, true ) + ") NormVal(" +
-					MathFormatter.slowFloatPrint( normalisedTestVal, 5, true ) + ") MappedVal(" +
-					MathFormatter.slowFloatPrint( mappedExpVal, 5, true ) + ")");
-			
-			float mappedBackVal = NormalisedValuesMapper.expMinMaxMapF( mappedExpVal, minVal, maxVal );
-			log.debug("MappedBackVal(" + MathFormatter.slowFloatPrint( mappedBackVal, 5, true ) + ")");
-			
+			final float testVal = testvals[i];
+
+			final float normalisedTestVal = testVal / maxVal;
+
+			final float mappedExpVal = NormalisedValuesMapper.logMinMaxMapF( normalisedTestVal, minVal, maxVal );
+
+			log.debug( "TestVal(" + MathFormatter.fastFloatPrint( testVal, 5, true ) + ") NormVal(" +
+					MathFormatter.fastFloatPrint( normalisedTestVal, 5, true ) + ") MappedVal(" +
+					MathFormatter.fastFloatPrint( mappedExpVal, 5, true ) + ")");
+
+			final float mappedBackVal = NormalisedValuesMapper.expMinMaxMapF( mappedExpVal, minVal, maxVal );
+			log.debug("MappedBackVal(" + MathFormatter.fastFloatPrint( mappedBackVal, 5, true ) + ")");
+
 		}
 	}
 }

@@ -80,27 +80,27 @@ public class CheckDbToLevelBounds extends TestCase
 		final MixdownSliderDbToLevelComputer dbComputer = new MixdownSliderDbToLevelComputer( 1000 );
 
 		final float dbForSliderHalfway = dbComputer.toDbFromNormalisedLevel( 0.5f );
-		log.debug("MDTOL DB for slider halfway is " + MathFormatter.slowFloatPrint( dbForSliderHalfway, 3, true ) );
+		log.debug("MDTOL DB for slider halfway is " + MathFormatter.fastFloatPrint( dbForSliderHalfway, 3, true ) );
 
 		final float dbForSliderAllway = dbComputer.toDbFromNormalisedLevel( 1.0f );
-		log.debug("MDTOL DB for slider all the way is " + MathFormatter.slowFloatPrint( dbForSliderAllway, 3, true ) );
+		log.debug("MDTOL DB for slider all the way is " + MathFormatter.fastFloatPrint( dbForSliderAllway, 3, true ) );
 
 		final float dbForSliderNoway = dbComputer.toDbFromNormalisedLevel( 0.0f );
-		log.debug("MDTOL DB for slider no way is " + MathFormatter.slowFloatPrint( dbForSliderNoway, 3, true ) );
+		log.debug("MDTOL DB for slider no way is " + MathFormatter.fastFloatPrint( dbForSliderNoway, 3, true ) );
 
 		final float dbForSliderPoint1 = dbComputer.toDbFromNormalisedLevel( 0.1f );
-		log.debug("MDTOL DB for slider point1 is " + MathFormatter.slowFloatPrint( dbForSliderPoint1, 3, true ) );
+		log.debug("MDTOL DB for slider point1 is " + MathFormatter.fastFloatPrint( dbForSliderPoint1, 3, true ) );
 
 		final float fiveDbAsNormalisedSliderLevel = dbComputer.toNormalisedSliderLevelFromDb( 5.0f );
 		log.debug("MDTOL Five DB as normalised slider level is " + fiveDbAsNormalisedSliderLevel );
 
 		final float amp = (float)AudioMath.dbToLevel( dbForSliderHalfway );
-		log.debug("MDTOL Halfway slider db is " + MathFormatter.slowFloatPrint( amp, 3, true ) + " as a amplification multiplier.");
+		log.debug("MDTOL Halfway slider db is " + MathFormatter.fastFloatPrint( amp, 3, true ) + " as a amplification multiplier.");
 
 		final float dbForZero = dbComputer.toDbFromNormalisedLevel( 0.0f );
 		log.debug("MDTOL DB for zero is " + dbForZero );
 		final float zeroDbAmp = (float)AudioMath.dbToLevel( dbForZero );
-		log.debug("MDTOL Which is " + MathFormatter.slowFloatPrint( zeroDbAmp, 3, true ) );
+		log.debug("MDTOL Which is " + MathFormatter.fastFloatPrint( zeroDbAmp, 3, true ) );
 
 		final float dbForFull = dbComputer.toDbFromNormalisedLevel( 1.0f );
 		log.debug("Db for full value is " + dbForFull );

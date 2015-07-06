@@ -291,14 +291,14 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 		// Only re-create the string when we need to
 		if( previousPositiveMagStr == null || previousPositiveMag != maxMag )
 		{
-			previousPositiveMagStr = MathFormatter.slowFloatPrint( maxMag, 2, true );
+			previousPositiveMagStr = MathFormatter.fastFloatPrint( maxMag, 2, true );
 			previousPositiveMag = maxMag;
 		}
 		g.drawString( previousPositiveMagStr, xOffset, top );
 
 		if( previousNegativeMagStr == null || previousNegativeMag != -maxMag )
 		{
-			previousNegativeMagStr = MathFormatter.slowFloatPrint( -maxMag, 2, true );
+			previousNegativeMagStr = MathFormatter.fastFloatPrint( -maxMag, 2, true );
 			previousNegativeMag = -maxMag;
 		}
 		final int bottom = height - halfFontHeight;

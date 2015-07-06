@@ -106,7 +106,7 @@ public class TestBlockResamplingServiceFakeValues extends TestCase
 		for( ; curFrame < numFrames ; curFrame += numPerIteration )
 		{
 			log.debug("Asking to resample from position(" + brc.getFramePosition() +
-					":" + MathFormatter.slowFloatPrint( brc.getFpOffset(), 4, false) +")" );
+					":" + MathFormatter.fastFloatPrint( brc.getFpOffset(), 4, false) +")" );
 
 			blockResamplingService.fetchAndResample(
 					brc,
@@ -130,7 +130,7 @@ public class TestBlockResamplingServiceFakeValues extends TestCase
 		for( ; curFrame > -16 ; curFrame -= numPerIteration )
 		{
 			log.debug("Asking to resample from position(" + brc.getFramePosition() +
-					":" + MathFormatter.slowFloatPrint( brc.getFpOffset(), 4, false) +")" );
+					":" + MathFormatter.fastFloatPrint( brc.getFpOffset(), 4, false) +")" );
 
 			blockResamplingService.fetchAndResample(
 					brc,
@@ -156,7 +156,7 @@ public class TestBlockResamplingServiceFakeValues extends TestCase
 		final StringBuilder sb = new StringBuilder();
 		for( int s = 0 ; s < numPerIteration ; ++s )
 		{
-			sb.append( MathFormatter.slowFloatPrint(outputLeftValues[s],  5, false ) );
+			sb.append( MathFormatter.fastFloatPrint(outputLeftValues[s],  5, false ) );
 			sb.append( " " );
 		}
 		final String valsAsString = sb.toString();

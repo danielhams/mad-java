@@ -34,7 +34,6 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacLogSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.sliderdisplay.SliderDisplayView.SatelliteOrientation;
 
@@ -97,7 +96,7 @@ public class RBJFilterQSliderUiControlInstance extends PacLogSlider
 	@Override
 	public String getControlValue()
 	{
-		return MathFormatter.slowFloatPrint( model.getValue(), 2, false );
+		return Float.toString(model.getValue());
 	}
 
 	@Override

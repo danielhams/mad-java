@@ -44,7 +44,7 @@ public class MidiFrequencyDumper
 		System.out.print("\t");
 		for( final MidiNote mn : mns )
 		{
-			System.out.print( MathFormatter.slowFloatPrint(mn.getFrequency(), 15, false ) );
+			System.out.print( MathFormatter.fastFloatPrint(mn.getFrequency(), 15, false ) );
 
 			if( numOutputCounter < numMidiNotes - 1 )
 			{

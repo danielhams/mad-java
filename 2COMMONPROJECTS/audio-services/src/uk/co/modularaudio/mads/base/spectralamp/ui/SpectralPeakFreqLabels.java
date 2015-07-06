@@ -104,7 +104,7 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 			final int xOffset )
 	{
 		final int fontHeight = fm.getAscent();
-		final String displayString = MathFormatter.slowFloatPrint( displayFloat, 0, false );
+		final String displayString = MathFormatter.fastFloatPrint( displayFloat, 0, false );
 
 		final char[] bscs = displayString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );

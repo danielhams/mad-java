@@ -54,17 +54,17 @@ public class DbToLevelChecker
 		for( final float v : testValues )
 		{
 			final float step = dbc.toStepFromDb( v );
-			log.debug("Value (" + MathFormatter.slowFloatPrint( v, NUM_DEC, true ) + ") -> step(" +
-					MathFormatter.slowFloatPrint( step, NUM_DEC, true ) + ")");
+			log.debug("Value (" + MathFormatter.fastFloatPrint( v, NUM_DEC, true ) + ") -> step(" +
+					MathFormatter.fastFloatPrint( step, NUM_DEC, true ) + ")");
 			final float nv = dbc.toNormalisedSliderLevelFromDb( v );
 
-			log.debug("Value (" + MathFormatter.slowFloatPrint( v, NUM_DEC, true ) + ") -> (" +
-					MathFormatter.slowFloatPrint( nv, NUM_DEC, true ) + ")");
+			log.debug("Value (" + MathFormatter.fastFloatPrint( v, NUM_DEC, true ) + ") -> (" +
+					MathFormatter.fastFloatPrint( nv, NUM_DEC, true ) + ")");
 
 			final float abv = dbc.toDbFromNormalisedLevel( nv );
 
-			log.debug("AndBa (" + MathFormatter.slowFloatPrint( nv, NUM_DEC, true ) + ") -> (" +
-					MathFormatter.slowFloatPrint( abv, NUM_DEC, true ) + ")");
+			log.debug("AndBa (" + MathFormatter.fastFloatPrint( nv, NUM_DEC, true ) + ") -> (" +
+					MathFormatter.fastFloatPrint( abv, NUM_DEC, true ) + ")");
 		}
 	}
 

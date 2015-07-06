@@ -182,12 +182,10 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			}
 
 			final RackComponent rackComponent = rackService.createComponentAtPosition( retVal, madDefinition, parameterValues, componentName, col, row );
-			final MadInstance<?,?> madInstance = rackComponent.getInstance();
 
 			// If it's a subgraph, check to see if we load the library path, or we "load" from the incoming data.
 			if( jbRackComponentXml instanceof SubRackXmlType )
 			{
-				final SubRackMadInstance subRackInstance = (SubRackMadInstance)madInstance;
 				final SubRackMadUiInstance subRackUiInstance = (SubRackMadUiInstance)rackComponent.getUiInstance();
 
 				final SubRackXmlType jbSubRackType = (SubRackXmlType)jbRackComponentXml;

@@ -228,11 +228,11 @@ public class PeakFinder
 						if( log.isDebugEnabled() )
 						{
 							log.debug("Found a peak at index " + peakBinNum + " around " +
-									MathFormatter.slowFloatPrint( amps[ indexMinus2 ], 5, true ) + ", " +
-									MathFormatter.slowFloatPrint( amps[ indexMinus1 ], 5, true ) + ", " +
-									MathFormatter.slowFloatPrint( curAmp, 5, true ) + ", " +
-									MathFormatter.slowFloatPrint( amps[ indexPlus1 ], 5, true ) + ", " +
-									MathFormatter.slowFloatPrint( amps[ indexPlus2 ], 5, true ) );
+									MathFormatter.fastFloatPrint( amps[ indexMinus2 ], 5, true ) + ", " +
+									MathFormatter.fastFloatPrint( amps[ indexMinus1 ], 5, true ) + ", " +
+									MathFormatter.fastFloatPrint( curAmp, 5, true ) + ", " +
+									MathFormatter.fastFloatPrint( amps[ indexPlus1 ], 5, true ) + ", " +
+									MathFormatter.fastFloatPrint( amps[ indexPlus2 ], 5, true ) );
 						}
 					}
 				}

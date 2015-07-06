@@ -134,19 +134,7 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	private void setCurrentValueNoPropogate( final float value )
 	{
-		String newText;
-		if( value == Float.NEGATIVE_INFINITY )
-		{
-			newText = "-Inf";
-		}
-		else if( value == Float.POSITIVE_INFINITY )
-		{
-			newText = "Inf";
-		}
-		else
-		{
-			newText = MathFormatter.slowFloatPrint( value, numDecPlaces, false );
-		}
+		final String newText = MathFormatter.fastFloatPrint( value, numDecPlaces, false );
 		textField.setText( newText );
 	}
 
@@ -188,7 +176,7 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 			float valueToSet;
 			if( validValue )
 			{
-				final String truncToPrecisionStr = MathFormatter.slowFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
+				final String truncToPrecisionStr = MathFormatter.fastFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
 				valueToSet = Float.parseFloat( truncToPrecisionStr );
 			}
 			else

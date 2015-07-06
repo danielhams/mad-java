@@ -40,7 +40,7 @@ public class TestFormatterPerformance
 		{
 			String sval = MathFormatter.slowFloatPrint( val, 3, true );
 			log.debug("There we go - for " + val + " got : " + sval );
-			sval = MathFormatter.slowFloatPrint( val, 3, true );
+			sval = MathFormatter.fastFloatPrint( val, 3, true );
 			log.debug("New version - for " + val + " got : " + sval );
 		}
 
@@ -53,7 +53,7 @@ public class TestFormatterPerformance
 	private static void doIterationTests()
 	{
 		long timeBefore = System.nanoTime();
-		final int NUM_ITERS = 100000;
+		final int NUM_ITERS = 1000000;
 		for( int i = 0 ; i < NUM_ITERS ; i++ )
 		{
 			final String thing = MathFormatter.slowFloatPrint( 1.642673f, 5, true );
@@ -61,12 +61,12 @@ public class TestFormatterPerformance
 		long timeAfter = System.nanoTime();
 		long diff = timeAfter - timeBefore;
 		long numPerIter = diff / NUM_ITERS;
-		log.debug( "For java formatter, did it in " + diff + " which is per iter " + numPerIter );
+		log.debug( "For string.format, did it in " + diff + " which is per iter " + numPerIter );
 
 		timeBefore = System.nanoTime();
 		for( int i = 0 ; i < NUM_ITERS ; i++ )
 		{
-			final String thing = MathFormatter.slowFloatPrint( 1.642673f, 5, true );
+			final String thing = MathFormatter.fastFloatPrint( 1.642673f, 5, true );
 		}
 		timeAfter = System.nanoTime();
 		diff = timeAfter - timeBefore;

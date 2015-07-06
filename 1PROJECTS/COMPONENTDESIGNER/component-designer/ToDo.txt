@@ -27,6 +27,8 @@ For release 0.0.3:
 
 * Implement fastFloatPrint and check uses of slowFloatPrint.
 
+* Look into the click inside the supplementary textbox on slider/rotary to see if I can synthesise an event for caret position.
+
 * Documentation - javadoc, component map and building.
 
 For release 0.0.4:

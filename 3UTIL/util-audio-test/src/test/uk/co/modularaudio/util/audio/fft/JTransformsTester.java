@@ -29,53 +29,53 @@ import uk.co.modularaudio.util.math.MathFormatter;
 public class JTransformsTester
 {
 	private static Log log = LogFactory.getLog( JTransformsTester.class.getName() );
-	
-	public static void main( String[] args )
+
+	public static void main( final String[] args )
 	{
-		JTransformsTester tester = new JTransformsTester();
+		final JTransformsTester tester = new JTransformsTester();
 		tester.go();
 	}
 
 	private void go()
 	{
 		log.debug("Beginning.");
-		
-		int numReals = 8;
-		int numBins = numReals + 1;
-		int fftSize = numReals * 2;
-		int fftComplexArraySize = numBins * 2;
 
-		DoubleFFT_1D fftEngine = new DoubleFFT_1D( fftSize );
-		
+		final int numReals = 8;
+		final int numBins = numReals + 1;
+		final int fftSize = numReals * 2;
+		final int fftComplexArraySize = numBins * 2;
+
+		final DoubleFFT_1D fftEngine = new DoubleFFT_1D( fftSize );
+
 		// Eight input values - same as frame size
-//		double[] discreteIn = new double[] { 0.0, 0.5, 1.0, 0.5, 
+//		double[] discreteIn = new double[] { 0.0, 0.5, 1.0, 0.5,
 //				0.0, -0.5, -1.0, -0.5 };
-		double[] discreteIn = new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
+		final double[] discreteIn = new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
 
 		// Sixteen output places for the spectrum data
-		double[] spectrumOut = new double[ fftComplexArraySize ];
-		
+		final double[] spectrumOut = new double[ fftComplexArraySize ];
+
 		for( int i = 0 ; i < numReals ; i++ )
 		{
 			spectrumOut[ i ] = discreteIn[i];
 		}
-		
+
 		debugArray( "SpectrumOut before FFT", spectrumOut );
 
 		fftEngine.realForward( spectrumOut );
-		
+
 		debugArray( "SpectrumOut", spectrumOut );
-		
+
 		// Now try reverse
 		fftEngine.realInverse( spectrumOut, true );
-		
+
 		debugArray( "InversedSpectrumOut", spectrumOut );
-		
+
 	}
 
-	private void debugArray(String name, double[] out)
+	private void debugArray(final String name, final double[] out)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append( name );
 		sb.append( " is [" );
 		for( int i = 0 ; i < out.length ; i++ )
@@ -84,7 +84,7 @@ public class JTransformsTester
 			{
 				sb.append( ", " );
 			}
-			sb.append( MathFormatter.slowFloatPrint( (float)out[i], 3, false  ) );
+			sb.append( MathFormatter.fastFloatPrint( (float)out[i], 3, false  ) );
 		}
 		sb.append("]");
 		log.debug( sb.toString() );

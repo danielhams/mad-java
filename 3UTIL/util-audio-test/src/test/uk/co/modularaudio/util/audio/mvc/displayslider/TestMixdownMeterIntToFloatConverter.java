@@ -57,15 +57,8 @@ public class TestMixdownMeterIntToFloatConverter
 		for( int i = 0 ; i < numTotalSteps ; ++i )
 		{
 			final float sliderFloatVal = intToFloatConverter.sliderIntValueToFloatValue( null, i );
-			if( sliderFloatVal == Float.NEGATIVE_INFINITY )
-			{
-				log.debug("IntToFloat " + i + " to -INF" );
-			}
-			else
-			{
-				log.debug("IntToFloat " + i + " to " +
-						MathFormatter.slowFloatPrint( sliderFloatVal, 5, true ) );
-			}
+			log.debug("IntToFloat " + i + " to " +
+					MathFormatter.fastFloatPrint( sliderFloatVal, 5, true ) );
 		}
 	}
 
@@ -101,7 +94,7 @@ public class TestMixdownMeterIntToFloatConverter
 			}
 			else
 			{
-				log.debug("FloatToInt " + MathFormatter.slowFloatPrint( f, 5, true ) + " as int: " +
+				log.debug("FloatToInt " + MathFormatter.fastFloatPrint( f, 5, true ) + " as int: " +
 						sliderIntVal );
 			}
 		}

@@ -103,15 +103,8 @@ public class AmpMeterMarks extends JPanel
 			g.drawLine( 0, offsetY, 2, offsetY );
 			g.drawLine( width - 3, offsetY, width - 1, offsetY );
 
-			String labelStr = null;
-			if( levelToMark == Float.NEGATIVE_INFINITY )
-			{
-				labelStr = "-Inf";
-			}
-			else
-			{
-				labelStr = MathFormatter.slowFloatPrint( levelToMark, 0, false );
-			}
+			final String labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
+
 			final int stringWidth = fm.stringWidth( labelStr );
 			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 

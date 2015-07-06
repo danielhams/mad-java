@@ -13,9 +13,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-3.946684"/>
+        <rackControl name="Gain" value="-5.9907894"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 108 (15 November 2011).mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/DJ Tiesto/dj tiesto - In Search Of Sunrise 2.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

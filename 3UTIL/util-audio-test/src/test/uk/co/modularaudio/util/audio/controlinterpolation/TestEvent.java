@@ -46,7 +46,7 @@ public class TestEvent
 		final StringBuilder sb = new StringBuilder("Offset(");
 		sb.append( offsetInSamples );
 		sb.append( ") Value(" );
-		sb.append( MathFormatter.slowFloatPrint( eventValue, 4, false ) );
+		sb.append( MathFormatter.fastFloatPrint( eventValue, 4, false ) );
 		sb.append( ")" );
 		return sb.toString();
 	}

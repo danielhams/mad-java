@@ -103,12 +103,7 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 	{
 		final int fontHeight = fm.getAscent();
 		final int fontHeightOver2 = fontHeight / 2;
-		final String scaleString = ( scaleFloat == Float.NEGATIVE_INFINITY
-				?
-				"-Inf"
-				:
-				MathFormatter.slowFloatPrint( scaleFloat, 1, false )
-			);
+		final String scaleString = MathFormatter.fastFloatPrint( scaleFloat, 1, false );
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = width - 2;

@@ -124,12 +124,7 @@ public class WaveRollerScaleDisplay extends JPanel
 	{
 		final int fontHeight = fm.getAscent();
 		final int fontHeightOver2 = fontHeight / 2;
-		final String scaleString = ( scaleFloat == Float.NEGATIVE_INFINITY
-				?
-				"-Inf dB"
-				:
-				MathFormatter.slowFloatPrint( scaleFloat, 0, false ) + " dB"
-			);
+		final String scaleString = MathFormatter.fastFloatPrint( scaleFloat, 0, false ) + " dB";
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = ( isLeftDisplay ? width - LL_WIDTH - 2 : LL_WIDTH + 2 + charsWidth );
