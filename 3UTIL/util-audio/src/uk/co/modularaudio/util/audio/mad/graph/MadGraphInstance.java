@@ -322,8 +322,16 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 
 	public String getNameForNewComponentInstance( final MadDefinition<?,?> definitionToAdd )
 	{
-		final String newName = definitionToAdd.getName() + " " + (instances.size() + 1);
-		return newName;
+		int counter = 1;
+		while( true )
+		{
+			final String newName = definitionToAdd.getName() + " " + counter;
+			if( nameToInstanceMap.get( newName ) == null )
+			{
+				return newName;
+			}
+			counter++;
+		}
 	}
 
 	public void addGraphListener( final MadGraphListener listener )
