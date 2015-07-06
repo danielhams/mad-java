@@ -30,6 +30,7 @@ import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFr
 import uk.co.modularaudio.componentdesigner.mainframe.actions.CheckAudioConfigurationAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.DumpGraphAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.DumpProfileAction;
+import uk.co.modularaudio.componentdesigner.mainframe.actions.DumpSampleCacheAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.ExitAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.NewFileAction;
 import uk.co.modularaudio.componentdesigner.mainframe.actions.OpenFileAction;
@@ -60,6 +61,7 @@ public class MainFrameActions
 	private final MainFrame mainFrame;
 	private final Action dumpGraphAction;
 	private final Action dumpProfileAction;
+	private final Action dumpSampleCacheAction;
 	private final Action toggleLoggingAction;
 	private final Action newFileAction;
 	private final Action openFileAction;
@@ -88,6 +90,7 @@ public class MainFrameActions
 		log.info("Constructing main actions.");
 		dumpGraphAction = new DumpGraphAction( fc );
 		dumpProfileAction = new DumpProfileAction( fc );
+		dumpSampleCacheAction = new DumpSampleCacheAction( fc );
 		toggleLoggingAction = new ToggleLoggingAction( fc );
 		saveAsFileAction = new SaveAsFileAction( fc, upc, mainFrame );
 		saveFileAction = new SaveFileAction( fc, saveAsFileAction );
@@ -133,6 +136,11 @@ public class MainFrameActions
 	public Action getDumpProfileAction()
 	{
 		return dumpProfileAction;
+	}
+
+	public Action getDumpSampleCacheAction()
+	{
+		return dumpSampleCacheAction;
 	}
 
 	public Action getNewFileAction()

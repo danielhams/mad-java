@@ -109,6 +109,14 @@ public interface ComponentDesignerFrontController
 	void dumpRack() throws DatastoreException;
 
 	/**
+	 * <p>Dumps the list of clients registered with the sample caching
+	 * service and their related file positions is shown.</p>
+	 *
+	 * @throws DatastoreException on internal error
+	 */
+	void dumpSampleCache() throws DatastoreException;
+
+	/**
 	 * <p>Asks for and then dumps the most recently available profiling
 	 * information filled in by the rendering thread for its currently
 	 * executing rendering plan.</p>

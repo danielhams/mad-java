@@ -366,27 +366,6 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 				whichSample );
 	}
 
-	@Override
-	public void destroy()
-	{
-		if( resampledSample != null )
-		{
-			try
-			{
-				blockResamplerService.destroyResamplingClient( resampledSample );
-			}
-			catch( final Exception e )
-			{
-				if( log.isErrorEnabled() )
-				{
-					log.error("Exception caught cleaning up sample cache client: " + e.toString(), e );
-				}
-			}
-			resampledSample = null;
-		}
-		super.destroy();
-	}
-
 	public BlockResamplingClient getResampledSample()
 	{
 		return resampledSample;

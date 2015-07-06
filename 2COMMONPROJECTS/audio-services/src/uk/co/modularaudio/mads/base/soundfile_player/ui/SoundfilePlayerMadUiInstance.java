@@ -49,6 +49,8 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class SoundfilePlayerMadUiInstance extends
 		AbstractNoNameChangeNonConfigurableMadUiInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance> implements
@@ -87,6 +89,25 @@ public class SoundfilePlayerMadUiInstance extends
 		jobExecutorService = instance.getJobExecutorService();
 
 		positionJumpCacheRefresher = new PositionJumpCacheRefresher( sampleEventListeners );
+	}
+
+	@Override
+	public void destroy()
+	{
+		// Clean up any sample cache clients we may have
+
+		if( currentResampledSample != null )
+		{
+			try
+			{
+				sampleCachingService.unregisterCacheClientForFile( currentResampledSample.getSampleCacheClient() );
+			}
+			catch( final RecordNotFoundException | DatastoreException e )
+			{
+				final String msg = "Exception caught cleaning up sample cache client: " + e.toString();
+				log.error( msg, e );
+			}
+		}
 	}
 
 	@Override

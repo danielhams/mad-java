@@ -182,6 +182,10 @@ public class SampleCache
 
 			if( curCount == 0 )
 			{
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Reference count of \"" + libraryEntry.getTitle() + "\" dropped to zero. Will remove");
+				}
 				libraryEntryToSampleCacheEntryMap.removeKey( libraryEntry.getLibraryEntryId() );
 				try
 				{

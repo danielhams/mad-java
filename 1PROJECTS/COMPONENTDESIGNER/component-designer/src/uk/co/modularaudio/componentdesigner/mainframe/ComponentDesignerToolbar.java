@@ -34,6 +34,7 @@ public class ComponentDesignerToolbar extends JToolBar
 
 	private final JButton dumpGraphButton;
 	private final JButton dumpProfileButton;
+	private final JButton dumpSampleCacheButton;
 	private final JToggleButton enableLoggingCheckbox;
 	private final JToggleButton playStopCheckbox;
 
@@ -42,10 +43,12 @@ public class ComponentDesignerToolbar extends JToolBar
 	{
 		dumpGraphButton = new DumpGraphButton( actions );
 		dumpProfileButton = new DumpProfileButton( actions );
+		dumpSampleCacheButton = new DumpSampleCacheButton( actions );
 		enableLoggingCheckbox = new EnableLoggingCheckbox( actions );
 		playStopCheckbox = new PlayStopCheckbox( fc, actions );
 		this.add( dumpGraphButton );
 		this.add( dumpProfileButton );
+		this.add( dumpSampleCacheButton );
 		this.add( enableLoggingCheckbox );
 		this.add( playStopCheckbox );
 		this.setFloatable( false );

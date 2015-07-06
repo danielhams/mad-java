@@ -193,6 +193,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		{
 			appRenderingSession.dumpRenderingPlan();
 		}
+	}
+
+	@Override
+	public void dumpSampleCache() throws DatastoreException
+	{
 		if( sampleCachingController != null )
 		{
 			sampleCachingController.dumpSampleCache();
@@ -305,6 +310,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 			if( previousRack != null )
 			{
+				log.trace("Beginning clean up of previous rack");
 				rackController.destroyRackDataModel( previousRack );
 			}
 		}
