@@ -23,6 +23,7 @@ package uk.co.modularaudio.mads.base.imixern.ui.lane;
 import java.awt.Color;
 
 import javax.swing.JComponent;
+
 import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.mads.base.djeq.ui.DJEQColorDefines;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
@@ -41,6 +42,8 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
 public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
@@ -117,7 +120,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	private final LaneFaderAndMarks<D,I> faderAndMarks;
 	private final LaneStereoAmpMeter<D,I> stereoAmpMeter;
 	private final RotaryDisplayModel panModel;
-	private final LanePanControl panControl;
+	private final RotaryDisplayKnob panControl;
 	private final LaneMuteSolo<D,I,U> muteSolo;
 
 	private final U uiInstance;
@@ -148,12 +151,19 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		this.setLayout( compLayout );
 
 		panModel = new RotaryDisplayModel(
-				-1.0f, 1.0f, 0.0f,
-				256, 32,
+				-1.0f, 1.0f,
+				0.0f, 0.0f,
+				2000,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
-		panControl = new LanePanControl( panModel, panController, this, ROTARY_COLORS );
+		panControl = new RotaryDisplayKnob( panModel,
+				panController,
+				KnobType.BIPOLAR,
+				ROTARY_COLORS,
+				false,
+				true );
 		this.add( panControl, "cell 0 0, pushx 50, width 33, height 33, growy 0, align center" );
 		panControl.setDiameter( 31 );
 
@@ -283,6 +293,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		return true;
 	}
 
+	@Override
 	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
 	{
 		stereoAmpMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );

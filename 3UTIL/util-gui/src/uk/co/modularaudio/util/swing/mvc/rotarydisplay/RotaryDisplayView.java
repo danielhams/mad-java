@@ -27,7 +27,6 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
-import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDoubleClickMouseListener.RotaryDoubleClickReceiver;
 
 public class RotaryDisplayView extends JPanel
 {
@@ -74,7 +73,7 @@ public class RotaryDisplayView extends JPanel
 			final String labelText,
 			final RotaryViewColors colours,
 			final boolean opaque,
-			final boolean doubleClickToReset )
+			final boolean rightClickToReset )
 	{
 		this.setOpaque( opaque );
 
@@ -98,7 +97,8 @@ public class RotaryDisplayView extends JPanel
 				controller,
 				knobType,
 				colours,
-				opaque );
+				opaque,
+				rightClickToReset );
 		textbox = new RotaryDisplayTextbox( model,
 				controller,
 				colours,
@@ -166,31 +166,6 @@ public class RotaryDisplayView extends JPanel
 		}
 
 		this.validate();
-
-		if( doubleClickToReset )
-		{
-			addDoubleClickReceiver( new RotaryDoubleClickReceiver()
-			{
-
-				@Override
-				public void receiveDoubleClick()
-				{
-					controller.setValue( this, controller.getModel().getInitialValue() );
-				}
-			} );
-		}
-	}
-
-	private void addDoubleClickReceiver( final RotaryDoubleClickReceiver receiver )
-	{
-		final RotaryDoubleClickMouseListener doubleClickMouseListener = new RotaryDoubleClickMouseListener( receiver );
-		knob.addMouseListener( doubleClickMouseListener );
-	}
-
-	public void changeModel( final RotaryDisplayModel newModel )
-	{
-		knob.changeModel( newModel );
-		textbox.changeModel( newModel );
 	}
 
 	public void setDiameter( final int diameter )

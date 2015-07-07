@@ -24,27 +24,33 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 
-public class RotaryDisplayMouseListener implements MouseMotionListener, MouseListener
+public class RotaryDisplayMouseListener implements MouseMotionListener, MouseListener, MouseWheelListener
 {
 	private final RotaryDisplayKnob knob;
 	private final RotaryDisplayModel model;
 	private final RotaryDisplayController controller;
 
 	private float startDragValue;
-	private Point startDragPoint = new Point();
+	private int startDragPointY = -1;
+	private boolean inDrag = false;
+	private final boolean rightClickToReset;
 
 	public RotaryDisplayMouseListener(
 			final RotaryDisplayKnob knob,
 			final RotaryDisplayModel model,
-			final RotaryDisplayController controller )
+			final RotaryDisplayController controller,
+			final boolean rightClickToReset )
 	{
 		this.knob = knob;
 		this.model = model;
 		this.controller = controller;
+		this.rightClickToReset = rightClickToReset;
 	}
 
 	@Override
@@ -69,54 +75,99 @@ public class RotaryDisplayMouseListener implements MouseMotionListener, MouseLis
 		{
 			knob.grabFocus();
 		}
-		final Point screenPoint = e.getLocationOnScreen();
-		startDragPoint = screenPoint;
-		startDragValue = model.getValue();
+		switch( e.getButton() )
+		{
+			case 1:
+			{
+				startDragPointY = e.getYOnScreen();
+				startDragValue = model.getValue();
+				inDrag = true;
+				e.consume();
+				break;
+			}
+			case 3:
+			{
+				if( rightClickToReset )
+				{
+					final float defaultValue = model.getDefaultValue();
+					controller.setValue( this, defaultValue );
+					e.consume();
+				}
+			}
+			default:
+			{
+				break;
+			}
+		}
 	}
 
 	@Override
-	public void mouseReleased( final MouseEvent arg0 )
+	public void mouseReleased( final MouseEvent e )
 	{
-		startDragPoint = null;
+		switch( e.getButton() )
+		{
+			case 1:
+			{
+				if( inDrag )
+				{
+					inDrag = false;
+				}
+				break;
+			}
+			default:
+			{
+			}
+		}
 	}
 
 	@Override
 	public void mouseDragged( final MouseEvent e )
 	{
-		final Point curPosition = e.getLocationOnScreen();
-
-		final int yDelta = curPosition.y - startDragPoint.y;
-		final int yAbsDelta = Math.abs( yDelta );
-		final int ySigNum = (int)Math.signum( yDelta );
-
-		// Scale it so 100 pixels difference = max diff
-		float scaledDelta = (yAbsDelta / 100.0f);
-		scaledDelta = (scaledDelta > 1.0f ? 1.0f : scaledDelta );
-
-		final float mmaxv = model.getMaxValue();
-		final float mminv = model.getMinValue();
-		final float scaledOffset = (mmaxv - mminv) * scaledDelta * ySigNum;
-		float newValueToSet = startDragValue - scaledOffset;
-
-		if( newValueToSet > mmaxv )
+		if( inDrag )
 		{
-			newValueToSet = mmaxv;
-		}
-		else if( newValueToSet < mminv )
-		{
-			newValueToSet = mminv;
-		}
+			final Point curPosition = e.getLocationOnScreen();
 
-		final float currentValue = model.getValue();
-		if( currentValue != newValueToSet )
-		{
-			controller.setValue( this, newValueToSet );
+			final int yDelta = curPosition.y - startDragPointY;
+			final int yAbsDelta = Math.abs( yDelta );
+			final int ySigNum = (int)Math.signum( yDelta );
+
+			// Scale it so 100 pixels difference = max diff
+			float scaledDelta = (yAbsDelta / 100.0f);
+			scaledDelta = (scaledDelta > 1.0f ? 1.0f : scaledDelta );
+
+			final float mmaxv = model.getMaxValue();
+			final float mminv = model.getMinValue();
+			final float scaledOffset = (mmaxv - mminv) * scaledDelta * ySigNum;
+			float newValueToSet = startDragValue - scaledOffset;
+
+			if( newValueToSet > mmaxv )
+			{
+				newValueToSet = mmaxv;
+			}
+			else if( newValueToSet < mminv )
+			{
+				newValueToSet = mminv;
+			}
+
+			final float currentValue = model.getValue();
+			if( currentValue != newValueToSet )
+			{
+				controller.setValue( this, newValueToSet );
+			}
 		}
 	}
 
 	@Override
 	public void mouseMoved( final MouseEvent e )
 	{
+	}
+
+	@Override
+	public void mouseWheelMoved( final MouseWheelEvent e )
+	{
+		final int wheelRotation = e.getWheelRotation() * -1;
+		controller.moveByMajorTick( this, wheelRotation );
+		e.consume();
 	}
 
 }

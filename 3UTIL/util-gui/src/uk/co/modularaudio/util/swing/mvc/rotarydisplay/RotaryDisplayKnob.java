@@ -37,8 +37,6 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModelAdaptor;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryIntToFloatConverter;
 
 public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, FocusListener
 {
@@ -83,7 +81,8 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, Fo
 			final RotaryDisplayController controller,
 			final KnobType knobType,
 			final RotaryViewColors colours,
-			final boolean opaque )
+			final boolean opaque,
+			final boolean rightClickToReset )
 	{
 		this.sdm = model;
 		this.knobType = knobType;
@@ -99,12 +98,12 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, Fo
 
 		sdm.addChangeListener( this );
 
-		mouseListener = new RotaryDisplayMouseListener( this, model, controller );
+		mouseListener = new RotaryDisplayMouseListener( this, model, controller, rightClickToReset );
 		addMouseListener( mouseListener );
 		addMouseMotionListener( mouseListener );
+		addMouseWheelListener( mouseListener );
 
-		keyListener = new RotaryDisplayKnobKeyListener(
-				new RotaryDisplayModelAdaptor( this, sdm, controller ) );
+		keyListener = new RotaryDisplayKnobKeyListener( controller );
 		this.addKeyListener( keyListener );
 	}
 
@@ -113,12 +112,6 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, Fo
 		this.sdm.removeChangeListener( this );
 		this.sdm = newModel;
 		this.sdm.addChangeListener( this );
-	}
-
-	public int getInitialValue()
-	{
-		final RotaryIntToFloatConverter itfc = sdm.getSliderIntToFloatConverter();
-		return itfc.floatValueToSliderIntValue( sdm, sdm.getInitialValue() );
 	}
 
 	@Override
@@ -239,7 +232,7 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, Fo
 		this.repaint();
 	}
 
-	public int getMajorTickSpacing()
+	public float getMajorTickSpacing()
 	{
 		return sdm.getMajorTickSpacing();
 	}

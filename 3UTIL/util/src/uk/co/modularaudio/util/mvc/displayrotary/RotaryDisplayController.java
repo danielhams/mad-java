@@ -47,4 +47,14 @@ public class RotaryDisplayController
 	{
 		return sdm;
 	}
+
+	public void moveByMajorTick( final Object source, final int direction )
+	{
+		sdm.moveByMajorTick( source, direction );
+	}
+
+	public void moveByMinorTick( final Object source, final int direction )
+	{
+		sdm.moveByMinorTick( source, direction );
+	}
 }

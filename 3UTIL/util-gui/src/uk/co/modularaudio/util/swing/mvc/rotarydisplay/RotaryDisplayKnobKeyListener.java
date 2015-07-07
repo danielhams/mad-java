@@ -23,17 +23,17 @@ package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.BoundedRangeModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 
 public class RotaryDisplayKnobKeyListener implements KeyListener
 {
 //	private static Log log = LogFactory.getLog( RotaryDisplayKnobKeyListener.class.getName() );
 
-	private BoundedRangeModel model;
+	private final RotaryDisplayController controller;
 
-	public RotaryDisplayKnobKeyListener( final BoundedRangeModel model )
+	public RotaryDisplayKnobKeyListener( final RotaryDisplayController controller )
 	{
-		this.model = model;
+		this.controller = controller;
 	}
 
 	@Override
@@ -51,17 +51,29 @@ public class RotaryDisplayKnobKeyListener implements KeyListener
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_DOWN:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue - 1 );
+//				final int curValue = model.getValue();
+//				model.setValue( curValue - 1 );
+				controller.moveByMinorTick( this, -1 );
 				me.consume();
 				break;
 			}
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_UP:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue + 1 );
+//				final int curValue = model.getValue();
+//				model.setValue( curValue + 1 );
+				controller.moveByMinorTick( this, +1 );
 				me.consume();
+				break;
+			}
+			case KeyEvent.VK_PAGE_DOWN:
+			{
+				controller.moveByMajorTick( this, -1 );
+				break;
+			}
+			case KeyEvent.VK_PAGE_UP:
+			{
+				controller.moveByMajorTick( this, +1 );
 				break;
 			}
 			default:
@@ -82,10 +94,4 @@ public class RotaryDisplayKnobKeyListener implements KeyListener
 	{
 //		log.debug("Key typed: " + arg0.toString() );
 	}
-
-	public void setModel( final BoundedRangeModel newModel )
-	{
-		this.model = newModel;
-	}
-
 }

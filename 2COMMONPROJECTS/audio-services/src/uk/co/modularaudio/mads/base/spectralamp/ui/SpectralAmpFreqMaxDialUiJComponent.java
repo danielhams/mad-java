@@ -61,11 +61,10 @@ public class SpectralAmpFreqMaxDialUiJComponent
 	{
 
 		model = new RotaryDisplayModel(
-				SpectralAmpFreqMinDialUiJComponent.DEFAULT_FREQ_MIN,
-				DEFAULT_FREQ_MAX,
-				DEFAULT_FREQ_MAX,
-				200,
-				32,
+				SpectralAmpFreqMinDialUiJComponent.DEFAULT_FREQ_MIN, DEFAULT_FREQ_MAX,
+				DEFAULT_FREQ_MAX, DEFAULT_FREQ_MAX,
+				2000,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				5,
 				0,
@@ -146,7 +145,8 @@ public class SpectralAmpFreqMaxDialUiJComponent
 		if( oldMaxValue != newMaxValue )
 		{
 			final float currentValue = model.getValue();
-			model.setMaxValue( sampleRate / 2.0f );
+			model.setMaxValue( newMaxValue );
+			model.setDefaultValue( newMaxValue );
 			if( currentValue == oldMaxValue )
 			{
 				model.setValue( this, newMaxValue );

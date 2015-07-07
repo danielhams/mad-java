@@ -30,7 +30,7 @@ public class SimpleRotaryIntToFloatConverter implements RotaryIntToFloatConverte
 	public int floatValueToSliderIntValue( final RotaryDisplayModel sdm, final float inValue )
 	{
 //		log.debug("Converting slider float value " + inValue );
-		final int numSteps = sdm.getNumSliderSteps();
+		final int numSteps = sdm.getNumSteps();
 		final float maxValue = sdm.getMaxValue();
 		final float minValue = sdm.getMinValue();
 		final float diffValue = maxValue - minValue;
@@ -45,7 +45,7 @@ public class SimpleRotaryIntToFloatConverter implements RotaryIntToFloatConverte
 	public float sliderIntValueToFloatValue( final RotaryDisplayModel sdm, final int sliderIntValue )
 	{
 //		log.debug("Converting slider int value " + sliderIntValue );
-		final int numSteps = sdm.getNumSliderSteps();
+		final int numSteps = sdm.getNumSteps();
 		final float maxValue = sdm.getMaxValue();
 		final float minValue = sdm.getMinValue();
 		final float diffValue = maxValue - minValue;

@@ -34,7 +34,6 @@ import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderChangeReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.PanChangeReceiver;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.LanePanControl;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
@@ -48,6 +47,8 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 
 public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		I extends MixerNMadInstance<D, I>,
@@ -88,7 +89,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	private final LaneFaderAndMarks<D,I> faderAndMarks;
 	private final LaneStereoAmpMeter<D,I> stereoAmpMeter;
 	private final RotaryDisplayModel panModel;
-	private final LanePanControl panControl;
+	private final RotaryDisplayKnob panControl;
 
 	private final U uiInstance;
 
@@ -118,12 +119,19 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		this.setLayout( compLayout );
 
 		panModel = new RotaryDisplayModel(
-				-1.0f, 1.0f, 0.0f,
-				256, 32,
+				-1.0f, 1.0f,
+				0.0f, 0.0f,
+				2000,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
-		panControl = new LanePanControl( panModel, panController, this, LaneMixerPanelUiInstance.ROTARY_COLORS );
+		panControl = new RotaryDisplayKnob( panModel,
+				panController,
+				KnobType.BIPOLAR,
+				LaneMixerPanelUiInstance.ROTARY_COLORS,
+				false,
+				true );
 		this.add( panControl, "cell 0 0, spanx 2, pushx 50, width 33, height 33, growy 0, align center" );
 		panControl.setDiameter( 31 );
 

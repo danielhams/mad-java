@@ -72,11 +72,10 @@ public class SoundfilePlayer2GainDialUiJComponent
 	{
 
 		model = new RotaryDisplayModel(
-				-SoundfilePlayer2MadInstance.GAIN_MAX_DB,
-				SoundfilePlayer2MadInstance.GAIN_MAX_DB,
-				0.0f,
-				257,
-				64,
+				-SoundfilePlayer2MadInstance.GAIN_MAX_DB, SoundfilePlayer2MadInstance.GAIN_MAX_DB,
+				0.0f, 0.0f,
+				4000,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				2,
 				3,

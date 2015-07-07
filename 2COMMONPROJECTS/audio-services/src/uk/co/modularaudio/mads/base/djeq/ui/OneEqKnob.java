@@ -56,11 +56,10 @@ public class OneEqKnob extends PacPanel
 		setLayout( msh.createMigLayout() );
 
 		rdm = new RotaryDisplayModel(
-				-26.0f,
-				9.0f,
-				0.0f,
+				-26.0f,	9.0f,
+				0.0f, 0.0f,
 				3500,
-				500,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3,
 				1,

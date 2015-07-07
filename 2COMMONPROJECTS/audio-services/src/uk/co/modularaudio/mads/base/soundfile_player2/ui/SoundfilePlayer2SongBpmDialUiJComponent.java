@@ -75,11 +75,10 @@ public class SoundfilePlayer2SongBpmDialUiJComponent
 	{
 
 		model = new RotaryDisplayModel(
-				MIN_BPM_VALUE,
-				MAX_BPM_VALUE,
-				DEFAULT_BPM_VALUE,
-				280,
-				64,
+				MIN_BPM_VALUE, MAX_BPM_VALUE,
+				DEFAULT_BPM_VALUE, DEFAULT_BPM_VALUE,
+				2000,
+				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3,
 				3,

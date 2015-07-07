@@ -44,7 +44,7 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	private static final long serialVersionUID = -493606535649144832L;
 
-	private RotaryDisplayModel model;
+	private final RotaryDisplayModel model;
 	private final RotaryDisplayController controller;
 
 	private final LWTCSpeedyUpdateTextField textField;
@@ -190,21 +190,21 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 		}
 	}
 
-	public void changeModel( final RotaryDisplayModel newModel )
-	{
-		model.removeChangeListener( this );
-		this.model = newModel;
-		extractModelVars( newModel );
-		completeModelSetup( newModel );
-
-		if( unitsStrLength > 0 )
-		{
-			unitsLabel.setText( unitsStr );
-		}
-
-		model.addChangeListener( this );
-		validate();
-		final Dimension minimumSize = this.getPreferredSize();
-		this.setMinimumSize( minimumSize );
-	}
+//	public void changeModel( final RotaryDisplayModel newModel )
+//	{
+//		model.removeChangeListener( this );
+//		this.model = newModel;
+//		extractModelVars( newModel );
+//		completeModelSetup( newModel );
+//
+//		if( unitsStrLength > 0 )
+//		{
+//			unitsLabel.setText( unitsStr );
+//		}
+//
+//		model.addChangeListener( this );
+//		validate();
+//		final Dimension minimumSize = this.getPreferredSize();
+//		this.setMinimumSize( minimumSize );
+//	}
 }

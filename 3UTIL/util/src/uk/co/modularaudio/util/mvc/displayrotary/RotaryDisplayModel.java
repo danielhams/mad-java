@@ -22,21 +22,18 @@ package uk.co.modularaudio.util.mvc.displayrotary;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 public class RotaryDisplayModel
 {
-	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog( RotaryDisplayModel.class.getName() );
+//	private static Log log = LogFactory.getLog( RotaryDisplayModel.class.getName() );
 
 	private float minValue;
 	private float maxValue;
 	private final float initialValue;
-	private final int numSliderSteps;
+	private float defaultValue;
+	private final int numSteps;
 	private int majorTickSpacing;
 
-	private final RotaryIntToFloatConverter sliderIntToFloatConverter;
+	private final RotaryIntToFloatConverter intToFloatConverter;
 	private final int displayNumSigPlaces;
 	private final int displayNumDecPlaces;
 
@@ -54,9 +51,10 @@ public class RotaryDisplayModel
 	public RotaryDisplayModel( final float minValue,
 			final float maxValue,
 			final float initialValue,
-			final int numSliderSteps,
-			final int sliderMajorTickSpacing,
-			final RotaryIntToFloatConverter sliderIntToFloatConverter,
+			final float defaultValue,
+			final int numSteps,
+			final int majorTickSpacing,
+			final RotaryIntToFloatConverter intToFloatConverter,
 			final int displayNumSigPlaces,
 			final int displayNumDecPlaces,
 			final String displayUnitsStr )
@@ -64,9 +62,10 @@ public class RotaryDisplayModel
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.initialValue = initialValue;
-		this.numSliderSteps = numSliderSteps;
-		this.majorTickSpacing = sliderMajorTickSpacing;
-		this.sliderIntToFloatConverter = sliderIntToFloatConverter;
+		this.defaultValue = defaultValue;
+		this.numSteps = numSteps;
+		this.majorTickSpacing = majorTickSpacing;
+		this.intToFloatConverter = intToFloatConverter;
 		this.displayNumSigPlaces = displayNumSigPlaces;
 		this.displayNumDecPlaces = displayNumDecPlaces;
 		this.displayUnitsStr = displayUnitsStr;
@@ -89,14 +88,14 @@ public class RotaryDisplayModel
 		return initialValue;
 	}
 
-	public int getNumSliderSteps()
+	public int getNumSteps()
 	{
-		return numSliderSteps;
+		return numSteps;
 	}
 
-	public RotaryIntToFloatConverter getSliderIntToFloatConverter()
+	public RotaryIntToFloatConverter getIntToFloatConverter()
 	{
-		return sliderIntToFloatConverter;
+		return intToFloatConverter;
 	}
 
 	public int getDisplayNumSigPlaces()
@@ -176,4 +175,35 @@ public class RotaryDisplayModel
 		notifyOfChange( this );
 	}
 
+	public void moveByMajorTick( final Object source, final int direction )
+	{
+		final int currentValueAsStep = intToFloatConverter.floatValueToSliderIntValue( this, currentValue );
+		int newStep = currentValueAsStep + (majorTickSpacing * direction );
+		newStep = (newStep > numSteps ? numSteps :
+					(newStep < 0 ? 0 : newStep )
+					);
+		final float newValue = intToFloatConverter.sliderIntValueToFloatValue( this, newStep );
+		setValue( source, newValue );
+	}
+
+	public float getDefaultValue()
+	{
+		return defaultValue;
+	}
+
+	public void setDefaultValue( final float defaultValue )
+	{
+		this.defaultValue = defaultValue;
+	}
+
+	public void moveByMinorTick( final Object source, final int direction )
+	{
+		final int currentValueAsStep = intToFloatConverter.floatValueToSliderIntValue( this, currentValue );
+		int newStep = currentValueAsStep + direction;
+		newStep = (newStep > numSteps ? numSteps :
+					(newStep < 0 ? 0 : newStep )
+					);
+		final float newValue = intToFloatConverter.sliderIntValueToFloatValue( this, newStep );
+		setValue( source, newValue );
+	}
 }
