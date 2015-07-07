@@ -40,6 +40,8 @@ public class TestFormatterPerformance
 			-13456.455734573457f,
 			123.634634f,
 			0.0f,
+			0.00000123f,
+			0.00009512f,
 			123f,
 			299.9f,
 			299.99f,
@@ -62,34 +64,31 @@ public class TestFormatterPerformance
 			MathDefines.TWO_PI_F
 		};
 
-		for( final float val : testVals )
+		for( int dec = 0 ; dec < 13 ; ++dec )
 		{
-			final String sval = MathFormatter.slowFloatPrint( val, 3, true );
-			log.debug("There we go - for " + val + " got : " + sval );
-			String fval = MathFormatter.fastFloatPrint( val, 3, true );
-			log.debug("New version - for " + val + " got : " + fval );
-
-			if( !sval.equals( fval ) )
+			for( final float val : testVals )
 			{
-				log.error("Failed format verification of " + val );
-				fval = MathFormatter.fastFloatPrint( val, 3, true );
+//				log.debug("Conversion tests of: " + MathFormatter.slowFloatPrint( val, dec, true) +
+//						" with " + dec + " decimal places" );
+				final String sval = MathFormatter.slowFloatPrint( val, dec, true );
+				final String fval = MathFormatter.fastFloatPrint( val, dec, true );
+//				log.debug("Old fast version: " + fval );
+				String nfval = MathFormatter.newFastFloatPrint( val, dec, true );
+//				log.debug("New fast version: " + nfval );
+
+				if( !sval.equals( nfval ) )
+				{
+					log.error("Failed new fast format verification of " + val );
+					nfval = MathFormatter.newFastFloatPrint( val, dec, true );
+				}
+
+				if( sval.equals( nfval ) && !fval.equals( nfval ) )
+				{
+					log.info( "New fast print worked where the old one failed:");
+					log.info( "New(" + nfval + ")");
+					log.info( "Old(" + fval + ")");
+				}
 			}
-
-		}
-
-		for( final float val : testVals )
-		{
-			final String sval = MathFormatter.slowFloatPrint( val, 4, true );
-			log.debug("There we go - for " + val + " got : " + sval );
-			String fval = MathFormatter.fastFloatPrint( val, 4, true );
-			log.debug("New version - for " + val + " got : " + fval );
-
-			if( !sval.equals( fval ) )
-			{
-				log.error("Failed format verification of " + val );
-				fval = MathFormatter.fastFloatPrint( val, 4, true );
-			}
-
 		}
 
 		doIterationTests();
@@ -119,7 +118,17 @@ public class TestFormatterPerformance
 		timeAfter = System.nanoTime();
 		diff = timeAfter - timeBefore;
 		numPerIter = diff / NUM_ITERS;
-		log.debug( "For new formatter, did it in " + diff + " which is per iter " + numPerIter );
-	}
+		log.debug( "For fast formatter, did it in " + diff + " which is per iter " + numPerIter );
+
+		timeBefore = System.nanoTime();
+		for( int i = 0 ; i < NUM_ITERS ; i++ )
+		{
+			final String thing = MathFormatter.newFastFloatPrint( 1.642673f, 4, true );
+		}
+		timeAfter = System.nanoTime();
+		diff = timeAfter - timeBefore;
+		numPerIter = diff / NUM_ITERS;
+		log.debug( "For new fast formatter, did it in " + diff + " which is per iter " + numPerIter );
+}
 
 }

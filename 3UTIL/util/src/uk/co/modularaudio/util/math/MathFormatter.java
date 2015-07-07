@@ -28,8 +28,9 @@ public class MathFormatter
 	{
 		return slowFloatPrint( f, 2, true );
 	}
+	private final static int MAX_DECIMALS = 12;
 
-	private static final int POW10[] = {
+	private static final long POW10[] = {
 		1,
 		10,
 		100,
@@ -38,7 +39,12 @@ public class MathFormatter
 		100000,
 		1000000,
 		10000000,
-		100000000
+		100000000,
+		1000000000,
+		10000000000L,
+		100000000000L,
+		1000000000000L,
+		10000000000000L
 	};
 
 	// Ugly unpleasant mess for printing floating point numbers
@@ -47,9 +53,9 @@ public class MathFormatter
 	// kinds of bounds, it should be ok.
 	public static String fastFloatPrint( final float iVal, final int numDecimals, final boolean echoPlus )
 	{
-		if( numDecimals >= 5 )
+		if( numDecimals > MAX_DECIMALS )
 		{
-			throw new RuntimeException("FastFloatPrint doesn't support more than 4 decimal digits due to rounding errors. Use slowFloatPrint instead.");
+			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead.");
 		}
 
 		String retVal;
@@ -79,20 +85,91 @@ public class MathFormatter
 				sb.append('+');
 			}
 
-			final int oExp = POW10[numDecimals+1];
+			final long oExp = POW10[numDecimals+1];
 			final double overScaledValue = val * oExp;
 			final int extraTen = (overScaledValue % 10 >= 5.0f ? 10 : 0 );
 			final long roundedVal = (long)(overScaledValue + extraTen);
 
 			final double valForPrint = roundedVal / 10.0;
 
-			final int exp = POW10[numDecimals];
+			final long exp = POW10[numDecimals];
 
 			final long integerPortion = (long)(valForPrint / exp);
 
 			sb.append( integerPortion );
 
 			final long truncedVal = (long)(valForPrint - (integerPortion * exp));
+
+			if( numDecimals > 0 )
+			{
+				sb.append('.');
+				for( int p = numDecimals - 1 ; p > 0 && truncedVal < POW10[p]; --p )
+				{
+					sb.append('0');
+				}
+
+				sb.append(truncedVal);
+			}
+
+			retVal = sb.toString();
+		}
+
+		return retVal;
+	}
+
+	public static String newFastFloatPrint( final float iVal, final int numDecimals, final boolean echoPlus )
+	{
+		if( numDecimals > MAX_DECIMALS )
+		{
+			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead.");
+		}
+
+		String retVal;
+		if( iVal == Float.NEGATIVE_INFINITY )
+		{
+			retVal = "-Inf";
+		}
+		else if( iVal == Float.POSITIVE_INFINITY )
+		{
+			retVal = "Inf";
+		}
+		else if( iVal == Float.NaN )
+		{
+			retVal = "NaN";
+		}
+		else
+		{
+			float val = iVal;
+			final StringBuilder sb = new StringBuilder();
+			if( val < 0 )
+			{
+				sb.append('-');
+				val = -val;
+			}
+			else if( echoPlus )
+			{
+				sb.append('+');
+			}
+
+			long integerPortion = (long)val;
+
+			final double remainder = ((double)val) - integerPortion;
+
+			final long oExp = POW10[numDecimals+1];
+			final double overScaledRemainder = remainder * oExp;
+			final int extraTen = (overScaledRemainder % 10 >= 5.0f ? 10 : 0 );
+			long roundedRemainder = (long)(overScaledRemainder + extraTen);
+
+			if( roundedRemainder >= oExp )
+			{
+				integerPortion += 1;
+				roundedRemainder -= oExp;
+			}
+			final long decimalsForPrint = roundedRemainder / 10;
+
+			sb.append( integerPortion );
+
+			final long truncedVal = decimalsForPrint;
 
 			if( numDecimals > 0 )
 			{
