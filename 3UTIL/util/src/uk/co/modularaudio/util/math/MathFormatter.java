@@ -103,17 +103,15 @@ public class MathFormatter
 
 			sb.append( integerPortion );
 
-			final long truncedVal = decimalsForPrint;
-
 			if( numDecimals > 0 )
 			{
 				sb.append('.');
-				for( int p = numDecimals - 1 ; p > 0 && truncedVal < POW10[p]; --p )
+				for( int p = numDecimals - 1 ; p > 0 && decimalsForPrint < POW10[p]; --p )
 				{
 					sb.append('0');
 				}
 
-				sb.append(truncedVal);
+				sb.append(decimalsForPrint);
 			}
 
 			retVal = sb.toString();
