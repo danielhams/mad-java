@@ -78,7 +78,7 @@ public class TestFormatterPerformance
 
 				if( !sval.equals( nfval ) )
 				{
-					log.error("Failed new fast format verification of " + val );
+					log.error("Failed new fast format verification of " + sval + " with " + nfval );
 					nfval = MathFormatter.newFastFloatPrint( val, dec, true );
 				}
 
