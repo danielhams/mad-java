@@ -35,7 +35,6 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class LWTCSliderDisplayTester
@@ -96,20 +95,9 @@ public class LWTCSliderDisplayTester
 				SatelliteOrientation.BELOW,
 				colours,
 				"Volume",
-				false );
+				false,
+				true );
 		panel.add( staticValueDisplay, "spanx 2, grow" );
-
-		final SliderDoubleClickReceiver dcr = new SliderDoubleClickReceiver()
-		{
-			@Override
-			public void receiveDoubleClick()
-			{
-				mixerModel.setValue( this, mixerModel.getDefaultValue() );
-
-			}
-		};
-
-		staticValueDisplay.addDoubleClickReceiver( dcr );
 
 		frame.setSize( 200, 200 );
 		frame.setVisible( true );

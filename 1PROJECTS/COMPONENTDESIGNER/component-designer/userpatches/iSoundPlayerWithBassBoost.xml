@@ -13,9 +13,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.9907894"/>
+        <rackControl name="Gain" value="-5.6734743"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/DJ Tiesto/dj tiesto - In Search Of Sunrise 2.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Regular/Recoil - Selected (2010)/CD2 - Remixed/12 - Shunt - Pan Sonic Mix.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -33,7 +33,7 @@
         <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
@@ -45,7 +45,7 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="2"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="CaptureTime" value="60.0"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

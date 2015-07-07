@@ -38,10 +38,9 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
 public class DJEQFaderMarksMeter extends PacPanel
@@ -80,7 +79,7 @@ public class DJEQFaderMarksMeter extends PacPanel
 
 	private final DJDeckFaderSliderModel sdm;
 	private final SliderDisplayController sdc;
-	private final DJEQFader fader;
+	private final LWTCSliderDisplaySlider fader;
 	private final DJEQFaderMarks faderMarks;
 	private final LaneStereoAmpMeter sam;
 	private final LWTCSliderDisplayTextbox faderTextbox;
@@ -106,7 +105,7 @@ public class DJEQFaderMarksMeter extends PacPanel
 		sdm = new DJDeckFaderSliderModel();
 		sdc = new SliderDisplayController( sdm );
 
-		fader = new DJEQFader( sdm, sdc, DisplayOrientation.VERTICAL, SLIDER_COLORS, false );
+		fader = new LWTCSliderDisplaySlider( sdm, sdc, DisplayOrientation.VERTICAL, SLIDER_COLORS, false, true );
 		this.add( fader, "cell 0 0, growy, pushy 100" );
 
 		faderMarks = new DJEQFaderMarks( sdm, Color.BLACK, false );
@@ -119,17 +118,6 @@ public class DJEQFaderMarksMeter extends PacPanel
 				SLIDER_COLORS,
 				false );
 		this.add( faderTextbox, "cell 0 1, spanx 3, growy 0, align left" );
-
-		final LWTCSliderDoubleClickMouseListener doubleClickMouseListener = new LWTCSliderDoubleClickMouseListener( new SliderDoubleClickReceiver()
-		{
-
-			@Override
-			public void receiveDoubleClick()
-			{
-				sdc.setValue( this, sdc.getModel().getDefaultValue() );
-			}
-		} );
-		fader.addMouseListener( doubleClickMouseListener );
 
 		sdm.addChangeListener( new ValueChangeListener()
 		{

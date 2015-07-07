@@ -30,6 +30,7 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 
@@ -42,7 +43,7 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 
 	private final MixdownSliderModel faderModel;
 	private final SliderDisplayController faderController;
-	private final MixerFader mixerFader;
+	private final LWTCSliderDisplaySlider mixerFader;
 	private final MixerFaderMarks mixerFaderLabels;
 
 	public LaneFaderAndMarks( final MixerNMadUiInstance<D,I> uiInstance,
@@ -62,11 +63,12 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 
 		faderModel = new MixdownSliderModel();
 		faderController = new SliderDisplayController( faderModel );
-		mixerFader = new MixerFader( faderModel,
+		mixerFader = new LWTCSliderDisplaySlider( faderModel,
 				faderController,
 				DisplayOrientation.VERTICAL,
 				colors,
-				false );
+				false,
+				true );
 		this.add( mixerFader, "growy" );
 
 		mixerFaderLabels = new MixerFaderMarks( faderModel,

@@ -29,6 +29,8 @@ For release 0.0.3:
 
 * Look into the click inside the supplementary textbox on slider/rotary to see if I can synthesise an event for caret position.
 
+* Look into using the mouse scrollwheel for changing sliders/dials and rotary choices.
+
 * Documentation - javadoc, component map and building.
 
 For release 0.0.4:
@@ -39,6 +41,10 @@ For release 0.0.4:
 * Create a mechanism for CI / easy(ish) building.
 
 * Fix up sound file metadata handling so we the user can override discovered metadata and we can start to fix up the BPM handling.
+
+* Look into find a way that sub-rack changes avoid a double fade - would be nice to fade in the new sub-rack in parallel with fading out the old sub-rack. May be tricky due to multi-output. Would still be nice to have as a feature of the rack.
+
+* Clicking in a slider outside of the handle and holding down should gradually jump in that direction.
 
 Oustanding issues:
 ------------------

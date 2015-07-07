@@ -20,6 +20,9 @@
 
 package uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.SwingConstants;
 
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
@@ -30,17 +33,60 @@ import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView
 
 public class LWTCSliderDisplaySlider extends LWTCSlider
 {
-//	private static Log log = LogFactory.getLog( SliderDisplaySlider.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCSliderDisplaySlider.class.getName() );
 
 	private static final long serialVersionUID = 7532750303295733460L;
 
 	private final SliderDisplayController controller;
 
+	private class ResetToDefaultMouseListener implements MouseListener
+	{
+
+		@Override
+		public void mouseClicked( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void mousePressed( final MouseEvent e )
+		{
+			switch( e.getButton() )
+			{
+				case 3:
+				{
+					final SliderDisplayModel sdm = controller.getModel();
+					controller.setValue( this, sdm.getDefaultValue() );
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+		}
+
+		@Override
+		public void mouseReleased( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void mouseEntered( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void mouseExited( final MouseEvent e )
+		{
+		}
+	};
+
 	public LWTCSliderDisplaySlider( final SliderDisplayModel model,
 			final SliderDisplayController controller,
 			final DisplayOrientation displayOrientation,
 			final LWTCSliderViewColors colours,
-			final boolean opaque )
+			final boolean opaque,
+			final boolean rightClickToReset )
 	{
 		super( ( displayOrientation == DisplayOrientation.HORIZONTAL ?
 				SwingConstants.HORIZONTAL :
@@ -58,6 +104,11 @@ public class LWTCSliderDisplaySlider extends LWTCSlider
 		this.setMajorTickSpacing( sliderMajorTickSpacing );
 		this.setBackground( colours.bgColor );
 		this.setForeground( colours.fgColor );
+
+		if( rightClickToReset )
+		{
+			this.addMouseListener( new ResetToDefaultMouseListener() );
+		}
 	}
 
 	public void changeModel( final SliderDisplayModel newModel )

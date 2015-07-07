@@ -23,11 +23,13 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
 
-public class LWTCSliderMouseListener implements MouseListener, MouseMotionListener
+public class LWTCSliderMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener
 {
 //	private static Log log = LogFactory.getLog( LWTCSliderMouseListener.class.getName() );
 
@@ -41,7 +43,8 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	private boolean inDrag = false;
 
 	public LWTCSliderMouseListener( final LWTCSlider slider,
-			final int orientation, final BoundedRangeModel model )
+			final int orientation,
+			final BoundedRangeModel model )
 	{
 		this.slider = slider;
 		this.orientation = orientation;
@@ -94,8 +97,8 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			{
 				model.setValue( attemptedValue );
 			}
+			me.consume();
 		}
-		me.consume();
 	}
 
 	@Override
@@ -130,48 +133,59 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 			slider.grabFocus();
 		}
 
-		final int xCoord = me.getX();
-		final int yCoord = me.getY();
-		if( mouseInKnob( xCoord, yCoord ) )
+		switch( me.getButton() )
 		{
-			final int curValue = model.getValue();
-			if( orientation == SwingConstants.HORIZONTAL )
+			case 1:
 			{
-				startCoord = xCoord;
+				final int xCoord = me.getX();
+				final int yCoord = me.getY();
+				if( mouseInKnob( xCoord, yCoord ) )
+				{
+					final int curValue = model.getValue();
+					if( orientation == SwingConstants.HORIZONTAL )
+					{
+						startCoord = xCoord;
+					}
+					else
+					{
+						startCoord = yCoord;
+					}
+					startModelValue = curValue;
+					inDrag = true;
+				}
+				else
+				{
+					// Work out direction and move model
+					// by major tick spacing in that direction
+					final int curValue = model.getValue();
+					final int range = model.getMaximum() - model.getMinimum();
+					final float normValue = ( (curValue - model.getMinimum()) / (float)range );
+
+					float normClick;
+					if( orientation == SwingConstants.HORIZONTAL )
+					{
+						normClick = (xCoord - 3) / (float)(slider.getWidth() - 6);
+					}
+					else
+					{
+						normClick = 1.0f - ((yCoord - 3) / (float)(slider.getHeight() - 6));
+					}
+					final int sign = (int)Math.signum( normClick - normValue );
+
+					final int numToAdd = sign * slider.getMajorTickSpacing();
+
+					final int prevValue = model.getValue();
+					final int attemptedValue = prevValue + numToAdd;
+					model.setValue( attemptedValue );
+				}
+				me.consume();
+				break;
 			}
-			else
+			default:
 			{
-				startCoord = yCoord;
+				break;
 			}
-			startModelValue = curValue;
-			inDrag = true;
 		}
-		else
-		{
-			// Work out direction and move model
-			// by major tick spacing in that direction
-			final int curValue = model.getValue();
-			final int range = model.getMaximum() - model.getMinimum();
-			final float normValue = ( (curValue - model.getMinimum()) / (float)range );
-
-			float normClick;
-			if( orientation == SwingConstants.HORIZONTAL )
-			{
-				normClick = (xCoord - 3) / (float)(slider.getWidth() - 6);
-			}
-			else
-			{
-				normClick = 1.0f - ((yCoord - 3) / (float)(slider.getHeight() - 6));
-			}
-			final int sign = (int)Math.signum( normClick - normValue );
-
-			final int numToAdd = sign * slider.getMajorTickSpacing();
-
-			final int prevValue = model.getValue();
-			final int attemptedValue = prevValue + numToAdd;
-			model.setValue( attemptedValue );
-		}
-		me.consume();
 	}
 
 	private boolean mouseInKnob( final int x, final int y )
@@ -235,15 +249,30 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	@Override
 	public void mouseReleased( final MouseEvent me )
 	{
-		if( inDrag )
+		if( me.getButton() == 1 )
 		{
-			inDrag = false;
+			if( inDrag )
+			{
+				inDrag = false;
+			}
+			me.consume();
 		}
-		me.consume();
 	}
 
 	public void setModel( final BoundedRangeModel newModel )
 	{
 		this.model = newModel;
+	}
+
+	@Override
+	public void mouseWheelMoved( final MouseWheelEvent e )
+	{
+		// Same for both horizontal and vertical.
+		final int numToAdd = e.getWheelRotation() * slider.getMajorTickSpacing() * -1;
+
+		final int prevValue = model.getValue();
+		final int attemptedValue = prevValue + numToAdd;
+		model.setValue( attemptedValue );
+		e.consume();
 	}
 }

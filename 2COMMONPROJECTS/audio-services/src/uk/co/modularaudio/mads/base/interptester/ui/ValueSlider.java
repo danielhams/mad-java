@@ -51,14 +51,6 @@ public abstract class ValueSlider extends JPanel implements ValueChangeListener
 
 		this.controller = new SliderDisplayController( model );
 
-//		 final SliderDisplayModel model,
-//			final SliderDisplayController controller,
-//			final SatelliteOrientation labelOrientation,
-//			final DisplayOrientation displayOrientation,
-//			final SatelliteOrientation textboxOrientation,
-//			final LWTCSliderViewColors colours,
-//			final String labelText,
-//			final boolean opaque )
 		this.view = new LWTCSliderDisplayView( model,
 				controller,
 				labelOrientation,

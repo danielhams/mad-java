@@ -62,7 +62,8 @@ public class OscilloscopeCaptureLengthSliderUiJComponent
 				SatelliteOrientation.RIGHT,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Capture Time:",
-				false, true );
+				false,
+				true );
 
 		model.addChangeListener( new ValueChangeListener()
 		{

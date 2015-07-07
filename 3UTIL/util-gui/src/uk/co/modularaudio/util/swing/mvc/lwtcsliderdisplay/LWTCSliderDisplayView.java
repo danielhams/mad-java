@@ -29,7 +29,6 @@ import net.miginfocom.swing.MigLayout;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class LWTCSliderDisplayView extends JPanel
 {
@@ -82,7 +81,7 @@ public class LWTCSliderDisplayView extends JPanel
 			final LWTCSliderViewColors colours,
 			final String labelText,
 			final boolean opaque,
-			final boolean doubleClickToReset )
+			final boolean rightClickToReset )
 	{
 		this.setOpaque( opaque );
 		this.setBackground( colours.bgColor );
@@ -111,7 +110,8 @@ public class LWTCSliderDisplayView extends JPanel
 				controller,
 				displayOrientation,
 				colours,
-				opaque );
+				opaque,
+				rightClickToReset );
 		textbox = new LWTCSliderDisplayTextbox( model,
 				controller,
 				colours,
@@ -185,25 +185,6 @@ public class LWTCSliderDisplayView extends JPanel
 		}
 
 		this.validate();
-
-		if( doubleClickToReset )
-		{
-			addDoubleClickReceiver( new SliderDoubleClickReceiver()
-			{
-
-				@Override
-				public void receiveDoubleClick()
-				{
-					controller.setValue( this, controller.getModel().getInitialValue() );
-				}
-			} );
-		}
-	}
-
-	public void addDoubleClickReceiver( final SliderDoubleClickReceiver receiver )
-	{
-		final LWTCSliderDoubleClickMouseListener doubleClickMouseListener = new LWTCSliderDoubleClickMouseListener( receiver );
-		slider.addMouseListener( doubleClickMouseListener );
 	}
 
 	public void changeModel( final SliderDisplayModel newModel )

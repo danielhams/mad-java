@@ -38,11 +38,9 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDoubleClickMouseListener.SliderDoubleClickReceiver;
 
 public class SoundfilePlayer2SpeedSliderUiJComponent
-	implements IMadUiControlInstance<SoundfilePlayer2MadDefinition, SoundfilePlayer2MadInstance, SoundfilePlayer2MadUiInstance>,
-	SliderDoubleClickReceiver
+	implements IMadUiControlInstance<SoundfilePlayer2MadDefinition, SoundfilePlayer2MadInstance, SoundfilePlayer2MadUiInstance>
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerSpeedSliderUiJComponent.class.getName() );
 
@@ -67,9 +65,8 @@ public class SoundfilePlayer2SpeedSliderUiJComponent
 				SatelliteOrientation.BELOW,
 				LWTCControlConstants.SLIDER_VIEW_COLORS,
 				"Speed",
-				false );
-
-		view.addDoubleClickReceiver(this);
+				false,
+				true );
 
 		model.addChangeListener( new ValueChangeListener()
 		{
@@ -112,12 +109,6 @@ public class SoundfilePlayer2SpeedSliderUiJComponent
 //			log.debug("Received control value " + value );
 		final float asFloat = Float.parseFloat( valueStr );
 		controller.setValue( this, asFloat );
-	}
-
-	@Override
-	public void receiveDoubleClick()
-	{
-		controller.setValue(this, model.getDefaultValue());
 	}
 
 	@Override
