@@ -104,7 +104,7 @@ public class SpectralAmpMadUiDefinition
 
 	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;
 
-	public static final float MIN_FREQ_DIFF = 10.0f;
+	public static final float MIN_FREQ_DIFF = 8.0f;
 
 	public SpectralAmpMadUiDefinition( final BufferedImageAllocator bia,
 			final SpectralAmpMadDefinition definition,

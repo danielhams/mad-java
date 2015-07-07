@@ -34,7 +34,7 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 {
 	private static final long serialVersionUID = 8208419176860684686L;
 
-//	private static Log log = LogFactory.getLog( NewFreqScaleLabels.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralPeakFreqLabels.class.getName() );
 
 	private FrequencyScaleComputer freqScaleComputer;
 

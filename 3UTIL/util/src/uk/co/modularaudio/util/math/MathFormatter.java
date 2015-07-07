@@ -47,9 +47,9 @@ public class MathFormatter
 	// kinds of bounds, it should be ok.
 	public static String fastFloatPrint( final float iVal, final int numDecimals, final boolean echoPlus )
 	{
-		if( numDecimals >= 8 )
+		if( numDecimals >= 5 )
 		{
-			throw new RuntimeException("FastFloatPrint doesn't support more than 7 decimal digits");
+			throw new RuntimeException("FastFloatPrint doesn't support more than 4 decimal digits due to rounding errors. Use slowFloatPrint instead.");
 		}
 
 		String retVal;
@@ -78,23 +78,30 @@ public class MathFormatter
 			{
 				sb.append('+');
 			}
+
+			final int oExp = POW10[numDecimals+1];
+			final double overScaledValue = val * oExp;
+			final int extraTen = (overScaledValue % 10 >= 5.0f ? 10 : 0 );
+			final long roundedVal = (long)(overScaledValue + extraTen);
+
+			final double valForPrint = roundedVal / 10.0;
+
 			final int exp = POW10[numDecimals];
-			final long lval = (long)(((double)val) * exp + 0.5);
-			sb.append(lval / exp);
+
+			final long integerPortion = (long)(valForPrint / exp);
+
+			sb.append( integerPortion );
+
+			final long truncedVal = (long)(valForPrint - (integerPortion * exp));
+
 			if( numDecimals > 0 )
 			{
 				sb.append('.');
-
-				final double remainder = val - ((long)val);
-				final int oExp = POW10[numDecimals+1];
-				long overScaledRemainder = (long)(remainder * oExp);
-				overScaledRemainder += (overScaledRemainder % 10 >= 5 ? 10 : 0 );
-				final long truncedVal = overScaledRemainder / 10;
-
 				for( int p = numDecimals - 1 ; p > 0 && truncedVal < POW10[p]; --p )
 				{
 					sb.append('0');
 				}
+
 				sb.append(truncedVal);
 			}
 
