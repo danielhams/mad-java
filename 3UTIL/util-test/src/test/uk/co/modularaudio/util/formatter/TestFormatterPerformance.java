@@ -71,22 +71,13 @@ public class TestFormatterPerformance
 //				log.debug("Conversion tests of: " + MathFormatter.slowFloatPrint( val, dec, true) +
 //						" with " + dec + " decimal places" );
 				final String sval = MathFormatter.slowFloatPrint( val, dec, true );
-				final String fval = MathFormatter.fastFloatPrint( val, dec, true );
-//				log.debug("Old fast version: " + fval );
-				String nfval = MathFormatter.newFastFloatPrint( val, dec, true );
-//				log.debug("New fast version: " + nfval );
+				String fval = MathFormatter.fastFloatPrint( val, dec, true );
+//				log.debug("fast version: " + fval );
 
-				if( !sval.equals( nfval ) )
+				if( !sval.equals( fval ) )
 				{
-					log.error("Failed new fast format verification of " + sval + " with " + nfval );
-					nfval = MathFormatter.newFastFloatPrint( val, dec, true );
-				}
-
-				if( sval.equals( nfval ) && !fval.equals( nfval ) )
-				{
-					log.info( "New fast print worked where the old one failed:");
-					log.info( "New(" + nfval + ")");
-					log.info( "Old(" + fval + ")");
+					log.error("Failed fast format verification of " + sval + " with " + fval );
+					fval = MathFormatter.fastFloatPrint( val, dec, true );
 				}
 			}
 		}
@@ -119,16 +110,6 @@ public class TestFormatterPerformance
 		diff = timeAfter - timeBefore;
 		numPerIter = diff / NUM_ITERS;
 		log.debug( "For fast formatter, did it in " + diff + " which is per iter " + numPerIter );
-
-		timeBefore = System.nanoTime();
-		for( int i = 0 ; i < NUM_ITERS ; i++ )
-		{
-			final String thing = MathFormatter.newFastFloatPrint( 1.642673f, 4, true );
-		}
-		timeAfter = System.nanoTime();
-		diff = timeAfter - timeBefore;
-		numPerIter = diff / NUM_ITERS;
-		log.debug( "For new fast formatter, did it in " + diff + " which is per iter " + numPerIter );
-}
+	}
 
 }
