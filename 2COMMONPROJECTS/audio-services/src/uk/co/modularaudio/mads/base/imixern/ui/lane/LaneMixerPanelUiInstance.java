@@ -37,6 +37,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
@@ -157,6 +158,14 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
+		panModel.addChangeListener( new ValueChangeListener()
+		{
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				receivePanChange( newValue );
+			}
+		} );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
 		panControl = new RotaryDisplayKnob( panModel,
 				panController,

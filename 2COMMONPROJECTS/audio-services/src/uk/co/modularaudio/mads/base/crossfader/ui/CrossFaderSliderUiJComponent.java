@@ -20,17 +20,17 @@
 
 package uk.co.modularaudio.mads.base.crossfader.ui;
 
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
 
@@ -46,19 +46,26 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 			final int controlIndex )
 	{
 		super( SwingConstants.HORIZONTAL,
-				new DefaultBoundedRangeModel(
-						0, 0,
-						-1000, 1000 ),
-						LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS,
-						false );
+				new SliderDisplayModel(
+						-1.0f,
+						1.0f,
+						0.0f,
+						0.0f,
+						200,
+						10,
+						new SimpleSliderIntToFloatConverter(),
+						1,
+						2,
+						"pos"),
+				LWTCControlConstants.STD_SLIDER_NOMARK_COLOURS,
+				false,
+				true );
 
-		model.addChangeListener( new ChangeListener()
+		model.addChangeListener( new ValueChangeListener()
 		{
-
 			@Override
-			public void stateChanged( final ChangeEvent e )
+			public void receiveValueChange( final Object source, final float newValue )
 			{
-				final float newValue = (model.getValue()) / 1000.0f;
 				uiInstance.setCrossFaderPosition( newValue );
 				uiInstance.recalculateAmps();
 			}
@@ -93,13 +100,12 @@ public class CrossFaderSliderUiJComponent extends LWTCSlider
 	@Override
 	public String getControlValue()
 	{
-		return Integer.toString( model.getValue() );
+		return Float.toString( model.getValue() );
 	}
 
 	@Override
 	public void receiveControlValue( final String value )
 	{
-		final int pos = Integer.parseInt( value );
-		model.setValue( pos );
+		model.setValue( this, Float.parseFloat( value ) );
 	}
 }

@@ -26,8 +26,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
+
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 
 public class LWTCSliderMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener
 {
@@ -35,20 +37,23 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 
 	private final LWTCSlider slider;
 	private final int orientation;
-	private BoundedRangeModel model;
+	private SliderDisplayModel model;
+	private final boolean rightClickToReset;
 
 	private int startCoord;
-	private int startModelValue;
+	private int startModelIntValue;
 
 	private boolean inDrag = false;
 
 	public LWTCSliderMouseListener( final LWTCSlider slider,
 			final int orientation,
-			final BoundedRangeModel model )
+			final SliderDisplayModel model,
+			final boolean rightClickToReset )
 	{
 		this.slider = slider;
 		this.orientation = orientation;
 		this.model = model;
+		this.rightClickToReset = rightClickToReset;
 	}
 
 	@Override
@@ -76,26 +81,33 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 					break;
 				}
 			}
-			final int mmaxv = model.getMaximum();
-			final int mminv = model.getMinimum();
-			final int range = mmaxv - mminv;
-			final float valuesPerPixel = range / (float)pixelsAvailable;
-			final float diffInValueSteps = valuesPerPixel * diffFromStart;
-			int attemptedValue = (int)(startModelValue + diffInValueSteps );
+			final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+			final float mmaxv = model.getMaxValue();
+			final int maxIntValue = sitfc.floatValueToSliderIntValue( model, mmaxv );
+			final float mminv = model.getMinValue();
+			final int minIntValue = sitfc.floatValueToSliderIntValue( model, mminv );
+			final int intRange = maxIntValue - minIntValue;
+			final float valuesPerPixel = (float)intRange / pixelsAvailable;
+			final int diffInValueSteps = (int)(valuesPerPixel * diffFromStart);
+			int attemptedIntValue = (startModelIntValue + diffInValueSteps );
 
-			if( attemptedValue > mmaxv )
+			if( attemptedIntValue > maxIntValue )
 			{
-				attemptedValue = mmaxv;
+				attemptedIntValue = maxIntValue;
 			}
-			else if( attemptedValue < mminv )
+			else if( attemptedIntValue < minIntValue )
 			{
-				attemptedValue = mminv;
+				attemptedIntValue = minIntValue;
 			}
 
-			final int currentValue = model.getValue();
-			if( attemptedValue != currentValue )
+			final float currentValue = model.getValue();
+			final int currentIntValue = sitfc.floatValueToSliderIntValue( model, currentValue );
+//			log.debug("Drag mouse change from int " + currentIntValue + " to " + attemptedIntValue );
+			if( attemptedIntValue != currentIntValue )
 			{
-				model.setValue( attemptedValue );
+				final float attemptedFloatValue = sitfc.sliderIntValueToFloatValue( model, attemptedIntValue );
+//				log.debug("Which is " + currentValue + " to " + attemptedFloatValue );
+				model.setValue( this, attemptedFloatValue );
 			}
 			me.consume();
 		}
@@ -141,7 +153,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 				final int yCoord = me.getY();
 				if( mouseInKnob( xCoord, yCoord ) )
 				{
-					final int curValue = model.getValue();
+					final float curValue = model.getValue();
 					if( orientation == SwingConstants.HORIZONTAL )
 					{
 						startCoord = xCoord;
@@ -150,16 +162,23 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 					{
 						startCoord = yCoord;
 					}
-					startModelValue = curValue;
+					final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+					startModelIntValue = sitfc.floatValueToSliderIntValue( model, curValue );
 					inDrag = true;
 				}
 				else
 				{
 					// Work out direction and move model
 					// by major tick spacing in that direction
-					final int curValue = model.getValue();
-					final int range = model.getMaximum() - model.getMinimum();
-					final float normValue = ( (curValue - model.getMinimum()) / (float)range );
+					final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+					final float curValue = model.getValue();
+					final int curIntValue = sitfc.floatValueToSliderIntValue( model, curValue );
+					final float minValue = model.getMinValue();
+					final int minIntValue = sitfc.floatValueToSliderIntValue( model, minValue );
+					final float maxValue = model.getMaxValue();
+					final int maxIntValue = sitfc.floatValueToSliderIntValue( model, maxValue );
+					final int intRange = maxIntValue - minIntValue;
+					final float normValue = ( (curIntValue - minIntValue) / (float)intRange );
 
 					float normClick;
 					if( orientation == SwingConstants.HORIZONTAL )
@@ -172,11 +191,16 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 					}
 					final int sign = (int)Math.signum( normClick - normValue );
 
-					final int numToAdd = sign * slider.getMajorTickSpacing();
-
-					final int prevValue = model.getValue();
-					final int attemptedValue = prevValue + numToAdd;
-					model.setValue( attemptedValue );
+					model.moveByMajorTick( this, sign );
+				}
+				me.consume();
+				break;
+			}
+			case 3:
+			{
+				if( rightClickToReset )
+				{
+					model.setValue( this, model.getDefaultValue() );
 				}
 				me.consume();
 				break;
@@ -196,9 +220,15 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 		final int sliderWidth = slider.getWidth();
 		final int sliderHeight = slider.getHeight();
 
-		final int curValue = model.getValue();
-		final int range = model.getMaximum() - model.getMinimum();
-		final float normValue = ( (curValue - model.getMinimum()) / (float)range );
+		final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+		final float curValue = model.getValue();
+		final int curIntValue = sitfc.floatValueToSliderIntValue( model, curValue );
+		final float minValue = model.getMinValue();
+		final int minIntValue = sitfc.floatValueToSliderIntValue( model, minValue );
+		final float maxValue = model.getMaxValue();
+		final int maxIntValue = sitfc.floatValueToSliderIntValue( model, maxValue );
+		final int intRange = maxIntValue - minIntValue;
+		final float normValue = (curIntValue - minIntValue) / (float)intRange;
 
 		switch( orientation )
 		{
@@ -259,7 +289,7 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 		}
 	}
 
-	public void setModel( final BoundedRangeModel newModel )
+	public void setModel( final SliderDisplayModel newModel )
 	{
 		this.model = newModel;
 	}
@@ -268,11 +298,8 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	public void mouseWheelMoved( final MouseWheelEvent e )
 	{
 		// Same for both horizontal and vertical.
-		final int numToAdd = e.getWheelRotation() * slider.getMajorTickSpacing() * -1;
-
-		final int prevValue = model.getValue();
-		final int attemptedValue = prevValue + numToAdd;
-		model.setValue( attemptedValue );
+		final int direction = e.getWheelRotation() * -1;
+		model.moveByMajorTick( this, direction );
 		e.consume();
 	}
 }

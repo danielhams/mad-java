@@ -34,10 +34,10 @@ public class SliderDisplayModel
 	private float maxValue;
 	private final float initialValue;
 	private final float defaultValue;
-	private final int numSliderSteps;
-	private final int sliderMajorTickSpacing;
+	private final int numSteps;
+	private final int majorTickSpacing;
 
-	private final SliderIntToFloatConverter sliderIntToFloatConverter;
+	private final SliderIntToFloatConverter intToFloatConverter;
 	private final int displayNumSigPlaces;
 	private final int displayNumDecPlaces;
 
@@ -56,9 +56,9 @@ public class SliderDisplayModel
 			final float maxValue,
 			final float initialValue,
 			final float defaultValue,
-			final int numSliderSteps,
-			final int sliderMajorTickSpacing,
-			final SliderIntToFloatConverter sliderIntToFloatConverter,
+			final int numSteps,
+			final int majorTickSpacing,
+			final SliderIntToFloatConverter intToFloatConverter,
 			final int displayNumSigPlaces,
 			final int displayNumDecPlaces,
 			final String displayUnitsStr )
@@ -67,9 +67,9 @@ public class SliderDisplayModel
 		this.maxValue = maxValue;
 		this.initialValue = initialValue;
 		this.defaultValue = defaultValue;
-		this.numSliderSteps = numSliderSteps;
-		this.sliderMajorTickSpacing = sliderMajorTickSpacing;
-		this.sliderIntToFloatConverter = sliderIntToFloatConverter;
+		this.numSteps = numSteps;
+		this.majorTickSpacing = majorTickSpacing;
+		this.intToFloatConverter = intToFloatConverter;
 		this.displayNumSigPlaces = displayNumSigPlaces;
 		this.displayNumDecPlaces = displayNumDecPlaces;
 		this.displayUnitsStr = displayUnitsStr;
@@ -99,12 +99,12 @@ public class SliderDisplayModel
 
 	public int getNumSliderSteps()
 	{
-		return numSliderSteps;
+		return numSteps;
 	}
 
-	public SliderIntToFloatConverter getSliderIntToFloatConverter()
+	public SliderIntToFloatConverter getIntToFloatConverter()
 	{
-		return sliderIntToFloatConverter;
+		return intToFloatConverter;
 	}
 
 	public int getDisplayNumSigPlaces()
@@ -164,7 +164,7 @@ public class SliderDisplayModel
 
 	public int getSliderMajorTickSpacing()
 	{
-		return sliderMajorTickSpacing;
+		return majorTickSpacing;
 	}
 
 	public void setMaxValue( final float newTimescaleUpperLimit )
@@ -173,4 +173,31 @@ public class SliderDisplayModel
 		notifyOfChange( this );
 	}
 
+	public void moveByMajorTick( final Object source, final int direction )
+	{
+		final int currentValueAsStep = intToFloatConverter.floatValueToSliderIntValue( this, currentValue );
+		int newStep = currentValueAsStep + (majorTickSpacing * direction );
+		newStep = (newStep > numSteps ? numSteps :
+					(newStep < 0 ? 0 : newStep )
+					);
+		final float newValue = intToFloatConverter.sliderIntValueToFloatValue( this, newStep );
+		if( currentValue != newValue )
+		{
+			setValue( source, newValue );
+		}
+	}
+
+	public void moveByMinorTick( final Object source, final int direction )
+	{
+		final int currentValueAsStep = intToFloatConverter.floatValueToSliderIntValue( this, currentValue );
+		int newStep = currentValueAsStep + direction;
+		newStep = (newStep > numSteps ? numSteps :
+					(newStep < 0 ? 0 : newStep )
+					);
+		final float newValue = intToFloatConverter.sliderIntValueToFloatValue( this, newStep );
+		if( currentValue != newValue )
+		{
+			setValue( source, newValue );
+		}
+	}
 }

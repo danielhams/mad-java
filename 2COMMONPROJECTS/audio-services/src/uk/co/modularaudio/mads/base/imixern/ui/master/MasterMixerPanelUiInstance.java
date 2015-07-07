@@ -32,9 +32,9 @@ import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderAndMarks;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderChangeReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
+import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.PanChangeReceiver;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -42,6 +42,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
@@ -125,6 +126,14 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 				100,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
+		panModel.addChangeListener( new ValueChangeListener()
+		{
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				receivePanChange( newValue );
+			}
+		} );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
 		panControl = new RotaryDisplayKnob( panModel,
 				panController,

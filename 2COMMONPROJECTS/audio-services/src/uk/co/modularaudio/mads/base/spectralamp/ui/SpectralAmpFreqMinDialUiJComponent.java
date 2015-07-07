@@ -61,7 +61,8 @@ public class SpectralAmpFreqMinDialUiJComponent
 	{
 
 		model = new RotaryDisplayModel(
-				DEFAULT_FREQ_MIN, SpectralAmpFreqMaxDialUiJComponent.DEFAULT_FREQ_MAX,
+				DEFAULT_FREQ_MIN,
+				SpectralAmpFreqMaxDialUiJComponent.DEFAULT_FREQ_MAX - SpectralAmpMadUiDefinition.MIN_FREQ_DIFF,
 				DEFAULT_FREQ_MIN, DEFAULT_FREQ_MIN,
 				2000,
 				100,

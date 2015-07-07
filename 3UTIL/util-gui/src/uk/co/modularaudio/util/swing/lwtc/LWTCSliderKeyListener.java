@@ -23,20 +23,17 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.BoundedRangeModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class LWTCSliderKeyListener implements KeyListener
 {
 //	private static Log log = LogFactory.getLog( LWTCSliderKeyListener.class.getName() );
 
-	private BoundedRangeModel model;
-	private final LWTCSlider slider;
+	private SliderDisplayModel model;
 
-	public LWTCSliderKeyListener( final BoundedRangeModel model,
-			final LWTCSlider slider )
+	public LWTCSliderKeyListener( final SliderDisplayModel model )
 	{
 		this.model = model;
-		this.slider = slider;
 	}
 
 	@Override
@@ -44,7 +41,6 @@ public class LWTCSliderKeyListener implements KeyListener
 	{
 		final int keyCode = me.getKeyCode();
 		final int modMask = me.getModifiers();
-		final int majorTickSpacing = slider.getMajorTickSpacing();
 		if( modMask != 0 )
 		{
 			return;
@@ -54,30 +50,26 @@ public class LWTCSliderKeyListener implements KeyListener
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_DOWN:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue - 1 );
+				model.moveByMinorTick( this, -1 );
 				me.consume();
 				break;
 			}
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_UP:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue + 1 );
+				model.moveByMinorTick( this, +1 );
 				me.consume();
 				break;
 			}
 			case KeyEvent.VK_PAGE_DOWN:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue - majorTickSpacing );
+				model.moveByMajorTick( this, -1 );
 				me.consume();
 				break;
 			}
 			case KeyEvent.VK_PAGE_UP:
 			{
-				final int curValue = model.getValue();
-				model.setValue( curValue + majorTickSpacing );
+				model.moveByMajorTick( this, +1 );
 				me.consume();
 				break;
 			}
@@ -100,7 +92,7 @@ public class LWTCSliderKeyListener implements KeyListener
 //		log.debug("Key typed: " + arg0.toString() );
 	}
 
-	public void setModel( final BoundedRangeModel newModel )
+	public void setModel( final SliderDisplayModel newModel )
 	{
 		this.model = newModel;
 	}

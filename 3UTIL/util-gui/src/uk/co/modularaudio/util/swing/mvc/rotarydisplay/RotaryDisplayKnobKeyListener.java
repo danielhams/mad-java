@@ -51,8 +51,6 @@ public class RotaryDisplayKnobKeyListener implements KeyListener
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_DOWN:
 			{
-//				final int curValue = model.getValue();
-//				model.setValue( curValue - 1 );
 				controller.moveByMinorTick( this, -1 );
 				me.consume();
 				break;
@@ -60,8 +58,6 @@ public class RotaryDisplayKnobKeyListener implements KeyListener
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_UP:
 			{
-//				final int curValue = model.getValue();
-//				model.setValue( curValue + 1 );
 				controller.moveByMinorTick( this, +1 );
 				me.consume();
 				break;
@@ -69,11 +65,13 @@ public class RotaryDisplayKnobKeyListener implements KeyListener
 			case KeyEvent.VK_PAGE_DOWN:
 			{
 				controller.moveByMajorTick( this, -1 );
+				me.consume();
 				break;
 			}
 			case KeyEvent.VK_PAGE_UP:
 			{
 				controller.moveByMajorTick( this, +1 );
+				me.consume();
 				break;
 			}
 			default:

@@ -30,6 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSlider;
 
@@ -51,7 +52,7 @@ public class TestShowLWTCSlider
 		testSwingJSlider = new JSlider( orientation );
 		testSwingJSlider.setOpaque( opaque );
 
-		testLWTCSlider = new LWTCSlider( orientation, opaque );
+		testLWTCSlider = new LWTCSlider( orientation, opaque, true );
 
 		final JFrame f = new JFrame();
 //		f.getContentPane().setBackground( Color.YELLOW );
@@ -137,28 +138,33 @@ public class TestShowLWTCSlider
 			@Override
 			public void run()
 			{
+				final SliderDisplayModel model = testLWTCSlider.getModel();
+
 				// 60 fps
 				final int millis = 16;
 				// 120 fps
 //				final int millis = 8;
 
-				int value = 0;
+				float value = model.getValue();
+				int iValue = 0;
 				int dir = 1;
 
 //				for( int i = 0 ; i < 60 * 30 ; ++i )
 				while( true )
 				{
-					testLWTCSlider.setValue( value );
-//					testSwingJSlider.setValue( value );
+					model.setValue( this, value );
+					testSwingJSlider.setValue( iValue );
 					value += dir * 1;
 					if( value > 100 )
 					{
 						value = 100;
+						iValue = 100;
 						dir = -1;
 					}
 					else if( value < 0 )
 					{
 						value = 0;
+						iValue = 0;
 						dir = 1;
 					}
 					try
@@ -191,21 +197,21 @@ public class TestShowLWTCSlider
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
 		}
-//		final TestShowLWTCSlider vt = new TestShowLWTCSlider();
-//		vt.go( SwingConstants.VERTICAL );
+		final TestShowLWTCSlider vt = new TestShowLWTCSlider();
+		vt.go( SwingConstants.VERTICAL );
 
 		final TestShowLWTCSlider ht = new TestShowLWTCSlider();
 		ht.go( SwingConstants.HORIZONTAL );
 
 //		vt.startThread();
-		ht.startThread();
+//		ht.startThread();
 
 		// n secs test
 		final int millis = 120 * 1000;
 		Thread.sleep( millis );
 
 ///		vt.joinThread();
-		ht.joinThread();
+//		ht.joinThread();
 	}
 
 }

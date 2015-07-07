@@ -74,7 +74,7 @@ public class SliderDisplaySlider extends JSlider
 
 	public int getInitialValue()
 	{
-		final SliderIntToFloatConverter itfc = sdm.getSliderIntToFloatConverter();
+		final SliderIntToFloatConverter itfc = sdm.getIntToFloatConverter();
 		return itfc.floatValueToSliderIntValue( sdm, sdm.getInitialValue() );
 	}
 }

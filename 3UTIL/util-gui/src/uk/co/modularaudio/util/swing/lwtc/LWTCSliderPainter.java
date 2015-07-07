@@ -23,9 +23,10 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.SwingConstants;
 
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSliderImageCache.ImagesForColours;
 
 public class LWTCSliderPainter
@@ -48,16 +49,21 @@ public class LWTCSliderPainter
 	public void paintSlider( final Graphics2D g2d,
 			final int orientation,
 			final int width, final int height,
-			final BoundedRangeModel model )
+			final SliderDisplayModel model )
 	{
 		final int xCenter = (width / 2);
 		final int yCenter = (height / 2);
 
-		final int curValue = model.getValue();
-		final int minValue = model.getMinimum();
-		final int maxValue = model.getMaximum();
-		final int range = maxValue - minValue;
-		final float normalisedPos = (curValue - minValue) / (float)range;
+		final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+
+		final float curValue = model.getValue();
+		final int curIntValue = sitfc.floatValueToSliderIntValue( model, curValue );
+		final float minValue = model.getMinValue();
+		final int minIntValue = sitfc.floatValueToSliderIntValue( model, minValue );
+		final float maxValue = model.getMaxValue();
+		final int maxIntValue = sitfc.floatValueToSliderIntValue( model, maxValue );
+		final int intRange = maxIntValue - minIntValue;
+		final float normalisedPos = (curIntValue - minIntValue) / (float)intRange;
 
 		guidePainter.paint( g2d, width, height, orientation );
 

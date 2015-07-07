@@ -33,7 +33,7 @@ public class CrossFaderMadUiInstance extends NoEventsNoNameChangeNonConfigurable
 
 	private boolean guiKillA;
 	private boolean guiKillB;
-	private float guiCrossFaderPosition;
+	private float guiCrossFaderPosition = 0.0f;
 
 	private RawCrossfadePowerTable powerCurve = StandardCrossfadePowerTables.getAdditivePowerTable();
 

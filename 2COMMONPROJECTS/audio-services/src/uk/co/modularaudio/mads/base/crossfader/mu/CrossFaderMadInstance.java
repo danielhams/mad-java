@@ -52,6 +52,9 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		ampAInterpolator.hardSetValue( 0.5f );
+		ampBInterpolator.hardSetValue( 0.5f );
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class AmpMeterMarks extends JPanel
 	};
 
 	private final static MixdownMeterModel METER_MODEL = new MixdownMeterModel();
-	private final static SliderIntToFloatConverter METER_VAL_CONVERTER = METER_MODEL.getSliderIntToFloatConverter();
+	private final static SliderIntToFloatConverter METER_VAL_CONVERTER = METER_MODEL.getIntToFloatConverter();
 
 	public static final int METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS = 6;
 

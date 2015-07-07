@@ -92,7 +92,7 @@ public class MixerFaderMarks extends JPanel
 		g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 		g2d.setColor( getForeground() );
 		g2d.setFont( getFont() );
-		final SliderIntToFloatConverter intToFloatConverter = model.getSliderIntToFloatConverter();
+		final SliderIntToFloatConverter intToFloatConverter = model.getIntToFloatConverter();
 		final float numModelSteps = model.getNumSliderSteps();
 
 		int minMarkY = Integer.MAX_VALUE;

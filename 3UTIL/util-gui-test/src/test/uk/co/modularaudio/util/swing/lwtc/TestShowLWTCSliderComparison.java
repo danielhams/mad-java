@@ -26,7 +26,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,6 +37,8 @@ import javax.swing.UIManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSliderKnobImage;
@@ -80,8 +81,19 @@ public class TestShowLWTCSliderComparison
 			final int width = getWidth();
 			final int height = getHeight();
 			final Graphics2D g2d = (Graphics2D)g;
+			final SliderDisplayModel testModel = new SliderDisplayModel(
+					0.0f,
+					100.0f,
+					0.0f,
+					50.0f,
+					100,
+					10,
+					new SimpleSliderIntToFloatConverter(),
+					3,
+					2,
+					"test");
 			painter.paintSlider( g2d, orientation, width, height,
-					new DefaultBoundedRangeModel());
+					testModel);
 		}
 	}
 

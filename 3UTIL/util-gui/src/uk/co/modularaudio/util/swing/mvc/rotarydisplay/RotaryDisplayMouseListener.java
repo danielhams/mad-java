@@ -93,6 +93,7 @@ public class RotaryDisplayMouseListener implements MouseMotionListener, MouseLis
 					controller.setValue( this, defaultValue );
 					e.consume();
 				}
+				break;
 			}
 			default:
 			{

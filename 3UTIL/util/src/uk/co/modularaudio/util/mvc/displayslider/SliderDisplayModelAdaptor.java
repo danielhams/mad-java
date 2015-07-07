@@ -47,7 +47,7 @@ public class SliderDisplayModelAdaptor implements BoundedRangeModel, ValueChange
 		this.source = source;
 		this.sdm = model;
 		this.sdc = controller;
-		sitfc = sdm.getSliderIntToFloatConverter();
+		sitfc = sdm.getIntToFloatConverter();
 		sdm.addChangeListener( this );
 
 		changeEvent = new ChangeEvent( source );

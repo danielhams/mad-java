@@ -25,12 +25,13 @@ import java.awt.Graphics2D;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import javax.swing.BoundedRangeModel;
-import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 
 public class LWTCSlider extends JPanel
 {
@@ -39,71 +40,80 @@ public class LWTCSlider extends JPanel
 //	private static Log log = LogFactory.getLog( LWTCSlider.class.getName() );
 
 	private final int orientation;
-	protected BoundedRangeModel model;
+	protected SliderDisplayModel model;
 	private int majorTickSpacing;
 
 	private LWTCSliderPainter painter;
 
 	private final LWTCSliderMouseListener mouseListener;
 	private final LWTCSliderKeyListener keyListener;
-	private final ValueChangeListener valueChangeListener;
+	private final InternalChangeListener valueChangeListener;
 
 	private int numUsablePixels;
 
 	private boolean myHasFocus = false;
 
-	private class ValueChangeListener implements ChangeListener
+	private class InternalChangeListener implements ValueChangeListener
 	{
-		private BoundedRangeModel model;
-		private int lastValueReceived;
+		private SliderDisplayModel model;
+		private float lastValueReceived;
 
-		public ValueChangeListener( final BoundedRangeModel model )
+		public InternalChangeListener( final SliderDisplayModel model )
 		{
 			this.model = model;
 			lastValueReceived = model.getValue();
-			model.addChangeListener( this );
 		}
 
-		@Override
-		public void stateChanged( final ChangeEvent ce )
-		{
-			final int newValue = model.getValue();
-			modelValueChangeDeltaRepaint( lastValueReceived, newValue );
-			lastValueReceived = newValue;
-		}
-
-		public void setModel( final BoundedRangeModel newModel )
+		public void setModel( final SliderDisplayModel newModel )
 		{
 			model.removeChangeListener( this );
 			lastValueReceived = newModel.getValue();
 			model = newModel;
 			model.addChangeListener( this );
 		}
+
+		@Override
+		public void receiveValueChange( final Object source, final float newValue )
+		{
+			if( newValue != lastValueReceived )
+			{
+				modelValueChangeDeltaRepaint( lastValueReceived, newValue );
+			}
+			lastValueReceived = newValue;
+		}
 	};
 
 	public LWTCSlider( final boolean opaque )
 	{
-		this( SwingConstants.HORIZONTAL, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
+		this( SwingConstants.HORIZONTAL,
+				new SliderDisplayModel( 0.0f, 100.0f, 0.0f, 0.0f, 100, 10, new SimpleSliderIntToFloatConverter(), 3, 0, "" ),
 				LWTCControlConstants.STD_SLIDER_COLOURS,
-				opaque);
+				opaque,
+				false );
 	}
 
-	public LWTCSlider( final int orientation, final boolean opaque )
+	public LWTCSlider( final int orientation, final boolean opaque, final boolean rightClickToReset )
 	{
-		this( orientation, new DefaultBoundedRangeModel( 50, 0, 0, 100 ),
+		this( orientation,
+				new SliderDisplayModel( 0.0f, 100.0f, 0.0f, 0.0f, 100, 10, new SimpleSliderIntToFloatConverter(), 3, 0, "" ),
 				LWTCControlConstants.STD_SLIDER_COLOURS,
-				opaque );
-	}
-
-	public LWTCSlider( final int orientation, final BoundedRangeModel model, final boolean opaque )
-	{
-		this( orientation, model, LWTCControlConstants.STD_SLIDER_COLOURS, opaque );
+				opaque,
+				rightClickToReset );
 	}
 
 	public LWTCSlider( final int orientation,
-			final BoundedRangeModel model,
+			final SliderDisplayModel model,
+			final boolean opaque,
+			final boolean rightClickToReset )
+	{
+		this( orientation, model, LWTCControlConstants.STD_SLIDER_COLOURS, opaque, rightClickToReset );
+	}
+
+	public LWTCSlider( final int orientation,
+			final SliderDisplayModel model,
 			final LWTCSliderColours sliderColours,
-			final boolean opaque )
+			final boolean opaque,
+			final boolean rightClickToReset )
 	{
 		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 		this.setOpaque( opaque );
@@ -118,18 +128,20 @@ public class LWTCSlider extends JPanel
 				LWTCSliderKnobImage.H_SLIDER_MIN_SIZE :
 				LWTCSliderKnobImage.V_SLIDER_MIN_SIZE );
 
-		keyListener = new LWTCSliderKeyListener( model, this );
+		keyListener = new LWTCSliderKeyListener( model );
 		this.addKeyListener( keyListener );
 
 		this.setFocusable( true );
 
-		mouseListener = new LWTCSliderMouseListener( this, orientation, model );
+		mouseListener = new LWTCSliderMouseListener( this, orientation, model, rightClickToReset );
 
 		this.addMouseListener( mouseListener );
 		this.addMouseMotionListener( mouseListener );
 		this.addMouseWheelListener( mouseListener );
 
-		valueChangeListener = new ValueChangeListener( model );
+		valueChangeListener = new InternalChangeListener( model );
+
+		model.addChangeListener( valueChangeListener );
 
 		this.addFocusListener( new FocusListener()
 		{
@@ -197,15 +209,16 @@ public class LWTCSlider extends JPanel
 		this.majorTickSpacing = majorTickSpacing;
 	}
 
-	private final void modelValueChangeDeltaRepaint( final int prevValue, final int newValue )
+	private final void modelValueChangeDeltaRepaint( final float prevFloatValue, final float newFloatValue )
 	{
-//		log.debug("modelValueChangeDeltaRepaint(" + prevValue + ", " + newValue +")");
+//		log.debug("modelValueChangeDeltaRepaint(" + prevFloatValue + ", " + newFloatValue +")");
 
 		final int width = getWidth();
 		final int height = getHeight();
 
-		final int prevStartPos = modelValueToSliderStart( prevValue );
-		final int newStartPos = modelValueToSliderStart( newValue );
+		final int prevStartPos = modelValueToSliderStart( prevFloatValue );
+		final int newStartPos = modelValueToSliderStart( newFloatValue );
+//		log.debug("prevStartPos(" + prevStartPos + ") newStartPos(" + newStartPos + ")");
 
 		int minPos, maxPos;
 
@@ -246,12 +259,16 @@ public class LWTCSlider extends JPanel
 		}
 	}
 
-	private final int modelValueToSliderStart( final int modelValue )
+	private final int modelValueToSliderStart( final float modelValue )
 	{
-		final int min = model.getMinimum();
-		final int max = model.getMaximum();
+		final SliderIntToFloatConverter sitfc = model.getIntToFloatConverter();
+		final int modelIntValue = sitfc.floatValueToSliderIntValue( model, modelValue );
+		final float minFloatValue = model.getMinValue();
+		final float maxFloatValue = model.getMaxValue();
+		final int min = sitfc.floatValueToSliderIntValue( model, minFloatValue );
+		final int max = sitfc.floatValueToSliderIntValue( model, maxFloatValue );
 		final int range = max - min;
-		final float normalisedValue = (modelValue-min) / (float)range;
+		final float normalisedValue = (modelIntValue-min) / (float)range;
 
 		return (int)(normalisedValue * numUsablePixels);
 	}
@@ -271,16 +288,16 @@ public class LWTCSlider extends JPanel
 		}
 	}
 
-	public void setValue( final int value )
-	{
-		model.setValue( value );
-	}
-
-	public void setModel( final BoundedRangeModel newModel )
+	public void setModel( final SliderDisplayModel newModel )
 	{
 		valueChangeListener.setModel( newModel );
 		mouseListener.setModel( newModel );
 		keyListener.setModel( newModel );
 		this.model = newModel;
+	}
+
+	public SliderDisplayModel getModel()
+	{
+		return model;
 	}
 }
