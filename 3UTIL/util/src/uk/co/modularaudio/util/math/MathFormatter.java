@@ -28,7 +28,7 @@ public class MathFormatter
 	{
 		return slowFloatPrint( f, 2, true );
 	}
-	private final static int MAX_DECIMALS = 12;
+	private final static int MAX_DECIMALS = 13;
 
 	private static final long POW10[] = {
 		1,
@@ -44,38 +44,38 @@ public class MathFormatter
 		10000000000L,
 		100000000000L,
 		1000000000000L,
-		10000000000000L
+		10000000000000L,
+		100000000000000L
 	};
 
 	// Ugly unpleasant mess for printing floating point numbers
 	// to a string. There's undoubtedly some precision loss and
 	// boundary cases here, but for formatting floats for users with "regular"
 	// kinds of bounds, it should be ok.
-	public static String fastFloatPrint( final float iVal, final int numDecimals, final boolean echoPlus )
+	public static String fastFloatPrint( float val, final int numDecimals, final boolean echoPlus )
 	{
 		if( numDecimals > MAX_DECIMALS )
 		{
 			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead.");
 		}
 
-		String retVal;
-		if( iVal == Float.NEGATIVE_INFINITY )
+		final String retVal;
+		if( val == Float.NEGATIVE_INFINITY )
 		{
 			retVal = "-Inf";
 		}
-		else if( iVal == Float.POSITIVE_INFINITY )
+		else if( val == Float.POSITIVE_INFINITY )
 		{
 			retVal = "Inf";
 		}
-		else if( iVal == Float.NaN )
+		else if( val == Float.NaN )
 		{
 			retVal = "NaN";
 		}
 		else
 		{
-			float val = iVal;
-			final StringBuilder sb = new StringBuilder();
-			if( val < 0 )
+			final StringBuilder sb = new StringBuilder( 20 );
+			if( val < 0.0f )
 			{
 				sb.append('-');
 				val = -val;
@@ -91,7 +91,7 @@ public class MathFormatter
 
 			final long oExp = POW10[numDecimals+1];
 			final double overScaledRemainder = remainder * oExp;
-			final int extraTen = (overScaledRemainder % 10 >= 5.0f ? 10 : 0 );
+			final int extraTen = (overScaledRemainder % 10.0 >= 5.0 ? 10 : 0 );
 			long roundedRemainder = (long)(overScaledRemainder + extraTen);
 
 			if( roundedRemainder >= oExp )

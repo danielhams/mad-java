@@ -61,18 +61,21 @@ public class TestFormatterPerformance
 			-129.9999f,
 			-120.0001f,
 			1.642673f,
-			MathDefines.TWO_PI_F
+			MathDefines.TWO_PI_F,
+			1234567.123456789f,
+			.1234567123456789f
 		};
 
-		for( int dec = 0 ; dec < 13 ; ++dec )
+		for( int dec = 0 ; dec < 14 ; ++dec )
 		{
 			for( final float val : testVals )
 			{
-//				log.debug("Conversion tests of: " + MathFormatter.slowFloatPrint( val, dec, true) +
-//						" with " + dec + " decimal places" );
+				log.debug("Source float: " + MathFormatter.slowFloatPrint( val, 18, true) +
+						" with " + dec + " decimal places" );
 				final String sval = MathFormatter.slowFloatPrint( val, dec, true );
+				log.debug("slow version: " + sval );
 				String fval = MathFormatter.fastFloatPrint( val, dec, true );
-//				log.debug("fast version: " + fval );
+				log.debug("fast version: " + fval );
 
 				if( !sval.equals( fval ) )
 				{
