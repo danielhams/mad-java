@@ -96,6 +96,12 @@ public class SpectralAmpMadUiInstance extends
 
 	private FrequencyScaleComputer desiredFreqScaleComputer = logFreqScaleComputer;
 
+	private final FrequencyScaleComputer[] freqScaleComputers =
+	{
+			linearFreqScaleComputer,
+			logFreqScaleComputer
+	};
+
 	// How the amplitude scale is computed
 	// This height will get set when the peak display resizes
 	private int displayPeaksHeight = 100;
@@ -105,6 +111,13 @@ public class SpectralAmpMadUiInstance extends
 	private final AmpScaleComputer logDbAmpScaleComputer = new LogarithmicDbAmpScaleComputer();
 
 	private AmpScaleComputer desiredAmpScaleComputer = logAmpScaleComputer;
+
+	private final AmpScaleComputer[] ampScaleComputers =
+	{
+			linearAmpScaleComputer,
+			logAmpScaleComputer,
+			logDbAmpScaleComputer
+	};
 
 	// How the running average is computed
 	private final RunningAverageComputer noAverageComputer = new NoAverageComputer();
@@ -116,6 +129,17 @@ public class SpectralAmpMadUiInstance extends
 	private final PeakGrabComputer peakGrabComputer = new PeakGrabComputer();
 
 	private RunningAverageComputer desiredRunningAverageComputer = fastFallComputer;
+
+	private final RunningAverageComputer[] runAvComputers =
+	{
+		noAverageComputer,
+		shortAverageComputer,
+		longAverageComputer,
+		fallComputer,
+		fastFallComputer,
+		peakHoldComputer,
+		peakGrabComputer
+	};
 
 	// The FFT processor and bits used to pull out the amplitudes
 	private StreamingWolaProcessor wolaProcessor;
@@ -411,25 +435,8 @@ public class SpectralAmpMadUiInstance extends
 
 	public void setDesiredAmpMapping( final AmpMapping mapping )
 	{
-		switch( mapping )
-		{
-			case LINEAR:
-			{
-				desiredAmpScaleComputer = linearAmpScaleComputer;
-				break;
-			}
-			case LOG:
-			default:
-			{
-				desiredAmpScaleComputer = logAmpScaleComputer;
-				break;
-			}
-			case LOG_DB:
-			{
-				desiredAmpScaleComputer = logDbAmpScaleComputer;
-				break;
-			}
-		}
+		desiredAmpScaleComputer = ampScaleComputers[ mapping.ordinal() ];
+
 		desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
 
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
@@ -440,20 +447,7 @@ public class SpectralAmpMadUiInstance extends
 
 	public void setDesiredFreqMapping( final FreqMapping mapping )
 	{
-		switch( mapping )
-		{
-			case LINEAR:
-			{
-				desiredFreqScaleComputer = linearFreqScaleComputer;
-				break;
-			}
-			case LOG:
-			default:
-			{
-				desiredFreqScaleComputer = logFreqScaleComputer;
-				break;
-			}
-		}
+		desiredFreqScaleComputer = freqScaleComputers[ mapping.ordinal() ];
 
 		desiredFreqScaleComputer.setMinMaxFrequency( desiredFreqMin, desiredFreqMax );
 
@@ -465,45 +459,7 @@ public class SpectralAmpMadUiInstance extends
 
 	public void setDesiredRunningAverage( final RunningAverage runningAverage )
 	{
-		switch( runningAverage )
-		{
-			case OFF:
-			{
-				desiredRunningAverageComputer = noAverageComputer;
-				break;
-			}
-			case SHORT:
-			{
-				desiredRunningAverageComputer = shortAverageComputer;
-				break;
-			}
-			case LONG:
-			{
-				desiredRunningAverageComputer = longAverageComputer;
-				break;
-			}
-			case FALL:
-			{
-				desiredRunningAverageComputer = fallComputer;
-				break;
-			}
-			case FAST_FALL:
-			default:
-			{
-				desiredRunningAverageComputer = fastFallComputer;
-				break;
-			}
-			case PEAK_HOLD:
-			{
-				desiredRunningAverageComputer = peakHoldComputer;
-				break;
-			}
-			case PEAK_GRAB:
-			{
-				desiredRunningAverageComputer = peakGrabComputer;
-				break;
-			}
-		}
+		desiredRunningAverageComputer = runAvComputers[ runningAverage.ordinal() ];
 
 		for( final RunningAvChangeListener rcl : runAvChangeListeners )
 		{
