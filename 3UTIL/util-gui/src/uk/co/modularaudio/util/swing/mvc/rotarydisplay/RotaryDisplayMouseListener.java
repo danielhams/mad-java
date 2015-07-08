@@ -21,6 +21,8 @@
 package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
 import java.awt.Point;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -30,7 +32,8 @@ import java.awt.event.MouseWheelListener;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 
-public class RotaryDisplayMouseListener implements MouseMotionListener, MouseListener, MouseWheelListener
+public class RotaryDisplayMouseListener
+	implements MouseMotionListener, MouseListener, MouseWheelListener, FocusListener
 {
 	private final RotaryDisplayKnob knob;
 	private final RotaryDisplayModel model;
@@ -166,9 +169,24 @@ public class RotaryDisplayMouseListener implements MouseMotionListener, MouseLis
 	@Override
 	public void mouseWheelMoved( final MouseWheelEvent e )
 	{
-		final int wheelRotation = e.getWheelRotation() * -1;
-		controller.moveByMajorTick( this, wheelRotation );
-		e.consume();
+		if( knob.hasFocus() )
+		{
+			final int wheelRotation = e.getWheelRotation() * -1;
+			controller.moveByMajorTick( this, wheelRotation );
+			e.consume();
+		}
+	}
+
+	@Override
+	public void focusGained( final FocusEvent e )
+	{
+		knob.addMouseWheelListener( this );
+	}
+
+	@Override
+	public void focusLost( final FocusEvent e )
+	{
+		knob.removeMouseWheelListener( this );
 	}
 
 }

@@ -137,7 +137,7 @@ public class LWTCSlider extends JPanel
 
 		this.addMouseListener( mouseListener );
 		this.addMouseMotionListener( mouseListener );
-		this.addMouseWheelListener( mouseListener );
+		this.addFocusListener( mouseListener );
 
 		valueChangeListener = new InternalChangeListener( model );
 

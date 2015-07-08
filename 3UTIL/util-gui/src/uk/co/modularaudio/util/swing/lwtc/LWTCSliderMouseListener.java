@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -31,7 +33,8 @@ import javax.swing.SwingConstants;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderIntToFloatConverter;
 
-public class LWTCSliderMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener
+public class LWTCSliderMouseListener
+	implements MouseListener, MouseMotionListener, MouseWheelListener, FocusListener
 {
 //	private static Log log = LogFactory.getLog( LWTCSliderMouseListener.class.getName() );
 
@@ -297,9 +300,24 @@ public class LWTCSliderMouseListener implements MouseListener, MouseMotionListen
 	@Override
 	public void mouseWheelMoved( final MouseWheelEvent e )
 	{
-		// Same for both horizontal and vertical.
-		final int direction = e.getWheelRotation() * -1;
-		model.moveByMajorTick( this, direction );
-		e.consume();
+		if( slider.hasFocus() )
+		{
+			// Same for both horizontal and vertical.
+			final int direction = e.getWheelRotation() * -1;
+			model.moveByMajorTick( this, direction );
+			e.consume();
+		}
+	}
+
+	@Override
+	public void focusGained( final FocusEvent e )
+	{
+		slider.addMouseWheelListener( this );
+	}
+
+	@Override
+	public void focusLost( final FocusEvent e )
+	{
+		slider.removeMouseWheelListener( this );
 	}
 }

@@ -101,7 +101,7 @@ public class RotaryDisplayKnob extends JPanel implements ValueChangeListener, Fo
 		mouseListener = new RotaryDisplayMouseListener( this, model, controller, rightClickToReset );
 		addMouseListener( mouseListener );
 		addMouseMotionListener( mouseListener );
-		addMouseWheelListener( mouseListener );
+		addFocusListener( mouseListener );
 
 		keyListener = new RotaryDisplayKnobKeyListener( controller );
 		this.addKeyListener( keyListener );
