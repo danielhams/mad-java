@@ -27,23 +27,23 @@ import uk.co.modularaudio.util.math.MathDefines;
 
 public class FourierTableGenerator
 {
-	public static void fillTable( float[] buffer, int position, int length, int harms, float[] amps, float phase )
+	public static void fillTable( final float[] buffer, final int position, final int length, final int harms, final float[] amps, final float phase )
 	{
 		double a;
 		double w;
-		double doublePhase = phase * MathDefines.TWO_PI_D;
+		final double doublePhase = phase * MathDefines.TWO_PI_D;
 		Arrays.fill( buffer, 0.0f );
-		
+
 		for( int i = 0 ; i < harms ; i++ )
 		{
 			a = ( amps == null ? 1.0f : amps[i] );
 			for( int n = 0 ; n < length ; n++ )
 			{
-				w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / (length) );
+				w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / (length - 1) );
 				buffer[ position + n ] += (a * Math.cos( w + doublePhase ) );
 			}
 		}
 		LookupTableUtils.normaliseFloats( buffer, position, length );
 	}
-	
+
 }

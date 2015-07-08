@@ -22,5 +22,5 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 public interface PulseWidthMapper
 {
-	float adjustPwPos(float pulseWidth, float pos);
+	float adjustPwPos( float pulseWidth, float pos );
 }

@@ -13,9 +13,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.5532184"/>
+        <rackControl name="Gain" value="-6.914021"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Regular/Massive Attack/Mezzanine/Massive Attack - Mezzanine - 06 - Dissolved Girl.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 111 master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -37,7 +37,7 @@
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="Sub Rack 4" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 4" definitionId="sub_rack">
         <rackPosition column="2" row="0"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 5" definitionId="sub_rack">
@@ -45,7 +45,7 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="2"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
+        <rackControl name="CaptureTime" value="60.0"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

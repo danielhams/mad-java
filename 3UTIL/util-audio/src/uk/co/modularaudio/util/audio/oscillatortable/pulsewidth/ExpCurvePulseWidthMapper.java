@@ -25,12 +25,12 @@ import uk.co.modularaudio.util.audio.oscillatortable.PulseWidthMapper;
 public final class ExpCurvePulseWidthMapper implements PulseWidthMapper
 {
 	@Override
-	public float adjustPwPos( float pulseWidth, float pos )
+	public float adjustPwPos( final float pulseWidth, final float pos )
 	{
 		// Simplified version of whats in the normalised values mapper for curve 4
-		float curvePos = (float)Math.sqrt( (pos * 2) - (pos * pos) );
-		float curveInfluence = (1.0f - pulseWidth) * 0.7f;
-		float posInfluence = 1.0f - curveInfluence;
+		final float curvePos = (float)Math.sqrt( (pos * 2) - (pos * pos) );
+		final float curveInfluence = (1.0f - pulseWidth) * 0.7f;
+		final float posInfluence = 1.0f - curveInfluence;
 		return (curveInfluence * curvePos) + (pos * posInfluence);
 	}
 

@@ -33,7 +33,7 @@ public final class HardKneePulseWidthMapper implements PulseWidthMapper
 		if( pw == 1.0f )
 		{
 			// Full pulse, don't adjust
-			return pos;
+			return iPos;
 		}
 		else if( pw == 0.0f )
 		{

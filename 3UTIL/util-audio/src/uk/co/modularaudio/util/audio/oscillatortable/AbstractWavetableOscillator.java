@@ -22,17 +22,18 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 public abstract class AbstractWavetableOscillator implements Oscillator
 {
-	protected float currentPosition = 0.0f;
-	protected WaveTableValueFetcher valueFetcher = null;
-	protected PulseWidthMapper pulseWidthMapper = null;
+	protected double currentPosition = 0.0;
+	protected WaveTableValueFetcher valueFetcher;
+	protected PulseWidthMapper pulseWidthMapper;
 
-	public AbstractWavetableOscillator( WaveTableValueFetcher valueFetcher, PulseWidthMapper pulseWidthMapper )
+	public AbstractWavetableOscillator( final WaveTableValueFetcher valueFetcher, final PulseWidthMapper pulseWidthMapper )
 	{
 		this.valueFetcher = valueFetcher;
 		this.pulseWidthMapper = pulseWidthMapper;
 	}
-	
-	public void resetPhase( float newPhase )
+
+	@Override
+	public void resetPhase( final float newPhase )
 	{
 		currentPosition = (newPhase < 0.0f ? 0.0f : (newPhase > 1.0f ? 1.0f : newPhase ) );
 	}

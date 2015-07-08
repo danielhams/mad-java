@@ -45,19 +45,19 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
 			prevFreq = freq;
 		}
-		final float incr = freq / sampleRate;
+		final double incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		float pos = currentPosition;
+		double pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
 			output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0f ) pos -= 1.0f;
-			while( pos < 0.0f ) pos += 1.0f;
+			while( pos >= 1.0 ) pos -= 1.0;
+			while( pos < 0.0 ) pos += 1.0;
 		}
 		currentPosition = pos;
 	}
@@ -67,7 +67,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		float pos = currentPosition;
+		double pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
@@ -79,13 +79,13 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 				prevFreq = freq;
 			}
 
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
 			output[currentOutputIndex] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
-			final float incr = freq / sampleRate;
+			final double incr = freq / sampleRate;
 			pos += incr;
-			while( pos >= 1.0f ) pos -= 1.0f;
-			while( pos < 0.0f ) pos += 1.0f;
+			while( pos >= 1.0 ) pos -= 1.0;
+			while( pos < 0.0 ) pos += 1.0;
 		}
 		currentPosition = pos;
 	}
@@ -99,20 +99,20 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
 			prevFreq = freq;
 		}
-		final float incr = freq / sampleRate;
+		final double incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		float pos = currentPosition;
+		double pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
 			final int currentOutputIndex = outputIndex + i;
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], (float)pos );
 			output[ currentOutputIndex ] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0f ) pos -= 1.0f;
-			while( pos < 0.0f ) pos += 1.0f;
+			while( pos >= 1.0 ) pos -= 1.0;
+			while( pos < 0.0 ) pos += 1.0;
 		}
 		currentPosition = pos;
 	}
@@ -123,7 +123,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		float pos = currentPosition;
+		double pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
@@ -135,13 +135,13 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 				prevFreq = freq;
 			}
 
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], (float)pos );
 			output[ currentOutputIndex ] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
-			final float incr = freq / sampleRate;
+			final double incr = freq / sampleRate;
 			pos += incr;
-			while( pos >= 1.0f ) pos -= 1.0f;
-			while( pos < 0.0f ) pos += 1.0f;
+			while( pos >= 1.0 ) pos -= 1.0;
+			while( pos < 0.0 ) pos += 1.0;
 		}
 		currentPosition = pos;
 	}
