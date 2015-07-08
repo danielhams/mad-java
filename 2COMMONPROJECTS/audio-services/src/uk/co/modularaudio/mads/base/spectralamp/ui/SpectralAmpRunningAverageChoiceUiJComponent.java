@@ -52,7 +52,8 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 		LONG( "Long Average" ),
 		FALL( "Fall" ),
 		FAST_FALL( "Fast Fall" ),
-		PEAK_HOLD( "Peak Hold" );
+		PEAK_HOLD( "Peak Hold" ),
+		PEAK_GRAB( "Peak Grab" );
 
 		private RunningAverage( final String label )
 		{
@@ -79,6 +80,7 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 		LABEL_TO_MAPPING.put( RunningAverage.FALL.getLabel(), RunningAverage.FALL );
 		LABEL_TO_MAPPING.put( RunningAverage.FAST_FALL.getLabel(), RunningAverage.FAST_FALL );
 		LABEL_TO_MAPPING.put( RunningAverage.PEAK_HOLD.getLabel(), RunningAverage.PEAK_HOLD );
+		LABEL_TO_MAPPING.put( RunningAverage.PEAK_GRAB.getLabel(), RunningAverage.PEAK_GRAB );
 	}
 
 	private final DefaultComboBoxModel<String> model;
@@ -112,6 +114,7 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 		model.addElement( RunningAverage.FALL.getLabel() );
 		model.addElement( RunningAverage.FAST_FALL.getLabel() );
 		model.addElement( RunningAverage.PEAK_HOLD.getLabel() );
+		model.addElement( RunningAverage.PEAK_GRAB.getLabel() );
 
 		model.setSelectedItem( DEFAULT_RUNNING_AVERAGE.getLabel() );
 

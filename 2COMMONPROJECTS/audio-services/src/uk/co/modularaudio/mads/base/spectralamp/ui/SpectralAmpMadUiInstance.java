@@ -60,6 +60,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakGrabComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
@@ -112,6 +113,7 @@ public class SpectralAmpMadUiInstance extends
 	private final RunningAverageComputer fallComputer = new FallComputer();
 	private final RunningAverageComputer fastFallComputer = new FastFallComputer();
 	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
+	private final PeakGrabComputer peakGrabComputer = new PeakGrabComputer();
 
 	private RunningAverageComputer desiredRunningAverageComputer = fastFallComputer;
 
@@ -356,9 +358,10 @@ public class SpectralAmpMadUiInstance extends
 		}
 	}
 
-	public void resetPeakHoldComputer()
+	public void resetPeakComputer()
 	{
 		peakHoldComputer.reset();
+		peakGrabComputer.reset();
 	}
 
 	public void addAmpAxisChangeListener( final AmpAxisChangeListener cl )
@@ -493,6 +496,11 @@ public class SpectralAmpMadUiInstance extends
 			case PEAK_HOLD:
 			{
 				desiredRunningAverageComputer = peakHoldComputer;
+				break;
+			}
+			case PEAK_GRAB:
+			{
+				desiredRunningAverageComputer = peakGrabComputer;
 				break;
 			}
 		}
