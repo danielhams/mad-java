@@ -52,11 +52,11 @@ public class MathFormatter
 	// to a string. There's undoubtedly some precision loss and
 	// boundary cases here, but for formatting floats for users with "regular"
 	// kinds of bounds, it should be ok.
-	public static String fastFloatPrint( float val, final int numDecimals, final boolean echoPlus )
+	public static String fastFloatPrint( float val, final int numDecimals, final boolean echoPlus ) // NOPMD by dan on 08/07/15 13:35
 	{
 		if( numDecimals > MAX_DECIMALS )
 		{
-			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead.");
+			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead."); // NOPMD by dan on 08/07/15 13:35
 		}
 
 		final String retVal;

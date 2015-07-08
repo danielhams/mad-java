@@ -126,7 +126,7 @@ class InternalBitFile
         }
     }
 
-    public void writeBits(int bits, int numbits) throws IOException
+    public void writeBits(int bits, int numbits) throws IOException // NOPMD by dan on 08/07/15 13:35
     {
 //        int bitsWritten = 0;
         final int numBytes = 255;
@@ -407,7 +407,7 @@ class InternalImageDescriptor
 
 class InternalBitUtils
 {
-    public static byte bitsNeeded(int n)
+    public static byte bitsNeeded(int n) // NOPMD by dan on 08/07/15 13:35
     {
         byte ret = 1;
 

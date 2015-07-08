@@ -513,7 +513,10 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 				}
 				else
 				{
-					log.trace("Cleaning up component in rack: \"" + aui.getInstanceName() +"\"");
+					if( log.isTraceEnabled() )
+					{
+						log.trace("Cleaning up component in rack: \"" + aui.getInstanceName() +"\"");
+					}
 					removeContentsFromRack( rack, rc );
 					rc.destroy();
 				}
@@ -522,7 +525,10 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 			if( rmToDelete != null )
 			{
 				final MadInstance<?,?> aui = rmToDelete.getInstance();
-				log.trace("Cleaning up component in rack: \"" + aui.getInstanceName() +"\"");
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Cleaning up component in rack: \"" + aui.getInstanceName() +"\"");
+				}
 				rack.removeContents( rmToDelete );
 				final IMadUiInstance<?,?> auui = rmToDelete.getUiInstance();
 				componentUiService.destroyUiInstance( auui );

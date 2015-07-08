@@ -58,7 +58,7 @@ public class FileUtilities
 		}
 		else
 		{
-			throw new RuntimeException( "Unknown OS type: " + hostString );
+			throw new RuntimeException( "Unknown OS type: " + hostString ); // NOPMD by dan on 08/07/15 13:35
 		}
 
 		return (retVal);

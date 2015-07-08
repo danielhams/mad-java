@@ -61,7 +61,7 @@ public class UnixAtomicFileUtilities implements AtomicFileUtilities
 		}
 		else
 		{
-			throw new RuntimeException("Unknown host OS: " + hostString );
+			throw new RuntimeException("Unknown host OS: " + hostString ); // NOPMD by dan on 08/07/15 13:35
 		}
 	}
 
