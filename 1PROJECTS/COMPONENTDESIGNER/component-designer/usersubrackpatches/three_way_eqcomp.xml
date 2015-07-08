@@ -39,7 +39,7 @@
         <rackPosition column="0" row="18"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="562"/>
+        <rackControl name="Slider" value="0.49"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="LowCompressor" definitionId="stereo_compressor">
@@ -66,7 +66,7 @@
         <rackPosition column="0" row="16"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="583"/>
+        <rackControl name="Slider" value="0.55999994"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="MidCompressor" definitionId="stereo_compressor">
@@ -93,7 +93,7 @@
         <rackPosition column="0" row="17"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="555"/>
+        <rackControl name="Slider" value="0.47000003"/>
         <rackControl name="PowerCurve" value="Additive"/>
     </rackComponent>
     <rackComponent name="NonLowEQ" definitionId="frequency_filter">
@@ -105,11 +105,15 @@
     </rackComponent>
     <rackComponent name="Spectral Amp 9" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Resolution" value="4096"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Long Average"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Running Average" value="Long Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="ThreeWayCompDryMixer" definitionId="imixer3">
