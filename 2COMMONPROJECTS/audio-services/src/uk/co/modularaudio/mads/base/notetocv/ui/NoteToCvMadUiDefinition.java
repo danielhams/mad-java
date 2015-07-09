@@ -59,25 +59,29 @@ public class NoteToCvMadUiDefinition
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Note On Type",
 		"ChannelNum",
-		"Frequency Glide"
+		"Frequency Glide",
+		"Learn"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.SLIDER
+		ControlType.SLIDER,
+		ControlType.BUTTON
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		NoteOnTypeChoiceUiJComponent.class,
 		NoteChannelChoiceUiJComponent.class,
-		NoteToCvGlideLengthSliderUiJComponent.class
+		NoteToCvGlideLengthSliderUiJComponent.class,
+		NoteToCvLearnButtonUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle(  30,  30, 110,  30 ),
 		new Rectangle( 150,  30, 120,  30 ),
-		new Rectangle( 280,  30, 250,  30 )
+		new Rectangle( 280,  30, 140,  30 ),
+		new Rectangle( 430,  30,  90,  30 ),
 	};
 
 	private static final Class<NoteToCvMadUiInstance> INSTANCE_CLASS = NoteToCvMadUiInstance.class;

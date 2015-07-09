@@ -28,7 +28,7 @@ public class LogarithmicTimeMillisMinZeroRotaryDisplayModel extends RotaryDispla
 	public static final float DEFAULT_MILLIS = 60.0f;
 	public LogarithmicTimeMillisMinZeroRotaryDisplayModel()
 	{
-		super( 0.0f, 5000.0f, DEFAULT_MILLIS,
+		super( 0.0f, 1000.0f, DEFAULT_MILLIS,
 				DEFAULT_MILLIS,
 				5000,
 				100,

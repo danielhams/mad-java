@@ -40,6 +40,8 @@ public class NoteToCvGlideLengthSliderUiJComponent
 {
 //	private static Log log = LogFactory.getLog( NoteToCvGlideLengthSliderUiJComponent.class.getName() );
 
+	public final static int GLISS_KNOB_DIAMETER = 27;
+
 	private final LogarithmicTimeMillisMinZeroRotaryDisplayModel model;
 //	private final SliderDisplayController controller;
 //	private final LWTCSliderDisplayView view;
@@ -65,6 +67,8 @@ public class NoteToCvGlideLengthSliderUiJComponent
 				"Gliss:",
 				LWTCControlConstants.STD_ROTARY_VIEW_COLORS,
 				false );
+
+		view.setDiameter( GLISS_KNOB_DIAMETER );
 
 		model.addChangeListener( new ValueChangeListener()
 		{

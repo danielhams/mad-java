@@ -72,7 +72,7 @@ public class ControllerToCvMadUiDefinition
 		new Rectangle(  30,  30, 120,  30 ),
 		new Rectangle( 160,  30, 120,  30 ),
 		new Rectangle( 290,  30, 130,  30 ),
-		new Rectangle( 430,  30, 90,  30 )
+		new Rectangle( 430,  30,  90,  30 )
 	};
 
 	private static final Class<ControllerToCvMadUiInstance> INSTANCE_CLASS = ControllerToCvMadUiInstance.class;
