@@ -27,11 +27,10 @@ import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.SpectralAmpFreqRotaryDisplayModel;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
@@ -42,7 +41,7 @@ public class SpectralAmpFreqMaxDialUiJComponent
 {
 //	private static Log log = LogFactory.getLog( SpectralAmpFreqMaxDialUiJComponent.class.getName() );
 
-	private final RotaryDisplayModel model;
+	private final SpectralAmpFreqRotaryDisplayModel model;
 	private final RotaryDisplayView view;
 
 	// Look into making this something in the preferences
@@ -59,17 +58,11 @@ public class SpectralAmpFreqMaxDialUiJComponent
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
-		model = new RotaryDisplayModel(
+		model = new SpectralAmpFreqRotaryDisplayModel(
 				SpectralAmpFreqMinDialUiJComponent.DEFAULT_FREQ_MIN + SpectralAmpMadUiDefinition.MIN_FREQ_DIFF,
 				DEFAULT_FREQ_MAX,
-				DEFAULT_FREQ_MAX, DEFAULT_FREQ_MAX,
-				2000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				5,
-				0,
-				"hz");
+				DEFAULT_FREQ_MAX,
+				DEFAULT_FREQ_MAX );
 
 		final RotaryDisplayController controller = new RotaryDisplayController( model );
 

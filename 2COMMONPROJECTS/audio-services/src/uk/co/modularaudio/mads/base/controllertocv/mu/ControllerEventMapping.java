@@ -22,13 +22,25 @@ package uk.co.modularaudio.mads.base.controllertocv.mu;
 
 public enum ControllerEventMapping
 {
-	LINEAR,
-	LOG,
-	LOG_FREQUENCY,
-	EXP_FREQUENCY,
-	EXP,
-	CIRC_Q1,
-	CIRC_Q2,
-	CIRC_Q3,
-	CIRC_Q4
+	LINEAR( "Linear" ),
+	LOG( "Log" ),
+	LOG_FREQUENCY( "Log Frequency" ),
+	EXP_FREQUENCY( "Exp Frequency" ),
+	EXP( "Exp" ),
+	CIRC_Q1( "Circle, Quad 1" ),
+	CIRC_Q2( "Circle, Quad 2" ),
+	CIRC_Q3( "Circle, Quad 3" ),
+	CIRC_Q4( "Circle, Quad 4" );
+
+	private String label;
+
+	private ControllerEventMapping( final String label )
+	{
+		this.label = label;
+	}
+
+	public String getLabel()
+	{
+		return label;
+	}
 }

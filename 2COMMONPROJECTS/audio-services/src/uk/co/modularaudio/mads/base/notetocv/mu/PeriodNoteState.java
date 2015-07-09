@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.notetocv.ui.NoteOnTypeChoiceUiJComponent.NoteOnType;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventCopier;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;

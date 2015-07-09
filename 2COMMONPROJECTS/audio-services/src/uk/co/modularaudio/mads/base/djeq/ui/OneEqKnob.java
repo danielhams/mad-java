@@ -24,9 +24,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.DjEQRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
@@ -39,7 +39,7 @@ public class OneEqKnob extends PacPanel
 
 	private static Log log = LogFactory.getLog( OneEqKnob.class.getName() );
 
-	private final RotaryDisplayModel rdm;
+	private final DjEQRotaryDisplayModel rdm;
 	private final RotaryDisplayController rdc;
 	private final RotaryDisplayView rdv;
 
@@ -55,15 +55,7 @@ public class OneEqKnob extends PacPanel
 
 		setLayout( msh.createMigLayout() );
 
-		rdm = new RotaryDisplayModel(
-				-26.0f,	9.0f,
-				0.0f, 0.0f,
-				3500,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				3,
-				1,
-				"dB");
+		rdm = new DjEQRotaryDisplayModel();
 
 		rdc = new RotaryDisplayController( rdm );
 

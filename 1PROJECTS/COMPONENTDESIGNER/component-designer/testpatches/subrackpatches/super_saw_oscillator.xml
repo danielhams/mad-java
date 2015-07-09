@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Osc1" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input CV Channel 1" rackComponentName="Band Limited Oscillator 1" rackComponentChannelInstanceName="Input Frequency CV"/>
+    <rackIOLink rackChannelName="Input CV Channel 2" rackComponentName="Linear CV Amplifier 1" rackComponentChannelInstanceName="Input CV amplification factor"/>
+    <rackIOLink rackChannelName="Input CV Channel 3" rackComponentName="Band Limited Oscillator 1" rackComponentChannelInstanceName="Input Trigger CV"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Linear CV Amplifier 1" rackComponentChannelInstanceName="Output Wave"/>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Shape" value="Square"/>
+        <rackControl name="Pulsewidth" value="100"/>
+    </rackComponent>
+    <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
+        <rackPosition column="2" row="1"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
+</rack>

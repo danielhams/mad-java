@@ -18,17 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.libmpg123wrapper;
+package uk.co.modularaudio.util.audio.mvc.rotarydisplay.models;
 
-public class LibMpg123WrapperLoader
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
+
+public class SoundFileGainRotaryDisplayModel extends RotaryDisplayModel
 {
-	static
+	public SoundFileGainRotaryDisplayModel( final float minGainDb, final float maxGainDb, final float initialGainDb, final float defaultGainDb )
 	{
-		System.loadLibrary( "mpg123_wrap" );
-	}
-
-	public static final void loadIt()
-	{
-		// Do nothing
+		super( minGainDb, maxGainDb,
+				initialGainDb, defaultGainDb,
+				2000,
+				100,
+				new SimpleRotaryIntToFloatConverter(),
+				2,
+				3,
+				"dB");
 	}
 }

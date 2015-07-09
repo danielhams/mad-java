@@ -23,13 +23,13 @@ package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 import uk.co.modularaudio.util.mvc.displayslider.LogSliderIntToFloatConverter;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
-public class LogarithmicTimeMillisSliderModel extends SliderDisplayModel
+public class LogarithmicTimeMillisMinOneSliderModel extends SliderDisplayModel
 {
-	public static final float DEFAULT_CAPTURE_MILLIS = 60.0f;
-	public LogarithmicTimeMillisSliderModel()
+	public static final float DEFAULT_MILLIS = 60.0f;
+	public LogarithmicTimeMillisMinOneSliderModel()
 	{
-		super( 1.0f, 5000.0f, DEFAULT_CAPTURE_MILLIS,
-				60.0f,
+		super( 1.0f, 5000.0f, DEFAULT_MILLIS,
+				DEFAULT_MILLIS,
 				4999,
 				100,
 				new LogSliderIntToFloatConverter( 5000.0f ),

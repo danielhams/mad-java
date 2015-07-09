@@ -18,17 +18,23 @@
  *
  */
 
-package uk.co.modularaudio.libmpg123wrapper;
+package uk.co.modularaudio.util.audio.mvc.rotarydisplay.models;
 
-public class LibMpg123WrapperLoader
+import uk.co.modularaudio.util.mvc.displayrotary.LogRotaryIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+
+public class LogarithmicTimeMillisMinZeroRotaryDisplayModel extends RotaryDisplayModel
 {
-	static
+	public static final float DEFAULT_MILLIS = 60.0f;
+	public LogarithmicTimeMillisMinZeroRotaryDisplayModel()
 	{
-		System.loadLibrary( "mpg123_wrap" );
-	}
-
-	public static final void loadIt()
-	{
-		// Do nothing
+		super( 0.0f, 5000.0f, DEFAULT_MILLIS,
+				DEFAULT_MILLIS,
+				5000,
+				100,
+				new LogRotaryIntToFloatConverter( 5000.0f ),
+				3,
+				3,
+				"ms" );
 	}
 }

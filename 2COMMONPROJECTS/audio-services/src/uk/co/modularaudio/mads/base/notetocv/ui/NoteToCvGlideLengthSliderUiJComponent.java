@@ -18,52 +18,53 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.oscilloscope.ui;
+package uk.co.modularaudio.mads.base.notetocv.ui;
 
 import javax.swing.JComponent;
 
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
+import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
+import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisMinOneSliderModel;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.LogarithmicTimeMillisMinZeroRotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
-import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
+import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
 
-public class OscilloscopeCaptureLengthSliderUiJComponent
-	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
+public class NoteToCvGlideLengthSliderUiJComponent
+	implements IMadUiControlInstance<NoteToCvMadDefinition, NoteToCvMadInstance, NoteToCvMadUiInstance>
 {
-//	private static Log log = LogFactory.getLog( OscilloscopeCaptureLengthSliderUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( NoteToCvGlideLengthSliderUiJComponent.class.getName() );
 
-	private final LogarithmicTimeMillisMinOneSliderModel model;
-	private final SliderDisplayController controller;
-	private final LWTCSliderDisplayView view;
+	private final LogarithmicTimeMillisMinZeroRotaryDisplayModel model;
+//	private final SliderDisplayController controller;
+//	private final LWTCSliderDisplayView view;
+	private final RotaryDisplayController controller;
+	private final RotaryDisplayView view;
 
-	public OscilloscopeCaptureLengthSliderUiJComponent( final OscilloscopeMadDefinition definition,
-			final OscilloscopeMadInstance instance,
-			final OscilloscopeMadUiInstance uiInstance,
+	public NoteToCvGlideLengthSliderUiJComponent( final NoteToCvMadDefinition definition,
+			final NoteToCvMadInstance instance,
+			final NoteToCvMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 
-		model = new LogarithmicTimeMillisMinOneSliderModel();
+		model = new LogarithmicTimeMillisMinZeroRotaryDisplayModel();
 
-		controller = new SliderDisplayController( model );
+		controller = new RotaryDisplayController( model );
 
-		view = new LWTCSliderDisplayView(
+		view = new RotaryDisplayView(
 				model,
 				controller,
+				KnobType.UNIPOLAR,
 				SatelliteOrientation.LEFT,
-				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
-				LWTCControlConstants.SLIDER_VIEW_COLORS,
-				"Capture Time:",
-				false,
-				true );
+				"Gliss:",
+				LWTCControlConstants.STD_ROTARY_VIEW_COLORS,
+				false );
 
 		model.addChangeListener( new ValueChangeListener()
 		{
@@ -71,7 +72,7 @@ public class OscilloscopeCaptureLengthSliderUiJComponent
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				uiInstance.setCaptureTimeMillis( newValue );
+				uiInstance.sendFrequencyGlideMillis( newValue );
 			}
 		} );
 	}

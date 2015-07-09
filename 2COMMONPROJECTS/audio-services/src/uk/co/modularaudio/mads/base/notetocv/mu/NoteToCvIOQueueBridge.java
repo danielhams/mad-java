@@ -23,8 +23,9 @@ package uk.co.modularaudio.mads.base.notetocv.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
+import uk.co.modularaudio.mads.base.notetocv.ui.NoteOnTypeChoiceUiJComponent.NoteOnType;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class NoteToCvIOQueueBridge extends MadLocklessQueueBridge<NoteToCvMadInstance>
@@ -48,7 +49,7 @@ public class NoteToCvIOQueueBridge extends MadLocklessQueueBridge<NoteToCvMadIns
 			{
 				final int val = (int)queueEntry.value;
 				final NoteOnType not = NoteOnType.values()[val];
-				instance.desiredNoteOnType = not;
+				instance.setDesiredNoteOnType( not );
 				break;
 			}
 			case COMMAND_FREQ_GLIDE_MILLIS:
@@ -60,7 +61,7 @@ public class NoteToCvIOQueueBridge extends MadLocklessQueueBridge<NoteToCvMadIns
 			case COMMAND_CHANNEL_NUM:
 			{
 				final int channelNum = (int)queueEntry.value;
-				instance.desiredChannelNum = channelNum;
+				instance.setDesiredChannelNum( channelNum );
 				break;
 			}
 			default:

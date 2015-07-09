@@ -22,15 +22,21 @@ package uk.co.modularaudio.mads.base.notetocv.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.notetocv.ui.NoteChannelChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.notetocv.ui.NoteOnTypeChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.notetocv.ui.NoteOnTypeChoiceUiJComponent.NoteOnType;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -40,7 +46,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteToCvMadInstance>
 {
-//	private static Log log = LogFactory.getLog( NoteToCvMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( NoteToCvMadInstance.class.getName() );
 
 	private final static float FREQ_VALUE_CHASE_MILLIS = 10;
 
@@ -54,10 +60,9 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 	private float ampGlideNewValueRatio;
 	private final PeriodNoteState periodNoteState = new PeriodNoteState();
 
-	public NoteOnType desiredNoteOnType = NoteOnType.FOLLOW_FIRST;
+	public NoteOnType desiredNoteOnType = NoteOnTypeChoiceUiJComponent.DEFAULT_NOTE_ON_TYPE;
 
-	// Default - all channels
-	public int desiredChannelNum;
+	public int desiredChannelNum = NoteChannelChoiceUiJComponent.DEFAULT_CHANNEL.getChannelNum();
 
 	public NoteToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -98,11 +103,13 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( NoteToCvMadDefinition.CONSUMER_NOTE );
 		final boolean outGateConnected = channelConnectedFlags.get( NoteToCvMadDefinition.PRODUCER_GATE_OUT );
@@ -124,7 +131,13 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 			for( int i = 0 ; i < numNotes ; i++ )
 			{
 				final MadChannelNoteEvent noteEvent = noteEvents[i];
+				if( desiredChannelNum != -1 && noteEvent.getChannel() != desiredChannelNum )
+				{
+					continue;
+				}
 				final MadChannelNoteEventType eventType = noteEvent.getEventType();
+				log.trace("Received note event in process(" + frameOffset + ", " + numFrames +
+						" " + eventType.toString() + " " + noteEvent.toString() );
 				switch( eventType )
 				{
 					case NOTE_ON:
@@ -163,6 +176,13 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 			periodNoteState.fillGate( gb );
 		}
 
+		if( outTriggerConnected )
+		{
+			final MadChannelBuffer outTriggerBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT ];
+			final float[] tb = outTriggerBuffer.floatBuffer;
+			periodNoteState.fillTrigger( tb );
+		}
+
 		if( outFreqConnected )
 		{
 			final MadChannelBuffer outFreqBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_FREQ_OUT ];
@@ -175,13 +195,6 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 			final MadChannelBuffer outVelocityBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT ];
 			final float[] vb = outVelocityBuffer.floatBuffer;
 			periodNoteState.fillVelocity( vb );
-		}
-
-		if( outTriggerConnected )
-		{
-			final MadChannelBuffer outTriggerBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT ];
-			final float[] tb = outTriggerBuffer.floatBuffer;
-			periodNoteState.fillTrigger( tb );
 		}
 
 		if( outVelAmpMultConnected )
@@ -199,5 +212,16 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 		freqGlideNewValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, val );
 		freqGlideCurValueRatio = 1.0f - freqGlideNewValueRatio;
 //		log.debug("Setting frequency glide with cur=" + freqGlideCurValueRatio + " and new=" + freqGlideNewValueRatio );
+	}
+
+	public void setDesiredNoteOnType( final NoteOnType not )
+	{
+		desiredNoteOnType = not;
+	}
+
+	public void setDesiredChannelNum( final int channelNum )
+	{
+		log.debug("Setting desired channel num to " + channelNum );
+		desiredChannelNum = channelNum;
 	}
 }

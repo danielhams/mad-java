@@ -18,17 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.libmpg123wrapper;
+package uk.co.modularaudio.util.audio.mvc.rotarydisplay.models;
 
-public class LibMpg123WrapperLoader
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
+
+public class DjEQRotaryDisplayModel extends RotaryDisplayModel
 {
-	static
+	public DjEQRotaryDisplayModel()
 	{
-		System.loadLibrary( "mpg123_wrap" );
-	}
-
-	public static final void loadIt()
-	{
-		// Do nothing
+		super(	-26.0f,	9.0f,
+				0.0f, 0.0f,
+				3500,
+				100,
+				new SimpleRotaryIntToFloatConverter(),
+				3,
+				1,
+				"dB");
 	}
 }

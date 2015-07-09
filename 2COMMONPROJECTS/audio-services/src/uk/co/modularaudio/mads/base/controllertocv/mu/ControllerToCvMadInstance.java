@@ -94,7 +94,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.CONSUMER_NOTE );
 		final MadChannelBuffer noteCb = channelBuffers[ ControllerToCvMadDefinition.CONSUMER_NOTE ];
@@ -117,7 +117,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 					case CONTROLLER:
 					{
 						// Only process events on our channel
-						if( ne.getChannel() == desiredChannel && ne.getParamOne() == desiredController )
+						if( (desiredChannel == -1 || desiredChannel == ne.getChannel() )
+							&&
+							(desiredController == -1 || desiredController == ne.getParamOne() )
+							)
 						{
 //							log.debug("Processing event " + ne.toString() );
 							eventProcessor.processEvent( ne );

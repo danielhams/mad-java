@@ -25,26 +25,19 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,LinearCVAMadInstance>
 {
 	//	private static Log log = LogFactory.getLog( OscillatorMadInstance.class.getName() );
-
-	private static final int VALUE_CHASE_MILLIS = 10;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
-
-	private long sampleRate;
 
 	public LinearCVAMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -59,17 +52,6 @@ public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,Lin
 	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
 	}
 
 	@Override
@@ -82,7 +64,7 @@ public class LinearCVAMadInstance extends MadInstance<LinearCVAMadDefinition,Lin
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean inWaveConnected = channelConnectedFlags.get( LinearCVAMadDefinition.CONSUMER_IN_WAVE );
 		final MadChannelBuffer inWaveCb = channelBuffers[ LinearCVAMadDefinition.CONSUMER_IN_WAVE ];

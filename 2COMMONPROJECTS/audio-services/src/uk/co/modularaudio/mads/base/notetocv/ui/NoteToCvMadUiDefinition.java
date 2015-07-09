@@ -48,12 +48,12 @@ public class NoteToCvMadUiDefinition
 		};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
-		new Point( 50, 45 ),
-		new Point( 130, 45 ),
-		new Point( 150, 45 ),
-		new Point( 170, 45 ),
-		new Point( 190, 45 ),
-		new Point( 210, 45 )
+		new Point( 150, 40 ),
+		new Point( 230, 40 ),
+		new Point( 250, 40 ),
+		new Point( 270, 40 ),
+		new Point( 290, 40 ),
+		new Point( 310, 40 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
@@ -69,15 +69,15 @@ public class NoteToCvMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		NoteOnTypeComboUiJComponent.class,
-		NoteChannelComboUiJComponent.class,
-		NoteToCvFrequencyGlideSliderUiJComponent.class
+		NoteOnTypeChoiceUiJComponent.class,
+		NoteChannelChoiceUiJComponent.class,
+		NoteToCvGlideLengthSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 30, 20, 110, 20 ),
-		new Rectangle( 30, 60, 110, 20 ),
-		new Rectangle( 150, 22, 75, 70 )
+		new Rectangle(  30,  30, 110,  30 ),
+		new Rectangle( 150,  30, 120,  30 ),
+		new Rectangle( 280,  30, 250,  30 )
 	};
 
 	private static final Class<NoteToCvMadUiInstance> INSTANCE_CLASS = NoteToCvMadUiInstance.class;

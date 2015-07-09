@@ -34,10 +34,9 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.SoundFileGainRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants.StdRotaryViewColor;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
@@ -49,7 +48,7 @@ public class SoundfilePlayerGainDialUiJComponent
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayerGainDialUiJComponent.class.getName() );
 
-	private final RotaryDisplayModel model;
+	private final SoundFileGainRotaryDisplayModel model;
 	private final RotaryDisplayView view;
 
 	// Look into making this something in the preferences
@@ -70,16 +69,11 @@ public class SoundfilePlayerGainDialUiJComponent
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
-		model = new RotaryDisplayModel(
-				-SoundfilePlayerMadInstance.GAIN_MAX_DB, SoundfilePlayerMadInstance.GAIN_MAX_DB,
-				0.0f, 0.0f,
-				2000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				2,
-				3,
-				"dB");
+		model = new SoundFileGainRotaryDisplayModel(
+				-SoundfilePlayerMadInstance.GAIN_MAX_DB,
+				SoundfilePlayerMadInstance.GAIN_MAX_DB,
+				0.0f,
+				0.0f );
 
 		final RotaryDisplayController controller = new RotaryDisplayController( model );
 

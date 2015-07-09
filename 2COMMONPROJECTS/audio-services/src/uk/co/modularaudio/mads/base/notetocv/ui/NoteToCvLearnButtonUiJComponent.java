@@ -20,71 +20,42 @@
 
 package uk.co.modularaudio.mads.base.notetocv.ui;
 
-import javax.swing.JComponent;
+import java.awt.Component;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class NoteToCvFrequencyGlideSliderUiJComponent extends PacSlider
+public class NoteToCvLearnButtonUiJComponent
 	implements IMadUiControlInstance<NoteToCvMadDefinition, NoteToCvMadInstance, NoteToCvMadUiInstance>
 {
-	private static final long serialVersionUID = 7923855236169668204L;
+	private static Log log = LogFactory.getLog( NoteToCvLearnButtonUiJComponent.class.getName() );
 
-	private final NoteToCvMadUiInstance uiInstance;
+	private final LWTCButton theButton;
 
-	public NoteToCvFrequencyGlideSliderUiJComponent( final NoteToCvMadDefinition definition,
+	public NoteToCvLearnButtonUiJComponent(
+			final NoteToCvMadDefinition definition,
 			final NoteToCvMadInstance instance,
 			final NoteToCvMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
-		this.setOpaque( false );
-		this.setOrientation( VERTICAL );
-		setFont( this.getFont().deriveFont( 9f ) );
-		this.setPaintLabels( true );
-		this.setMinimum( 1 );
-		this.setMaximum( 10000 );
-		// Default value
-		this.setValue( 0 );
-		this.setValue( 100 );
-	}
-
-	@Override
-	public JComponent getControl()
-	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final int value )
-	{
-		final float newValue = value / 10.0f;
-		uiInstance.sendFrequencyGlide( newValue );
-	}
-
-	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
-	{
-		// log.debug("Received display tick");
-	}
-
-	@Override
-	public void processValueChange( final int previousValue, final int newValue )
-	{
-		if( previousValue != newValue )
+		theButton = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS, "Learn", true )
 		{
-			passChangeToInstanceData( newValue );
-		}
-	}
+			private static final long serialVersionUID = -8901816933509201750L;
 
-	@Override
-	public void destroy()
-	{
+			@Override
+			public void receiveClick()
+			{
+				log.trace("Would activate midi learn");
+			}
+		};
 	}
 
 	@Override
@@ -92,4 +63,33 @@ public class NoteToCvFrequencyGlideSliderUiJComponent extends PacSlider
 	{
 		return false;
 	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTime )
+	{
+	}
+
+	@Override
+	public Component getControl()
+	{
+		return theButton;
+	}
+
+	@Override
+	public void destroy()
+	{
+	}
+
 }

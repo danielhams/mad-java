@@ -43,32 +43,36 @@ public class ControllerToCvMadUiDefinition
 		ControllerToCvMadDefinition.PRODUCER_CV_OUT };
 
 	private static final Point[] CHAN_POSIS = new Point[] {
-		new Point( 50, 45 ),
-		new Point( 190, 45 )
+		new Point( 150, 40 ),
+		new Point( 250, 40 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"Mapping Curve",
 		"Channel Selection",
-		"Controller Selection"
+		"Controller Selection",
+		"Mapping Curve",
+		"Learn"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.COMBO
+		ControlType.COMBO,
+		ControlType.BUTTON
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		ControllerToCvMappingCurveUiJComponent.class,
-		ControllerToCvChannelComboUiJComponent.class,
-		ControllerToCvControlComboUiJComponent.class
+		ControllerToCvChannelChoiceUiJComponent.class,
+		ControllerToCvControlChoiceUiJComponent.class,
+		ControllerToCvMappingChoiceUiJComponent.class,
+		ControllerToCvLearnButtonUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 20, 20, 100, 30 ),
-		new Rectangle( 120, 20, 100, 30 ),
-		new Rectangle( 20, 60, 100, 30 )
+		new Rectangle(  30,  30, 120,  30 ),
+		new Rectangle( 160,  30, 120,  30 ),
+		new Rectangle( 290,  30, 130,  30 ),
+		new Rectangle( 430,  30, 90,  30 )
 	};
 
 	private static final Class<ControllerToCvMadUiInstance> INSTANCE_CLASS = ControllerToCvMadUiInstance.class;
@@ -82,7 +86,7 @@ public class ControllerToCvMadUiDefinition
 			super( bia,
 					cif,
 					imageRoot,
-					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
+					MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

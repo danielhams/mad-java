@@ -26,6 +26,7 @@ import java.awt.Component;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadInstance;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
@@ -34,10 +35,9 @@ import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.SoundFileGainRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants.StdRotaryViewColor;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
@@ -49,7 +49,7 @@ public class SoundfilePlayer2GainDialUiJComponent
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayer2GainDialUiJComponent.class.getName() );
 
-	private final RotaryDisplayModel model;
+	private final SoundFileGainRotaryDisplayModel model;
 	private final RotaryDisplayView view;
 
 	// Look into making this something in the preferences
@@ -70,16 +70,11 @@ public class SoundfilePlayer2GainDialUiJComponent
 			final SoundfilePlayer2MadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
-		model = new RotaryDisplayModel(
-				-SoundfilePlayer2MadInstance.GAIN_MAX_DB, SoundfilePlayer2MadInstance.GAIN_MAX_DB,
-				0.0f, 0.0f,
-				4000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				2,
-				3,
-				"dB");
+		model = new SoundFileGainRotaryDisplayModel(
+				-SoundfilePlayerMadInstance.GAIN_MAX_DB,
+				SoundfilePlayerMadInstance.GAIN_MAX_DB,
+				0.0f,
+				0.0f );
 
 		final RotaryDisplayController controller = new RotaryDisplayController( model );
 

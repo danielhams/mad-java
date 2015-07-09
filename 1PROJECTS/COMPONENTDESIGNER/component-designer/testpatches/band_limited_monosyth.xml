@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 1" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 2" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Note To CV 1" rackComponentChannelInstanceName="Input Note"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Shape" value="Sine"/>
+        <rackControl name="Pulsewidth" value="100"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
+        <rackPosition column="2" row="7"/>
+        <rackControl name="Channel Selection" value="Channel 0"/>
+        <rackControl name="Controller Selection" value="Control 16"/>
+        <rackControl name="Mapping Curve" value="Log"/>
+        <rackControl name="Learn" value=""/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
+        <rackPosition column="2" row="8"/>
+        <rackControl name="Channel Selection" value="Channel 0"/>
+        <rackControl name="Controller Selection" value="Control 17"/>
+        <rackControl name="Mapping Curve" value="Exp"/>
+        <rackControl name="Learn" value=""/>
+    </rackComponent>
+    <rackComponent name="DC Trap 1" definitionId="dc_trap">
+        <rackPosition column="2" row="2"/>
+    </rackComponent>
+    <rackComponent name="Envelope 1" definitionId="envelope">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Attack From Zero" value="0"/>
+        <rackControl name="Attack Wave Choice" value="LOG"/>
+        <rackControl name="Decay Wave Choice" value="LOG"/>
+        <rackControl name="Release Wave Choice" value="LOG"/>
+        <rackControl name="Attack Slider" value="10.0"/>
+        <rackControl name="Decay Slider" value="10.0"/>
+        <rackControl name="Sustain Slider" value="0.722"/>
+        <rackControl name="Release Slider" value="10.0"/>
+        <rackControl name="Scale Slider" value="460.0"/>
+    </rackComponent>
+    <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
+        <rackPosition column="3" row="2"/>
+    </rackComponent>
+    <rackComponent name="Linear CV Amplifier 2" definitionId="linear_cva">
+        <rackPosition column="0" row="10"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Eight Stereo Lanes) 1" definitionId="imixer8">
+        <rackPosition column="0" row="15"/>
+        <rackControl name="Master Lane" value="-15.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 3" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 4" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 5" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 6" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 7" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
+        <rackPosition column="2" row="3"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="-4.5:0.0:M "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Note To CV 1" definitionId="note_to_cv">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Note On Type" value="Follow Last"/>
+        <rackControl name="ChannelNum" value="All Channels"/>
+        <rackControl name="Frequency Glide" value="1.0"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Osc1" definitionId="sub_rack">
+        <rackPosition column="2" row="9"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Scale" value="Log dB"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Peak Reset" value=""/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 1" definitionId="sub_rack">
+        <rackPosition column="1" row="10"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 2" definitionId="sub_rack">
+        <rackPosition column="1" row="11"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 3" definitionId="sub_rack">
+        <rackPosition column="1" row="12"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 4" definitionId="sub_rack">
+        <rackPosition column="1" row="13"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 5" definitionId="sub_rack">
+        <rackPosition column="2" row="14"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 6" definitionId="sub_rack">
+        <rackPosition column="0" row="14"/>
+    </rackComponent>
+    <rackComponent name="Supersaw Module 1" definitionId="supersaw_module">
+        <rackPosition column="3" row="10"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="DC Trap 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="Supersaw Module 1" consumerChannelName="Input CV"/>
+    <rackLink producerRackComponentName="Controller To CV 2" producerChannelName="Output CV" consumerRackComponentName="Supersaw Module 1" consumerChannelName="Input CV Mix"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Envelope 1" producerChannelName="Output Amp" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Envelope 1" producerChannelName="Output Amp" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mixer (Eight Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Frequency" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Frequency" consumerRackComponentName="Supersaw Module 1" consumerChannelName="Input CV Frequency"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Gate" consumerRackComponentName="Envelope 1" consumerChannelName="Input Gate"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Envelope 1" consumerChannelName="Input Retrigger"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Osc1" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 4" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 5" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Note To CV 1" producerChannelName="Output Trigger" consumerRackComponentName="Sub Rack 6" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Osc1" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 2" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 3 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 3" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 4 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 4" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 5 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 5" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 7 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sub Rack 6" producerChannelName="Output Channel 1" consumerRackComponentName="Mixer (Eight Stereo Lanes) 1" consumerChannelName="Lane 6 Input Wave Left"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 1 Amp" consumerRackComponentName="Osc1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 1 Frequency" consumerRackComponentName="Osc1" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 2 Amp" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 2 Frequency" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 3 Amp" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 3 Frequency" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 4 Amp" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 4 Frequency" consumerRackComponentName="Sub Rack 3" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 5 Amp" consumerRackComponentName="Sub Rack 4" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 5 Frequency" consumerRackComponentName="Sub Rack 4" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 6 Amp" consumerRackComponentName="Sub Rack 6" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 6 Frequency" consumerRackComponentName="Sub Rack 6" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 7 Amp" consumerRackComponentName="Sub Rack 5" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Supersaw Module 1" producerChannelName="Output CV Oscillator 7 Frequency" consumerRackComponentName="Sub Rack 5" consumerChannelName="Input CV Channel 1"/>
+</rack>

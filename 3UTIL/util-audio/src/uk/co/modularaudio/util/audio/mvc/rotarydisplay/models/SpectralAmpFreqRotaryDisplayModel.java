@@ -18,10 +18,24 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notetocv.mu;
+package uk.co.modularaudio.util.audio.mvc.rotarydisplay.models;
 
-public enum NoteOnType
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
+
+public class SpectralAmpFreqRotaryDisplayModel extends RotaryDisplayModel
 {
-	FOLLOW_FIRST,
-	FOLLOW_LAST
+	public SpectralAmpFreqRotaryDisplayModel( final float freqMin, final float freqMax, final float initialFreq, final float defaultFreq )
+	{
+		super(	freqMin,
+				freqMax,
+				initialFreq,
+				defaultFreq,
+				2000,
+				100,
+				new SimpleRotaryIntToFloatConverter(),
+				5,
+				0,
+				"hz");
+	}
 }

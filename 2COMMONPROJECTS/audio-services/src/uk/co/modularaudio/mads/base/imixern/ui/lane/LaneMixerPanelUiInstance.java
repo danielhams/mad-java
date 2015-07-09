@@ -35,10 +35,9 @@ import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.MixerLanePanRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
@@ -120,7 +119,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 	private final LaneFaderAndMarks<D,I> faderAndMarks;
 	private final LaneStereoAmpMeter<D,I> stereoAmpMeter;
-	private final RotaryDisplayModel panModel;
+	private final MixerLanePanRotaryDisplayModel panModel;
 	private final RotaryDisplayKnob panControl;
 	private final LaneMuteSolo<D,I,U> muteSolo;
 
@@ -151,13 +150,8 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		final MigLayout compLayout = msh.createMigLayout();
 		this.setLayout( compLayout );
 
-		panModel = new RotaryDisplayModel(
-				-1.0f, 1.0f,
-				0.0f, 0.0f,
-				2000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				3, 2, "dB" );
+		panModel = new MixerLanePanRotaryDisplayModel();
+
 		panModel.addChangeListener( new ValueChangeListener()
 		{
 			@Override

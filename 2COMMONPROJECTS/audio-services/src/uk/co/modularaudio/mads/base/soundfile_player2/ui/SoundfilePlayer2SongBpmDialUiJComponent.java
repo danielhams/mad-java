@@ -33,10 +33,9 @@ import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.SoundFileBpmRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants.StdRotaryViewColor;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
@@ -48,7 +47,7 @@ public class SoundfilePlayer2SongBpmDialUiJComponent
 {
 	private static Log log = LogFactory.getLog( SoundfilePlayer2SongBpmDialUiJComponent.class.getName() );
 
-	private final RotaryDisplayModel model;
+	private final SoundFileBpmRotaryDisplayModel model;
 	private final RotaryDisplayView view;
 
 	private static final float MIN_BPM_VALUE = 40.0f;
@@ -73,16 +72,9 @@ public class SoundfilePlayer2SongBpmDialUiJComponent
 			final SoundfilePlayer2MadUiInstance uiInstance,
 			final int controlIndex )
 	{
-
-		model = new RotaryDisplayModel(
+		model = new SoundFileBpmRotaryDisplayModel(
 				MIN_BPM_VALUE, MAX_BPM_VALUE,
-				DEFAULT_BPM_VALUE, DEFAULT_BPM_VALUE,
-				2000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				3,
-				3,
-				"bpm");
+				DEFAULT_BPM_VALUE, DEFAULT_BPM_VALUE );
 
 		final RotaryDisplayController controller = new RotaryDisplayController( model );
 
