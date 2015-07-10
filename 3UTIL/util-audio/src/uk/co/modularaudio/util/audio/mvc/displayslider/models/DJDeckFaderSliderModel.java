@@ -33,7 +33,7 @@ public class DJDeckFaderSliderModel extends SliderDisplayModel
 				Float.NEGATIVE_INFINITY,
 				0.0f,
 				INT_TO_FLOAT_CONVERTER.getNumTotalSteps(),
-				1,
+				20,
 				INT_TO_FLOAT_CONVERTER,
 				3,
 				3,

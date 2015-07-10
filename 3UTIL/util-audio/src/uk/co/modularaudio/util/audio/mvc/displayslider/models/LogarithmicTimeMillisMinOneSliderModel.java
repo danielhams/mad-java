@@ -30,8 +30,8 @@ public class LogarithmicTimeMillisMinOneSliderModel extends SliderDisplayModel
 	{
 		super( 1.0f, 5000.0f, DEFAULT_MILLIS,
 				DEFAULT_MILLIS,
-				4999,
-				100,
+				499,
+				10,
 				new LogSliderIntToFloatConverter( 5000.0f ),
 				3,
 				3,

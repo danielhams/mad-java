@@ -29,8 +29,8 @@ public class MoogResonanceSliderModel extends SliderDisplayModel
 	{
 		super( 0.0f, 1.0f, 0.5f,
 				1.0f,
-				1000,
 				100,
+				10,
 				new SimpleSliderIntToFloatConverter(),
 				2,
 				3,

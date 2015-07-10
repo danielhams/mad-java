@@ -31,6 +31,7 @@ import java.awt.event.MouseWheelListener;
 
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryIntToFloatConverter;
 
 public class RotaryDisplayMouseListener
 	implements MouseMotionListener, MouseListener, MouseWheelListener, FocusListener
@@ -136,21 +137,32 @@ public class RotaryDisplayMouseListener
 			final int ySigNum = (int)Math.signum( yDelta );
 
 			// Scale it so 100 pixels difference = max diff
-			float scaledDelta = (yAbsDelta / 100.0f);
-			scaledDelta = (scaledDelta > 1.0f ? 1.0f : scaledDelta );
+			float scaledScreenDelta = (yAbsDelta / 100.0f);
+			scaledScreenDelta = (scaledScreenDelta > 1.0f ? 1.0f : scaledScreenDelta );
 
-			final float mmaxv = model.getMaxValue();
-			final float mminv = model.getMinValue();
-			final float scaledOffset = (mmaxv - mminv) * scaledDelta * ySigNum;
-			float newValueToSet = startDragValue - scaledOffset;
+			final RotaryIntToFloatConverter itfc = model.getIntToFloatConverter();
+			final float maxFloatValue = model.getMaxValue();
+			final int maxIntStep = itfc.floatValueToSliderIntValue( model, maxFloatValue );
+			final float minFloatValue = model.getMinValue();
+			final int minIntStep = itfc.floatValueToSliderIntValue( model, minFloatValue );
 
-			if( newValueToSet > mmaxv )
+			final int stepRange = maxIntStep - minIntStep;
+
+			final int startDragStep = itfc.floatValueToSliderIntValue( model, startDragValue );
+
+			final int deltaIntStep = (int)(minIntStep - (scaledScreenDelta * stepRange * ySigNum));
+
+			final int newIntStep = startDragStep + deltaIntStep;
+
+			float newValueToSet = itfc.sliderIntValueToFloatValue( model, newIntStep );
+
+			if( newValueToSet > maxFloatValue )
 			{
-				newValueToSet = mmaxv;
+				newValueToSet = maxFloatValue;
 			}
-			else if( newValueToSet < mminv )
+			else if( newValueToSet < minFloatValue )
 			{
-				newValueToSet = mminv;
+				newValueToSet = minFloatValue;
 			}
 
 			final float currentValue = model.getValue();

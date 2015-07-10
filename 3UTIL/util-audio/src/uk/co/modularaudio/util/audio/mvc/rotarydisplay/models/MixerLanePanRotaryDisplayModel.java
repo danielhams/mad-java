@@ -29,8 +29,8 @@ public class MixerLanePanRotaryDisplayModel extends RotaryDisplayModel
 	{
 		super(	-1.0f, 1.0f,
 				0.0f, 0.0f,
-				2000,
 				100,
+				10,
 				new SimpleRotaryIntToFloatConverter(),
 				3, 2, "dB" );
 	}

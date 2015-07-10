@@ -29,9 +29,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import net.miginfocom.swing.MigLayout;
+import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.LogarithmicTimeMillisMinZeroRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
-import uk.co.modularaudio.util.mvc.displayrotary.SimpleRotaryIntToFloatConverter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
@@ -66,19 +65,21 @@ public class RotaryDisplayTester
 
 	public void go() throws Exception
 	{
-		// Sample model that mimics what pan would be
-		// i.e. -1 -> 1
-		final RotaryDisplayModel staticValueModel = new RotaryDisplayModel( -10.0f,
-				10.0f,
-				0.0f,
-				5.0f,
-				2000,
-				100,
-				new SimpleRotaryIntToFloatConverter(),
-				3,
-				3,
-				"unit" );
-		final RotaryDisplayController staticValueController = new RotaryDisplayController( staticValueModel );
+//		// Sample model that mimics what pan would be
+//		// i.e. -1 -> 1
+//		final RotaryDisplayModel model = new RotaryDisplayModel( -10.0f,
+//				10.0f,
+//				0.0f,
+//				5.0f,
+//				2000,
+//				100,
+//				new SimpleRotaryIntToFloatConverter(),
+//				3,
+//				3,
+//				"unit" );
+		final LogarithmicTimeMillisMinZeroRotaryDisplayModel model = new LogarithmicTimeMillisMinZeroRotaryDisplayModel();
+
+		final RotaryDisplayController staticValueController = new RotaryDisplayController( model );
 
 		final Color bgColor = new Color(72,72,72);
 		final Color fgColor = new Color(100,100,100);
@@ -108,7 +109,7 @@ public class RotaryDisplayTester
 				labelColor,
 				unitsColor );
 
-		staticValueDisplay = new RotaryDisplayView( staticValueModel,
+		staticValueDisplay = new RotaryDisplayView( model,
 				staticValueController,
 				KnobType.BIPOLAR,
 //				KnobType.UNIPOLAR,

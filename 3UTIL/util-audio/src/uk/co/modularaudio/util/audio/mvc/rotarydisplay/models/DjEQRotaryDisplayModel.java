@@ -29,8 +29,8 @@ public class DjEQRotaryDisplayModel extends RotaryDisplayModel
 	{
 		super(	-26.0f,	9.0f,
 				0.0f, 0.0f,
-				3500,
-				100,
+				350,
+				10,
 				new SimpleRotaryIntToFloatConverter(),
 				3,
 				1,

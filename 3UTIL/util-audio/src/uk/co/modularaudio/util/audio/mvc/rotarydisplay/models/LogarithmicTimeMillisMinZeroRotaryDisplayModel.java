@@ -25,13 +25,13 @@ import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 
 public class LogarithmicTimeMillisMinZeroRotaryDisplayModel extends RotaryDisplayModel
 {
-	public static final float DEFAULT_MILLIS = 60.0f;
+	public static final float DEFAULT_MILLIS = 0.0f;
 	public LogarithmicTimeMillisMinZeroRotaryDisplayModel()
 	{
 		super( 0.0f, 1000.0f, DEFAULT_MILLIS,
 				DEFAULT_MILLIS,
-				5000,
-				100,
+				500,
+				10,
 				new LogRotaryIntToFloatConverter( 5000.0f ),
 				3,
 				3,

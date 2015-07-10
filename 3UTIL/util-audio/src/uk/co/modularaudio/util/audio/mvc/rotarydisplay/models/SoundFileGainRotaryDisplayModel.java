@@ -29,8 +29,8 @@ public class SoundFileGainRotaryDisplayModel extends RotaryDisplayModel
 	{
 		super( minGainDb, maxGainDb,
 				initialGainDb, defaultGainDb,
-				2000,
-				100,
+				200,
+				10,
 				new SimpleRotaryIntToFloatConverter(),
 				2,
 				3,

@@ -31,8 +31,8 @@ public class SoundFileBpmRotaryDisplayModel extends RotaryDisplayModel
 	{
 		super( minBpm, maxBpm,
 				initialBpm, defaultBpm,
-				2000,
-				100,
+				200,
+				10,
 				new SimpleRotaryIntToFloatConverter(),
 				3,
 				3,
