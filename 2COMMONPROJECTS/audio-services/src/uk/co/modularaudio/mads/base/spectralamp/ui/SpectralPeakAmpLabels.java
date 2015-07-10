@@ -35,7 +35,7 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 {
 	private static final long serialVersionUID = -4554672067965895575L;
 
-//	private static Log log = LogFactory.getLog( NewAmpScaleLabels.class.getName() );
+//	private static Log log = LogFactory.getLog( SpectralPeakAmpLabels.class.getName() );
 
 	private AmpScaleComputer ampScaleComputer;
 
