@@ -11,9 +11,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-6.7806883"/>
+        <rackControl name="Gain" value="-6.38477"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 103 master.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/Sasha_-_Live___Fabric_Club_(London)_-_25.09.2010-Mixing.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -25,13 +25,14 @@
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">
         <rackPosition column="0" row="4"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-96dB"/>
+        <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Max" value="22050.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Window" value="Hann"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>

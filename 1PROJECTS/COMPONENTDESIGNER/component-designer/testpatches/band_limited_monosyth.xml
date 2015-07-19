@@ -35,10 +35,10 @@
         <rackControl name="Attack Wave Choice" value="LOG"/>
         <rackControl name="Decay Wave Choice" value="LOG"/>
         <rackControl name="Release Wave Choice" value="LOG"/>
-        <rackControl name="Attack Slider" value="10.0"/>
-        <rackControl name="Decay Slider" value="10.0"/>
-        <rackControl name="Sustain Slider" value="0.722"/>
-        <rackControl name="Release Slider" value="10.0"/>
+        <rackControl name="Attack Slider" value="6.8999996"/>
+        <rackControl name="Decay Slider" value="80.04"/>
+        <rackControl name="Sustain Slider" value="0.957"/>
+        <rackControl name="Release Slider" value="240.12001"/>
         <rackControl name="Scale Slider" value="460.0"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
@@ -70,7 +70,8 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="Note On Type" value="Follow Last"/>
         <rackControl name="ChannelNum" value="All Channels"/>
-        <rackControl name="Frequency Glide" value="1.0"/>
+        <rackControl name="Frequency Glide" value="21.161467"/>
+        <rackControl name="Learn" value=""/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Osc1" definitionId="sub_rack">
         <rackPosition column="2" row="9"/>
@@ -81,10 +82,11 @@
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="Log dB"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Max" value="22050.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Window" value="Hann"/>
         <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>

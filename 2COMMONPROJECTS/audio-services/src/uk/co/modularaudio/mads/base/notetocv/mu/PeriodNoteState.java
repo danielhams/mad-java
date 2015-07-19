@@ -296,7 +296,7 @@ public class PeriodNoteState
 //		log.debug("Ended period");
 	}
 
-	public void fillGate( final float[] gb )
+	public void fillGate( final float[] gb, final int frameOffset, final int numFrames )
 	{
 //		if( numSegmentsReady > 0 )
 //		{
@@ -344,7 +344,7 @@ public class PeriodNoteState
 			}
 			else
 			{
-				Arrays.fill( gb, startIndex, endIndex, gateVal );
+				Arrays.fill( gb, frameOffset + startIndex, frameOffset + endIndex, gateVal );
 			}
 		}
 
@@ -352,7 +352,7 @@ public class PeriodNoteState
 
 	private final MadChannelNoteEvent lastTriggerEvent = new MadChannelNoteEvent();
 
-	public void fillTrigger( final float[] tb )
+	public void fillTrigger( final float[] tb, final int frameOffset, final int numFrames )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
@@ -419,7 +419,7 @@ public class PeriodNoteState
 
 	private float curOutputFrequency = 0.0f;
 
-	public void fillFrequency( final float[] fb )
+	public void fillFrequency( final float[] fb, final int frameOffset, final int numFrames )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
@@ -470,7 +470,7 @@ public class PeriodNoteState
 		}
 	}
 
-	public void fillVelocity( final float[] vb )
+	public void fillVelocity( final float[] vb, final int frameOffset, final int numFrames )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{
@@ -506,7 +506,7 @@ public class PeriodNoteState
 
 	}
 
-	public void fillVelAmpMultiplier( final float[] vb )
+	public void fillVelAmpMultiplier( final float[] vb, final int frameOffset, final int numFrames )
 	{
 		for( int p = 0 ; p < numSegmentsReady ; p++ )
 		{

@@ -7,7 +7,7 @@
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="1"/>
         <rackControl name="Frequency" value="200"/>
-        <rackControl name="Shape" value="Square"/>
+        <rackControl name="Shape" value="Saw"/>
         <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">

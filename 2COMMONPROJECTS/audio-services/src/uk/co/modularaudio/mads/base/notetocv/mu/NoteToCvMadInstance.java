@@ -173,35 +173,35 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 		{
 			final MadChannelBuffer outGateBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_GATE_OUT ];
 			final float[] gb = outGateBuffer.floatBuffer;
-			periodNoteState.fillGate( gb );
+			periodNoteState.fillGate( gb, frameOffset, numFrames );
 		}
 
 		if( outTriggerConnected )
 		{
 			final MadChannelBuffer outTriggerBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_TRIGGER_OUT ];
 			final float[] tb = outTriggerBuffer.floatBuffer;
-			periodNoteState.fillTrigger( tb );
+			periodNoteState.fillTrigger( tb, frameOffset, numFrames );
 		}
 
 		if( outFreqConnected )
 		{
 			final MadChannelBuffer outFreqBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_FREQ_OUT ];
 			final float[] fb = outFreqBuffer.floatBuffer;
-			periodNoteState.fillFrequency( fb );
+			periodNoteState.fillFrequency( fb, frameOffset, numFrames );
 		}
 
 		if( outVelocityConnected )
 		{
 			final MadChannelBuffer outVelocityBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VELOCITY_OUT ];
 			final float[] vb = outVelocityBuffer.floatBuffer;
-			periodNoteState.fillVelocity( vb );
+			periodNoteState.fillVelocity( vb, frameOffset, numFrames );
 		}
 
 		if( outVelAmpMultConnected )
 		{
 			final MadChannelBuffer outVelAmpMultBuffer = channelBuffers[ NoteToCvMadDefinition.PRODUCER_VEL_AMP_MULT_OUT ];
 			final float[] tb = outVelAmpMultBuffer.floatBuffer;
-			periodNoteState.fillVelAmpMultiplier( tb );
+			periodNoteState.fillVelAmpMultiplier( tb, frameOffset, numFrames );
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
