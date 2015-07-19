@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Output Amp" definitionId="imixer3">
@@ -13,9 +11,9 @@
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-7.4131227"/>
+        <rackControl name="Gain" value="-6.7806883"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP030_ERIC_SNEO.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 103 master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -27,13 +25,13 @@
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">
         <rackPosition column="0" row="4"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Max" value="22050.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
@@ -45,7 +43,7 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="2" row="2"/>
-        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="CaptureTime" value="5000.0"/>
         <rackControl name="ScaleChoice" value="-5dB"/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>

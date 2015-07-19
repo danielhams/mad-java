@@ -31,6 +31,8 @@ import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefin
 import uk.co.modularaudio.mads.base.audiocvconverter.ui.AudioCvConverterMadUiDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.ui.BandLimitedOscillatorMadUiDefinition;
+import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadDefinition;
+import uk.co.modularaudio.mads.base.bessel4.ui.Bessel4FilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvMadUiDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
@@ -200,6 +202,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( MidSideMadDefinition.class, MidSideMadUiDefinition.class );
 
 		classToUiDefinition.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadUiDefinition.class );
+
+		classToUiDefinition.put( Bessel4FilterMadDefinition.class, Bessel4FilterMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

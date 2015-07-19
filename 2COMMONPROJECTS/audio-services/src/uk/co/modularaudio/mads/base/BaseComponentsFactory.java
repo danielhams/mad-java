@@ -30,6 +30,8 @@ import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefin
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadInstance;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
+import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadDefinition;
+import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadInstance;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
@@ -206,6 +208,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( MidSideMadDefinition.class, MidSideMadInstance.class );
 
 		defClassToInsClassMap.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadInstance.class );
+
+		defClassToInsClassMap.put( Bessel4FilterMadDefinition.class, Bessel4FilterMadInstance.class );
 	}
 
 	@Override
