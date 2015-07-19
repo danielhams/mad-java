@@ -23,21 +23,22 @@ package uk.co.modularaudio.util.audio.fft;
 public abstract class FftWindow
 {
 	protected float[] amps;
-	
-	public FftWindow( int length )
+
+	public FftWindow( final int length )
 	{
 		amps = new float[ length ];
+		fillAmps( length );
 	}
-	
-	public strictfp void apply( float[] buffer )
+
+	public strictfp void apply( final float[] buffer )
 	{
 		for( int i = 0 ; i < amps.length ; i++ )
 		{
 			buffer[i] = buffer[i] * amps[i];
 		}
 	}
-	
-	public strictfp void applyWithGain( float[] buffer, float gain )
+
+	public strictfp void applyWithGain( final float[] buffer, final float gain )
 	{
 		for( int i = 0 ; i < amps.length ; i++ )
 		{
@@ -49,4 +50,12 @@ public abstract class FftWindow
 	{
 		return amps;
 	}
+
+	public void resetWindowLength( final int windowLength )
+	{
+		amps = new float[ windowLength ];
+		fillAmps( windowLength );
+	}
+
+	protected abstract void fillAmps( int windowLength );
 }

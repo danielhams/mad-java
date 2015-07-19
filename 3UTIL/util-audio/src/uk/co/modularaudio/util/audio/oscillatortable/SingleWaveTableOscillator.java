@@ -59,15 +59,30 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 
 		double pos = currentPosition;
 
-		for( int i = 0 ; i < length ; i++ )
+		if( pulseWidth == 1.0f )
 		{
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
-			output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
+			for( int i = 0 ; i < length ; i++ )
+			{
+				output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, (float)pos );
 
-			final double incr = freqs[i] / sampleRate;
-			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+				final double incr = freqs[i] / sampleRate;
+				pos += incr;
+				while( pos >= 1.0 ) pos -= 1.0;
+				while( pos < 0.0 ) pos += 1.0;
+			}
+		}
+		else
+		{
+			for( int i = 0 ; i < length ; i++ )
+			{
+				final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
+				output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
+
+				final double incr = freqs[i] / sampleRate;
+				pos += incr;
+				while( pos >= 1.0 ) pos -= 1.0;
+				while( pos < 0.0 ) pos += 1.0;
+			}
 		}
 		currentPosition = pos;
 	}

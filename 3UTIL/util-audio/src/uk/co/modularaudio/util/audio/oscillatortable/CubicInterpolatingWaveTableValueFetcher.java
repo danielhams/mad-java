@@ -27,39 +27,39 @@ public class CubicInterpolatingWaveTableValueFetcher implements WaveTableValueFe
 //	private static Log log = LogFactory.getLog( CubicInterpolatingWaveTableValueFetcher.class.getName() );
 
 	@Override
-	public float getValueAtNormalisedPosition( CubicPaddedRawWaveTable waveTable, float normalisedPosition )
+	public float getValueAtNormalisedPosition( final CubicPaddedRawWaveTable waveTable, final float normalisedPosition )
 	{
-		int finalIndex = waveTable.finalIndex;
-		float[] floatBuffer = waveTable.buffer;
-		
+		final int finalIndex = waveTable.finalIndex;
+		final float[] floatBuffer = waveTable.buffer;
+
 		// We add one to start at index 1
-		float realInternalPos = (normalisedPosition * finalIndex );
+		final float realInternalPos = (normalisedPosition * finalIndex );
 
 		// Now cubic interpolate it.
-		
+
 		float frac,  fracsq;
 		float y0, y1, y2, y3;
-		
+
 		// Cubic interpolation
-		int intPos = (int)realInternalPos;
+		final int intPos = (int)realInternalPos;
 		frac = realInternalPos - intPos;
 		fracsq = frac * frac;
 
 		y0 = floatBuffer[ intPos ];
-		y1 = floatBuffer[ intPos + 1];
+		y1 = floatBuffer[ intPos + 1 ];
 		y2 = floatBuffer[ intPos + 2 ];
 		y3 = floatBuffer[ intPos + 3 ];
-		
-//		float a0 = y3 - y2 - y0 + y1;
-//		float a1 = y0 - y1 -a0;
-//		float a2 = y2 - y0;
-//		float a3 = y1;
 
-		float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
-		float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
-		float a2 = -0.5f*y0 + 0.5f*y2;
-		float a3 = y1;
-		
+//		final float a0 = y3 - y2 - y0 + y1;
+//		final float a1 = y0 - y1 -a0;
+//		final float a2 = y2 - y0;
+//		final float a3 = y1;
+
+		final float a0 = -0.5f*y0 + 1.5f*y1 - 1.5f*y2 + 0.5f*y3;
+		final float a1 = y0 - 2.5f*y1 + 2.0f*y2 - 0.5f*y3;
+		final float a2 = -0.5f*y0 + 0.5f*y2;
+		final float a3 = y1;
+
 		return( (a0 * frac * fracsq)  + (a1 * fracsq) + (a2 * frac) + a3 );
 	}
 

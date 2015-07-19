@@ -25,13 +25,18 @@ import uk.co.modularaudio.util.math.MathDefines;
 
 public class HammingFftWindow extends FftWindow
 {
-	public HammingFftWindow( int length )
+	public HammingFftWindow( final int length )
 	{
 		super( length );
+	}
+
+	@Override
+	protected final void fillAmps( final int length )
+	{
 		// 0.54 - 0.46 cos(2 PI n / n + 1 ) )
 		for( int i = 0 ; i < length ; i++ )
 		{
-			amps[i] = (float)(0.54f - (0.46f * Math.cos( (MathDefines.TWO_PI_D * i) / (length)) ) );
+			amps[i] = (float)(0.54 - (0.46 * Math.cos( (MathDefines.TWO_PI_D * i) / (length)) ) );
 		}
 	}
 }

@@ -32,13 +32,18 @@ public class BlackmannHarrisFftWindow extends FftWindow
 	public BlackmannHarrisFftWindow( final int length )
 	{
 		super( length );
+	}
+
+	@Override
+	protected final void fillAmps( final int length )
+	{
 		// a1 - a2 *cos ( 2PI * i / length -1 ) + a3 * cos( 4PI * i / length - 1) - a4 * cos( 6PI * i / length - 1)
 		for( int i = 0 ; i < length ; i++ )
 		{
 			amps[i] = (float)(A1
-					- (A2 * Math.cos( ( MathDefines.TWO_PI_D * i) / (length - 1) ) )
-					+ (A3 * Math.cos( ( MathDefines.TWO_PI_D * 2 * i ) / (length - 1) ) )
-					- (A4 * Math.cos( ( MathDefines.TWO_PI_D * 3 * i ) / (length - 1) ) )
+					- (A2 * Math.cos( ( MathDefines.TWO_PI_D * i) / (length) ) )
+					+ (A3 * Math.cos( ( MathDefines.TWO_PI_D * 2 * i ) / (length) ) )
+					- (A4 * Math.cos( ( MathDefines.TWO_PI_D * 3 * i ) / (length) ) )
 					);
 		}
 	}
