@@ -35,10 +35,13 @@ import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMaxChoiceUiJCom
 import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpAmpMinChoiceUiJComponent.AmpMin;
 import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpFreqMappingChoiceUiJComponent.FreqMapping;
 import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpRunningAverageChoiceUiJComponent.RunningAverage;
+import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpWindowChoiceUiJComponent.WindowChoice;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
+import uk.co.modularaudio.util.audio.fft.BlackmannHarrisFftWindow;
 import uk.co.modularaudio.util.audio.fft.FftWindow;
+import uk.co.modularaudio.util.audio.fft.HammingFftWindow;
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
@@ -141,6 +144,19 @@ public class SpectralAmpMadUiInstance extends
 		peakGrabComputer
 	};
 
+	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanHarrisWindow = new BlackmannHarrisFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
+
+	private WindowChoice desiredWindow = SpectralAmpWindowChoiceUiJComponent.DEFAULT_WINDOW_CHOICE;
+
+	private final FftWindow[] windows =
+	{
+			hannWindow,
+			hammingWindow,
+			blackmanHarrisWindow
+	};
+
 	// The FFT processor and bits used to pull out the amplitudes
 	private StreamingWolaProcessor wolaProcessor;
 	private SpecDataListener specDataListener;
@@ -216,10 +232,12 @@ public class SpectralAmpMadUiInstance extends
 			final int fftSize = desiredFftSize;
 			final int windowLength = (fftSize >= SpectralAmpMadDefinition.MAX_WINDOW_LENGTH ? SpectralAmpMadDefinition.MAX_WINDOW_LENGTH
 					: fftSize);
-			final FftWindow hannWindow = new HannFftWindow( windowLength );
+			final FftWindow fftWindow = windows[desiredWindow.ordinal()];
+
+			fftWindow.resetWindowLength( windowLength );
 
 			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
-					SpectralAmpMadDefinition.NUM_OVERLAPS, fftSize, hannWindow );
+					SpectralAmpMadDefinition.NUM_OVERLAPS, fftSize, fftWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			wolaProcessor = new StreamingWolaProcessor( params, peakAmpAccumulator );
@@ -490,5 +508,11 @@ public class SpectralAmpMadUiInstance extends
 	public void setDisplayPeaksHeight( final int displayPeaksHeight )
 	{
 		this.displayPeaksHeight = displayPeaksHeight;
+	}
+
+	public void setDesiredWindow( final WindowChoice win )
+	{
+		this.desiredWindow = win;
+		reinitialiseFrequencyProcessor();
 	}
 }

@@ -40,22 +40,18 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCRotaryChoice;
 
-public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
+public class SpectralAmpWindowChoiceUiJComponent extends JPanel
 	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
 	private static final long serialVersionUID = -6447604891826738340L;
 
-	public enum RunningAverage
+	public enum WindowChoice
 	{
-		OFF( "Off" ),
-		SHORT( "Short Average" ),
-		LONG( "Long Average" ),
-		FALL( "Fall" ),
-		FAST_FALL( "Fast Fall" ),
-		PEAK_HOLD( "Peak Hold" ),
-		PEAK_GRAB( "Peak Grab" );
+		HANN( "Hann" ),
+		HAMMING( "Hamming" ),
+		BLACKMANN_HARRIS( "Blckmn-H." );
 
-		private RunningAverage( final String label )
+		private WindowChoice( final String label )
 		{
 			this.label = label;
 		}
@@ -68,25 +64,21 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 		}
 	};
 
-	public final static RunningAverage DEFAULT_RUNNING_AVERAGE = RunningAverage.FAST_FALL;
+	public final static WindowChoice DEFAULT_WINDOW_CHOICE = WindowChoice.HANN;
 
-	private final static Map<String, RunningAverage> LABEL_TO_MAPPING = new HashMap<>();
+	private final static Map<String, WindowChoice> LABEL_TO_MAPPING = new HashMap<>();
 
 	static
 	{
-		LABEL_TO_MAPPING.put( RunningAverage.OFF.getLabel(), RunningAverage.OFF );
-		LABEL_TO_MAPPING.put( RunningAverage.SHORT.getLabel(), RunningAverage.SHORT );
-		LABEL_TO_MAPPING.put( RunningAverage.LONG.getLabel(), RunningAverage.LONG );
-		LABEL_TO_MAPPING.put( RunningAverage.FALL.getLabel(), RunningAverage.FALL );
-		LABEL_TO_MAPPING.put( RunningAverage.FAST_FALL.getLabel(), RunningAverage.FAST_FALL );
-		LABEL_TO_MAPPING.put( RunningAverage.PEAK_HOLD.getLabel(), RunningAverage.PEAK_HOLD );
-		LABEL_TO_MAPPING.put( RunningAverage.PEAK_GRAB.getLabel(), RunningAverage.PEAK_GRAB );
+		LABEL_TO_MAPPING.put( WindowChoice.HANN.getLabel(), WindowChoice.HANN );
+		LABEL_TO_MAPPING.put( WindowChoice.HAMMING.getLabel(), WindowChoice.HAMMING );
+		LABEL_TO_MAPPING.put( WindowChoice.BLACKMANN_HARRIS.getLabel(), WindowChoice.BLACKMANN_HARRIS );
 	}
 
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	public SpectralAmpRunningAverageChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+	public SpectralAmpWindowChoiceUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
@@ -102,21 +94,17 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 
 		setLayout( msh.createMigLayout() );
 
-		final LWTCLabel label = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "Peaks:" );
+		final LWTCLabel label = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "Win:" );
 		label.setBorder( BorderFactory.createEmptyBorder() );
 		label.setFont( LWTCControlConstants.LABEL_FONT );
 		add( label, "align center, right" );
 
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( RunningAverage.OFF.getLabel() );
-		model.addElement( RunningAverage.SHORT.getLabel() );
-		model.addElement( RunningAverage.LONG.getLabel() );
-		model.addElement( RunningAverage.FALL.getLabel() );
-		model.addElement( RunningAverage.FAST_FALL.getLabel() );
-		model.addElement( RunningAverage.PEAK_HOLD.getLabel() );
-		model.addElement( RunningAverage.PEAK_GRAB.getLabel() );
+		model.addElement( WindowChoice.HANN.getLabel() );
+		model.addElement( WindowChoice.HAMMING.getLabel() );
+		model.addElement( WindowChoice.BLACKMANN_HARRIS.getLabel() );
 
-		model.setSelectedItem( DEFAULT_RUNNING_AVERAGE.getLabel() );
+		model.setSelectedItem( DEFAULT_WINDOW_CHOICE.getLabel() );
 
 		rotaryChoice = new LWTCRotaryChoice( LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
 				model,
@@ -139,8 +127,8 @@ public class SpectralAmpRunningAverageChoiceUiJComponent extends JPanel
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String val = (String)model.getSelectedItem();
-				final RunningAverage ra = LABEL_TO_MAPPING.get( val );
-				uiInstance.setDesiredRunningAverage( ra );
+				final WindowChoice win = LABEL_TO_MAPPING.get( val );
+				uiInstance.setDesiredWindow( win );
 			}
 		} );
 

@@ -55,6 +55,7 @@ public class SpectralAmpMadUiDefinition
 		"Frequency Scale",
 		"Display",
 		"Resolution",
+		"Window",
 		"Running Average",
 		"Peak Reset"
 	};
@@ -69,6 +70,7 @@ public class SpectralAmpMadUiDefinition
 		ControlType.DISPLAY,
 		ControlType.COMBO,
 		ControlType.COMBO,
+		ControlType.COMBO,
 		ControlType.BUTTON
 	};
 
@@ -81,6 +83,7 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpFreqMappingChoiceUiJComponent.class,
 		SpectralAmpDisplayUiJComponent.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
+		SpectralAmpWindowChoiceUiJComponent.class,
 		SpectralAmpRunningAverageChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class
 	};
@@ -98,7 +101,8 @@ public class SpectralAmpMadUiDefinition
 		new Rectangle( 430,  41, 120,  30 ),		// Freq Scale
 		new Rectangle(   6,  77, 544, 192 ),		// Display
 		new Rectangle(   8, 276, 105,  30 ),		// FFT Resolution
-		new Rectangle( 204, 276, 226,  30 ),		// Runn Average Type
+		new Rectangle( 124, 276, 130,  30 ),		// Window choice
+		new Rectangle( 268, 276, 166,  30 ),		// Runn Average Type
 		new Rectangle( 450, 276,  96,  30 )			// Peak Reset Button
 	};
 
