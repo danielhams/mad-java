@@ -136,8 +136,11 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 					continue;
 				}
 				final MadChannelNoteEventType eventType = noteEvent.getEventType();
-				log.trace("Received note event in process(" + frameOffset + ", " + numFrames +
-						" " + eventType.toString() + " " + noteEvent.toString() );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Received note event in process(" + frameOffset + ", " + numFrames +
+							" " + eventType.toString() + " " + noteEvent.toString() );
+				}
 				switch( eventType )
 				{
 					case NOTE_ON:
@@ -221,7 +224,10 @@ public class NoteToCvMadInstance extends MadInstance<NoteToCvMadDefinition,NoteT
 
 	public void setDesiredChannelNum( final int channelNum )
 	{
-		log.debug("Setting desired channel num to " + channelNum );
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Setting desired channel num to " + channelNum );
+		}
 		desiredChannelNum = channelNum;
 	}
 }

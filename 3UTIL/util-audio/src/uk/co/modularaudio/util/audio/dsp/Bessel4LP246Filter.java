@@ -99,7 +99,10 @@ public class Bessel4LP246Filter
 			}
 			default:
 			{
-				log.error("No coefficients for sample rate: " + sr );
+				if( log.isErrorEnabled() )
+				{
+					log.error("No coefficients for sample rate: " + sr );
+				}
 				Arrays.fill( coefs, 0.0f );
 			}
 		}
