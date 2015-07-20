@@ -20,102 +20,39 @@
 
 package uk.co.modularaudio.util.thread;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.os.OperatingSystemIdentifiers;
-import uk.co.modularaudio.util.pooling.forkexec.ChildProcessExecutor;
 
 public class ThreadUtils
 {
-	private static Log log = LogFactory.getLog( ThreadUtils.class.getName() );
-	
+//	private static Log log = LogFactory.getLog( ThreadUtils.class.getName() );
+
 	public enum MAThreadPriority
 	{
-		REALTIME,
-		REALTIME_SUPPORT,
-		APPLICATION,
+		IDLE,
 		BACKGROUND,
-		IDLE
+		APPLICATION,
+		REALTIME_SUPPORT,
+		REALTIME,
+		NUM_PRIORITIES
 	};
 
-	private static boolean platformSupportsRenice = false;
-
-	static
-	{
-		// Switch based on host type
-		String hostString = System.getProperty("os.name");
-		
-		if(hostString.equals(OperatingSystemIdentifiers.OS_SOLARIS) ||
-				hostString.equals(OperatingSystemIdentifiers.OS_LINUX))
-		{
-			platformSupportsRenice = true;
-		}
-		else
-		{
-			platformSupportsRenice = false;
-		}
-	};
-
-	public static void setCurrentThreadPriority( MAThreadPriority priority )
+	public static void setCurrentThreadPriority( final MAThreadPriority priority )
 		throws DatastoreException
 	{
-		if( !platformSupportsRenice )
+		final int maxPriority = Thread.MAX_PRIORITY;
+		final int minPriority = Thread.MIN_PRIORITY;
+
+		final int priorityRange = maxPriority - minPriority;
+
+		if( priorityRange < MAThreadPriority.NUM_PRIORITIES.ordinal() )
 		{
-			log.warn("Platform doesn't support renice.");
-			return;
-		}
-		int niceValue;
-		switch( priority )
-		{
-			case REALTIME:
-			{
-				niceValue = -10;
-				break;
-			}
-			case REALTIME_SUPPORT:
-			{
-				niceValue = -5;
-				break;
-			}
-			case APPLICATION:
-			{
-				niceValue = -1;
-				break;
-			}
-			case BACKGROUND:
-			{
-				niceValue = +1;
-				break;
-			}
-			case IDLE:
-			{
-				niceValue = +10;
-				break;
-			}
-			default:
-			{
-				throw new DatastoreException("Unknown priority attempting to set current thread priority: " + priority );
-			}
+			throw new RuntimeException("OS lacks appropriate priority granularity");
 		}
 
-		try
-		{
-			int nativeThreadID = GetThreadID.get_tid();
-			String[] cmdArray = new String[] { "/usr/bin/renice", "-n", "" + niceValue, "-p", "" + nativeThreadID };
-			ChildProcessExecutor cpe = new ChildProcessExecutor( cmdArray );
-			cpe.close();
-			int retVal = cpe.getExitValue();
-			if( retVal != 0 )
-			{
-				throw new DatastoreException("Failed return code from renice child process: " + retVal );
-			}
-		}
-		catch ( Exception e )
-		{
-			String msg = "Exception caught calling renice: " + e.toString();
-			throw new DatastoreException( msg, e );
-		}
+		final float jpPerMaPInt = (priorityRange / (float)MAThreadPriority.NUM_PRIORITIES.ordinal());
+
+		final int jPriority = (int)(minPriority + (jpPerMaPInt * priority.ordinal()));
+
+		Thread.currentThread().setPriority( jPriority );
 	}
 }

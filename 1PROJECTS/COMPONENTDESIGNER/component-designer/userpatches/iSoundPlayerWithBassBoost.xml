@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Lane 2 Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="4"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 0" value="-6.75:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-6.38477"/>
+        <rackControl name="Gain" value="-2.5163584"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/Sasha_-_Live___Fabric_Club_(London)_-_25.09.2010-Mixing.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/John_Digweed_-_Kiss100_01-02-DAB-2005-LtH/01_john_digweed_-_kiss100_01_02_2005-lth-djmixes2k.com.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">

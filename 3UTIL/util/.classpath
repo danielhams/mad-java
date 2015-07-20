@@ -3,6 +3,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/external-libs"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/util-native"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
