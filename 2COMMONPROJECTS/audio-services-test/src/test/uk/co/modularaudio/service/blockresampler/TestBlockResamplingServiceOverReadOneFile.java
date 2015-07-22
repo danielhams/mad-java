@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.blockresampler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,13 +51,9 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestBlockResamplingServiceOverReadOneFile.class.getName() );
 
-	// First one should be a wav so the forward skipping works
-	private final static String testFile = "/home/dan/Music/CanLoseMusic/SimpleWavs/ExampleBeats.wav";
-//	private final static String testFile = "/home/dan/Music/CanLoseMusic/Samples/OpenPathMusic/OpenPathMusic44v1/belltree.wav";
-//	private final static String testFile = "/home/dan/Music/CanLoseMusic/Samples/OpenPathMusic/OpenPathMusic44v1/timbale-lick.wav";
-//	private final static String testFile = "/home/dan/Music/CanLoseMusic/Samples/OpenPathMusic/OpenPathMusic44v1/cymbal-ride-roll-long.wav";
+	private final static String testFile = "../../5TEST/audio-test-files/audiofiles/ExampleBeats_stereo.wav";
 
-	private final static String outputFile = "/tmp/overreadoutput.wav";
+	private final static String outputFileName = "tmpoutput/overreadoutput_brs.wav";
 
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
@@ -126,7 +123,8 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 //		final float playbackSpeed = 1.0f;
 //		final float playbackSpeed = 0.5f;
 
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile );
+		final File inputFile = new File(testFile);
+		SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
 		final int numChannels = scc1.getNumChannels();
 		final int sampleRate = scc1.getSampleRate();
 		final long totalFrames = scc1.getTotalNumFrames();
@@ -141,8 +139,11 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 		final float[] tmpBuffer = tes.temporaryFloatArray;
 
 		log.debug("Audio file has " + scc1.getTotalNumFrames() + " frames");
+		final File outputFile = new File( outputFileName );
+		final File parentDir = outputFile.getParentFile();
+		parentDir.mkdirs();
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile, numChannels, sampleRate, (short)16);
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFileName, numChannels, sampleRate, (short)16);
 
 		// Read a block with some zeros half a second before the start
 		final long halfSecondFrames = (long)(sampleRate * 0.5);

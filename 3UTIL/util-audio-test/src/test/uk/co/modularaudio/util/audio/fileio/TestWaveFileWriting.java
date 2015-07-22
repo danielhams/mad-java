@@ -20,6 +20,8 @@
 
 package test.uk.co.modularaudio.util.audio.fileio;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
@@ -35,12 +37,19 @@ public class TestWaveFileWriting extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestWaveFileWriting.class.getName() );
 
+	private final String outputFilename = "tmpoutput/javawavfilewriter.wav";
+
 	public void testWriteAFile()
 		throws Exception
 	{
 		final int sampleRate = 44100;
 		final short bitsPerSample = 16;
-		final WaveFileWriter outputWriter = new WaveFileWriter( "/tmp/javawavefilewriter.out", 1, sampleRate, bitsPerSample );
+
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter outputWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 1, sampleRate, bitsPerSample );
 
 		final int testDataLength = sampleRate;
 		final float[] testData = new float[ testDataLength ];
@@ -60,7 +69,12 @@ public class TestWaveFileWriting extends TestCase
 	{
 		final int sampleRate = 44100;
 		final short bitsPerSample = 16;
-		final WaveFileWriter wof = new WaveFileWriter( "/tmp/javawavout.wav", 1, sampleRate, bitsPerSample );
+
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter wof = new WaveFileWriter( outputFile.getAbsolutePath(), 1, sampleRate, bitsPerSample );
 
 		final float[] testData = new float[] { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f, -1.0f, -0.75f, -0.5f, -0.25f, 0.0f };
 		wof.writeFloats( testData, testData.length );
@@ -76,7 +90,9 @@ public class TestWaveFileWriting extends TestCase
 		final short bitsPerSample = 16;
 		final int numChannels = 1;
 
-		final String filename = "/tmp/compareit.wav";
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
 
 		final float[] testData = new float[] { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f, -1.0f, -0.75f, -0.5f, -0.25f, 0.0f };
 		final double[] testDataAsDoubles = new double[ testData.length ];
@@ -85,12 +101,12 @@ public class TestWaveFileWriting extends TestCase
 			testDataAsDoubles[ i ] = testData[i];
 		}
 
-		final WaveFileWriter wof = new WaveFileWriter( filename, numChannels, sampleRate, bitsPerSample );
+		final WaveFileWriter wof = new WaveFileWriter( outputFile.getAbsolutePath(), numChannels, sampleRate, bitsPerSample );
 
 		wof.writeFloats( testData, testData.length );
 		wof.close();
 
-		final WaveFileReader wif = new WaveFileReader( filename );
+		final WaveFileReader wif = new WaveFileReader( outputFile.getAbsolutePath() );
 
 		final long numFloats = wif.getNumTotalFloats();
 

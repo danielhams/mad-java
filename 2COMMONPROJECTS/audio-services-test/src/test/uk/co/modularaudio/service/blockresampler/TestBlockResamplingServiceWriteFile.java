@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.blockresampler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,15 +58,9 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 	private static int MAX_SPEED = 10;
 
-//	private final static String inputFile = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/20130215/3836570_The_Monkey_Dessert_Original_Mix.mp3";
-//	private final static String inputFile = "/home/dan/Music/CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3";
-	private final static String inputFile = "/home/dan/Temp/stereo_17khzsine_2min.wav";
-//	private final static String inputFile = "/home/dan/Temp/stereo_2_5khzsine_2min.wav";
-//	private final static String inputFile = "/home/dan/Temp/stereo_50hzsine_2min.wav";
-//	private final static String inputFile = "/home/dan/Temp/stereo_silence_10sec.wav";
-//	private final static String inputFile = "/home/dan/Temp/stereo_cosina_beats.wav";
-	private final static String oldOutputFile = "/tmp/BlockResamplingTest_Old.wav";
-	private final static String newOutputFile = "/tmp/BlockResamplingTest_New.wav";
+	private final static String inputFileName = "../../5TEST/audio-test-files/audiofiles/440hz_sine_44100_30secs_stereo.wav";
+	private final static String oldOutputFileName = "tmpoutput/BlockResamplingTest_Old.wav";
+	private final static String newOutputFileName = "tmpoutput/BlockResamplingTest_New.wav";
 
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
@@ -128,9 +123,9 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 	{
 		if( true )
 		{
-			readWriteOneFile( inputFile, oldOutputFile );
+			readWriteOneFile( inputFileName, oldOutputFileName );
 		}
-		readWriteOneFileVarispeed( inputFile, newOutputFile );
+		readWriteOneFileVarispeed( inputFileName, newOutputFileName );
 	}
 
 	public float updatePlaybackSpeed( final float currentSpeed )
@@ -155,7 +150,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 
 		hsc.getThreadSession();
-		final BlockResamplingClient brc = brsi.createResamplingClient( inputFilename,
+		final File inputFile = new File(inputFilename);
+		final BlockResamplingClient brc = brsi.createResamplingClient( inputFile.getAbsolutePath(),
 				BlockResamplingMethod.CUBIC );
 		final SampleCacheClient scc1 = brc.getSampleCacheClient();
 
@@ -186,7 +182,11 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		Thread.sleep( 200 );
 
-		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
+		final File outputFile = new File(outputFilename);
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFile.getAbsolutePath(),
 			2,
 			outputSampleRate,
 			(short) 16 );
@@ -267,7 +267,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 
 		hsc.getThreadSession();
-		final BlockResamplingClient brc = brsi.createResamplingClient( inputFilename,
+		final File inputFile = new File(inputFilename);
+		final BlockResamplingClient brc = brsi.createResamplingClient( inputFile.getAbsolutePath(),
 				BlockResamplingMethod.CUBIC );
 		final SampleCacheClient scc1 = brc.getSampleCacheClient();
 
@@ -298,7 +299,11 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		Thread.sleep( 200 );
 
-		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename,
+		final File outputFile = new File(outputFilename);
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFile.getAbsolutePath(),
 			2,
 			outputSampleRate,
 			(short) 16 );

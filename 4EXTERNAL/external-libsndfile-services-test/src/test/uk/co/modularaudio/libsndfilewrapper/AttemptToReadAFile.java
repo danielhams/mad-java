@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.libsndfilewrapper;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
@@ -42,9 +43,8 @@ public class AttemptToReadAFile
 
 	private final float[] buffer = new float[BUFFER_LENGTH_FLOATS];
 
-	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/depeche_mode/a_broken_frame/a_photograph_of_you.ogg";
-//	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/ORB - The Orb's Adventures Beyond The Ultraworld/CD 1/02 - Earth Orbit Two- Earth (Gaia).flac";
-//	final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200911/974684_She_Came_Along_feat__Kid_Cudi_Sharam_s_Ecstasy_Of_Ibiza_Edit.mp3";
+	final String inputFilename = "../../5TEST/audio-test-files/audiofiles/ExampleBeats.flac";
+	final String outputFilename = "tmpoutput/libsndfilereaderfromflac.wav";
 
 	public AttemptToReadAFile()
 	{
@@ -57,7 +57,9 @@ public class AttemptToReadAFile
 
 		log.trace( "Beginning" );
 
-		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = libsndfile.sf_open( filePath, libsndfile.SFM_READ, sf );
+		final File inputFile = new File(inputFilename);
+
+		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = libsndfile.sf_open( inputFile.getAbsolutePath(), libsndfile.SFM_READ, sf );
 
 		if( sndfilePtr == null )
 		{
@@ -70,7 +72,11 @@ public class AttemptToReadAFile
 		log.trace( "Apparently have opened the file with (" + sampleRate + ") (" + numFrames + ") (" + numChannels
 				+ ")" );
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( "/tmp/javalibsndfilereader.wave", 2, sampleRate,
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 2, sampleRate,
 				(short) 16 );
 
 		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / numChannels;
@@ -119,7 +125,9 @@ public class AttemptToReadAFile
 
 		log.trace( "Beginning" );
 
-		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = libsndfile.sf_open( filePath, libsndfile.SFM_READ, sf );
+		final File inputFile = new File(inputFilename);
+
+		final SWIGTYPE_p_SNDFILE_tag sndfilePtr = libsndfile.sf_open( inputFile.getAbsolutePath(), libsndfile.SFM_READ, sf );
 
 		if( sndfilePtr == null )
 		{
@@ -132,7 +140,11 @@ public class AttemptToReadAFile
 		log.trace( "Apparently have opened the file with (" + sampleRate + ") (" + numFrames + ") (" + numChannels
 				+ ")" );
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( "/tmp/javalibsndfilereader.wave", 2, sampleRate,
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 2, sampleRate,
 				(short) 16 );
 
 		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / numChannels;

@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.rackgeneration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,7 +99,11 @@ public class GenerateReleaseRack
 			rackService.createComponent( rdm, def, emptyParameterValues, def.getName() + " Example" );
 		}
 
-		rackMarshallingService.saveBaseRackToFile( rdm, "/tmp/releaserack.xml" );
+		final String outputRackFilename = "tmpoutput/releaserack.xml";
+		final File outputRackFile = new File(outputRackFilename);
+		final File parentDir = outputRackFile.getParentFile();
+		parentDir.mkdirs();
+		rackMarshallingService.saveBaseRackToFile( rdm, outputRackFile.getAbsolutePath() );
 
 		rackService.destroyRackDataModel( rdm );
 	}

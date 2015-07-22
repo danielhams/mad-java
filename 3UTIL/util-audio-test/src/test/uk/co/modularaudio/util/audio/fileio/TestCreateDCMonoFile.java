@@ -20,6 +20,8 @@
 
 package test.uk.co.modularaudio.util.audio.fileio;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 
@@ -27,12 +29,18 @@ public class TestCreateDCMonoFile extends TestCase
 {
 //	private static Log log = LogFactory.getLog( TestCreateDCMonoFile.class.getName() );
 
+	private final String outputFilename = "tmpoutput/dcmonooffset0_5.wav";
+
 	public void testWriteAFile()
 		throws Exception
 	{
 		final int sampleRate = 44100;
 		final short bitsPerSample = 16;
-		final WaveFileWriter outputWriter = new WaveFileWriter( "/tmp/dcmonooffset0_5.wav", 1, sampleRate, bitsPerSample );
+
+		final File outputFile = new File(outputFilename);
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+		final WaveFileWriter outputWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 1, sampleRate, bitsPerSample );
 
 		final int testDataLength = sampleRate;
 		final float[] testData = new float[ testDataLength ];

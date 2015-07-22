@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.libmpg123wrapper;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.logging.Log;
@@ -46,9 +47,8 @@ public class AttemptToReadAFile
 
 	private final static int SEEK_SET = 0;
 
-//	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/depeche_mode/a_broken_frame/a_photograph_of_you.ogg";
-//	final String filePath = "/home/dan/Music/CanLoseMusic/Albums/Regular/ORB - The Orb's Adventures Beyond The Ultraworld/CD 1/02 - Earth Orbit Two- Earth (Gaia).flac";
-	final String filePath = "/home/dan/Music/PreferNotToLoseMusic/SetSources/Mp3Repository/200911/974684_She_Came_Along_feat__Kid_Cudi_Sharam_s_Ecstasy_Of_Ibiza_Edit.mp3";
+	private final String inputFileName = "../../5TEST/audio-test-files/audiofiles/ExampleBeats.mp3";
+	private final String outputFileName = "tmpoutput/javalibmpg123reader.wav";
 
 	private final Limiter limiter = new Limiter( 0.98f, 25 );
 
@@ -79,7 +79,9 @@ public class AttemptToReadAFile
 
 		libmpg123.mpg123_param( handle, mpg123_parms.MPG123_ADD_FLAGS, mpg123_param_flags.MPG123_FORCE_FLOAT.swigValue(), 0.0f );
 
-		final int openSuccess = libmpg123.mpg123_open( handle, filePath );
+		final File inputFile = new File(inputFileName);
+
+		final int openSuccess = libmpg123.mpg123_open( handle, inputFile.getAbsolutePath() );
 
 		if( openSuccess != mpg123_errors.MPG123_OK.swigValue() )
 		{
@@ -101,7 +103,7 @@ public class AttemptToReadAFile
 		log.debug( "Custom JNI Methods say sample rate is (" + cSampleRate +") and channels(" +
 				cChannels + ")");
 
-		log.debug( "Opened " + filePath + " for reading" );
+		log.debug( "Opened " + inputFileName + " for reading" );
 
 		final int scanSuccess = libmpg123.mpg123_scan( handle );
 
@@ -120,10 +122,16 @@ public class AttemptToReadAFile
 		final long totalFrames = libmpg123.mpg123_length( handle );
 		log.debug("Have " + totalFrames + " frames");
 
-		final WaveFileWriter waveWriter = new WaveFileWriter( "/tmp/javalibmpg123reader.wave",
+		final File debugOutputFile = new File(outputFileName);
+		final File parentDir = debugOutputFile.getParentFile();
+		parentDir.mkdirs();
+
+		final WaveFileWriter waveWriter = new WaveFileWriter( outputFileName,
 				2,
 				(int)cSampleRate,
 				(short)16 );
+
+
 
 		final int numFramesPerRound = BUFFER_LENGTH_FLOATS / cChannels;
 

@@ -57,21 +57,6 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 		return bufferLength;
 	}
 
-//	public void debugBuffer( float[] buffer )
-//	{
-//		try
-//		{
-//			WaveFileWriter wavFileWriter = new WaveFileWriter( "/tmp/scrollerscoperingdebug.wav",  1,  DataRate.SR_44100.getValue(), (short)16 );
-//			wavFileWriter.writeFloats( buffer, buffer.length );
-//			wavFileWriter.close();
-//			log.debug("Written debug");
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
-
 	public int readToRingWithWriteIndex( final int rwritePosition, final UnsafeFloatRingBuffer targetRing, final int numToRead )
 	{
 		final int rreadPosition = readPosition.get();
@@ -89,15 +74,12 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 					targetRing.readPosition - targetRing.writePosition - 1 );
 			final int numReadableAtOnce = (rreadPosition < rwritePosition ? (rwritePosition - rreadPosition) : (bufferLength - rreadPosition) );
 
-//			int newTargetWritePosition = targetRing.writePosition + numToRead;
-
 			if( numTargetWriteableAtOnce >= numToRead )
 			{
 				// All in one blob for write
 				if( numReadableAtOnce >= numToRead )
 				{
 					// All at once
-//					System.arraycopy( buffer, rreadPosition, targetRing.buffer, targetRing.writePosition, numToRead);
 					targetRing.write( buffer, rreadPosition, numToRead );
 				}
 				else
@@ -105,9 +87,6 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 					// Two bits
 					final int firstSize = numReadableAtOnce;
 					final int secondSize = numToRead - firstSize;
-//					System.arraycopy( buffer, rreadPosition, targetRing.buffer, targetRing.writePosition, firstSize );
-//					System.arraycopy( buffer, 0, targetRing.buffer, targetRing.writePosition + firstSize, secondSize );
-//					newTargetWritePosition = newTargetWritePosition % targetRing.bufferLength;
 					targetRing.write( buffer, rreadPosition, firstSize );
 					targetRing.write( buffer, 0, secondSize );
 				}
@@ -124,13 +103,6 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 					final int firstAndSecondSize = firstSize + secondSize;
 					final int thirdSize = numToRead - firstAndSecondSize;
 
-//					System.arraycopy( buffer, rreadPosition, targetRing.buffer, targetRing.writePosition, firstSize );
-//					System.arraycopy( buffer, 0, targetRing.buffer, targetRing.writePosition + firstSize, secondSize );
-//					if( thirdSize > 0 )
-//					{
-//						System.arraycopy( buffer, 0 + secondSize, targetRing.buffer, 0, thirdSize );
-//					}
-
 					targetRing.write( buffer, rreadPosition, firstSize );
 					targetRing.write( buffer, 0, secondSize );
 					if( thirdSize > 0 )
@@ -146,12 +118,6 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 					final int firstAndSecondSize = firstSize + secondSize;
 					final int thirdSize = numToRead - firstAndSecondSize;
 
-//					System.arraycopy( buffer, rreadPosition, targetRing.buffer, targetRing.writePosition, firstSize );
-//					System.arraycopy( buffer, rreadPosition + firstSize, targetRing.buffer, 0, secondSize );
-//					if( thirdSize > 0 )
-//					{
-//						System.arraycopy( buffer, 0, targetRing.buffer, secondSize, thirdSize );
-//					}
 					targetRing.write(buffer,  rreadPosition,  firstSize );
 					targetRing.write( buffer, rreadPosition + firstSize, secondSize );
 					if( thirdSize > 0 )
@@ -159,9 +125,7 @@ public class AudioAnalyserDataRingBuffer extends LocklessFloatRingBuffer
 						targetRing.write( buffer, 0, thirdSize );
 					}
 				}
-//				newTargetWritePosition = newTargetWritePosition % targetRing.bufferLength;
 			}
-//			targetRing.writePosition = newTargetWritePosition;
 		}
 		final int newReadPosition = rreadPosition + numToRead;
 		readPosition.set( newReadPosition % bufferLength );

@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.samplecaching;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +50,8 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestSampleCachingServiceWriteFileJumpAround.class.getName() );
 
-//	private final static String inputFile = "/music/Mp3Repository/TestForPac/hc.wav";
-//	private final static String inputFile = "/media/663099F83099D003/Music/Mp3Repository/MyStuff200910/ExampleBeats.mp3";
-//	private final static String inputFile1 = "/media/663099F83099D003/Music/PhaseVocoderAudioFiles/examplebeats_full.wav";
-//	private final static String outputFile1 = "/tmp/scsout1.wav";
-
-//	private final static String inputFile2 = "/media/663099F83099D003/Music/Mp3Repository/20130215/3836570_The_Monkey_Dessert_Original_Mix.mp3";
-	private final static String inputFile2 = "/media/663099F83099D003/Music/Samples/House/VocalStabs/picturethisarecordingstudio.flac";
-//	private final static String inputFile2 = "/media/663099F83099D003/Music/OldCassettes/DJ Staden May 1995 - Epiphany/Side1DoWhatYouWantToDo_filtered.wav";
-	private final static String outputFile2 = "/tmp/scsout2.wav";
+	private final static String inputFileName = "../../5TEST/audio-test-files/audiofiles/ExampleBeats_mono.wav";
+	private final static String outputFileName = "tmpoutput/scs_jumparound_read.wav";
 
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
@@ -88,8 +82,7 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 
 	public void testReadAndWrite() throws Exception
 	{
-//		readWriteOneFile( inputFile1, outputFile1 );
-		readWriteOneFile( inputFile2, outputFile2 );
+		readWriteOneFile( inputFileName, outputFileName );
 	}
 
 	private void readWriteOneFile( final String inputFilename, final String outputFilename )
@@ -114,11 +107,18 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 //		int numOutputFrames = 32;
 //		float playbackSpeed = 1.0f;
 
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
+		final File inputFile = new File(inputFilename);
+
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
 		Thread.sleep( 200 );
 
 		final int sampleRate = 44100;
-		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
+
+		final File outputFile = new File( outputFilename );
+		final File outputDir = outputFile.getParentFile();
+		outputDir.mkdirs();
+
+		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 2, sampleRate, (short)16 );
 
 		final long totalNumFrames = scc1.getTotalNumFrames();
 		long numToRead = ( totalNumFrames < numFramesToRead ? totalNumFrames : numFramesToRead );
@@ -156,7 +156,8 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 				log.debug( "File ended" );
 				break;
 			}
-			Thread.sleep( 20 );
+			// Give the cache population thread time to wake up / do its thing
+			Thread.sleep( 5 );
 		}
 
 		frontController.unregisterCacheClientForFile( scc1 );
