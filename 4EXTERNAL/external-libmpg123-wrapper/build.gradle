@@ -5,6 +5,9 @@ sourceSets {
         java {
             srcDir 'src'
         }
+        jar {
+          from "lib/libmpg123_wrap.so"
+        }
     }
 }
 
@@ -19,7 +22,6 @@ dependencies {
 }
 
 task buildWrapper (type:Exec) {
-  println("Would build wrapper shared library")
   String osName = System.getProperty("os.name").toLowerCase();
 
   if(osName.contains("windows"))
@@ -39,3 +41,4 @@ task buildWrapper (type:Exec) {
 }
 
 compileJava.dependsOn buildWrapper
+jar.dependsOn buildWrapper
