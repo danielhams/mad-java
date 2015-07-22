@@ -22,11 +22,10 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 
 import javax.swing.UnsupportedLookAndFeelException;
 
-import junit.framework.TestCase;
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 
-public class TestCreateCVSurface extends TestCase
+public class TestCreateCVSurface
 {
 	private final GenericComponentVisualiser gcv;
 
@@ -35,21 +34,16 @@ public class TestCreateCVSurface extends TestCase
 		gcv = new GenericComponentVisualiser();
 	}
 
-	@Override
-	protected void setUp() throws Exception
+	protected void go() throws Exception
 	{
 		gcv.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception
-	{
+		gcv.testAndShowComponent( CvSurfaceMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
-	public void testAndShowComponent()
-			throws Exception
+	public static void main( final String[] args ) throws Exception
 	{
-		gcv.testAndShowComponent( CvSurfaceMadDefinition.DEFINITION_ID );
+		final TestCreateCVSurface tc = new TestCreateCVSurface();
+		tc.go();
 	}
 }

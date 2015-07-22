@@ -22,11 +22,10 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 
 import javax.swing.UnsupportedLookAndFeelException;
 
-import junit.framework.TestCase;
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
 
-public class TestCreateMidSide extends TestCase
+public class TestCreateMidSide
 {
 	private final GenericComponentVisualiser gcv;
 
@@ -35,21 +34,16 @@ public class TestCreateMidSide extends TestCase
 		gcv = new GenericComponentVisualiser();
 	}
 
-	@Override
-	protected void setUp() throws Exception
+	protected void go() throws Exception
 	{
 		gcv.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception
-	{
+		gcv.testAndShowComponent( MidSideMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
-	public void testAndShowComponent()
-			throws Exception
+	public static void main( final String[] args ) throws Exception
 	{
-		gcv.testAndShowComponent( MidSideMadDefinition.DEFINITION_ID );
+		final TestCreateMidSide tc = new TestCreateMidSide();
+		tc.go();
 	}
 }

@@ -22,11 +22,10 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 
 import javax.swing.UnsupportedLookAndFeelException;
 
-import junit.framework.TestCase;
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 
-public class TestCreateDJEQ extends TestCase
+public class TestCreateDJEQ
 {
 	private final GenericComponentVisualiser gcv;
 
@@ -35,21 +34,16 @@ public class TestCreateDJEQ extends TestCase
 		gcv = new GenericComponentVisualiser();
 	}
 
-	@Override
-	protected void setUp() throws Exception
+	protected void go() throws Exception
 	{
 		gcv.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception
-	{
+		gcv.testAndShowComponent( DJEQMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
-	public void testAndShowComponent()
-			throws Exception
+	public static void main( final String[] args ) throws Exception
 	{
-		gcv.testAndShowComponent( DJEQMadDefinition.DEFINITION_ID );
+		final TestCreateDJEQ tc = new TestCreateDJEQ();
+		tc.go();
 	}
 }

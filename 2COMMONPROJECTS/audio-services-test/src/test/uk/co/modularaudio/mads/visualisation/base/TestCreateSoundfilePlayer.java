@@ -22,11 +22,10 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 
 import javax.swing.UnsupportedLookAndFeelException;
 
-import junit.framework.TestCase;
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 
-public class TestCreateSoundfilePlayer extends TestCase
+public class TestCreateSoundfilePlayer
 {
 	private final GenericComponentVisualiser gcv;
 
@@ -35,21 +34,16 @@ public class TestCreateSoundfilePlayer extends TestCase
 		gcv = new GenericComponentVisualiser();
 	}
 
-	@Override
-	protected void setUp() throws Exception
+	protected void go() throws Exception
 	{
 		gcv.setUp();
-	}
-
-	@Override
-	protected void tearDown() throws Exception
-	{
+		gcv.testAndShowComponent( SoundfilePlayerMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
-	public void testAndShowComponent()
-			throws Exception
+	public static void main( final String[] args ) throws Exception
 	{
-		gcv.testAndShowComponent( SoundfilePlayerMadDefinition.DEFINITION_ID );
+		final TestCreateSoundfilePlayer tc = new TestCreateSoundfilePlayer();
+		tc.go();
 	}
 }
