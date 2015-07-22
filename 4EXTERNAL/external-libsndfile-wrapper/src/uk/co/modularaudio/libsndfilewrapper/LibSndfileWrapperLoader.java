@@ -20,10 +20,16 @@
 
 package uk.co.modularaudio.libsndfilewrapper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class LibSndfileWrapperLoader
 {
+	private static Log log = LogFactory.getLog( LibSndfileWrapperLoader.class.getName() );
+
 	static
 	{
+		log.info("Loading libsndfile wrapper library");
 		System.loadLibrary( "sndfile_wrap" );
 	}
 

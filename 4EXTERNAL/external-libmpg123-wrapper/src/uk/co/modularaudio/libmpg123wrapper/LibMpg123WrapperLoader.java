@@ -20,10 +20,16 @@
 
 package uk.co.modularaudio.libmpg123wrapper;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class LibMpg123WrapperLoader
 {
+	private static Log log = LogFactory.getLog( LibMpg123WrapperLoader.class.getName() );
+
 	static
 	{
+		log.info("Loading libmpg123 wrapper library");
 		System.loadLibrary( "mpg123_wrap" );
 	}
 

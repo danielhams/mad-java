@@ -20,5 +20,6 @@ sourceSets {
 repositories { mavenCentral() }
 
 dependencies {
+    compile project(':external-libsndfile-wrapper')
     compile project(':external-libsndfile-services')
 }
