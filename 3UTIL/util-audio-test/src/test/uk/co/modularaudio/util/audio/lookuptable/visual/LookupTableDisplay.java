@@ -27,9 +27,6 @@ import javax.swing.WindowConstants;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.apache.log4j.BasicConfigurator;
-
-
 public class LookupTableDisplay extends JFrame
 {
 //	private static Log log = LogFactory.getLog( LookupTableDisplay.class.getName() );
@@ -75,7 +72,6 @@ public class LookupTableDisplay extends JFrame
 
 	public static void main( final String[] args )
 	{
-		BasicConfigurator.configure();
 		final LookupTableDisplay wtd = new LookupTableDisplay();
 		wtd.setVisible( true );
 		wtd.doWavey();

@@ -58,17 +58,17 @@ public class TestSampleCachingServiceWriteFile extends TestCase
 	private final static String inputFile2 = "/media/663099F83099D003/Music/Samples/House/VocalStabs/picturethisarecordingstudio.flac";
 	private final static String outputFile2 = "/tmp/scsout2.wav";
 
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController = null;
-	private SampleCachingServiceImpl scsi = null;
-	private BlockBufferingConfiguration bbc = null;
+	private AdvancedComponentsFrontController frontController;
+	private SampleCachingServiceImpl scsi;
+	private BlockBufferingConfiguration bbc;
 
 	@Override
 	protected void setUp() throws Exception
 	{
-		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		final List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -91,41 +91,41 @@ public class TestSampleCachingServiceWriteFile extends TestCase
 		readWriteOneFile( inputFile2, outputFile2 );
 	}
 
-	private void readWriteOneFile( String inputFilename, String outputFilename )
+	private void readWriteOneFile( final String inputFilename, final String outputFilename )
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
 			RecordNotFoundException
 	{
 		log.debug( "Will attempt to read a file from start to end." );
 
-		int blockLengthInFloats = bbc.blockLengthInFloats;
-		int numChannels = 2;
+		final int blockLengthInFloats = bbc.blockLengthInFloats;
+		final int numChannels = 2;
 
-		int numFloatsToRead = (blockLengthInFloats * 20) + 20;
-		int numFramesToRead = numFloatsToRead / numChannels;
+		final int numFloatsToRead = (blockLengthInFloats * 20) + 20;
+		final int numFramesToRead = numFloatsToRead / numChannels;
 
-		int outputFrameFloatsLength = 4096;
-		int outputFrameLength = outputFrameFloatsLength / numChannels;
-		float[] outputFrameFloats = new float[ outputFrameFloatsLength ];
+		final int outputFrameFloatsLength = 4096;
+		final int outputFrameLength = outputFrameFloatsLength / numChannels;
+		final float[] outputFrameFloats = new float[ outputFrameFloatsLength ];
 
 //		int outputFrameIndex = 0;
 //		int numOutputFrames = 32;
 //		float playbackSpeed = 1.0f;
 
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFilename );
 		Thread.sleep( 200 );
 
-		int sampleRate = 44100;
-		WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
+		final int sampleRate = 44100;
+		final WaveFileWriter waveFileWriter = new WaveFileWriter( outputFilename, 2, sampleRate, (short)16 );
 
-		long totalNumFrames = scc1.getTotalNumFrames();
+		final long totalNumFrames = scc1.getTotalNumFrames();
 		long numToRead = ( totalNumFrames < numFramesToRead ? totalNumFrames : numFramesToRead );
 		// Use an offset to verify block boundary reads
 		long readFramePosition = 0;
 		scc1.setCurrentFramePosition( readFramePosition );
 		while( numToRead > 0 )
 		{
-			int numFramesThisRound = (int)(outputFrameLength < numToRead ? outputFrameLength : numToRead );
-			RealtimeMethodReturnCodeEnum retCode = scsi.readSamplesForCacheClient( scc1, outputFrameFloats, 0, numFramesThisRound );
+			final int numFramesThisRound = (int)(outputFrameLength < numToRead ? outputFrameLength : numToRead );
+			final RealtimeMethodReturnCodeEnum retCode = scsi.readSamplesForCacheClient( scc1, outputFrameFloats, 0, numFramesThisRound );
 			if( retCode == RealtimeMethodReturnCodeEnum.SUCCESS )
 			{
 				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );

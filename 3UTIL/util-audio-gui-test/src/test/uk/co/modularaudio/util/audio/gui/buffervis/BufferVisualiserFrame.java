@@ -27,12 +27,14 @@ import javax.swing.JFrame;
 public class BufferVisualiserFrame extends JFrame
 {
 	private static final long serialVersionUID = -1841622140858949623L;
-	
-	public BufferVisualiserFrame( BufferVisualiser bv )
+
+	public BufferVisualiserFrame( final BufferVisualiser bv )
 	{
 //		this.setBackground( Color.GREEN );
 		this.setBackground( Color.BLACK );
 		this.add( bv );
 		this.pack();
+
+		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	}
 }

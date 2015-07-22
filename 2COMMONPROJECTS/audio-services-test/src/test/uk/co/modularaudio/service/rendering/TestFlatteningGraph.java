@@ -23,10 +23,12 @@ package test.uk.co.modularaudio.service.rendering;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
+import test.uk.co.modularaudio.service.rendering.config.RenderingTestConfig;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -39,29 +41,31 @@ import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 
-public class TestFlatteningGraph extends AbstractGraphTest
+public class TestFlatteningGraph extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestFlatteningGraph.class.getName() );
+
+	private final RenderingTestConfig rt = new RenderingTestConfig();
 
 	public void testSimpleGraphFlatten()
 		throws Exception
 	{
 		log.debug("SimpleGraphFlattenTest beginning.");
-		final MadGraphInstance<?,?> graphToRender = graphService.createNewRootGraph(  "Test Simple Graph" );
+		final MadGraphInstance<?,?> graphToRender = rt.graphService.createNewRootGraph(  "Test Simple Graph" );
 
-		final MadDefinition<?,?> definition = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> definition = rt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
 		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		final MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
-		graphService.addInstanceToGraphWithName(  graphToRender, firstInstance, firstInstance.getInstanceName() );
+		final MadInstance<?,?> firstInstance = rt.componentService.createInstanceFromDefinition(  definition, emptyParameterMap, "Test instance" );
+		rt.graphService.addInstanceToGraphWithName(  graphToRender, firstInstance, firstInstance.getInstanceName() );
 
 		final MadChannelInstance[] firstChannelInstances = firstInstance.getChannelInstances();
 		final MadChannelInstance firstConsumerChannel = firstChannelInstances[ FadeInMadDefinition.CONSUMER ];
 
-		final MadInstance<?,?> secondInstance = componentService.createInstanceFromDefinition(  definition,
+		final MadInstance<?,?> secondInstance = rt.componentService.createInstanceFromDefinition(  definition,
 				emptyParameterMap, "Test instance two");
 
-		graphService.addInstanceToGraphWithName( graphToRender, secondInstance, secondInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName( graphToRender, secondInstance, secondInstance.getInstanceName() );
 
 		final MadChannelInstance[] secondChannelInstances = secondInstance.getChannelInstances();
 		final MadChannelInstance secondProducerChannel = secondChannelInstances[ FadeInMadDefinition.PRODUCER ];
@@ -69,19 +73,19 @@ public class TestFlatteningGraph extends AbstractGraphTest
 
 		final MadLink link = new MadLink( secondProducerChannel, firstConsumerChannel );
 
-		graphService.addLink( graphToRender,  link );
+		rt.graphService.addLink( graphToRender,  link );
 
-		final MadInstance<?,?> thirdInstance = componentService.createInstanceFromDefinition(  definition,
+		final MadInstance<?,?> thirdInstance = rt.componentService.createInstanceFromDefinition(  definition,
 				emptyParameterMap, "Third one");
 
-		graphService.addInstanceToGraphWithName( graphToRender, thirdInstance, thirdInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName( graphToRender, thirdInstance, thirdInstance.getInstanceName() );
 
 		final MadChannelInstance[] thirdChannelInstances = thirdInstance.getChannelInstances();
 		final MadChannelInstance thirdProducerChannel = thirdChannelInstances[ FadeInMadDefinition.PRODUCER ];
 
 		final MadLink link2 = new MadLink( thirdProducerChannel, secondConsumerChannel );
 
-		graphService.addLink( graphToRender, link2 );
+		rt.graphService.addLink( graphToRender, link2 );
 
 		final DataRate dataRate = DataRate.CD_QUALITY;
 		final int channelBufferLength = 64;
@@ -97,15 +101,29 @@ public class TestFlatteningGraph extends AbstractGraphTest
 		{
 			log.debug("Before creating the rendering plan");
 			final long bt = System.nanoTime();
-			renderingPlan = renderingPlanService.createRenderingPlan( graphToRender, planDataRateConfiguration, this );
+			renderingPlan = rt.renderingPlanService.createRenderingPlan( graphToRender, planDataRateConfiguration, rt );
 			final long at = System.nanoTime();
 			final long diff = at - bt;
 			final long inMicros = diff / 1000;
 			log.debug("After creating the rendering plan diff in micros is " + inMicros );
 		}
-		graphService.dumpGraph(  graphToRender  );
-		renderingPlanService.dumpRenderingPlan( renderingPlan );
+		rt.graphService.dumpGraph(  graphToRender  );
+		rt.renderingPlanService.dumpRenderingPlan( renderingPlan );
 
-		graphService.destroyGraph( graphToRender, true, true );
+		rt.graphService.destroyGraph( graphToRender, true, true );
+	}
+
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		rt.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception
+	{
+		rt.tearDown();
+		super.tearDown();
 	}
 }

@@ -45,17 +45,17 @@ public class TestSampleCachingService extends TestCase
 	private final static String testFile1 = "/home/dan/Temp/PhaseVocoderAudioFiles/monosine44_1_long.wav";
 	private final static String testFile2 = "/home/dan/Temp/PhaseVocoderAudioFiles/sine_stereo_441k_1khz_1min.wav";
 
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController = null;
-	private SampleCachingServiceImpl scsi = null;
-	private BlockBufferingConfiguration bbc = null;
+	private AdvancedComponentsFrontController frontController;
+	private SampleCachingServiceImpl scsi;
+	private BlockBufferingConfiguration bbc;
 
 	@Override
 	protected void setUp() throws Exception
 	{
-		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		final List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -76,20 +76,20 @@ public class TestSampleCachingService extends TestCase
 	{
 		log.debug( "Will attempt to read a file from start to end." );
 
-		int blockLengthInFloats = bbc.blockLengthInFloats;
+		final int blockLengthInFloats = bbc.blockLengthInFloats;
 
-		int numFloatsToRead = (bbc.blockLengthInFloats * 2) + 20;
+		final int numFloatsToRead = (bbc.blockLengthInFloats * 2) + 20;
 
-		float[] outputFrameFloats = new float[ numFloatsToRead ];
+		final float[] outputFrameFloats = new float[ numFloatsToRead ];
 
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
 //		int file1NumChannels = scc1.getNumChannels();
 		SampleCacheClient scc2 = frontController.registerCacheClientForFile( testFile2 );
-		int file2NumChannels = scc2.getNumChannels();
+		final int file2NumChannels = scc2.getNumChannels();
 
 		// And back (should free the block up)
-		int file2NumFramesToRead = numFloatsToRead / file2NumChannels;
-		long readFramePosition = (bbc.blockLengthInFloats * 2 + 40) / file2NumChannels;
+		final int file2NumFramesToRead = numFloatsToRead / file2NumChannels;
+		final long readFramePosition = (bbc.blockLengthInFloats * 2 + 40) / file2NumChannels;
 		scc2.setCurrentFramePosition( readFramePosition );
 
 		scsi.readSamplesForCacheClient( scc2,  outputFrameFloats, 0, file2NumFramesToRead );

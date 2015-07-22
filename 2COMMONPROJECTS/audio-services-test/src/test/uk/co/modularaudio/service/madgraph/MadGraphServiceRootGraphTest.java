@@ -24,10 +24,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import test.uk.co.modularaudio.service.madgraph.abstractunittest.AbstractGraphTest;
+import test.uk.co.modularaudio.service.madgraph.config.GraphTestConfig;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
@@ -36,40 +38,56 @@ import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 
-public class MadGraphServiceRootGraphTest extends AbstractGraphTest
+public class MadGraphServiceRootGraphTest extends TestCase
 {
 	private static Log log = LogFactory.getLog( MadGraphServiceRootGraphTest.class.getName());
-	
+
+	private final GraphTestConfig gt = new GraphTestConfig();
+
 	public void testCreateNewRootGraph()
 		throws Exception
 	{
 		log.debug("Starting create new root graph test");
-		MadGraphInstance<?,?> rootGraph = graphService.createNewRootGraph(  "Test Root Graph" );
+		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph(  "Test Root Graph" );
 		log.debug("Got a root graph: " + rootGraph.toString() );
-		MadChannelInstance[] channelIns = rootGraph.getChannelInstances();
+		final MadChannelInstance[] channelIns = rootGraph.getChannelInstances();
 		assertTrue( channelIns.length == 0 );
-		Collection<MadInstance<?,?> > instanceIns = rootGraph.getInstances();
+		final Collection<MadInstance<?,?> > instanceIns = rootGraph.getInstances();
 		assertTrue( instanceIns.size() == 0 );
-		Collection<MadLink> links = rootGraph.getLinks();
+		final Collection<MadLink> links = rootGraph.getLinks();
 		assertTrue( links.size() == 0 );
-		
-		graphService.destroyGraph( rootGraph, true, true );
+
+		gt.graphService.destroyGraph( rootGraph, true, true );
 	}
-	
+
 	public void testAddComponentToRootGraph()
 		throws Exception
 	{
-		MadGraphInstance<?,?> rootGraph = graphService.createNewRootGraph(  "Test root graph" );
-		MadDefinitionListModel definitions = componentService.listDefinitionsAvailable();
+		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph(  "Test root graph" );
+		final MadDefinitionListModel definitions = gt.componentService.listDefinitionsAvailable();
 		assertTrue( definitions.getSize() > 0 );
-		MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
-		Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
-		MadInstance<?,?> firstInstance = componentService.createInstanceFromDefinition(  firstDefinition, emptyParameterMap, "Test instance" );
-		graphService.addInstanceToGraphWithName(  rootGraph, firstInstance, firstInstance.getInstanceName() );
-		
-		Collection<MadInstance<?,?>> instanceIns = rootGraph.getInstances();
+		final MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
+		final Map<MadParameterDefinition, String> emptyParameterMap = new HashMap<MadParameterDefinition, String>();
+		final MadInstance<?,?> firstInstance = gt.componentService.createInstanceFromDefinition(  firstDefinition, emptyParameterMap, "Test instance" );
+		gt.graphService.addInstanceToGraphWithName(  rootGraph, firstInstance, firstInstance.getInstanceName() );
+
+		final Collection<MadInstance<?,?>> instanceIns = rootGraph.getInstances();
 		assertTrue( instanceIns.size() == 1 );
 
-		graphService.destroyGraph( rootGraph, true, true );
+		gt.graphService.destroyGraph( rootGraph, true, true );
+	}
+
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		gt.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception
+	{
+		gt.tearDown();
+		super.tearDown();
 	}
 }

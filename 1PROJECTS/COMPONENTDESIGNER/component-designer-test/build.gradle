@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test']
+        }
+        resources {
+            srcDirs = ['src']
+        }
+    }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+    compile project(':util')
+    compile project(':component-designer-services')
+    compile project(':component-designer')
+}

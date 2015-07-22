@@ -1,0 +1,46 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.apache.logging.log4j:log4j-api:2.3'
+  compile 'org.apache.logging.log4j:log4j-core:2.3'
+  compile 'org.apache.logging.log4j:log4j-jcl:2.3'
+  compile 'commons-logging:commons-logging:1.2'
+  compile 'commons-codec:commons-codec:1.10'
+  compile 'dom4j:dom4j:1.6.1'
+  compile 'com.github.wendykierp:JTransforms:3.0'
+  compile 'net.java.dev.jna:jna:4.1.0'
+  compile 'org.apache.mahout:mahout-collections:1.0'
+  compile 'org.springframework:spring-core:4.1.7.RELEASE'
+  compile 'org.springframework:spring-context:4.1.7.RELEASE'
+  compile 'org.springframework:spring-beans:4.1.7.RELEASE'
+  compile 'org.springframework:spring-expression:4.1.7.RELEASE'
+  compile 'org.hibernate:hibernate-core:4.3.10.Final'
+  compile 'com.miglayout:miglayout-swing:5.0'
+  compile 'junit:junit:4.12'
+//  compile 'org.glassfish.jaxb:jaxb-runtime:2.2.11'
+//  compile 'org.glassfish.jaxb:jaxb-core:2.2.11'
+  compile 'com.sun.xml.bind:jaxb-xjc:2.2.4-1'
+  compile 'org.hsqldb:hsqldb:2.3.2'
+  compile files('tmpcustomlib/jnajack-custom.jar')
+}
+
+task get_libs(type: Copy) {
+    from sourceSets.main.runtimeClasspath
+    include "*.jar"
+    into 'libs/'
+}
+
+build.dependsOn get_libs
+build.mustRunAfter get_libs

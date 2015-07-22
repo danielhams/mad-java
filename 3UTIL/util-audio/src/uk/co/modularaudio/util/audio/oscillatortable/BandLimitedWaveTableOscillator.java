@@ -40,7 +40,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 		final float freqDiff = (prevFreq - freq);
 		final float absFreqDiff = ( freqDiff < 0.0f ? -freqDiff : freqDiff );
 		// Only check for a new table every 20hz of difference
-		if( absFreqDiff > 20.0f )
+		if( absFreqDiff > 20.0f || waveTableForFreq == null )
 		{
 			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
 			prevFreq = freq;

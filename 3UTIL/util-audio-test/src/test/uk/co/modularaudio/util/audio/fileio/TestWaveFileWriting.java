@@ -27,7 +27,9 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.math.MathFormatter;
 
 public class TestWaveFileWriting extends TestCase
 {
@@ -103,9 +105,14 @@ public class TestWaveFileWriting extends TestCase
 
 		for( int i = 0 ; i < testData.length ; ++i )
 		{
-			if( testData[ i ] != resultData[ i ] )
+			final float absDiff = Math.abs(testData[i] - resultData[i]);
+			if( absDiff > AudioMath.MIN_FLOATING_POINT_16BIT_VAL_F )
 			{
 				log.debug("On index " + i + " expected " + testData[ i ] + " but got " + resultData[ i ] );
+				log.debug("AbsDiff(" +
+						MathFormatter.slowFloatPrint( absDiff, 16, true ) +
+						") while min floating point 16 bit value is " +
+						MathFormatter.slowFloatPrint( AudioMath.MIN_FLOATING_POINT_16BIT_VAL_F, 16, true ) );
 			}
 		}
 	}

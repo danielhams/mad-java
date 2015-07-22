@@ -1,2 +1,5 @@
 *~
 .pmd
+build
+.gradle
+wavetablecache

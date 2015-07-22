@@ -45,17 +45,17 @@ public class TestSampleCachingServiceReadMonoFile extends TestCase
 
 	private final static String testFile1 = "/home/dan/Temp/PhaseVocoderAudioFiles/monosine44_1_long.wav";
 
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController = null;
-	private SampleCachingServiceImpl scsi = null;
-	private BlockBufferingConfiguration bbc = null;
+	private AdvancedComponentsFrontController frontController;
+	private SampleCachingServiceImpl scsi;
+	private BlockBufferingConfiguration bbc;
 
 	@Override
 	protected void setUp() throws Exception
 	{
-		List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
+		final List<SpringContextHelper> clientHelpers = new ArrayList<SpringContextHelper>();
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
@@ -76,25 +76,25 @@ public class TestSampleCachingServiceReadMonoFile extends TestCase
 	{
 		log.debug( "Will attempt to read mono file from start to end." );
 
-		int blockLengthInFloats = bbc.blockLengthInFloats;
+		final int blockLengthInFloats = bbc.blockLengthInFloats;
 
-		int numFloatsToRead = (bbc.blockLengthInFloats * 2) + 20;
+		final int numFloatsToRead = (bbc.blockLengthInFloats * 2) + 20;
 
-		float[] outputFrameFloats = new float[ numFloatsToRead ];
+		final float[] outputFrameFloats = new float[ numFloatsToRead ];
 
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
-		int numChannels = scc1.getNumChannels();
-		long numFrames = scc1.getTotalNumFrames();
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
+		final int numChannels = scc1.getNumChannels();
+		final long numFrames = scc1.getTotalNumFrames();
 		assert numChannels == 1;
 
 		long curPos = 0;
-		long numLeft = numFrames;
+		final long numLeft = numFrames;
 
 		while( curPos < numFrames )
 		{
-			int numThisRound = (int)( numLeft > blockLengthInFloats ? blockLengthInFloats : numLeft );
+			final int numThisRound = (int)( numLeft > blockLengthInFloats ? blockLengthInFloats : numLeft );
 
-			RealtimeMethodReturnCodeEnum rc = scsi.readSamplesForCacheClient( scc1, outputFrameFloats, 0, numThisRound );
+			final RealtimeMethodReturnCodeEnum rc = scsi.readSamplesForCacheClient( scc1, outputFrameFloats, 0, numThisRound );
 
 			assert rc == RealtimeMethodReturnCodeEnum.SUCCESS;
 

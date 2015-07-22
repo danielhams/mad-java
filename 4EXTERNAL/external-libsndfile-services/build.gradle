@@ -1,0 +1,20 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+    compile project(':util')
+    compile project(':util-external')
+    compile project(':util-audio')
+    compile project(':audio-services')
+    compile project(':external-libsndfile-wrapper')
+}

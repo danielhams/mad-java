@@ -1,0 +1,22 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+    compile project(':util')
+    compile project(':util-external')
+    compile project(':util-audio')
+    compile project(':util-gui')
+    compile project(':util-audio-gui')
+    compile project(':common-services')
+    compile project(':rack-marshalling-jaxb')
+}

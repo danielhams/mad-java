@@ -6,7 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-audio"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-external"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-gui"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

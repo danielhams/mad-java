@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+}

@@ -23,10 +23,12 @@ package test.uk.co.modularaudio.service.rendering;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
+import test.uk.co.modularaudio.service.rendering.config.RenderingTestConfig;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.service.madgraph.GraphType;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
@@ -45,14 +47,16 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
+public class TestRootGraphAppGraphSubGraph extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestRootGraphAppGraphSubGraph.class.getName() );
+
+	private final RenderingTestConfig rt = new RenderingTestConfig();
 
 	public void testCreatingGraphLevels()
 		throws Exception
 	{
-		final MadGraphInstance<?,?> subSubGraph = graphService.createNewParameterisedGraph( "Silly Sub Sub Graph",
+		final MadGraphInstance<?,?> subSubGraph = rt.graphService.createNewParameterisedGraph( "Silly Sub Sub Graph",
 				GraphType.SUB_GRAPH,
 				4, 4,
 				0, 0,
@@ -60,21 +64,21 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 
 		setupSubSubGraph( subSubGraph );
 
-		graphService.dumpGraph( subSubGraph );
+		rt.graphService.dumpGraph( subSubGraph );
 
-		final MadGraphInstance<?,?> subGraph = graphService.createNewParameterisedGraph( "Vol And Pan Subgraph",
+		final MadGraphInstance<?,?> subGraph = rt.graphService.createNewParameterisedGraph( "Vol And Pan Subgraph",
 				GraphType.SUB_GRAPH,
 				2, 2,
 				2, 2,
 				0, 0 );
 
-		graphService.addInstanceToGraphWithName( subGraph,  subSubGraph,  subSubGraph.getInstanceName());
+		rt.graphService.addInstanceToGraphWithName( subGraph,  subSubGraph,  subSubGraph.getInstanceName());
 
 		setupSubGraph( subGraph );
 
-		graphService.dumpGraph( subGraph );
+		rt.graphService.dumpGraph( subGraph );
 
-		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Component Designer Application Graph",
+		final MadGraphInstance<?,?> appGraph = rt.graphService.createNewParameterisedGraph( "Component Designer Application Graph",
 				GraphType.APP_GRAPH,
 				// Audio Ins/Outs
 				4, 4,
@@ -83,17 +87,17 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 				// Midi Ins/Outs
 				4, 4 );
 
-		graphService.addInstanceToGraphWithName( appGraph,  subGraph,  subGraph.getInstanceName());
+		rt.graphService.addInstanceToGraphWithName( appGraph,  subGraph,  subGraph.getInstanceName());
 
 		setupAppGraph( appGraph, subGraph );
 
-		graphService.dumpGraph( appGraph );
+		rt.graphService.dumpGraph( appGraph );
 
-		final MadGraphInstance<?,?> rootGraph = graphService.createNewRootGraph(  "Root graph" );
-		graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
+		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph(  "Root graph" );
+		rt.graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
 		setupRootGraph( rootGraph, appGraph );
 
-		graphService.dumpGraph( rootGraph );
+		rt.graphService.dumpGraph( rootGraph );
 
 		RenderingPlan magic = null;
 
@@ -111,55 +115,55 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 			{
 				log.debug("Beginning render plan creation");
 			}
-			magic = renderingPlanService.createRenderingPlan( rootGraph, planDataRateConfiguration, this );
+			magic = rt.renderingPlanService.createRenderingPlan( rootGraph, planDataRateConfiguration, rt );
 			if( i == 0 || i == 999 )
 			{
 				log.debug("Finished render plan creation");
 			}
 		}
-		renderingPlanService.dumpRenderingPlan( magic );
+		rt.renderingPlanService.dumpRenderingPlan( magic );
 
-		renderingPlanService.destroyRenderingPlan( magic );
+		rt.renderingPlanService.destroyRenderingPlan( magic );
 
-		graphService.destroyGraph( rootGraph, true, true );
+		rt.graphService.destroyGraph( rootGraph, true, true );
 	}
 
 	private void setupSubSubGraph( final MadGraphInstance<?,?> subSubGraph ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		final MadInstance<?,?> fakeOscillatorInstance = createInstanceNamed( "Fake sub sub Oscillator" );
-		graphService.addInstanceToGraphWithName(subSubGraph, fakeOscillatorInstance, fakeOscillatorInstance.getInstanceName());
+		rt.graphService.addInstanceToGraphWithName(subSubGraph, fakeOscillatorInstance, fakeOscillatorInstance.getInstanceName());
 	}
 
 	private void setupSubGraph( final MadGraphInstance<?,?> subGraph ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException
 	{
 		final MadInstance<?,?> fakeGainInstance = createInstanceNamed( "Fake sub graph Gain" );
 		final MadInstance<?,?> fakePanInstance = createInstanceNamed( "Fake sub graph Pan" );
-		graphService.addInstanceToGraphWithName(subGraph, fakeGainInstance, fakeGainInstance.getInstanceName());
-		graphService.addInstanceToGraphWithName(subGraph, fakePanInstance, fakePanInstance.getInstanceName());
+		rt.graphService.addInstanceToGraphWithName(subGraph, fakeGainInstance, fakeGainInstance.getInstanceName());
+		rt.graphService.addInstanceToGraphWithName(subGraph, fakePanInstance, fakePanInstance.getInstanceName());
 
 		// Connecting gain in as the subgraph in 0
 		final MadChannelInstance graphInChannel = subGraph.getChannelInstanceByName( "Input Channel 1" );
 
 		final MadChannelInstance gainInChannel = fakeGainInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
-		graphService.exposeAudioInstanceChannelAsGraphChannel( subGraph, graphInChannel, gainInChannel );
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel( subGraph, graphInChannel, gainInChannel );
 
 		// Connecting gain output to the pan input 0
 		final MadChannelInstance gainOutChannel = fakeGainInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
 		final MadChannelInstance panInChannel = fakePanInstance.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
 		final MadLink gainToPanLink = new MadLink( gainOutChannel, panInChannel );
-		graphService.addLink( subGraph, gainToPanLink );
+		rt.graphService.addLink( subGraph, gainToPanLink );
 
 		// Connecting pan output to graph out 0
 		final MadChannelInstance panOutChannel = fakePanInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
 		final MadChannelInstance graphOutChannel = subGraph.getChannelInstanceByName(  "Output Channel 1" );
-		graphService.exposeAudioInstanceChannelAsGraphChannel(subGraph, graphOutChannel, panOutChannel);
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel(subGraph, graphOutChannel, panOutChannel);
 	}
 
 	private void setupAppGraph( final MadGraphInstance<?,?> appGraph, final MadInstance<?,?> volAndPanInstance ) throws RecordNotFoundException, DatastoreException, MAConstraintViolationException, UnknownDataRateException, MadProcessingException
 	{
 		final MadInstance<?,?> fakeOscillatorInstance = createInstanceNamed( "Fake app graph Oscillator" );
 
-		graphService.addInstanceToGraphWithName(appGraph, fakeOscillatorInstance, fakeOscillatorInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName(appGraph, fakeOscillatorInstance, fakeOscillatorInstance.getInstanceName() );
 
 		// Connect oscillator out to the first input channel of the vol and pan subgraph
 		final MadChannelInstance volAndPanInChannelInstance = volAndPanInstance.getChannelInstanceByName( "Input Channel 1" );
@@ -167,24 +171,24 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 		final MadChannelInstance oscOutChannel = fakeOscillatorInstance.getChannelInstances()[ FadeInMadDefinition.PRODUCER ];
 
 		final MadLink oscToVAPLink = new MadLink( oscOutChannel, volAndPanInChannelInstance );
-		graphService.addLink( appGraph, oscToVAPLink );
+		rt.graphService.addLink( appGraph, oscToVAPLink );
 
 		// Now expose the vol and pan output 1 as our graph output 1
 		final MadChannelInstance volAndPanOutChannelInstance = volAndPanInstance.getChannelInstanceByName( "Output Channel 1" );
 
 		final MadChannelInstance graphOutChannelInstance = appGraph.getChannelInstanceByName( "Output Channel 1" );
 
-		graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphOutChannelInstance, volAndPanOutChannelInstance );
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphOutChannelInstance, volAndPanOutChannelInstance );
 
 		// And expose a fake component as input too
 		final MadInstance<?,?> fakeInputInstance = createInstanceNamed("AppGraphInputProcessor");
-		graphService.addInstanceToGraphWithName( appGraph, fakeInputInstance, fakeInputInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName( appGraph, fakeInputInstance, fakeInputInstance.getInstanceName() );
 
 		final MadChannelInstance ipInChannelInstance = fakeInputInstance.getChannelInstanceByName( "Input");
 
 		final MadChannelInstance graphInChannelInstance = appGraph.getChannelInstanceByName( "Input Channel 1");
 
-		graphService.exposeAudioInstanceChannelAsGraphChannel(appGraph, graphInChannelInstance, ipInChannelInstance);
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel(appGraph, graphInChannelInstance, ipInChannelInstance);
 	}
 
 	private void setupRootGraph( final MadGraphInstance<?,?> rootGraph, final MadGraphInstance<?,?> appGraphInstance ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException, UnknownDataRateException
@@ -200,22 +204,36 @@ public class TestRootGraphAppGraphSubGraph extends AbstractGraphTest
 		final MadChannelInstance appInChannel = appGraphInstance.getChannelInstanceByName( "Input Channel 1" );
 
 		final MadLink masterInToAppLink = new MadLink( masterInChannel, appInChannel );
-		graphService.addLink( rootGraph,  masterInToAppLink );
+		rt.graphService.addLink( rootGraph,  masterInToAppLink );
 
 		// Connect master out to app out
 		final MadChannelInstance masterOutChannel = fakeMasterOut.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
 		final MadChannelInstance appOutChannel = appGraphInstance.getChannelInstanceByName(  "Output Channel 1" );
 
 		final MadLink masterOutToAppLink = new MadLink( appOutChannel, masterOutChannel );
-		graphService.addLink( rootGraph, masterOutToAppLink );
+		rt.graphService.addLink( rootGraph, masterOutToAppLink );
 	}
 
 
 	private MadInstance<?,?> createInstanceNamed( final String name ) throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
-		final MadDefinition<?,?> def = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> def = rt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-		final MadInstance<?,?> retVal = componentService.createInstanceFromDefinition(  def, parameterValues, name );
+		final MadInstance<?,?> retVal = rt.componentService.createInstanceFromDefinition(  def, parameterValues, name );
 		return retVal;
+	}
+
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		rt.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception
+	{
+		rt.tearDown();
+		super.tearDown();
 	}
 }

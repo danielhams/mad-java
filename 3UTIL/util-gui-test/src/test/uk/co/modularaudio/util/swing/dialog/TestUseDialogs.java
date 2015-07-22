@@ -22,8 +22,6 @@ package test.uk.co.modularaudio.util.swing.dialog;
 
 import javax.swing.JOptionPane;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,7 +34,7 @@ import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialog;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
 
-public class TestUseDialogs extends TestCase
+public class TestUseDialogs
 {
 	private static Log log = LogFactory.getLog( TestUseDialogs.class.getName() );
 
@@ -110,6 +108,15 @@ public class TestUseDialogs extends TestCase
 
 		dsd.setValues( null, "Some message", "Some title", JOptionPane.INFORMATION_MESSAGE, testCallback );
 		dsd.go();
+	}
+
+	public static void main( final String[] args ) throws Exception
+	{
+		final TestUseDialogs tud = new TestUseDialogs();
+		tud.testUseTextInput();
+		tud.testUseYesNoQuestion();
+		tud.testMessage();
+		tud.testDirectorySelection();
 	}
 }
 

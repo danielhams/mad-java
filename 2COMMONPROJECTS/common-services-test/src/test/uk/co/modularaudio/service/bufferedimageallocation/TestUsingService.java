@@ -20,8 +20,6 @@
 
 package test.uk.co.modularaudio.service.bufferedimageallocation;
 
-import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,27 +31,29 @@ import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
 import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
 import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 
-public class TestUsingService extends TestCase
+public class TestUsingService
 {
 	private static Log log = LogFactory.getLog( TestUsingService.class.getName() );
 
 	private ConfigurationServiceImpl configurationService;
 	private BufferedImageAllocationServiceImpl bufferedImageAllocationService;
 
-	@Override
+	public TestUsingService()
+	{
+	}
+
 	protected void setUp() throws Exception
 	{
 		log.debug("Setting up..");
 
 		configurationService = new ConfigurationServiceImpl();
-		configurationService.setConfigResourcePath( "bias.properties" );
+		configurationService.setConfigResourcePath( "/bias.properties" );
 		bufferedImageAllocationService = new BufferedImageAllocationServiceImpl();
 		bufferedImageAllocationService.setConfigurationService( configurationService );
 		configurationService.init();
 		bufferedImageAllocationService.init();
 	}
 
-	@Override
 	protected void tearDown() throws Exception
 	{
 		log.debug("Tearing down..");
@@ -118,5 +118,19 @@ public class TestUsingService extends TestCase
 			}
 		}
 
+	}
+
+	public static void main( final String[] args ) throws Exception
+	{
+		final TestUsingService tus = new TestUsingService();
+		tus.setUp();
+		try
+		{
+			tus.testAllocationLoop();
+		}
+		finally
+		{
+			tus.tearDown();
+		}
 	}
 }

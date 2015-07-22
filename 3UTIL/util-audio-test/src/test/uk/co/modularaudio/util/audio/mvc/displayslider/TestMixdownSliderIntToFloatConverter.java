@@ -22,13 +22,15 @@ package test.uk.co.modularaudio.util.audio.mvc.displayslider;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderIntToFloatConverter;
 import uk.co.modularaudio.util.math.MathFormatter;
 
-public class TestMixdownSliderIntToFloatConverter
+public class TestMixdownSliderIntToFloatConverter extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestMixdownSliderIntToFloatConverter.class.getName() );
 
@@ -36,7 +38,7 @@ public class TestMixdownSliderIntToFloatConverter
 	{
 	}
 
-	public void go() throws IOException
+	public void testMixdownSliderConversions() throws IOException
 	{
 		final MixdownSliderIntToFloatConverter intToFloatConverter = new MixdownSliderIntToFloatConverter();
 
@@ -102,13 +104,4 @@ public class TestMixdownSliderIntToFloatConverter
 			}
 		}
 	}
-
-	public static void main( final String[] args )
-		throws IOException
-	{
-		final TestMixdownSliderIntToFloatConverter t = new TestMixdownSliderIntToFloatConverter();
-		t.go();
-
-	}
-
 }

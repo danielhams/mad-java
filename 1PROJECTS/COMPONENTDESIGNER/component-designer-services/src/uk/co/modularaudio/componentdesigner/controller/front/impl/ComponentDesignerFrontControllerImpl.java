@@ -28,12 +28,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.controller.front.RenderingStateListener;
@@ -108,7 +107,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private final List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
 
-	private Priority previousLoggingThreshold;
+	private Level previousLoggingLevel;
 
 	private boolean frontPreviouslyShowing = true;
 
@@ -223,28 +222,21 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	public void toggleLogging()
 	{
 		loggingEnabled = (loggingEnabled ? false : true );
-		final Logger rootLogger = LogManager.getRootLogger();
-		final Appender appender = rootLogger.getAppender( "console" );
-		if( appender instanceof ConsoleAppender )
+		final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
+		final Configuration config = ctx.getConfiguration();
+		final LoggerConfig loggerConfig = config.getLoggerConfig( LogManager.ROOT_LOGGER_NAME );
+
+		if( previousLoggingLevel == null )
 		{
-			final ConsoleAppender ca = (ConsoleAppender)appender;
-			if( loggingEnabled )
-			{
-				if( previousLoggingThreshold != null )
-				{
-					ca.setThreshold( previousLoggingThreshold );
-				}
-				else
-				{
-					ca.setThreshold( Level.TRACE );
-				}
-			}
-			else
-			{
-				previousLoggingThreshold  = ca.getThreshold();
-				ca.setThreshold( Level.WARN );
-			}
+			previousLoggingLevel = loggerConfig.getLevel();
+			loggerConfig.setLevel( Level.TRACE );
 		}
+		else
+		{
+			loggerConfig.setLevel( previousLoggingLevel );
+			previousLoggingLevel = null;
+		}
+		ctx.updateLoggers();
 	}
 
 	@Override

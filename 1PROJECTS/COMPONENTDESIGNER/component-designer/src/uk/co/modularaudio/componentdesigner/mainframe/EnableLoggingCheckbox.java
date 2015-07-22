@@ -27,9 +27,9 @@ public class EnableLoggingCheckbox extends JCheckBox
 {
 	private static final long serialVersionUID = -6011748340308255539L;
 
-	public EnableLoggingCheckbox(MainFrameActions actions)
+	public EnableLoggingCheckbox(final MainFrameActions actions)
 	{
 		this.setAction( actions.getToggleLoggingAction() );
-		setSelected( true );
+		setSelected( false );
 	}
 }

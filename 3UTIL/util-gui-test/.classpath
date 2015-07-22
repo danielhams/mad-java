@@ -3,11 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/external-libs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/util-audio"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/util-audio-gui"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-external"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-gui"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-audio"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-audio-gui"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

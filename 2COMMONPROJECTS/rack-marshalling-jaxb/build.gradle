@@ -1,0 +1,36 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+configurations {
+    jaxb
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.4-1'
+}
+
+task jaxb () {
+     doLast {
+            def jaxbOutputDir = new File('src')
+            jaxbOutputDir.mkdirs()
+
+            ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+
+            ant.xjc(destdir: jaxbOutputDir,
+                    package: 'uk.co.modularaudio.service.rackmarshalling.generated.madrack' ) {
+                schema(dir:'schema', includes: 'madrack.xsd')
+            }
+     }
+}
+
+compileJava.dependsOn jaxb

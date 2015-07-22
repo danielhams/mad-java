@@ -1,0 +1,34 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+
+    test {
+        java {
+            srcDirs = ['src/test']
+        }
+        resources {
+            srcDirs = ['src']
+        }
+    }
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+    compile project(':util')
+    compile project(':util-audio')
+    compile project(':util-gui')
+    compile project(':util-audio-gui')
+    compile project(':common-services')
+    compile project(':audio-services')
+    compile project(':external-libmpg123-wrapper')
+    compile project(':external-libmpg123-services')
+    compile project(':external-libsndfile-wrapper')
+    compile project(':external-libsndfile-services')
+}

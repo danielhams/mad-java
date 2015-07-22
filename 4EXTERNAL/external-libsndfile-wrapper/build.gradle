@@ -1,0 +1,41 @@
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+configurations {
+    buildWrapper
+}
+
+repositories { mavenCentral() }
+
+dependencies {
+    compile project(':external-libs')
+}
+
+task buildWrapper (type:Exec) {
+  println("Would build wrapper shared library")
+  String osName = System.getProperty("os.name").toLowerCase();
+
+  if(osName.contains("windows"))
+  {
+  }
+  else if(osName.contains("osx"))
+  {
+  }
+  else if(osName.contains("linux"))
+  {
+    commandLine 'sh'
+    args 'generate_linux_so.sh'
+  }
+  else
+  {
+  }
+}
+
+compileJava.dependsOn buildWrapper

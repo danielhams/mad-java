@@ -23,10 +23,12 @@ package test.uk.co.modularaudio.service.rendering;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import test.uk.co.modularaudio.service.rendering.abstractunittest.AbstractGraphTest;
+import test.uk.co.modularaudio.service.rendering.config.RenderingTestConfig;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.service.madgraph.GraphType;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
@@ -45,14 +47,16 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class TestGraphSubGraph extends AbstractGraphTest
+public class TestGraphSubGraph extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestGraphSubGraph.class.getName() );
+
+	private final RenderingTestConfig rt = new RenderingTestConfig();
 
 	public void testCreatingGraphLevels()
 		throws Exception
 	{
-		final MadGraphInstance<?,?> appGraph = graphService.createNewParameterisedGraph( "Component Designer Application Graph",
+		final MadGraphInstance<?,?> appGraph = rt.graphService.createNewParameterisedGraph( "Component Designer Application Graph",
 				GraphType.APP_GRAPH,
 				// Audio Ins/Outs
 				1, 1,
@@ -63,13 +67,13 @@ public class TestGraphSubGraph extends AbstractGraphTest
 
 		setupAppGraph( appGraph );
 
-		graphService.dumpGraph( appGraph );
+		rt.graphService.dumpGraph( appGraph );
 
-		final MadGraphInstance<?,?> rootGraph = graphService.createNewRootGraph(  "Root graph" );
-		graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
+		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph(  "Root graph" );
+		rt.graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
 		setupRootGraph( rootGraph, appGraph );
 
-		graphService.dumpGraph( rootGraph );
+		rt.graphService.dumpGraph( rootGraph );
 
 		RenderingPlan magic = null;
 
@@ -87,17 +91,17 @@ public class TestGraphSubGraph extends AbstractGraphTest
 			{
 				log.debug("Beginning render plan creation");
 			}
-			magic = renderingPlanService.createRenderingPlan( rootGraph, planDataRateConfiguration, this );
+			magic = rt.renderingPlanService.createRenderingPlan( rootGraph, planDataRateConfiguration, rt );
 			if( i == 0 || i == 999 )
 			{
 				log.debug("Finished render plan creation");
 			}
 		}
-		renderingPlanService.dumpRenderingPlan( magic );
+		rt.renderingPlanService.dumpRenderingPlan( magic );
 
-		renderingPlanService.destroyRenderingPlan( magic );
+		rt.renderingPlanService.destroyRenderingPlan( magic );
 
-		graphService.destroyGraph( rootGraph, true, true );
+		rt.graphService.destroyGraph( rootGraph, true, true );
 	}
 
 	private void setupAppGraph( final MadGraphInstance<?,?> appGraph ) throws RecordNotFoundException, DatastoreException, MAConstraintViolationException, UnknownDataRateException, MadProcessingException
@@ -105,24 +109,24 @@ public class TestGraphSubGraph extends AbstractGraphTest
 		final MadChannelInstance graphInChannelInstance = appGraph.getChannelInstanceByName( "Input Channel 1");
 
 		final MadInstance<?,?> fakeIOInstance = createInstanceNamed( "AppGraphInputOutputProcessor" );
-		graphService.addInstanceToGraphWithName(appGraph, fakeIOInstance, fakeIOInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName(appGraph, fakeIOInstance, fakeIOInstance.getInstanceName() );
 
 		final MadChannelInstance ioOutChannelInstance = fakeIOInstance.getChannelInstanceByName("Output");
 		final MadChannelInstance graphOutChannelInstance = appGraph.getChannelInstanceByName("Output Channel 1");
 
-		graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphOutChannelInstance, ioOutChannelInstance );
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphOutChannelInstance, ioOutChannelInstance );
 
 		final MadChannelInstance ioInChannelInstance = fakeIOInstance.getChannelInstanceByName("Input");
 
-		graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphInChannelInstance, ioInChannelInstance );
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphInChannelInstance, ioInChannelInstance );
 
 		// And expose a fake component as input too
 		final MadInstance<?,?> fakeInputInstance = createInstanceNamed("AppGraphInputOnlyProcessor");
-		graphService.addInstanceToGraphWithName( appGraph, fakeInputInstance, fakeInputInstance.getInstanceName() );
+		rt.graphService.addInstanceToGraphWithName( appGraph, fakeInputInstance, fakeInputInstance.getInstanceName() );
 
 		final MadChannelInstance ipInChannelInstance = fakeInputInstance.getChannelInstanceByName( "Input");
 
-		graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphInChannelInstance, ipInChannelInstance );
+		rt.graphService.exposeAudioInstanceChannelAsGraphChannel( appGraph, graphInChannelInstance, ipInChannelInstance );
 
 	}
 
@@ -139,22 +143,36 @@ public class TestGraphSubGraph extends AbstractGraphTest
 		final MadChannelInstance appInChannel = appGraphInstance.getChannelInstanceByName( "Input Channel 1" );
 
 		final MadLink masterInToAppLink = new MadLink( masterInChannel, appInChannel );
-		graphService.addLink( rootGraph,  masterInToAppLink );
+		rt.graphService.addLink( rootGraph,  masterInToAppLink );
 
 		// Connect master out to app out
 		final MadChannelInstance masterOutChannel = fakeMasterOut.getChannelInstances()[ FadeInMadDefinition.CONSUMER ];
 		final MadChannelInstance appOutChannel = appGraphInstance.getChannelInstanceByName(  "Output Channel 1" );
 
 		final MadLink masterOutToAppLink = new MadLink( appOutChannel, masterOutChannel );
-		graphService.addLink( rootGraph, masterOutToAppLink );
+		rt.graphService.addLink( rootGraph, masterOutToAppLink );
 	}
 
 
 	private MadInstance<?,?> createInstanceNamed( final String name ) throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
-		final MadDefinition<?,?> def = componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
+		final MadDefinition<?,?> def = rt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 		final Map<MadParameterDefinition, String> parameterValues = new HashMap<MadParameterDefinition, String>();
-		final MadInstance<?,?> retVal = componentService.createInstanceFromDefinition(  def, parameterValues, name );
+		final MadInstance<?,?> retVal = rt.componentService.createInstanceFromDefinition(  def, parameterValues, name );
 		return retVal;
+	}
+
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		rt.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception
+	{
+		rt.tearDown();
+		super.tearDown();
 	}
 }

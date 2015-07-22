@@ -59,12 +59,12 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 //	private final static String inputFile2 = "/media/663099F83099D003/Music/OldCassettes/DJ Staden May 1995 - Epiphany/Side1DoWhatYouWantToDo_filtered.wav";
 	private final static String outputFile2 = "/tmp/scsout2.wav";
 
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController = null;
-	private SampleCachingServiceImpl scsi = null;
-	private BlockBufferingConfiguration bbc = null;
+	private AdvancedComponentsFrontController frontController;
+	private SampleCachingServiceImpl scsi;
+	private BlockBufferingConfiguration bbc;
 
 	@Override
 	protected void setUp() throws Exception

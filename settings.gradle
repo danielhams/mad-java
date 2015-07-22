@@ -1,0 +1,49 @@
+include ':external-libs',
+        ':util',
+        ':util-test',
+        ':util-external',
+        ':util-audio',
+        ':util-audio-test',
+        ':util-gui',
+        ':util-gui-test',
+        ':util-audio-gui',
+        ':util-audio-gui-test',
+        ':common-services',
+        ':common-services-test',
+        ':rack-marshalling-jaxb',
+        ':audio-services',
+        ':audio-services-test',
+        ':external-libmpg123-wrapper',
+        ':external-libmpg123-services',
+        ':external-libmpg123-services-test',
+        ':external-libsndfile-wrapper',
+        ':external-libsndfile-services',
+        ':external-libsndfile-services-test',
+        ':component-designer-services',
+        ':component-designer-services-test',
+        ':component-designer'
+
+project(':external-libs').projectDir = file('4EXTERNAL/external-libs')
+project(':util').projectDir = file('3UTIL/util')
+project(':util-test').projectDir = file('3UTIL/util-test')
+project(':util-external').projectDir = file('3UTIL/util-external')
+project(':util-audio').projectDir = file('3UTIL/util-audio')
+project(':util-audio-test').projectDir = file('3UTIL/util-audio-test')
+project(':util-gui').projectDir = file('3UTIL/util-gui')
+project(':util-gui-test').projectDir = file('3UTIL/util-gui-test')
+project(':util-audio-gui').projectDir = file('3UTIL/util-audio-gui')
+project(':util-audio-gui-test').projectDir = file('3UTIL/util-audio-gui-test')
+project(':common-services').projectDir = file('2COMMONPROJECTS/common-services')
+project(':common-services-test').projectDir = file('2COMMONPROJECTS/common-services-test')
+project(':rack-marshalling-jaxb').projectDir = file('2COMMONPROJECTS/rack-marshalling-jaxb')
+project(':audio-services').projectDir = file('2COMMONPROJECTS/audio-services')
+project(':audio-services-test').projectDir = file('2COMMONPROJECTS/audio-services-test')
+project(':external-libmpg123-wrapper').projectDir = file('4EXTERNAL/external-libmpg123-wrapper')
+project(':external-libmpg123-services').projectDir = file('4EXTERNAL/external-libmpg123-services')
+project(':external-libmpg123-services-test').projectDir = file('4EXTERNAL/external-libmpg123-services-test')
+project(':external-libsndfile-wrapper').projectDir = file('4EXTERNAL/external-libsndfile-wrapper')
+project(':external-libsndfile-services').projectDir = file('4EXTERNAL/external-libsndfile-services')
+project(':external-libsndfile-services-test').projectDir = file('4EXTERNAL/external-libsndfile-services-test')
+project(':component-designer-services').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer-services')
+project(':component-designer-services-test').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer-services-test')
+project(':component-designer').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer')

@@ -20,7 +20,9 @@
 
 package test.uk.co.modularaudio.service.ioandrendering.test;
 
-import org.apache.mahout.cf.taste.impl.common.FastMap;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
@@ -72,7 +74,7 @@ public class TestSubRackDestruction
 
 		final MadDefinition<?,?> subRackDef = componentService.findDefinitionById( SubRackMadDefinition.DEFINITION_ID );
 
-		final FastMap<MadParameterDefinition,String> emptyParamValues = new FastMap<MadParameterDefinition,String>();
+		final Map<MadParameterDefinition,String> emptyParamValues = new HashMap<MadParameterDefinition,String>();
 
 		rackService.createComponent( rootRack, subRackDef, emptyParamValues, "Sub Rack" );
 

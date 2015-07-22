@@ -20,22 +20,38 @@
 
 package test.uk.co.modularaudio.service.rackmarshalling;
 
-import test.uk.co.modularaudio.service.rackmarshalling.abstractunittest.AbstractGraphTest;
+import junit.framework.TestCase;
+import test.uk.co.modularaudio.service.rackmarshalling.config.RackMarshallingTestConfig;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 
-public class TestLoadingAFile extends AbstractGraphTest
+public class TestLoadingAFile extends TestCase
 {
 //	private static Log log = LogFactory.getLog( TestLoadingAFile.class.getName() );
+
+	private final RackMarshallingTestConfig tc = new RackMarshallingTestConfig();
 
 	public void testLoadAFile()
 		throws Exception
 	{
 		final String filename = "test_save_file_output.xml";
 
-		final RackDataModel rdm = rackMarshallingService.loadBaseRackFromFile( filename );
+		final RackDataModel rdm = tc.rackMarshallingService.loadBaseRackFromFile( filename );
 
-		rackService.getRackGraphInstance( rdm );
-		rackService.destroyRackDataModel( rdm );
+		tc.rackService.getRackGraphInstance( rdm );
+		tc.rackService.destroyRackDataModel( rdm );
+	}
 
+	@Override
+	protected void setUp() throws Exception
+	{
+		super.setUp();
+		tc.setUp();
+	}
+
+	@Override
+	protected void tearDown() throws Exception
+	{
+		tc.tearDown();
+		super.tearDown();
 	}
 }

@@ -22,29 +22,28 @@ package test.uk.co.modularaudio.util.audio.timing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.BasicConfigurator;
 
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class AudioTimingUtilsTest
 {
 	private static Log log = LogFactory.getLog( AudioTimingUtilsTest.class.getName() );
-	
+
 	public AudioTimingUtilsTest()
 	{
 	}
-	
+
 	public void doit()
 		throws Exception
 	{
 		log.debug("Doing timing tests.");
-		float newRatio22050And10 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  22050, 10 );
+		final float newRatio22050And10 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  22050, 10 );
 		log.debug("For 22050 and 10 it is " + newRatio22050And10 );
-		float newRatio44100And20 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 20 );
+		final float newRatio44100And20 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 20 );
 		log.debug("For 44100 and 20 it is " + newRatio44100And20 );
-		float newRatio44100And5 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 5 );
+		final float newRatio44100And5 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 5 );
 		log.debug("For 44100 and 5 it is " + newRatio44100And5 );
-		
+
 		testOne( 44100, 10 );
 		testOne( 44100, 20 );
 		testOne( 44100, 40 );
@@ -55,24 +54,24 @@ public class AudioTimingUtilsTest
 		testOne( 11025, 20 );
 		testOne( 11025, 40 );
 	}
-	
-	public void testOne( int sampleRate, int millis )
+
+	public void testOne( final int sampleRate, final int millis )
 	{
-		float testValue= AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  sampleRate, millis );
-		float oldRatio = 1.0f - testValue;
+		final float testValue= AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  sampleRate, millis );
+		final float oldRatio = 1.0f - testValue;
 		float value = 1.0f;
 		int numSamplesToHalf = 0;
-		
+
 		while( value >= 0.5f )
 		{
 			value = value * oldRatio;
 			numSamplesToHalf++;
 		}
 		log.debug("The number of samples to half at " + sampleRate +" and " + millis + "ms is " + numSamplesToHalf );
-		int numSamplesPerMilli = sampleRate / 1000;
-		float numMillisToHalf = numSamplesToHalf / (float)numSamplesPerMilli;
+		final int numSamplesPerMilli = sampleRate / 1000;
+		final float numMillisToHalf = numSamplesToHalf / (float)numSamplesPerMilli;
 		log.debug("This is " + numMillisToHalf + " milliseconds to half");
-		int numSamplesForMillisAtSampleRate = sampleRate / 1000 * millis;
+		final int numSamplesForMillisAtSampleRate = sampleRate / 1000 * millis;
 		log.debug("And " + millis + "ms at " + sampleRate + " is " + numSamplesForMillisAtSampleRate + " samples");
 		value = 1.0f;
 		for( int i = 0 ; i < numSamplesForMillisAtSampleRate ; i++ )
@@ -81,15 +80,14 @@ public class AudioTimingUtilsTest
 		}
 		log.debug("And after this many samples, the value is " + value );
 	}
-	
+
 	/**
 	 * @param args
 	 */
-	public static void main( String[] args )
+	public static void main( final String[] args )
 		throws Exception
 	{
-		BasicConfigurator.configure();
-		AudioTimingUtilsTest atut = new AudioTimingUtilsTest();
+		final AudioTimingUtilsTest atut = new AudioTimingUtilsTest();
 		atut.doit();
 	}
 
