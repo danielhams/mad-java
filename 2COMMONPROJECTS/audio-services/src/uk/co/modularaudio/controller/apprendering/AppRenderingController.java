@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 /**
- * The application rendering controller provides
+ * <p>The application rendering controller provides
  * functionality related to audio input/output.</p>
  *
  * @author dan

@@ -48,7 +48,7 @@ public interface UserPreferencesController
 	UserPreferencesMVCController getUserPreferencesMVCController() throws DatastoreException;
 	/**
 	 * <p>Persist any changes made to the MVC model.</p>
-	 * @see UserPreferencesService#applyUserPreferencesChanges(UserPreferencesMVCController)
+	 * @see UserPreferencesService#applyUserPreferencesChanges(uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel)
 	 */
 	void applyUserPreferencesChanges() throws DatastoreException;
 

@@ -27,7 +27,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
-import uk.co.modularaudio.service.library.LibraryService;
 import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -52,7 +51,6 @@ public interface SampleCachingController
 	 * and after the current frame position of the client.</p>
 	 * <p>The file specified will be added to some internal library.</p>
 	 * @see SampleCachingService#registerCacheClientForFile(String)
-	 * @see LibraryService#addFileToLibrary(java.io.File)
 	 */
 	SampleCacheClient registerCacheClientForFile( String path )
 		throws DatastoreException, NoSuchHibernateSessionException, IOException, UnsupportedAudioFileException;

@@ -21,7 +21,6 @@
 package uk.co.modularaudio.util.component;
 
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
-import uk.co.modularaudio.util.exception.DatastoreException;
 
 
 /**
@@ -37,7 +36,7 @@ public interface ComponentWithPostInitPreShutdown
 	/**
 	 * Called after initialisation has completed.
 	 *
-	 * @throws DatastoreException allowing the component to indicate failure
+	 * @throws ComponentConfigurationException allowing the component to indicate failure
 	 */
 	public void postInit() throws ComponentConfigurationException;
 

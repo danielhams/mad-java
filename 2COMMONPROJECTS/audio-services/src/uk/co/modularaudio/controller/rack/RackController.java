@@ -76,13 +76,13 @@ public interface RackController
 
 	/**
 	 * <p>Save a rack to the filesystem file.</p>
-	 * @see RackMarshallingService#saveRackToFile(RackDataModel, String)
+	 * @see RackMarshallingService#saveBaseRackToFile(RackDataModel, String)
 	 */
 	void saveBaseRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
 
 	/**
 	 * <p>Save a sub rack to the filesystem file.</p>
-	 * @see RackMarshallingService#saveRackToFile(RackDataModel, String)
+	 * @see RackMarshallingService#saveSubRackToFile(RackDataModel, String)
 	 */
 	void saveSubRackToFile(RackDataModel dataModel, String filename ) throws DatastoreException, IOException;
 
