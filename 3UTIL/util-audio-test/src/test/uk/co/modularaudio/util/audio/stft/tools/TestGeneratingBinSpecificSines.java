@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.util.audio.stft.tools;
 
+import java.io.File;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -32,37 +33,42 @@ public class TestGeneratingBinSpecificSines extends TestCase
 {
 //	private static Log log = LogFactory.getLog(  TestGeneratingBinSpecificSines.class.getName() );
 
+	@Override
 	protected void setUp() throws Exception
 	{
 	}
 
+	@Override
 	protected void tearDown() throws Exception
 	{
 	}
-	
+
 	public void testGenerateEm() throws Exception
 	{
-		int numReals = 2048;
-		FloatFFT_1D outputFft = new FloatFFT_1D( numReals );
-		
-		float[] fftArray = new float[ numReals ];
-		
-		int[] binsToGenerate = new int[] { 2, 7, 17, 97, 98, 99, 100, 257 };
-		
-		for( int bin : binsToGenerate )
+		final int numReals = 2048;
+		final FloatFFT_1D outputFft = new FloatFFT_1D( numReals );
+
+		final float[] fftArray = new float[ numReals ];
+
+		final int[] binsToGenerate = new int[] { 2, 7, 17, 97, 98, 99, 100, 257 };
+
+		for( final int bin : binsToGenerate )
 		{
 			Arrays.fill( fftArray, 0.0f );
-			
-			int ampIndex = ( bin * 2 );
-			int phaseIndex = ( (bin * 2) + 1 );
-			
+
+			final int ampIndex = ( bin * 2 );
+			final int phaseIndex = ( (bin * 2) + 1 );
+
 			fftArray[ ampIndex ] = 100.0f;
 			fftArray[ phaseIndex ] = 0.0f;
-			
+
 			outputFft.realInverse( fftArray, true );
-			
-			String wavOutPath = "fftbin_sine_" + bin + ".wav";
-			WaveFileWriter wfw = new WaveFileWriter( wavOutPath, 1, 44100, (short)16 );
+
+			final String wavOutPath = "tmpoutput/fftbin_sine_" + bin + ".wav";
+			final File waveOutputFile = new File(wavOutPath);
+			final File parentDir = waveOutputFile.getParentFile();
+			parentDir.mkdirs();
+			final WaveFileWriter wfw = new WaveFileWriter( wavOutPath, 1, 44100, (short)16 );
 			wfw.writeFloats( fftArray, numReals );
 			wfw.close();
 		}
