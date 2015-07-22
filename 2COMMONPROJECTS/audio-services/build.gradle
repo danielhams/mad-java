@@ -5,6 +5,11 @@ sourceSets {
         java {
             srcDir 'src'
         }
+        resources {
+            srcDirs = ['src']
+            exclude '**/*.java'
+            exclude '**/*.html'
+        }
     }
 }
 
