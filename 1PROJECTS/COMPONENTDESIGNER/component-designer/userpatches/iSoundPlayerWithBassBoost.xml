@@ -7,15 +7,15 @@
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="4"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="-6.75:0.0:  "/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-2.5163584"/>
+        <rackControl name="Gain" value="-1.7402296"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/John_Digweed_-_Kiss100_01-02-DAB-2005-LtH/01_john_digweed_-_kiss100_01_02_2005-lth-djmixes2k.com.mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/For_Crying_Outloud_hifi.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
