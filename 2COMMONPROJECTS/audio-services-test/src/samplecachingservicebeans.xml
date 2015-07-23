@@ -56,6 +56,7 @@
         <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
 	</bean>
 	<bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
 	<bean id="guiComponentFactoryService" class="uk.co.modularaudio.service.guicompfactory.impl.GuiComponentFactoryServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>

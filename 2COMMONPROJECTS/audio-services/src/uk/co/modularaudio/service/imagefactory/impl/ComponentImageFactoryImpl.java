@@ -31,6 +31,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.configuration.ConfigurationService;
+import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -40,11 +42,25 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 {
 	private static Log log = LogFactory.getLog( ComponentImageFactoryImpl.class.getName() );
 
+	private final static String CONFIG_KEY_FROM_PATH = ComponentImageFactoryImpl.class.getSimpleName() + ".FromPath";
+
+	private ConfigurationService configurationService;
+
 	private final Map<String, BufferedImage> biCache = new HashMap<String, BufferedImage>();
+
+	private boolean getImagesFromPath;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( configurationService == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies - check configuration" );
+		}
+
+		final Map<String,String> errors = new HashMap<String,String>();
+		getImagesFromPath = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_FROM_PATH, errors );
+		ConfigurationServiceHelper.errorCheck( errors );
 	}
 
 	@Override
@@ -52,12 +68,9 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 	{
 	}
 
-	@Override
-	public synchronized BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
+	private BufferedImage getBufferedImageFromPath( final String directory, final String filename) throws DatastoreException
 	{
 		final String pathToLoad = directory + "/" + filename;
-
-
 		BufferedImage retVal = biCache.get( pathToLoad );
 
 		if( retVal == null )
@@ -85,5 +98,28 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 		}
 
 		return retVal;
+	}
+
+	private BufferedImage getBufferedImageFromClasspath(  final String directory, final String filename) throws DatastoreException
+	{
+		throw new DatastoreException( "NI" );
+	}
+
+	@Override
+	public synchronized BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
+	{
+		if( getImagesFromPath )
+		{
+			return getBufferedImageFromPath( directory, filename );
+		}
+		else
+		{
+			return getBufferedImageFromClasspath( directory, filename );
+		}
+	}
+
+	public void setConfigurationService( final ConfigurationService configurationService )
+	{
+		this.configurationService = configurationService;
 	}
 }
