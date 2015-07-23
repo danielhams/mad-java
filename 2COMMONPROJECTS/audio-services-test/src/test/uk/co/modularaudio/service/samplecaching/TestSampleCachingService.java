@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.samplecaching;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +43,8 @@ public class TestSampleCachingService extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestSampleCachingService.class.getName() );
 
-	private final static String testFile1 = "/home/dan/Temp/PhaseVocoderAudioFiles/monosine44_1_long.wav";
-	private final static String testFile2 = "/home/dan/Temp/PhaseVocoderAudioFiles/sine_stereo_441k_1khz_1min.wav";
+	private final static String inputFileName1 = "../../5TEST/audio-test-files/audiofiles/ExampleBeats.mp3";
+	private final static String inputFileName2 = "../../5TEST/audio-test-files/audiofiles/ExampleBeats_stereo.wav";
 
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
@@ -82,9 +83,11 @@ public class TestSampleCachingService extends TestCase
 
 		final float[] outputFrameFloats = new float[ numFloatsToRead ];
 
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
+		final File inputFile1 = new File(inputFileName1);
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile1.getAbsolutePath() );
 //		int file1NumChannels = scc1.getNumChannels();
-		SampleCacheClient scc2 = frontController.registerCacheClientForFile( testFile2 );
+		final File inputFile2 = new File(inputFileName2);
+		SampleCacheClient scc2 = frontController.registerCacheClientForFile( inputFile2.getAbsolutePath() );
 		final int file2NumChannels = scc2.getNumChannels();
 
 		// And back (should free the block up)
@@ -100,7 +103,7 @@ public class TestSampleCachingService extends TestCase
 		frontController.unregisterCacheClientForFile( scc1 );
 		frontController.unregisterCacheClientForFile( scc2 );
 
-		scc2 = frontController.registerCacheClientForFile( testFile2 );
+		scc2 = frontController.registerCacheClientForFile( inputFile2.getAbsolutePath() );
 
 		frontController.unregisterCacheClientForFile( scc2 );
 		log.debug( "All done" );

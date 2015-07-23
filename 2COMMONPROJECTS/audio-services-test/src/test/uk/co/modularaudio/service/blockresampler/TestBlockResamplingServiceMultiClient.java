@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.blockresampler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
+import test.uk.co.modularaudio.service.samplecaching.SampleCachingTestDefines;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
@@ -45,20 +47,21 @@ public class TestBlockResamplingServiceMultiClient extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestBlockResamplingServiceMultiClient.class.getName() );
 
-	private final static String[] testFiles = new String[] {
-		"/home/dan/SetSources/200808/146914_We_Share_Our_Mothers_Health_Original_Mix.mp3",
-		"/home/dan/SetSources/20120518/3463966_Life_s_Good_Bembe_Tribal_Version_Rework.mp3"
+	private final static String[] inputFileNames = new String[] {
+		"../../5TEST/audio-test-files/audiofiles/440hz_sine_44100_30secs_stereo.wav",
+		"../../5TEST/audio-test-files/audiofiles/ExampleBeats_stereo.wav"
 	};
 
-	private final static String fileToMess = "/home/dan/SetSources/20120518/2759757_Cobra_Original_Mix.mp3";
+	private final static String fileToMess =
+			"../../5TEST/audio-test-files/audiofiles/ExampleBeats.flac";
 
-	private SpringComponentHelper sch = null;
-	private GenericApplicationContext gac = null;
+	private SpringComponentHelper sch;
+	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController = null;
-	private SampleCachingServiceImpl scsi = null;
-	private BlockBufferingConfiguration bbc = null;
-	private BlockResamplerService brs = null;
+	private AdvancedComponentsFrontController frontController;
+	private SampleCachingServiceImpl scsi;
+	private BlockBufferingConfiguration bbc;
+	private BlockResamplerService brs;
 
 	@Override
 	protected void setUp() throws Exception
@@ -67,7 +70,8 @@ public class TestBlockResamplingServiceMultiClient extends TestCase
 		clientHelpers.add( new SpringHibernateContextHelper() ) ;
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
-		gac = sch.makeAppContext();
+		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME,
+				SampleCachingTestDefines.CONFIGURATION_FILENAME );
 
 		frontController = gac.getBean( AdvancedComponentsFrontController.class );
 		scsi = gac.getBean( SampleCachingServiceImpl.class );
@@ -93,11 +97,12 @@ public class TestBlockResamplingServiceMultiClient extends TestCase
 
 		final float[] outputFrameFloats = new float[ numFloatsToRead ];
 
-		final BlockResamplingClient[] resampleDetails = new BlockResamplingClient[ testFiles.length ];
+		final BlockResamplingClient[] resampleDetails = new BlockResamplingClient[ inputFileNames.length ];
 
-		for( int i = 0 ; i < testFiles.length ; ++i )
+		for( int i = 0 ; i < inputFileNames.length ; ++i )
 		{
-			final SampleCacheClient scc = frontController.registerCacheClientForFile( testFiles[i] );
+			final File inputFile = new File(inputFileNames[i]);
+			final SampleCacheClient scc = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
 //			resampleDetails[ i ] = new InternalResamplingClient(scc, BlockResamplingMethod.LINEAR, 0, 0.0f);
 //			resampleDetails[ i ] = brs.createResamplingClient(testFiles[i], BlockResamplingMethod.LINEAR );
 			resampleDetails[ i ] = brs.promoteSampleCacheClientToResamplingClient( scc, BlockResamplingMethod.LINEAR );
@@ -112,7 +117,8 @@ public class TestBlockResamplingServiceMultiClient extends TestCase
 		scsi.dumpSampleCacheToLog();
 
 		// Now open up a new one
-		final SampleCacheClient testCc = frontController.registerCacheClientForFile(fileToMess);
+		final File extraFile = new File(fileToMess);
+		final SampleCacheClient testCc = frontController.registerCacheClientForFile(extraFile.getAbsolutePath());
 
 		scsi.dumpSampleCacheToLog();
 

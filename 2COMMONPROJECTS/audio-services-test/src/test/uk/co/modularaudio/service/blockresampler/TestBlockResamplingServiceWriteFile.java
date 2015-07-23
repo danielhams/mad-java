@@ -34,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
+import test.uk.co.modularaudio.service.samplecaching.SampleCachingTestDefines;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
@@ -105,8 +106,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		clientHelpers.add( new SpringHibernateContextHelper() );
 		clientHelpers.add( new PostInitPreShutdownContextHelper() );
 		sch = new SpringComponentHelper( clientHelpers );
-		gac = sch.makeAppContext( "/samplecachingservicebeans.xml",
-				"/samplecachingservicetest.properties" );
+		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME,
+				SampleCachingTestDefines.CONFIGURATION_FILENAME );
 
 		hsc = gac.getBean( HibernateSessionController.class );
 		scsi = gac.getBean( SampleCachingService.class );

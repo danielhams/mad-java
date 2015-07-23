@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.samplecaching;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class TestSampleCachingServiceReadMonoFile extends TestCase
 {
 	public static Log log = LogFactory.getLog( TestSampleCachingServiceReadMonoFile.class.getName() );
 
-	private final static String testFile1 = "/home/dan/Temp/PhaseVocoderAudioFiles/monosine44_1_long.wav";
+	private final static String inputFileName = "../../5TEST/audio-test-files/audiofiles/ExampleBeats_mono.wav";
 
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
@@ -82,7 +83,8 @@ public class TestSampleCachingServiceReadMonoFile extends TestCase
 
 		final float[] outputFrameFloats = new float[ numFloatsToRead ];
 
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( testFile1 );
+		final File inputFile = new File(inputFileName);
+		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
 		final int numChannels = scc1.getNumChannels();
 		final long numFrames = scc1.getTotalNumFrames();
 		assert numChannels == 1;
