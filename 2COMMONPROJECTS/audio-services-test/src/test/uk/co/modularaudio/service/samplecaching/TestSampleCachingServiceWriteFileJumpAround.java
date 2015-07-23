@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -31,15 +33,21 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
-import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
+import test.uk.co.modularaudio.service.blockresampler.CacheFillListener;
+import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.floatblockpool.BlockBufferingConfiguration;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
@@ -56,9 +64,13 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController;
+	private HibernateSessionController hsc;
+	private SampleCachingController scc;
 	private SampleCachingServiceImpl scsi;
 	private BlockBufferingConfiguration bbc;
+
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final CacheFillListener cfl = new CacheFillListener( cb );
 
 	@Override
 	protected void setUp() throws Exception
@@ -69,7 +81,8 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 		sch = new SpringComponentHelper( clientHelpers );
 		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME, SampleCachingTestDefines.CONFIGURATION_FILENAME );
 
-		frontController = gac.getBean( AdvancedComponentsFrontController.class );
+		hsc = gac.getBean( HibernateSessionController.class );
+		scc = gac.getBean( SampleCachingController.class );
 		scsi = gac.getBean( SampleCachingServiceImpl.class );
 		bbc = scsi.getBlockBufferingConfiguration();
 	}
@@ -87,9 +100,12 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 
 	private void readWriteOneFile( final String inputFilename, final String outputFilename )
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
-			RecordNotFoundException
+			RecordNotFoundException, BrokenBarrierException, NoSuchHibernateSessionException
 	{
 		log.debug( "Will attempt to read a file from start to end." );
+
+		hsc.getThreadSession();
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
 
 		final int blockLengthInFloats = bbc.blockLengthInFloats;
 		final int numChannels = 2;
@@ -109,8 +125,9 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 
 		final File inputFile = new File(inputFilename);
 
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
-		Thread.sleep( 200 );
+		final Transaction t = tls.beginTransaction();
+		final SampleCacheClient scc1 = scc.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		t.commit();
 
 		final int sampleRate = 44100;
 
@@ -125,6 +142,10 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 		// Use an offset to verify block boundary reads
 		long readFramePosition = 0;
 		scc1.setCurrentFramePosition( readFramePosition );
+
+		scsi.registerForBufferFillCompletion( scc1, cfl );
+		cb.await();
+
 		while( numToRead > 0 )
 		{
 			final boolean isFirstFrame = (readFramePosition == 0);
@@ -156,13 +177,16 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 				log.debug( "File ended" );
 				break;
 			}
-			// Give the cache population thread time to wake up / do its thing
-			Thread.sleep( 5 );
+			// Give the cache population an opportunity to do its thing
+			scsi.registerForBufferFillCompletion( scc1, cfl );
+			cb.await();
 		}
 
-		frontController.unregisterCacheClientForFile( scc1 );
+		scc.unregisterCacheClientForFile( scc1 );
 
 		waveFileWriter.close();
+
+		hsc.releaseThreadSession();
 
 		log.debug( "All done" );
 	}

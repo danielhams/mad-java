@@ -23,19 +23,23 @@ package test.uk.co.modularaudio.service.blockresampler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
 import test.uk.co.modularaudio.service.samplecaching.SampleCachingTestDefines;
-import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
-import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
+import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl;
 import uk.co.modularaudio.util.audio.floatblockpool.BlockBufferingConfiguration;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
@@ -51,9 +55,13 @@ public class TestBlockResamplingServiceReadOneFile extends TestCase
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController;
+	private HibernateSessionController hsc;
+	private SampleCachingController scc;
 	private SampleCachingServiceImpl scsi;
 	private BlockBufferingConfiguration bbc;
+
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final CacheFillListener cfl = new CacheFillListener( cb );
 
 	@Override
 	protected void setUp() throws Exception
@@ -65,7 +73,8 @@ public class TestBlockResamplingServiceReadOneFile extends TestCase
 		gac = sch.makeAppContext( SampleCachingTestDefines.BEANS_FILENAME,
 				SampleCachingTestDefines.CONFIGURATION_FILENAME );
 
-		frontController = gac.getBean( AdvancedComponentsFrontController.class );
+		hsc = gac.getBean( HibernateSessionController.class );
+		scc = gac.getBean( SampleCachingController.class );
 		scsi = gac.getBean( SampleCachingServiceImpl.class );
 		bbc = scsi.getBlockBufferingConfiguration();
 	}
@@ -80,6 +89,9 @@ public class TestBlockResamplingServiceReadOneFile extends TestCase
 	{
 		log.debug( "Will attempt to read a file from start to end." );
 
+		hsc.getThreadSession();
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
+
 //		int blockLengthInFloats = bbc.blockLengthInFloats;
 		final int numChannels = 2;
 
@@ -93,7 +105,9 @@ public class TestBlockResamplingServiceReadOneFile extends TestCase
 //		float playbackSpeed = 1.0f;
 
 		final File inputFile = new File(inputFilename);
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		final Transaction t = tls.beginTransaction();
+		final SampleCacheClient scc1 = scc.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		t.commit();
 
 		// Read a block with loads of zeros
 		scc1.setCurrentFramePosition(-(bbc.blockLengthInFloats * 2) - 20);
@@ -101,23 +115,20 @@ public class TestBlockResamplingServiceReadOneFile extends TestCase
 
 		scc1.setCurrentFramePosition( scc1.getTotalNumFrames() - 20 );
 
-		scsi.registerForBufferFillCompletion(scc1, new BufferFillCompletionListener()
-		{
-
-			@Override
-			public void notifyBufferFilled(final SampleCacheClient sampleCacheClient)
-			{
-				// Don't do anything we're using this to trigger a scan of the cache clients
-			}
-		});
+		scsi.registerForBufferFillCompletion(scc1, cfl);
+		cb.await();
 
 		scsi.readSamplesForCacheClient( scc1,  outputFrameFloats,  0,  numFramesToRead );
 
 		// Read the first block with some leading zeros
 		scc1.setCurrentFramePosition( -10 );
+		scsi.registerForBufferFillCompletion(scc1, cfl);
+		cb.await();
 		scsi.readSamplesForCacheClient( scc1,  outputFrameFloats,  0,  numFramesToRead );
 
-		frontController.unregisterCacheClientForFile( scc1 );
+		scc.unregisterCacheClientForFile( scc1 );
+
+		hsc.releaseThreadSession();
 
 		log.debug( "All done" );
 	}

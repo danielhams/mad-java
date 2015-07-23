@@ -23,24 +23,27 @@ package test.uk.co.modularaudio.service.blockresampler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
-import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
+import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
-import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
-import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
@@ -58,11 +61,16 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController;
+	private HibernateSessionController hsc;
+	private SampleCachingController scc;
 	private SampleCachingServiceImpl scsi;
 	private BlockResamplerService brs;
 
 	private final Limiter LIM = new Limiter( 0.98f, 22 );
+
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final CacheFillListener cfl = new CacheFillListener( cb );
+
 	@Override
 	protected void setUp() throws Exception
 	{
@@ -72,8 +80,9 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 		sch = new SpringComponentHelper( clientHelpers );
 		gac = sch.makeAppContext( "/samplecachingservicebeans.xml", "/samplecachingservicetest.properties" );
 
-		frontController = gac.getBean( AdvancedComponentsFrontController.class );
-		scsi = (SampleCachingServiceImpl)gac.getBean( SampleCachingService.class );
+		hsc = gac.getBean( HibernateSessionController.class );
+		scc = gac.getBean( SampleCachingController.class );
+		scsi = gac.getBean( SampleCachingServiceImpl.class );
 		brs = gac.getBean( BlockResamplerService.class );
 	}
 
@@ -115,6 +124,9 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 	{
 		log.debug( "Will attempt to over read a file." );
 
+		hsc.getThreadSession();
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
+
 //		int blockLengthInFloats = bbc.blockLengthInFloats;
 
 //		int outputFrameIndex = 0;
@@ -124,10 +136,12 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 //		final float playbackSpeed = 0.5f;
 
 		final File inputFile = new File(testFile);
-		SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
-		final int numChannels = scc1.getNumChannels();
-		final int sampleRate = scc1.getSampleRate();
-		final long totalFrames = scc1.getTotalNumFrames();
+		final Transaction t = tls.beginTransaction();
+		SampleCacheClient cc1 = scc.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		t.commit();
+		final int numChannels = cc1.getNumChannels();
+		final int sampleRate = cc1.getSampleRate();
+		final long totalFrames = cc1.getTotalNumFrames();
 
 		final int numFramesPerRound = 8192;
 		final int numFloatsPerRound = numFramesPerRound * numChannels;
@@ -138,7 +152,7 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 		final ThreadSpecificTemporaryEventStorage tes = new ThreadSpecificTemporaryEventStorage( 1024 * 8 );
 		final float[] tmpBuffer = tes.temporaryFloatArray;
 
-		log.debug("Audio file has " + scc1.getTotalNumFrames() + " frames");
+		log.debug("Audio file has " + cc1.getTotalNumFrames() + " frames");
 		final File outputFile = new File( outputFileName );
 		final File parentDir = outputFile.getParentFile();
 		parentDir.mkdirs();
@@ -151,7 +165,7 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 		// Half a second after the end
 		final long endPos = totalFrames + halfSecondFrames;
 
-		final BlockResamplingClient brc = brs.promoteSampleCacheClientToResamplingClient( scc1, BlockResamplingMethod.CUBIC );
+		final BlockResamplingClient brc = brs.promoteSampleCacheClientToResamplingClient( cc1, BlockResamplingMethod.CUBIC );
 
 		brc.setFramePosition( curPos );
 		brc.setFpOffset( 0.0f );
@@ -159,25 +173,10 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 		// Wait for sync on position;
 		boolean startGettingData = false;
 
-		scc1 = brc.getSampleCacheClient();
+		cc1 = brc.getSampleCacheClient();
 
-		scsi.registerForBufferFillCompletion(scc1, new BufferFillCompletionListener()
-		{
-
-			@Override
-			public void notifyBufferFilled(final SampleCacheClient sampleCacheClient)
-			{
-				// Don't do anything we're using this to trigger a scan of the cache clients
-			}
-		});
-
-		try
-		{
-			Thread.sleep( 200 );
-		}
-		catch( final InterruptedException ie )
-		{
-		}
+		scsi.registerForBufferFillCompletion(cc1, cfl);
+		cb.await();
 
 		boolean outputEnd = false;
 		haveFloats = false;
@@ -218,12 +217,15 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 
 			curPos = brc.getFramePosition();
 
-			Thread.sleep( 20 );
+			scsi.registerForBufferFillCompletion( cc1, cfl );
+			cb.await();
 		}
 
 		waveWriter.close();
 
-		frontController.unregisterCacheClientForFile( scc1 );
+		scc.unregisterCacheClientForFile( cc1 );
+
+		hsc.releaseThreadSession();
 
 		log.debug( "All done" );
 	}

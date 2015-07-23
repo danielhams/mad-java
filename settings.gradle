@@ -20,7 +20,7 @@ include ':external-libs',
         ':external-libsndfile-services',
         ':external-libsndfile-services-test',
         ':component-designer-services',
-        ':component-designer-services-test',
+        ':component-designer-test',
         ':component-designer'
 
 project(':external-libs').projectDir = file('4EXTERNAL/external-libs')
@@ -45,5 +45,5 @@ project(':external-libsndfile-wrapper').projectDir = file('4EXTERNAL/external-li
 project(':external-libsndfile-services').projectDir = file('4EXTERNAL/external-libsndfile-services')
 project(':external-libsndfile-services-test').projectDir = file('4EXTERNAL/external-libsndfile-services-test')
 project(':component-designer-services').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer-services')
-project(':component-designer-services-test').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer-services-test')
+project(':component-designer-test').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer-test')
 project(':component-designer').projectDir = file('1PROJECTS/COMPONENTDESIGNER/component-designer')

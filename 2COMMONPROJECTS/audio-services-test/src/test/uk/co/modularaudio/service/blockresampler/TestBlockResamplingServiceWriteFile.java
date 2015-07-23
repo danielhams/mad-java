@@ -23,8 +23,9 @@ package test.uk.co.modularaudio.service.blockresampler;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -32,13 +33,16 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
 import test.uk.co.modularaudio.service.samplecaching.SampleCachingTestDefines;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
@@ -47,6 +51,8 @@ import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.hibernate.NoSuchHibernateSessionException;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
@@ -67,12 +73,11 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 	private GenericApplicationContext gac;
 
 	private HibernateSessionController hsc;
+	private SampleCachingController scc;
 	private SampleCachingService scsi;
 	private BlockResamplerService brsi;
 
 	private final Limiter limiter = new Limiter( 0.98, 25 );
-
-	private final TestBufferFillCompletionListener completionListener;
 
 //	float playbackSpeed = 2.0f;
 //	float playbackSpeed = 1.19572734683248646f;
@@ -90,13 +95,15 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 	public final static float PLAYBACK_DIRECTION = -1.0f;
 
-	public final static float NUM_SECONDS = 10.0f;
+	public final static float NUM_SECONDS = 3.0f;
 
 	public final static int OUTPUT_SAMPLE_RATE = 48000;
 
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final CacheFillListener cfl = new CacheFillListener( cb );
+
 	public TestBlockResamplingServiceWriteFile()
 	{
-		completionListener = new TestBufferFillCompletionListener();
 	}
 
 	@Override
@@ -110,6 +117,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 				SampleCachingTestDefines.CONFIGURATION_FILENAME );
 
 		hsc = gac.getBean( HibernateSessionController.class );
+		scc = gac.getBean( SampleCachingController.class );
 		scsi = gac.getBean( SampleCachingService.class );
 		brsi = gac.getBean( BlockResamplerService.class );
 	}
@@ -120,14 +128,14 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		gac.close();
 	}
 
-	public void testReadAndWrite() throws Exception
-	{
-		if( true )
-		{
-			readWriteOneFile( inputFileName, oldOutputFileName );
-		}
-		readWriteOneFileVarispeed( inputFileName, newOutputFileName );
-	}
+//	public void testReadAndWrite() throws Exception
+//	{
+//		if( true )
+//		{
+//			readWriteOneFile( inputFileName, oldOutputFileName );
+//		}
+//		readWriteOneFileVarispeed( inputFileName, newOutputFileName );
+//	}
 
 	public float updatePlaybackSpeed( final float currentSpeed )
 	{
@@ -142,23 +150,29 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		}
 	}
 
-	private void readWriteOneFile( final String inputFilename, final String outputFilename )
+	public void testReadWriteOneFile()
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
-			RecordNotFoundException
+			RecordNotFoundException, BrokenBarrierException, NoSuchHibernateSessionException
 	{
-		final ThreadSpecificTemporaryEventStorage tempEventStorage = new ThreadSpecificTemporaryEventStorage( 8192 );
-		// Fill temp storage with crap to show up any issues with boundary cases
-		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
+		log.debug( "Beginning test read write one file" );
 
 		hsc.getThreadSession();
-		final File inputFile = new File(inputFilename);
-		final BlockResamplingClient brc = brsi.createResamplingClient( inputFile.getAbsolutePath(),
-				BlockResamplingMethod.CUBIC );
-		final SampleCacheClient scc1 = brc.getSampleCacheClient();
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
 
-		final int numChannels = scc1.getNumChannels();
-		final long totalNumFrames = scc1.getTotalNumFrames();
-		final int sampleRate = scc1.getSampleRate();
+		final ThreadSpecificTemporaryEventStorage tempEventStorage = new ThreadSpecificTemporaryEventStorage( 8192 );
+		// Fill temp storage with crap to show up any issues with boundary cases
+//		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
+
+		hsc.getThreadSession();
+		final File inputFile = new File(inputFileName);
+		final Transaction t = tls.beginTransaction();
+		final BlockResamplingClient brc = scc.createResamplingClient( inputFile.getAbsolutePath(), BlockResamplingMethod.CUBIC );
+		t.commit();
+		final SampleCacheClient cc = brc.getSampleCacheClient();
+
+		final int numChannels = cc.getNumChannels();
+		final long totalNumFrames = cc.getTotalNumFrames();
+		final int sampleRate = cc.getSampleRate();
 
 //		int outputSampleRate = OUTPUT_SAMPLE_RATE;
 		final int outputSampleRate = sampleRate;
@@ -173,17 +187,16 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long readFramePosition = totalNumFrames / 2;
 		brc.setFramePosition( readFramePosition );
 		brc.setFpOffset( 0.0f );
-		scsi.registerForBufferFillCompletion( scc1, completionListener );
-		scsi.addJobToCachePopulationThread();
-		completionListener.waitForSignal();
+
+		// Wait to be notified a new pass has occured
+		scsi.registerForBufferFillCompletion(cc, cfl );
+		cb.await();
 
 		final float[] outputLeftFloats = new float[outputFrameLength * MAX_SPEED];
 		final float[] outputRightFloats = new float[outputFrameLength * MAX_SPEED];
 		final float[] speedFloats = new float[outputFrameLength * MAX_SPEED];
 
-		Thread.sleep( 200 );
-
-		final File outputFile = new File(outputFilename);
+		final File outputFile = new File(oldOutputFileName);
 		final File outputDir = outputFile.getParentFile();
 		outputDir.mkdirs();
 
@@ -202,7 +215,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		// Use an offset to verify block boundary reads
 		while (numToOutput > 0)
 		{
-			Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
+//			Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 			final int numFramesThisRound = (int) (outputFrameLength < numToOutput ? outputFrameLength : numToOutput);
 //			log.debug("fetchAndResample of " + numFramesThisRound + " frames for output position " + numSoFar );
 
@@ -241,10 +254,10 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 				log.debug( "File ended" );
 				break;
 			}
-			scsi.registerForBufferFillCompletion( scc1, completionListener );
-			scsi.addJobToCachePopulationThread();
-			completionListener.waitForSignal();
-//			scsi.dumpSampleCacheToLog();
+
+			// Wait to be notified a new pass has occured
+			scsi.registerForBufferFillCompletion(cc, cfl);
+			cb.await();
 
 			playbackSpeed = updatePlaybackSpeed( playbackSpeed );
 			speedSad.notifyOfNewValue( playbackSpeed );
@@ -254,28 +267,33 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		waveFileWriter.close();
 
-		hsc.releaseThreadSessionNoException();
+		hsc.releaseThreadSession();
 
 		log.debug( "All done - output " + numSoFar + " frames" );
 	}
 
-	private void readWriteOneFileVarispeed( final String inputFilename, final String outputFilename )
+	public void testReadWriteOneFileVarispeed()
 			throws DatastoreException, UnsupportedAudioFileException, InterruptedException, IOException,
-			RecordNotFoundException
+			RecordNotFoundException, BrokenBarrierException, NoSuchHibernateSessionException
 	{
+		log.debug( "Beginning test read write one file varispeed" );
 		final ThreadSpecificTemporaryEventStorage tempEventStorage = new ThreadSpecificTemporaryEventStorage( 8192 );
 		// Fill temp storage with crap to show up any issues with boundary cases
-		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
+//		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 
 		hsc.getThreadSession();
-		final File inputFile = new File(inputFilename);
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
+
+		final File inputFile = new File(inputFileName);
+		final Transaction t = tls.beginTransaction();
 		final BlockResamplingClient brc = brsi.createResamplingClient( inputFile.getAbsolutePath(),
 				BlockResamplingMethod.CUBIC );
-		final SampleCacheClient scc1 = brc.getSampleCacheClient();
+		t.commit();
+		final SampleCacheClient cc = brc.getSampleCacheClient();
 
-		final int numChannels = scc1.getNumChannels();
-		final long totalNumFrames = scc1.getTotalNumFrames();
-		final int sampleRate = scc1.getSampleRate();
+		final int numChannels = cc.getNumChannels();
+		final long totalNumFrames = cc.getTotalNumFrames();
+		final int sampleRate = cc.getSampleRate();
 
 //		int outputSampleRate = OUTPUT_SAMPLE_RATE;
 		final int outputSampleRate = sampleRate;
@@ -290,17 +308,16 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long readFramePosition = totalNumFrames / 2;
 		brc.setFramePosition( readFramePosition );
 		brc.setFpOffset( 0.0f );
-		scsi.registerForBufferFillCompletion( scc1, completionListener );
-		scsi.addJobToCachePopulationThread();
-		completionListener.waitForSignal();
+
+		// Wait to be notified a new pass has occured
+		scsi.registerForBufferFillCompletion(cc, cfl);
+		cb.await();
 
 		final float[] outputLeftFloats = new float[outputFrameLength * MAX_SPEED];
 		final float[] outputRightFloats = new float[outputFrameLength * MAX_SPEED];
 		final float[] speedFloats = new float[outputFrameLength * MAX_SPEED];
 
-		Thread.sleep( 200 );
-
-		final File outputFile = new File(outputFilename);
+		final File outputFile = new File(newOutputFileName);
 		final File outputDir = outputFile.getParentFile();
 		outputDir.mkdirs();
 
@@ -319,7 +336,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		// Use an offset to verify block boundary reads
 		while (numToOutput > 0)
 		{
-			Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
+//			Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 			final int numFramesThisRound = (int) (outputFrameLength < numToOutput ? outputFrameLength : numToOutput);
 //			log.debug("fetchAndResample of " + numFramesThisRound + " frames for output position " + numSoFar );
 
@@ -358,9 +375,11 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 				log.debug( "File ended" );
 				break;
 			}
-			scsi.registerForBufferFillCompletion( scc1, completionListener );
-			scsi.addJobToCachePopulationThread();
-			completionListener.waitForSignal();
+
+			// Wait to be notified a new pass has occured
+			scsi.registerForBufferFillCompletion(cc, cfl);
+			cb.await();
+
 //			scsi.dumpSampleCacheToLog();
 
 			playbackSpeed = updatePlaybackSpeed( playbackSpeed );
@@ -371,7 +390,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 		waveFileWriter.close();
 
-		hsc.releaseThreadSessionNoException();
+		hsc.releaseThreadSession();
 
 		log.debug( "All done - output " + numSoFar + " frames" );
 	}

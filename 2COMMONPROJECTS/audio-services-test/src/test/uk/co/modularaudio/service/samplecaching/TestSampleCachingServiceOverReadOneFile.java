@@ -23,20 +23,25 @@ package test.uk.co.modularaudio.service.samplecaching;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
-import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
-import uk.co.modularaudio.service.samplecaching.BufferFillCompletionListener;
+import test.uk.co.modularaudio.service.blockresampler.CacheFillListener;
+import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
+import uk.co.modularaudio.controller.samplecaching.SampleCachingController;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.floatblockpool.BlockBufferingConfiguration;
+import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
@@ -54,9 +59,13 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 	private SpringComponentHelper sch;
 	private GenericApplicationContext gac;
 
-	private AdvancedComponentsFrontController frontController;
+	private HibernateSessionController hsc;
+	private SampleCachingController scc;
 	private SampleCachingServiceImpl scsi;
 	private BlockBufferingConfiguration bbc;
+
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final CacheFillListener cfl = new CacheFillListener( cb );
 
 	@Override
 	protected void setUp() throws Exception
@@ -67,7 +76,8 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 		sch = new SpringComponentHelper( clientHelpers );
 		gac = sch.makeAppContext( "/samplecachingservicebeans.xml", "/samplecachingservicetest.properties" );
 
-		frontController = gac.getBean( AdvancedComponentsFrontController.class );
+		hsc = gac.getBean( HibernateSessionController.class );
+		scc = gac.getBean( SampleCachingController.class );
 		scsi = (SampleCachingServiceImpl)gac.getBean( SampleCachingService.class );
 		bbc = scsi.getBlockBufferingConfiguration();
 	}
@@ -103,9 +113,14 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 //		int numOutputFrames = 32;
 //		float playbackSpeed = 1.0f;
 
+		hsc.getThreadSession();
+		final Session tls = ThreadLocalSessionResource.getSessionResource();
+
 		final File inputFile = new File(testFileName);
 
-		final SampleCacheClient scc1 = frontController.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		final Transaction t = tls.beginTransaction();
+		final SampleCacheClient scc1 = scc.registerCacheClientForFile( inputFile.getAbsolutePath() );
+		t.commit();
 		final int numChannels = scc1.getNumChannels();
 		final int sampleRate = scc1.getSampleRate();
 		final long totalFrames = scc1.getTotalNumFrames();
@@ -131,27 +146,10 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 
 		scc1.setCurrentFramePosition( curPos );
 
-		// Wait for sync on position;
+		scsi.registerForBufferFillCompletion( scc1, cfl );
+		cb.await();
+
 		boolean startGettingData = false;
-
-		scsi.registerForBufferFillCompletion(scc1, new BufferFillCompletionListener()
-		{
-
-			@Override
-			public void notifyBufferFilled(final SampleCacheClient sampleCacheClient)
-			{
-				// Don't do anything we're using this to trigger a scan of the cache clients
-			}
-		});
-
-		try
-		{
-			Thread.sleep( 200 );
-		}
-		catch( final InterruptedException ie )
-		{
-		}
-
 		boolean outputEnd = false;
 		haveFloats = false;
 
@@ -180,12 +178,15 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 			waveWriter.writeFloats( outputFrameFloats, numFloatsToRead );
 			curPos += numFramesToRead;
 			scc1.setCurrentFramePosition( curPos );
-			Thread.sleep( 20 );
+			scsi.registerForBufferFillCompletion( scc1, cfl );
+			cb.await();
 		}
 
 		waveWriter.close();
 
-		frontController.unregisterCacheClientForFile( scc1 );
+		scc.unregisterCacheClientForFile( scc1 );
+
+		hsc.releaseThreadSession();
 
 		log.debug( "All done" );
 	}

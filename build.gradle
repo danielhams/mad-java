@@ -3,60 +3,45 @@ apply plugin: 'java'
 version = '0.0.3'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+def applicationName = 'component-designer'
 
 repositories { mavenCentral() }
 
 dependencies {
+  compile project(':external-libs')
+  compile project(':util')
+  compile project(':util-test')
+  compile project(':util-audio')
+  compile project(':util-audio-test')
+  compile project(':util-gui')
+  compile project(':util-gui-test')
+  compile project(':util-audio-gui')
+  compile project(':util-audio-gui-test')
+  compile project(':common-services')
+  compile project(':common-services-test')
+  compile project(':audio-services')
+  compile project(':audio-services-test')
+  compile project(':external-libmpg123-wrapper')
+  compile project(':external-libsndfile-wrapper')
+  compile project(':component-designer-services')
   compile project(':component-designer')
+  compile project(':component-designer-test')
   compile project(':external-libsndfile-services')
+  compile project(':external-libsndfile-services-test')
   compile project(':external-libmpg123-services')
+  compile project(':external-libmpg123-services-test')
 }
 
-/*
 task componentDesignerJar(type: Jar) {
-  baseName = 'componentDesignerBN'
+  baseName = applicationName
   manifest {
     attributes 'Main-Class': 'uk.co.modularaudio.componentdesigner.ComponentDesigner'
   }
   from {
-    configurations.compile.collect {
-      it.isDirectory() ? it : zipTree(it)
+    subprojects.jar.archivePath.collect {
+      zipTree(it)
     }
   }
-  with jar  
 }
-*/
 
-task componentDesignerJar(type: Jar) {
-  baseName = 'componentDesignerBN'
-  manifest {
-    attributes 'Main-Class': 'uk.co.modularaudio.componentdesigner.ComponentDesigner'
-  }
-  from {
-    configurations.runtime.collect {
-      it.isDirectory() ? it : zipTree(it)
-    }
-  }
-  with jar  
-}
-/*
-task uberJar(type: Jar, dependsOn: subprojects ) {
-  subprojects.each { proj ->
-    from proj.jars.collect { zipTree(it) }
-  }
-}
-*/
-
-task listSources << {
-  subprojects.each { proj ->
-    if( proj.hasProperty('jar') )
-    {
-      println("Using generated classes from " + proj + " at " + proj.jar.archivePath)
-      FileTree projTree = zipTree(proj.jar.archivePath)
-    }
-    else
-    {
-      println("Skipping " + proj)
-    }
-  }
-}
+componentDesignerJar.dependsOn build
