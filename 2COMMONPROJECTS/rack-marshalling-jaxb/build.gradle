@@ -24,7 +24,7 @@ dependencies {
 
 task jaxb () {
      doLast {
-            def jaxbOutputDir = new File('src')
+            def jaxbOutputDir = file('src')
             jaxbOutputDir.mkdirs()
 
             ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
