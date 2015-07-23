@@ -1,0 +1,62 @@
+apply plugin: 'java'
+
+version = '0.0.3'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories { mavenCentral() }
+
+dependencies {
+  compile project(':component-designer')
+  compile project(':external-libsndfile-services')
+  compile project(':external-libmpg123-services')
+}
+
+/*
+task componentDesignerJar(type: Jar) {
+  baseName = 'componentDesignerBN'
+  manifest {
+    attributes 'Main-Class': 'uk.co.modularaudio.componentdesigner.ComponentDesigner'
+  }
+  from {
+    configurations.compile.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
+  with jar  
+}
+*/
+
+task componentDesignerJar(type: Jar) {
+  baseName = 'componentDesignerBN'
+  manifest {
+    attributes 'Main-Class': 'uk.co.modularaudio.componentdesigner.ComponentDesigner'
+  }
+  from {
+    configurations.runtime.collect {
+      it.isDirectory() ? it : zipTree(it)
+    }
+  }
+  with jar  
+}
+/*
+task uberJar(type: Jar, dependsOn: subprojects ) {
+  subprojects.each { proj ->
+    from proj.jars.collect { zipTree(it) }
+  }
+}
+*/
+
+task listSources << {
+  subprojects.each { proj ->
+    if( proj.hasProperty('jar') )
+    {
+      println("Using generated classes from " + proj + " at " + proj.jar.archivePath)
+      FileTree projTree = zipTree(proj.jar.archivePath)
+    }
+    else
+    {
+      println("Skipping " + proj)
+    }
+  }
+}
