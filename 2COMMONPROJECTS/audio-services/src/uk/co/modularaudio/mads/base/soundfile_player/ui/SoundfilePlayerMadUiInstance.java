@@ -108,6 +108,8 @@ public class SoundfilePlayerMadUiInstance extends
 				log.error( msg, e );
 			}
 		}
+
+		super.destroy();
 	}
 
 	@Override

@@ -24,9 +24,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.mainframe.ExitSignalReceiver;
 import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
@@ -35,17 +32,16 @@ public class WindowShowProfilingAction extends AbstractAction implements ExitSig
 {
 	private static final long serialVersionUID = -5903263092723112562L;
 
-	private static Log log = LogFactory.getLog( WindowShowProfilingAction.class.getName() );
+//	private static Log log = LogFactory.getLog( WindowShowProfilingAction.class.getName() );
 
-	private final ComponentDesignerFrontController fc;
+//	private final ComponentDesignerFrontController fc;
 
-	private ProfilingWindow profilingWindow;
+	private final ProfilingWindow profilingWindow;
 
 	public WindowShowProfilingAction( final ComponentDesignerFrontController fc,
 			final ProfilingWindow profilingWindow )
 	{
-		this.fc = fc;
-
+//		this.fc = fc;
 		this.profilingWindow = profilingWindow;
 		this.putValue( NAME, "Show Profiling Window" );
 	}
@@ -53,13 +49,6 @@ public class WindowShowProfilingAction extends AbstractAction implements ExitSig
 	@Override
 	public void actionPerformed( final ActionEvent e )
 	{
-		log.error("Quick debugging hack!");
-		if( profilingWindow != null )
-		{
-			profilingWindow.dispose();
-		}
-		profilingWindow = new ProfilingWindow( fc );
-		log.debug("Window show profiling action perform");
 		if( !profilingWindow.isShowing() )
 		{
 			profilingWindow.setVisible( true );
@@ -71,7 +60,6 @@ public class WindowShowProfilingAction extends AbstractAction implements ExitSig
 	{
 		if( profilingWindow != null && profilingWindow.isShowing() )
 		{
-			log.debug("Received exit signal - will close profiling window");
 			profilingWindow.dispose();
 		}
 	}
