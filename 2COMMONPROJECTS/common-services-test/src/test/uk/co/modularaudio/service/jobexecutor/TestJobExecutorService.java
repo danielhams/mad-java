@@ -20,6 +20,8 @@
 
 package test.uk.co.modularaudio.service.jobexecutor;
 
+import java.util.concurrent.CyclicBarrier;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
@@ -32,7 +34,8 @@ public class TestJobExecutorService extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestJobExecutorService.class.getName() );
 
-	private static final long WAIT_FOR_JOB_EXECUTION_GRACE_MILLIS = 1000;
+	private final CyclicBarrier cb = new CyclicBarrier( 2 );
+	private final JobExecutedWaitBarrier wb = new JobExecutedWaitBarrier( cb );
 
 	public TestJobExecutorService()
 	{
@@ -56,22 +59,8 @@ public class TestJobExecutorService extends TestCase
 
 		log.trace("Adding a simple runnable with a callback");
 
-		final Runnable r = new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				log.trace( "Test runnable called" );
-				receiveCallback();
-				log.trace( "Completed callback call");
-			}
-		};
-
-		jesi.submitJob( r );
-
-		// Give the job some grace time to execute
-		Thread.sleep( WAIT_FOR_JOB_EXECUTION_GRACE_MILLIS );
+		jesi.submitJob( wb );
+		cb.await();
 
 		log.trace("Dump jobs after tests, before we shutdown");
 
