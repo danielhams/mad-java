@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import test.uk.co.modularaudio.service.madgraph.config.GraphTestConfig;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
@@ -41,6 +40,7 @@ import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
+import uk.co.modularaudio.util.timing.TestTimer;
 
 public class MadGraphServiceAppGraphTest extends TestCase
 {
@@ -170,8 +170,14 @@ public class MadGraphServiceAppGraphTest extends TestCase
 	public void testExposedSubGraphInAppGraph()
 			throws Exception
 	{
+		final TestTimer tt = new TestTimer();
+
+		tt.markBoundary( "Begin" );
+
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
 				GraphType.APP_GRAPH, 4, 4, 4, 4, 4, 4 );
+
+		tt.markBoundary( "Create app graph" );
 
 		final FakeGraphListener fgl = new FakeGraphListener();
 
@@ -180,16 +186,36 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		final MadGraphInstance<?,?> subGraph = gt.graphService.createNewParameterisedGraph( "Test Sub Graph",
 				GraphType.SUB_GRAPH, 4, 4, 4, 4, 4, 4 );
 
+		tt.markBoundary( "Create sub graph" );
+
 		// Now expose all channels we can
 		gt.graphService.addInstanceToGraphWithNameAndMapChannelsToGraphChannels( appGraph, subGraph, "SubGraphName", false );
 
-		gt.graphService.dumpGraph( appGraph );
+		tt.markBoundary( "Add instance to graph map channels" );
+
+		if( log.isTraceEnabled() )
+		{
+			gt.graphService.dumpGraph( appGraph );
+			tt.markBoundary( "Dump graph" );
+		}
 
 		gt.graphService.removeInstanceFromGraph( appGraph, subGraph );
 
+		tt.markBoundary( "Remove sub graph from app graph" );
+
 		gt.graphService.removeGraphListener( appGraph, fgl );
 
+		tt.markBoundary( "Remove graph listener" );
+
+		gt.graphService.destroyGraph( subGraph, true, true );
+
+		tt.markBoundary( "Destroy sub graph" );
+
 		gt.graphService.destroyGraph( appGraph, true, true );
+
+		tt.markBoundary( "Destroy app graph" );
+
+		tt.logTimes( "EXPOSESUBGINAPPG", log );
 	}
 
 	public void testMakeDualLinksFromProducerToConsumersInGraph()

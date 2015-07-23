@@ -67,7 +67,8 @@ public class FadeInOutLinkHelper
 
 	private final static Map<MadParameterDefinition, String> EMPTY_PARAM_VALUES = new HashMap<MadParameterDefinition, String>();
 
-	private final long MAX_WAIT_MILLIS = 500;
+	// TODO: Find a way to fix this.
+	private final long MAX_WAIT_MILLIS = 200;
 
 	public FadeInOutLinkHelper( final MadComponentService componentService ) throws DatastoreException, RecordNotFoundException
 	{
