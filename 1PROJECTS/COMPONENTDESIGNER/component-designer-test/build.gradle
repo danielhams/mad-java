@@ -4,18 +4,23 @@ sourceSets {
     main {
         java {
             srcDir 'src'
+            exclude 'test/**/*'
         }
         resources {
             srcDirs = ['src']
+            exclude 'test/**/*'
+            exclude 'log4j2.xml'
         }
     }
 
     test {
         java {
-            srcDirs = ['src/test']
+            srcDirs = ['src']
+            include 'test/**/*'
         }
         resources {
             srcDirs = ['src']
+            include 'test/**/*'
         }
     }
 }

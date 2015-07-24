@@ -18,7 +18,7 @@
  *
  */
 
-package test.uk.co.modularaudio.service.ioandrendering.test;
+package test.uk.co.modularaudio.service.ioandrendering;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -18,7 +18,7 @@
  *
  */
 
-package test.uk.co.modularaudio.service.ioandrendering.test;
+package test.uk.co.modularaudio.service.ioandrendering;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

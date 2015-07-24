@@ -51,10 +51,51 @@ test {
   systemProperties['org.jboss.logging.provider'] = 'slf4j'
 }
 
+task copyNativeLibs(type: Copy) {
+  from '4EXTERNAL/external-libmpg123-wrapper/lib/libmpg123_wrap.so'
+  from '4EXTERNAL/external-libsndfile-wrapper/lib/libsndfile_wrap.so'
+  into 'releasedir/natives'
+}
+
+task copyLaunchScripts(type: Copy) {
+  from '1PROJECTS/COMPONENTDESIGNER/component-designer/scripts'
+  include '*.sh'
+  include '*.bat'
+  into 'releasedir'
+}
+
+task copySupportJars(type: Copy) {
+  from '4EXTERNAL/external-libs/libs'
+  into 'releasedir/supportlibs'
+}
+
+task copyCdJar(type: Copy) {
+  from 'build/libs/component-designer-0.0.3.jar'
+  into 'releasedir'
+}
+
+copyCdJar.dependsOn build
+
+task copyUserPatches(type: Copy) {
+  from '1PROJECTS/COMPONENTDESIGNER/component-designer/userpatches'
+  into 'releasedir/userpatches'
+}
+
+task copyUserSubRackPatches(type: Copy) {
+  from '1PROJECTS/COMPONENTDESIGNER/component-designer/usersubrackpatches'
+  into 'releasedir/usersubrackpatches'
+}
+
 task componentDesignerSupportFiles(type: JavaExec) {
   classpath += sourceSets.main.runtimeClasspath
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   args = ['releasedir', '2COMMONPROJECTS/audio-services-images/images']
 }
 
-componentDesignerSupportFiles.dependsOn build
+componentDesignerSupportFiles.dependsOn build, copyNativeLibs, copyLaunchScripts,
+  copySupportJars, copyCdJar, copyUserPatches, copyUserSubRackPatches
+
+task componentDesignerRelease {
+}
+
+componentDesignerRelease.dependsOn build, componentDesignerJar, componentDesignerSupportFiles
