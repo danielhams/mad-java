@@ -50,3 +50,11 @@ test {
   systemProperties = System.getProperties();
   systemProperties['org.jboss.logging.provider'] = 'slf4j'
 }
+
+task componentDesignerSupportFiles(type: JavaExec) {
+  classpath += sourceSets.main.runtimeClasspath
+  main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
+  args = ['releasedir', '2COMMONPROJECTS/audio-services-images/images']
+}
+
+componentDesignerSupportFiles.dependsOn build

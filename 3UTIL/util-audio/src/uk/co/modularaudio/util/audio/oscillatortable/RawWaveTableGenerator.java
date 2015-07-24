@@ -58,7 +58,7 @@ public abstract class RawWaveTableGenerator
 			}
 			else if( numTotalFloatsAsInt != cycleLength + CubicPaddedRawWaveTable.NUM_EXTRA_SAMPLES_IN_BUFFER )
 			{
-				throw new IOException( "The cached wave shape on disk doesn't match the size we expect" );
+				throw new IOException( "The cached wave shape length doesn't match the size we expect" );
 			}
 			final float[] data = new float[ numTotalFloatsAsInt ];
 			fileReader.read( data, 0, 0, numTotalFloatsAsInt );

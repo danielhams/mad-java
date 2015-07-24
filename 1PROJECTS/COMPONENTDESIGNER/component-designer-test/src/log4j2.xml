@@ -9,6 +9,7 @@
   </Appenders>
   <Loggers>
     <Logger name="test.uk.co.modularaudio" level="DEBUG"/>
+    <Logger name="uk.co.modularaudio" level="DEBUG"/>
     <Root level="ERROR">
       <AppenderRef ref="Console"/>
     </Root>
