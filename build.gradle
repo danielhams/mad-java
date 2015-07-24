@@ -45,3 +45,8 @@ task componentDesignerJar(type: Jar) {
 }
 
 componentDesignerJar.dependsOn build
+
+test {
+  systemProperties = System.getProperties();
+  systemProperties['org.jboss.logging.provider'] = 'slf4j'
+}

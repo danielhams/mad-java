@@ -47,7 +47,9 @@ public class TestUsingIOAndRendering
 
 	public void go() throws Exception
 	{
-		componentDesigner.setupApplicationContext( true, true, null, null );
+		componentDesigner.setupApplicationContext( ComponentDesigner.CDTEST_PROPERTIES,
+				null, null,
+				true, true );
 
 		applicationContext = componentDesigner.getApplicationContext();
 

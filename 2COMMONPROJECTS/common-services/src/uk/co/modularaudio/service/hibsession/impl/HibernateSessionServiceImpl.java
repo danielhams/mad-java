@@ -178,6 +178,11 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	@Override
 	public Session getSession()
 	{
+		if( log.isTraceEnabled() )
+		{
+			final String msg = "hibernate.getSession() called for thread " + Thread.currentThread().getName();
+			log.trace( msg );
+		}
 		final Session tmpSession = sessionFactory.openSession();
 		sessionsInUse.add( tmpSession );
 		return tmpSession;
@@ -186,6 +191,11 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	@Override
 	public void releaseSession( final Session session )
 	{
+		if( log.isTraceEnabled() )
+		{
+			final String msg = "hibernate.releaseSession() called for thread " + Thread.currentThread().getName();
+			log.trace( msg );
+		}
 		sessionsInUse.remove( session );
 		session.close();
 	}
@@ -199,7 +209,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	@Override
 	public void destroy()
 	{
-		log.debug("destroy() called");
+		log.trace("destroy() called");
 		if( sessionFactory != null)
 		{
 			if( sessionsInUse.size() > 0 )

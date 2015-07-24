@@ -18,3 +18,7 @@ dependencies {
     compile project(':util')
     compile project(':common-services')
 }
+
+tasks.withType(Test) {
+  systemProperty "org.jboss.logging.provider", "slf4j"
+}

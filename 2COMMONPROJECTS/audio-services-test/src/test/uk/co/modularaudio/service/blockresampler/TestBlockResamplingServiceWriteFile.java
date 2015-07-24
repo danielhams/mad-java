@@ -163,7 +163,6 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		// Fill temp storage with crap to show up any issues with boundary cases
 //		Arrays.fill( tempEventStorage.temporaryFloatArray, BlockResamplerService.MAGIC_FLOAT );
 
-		hsc.getThreadSession();
 		final File inputFile = new File(inputFileName);
 		final Transaction t = tls.beginTransaction();
 		final BlockResamplingClient brc = scc.createResamplingClient( inputFile.getAbsolutePath(), BlockResamplingMethod.CUBIC );

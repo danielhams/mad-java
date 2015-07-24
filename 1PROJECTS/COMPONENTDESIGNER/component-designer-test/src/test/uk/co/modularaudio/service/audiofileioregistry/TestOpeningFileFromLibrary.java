@@ -20,6 +20,10 @@
 
 package test.uk.co.modularaudio.service.audiofileioregistry;
 
+import java.io.File;
+
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -32,11 +36,11 @@ import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
 
-public class TestOpeningFileFromLibrary
+public class TestOpeningFileFromLibrary extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestOpeningFileFromLibrary.class.getName() );
 
-	private final static String TEST_FILE = "/home/dan/Music/CanLoseMusic/DJMixes/EricSneoLGT/LGTP001_ERIC_SNEO.mp3";
+	private final static String TEST_FILE_NAME = "../../../5TEST/audio-test-files/audiofiles/ExampleBeats.mp3";
 
 	private static final long SLEEP_AFTER_FIRST_OPEN_MILLIS = 500;
 	private static final long SLEEP_AFTER_SECOND_OPEN_MILLIS = 500;
@@ -47,21 +51,33 @@ public class TestOpeningFileFromLibrary
 	private HibernateSessionController hsc;
 	private SampleCachingService scs;
 
-	public TestOpeningFileFromLibrary() throws Exception
+	public TestOpeningFileFromLibrary()
 	{
 		componentDesigner = new ComponentDesigner();
 	}
 
-	public void go() throws Exception
+	@Override
+	protected void setUp() throws Exception
 	{
-		componentDesigner.setupApplicationContext( true, true, null, null );
+		componentDesigner.setupApplicationContext( ComponentDesigner.CDTEST_PROPERTIES,
+				null, null,
+				true, true );
 
 		applicationContext = componentDesigner.getApplicationContext();
 
 		// Grab the necessary controller references
 		hsc = applicationContext.getBean( HibernateSessionController.class );
 		scs = applicationContext.getBean( SampleCachingService.class );
+	}
 
+	@Override
+	protected void tearDown() throws Exception
+	{
+		componentDesigner.destroyApplicationContext();
+	}
+
+	public void testReadSomeFiles() throws Exception
+	{
 		// Obtain a hibernate session
 		hsc.getThreadSession();
 		Session tls = ThreadLocalSessionResource.getSessionResource();
@@ -69,7 +85,8 @@ public class TestOpeningFileFromLibrary
 
 		log.debug("-- FIRST OPEN BEGIN");
 		final long nb = System.nanoTime();
-		final SampleCacheClient scc = scs.registerCacheClientForFile( TEST_FILE );
+		final File testFile = new File(TEST_FILE_NAME);
+		final SampleCacheClient scc = scs.registerCacheClientForFile( testFile.getAbsolutePath() );
 		final long na = System.nanoTime();
 		final long diff = na - nb;
 		log.debug("-- FIRST OPEN END");
@@ -85,7 +102,7 @@ public class TestOpeningFileFromLibrary
 
 		log.debug("-- SECOND OPEN BEGIN");
 		final long nb2 = System.nanoTime();
-		final SampleCacheClient scc2 = scs.registerCacheClientForFile( TEST_FILE );
+		final SampleCacheClient scc2 = scs.registerCacheClientForFile( testFile.getAbsolutePath() );
 		final long na2 = System.nanoTime();
 		final long diff2 = na2 - nb2;
 		log.debug("-- SECOND OPEN END");
@@ -101,15 +118,5 @@ public class TestOpeningFileFromLibrary
 
 		log.debug("First  file took " + diff + "ns or " + (diff/1000) + "us or " + (diff/1000000) + "ms");
 		log.debug("Second file took " + diff2 + "ns or " + (diff2/1000) + "us or " + (diff2/1000000) + "ms");
-
-		componentDesigner.destroyApplicationContext();
 	}
-
-	public static void main( final String[] args ) throws Exception
-	{
-		final TestOpeningFileFromLibrary offl = new TestOpeningFileFromLibrary();
-
-		offl.go();
-	}
-
 }

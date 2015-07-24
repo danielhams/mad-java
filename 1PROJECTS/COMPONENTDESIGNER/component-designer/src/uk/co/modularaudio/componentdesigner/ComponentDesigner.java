@@ -63,8 +63,12 @@ public class ComponentDesigner implements ExitSignalReceiver
 {
 	private static Log log = LogFactory.getLog( ComponentDesigner.class.getName() );
 
+	public static final String CDCONFIG_PROPERTIES = "/cdconfiguration.properties";
+	public static final String CDDEVELOPMENT_PROPERTIES = "/cddevelopment.properties";
+	public static final String CDJPROFILER_PROPERTIES = "/cdjprofiler.properties";
+	public static final String CDTEST_PROPERTIES = "/cdtest.properties";
+
 	private static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
-	private static String configResourcePath = "/cdconfiguration.properties";
 	private static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";
 	private static final String PLUGIN_CONFIG_RESOURCE_PATH = "/pluginconfiguration.properties";
 
@@ -93,11 +97,14 @@ public class ComponentDesigner implements ExitSignalReceiver
 	{
 	}
 
-	public void init( final boolean showAlpha, final boolean showBeta,
-			final String additionalBeansResource, final String additionalConfigResource ) throws DatastoreException
+	public void init( final String configResourcePath,
+			final String additionalBeansResource, final String additionalConfigResource,
+			final boolean showAlpha, final boolean showBeta ) throws DatastoreException
 	{
 		// Setup the application context and get the necessary references to the gui controller
-		setupApplicationContext( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
+		setupApplicationContext( configResourcePath,
+				additionalBeansResource, additionalConfigResource,
+				showAlpha, showBeta );
 
 		mainFrame = new MainFrame();
 
@@ -119,8 +126,9 @@ public class ComponentDesigner implements ExitSignalReceiver
 
 	}
 
-	public void setupApplicationContext( final boolean showAlpha , final boolean showBeta,
-			final String additionalBeansResource, final String additionalConfigResource )
+	public void setupApplicationContext( final String configResourcePath,
+			final String additionalBeansResource, final String additionalConfigResource,
+			final boolean showAlpha , final boolean showBeta )
 		throws DatastoreException
 	{
 		try
@@ -253,6 +261,8 @@ public class ComponentDesigner implements ExitSignalReceiver
 		String additionalBeansResource = null;
 		String additionalConfigResource = null;
 
+		String configResourcePath = CDCONFIG_PROPERTIES;
+
 		if( args.length > 0 )
 		{
 			for( int i = 0 ; i < args.length ; ++i )
@@ -285,13 +295,13 @@ public class ComponentDesigner implements ExitSignalReceiver
 				else if( arg.equals( "--development") )
 				{
 					// Let me specify certain things with hard paths
-					configResourcePath = "/cddevelopment.properties";
-					log.info("In development mode. Will use /cddevelopment.properties for configuration");
+					configResourcePath = CDDEVELOPMENT_PROPERTIES;
+					log.info("In development mode. Will use development properties for configuration");
 				}
 				else if( arg.equals( "--jprofiler") )
 				{
-					configResourcePath = "/cdjprofiler.properties";
-					log.info("In jprofiler mode - using absolute paths from /cdjprofiler.properties for configuration");
+					configResourcePath = CDJPROFILER_PROPERTIES;
+					log.info("In jprofiler mode - using jprofiler properties for configuration");
 				}
 			}
 			if( useSystemLookAndFeel )
@@ -342,7 +352,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 		JTransformsConfigurator.setThreadsToOne();
 
 		final ComponentDesigner application = new ComponentDesigner();
-		application.init( showAlpha, showBeta, additionalBeansResource, additionalConfigResource );
+		application.init( configResourcePath, additionalBeansResource, additionalConfigResource, showAlpha, showBeta );
 
 		SwingUtilities.invokeLater( new Runnable()
 		{
