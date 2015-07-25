@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Rack" cols="20" rows="19">
+    <rackIOLink rackChannelName="Input Channel 3" rackComponentName="Test component one" rackComponentChannelInstanceName="Input"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="The second test component" rackComponentChannelInstanceName="Output"/>
+    <rackComponent name="Test component one" definitionId="fade_in">
+        <rackPosition column="0" row="0"/>
+    </rackComponent>
+    <rackComponent name="The second test component" definitionId="fade_in">
+        <rackPosition column="0" row="1"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Test component one" producerChannelName="Output" consumerRackComponentName="The second test component" consumerChannelName="Input"/>
+</rack>

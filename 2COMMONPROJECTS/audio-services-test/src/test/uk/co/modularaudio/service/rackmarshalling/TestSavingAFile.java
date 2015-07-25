@@ -20,6 +20,7 @@
 
 package test.uk.co.modularaudio.service.rackmarshalling;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -95,7 +96,9 @@ public class TestSavingAFile extends TestCase
 
 		tc.rackService.dumpRack( emptyRack );
 
-		tc.rackMarshallingService.saveBaseRackToFile( emptyRack,  "test_save_file_output.xml" );
+		final String outputFileName = "tmpoutput/test_save_file_output.xml";
+		final File outputFile = new File( outputFileName );
+		tc.rackMarshallingService.saveBaseRackToFile( emptyRack,  outputFile.getAbsolutePath() );
 
 		// Create a rendering plan from it
 		final RenderingPlan testRenderingPlan = tc.renderingPlanService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, tc );

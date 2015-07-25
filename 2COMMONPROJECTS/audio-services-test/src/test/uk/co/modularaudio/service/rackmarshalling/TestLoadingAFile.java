@@ -20,6 +20,8 @@
 
 package test.uk.co.modularaudio.service.rackmarshalling;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 import test.uk.co.modularaudio.service.rackmarshalling.config.RackMarshallingTestConfig;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
@@ -33,9 +35,10 @@ public class TestLoadingAFile extends TestCase
 	public void testLoadAFile()
 		throws Exception
 	{
-		final String filename = "test_save_file_output.xml";
+		final String inputFileName = "supportfiles/test_rack_file_input.xml";
+		final File inputFile = new File( inputFileName );
 
-		final RackDataModel rdm = tc.rackMarshallingService.loadBaseRackFromFile( filename );
+		final RackDataModel rdm = tc.rackMarshallingService.loadBaseRackFromFile( inputFile.getAbsolutePath() );
 
 		tc.rackService.getRackGraphInstance( rdm );
 		tc.rackService.destroyRackDataModel( rdm );
