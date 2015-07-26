@@ -132,7 +132,7 @@ public class AppRenderingServiceImpl
 		// Do any needed hotspot looping to get things compile hot
 		if( doStartupHotspot )
 		{
-			log.info("Beginning startup hotspot heating");
+			log.debug("Beginning startup hotspot heating");
 			try
 			{
 				startupHotspot();
@@ -142,7 +142,7 @@ public class AppRenderingServiceImpl
 				final String msg = "Failure during startup hotspot looping: " + e.toString();
 				log.error( msg, e );
 			}
-			log.info("Completed startup hotspot heating");
+			log.debug("Completed startup hotspot heating");
 		}
 	}
 
