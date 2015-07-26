@@ -150,10 +150,10 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 				timingParameters = timingService.getTimingSource().getTimingParameters();
 				timingParameters.reset( discoveredSettings.getTail() );
 
-				if( log.isInfoEnabled() )
+				if( log.isDebugEnabled() )
 				{
-					log.info("Starting up audio IO with channel settings: " + hardwareChannelSettings.toString() ); // NOPMD by dan on 22/01/15 08:22
-					log.info("Starting up audio IO with parameters: " + timingParameters.toString() ); // NOPMD by dan on 22/01/15 08:22
+					log.debug("Starting up audio IO with channel settings: " + hardwareChannelSettings.toString() ); // NOPMD by dan on 22/01/15 08:22
+					log.debug("Starting up audio IO with parameters: " + timingParameters.toString() ); // NOPMD by dan on 22/01/15 08:22
 				}
 
 				startThreads();

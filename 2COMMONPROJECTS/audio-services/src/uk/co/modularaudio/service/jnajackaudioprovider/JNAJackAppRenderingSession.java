@@ -113,9 +113,9 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 		{
 			final int bufferSize = client.getBufferSize();
 			final int sampleRate = client.getSampleRate();
-			if( log.isInfoEnabled() )
+			if( log.isDebugEnabled() )
 			{
-				log.info("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")"); // NOPMD by dan on 01/02/15 07:06
+				log.debug("Jack tells us sampleRate(" + sampleRate + ") and bufferSize(" + bufferSize +")"); // NOPMD by dan on 01/02/15 07:06
 			}
 			final DataRate dataRate = DataRate.fromFrequency(sampleRate);
 

@@ -347,7 +347,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 		final String fontName = f.getName();
 		FontResetter.setUIFontFromString( fontName, Font.PLAIN, 10 );
 
-		log.info( "ComponentDesigner starting.");
+		log.debug( "ComponentDesigner starting.");
 		// Set the fft library to only use current thread
 		JTransformsConfigurator.setThreadsToOne();
 
