@@ -29,7 +29,7 @@ public class LibMpg123WrapperLoader
 
 	static
 	{
-		log.info("Loading libmpg123 wrapper library");
+		log.debug("Loading libmpg123 wrapper library");
 		System.loadLibrary( "mpg123_wrap" );
 	}
 

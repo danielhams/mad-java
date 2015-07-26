@@ -89,9 +89,9 @@ public class AudioProviderRegistryServiceImpl
 		}
 		else
 		{
-			if( log.isInfoEnabled() )
+			if( log.isDebugEnabled() )
 			{
-				log.info("Registering audio provider: " + provider.getId() ); // NOPMD by dan on 01/02/15 07:08
+				log.debug("Registering audio provider: " + provider.getId() ); // NOPMD by dan on 01/02/15 07:08
 			}
 			providers.add( provider );
 			idToProviderMap.put( provider.getId(), provider );
@@ -104,9 +104,9 @@ public class AudioProviderRegistryServiceImpl
 	{
 		if( providers.contains( provider ) )
 		{
-			if( log.isInfoEnabled() )
+			if( log.isDebugEnabled() )
 			{
-				log.info("Unregistered audio provider:" + provider.getId() ); // NOPMD by dan on 01/02/15 07:08
+				log.debug("Unregistered audio provider:" + provider.getId() ); // NOPMD by dan on 01/02/15 07:08
 			}
 			idToProviderMap.remove( provider.getId() );
 			providers.remove( provider );

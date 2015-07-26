@@ -16,9 +16,7 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
-import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
 import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardBandLimitedWaveTables;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardWaveTables;
@@ -146,9 +144,8 @@ public class ComponentDesignerSupportFileGenerator
 		final GenericApplicationContext gac = cd.getApplicationContext();
 		final UserPreferencesController upc = gac.getBean( UserPreferencesController.class );
 		upc.reloadUserPreferences();
-		final UserPreferencesMVCView view = upc.getUserPreferencesMVCView();
 		final UserPreferencesMVCController upmc = upc.getUserPreferencesMVCController();
-		final UserPreferencesMVCModel preferencesModel = upmc.getModel();
+
 		// Set up the defaults
 		upmc.getUserMusicDirController().setValue( this, "./music" );
 		upmc.getUserPatchesController().setValue( this, "./userpatches" );

@@ -29,8 +29,8 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -61,9 +61,9 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	@Override
 	public void registerComponentUiFactory( final MadComponentUiFactory uiFactory ) throws DatastoreException
 	{
-		if( log.isInfoEnabled() )
+		if( log.isDebugEnabled() )
 		{
-			log.info( "Registering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
+			log.debug( "Registering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
 		}
 
 		final List<MadUiDefinition<?,?>> factoryDefinitions = uiFactory.listComponentUiDefinitions();
@@ -90,9 +90,9 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	@Override
 	public void unregisterComponentUiFactory( final MadComponentUiFactory uiFactory ) throws DatastoreException
 	{
-		if( log.isInfoEnabled() )
+		if( log.isDebugEnabled() )
 		{
-			log.info( "Unregistering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
+			log.debug( "Unregistering ui components for " + uiFactory.getClass().getSimpleName() ); // NOPMD by dan on 01/02/15 07:07
 		}
 
 		final List<MadUiDefinition<?,?>> factoryDefinitions = uiFactory.listComponentUiDefinitions();

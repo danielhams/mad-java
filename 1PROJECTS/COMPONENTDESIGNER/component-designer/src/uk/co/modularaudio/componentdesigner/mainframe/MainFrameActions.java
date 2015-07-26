@@ -87,7 +87,7 @@ public class MainFrameActions
 		this.fc = fcin;
 		this.mainFrame = mainFrame;
 
-		log.info("Constructing main actions.");
+		log.debug("Constructing main actions.");
 		dumpGraphAction = new DumpGraphAction( fc );
 		dumpProfileAction = new DumpProfileAction( fc );
 		dumpSampleCacheAction = new DumpSampleCacheAction( fc );

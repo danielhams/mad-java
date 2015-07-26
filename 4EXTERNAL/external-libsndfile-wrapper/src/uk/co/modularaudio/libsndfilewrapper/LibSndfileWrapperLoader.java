@@ -29,7 +29,7 @@ public class LibSndfileWrapperLoader
 
 	static
 	{
-		log.info("Loading libsndfile wrapper library");
+		log.debug("Loading libsndfile wrapper library");
 		System.loadLibrary( "sndfile_wrap" );
 	}
 
