@@ -61,7 +61,7 @@ public class DirectorySelectionDialog extends JFileChooser
 			dirPath = getSelectedFile().getPath();
 		}
 
-		if( callback != null )
+		if( callback != null && dirPath != null )
 		{
 			callback.receiveDirectorySelectionDialogClosed( dirPath );
 		}
