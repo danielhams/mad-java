@@ -62,7 +62,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 
 	private final static String PROVIDER_ID = "JNA Jack Provider";
 
-	private static final String CONFIG_KEY_SHOULD_REGISTER = JNAJackAudioProvider.class.getSimpleName() + ".ShouldRegister";
+	private static final String CONFIG_KEY_DO_CONNECT = JNAJackAudioProvider.class.getSimpleName() + ".DoConnect";
 
 	private static final int NUM_STEREO_JACK_AUDIO_CHANNELS = 2;
 	private static final int NUM_QUAD_JACK_AUDIO_CHANNELS = 4;
@@ -74,7 +74,7 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	private TimingService timingService;
 	private AppRenderingService appRenderingService;
 
-	private boolean shouldRegister;
+	private boolean doConnect;
 
 	private final ArrayList<AudioHardwareDevice> consumerAudioHardwareDevices;
 	private final ArrayList<AudioHardwareDevice> producerAudioHardwareDevices;
@@ -118,11 +118,57 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 
 			final Map<String,String> errors = new HashMap<String,String>();
 
-			shouldRegister = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_SHOULD_REGISTER, errors );
+			doConnect = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_DO_CONNECT, errors );
 
 			ConfigurationServiceHelper.errorCheck( errors );
 
-			if( shouldRegister )
+			consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackout8",
+					"JNAJack " + NUM_SURROUND_JACK_AUDIO_CHANNELS + " Channel Output",
+					DeviceDirection.CONSUMER,
+					 NUM_SURROUND_JACK_AUDIO_CHANNELS ) );
+
+			producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackin8",
+					"JNAJack " + NUM_SURROUND_JACK_AUDIO_CHANNELS + " Channel Input",
+					DeviceDirection.PRODUCER,
+					NUM_SURROUND_JACK_AUDIO_CHANNELS ));
+
+			consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackout4",
+					"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Output",
+					DeviceDirection.CONSUMER,
+					 NUM_QUAD_JACK_AUDIO_CHANNELS ) );
+
+			producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackin4",
+					"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Input",
+					DeviceDirection.PRODUCER,
+					NUM_QUAD_JACK_AUDIO_CHANNELS ));
+
+			consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackout2",
+					"JNAJack " + NUM_STEREO_JACK_AUDIO_CHANNELS + " Channel Output",
+					DeviceDirection.CONSUMER,
+					NUM_STEREO_JACK_AUDIO_CHANNELS ) );
+
+			producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
+					"jnajackin2",
+					"JNAJack " + NUM_STEREO_JACK_AUDIO_CHANNELS + " Channel Input",
+					DeviceDirection.PRODUCER,
+					NUM_STEREO_JACK_AUDIO_CHANNELS ));
+
+			consumerMidiHardwareDevices.add( new MidiHardwareDevice( this.getId(),
+					"jnajackmidiout",
+					"JNAJack Midi Output",
+					DeviceDirection.CONSUMER ));
+
+			producerMidiHardwareDevices.add( new MidiHardwareDevice( this.getId(),
+					"jnajackmidiin",
+					"JNAJack Midi Input",
+					DeviceDirection.PRODUCER ) );
+
+			if( doConnect )
 			{
 				jack = Jack.getInstance();
 
@@ -133,62 +179,15 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 				if( client != null )
 				{
 					connectedToJack = true;
-
-					consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackout8",
-							"JNAJack " + NUM_SURROUND_JACK_AUDIO_CHANNELS + " Channel Output",
-							DeviceDirection.CONSUMER,
-							 NUM_SURROUND_JACK_AUDIO_CHANNELS ) );
-
-					producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackin8",
-							"JNAJack " + NUM_SURROUND_JACK_AUDIO_CHANNELS + " Channel Input",
-							DeviceDirection.PRODUCER,
-							NUM_SURROUND_JACK_AUDIO_CHANNELS ));
-
-					consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackout4",
-							"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Output",
-							DeviceDirection.CONSUMER,
-							 NUM_QUAD_JACK_AUDIO_CHANNELS ) );
-
-					producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackin4",
-							"JNAJack " + NUM_QUAD_JACK_AUDIO_CHANNELS + " Channel Input",
-							DeviceDirection.PRODUCER,
-							NUM_QUAD_JACK_AUDIO_CHANNELS ));
-
-					consumerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackout2",
-							"JNAJack " + NUM_STEREO_JACK_AUDIO_CHANNELS + " Channel Output",
-							DeviceDirection.CONSUMER,
-							NUM_STEREO_JACK_AUDIO_CHANNELS ) );
-
-					producerAudioHardwareDevices.add( new AudioHardwareDevice( this.getId(),
-							"jnajackin2",
-							"JNAJack " + NUM_STEREO_JACK_AUDIO_CHANNELS + " Channel Input",
-							DeviceDirection.PRODUCER,
-							NUM_STEREO_JACK_AUDIO_CHANNELS ));
-
-					consumerMidiHardwareDevices.add( new MidiHardwareDevice( this.getId(),
-							"jnajackmidiout",
-							"JNAJack Midi Output",
-							DeviceDirection.CONSUMER ));
-
-					producerMidiHardwareDevices.add( new MidiHardwareDevice( this.getId(),
-							"jnajackmidiin",
-							"JNAJack Midi Input",
-							DeviceDirection.PRODUCER ) );
 				}
-
-				try
-				{
-					audioProviderRegistryService.registerAudioProvider( this );
-				}
-				catch (final Exception e)
-				{
-					log.error( e );
-				}
+			}
+			try
+			{
+				audioProviderRegistryService.registerAudioProvider( this );
+			}
+			catch (final Exception e)
+			{
+				log.error( e );
 			}
 		}
 		catch(final JackException je )
@@ -202,26 +201,23 @@ public class JNAJackAudioProvider extends AudioProvider implements ComponentWith
 	@Override
 	public void destroy()
 	{
-		if( shouldRegister )
+		try
 		{
-			try
-			{
-				audioProviderRegistryService.unregisterAudioProvider( this );
-			}
-			catch (final Exception e)
-			{
-				log.error( e );
-			}
-			if( connectedToJack )
-			{
-				client.close();
-				client = null;
-				consumerAudioHardwareDevices.clear();
-				producerAudioHardwareDevices.clear();
-				consumerMidiHardwareDevices.clear();
-				producerMidiHardwareDevices.clear();
-				connectedToJack = false;
-			}
+			audioProviderRegistryService.unregisterAudioProvider( this );
+		}
+		catch (final Exception e)
+		{
+			log.error( e );
+		}
+		if( doConnect && connectedToJack )
+		{
+			client.close();
+			client = null;
+			consumerAudioHardwareDevices.clear();
+			producerAudioHardwareDevices.clear();
+			consumerMidiHardwareDevices.clear();
+			producerMidiHardwareDevices.clear();
+			connectedToJack = false;
 		}
 	}
 

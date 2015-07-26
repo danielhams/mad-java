@@ -12,7 +12,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.springframework.context.support.GenericApplicationContext;
 
+import uk.co.modularaudio.componentdesigner.ComponentDesigner;
+import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
+import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
+import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCModel;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardBandLimitedWaveTables;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardWaveTables;
@@ -21,21 +27,40 @@ public class ComponentDesignerSupportFileGenerator
 {
 	private static Log log = LogFactory.getLog( ComponentDesignerSupportFileGenerator.class.getName() );
 
-	private final String outputDirectory;
+	private final ComponentDesigner cd;
 
+	private final String outputDirectory;
 	private final String inputImagesDirectory;
 
 	public ComponentDesignerSupportFileGenerator( final String outputDirectory, final String inputImagesDirectory )
 			throws Exception
 	{
+		cd = new ComponentDesigner();
+
 		this.outputDirectory = outputDirectory;
 		this.inputImagesDirectory = inputImagesDirectory;
+	}
+
+	public void init() throws Exception
+	{
+		cd.init( ComponentDesigner.CDTEST_PROPERTIES, null, null, true, true );
+	}
+
+	public void destroy() throws Exception
+	{
+		cd.signalPreExit();
+		cd.signalPostExit();
 	}
 
 	public void generateFiles() throws Exception
 	{
 		generateBlw();
 		copyComponentImages();
+	}
+
+	public void initialiseThingsNeedingComponentGraph() throws Exception
+	{
+		generatePreferencesFiles();
 	}
 
 	public static void main( final String[] args ) throws Exception
@@ -53,6 +78,9 @@ public class ComponentDesignerSupportFileGenerator
 
 		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0], args[1] );
 		sfg.generateFiles();
+		sfg.init();
+		sfg.initialiseThingsNeedingComponentGraph();
+		sfg.destroy();
 	}
 
 	private void generateBlw() throws Exception
@@ -112,4 +140,28 @@ public class ComponentDesignerSupportFileGenerator
 			}
 		}
 	}
+
+	private void generatePreferencesFiles() throws Exception
+	{
+		final GenericApplicationContext gac = cd.getApplicationContext();
+		final UserPreferencesController upc = gac.getBean( UserPreferencesController.class );
+		upc.reloadUserPreferences();
+		final UserPreferencesMVCView view = upc.getUserPreferencesMVCView();
+		final UserPreferencesMVCController upmc = upc.getUserPreferencesMVCController();
+		final UserPreferencesMVCModel preferencesModel = upmc.getModel();
+		// Set up the defaults
+		upmc.getUserMusicDirController().setValue( this, "./music" );
+		upmc.getUserPatchesController().setValue( this, "./userpatches" );
+		upmc.getUserSubRacksController().setValue( this, "./usersubrackpatches" );
+
+		upmc.getRenderingCoresController().setValue( 1 );
+		upmc.getFpsComboController().setSelectedElementById( "60" );
+		upmc.getInputDeviceComboController().setSelectedElementById( "jnajackin2" );
+		upmc.getOutputDeviceComboController().setSelectedElementById( "jnajackout4" );
+		upmc.getInputMidiDeviceComboController().setSelectedElementById( "jnajackmidiin" );
+		upmc.getOutputMidiDeviceComboController().setSelectedElementById( "jnajackmidiout" );
+
+		upc.applyUserPreferencesChanges();
+	}
+
 }

@@ -87,6 +87,8 @@ task copyUserSubRackPatches(type: Copy) {
 }
 
 task componentDesignerSupportFiles(type: JavaExec) {
+  systemProperty "java.library.path", "4EXTERNAL/external-libsndfile-wrapper/lib:4EXTERNAL/external-libmpg123-wrapper/lib"
+  systemProperty "org.jboss.logging.provider", "slf4j"
   classpath += sourceSets.main.runtimeClasspath
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   args = ['releasedir', '2COMMONPROJECTS/audio-services-images/images']

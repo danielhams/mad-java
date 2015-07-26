@@ -1,5 +1,5 @@
 bin/*
-componentdesignersql.*
 /bin
 .javacomponentdesigner*
 /thumbnails/
+component-designer-db.*
