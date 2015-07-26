@@ -5,7 +5,12 @@
 #############################################
 
 # Where your JDK lives (1.8 please, 1.7 has performance issues with swing)
-export JAVA_HOME=/home/dan/Development/Jdks/jdk1.8.0_45
+#export JAVA_HOME=/home/dan/Development/Jdks/jdk1.8.0_45
+#export JAVA_HOME=/home/dan/Development/Jdks/jdk1.8.0_45
+if [ "$JAVA_HOME"q == "q" ]; then
+    echo "You must set JAVA_HOME before running this script"
+    exit 1;
+fi
 
 # Whether to use the java platform look and feel
 # Values: yes or no

@@ -37,7 +37,3 @@ task jaxb () {
 }
 
 compileJava.dependsOn jaxb
-
-//task javadoc(type: Javadoc) {
-//  exclude 'uk/co/modularaudio/service/rackmarshalling/generated/**'
-//}
