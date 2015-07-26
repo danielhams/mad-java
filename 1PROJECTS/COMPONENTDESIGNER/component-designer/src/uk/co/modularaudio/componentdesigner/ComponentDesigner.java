@@ -66,7 +66,7 @@ public class ComponentDesigner implements ExitSignalReceiver
 	public static final String CDCONFIG_PROPERTIES = "/cdconfiguration.properties";
 	public static final String CDDEVELOPMENT_PROPERTIES = "/cddevelopment.properties";
 	public static final String CDJPROFILER_PROPERTIES = "/cdjprofiler.properties";
-	public static final String CDTEST_PROPERTIES = "/cdtest.properties";
+	public static final String CDRELEASEGENERATOR_PROPERTIES = "/cdreleasegenerator.properties";
 
 	private static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
 	private static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";

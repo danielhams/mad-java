@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
+import test.uk.co.modularaudio.service.TestConstants;
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 
@@ -47,7 +48,7 @@ public class TestUsingIOAndRendering
 
 	public void go() throws Exception
 	{
-		componentDesigner.setupApplicationContext( ComponentDesigner.CDTEST_PROPERTIES,
+		componentDesigner.setupApplicationContext( TestConstants.CDTEST_PROPERTIES,
 				null, null,
 				true, true );
 

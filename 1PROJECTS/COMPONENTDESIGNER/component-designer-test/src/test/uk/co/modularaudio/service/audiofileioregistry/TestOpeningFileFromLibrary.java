@@ -30,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
+import test.uk.co.modularaudio.service.TestConstants;
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
@@ -59,7 +60,7 @@ public class TestOpeningFileFromLibrary extends TestCase
 	@Override
 	protected void setUp() throws Exception
 	{
-		componentDesigner.setupApplicationContext( ComponentDesigner.CDTEST_PROPERTIES,
+		componentDesigner.setupApplicationContext( TestConstants.CDTEST_PROPERTIES,
 				null, null,
 				true, true );
 

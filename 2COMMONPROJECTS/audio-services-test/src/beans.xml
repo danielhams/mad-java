@@ -11,7 +11,6 @@
     <bean id="componentUiService" class="uk.co.modularaudio.service.madcomponentui.impl.MadComponentUiServiceImpl" init-method="init" destroy-method="destroy">
     </bean>
     <bean id="componentImageFactory" class="uk.co.modularaudio.service.imagefactory.impl.ComponentImageFactoryImpl" init-method="init" destroy-method="destroy">
-        <property name="configurationService"><ref bean="configurationService"></ref></property>
     </bean>
     <bean id="bufferedImageAllocationService" class="uk.co.modularaudio.service.bufferedimageallocation.impl.BufferedImageAllocationServiceImpl" init-method="init" destroy-method="destroy">
         <property name="configurationService"><ref bean="configurationService"></ref></property>
