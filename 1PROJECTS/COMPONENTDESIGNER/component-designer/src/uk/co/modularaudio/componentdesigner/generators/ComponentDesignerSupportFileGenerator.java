@@ -25,8 +25,8 @@ public class ComponentDesignerSupportFileGenerator
 
 	private final String inputImagesDirectory;
 
-	public ComponentDesignerSupportFileGenerator( final String outputDirectory,
-			final String inputImagesDirectory ) throws Exception
+	public ComponentDesignerSupportFileGenerator( final String outputDirectory, final String inputImagesDirectory )
+			throws Exception
 	{
 		this.outputDirectory = outputDirectory;
 		this.inputImagesDirectory = inputImagesDirectory;
@@ -38,14 +38,32 @@ public class ComponentDesignerSupportFileGenerator
 		copyComponentImages();
 	}
 
+	public static void main( final String[] args ) throws Exception
+	{
+		if( args.length != 2 )
+		{
+			throw new Exception( "Missing required directories: outputDir inputImagesDir" );
+		}
+
+		final LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
+		final Configuration config = ctx.getConfiguration();
+		final LoggerConfig loggerConfig = config.getLoggerConfig( LogManager.ROOT_LOGGER_NAME );
+		loggerConfig.setLevel( Level.INFO );
+		ctx.updateLoggers();
+
+		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0], args[1] );
+		sfg.generateFiles();
+	}
+
 	private void generateBlw() throws Exception
 	{
-		log.info( "Check if wave tables need to be generated...");
+		log.info( "Check if wave tables need to be generated..." );
 
 		final String waveTablesOutputDirectory = outputDirectory + File.separatorChar + "wavetables";
 
 		final StandardWaveTables swt = StandardWaveTables.getInstance( waveTablesOutputDirectory );
-		final StandardBandLimitedWaveTables sblwt = StandardBandLimitedWaveTables.getInstance( waveTablesOutputDirectory );
+		final StandardBandLimitedWaveTables sblwt = StandardBandLimitedWaveTables
+				.getInstance( waveTablesOutputDirectory );
 
 		for( final OscillatorWaveShape shape : OscillatorWaveShape.values() )
 		{
@@ -60,10 +78,10 @@ public class ComponentDesignerSupportFileGenerator
 
 	private void copyComponentImages() throws Exception
 	{
-		log.info( "Checking for new component images...");
+		log.info( "Checking for new component images..." );
 		final File inputImageDir = new File( inputImagesDirectory );
 
-		final File outputImageDir = new File( outputDirectory + File.separatorChar + "images");
+		final File outputImageDir = new File( outputDirectory + File.separatorChar + "images" );
 		outputImageDir.mkdirs();
 
 		final Path inputImagesPath = inputImageDir.toPath();
@@ -74,8 +92,8 @@ public class ComponentDesignerSupportFileGenerator
 		{
 			final String outputName = entry.toFile().getName();
 			final String outputPath = outputImageDir.getAbsolutePath() + File.separatorChar + outputName;
-//			copyFile( entry.toFile(), new File(outputPath) );
-			final File outputImageFile = new File(outputPath);
+			// copyFile( entry.toFile(), new File(outputPath) );
+			final File outputImageFile = new File( outputPath );
 			final long inputFileLastMod = entry.toFile().lastModified();
 			long outputFileLastMod = inputFileLastMod;
 			if( outputImageFile.exists() )
@@ -89,28 +107,9 @@ public class ComponentDesignerSupportFileGenerator
 				{
 					outputImageFile.delete();
 				}
-				log.info("Copying image file: " + outputName);
-				Files.copy( entry, new File(outputPath).toPath() );
+				log.info( "Copying image file: " + outputName );
+				Files.copy( entry, new File( outputPath ).toPath() );
 			}
 		}
 	}
-
-	public static void main( final String[] args ) throws Exception
-	{
-		if( args.length != 2 )
-		{
-			throw new Exception("Missing required directories: outputDir inputImagesDir");
-		}
-
-		final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
-		final Configuration config = ctx.getConfiguration();
-		final LoggerConfig loggerConfig = config.getLoggerConfig( LogManager.ROOT_LOGGER_NAME );
-		loggerConfig.setLevel( Level.INFO );
-		ctx.updateLoggers();
-
-		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0],
-				args[1] );
-		sfg.generateFiles();
-	}
-
 }
