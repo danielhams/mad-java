@@ -20,12 +20,15 @@ dependencies {
 
 task buildWrapper (type:Exec) {
   String osName = System.getProperty("os.name").toLowerCase();
+  println("OsName is " + osName)
 
   if(osName.contains("windows"))
   {
   }
-  else if(osName.contains("osx"))
+  else if(osName.contains("os x"))
   {
+    commandLine 'sh'
+    args 'generate_osx_so.sh'
   }
   else if(osName.contains("linux"))
   {

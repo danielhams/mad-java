@@ -53,7 +53,9 @@ test {
 
 task copyNativeLibs(type: Copy) {
   from '4EXTERNAL/external-libmpg123-wrapper/lib/libmpg123_wrap.so'
+  from '4EXTERNAL/external-libmpg123-wrapper/lib/libmpg123_wrap.dylib'
   from '4EXTERNAL/external-libsndfile-wrapper/lib/libsndfile_wrap.so'
+  from '4EXTERNAL/external-libsndfile-wrapper/lib/libsndfile_wrap.dylib'
   into 'releasedir/natives'
 }
 
