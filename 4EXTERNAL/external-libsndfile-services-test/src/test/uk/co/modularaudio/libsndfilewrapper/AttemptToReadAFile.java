@@ -23,6 +23,8 @@ package test.uk.co.modularaudio.libsndfilewrapper;
 import java.io.File;
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,7 +37,7 @@ import uk.co.modularaudio.libsndfilewrapper.swig.libsndfile;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.exception.DatastoreException;
 
-public class AttemptToReadAFile
+public class AttemptToReadAFile extends TestCase
 {
 	private static Log log = LogFactory.getLog( AttemptToReadAFile.class.getName() );
 
@@ -51,7 +53,7 @@ public class AttemptToReadAFile
 		LibSndfileWrapperLoader.loadIt();
 	}
 
-	public void goSlowMethod() throws Exception
+	public void testUseSwigWrapperSlow() throws Exception
 	{
 		final SF_INFO sf = new SF_INFO();
 
@@ -118,7 +120,7 @@ public class AttemptToReadAFile
 				+ " millis" );
 	}
 
-	public void goBulkMethod() throws Exception
+	public void testUseSwigWrapperBulk() throws Exception
 	{
 
 		final SF_INFO sf = new SF_INFO();
@@ -188,8 +190,8 @@ public class AttemptToReadAFile
 		log.trace( "Beginning libsndfile read attempt" );
 		final AttemptToReadAFile a = new AttemptToReadAFile();
 
-		a.goSlowMethod();
-		a.goBulkMethod();
+		a.testUseSwigWrapperSlow();
+		a.testUseSwigWrapperBulk();
 	}
 
 }

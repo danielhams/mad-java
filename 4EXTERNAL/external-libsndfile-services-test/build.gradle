@@ -17,3 +17,7 @@ dependencies {
     compile project(':external-libsndfile-wrapper')
     compile project(':external-libsndfile-services')
 }
+
+tasks.withType(Test) {
+  systemProperty "java.library.path", "../external-libsndfile-wrapper/lib"
+}

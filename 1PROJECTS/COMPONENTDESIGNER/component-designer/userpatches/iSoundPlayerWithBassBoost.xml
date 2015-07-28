@@ -41,10 +41,10 @@
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="./usersubrackpatches/mid_side_processing.xml" name="Sub Rack 4" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 4" definitionId="sub_rack">
         <rackPosition column="2" row="0"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="./usersubrackpatches/mid_side_processing.xml" name="Sub Rack 5" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 5" definitionId="sub_rack">
         <rackPosition column="2" row="1"/>
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">

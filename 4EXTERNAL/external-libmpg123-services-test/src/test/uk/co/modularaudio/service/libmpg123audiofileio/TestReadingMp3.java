@@ -20,6 +20,8 @@
 
 package test.uk.co.modularaudio.service.libmpg123audiofileio;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -27,19 +29,27 @@ import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
 import uk.co.modularaudio.service.audiofileio.AudioFileIOService;
 import uk.co.modularaudio.service.audiofileio.StaticMetadata;
 import uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl;
+import uk.co.modularaudio.service.audioproviderregistry.impl.AudioProviderRegistryServiceImpl;
+import uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl;
 import uk.co.modularaudio.service.libmpg123audiofileio.LibMpg123AudioFileIOService;
+import uk.co.modularaudio.service.userpreferences.impl.UserPreferencesServiceImpl;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 
-public class TestReadingMp3
+public class TestReadingMp3 extends TestCase
 {
 	private static Log log = LogFactory.getLog( TestReadingMp3.class.getName() );
 
-	private final static String TEST_FILE = "/home/dan/Music/CanLoseMusic/Albums/House/Ministry Of Sound/The Annual 2004/Bonus CD/01-Fatboy Slim - Right Here Right Now.mp3";
+	private final static String TEST_FILE = "../../5TEST/audio-test-files/audiofiles/ExampleBeats.mp3";
 
-	private final static String NOUT_FILE = "/data_slow/dan/temp/nativeoutfile.wav";
+	private final static String NOUT_FILE = "tmpoutput/nativeoutfile.wav";
 
 	private final static int BUFFER_LENGTH_FLOATS = 4096;
 
+	private static final String TEST_CONFIG_RESOURCE_PATH = "/service-test.properties";
+
+	private final ConfigurationServiceImpl cs;
+	private final AudioProviderRegistryServiceImpl aprs;
+	private final UserPreferencesServiceImpl ups;
 	private final AudioFileIORegistryServiceImpl firs;
 	private final LibMpg123AudioFileIOService nmr;
 
@@ -47,17 +57,29 @@ public class TestReadingMp3
 
 	public TestReadingMp3() throws Exception
 	{
+		cs = new ConfigurationServiceImpl();
+		aprs = new AudioProviderRegistryServiceImpl();
 		firs = new AudioFileIORegistryServiceImpl();
 		nmr = new LibMpg123AudioFileIOService();
+		ups = new UserPreferencesServiceImpl();
 
-		nmr.setAudioFileIORegistryService( firs );
+		cs.setConfigResourcePath( TEST_CONFIG_RESOURCE_PATH );
+		cs.init();
 
+		aprs.init();
+
+		ups.setConfigurationService( cs );
+		ups.setAudioProviderRegistryService( aprs );
+		ups.init();
+
+		firs.setUserPreferencesService( ups );
 		firs.init();
 
+		nmr.setAudioFileIORegistryService( firs );
 		nmr.init();
 	}
 
-	public long testNative() throws Exception
+	public void testLibmpg123AudioFileIOService() throws Exception
 	{
 		final AudioFileHandleAtom fha = nmr.openForRead( TEST_FILE );
 		final AudioFileIOService is = fha.getAudioFileIOService();
@@ -94,8 +116,6 @@ public class TestReadingMp3
 		}
 
 		fw.close();
-
-		return currentPositionFrames;
 	}
 
 	private final static int NUM_ITERATIONS = 3;
@@ -107,12 +127,11 @@ public class TestReadingMp3
 		for( int i = 0 ; i < NUM_ITERATIONS ; ++i )
 		{
 			final long aj = System.nanoTime();
-			final long numNativeFrames = jan.testNative();
+			jan.testLibmpg123AudioFileIOService();
 			final long an = System.nanoTime();
-
 			final long nd = an - aj;
 
-			log.trace( "N did " + numNativeFrames + " frames and took " + nd + "ns or " + (nd/1000) + "us or " + (nd/1000000) + "ms");
+			log.trace( "Test took " + nd + "ns or " + (nd/1000) + "us or " + (nd/1000000) + "ms");
 
 		}
 	}

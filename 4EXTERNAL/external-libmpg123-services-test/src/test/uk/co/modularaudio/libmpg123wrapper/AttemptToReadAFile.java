@@ -23,6 +23,8 @@ package test.uk.co.modularaudio.libmpg123wrapper;
 import java.io.File;
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,7 +39,7 @@ import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_parms;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 
-public class AttemptToReadAFile
+public class AttemptToReadAFile extends TestCase
 {
 	private static Log log = LogFactory.getLog( AttemptToReadAFile.class.getName() );
 
@@ -64,7 +66,7 @@ public class AttemptToReadAFile
 		}
 	}
 
-	public void go() throws Exception
+	public void testUseSwigWrapper() throws Exception
 	{
 		libmpg123.HandRolled( 25, "SomeString" );
 
@@ -195,13 +197,4 @@ public class AttemptToReadAFile
 
 		log.trace( "Done" );
 	}
-
-	public static void main( final String[] args ) throws Exception
-	{
-		log.trace("Beginning libmpg123 read attempt");
-		final AttemptToReadAFile a = new AttemptToReadAFile();
-
-		a.go();
-	}
-
 }

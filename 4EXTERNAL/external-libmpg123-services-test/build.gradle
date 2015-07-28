@@ -14,5 +14,10 @@ sourceSets {
 repositories { mavenCentral() }
 
 dependencies {
+    compile project(':external-libmpg123-wrapper')
     compile project(':external-libmpg123-services')
+}
+
+tasks.withType(Test) {
+  systemProperty "java.library.path", "../external-libmpg123-wrapper/lib"
 }
