@@ -75,7 +75,6 @@ public class ComponentDesignerSupportFileGenerator
 //		sfg.init();
 //		sfg.initialiseThingsNeedingComponentGraph();
 //		sfg.destroy();
-		log.error("Fix me!");
 	}
 
 	private void generateBlw() throws Exception
