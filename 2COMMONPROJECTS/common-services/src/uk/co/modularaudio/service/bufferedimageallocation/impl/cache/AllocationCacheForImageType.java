@@ -21,8 +21,6 @@
 package uk.co.modularaudio.service.bufferedimageallocation.impl.cache;
 
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +43,6 @@ public class AllocationCacheForImageType
 {
 	private static Log log = LogFactory.getLog( AllocationCacheForImageType.class.getName() );
 
-	private final GraphicsConfiguration graphicsConfiguration;
 	private final String cacheName;
 	private final AllocationBufferType allocationBufferType;
 
@@ -68,14 +65,12 @@ public class AllocationCacheForImageType
 	private final Decomposition decompositionForAllocation = new Decomposition();
 	private final Recomposition recompositionForFree = new Recomposition();
 
-	public AllocationCacheForImageType( final GraphicsConfiguration graphicsConfiguration,
-			final String name,
+	public AllocationCacheForImageType( final String name,
 			final AllocationCacheConfiguration cacheConfiguration,
 			final AllocationLifetime lifetime,
 			final AllocationBufferType allocationBufferType )
 			throws DatastoreException
 	{
-		this.graphicsConfiguration = graphicsConfiguration;
 		this.cacheName = name;
 		this.allocationBufferType = allocationBufferType;
 		stdAllocImageWidth = cacheConfiguration.getStdAllocImageWidth();
@@ -134,12 +129,12 @@ public class AllocationCacheForImageType
 		{
 			case BufferedImage.TYPE_INT_RGB:
 			{
-				bufferedImage = graphicsConfiguration.createCompatibleImage( desiredWidth, desiredHeight );
+				bufferedImage = new BufferedImage( desiredWidth, desiredHeight, BufferedImage.TYPE_INT_RGB );
 				break;
 			}
 			case BufferedImage.TYPE_INT_ARGB:
 			{
-				bufferedImage = graphicsConfiguration.createCompatibleImage( desiredWidth, desiredHeight, Transparency.TRANSLUCENT );
+				bufferedImage = new BufferedImage( desiredWidth, desiredHeight, BufferedImage.TYPE_INT_ARGB );
 				break;
 			}
 			default:

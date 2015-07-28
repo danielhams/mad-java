@@ -24,7 +24,10 @@ import java.awt.Component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,6 +50,8 @@ import uk.co.modularaudio.service.apprendering.util.jobqueue.MTRenderingJobQueue
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorCallback;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.AppRenderingErrorStruct;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.ErrorSeverity;
+import uk.co.modularaudio.service.configuration.ConfigurationService;
+import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.gui.GuiTabbedPane;
 import uk.co.modularaudio.service.gui.RackModelRenderingComponent;
 import uk.co.modularaudio.service.gui.UserPreferencesMVCView;
@@ -79,11 +84,15 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 
 	private static Log log = LogFactory.getLog( ComponentDesignerFrontControllerImpl.class.getName() );
 
+	private final static String CONFIG_KEY_LOG_ROOTS = ComponentDesignerFrontControllerImpl.class.getSimpleName() +
+			".LoggingRoots";
+
 	private GuiController guiController;
 	private RackController rackController;
 	private AppRenderingController appRenderingController;
 	private UserPreferencesController userPreferencesController;
 	private SampleCachingController sampleCachingController;
+	private ConfigurationService configurationService;
 
 	// TODO: Known violations of the component hierarchy
 	private TimingService timingService;
@@ -99,6 +108,7 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	private GuiDrivingTimer guiDrivingTimer;
 	private ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage;
 
+	private final HashSet<String> loggingRoots = new HashSet<String>();
 	private boolean loggingEnabled = true;
 
 	private boolean currentlyRendering;
@@ -108,13 +118,35 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 	private final List<RenderingStateListener> renderingStateListeners = new ArrayList<RenderingStateListener>();
 
 	private Level previousLoggingLevel;
+	private final Map<String, Level> previousLoggerLevels = new HashMap<String, Level>();
 
 	private boolean frontPreviouslyShowing = true;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( guiController == null ||
+				rackController == null ||
+				appRenderingController == null ||
+				userPreferencesController == null ||
+				sampleCachingController == null ||
+				configurationService == null ||
+				timingService == null ||
+				rackService == null )
+		{
+			throw new ComponentConfigurationException( "Front controller missing dependencies. Please check configuration" );
+		}
+
 		guiTemporaryEventStorage = new ThreadSpecificTemporaryEventStorage( MTRenderingJobQueue.RENDERING_JOB_QUEUE_CAPACITY );
+
+		final Map<String,String> errors = new HashMap<String,String>();
+		final String[] loggingRootsArray = ConfigurationServiceHelper.checkForCommaSeparatedStringValues( configurationService, CONFIG_KEY_LOG_ROOTS, errors );
+		ConfigurationServiceHelper.errorCheck( errors );
+
+		for( final String lr : loggingRootsArray )
+		{
+			loggingRoots.add( lr );
+		}
 	}
 
 	@Override
@@ -174,6 +206,11 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		this.sampleCachingController = sampleCachingController;
 	}
 
+	public void setConfigurationService( final ConfigurationService configurationService )
+	{
+		this.configurationService = configurationService;
+	}
+
 	public void setTimingService( final TimingService timingService )
 	{
 		this.timingService = timingService;
@@ -225,16 +262,38 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
 		final Configuration config = ctx.getConfiguration();
 		final LoggerConfig loggerConfig = config.getLoggerConfig( LogManager.ROOT_LOGGER_NAME );
+		final Map<String, LoggerConfig> loggers = config.getLoggers();
 
 		if( previousLoggingLevel == null )
 		{
 			previousLoggingLevel = loggerConfig.getLevel();
 			loggerConfig.setLevel( Level.TRACE );
+			for( final Map.Entry<String, LoggerConfig> logger : loggers.entrySet() )
+			{
+				final String loggerName = logger.getKey();
+				if( loggingRoots.contains( loggerName ) )
+				{
+					final LoggerConfig lc = logger.getValue();
+					previousLoggerLevels.put( loggerName, lc.getLevel() );
+					lc.setLevel( Level.TRACE );
+				}
+			}
 		}
 		else
 		{
 			loggerConfig.setLevel( previousLoggingLevel );
 			previousLoggingLevel = null;
+			for( final Map.Entry<String, LoggerConfig> logger : loggers.entrySet() )
+			{
+				final String loggerName = logger.getKey();
+				if( loggingRoots.contains( loggerName ) )
+				{
+					final LoggerConfig lc = logger.getValue();
+					final Level oldLevel = previousLoggerLevels.get( loggerName );
+					lc.setLevel( oldLevel );
+				}
+			}
+			previousLoggerLevels.clear();
 		}
 		ctx.updateLoggers();
 	}

@@ -94,7 +94,8 @@ public class UserPreferencesControllerImpl implements ComponentWithLifecycle, Co
 	{
 		try
 		{
-			userPreferencesMVCController = userPreferencesService.getUserPreferencesMVCController();
+			getUserPreferencesMVCController();
+			getUserPreferencesMVCView();
 		}
 		catch( final DatastoreException de )
 		{

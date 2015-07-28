@@ -93,7 +93,8 @@ task componentDesignerSupportFiles(type: JavaExec) {
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   jvmArgs = [
       '-Djava.library.path=4EXTERNAL/external-libsndfile-wrapper/lib:4EXTERNAL/external-libmpg123-wrapper/lib',
-      '-Dorg.jboss.logging.provider=slf4j'
+      '-Dorg.jboss.logging.provider=slf4j',
+      '-Djava.awt.headless=true'
   ]
   args = [
       'releasedir',

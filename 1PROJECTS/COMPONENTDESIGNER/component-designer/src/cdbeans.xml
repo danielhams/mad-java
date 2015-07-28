@@ -10,6 +10,7 @@
 		<property name="appRenderingController"><ref bean="appRenderingController"></ref></property>
 		<property name="sampleCachingController"><ref bean="sampleCachingController"></ref></property>
 		<property name="userPreferencesController"><ref bean="userPreferencesController"></ref></property>
+        <property name="configurationService"><ref bean="configurationService"></ref></property>
         <property name="timingService"><ref bean="timingService"></ref></property>
         <property name="rackService"><ref bean="rackService"></ref></property>
 	</bean>

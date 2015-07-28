@@ -235,15 +235,21 @@ public class ComponentDesigner implements ExitSignalReceiver
 	@Override
 	public void signalPostExit()
 	{
-		preferencesDialog.setVisible( false );
-		preferencesDialog.dispose();
-		preferencesDialog = null;
+		if( preferencesDialog != null )
+		{
+			preferencesDialog.setVisible( false );
+			preferencesDialog.dispose();
+			preferencesDialog = null;
+		}
 		preferencesActions = null;
 		preferencesManipulator = null;
 
-		mainFrame.setVisible( false );
-		mainFrame.dispose();
-		mainFrame = null;
+		if( mainFrame != null )
+		{
+			mainFrame.setVisible( false );
+			mainFrame.dispose();
+			mainFrame = null;
+		}
 		mainFrameActions = null;
 		mainFrameManipulator = null;
 		destroyApplicationContext();

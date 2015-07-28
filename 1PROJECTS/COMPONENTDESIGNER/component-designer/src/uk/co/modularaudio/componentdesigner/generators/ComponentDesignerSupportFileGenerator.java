@@ -41,7 +41,7 @@ public class ComponentDesignerSupportFileGenerator
 
 	public void init() throws Exception
 	{
-		cd.init( ComponentDesigner.CDRELEASEGENERATOR_PROPERTIES, null, null, true, true );
+		cd.setupApplicationContext( ComponentDesigner.CDRELEASEGENERATOR_PROPERTIES, null, null, true, true );
 	}
 
 	public void destroy() throws Exception

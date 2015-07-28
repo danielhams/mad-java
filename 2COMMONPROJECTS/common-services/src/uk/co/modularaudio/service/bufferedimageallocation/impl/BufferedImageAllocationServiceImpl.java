@@ -20,11 +20,8 @@
 
 package uk.co.modularaudio.service.bufferedimageallocation.impl;
 
-import java.awt.GraphicsConfiguration;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JFrame;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,11 +71,6 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		//		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		//		GraphicsDevice[] gs = ge.getScreenDevices();
-		final JFrame tmpFrame = new JFrame();
-		final GraphicsConfiguration graphicsConfiguration = tmpFrame.getGraphicsConfiguration();
-
 		final Map<String,String> configErrors = new HashMap<String,String>();
 
 		showDebugWindow = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_SHOW_DEBUG_WINDOW, configErrors );
@@ -97,7 +89,7 @@ public class BufferedImageAllocationServiceImpl implements ComponentWithLifecycl
 				final AllocationBufferType bufferedImageType = cacheConfiguration.getBufferedImageTypeAt( bic );
 				final long lifetimeAndImageType = buildCompoundKey( lifetime, bufferedImageType.ordinal() );
 
-				final AllocationCacheForImageType cacheForType = new AllocationCacheForImageType( graphicsConfiguration,
+				final AllocationCacheForImageType cacheForType = new AllocationCacheForImageType(
 						lifetime.toString() + " " + bufferedImageType.toString(),
 						cacheConfiguration,
 						lifetime,
