@@ -141,6 +141,7 @@ public class ComponentDesignerSupportFileGenerator
 
 	private void generatePreferencesFiles() throws Exception
 	{
+		log.info( "Force writing default preferences file" );
 		final GenericApplicationContext gac = cd.getApplicationContext();
 		final UserPreferencesController upc = gac.getBean( UserPreferencesController.class );
 		upc.reloadUserPreferences();
