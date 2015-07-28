@@ -98,8 +98,10 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefini
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadInstance;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadInstance;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
@@ -144,7 +146,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadInstance.class );
 
 		defClassToInsClassMap.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadInstance.class );
-		defClassToInsClassMap.put( SpectralAmpMadDefinition.class, SpectralAmpMadInstance.class );
+		defClassToInsClassMap.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadInstance.class );
+		defClassToInsClassMap.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadInstance.class );
 		defClassToInsClassMap.put( SpectralRollMadDefinition.class, SpectralRollMadInstance.class );
 		defClassToInsClassMap.put( InverterMadDefinition.class, InverterMadInstance.class );
 

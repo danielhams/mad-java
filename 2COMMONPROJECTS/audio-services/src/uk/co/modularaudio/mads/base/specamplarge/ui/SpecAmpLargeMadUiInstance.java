@@ -18,19 +18,19 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.spectralamp.ui;
+package uk.co.modularaudio.mads.base.specamplarge.ui;
 
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenMadUiInstance;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 
-public class SpectralAmpMadUiInstance
-	extends SpectralAmpGenMadUiInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance>
-		implements IOQueueEventUiConsumer<SpectralAmpMadInstance>
+public class SpecAmpLargeMadUiInstance
+	extends SpectralAmpGenMadUiInstance<SpecAmpLargeMadDefinition, SpecAmpLargeMadInstance>
+		implements IOQueueEventUiConsumer<SpecAmpLargeMadInstance>
 {
-	public SpectralAmpMadUiInstance( final SpectralAmpMadInstance instance,
-			final SpectralAmpMadUiDefinition uiDefinition )
+	public SpecAmpLargeMadUiInstance( final SpecAmpLargeMadInstance instance,
+			final SpecAmpLargeMadUiDefinition uiDefinition )
 	{
 		super( instance, uiDefinition );
 	}

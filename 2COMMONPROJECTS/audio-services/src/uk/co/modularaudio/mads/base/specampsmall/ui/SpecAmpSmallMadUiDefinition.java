@@ -18,14 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.spectralamp.ui;
+package uk.co.modularaudio.mads.base.specampsmall.ui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenMadUiDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
@@ -33,13 +33,13 @@ import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
-public class SpectralAmpMadUiDefinition
-	extends SpectralAmpGenMadUiDefinition<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
+public class SpecAmpSmallMadUiDefinition
+	extends SpectralAmpGenMadUiDefinition<SpecAmpSmallMadDefinition, SpecAmpSmallMadInstance, SpecAmpSmallMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,4);
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		SpectralAmpMadDefinition.CONSUMER_IN
+		SpecAmpSmallMadDefinition.CONSUMER_IN
 	};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
@@ -53,11 +53,11 @@ public class SpectralAmpMadUiDefinition
 		"Frequency Min",
 		"Frequency Max",
 		"Frequency Scale",
-		"Display",
 		"Resolution",
 		"Window",
 		"Running Average",
-		"Peak Reset"
+		"Peak Reset",
+		"Display"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
@@ -67,25 +67,25 @@ public class SpectralAmpMadUiDefinition
 		ControlType.SLIDER,
 		ControlType.SLIDER,
 		ControlType.COMBO,
-		ControlType.DISPLAY,
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.BUTTON
+		ControlType.BUTTON,
+		ControlType.DISPLAY
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		SpectralAmpAmpMaxChoiceUiJComponent.class,
-		SpectralAmpAmpMinChoiceUiJComponent.class,
-		SpectralAmpAmpMappingChoiceUiJComponent.class,
-		SpectralAmpFreqMinDialUiJComponent.class,
-		SpectralAmpFreqMaxDialUiJComponent.class,
-		SpectralAmpFreqMappingChoiceUiJComponent.class,
-		SpectralAmpDisplayUiJComponent.class,
-		SpectralAmpFFTResolutionChoiceUiJComponent.class,
-		SpectralAmpWindowChoiceUiJComponent.class,
-		SpectralAmpRunAvChoiceUiJComponent.class,
-		SpectralAmpPeakResetUiJComponent.class
+		SpecAmpSmallAmpMaxChoiceUiJComponent.class,
+		SpecAmpSmallAmpMinChoiceUiJComponent.class,
+		SpecAmpSmallAmpMappingChoiceUiJComponent.class,
+		SpecAmpSmallFreqMinDialUiJComponent.class,
+		SpecAmpSmallFreqMaxDialUiJComponent.class,
+		SpecAmpSmallFreqMappingChoiceUiJComponent.class,
+		SpecAmpSmallFFTResolutionChoiceUiJComponent.class,
+		SpecAmpSmallWindowChoiceUiJComponent.class,
+		SpecAmpSmallRunAvChoiceUiJComponent.class,
+		SpecAmpSmallPeakResetUiJComponent.class,
+		SpecAmpSmallDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
@@ -95,17 +95,17 @@ public class SpectralAmpMadUiDefinition
 		new Rectangle(  94,  41, 182,  30 ),		// Freq Min
 		new Rectangle( 302,  41, 122,  30 ),		// Freq Max
 		new Rectangle( 450,  41, 100,  30 ),		// Freq Scale
-		new Rectangle(   6,  77, 544, 192 ),		// Display
 		new Rectangle(   8, 276, 105,  30 ),		// FFT Resolution
 		new Rectangle( 124, 276, 130,  30 ),		// Window choice
 		new Rectangle( 268, 276, 166,  30 ),		// Runn Average Type
-		new Rectangle( 450, 276,  96,  30 )			// Peak Reset Button
+		new Rectangle( 450, 276,  96,  30 ),		// Peak Reset Button
+		new Rectangle(   6,  77, 544, 192 )			// Display
 	};
 
-	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;
+	private static final Class<SpecAmpSmallMadUiInstance> INSTANCE_CLASS = SpecAmpSmallMadUiInstance.class;
 
-	public SpectralAmpMadUiDefinition( final BufferedImageAllocator bia,
-			final SpectralAmpMadDefinition definition,
+	public SpecAmpSmallMadUiDefinition( final BufferedImageAllocator bia,
+			final SpecAmpSmallMadDefinition definition,
 			final ComponentImageFactory cif,
 			final String imageRoot )
 		throws DatastoreException

@@ -18,21 +18,17 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.spectralamp.ui;
+package uk.co.modularaudio.mads.base.specampsmall.ui;
 
-import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenPeakResetUiJComponent;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenFreqMaxDialUiJComponent;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
 
-public class SpectralAmpPeakResetUiJComponent
-	extends SpectralAmpGenPeakResetUiJComponent<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
+public class SpecAmpSmallFreqMaxDialUiJComponent
+	extends SpectralAmpGenFreqMaxDialUiJComponent<SpecAmpSmallMadDefinition, SpecAmpSmallMadInstance, SpecAmpSmallMadUiInstance>
 {
-	private static final long serialVersionUID = -4953672592925662959L;
-
-	public SpectralAmpPeakResetUiJComponent( final SpectralAmpMadDefinition definition,
-			final SpectralAmpMadInstance instance,
-			final SpectralAmpMadUiInstance uiInstance,
-			final int controlIndex )
+	public SpecAmpSmallFreqMaxDialUiJComponent( final SpecAmpSmallMadDefinition definition, final SpecAmpSmallMadInstance instance,
+			final SpecAmpSmallMadUiInstance uiInstance, final int controlIndex )
 	{
 		super( definition, instance, uiInstance, controlIndex );
 	}

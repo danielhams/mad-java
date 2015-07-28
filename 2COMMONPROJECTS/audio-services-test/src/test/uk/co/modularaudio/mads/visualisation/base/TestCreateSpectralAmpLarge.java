@@ -23,13 +23,13 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
-import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
 
-public class TestCreateSpectralAmp
+public class TestCreateSpectralAmpLarge
 {
 	private final GenericComponentVisualiser gcv;
 
-	public TestCreateSpectralAmp() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	public TestCreateSpectralAmpLarge() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		gcv = new GenericComponentVisualiser();
 	}
@@ -37,13 +37,13 @@ public class TestCreateSpectralAmp
 	protected void go() throws Exception
 	{
 		gcv.setUp();
-		gcv.testAndShowComponent( SpecAmpSmallMadDefinition.DEFINITION_ID );
+		gcv.testAndShowComponent( SpecAmpLargeMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
 	public static void main( final String[] args ) throws Exception
 	{
-		final TestCreateSpectralAmp tc = new TestCreateSpectralAmp();
+		final TestCreateSpectralAmpLarge tc = new TestCreateSpectralAmpLarge();
 		tc.go();
 	}
 }

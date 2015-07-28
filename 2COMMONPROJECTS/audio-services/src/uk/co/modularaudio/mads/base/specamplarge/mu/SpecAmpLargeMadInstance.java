@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.spectralamp.mu;
+package uk.co.modularaudio.mads.base.specamplarge.mu;
 
 import java.util.Map;
 
@@ -27,11 +27,11 @@ import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 
-public class SpectralAmpMadInstance extends SpectralAmpGenMadInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance>
+public class SpecAmpLargeMadInstance extends SpectralAmpGenMadInstance<SpecAmpLargeMadDefinition, SpecAmpLargeMadInstance>
 {
-	public SpectralAmpMadInstance( final BaseComponentsCreationContext creationContext,
+	public SpecAmpLargeMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
-			final SpectralAmpMadDefinition definition,
+			final SpecAmpLargeMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
 	{

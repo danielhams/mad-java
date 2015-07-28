@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -63,7 +62,7 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 		super( bia,
 				cif,
 				imageRoot,
-				MadUIStandardBackgrounds.STD_2X4_ORANGE,
+				imagePrefix,
 				definition,
 				span,
 				instanceClass,

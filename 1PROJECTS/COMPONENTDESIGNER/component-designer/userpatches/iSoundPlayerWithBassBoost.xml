@@ -11,20 +11,20 @@
         <rackPosition column="2" row="4"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="10.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-0.83692646"/>
+        <rackControl name="Gain" value="-0.12173653"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 265 (2 February 2015).mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 268 (2 March 2015).mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="FastForward" value=""/>
     </rackComponent>
     <rackComponent name="Spectral Amp 8" definitionId="spectral_amp">

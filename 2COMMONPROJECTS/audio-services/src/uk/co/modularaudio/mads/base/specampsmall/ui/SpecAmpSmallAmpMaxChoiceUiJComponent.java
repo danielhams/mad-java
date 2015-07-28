@@ -18,32 +18,22 @@
  *
  */
 
-package test.uk.co.modularaudio.mads.visualisation.base;
+package uk.co.modularaudio.mads.base.specampsmall.ui;
 
-import javax.swing.UnsupportedLookAndFeelException;
-
-import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMaxChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
 
-public class TestCreateSpectralAmp
+public class SpecAmpSmallAmpMaxChoiceUiJComponent
+	extends SpectralAmpGenAmpMaxChoiceUiJComponent<SpecAmpSmallMadDefinition, SpecAmpSmallMadInstance, SpecAmpSmallMadUiInstance>
 {
-	private final GenericComponentVisualiser gcv;
+	private static final long serialVersionUID = 8996574476533875047L;
 
-	public TestCreateSpectralAmp() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	public SpecAmpSmallAmpMaxChoiceUiJComponent( final SpecAmpSmallMadDefinition definition,
+			final SpecAmpSmallMadInstance instance,
+			final SpecAmpSmallMadUiInstance uiInstance,
+			final int controlIndex )
 	{
-		gcv = new GenericComponentVisualiser();
-	}
-
-	protected void go() throws Exception
-	{
-		gcv.setUp();
-		gcv.testAndShowComponent( SpecAmpSmallMadDefinition.DEFINITION_ID );
-		gcv.tearDown();
-	}
-
-	public static void main( final String[] args ) throws Exception
-	{
-		final TestCreateSpectralAmp tc = new TestCreateSpectralAmp();
-		tc.go();
+		super( definition, instance, uiInstance, controlIndex );
 	}
 }

@@ -99,8 +99,10 @@ import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefini
 import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerMadUiDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player2.ui.SoundfilePlayer2MadUiDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.ui.SpectralAmpMadUiDefinition;
+import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
+import uk.co.modularaudio.mads.base.specamplarge.ui.SpecAmpLargeMadUiDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
+import uk.co.modularaudio.mads.base.specampsmall.ui.SpecAmpSmallMadUiDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
 import uk.co.modularaudio.mads.base.spectralroll.ui.SpectralRollMadUiDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
@@ -142,7 +144,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadUiDefinition.class );
 
 		classToUiDefinition.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadUiDefinition.class );
-		classToUiDefinition.put( SpectralAmpMadDefinition.class, SpectralAmpMadUiDefinition.class );
+		classToUiDefinition.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadUiDefinition.class );
+		classToUiDefinition.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadUiDefinition.class );
 		classToUiDefinition.put( SpectralRollMadDefinition.class, SpectralRollMadUiDefinition.class );
 		classToUiDefinition.put( InverterMadDefinition.class, InverterMadUiDefinition.class );
 		classToUiDefinition.put( CvSurfaceMadDefinition.class, CvSurfaceMadUiDefinition.class );

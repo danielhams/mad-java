@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.spectralamp.mu;
+package uk.co.modularaudio.mads.base.specamplarge.mu;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
@@ -28,17 +28,17 @@ import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class SpectralAmpMadDefinition extends SpectralAmpGenMadDefinition<SpectralAmpMadDefinition, SpectralAmpMadInstance>
+public class SpecAmpLargeMadDefinition extends SpectralAmpGenMadDefinition<SpecAmpLargeMadDefinition, SpecAmpLargeMadInstance>
 {
-	public static final String DEFINITION_ID = "spectral_amp";
+	public static final String DEFINITION_ID = "spec_amp_large";
 
-	private final static String USER_VISIBLE_NAME = "Spectral Amp";
+	private final static String USER_VISIBLE_NAME = "Spectral Amp (Large)";
 
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String CLASS_NAME = "Spectral Amp";
+	private final static String CLASS_NAME = "Spectral Amp (Large)";
 	private final static String CLASS_DESC = "A spectral amplitude display";
 
-	public SpectralAmpMadDefinition( final BaseComponentsCreationContext creationContext,
+	public SpecAmpLargeMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,
