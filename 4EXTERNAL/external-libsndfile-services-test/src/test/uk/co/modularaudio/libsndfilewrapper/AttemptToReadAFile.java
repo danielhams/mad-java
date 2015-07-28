@@ -53,6 +53,13 @@ public class AttemptToReadAFile extends TestCase
 		LibSndfileWrapperLoader.loadIt();
 	}
 
+	/*
+	 * A good example of how _not_ to use the JNI interface.
+	 *
+	 * The loop with calls to .get(i) per float is painful, so
+	 * I added a custom method where you pass the float array
+	 * and it fills the array directly.
+	 */
 	public void testUseSwigWrapperSlow() throws Exception
 	{
 		final SF_INFO sf = new SF_INFO();
