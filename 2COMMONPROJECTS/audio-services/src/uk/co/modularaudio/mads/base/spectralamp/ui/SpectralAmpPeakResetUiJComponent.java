@@ -20,63 +20,20 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
-import javax.swing.JComponent;
-
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenPeakResetUiJComponent;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
-import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class SpectralAmpPeakResetUiJComponent extends LWTCButton
-	implements IMadUiControlInstance<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
+public class SpectralAmpPeakResetUiJComponent
+	extends SpectralAmpGenPeakResetUiJComponent<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	private static final long serialVersionUID = 6068897521037173787L;
+	private static final long serialVersionUID = -4953672592925662959L;
 
-	private final SpectralAmpMadUiInstance uiInstance;
-
-	public SpectralAmpPeakResetUiJComponent(
-			final SpectralAmpMadDefinition definition,
+	public SpectralAmpPeakResetUiJComponent( final SpectralAmpMadDefinition definition,
 			final SpectralAmpMadInstance instance,
 			final SpectralAmpMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		// Default value
-		super( LWTCControlConstants.STD_BUTTON_COLOURS, "Peak Reset", false );
-
-		this.uiInstance = uiInstance;
+		super( definition, instance, uiInstance, controlIndex );
 	}
-
-	@Override
-	public JComponent getControl()
-	{
-		return this;
-	}
-
-	@Override
-	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
-			final MadTimingParameters timingParameters,
-			final long currentGuiTime)
-	{
-	}
-
-	@Override
-	public void destroy()
-	{
-	}
-
-	@Override
-	public boolean needsDisplayProcessing()
-	{
-		return false;
-	}
-
-	@Override
-	public void receiveClick()
-	{
-		uiInstance.resetPeakComputer();
-	}
-
 }

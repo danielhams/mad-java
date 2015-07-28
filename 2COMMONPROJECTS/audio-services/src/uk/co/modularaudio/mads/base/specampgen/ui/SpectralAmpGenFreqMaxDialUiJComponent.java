@@ -36,8 +36,8 @@ import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayView.SatelliteOrientation;
 
 public class SpectralAmpGenFreqMaxDialUiJComponent<D extends SpectralAmpGenMadDefinition<D, I>,
-I extends SpectralAmpGenMadInstance<D, I>,
-U extends SpectralAmpGenMadUiInstance<D, I>>
+	I extends SpectralAmpGenMadInstance<D, I>,
+	U extends SpectralAmpGenMadUiInstance<D, I>>
 	implements IMadUiControlInstance<D, I, U>,
 	SampleRateListener, FreqAxisChangeListener
 {

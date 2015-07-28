@@ -23,18 +23,18 @@ package uk.co.modularaudio.mads.base.spectralamp.ui;
 import java.awt.Point;
 import java.awt.Rectangle;
 
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenMadUiDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
 import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
-import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
 public class SpectralAmpMadUiDefinition
-	extends AbstractNonConfigurableMadUiDefinition<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
+	extends SpectralAmpGenMadUiDefinition<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
 	private static final Span SPAN = new Span(2,4);
 
@@ -84,13 +84,9 @@ public class SpectralAmpMadUiDefinition
 		SpectralAmpDisplayUiJComponent.class,
 		SpectralAmpFFTResolutionChoiceUiJComponent.class,
 		SpectralAmpWindowChoiceUiJComponent.class,
-		SpectralAmpRunningAverageChoiceUiJComponent.class,
+		SpectralAmpRunAvChoiceUiJComponent.class,
 		SpectralAmpPeakResetUiJComponent.class
 	};
-
-	public final static int SCALES_HEIGHT_OFFSET = 10;
-	public final static int SCALES_WIDTH_OFFSET = 20;
-	public final static int FREQ_AXIS_COMPONENT_HEIGHT = 25;
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 108,   5, 150,  30 ),		// Amp Ceil Choice
@@ -108,8 +104,6 @@ public class SpectralAmpMadUiDefinition
 
 	private static final Class<SpectralAmpMadUiInstance> INSTANCE_CLASS = SpectralAmpMadUiInstance.class;
 
-	public static final float MIN_FREQ_DIFF = 8.0f;
-
 	public SpectralAmpMadUiDefinition( final BufferedImageAllocator bia,
 			final SpectralAmpMadDefinition definition,
 			final ComponentImageFactory cif,
@@ -117,10 +111,10 @@ public class SpectralAmpMadUiDefinition
 		throws DatastoreException
 	{
 		super( bia,
+				definition,
 				cif,
 				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_ORANGE,
-				definition,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

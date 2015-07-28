@@ -27,18 +27,17 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenIOQueueBridge;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadInstance;
-import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMinChoiceUiJComponent.AmpMin;
-import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenFreqMappingChoiceUiJComponent.FreqMapping;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMappingChoiceUiJComponent.AmpMapping;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMaxChoiceUiJComponent.AmpMax;
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMinChoiceUiJComponent.AmpMin;
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenFreqMappingChoiceUiJComponent.FreqMapping;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenRunAvChoiceUiJComponent.RunningAverage;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenWindowChoiceUiJComponent.WindowChoice;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpIOQueueBridge;
-import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
-import uk.co.modularaudio.mads.base.spectralamp.util.SpecDataListener;
-import uk.co.modularaudio.mads.base.spectralamp.util.SpectralPeakAmpAccumulator;
+import uk.co.modularaudio.mads.base.specampgen.util.SpecDataListener;
+import uk.co.modularaudio.mads.base.specampgen.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 import uk.co.modularaudio.util.audio.fft.BlackmannHarrisFftWindow;
 import uk.co.modularaudio.util.audio.fft.FftWindow;
@@ -147,9 +146,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		peakGrabComputer
 	};
 
-	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow blackmanHarrisWindow = new BlackmannHarrisFftWindow( SpectralAmpMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanHarrisWindow = new BlackmannHarrisFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
 
 	private WindowChoice desiredWindow = SpectralAmpGenWindowChoiceUiJComponent.DEFAULT_WINDOW_CHOICE;
 
@@ -233,14 +232,15 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		try
 		{
 			final int fftSize = desiredFftSize;
-			final int windowLength = (fftSize >= SpectralAmpMadDefinition.MAX_WINDOW_LENGTH ? SpectralAmpMadDefinition.MAX_WINDOW_LENGTH
+			final int windowLength = (fftSize >= SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH ?
+					SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH
 					: fftSize);
 			final FftWindow fftWindow = windows[desiredWindow.ordinal()];
 
 			fftWindow.resetWindowLength( windowLength );
 
 			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
-					SpectralAmpMadDefinition.NUM_OVERLAPS, fftSize, fftWindow );
+					SpectralAmpGenMadDefinition.NUM_OVERLAPS, fftSize, fftWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			wolaProcessor = new StreamingWolaProcessor( params, peakAmpAccumulator );
@@ -268,7 +268,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		switch (nextOutgoingEntry.command)
 		{
-			case SpectralAmpIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
+			case SpectralAmpGenIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX:
 			{
 				final long value = nextOutgoingEntry.value;
 				final int bufferNum = (int) ((value) & 0xFFFFFFFF);
@@ -376,7 +376,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 	public void sendUiActive( final boolean showing )
 	{
-		sendTemporalValueToInstance( SpectralAmpIOQueueBridge.COMMAND_IN_ACTIVE, (showing ? 1 : 0) );
+		sendTemporalValueToInstance( SpectralAmpGenIOQueueBridge.COMMAND_IN_ACTIVE, (showing ? 1 : 0) );
 	}
 
 	public FrequencyScaleComputer getDesiredFreqScaleComputer()

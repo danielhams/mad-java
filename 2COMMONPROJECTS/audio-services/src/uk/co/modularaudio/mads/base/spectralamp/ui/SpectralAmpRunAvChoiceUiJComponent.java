@@ -20,7 +20,20 @@
 
 package uk.co.modularaudio.mads.base.spectralamp.ui;
 
-public interface SampleRateListener
+import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenRunAvChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadDefinition;
+import uk.co.modularaudio.mads.base.spectralamp.mu.SpectralAmpMadInstance;
+
+public class SpectralAmpRunAvChoiceUiJComponent
+	extends SpectralAmpGenRunAvChoiceUiJComponent<SpectralAmpMadDefinition, SpectralAmpMadInstance, SpectralAmpMadUiInstance>
 {
-	void receiveSampleRateChange( int sampleRate );
+	private static final long serialVersionUID = 3528706960655187180L;
+
+	public SpectralAmpRunAvChoiceUiJComponent( final SpectralAmpMadDefinition definition,
+			final SpectralAmpMadInstance instance,
+			final SpectralAmpMadUiInstance uiInstance,
+			final int controlIndex )
+	{
+		super( definition, instance, uiInstance, controlIndex );
+	}
 }
