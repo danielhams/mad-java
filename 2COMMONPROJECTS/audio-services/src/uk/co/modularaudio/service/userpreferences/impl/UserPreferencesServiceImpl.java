@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +78,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private static final String PREFS_FILE_RENDERING_CORES = "RenderingCores";
 	private static final String DEFAULT_RENDERING_CORES_STRING = "1";
 	private static final String PREFS_FILE_GUI_FPS = "GuiFps";
-	private static final String DEFAULT_GUI_FPS_STRING = "30";
+	private static final String DEFAULT_GUI_FPS_STRING = "60";
 
 	private static final String PREFS_FILE_KEY_INPUT_DEVICE = "InputDeviceId";
 	private static final String PREFS_FILE_KEY_OUTPUT_DEVICE = "OutputDeviceId";
@@ -92,7 +90,12 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	private static final String PREFS_FILE_KEY_USER_SUBRACKS = "UserSubRacksDir";
 	private static final String PREFS_FILE_KEY_USER_MUSICDIR = "UserMusicDir";
 
+	// Not currently used, we only use Jack for the moment.
 	private static final String DEFAULT_BUFFER_SIZE_STRING = "1024";
+	private static final String DEFAULT_OUTPUT_DEVICE_ID = "jnajackout4";
+	private static final String DEFAULT_INPUT_DEVICE_ID = "jnajackin2";
+	private static final String DEFAULT_OUTPUT_MIDI_ID = "jnajackmidiout";
+	private static final String DEFAULT_INPUT_MIDI_ID = "jnajackmidiin";
 
 	private ConfigurationService configurationService;
 	private AudioProviderRegistryService audioProviderRegistryService;
@@ -152,20 +155,19 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 		renderingCores = Integer.parseInt( userPreferencesProperties.getProperty( PREFS_FILE_RENDERING_CORES, DEFAULT_RENDERING_CORES_STRING ) );
 		guiFps = Integer.parseInt( userPreferencesProperties.getProperty( PREFS_FILE_GUI_FPS, DEFAULT_GUI_FPS_STRING ) );
 		bufferSize = Integer.parseInt( userPreferencesProperties.getProperty(PREFS_FILE_KEY_BUFFER_SIZE, DEFAULT_BUFFER_SIZE_STRING ) );
-		outputDeviceId = userPreferencesProperties.getProperty(PREFS_FILE_KEY_OUTPUT_DEVICE, "");
-		inputDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_DEVICE, "" );
-		inputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_MIDI_DEVICE, "" );
-		outputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE, "" );
+		outputDeviceId = userPreferencesProperties.getProperty(PREFS_FILE_KEY_OUTPUT_DEVICE, DEFAULT_OUTPUT_DEVICE_ID );
+		inputDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_DEVICE, DEFAULT_INPUT_DEVICE_ID );
+		outputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_OUTPUT_MIDI_DEVICE, DEFAULT_OUTPUT_MIDI_ID );
+		inputMidiDeviceId = userPreferencesProperties.getProperty( PREFS_FILE_KEY_INPUT_MIDI_DEVICE, DEFAULT_INPUT_MIDI_ID );
 
-		final Path currentRelativePath = Paths.get( "" );
-		final String absPathString = currentRelativePath.toAbsolutePath().toString();
+		final String currentWorkingDir = System.getProperty( "user.dir" ) + File.separatorChar;
 
 		userPatchesDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_PATCHES,
-				absPathString + File.separatorChar + "userpatches" );
+				currentWorkingDir + "userpatches" );
 		userSubRacksDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_SUBRACKS,
-				absPathString + File.separatorChar + "usersubrackpatches" );
+				currentWorkingDir + "usersubrackpatches" );
 		userMusicDir = userPreferencesProperties.getProperty( PREFS_FILE_KEY_USER_MUSICDIR,
-				absPathString + File.separatorChar + "music" );
+				currentWorkingDir + "music" );
 	}
 
 	@Override

@@ -94,11 +94,11 @@ public class SpectralAmpMadUiDefinition
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 108,   5, 150,  30 ),		// Amp Ceil Choice
-		new Rectangle( 286,   5, 118,  30 ),		// Amp Floor Choice
-		new Rectangle( 430,   5, 120,  30 ),		// Amp Scale
+		new Rectangle( 296,   5, 118,  30 ),		// Amp Floor Choice
+		new Rectangle( 450,   5, 100,  30 ),		// Amp Scale
 		new Rectangle(  94,  41, 182,  30 ),		// Freq Min
-		new Rectangle( 292,  41, 122,  30 ),		// Freq Max
-		new Rectangle( 430,  41, 120,  30 ),		// Freq Scale
+		new Rectangle( 302,  41, 122,  30 ),		// Freq Max
+		new Rectangle( 450,  41, 100,  30 ),		// Freq Scale
 		new Rectangle(   6,  77, 544, 192 ),		// Display
 		new Rectangle(   8, 276, 105,  30 ),		// FFT Resolution
 		new Rectangle( 124, 276, 130,  30 ),		// Window choice

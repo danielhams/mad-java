@@ -12,11 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
-import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
-import uk.co.modularaudio.service.userpreferences.mvc.UserPreferencesMVCController;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardBandLimitedWaveTables;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardWaveTables;
@@ -56,10 +53,9 @@ public class ComponentDesignerSupportFileGenerator
 		copyComponentImages();
 	}
 
-	public void initialiseThingsNeedingComponentGraph() throws Exception
-	{
-		generatePreferencesFiles();
-	}
+//	public void initialiseThingsNeedingComponentGraph() throws Exception
+//	{
+//	}
 
 	public static void main( final String[] args ) throws Exception
 	{
@@ -76,9 +72,10 @@ public class ComponentDesignerSupportFileGenerator
 
 		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0], args[1] );
 		sfg.generateFiles();
-		sfg.init();
-		sfg.initialiseThingsNeedingComponentGraph();
-		sfg.destroy();
+//		sfg.init();
+//		sfg.initialiseThingsNeedingComponentGraph();
+//		sfg.destroy();
+		log.error("Fix me!");
 	}
 
 	private void generateBlw() throws Exception
@@ -138,28 +135,4 @@ public class ComponentDesignerSupportFileGenerator
 			}
 		}
 	}
-
-	private void generatePreferencesFiles() throws Exception
-	{
-		log.info( "Force writing default preferences file" );
-		final GenericApplicationContext gac = cd.getApplicationContext();
-		final UserPreferencesController upc = gac.getBean( UserPreferencesController.class );
-		upc.reloadUserPreferences();
-		final UserPreferencesMVCController upmc = upc.getUserPreferencesMVCController();
-
-		// Set up the defaults
-		upmc.getUserMusicDirController().setValue( this, "./music" );
-		upmc.getUserPatchesController().setValue( this, "./userpatches" );
-		upmc.getUserSubRacksController().setValue( this, "./usersubrackpatches" );
-
-		upmc.getRenderingCoresController().setValue( 1 );
-		upmc.getFpsComboController().setSelectedElementById( "60" );
-		upmc.getInputDeviceComboController().setSelectedElementById( "jnajackin2" );
-		upmc.getOutputDeviceComboController().setSelectedElementById( "jnajackout4" );
-		upmc.getInputMidiDeviceComboController().setSelectedElementById( "jnajackmidiin" );
-		upmc.getOutputMidiDeviceComboController().setSelectedElementById( "jnajackmidiout" );
-
-		upc.applyUserPreferencesChanges();
-	}
-
 }

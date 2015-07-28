@@ -142,7 +142,7 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final int numOversampledFrames = numFrames * oversamplingRatio;
 		final boolean inLConnected = channelConnectedFlags.get( Ms20FilterMadDefinition.CONSUMER_IN_LEFT );
@@ -184,7 +184,7 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 
 		if( inCvFreqConnected )
 		{
-			freqCvOversampler.oversample( inCvFreqFloats, numFrames, freqCvOversampleBuffer );
+			freqCvOversampler.oversample( inCvFreqFloats, frameOffset, numFrames, freqCvOversampleBuffer );
 		}
 
 		if( inCvResConnected )
@@ -193,7 +193,7 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 			{
 				inResFloats[ i ] *= MAXIMUM_RESONANCE_VALUE;
 			}
-			resCvOversampler.oversample( inResFloats, numFrames, resCvOversampleBuffer );
+			resCvOversampler.oversample( inResFloats, frameOffset, numFrames, resCvOversampleBuffer );
 		}
 
 		if( inCvThresConnected )
@@ -202,31 +202,41 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 			{
 				inThresFloats[ i ] *= MAXIMUM_THRESHOLD_VALUE;
 			}
-			thresCvOversampler.oversample( inThresFloats, numFrames, thresCvOversampleBuffer );
+			thresCvOversampler.oversample( inThresFloats, frameOffset, numFrames, thresCvOversampleBuffer );
 		}
 
 		if( !inLConnected && outLConnected )
 		{
-			Arrays.fill( outLfloats, 0.0f );
+			Arrays.fill( outLfloats, frameOffset, numFrames, 0.0f );
 		}
 		else if( inLConnected && outLConnected )
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				leftOversampler.oversample( inLfloats, numFrames, oversampleTemporaryBuffer );
+				leftOversampler.oversample( inLfloats, frameOffset, numFrames, oversampleTemporaryBuffer );
 				if( inCvFreqConnected )
 				{
 					if( inCvResConnected )
 					{
 						if( inCvThresConnected )
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									freqCvOversampleBuffer, resCvOversampleBuffer, thresCvOversampleBuffer );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									freqCvOversampleBuffer,
+									resCvOversampleBuffer,
+									thresCvOversampleBuffer );
 						}
 						else
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									freqCvOversampleBuffer, resCvOversampleBuffer, currentSaturationThreshold );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									freqCvOversampleBuffer,
+									resCvOversampleBuffer,
+									currentSaturationThreshold );
 						}
 					}
 					else
@@ -234,13 +244,23 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 						// No CV resonance connected
 						if( inCvThresConnected )
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									freqCvOversampleBuffer, currentFilterResonance, thresCvOversampleBuffer );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									freqCvOversampleBuffer,
+									currentFilterResonance,
+									thresCvOversampleBuffer );
 						}
 						else
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									freqCvOversampleBuffer, currentFilterResonance, currentSaturationThreshold );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									freqCvOversampleBuffer,
+									currentFilterResonance,
+									currentSaturationThreshold );
 						}
 					}
 				}
@@ -251,46 +271,66 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 					{
 						if( inCvThresConnected )
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									currentFrequency, resCvOversampleBuffer, thresCvOversampleBuffer );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									currentFrequency,
+									resCvOversampleBuffer,
+									thresCvOversampleBuffer );
 						}
 						else
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									currentFrequency, resCvOversampleBuffer, currentSaturationThreshold );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									currentFrequency,
+									resCvOversampleBuffer,
+									currentSaturationThreshold );
 						}
 					}
 					else
 					{
 						if( inCvThresConnected )
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									currentFrequency, currentFilterResonance, thresCvOversampleBuffer );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									currentFrequency,
+									currentFilterResonance,
+									thresCvOversampleBuffer );
 						}
 						else
 						{
-							leftMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames,
-									currentFrequency, currentFilterResonance, currentSaturationThreshold );
+							leftMs20FilterRuntime.filterFloats( desiredFilterMode,
+									oversampleTemporaryBuffer,
+									0,
+									numOversampledFrames,
+									currentFrequency,
+									currentFilterResonance,
+									currentSaturationThreshold );
 						}
 					}
 				}
-				leftOversampler.undersample( oversampleTemporaryBuffer, numOversampledFrames, outLfloats );
+				leftOversampler.undersample( oversampleTemporaryBuffer, numOversampledFrames, outLfloats, frameOffset );
 			}
 			else
 			{
-				System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
+				System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
 			}
 		}
 
 		if( !inRConnected && outRConnected )
 		{
-			Arrays.fill( outRfloats, 0.0f );
+			Arrays.fill( outRfloats, frameOffset, numFrames, 0.0f );
 		}
 		else if( inRConnected && outRConnected )
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				rightOversampler.oversample( inRfloats, numFrames, oversampleTemporaryBuffer );
+				rightOversampler.oversample( inRfloats, frameOffset, numFrames, oversampleTemporaryBuffer );
 				if( inCvFreqConnected )
 				{
 					if( inCvResConnected )
@@ -324,7 +364,7 @@ public class Ms20FilterMadInstance extends MadInstance<Ms20FilterMadDefinition,M
 				{
 					rightMs20FilterRuntime.filterFloats( desiredFilterMode, oversampleTemporaryBuffer, 0, numOversampledFrames, currentFrequency, currentFilterResonance, currentSaturationThreshold );
 				}
-				rightOversampler.undersample( oversampleTemporaryBuffer, numOversampledFrames, outRfloats );
+				rightOversampler.undersample( oversampleTemporaryBuffer, numOversampledFrames, outRfloats, frameOffset );
 			}
 			else
 			{

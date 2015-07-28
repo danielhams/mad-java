@@ -191,11 +191,11 @@ public class SpectralPeakGraph extends JPanel
 				}
 
 				polygonXPoints[ bodyPointOffset ] = i;
-				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
+				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
 				bodyPointOffset++;
 
 				polylineXPoints[ runAvPointOffset ] = i;
-				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue + yOffset;
+				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
 				polylineExtraXPoints[ runAvPointOffset ] = i;
 				polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
 				runAvPointOffset++;
@@ -216,14 +216,14 @@ public class SpectralPeakGraph extends JPanel
 		final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
 
 		polygonXPoints[ bodyPointOffset ] = finalPixel;
-		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue + yOffset;
+		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
 		bodyPointOffset++;
 
 		final float runAvValForBin = runningBinPeaks[ whichBin ];
 		final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
 		final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
 		polylineXPoints[ runAvPointOffset ] = finalPixel;
-		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue + yOffset;
+		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
 		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
 		polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
 		runAvPointOffset++;

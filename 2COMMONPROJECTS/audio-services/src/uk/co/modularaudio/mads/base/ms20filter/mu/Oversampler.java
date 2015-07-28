@@ -69,9 +69,9 @@ public class Oversampler
 		return oversampledPeriodLength;
 	}
 
-	public int oversample( final float[] input, final int numFrames, final float[] output )
+	public int oversample( final float[] input, final int frameOffset, final int numFrames, final float[] output )
 	{
-		inputRingBuffer.write( input, 0, numFrames );
+		inputRingBuffer.write( input, frameOffset, numFrames );
 
 		final int numInRing = inputRingBuffer.getNumReadable();
 
@@ -141,7 +141,8 @@ public class Oversampler
 		return ( (y0 * (1.0f - frac)) + (y1 * frac ) );
 	}
 
-	public int undersample( final float[] input, final int numFramesInput, final float[] output )
+	public int undersample( final float[] input, final int numFramesInput,
+			final float[] output, final int outputFrameOffset )
 	{
 		outputRingBuffer.write( input, 0, numFramesInput );
 
@@ -180,7 +181,7 @@ public class Oversampler
 //			float newSample = cubicInterpolate( inputPos, y0, y1, y2, y3, intPos );
 			final float newSample = linearInterpolate( inputPos, y0, y1, intPos );
 
-			output[ n ] = newSample;
+			output[ outputFrameOffset + n ] = newSample;
 		}
 		return numOutputThisRound;
 	}

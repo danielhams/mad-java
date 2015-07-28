@@ -85,7 +85,7 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean inLConnected = channelConnectedFlags.get( RBJFilterMadDefinition.CONSUMER_IN_LEFT );
 		final MadChannelBuffer inLcb = channelBuffers[ RBJFilterMadDefinition.CONSUMER_IN_LEFT ];
@@ -107,33 +107,33 @@ public class RBJFilterMadInstance extends MadInstance<RBJFilterMadDefinition,RBJ
 
 		if( !inLConnected && outLConnected )
 		{
-			Arrays.fill( outLfloats, 0.0f );
+			Arrays.fill( outLfloats, frameOffset, numFrames, 0.0f );
 		}
 		else if( inLConnected && outLConnected )
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				leftFilter.filter( inLfloats, 0, outLfloats, 0, numFrames);
+				leftFilter.filter( inLfloats, frameOffset, outLfloats, frameOffset, numFrames);
 			}
 			else
 			{
-				System.arraycopy(inLfloats, 0, outLfloats, 0, numFrames);
+				System.arraycopy(inLfloats, frameOffset, outLfloats, frameOffset, numFrames);
 			}
 		}
 
 		if( !inRConnected && outRConnected )
 		{
-			Arrays.fill( outRfloats, 0.0f );
+			Arrays.fill( outRfloats, frameOffset, numFrames, 0.0f );
 		}
 		else if( inRConnected && outRConnected )
 		{
 			if( desiredFilterMode != FrequencyFilterMode.NONE )
 			{
-				rightFilter.filter( inRfloats, 0, outRfloats, 0, numFrames);
+				rightFilter.filter( inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
 			}
 			else
 			{
-				System.arraycopy(inRfloats, 0, outRfloats, 0, numFrames);
+				System.arraycopy(inRfloats, frameOffset, outRfloats, frameOffset, numFrames);
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;

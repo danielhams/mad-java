@@ -51,7 +51,7 @@ public class SpectralAmpAmpMappingChoiceUiJComponent extends JPanel
 	{
 		LINEAR( "Lin" ),
 		LOG( "Log" ),
-		LOG_DB( "Log dB" );
+		DB( "dB" );
 
 		private AmpMapping( final String label )
 		{
@@ -74,7 +74,7 @@ public class SpectralAmpAmpMappingChoiceUiJComponent extends JPanel
 	{
 		LABEL_TO_MAPPING.put( AmpMapping.LINEAR.getLabel(), AmpMapping.LINEAR );
 		LABEL_TO_MAPPING.put( AmpMapping.LOG.getLabel(), AmpMapping.LOG );
-		LABEL_TO_MAPPING.put( AmpMapping.LOG_DB.getLabel(), AmpMapping.LOG_DB );
+		LABEL_TO_MAPPING.put( AmpMapping.DB.getLabel(), AmpMapping.DB );
 	}
 
 	private final DefaultComboBoxModel<String> model;
@@ -104,7 +104,7 @@ public class SpectralAmpAmpMappingChoiceUiJComponent extends JPanel
 		model = new DefaultComboBoxModel<String>();
 		model.addElement( AmpMapping.LINEAR.getLabel() );
 		model.addElement( AmpMapping.LOG.getLabel() );
-		model.addElement( AmpMapping.LOG_DB.getLabel() );
+		model.addElement( AmpMapping.DB.getLabel() );
 
 		model.setSelectedItem( DEFAULT_AMP_MAPPING.getLabel() );
 

@@ -9,17 +9,23 @@
         <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="DC Trap 1" definitionId="dc_trap">
-        <rackPosition column="0" row="6"/>
+        <rackPosition column="0" row="7"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 5" definitionId="linear_cva">
         <rackPosition column="0" row="5"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 8" definitionId="imixer3">
-        <rackPosition column="0" row="7"/>
-        <rackControl name="Master Lane" value="-11.75:0.0"/>
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Master Lane" value="-18.25:0.0"/>
         <rackControl name="Mixer Lane 0" value="-3.375:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="RBJ Filter 1" definitionId="rbj_filter">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="Filter Type" value="None"/>
+        <rackControl name="Frequency" value="320.896"/>
+        <rackControl name="Q" value="0.1"/>
     </rackComponent>
     <rackComponent name="Scale And Offset 6" definitionId="scale_and_offset">
         <rackPosition column="0" row="1"/>
@@ -30,12 +36,12 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="5518.5"/>
+        <rackControl name="Frequency Max" value="480.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Window" value="Blckmn-H."/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
@@ -44,19 +50,19 @@
         <rackPosition column="2" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="5518.5"/>
+        <rackControl name="Frequency Max" value="480.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Window" value="Hann"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Peak Reset" value=""/>
     </rackComponent>
     <rackComponent name="Static Value 3" definitionId="static_value">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Value" value="300.0"/>
+        <rackControl name="Value" value="240.0"/>
     </rackComponent>
     <rackComponent name="Static Value 4" definitionId="static_value">
         <rackPosition column="0" row="4"/>
@@ -73,10 +79,11 @@
     <rackLink producerRackComponentName="Band Limited Oscillator 2" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 5" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 8" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 8" consumerChannelName="Lane 1 Input Wave Right"/>
-    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="DC Trap 1" consumerChannelName="Input Wave Left"/>
-    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="Wave Roller 7" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 7" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 5" producerChannelName="Output Wave" consumerRackComponentName="RBJ Filter 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="RBJ Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="DC Trap 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Scale And Offset 6" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 2" consumerChannelName="Input Frequency CV"/>
     <rackLink producerRackComponentName="Static Value 3" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 6" consumerChannelName="Input CV"/>
     <rackLink producerRackComponentName="Static Value 4" producerChannelName="Output CV" consumerRackComponentName="Linear CV Amplifier 5" consumerChannelName="Input CV amplification factor"/>
