@@ -39,7 +39,7 @@ public class BackendToFrontendDataRingBuffer extends LocklessFloatRingBuffer
 		return writePosition.get();
 	}
 
-	public int getNumReadableWithWriteIndex( final int writePosition )
+	public int frontEndGetNumReadableWithWriteIndex( final int writePosition )
 	{
 		final int curReadPosition = readPosition.get();
 		return calcNumReadable(curReadPosition, writePosition);
@@ -57,7 +57,7 @@ public class BackendToFrontendDataRingBuffer extends LocklessFloatRingBuffer
 		return bufferLength;
 	}
 
-	public int readToRingWithWriteIndex( final int rwritePosition, final UnsafeFloatRingBuffer targetRing, final int numToRead )
+	public int frontEndReadToRingWithWriteIndex( final int rwritePosition, final UnsafeFloatRingBuffer targetRing, final int numToRead )
 	{
 		final int rreadPosition = readPosition.get();
 		final int numReadable = calcNumReadable( rreadPosition, rwritePosition );
@@ -149,15 +149,26 @@ public class BackendToFrontendDataRingBuffer extends LocklessFloatRingBuffer
 		return numToRead;
 	}
 
-	public int getNumSamplesQueued()
+	public int backEndGetNumSamplesQueued()
 	{
 		return numSamplesQueued;
 	}
 
-	public void setNumSamplesQueued( final int numSamplesQueued )
+	public void backEndClearNumSamplesQueued()
 	{
-		this.numSamplesQueued = numSamplesQueued;
+		numSamplesQueued = 0;
 	}
 
+	public int backEndWrite( final float[] source, final int pos, final int length )
+	{
+		final int numWritten = super.write( source, pos, length );
+		numSamplesQueued += length;
+		return numWritten;
+	}
 
+	@Override
+	public int write( final float[] s, final int p, final int l)
+	{
+		throw new RuntimeException("Use backEndWrite");
+	}
 }

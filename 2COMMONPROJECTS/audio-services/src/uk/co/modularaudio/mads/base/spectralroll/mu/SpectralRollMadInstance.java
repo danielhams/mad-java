@@ -78,7 +78,7 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 				AudioTimingUtils.getNumSamplesForNanosAtSampleRate( sampleRate, nanosForBuffering );
 
 			dataRingBuffer = new BackendToFrontendDataRingBuffer( maxRingBufferingInSamples );
-			dataRingBuffer.setNumSamplesQueued( 0 );
+			dataRingBuffer.backEndClearNumSamplesQueued();
 
 			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 		}
@@ -118,16 +118,16 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 					{
 						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
 
-						if( dataRingBuffer.getNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
+						if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
 						{
 							queueWriteIndexUpdate( tempQueueEntryStorage,
 								0,
 								dataRingBuffer.getWritePosition(),
 								timestampForIndexUpdate );
-							dataRingBuffer.setNumSamplesQueued( 0 );
+							dataRingBuffer.backEndClearNumSamplesQueued();
 						}
 
-						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
+						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.backEndGetNumSamplesQueued();
 
 						final int numAvailable = numFrames - curSampleIndex;
 						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
@@ -138,8 +138,7 @@ public class SpectralRollMadInstance extends MadInstance<SpectralRollMadDefiniti
 
 						if( numToWrite > 0 )
 						{
-							dataRingBuffer.write( inFloats, frameOffset + curSampleIndex, numToWrite );
-							dataRingBuffer.setNumSamplesQueued( dataRingBuffer.getNumSamplesQueued() + numToWrite );
+							dataRingBuffer.backEndWrite( inFloats, frameOffset + curSampleIndex, numToWrite );
 						}
 						else
 						{

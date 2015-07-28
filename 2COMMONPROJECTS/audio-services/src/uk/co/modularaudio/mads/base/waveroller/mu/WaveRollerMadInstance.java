@@ -28,10 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.buffer.BackendToFrontendDataRingBuffer;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -84,7 +84,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 					AudioTimingUtils.getNumSamplesForNanosAtSampleRate( sampleRate, nanosForBuffering );
 
 			dataRingBuffer = new BackendToFrontendDataRingBuffer( maxRingBufferingInSamples );
-			dataRingBuffer.setNumSamplesQueued( 0 );
+			dataRingBuffer.backEndClearNumSamplesQueued();
 
 			numSamplesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
@@ -124,16 +124,16 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 					{
 						final long timestampForIndexUpdate = periodStartTimestamp + curSampleIndex;
 
-						if( dataRingBuffer.getNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
+						if( dataRingBuffer.backEndGetNumSamplesQueued() >= numSamplesPerFrontEndPeriod )
 						{
 							queueWriteIndexUpdate( tempQueueEntryStorage,
 									0,
 									dataRingBuffer.getWritePosition(),
 									timestampForIndexUpdate );
-							dataRingBuffer.setNumSamplesQueued( 0 );
+							dataRingBuffer.backEndClearNumSamplesQueued();
 						}
 
-						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.getNumSamplesQueued();
+						final int numLeft = numSamplesPerFrontEndPeriod - dataRingBuffer.backEndGetNumSamplesQueued();
 
 						final int numAvailable = numFrames - curSampleIndex;
 						final int numThisRound = ( numLeft > numAvailable ? numAvailable : numLeft );
@@ -143,8 +143,7 @@ public class WaveRollerMadInstance extends MadInstance<WaveRollerMadDefinition,W
 						final int numToWrite = ( spaceAvailable > numThisRound ? numThisRound : spaceAvailable );
 						if( numToWrite > 0 )
 						{
-							dataRingBuffer.write( in0Floats, frameOffset + curSampleIndex, numToWrite );
-							dataRingBuffer.setNumSamplesQueued( dataRingBuffer.getNumSamplesQueued() + numToWrite );
+							dataRingBuffer.backEndWrite( in0Floats, frameOffset + curSampleIndex, numToWrite );
 						}
 						else
 						{

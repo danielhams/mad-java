@@ -241,7 +241,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 	@Override
 	public void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		final int numReadable = instanceRingBuffer.getNumReadableWithWriteIndex( writeIndex );
+		final int numReadable = instanceRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 
 		final int spaceAvailable = displayRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
@@ -251,7 +251,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 		}
 
 		// Add on the new data
-		final int numRead = instanceRingBuffer.readToRingWithWriteIndex( writeIndex, displayRingBuffer,  numReadable );
+		final int numRead = instanceRingBuffer.frontEndReadToRingWithWriteIndex( writeIndex, displayRingBuffer,  numReadable );
 		if( numRead != numReadable )
 		{
 			if( log.isErrorEnabled() )

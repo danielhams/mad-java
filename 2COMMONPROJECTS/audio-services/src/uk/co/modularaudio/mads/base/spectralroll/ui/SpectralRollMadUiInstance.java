@@ -186,7 +186,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 
 	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		final int numReadable = backendRingBuffer.getNumReadableWithWriteIndex( writeIndex );
+		final int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 
 		final int spaceAvailable = frontendRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
@@ -196,7 +196,7 @@ public class SpectralRollMadUiInstance extends AbstractNoNameChangeNonConfigurab
 			frontendRingBuffer.moveForward( spaceToFree );
 		}
 
-		final int numRead = backendRingBuffer.readToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
+		final int numRead = backendRingBuffer.frontEndReadToRingWithWriteIndex( writeIndex, frontendRingBuffer, numReadable );
 		if( numRead != numReadable )
 		{
 			if( log.isWarnEnabled() )
