@@ -95,7 +95,8 @@ public class SpectralAmpGenAmpMinChoiceUiJComponent<D extends SpectralAmpGenMadD
 	public SpectralAmpGenAmpMinChoiceUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
-			final int controlIndex )
+			final int controlIndex,
+			final boolean labelAbove )
 	{
 		setOpaque( false );
 
@@ -105,14 +106,28 @@ public class SpectralAmpGenAmpMinChoiceUiJComponent<D extends SpectralAmpGenMadD
 		msh.addLayoutConstraint( "gap 0" );
 		msh.addLayoutConstraint( "fill" );
 
-		msh.addColumnConstraint( "[grow 0][fill]" );
+		if( labelAbove )
+		{
+			msh.addRowConstraint( "[grow 0][fill]" );
+		}
+		else
+		{
+			msh.addColumnConstraint( "[grow 0][fill]" );
+		}
 
 		setLayout( msh.createMigLayout() );
 
 		final LWTCLabel label = new LWTCLabel( "Floor:" );
 		label.setBorder( BorderFactory.createEmptyBorder() );
 		label.setFont( LWTCControlConstants.LABEL_FONT );
-		add( label, "align center, right" );
+		if( labelAbove )
+		{
+			add( label, "align center, bottom, wrap" );
+		}
+		else
+		{
+			add( label, "align center, right" );
+		}
 
 		model = new DefaultComboBoxModel<String>();
 		model.addElement( AmpMin.M_70_DB.getName() );

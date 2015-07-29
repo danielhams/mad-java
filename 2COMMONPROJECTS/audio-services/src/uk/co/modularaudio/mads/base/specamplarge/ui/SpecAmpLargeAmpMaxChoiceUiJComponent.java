@@ -34,6 +34,6 @@ public class SpecAmpLargeAmpMaxChoiceUiJComponent
 			final SpecAmpLargeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( definition, instance, uiInstance, controlIndex );
+		super( definition, instance, uiInstance, controlIndex, true );
 	}
 }

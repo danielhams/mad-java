@@ -37,7 +37,7 @@ import uk.co.modularaudio.util.table.Span;
 public class SpecAmpLargeMadUiDefinition
 	extends SpectralAmpGenMadUiDefinition<SpecAmpLargeMadDefinition, SpecAmpLargeMadInstance, SpecAmpLargeMadUiInstance>
 {
-	private static final Span SPAN = new Span(4,8);
+	private static final Span SPAN = new Span(4,6);
 
 	private static final int[] CHAN_INDEXES = new int[] {
 		SpecAmpSmallMadDefinition.CONSUMER_IN
@@ -48,9 +48,6 @@ public class SpecAmpLargeMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"Amp Ceil",
-		"Amp Floor",
-		"Amp Scale",
 		"Frequency Min",
 		"Frequency Max",
 		"Frequency Scale",
@@ -58,49 +55,52 @@ public class SpecAmpLargeMadUiDefinition
 		"Window",
 		"Running Average",
 		"Peak Reset",
-		"Display"
+		"Display",
+		"Amp Ceil",
+		"Amp Floor",
+		"Amp Scale"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.COMBO,
-		ControlType.SLIDER,
-		ControlType.SLIDER,
-		ControlType.COMBO,
-		ControlType.COMBO,
-		ControlType.COMBO,
-		ControlType.COMBO,
 		ControlType.BUTTON,
-		ControlType.DISPLAY
+		ControlType.SLIDER,
+		ControlType.SLIDER,
+		ControlType.COMBO,
+		ControlType.DISPLAY,
+		ControlType.COMBO,
+		ControlType.COMBO,
+		ControlType.COMBO
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		SpecAmpLargeAmpMaxChoiceUiJComponent.class,
-		SpecAmpLargeAmpMinChoiceUiJComponent.class,
-		SpecAmpLargeAmpMappingChoiceUiJComponent.class,
-		SpecAmpLargeFreqMinDialUiJComponent.class,
-		SpecAmpLargeFreqMaxDialUiJComponent.class,
-		SpecAmpLargeFreqMappingChoiceUiJComponent.class,
 		SpecAmpLargeFFTResolutionChoiceUiJComponent.class,
 		SpecAmpLargeWindowChoiceUiJComponent.class,
 		SpecAmpLargeRunAvChoiceUiJComponent.class,
 		SpecAmpLargePeakResetUiJComponent.class,
-		SpecAmpLargeDisplayUiJComponent.class
+		SpecAmpLargeFreqMinDialUiJComponent.class,
+		SpecAmpLargeFreqMaxDialUiJComponent.class,
+		SpecAmpLargeFreqMappingChoiceUiJComponent.class,
+		SpecAmpLargeDisplayUiJComponent.class,
+		SpecAmpLargeAmpMaxChoiceUiJComponent.class,
+		SpecAmpLargeAmpMinChoiceUiJComponent.class,
+		SpecAmpLargeAmpMappingChoiceUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 108,   5, 150,  30 ),		// Amp Ceil Choice
-		new Rectangle( 296,   5, 118,  30 ),		// Amp Floor Choice
-		new Rectangle( 450,   5, 100,  30 ),		// Amp Scale
-		new Rectangle(  94,  41, 182,  30 ),		// Freq Min
-		new Rectangle( 302,  41, 122,  30 ),		// Freq Max
-		new Rectangle( 450,  41, 100,  30 ),		// Freq Scale
-		new Rectangle(   8,  77, 105,  30 ),		// FFT Resolution
-		new Rectangle( 124,  77, 130,  30 ),		// Window choice
-		new Rectangle( 268,  77, 166,  30 ),		// Runn Average Type
-		new Rectangle( 450,  77,  96,  30 ),		// Peak Reset Button
-		new Rectangle(   6, 114, 1144, 408 )			// Display
+		new Rectangle( 612,   5, 105,  30 ),		// FFT Resolution
+		new Rectangle( 728,   5, 130,  30 ),		// Window choice
+		new Rectangle( 872,   5, 166,  30 ),		// Runn Average Type
+		new Rectangle( 1054,  5,  96,  30 ),		// Peak Reset Button
+		new Rectangle( 102, 438, 182,  30 ),		// Freq Min
+		new Rectangle( 1030,438, 122,  30 ),		// Freq Max
+		new Rectangle( 500, 438, 100,  30 ),		// Freq Scale
+		new Rectangle( 102,  40,1048, 394 ),		// Display
+		new Rectangle(   6,  40,  90,  44 ),		// Amp Ceil Choice
+		new Rectangle(   6, 390,  90,  44 ),		// Amp Floor Choice
+		new Rectangle(   6, 210,  90,  44 )			// Amp Scale
 	};
 
 	private static final Class<SpecAmpLargeMadUiInstance> INSTANCE_CLASS = SpecAmpLargeMadUiInstance.class;

@@ -53,9 +53,6 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 	public static final int SPECTRAL_DISPLAY_RIGHT_PADDING = 16;
 	public static final int SPECTRAL_DISPLAY_TOP_PADDING = 8;
 
-//	public static final int NUM_FREQ_MARKERS = 9;
-//	public static final int NUM_AMP_MARKERS = 5;
-
 	public SpectralAmpGenDisplayUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
@@ -85,7 +82,6 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 				"[" + FREQ_LABELS_HEIGHT + "px]" );
 
 		setLayout( msh.createMigLayout() );
-
 
 		ampScaleLabels = new SpectralPeakAmpLabels( uiInstance, numAmpMarkers );
 		topEmptyPlot = new SpectralPeakEmptyPlot();

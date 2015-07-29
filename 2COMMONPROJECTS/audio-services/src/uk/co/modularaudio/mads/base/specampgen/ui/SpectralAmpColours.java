@@ -26,7 +26,9 @@ public class SpectralAmpColours
 {
 	final static Color BACKGROUND_COLOR = Color.BLACK;
 
-	final static Color SPECTRAL_BODY = new Color( 209, 139, 46, 255 );
+//	final static Color SPECTRAL_BODY = new Color( 209, 139, 46, 255 );
+//	final static Color SPECTRAL_BODY = new Color( 146, 97, 32, 255 );
+	final static Color SPECTRAL_BODY = new Color( 177, 118, 39, 255 );
 
 	final static Color RUNNING_PEAK_COLOUR = new Color( 209, 188, 46, 255 );
 
