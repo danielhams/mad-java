@@ -61,6 +61,9 @@ public class SpectralPeakGraph extends JPanel
 	private int vertPixelsPerMarker;
 	private int horizPixelsPerMarker;
 
+	private final int numAmpMarkers;
+	private final int numFreqMarkers;
+
 	// Setup when setNumBins called
 	private int currentNumBins;
 
@@ -84,12 +87,16 @@ public class SpectralPeakGraph extends JPanel
 	private int[] polylineExtraXPoints;
 	private int[] polylineExtraYPoints;
 
-	public SpectralPeakGraph( final SpectralAmpGenMadUiInstance<?,?> uiInstance )
+	public SpectralPeakGraph( final SpectralAmpGenMadUiInstance<?,?> uiInstance,
+			final int numAmpMarkers,
+			final int numFreqMarkers )
 	{
 		this.uiInstance = uiInstance;
 		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
 		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
 		this.runAvComputer = uiInstance.getDesiredRunningAverageComputer();
+		this.numAmpMarkers = numAmpMarkers;
+		this.numFreqMarkers = numFreqMarkers;
 
 		setOpaque( true );
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
@@ -124,13 +131,13 @@ public class SpectralPeakGraph extends JPanel
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
 		// Draw the axis lines
-		for( int i = 0 ; i < SpectralAmpGenDisplayUiJComponent.NUM_AMP_MARKERS ; ++i )
+		for( int i = 0 ; i < numAmpMarkers ; ++i )
 		{
 			final int lineY = (vertPixelsPerMarker * i);
 			g.drawLine( 0, lineY, magsWidth - 1, lineY );
 		}
 
-		for( int j = 0 ; j < SpectralAmpGenDisplayUiJComponent.NUM_FREQ_MARKERS; ++j )
+		for( int j = 0 ; j < numFreqMarkers ; ++j )
 		{
 			final int lineX = horizPixelsPerMarker * j;
 			g.drawLine( lineX, 0, lineX, magsHeight );
@@ -332,13 +339,13 @@ public class SpectralPeakGraph extends JPanel
 //		magsWidth = width - SpectralAmpMadUiDefinition.SCALES_WIDTH_OFFSET - 1;
 //		magsHeight = height - SpectralAmpMadUiDefinition.SCALES_HEIGHT_OFFSET - 1;
 
-		magsWidth = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width );
-		magsHeight = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height );
+		magsWidth = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width, numFreqMarkers );
+		magsHeight = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height, numAmpMarkers );
 
 		yOffset = this.height - magsHeight;
 
-		horizPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
-		vertPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
+		horizPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width, numFreqMarkers );
+		vertPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height, numAmpMarkers );
 
 		// We make the lookup table one larger than the width so we can overplot on width
 		// so the final pixel(s) are drawn correctly

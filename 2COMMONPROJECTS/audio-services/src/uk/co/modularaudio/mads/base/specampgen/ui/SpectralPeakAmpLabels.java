@@ -48,12 +48,15 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 	private int magsHeight;
 	private int yOffset;
 	private int vertPixelsPerMarker;
+	private final int numAmpMarkers;
 
-	public SpectralPeakAmpLabels( final SpectralAmpGenMadUiInstance<?,?> uiInstance )
+	public SpectralPeakAmpLabels( final SpectralAmpGenMadUiInstance<?,?> uiInstance,
+			final int numAmpMarkers )
 	{
 		this.setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
 		this.ampScaleComputer = uiInstance.getDesiredAmpScaleComputer();
+		this.numAmpMarkers = numAmpMarkers;
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 		setMinimumSize( new Dimension( SpectralAmpGenDisplayUiJComponent.AMP_LABELS_WIDTH, SpectralAmpGenDisplayUiJComponent.AMP_LABELS_WIDTH  ) );
@@ -71,11 +74,11 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 		this.height = height - 1 - SpectralAmpGenDisplayUiJComponent.SPECTRAL_DISPLAY_TOP_PADDING -
 				SpectralAmpGenDisplayUiJComponent.AXIS_MARKS_LENGTH;
 
-		magsHeight = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height );
+		magsHeight = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightOfDisplay( this.height, numAmpMarkers );
 
 		yOffset = SpectralAmpGenDisplayUiJComponent.SPECTRAL_DISPLAY_TOP_PADDING + (this.height - magsHeight);
 
-		vertPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height );
+		vertPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height, numAmpMarkers );
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 		g.translate( 0, yOffset );
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < SpectralAmpGenDisplayUiJComponent.NUM_AMP_MARKERS ; ++i )
+		for( int i = 0 ; i < numAmpMarkers ; ++i )
 		{
 			final int y = vertPixelsPerMarker * i;
 

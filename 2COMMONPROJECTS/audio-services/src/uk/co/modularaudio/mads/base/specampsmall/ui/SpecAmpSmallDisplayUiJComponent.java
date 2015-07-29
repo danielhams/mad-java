@@ -29,11 +29,14 @@ public class SpecAmpSmallDisplayUiJComponent
 {
 	private static final long serialVersionUID = 4479101298784505822L;
 
+	private static final int NUM_AMP_MARKERS = 5;
+	private static final int NUM_FREQ_MARKERS = 9;
+
 	public SpecAmpSmallDisplayUiJComponent( final SpecAmpSmallMadDefinition definition,
 			final SpecAmpSmallMadInstance instance,
 			final SpecAmpSmallMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( definition, instance, uiInstance, controlIndex );
+		super( definition, instance, uiInstance, controlIndex, NUM_AMP_MARKERS, NUM_FREQ_MARKERS );
 	}
 }

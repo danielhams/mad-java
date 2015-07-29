@@ -46,12 +46,14 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 	private int magsWidth;
 	private int xOffset;
 	private int horizPixelsPerMarker;
+	private final int numFreqMarkers;
 
-	public SpectralPeakFreqLabels( final SpectralAmpGenMadUiInstance<?,?> uiInstance )
+	public SpectralPeakFreqLabels( final SpectralAmpGenMadUiInstance<?,?> uiInstance, final int numFreqMarkers )
 	{
 		this.setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
 		this.freqScaleComputer = uiInstance.getDesiredFreqScaleComputer();
+		this.numFreqMarkers = numFreqMarkers;
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 		setMinimumSize( new Dimension( SpectralAmpGenDisplayUiJComponent.FREQ_LABELS_HEIGHT, SpectralAmpGenDisplayUiJComponent.FREQ_LABELS_HEIGHT ) );
@@ -69,12 +71,12 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 				SpectralAmpGenDisplayUiJComponent.AXIS_MARKS_LENGTH -
 				SpectralAmpGenDisplayUiJComponent.AMP_LABELS_WIDTH;
 
-		magsWidth = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width );
+		magsWidth = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthOfDisplay( this.width, numFreqMarkers );
 
 		xOffset = SpectralAmpGenDisplayUiJComponent.AMP_LABELS_WIDTH +
 				SpectralAmpGenDisplayUiJComponent.AXIS_MARKS_LENGTH;
 
-		horizPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width );
+		horizPixelsPerMarker = SpectralAmpGenDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width, numFreqMarkers );
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 		g.translate( xOffset, 0 );
 		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
-		for( int i = 0 ; i < SpectralAmpGenDisplayUiJComponent.NUM_FREQ_MARKERS ; ++i )
+		for( int i = 0 ; i < numFreqMarkers ; ++i )
 		{
 			final int x = horizPixelsPerMarker * i;
 

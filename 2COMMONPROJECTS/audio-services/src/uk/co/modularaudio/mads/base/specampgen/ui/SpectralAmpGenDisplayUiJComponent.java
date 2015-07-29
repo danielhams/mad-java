@@ -53,13 +53,15 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 	public static final int SPECTRAL_DISPLAY_RIGHT_PADDING = 16;
 	public static final int SPECTRAL_DISPLAY_TOP_PADDING = 8;
 
-	public static final int NUM_FREQ_MARKERS = 9;
-	public static final int NUM_AMP_MARKERS = 5;
+//	public static final int NUM_FREQ_MARKERS = 9;
+//	public static final int NUM_AMP_MARKERS = 5;
 
 	public SpectralAmpGenDisplayUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
-			final int controlIndex )
+			final int controlIndex,
+			final int numAmpMarkers,
+			final int numFreqMarkers )
 	{
 		setOpaque( true );
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
@@ -85,13 +87,13 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 		setLayout( msh.createMigLayout() );
 
 
-		ampScaleLabels = new SpectralPeakAmpLabels( uiInstance );
+		ampScaleLabels = new SpectralPeakAmpLabels( uiInstance, numAmpMarkers );
 		topEmptyPlot = new SpectralPeakEmptyPlot();
-		ampAxisMarks = new SpectralPeakAmpMarks();
-		spectralDispaly = new SpectralPeakGraph( uiInstance );
+		ampAxisMarks = new SpectralPeakAmpMarks( numAmpMarkers );
+		spectralDispaly = new SpectralPeakGraph( uiInstance, numAmpMarkers, numFreqMarkers );
 		rightEmptyPlot = new SpectralPeakEmptyPlot();
-		freqScaleLabels = new SpectralPeakFreqLabels( uiInstance );
-		freqAxisMarks = new SpectralPeakFreqMarks();
+		freqScaleLabels = new SpectralPeakFreqLabels( uiInstance, numFreqMarkers );
+		freqAxisMarks = new SpectralPeakFreqMarks( numFreqMarkers );
 
 		// Sizing set using row/column constraints
 		this.add( ampScaleLabels, "cell 0 0, spany 3, growy" );
@@ -139,23 +141,23 @@ public class SpectralAmpGenDisplayUiJComponent<D extends SpectralAmpGenMadDefini
 	{
 	}
 
-	static public int getAdjustedWidthOfDisplay( final int actualWidth )
+	static public int getAdjustedWidthOfDisplay( final int actualWidth, final int numFreqMarkers )
 	{
-		return getAdjustedWidthBetweenMarkers( actualWidth ) * (NUM_FREQ_MARKERS-1);
+		return getAdjustedWidthBetweenMarkers( actualWidth, numFreqMarkers ) * (numFreqMarkers-1);
 	}
 
-	static public int getAdjustedWidthBetweenMarkers( final int actualWidth )
+	static public int getAdjustedWidthBetweenMarkers( final int actualWidth, final int numFreqMarkers )
 	{
-		return (int)Math.floor(actualWidth / (NUM_FREQ_MARKERS-1));
+		return (int)Math.floor(actualWidth / (numFreqMarkers-1));
 	}
 
-	static public int getAdjustedHeightOfDisplay( final int actualHeight )
+	static public int getAdjustedHeightOfDisplay( final int actualHeight, final int numAmpMarkers )
 	{
-		return getAdjustedHeightBetweenMarkers( actualHeight ) * (NUM_AMP_MARKERS-1);
+		return getAdjustedHeightBetweenMarkers( actualHeight, numAmpMarkers ) * (numAmpMarkers-1);
 	}
 
-	static public int getAdjustedHeightBetweenMarkers( final int actualHeight )
+	static public int getAdjustedHeightBetweenMarkers( final int actualHeight, final int numAmpMarkers )
 	{
-		return (int)Math.floor(actualHeight / (NUM_AMP_MARKERS-1));
+		return (int)Math.floor(actualHeight / (numAmpMarkers-1));
 	}
 }
