@@ -73,6 +73,8 @@ task copySupportJars(type: Copy) {
   into releasedir + '/supportlibs'
 }
 
+copySupportJars.dependsOn(':external-libs:get_libs')
+
 task copyCdJar(type: Copy) {
   from 'build/libs/' + applicationNameAndVersion + '.jar'
   into releasedir
