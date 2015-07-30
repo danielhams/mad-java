@@ -46,7 +46,7 @@ public class ThreadUtils
 
 		if( priorityRange < MAThreadPriority.NUM_PRIORITIES.ordinal() )
 		{
-			throw new RuntimeException("OS lacks appropriate priority granularity");
+			throw new DatastoreException("OS lacks appropriate priority granularity");
 		}
 
 		final float jpPerMaPInt = (priorityRange / (float)MAThreadPriority.NUM_PRIORITIES.ordinal());

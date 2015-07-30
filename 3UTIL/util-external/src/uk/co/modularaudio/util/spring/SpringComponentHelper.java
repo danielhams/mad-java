@@ -196,7 +196,7 @@ public class SpringComponentHelper
 		}
 
 		// Perform a GC pass here to clean up before things are launched post refresh
-		Runtime.getRuntime().gc();
+		Runtime.getRuntime().gc(); // NOPMD by dan on 30/07/15 15:00
 
 		// Do any work needed after we refresh the context
 		// Post refresh calls

@@ -48,6 +48,7 @@ public class InternalSampleCacheClient implements SampleCacheClient
 		return libraryEntry;
 	}
 
+	@Override
 	public long getCurrentFramePosition()
 	{
 		return currentFramePosition.get();

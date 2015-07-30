@@ -404,7 +404,8 @@ public class BlockResamplerServiceImpl implements BlockResamplerService
 			final SampleCacheClient sampleCacheClient,
 			final BlockResamplingMethod resamplingMethod )
 	{
-		return new InternalResamplingClient( sampleCacheClient, resamplingMethod, -1, 0.0f );
+		final long clientPosition = sampleCacheClient.getCurrentFramePosition();
+		return new InternalResamplingClient( sampleCacheClient, resamplingMethod, clientPosition-1, 0.0f );
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontC
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerIOQueueBridge;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerZoomToggleGroupUiJComponent.ZoomLevel;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.GetAnalysisRunnable;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.LoadNewSoundFileRunnable;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.runnable.SoundFileLoadCompletionListener;
@@ -66,12 +67,11 @@ public class SoundfilePlayerMadUiInstance extends
 
 	private final ArrayList<SoundfileSampleEventListener> sampleEventListeners = new ArrayList<SoundfileSampleEventListener>();
 
-	private SoundfilePlayerZoomProducer zoomProducer;
-	private ZoomDataListener zoomDataListener;
+	private final List<ZoomListener> zoomListeners = new ArrayList<ZoomListener>();
 
 	protected BlockResamplingClient currentResampledSample;
 
-	protected DataRate knownDataRate;
+	protected DataRate knownDataRate = DataRate.CD_QUALITY;
 
 	protected List<InstanceLifecycleListener> lifecycleListeners = new ArrayList<InstanceLifecycleListener>();
 
@@ -136,16 +136,6 @@ public class SoundfilePlayerMadUiInstance extends
 				resampledSample = null;
 				break;
 			}
-			case SoundfilePlayerIOQueueBridge.COMMAND_OUT_CURRENT_SAMPLE:
-			{
-				final BlockResamplingClient curSample = (BlockResamplingClient)queueEvent.object;
-				currentResampledSample = curSample;
-				for( int i = 0 ; i < sampleEventListeners.size() ; ++i )
-				{
-					sampleEventListeners.get(i).receiveSampleChangeEvent(currentResampledSample);
-				}
-				break;
-			}
 			case SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_DELTA:
 			{
 				final BlockResamplingClient rs = (BlockResamplingClient)queueEvent.object;
@@ -160,6 +150,7 @@ public class SoundfilePlayerMadUiInstance extends
 			}
 			case SoundfilePlayerIOQueueBridge.COMMAND_OUT_FRAME_POSITION_ABS:
 			{
+				log.trace("Received abs frame position event");
 				final BlockResamplingClient rs = (BlockResamplingClient)queueEvent.object;
 				if( rs == currentResampledSample )
 				{
@@ -224,12 +215,13 @@ public class SoundfilePlayerMadUiInstance extends
 		analysisFillListeners.remove( al );
 	}
 
-	public void setFileInfo( final String filename )
+	public void setFileInfo( final String filename, final long position )
 	{
 //		log.debug("A set of the file info is causing the load runnable to be executed");
 		final LoadNewSoundFileRunnable loadRunnable =
 				new LoadNewSoundFileRunnable( advancedComponentsFrontController,
 						filename,
+						position,
 						this );
 		jobExecutorService.submitJob( loadRunnable );
 	}
@@ -273,22 +265,9 @@ public class SoundfilePlayerMadUiInstance extends
 		super.doDisplayProcessing(guiTemporaryEventStorage, timingParameters, currentGuiTick);
 	}
 
-	public void setZoomProducer( final SoundfilePlayerZoomProducer zoomProducer )
+	public void addZoomListener( final ZoomListener zoomDataListener )
 	{
-		this.zoomProducer = zoomProducer;
-		if( zoomDataListener != null && zoomProducer != null )
-		{
-			zoomProducer.setZoomDataListener(zoomDataListener);
-		}
-	}
-
-	public void setZoomDataListener( final ZoomDataListener zoomDataListener )
-	{
-		this.zoomDataListener = zoomDataListener;
-		if( zoomDataListener != null && zoomProducer != null )
-		{
-			zoomProducer.setZoomDataListener(zoomDataListener);
-		}
+		zoomListeners.add( zoomDataListener );
 	}
 
 	@Override
@@ -321,6 +300,11 @@ public class SoundfilePlayerMadUiInstance extends
 		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient(
 				sampleCacheClient,
 			BlockResamplingMethod.CUBIC );
+
+		for( final SoundfileSampleEventListener sel : sampleEventListeners )
+		{
+			sel.receiveSampleChangeEvent( currentResampledSample );
+		}
 
 		sendCommandObjectToInstance(SoundfilePlayerIOQueueBridge.COMMAND_IN_RESAMPLED_SAMPLE, currentResampledSample );
 
@@ -402,4 +386,23 @@ public class SoundfilePlayerMadUiInstance extends
 		}
 	}
 
+	public long getCurrentSongPosition()
+	{
+		if( currentResampledSample != null )
+		{
+			return currentResampledSample.getFramePosition();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	public void setZoomLevel( final ZoomLevel zoomLevel )
+	{
+		for( final ZoomListener zl : zoomListeners )
+		{
+			zl.receiveZoomLevel( zoomLevel );
+		}
+	}
 }

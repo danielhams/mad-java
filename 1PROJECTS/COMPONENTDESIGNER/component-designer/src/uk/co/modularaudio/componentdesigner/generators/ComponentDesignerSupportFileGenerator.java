@@ -21,6 +21,7 @@
 package uk.co.modularaudio.componentdesigner.generators;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -84,9 +85,12 @@ public class ComponentDesignerSupportFileGenerator
 	{
 		if( args.length != 2 )
 		{
-			throw new Exception( "Missing required directories: outputDir inputImagesDir" );
+			throw new IOException( "Missing required directories: outputDir inputImagesDir" );
 		}
-		log.info("Creating output in '" + args[0] + "' reading images from '" + args[1] + "'");
+		if( log.isInfoEnabled() )
+		{
+			log.info("Creating output in '" + args[0] + "' reading images from '" + args[1] + "'");
+		}
 
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
 		final Configuration config = ctx.getConfiguration();
@@ -177,7 +181,10 @@ public class ComponentDesignerSupportFileGenerator
 				{
 					outputImageFile.delete();
 				}
-				log.info( "Copying image file: " + outputName );
+				if( log.isInfoEnabled() )
+				{
+					log.info( "Copying image file: " + outputName );
+				}
 				Files.copy( entry, new File( outputPath ).toPath() );
 			}
 		}

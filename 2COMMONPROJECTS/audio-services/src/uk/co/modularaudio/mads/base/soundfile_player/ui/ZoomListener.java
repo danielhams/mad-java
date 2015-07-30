@@ -20,8 +20,10 @@
 
 package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
+import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerZoomToggleGroupUiJComponent.ZoomLevel;
 
-public interface ZoomDataListener
+
+public interface ZoomListener
 {
-	void setZoomMillis( float zoomMillis );
+	void receiveZoomLevel( ZoomLevel zoomLevel );
 }

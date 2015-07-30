@@ -521,7 +521,10 @@ public class SampleCache
 					{
 						if( curBlock == null )
 						{
-//							log.debug("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
+							if( log.isTraceEnabled() )
+							{
+								log.trace("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
+							}
 							final SampleCacheBlock newlyPopulatedBlock = populateCacheForSampleCacheEntryBlock( sce, le, i, curBlockMapIndex );
 							blocksForCacheEntry.put( curBlockMapIndex, newlyPopulatedBlock );
 						}
@@ -538,7 +541,10 @@ public class SampleCache
 								case WARM:
 								{
 									// Re-warm the cache entry
-//									log.debug("Will re-warm existing block " + curBlockMapIndex );
+									if( log.isTraceEnabled() )
+									{
+										log.trace("Will re-warm existing block " + curBlockMapIndex );
+									}
 									temperatureBufferBlockMap.reheatBlock( curBlock );
 									break;
 								}
@@ -552,7 +558,10 @@ public class SampleCache
 					}
 					else if( !shouldCacheBlock && curBlock != null && curBlock.useStatus.get() == SampleCacheBlockEnum.HOT )
 					{
-//						log.debug("Will cool hot block " + curBlockMapIndex );
+						if( log.isTraceEnabled() )
+						{
+							log.trace("Will cool hot block " + curBlockMapIndex );
+						}
 						temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( curBlockMapIndex );
 						hotBlocksToCoolSet.remove( curBlock );
 					}
@@ -564,7 +573,10 @@ public class SampleCache
 			// Now clean up any remaining hot blocks by moving them to "warm"
 			for( final SampleCacheBlock hotBlock : hotBlocksToCoolSet )
 			{
-//				log.debug("Will set orphaned block " + hotBlock.blockID + " to warm");
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Will set orphaned block " + hotBlock.blockID + " to warm");
+				}
 
 				temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( hotBlock.blockID );
 			}
@@ -618,6 +630,10 @@ public class SampleCache
 
 	private void buildBlockCacheBoolsForClients( final SampleCacheEntry sce )
 	{
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Building block cache bools for " + sce.getLibraryEntry().getTitle());
+		}
 		final HashSet<InternalSampleCacheClient> sampleCacheEntryClients = sce.getCurrentClientSet();
 		final boolean[] requiredCachedBlocks = sce.getRequiredCachedBlocks();
 		Arrays.fill( requiredCachedBlocks, false );
@@ -635,6 +651,11 @@ public class SampleCache
 			framePosition = framePosition < 0 ? 0 : framePosition < totalNumFrames ? framePosition : totalNumFrames;
 			final long floatPosition = SampleCache.frameToRawFloat( framePosition, numChannels );
 			setBlocksToCacheFromBlockBoundaries( le, requiredCachedBlocks, floatPosition );
+
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Adding cue point dictated frame position " + framePosition + " as a needed cache point");
+			}
 		}
 
 		// And do the same for each client and their positions
@@ -651,6 +672,11 @@ public class SampleCache
 
 			floatPosition = SampleCache.frameToRawFloat( intendedFramePosition, numChannels );
 			setBlocksToCacheFromBlockBoundaries( le, requiredCachedBlocks, floatPosition );
+
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Adding client position dictated frame position " + currentFramePosition + " as a needed cache point");
+			}
 		}
 	}
 

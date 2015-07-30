@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerColorDefines;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerMadUiInstance;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerZoomToggleGroupUiJComponent.ZoomLevel;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.gui.mad.rollpainter.RollPaintDefaultUpdateStructure;
@@ -61,7 +62,7 @@ public class SoundfileDisplaySampleFactory implements
 	private long receivedBufferPos = 0;
 
 	private long lastBufferPos;
-	private float captureLengthMillis;
+	private float captureLengthMillis = ZoomLevel.ZOOMED_DEFAULT.getMillisForLevel();
 	private int numSamplesPerPixel;
 
 	private float displayMultiplier;
@@ -326,9 +327,9 @@ public class SoundfileDisplaySampleFactory implements
 	public void setSampleCacheClient( final SampleCacheClient scc )
 	{
 		this.scc = scc;
-//		receivedBufferPos = 0;
-//		resetForFullRepaint();
+		receivedBufferPos = scc.getCurrentFramePosition();
 		computeSamplesPerPixel();
+		resetForFullRepaint();
 	}
 
 	private void computeSamplesPerPixel()

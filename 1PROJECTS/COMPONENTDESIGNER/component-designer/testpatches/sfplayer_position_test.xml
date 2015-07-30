@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Gain" value="-7.2050977"/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Oakenfold - Bunkka/Paul Oakenfold - Paul Oakenfold - 01 - Ready Steady Go (Vocals Asher D).mp3|7549425"/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="SpeedSlider" value="0.0"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="FastForward" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Display" value=""/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+</rack>

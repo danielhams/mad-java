@@ -22,5 +22,5 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 public interface SoundfilePlayerZoomProducer
 {
-	void setZoomDataListener( ZoomDataListener dataListener );
+	void setZoomDataListener( ZoomListener dataListener );
 }

@@ -35,8 +35,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCToggleButton;
 import uk.co.modularaudio.util.swing.lwtc.LWTCToggleGroup;
 
 public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
-	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
-	SoundfilePlayerZoomProducer
+	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>
 {
 	private static final long serialVersionUID = -5668580477214022847L;
 
@@ -50,14 +49,26 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 
 	private final LWTCToggleGroup toggleGroup;
 
-	private final float[] ZOOM_MILLIS = new float[] {
-			1250.0f,
-			2500.0f,
-			5000.0f
-	};
-	private float currentZoomMillis = 2500.0f;
+	public enum ZoomLevel
+	{
+		ZOOMED_IN(1250.0f),
+		ZOOMED_DEFAULT(2500.0f),
+		ZOOMED_OUT(5000.0f);
 
-	private ZoomDataListener dataListener;
+		private float millisFoLevel;
+
+		private ZoomLevel( final float millisForLevel )
+		{
+			this.millisFoLevel = millisForLevel;
+		}
+
+		public float getMillisForLevel()
+		{
+			return millisFoLevel;
+		}
+	};
+
+	public final static ZoomLevel DEFAULT_ZOOM_LEVEL = ZoomLevel.ZOOMED_DEFAULT;
 
 	public SoundfilePlayerZoomToggleGroupUiJComponent( final SoundfilePlayerMadDefinition definition,
 			final SoundfilePlayerMadInstance instance,
@@ -80,12 +91,7 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 			@Override
 			public void receiveUpdateEvent(final int previousSelection, final int newSelection)
 			{
-				if( dataListener != null )
-				{
-					currentZoomMillis = ZOOM_MILLIS[ newSelection ];
-//					log.debug("Set zoom millis to " + currentZoomMillis );
-					dataListener.setZoomMillis(currentZoomMillis);
-				}
+				uiInstance.setZoomLevel( ZoomLevel.values()[newSelection] );
 			}
 		};
 
@@ -93,19 +99,6 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 		{
 			add( tb, "grow, shrink, wrap");
 		}
-
-		uiInstance.setZoomProducer( this );
-	}
-
-	@Override
-	public void setZoomDataListener( final ZoomDataListener dataListener )
-	{
-//		if( log.isDebugEnabled() )
-//		{
-//			log.debug("Received data listener - will set zoom millis to " + currentZoomMillis );
-//		}
-		this.dataListener = dataListener;
-		dataListener.setZoomMillis( currentZoomMillis );
 	}
 
 	@Override
@@ -123,7 +116,6 @@ public class SoundfilePlayerZoomToggleGroupUiJComponent extends JPanel
 //		}
 		final int intValue = Integer.valueOf(value);
 		toggleGroup.setSelectedItemIndex( intValue );
-		this.currentZoomMillis = ZOOM_MILLIS[intValue];
 	}
 
 	@Override

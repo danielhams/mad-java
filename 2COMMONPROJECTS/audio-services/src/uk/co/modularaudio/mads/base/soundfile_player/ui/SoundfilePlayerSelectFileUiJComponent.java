@@ -40,6 +40,9 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 {
 	private static final long serialVersionUID = 6068897521037173787L;
 
+	private static final char POS_SEP_CHAR = '|';
+	private static final String INITIAL_POS_STR = POS_SEP_CHAR + "0";
+
 	private final SoundfilePlayerMadUiInstance uiInstance;
 
 	private String currentFilename = "";
@@ -63,11 +66,21 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 		return this;
 	}
 
-	private void passChangeToInstanceData( final String filename )
+	private void passChangeToInstanceData( final String filenameAndPos )
 	{
 		if( currentFilename != null )
 		{
+			final int colonPosition = filenameAndPos.indexOf( POS_SEP_CHAR );
+			final String filename = (
+					colonPosition == -1 ? filenameAndPos :
+					filenameAndPos.substring( 0, colonPosition )
+					);
+			final long position = (
+					colonPosition == -1 ? 0 :
+					Long.parseLong( filenameAndPos.substring( colonPosition + 1 ))
+					);
 			currentFilename = filename;
+
 			if( !FileUtilities.isRelativePath( currentFilename ) )
 			{
 				final String userMusicDir = acfc.getSoundfileMusicRoot();
@@ -78,7 +91,7 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 			}
 			if( currentFilename.length() > 0 )
 			{
-				uiInstance.setFileInfo( currentFilename );
+				uiInstance.setFileInfo( currentFilename, position );
 			}
 		}
 	}
@@ -98,7 +111,12 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 	@Override
 	public String getControlValue()
 	{
-		return currentFilename;
+		final StringBuilder sb = new StringBuilder();
+		final long songPosition = uiInstance.getCurrentSongPosition();
+		sb.append( currentFilename );
+		sb.append( POS_SEP_CHAR );
+		sb.append( Long.toString(songPosition) );
+		return sb.toString();
 	}
 
 	@Override
@@ -134,7 +152,8 @@ public class SoundfilePlayerSelectFileUiJComponent extends LWTCButton
 			if (f != null && !f.isDirectory())
 			{
 				currentDirectory = f.getParentFile().getAbsolutePath();
-				passChangeToInstanceData( f.getAbsolutePath() );
+				// Make zero the start position
+				passChangeToInstanceData( f.getAbsolutePath() + INITIAL_POS_STR );
 			}
 		}
 	}

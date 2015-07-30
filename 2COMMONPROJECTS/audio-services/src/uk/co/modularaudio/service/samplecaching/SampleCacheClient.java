@@ -25,6 +25,7 @@ import uk.co.modularaudio.service.library.LibraryEntry;
 public interface SampleCacheClient
 {
 	public void setCurrentFramePosition( long newFramePosition );
+	public long getCurrentFramePosition();
 	public void setIntendedFramePosition( long newIntendedPosition );
 	public long getTotalNumFrames();
 	public int getNumChannels();

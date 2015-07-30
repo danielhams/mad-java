@@ -52,10 +52,9 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 	public static final int COMMAND_OUT_RECYCLE_SAMPLE = 16;
 
 	public static final int COMMAND_OUT_STATE_CHANGE = 17;
-	public static final int COMMAND_OUT_CURRENT_SAMPLE = 18;
-	public static final int COMMAND_OUT_FRAME_POSITION_ABS = 19;
-	public static final int COMMAND_OUT_FRAME_POSITION_DELTA = 20;
-	public static final int COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE = 21;
+	public static final int COMMAND_OUT_FRAME_POSITION_ABS = 18;
+	public static final int COMMAND_OUT_FRAME_POSITION_DELTA = 19;
+	public static final int COMMAND_OUT_FRAME_POSITION_ABS_WAIT_FOR_CACHE = 20;
 
 
 	public SoundfilePlayerIOQueueBridge()
@@ -101,8 +100,6 @@ public class SoundfilePlayerIOQueueBridge extends MadLocklessQueueBridge<Soundfi
 					// Get the UI to clean up the previously used one
 					queueCommandEventToUi(tses, COMMAND_OUT_RECYCLE_SAMPLE, 0, prevSample);
 				}
-				queueCommandEventToUi(tses, COMMAND_OUT_CURRENT_SAMPLE, 0, resampledSample);
-				queueCommandEventToUi(tses, COMMAND_OUT_FRAME_POSITION_ABS, 0, resampledSample);
 				break;
 			}
 			case COMMAND_IN_SHUTTLE_REWIND_TO_START:

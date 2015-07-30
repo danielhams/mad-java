@@ -169,10 +169,14 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 					newSample.getSampleCacheClient().getLibraryEntry().getTitle() );
 		}
 		currentSampleNumFrames = newSample.getTotalNumFrames();
+		final long position = newSample.getFramePosition();
+		recomputeDesiredPositionOffset( position );
 		if( log.isDebugEnabled() )
 		{
-			log.debug("The number of sample frames is " + currentSampleNumFrames );
+			log.debug("The number of sample frames is " + currentSampleNumFrames +
+					" and the current position is " + position );
 		}
+		repaint();
 	}
 
 	private void recomputeDesiredPositionOffset( final long newPosition )
@@ -180,19 +184,29 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final float normalisedPos = ((float)newPosition) / currentSampleNumFrames;
 
 		desiredPositionOffset = (int)(lastOverviewWidth * normalisedPos);
+		if( log.isTraceEnabled() )
+		{
+			log.trace( "Updated desiredPositionOffset to " + desiredPositionOffset );
+		}
 	}
 
 	@Override
 	public void receiveDeltaPositionEvent( final long newPosition )
 	{
-//		log.trace("Received delta position event: " + newPosition );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Received delta position event: " + newPosition );
+		}
 		recomputeDesiredPositionOffset( newPosition );
 	}
 
 	@Override
 	public void receiveAbsPositionEvent( final long newPosition )
 	{
-//		log.trace("Received abs position event: " + newPosition );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Received abs position event: " + newPosition );
+		}
 		recomputeDesiredPositionOffset( newPosition );
 	}
 

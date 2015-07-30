@@ -22,12 +22,14 @@ package uk.co.modularaudio.mads.base.soundfile_player.ui;
 
 import java.awt.Component;
 import java.awt.Graphics;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
+import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerZoomToggleGroupUiJComponent.ZoomLevel;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplayBuffer;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplayBufferClearer;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.rollpainter.SoundfileDisplaySampleFactory;
@@ -50,7 +52,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	implements IMadUiControlInstance<SoundfilePlayerMadDefinition, SoundfilePlayerMadInstance, SoundfilePlayerMadUiInstance>,
 	SoundfileSampleEventListener,
-	ZoomDataListener,
+	ZoomListener,
 	InstanceLifecycleListener,
 	AnalysisFillCompletionListener
 {
@@ -94,7 +96,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		this.bia = uiInstance.getUiDefinition().getBufferedImageAllocator();
 
 		uiInstance.addSampleEventListener( this );
-		uiInstance.setZoomDataListener( this );
+		uiInstance.addZoomListener( this );
 		uiInstance.addLifecycleListener( this );
 		uiInstance.addAnalysisFillListener( this );
 
@@ -173,19 +175,24 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void paint(final Graphics g)
 	{
+		log.debug("Received paint request");
 		if( rollPainter != null )
 		{
+			log.debug("Rollpainter exists");
 			if( rollPainter.buffer0Visible() )
 			{
+				log.debug("Drawing buffer0");
 				g.drawImage( rollPainter.buffer0.bi, rollPainter.buffer0XOffset, 0, null );
 			}
 			if( rollPainter.buffer1Visible() )
 			{
+				log.debug("Drawing buffer1");
 				g.drawImage( rollPainter.buffer1.bi,  rollPainter.buffer1XOffset, 0, null );
 			}
 		}
 		else
 		{
+			log.debug("Rollpainter doesn't exist");
 			g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 			g.fillRect(0, 0, displayWidth, displayHeight );
 		}
@@ -225,30 +232,25 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 	private void setSampleFactoryCaptureLengthMillis()
 	{
+		log.debug( "Received capture length millis change" );
 		if( uiInstance != null && uiInstance.knownDataRate != null )
 		{
 //			log.debug("Setting capture render length for SR(" + uiInstance.knownDataRate.getValue() + ") ms(" + currentZoomMillis + ")" );
 			if( rpSampleFactory != null )
 			{
 				rpSampleFactory.setCaptureLengthMillis( currentZoomMillis );
+				if( rollPainter.checkAndUpdate() )
+				{
+					repaint();
+				}
 			}
-		}
-	}
-
-	@Override
-	public void setZoomMillis(final float zoomMillis)
-	{
-//		log.debug("Received zoom of " + zoomMillis + " millis");
-		currentZoomMillis = zoomMillis;
-		if( uiInstance.knownDataRate != null )
-		{
-			setSampleFactoryCaptureLengthMillis();
 		}
 	}
 
 	@Override
 	public void receiveSampleChangeEvent( final BlockResamplingClient newSample)
 	{
+		log.debug("Receive sample change event");
 		rss = newSample;
 		if( newSample != null )
 		{
@@ -259,6 +261,8 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		{
 			rpSampleFactory.setSampleCacheClient( null );
 		}
+
+		repaint();
 	}
 
 	@Override
@@ -296,7 +300,12 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void receiveCacheRefreshCompletionEvent()
 	{
-		this.repaint();
+		log.debug("Received cache refresh completion event");
+		rpSampleFactory.resetForFullRepaint();
+		if( rollPainter.checkAndUpdate() )
+		{
+			this.repaint();
+		}
 	}
 
 	@Override
@@ -328,6 +337,19 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 		rpSampleFactory.setDisplayMultiplier( adjustmentMultiplier );
 		rpSampleFactory.resetForFullRepaint();
+		if( rollPainter.checkAndUpdate() )
+		{
+			this.repaint();
+		}
 	}
 
+	@Override
+	public void receiveZoomLevel( final ZoomLevel zoomLevel )
+	{
+		currentZoomMillis = zoomLevel.getMillisForLevel();
+		if( uiInstance.knownDataRate != null )
+		{
+			setSampleFactoryCaptureLengthMillis();
+		}
+	}
 }

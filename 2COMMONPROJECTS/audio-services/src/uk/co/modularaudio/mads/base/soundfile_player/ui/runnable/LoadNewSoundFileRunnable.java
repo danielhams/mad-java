@@ -33,15 +33,18 @@ public class LoadNewSoundFileRunnable implements Runnable
 	private final AdvancedComponentsFrontController acfc;
 
 	private final String fileToLoad;
+	private final long position;
 	private final SoundFileLoadCompletionListener completionListener;
 
 	public LoadNewSoundFileRunnable(
 			final AdvancedComponentsFrontController acfc,
 			final String fileToLoad,
+			final long position,
 			final SoundFileLoadCompletionListener completionListener )
 	{
 		this.acfc = acfc;
 		this.fileToLoad = fileToLoad;
+		this.position = position;
 		this.completionListener = completionListener;
 	}
 
@@ -51,6 +54,11 @@ public class LoadNewSoundFileRunnable implements Runnable
 		try
 		{
 			final SampleCacheClient sampleCacheClient = acfc.registerCacheClientForFile( fileToLoad );
+			if( log.isTraceEnabled() )
+			{
+				log.trace( "Setting position to " + position );
+			}
+			sampleCacheClient.setCurrentFramePosition( position );
 			acfc.registerForBufferFillCompletion( sampleCacheClient, completionListener );
 		}
 		catch ( final Exception e )
