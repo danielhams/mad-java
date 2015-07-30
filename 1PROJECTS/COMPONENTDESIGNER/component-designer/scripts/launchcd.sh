@@ -19,7 +19,7 @@ export USE_NATIVE_LAF=yes
 
 # What components you can select from the GUI
 # Values: --alpha (show all) or --beta (show beta + released)
-export DEVELOPMENT_COMPONENTS=--alpha
+#export DEVELOPMENT_COMPONENTS=--alpha
 #export DEVELOPMENT_COMPONENTS=--beta
 
 # Use an additional jar as a source of components

@@ -77,7 +77,7 @@ public class Bessel4FilterMadDefinition extends AbstractNonConfigurableMadDefini
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ),
+						ReleaseState.ALPHA ),
 				new Bessel4FilterIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,

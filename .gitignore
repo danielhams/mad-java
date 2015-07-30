@@ -5,3 +5,4 @@ build
 wavetablecache
 releasedir
 mad-pp-*
+.javamadpp.properties
