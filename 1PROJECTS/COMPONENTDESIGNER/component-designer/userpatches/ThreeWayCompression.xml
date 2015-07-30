@@ -6,8 +6,8 @@
         <rackPosition column="2" row="6"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="1000"/>
         <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="1.0"/>
     </rackComponent>
     <rackComponent name="InSignalReplacer" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
@@ -29,48 +29,49 @@
     <rackComponent name="Roll Painter Test 16" definitionId="wave_roller">
         <rackPosition column="0" row="4"/>
         <rackControl name="CaptureTime" value="60.0"/>
-        <rackControl name="ScaleChoice" value="-5dB"/>
-        <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="-5dB"/>
     </rackComponent>
     <rackComponent name="Soundfile Player (Roll Painter) 14" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.8053875"/>
+        <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 290 (25 May 2015).mp3"/>
-        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="Gain" value="-5.805387"/>
+        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 290 (25 May 2015).mp3|4140179"/>
+        <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="SpeedSlider" value="1.0"/>
-        <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
-        <rackControl name="FastForward" value=""/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 11" definitionId="spectral_amp">
         <rackPosition column="0" row="10"/>
-        <rackControl name="AmpCeil" value="0dB"/>
-        <rackControl name="AmpFloor" value="-144dB"/>
-        <rackControl name="Resolution" value="8192"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Short Average"/>
-        <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Amp Scale Axis" value=""/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Freq Scale Axis" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Running Average" value="Short Average"/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="Spectral Roll 12" definitionId="spectral_roll">
         <rackPosition column="0" row="6"/>
-        <rackControl name="Display" value=""/>
         <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale" value="Log"/>
         <rackControl name="Resolution" value="Log"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 13" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 13" definitionId="sub_rack">
         <rackPosition column="2" row="9"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="ThreeWayEqAndCompression" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="ThreeWayEqAndCompression" definitionId="sub_rack">
         <rackPosition column="2" row="5"/>
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 13" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 13" consumerChannelName="Input Channel 1"/>

@@ -6,10 +6,10 @@
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer 4" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="DJ EQ 6" definitionId="djeq">
         <rackPosition column="0" row="0"/>
-        <rackControl name="HighLane" value="0.0:false"/>
-        <rackControl name="MidLane" value="0.0:false"/>
-        <rackControl name="LowLane" value="0.0:false"/>
         <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
     </rackComponent>
     <rackComponent name="Mixer 4" definitionId="imixer3">
         <rackPosition column="0" row="4"/>
@@ -20,26 +20,32 @@
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
-        <rackControl name="Resolution" value="16384"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="Spectral Roll 2" definitionId="spectral_roll">
         <rackPosition column="2" row="2"/>
-        <rackControl name="Display" value=""/>
         <rackControl name="Amp Scale" value="16384"/>
+        <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale" value="Log"/>
         <rackControl name="Resolution" value="Log"/>
     </rackComponent>
     <rackComponent name="Wave Roller 5" definitionId="wave_roller">
         <rackPosition column="2" row="0"/>
         <rackControl name="CaptureTime" value="3876.2249"/>
-        <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="0dB"/>
     </rackComponent>
     <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="DJ EQ 6" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer 4" consumerChannelName="Lane 1 Input Wave Right"/>

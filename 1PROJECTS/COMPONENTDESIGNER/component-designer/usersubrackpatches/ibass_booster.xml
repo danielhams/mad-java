@@ -8,17 +8,17 @@
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Wet Mixdown" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="High" definitionId="frequency_filter">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Filter Type" value="High Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="80.0"/>
         <rackControl name="Bandwidth" value="500.0"/>
+        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Knee" value="80.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Low" definitionId="frequency_filter">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="80.0"/>
         <rackControl name="Bandwidth" value="500.0"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="80.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Wet Mixdown" definitionId="imixer3">
         <rackPosition column="1" row="2"/>

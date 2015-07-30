@@ -17,104 +17,105 @@
     </rackComponent>
     <rackComponent name="HIghEQ" definitionId="frequency_filter">
         <rackPosition column="2" row="10"/>
-        <rackControl name="Filter Type" value="High Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="2500.0"/>
         <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Knee" value="2500.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="HighCompressor" definitionId="stereo_compressor">
         <rackPosition column="2" row="12"/>
-        <rackControl name="ThresholdType" value="Peak"/>
-        <rackControl name="Lookahead" value="1"/>
-        <rackControl name="InMeter" value=""/>
-        <rackControl name="Threshold" value="-20.0"/>
-        <rackControl name="CompressionRatio" value="3.0"/>
         <rackControl name="Attack" value="4.0"/>
-        <rackControl name="Release" value="16.0"/>
         <rackControl name="Attenuation" value=""/>
+        <rackControl name="CompressionRatio" value="3.0"/>
+        <rackControl name="InMeter" value=""/>
+        <rackControl name="Lookahead" value="1"/>
         <rackControl name="MakeupGain" value="10.0"/>
         <rackControl name="OutMeter" value=""/>
+        <rackControl name="Release" value="16.0"/>
+        <rackControl name="Threshold" value="-20.0"/>
+        <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
     <rackComponent name="HighFader" definitionId="cross_fader">
         <rackPosition column="0" row="18"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="0.49"/>
         <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="0.49"/>
     </rackComponent>
     <rackComponent name="LowCompressor" definitionId="stereo_compressor">
         <rackPosition column="0" row="6"/>
-        <rackControl name="ThresholdType" value="Peak"/>
-        <rackControl name="Lookahead" value="1"/>
-        <rackControl name="InMeter" value=""/>
-        <rackControl name="Threshold" value="-20.0"/>
-        <rackControl name="CompressionRatio" value="3.0"/>
         <rackControl name="Attack" value="4.0"/>
-        <rackControl name="Release" value="32.0"/>
         <rackControl name="Attenuation" value=""/>
+        <rackControl name="CompressionRatio" value="3.0"/>
+        <rackControl name="InMeter" value=""/>
+        <rackControl name="Lookahead" value="1"/>
         <rackControl name="MakeupGain" value="12.0"/>
         <rackControl name="OutMeter" value=""/>
+        <rackControl name="Release" value="32.0"/>
+        <rackControl name="Threshold" value="-20.0"/>
+        <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
     <rackComponent name="LowEQ" definitionId="frequency_filter">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="467.46"/>
         <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="467.46"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="LowFader" definitionId="cross_fader">
         <rackPosition column="0" row="16"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="0.55999994"/>
         <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="0.55999994"/>
     </rackComponent>
     <rackComponent name="MidCompressor" definitionId="stereo_compressor">
         <rackPosition column="0" row="12"/>
-        <rackControl name="ThresholdType" value="Peak"/>
-        <rackControl name="Lookahead" value="1"/>
-        <rackControl name="InMeter" value=""/>
-        <rackControl name="Threshold" value="-22.0"/>
-        <rackControl name="CompressionRatio" value="3.0"/>
         <rackControl name="Attack" value="8.0"/>
-        <rackControl name="Release" value="32.0"/>
         <rackControl name="Attenuation" value=""/>
+        <rackControl name="CompressionRatio" value="3.0"/>
+        <rackControl name="InMeter" value=""/>
+        <rackControl name="Lookahead" value="1"/>
         <rackControl name="MakeupGain" value="10.0"/>
         <rackControl name="OutMeter" value=""/>
+        <rackControl name="Release" value="32.0"/>
+        <rackControl name="Threshold" value="-22.0"/>
+        <rackControl name="ThresholdType" value="Peak"/>
     </rackComponent>
     <rackComponent name="MidEQ" definitionId="frequency_filter">
         <rackPosition column="0" row="10"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="2500.0"/>
         <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="2500.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="MidFader" definitionId="cross_fader">
         <rackPosition column="0" row="17"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="0.47000003"/>
         <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="0.47000003"/>
     </rackComponent>
     <rackComponent name="NonLowEQ" definitionId="frequency_filter">
         <rackPosition column="2" row="8"/>
-        <rackControl name="Filter Type" value="High Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="467.46"/>
         <rackControl name="Bandwidth" value="1552.62"/>
+        <rackControl name="Filter Type" value="High Pass"/>
+        <rackControl name="Knee" value="467.46"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 9" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="24000.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="4096"/>
         <rackControl name="Running Average" value="Long Average"/>
-        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="ThreeWayCompDryMixer" definitionId="imixer3">
         <rackPosition column="2" row="16"/>

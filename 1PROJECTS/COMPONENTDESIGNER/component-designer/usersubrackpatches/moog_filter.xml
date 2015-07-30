@@ -13,18 +13,23 @@
     </rackComponent>
     <rackComponent name="Moog Filter 1" definitionId="moog_filter">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
         <rackControl name="Cutoff" value="0.752"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
         <rackControl name="Q" value="0.781"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
         <rackPosition column="2" row="2"/>
-        <rackControl name="Resolution" value="4096"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" producerChannelName="Output Wave Left" consumerRackComponentName="Moog Filter 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 3" producerChannelName="Output Wave Right" consumerRackComponentName="Moog Filter 1" consumerChannelName="Input Wave Right"/>

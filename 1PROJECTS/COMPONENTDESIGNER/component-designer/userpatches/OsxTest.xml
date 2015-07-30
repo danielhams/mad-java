@@ -26,37 +26,42 @@
     </rackComponent>
     <rackComponent name="Moog Filter 8" definitionId="moog_filter">
         <rackPosition column="0" row="8"/>
-        <rackControl name="Filter Type" value="None"/>
-        <rackControl name="Cutoff" value="0.80"/>
-        <rackControl name="Q" value="1.00"/>
+        <rackControl name="Cutoff" value="0.46"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Q" value="0.68"/>
     </rackComponent>
     <rackComponent name="Moog Filter 9" definitionId="moog_filter">
         <rackPosition column="0" row="10"/>
+        <rackControl name="Cutoff" value="0.63"/>
         <rackControl name="Filter Type" value="None"/>
-        <rackControl name="Cutoff" value="0.86"/>
-        <rackControl name="Q" value="0.68"/>
+        <rackControl name="Q" value="0.73"/>
     </rackComponent>
     <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-5.936289"/>
+        <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/200810/670820_Funk_Nasty_feat__Gram_ma_Funk_Wolfgang_Gartner_Remix.mp3"/>
-        <rackControl name="ZoomToggleGroup" value="2"/>
+        <rackControl name="Gain" value="-5.936289"/>
+        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/200810/670820_Funk_Nasty_feat__Gram_ma_Funk_Wolfgang_Gartner_Remix.mp3|9158220"/>
+        <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
-        <rackControl name="SpeedSlider" value="1.0"/>
-        <rackControl name="Rewind" value=""/>
-        <rackControl name="PlayStop" value="true"/>
-        <rackControl name="FastForward" value=""/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 4" definitionId="spectral_amp">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Resolution" value="4096"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 3" definitionId="sub_rack">
         <rackPosition column="2" row="0"/>

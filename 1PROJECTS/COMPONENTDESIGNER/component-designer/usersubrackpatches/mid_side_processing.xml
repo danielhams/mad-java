@@ -14,17 +14,17 @@
         <rackPosition column="2" row="6"/>
         <rackControl name="CaptureTime" value="48.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="InSignal" definitionId="oscilloscope">
         <rackPosition column="2" row="0"/>
         <rackControl name="CaptureTime" value="48.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Mid Side Processor 18" definitionId="midside">
         <rackPosition column="0" row="1"/>
@@ -38,9 +38,9 @@
         <rackPosition column="2" row="3"/>
         <rackControl name="CaptureTime" value="48.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 20" definitionId="imixer3">
         <rackPosition column="0" row="2"/>
@@ -65,8 +65,8 @@
         <rackPosition column="0" row="7"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
-        <rackControl name="Slider" value="1000"/>
         <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="1.0"/>
     </rackComponent>
     <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 2 Input Wave Right"/>
