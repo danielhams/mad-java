@@ -584,7 +584,22 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 
 				// Grab the controls and persist their value too
 				final AbstractMadUiControlInstance<?,?,?>[] uiInstances = component.getUiControlInstances();
-				for( final AbstractMadUiControlInstance<?,?,?> cui : uiInstances )
+				final ArrayList<AbstractMadUiControlInstance<?,?,?>> controlsByName = new ArrayList<AbstractMadUiControlInstance<?, ?, ?>>();
+				for( final AbstractMadUiControlInstance<?,?,?> muci : uiInstances )
+				{
+					controlsByName.add( muci );
+				}
+				Collections.sort( controlsByName, new Comparator<AbstractMadUiControlInstance<?,?,?>>() {
+
+					@Override
+					public int compare( final AbstractMadUiControlInstance<?, ?, ?> o1,
+							final AbstractMadUiControlInstance<?, ?, ?> o2 )
+					{
+						return o1.getUiControlDefinition().getControlName().compareTo(
+								o2.getUiControlDefinition().getControlName() );
+					}
+				} );
+				for( final AbstractMadUiControlInstance<?,?,?> cui : controlsByName )
 				{
 					//					log.debug("Found a UI instance to persist: " + cui.getClass().getName() );
 					final MadUiControlDefinition<?,?,?> cud = cui.getUiControlDefinition();
