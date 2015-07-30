@@ -38,7 +38,7 @@ public class RawLookupTableDefines
 //	public static final int OSCILLATOR_NUM_HARMONICS = 40;
 //	public static final int OSCILLATOR_NUM_HARMONICS = 60;
 
-	public static final int OSCILLATOR_NUM_HARMONICS = 152;
+	public static final int OSCILLATOR_NUM_HARMONICS = 150;
 //	public static final int OSCILLATOR_NUM_HARMONICS = 305;
 
 	// Must always be an odd number to get the middle at 0.0
