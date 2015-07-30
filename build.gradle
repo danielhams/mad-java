@@ -3,7 +3,9 @@ apply plugin: 'java'
 version = '0.0.3'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-def applicationName = 'component-designer'
+def applicationName = 'mad-pp'
+def applicationNameAndVersion = applicationName + '-' + version
+def releasedir = applicationNameAndVersion
 
 repositories { mavenCentral() }
 
@@ -32,7 +34,7 @@ dependencies {
   compile project(':external-libmpg123-services-test')
 }
 
-task componentDesignerJar(type: Jar) {
+task appJar(type: Jar) {
   baseName = applicationName
   manifest {
     attributes 'Main-Class': 'uk.co.modularaudio.componentdesigner.ComponentDesigner'
@@ -44,7 +46,7 @@ task componentDesignerJar(type: Jar) {
   }
 }
 
-componentDesignerJar.dependsOn build
+appJar.dependsOn build
 
 test {
   systemProperties = System.getProperties();
@@ -56,39 +58,39 @@ task copyNativeLibs(type: Copy) {
   from '4EXTERNAL/external-libmpg123-wrapper/lib/libmpg123_wrap.dylib'
   from '4EXTERNAL/external-libsndfile-wrapper/lib/libsndfile_wrap.so'
   from '4EXTERNAL/external-libsndfile-wrapper/lib/libsndfile_wrap.dylib'
-  into 'releasedir/natives'
+  into releasedir + '/natives'
 }
 
 task copyLaunchScripts(type: Copy) {
   from '1PROJECTS/COMPONENTDESIGNER/component-designer/scripts'
   include '*.sh'
   include '*.bat'
-  into 'releasedir'
+  into releasedir
 }
 
 task copySupportJars(type: Copy) {
   from '4EXTERNAL/external-libs/libs'
-  into 'releasedir/supportlibs'
+  into releasedir + '/supportlibs'
 }
 
 task copyCdJar(type: Copy) {
-  from 'build/libs/component-designer-0.0.3.jar'
-  into 'releasedir'
+  from 'build/libs/' + applicationNameAndVersion + '.jar'
+  into releasedir
 }
 
 copyCdJar.dependsOn build
 
 task copyUserPatches(type: Copy) {
   from '1PROJECTS/COMPONENTDESIGNER/component-designer/userpatches'
-  into 'releasedir/userpatches'
+  into releasedir + '/userpatches'
 }
 
 task copyUserSubRackPatches(type: Copy) {
   from '1PROJECTS/COMPONENTDESIGNER/component-designer/usersubrackpatches'
-  into 'releasedir/usersubrackpatches'
+  into releasedir + '/usersubrackpatches'
 }
 
-task componentDesignerSupportFiles(type: JavaExec) {
+task appSupportFiles(type: JavaExec) {
   classpath += project(':component-designer').sourceSets.main.runtimeClasspath
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   jvmArgs = [
@@ -97,15 +99,15 @@ task componentDesignerSupportFiles(type: JavaExec) {
       '-Djava.awt.headless=true'
   ]
   args = [
-      'releasedir',
+      releasedir,
       '2COMMONPROJECTS/audio-services-images/images'
   ]
 }
 
-componentDesignerSupportFiles.dependsOn build, copyNativeLibs, copyLaunchScripts,
+appSupportFiles.dependsOn build, copyNativeLibs, copyLaunchScripts,
   copySupportJars, copyCdJar, copyUserPatches, copyUserSubRackPatches
 
-task componentDesignerRelease {
+task appRelease {
 }
 
-componentDesignerRelease.dependsOn build, componentDesignerJar, componentDesignerSupportFiles
+appRelease.dependsOn build, appJar, appSupportFiles

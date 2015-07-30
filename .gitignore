@@ -4,3 +4,4 @@ build
 .gradle
 wavetablecache
 releasedir
+mad-pp-*

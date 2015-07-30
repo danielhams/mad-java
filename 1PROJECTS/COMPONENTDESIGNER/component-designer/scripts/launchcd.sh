@@ -66,7 +66,8 @@ export CD_JAR=component-designer-0.0.3.jar
 export SL_DIR=supportlibs
 
 export CLASSPATH=$(echo supportlibs/*.jar |tr ' ' ':')
-export CLASSPATH=component-designer-0.0.3.jar:$CLASSPATH
+export MAINJAR=$(echo *.jar |tr ' ' ':')
+export CLASSPATH=$MAINJAR:$CLASSPATH
 
 export CD_SWITCHES=""
 

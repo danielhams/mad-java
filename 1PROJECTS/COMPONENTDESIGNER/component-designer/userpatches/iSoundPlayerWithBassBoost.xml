@@ -9,16 +9,16 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="4"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Master Lane" value="-5.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Gain" value="-0.26955605"/>
+        <rackControl name="Gain" value="-7.1596694"/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 269 (9 March 2015).mp3"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 114 master.mp3"/>
         <rackControl name="ZoomToggleGroup" value="2"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

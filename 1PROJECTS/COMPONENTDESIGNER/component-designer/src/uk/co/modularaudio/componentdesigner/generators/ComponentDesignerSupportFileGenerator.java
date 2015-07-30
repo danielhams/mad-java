@@ -24,6 +24,7 @@ import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +33,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
+import uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardBandLimitedWaveTables;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardWaveTables;
@@ -73,9 +76,9 @@ public class ComponentDesignerSupportFileGenerator
 		copyComponentImages();
 	}
 
-//	public void initialiseThingsNeedingComponentGraph() throws Exception
-//	{
-//	}
+	public void initialiseThingsNeedingComponentGraph() throws Exception
+	{
+	}
 
 	public static void main( final String[] args ) throws Exception
 	{
@@ -83,6 +86,7 @@ public class ComponentDesignerSupportFileGenerator
 		{
 			throw new Exception( "Missing required directories: outputDir inputImagesDir" );
 		}
+		log.info("Creating output in '" + args[0] + "' reading images from '" + args[1] + "'");
 
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
 		final Configuration config = ctx.getConfiguration();
@@ -92,9 +96,33 @@ public class ComponentDesignerSupportFileGenerator
 
 		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0], args[1] );
 		sfg.generateFiles();
-//		sfg.init();
-//		sfg.initialiseThingsNeedingComponentGraph();
-//		sfg.destroy();
+		sfg.init();
+		sfg.initialiseThingsNeedingComponentGraph();
+		final String[] dbFilesToMove = sfg.getDatabaseFiles();
+		sfg.destroy();
+
+		// Finally move the (now closed) database files into the output directory
+		for( final String dbFileToMove : dbFilesToMove )
+		{
+			final File source = new File( dbFileToMove );
+			final String fileName = source.getName();
+			final File target = new File( args[0] + File.separatorChar + fileName );
+			Files.move( source.toPath(), target.toPath(), StandardCopyOption.ATOMIC_MOVE );
+		}
+
+	}
+
+	private String[] getDatabaseFiles()
+	{
+		final GenericApplicationContext gac = cd.getApplicationContext();
+		final HibernateSessionServiceImpl hssi = gac.getBean( HibernateSessionServiceImpl.class );
+		final String dbFilename = hssi.getDatabaseFilename();
+
+		final String[] dbFiles = new String[2];
+		dbFiles[0] = dbFilename + ".script";
+		dbFiles[1] = dbFilename + ".properties";
+
+		return dbFiles;
 	}
 
 	private void generateBlw() throws Exception

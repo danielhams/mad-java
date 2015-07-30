@@ -23,8 +23,10 @@ package uk.co.modularaudio.service.hibsession.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,6 +40,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import uk.co.modularaudio.service.configuration.ConfigurationService;
+import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -60,7 +63,10 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 
 	private static final String HIBERNATE_KEY = "hibernate";
 
+	private static final String HIBERNATE_CONNECTION_URL_KEY = "hibernate.connection.url";
+
 	// Hibernate things
+	private String databaseFilename;
 	private SessionFactory sessionFactory;
 	private ServiceRegistry serviceRegistry;
 
@@ -132,7 +138,7 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	{
 		log.trace("PrepareConfiguration start");
 		// special parameter to avoid the use of the CGLIB optimizer
-		// Hibernate allways uses CGLIB though
+		// Hibernate always uses CGLIB though
 		System.setProperty("hibernate.cglib.use_reflection_optimizer", "false");
 
 		configuration = new Configuration();
@@ -204,6 +210,25 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 	public void init()
 			throws ComponentConfigurationException
 	{
+		// Fetch the connection url we will use and pull out the database filename (if any)
+		final Map<String,String> errors = new HashMap<String,String>();
+		final String connectionUrl = ConfigurationServiceHelper.checkForSingleStringKey( configurationService,
+				HIBERNATE_CONNECTION_URL_KEY,
+				errors );
+
+		ConfigurationServiceHelper.errorCheck( errors );
+
+		int fileBeginning;
+		if( (fileBeginning = connectionUrl.indexOf( "file:" )) != -1 )
+		{
+			int lastIndex = connectionUrl.indexOf( ";", fileBeginning + 1 );
+			lastIndex = (lastIndex == -1 ? connectionUrl.length() - 1 : lastIndex );
+			databaseFilename = connectionUrl.substring( fileBeginning + 5, lastIndex );
+		}
+		else
+		{
+			log.warn("Database backing is not disk based!");
+		}
 	}
 
 	@Override
@@ -224,5 +249,10 @@ public class HibernateSessionServiceImpl implements HibernateSessionService, Com
 
 			sessionFactory.close();
 		}
+	}
+
+	public String getDatabaseFilename()
+	{
+		return databaseFilename;
 	}
 }
