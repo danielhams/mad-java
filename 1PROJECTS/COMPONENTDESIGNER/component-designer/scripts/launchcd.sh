@@ -84,7 +84,7 @@ if [ "$PLUGIN_JAR"q == "yesq" ]; then
     export CD_SWITCHES="$CD_SWITCHES --pluginJar"
 fi
 
-export JAVA_CL_ARGS="$AA_OPTIONS $GL_OPTIONS $VM_PROPS $VM_MEM_OPTS $VM_GC_OPTS $VM_GC_DEBUG $VM_DISABLE_PERF_DATA uk.co.modularaudio.componentdesigner.ComponentDesigner $CD_SWITCHES"
+export JAVA_CL_ARGS="$AA_OPTIONS $GL_OPTIONS $VM_PROPS $VM_MEM_OPTS $VM_GC_OPTS $VM_GC_DEBUG $VM_DISABLE_PERF_DATA uk.co.modularaudio.componentdesigner.ComponentDesignerLauncher $CD_SWITCHES"
 
 echo "Running $JAVA_HOME/bin/java $JAVA_CL_ARGS"
 $JAVA_HOME/bin/java $JAVA_CL_ARGS

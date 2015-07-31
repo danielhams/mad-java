@@ -31,7 +31,7 @@ import org.hibernate.Transaction;
 import org.springframework.context.support.GenericApplicationContext;
 
 import test.uk.co.modularaudio.service.TestConstants;
-import uk.co.modularaudio.componentdesigner.ComponentDesigner;
+import uk.co.modularaudio.componentdesigner.ComponentDesignerLauncher;
 import uk.co.modularaudio.controller.hibsession.HibernateSessionController;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
@@ -46,7 +46,7 @@ public class TestOpeningFileFromLibrary extends TestCase
 	private static final long SLEEP_AFTER_FIRST_OPEN_MILLIS = 500;
 	private static final long SLEEP_AFTER_SECOND_OPEN_MILLIS = 500;
 
-	private final ComponentDesigner componentDesigner;
+	private final ComponentDesignerLauncher componentDesigner;
 	private GenericApplicationContext applicationContext;
 
 	private HibernateSessionController hsc;
@@ -54,7 +54,7 @@ public class TestOpeningFileFromLibrary extends TestCase
 
 	public TestOpeningFileFromLibrary()
 	{
-		componentDesigner = new ComponentDesigner();
+		componentDesigner = new ComponentDesignerLauncher();
 	}
 
 	@Override

@@ -45,3 +45,12 @@ task get_libs(type: Copy) {
 
 build.dependsOn get_libs
 build.mustRunAfter get_libs
+
+task libsClean {
+  doLast {
+    def libsdir = file('libs/')
+    libsdir.deleteDir()
+  }
+}
+
+clean.dependsOn libsClean

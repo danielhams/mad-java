@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.componentdesigner;
 
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -28,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Action;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 
 import org.apache.commons.logging.Log;
@@ -49,13 +45,11 @@ import uk.co.modularaudio.componentdesigner.profiling.ProfilingWindow;
 import uk.co.modularaudio.controller.userpreferences.UserPreferencesController;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
-import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
 import uk.co.modularaudio.util.springhibernate.SpringHibernateContextHelper;
-import uk.co.modularaudio.util.swing.general.FontResetter;
 import uk.co.modularaudio.util.thread.ThreadUtils;
 import uk.co.modularaudio.util.thread.ThreadUtils.MAThreadPriority;
 
@@ -68,9 +62,9 @@ public class ComponentDesigner implements ExitSignalReceiver
 	public static final String CDJPROFILER_PROPERTIES = "/cdjprofiler.properties";
 	public static final String CDRELEASEGENERATOR_PROPERTIES = "/cdreleasegenerator.properties";
 
-	private static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
-	private static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";
-	private static final String PLUGIN_CONFIG_RESOURCE_PATH = "/pluginconfiguration.properties";
+	public static final String BEANS_RESOURCE_PATH = "/cdbeans.xml";
+	public static final String PLUGIN_BEANS_RESOURCE_PATH = "/pluginbeans.xml";
+	public static final String PLUGIN_CONFIG_RESOURCE_PATH = "/pluginconfiguration.properties";
 
 	// Gui bits
 	private MainFrame mainFrame;
@@ -256,130 +250,6 @@ public class ComponentDesigner implements ExitSignalReceiver
 		log.debug("signalExit() terminating.");
 		// Not needed as swing properly terminates.
 //		System.exit( 0 );
-	}
-
-	public static void main(final String[] args) throws Exception
-	{
-		boolean useSystemLookAndFeel = false;
-
-		boolean showAlpha = false;
-		boolean showBeta = false;
-		String additionalBeansResource = null;
-		String additionalConfigResource = null;
-
-		String configResourcePath = CDCONFIG_PROPERTIES;
-
-		if( args.length > 0 )
-		{
-			for( int i = 0 ; i < args.length ; ++i )
-			{
-				final String arg = args[i];
-				if( arg.equals("--useSlaf") )
-				{
-					useSystemLookAndFeel = true;
-				}
-				else if( arg.equals("--beta") )
-				{
-					showBeta = true;
-				}
-				else if( arg.equals("--alpha") )
-				{
-					showAlpha = true;
-					showBeta = true;
-				}
-				else if( arg.equals("--pluginJar") )
-				{
-					additionalBeansResource = PLUGIN_BEANS_RESOURCE_PATH;
-					additionalConfigResource = PLUGIN_CONFIG_RESOURCE_PATH;
-
-					if( log.isDebugEnabled() )
-					{
-						log.debug( "Will append plugin beans: " + additionalBeansResource );
-						log.debug( "Will append plugin config file: " + additionalConfigResource );
-					}
-				}
-				else if( arg.equals( "--development") )
-				{
-					// Let me specify certain things with hard paths
-					configResourcePath = CDDEVELOPMENT_PROPERTIES;
-					log.info("In development mode. Will use development properties for configuration");
-				}
-				else if( arg.equals( "--jprofiler") )
-				{
-					configResourcePath = CDJPROFILER_PROPERTIES;
-					log.info("In jprofiler mode - using jprofiler properties for configuration");
-				}
-			}
-			if( useSystemLookAndFeel )
-			{
-				log.info( "System look and feel activated" );
-			}
-			if( showAlpha )
-			{
-				log.info("Showing alpha components");
-			}
-			if( showBeta )
-			{
-				log.info("Showing beta components");
-			}
-		}
-
-		if( useSystemLookAndFeel )
-		{
-			final String gtkLookAndFeelClassName = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-			boolean foundGtkLaf = false;
-
-			final LookAndFeelInfo lafis[] = UIManager.getInstalledLookAndFeels();
-
-			for( final LookAndFeelInfo lafi : lafis )
-			{
-				final String lc = lafi.getClassName();
-				if( lc.equals( gtkLookAndFeelClassName ) )
-				{
-					foundGtkLaf = true;
-					break;
-				}
-			}
-
-			if( foundGtkLaf )
-			{
-				log.debug("Found available GTK laf. Will set active");
-				UIManager.setLookAndFeel( gtkLookAndFeelClassName );
-			}
-			UIManager.put( "Slider.paintValue",  Boolean.FALSE );
-		}
-
-		final Font f = Font.decode( "" );
-		final String fontName = f.getName();
-		FontResetter.setUIFontFromString( fontName, Font.PLAIN, 10 );
-
-		log.debug( "ComponentDesigner starting.");
-		// Set the fft library to only use current thread
-		JTransformsConfigurator.setThreadsToOne();
-
-		final ComponentDesigner application = new ComponentDesigner();
-		application.init( configResourcePath, additionalBeansResource, additionalConfigResource, showAlpha, showBeta );
-
-		SwingUtilities.invokeLater( new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				try
-				{
-					application.go();
-					application.registerCloseAction();
-				}
-				catch (final Exception e)
-				{
-					final String msg = "Exception caught at top level of ComponentDesigner launch: " + e.toString();
-					log.error( msg, e );
-					System.exit(0);
-				}
-				log.debug("Leaving runnable run section.");
-			}
-		});
 	}
 
 	public GenericApplicationContext getApplicationContext()

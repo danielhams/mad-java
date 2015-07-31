@@ -6,6 +6,7 @@ targetCompatibility = 1.8
 def applicationName = 'mad-pp'
 def applicationNameAndVersion = applicationName + '-' + version
 def releasedir = applicationNameAndVersion
+def releaseball = applicationNameAndVersion + '.tar.gz'
 
 repositories { mavenCentral() }
 
@@ -96,25 +97,35 @@ task appSupportFiles(type: JavaExec) {
   classpath += project(':component-designer').sourceSets.main.runtimeClasspath
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   jvmArgs = [
-      '-Djava.library.path=4EXTERNAL/external-libsndfile-wrapper/lib:4EXTERNAL/external-libmpg123-wrapper/lib',
+      '-Djava.library.path=../4EXTERNAL/external-libsndfile-wrapper/lib:../4EXTERNAL/external-libmpg123-wrapper/lib',
       '-Dorg.jboss.logging.provider=slf4j',
       '-Djava.awt.headless=true'
   ]
   args = [
-      releasedir,
-      '2COMMONPROJECTS/audio-services-images/images'
+      '.',
+      '../2COMMONPROJECTS/audio-services-images/images'
   ]
+  workingDir = releasedir
 }
 
 appSupportFiles.dependsOn build, copyNativeLibs, copyLaunchScripts,
   copySupportJars, copyCdJar, copyUserPatches, copyUserSubRackPatches
 
-task appRelease {
+task appRelease(type:Exec) {
+    commandLine 'tar'
+    args '-zcf', releaseball, releasedir
 }
 
 appRelease.dependsOn build, appJar, appSupportFiles
 
-task cleanRelease {
-  def mainDir = file(releasedir)
-  mainDir.deleteDir()
+task appReleaseClean {
+  doLast {
+    println("Cleaning up app release");
+    def maindir = file(releasedir)
+    maindir.deleteDir()
+    def mainball = file(releaseball)
+    mainball.delete()
+  }
 }
+
+clean.dependsOn appReleaseClean
