@@ -5,12 +5,9 @@ The application supports the idea of "racks" and "sub racks" allowing the creati
 
 Currently a small number of semi-usable components exist, whilst a number of other audio components are in progress.
 
-# 0.0.3 Preview Screenshot
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava003-preview.png">New Updates Coming in 0.0.3</img>
-# 0.0.1 Screenshots
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-playingasoundfile.png">Playing a soundfile</img>
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostrack.png">A rack boosting the bass of a signal</img>
-<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava001-bassboostwiring.png">The wiring behind the bass booster</img>
+# 0.0.3 Screenshots
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava003-playingasoundfile.png">Playing a soundfile</img>
+<img src="1PROJECTS/COMPONENTDESIGNER/component-designer/screenshots/madjava003-spectralanalysis.png">Analysing the spectrum of a signal</img>
 
 # Building And Running
 Currently development is done using Eclipse and JDK 1.8 on a Linux machine with Jack 2.
@@ -46,7 +43,7 @@ Building from source is most easily accomplished using Gradle, but still needs s
 
 # Known Issues
 
-1. All of the non-release components (what you see when you add --alpha) have sizing issues - I modified the rack spacing and haven't yet had the time to update the layouts and component sizes.
+1. All of the non-release components (what you see when you add --alpha on the command line) have sizing issues - I modified the rack spacing and haven't yet had the time to update the layouts and component sizes.
 
 2. A lof of the components don't currently do extensive checking. By playing around with some of the sliders and/or input values you can get them to spit out NaNs that will cause the whole signal chain to choke.
 
