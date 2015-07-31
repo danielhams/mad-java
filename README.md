@@ -49,3 +49,4 @@ Building from source is most easily accomplished using Gradle, but still needs s
 
 3. Performance - Java makes it rather tricky to get consistently reliable low latency audio in the same process as something using Swing. At some point I'll have to look into separating the front and back ends and leaving the DSP processing in a VM where there are minimal allocations at run time.
 
+4. Multi-core doesn't currently work well. I'm not sure I'll go any further with this as (3) needs to be solved first before looking into multi-core. The issue is that any additional rendering threads need to be created via jack so they have the appropriate priority.
