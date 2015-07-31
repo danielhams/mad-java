@@ -113,3 +113,8 @@ task appRelease {
 }
 
 appRelease.dependsOn build, appJar, appSupportFiles
+
+task cleanRelease {
+  def mainDir = file(releasedir)
+  mainDir.deleteDir()
+}
