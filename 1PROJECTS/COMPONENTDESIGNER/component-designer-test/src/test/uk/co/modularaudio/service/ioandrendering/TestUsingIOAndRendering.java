@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.support.GenericApplicationContext;
 
 import test.uk.co.modularaudio.service.TestConstants;
-import uk.co.modularaudio.componentdesigner.ComponentDesignerLauncher;
+import uk.co.modularaudio.componentdesigner.ComponentDesigner;
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 
 
@@ -33,7 +33,7 @@ public class TestUsingIOAndRendering
 {
 	private static Log log = LogFactory.getLog( TestUsingIOAndRendering.class.getName() );
 
-	private final ComponentDesignerLauncher componentDesigner;
+	private final ComponentDesigner componentDesigner;
 	private GenericApplicationContext applicationContext;
 
 	private ComponentDesignerFrontController componentDesignerFrontController;
@@ -43,7 +43,7 @@ public class TestUsingIOAndRendering
 
 	public TestUsingIOAndRendering()
 	{
-		componentDesigner = new ComponentDesignerLauncher();
+		componentDesigner = new ComponentDesigner();
 	}
 
 	public void go() throws Exception

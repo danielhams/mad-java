@@ -120,7 +120,6 @@ appRelease.dependsOn build, appJar, appSupportFiles
 
 task appReleaseClean {
   doLast {
-    println("Cleaning up app release");
     def maindir = file(releasedir)
     maindir.deleteDir()
     def mainball = file(releaseball)
