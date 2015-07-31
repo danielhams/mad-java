@@ -21,6 +21,7 @@ sourceSets {
         resources {
             srcDirs = ['src']
             include 'test/**/*'
+            include 'log4j2.xml'
         }
     }
 }
@@ -40,7 +41,6 @@ dependencies {
     compile project(':external-libsndfile-wrapper')
     compile project(':external-libsndfile-services')
     compile project(':component-designer-services')
-    compile project(':component-designer')
 }
 
 tasks.withType(Test) {
