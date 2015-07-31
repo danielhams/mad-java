@@ -175,24 +175,19 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void paint(final Graphics g)
 	{
-		log.debug("Received paint request");
 		if( rollPainter != null )
 		{
-			log.debug("Rollpainter exists");
 			if( rollPainter.buffer0Visible() )
 			{
-				log.debug("Drawing buffer0");
 				g.drawImage( rollPainter.buffer0.bi, rollPainter.buffer0XOffset, 0, null );
 			}
 			if( rollPainter.buffer1Visible() )
 			{
-				log.debug("Drawing buffer1");
 				g.drawImage( rollPainter.buffer1.bi,  rollPainter.buffer1XOffset, 0, null );
 			}
 		}
 		else
 		{
-			log.debug("Rollpainter doesn't exist");
 			g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 			g.fillRect(0, 0, displayWidth, displayHeight );
 		}
@@ -232,7 +227,6 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 	private void setSampleFactoryCaptureLengthMillis()
 	{
-		log.debug( "Received capture length millis change" );
 		if( uiInstance != null && uiInstance.knownDataRate != null )
 		{
 //			log.debug("Setting capture render length for SR(" + uiInstance.knownDataRate.getValue() + ") ms(" + currentZoomMillis + ")" );
@@ -250,7 +244,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void receiveSampleChangeEvent( final BlockResamplingClient newSample)
 	{
-		log.debug("Receive sample change event");
+		log.trace("Receive sample change event");
 		rss = newSample;
 		if( newSample != null )
 		{

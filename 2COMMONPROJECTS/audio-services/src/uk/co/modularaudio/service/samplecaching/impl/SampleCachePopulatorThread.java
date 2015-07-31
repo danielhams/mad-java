@@ -60,7 +60,10 @@ public class SampleCachePopulatorThread extends AbstractInterruptableThread
 			{
 				jobsToDoSemaphore.acquire();
 				jobsToDoSemaphore.drainPermits();
-				log.trace( "Attempting to refresh cache." );
+				if( SampleCache.DEBUG_SAMPLE_CACHE_ACTIVITY )
+				{
+					log.trace( "Attempting to refresh cache." );
+				}
 				sampleCache.refreshCache();
 			}
 			catch( final InterruptedException ie )
