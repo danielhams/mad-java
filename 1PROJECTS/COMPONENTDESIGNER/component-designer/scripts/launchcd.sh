@@ -62,7 +62,7 @@ export VM_PROPS="-Dorg.jboss.logging.provider=slf4j"
 # Comment this out if you want to use visualvm etc
 export VM_DISABLE_PERF_DATA="-XX:-UsePerfData"
 
-export CD_JAR=component-designer-0.0.3.jar
+export CD_JAR=component-designer-0.0.4dev.jar
 export SL_DIR=supportlibs
 
 export CLASSPATH=$(echo supportlibs/*.jar |tr ' ' ':')
