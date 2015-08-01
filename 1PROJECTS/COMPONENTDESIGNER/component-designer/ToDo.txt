@@ -1,44 +1,11 @@
-For release 0.0.3:
-------------------
-
-* Fix mixer names to remove (interpolated) in the name.
-
-* Demote soundfileplayer2 to alpha. I need to fix the metadata service dependencies and work out the proper way to do that stuff.
-
-* Demote static value and scale and offset to beta - there isn't anything to use them yet.
-
-* Demote stereo compressor to alpha since it has broken sub-period event processing.
-
-* Demote spectral roller to alpha (put off the re-work until 0.0.4)
-
-* Update DcTrap to stereo for completeness, fix frameOffset in processing.
-
-* Fix Wave Roller to include "Scale" selection and put a scale in there.
-
-* Fix Spectral Amp to include "Scale" selection and put amp/freq scales.
-
-* Fix new component name suggestion to be something that will work. Occasionally fails at the moment as there isn't a proper check.
-
-* Make mid sid processing a little more presentable.
-
-* Pass on "released" components to check all is well.
-
-* Investigate and fix the "updates even when values not changing" bug in the slider / rotary bits.
-
-* Implement fastFloatPrint and check uses of slowFloatPrint.
-
-* Look into the click inside the supplementary textbox on slider/rotary to see if I can synthesise an event for caret position.
-
-* Look into using the mouse scrollwheel for changing sliders/dials and rotary choices.
-
-* Documentation - javadoc, component map and building.
-
 For release 0.0.4:
 ------------------
 
+* Demote spectral roller to alpha (put off the re-work until 0.0.4)
+
 * Fix spectral roller to include "Scale" selection and put amp/freq scales.
 
-* Create a mechanism for CI / easy(ish) building.
+* Look into sensible way for multi-arch checkin/build of native libs.
 
 * Fix up sound file metadata handling so we the user can override discovered metadata and we can start to fix up the BPM handling.
 
