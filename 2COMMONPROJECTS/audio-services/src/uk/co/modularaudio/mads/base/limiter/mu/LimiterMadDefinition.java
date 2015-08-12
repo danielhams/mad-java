@@ -40,7 +40,7 @@ public class LimiterMadDefinition extends AbstractNonConfigurableMadDefinition<L
 	public final static int PRODUCER_OUT_RIGHT = 3;
 	public final static int NUM_CHANNELS = 4;
 
-	private final static String DEFINITION_ID = "limiter";
+	public final static String DEFINITION_ID = "limiter";
 
 	private final static String USER_VISIBLE_NAME = "Limiter";
 
