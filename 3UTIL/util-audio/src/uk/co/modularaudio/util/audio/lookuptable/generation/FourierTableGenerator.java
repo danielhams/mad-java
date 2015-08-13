@@ -37,10 +37,14 @@ public class FourierTableGenerator
 		for( int i = 0 ; i < harms ; i++ )
 		{
 			a = ( amps == null ? 1.0f : amps[i] );
-			for( int n = 0 ; n < length ; n++ )
+			if( a > 0.0f )
 			{
-				w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / (length - 1) );
-				buffer[ position + n ] += (a * Math.cos( w + doublePhase ) );
+				for( int n = 0 ; n < length ; n++ )
+				{
+//					w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / (length - 1) );
+					w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / length );
+					buffer[ position + n ] += (a * Math.cos( w + doublePhase ) );
+				}
 			}
 		}
 		LookupTableUtils.normaliseFloats( buffer, position, length );

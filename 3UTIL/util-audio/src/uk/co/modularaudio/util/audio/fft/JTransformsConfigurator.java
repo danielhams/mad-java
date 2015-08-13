@@ -28,4 +28,9 @@ public class JTransformsConfigurator
 	{
 		ConcurrencyUtils.setThreadsBeginN_1D_FFT_2Threads(8192 * 4);
 	}
+
+	public final static void setThreadingLowerBound( final int lowerFftBoundForThreading )
+	{
+		ConcurrencyUtils.setThreadsBeginN_1D_FFT_2Threads( lowerFftBoundForThreading );
+	}
 }

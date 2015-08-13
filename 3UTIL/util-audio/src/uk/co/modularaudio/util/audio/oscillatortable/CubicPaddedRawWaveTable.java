@@ -25,12 +25,12 @@ import uk.co.modularaudio.util.audio.lookuptable.LookupTableUtils;
 public class CubicPaddedRawWaveTable
 {
 	public final static int NUM_EXTRA_SAMPLES_IN_BUFFER = 3;
-	protected float[] buffer;
-	protected int bufferLength;
-	protected int origWaveLength;
-	protected int finalIndex;
+	public float[] buffer;
+	public int bufferLength;
+	public int origWaveLength;
+	public int finalIndex;
 
-	public CubicPaddedRawWaveTable( float[] data )
+	public CubicPaddedRawWaveTable( final float[] data )
 	{
 		bufferLength = data.length;
 		origWaveLength = bufferLength - NUM_EXTRA_SAMPLES_IN_BUFFER;
@@ -39,7 +39,7 @@ public class CubicPaddedRawWaveTable
 		System.arraycopy( data, 0, buffer, 0, bufferLength );
 	}
 
-	public CubicPaddedRawWaveTable( int cycleLength )
+	public CubicPaddedRawWaveTable( final int cycleLength )
 	{
 		origWaveLength = cycleLength;
 		bufferLength = origWaveLength + NUM_EXTRA_SAMPLES_IN_BUFFER;
@@ -53,7 +53,7 @@ public class CubicPaddedRawWaveTable
 		buffer[ 0 ] = buffer[ bufferLength - 3 ];
 		buffer[ bufferLength - 2 ] = buffer[ 1 ];
 		buffer[ bufferLength - 1 ] = buffer[ 2 ];
-		
+
 		LookupTableUtils.normaliseFloats( buffer, 0, bufferLength );
 	}
 }

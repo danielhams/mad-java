@@ -37,7 +37,7 @@ public class SineRawWaveTableGenerator extends RawWaveTableGenerator
 		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
 
 		double currentSineRadians = 0.0;
-		final double incrementalRadians = MathDefines.TWO_PI_D / (cycleLength-1);
+		final double incrementalRadians = MathDefines.TWO_PI_D / cycleLength;
 		for( int i = 0 ; i < cycleLength ; i++ )
 		{
 			retVal.buffer[ 1 + i ] = (float)Math.sin( currentSineRadians );
