@@ -99,19 +99,19 @@ public class AttemptToReadAFile extends TestCase
 
 		while( numFramesLeft > 0 )
 		{
-			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
+			final int numFramesThisRound = (int)(numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
 
 			final long numFramesRead = libsndfile.sf_readf_float( sndfilePtr, floatPtr, numFramesThisRound );
 
 			assert (numFramesRead == numFramesThisRound);
 
-			final int numFloatsThisRound = (int) (numFramesThisRound * numChannels);
+			final int numFloatsThisRound = numFramesThisRound * numChannels;
 			for( int i = 0 ; i < numFloatsThisRound ; ++i )
 			{
 				buffer[i] = cArrayFloat.getitem( i );
 			}
 
-			waveWriter.writeFloats( buffer, numFloatsThisRound );
+			waveWriter.writeFrames( buffer, 0, numFramesThisRound );
 
 			numFramesLeft -= numFramesThisRound;
 		}
@@ -164,8 +164,8 @@ public class AttemptToReadAFile extends TestCase
 
 		while( numFramesLeft > 0 )
 		{
-			final long numFramesThisRound = (numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
-			final int numFloatsThisRound = (int)(numFramesThisRound * numChannels);
+			final int numFramesThisRound = (int)(numFramesLeft > numFramesPerRound ? numFramesPerRound : numFramesLeft);
+			final int numFloatsThisRound = numFramesThisRound * numChannels;
 
 			final long numFloatsRead = libsndfile.CustomSfReadFloatsOffset( sndfilePtr, buffer, 0, numFloatsThisRound );
 
@@ -175,7 +175,7 @@ public class AttemptToReadAFile extends TestCase
 				throw new IOException("Read error");
 			}
 
-			waveWriter.writeFloats( buffer, numFloatsThisRound );
+			waveWriter.writeFrames( buffer, 0, numFramesThisRound );
 
 			numFramesLeft -= numFramesThisRound;
 		}

@@ -49,7 +49,7 @@ public class TestCreateDCMonoFile extends TestCase
 			testData[i] = 0.5f;
 		}
 
-		outputWriter.writeFloats( testData, testDataLength );
+		outputWriter.writeFrames( testData, 0, testDataLength );
 
 		outputWriter.close();
 	}

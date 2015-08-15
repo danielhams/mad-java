@@ -11,9 +11,9 @@
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
         <rackPosition column="2" row="11"/>
         <rackControl name="AmpAKill" value="false"/>
-        <rackControl name="AmpBKill" value="true"/>
+        <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
-        <rackControl name="Slider" value="1.0"/>
+        <rackControl name="Slider" value="-1.0"/>
     </rackComponent>
     <rackComponent name="DC Trap 1" definitionId="dc_trap">
         <rackPosition column="0" row="7"/>
@@ -23,10 +23,10 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 8" definitionId="imixer3">
         <rackPosition column="0" row="8"/>
-        <rackControl name="Master Lane" value="-45.5:0.0"/>
+        <rackControl name="Master Lane" value="-18.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="-3.375:0.0:M "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
-        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-4.5:0.0:  "/>
     </rackComponent>
     <rackComponent name="Oscillator 1" definitionId="oscillator">
         <rackPosition column="2" row="6"/>
@@ -40,17 +40,17 @@
         <rackControl name="Q" value="0.1"/>
     </rackComponent>
     <rackComponent name="Scale And Offset 6" definitionId="scale_and_offset">
-        <rackPosition column="0" row="1"/>
+        <rackPosition column="0" row="3"/>
         <rackControl name="Offset" value="0.0"/>
-        <rackControl name="Scale" value="1.9999695"/>
+        <rackControl name="Scale" value="1.0"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="0"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="480.0"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
@@ -60,11 +60,11 @@
     </rackComponent>
     <rackComponent name="Static Value 3" definitionId="static_value">
         <rackPosition column="2" row="10"/>
-        <rackControl name="Value" value="500.0"/>
+        <rackControl name="Value" value="495.0"/>
     </rackComponent>
     <rackComponent name="Static Value 4" definitionId="static_value">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Value" value="0.95"/>
+        <rackControl name="Value" value="0.5"/>
     </rackComponent>
     <rackComponent name="Wave Roller 7" definitionId="wave_roller">
         <rackPosition column="2" row="4"/>
@@ -77,28 +77,28 @@
     <rackComponent name="blosc" definitionId="spectral_amp">
         <rackPosition column="0" row="12"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-120dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="osc" definitionId="spectral_amp">
         <rackPosition column="2" row="12"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-120dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Resolution" value="8192"/>
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>

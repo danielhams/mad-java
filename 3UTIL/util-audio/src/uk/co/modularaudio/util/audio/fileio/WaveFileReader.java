@@ -38,7 +38,7 @@ public class WaveFileReader
 	private RandomAccessFile raf;
 
 	private final int internalFloatBufferLength;
-	private final byte[] internalByteBuffer;
+	private byte[] internalByteBuffer;
 
 	private int numChannels;
 	private long numTotalFrames;
@@ -54,6 +54,7 @@ public class WaveFileReader
 	private long dataChunkOffset;
 	private int sampleRate;
 	private short bitsPerSample; // NOPMD by dan on 29/01/15 16:25
+	private int bytesPerSample;
 
 	public WaveFileReader( final String inputFilePath )
 			throws IOException
@@ -65,7 +66,6 @@ public class WaveFileReader
 			throws IOException
 	{
 		this.internalFloatBufferLength = internalFloatBufferLength;
-		this.internalByteBuffer = new byte[ internalFloatBufferLength * 2 ];
 		this.inputFilePath = inputFilePath;
 		raf = new RandomAccessFile( new File( inputFilePath ), "r" );
 		readHeader();
@@ -114,6 +114,13 @@ public class WaveFileReader
 		byteRate = readInt();
 		blockAlign = readShort();
 		bitsPerSample = readShort();
+		bytesPerSample = (bitsPerSample + 7) / 8;
+		// Only support byte multiples
+		if( bitsPerSample % 8 != 0 )
+		{
+			throw new IOException("Non byte-multiple bits per sample not supported");
+		}
+		this.internalByteBuffer = new byte[ internalFloatBufferLength * bytesPerSample ];
 		int nextChunkId = readInt();
 		int amountSkipped = 0;
 		while( nextChunkId != WaveFileDefines.DATA_CHUNK_ID )
@@ -168,34 +175,36 @@ public class WaveFileReader
 		return numTotalFrames;
 	}
 
-	public void read( final float[] result, final int resultStartIndex, final long waveReadPosition, final int numFloatsToRead )
-		throws IOException
-	{
-		final long seekPosition = dataChunkOffset + (waveReadPosition * 2);
-		if( seekPosition != raf.getFilePointer() )
-		{
-			raf.seek( seekPosition );
-		}
-
-		int curOutputPos = resultStartIndex;
-		int numFloatsLeft = numFloatsToRead;
-
-		while( numFloatsLeft > 0 )
-		{
-			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
-			final int numBytesThisRound = numFloatsThisRound * 2;
-			raf.read( internalByteBuffer, 0, numBytesThisRound );
-			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFloatsThisRound, false );
-
-			curOutputPos += numFloatsThisRound;
-			numFloatsLeft -= numFloatsThisRound;
-		}
-	}
+//	public void read( final float[] result, final int resultStartIndex, final long waveReadPosition, final int numFloatsToRead )
+//		throws IOException
+//	{
+//		final long seekPosition = dataChunkOffset + (waveReadPosition * bytesPerSample);
+//		if( seekPosition != raf.getFilePointer() )
+//		{
+//			raf.seek( seekPosition );
+//		}
+//
+//		int curOutputPos = resultStartIndex;
+//		int numFloatsLeft = numFloatsToRead;
+//
+//		while( numFloatsLeft > 0 )
+//		{
+//			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
+//			final int numBytesThisRound = numFloatsThisRound * bytesPerSample;
+//			raf.read( internalByteBuffer, 0, numBytesThisRound );
+//			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0,
+//					result, curOutputPos, numFloatsThisRound,
+//					bytesPerSample );
+//
+//			curOutputPos += numFloatsThisRound;
+//			numFloatsLeft -= numFloatsThisRound;
+//		}
+//	}
 
 	public void readFrames( final float[] result, final int outFrameStartIndex, final long frameReadPosition, final int numFramesToRead )
 		throws IOException
 	{
-		final long seekPosition = dataChunkOffset + (frameReadPosition * numChannels * 2 );
+		final long seekPosition = dataChunkOffset + (frameReadPosition * numChannels * bytesPerSample );
 		if( seekPosition != raf.getFilePointer() )
 		{
 			raf.seek( seekPosition );
@@ -207,9 +216,10 @@ public class WaveFileReader
 		while( numFloatsLeft > 0 )
 		{
 			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
-			final int numBytesThisRound = numFloatsThisRound * 2;
+			final int numFramesThisRound = numFloatsThisRound / numChannels;
+			final int numBytesThisRound = numFloatsThisRound * bytesPerSample;
 			raf.read( internalByteBuffer, 0, numBytesThisRound );
-			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFloatsThisRound, false );
+			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0, result, curOutputPos, numFramesThisRound, bytesPerSample );
 
 			curOutputPos += numFloatsThisRound;
 			numFloatsLeft -= numFloatsThisRound;

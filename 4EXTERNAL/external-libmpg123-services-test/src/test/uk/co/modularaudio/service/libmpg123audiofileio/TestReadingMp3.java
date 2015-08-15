@@ -107,9 +107,7 @@ public class TestReadingMp3 extends TestCase
 				break;
 			}
 
-			final int numFloatsRead = numFramesRead * numChannels;
-
-			fw.writeFloats( buffer, numFloatsRead );
+			fw.writeFrames( buffer, 0, numFramesRead );
 
 			currentPositionFrames += numFramesRead;
 			numFramesLeft -= numFramesRead;

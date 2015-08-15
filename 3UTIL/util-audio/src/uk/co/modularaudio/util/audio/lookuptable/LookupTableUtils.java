@@ -24,21 +24,62 @@ package uk.co.modularaudio.util.audio.lookuptable;
 public class LookupTableUtils
 {
 //	private static Log log = LogFactory.getLog( WaveTableUtils.class.getName() );
-	
-	public static void normaliseFloats(float[] table, int position, int length )
+
+	public static void normaliseFloats(final float[] table, final int position, final int length )
 	{
 		int n;
 		float absMax = 0.f;
 		for(n=0; n < length; n++)
 		{
-			float curVal = table[ position + n];
-			float curAbs = ( curVal < 0.0f ? -curVal : curVal );
+			final float curVal = table[ position + n];
+			final float curAbs = ( curVal < 0.0f ? -curVal : curVal );
 			absMax = curAbs > absMax ? curAbs : absMax;
 		}
-		
+
 		for(n=0; n < length; n++)
 		{
 			table[ position + n] /= absMax;
+		}
+	}
+
+	public static void normaliseFloatsToMax(final float[] table, final int position, final int length, final float maxValue )
+	{
+		int n;
+		float absMax = 0.f;
+		for( n=0; n < length; n++ )
+		{
+			final float curVal = table[ position + n ];
+			final float curAbs = ( curVal < 0.0f ? -curVal : curVal );
+			absMax = curAbs > absMax ? curAbs : absMax;
+		}
+
+		absMax = absMax / maxValue;
+
+		for( n=0; n < length; n++ )
+		{
+			table[ position + n ] /= absMax;
+		}
+	}
+
+	public static void normaliseDoublesToMax(final double[] table,
+			final int position,
+			final int length,
+			final double maxValue )
+	{
+		int n;
+		double absMax = 0.0;
+		for( n=0; n < length; n++ )
+		{
+			final double curVal = table[ position + n ];
+			final double curAbs = ( curVal < 0.0 ? -curVal : curVal );
+			absMax = curAbs > absMax ? curAbs : absMax;
+		}
+
+		absMax = absMax / maxValue;
+
+		for( n=0; n < length; n++ )
+		{
+			table[ position + n ] /= absMax;
 		}
 	}
 }

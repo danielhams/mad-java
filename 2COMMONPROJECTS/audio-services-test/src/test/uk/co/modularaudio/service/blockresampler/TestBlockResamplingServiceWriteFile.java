@@ -241,8 +241,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 			if (retCode == RealtimeMethodReturnCodeEnum.SUCCESS)
 			{
-				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
-//				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
+				waveFileWriter.writeFrames( outputFrameFloats, 0, numFramesThisRound );
 
 				readFramePosition = readFramePosition + numFramesThisRound;
 				numToOutput -= numFramesThisRound;
@@ -362,8 +361,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 
 			if (retCode == RealtimeMethodReturnCodeEnum.SUCCESS)
 			{
-				waveFileWriter.writeFloats( outputFrameFloats, numFramesThisRound * numChannels );
-//				waveFileWriter.writeFloats( outputLeftFloats, numFramesThisRound );
+				waveFileWriter.writeFrames( outputFrameFloats, 0, numFramesThisRound );
 
 				readFramePosition = readFramePosition + numFramesThisRound;
 				numToOutput -= numFramesThisRound;

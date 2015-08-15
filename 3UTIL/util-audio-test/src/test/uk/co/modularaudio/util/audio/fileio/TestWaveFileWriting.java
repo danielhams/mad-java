@@ -59,7 +59,7 @@ public class TestWaveFileWriting extends TestCase
 //			testData[i] = ( i % 10 == 0 ? 0.5f : -0.1f );
 		}
 
-		outputWriter.writeFloats( testData, testDataLength );
+		outputWriter.writeFrames( testData, 0, testDataLength );
 
 		outputWriter.close();
 	}
@@ -77,7 +77,7 @@ public class TestWaveFileWriting extends TestCase
 		final WaveFileWriter wof = new WaveFileWriter( outputFile.getAbsolutePath(), 1, sampleRate, bitsPerSample );
 
 		final float[] testData = new float[] { 0.0f, 0.25f, 0.5f, 0.75f, 1.0f, -1.0f, -0.75f, -0.5f, -0.25f, 0.0f };
-		wof.writeFloats( testData, testData.length );
+		wof.writeFrames( testData, 0, testData.length );
 
 		wof.close();
 
@@ -103,7 +103,7 @@ public class TestWaveFileWriting extends TestCase
 
 		final WaveFileWriter wof = new WaveFileWriter( outputFile.getAbsolutePath(), numChannels, sampleRate, bitsPerSample );
 
-		wof.writeFloats( testData, testData.length );
+		wof.writeFrames( testData, 0, testData.length );
 		wof.close();
 
 		final WaveFileReader wif = new WaveFileReader( outputFile.getAbsolutePath() );
@@ -117,7 +117,7 @@ public class TestWaveFileWriting extends TestCase
 			throw new DatastoreException( "Reading after writing doesn't produce the same number of values!" );
 		}
 		final float[] resultData = new float[ numFloatsAsInt ];
-		wif.read( resultData, 0, 0, numFloatsAsInt );
+		wif.readFrames( resultData, 0, 0, numFloatsAsInt );
 
 		for( int i = 0 ; i < testData.length ; ++i )
 		{

@@ -5,7 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/external-libs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-audio"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/util-external"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util-gui"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

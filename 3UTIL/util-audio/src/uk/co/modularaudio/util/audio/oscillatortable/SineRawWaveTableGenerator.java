@@ -32,7 +32,7 @@ public class SineRawWaveTableGenerator extends RawWaveTableGenerator
 	}
 
 	@Override
-	public CubicPaddedRawWaveTable reallyGenerateWaveTable( final int cycleLength, final int numHarmonics )
+	public strictfp CubicPaddedRawWaveTable reallyGenerateWaveTable( final int cycleLength, final int numHarmonics )
 	{
 		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
 
@@ -42,6 +42,10 @@ public class SineRawWaveTableGenerator extends RawWaveTableGenerator
 		{
 			retVal.buffer[ 1 + i ] = (float)Math.sin( currentSineRadians );
 			currentSineRadians += incrementalRadians;
+			if( currentSineRadians > MathDefines.TWO_PI_D )
+			{
+				currentSineRadians -= MathDefines.TWO_PI_D;
+			}
 		}
 
 		retVal.completeCubicBufferFillAndNormalise();

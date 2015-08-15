@@ -36,13 +36,23 @@ public class AudioMath
 
 	public static final double MAX_TUNE = 22050.0D;
 
-	public static final long MAX_16BIT_UINT_VALUE = 1 << 16;
-	public static final double MIN_FLOATING_POINT_16BIT_VAL_D = 1.0 / MAX_16BIT_UINT_VALUE;
+	public static final int MAX_SHORT_VALUE = Short.MAX_VALUE;
+
+	public static final long MAX_8BIT_UINT_VALUE = (1L << 8) - 1;
+	public static final double MIN_FLOATING_POINT_8BIT_VAL_D = 2.0 / MAX_8BIT_UINT_VALUE;
+	public static final float MIN_FLOATING_POINT_8BIT_VAL_F = (float)MIN_FLOATING_POINT_8BIT_VAL_D;
+
+	public static final long MAX_16BIT_UINT_VALUE = (1L << 16) - 1;
+	public static final double MIN_FLOATING_POINT_16BIT_VAL_D = 2.0 / MAX_16BIT_UINT_VALUE;
 	public static final float MIN_FLOATING_POINT_16BIT_VAL_F = (float)MIN_FLOATING_POINT_16BIT_VAL_D;
 
-	public static final long MAX_24BIT_UINT_VALUE = 1 << 24;
-	public static final double MIN_FLOATING_POINT_24BIT_VAL_D = 1.0 / MAX_24BIT_UINT_VALUE;
+	public static final long MAX_24BIT_UINT_VALUE = (1L << 24) - 1;
+	public static final double MIN_FLOATING_POINT_24BIT_VAL_D = 2.0 / MAX_24BIT_UINT_VALUE;
 	public static final float MIN_FLOATING_POINT_24BIT_VAL_F = (float)MIN_FLOATING_POINT_24BIT_VAL_D;
+
+	public static final long MAX_32BIT_UINT_VALUE = (1L << 32) - 1;
+	public static final double MIN_FLOATING_POINT_32BIT_VAL_D = 2.0 / MAX_32BIT_UINT_VALUE;
+	public static final float MIN_FLOATING_POINT_32BIT_VAL_F = (float)MIN_FLOATING_POINT_32BIT_VAL_D;
 
 
 //	static

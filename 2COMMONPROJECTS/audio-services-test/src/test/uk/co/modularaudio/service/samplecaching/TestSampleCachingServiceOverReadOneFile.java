@@ -175,7 +175,7 @@ public class TestSampleCachingServiceOverReadOneFile extends TestCase
 					outputEnd = true;
 				}
 			}
-			waveWriter.writeFloats( outputFrameFloats, numFloatsToRead );
+			waveWriter.writeFrames( outputFrameFloats, 0, numFramesToRead );
 			curPos += numFramesToRead;
 			scc1.setCurrentFramePosition( curPos );
 			scsi.registerForBufferFillCompletion( scc1, cfl );

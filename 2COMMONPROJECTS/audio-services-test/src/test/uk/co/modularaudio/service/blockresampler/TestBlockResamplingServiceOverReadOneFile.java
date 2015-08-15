@@ -213,7 +213,7 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 
 			LIM.filter( tmpBuffer, 0, numFloatsPerRound );
 
-			waveWriter.writeFloats( tmpBuffer, numFloatsPerRound );
+			waveWriter.writeFrames( tmpBuffer, 0, numFramesPerRound );
 
 			curPos = brc.getFramePosition();
 

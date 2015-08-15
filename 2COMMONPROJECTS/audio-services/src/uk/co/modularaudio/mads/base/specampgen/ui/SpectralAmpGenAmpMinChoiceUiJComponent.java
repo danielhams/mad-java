@@ -55,10 +55,11 @@ public class SpectralAmpGenAmpMinChoiceUiJComponent<D extends SpectralAmpGenMadD
 	{
 		M_70_DB( "-70dB", -70.0f ),
 		M_80_DB( "-80dB", -80.0f ),
-		M_96_DB( "-96dB", -96.0f ),
+		M_96_DB( "-96dB", -96.3f ),
 		M_100_DB( "-100dB", -100.0f ),
-		M_120_DB( "-120dB", -120.0f ),
-		M_144_DB( "-144dB", -144.0f );
+		M_120_DB( "-120dB", -120.4f ),
+		M_144_DB( "-144dB", -144.5f ),
+		M_192_DB( "-192dB", -192.7f );
 
 		private AmpMin( final String name, final float db )
 		{
@@ -136,6 +137,7 @@ public class SpectralAmpGenAmpMinChoiceUiJComponent<D extends SpectralAmpGenMadD
 		model.addElement( AmpMin.M_100_DB.getName() );
 		model.addElement( AmpMin.M_120_DB.getName() );
 		model.addElement( AmpMin.M_144_DB.getName() );
+		model.addElement( AmpMin.M_192_DB.getName() );
 
 		model.setSelectedItem( DEFAULT_AMP_MIN.getName() );
 

@@ -49,7 +49,8 @@ public class WaveFileWriter
 	private long chunksize2;
 
 	private final int sampleRate;
-	private short bitsPerSample = 16; // NOPMD by dan on 29/01/15 16:25
+	private final int bitsPerSample;
+	private final int bytesPerSample;
 
 	public WaveFileWriter( final String outputFilePath, final int numChannels, final int sampleRate, final short bitsPerSample  ) // NOPMD by dan on 29/01/15 16:25
 			throws IOException
@@ -62,9 +63,14 @@ public class WaveFileWriter
 	{
 		this.internalFloatBufferLength = internalFloatBufferLength;
 		this.sampleRate = sampleRate;
+		if( bitsPerSample % 8 != 0 )
+		{
+			throw new IOException("Non byte-multiple bits per sample not supported");
+		}
 		this.bitsPerSample = bitsPerSample;
+		this.bytesPerSample = (bitsPerSample+7) / 8;
 
-		internalByteBuffer = new byte[ internalFloatBufferLength * 2];
+		internalByteBuffer = new byte[ internalFloatBufferLength * bytesPerSample];
 
 		this.outputFilePath = outputFilePath;
 		fos = new FileOutputStream( outputFilePath );
@@ -95,7 +101,7 @@ public class WaveFileWriter
 		writeInt( sampleRate );
 		writeInt( byteRate );
 		writeShort( blockAlign );
-		writeShort( bitsPerSample );
+		writeShort( (short)bitsPerSample );
 		writeInt( WaveFileDefines.DATA_CHUNK_ID );
 		final int emptyChunkSize = 0;
 		writeInt( emptyChunkSize );
@@ -123,21 +129,17 @@ public class WaveFileWriter
 		fos.write( b2 );
 	}
 
-	public void writeFloats( final float[] data, final int length ) throws IOException
+	public void writeFrames( final float[] data, final int readFrameOffset, final int numFrames ) throws IOException
 	{
-		writeFloats( data, 0, length );
-	}
-
-	public void writeFloats( final float[] data, final int readArrayOffset, final int length ) throws IOException
-	{
-		int numLeft = length;
-		int readPosition = readArrayOffset;
+		int numLeft = numFrames * numChannels;
+		int readPosition = readFrameOffset * numChannels;
 		while (numLeft > 0)
 		{
 			final int numThisRound = (numLeft > internalFloatBufferLength ? internalFloatBufferLength : numLeft);
 			FloatToByteConverter.floatToByteConversion( data, readPosition,
-					numThisRound, internalByteBuffer, 0, false );
-			final int numBytesThisRound = numThisRound * 2;
+					numThisRound, internalByteBuffer, 0, bytesPerSample );
+
+			final int numBytesThisRound = numThisRound * bytesPerSample;
 			fos.write( internalByteBuffer, 0, numBytesThisRound );
 			chunksize2 += numBytesThisRound;
 			readPosition += numThisRound;
@@ -145,6 +147,23 @@ public class WaveFileWriter
 		}
 	}
 
+	public void writeFramesDoubles( final double[] data, final int readFrameOffset, final int numFrames ) throws IOException
+	{
+		int numLeft = numFrames * numChannels;
+		int readPosition = readFrameOffset * numChannels;
+		while (numLeft > 0)
+		{
+			final int numThisRound = (numLeft > internalFloatBufferLength ? internalFloatBufferLength : numLeft);
+			FloatToByteConverter.doubleToByteConversion( data, readPosition,
+					numThisRound, internalByteBuffer, 0, bytesPerSample );
+
+			final int numBytesThisRound = numThisRound * bytesPerSample;
+			fos.write( internalByteBuffer, 0, numBytesThisRound );
+			chunksize2 += numBytesThisRound;
+			readPosition += numThisRound;
+			numLeft -= numThisRound;
+		}
+	}
 	private void rafWriteInt( final int val ) throws IOException
 	{
 		final byte b1 = (byte) (val & 0xFF);

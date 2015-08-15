@@ -166,7 +166,7 @@ public class TestSampleCachingServiceWriteFileJumpAround extends TestCase
 					outputFrameFloats, readArrayFramePosition * numChannels, numFramesWithInterpolationFrames );
 			if( retCode == RealtimeMethodReturnCodeEnum.SUCCESS )
 			{
-				waveFileWriter.writeFloats( outputFrameFloats, 2, numFramesThisRound * numChannels );
+				waveFileWriter.writeFrames( outputFrameFloats, numChannels, numFramesThisRound );
 
 				readFramePosition = readFramePosition + numFramesThisRound;
 				scc1.setCurrentFramePosition( readFramePosition );

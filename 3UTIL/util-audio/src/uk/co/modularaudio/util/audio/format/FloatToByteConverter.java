@@ -24,65 +24,226 @@ package uk.co.modularaudio.util.audio.format;
 public class FloatToByteConverter
 {
 //	private static Log log = LogFactory.getLog( FloatToByteConverter.class.getName());
-	
-	public static int floatToByteConversion( float[] sourceFloats, int position, int numFloats, byte[] destination, int bpos, boolean bigEndian )
-		throws ArrayIndexOutOfBoundsException
-	{
-		int numConverted = 0;
-		
-		for( int i = 0 ; i < numFloats ; i++ )
-		{
-			int sourcePosition = position + i;
-			int destPosition = bpos + (i * 2);
-			
-			float fSample = sourceFloats[ sourcePosition ];
-			
-			// scaling and conversion to integer
-			int nSample =(int)(fSample * 32767.0F);
 
-			if( bigEndian )
-			{
-				destination[ destPosition ] = (byte) ((nSample >> 8) & 0xFF);
-				destination[ destPosition + 1 ] = (byte) (nSample & 0xFF);
-			}
-			else
-			{
-				destination[ destPosition ] = (byte) (nSample & 0xFF);
-				destination[ destPosition + 1 ] = (byte) ((nSample >> 8) & 0xFF);
-			}
-			numConverted++;
-		}
-		
-		return numConverted;
+	private final static long getMaxValueForFloatsToMultiBytes( final int bytesPerSample )
+	{
+		return (1L << ((bytesPerSample * 8) - 1)) - 1;
 	}
-	
-	public static int byteToFloatConversion( byte[] sourceBytes, int position, float[] destination, int fpos, int numFloats, boolean bigEndian )
+
+	private final static long getMaxValueForMultiBytesToFloats( final int bytesPerSample )
+	{
+		return 1L << ((bytesPerSample * 8) - 1);
+	}
+
+	public static int byteToFloatConversion( final byte[] sourceBytes, final int position,
+			final float[] destination, final int fpos, final int numFloats,
+			final int bytesPerFloat )
 		throws ArrayIndexOutOfBoundsException
 	{
-		int numConverted = 0;
-		
+		if( bytesPerFloat > 1 )
+		{
+			return multiByteToFloatConversion( sourceBytes, position, destination, fpos, numFloats, bytesPerFloat );
+		}
+		else
+		{
+			return singleByteToFloatConversion( sourceBytes, position, destination, fpos, numFloats );
+		}
+	}
+
+	public static int multiByteToFloatConversion( final byte[] sourceBytes, final int position,
+			final float[] destination, final int fpos, final int numFloats,
+			final int bytesPerFloat )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final long scaleValue = getMaxValueForMultiBytesToFloats( bytesPerFloat );
+		int sourcePosition = position;
+		int destPosition = fpos;
+
+		final int bMax = bytesPerFloat - 1;
+
 		for( int i = 0 ; i < numFloats ; i++ )
 		{
-			int sourcePosition = position + ( i * 2 );
-			int destPosition = fpos + i;
-			
-			byte b1 = sourceBytes[ sourcePosition ];
-			byte b2 = sourceBytes[ sourcePosition + 1 ];
-			int iVal = 0;
-			if( bigEndian )
+			long curValue = (sourceBytes[sourcePosition++] & 0xFF);
+			int b = 1;
+			while( b < bMax )
 			{
-				iVal = ( b1 << 8 ) | ( b2 & 0xFF );
+				final byte v = sourceBytes[sourcePosition++];
+				curValue = curValue | ((v & 0xff) << (b*8));
+				b++;
 			}
-			else
-			{
-				iVal = ( b2 << 8 ) | ( b1 & 0xFF );
-			}
+			final byte v = sourceBytes[sourcePosition++];
+			curValue = curValue | (v << (b*8));
+
 			// Conversion to float
-			float fSample = ((float)iVal) / 32767.0F;
-			destination[ destPosition ] = fSample;
-			numConverted++;
+			final float asFloat = curValue / (float)scaleValue;
+			destination[ destPosition++ ] = asFloat;
 		}
-		return numConverted;
+		return numFloats;
 	}
-	
+
+	public static int singleByteToFloatConversion( final byte[] sourceBytes, final int position,
+			final float[] destination, final int fpos, final int numFloats )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final float offset = 1;
+		final int maxValue = (1 << 8) - 1;
+		final float scaleValue = 0.5f * (maxValue + 1);
+		int sourcePosition = position;
+		int destPosition = fpos;
+
+		for( int i = 0 ; i < numFloats ; i++ )
+		{
+			final long curValue = (sourceBytes[sourcePosition++] & 0xFF);
+
+			// Conversion to float
+			final float asFloat = (curValue / scaleValue) - offset;
+			destination[ destPosition++ ] = asFloat;
+		}
+		return numFloats;
+	}
+
+	public static int floatToByteConversion( final float[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos,
+			final int bytesPerSample )
+		throws ArrayIndexOutOfBoundsException
+	{
+		if( bytesPerSample > 1 )
+		{
+			return floatToMultiByteConversion( sourceFloats, position, numFloats, destination, bpos, bytesPerSample );
+		}
+		else
+		{
+			return floatToSingleByteConversion( sourceFloats, position, numFloats, destination, bpos );
+		}
+	}
+
+	private static int floatToSingleByteConversion( final float[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final float offset = 1;
+		final int maxValue = (1 << 8) - 1;
+		final float scaleValue = 0.5f * (maxValue + 1);
+//		final float scaleValue = 0.5f * maxValue;
+
+		for( int i = 0 ; i < numFloats ; i++ )
+		{
+			final int sourcePosition = position + i;
+			int destPosition = bpos + i;
+
+			final float fSample = sourceFloats[ sourcePosition ];
+
+			// scaling and conversion to integer
+//			long nSample = Math.round( (((fSample + offset) * maxValue) / 2) );
+
+//			final float scaledSample = (fSample + offset) * scaleValue;
+//			long nSample = (long)scaledSample;
+
+			long nSample = Math.round( (fSample + offset) * scaleValue );
+
+			nSample = (nSample > maxValue ? maxValue : (nSample < 0 ? 0 : nSample ));
+
+			destination[ destPosition++ ] = (byte)(nSample & 0xFF);
+		}
+
+		return numFloats;
+	}
+
+	private static int floatToMultiByteConversion( final float[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos,
+			final int bytesPerSample )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final long maxValue = getMaxValueForFloatsToMultiBytes( bytesPerSample );
+		final long scaleValue = maxValue + 1;
+
+		for( int i = 0 ; i < numFloats ; i++ )
+		{
+			final int sourcePosition = position + i;
+			int destPosition = bpos + (i * bytesPerSample);
+
+			final float fSample = sourceFloats[ sourcePosition ];
+
+			// scaling and conversion to integer
+			long nSample = Math.round( fSample * scaleValue );
+			nSample = (nSample > maxValue ? maxValue : (nSample < -maxValue ? -maxValue : nSample ) );
+
+			for( int b = 0 ; b < bytesPerSample ; b++ )
+			{
+				destination[ destPosition++ ] = (byte)(nSample & 0xFF);
+				nSample >>= 8;
+			}
+		}
+
+		return numFloats;
+	}
+
+	public static int doubleToByteConversion( final double[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos,
+			final int bytesPerSample )
+		throws ArrayIndexOutOfBoundsException
+	{
+		if( bytesPerSample > 1 )
+		{
+			return doubleToMultiByteConversion( sourceFloats, position, numFloats, destination, bpos, bytesPerSample );
+		}
+		else
+		{
+			return doubleToSingleByteConversion( sourceFloats, position, numFloats, destination, bpos );
+		}
+	}
+
+	private static int doubleToSingleByteConversion( final double[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final double offset = 1;
+		final int maxValue = (1 << 8) - 1;
+		final double scaleValue = 0.5 * (maxValue + 1);
+
+		for( int i = 0 ; i < numFloats ; i++ )
+		{
+			final int sourcePosition = position + i;
+			int destPosition = bpos + i;
+
+			final double dSample = sourceFloats[ sourcePosition ];
+
+			long nSample = Math.round( (dSample + offset) * scaleValue );
+
+			nSample = (nSample > maxValue ? maxValue : (nSample < 0 ? 0 : nSample ));
+
+			destination[ destPosition++ ] = (byte)(nSample & 0xFF);
+		}
+
+		return numFloats;
+	}
+
+	private static int doubleToMultiByteConversion( final double[] sourceFloats, final int position, final int numFloats,
+			final byte[] destination, final int bpos,
+			final int bytesPerSample )
+		throws ArrayIndexOutOfBoundsException
+	{
+		final long maxValue = getMaxValueForFloatsToMultiBytes( bytesPerSample );
+		final long scaleValue = maxValue + 1;
+
+		for( int i = 0 ; i < numFloats ; i++ )
+		{
+			final int sourcePosition = position + i;
+			int destPosition = bpos + (i * bytesPerSample);
+
+			final double dSample = sourceFloats[ sourcePosition ];
+
+			// scaling and conversion to integer
+			long nSample = Math.round( dSample * scaleValue );
+			nSample = (nSample > maxValue ? maxValue : (nSample < -maxValue ? -maxValue : nSample ) );
+
+			for( int b = 0 ; b < bytesPerSample ; b++ )
+			{
+				destination[ destPosition++ ] = (byte)(nSample & 0xFF);
+				nSample >>= 8;
+			}
+		}
+
+		return numFloats;
+	}
 }

@@ -208,7 +208,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 		final float[] samples = new float[numSamplesInt];
 
-		reader.read( samples, 0, 0, numSamplesInt );
+		reader.readFrames( samples, 0, 0, numSamplesInt );
 
 		// Work out the offsets for control value changes
 		final ArrayList<Integer> controlValueChanges = new ArrayList<Integer>();
@@ -226,7 +226,10 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 			}
 		}
 
-		final WaveFileWriter writer = new WaveFileWriter( outWavFile, visualisers.length, DataRate.SR_48000.getValue(), (short)16 );
+		final WaveFileWriter writer = new WaveFileWriter( outWavFile,
+				visualisers.length,
+				DataRate.SR_48000.getValue(),
+				(short)16 );
 
 		final float[][] processedSamples = new float[visualisers.length][];
 		for( int i = 0 ; i < visualisers.length ; ++i )
@@ -273,13 +276,17 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 			prevOffset = valueChangeOffset;
 		}
 
-		for( int i = 0 ; i < numSamplesInt ; ++i )
+		final float[] outFloats = new float[ numSamplesInt * visualisers.length ];
+
+		int outIndex = 0;
+		for( int s = 0 ; s < numSamplesInt ; ++s )
 		{
-			for( int s = 0 ; s < processedSamples.length ; ++s )
+			for( int v = 0 ; v < visualisers.length ; ++v )
 			{
-				writer.writeFloats( processedSamples[s], i, 1 );
+				outFloats[outIndex++] = processedSamples[v][s];
 			}
 		}
+		writer.writeFrames( outFloats, 0, numSamplesInt );
 		writer.close();
 		reader.close();
 	}

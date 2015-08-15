@@ -69,7 +69,7 @@ public class TestGeneratingBinSpecificSines extends TestCase
 			final File parentDir = waveOutputFile.getParentFile();
 			parentDir.mkdirs();
 			final WaveFileWriter wfw = new WaveFileWriter( wavOutPath, 1, 44100, (short)16 );
-			wfw.writeFloats( fftArray, numReals );
+			wfw.writeFrames( fftArray, 0, numReals );
 			wfw.close();
 		}
 	}

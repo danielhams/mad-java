@@ -49,7 +49,7 @@ public abstract class RawWaveTableGenerator
 		{
 			final int sampleRate = 44100;
 			final int numChannels = 1;
-			final short numBitsPerSample = 16; // NOPMD by dan on 29/01/15 16:30
+			final short numBitsPerSample = 32; // NOPMD by dan on 29/01/15 16:30
 			final String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
 
 			CubicPaddedRawWaveTable retVal = nameToWaveTable.get( uniqueName );
@@ -73,6 +73,11 @@ public abstract class RawWaveTableGenerator
 				}
 
 				final WaveFileReader fileReader = new WaveFileReader( pathToCachedWave );
+				final int discoveredNumChannels = fileReader.getNumChannels();
+				if( discoveredNumChannels != numChannels )
+				{
+					throw new IOException("Mismatch on num channels");
+				}
 				final long numTotalFloats = fileReader.getNumTotalFloats();
 				final int numTotalFloatsAsInt = (int)numTotalFloats;
 				if( numTotalFloatsAsInt != numTotalFloats )
@@ -84,7 +89,7 @@ public abstract class RawWaveTableGenerator
 					throw new IOException( "The cached wave shape length doesn't match the size we expect" );
 				}
 				final float[] data = new float[ numTotalFloatsAsInt ];
-				fileReader.read( data, 0, 0, numTotalFloatsAsInt );
+				fileReader.readFrames( data, 0, 0, numTotalFloatsAsInt );
 				fileReader.close();
 				retVal = new CubicPaddedRawWaveTable( data );
 				nameToWaveTable.put( uniqueName, retVal );
@@ -109,7 +114,7 @@ public abstract class RawWaveTableGenerator
 
 				final String tmpPath = pathToCachedWave + ".tmp";
 				final WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
-				fileWriter.writeFloats( retVal.buffer, retVal.bufferLength );
+				fileWriter.writeFrames( retVal.buffer, 0, retVal.bufferLength );
 				fileWriter.close();
 
 				final File tmpFile = new File(tmpPath);

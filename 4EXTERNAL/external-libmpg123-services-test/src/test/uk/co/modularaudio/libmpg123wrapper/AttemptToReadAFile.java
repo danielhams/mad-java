@@ -176,7 +176,7 @@ public class AttemptToReadAFile extends TestCase
 
 			limiter.filter( buffer, 0, numFloatsRead );
 
-			waveWriter.writeFloats( buffer, numFloatsThisRound );
+			waveWriter.writeFrames( buffer, 0, numFramesRead );
 
 			numFramesLeft -= numFramesThisRound;
 

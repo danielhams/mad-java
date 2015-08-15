@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.stft.tools;
 
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftDataFrameDouble;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.math.FastMath;
 
@@ -115,6 +116,33 @@ public class ComplexPolarConverter
 				phase = phases[chan][ i ];
 				complexFrame[chan][ i*2 ] = (float)(amp * Math.cos( phase ) );
 				complexFrame[chan][ (i*2) + 1 ] = (float)(amp * Math.sin( phase ) );
+			}
+		}
+	}
+
+	public final void polarToComplexDouble( final StftDataFrameDouble frame )
+	{
+		final double[][] complexFrame = frame.complexFrame;
+		final double[][] amps = frame.amps;
+		final double[][] phases = frame.phases;
+		double amp;
+		double phase;
+
+		for( int chan = 0 ; chan < numChannels ; chan++ )
+		{
+
+			// Copy over the amps for 0 and nyquist/2
+			complexFrame[chan][0] = amps[chan][0] * frame.dcSign[chan];
+			complexFrame[chan][1] = amps[chan][numBins - 1 ] * frame.nySign[chan];
+
+			// Now loop over the amps and freqs, computing the needed phase before turning it
+			// back to complex
+			for( int i = 1 ; i < numBins - 1 ; i++ )
+			{
+				amp = amps[chan][ i ];
+				phase = phases[chan][ i ];
+				complexFrame[chan][ i*2 ] = amp * Math.cos( phase );
+				complexFrame[chan][ (i*2) + 1 ] = amp * Math.sin( phase );
 			}
 		}
 	}
