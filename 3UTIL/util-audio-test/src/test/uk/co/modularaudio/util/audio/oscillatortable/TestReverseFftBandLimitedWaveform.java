@@ -15,7 +15,8 @@ import uk.co.modularaudio.util.audio.lookuptable.LookupTableUtils;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.oscillatortable.CubicPaddedRawWaveTable;
-import uk.co.modularaudio.util.audio.oscillatortable.SquareRawWaveTableGenerator;
+import uk.co.modularaudio.util.audio.oscillatortable.JunoRawWaveTableGenerator;
+import uk.co.modularaudio.util.audio.oscillatortable.RawWaveTableGenerator;
 import uk.co.modularaudio.util.audio.stft.StftDataFrame;
 import uk.co.modularaudio.util.audio.stft.StftDataFrameDouble;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
@@ -34,7 +35,8 @@ public class TestReverseFftBandLimitedWaveform
 
 	private final int sampleRate = DataRate.SR_48000.getValue();
 
-	final int fftRealLength = 256;
+	final int fftRealLength = 32768;
+//	final int fftRealLength = 256;
 
 	final HannFftWindow fftWindow = new HannFftWindow( fftRealLength );
 
@@ -42,10 +44,15 @@ public class TestReverseFftBandLimitedWaveform
 
 	final ComplexPolarConverter cpc;
 
-	private final int numHarmonics = 1;
+//	private final int numHarmonics = 1;
+//	private final int numHarmonics = 3;
+	private final int numHarmonics = 100;
+//	private final int numHarmonics = 120;
+//	private final int numHarmonics = 337;
 
+	private final int numToConcatenate = 1;
 //	private final int numToConcatenate = 20;
-	private final int numToConcatenate = 4096;
+//	private final int numToConcatenate = 4096;
 	private final long numExpectedFrames = numToConcatenate * fftRealLength;
 
 	private static final double MAX_DB = -0.75;
@@ -54,6 +61,13 @@ public class TestReverseFftBandLimitedWaveform
 
 	private final float[][] fArray = new float[1][];
 	private final double[][] dArray = new double[1][];
+
+	private final RawWaveTableGenerator waveTableGenerator = new JunoRawWaveTableGenerator();
+//	private final RawWaveTableGenerator waveTableGenerator = new SawRawWaveTableGenerator();
+//	private final RawWaveTableGenerator waveTableGenerator = new SineRawWaveTableGenerator();
+//	private final RawWaveTableGenerator waveTableGenerator = new SquareRawWaveTableGenerator();
+//	private final RawWaveTableGenerator waveTableGenerator = new Test1RawWaveTableGenerator();
+//	private final RawWaveTableGenerator waveTableGenerator = new TriangleRawWaveTableGenerator();
 
 	public TestReverseFftBandLimitedWaveform() throws Exception
 	{
@@ -66,10 +80,8 @@ public class TestReverseFftBandLimitedWaveform
 		cpc = new ComplexPolarConverter( stftParams );
 	}
 
-	public void doIt() throws Exception
+	public void analyseAdditiveFourierVersion() throws Exception
 	{
-		final SquareRawWaveTableGenerator waveTableGenerator = new SquareRawWaveTableGenerator();
-//		final SineRawWaveTableGenerator waveTableGenerator = new SineRawWaveTableGenerator();
 		final CubicPaddedRawWaveTable waveTable = waveTableGenerator.reallyGenerateWaveTable( fftRealLength,
 				numHarmonics );
 
@@ -135,14 +147,10 @@ public class TestReverseFftBandLimitedWaveform
 
 		final int startBin = 1;
 
-		final RawLookupTable harmonics = new RawLookupTable( numHarmonics, true );
-		for( int i = 0 ; i < numHarmonics ; i+=2 )
-		{
-			harmonics.floatBuffer[i] = 1.0f / (i + 1);
-		}
+		final RawLookupTable harmonics = waveTableGenerator.getHarmonics( numHarmonics );
+		final float phase = waveTableGenerator.getPhase() * MathDefines.TWO_PI_F;
 
 		// What's used in the fourier generator
-		final float phaseOfBins = MathDefines.TWO_PI_F * -0.25f;
 		for( int i = 0 ; i < numHarmonics ; ++i )
 		{
 			// Every other bin gets a peak
@@ -151,7 +159,7 @@ public class TestReverseFftBandLimitedWaveform
 			final float ampOfBin = harmonics.floatBuffer[ harmonicIndex ] * (fftRealLength / 2);
 
 			dataFrame.amps[0][binToFill] = ampOfBin;
-			dataFrame.phases[0][binToFill] = phaseOfBins;
+			dataFrame.phases[0][binToFill] = phase;
 		}
 
 		// Convert back to complex form
@@ -193,24 +201,19 @@ public class TestReverseFftBandLimitedWaveform
 
 		final int startBin = 1;
 
-//		final RawLookupTable harmonics = new RawLookupTable( numHarmonics, true );
-		final double[] harmonics = new double[ numHarmonics ];
-		for( int i = 0 ; i < numHarmonics ; i+=2 )
-		{
-			harmonics[i] = 1.0 / (i + 1);
-		}
+		final RawLookupTable harmonics = waveTableGenerator.getHarmonics( numHarmonics );
+		final double phase = waveTableGenerator.getPhase() * MathDefines.TWO_PI_D;
 
 		// What's used in the fourier generator
-		final double phaseOfBins = MathDefines.TWO_PI_D * -0.25;
 		for( int i = 0 ; i < numHarmonics ; ++i )
 		{
 			// Every other bin gets a peak
 			final int harmonicIndex = i;
 			final int binToFill = startBin + harmonicIndex;
-			final double ampOfBin = harmonics[ harmonicIndex ] * (fftRealLength / 2);
+			final double ampOfBin = harmonics.floatBuffer[ harmonicIndex ] * (fftRealLength / 2);
 
 			dataFrame.amps[0][binToFill] = ampOfBin;
-			dataFrame.phases[0][binToFill] = phaseOfBins;
+			dataFrame.phases[0][binToFill] = phase;
 		}
 
 		// Convert back to complex form
@@ -240,7 +243,7 @@ public class TestReverseFftBandLimitedWaveform
 		JTransformsConfigurator.setThreadingLowerBound( 256 * 1024 );
 
 		final TestReverseFftBandLimitedWaveform t = new TestReverseFftBandLimitedWaveform();
-		t.doIt();
+		t.analyseAdditiveFourierVersion();
 		t.generateTestOutput();
 		t.generateTestOutputDouble();
 	}

@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.util.audio.oscillatortable;
 
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.math.MathDefines;
 
 public class SineRawWaveTableGenerator extends RawWaveTableGenerator
@@ -53,4 +54,17 @@ public class SineRawWaveTableGenerator extends RawWaveTableGenerator
 		return retVal;
 	}
 
+	@Override
+	public RawLookupTable getHarmonics( final int numHarmonics )
+	{
+		final RawLookupTable harmonics = new RawLookupTable( numHarmonics, true );
+		harmonics.floatBuffer[0] = 1.0f;
+		return harmonics;
+	}
+
+	@Override
+	public float getPhase()
+	{
+		return -0.25f;
+	}
 }

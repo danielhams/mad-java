@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 
 
 public abstract class RawWaveTableGenerator
@@ -139,4 +140,6 @@ public abstract class RawWaveTableGenerator
 
 	public abstract String getWaveTypeId();
 	public abstract CubicPaddedRawWaveTable reallyGenerateWaveTable( int cycleLength, int numHarmonics );
+	public abstract RawLookupTable getHarmonics( int numHarmonics );
+	public abstract float getPhase();
 }

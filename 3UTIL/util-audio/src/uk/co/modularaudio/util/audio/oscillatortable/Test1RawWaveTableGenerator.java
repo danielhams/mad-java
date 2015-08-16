@@ -33,22 +33,35 @@ public class Test1RawWaveTableGenerator extends RawWaveTableGenerator
 	}
 
 	@Override
-	public CubicPaddedRawWaveTable reallyGenerateWaveTable( int cycleLength, int numHarmonics )
+	public CubicPaddedRawWaveTable reallyGenerateWaveTable( final int cycleLength, final int numHarmonics )
 	{
-		CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
-		
+		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
+
 		// Initialise the harmonics table and set them up
-		RawLookupTable harmonics = new RawLookupTable( numHarmonics, true );
+		final RawLookupTable harmonics = getHarmonics( numHarmonics );
+		final float phase = getPhase();
+
+		FourierTableGenerator.fillTable( retVal.buffer, 1, retVal.origWaveLength, numHarmonics, harmonics.floatBuffer, phase );
+
+		retVal.completeCubicBufferFillAndNormalise();
+
+		return retVal;
+	}
+
+	@Override
+	public RawLookupTable getHarmonics( final int numHarmonics )
+	{
+		final RawLookupTable harmonics = new RawLookupTable( numHarmonics, true );
 		for( int i = 0 ; i < numHarmonics ; i+=3 )
 		{
 			harmonics.floatBuffer[i] = 1.0f / (i + 1 );
 		}
-		
-		FourierTableGenerator.fillTable( retVal.buffer, 1, retVal.origWaveLength, numHarmonics, harmonics.floatBuffer, -0.25f );
-		
-		retVal.completeCubicBufferFillAndNormalise();
-		
-		return retVal;
+		return harmonics;
 	}
 
+	@Override
+	public float getPhase()
+	{
+		return -0.25f;
+	}
 }

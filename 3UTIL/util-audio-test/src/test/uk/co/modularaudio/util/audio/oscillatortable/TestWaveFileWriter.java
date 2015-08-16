@@ -17,7 +17,7 @@ public class TestWaveFileWriter
 		{
 			throw new IOException("Only one channel supported");
 		}
-		myWriter = new WaveFileWriter( outFilename, numChannels, sampleRate, (short)16 );
+		myWriter = new WaveFileWriter( outFilename, numChannels, sampleRate, (short)32 );
 	}
 
 	public void writeFloats( final float[][] source, final int offset, final int length ) throws IOException, WavFileException
