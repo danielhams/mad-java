@@ -42,7 +42,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 		// Only check for a new table every 20hz of difference
 		if( absFreqDiff > 20.0f || waveTableForFreq == null )
 		{
-			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
+			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
 			prevFreq = freq;
 		}
 		final double incr = freq / sampleRate;
@@ -75,7 +75,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			final float freq = freqs[ currentOutputIndex ];
 			if( freq != prevFreq )
 			{
-				waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
+				waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
 				prevFreq = freq;
 			}
 
@@ -96,7 +96,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	{
 		if( freq != prevFreq )
 		{
-			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
+			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
 			prevFreq = freq;
 		}
 		final double incr = freq / sampleRate;
@@ -131,7 +131,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			final float freq = freqs[ currentOutputIndex ];
 			if( freq != prevFreq )
 			{
-				waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( freq );
+				waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
 				prevFreq = freq;
 			}
 

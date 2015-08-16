@@ -25,11 +25,11 @@ public class TruncatingWaveTableValueFetcher implements WaveTableValueFetcher
 {
 
 	@Override
-	public float getValueAtNormalisedPosition( CubicPaddedRawWaveTable waveTable, float position )
+	public float getValueAtNormalisedPosition( final CubicPaddedRawWaveTable waveTable, final float position )
 	{
-		float[] buffer = waveTable.buffer;
-		int finalIndex = waveTable.finalIndex;
-		int posInBuffer = 1 + (int)((finalIndex * position ));
+		final float[] buffer = waveTable.buffer;
+		final int waveTableLength = waveTable.origWaveLength;
+		final int posInBuffer = 1 + (int)( waveTableLength * position );
 		return buffer[ posInBuffer ];
 	}
 

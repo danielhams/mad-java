@@ -31,7 +31,8 @@ public final class ExpCurvePulseWidthMapper implements PulseWidthMapper
 		final float curvePos = (float)Math.sqrt( (pos * 2) - (pos * pos) );
 		final float curveInfluence = (1.0f - pulseWidth) * 0.7f;
 		final float posInfluence = 1.0f - curveInfluence;
-		return (curveInfluence * curvePos) + (pos * posInfluence);
+		final float result = (curveInfluence * curvePos) + (pos * posInfluence);
+		return (result >= 1.0f ? result - 1.0f : result);
 	}
 
 }

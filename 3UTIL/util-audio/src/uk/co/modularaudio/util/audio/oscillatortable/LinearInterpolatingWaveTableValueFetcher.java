@@ -27,20 +27,20 @@ public class LinearInterpolatingWaveTableValueFetcher implements WaveTableValueF
 //	private static Log log = LogFactory.getLog( LinearInterpolatingWaveTableValueFetcher.class.getName() );
 
 	@Override
-	public float getValueAtNormalisedPosition( CubicPaddedRawWaveTable waveTable, float normalisedPosition )
+	public float getValueAtNormalisedPosition( final CubicPaddedRawWaveTable waveTable, final float normalisedPosition )
 	{
-		int finalIndex = waveTable.finalIndex;
-		float[] floatBuffer = waveTable.buffer;
-		
+		final int waveTableLength = waveTable.origWaveLength;
+		final float[] floatBuffer = waveTable.buffer;
+
 		// We add one to start at index 1
-		float realInternalPos = 1.0f + (normalisedPosition * finalIndex );
+		final float realInternalPos = 1.0f + (normalisedPosition * waveTableLength );
 
-		int intPos = (int)realInternalPos;
+		final int intPos = (int)realInternalPos;
 
-		float frac = realInternalPos - intPos;
-		float fracOther = 1.0f - frac;
-		float a0 = floatBuffer[ intPos ];
-		float a1 = floatBuffer[ intPos + 1 ];
+		final float frac = realInternalPos - intPos;
+		final float fracOther = 1.0f - frac;
+		final float a0 = floatBuffer[ intPos ];
+		final float a1 = floatBuffer[ intPos + 1 ];
 
 		return( (a0 * fracOther)  + (a1 * frac) );
 	}

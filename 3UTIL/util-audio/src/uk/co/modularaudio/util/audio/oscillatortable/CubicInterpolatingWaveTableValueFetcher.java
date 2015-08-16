@@ -29,11 +29,15 @@ public class CubicInterpolatingWaveTableValueFetcher implements WaveTableValueFe
 	@Override
 	public float getValueAtNormalisedPosition( final CubicPaddedRawWaveTable waveTable, final float normalisedPosition )
 	{
-		final int finalIndex = waveTable.finalIndex;
+		if( normalisedPosition < 0.0f || normalisedPosition >= 1.0f )
+		{
+			throw new IndexOutOfBoundsException("Bad normalised position");
+		}
+		final int waveTableLength = waveTable.origWaveLength;
 		final float[] floatBuffer = waveTable.buffer;
 
 		// We add one to start at index 1
-		final float realInternalPos = (normalisedPosition * finalIndex );
+		final float realInternalPos = (normalisedPosition * waveTableLength );
 
 		// Now cubic interpolate it.
 

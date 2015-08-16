@@ -28,13 +28,11 @@ public class CubicPaddedRawWaveTable
 	public float[] buffer;
 	public int bufferLength;
 	public int origWaveLength;
-	public int finalIndex;
 
 	public CubicPaddedRawWaveTable( final float[] data )
 	{
 		bufferLength = data.length;
 		origWaveLength = bufferLength - NUM_EXTRA_SAMPLES_IN_BUFFER;
-		finalIndex = origWaveLength - 1;
 		buffer = new float[ bufferLength ];
 		System.arraycopy( data, 0, buffer, 0, bufferLength );
 	}
@@ -43,7 +41,6 @@ public class CubicPaddedRawWaveTable
 	{
 		origWaveLength = cycleLength;
 		bufferLength = origWaveLength + NUM_EXTRA_SAMPLES_IN_BUFFER;
-		finalIndex = origWaveLength - 1;
 		buffer = new float[ bufferLength ];
 	}
 
