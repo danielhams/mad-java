@@ -22,17 +22,11 @@ package uk.co.modularaudio.util.audio.lookuptable.raw;
 
 public class RawLookupTableDefines
 {
-	// Defaults for non-band-limited waves (LFO, sine)
-	// 32K per standard wave table
-//	public static final int OSCILLATOR_BUFFER_LENGTH = 32 * 1024;
-//	public static final int LFO_BUFFER_LENGTH = 32 * 1024;
-
 	public static final int OSCILLATOR_MIN_BUFFER_LENGTH = 256;
-
 	public static final int OSCILLATOR_MAX_BUFFER_LENGTH = 32 * 1024;
 
+	// Defaults for non-band-limited waves (LFO)
 	public static final int LFO_NUM_HARMONICS = 150;
-
 	public static final int LFO_BUFFER_LENGTH = calculateCycleLengthForHarmonics( LFO_NUM_HARMONICS );
 
 	public static int calculateCycleLengthForHarmonics( final int numHarmonics )

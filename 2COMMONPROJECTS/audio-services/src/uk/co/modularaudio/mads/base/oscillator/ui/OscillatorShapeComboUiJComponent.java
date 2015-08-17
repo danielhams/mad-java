@@ -61,6 +61,7 @@ public class OscillatorShapeComboUiJComponent extends PacComboBox<String>
 		waveNameToShapeMap.put( "Square", OscillatorWaveShape.SQUARE );
 		waveNameToShapeMap.put( "Triangle", OscillatorWaveShape.TRIANGLE );
 		waveNameToShapeMap.put( "Test1", OscillatorWaveShape.TEST1 );
+		waveNameToShapeMap.put( "Juno", OscillatorWaveShape.JUNO );
 		for( final String waveName : waveNameToShapeMap.keySet() )
 		{
 //			log.debug("Adding " + waveName + " to the map");

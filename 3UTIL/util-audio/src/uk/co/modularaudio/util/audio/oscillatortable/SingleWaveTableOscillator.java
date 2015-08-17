@@ -24,7 +24,7 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 {
-	private CubicPaddedRawWaveTable singleWaveTable = null;
+	private final CubicPaddedRawWaveTable singleWaveTable;
 
 	public SingleWaveTableOscillator( final CubicPaddedRawWaveTable waveTable, final WaveTableValueFetcher valueFetcher, final PulseWidthMapper pulseWidthMapper )
 	{

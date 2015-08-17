@@ -51,7 +51,7 @@ public class OscillatorInstances
 		for( final OscillatorWaveShape waveShape : OscillatorWaveShape.values() )
 		{
 			typeToTableMap.put( waveShape,
-					oscillatorFactory.createOscillator( OscillatorWaveTableType.SINGLE, OscillatorInterpolationType.LINEAR, waveShape ) );
+					oscillatorFactory.createOscillator( OscillatorWaveTableType.SINGLE, OscillatorInterpolationType.CUBIC, waveShape ) );
 		}
 	}
 
