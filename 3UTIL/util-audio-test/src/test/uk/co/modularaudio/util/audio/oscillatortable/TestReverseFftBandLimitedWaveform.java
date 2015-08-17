@@ -82,7 +82,7 @@ public class TestReverseFftBandLimitedWaveform
 
 	public void analyseAdditiveFourierVersion() throws Exception
 	{
-		final CubicPaddedRawWaveTable waveTable = waveTableGenerator.reallyGenerateWaveTable( fftRealLength,
+		final CubicPaddedRawWaveTable waveTable = waveTableGenerator.generateWaveTableAdditiveFourier( fftRealLength,
 				numHarmonics );
 
 		assert( fftRealLength == waveTable.buffer.length - CubicPaddedRawWaveTable.NUM_EXTRA_SAMPLES_IN_BUFFER );

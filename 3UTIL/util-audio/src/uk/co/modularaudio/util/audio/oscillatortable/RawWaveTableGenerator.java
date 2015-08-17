@@ -22,16 +22,25 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jtransforms.fft.FloatFFT_1D;
 
+import uk.co.modularaudio.util.audio.fft.FftWindow;
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
+import uk.co.modularaudio.util.audio.stft.StftDataFrame;
+import uk.co.modularaudio.util.audio.stft.StftException;
+import uk.co.modularaudio.util.audio.stft.StftParameters;
+import uk.co.modularaudio.util.audio.stft.tools.ComplexPolarConverter;
+import uk.co.modularaudio.util.math.MathDefines;
 
 
 public abstract class RawWaveTableGenerator
@@ -42,7 +51,11 @@ public abstract class RawWaveTableGenerator
 
 	private final static ReentrantLock cacheLock = new ReentrantLock( true );
 
-	public CubicPaddedRawWaveTable readFromCacheOrGenerate( final String cacheFileRoot, final int cycleLength, final int numHarmonics )
+	public final static boolean GENERATE_USING_FFT = true;
+
+	public CubicPaddedRawWaveTable readFromCacheOrGenerate( final String cacheFileRoot,
+			final int cycleLength,
+			final int numHarmonics )
 			throws IOException
 	{
 		cacheLock.lock();
@@ -111,7 +124,14 @@ public abstract class RawWaveTableGenerator
 					}
 				}
 
-				retVal = reallyGenerateWaveTable( cycleLength, numHarmonics );
+				if( GENERATE_USING_FFT )
+				{
+					retVal = generateWaveTableInverseFft( cycleLength, numHarmonics );
+				}
+				else
+				{
+					retVal = generateWaveTableAdditiveFourier( cycleLength, numHarmonics );
+				}
 
 				final String tmpPath = pathToCachedWave + ".tmp";
 				final WaveFileWriter fileWriter = new WaveFileWriter( tmpPath, numChannels, sampleRate, numBitsPerSample );
@@ -132,6 +152,10 @@ public abstract class RawWaveTableGenerator
 
 			return retVal;
 		}
+		catch( final StftException se )
+		{
+			throw new IOException( se );
+		}
 		finally
 		{
 			cacheLock.unlock();
@@ -139,7 +163,59 @@ public abstract class RawWaveTableGenerator
 	}
 
 	public abstract String getWaveTypeId();
-	public abstract CubicPaddedRawWaveTable reallyGenerateWaveTable( int cycleLength, int numHarmonics );
+	public abstract CubicPaddedRawWaveTable generateWaveTableAdditiveFourier( int cycleLength, int numHarmonics );
 	public abstract RawLookupTable getHarmonics( int numHarmonics );
 	public abstract float getPhase();
+
+	public CubicPaddedRawWaveTable generateWaveTableInverseFft( final int cycleLength, final int numHarmonics )
+			throws StftException
+	{
+		final int fftRealLength = cycleLength;
+		final FftWindow emptyFftWindow = null;
+		final StftParameters stftParams = new StftParameters( DataRate.CD_QUALITY,
+				1,
+				fftRealLength,
+				4,
+				fftRealLength,
+				emptyFftWindow );
+
+		final int numBins = stftParams.getNumBins();
+		final int fftComplexArraySize = stftParams.getComplexArraySize();
+
+		final ComplexPolarConverter cpc = new ComplexPolarConverter( stftParams );
+
+		final FloatFFT_1D fftEngine = new FloatFFT_1D( fftRealLength );
+
+		final StftDataFrame dataFrame = new StftDataFrame( 1, fftRealLength, fftComplexArraySize, numBins );
+		Arrays.fill( dataFrame.amps[0], 0.0f );
+		Arrays.fill( dataFrame.phases[0], 0.0f );
+		Arrays.fill( dataFrame.complexFrame[0], 0.0f );
+
+		final int startBin = 1;
+
+		final RawLookupTable harmonics = getHarmonics( numHarmonics );
+		final float phase = getPhase() * MathDefines.TWO_PI_F;
+
+		// What's used in the fourier generator
+		for( int i = 0 ; i < numHarmonics ; ++i )
+		{
+			// Every other bin gets a peak
+			final int harmonicIndex = i;
+			final int binToFill = startBin + harmonicIndex;
+			final float ampOfBin = harmonics.floatBuffer[ harmonicIndex ] * (fftRealLength / 2);
+
+			dataFrame.amps[0][binToFill] = ampOfBin;
+			dataFrame.phases[0][binToFill] = phase;
+		}
+
+		// Convert back to complex form
+		cpc.polarToComplex( dataFrame );
+		fftEngine.realInverse( dataFrame.complexFrame[0], true );
+
+		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
+		System.arraycopy( dataFrame.complexFrame[0], 0, retVal.buffer, 1, fftRealLength );
+		retVal.completeCubicBufferFillAndNormalise();
+
+		return retVal;
+	}
 }

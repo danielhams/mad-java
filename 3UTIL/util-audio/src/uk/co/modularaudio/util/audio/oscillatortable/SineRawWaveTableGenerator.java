@@ -33,7 +33,7 @@ public class SineRawWaveTableGenerator extends RawWaveTableGenerator
 	}
 
 	@Override
-	public strictfp CubicPaddedRawWaveTable reallyGenerateWaveTable( final int cycleLength, final int numHarmonics )
+	public strictfp CubicPaddedRawWaveTable generateWaveTableAdditiveFourier( final int cycleLength, final int numHarmonics )
 	{
 		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
 

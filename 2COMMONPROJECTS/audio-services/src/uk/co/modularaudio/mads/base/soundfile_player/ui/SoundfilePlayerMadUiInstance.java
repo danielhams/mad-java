@@ -299,7 +299,8 @@ public class SoundfilePlayerMadUiInstance extends
 //		log.debug("Received notification that the buffer is filled. Promoting to resampler client.");
 		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient(
 				sampleCacheClient,
-			BlockResamplingMethod.CUBIC );
+				BlockResamplingMethod.CUBIC );
+//				BlockResamplingMethod.LINEAR );
 
 		for( final SoundfileSampleEventListener sel : sampleEventListeners )
 		{

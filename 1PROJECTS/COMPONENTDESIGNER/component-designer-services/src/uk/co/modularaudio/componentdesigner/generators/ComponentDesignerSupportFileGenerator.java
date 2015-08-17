@@ -38,6 +38,7 @@ import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
 import uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl;
+import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardBandLimitedWaveTables;
 import uk.co.modularaudio.util.audio.oscillatortable.StandardWaveTables;
@@ -91,6 +92,8 @@ public class ComponentDesignerSupportFileGenerator
 		{
 			log.info("Creating output in '" + args[0] + "' reading images from '" + args[1] + "'");
 		}
+
+		JTransformsConfigurator.setThreadsToOne();
 
 		final LoggerContext ctx = (LoggerContext) LogManager.getContext( false );
 		final Configuration config = ctx.getConfiguration();
@@ -148,6 +151,7 @@ public class ComponentDesignerSupportFileGenerator
 				sblwt.getMapForShape( shape );
 			}
 		}
+		log.info( "Completed wave tables check" );
 	}
 
 	private void copyComponentImages() throws Exception
@@ -188,5 +192,6 @@ public class ComponentDesignerSupportFileGenerator
 				Files.copy( entry, new File( outputPath ).toPath() );
 			}
 		}
+		log.info( "Done checking for new component images..." );
 	}
 }

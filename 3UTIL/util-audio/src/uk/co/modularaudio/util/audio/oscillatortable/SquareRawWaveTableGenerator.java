@@ -32,7 +32,7 @@ public class SquareRawWaveTableGenerator extends RawWaveTableGenerator
 	}
 
 	@Override
-	public CubicPaddedRawWaveTable reallyGenerateWaveTable( final int cycleLength, final int numHarmonics )
+	public CubicPaddedRawWaveTable generateWaveTableAdditiveFourier( final int cycleLength, final int numHarmonics )
 	{
 		final CubicPaddedRawWaveTable retVal = new CubicPaddedRawWaveTable( cycleLength );
 

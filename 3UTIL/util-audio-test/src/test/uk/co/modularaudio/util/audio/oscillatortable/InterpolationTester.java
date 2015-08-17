@@ -45,7 +45,7 @@ public class InterpolationTester extends TestCase
 	private void internalDoWithFetcher( final WaveTableValueFetcher valueFetcher )
 	{
 		final SineRawWaveTableGenerator sineGenerator = new SineRawWaveTableGenerator();
-		final CubicPaddedRawWaveTable sineTable = sineGenerator.reallyGenerateWaveTable( 4, 1 );
+		final CubicPaddedRawWaveTable sineTable = sineGenerator.generateWaveTableAdditiveFourier( 4, 1 );
 
 //		final float[] sourceData = new float[] {
 //				-0.25f,		//-1
