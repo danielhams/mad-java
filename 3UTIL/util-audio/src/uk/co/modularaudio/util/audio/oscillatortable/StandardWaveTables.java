@@ -56,8 +56,8 @@ public final class StandardWaveTables
 					{
 						final SineRawWaveTableGenerator sineWaveTableGenerator = new SineRawWaveTableGenerator();
 						final CubicPaddedRawWaveTable sineTable = sineWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.OSCILLATOR_MIN_BUFFER_LENGTH,
+								1 );
 						shapeToTableMap.put( OscillatorWaveShape.SINE, sineTable );
 						break;
 					}
@@ -65,8 +65,8 @@ public final class StandardWaveTables
 					{
 						final SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
 						final CubicPaddedRawWaveTable sawTable = sawWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.LFO_BUFFER_LENGTH,
+								RawLookupTableDefines.LFO_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.SAW, sawTable );
 						break;
 					}
@@ -74,8 +74,8 @@ public final class StandardWaveTables
 					{
 						final SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
 						final CubicPaddedRawWaveTable squareTable = squareWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.LFO_BUFFER_LENGTH,
+								RawLookupTableDefines.LFO_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.SQUARE, squareTable );
 						break;
 					}
@@ -83,8 +83,8 @@ public final class StandardWaveTables
 					{
 						final Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
 						final CubicPaddedRawWaveTable test1Table = test1WaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.LFO_BUFFER_LENGTH,
+								RawLookupTableDefines.LFO_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.TEST1, test1Table );
 						break;
 					}
@@ -92,8 +92,8 @@ public final class StandardWaveTables
 					{
 						final TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
 						final CubicPaddedRawWaveTable triangleTable = triangleWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.LFO_BUFFER_LENGTH,
+								RawLookupTableDefines.LFO_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.TRIANGLE, triangleTable );
 						break;
 					}
@@ -101,8 +101,8 @@ public final class StandardWaveTables
 					{
 						final JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
 						final CubicPaddedRawWaveTable junoTable = junoWaveTableGenerator.readFromCacheOrGenerate( pathToCacheRoot,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH,
-								RawLookupTableDefines.OSCILLATOR_NUM_HARMONICS );
+								RawLookupTableDefines.LFO_BUFFER_LENGTH,
+								RawLookupTableDefines.LFO_NUM_HARMONICS );
 						shapeToTableMap.put( OscillatorWaveShape.JUNO, junoTable );
 						break;
 					}

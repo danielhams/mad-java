@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 public abstract class AbstractWavetableOscillator implements Oscillator
 {
-	protected double currentPosition = 0.0;
+	protected float currentPosition = 0.0f;
 	protected WaveTableValueFetcher valueFetcher;
 	protected PulseWidthMapper pulseWidthMapper;
 

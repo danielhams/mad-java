@@ -26,7 +26,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	private final BandLimitedWaveTableMap bandWaveTableMap;
 
 	private float prevFreq = -1.0f;
-	private CubicPaddedRawWaveTable waveTableForFreq = null;
+	private CubicPaddedRawWaveTable waveTableForFreq;
 
 	public BandLimitedWaveTableOscillator( final BandLimitedWaveTableMap waveTableMap, final WaveTableValueFetcher valueFetcher, final PulseWidthMapper pulseWidthMapper )
 	{
@@ -48,16 +48,16 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 		final double incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
 			output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}
@@ -67,7 +67,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
@@ -79,13 +79,13 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 				prevFreq = freq;
 			}
 
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
 			output[currentOutputIndex] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			final double incr = freq / sampleRate;
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}
@@ -99,20 +99,20 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
 			prevFreq = freq;
 		}
-		final double incr = freq / sampleRate;
+		final float incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
 			final int currentOutputIndex = outputIndex + i;
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], pos );
 			output[ currentOutputIndex ] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}
@@ -123,7 +123,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
@@ -135,13 +135,13 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 				prevFreq = freq;
 			}
 
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[ currentOutputIndex ], pos );
 			output[ currentOutputIndex ] = valueFetcher.getValueAtNormalisedPosition( waveTableForFreq, pwAdjustedPos );
 
 			final double incr = freq / sampleRate;
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}

@@ -29,8 +29,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTableDefines;
-
 public final class StandardBandLimitedWaveTables
 {
 	private static Log log = LogFactory.getLog( StandardBandLimitedWaveTables.class.getName() );
@@ -82,8 +80,7 @@ public final class StandardBandLimitedWaveTables
 					{
 						final SawRawWaveTableGenerator sawWaveTableGenerator = new SawRawWaveTableGenerator();
 						final BandLimitedWaveTableMap sawWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
-								sawWaveTableGenerator,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH );
+								sawWaveTableGenerator );
 						shapeToTableMap.put( OscillatorWaveShape.SAW, sawWaveTableMap );
 						break;
 					}
@@ -91,8 +88,7 @@ public final class StandardBandLimitedWaveTables
 					{
 						final SquareRawWaveTableGenerator squareWaveTableGenerator = new SquareRawWaveTableGenerator();
 						final BandLimitedWaveTableMap squareWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
-								squareWaveTableGenerator,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH );
+								squareWaveTableGenerator );
 						shapeToTableMap.put( OscillatorWaveShape.SQUARE, squareWaveTableMap );
 						break;
 					}
@@ -100,8 +96,7 @@ public final class StandardBandLimitedWaveTables
 					{
 						final Test1RawWaveTableGenerator test1WaveTableGenerator = new Test1RawWaveTableGenerator();
 						final BandLimitedWaveTableMap test1WaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
-								test1WaveTableGenerator,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH );
+								test1WaveTableGenerator );
 						shapeToTableMap.put( OscillatorWaveShape.TEST1, test1WaveTableMap );
 						break;
 					}
@@ -109,8 +104,7 @@ public final class StandardBandLimitedWaveTables
 					{
 						final TriangleRawWaveTableGenerator triangleWaveTableGenerator = new TriangleRawWaveTableGenerator();
 						final BandLimitedWaveTableMap triangleWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
-								triangleWaveTableGenerator,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH );
+								triangleWaveTableGenerator );
 						shapeToTableMap.put( OscillatorWaveShape.TRIANGLE, triangleWaveTableMap );
 						break;
 					}
@@ -118,8 +112,7 @@ public final class StandardBandLimitedWaveTables
 					{
 						final JunoRawWaveTableGenerator junoWaveTableGenerator = new JunoRawWaveTableGenerator();
 						final BandLimitedWaveTableMap junoWaveTableMap = new BandLimitedWaveTableMap( pathToCacheRoot,
-								junoWaveTableGenerator,
-								RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH );
+								junoWaveTableGenerator );
 						shapeToTableMap.put( OscillatorWaveShape.JUNO, junoWaveTableMap );
 						break;
 					}

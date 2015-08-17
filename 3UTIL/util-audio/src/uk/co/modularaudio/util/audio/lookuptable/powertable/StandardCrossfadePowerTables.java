@@ -30,8 +30,8 @@ public class StandardCrossfadePowerTables
 	
 	static
 	{
-		additivePowerTable = new LinearPowerTable( RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH + 1);
-		equalPowerTable = new EqualPowerTable( RawLookupTableDefines.OSCILLATOR_BUFFER_LENGTH + 1);
+		additivePowerTable = new LinearPowerTable( RawLookupTableDefines.LFO_BUFFER_LENGTH + 1);
+		equalPowerTable = new EqualPowerTable( RawLookupTableDefines.LFO_BUFFER_LENGTH + 1);
 	}
 	
 	public static LinearPowerTable getAdditivePowerTable()

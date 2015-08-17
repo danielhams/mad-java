@@ -35,19 +35,19 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	@Override
 	public void oscillate( final float[] output, final float freq, final float iPhase, final float pulseWidth, final int outputIndex, final int length, final int sampleRate )
 	{
-		final double incr = freq / sampleRate;
+		final float incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
 			output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}
@@ -57,31 +57,31 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		if( pulseWidth == 1.0f )
 		{
 			for( int i = 0 ; i < length ; i++ )
 			{
-				output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, (float)pos );
+				output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pos );
 
-				final double incr = freqs[i] / sampleRate;
+				final float incr = freqs[i] / sampleRate;
 				pos += incr;
-				while( pos >= 1.0 ) pos -= 1.0;
-				while( pos < 0.0 ) pos += 1.0;
+				while( pos >= 1.0f ) pos -= 1.0f;
+				while( pos < 0.0f ) pos += 1.0f;
 			}
 		}
 		else
 		{
 			for( int i = 0 ; i < length ; i++ )
 			{
-				final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, (float)pos );
+				final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidth, pos );
 				output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
 
-				final double incr = freqs[i] / sampleRate;
+				final float incr = freqs[i] / sampleRate;
 				pos += incr;
-				while( pos >= 1.0 ) pos -= 1.0;
-				while( pos < 0.0 ) pos += 1.0;
+				while( pos >= 1.0f ) pos -= 1.0f;
+				while( pos < 0.0f ) pos += 1.0f;
 			}
 		}
 		currentPosition = pos;
@@ -91,19 +91,19 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	public void oscillate( final float[] output, final float freq, final float iPhase,
 			final float[] pulseWidths, final int outputIndex, final int length, final int sampleRate )
 	{
-		final double incr = freq / sampleRate;
+		final float incr = freq / sampleRate;
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[i], (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[i], pos );
 			output[outputIndex + i] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
 
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}
@@ -113,18 +113,18 @@ public class SingleWaveTableOscillator extends AbstractWavetableOscillator
 	{
 //		final float phase = ( iPhase < 0 ? iPhase + 1 : iPhase );
 
-		double pos = currentPosition;
+		float pos = currentPosition;
 
 		for( int i = 0 ; i < length ; i++ )
 		{
 			final int currentIndex = outputIndex + i;
-			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[i], (float)pos );
+			final float pwAdjustedPos = pulseWidthMapper.adjustPwPos( pulseWidths[i], pos );
 			output[currentIndex] = valueFetcher.getValueAtNormalisedPosition( singleWaveTable, pwAdjustedPos );
 
-			final double incr = freqs[currentIndex] / sampleRate;
+			final float incr = freqs[currentIndex] / sampleRate;
 			pos += incr;
-			while( pos >= 1.0 ) pos -= 1.0;
-			while( pos < 0.0 ) pos += 1.0;
+			while( pos >= 1.0f ) pos -= 1.0f;
+			while( pos < 0.0f ) pos += 1.0f;
 		}
 		currentPosition = pos;
 	}

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTableDefines;
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 import uk.co.modularaudio.util.audio.midi.MidiUtils;
 
@@ -39,7 +40,8 @@ public class BandLimitedWaveTableMap
 	private final static MidiNote BAND_END_NOTE = MidiUtils.getMidiNoteFromStringReturnNull( "G10" );
 	private final int notesBetweenBands = 1;
 
-	public BandLimitedWaveTableMap( final String waveCacheRoot, final RawWaveTableGenerator waveTableBandGenerator, final int cycleLength )
+	public BandLimitedWaveTableMap( final String waveCacheRoot,
+			final RawWaveTableGenerator waveTableBandGenerator )
 		throws IOException
 	{
 		final FreqTreeMap<FreqTreeMapEntry> freqTreeMap = new FreqTreeMap<FreqTreeMapEntry>();
@@ -54,8 +56,10 @@ public class BandLimitedWaveTableMap
 			final float bandStartFreq = bandStartFreqs[ i ];
 			final int numHarmonics = bandNumHarms[ i ];
 
+			final int calculatedCycleLength = RawLookupTableDefines.calculateCycleLengthForHarmonics( numHarmonics );
+
 			final CubicPaddedRawWaveTable waveTableForBand = waveTableBandGenerator.readFromCacheOrGenerate( waveCacheRoot,
-					cycleLength,
+					calculatedCycleLength,
 					numHarmonics );
 			bandLimitedWaveTables.add(  waveTableForBand );
 
