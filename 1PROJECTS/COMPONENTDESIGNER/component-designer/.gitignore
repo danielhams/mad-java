@@ -1,5 +1,6 @@
 bin/*
 /bin
-.javacomponentdesigner*
+javamadpp.properties
 /thumbnails/
 component-designer-db.*
+wavetablescache
