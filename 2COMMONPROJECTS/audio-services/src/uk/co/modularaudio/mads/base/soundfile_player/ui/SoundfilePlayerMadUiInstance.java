@@ -300,7 +300,6 @@ public class SoundfilePlayerMadUiInstance extends
 		currentResampledSample = advancedComponentsFrontController.promoteSampleCacheClientToResamplingClient(
 				sampleCacheClient,
 				BlockResamplingMethod.CUBIC );
-//				BlockResamplingMethod.LINEAR );
 
 		for( final SoundfileSampleEventListener sel : sampleEventListeners )
 		{

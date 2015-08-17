@@ -11,6 +11,7 @@ import uk.co.modularaudio.util.audio.oscillatortable.LinearInterpolatingWaveTabl
 import uk.co.modularaudio.util.audio.oscillatortable.SineRawWaveTableGenerator;
 import uk.co.modularaudio.util.audio.oscillatortable.TruncatingWaveTableValueFetcher;
 import uk.co.modularaudio.util.audio.oscillatortable.WaveTableValueFetcher;
+import uk.co.modularaudio.util.audio.stft.StftException;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 
@@ -18,7 +19,7 @@ public class InterpolationTester extends TestCase
 {
 	private static Log log = LogFactory.getLog( InterpolationTester.class.getName() );
 
-	public void testTruncatingInterpolator()
+	public void testTruncatingInterpolator() throws StftException
 	{
 		log.debug("Testing truncating interpolator");
 
@@ -26,7 +27,7 @@ public class InterpolationTester extends TestCase
 		internalDoWithFetcher( valueFetcher );
 	}
 
-	public void testLinearInterpolator()
+	public void testLinearInterpolator() throws StftException
 	{
 		log.debug("Testing linear interpolator");
 
@@ -34,7 +35,7 @@ public class InterpolationTester extends TestCase
 		internalDoWithFetcher( valueFetcher );
 	}
 
-	public void testCubicInterpolator()
+	public void testCubicInterpolator() throws StftException
 	{
 		log.debug("Testing cubic interpolator");
 
@@ -42,26 +43,16 @@ public class InterpolationTester extends TestCase
 		internalDoWithFetcher( valueFetcher );
 	}
 
-	private void internalDoWithFetcher( final WaveTableValueFetcher valueFetcher )
+	private void internalDoWithFetcher( final WaveTableValueFetcher valueFetcher ) throws StftException
 	{
 		final SineRawWaveTableGenerator sineGenerator = new SineRawWaveTableGenerator();
-		final CubicPaddedRawWaveTable sineTable = sineGenerator.generateWaveTableAdditiveFourier( 4, 1 );
 
-//		final float[] sourceData = new float[] {
-//				-0.25f,		//-1
-//				0.0f,		// 0
-//				0.25f,		// 1
-//				0.5f,		// 2
-//				0.25f,		// 3
-//				0.0f,		// 4
-//				-0.25f,		// 5
-//				0.0f		// 6
-//		};
+		final CubicPaddedRawWaveTable sineTable = sineGenerator.generateWaveTableInverseFft( 4, 1 );
+
 		final float[] sourceData = sineTable.buffer;
 
 		final int sourceDataLength = sourceData.length - CubicPaddedRawWaveTable.NUM_EXTRA_SAMPLES_IN_BUFFER;
 
-//		final CubicPaddedRawWaveTable sourceWaveTable = new CubicPaddedRawWaveTable( sourceData );
 		final CubicPaddedRawWaveTable sourceWaveTable = sineTable;
 
 		final int numStepPositions = (sourceDataLength * 2) + 1;
