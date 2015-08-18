@@ -242,10 +242,4 @@ public class SliderDisplayView extends JPanel
 		final SliderDoubleClickMouseListener doubleClickMouseListener = new SliderDoubleClickMouseListener( receiver );
 		slider.addMouseListener( doubleClickMouseListener );
 	}
-
-	public void changeModel( final SliderDisplayModel newModel )
-	{
-		slider.changeModel( newModel );
-		textbox.changeModel( newModel );
-	}
 }

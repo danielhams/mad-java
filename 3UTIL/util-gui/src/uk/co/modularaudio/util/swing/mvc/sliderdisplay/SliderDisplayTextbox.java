@@ -34,6 +34,7 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.mvc.TextboxHelper;
 
 public class SliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
@@ -41,7 +42,7 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 
 	private static final long serialVersionUID = -493606535649144832L;
 
-	private SliderDisplayModel model;
+	private final SliderDisplayModel model;
 	private final SliderDisplayController controller;
 
 	private final JTextField textField;
@@ -129,11 +130,8 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 	@Override
 	public void receiveValueChange( final Object source, final float newValue )
 	{
-		if( source != this )
-		{
-//			log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
-			setCurrentValueNoPropogate( newValue );
-		}
+//		log.debug("Received value change from " + source.getClass().getSimpleName() + " with " + newValue );
+		setCurrentValueNoPropogate( newValue );
 	}
 
 	@Override
@@ -143,56 +141,16 @@ public class SliderDisplayTextbox extends JPanel implements ValueChangeListener,
 		if( e.getSource() == textField )
 		{
 			final String valueStr = textField.getText();
-			boolean validValue = false;
-			float valueAsFloat = 0.0f;
 			try
 			{
-				valueAsFloat = Float.parseFloat( valueStr );
-				if( !Float.isInfinite( valueAsFloat ) )
-				{
-					if( valueAsFloat >= model.getMinValue() &&
-							valueAsFloat <= model.getMaxValue() )
-					{
-						validValue = true;
-					}
-				}
+				final float valueAsFloat = TextboxHelper.parseFloatTextbox( valueStr, model.getDisplayNumDecPlaces() );
+				controller.setValue( this, valueAsFloat );
 			}
 			catch(final NumberFormatException nfe )
 			{
+				final float resetValue = model.getValue();
+				controller.setValue( this, resetValue );
 			}
-
-			float valueToSet;
-			if( validValue )
-			{
-				final String truncToPrecisionStr = MathFormatter.fastFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
-				valueToSet = Float.parseFloat( truncToPrecisionStr );
-			}
-			else
-			{
-				valueToSet = model.getValue();
-			}
-			setCurrentValueNoPropogate( valueToSet );
-
-			controller.setValue( this, valueToSet );
-
 		}
-	}
-
-	public void changeModel( final SliderDisplayModel newModel )
-	{
-		model.removeChangeListener( this );
-		this.model = newModel;
-		extractModelVars( newModel );
-		completeModelSetup( newModel );
-
-		if( unitsStrLength > 0 )
-		{
-			unitsLabel.setText( unitsStr );
-		}
-
-		model.addChangeListener( this );
-		validate();
-		final Dimension minimumSize = this.getPreferredSize();
-		this.setMinimumSize( minimumSize );
 	}
 }

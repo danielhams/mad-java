@@ -37,6 +37,7 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 import uk.co.modularaudio.util.swing.lwtc.LWTCSpeedyUpdateTextField;
+import uk.co.modularaudio.util.swing.mvc.TextboxHelper;
 
 public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListener, ActionListener
 {
@@ -101,9 +102,6 @@ public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListe
 
 		textField.setHorizontalAlignment( JTextField.RIGHT );
 
-		final float curValue = model.getInitialValue();
-		setCurrentValueNoPropogate( curValue );
-
 		model.addChangeListener( this );
 
 		textField.addActionListener( this );
@@ -152,44 +150,16 @@ public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListe
 		if( e.getSource() == textField )
 		{
 			final String valueStr = textField.getText();
-			boolean validValue = false;
-			float valueAsFloat = 0.0f;
 			try
 			{
-				if( valueStr.equals("-Inf"))
-				{
-					valueAsFloat = Float.NEGATIVE_INFINITY;
-					validValue = true;
-				}
-				else if( valueStr.equals("Inf") ||
-						valueStr.equals("+Inf"))
-				{
-					valueAsFloat = Float.POSITIVE_INFINITY;
-					validValue = true;
-				}
-				else
-				{
-					valueAsFloat = Float.parseFloat( valueStr );
-					validValue = true;
-				}
+				final float valueAsFloat = TextboxHelper.parseFloatTextbox( valueStr, model.getDisplayNumDecPlaces() );
+				controller.setValue( this, valueAsFloat );
 			}
 			catch(final NumberFormatException nfe )
 			{
+				final float resetValue = model.getValue();
+				controller.setValue( this, resetValue );
 			}
-
-			float valueToSet;
-			if( validValue )
-			{
-				final String truncToPrecisionStr = MathFormatter.fastFloatPrint( valueAsFloat, model.getDisplayNumDecPlaces(), false );
-				valueToSet = Float.parseFloat( truncToPrecisionStr );
-			}
-			else
-			{
-				valueToSet = model.getValue();
-			}
-//			setCurrentValueNoPropogate( valueToSet );
-
-			controller.setValue( this, valueToSet );
 		}
 	}
 
