@@ -41,14 +41,19 @@ public class InterpTesterMadUiDefinition
 	private static final int[] CHAN_INDEXES = new int[] {
 		InterpTesterMadDefinition.CONSUMER_AUDIO,
 		InterpTesterMadDefinition.CONSUMER_CV,
+
 		InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
+
 		InterpTesterMadDefinition.PRODUCER_CV_RAW,
+		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER,
 		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE,
+
 		InterpTesterMadDefinition.PRODUCER_AUDIO,
 		InterpTesterMadDefinition.PRODUCER_CV
 	};
@@ -59,6 +64,7 @@ public class InterpTesterMadUiDefinition
 
 		new Point( 150, 120 ),
 		new Point( 190, 120 ),
+		new Point( 230, 120 ),
 
 		new Point( 150, 160 ),
 		new Point( 190, 160 ),
@@ -66,6 +72,7 @@ public class InterpTesterMadUiDefinition
 		new Point( 270, 160 ),
 		new Point( 310, 160 ),
 		new Point( 350, 160 ),
+		new Point( 390, 160 ),
 
 
 		new Point( 150, 200 ),

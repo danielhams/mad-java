@@ -89,6 +89,11 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 				perfDataReceiver.setNoneNanos( nextOutgoingEntry.value );
 				break;
 			}
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_SOR_NANOS:
+			{
+				perfDataReceiver.setSorNanos( nextOutgoingEntry.value );
+				break;
+			}
 			case InterpTesterIOQueueBridge.COMMAND_TO_UI_LIN_NANOS:
 			{
 				perfDataReceiver.setLNanos( nextOutgoingEntry.value );
@@ -157,7 +162,7 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		final int intBits = Float.floatToIntBits( newValue );
 		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP, intBits );
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_AMP_NOTS, intBits );
-		
+
 //		long curTimestamp = System.nanoTime();
 //		log.debug("Sending new value at timestamp " + curTimestamp );
 	}

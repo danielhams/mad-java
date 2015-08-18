@@ -32,10 +32,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.69585"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Gain" value="-5.580923"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/Mp3Repository/20150710/6759810_Elysium_Original_Mix.mp3|11997692"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/John Digweed - Transitions Vol.4 FLAC (2008)/VA-John Digweed - Transitions Vol. 4/05-Sian-Wear Your Scars Like Medals,Kim Runic,Suspicious Blue,Two Lone Swordsmen,Snack 54.flac|5640094"/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -45,10 +45,10 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-6.740746"/>
+        <rackControl name="Gain" value="-5.860177"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/John Digweed - Transitions Vol.4 FLAC (2008)/VA-John Digweed - Transitions Vol. 4/08-Pascale Feos &amp; Marc Miroir-Rezolution,Spector,Mineral Drive,Jorg Burger,Superpicture.flac|-1"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/John Digweed - Transitions Vol.4 FLAC (2008)/VA-John Digweed - Transitions Vol. 4/02-Henry Saiz-From Empty Lands,Guy J,Geko.flac|157849410"/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

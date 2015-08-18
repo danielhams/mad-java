@@ -34,6 +34,7 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	private static final long serialVersionUID = -6944278603929566358L;
 
 	private final LWTCLabel nonePerf;
+	private final LWTCLabel sorPerf;
 	private final LWTCLabel lPerf;
 	private final LWTCLabel hhPerf;
 	private final LWTCLabel sdPerf;
@@ -76,6 +77,10 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 		nonePerf = new DarkLabel();
 		add( nonePerf, "wrap");
 
+		add( new DarkLabel("Sum Of Ratios:"), "");
+		sorPerf = new DarkLabel();
+		add( sorPerf, "wrap");
+
 		add( new DarkLabel("Linear:"), "");
 		lPerf = new DarkLabel();
 		add( lPerf, "wrap");
@@ -101,6 +106,12 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	public void setNoneNanos( final long value )
 	{
 		nonePerf.setText( Long.toString( value ) );
+	}
+
+	@Override
+	public void setSorNanos( final long value )
+	{
+		sorPerf.setText( Long.toString( value ) );
 	}
 
 	@Override

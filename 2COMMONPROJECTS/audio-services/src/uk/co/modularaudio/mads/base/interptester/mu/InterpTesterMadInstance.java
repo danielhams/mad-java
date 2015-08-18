@@ -34,6 +34,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -52,6 +53,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private static Log log = LogFactory.getLog( InterpTesterMadInstance.class.getName() );
 
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
+	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
@@ -59,6 +61,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final SpringAndDamperDoubleInterpolator sddInterpolator = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
+	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 
 	private int sampleRate;
@@ -70,6 +73,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private int numFramesToNextUiEvent;
 
 	private long lastNoneNanos;
+	private long lastSorNanos;
 	private long lastLinNanos;
 	private long lastHHNanos;
 	private long lastSDNanos;
@@ -100,12 +104,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
+		sorInterpolator.reset( sampleRate, desValueChaseMillis );
 		liInterpolator.reset( sampleRate, desValueChaseMillis );
 		hhInterpolator.reset( sampleRate, desValueChaseMillis );
 		sdInterpolator.reset( sampleRate );
 		lpInterpolator.reset( sampleRate, desValueChaseMillis );
 		sddInterpolator.reset( sampleRate );
 
+		sorInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 
 		framesBetweenUiEvents = timingParameters.getSampleFramesPerFrontEndPeriod() * 10;
@@ -136,6 +142,11 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 					lastNoneNanos,
 					null );
 
+			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
+					periodStartFrameTime,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_SOR_NANOS,
+					lastSorNanos,
+					null );
 
 			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
 					periodStartFrameTime,
@@ -174,10 +185,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		noneInterpolatorNoTs.generateControlValues( rawNoTsBuf, frameOffset, numFrames );
 		noneInterpolatorNoTs.checkForDenormal();
 
+		final float[] sorNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS ].floatBuffer;
+		sorInterpolatorNoTs.generateControlValues( sorNoTsBuf, frameOffset, numFrames );
+		sorInterpolatorNoTs.checkForDenormal();
+
 		final float[] hhNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS ].floatBuffer;
 		hhInterpolatorNoTs.generateControlValues( hhNoTsBuf, frameOffset, numFrames );
 		hhInterpolatorNoTs.checkForDenormal();
-
 
 		final float[] rawBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW ].floatBuffer;
 		long before = System.nanoTime();
@@ -185,6 +199,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		noneInterpolator.checkForDenormal();
 		long after = System.nanoTime();
 		lastNoneNanos = after - before;
+
+		final float[] sorBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS ].floatBuffer;
+		before = System.nanoTime();
+		sorInterpolator.generateControlValues( sorBuf, frameOffset, numFrames );
+		sorInterpolator.checkForDenormal();
+		after = System.nanoTime();
+		lastSorNanos = after - before;
 
 		final float[] linearBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LINEAR ].floatBuffer;
 		before = System.nanoTime();
@@ -232,6 +253,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		// Set all the TS based interpolators
 		noneInterpolator.notifyOfNewValue( amp );
+		sorInterpolator.notifyOfNewValue( amp );
 		liInterpolator.notifyOfNewValue( amp );
 		hhInterpolator.notifyOfNewValue( amp );
 		sdInterpolator.notifyOfNewValue( amp );
@@ -242,18 +264,21 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	public void setDesiredAmpNoTs( final float amp )
 	{
 		noneInterpolatorNoTs.notifyOfNewValue( amp );
+		sorInterpolatorNoTs.notifyOfNewValue( amp );
 		hhInterpolatorNoTs.notifyOfNewValue( amp );
 	}
 
 	public void setChaseMillis( final float chaseMillis )
 	{
 		desValueChaseMillis = chaseMillis;
+		sorInterpolator.reset( sampleRate, chaseMillis );
 		liInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
 		sdInterpolator.reset( sampleRate );
 		lpInterpolator.reset( sampleRate, chaseMillis );
 		sddInterpolator.reset( sampleRate );
 
+		sorInterpolatorNoTs.reset( sampleRate, chaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, chaseMillis );
 	}
 
@@ -278,12 +303,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		}
 
 		noneInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		sorInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		liInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		sdInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		lpInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
 
+		sorInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 	}
 

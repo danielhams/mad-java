@@ -25,6 +25,8 @@ public interface PerfDataReceiver
 
 	void setNoneNanos( long value );
 
+	void setSorNanos( long value );
+
 	void setLNanos( long value );
 
 	void setHHNanos( long value );
