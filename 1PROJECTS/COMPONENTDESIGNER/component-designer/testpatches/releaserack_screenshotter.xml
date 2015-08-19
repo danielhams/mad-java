@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Input Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Input Channel 2"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 2"/>
-    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
-        <rackPosition column="0" row="0"/>
-        <rackControl name="FastForward" value=""/>
-        <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.4887934"/>
-        <rackControl name="PlayStop" value="false"/>
-        <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/ErikMitchell/Erik Mitchell - Turbo Tech 015 - 10.25.11.mp3|6569471"/>
-        <rackControl name="SpeedSlider" value="1.0"/>
-        <rackControl name="WaveDisplay" value=""/>
-        <rackControl name="WaveOverview" value=""/>
-        <rackControl name="ZoomToggleGroup" value="2"/>
-    </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 1" definitionId="sub_rack">
-        <rackPosition column="2" row="0"/>
+        <rackPosition column="0" row="0"/>
         <rack name="ReleaseRack" cols="4" rows="36">
             <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ Example" rackComponentChannelInstanceName="Input Wave Left"/>
             <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Eight Stereo Lanes) Example" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
@@ -131,6 +120,4 @@
             <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) Example" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller Example" consumerChannelName="Input Wave 0"/>
         </rack>
     </rackComponent>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
 </rack>
