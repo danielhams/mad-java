@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 1"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 2"/>
+    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="FastForward" value=""/>
+        <rackControl name="FileInfo" value=""/>
+        <rackControl name="Gain" value="-7.4887934"/>
+        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Rewind" value=""/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/ErikMitchell/Erik Mitchell - Turbo Tech 015 - 10.25.11.mp3|6569471"/>
+        <rackControl name="SpeedSlider" value="1.0"/>
+        <rackControl name="WaveDisplay" value=""/>
+        <rackControl name="WaveOverview" value=""/>
+        <rackControl name="ZoomToggleGroup" value="2"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 1" definitionId="sub_rack">
+        <rackPosition column="2" row="0"/>
+        <rack name="ReleaseRack" cols="4" rows="36">
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DJ EQ Example" rackComponentChannelInstanceName="Input Wave Left"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Eight Stereo Lanes) Example" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mixer (Three Stereo Lanes) Example" rackComponentChannelInstanceName="Lane 1 Input Wave Left"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Spectral Amp (Large) Example" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Spectral Amp Example" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DJ EQ Example" rackComponentChannelInstanceName="Input Wave Right"/>
+            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Eight Stereo Lanes) Example" rackComponentChannelInstanceName="Lane 1 Input Wave Right"/>
+            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mixer (Three Stereo Lanes) Example" rackComponentChannelInstanceName="Lane 1 Input Wave Right"/>
+            <rackComponent name="Cross Fader Example" definitionId="cross_fader">
+                <rackPosition column="0" row="0"/>
+                <rackControl name="AmpAKill" value="false"/>
+                <rackControl name="AmpBKill" value="false"/>
+                <rackControl name="PowerCurve" value="Additive"/>
+                <rackControl name="Slider" value="0.0"/>
+            </rackComponent>
+            <rackComponent name="DC Trap Example" definitionId="dc_trap">
+                <rackPosition column="0" row="1"/>
+            </rackComponent>
+            <rackComponent name="DJ EQ Example" definitionId="djeq">
+                <rackPosition column="0" row="2"/>
+                <rackControl name="Fader" value="0.0"/>
+                <rackControl name="HighLane" value="0.0:false"/>
+                <rackControl name="LowLane" value="0.0:false"/>
+                <rackControl name="MidLane" value="0.0:false"/>
+            </rackComponent>
+            <rackComponent name="Frequency Filter Example" definitionId="frequency_filter">
+                <rackPosition column="0" row="6"/>
+                <rackControl name="Bandwidth" value="440.0"/>
+                <rackControl name="Filter Type" value="Low Pass"/>
+                <rackControl name="Knee" value="440.0"/>
+                <rackControl name="Toggle 24 dB" value="false"/>
+            </rackComponent>
+            <rackComponent name="Mixer (Eight Stereo Lanes) Example" definitionId="imixer8">
+                <rackPosition column="0" row="8"/>
+                <rackControl name="Master Lane" value="-Infinity:0.0"/>
+                <rackControl name="Mixer Lane 0" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 3" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 4" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 5" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 6" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 7" value="-Infinity:0.0:  "/>
+            </rackComponent>
+            <rackComponent name="Mixer (Three Stereo Lanes) Example" definitionId="imixer3">
+                <rackPosition column="0" row="12"/>
+                <rackControl name="Master Lane" value="0.0:0.0"/>
+                <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+                <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+            </rackComponent>
+            <rackComponent name="Moog Filter Example" definitionId="moog_filter">
+                <rackPosition column="0" row="16"/>
+                <rackControl name="Cutoff" value="0.5"/>
+                <rackControl name="Filter Type" value="Low Pass"/>
+                <rackControl name="Q" value="0.5"/>
+            </rackComponent>
+            <rackComponent name="Soundfile Player Example" definitionId="soundfile_player">
+                <rackPosition column="0" row="18"/>
+                <rackControl name="FastForward" value=""/>
+                <rackControl name="FileInfo" value=""/>
+                <rackControl name="Gain" value="0.0"/>
+                <rackControl name="PlayStop" value="false"/>
+                <rackControl name="Rewind" value=""/>
+                <rackControl name="SelectFile" value="|0"/>
+                <rackControl name="SpeedSlider" value="1.0"/>
+                <rackControl name="WaveDisplay" value=""/>
+                <rackControl name="WaveOverview" value=""/>
+                <rackControl name="ZoomToggleGroup" value="1"/>
+            </rackComponent>
+            <rackComponent name="Spectral Amp (Large) Example" definitionId="spec_amp_large">
+                <rackPosition column="0" row="26"/>
+                <rackControl name="Amp Ceil" value="0dB"/>
+                <rackControl name="Amp Floor" value="-96dB"/>
+                <rackControl name="Amp Scale" value="Log"/>
+                <rackControl name="Display" value=""/>
+                <rackControl name="Frequency Max" value="Hann"/>
+                <rackControl name="Frequency Min" value="4096"/>
+                <rackControl name="Frequency Scale" value="Fast Fall"/>
+                <rackControl name="Peak Reset" value="Log"/>
+                <rackControl name="Resolution" value=""/>
+                <rackControl name="Running Average" value="24000.0"/>
+                <rackControl name="Window" value="0.0"/>
+            </rackComponent>
+            <rackComponent name="Spectral Amp Example" definitionId="spectral_amp">
+                <rackPosition column="0" row="22"/>
+                <rackControl name="Amp Ceil" value="0dB"/>
+                <rackControl name="Amp Floor" value="-96dB"/>
+                <rackControl name="Amp Scale" value="Log"/>
+                <rackControl name="Display" value=""/>
+                <rackControl name="Frequency Max" value="24000.0"/>
+                <rackControl name="Frequency Min" value="0.0"/>
+                <rackControl name="Frequency Scale" value="Log"/>
+                <rackControl name="Peak Reset" value=""/>
+                <rackControl name="Resolution" value="4096"/>
+                <rackControl name="Running Average" value="Fast Fall"/>
+                <rackControl name="Window" value="Hann"/>
+            </rackComponent>
+            <rackComponent xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack Example" definitionId="sub_rack">
+                <rackPosition column="0" row="32"/>
+                <rack name="Sub Rack Example" cols="4" rows="19"/>
+            </rackComponent>
+            <rackComponent name="Wave Roller Example" definitionId="wave_roller">
+                <rackPosition column="0" row="33"/>
+                <rackControl name="CaptureTime" value="60.0"/>
+                <rackControl name="Display" value=""/>
+                <rackControl name="Left Scale" value=""/>
+                <rackControl name="Right Scale" value=""/>
+                <rackControl name="ScaleChoice" value="0dB"/>
+            </rackComponent>
+            <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) Example" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller Example" consumerChannelName="Input Wave 0"/>
+        </rack>
+    </rackComponent>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
+</rack>
