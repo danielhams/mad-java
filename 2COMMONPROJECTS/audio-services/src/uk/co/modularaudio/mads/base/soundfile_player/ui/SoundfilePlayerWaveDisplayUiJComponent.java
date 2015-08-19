@@ -76,7 +76,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 
 	private boolean active;
 
-	private float currentZoomMillis = 0.0f;
+	private float currentZoomMillis = SoundfilePlayerZoomToggleGroupUiJComponent.ZoomLevel.ZOOMED_DEFAULT.getMillisForLevel();
 
 	private SoundfileDisplaySampleFactory rpSampleFactory;
 	private RollPainter<SoundfileDisplayBuffer, SoundfileDisplayBufferClearer> rollPainter;
