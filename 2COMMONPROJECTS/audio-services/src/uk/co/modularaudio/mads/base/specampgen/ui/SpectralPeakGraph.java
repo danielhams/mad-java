@@ -35,6 +35,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
+import uk.co.modularaudio.util.audio.stft.StftParameters;
 
 public class SpectralPeakGraph extends JPanel
 	implements AmpAxisChangeListener, FreqAxisChangeListener, RunningAvChangeListener,
@@ -161,18 +162,20 @@ public class SpectralPeakGraph extends JPanel
 			{
 				// Computing the spectral body amplitude
 				// and running average in screen space
-				final int bucketMappedBodyValue;
+				int bucketMappedBodyValue;
 				final int bucketMappedRunAvValue;
 
 				if( previousBinDrawn == -1 || whichBin == previousBinDrawn + 1 )
 				{
 					final float bodyValForBin = computedBins[ whichBin ];
 					final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+
+					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( normalisedBodyBinValue );
+
 
 					final float runAvValForBin = runningBinPeaks[ whichBin ];
 					final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
+					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( normalisedRunAvBinValue );
 				}
 				else
 				{
@@ -193,8 +196,8 @@ public class SpectralPeakGraph extends JPanel
 							maxNormalisedRunAvValue = normalisedRunAvBinValue;
 						}
 					}
-					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, maxNormalisedValue );
-					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, maxNormalisedRunAvValue );
+					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( maxNormalisedValue );
+					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( maxNormalisedRunAvValue );
 				}
 
 				polygonXPoints[ bodyPointOffset ] = i;
@@ -220,7 +223,7 @@ public class SpectralPeakGraph extends JPanel
 
 		final float bodyValForBin = computedBins[ whichBin ];
 		final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-		final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedBodyBinValue );
+		final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( normalisedBodyBinValue );
 
 		polygonXPoints[ bodyPointOffset ] = finalPixel;
 		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
@@ -228,7 +231,7 @@ public class SpectralPeakGraph extends JPanel
 
 		final float runAvValForBin = runningBinPeaks[ whichBin ];
 		final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-		final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucketMinMax( magsHeight, normalisedRunAvBinValue );
+		final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( normalisedRunAvBinValue );
 		polylineXPoints[ runAvPointOffset ] = finalPixel;
 		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
 		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
@@ -357,11 +360,18 @@ public class SpectralPeakGraph extends JPanel
 		uiInstance.setDisplayPeaksHeight( magsHeight );
 	}
 
+//	@Override
+//	public void receiveFftSizeChange( final int desiredFftSize )
+//	{
+//		final int numBins = (desiredFftSize / 2) + 1;
+//		currentNumBins = numBins;
+//		recomputePixelToBinLookup();
+//		clear();
+//	}
 	@Override
-	public void receiveFftSizeChange( final int desiredFftSize )
+	public void receiveFftParams( final StftParameters params )
 	{
-		final int numBins = (desiredFftSize / 2) + 1;
-		currentNumBins = numBins;
+		currentNumBins = params.getNumBins();
 		recomputePixelToBinLookup();
 		clear();
 	}

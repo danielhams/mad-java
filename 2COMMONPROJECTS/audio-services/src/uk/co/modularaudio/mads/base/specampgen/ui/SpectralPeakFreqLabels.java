@@ -27,6 +27,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
@@ -94,7 +95,7 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 	}
 
 	@Override
-	public void receiveFftSizeChange( final int desiredFftSize )
+	public void receiveFftParams( final StftParameters params )
 	{
 		// Do nothing, we don't change based on fft size changes.
 	}

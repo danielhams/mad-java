@@ -18,15 +18,25 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
+package uk.co.modularaudio.util.audio.mvc.displayslider.models;
 
-public interface AmpScaleComputer
+import uk.co.modularaudio.util.mvc.displayslider.SimpleSliderIntToFloatConverter;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+
+public class OscillatorPulseWidthSliderModel extends SliderDisplayModel
 {
-	public final static float APPROX_POLAR_AMP_SCALE_FACTOR = 510.5857f;
+	public final static float DEFAULT_PULSE_WIDTH = 1.0f;
 
-	float scaleIt(float valForBin);
-
-	void setParameters( int numBuckets, float minValueDb, float maxValueDb );
-	int rawToMappedBucket( float rawValue );
-	float mappedBucketToRaw( int bucket );
+	public OscillatorPulseWidthSliderModel()
+	{
+		super( 0.0f, 1.0f,
+				DEFAULT_PULSE_WIDTH,
+				DEFAULT_PULSE_WIDTH,
+				100,
+				10,
+				new SimpleSliderIntToFloatConverter(),
+				2,
+				3,
+				"" );
+	}
 }

@@ -40,6 +40,7 @@ public class WolaProcessor
 	private final int numBins;
 
 	// Main algorithmic loop
+	private final StftParameters parameters;
 	private final StftFrameCreator frameCreator;
 	private final StftFrameProcessor frameProcessor;
 	private final StftFrameSynthesiser frameSynthesiser;
@@ -60,6 +61,7 @@ public class WolaProcessor
 	public WolaProcessor( final StftParameters params, final StftFrameProcessor frameProcessor )
 			throws StftException
 	{
+		this.parameters = params;
 		this.numChannels = params.getNumChannels();
 		this.analysisStepSize = params.getStepSize();
 		this.numReals = params.getNumReals();
@@ -166,4 +168,8 @@ public class WolaProcessor
 		processedFrame = new StftDataFrame( numChannels, numReals, complexArraySize, numBins );
 	}
 
+	public StftParameters getParameters()
+	{
+		return parameters;
+	}
 }

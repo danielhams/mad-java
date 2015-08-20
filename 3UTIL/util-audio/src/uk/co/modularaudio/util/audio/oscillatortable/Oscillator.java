@@ -22,9 +22,9 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 
 public interface Oscillator
 {
-	void oscillate( float[] output, float freq, float phase, float pulseWidth, int outputIndex, int length, int sampleRate );
-	void oscillate( float[] output, float[] freqs, float phase, float pulseWidth, int outputIndex, int length, int sampleRate );
-	void oscillate( float[] output, float freq, float phase, float pulseWidths[], int outputIndex, int length, int sampleRate );
-	void oscillate( float[] output, float[] freqs, float phase, float pulseWidths[], int outputIndex, int length, int sampleRate );
+	void oscillate( float freq, float phase, float pulseWidth, float[] output, int outputIndex, int length, int sampleRate );
+	void oscillate( float[] freqs, int freqIndex, float phase, float pulseWidth, float[] output, int outputIndex, int length, int sampleRate );
+	void oscillate( float freq, float phase, float pulseWidths[], int pwIndex, float[] output, int outputIndex, int length, int sampleRate );
+	void oscillate( float[] freqs, int freqIndex, float phase, float pulseWidths[], int pwIndex, float[] output, int outputIndex, int length, int sampleRate );
 	void resetPhase( float newPhase );
 }

@@ -20,54 +20,49 @@
 
 package uk.co.modularaudio.mads.base.bandlimitedoscillator.mu;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.OscillatorFrequencySliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.OscillatorPulseWidthSliderModel;
 import uk.co.modularaudio.util.audio.oscillatortable.NoWaveTableForShapeException;
 import uk.co.modularaudio.util.audio.oscillatortable.Oscillator;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactoryException;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOscillatorMadDefinition,BandLimitedOscillatorMadInstance>
 {
 	private static Log log = LogFactory.getLog( BandLimitedOscillatorMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 1;
 	private int sampleRate;
 
 	private final BandLimitedOscillatorInstances oscillatorInstances;
-
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
-	protected float oscillationFrequency = 100.0f;
-	// The actual value passed to the oscillator
-	protected float runtimeOscillationFrequency = 100.0f;
 
 	protected OscillatorWaveShape desiredWaveShape = OscillatorWaveShape.SAW;
 
 	private OscillatorWaveShape usedWaveShape = OscillatorWaveShape.SAW;
 	private Oscillator oscillator;
 
-	private final static boolean CHECK_NAN = false;
-
-	public float desiredPulsewidth = 1.0f;
-	public float runtimePulsewidth = 1.0f;
+	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator(
+			0.0f, DataRate.CD_QUALITY.getValue() / 2.0f );
+	private final SpringAndDamperDoubleInterpolator pwSad = new SpringAndDamperDoubleInterpolator( 0.01f,
+			1.0f );
 
 	public BandLimitedOscillatorMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -78,6 +73,9 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
 		oscillatorInstances = new BandLimitedOscillatorInstances( creationContext.getOscillatorFactory() );
+
+		freqSad.hardSetValue( OscillatorFrequencySliderModel.DEFAULT_OSCILLATOR_FREQUENCY );
+		pwSad.hardSetValue( OscillatorPulseWidthSliderModel.DEFAULT_PULSE_WIDTH );
 	}
 
 	@Override
@@ -87,10 +85,10 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 		try
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
 
 			oscillator = oscillatorInstances.getOscillator( usedWaveShape );
+
+			freqSad.resetLowerUpperBounds( 0.0f, sampleRate / 2.0f );
 		}
 		catch (final Exception e)
 		{
@@ -112,6 +110,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			final int frameOffset,
 			final int numFrames  )
 	{
+		final float[] tmpFloats = tempQueueEntryStorage.temporaryFloatArray;
 
 		final boolean cvFreqConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ );
 		final MadChannelBuffer cvFreqBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ ];
@@ -137,6 +136,13 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 		final MadChannelBuffer cvOutBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.PRODUCER_CV_OUT ];
 		final float[] cvOutFloats = cvOutBuf.floatBuffer;
 
+		int freqIndex = 0;
+		boolean constantFreq = freqSad.checkForDenormal();
+		freqSad.generateControlValues( tmpFloats, freqIndex, numFrames );
+		int pwIndex = numFrames;
+		boolean constantPw = pwSad.checkForDenormal();
+		pwSad.generateControlValues( tmpFloats, pwIndex, numFrames );
+
 		if( !audioOutConnected && !cvOutConnected )
 		{
 			// Do nothing, we have no output anyway
@@ -146,15 +152,27 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			if( cvFreqConnected )
 			{
 				cvFreqFloats = cvFreqBuf.floatBuffer;
+				freqIndex = frameOffset;
+				constantFreq = true;
+			}
+			else
+			{
+				cvFreqFloats = tmpFloats;
 			}
 
 			if( pwConnected )
 			{
 				pwFloats = pwBuf.floatBuffer;
+				pwIndex = frameOffset;
+				constantPw = true;
+			}
+			else
+			{
+				pwFloats = tmpFloats;
 			}
 
 			// Need one of the buffers to render into
-			final float[] genFloats = (audioOutConnected ? audioOutBuf.floatBuffer : cvOutBuf.floatBuffer );
+			final float[] genFloats = (audioOutConnected ? audioOutFloats : cvOutFloats );
 
 			if( usedWaveShape != desiredWaveShape )
 			{
@@ -162,129 +180,53 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 				usedWaveShape = desiredWaveShape;
 			}
 
-			if( !triggerConnected )
+			// TODO: Fix trigger aspects
+
+			if( !constantFreq )
 			{
-				if( cvFreqConnected )
+				if( !constantPw )
 				{
-					if( pwConnected )
-					{
-						oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, pwFloats, frameOffset, numFrames, sampleRate );
-					}
-					else
-					{
-						runtimePulsewidth = (runtimePulsewidth * curValueRatio ) + (desiredPulsewidth * newValueRatio );
-						oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, runtimePulsewidth, frameOffset, numFrames, sampleRate );
-					}
+					oscillator.oscillate( cvFreqFloats, freqIndex, 0.0f, pwFloats, pwIndex, genFloats, frameOffset, numFrames, sampleRate );
 				}
 				else
 				{
-					runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
-					if( pwConnected )
-					{
-						oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, pwFloats, frameOffset, numFrames, sampleRate );
-					}
-					else
-					{
-						runtimePulsewidth = (runtimePulsewidth * curValueRatio ) + (desiredPulsewidth * newValueRatio );
-						oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, runtimePulsewidth, frameOffset, numFrames, sampleRate );
-					}
-				}
-
-				if( audioOutConnected && cvOutConnected )
-				{
-					// We rendered into audio out, copy it over into the cv out
-					System.arraycopy( genFloats, frameOffset, cvOutFloats, frameOffset, numFrames );
+					oscillator.oscillate( cvFreqFloats, freqIndex, 0.0f, pwFloats[pwIndex], genFloats, frameOffset, numFrames, sampleRate );
 				}
 			}
 			else
 			{
-				// Have trigger samples - lets assume we have phase, too
-
-				// Lets fill some false values to make it easier in the loops
-
-				if( !cvFreqConnected )
+				if( !constantPw )
 				{
-					runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
-					Arrays.fill( cvFreqFloats, frameOffset, frameOffset + numFrames, runtimeOscillationFrequency );
+					oscillator.oscillate( cvFreqFloats[freqIndex], 0.0f, pwFloats, pwIndex, genFloats, frameOffset, numFrames, sampleRate );
 				}
-
-				if( !pwConnected )
+				else
 				{
-					runtimePulsewidth = (runtimePulsewidth * curValueRatio ) + (desiredPulsewidth * newValueRatio );
-					Arrays.fill( pwFloats, frameOffset, frameOffset + numFrames, runtimePulsewidth );
+					oscillator.oscillate( cvFreqFloats[freqIndex], 0.0f, pwFloats[pwIndex], genFloats, frameOffset, numFrames, sampleRate );
 				}
-
-				int samplesLeft = numFrames;
-				final int currentSampleIndex = 0;
-				int checkStartIndex = 0;
-
-				do
-				{
-					int s = currentSampleIndex;
-
-					for( ; s < numFrames ; s++ )
-					{
-						if( triggerSamples[ frameOffset + s ] > 0.0f )
-						{
-							final int length = s - checkStartIndex;
-
-							// Allow the oscillator to finish existing oscillation
-							if( length > 0 )
-							{
-								// Finish the existing wave
-								oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, pwFloats, frameOffset + checkStartIndex, length, sampleRate );
-							}
-							if( phaseConnected )
-							{
-								oscillator.resetPhase( phaseSamples[ frameOffset + s ] );
-							}
-							else
-							{
-								oscillator.resetPhase( (float)(Math.random() ) );
-							}
-							checkStartIndex = s;
-							samplesLeft -= length;
-						}
-					}
-
-					if( s >= numFrames )
-					{
-						final int length = numFrames - checkStartIndex;
-						// Output up to the final period sample
-						oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, pwFloats, frameOffset + checkStartIndex, length, sampleRate );
-						samplesLeft -= length;
-					}
-				}
-				while( samplesLeft > 0 );
-
-				if( audioOutConnected && cvOutConnected )
-				{
-					// We rendered into audio out, copy it over into the cv out
-					System.arraycopy( genFloats, frameOffset, cvOutFloats, frameOffset, numFrames );
-				}
-
 			}
-		}
 
-		if( CHECK_NAN )
-		{
-
-			for( int i = 0 ; i < numFrames ; i++ )
+			if( audioOutConnected && cvOutConnected )
 			{
-				if( audioOutConnected )
-				{
-					if( audioOutFloats[ frameOffset + i ] == Float.NaN )
-					{
-						log.error("Generated an audio NaN");
-					}
-
-					if( cvOutFloats[ frameOffset + i ] == Float.NaN )
-					{
-						log.error("Generated a cv NaN");
-					}
-				}
+				// We rendered into audio out, copy it over into the cv out
+				System.arraycopy( audioOutFloats, frameOffset, cvOutFloats, frameOffset, numFrames );
 			}
 		}
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void setDesiredFrequency( final float freq )
+	{
+		freqSad.notifyOfNewValue( freq );
+	}
+
+	public void setDesiredFrequencyImmediate( final float freq )
+	{
+		freqSad.hardSetValue( freq );
+	}
+
+	public void setDesiredPulseWidth( final float pw )
+	{
+		pwSad.notifyOfNewValue( pw );
 	}
 }

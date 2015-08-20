@@ -9,7 +9,7 @@
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Equal Power"/>
-        <rackControl name="Slider" value="-1.0"/>
+        <rackControl name="Slider" value="0.0"/>
     </rackComponent>
     <rackComponent name="DC Trap 1" definitionId="dc_trap">
         <rackPosition column="1" row="12"/>
@@ -35,7 +35,7 @@
         <rackControl name="Gain" value="-5.393979"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/DJS_JD_09042005.mp3|390941315"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/DJS_JD_09042005.mp3|624635158"/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -48,7 +48,7 @@
         <rackControl name="Gain" value="-5.8200817"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/John Digweed - Transitions Vol.4 FLAC (2008)/VA-John Digweed - Transitions Vol. 4/06-Plasmik-Pitch It,Jamie Stevens,Keep Her Space.flac|35613543"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/John Digweed - Transitions Vol.4 FLAC (2008)/VA-John Digweed - Transitions Vol. 4/06-Plasmik-Pitch It,Jamie Stevens,Keep Her Space.flac|35613542"/>
         <rackControl name="SpeedSlider" value="1.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -60,7 +60,7 @@
         <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Max" value="22050.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>

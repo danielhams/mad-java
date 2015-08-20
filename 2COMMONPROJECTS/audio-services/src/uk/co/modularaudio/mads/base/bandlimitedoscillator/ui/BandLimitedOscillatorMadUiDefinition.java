@@ -49,40 +49,42 @@ public class BandLimitedOscillatorMadUiDefinition
 	};
 
 	private static final Point[] CHAN_POSI = new Point[] {
-		new Point( 80, 30 ),
-		new Point( 60, 50 ),
-		new Point( 100, 50 ),
-		new Point( 80, 70 ),
-		new Point( 200, 30 ),
-		new Point( 200, 50 ),
-		new Point( 200, 70 )
+		new Point( 120,  60 ),
+		new Point( 100,  80 ),
+		new Point( 140,  80 ),
+		new Point( 120, 100 ),
+		new Point( 240,  60 ),
+		new Point( 240,  80 ),
+		new Point( 240, 100 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"Frequency",
 		"Shape",
+		"Frequency",
 		"Pulsewidth"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
-		ControlType.SLIDER,
 		ControlType.COMBO,
+		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		BandLimitedOscillatorHertzSliderUiJComponent.class,
-		BandLimitedOscillatorShapeComboUiJComponent.class,
-		BandLimitedOscillatorPulseWidthUiJComponent.class
+		BandLimitedOscillatorShapeChoiceUiJComponent.class,
+		BandLimitedOscillatorFrequencySliderUiJComponent.class,
+		BandLimitedOscillatorWidthSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 113, 3, 75, 43 ),
-		new Rectangle( 190, 15, 65, 20 ),
-		new Rectangle( 113, 50, 75, 42 )
+		new Rectangle( 113,  15, 140, 30 ),
+		new Rectangle( 113,  50, 400, 30 ),
+		new Rectangle( 113, 100, 400, 30 )
 	};
 
 	private static final Class<BandLimitedOscillatorMadUiInstance> INSTANCE_CLASS = BandLimitedOscillatorMadUiInstance.class;
+
+	public static final int SLIDER_LABEL_MIN_WIDTH = 80;
 
 	public BandLimitedOscillatorMadUiDefinition( final BufferedImageAllocator bia,
 			final BandLimitedOscillatorMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )

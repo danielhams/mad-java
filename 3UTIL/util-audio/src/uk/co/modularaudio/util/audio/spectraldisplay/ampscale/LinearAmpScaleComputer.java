@@ -33,7 +33,7 @@ public class LinearAmpScaleComputer implements AmpScaleComputer
 		return valForBin / 500.0f;
 	}
 
-	private int lastBucketIndex = 199;
+	private int numBuckets = 199;
 
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
@@ -43,34 +43,9 @@ public class LinearAmpScaleComputer implements AmpScaleComputer
 	private float rangeValue = maxValue - minValue;
 
 	@Override
-	public void setMinMaxDb( final float minValueDb, final float maxValueDb )
-	{
-		this.minDb = minValueDb;
-		minValue = AudioMath.dbToLevelF( minDb );
-		this.maxDb = maxValueDb;
-		maxValue = AudioMath.dbToLevelF( maxDb );
-		rangeValue = maxValue - minValue;
-	}
-
-	@Override
-	public int rawToMappedBucketMinMax( final int numBuckets, final float iRawValue )
-	{
-		float rawValue = (iRawValue < minValue ? 0.0f : iRawValue - minValue );
-		rawValue = (rawValue >= rangeValue ? 1.0f : (rawValue / rangeValue ));
-		return (int)(((numBuckets - 1) * rawValue) + 0.5f);
-	}
-
-	@Override
-	public float mappedBucketToRawMinMax( final int numBuckets, final int bucket )
-	{
-		final float normalisedBucketNum = bucket / (float)(numBuckets - 1);
-		return minValue + (normalisedBucketNum * rangeValue);
-	}
-
-	@Override
 	public void setParameters( final int numBuckets, final float minValueDb, final float maxValueDb )
 	{
-		lastBucketIndex = numBuckets - 1;
+		this.numBuckets = numBuckets;
 		this.minDb = minValueDb;
 		minValue = AudioMath.dbToLevelF( minDb );
 		this.maxDb = maxValueDb;
@@ -83,13 +58,13 @@ public class LinearAmpScaleComputer implements AmpScaleComputer
 	{
 		float rawValue = (iRawValue < minValue ? 0.0f : iRawValue - minValue );
 		rawValue = (rawValue >= rangeValue ? 1.0f : (rawValue / rangeValue ));
-		return (int)((lastBucketIndex * rawValue) + 0.5f);
+		return (int)((numBuckets * rawValue) + 0.5f);
 	}
 
 	@Override
 	public final float mappedBucketToRaw( final int bucket )
 	{
-		final float normalisedBucketNum = bucket / (float)lastBucketIndex;
+		final float normalisedBucketNum = bucket / (float)numBuckets;
 		return minValue + (normalisedBucketNum * rangeValue);
 	}
 

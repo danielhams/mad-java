@@ -23,9 +23,9 @@ package uk.co.modularaudio.mads.base.bandlimitedoscillator.ui;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorIOQueueBridge;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
-import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
 
@@ -49,13 +49,18 @@ public class BandLimitedOscillatorMadUiInstance extends NoEventsNoNameChangeNonC
 		sendCommandValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_FREQUENCY_IMMEDIATE, (Float.floatToIntBits( frequency ) ) );
 	}
 
-	public void sendWaveChoice( final OscillatorWaveShape waveShape )
-	{
-		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_WAVE, waveShape.ordinal() );
-	}
+//	public void sendWaveChoice( final OscillatorWaveShape waveShape )
+//	{
+//		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_WAVE, waveShape.ordinal() );
+//	}
 
 	public void sendPulsewidthChange( final float pulsewidth )
 	{
 		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_PULSE_WIDTH, (Float.floatToIntBits( pulsewidth ) ) );
+	}
+
+	public void setWaveShape( final OscillatorWaveShape shape )
+	{
+		sendTemporalValueToInstance( BandLimitedOscillatorIOQueueBridge.COMMAND_WAVE, shape.ordinal() );
 	}
 }

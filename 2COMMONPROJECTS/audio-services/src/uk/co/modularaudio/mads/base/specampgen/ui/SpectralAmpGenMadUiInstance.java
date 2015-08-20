@@ -256,9 +256,10 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		this.desiredFftSize = resolution;
 		reinitialiseFrequencyProcessor();
+		final StftParameters params = wolaProcessor.getWolaProcessor().getParameters();
 		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
 		{
-			facl.receiveFftSizeChange( desiredFftSize );
+			facl.receiveFftParams( params );
 		}
 	}
 
@@ -440,7 +441,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		freqAxisChangeListeners.add( cl );
 		cl.receiveFreqScaleChange( desiredFreqScaleComputer );
-		cl.receiveFftSizeChange( desiredFftSize );
+		cl.receiveFftParams( wolaProcessor.getWolaProcessor().getParameters() );
 	}
 
 	public void addRunAvChangeListener( final RunningAvChangeListener racl )
@@ -512,6 +513,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	public void setDisplayPeaksHeight( final int displayPeaksHeight )
 	{
 		this.displayPeaksHeight = displayPeaksHeight;
+		desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
 	}
 
 	public void setDesiredWindow( final WindowChoice win )

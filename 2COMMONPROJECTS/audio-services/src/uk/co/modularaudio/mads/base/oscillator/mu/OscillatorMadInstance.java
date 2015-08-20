@@ -140,12 +140,12 @@ public class OscillatorMadInstance extends MadInstance<OscillatorMadDefinition,O
 
 			if( cvFreqConnected )
 			{
-				oscillator.oscillate( genFloats, cvFreqFloats, 0.0f, 1.0f, frameOffset, numFrames, sampleRate );
+				oscillator.oscillate( cvFreqFloats, frameOffset, 0.0f, 1.0f, genFloats, frameOffset, numFrames, sampleRate );
 			}
 			else
 			{
 				runtimeOscillationFrequency = (runtimeOscillationFrequency * curValueRatio) + (oscillationFrequency * newValueRatio );
-				oscillator.oscillate( genFloats, runtimeOscillationFrequency, 0.0f, 1.0f, frameOffset, numFrames, sampleRate );
+				oscillator.oscillate( runtimeOscillationFrequency, 0.0f, 1.0f, genFloats, frameOffset, numFrames, sampleRate );
 			}
 
 			if( audioOutConnected && cvOutConnected )

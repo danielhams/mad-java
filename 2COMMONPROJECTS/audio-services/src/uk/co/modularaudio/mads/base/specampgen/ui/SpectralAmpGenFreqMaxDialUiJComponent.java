@@ -29,6 +29,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.SpectralAmpFreqRotaryDisplayModel;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.stft.StftParameters;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryDisplayKnob.KnobType;
@@ -163,7 +164,7 @@ public class SpectralAmpGenFreqMaxDialUiJComponent<D extends SpectralAmpGenMadDe
 	}
 
 	@Override
-	public void receiveFftSizeChange( final int desiredFftSize )
+	public void receiveFftParams( final StftParameters params )
 	{
 		// Don't care
 	}

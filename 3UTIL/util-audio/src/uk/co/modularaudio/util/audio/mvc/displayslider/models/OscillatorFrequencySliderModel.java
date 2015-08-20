@@ -25,10 +25,13 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class OscillatorFrequencySliderModel extends SliderDisplayModel
 {
+	public final static float DEFAULT_OSCILLATOR_FREQUENCY = 440.0f;
+
 	public OscillatorFrequencySliderModel()
 	{
-		super( 40.0f, 22050.0f, 440.0f,
-				440.0f,
+		super( 40.0f, 22050.0f,
+				DEFAULT_OSCILLATOR_FREQUENCY,
+				DEFAULT_OSCILLATOR_FREQUENCY,
 				1000,
 				100,
 				new LogSliderIntToFloatConverter( 22050.0f ),

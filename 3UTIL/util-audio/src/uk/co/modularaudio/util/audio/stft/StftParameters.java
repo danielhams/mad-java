@@ -47,6 +47,8 @@ public class StftParameters
 	private final float freqPerBin;
 	private final float[] binCenterFreqs;
 
+	private final float expectedAmpMax;
+
 	private final float twoPiAnalysisStepsOverSampleRate;
 	private final float sampleRateOverTwoPiAnalysisSteps;
 
@@ -95,6 +97,8 @@ public class StftParameters
 //			log.debug("Bin " + b + " center frequency is " + binCenterFreqs[b] );
 		}
 //		log.debug("Last bin center freq is " + binCenterFreqs[ numBins - 1] );
+
+		expectedAmpMax = stepSize;
 
 		twoPiAnalysisStepsOverSampleRate = (MathDefines.TWO_PI_F * stepSize) / sampleRate;
 		sampleRateOverTwoPiAnalysisSteps = sampleRate / (MathDefines.TWO_PI_F * stepSize);
@@ -163,6 +167,11 @@ public class StftParameters
 	public float[] getBinCenterFreqs()
 	{
 		return binCenterFreqs;
+	}
+
+	public float getExpectedAmpMax()
+	{
+		return expectedAmpMax;
 	}
 
 	public float getTwoPiAnalysisStepsOverSampleRate()

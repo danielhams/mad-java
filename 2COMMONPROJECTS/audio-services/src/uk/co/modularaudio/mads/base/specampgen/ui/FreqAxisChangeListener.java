@@ -21,10 +21,12 @@
 package uk.co.modularaudio.mads.base.specampgen.ui;
 
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
+import uk.co.modularaudio.util.audio.stft.StftParameters;
 
 public interface FreqAxisChangeListener
 {
 	void receiveFreqScaleChange( FrequencyScaleComputer freqScaleComputer );
 
-	void receiveFftSizeChange( int desiredFftSize );
+//	void receiveFftSizeChange( int desiredFftSize );
+	void receiveFftParams( StftParameters params );
 }

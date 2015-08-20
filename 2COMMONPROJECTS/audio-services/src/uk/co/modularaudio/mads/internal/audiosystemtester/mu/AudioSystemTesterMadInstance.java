@@ -79,7 +79,7 @@ public class AudioSystemTesterMadInstance extends MadInstance<AudioSystemTesterM
 
 			oscillator = of.createOscillator( OscillatorWaveTableType.BAND_LIMITED, OscillatorInterpolationType.LINEAR, OscillatorWaveShape.SQUARE );
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			throw new MadProcessingException( e );
 		}
@@ -97,7 +97,7 @@ public class AudioSystemTesterMadInstance extends MadInstance<AudioSystemTesterM
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+			final int frameOffset , final int numFrames  )
 	{
 		final int numOutputChannels = instanceConfiguration.getNumOutputChannels();
 
@@ -107,7 +107,7 @@ public class AudioSystemTesterMadInstance extends MadInstance<AudioSystemTesterM
 
 			final MadChannelBuffer genCb = channelBuffers[ genIndex ];
 			final float[] genFloats = genCb.floatBuffer;
-			oscillator.oscillate( genFloats, TEST_WAVE_HERTZ, 0.0f, 1.0f, 0, numFrames, sampleRate );
+			oscillator.oscillate( TEST_WAVE_HERTZ, 0.0f, 1.0f, genFloats, frameOffset, numFrames, sampleRate );
 
 			for( int s = 0 ; s < numFrames ; s++ )
 			{

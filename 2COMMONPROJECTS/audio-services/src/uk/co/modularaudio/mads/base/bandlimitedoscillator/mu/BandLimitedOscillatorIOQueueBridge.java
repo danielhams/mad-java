@@ -53,7 +53,7 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float freq = Float.intBitsToFloat( truncVal );
-				instance.oscillationFrequency = freq;
+				instance.setDesiredFrequency( freq );
 				break;
 			}
 			case COMMAND_FREQUENCY_IMMEDIATE:
@@ -62,8 +62,7 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float freq = Float.intBitsToFloat( truncVal );
-				instance.oscillationFrequency = freq;
-				instance.runtimeOscillationFrequency = freq;
+				instance.setDesiredFrequencyImmediate( freq );
 				break;
 			}
 			case COMMAND_WAVE:
@@ -81,7 +80,7 @@ public class BandLimitedOscillatorIOQueueBridge extends MadLocklessQueueBridge<B
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float pw = Float.intBitsToFloat( truncVal );
-				instance.desiredPulsewidth = pw;
+				instance.setDesiredPulseWidth( pw );
 				break;
 			}
 			default:
