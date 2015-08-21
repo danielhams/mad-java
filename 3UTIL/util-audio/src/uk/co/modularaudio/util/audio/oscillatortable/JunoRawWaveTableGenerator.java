@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 public class JunoRawWaveTableGenerator extends RawWaveTableGenerator
 {
 
-	private final static float[] loopingAmpAmounts = new float[] {
+	private final static float[] LOOPING_AMP_AMOUNTS = new float[] {
 			1.0f,
 			0.0f,
 			0.35f,
@@ -68,10 +68,10 @@ public class JunoRawWaveTableGenerator extends RawWaveTableGenerator
 		int curAmpCounter = 0;
 		for( int i = 0 ; i < numHarmonics ; i++ )
 		{
-			final float loopAmp = loopingAmpAmounts[curAmpCounter];
+			final float loopAmp = LOOPING_AMP_AMOUNTS[curAmpCounter];
 			harmonics.floatBuffer[i] = (1.0f / (i + 1 )) * loopAmp * ampSetMultiplier;
 			curAmpCounter++;
-			if( curAmpCounter > loopingAmpAmounts.length - 1 )
+			if( curAmpCounter > LOOPING_AMP_AMOUNTS.length - 1 )
 			{
 				curAmpCounter = 0;
 				ampSetMultiplier = ampSetMultiplier / 2.0f;

@@ -22,9 +22,6 @@ package uk.co.modularaudio.mads.base.bandlimitedoscillator.mu;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -48,7 +45,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOscillatorMadDefinition,BandLimitedOscillatorMadInstance>
 {
-	private static Log log = LogFactory.getLog( BandLimitedOscillatorMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( BandLimitedOscillatorMadInstance.class.getName() );
 
 	private int sampleRate;
 
@@ -116,13 +113,13 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 		final MadChannelBuffer cvFreqBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_FREQ ];
 		float[] cvFreqFloats = cvFreqBuf.floatBuffer;
 
-		final boolean phaseConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE );
-		final MadChannelBuffer phaseBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE ];
-		final float[] phaseSamples = phaseBuf.floatBuffer;
-
-		final boolean triggerConnected = channelConnectedFlags.get(  BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER );
-		final MadChannelBuffer triggerBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER ];
-		final float[] triggerSamples = triggerBuf.floatBuffer;
+//		final boolean phaseConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE );
+//		final MadChannelBuffer phaseBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PHASE ];
+//		final float[] phaseSamples = phaseBuf.floatBuffer;
+//
+//		final boolean triggerConnected = channelConnectedFlags.get(  BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER );
+//		final MadChannelBuffer triggerBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_TRIGGER ];
+//		final float[] triggerSamples = triggerBuf.floatBuffer;
 
 		final boolean pwConnected = channelConnectedFlags.get( BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH );
 		final MadChannelBuffer pwBuf = channelBuffers[ BandLimitedOscillatorMadDefinition.CONSUMER_CV_PULSEWIDTH ];

@@ -169,6 +169,6 @@ public class BackendToFrontendDataRingBuffer extends LocklessFloatRingBuffer
 	@Override
 	public int write( final float[] s, final int p, final int l)
 	{
-		throw new RuntimeException("Use backEndWrite");
+		throw new RuntimeException("Use backEndWrite"); // NOPMD by dan on 21/08/15 09:19
 	}
 }

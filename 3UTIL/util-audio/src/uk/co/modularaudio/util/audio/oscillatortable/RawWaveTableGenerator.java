@@ -47,9 +47,9 @@ public abstract class RawWaveTableGenerator
 {
 	private static Log log = LogFactory.getLog( RawWaveTableGenerator.class.getName() );
 
-	private final static Map<String, CubicPaddedRawWaveTable> nameToWaveTable = new HashMap<String, CubicPaddedRawWaveTable>();
+	private final static Map<String, CubicPaddedRawWaveTable> NAME_TO_WAVE_TABLE = new HashMap<String, CubicPaddedRawWaveTable>();
 
-	private final static ReentrantLock cacheLock = new ReentrantLock( true );
+	private final static ReentrantLock CACHE_LOCK = new ReentrantLock( true );
 
 	public final static boolean GENERATE_USING_FFT = true;
 
@@ -58,7 +58,7 @@ public abstract class RawWaveTableGenerator
 			final int numHarmonics )
 			throws IOException
 	{
-		cacheLock.lock();
+		CACHE_LOCK.lock();
 		try
 		{
 			final int sampleRate = 44100;
@@ -66,7 +66,7 @@ public abstract class RawWaveTableGenerator
 			final short numBitsPerSample = 32; // NOPMD by dan on 29/01/15 16:30
 			final String uniqueName = getWaveTypeId() + "_l" + cycleLength + "_h" + numHarmonics + ".wav";
 
-			CubicPaddedRawWaveTable retVal = nameToWaveTable.get( uniqueName );
+			CubicPaddedRawWaveTable retVal = NAME_TO_WAVE_TABLE.get( uniqueName );
 			if( retVal != null )
 			{
 				if( log.isTraceEnabled() )
@@ -106,7 +106,7 @@ public abstract class RawWaveTableGenerator
 				fileReader.readFrames( data, 0, 0, numTotalFloatsAsInt );
 				fileReader.close();
 				retVal = new CubicPaddedRawWaveTable( data );
-				nameToWaveTable.put( uniqueName, retVal );
+				NAME_TO_WAVE_TABLE.put( uniqueName, retVal );
 			}
 			else
 			{
@@ -147,7 +147,7 @@ public abstract class RawWaveTableGenerator
 					throw new IOException( msg );
 				}
 
-				nameToWaveTable.put( uniqueName, retVal );
+				NAME_TO_WAVE_TABLE.put( uniqueName, retVal );
 			}
 
 			return retVal;
@@ -158,7 +158,7 @@ public abstract class RawWaveTableGenerator
 		}
 		finally
 		{
-			cacheLock.unlock();
+			CACHE_LOCK.unlock();
 		}
 	}
 

@@ -101,7 +101,7 @@ public class WaveFileWriter
 		writeInt( sampleRate );
 		writeInt( byteRate );
 		writeShort( blockAlign );
-		writeShort( (short)bitsPerSample );
+		writeShort( (short)bitsPerSample ); // NOPMD by dan on 21/08/15 09:18
 		writeInt( WaveFileDefines.DATA_CHUNK_ID );
 		final int emptyChunkSize = 0;
 		writeInt( emptyChunkSize );
