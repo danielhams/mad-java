@@ -22,11 +22,9 @@ package uk.co.modularaudio.util.audio.spectraldisplay.ampscale;
 
 public interface AmpScaleComputer
 {
-	public final static float APPROX_POLAR_AMP_SCALE_FACTOR = 510.5857f;
-
 	float scaleIt(float valForBin);
 
 	void setParameters( int numBuckets, float minValueDb, float maxValueDb );
-	int rawToMappedBucket( float rawValue );
-	float mappedBucketToRaw( int bucket );
+	int normalisedRawToMappedBucket( float rawValue );
+	float mappedBucketToNormalisedRaw( int bucket );
 }

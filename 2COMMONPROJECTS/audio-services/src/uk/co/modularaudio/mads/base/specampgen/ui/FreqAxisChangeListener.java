@@ -27,6 +27,5 @@ public interface FreqAxisChangeListener
 {
 	void receiveFreqScaleChange( FrequencyScaleComputer freqScaleComputer );
 
-//	void receiveFftSizeChange( int desiredFftSize );
 	void receiveFftParams( StftParameters params );
 }

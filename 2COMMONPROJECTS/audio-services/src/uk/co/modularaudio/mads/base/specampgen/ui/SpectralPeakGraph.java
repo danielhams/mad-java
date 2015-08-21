@@ -88,6 +88,8 @@ public class SpectralPeakGraph extends JPanel
 	private int[] polylineExtraXPoints;
 	private int[] polylineExtraYPoints;
 
+	private float stftExpectedAmpMax = 512.0f;
+
 	public SpectralPeakGraph( final SpectralAmpGenMadUiInstance<?,?> uiInstance,
 			final int numAmpMarkers,
 			final int numFreqMarkers )
@@ -168,14 +170,14 @@ public class SpectralPeakGraph extends JPanel
 				if( previousBinDrawn == -1 || whichBin == previousBinDrawn + 1 )
 				{
 					final float bodyValForBin = computedBins[ whichBin ];
-					final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+					final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
 
-					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( normalisedBodyBinValue );
+					bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedBodyBinValue );
 
 
 					final float runAvValForBin = runningBinPeaks[ whichBin ];
-					final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( normalisedRunAvBinValue );
+					final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
+					bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedRunAvBinValue );
 				}
 				else
 				{
@@ -184,20 +186,20 @@ public class SpectralPeakGraph extends JPanel
 					for( int sb = previousBinDrawn + 1 ; sb <= whichBin ; ++sb )
 					{
 						final float bodyValForBin = computedBins[ sb ];
-						final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+						final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
 						if( normalisedBodyBinValue > maxNormalisedValue )
 						{
 							maxNormalisedValue = normalisedBodyBinValue;
 						}
 						final float runAvValForBin = runningBinPeaks[ sb ];
-						final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+						final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
 						if( normalisedRunAvBinValue > maxNormalisedRunAvValue )
 						{
 							maxNormalisedRunAvValue = normalisedRunAvBinValue;
 						}
 					}
-					bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( maxNormalisedValue );
-					bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( maxNormalisedRunAvValue );
+					bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( maxNormalisedValue );
+					bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( maxNormalisedRunAvValue );
 				}
 
 				polygonXPoints[ bodyPointOffset ] = i;
@@ -207,7 +209,9 @@ public class SpectralPeakGraph extends JPanel
 				polylineXPoints[ runAvPointOffset ] = i;
 				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
 				polylineExtraXPoints[ runAvPointOffset ] = i;
-				polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
+				int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
+				extraYPoint = extraYPoint < 0 ? 0 : extraYPoint;
+				polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
 				runAvPointOffset++;
 
 				previousBinDrawn = whichBin;
@@ -222,20 +226,23 @@ public class SpectralPeakGraph extends JPanel
 //		log.debug("Final pixel " + finalPixel + " using bin " + whichBin );
 
 		final float bodyValForBin = computedBins[ whichBin ];
-		final float normalisedBodyBinValue = bodyValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-		final int bucketMappedBodyValue = ampScaleComputer.rawToMappedBucket( normalisedBodyBinValue );
+		final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
+		final int bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedBodyBinValue );
 
 		polygonXPoints[ bodyPointOffset ] = finalPixel;
 		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
 		bodyPointOffset++;
 
 		final float runAvValForBin = runningBinPeaks[ whichBin ];
-		final float normalisedRunAvBinValue = runAvValForBin / AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-		final int bucketMappedRunAvValue = ampScaleComputer.rawToMappedBucket( normalisedRunAvBinValue );
+		final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
+		final int bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedRunAvBinValue );
 		polylineXPoints[ runAvPointOffset ] = finalPixel;
 		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
 		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
-		polylineExtraYPoints[ runAvPointOffset ] = polylineYPoints[ runAvPointOffset ] - 1;
+		int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
+		extraYPoint = (extraYPoint < 0 ? 0 : extraYPoint );
+		polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
+
 		runAvPointOffset++;
 
 		// Close off the polygon
@@ -357,21 +364,14 @@ public class SpectralPeakGraph extends JPanel
 		recomputePixelToBinLookup();
 
 		// Inform the uiInstance of our size
-		uiInstance.setDisplayPeaksHeight( magsHeight );
+		uiInstance.setDisplayPeaksHeight( magsHeight + 1 );
 	}
 
-//	@Override
-//	public void receiveFftSizeChange( final int desiredFftSize )
-//	{
-//		final int numBins = (desiredFftSize / 2) + 1;
-//		currentNumBins = numBins;
-//		recomputePixelToBinLookup();
-//		clear();
-//	}
 	@Override
 	public void receiveFftParams( final StftParameters params )
 	{
 		currentNumBins = params.getNumBins();
+		stftExpectedAmpMax = params.getExpectedAmpMax();
 		recomputePixelToBinLookup();
 		clear();
 	}

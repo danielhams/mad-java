@@ -192,14 +192,6 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		{
 			srl.receiveSampleRateChange( dataRate.getValue() );
 		}
-
-//		// Notify the frequency axis listeners we've started since the
-//		// frequency scale depends on the sample rate we're running at
-//		desiredFreqScaleComputer.setMinMaxFrequency( 0.0f, dataRate.getValue() / 2.0f );
-//		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
-//		{
-//			facl.receiveFreqScaleChange( desiredFreqScaleComputer );
-//		}
 	}
 
 	private void initialiseBuffers()
@@ -420,7 +412,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	public void setDesiredAmpMax( final AmpMax al )
 	{
 		this.desiredAmpMaxDb = al.getDb();
-		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
+		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight,
+				desiredAmpMinDb,
+				desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
 			cl.receiveAmpScaleChange( desiredAmpScaleComputer );
@@ -430,7 +424,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	public void setDesiredAmpMin( final AmpMin am )
 	{
 		this.desiredAmpMinDb = am.getDb();
-		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
+		this.desiredAmpScaleComputer.setParameters( displayPeaksHeight,
+				desiredAmpMinDb,
+				desiredAmpMaxDb );
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
 			cl.receiveAmpScaleChange( desiredAmpScaleComputer );
@@ -460,7 +456,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		desiredAmpScaleComputer = ampScaleComputers[ mapping.ordinal() ];
 
-		desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
+		desiredAmpScaleComputer.setParameters( displayPeaksHeight,
+				desiredAmpMinDb,
+				desiredAmpMaxDb );
 
 		for( final AmpAxisChangeListener cl : ampAxisChangeListeners )
 		{
@@ -513,7 +511,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	public void setDisplayPeaksHeight( final int displayPeaksHeight )
 	{
 		this.displayPeaksHeight = displayPeaksHeight;
-		desiredAmpScaleComputer.setParameters( displayPeaksHeight, desiredAmpMinDb, desiredAmpMaxDb );
+		desiredAmpScaleComputer.setParameters( displayPeaksHeight,
+				desiredAmpMinDb,
+				desiredAmpMaxDb );
 	}
 
 	public void setDesiredWindow( final WindowChoice win )

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 4"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 4"/>
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Frequency" value="215.332"/>
+        <rackControl name="Frequency" value="923.236"/>
         <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
     </rackComponent>
@@ -10,8 +12,8 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="0.0"/>
-        <rackControl name="ValueChase" value="1.0"/>
+        <rackControl name="Value" value="1.0"/>
+        <rackControl name="ValueChase" value="14.281"/>
     </rackComponent>
     <rackComponent name="HalfHann" definitionId="spectral_amp">
         <rackPosition column="2" row="4"/>
@@ -19,9 +21,9 @@
         <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="22050.0"/>
+        <rackControl name="Frequency Max" value="2212.2"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
@@ -33,9 +35,9 @@
         <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="22050.0"/>
+        <rackControl name="Frequency Max" value="2212.2"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
@@ -47,9 +49,9 @@
         <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="22050.0"/>
+        <rackControl name="Frequency Max" value="2212.2"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
@@ -61,9 +63,9 @@
         <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="22050.0"/>
+        <rackControl name="Frequency Max" value="2212.2"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>

@@ -34,8 +34,11 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	public final static float MIN_RAW_VALUE = AudioMath.dbToLevelF( MIN_DB_VALUE );
 	public final static float MIN_NATURAL_VALUE = levelToNatural( MIN_RAW_VALUE );
 
-	private static final float L_TO_N_PRE_LOG_SCALE_FACTOR = 10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
-	private static final float N_TO_L_POST_EXP_SCALE_FACTOR = 10.0f * AmpScaleComputer.APPROX_POLAR_AMP_SCALE_FACTOR;
+//	private static final float PRE_LOG_SCALE_FACTOR = 10.0f * 512.0f;
+//	private static final float PRE_LOG_SCALE_FACTOR = 10.0f * 512.0f;
+//	private static final float PRE_LOG_SCALE_FACTOR = 10.0f * 200.0f;
+//	private static final float PRE_LOG_SCALE_FACTOR = 10.0f * 150.0f;
+	private static final float PRE_LOG_SCALE_FACTOR = 10.0f * 100.0f;
 
 	@Override
 	public float scaleIt(final float valForBin)
@@ -48,7 +51,7 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 
 	private final static float levelToNatural( final float rawValue )
 	{
-		final float preLog = (rawValue * L_TO_N_PRE_LOG_SCALE_FACTOR) + 1.0f;
+		final float preLog = (rawValue * PRE_LOG_SCALE_FACTOR) + 1.0f;
 		final float theLog = (float)Math.log(preLog);
 		return theLog / SCALE_FACTOR;
 	}
@@ -57,10 +60,10 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	{
 		final float preExp = natural * SCALE_FACTOR;
 		final float postExp = (float)Math.exp( preExp );
-		return (postExp - 1.0f) / (N_TO_L_POST_EXP_SCALE_FACTOR);
+		return (postExp - 1.0f) / PRE_LOG_SCALE_FACTOR;
 	}
 
-	private int numBuckets = 200;
+	private int lastBucketIndex = 200;
 	private float minDb = -96.0f;
 	private float minValue = AudioMath.dbToLevelF( minDb );
 	private float minNaturalValue = levelToNatural( minValue );
@@ -71,9 +74,11 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	private float rangeNatural = maxNaturalValue - minNaturalValue;
 
 	@Override
-	public void setParameters( final int numBuckets, final float minValueDb, final float maxValueDb )
+	public void setParameters( final int numBuckets,
+			final float minValueDb,
+			final float maxValueDb )
 	{
-		this.numBuckets = numBuckets;
+		this.lastBucketIndex = numBuckets - 1;
 		this.minDb = minValueDb;
 		minValue = AudioMath.dbToLevelF( minDb );
 		minNaturalValue = levelToNatural( minValue );
@@ -84,11 +89,11 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 	}
 
 	@Override
-	public final int rawToMappedBucket( final float rawValue )
+	public final int normalisedRawToMappedBucket( final float rawValue )
 	{
 		if( rawValue >= maxValue )
 		{
-			return numBuckets;
+			return lastBucketIndex;
 		}
 		else if( rawValue <= minValue )
 		{
@@ -99,24 +104,24 @@ public class LogarithmicNaturalAmpScaleComputer implements AmpScaleComputer
 			final float asNatural = levelToNatural( rawValue );
 			final float normalisedValue = (asNatural - minNaturalValue) / rangeNatural;
 
-			return (int)( (normalisedValue * numBuckets) + 0.5f );
+			return (int)( (normalisedValue * lastBucketIndex) + 0.5f );
 		}
 	}
 
 	@Override
-	public final float mappedBucketToRaw( final int bucket )
+	public final float mappedBucketToNormalisedRaw( final int bucket )
 	{
 		if( bucket == 0 )
 		{
 			return minValue;
 		}
-		else if( bucket == numBuckets )
+		else if( bucket == lastBucketIndex )
 		{
 			return maxValue;
 		}
 		else
 		{
-			final float normalisedValue = bucket / (float)numBuckets;
+			final float normalisedValue = bucket / (float)lastBucketIndex;
 
 			final float naturalValueInBucket = minNaturalValue + (normalisedValue * rangeNatural);
 			final float finalValue = naturalToLevel( naturalValueInBucket );

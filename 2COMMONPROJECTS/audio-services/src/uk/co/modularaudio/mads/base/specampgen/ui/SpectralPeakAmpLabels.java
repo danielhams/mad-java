@@ -110,7 +110,7 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 		{
 			final int y = vertPixelsPerMarker * i;
 
-			final float result = ampScaleComputer.mappedBucketToRaw( magsHeight - y );
+			final float result = ampScaleComputer.mappedBucketToNormalisedRaw( magsHeight - y );
 //			final float result = ampScaleComputer.mappedBucketToRawMinMax( magsHeight + 1, magsHeight - y );
 
 			final float asDb = AudioMath.levelToDbF( result );

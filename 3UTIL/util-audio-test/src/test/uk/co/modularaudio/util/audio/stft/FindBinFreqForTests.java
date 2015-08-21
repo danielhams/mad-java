@@ -16,12 +16,16 @@ public class FindBinFreqForTests
 	public void go() throws Exception
 	{
 		final FftWindow fftWindow = new HannFftWindow( 1024 );
+		final int numChannels = 1;
+		final int windowLength = 2048;
+		final int numOverlaps = 4;
+		final int numReals = 16384;
 		final StftParameters paramsForTest = new StftParameters( DataRate.CD_QUALITY,
-				1, 1024, 4, 1024, fftWindow );
+				numChannels, windowLength, numOverlaps, numReals, fftWindow );
 
 		final float[] binCenterFreqs = paramsForTest.getBinCenterFreqs();
 
-		for( int i = 0 ; i < binCenterFreqs.length ; ++i )
+		for( int i = 0 ; i < 400 ; ++i )
 		{
 			final String index = String.format( "%04d", i );
 			log.info( "Bin " + index + " has center frequency " +
