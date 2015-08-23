@@ -28,12 +28,12 @@ public class PlaybackSpeedSliderModel extends SliderDisplayModel
 
 	public PlaybackSpeedSliderModel()
 	{
-		super(  -1.5f, 1.5f, 1.0f,
-				1.0f,
-				300,
+		super(  -150.0f, 150.0f, 100.0f,
+				100.0f,
+				3000,
 				10,
 				new SimpleSliderIntToFloatConverter(),
-				2,
+				3,
 				2,
 				"%" );
 	}

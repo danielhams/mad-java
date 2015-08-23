@@ -70,7 +70,8 @@ public class SoundfilePlayerSpeedSliderUiJComponent
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				uiInstance.sendPlayingSpeed( newValue );
+				final float actualSpeed = newValue / 100.0f;
+				uiInstance.sendPlayingSpeed( actualSpeed );
 			}
 		} );
 	}

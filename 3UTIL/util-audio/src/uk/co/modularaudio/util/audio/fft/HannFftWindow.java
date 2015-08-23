@@ -32,19 +32,9 @@ public class HannFftWindow extends FftWindow
 	@Override
 	protected final void fillAmps( final int length )
 	{
-		// 0.5( 1- cos(2 PI n / n + 1 ) )
 		for( int i = 0 ; i < length ; i++ )
 		{
-			// Doesn't work
-			//amps[i] = (float) (0.5f * ( 1.0f - Math.cos( (TWO_PI / length) / (i + 1) ) ) );
-			// -.5*cos(2.*M_PI*(double)k/(double)fftFrameSize)+.5
-			//amps[i] = (float) (-0.5f * ( Math.cos( 2.0f * TWO_PI * i / length )) + 0.5f);
-
-			//function w = hanningz(n)
-			//w = .5*(1 - cos(2*pi*(0:n-1)’/(n)));
-
-
-			amps[i] = (float)(0.5 * ( 1.0 - Math.cos( (MathDefines.TWO_PI_D * i) / (length) ) ) );
+			amps[i] = (float)(0.5 * ( 1.0 - Math.cos( (MathDefines.TWO_PI_D * i) / (length-1) ) ) );
 		}
 	}
 }

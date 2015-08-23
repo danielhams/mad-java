@@ -33,10 +33,9 @@ public class HammingFftWindow extends FftWindow
 	@Override
 	protected final void fillAmps( final int length )
 	{
-		// 0.54 - 0.46 cos(2 PI n / n + 1 ) )
 		for( int i = 0 ; i < length ; i++ )
 		{
-			amps[i] = (float)(0.54 - (0.46 * Math.cos( (MathDefines.TWO_PI_D * i) / (length)) ) );
+			amps[i] = (float)(0.54 - (0.46 * Math.cos( (MathDefines.TWO_PI_D * i) / (length-1)) ) );
 		}
 	}
 }

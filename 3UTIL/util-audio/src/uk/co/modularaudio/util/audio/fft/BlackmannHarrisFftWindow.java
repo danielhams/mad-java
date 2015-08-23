@@ -41,9 +41,9 @@ public class BlackmannHarrisFftWindow extends FftWindow
 		for( int i = 0 ; i < length ; i++ )
 		{
 			amps[i] = (float)(A1
-					- (A2 * Math.cos( ( MathDefines.TWO_PI_D * i) / (length) ) )
-					+ (A3 * Math.cos( ( MathDefines.TWO_PI_D * 2 * i ) / (length) ) )
-					- (A4 * Math.cos( ( MathDefines.TWO_PI_D * 3 * i ) / (length) ) )
+					- (A2 * Math.cos( ( MathDefines.TWO_PI_D * i) / (length-1) ) )
+					+ (A3 * Math.cos( ( MathDefines.TWO_PI_D * 2 * i ) / (length-1) ) )
+					- (A4 * Math.cos( ( MathDefines.TWO_PI_D * 3 * i ) / (length-1) ) )
 					);
 		}
 	}

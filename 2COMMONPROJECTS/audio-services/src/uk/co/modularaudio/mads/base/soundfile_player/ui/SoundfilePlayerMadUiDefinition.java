@@ -96,8 +96,7 @@ public class SoundfilePlayerMadUiDefinition extends
 				SoundfilePlayerWaveDisplayUiJComponent.REQUIRED_WIDTH,
 				SoundfilePlayerWaveDisplayUiJComponent.REQUIRED_HEIGHT ),		// WaveDisplay
 		new Rectangle(  47, 213, 441,  37 ),		// WaveOverview
-//		new Rectangle( 500,  22,  50, 264 ),		// SpeedSlider
-		new Rectangle( 500,  38,  50, 213 ),		// SpeedSlider
+		new Rectangle( 495,  38,  60, 213 ),		// SpeedSlider
 		new Rectangle(  47, 250,  45,  30 ),		// Rewind
 		new Rectangle(  92, 250,  91,  30 ),		// PlayStop
 		new Rectangle( 183, 250,  45,  30 )			// FastForward
