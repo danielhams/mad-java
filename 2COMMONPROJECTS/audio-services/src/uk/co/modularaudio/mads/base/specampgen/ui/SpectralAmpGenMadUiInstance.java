@@ -64,6 +64,7 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.FallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.FastFallComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.LongAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakDetectComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakGrabComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
@@ -132,6 +133,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	private final RunningAverageComputer fastFallComputer = new FastFallComputer();
 	private final PeakHoldComputer peakHoldComputer = new PeakHoldComputer();
 	private final PeakGrabComputer peakGrabComputer = new PeakGrabComputer();
+	private final PeakDetectComputer peakDetectComputer = new PeakDetectComputer();
 
 	private RunningAverageComputer desiredRunningAverageComputer = fastFallComputer;
 
@@ -143,7 +145,8 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		fallComputer,
 		fastFallComputer,
 		peakHoldComputer,
-		peakGrabComputer
+		peakGrabComputer,
+		peakDetectComputer
 	};
 
 	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );

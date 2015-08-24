@@ -34,6 +34,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.spectraldisplay.ampscale.AmpScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.freqscale.FrequencyScaleComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.NoAverageComputer;
+import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakDetectComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
 
@@ -89,6 +90,10 @@ public class SpectralPeakGraph extends JPanel
 	private int[] polylineExtraYPoints;
 
 	private float stftExpectedAmpMax = 512.0f;
+
+	// Start after the origin point
+	private int bodyPointOffset = 1;
+	private int runAvPointOffset = 0;
 
 	public SpectralPeakGraph( final SpectralAmpGenMadUiInstance<?,?> uiInstance,
 			final int numAmpMarkers,
@@ -147,12 +152,10 @@ public class SpectralPeakGraph extends JPanel
 		}
 	}
 
-	private void drawBodyAndRunAv( final Graphics g )
+	private void populateBodyAndRunAvArrays()
 	{
-		// Start after the origin point
-		int bodyPointOffset = 1;
-		int runAvPointOffset = 0;
-
+		bodyPointOffset = 1;
+		runAvPointOffset = 0;
 		int previousBinDrawn = -1;
 
 		for( int i = 0 ; i < magsWidth ; i++ )
@@ -258,8 +261,124 @@ public class SpectralPeakGraph extends JPanel
 			polylineYPoints[ runAvPointOffset ] = polylineExtraYPoints[ numInOneLine - i - 1 ];
 			runAvPointOffset++;
 		}
+	}
 
-		g.fillPolygon( polygonXPoints, polygonYPoints, bodyPointOffset );
+	private void populateBodyAndPeakDetectArrays()
+	{
+		bodyPointOffset = 1;
+		runAvPointOffset = 0;
+		int previousBinDrawn = -1;
+
+		for( int i = 0 ; i < magsWidth ; i++ )
+		{
+			final int whichBin = pixelToBinLookupTable[i];
+//			log.trace( "For pixel " + i + " will pull values from bin: " + whichBin );
+
+			if( whichBin != previousBinDrawn )
+			{
+				// Computing the spectral body amplitude
+				// and running average in screen space
+				int bucketMappedBodyValue;
+				final int bucketMappedRunAvValue;
+
+				if( previousBinDrawn == -1 || whichBin == previousBinDrawn + 1 )
+				{
+					final float bodyValForBin = computedBins[ whichBin ];
+					final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
+
+					bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedBodyBinValue );
+
+
+					final float runAvValForBin = runningBinPeaks[ whichBin ];
+					final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
+					bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedRunAvBinValue );
+				}
+				else
+				{
+					float maxNormalisedValue = 0.0f;
+					float maxNormalisedRunAvValue = 0.0f;
+					for( int sb = previousBinDrawn + 1 ; sb <= whichBin ; ++sb )
+					{
+						final float bodyValForBin = computedBins[ sb ];
+						final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
+						if( normalisedBodyBinValue > maxNormalisedValue )
+						{
+							maxNormalisedValue = normalisedBodyBinValue;
+						}
+						final float runAvValForBin = runningBinPeaks[ sb ];
+						final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
+						if( normalisedRunAvBinValue > maxNormalisedRunAvValue )
+						{
+							maxNormalisedRunAvValue = normalisedRunAvBinValue;
+						}
+					}
+					bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( maxNormalisedValue );
+					bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( maxNormalisedRunAvValue );
+				}
+
+				polygonXPoints[ bodyPointOffset ] = i;
+				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
+				bodyPointOffset++;
+
+				polylineXPoints[ runAvPointOffset ] = i;
+				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
+				polylineExtraXPoints[ runAvPointOffset ] = i;
+				int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
+				extraYPoint = extraYPoint < 0 ? 0 : extraYPoint;
+				polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
+				runAvPointOffset++;
+
+				previousBinDrawn = whichBin;
+			}
+		}
+
+		// Final pixel is a pain because it isn't necessarily a new bin
+		// but we need a value for it
+		final int finalPixel = magsWidth;
+		final int whichBin = pixelToBinLookupTable[ finalPixel ];
+
+//		log.debug("Final pixel " + finalPixel + " using bin " + whichBin );
+
+		final float bodyValForBin = computedBins[ whichBin ];
+		final float normalisedBodyBinValue = bodyValForBin / stftExpectedAmpMax;
+		final int bucketMappedBodyValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedBodyBinValue );
+
+		polygonXPoints[ bodyPointOffset ] = finalPixel;
+		polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
+		bodyPointOffset++;
+
+		final float runAvValForBin = runningBinPeaks[ whichBin ];
+		final float normalisedRunAvBinValue = runAvValForBin / stftExpectedAmpMax;
+		final int bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedRunAvBinValue );
+		polylineXPoints[ runAvPointOffset ] = finalPixel;
+		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
+		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
+		int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
+		extraYPoint = (extraYPoint < 0 ? 0 : extraYPoint );
+		polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
+
+		runAvPointOffset++;
+
+		// Close off the polygon
+		polygonXPoints[ bodyPointOffset ] = magsWidth;
+		polygonYPoints[ bodyPointOffset ] = height;
+		bodyPointOffset++;
+	}
+
+	private void drawBodyAndRunAv( final Graphics g )
+	{
+
+		if( runAvComputer instanceof PeakDetectComputer )
+		{
+			populateBodyAndPeakDetectArrays();
+			g.setColor( SpectralAmpColours.SPECTRAL_BODY.darker().darker() );
+			g.fillPolygon( polygonXPoints, polygonYPoints, bodyPointOffset );
+		}
+		else
+		{
+			populateBodyAndRunAvArrays();
+			g.fillPolygon( polygonXPoints, polygonYPoints, bodyPointOffset );
+		}
 
 		if( !(runAvComputer instanceof NoAverageComputer) )
 		{

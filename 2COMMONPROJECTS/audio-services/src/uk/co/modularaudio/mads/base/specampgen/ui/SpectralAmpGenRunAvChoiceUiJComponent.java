@@ -56,7 +56,8 @@ public class SpectralAmpGenRunAvChoiceUiJComponent<D extends SpectralAmpGenMadDe
 		FALL( "Fall" ),
 		FAST_FALL( "Fast Fall" ),
 		PEAK_HOLD( "Peak Hold" ),
-		PEAK_GRAB( "Peak Grab" );
+		PEAK_GRAB( "Peak Grab" ),
+		PEAK_DETECT( "Peak Detect" );
 
 		private RunningAverage( final String label )
 		{
@@ -84,6 +85,7 @@ public class SpectralAmpGenRunAvChoiceUiJComponent<D extends SpectralAmpGenMadDe
 		LABEL_TO_MAPPING.put( RunningAverage.FAST_FALL.getLabel(), RunningAverage.FAST_FALL );
 		LABEL_TO_MAPPING.put( RunningAverage.PEAK_HOLD.getLabel(), RunningAverage.PEAK_HOLD );
 		LABEL_TO_MAPPING.put( RunningAverage.PEAK_GRAB.getLabel(), RunningAverage.PEAK_GRAB );
+		LABEL_TO_MAPPING.put( RunningAverage.PEAK_DETECT.getLabel(), RunningAverage.PEAK_DETECT );
 	}
 
 	private final DefaultComboBoxModel<String> model;
@@ -118,6 +120,7 @@ public class SpectralAmpGenRunAvChoiceUiJComponent<D extends SpectralAmpGenMadDe
 		model.addElement( RunningAverage.FAST_FALL.getLabel() );
 		model.addElement( RunningAverage.PEAK_HOLD.getLabel() );
 		model.addElement( RunningAverage.PEAK_GRAB.getLabel() );
+		model.addElement( RunningAverage.PEAK_DETECT.getLabel() );
 
 		model.setSelectedItem( DEFAULT_RUNNING_AVERAGE.getLabel() );
 
