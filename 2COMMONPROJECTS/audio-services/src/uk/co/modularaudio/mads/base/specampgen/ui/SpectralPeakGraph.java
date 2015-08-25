@@ -295,6 +295,7 @@ public class SpectralPeakGraph extends JPanel
 				}
 				else
 				{
+					// Skipping over multiple bin values - work out the max over the bin range
 					float maxNormalisedValue = 0.0f;
 					float maxNormalisedRunAvValue = 0.0f;
 					for( int sb = previousBinDrawn + 1 ; sb <= whichBin ; ++sb )
@@ -320,13 +321,23 @@ public class SpectralPeakGraph extends JPanel
 				polygonYPoints[ bodyPointOffset ] = magsHeight - bucketMappedBodyValue;
 				bodyPointOffset++;
 
+
+				polylineXPoints[ runAvPointOffset ] = i;
+				polylineYPoints[ runAvPointOffset ] = magsHeight;
+				runAvPointOffset++;
 				polylineXPoints[ runAvPointOffset ] = i;
 				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
-				polylineExtraXPoints[ runAvPointOffset ] = i;
-				int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
-				extraYPoint = extraYPoint < 0 ? 0 : extraYPoint;
-				polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
 				runAvPointOffset++;
+				polylineXPoints[ runAvPointOffset ] = i;
+				polylineYPoints[ runAvPointOffset ] = magsHeight;
+				runAvPointOffset++;
+//				polylineXPoints[ runAvPointOffset ] = i;
+//				polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
+//				polylineExtraXPoints[ runAvPointOffset ] = i;
+//				int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
+//				extraYPoint = extraYPoint < 0 ? 0 : extraYPoint;
+//				polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
+//				runAvPointOffset++;
 
 				previousBinDrawn = whichBin;
 			}
@@ -352,11 +363,6 @@ public class SpectralPeakGraph extends JPanel
 		final int bucketMappedRunAvValue = ampScaleComputer.normalisedRawToMappedBucket( normalisedRunAvBinValue );
 		polylineXPoints[ runAvPointOffset ] = finalPixel;
 		polylineYPoints[ runAvPointOffset ] = magsHeight - bucketMappedRunAvValue;
-		polylineExtraXPoints[ runAvPointOffset ] = finalPixel;
-		int extraYPoint = polylineYPoints[ runAvPointOffset ] - 1;
-		extraYPoint = (extraYPoint < 0 ? 0 : extraYPoint );
-		polylineExtraYPoints[ runAvPointOffset ] = extraYPoint;
-
 		runAvPointOffset++;
 
 		// Close off the polygon
@@ -400,10 +406,16 @@ public class SpectralPeakGraph extends JPanel
 			polygonYPoints[ 0 ] = height;
 
 			final int maxPolylinePoints = width;
+
+			// Regular peak continuous line uses double points
+			// to get a thinker line, whilst the peak display uses
+			// three
+			// (newX, 0), (newX, newY), (newX, 0)
 			// We'll use double and copy over the extra points
 			// once we know how many there are
-			polylineXPoints = new int[ maxPolylinePoints * 2 ];
-			polylineYPoints = new int[ maxPolylinePoints * 2 ];
+			polylineXPoints = new int[ maxPolylinePoints * 3 ];
+			polylineYPoints = new int[ maxPolylinePoints * 3 ];
+			// Space for the double points to be temporarily written
 			polylineExtraXPoints = new int[ maxPolylinePoints ];
 			polylineExtraYPoints = new int[ maxPolylinePoints ];
 		}
@@ -426,12 +438,14 @@ public class SpectralPeakGraph extends JPanel
 	{
 		this.freqScaleComputer = freqScaleComputer;
 		recomputePixelToBinLookup();
+		repaint();
 	}
 
 	@Override
 	public void receiveAmpScaleChange( final AmpScaleComputer ampScaleComputer )
 	{
 		this.ampScaleComputer = ampScaleComputer;
+		repaint();
 	}
 
 	@Override
@@ -439,6 +453,7 @@ public class SpectralPeakGraph extends JPanel
 	{
 		this.runAvComputer = runAvComputer;
 		clear();
+		repaint();
 	}
 
 	@Override
@@ -493,6 +508,7 @@ public class SpectralPeakGraph extends JPanel
 		stftExpectedAmpMax = params.getExpectedAmpMax();
 		recomputePixelToBinLookup();
 		clear();
+		repaint();
 	}
 
 	private void recomputePixelToBinLookup()
