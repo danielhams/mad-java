@@ -22,9 +22,7 @@ package uk.co.modularaudio.componentdesigner.generators;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.logging.Log;
@@ -50,15 +48,13 @@ public class ComponentDesignerSupportFileGenerator
 	private final ComponentDesigner cd;
 
 	private final String outputDirectory;
-	private final String inputImagesDirectory;
 
-	public ComponentDesignerSupportFileGenerator( final String outputDirectory, final String inputImagesDirectory )
+	public ComponentDesignerSupportFileGenerator( final String outputDirectory )
 			throws Exception
 	{
 		cd = new ComponentDesigner();
 
 		this.outputDirectory = outputDirectory;
-		this.inputImagesDirectory = inputImagesDirectory;
 	}
 
 	public void init() throws Exception
@@ -75,7 +71,6 @@ public class ComponentDesignerSupportFileGenerator
 	public void generateFiles() throws Exception
 	{
 		generateBlw();
-		copyComponentImages();
 	}
 
 	public void initialiseThingsNeedingComponentGraph() throws Exception
@@ -84,13 +79,13 @@ public class ComponentDesignerSupportFileGenerator
 
 	public static void main( final String[] args ) throws Exception
 	{
-		if( args.length != 2 )
+		if( args.length != 1 )
 		{
-			throw new IOException( "Missing required directories: outputDir inputImagesDir" );
+			throw new IOException( "Expecting only output directory: outputDir" );
 		}
 		if( log.isInfoEnabled() )
 		{
-			log.info("Creating output in '" + args[0] + "' reading images from '" + args[1] + "'");
+			log.info("Creating output in '" + args[0] + "'");
 		}
 
 		JTransformsConfigurator.setThreadsToOne();
@@ -101,7 +96,7 @@ public class ComponentDesignerSupportFileGenerator
 		loggerConfig.setLevel( Level.INFO );
 		ctx.updateLoggers();
 
-		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0], args[1] );
+		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0] );
 		sfg.generateFiles();
 		sfg.init();
 		sfg.initialiseThingsNeedingComponentGraph();
@@ -152,46 +147,5 @@ public class ComponentDesignerSupportFileGenerator
 			}
 		}
 		log.info( "Completed wave tables check" );
-	}
-
-	private void copyComponentImages() throws Exception
-	{
-		log.info( "Checking for new component images..." );
-		final File inputImageDir = new File( inputImagesDirectory );
-
-		final File outputImageDir = new File( outputDirectory + File.separatorChar + "images" );
-		outputImageDir.mkdirs();
-
-		final Path inputImagesPath = inputImageDir.toPath();
-
-		final DirectoryStream<Path> stream = Files.newDirectoryStream( inputImagesPath, "*.png" );
-
-		for( final Path entry : stream )
-		{
-			final String outputName = entry.toFile().getName();
-			final String outputPath = outputImageDir.getAbsolutePath() + File.separatorChar + outputName;
-			// copyFile( entry.toFile(), new File(outputPath) );
-			final File outputImageFile = new File( outputPath );
-			final long inputFileLastMod = entry.toFile().lastModified();
-			long outputFileLastMod = inputFileLastMod;
-			if( outputImageFile.exists() )
-			{
-				outputFileLastMod = outputImageFile.lastModified();
-			}
-
-			if( !outputImageFile.exists() || outputFileLastMod < inputFileLastMod )
-			{
-				if( outputImageFile.exists() )
-				{
-					outputImageFile.delete();
-				}
-				if( log.isInfoEnabled() )
-				{
-					log.info( "Copying image file: " + outputName );
-				}
-				Files.copy( entry, new File( outputPath ).toPath() );
-			}
-		}
-		log.info( "Done checking for new component images..." );
 	}
 }

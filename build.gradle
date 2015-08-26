@@ -45,6 +45,9 @@ task appJar(type: Jar) {
       zipTree(it)
     }
   }
+  into('images') {
+    from fileTree(dir: '2COMMONPROJECTS/audio-services-images/images', includes: ['*.png'])
+  }
 }
 
 appJar.dependsOn build
@@ -102,8 +105,7 @@ task appSupportFiles(type: JavaExec) {
       '-Djava.awt.headless=true'
   ]
   args = [
-      '.',
-      '../2COMMONPROJECTS/audio-services-images/images'
+      '.'
   ]
   workingDir = releasedir
 }

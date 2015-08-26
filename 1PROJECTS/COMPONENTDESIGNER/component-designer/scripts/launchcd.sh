@@ -80,7 +80,7 @@ if [ "$DEVELOPMENT_COMPONENTS"q != "q" ]; then
 fi
 
 if [ "$PLUGIN_JAR"q == "yesq" ]; then
-    export CLASSPATH=$CLASSPATH:cdplugin.jar
+    export CLASSPATH=$CLASSPATH:mad-plugin.jar
     export CD_SWITCHES="$CD_SWITCHES --pluginJar"
 fi
 

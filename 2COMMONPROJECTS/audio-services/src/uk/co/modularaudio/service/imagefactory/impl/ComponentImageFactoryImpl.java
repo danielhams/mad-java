@@ -22,7 +22,9 @@ package uk.co.modularaudio.service.imagefactory.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.service.configuration.ConfigurationService;
+import uk.co.modularaudio.service.configuration.ConfigurationServiceHelper;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -40,11 +44,24 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 {
 	private static Log log = LogFactory.getLog( ComponentImageFactoryImpl.class.getName() );
 
+	private static final String CONFIG_KEY_USE_FILES = ComponentImageFactoryImpl.class.getSimpleName() + ".UseFiles";
+
 	private final Map<String, BufferedImage> biCache = new HashMap<String, BufferedImage>();
+
+	private ConfigurationService configurationService;
+
+	private boolean useFiles = false;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( configurationService == null )
+		{
+			throw new ComponentConfigurationException("Service missing dependencies. Check configuration");
+		}
+		final Map<String, String> errors = new HashMap<String, String>();
+		useFiles = ConfigurationServiceHelper.checkForBooleanKey( configurationService, CONFIG_KEY_USE_FILES, errors );
+		ConfigurationServiceHelper.errorCheck( errors );
 	}
 
 	@Override
@@ -60,8 +77,30 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 		if( retVal == null )
 		{
 			try {
-				final File input = new File( pathToLoad );
-				retVal = ImageIO.read(input);
+				InputStream iis;
+				if( useFiles )
+				{
+					final File input = new File( pathToLoad );
+					iis = new FileInputStream( input );
+				}
+				else
+				{
+					if( pathToLoad.length() <= 2 )
+					{
+						throw new DatastoreException("Badly formed image path to load: " + pathToLoad );
+					}
+					else
+					{
+						// Remove leading "."
+						final String resourcePath = pathToLoad.substring( 1 );
+						iis = this.getClass().getResourceAsStream( resourcePath );
+						if( iis == null )
+						{
+							throw new DatastoreException("Failed to find image resource at path: " + resourcePath );
+						}
+					}
+				}
+				retVal = ImageIO.read( iis );
 				if( log.isDebugEnabled() )
 				{
 					log.debug( "Adding " + pathToLoad + " to buffered image cache" );
@@ -88,5 +127,10 @@ public class ComponentImageFactoryImpl implements ComponentWithLifecycle, Compon
 	public synchronized BufferedImage getBufferedImage( final String directory, final String filename) throws DatastoreException
 	{
 		return getBufferedImageFromPath( directory, filename );
+	}
+
+	public void setConfigurationService( final ConfigurationService configurationService )
+	{
+		this.configurationService = configurationService;
 	}
 }
