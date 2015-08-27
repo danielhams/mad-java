@@ -74,12 +74,13 @@ public class StereoGateMadUiDefinition
 
 	private static final Class<StereoGateMadUiInstance> INSTANCE_CLASS = StereoGateMadUiInstance.class;
 
-	public StereoGateMadUiDefinition( final BufferedImageAllocator bia, final StereoGateMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public StereoGateMadUiDefinition( final BufferedImageAllocator bia,
+			final StereoGateMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

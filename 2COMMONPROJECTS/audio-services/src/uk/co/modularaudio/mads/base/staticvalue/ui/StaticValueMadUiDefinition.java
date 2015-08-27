@@ -64,12 +64,13 @@ public class StaticValueMadUiDefinition
 
 	private static final Class<StaticValueMadUiInstance> INSTANCE_CLASS = StaticValueMadUiInstance.class;
 
-	public StaticValueMadUiDefinition( final BufferedImageAllocator bia, final StaticValueMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public StaticValueMadUiDefinition( final BufferedImageAllocator bia,
+			final StaticValueMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,

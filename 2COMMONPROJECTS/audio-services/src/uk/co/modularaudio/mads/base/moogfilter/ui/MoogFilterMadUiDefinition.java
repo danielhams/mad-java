@@ -86,13 +86,11 @@ public class MoogFilterMadUiDefinition
 
 	public MoogFilterMadUiDefinition( final BufferedImageAllocator bia,
 			final MoogFilterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,

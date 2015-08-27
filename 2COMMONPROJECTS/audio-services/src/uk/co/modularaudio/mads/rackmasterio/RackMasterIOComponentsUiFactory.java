@@ -35,19 +35,19 @@ public class RackMasterIOComponentsUiFactory extends AbstractMadComponentUiFacto
 	@Override
 	public void setupTypeToDefinitionClasses() throws DatastoreException
 	{
-		Collection<MadDefinition<?,?>> auds = rackMasterIOComponentsFactory.listDefinitions();
-		for( MadDefinition<?,?> aud : auds )
+		final Collection<MadDefinition<?,?>> auds = rackMasterIOComponentsFactory.listDefinitions();
+		for( final MadDefinition<?,?> aud : auds )
 		{
 			if( aud instanceof RackMasterIOMadDefinition )
 			{
-				RackMasterIOMadDefinition fi = (RackMasterIOMadDefinition)aud;
-				RackMasterIOMadUiDefinition fiud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory, imageRoot );
+				final RackMasterIOMadDefinition fi = (RackMasterIOMadDefinition)aud;
+				final RackMasterIOMadUiDefinition fiud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory );
 				componentDefinitionToUiDefinitionMap.put( aud, fiud );
 			}
 		}
 	}
 
-	public void setRackMasterIOComponentsFactory( RackMasterIOComponentsFactory internalComponentsFactory )
+	public void setRackMasterIOComponentsFactory( final RackMasterIOComponentsFactory internalComponentsFactory )
 	{
 		this.rackMasterIOComponentsFactory = internalComponentsFactory;
 	}

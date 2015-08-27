@@ -76,12 +76,13 @@ public class SpectralRollMadUiDefinition
 
 	private static final Class<SpectralRollMadUiInstance> INSTANCE_CLASS = SpectralRollMadUiInstance.class;
 
-	public SpectralRollMadUiDefinition( final BufferedImageAllocator bia, final SpectralRollMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public SpectralRollMadUiDefinition( final BufferedImageAllocator bia,
+			final SpectralRollMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

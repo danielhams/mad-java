@@ -106,13 +106,11 @@ public class SoundfilePlayerMadUiDefinition extends
 
 	public SoundfilePlayerMadUiDefinition( final BufferedImageAllocator bia,
 			final SoundfilePlayerMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
 				definition,
 				SPAN,

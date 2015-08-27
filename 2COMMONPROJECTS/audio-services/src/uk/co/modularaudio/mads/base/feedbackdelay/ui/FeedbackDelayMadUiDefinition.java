@@ -73,12 +73,13 @@ public class FeedbackDelayMadUiDefinition
 
 	private static final Class<FeedbackDelayMadUiInstance> INSTANCE_CLASS = FeedbackDelayMadUiInstance.class;
 
-	public FeedbackDelayMadUiDefinition( final BufferedImageAllocator bia, final FeedbackDelayMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public FeedbackDelayMadUiDefinition( final BufferedImageAllocator bia,
+			final FeedbackDelayMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				definition.getId(),
 				definition,
 				SPAN,

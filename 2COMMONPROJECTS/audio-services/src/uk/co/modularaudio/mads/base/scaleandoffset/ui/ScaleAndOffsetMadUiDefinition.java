@@ -75,12 +75,13 @@ public class ScaleAndOffsetMadUiDefinition
 
 	private static final Class<ScaleAndOffsetMadUiInstance> INSTANCE_CLASS = ScaleAndOffsetMadUiInstance.class;
 
-	public ScaleAndOffsetMadUiDefinition( final BufferedImageAllocator bia, final ScaleAndOffsetMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public ScaleAndOffsetMadUiDefinition( final BufferedImageAllocator bia,
+			final ScaleAndOffsetMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,

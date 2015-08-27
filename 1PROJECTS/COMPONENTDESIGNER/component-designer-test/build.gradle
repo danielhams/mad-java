@@ -19,9 +19,10 @@ sourceSets {
             include 'test/**/*'
         }
         resources {
-            srcDirs = ['src']
+            srcDirs = ['src', '../../../2COMMONPROJECTS/audio-services-images/images']
             include 'test/**/*'
             include 'log4j2.xml'
+            include '*.png'
         }
     }
 }

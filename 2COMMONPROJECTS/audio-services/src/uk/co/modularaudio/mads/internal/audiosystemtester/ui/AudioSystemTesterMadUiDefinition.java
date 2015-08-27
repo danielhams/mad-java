@@ -47,11 +47,10 @@ public class AudioSystemTesterMadUiDefinition
 
 	public AudioSystemTesterMadUiDefinition( final BufferedImageAllocator bia,
 			final AudioSystemTesterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
+		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,

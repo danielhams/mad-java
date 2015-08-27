@@ -70,12 +70,11 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 
 	public RackMasterIOMadUiDefinition( final BufferedImageAllocator bia,
 			final RackMasterIOMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		// master io is not draggable.
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
+		super( bia, cif, MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
 	}
 
 	@Override

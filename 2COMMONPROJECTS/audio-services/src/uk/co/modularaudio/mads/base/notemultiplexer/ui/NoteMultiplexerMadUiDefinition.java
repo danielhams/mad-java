@@ -49,10 +49,10 @@ public class NoteMultiplexerMadUiDefinition extends
 	public NoteMultiplexerMadUiDefinition(
 			final BufferedImageAllocator bia,
 			final NoteMultiplexerMadDefinition definition,
-			final ComponentImageFactory cif, final String imageRoot )
+			final ComponentImageFactory cif )
 			throws DatastoreException
 	{
-		super( bia, cif, imageRoot, definition.getId(), definition, INSTANCE_CLASS );
+		super( bia, cif, definition.getId(), definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

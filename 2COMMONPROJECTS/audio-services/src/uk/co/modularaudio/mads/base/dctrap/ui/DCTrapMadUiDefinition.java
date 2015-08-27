@@ -68,13 +68,11 @@ public class DCTrapMadUiDefinition
 
 	public DCTrapMadUiDefinition( final BufferedImageAllocator bia,
 			final DCTrapMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,

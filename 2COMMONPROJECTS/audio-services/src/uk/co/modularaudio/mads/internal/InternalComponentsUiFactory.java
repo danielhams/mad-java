@@ -85,13 +85,13 @@ public class InternalComponentsUiFactory extends AbstractMadComponentUiFactory
 				final Class[] constructorParamTypes = new Class[] {
 						BufferedImageAllocator.class,
 						aud.getClass(),
-						ComponentImageFactory.class,
-						String.class };
+						ComponentImageFactory.class };
+
 				final Object[] constructorParams = new Object[] {
 						bufferedImageAllocationService,
 						aud,
-						componentImageFactory,
-						imageRoot };
+						componentImageFactory };
+
 				final Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
 				final Object newInstance = c.newInstance( constructorParams );
 				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;

@@ -45,10 +45,9 @@ public class FeedbackLinkConsumerMadUiDefinition extends MadUiDefinition<Feedbac
 	private static final Point CONSUMER_CV_CHANNEL_CENTER = new Point( 160, 30 );
 
 	public FeedbackLinkConsumerMadUiDefinition( final BufferedImageAllocator bia, final FeedbackLinkConsumerMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot ) throws DatastoreException
+			final ComponentImageFactory cif ) throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

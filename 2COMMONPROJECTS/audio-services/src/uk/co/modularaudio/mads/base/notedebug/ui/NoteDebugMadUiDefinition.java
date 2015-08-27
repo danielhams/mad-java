@@ -61,22 +61,20 @@ public class NoteDebugMadUiDefinition
 
 	public NoteDebugMadUiDefinition( final BufferedImageAllocator bia,
 			final NoteDebugMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
-			throws DatastoreException
-		{
-			super( bia,
-					cif,
-					imageRoot,
-					MadUIStandardBackgrounds.STD_2X2_BLUE,
-					definition,
-					SPAN,
-					INSTANCE_CLASS,
-					CHAN_INDEXES,
-					CHAN_POSIS,
-					CONTROL_NAMES,
-					CONTROL_TYPES,
-					CONTROL_CLASSES,
-					CONTROL_BOUNDS );
-		}
+			final ComponentImageFactory cif )
+		throws DatastoreException
+	{
+		super( bia,
+				cif,
+				MadUIStandardBackgrounds.STD_2X2_BLUE,
+				definition,
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
+	}
 }

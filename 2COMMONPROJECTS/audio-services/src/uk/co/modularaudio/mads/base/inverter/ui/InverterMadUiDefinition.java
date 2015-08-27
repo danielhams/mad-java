@@ -64,13 +64,11 @@ public class InverterMadUiDefinition
 
 	public InverterMadUiDefinition( final BufferedImageAllocator bia,
 			final InverterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 					definition,
 					SPAN,

@@ -44,10 +44,9 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 	private static final Point PRODUCER_RIGHT_CHANNEL_CENTER = new Point( 180, 30 );
 
 	public BlockingWriteRingMadUiDefinition( final BufferedImageAllocator bia, final BlockingWriteRingMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot ) throws DatastoreException
+			final ComponentImageFactory cif ) throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

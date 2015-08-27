@@ -88,13 +88,11 @@ public class CrossFaderMadUiDefinition
 
 	public CrossFaderMadUiDefinition( final BufferedImageAllocator bia,
 			final CrossFaderMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 				definition,
 				SPAN,

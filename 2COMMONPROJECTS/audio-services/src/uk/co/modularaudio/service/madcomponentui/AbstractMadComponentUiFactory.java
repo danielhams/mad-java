@@ -32,8 +32,8 @@ import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocatio
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -46,14 +46,10 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 {
 	private static Log log = LogFactory.getLog( AbstractMadComponentUiFactory.class.getName() );
 
-	protected static final String IMAGE_ROOT = "ImageRoot";
-
 	protected BufferedImageAllocationService bufferedImageAllocationService;
 	protected MadComponentUiService componentUiService;
 	protected ComponentImageFactory componentImageFactory;
 	protected ConfigurationService configurationService;
-
-	protected String imageRoot;
 
 	protected Map<MadDefinition<?,?>, MadUiDefinition<? extends MadDefinition<?,?>, ? extends MadInstance<?,?>>> componentDefinitionToUiDefinitionMap =
 			new HashMap<MadDefinition<?,?>, MadUiDefinition<? extends MadDefinition<?,?>, ? extends MadInstance<?,?>>>();
@@ -104,29 +100,6 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		String declaringClassSimpleName = null;
-		try
-		{
-			final Class<?> declaringClass = this.getClass();
-			if( declaringClass == null )
-			{
-				final String msg = "Declaring class not defined - unable to fetch class specific configuration";
-				log.error( msg );
-				throw new ComponentConfigurationException( msg );
-			}
-			else
-			{
-				declaringClassSimpleName = declaringClass.getSimpleName();
-				imageRoot = configurationService.getSingleStringValue( declaringClassSimpleName + "." + IMAGE_ROOT );
-			}
-		}
-		catch( final RecordNotFoundException rnfe )
-		{
-			final String msg = "Error configuring image factory: " + rnfe.toString();
-			log.error( msg, rnfe );
-			throw new ComponentConfigurationException( msg, rnfe );
-		}
-
 		try
 		{
 			setupTypeToDefinitionClasses();

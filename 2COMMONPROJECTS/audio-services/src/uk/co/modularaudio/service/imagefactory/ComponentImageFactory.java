@@ -29,6 +29,6 @@ import uk.co.modularaudio.util.image.ImageFactory;
 public interface ComponentImageFactory extends ImageFactory
 {
 
-	BufferedImage getBufferedImage( String directory, String filename ) throws DatastoreException;
+	BufferedImage getBufferedImage( String filename ) throws DatastoreException;
 
 }

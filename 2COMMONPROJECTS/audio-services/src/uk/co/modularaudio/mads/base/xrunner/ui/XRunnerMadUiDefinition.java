@@ -66,12 +66,13 @@ public class XRunnerMadUiDefinition
 
 	private static final Class<XRunnerMadUiInstance> INSTANCE_CLASS = XRunnerMadUiInstance.class;
 
-	public XRunnerMadUiDefinition( final BufferedImageAllocator bia, final XRunnerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public XRunnerMadUiDefinition( final BufferedImageAllocator bia,
+			final XRunnerMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,

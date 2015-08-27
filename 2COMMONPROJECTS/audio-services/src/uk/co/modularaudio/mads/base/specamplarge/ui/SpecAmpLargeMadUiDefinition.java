@@ -107,14 +107,12 @@ public class SpecAmpLargeMadUiDefinition
 
 	public SpecAmpLargeMadUiDefinition( final BufferedImageAllocator bia,
 			final SpecAmpLargeMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				definition,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_4X8_ORANGE,
 				SPAN,
 				INSTANCE_CLASS,

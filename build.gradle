@@ -98,6 +98,8 @@ task copyUserSubRackPatches(type: Copy) {
 
 task appSupportFiles(type: JavaExec) {
   classpath += project(':component-designer').sourceSets.main.runtimeClasspath
+  def jarFilePath = file(releasedir + '/' + applicationNameAndVersion + '.jar')
+  classpath += files { jarFilePath }
   main = "uk.co.modularaudio.componentdesigner.generators.ComponentDesignerSupportFileGenerator"
   jvmArgs = [
       '-Djava.library.path=../4EXTERNAL/external-libsndfile-wrapper/lib:../4EXTERNAL/external-libmpg123-wrapper/lib',

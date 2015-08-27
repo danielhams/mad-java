@@ -86,12 +86,13 @@ public class SingleSamplePlayerMadUiDefinition
 
 	private static final Class<SingleSamplePlayerMadUiInstance> INSTANCE_CLASS = SingleSamplePlayerMadUiInstance.class;
 
-	public SingleSamplePlayerMadUiDefinition( final BufferedImageAllocator bia, final SingleSamplePlayerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public SingleSamplePlayerMadUiDefinition( final BufferedImageAllocator bia,
+			final SingleSamplePlayerMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 					definition,
 					SPAN,

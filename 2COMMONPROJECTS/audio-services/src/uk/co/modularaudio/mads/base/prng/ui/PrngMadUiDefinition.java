@@ -60,12 +60,13 @@ public class PrngMadUiDefinition
 
 	private static final Class<PrngMadUiInstance> INSTANCE_CLASS = PrngMadUiInstance.class;
 
-	public PrngMadUiDefinition( final BufferedImageAllocator bia, final PrngMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public PrngMadUiDefinition( final BufferedImageAllocator bia,
+			final PrngMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 					definition,
 					SPAN,

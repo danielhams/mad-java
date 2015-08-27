@@ -87,7 +87,7 @@ public class SwingDebugger extends JFrame
 
 		this.add( new DebugPanel(), "grow, wrap");
 
-		final RackComponent rc = FakeRackComponent.createInstance( bia, imageFactory, imageRoot, imagePrefix );
+		final RackComponent rc = FakeRackComponent.createInstance( bia, imageFactory, imagePrefix );
 		this.add( new ResizableFrontContainer( mrcf.getFrontDecorationImages(), rc ), "grow, wrap");
 		this.add( new ResizableBackContainer( mrcf.getBackDecorationImages(), rc ), "grow");
 

@@ -87,12 +87,12 @@ public class BandLimitedOscillatorMadUiDefinition
 	public static final int SLIDER_LABEL_MIN_WIDTH = 80;
 
 	public BandLimitedOscillatorMadUiDefinition( final BufferedImageAllocator bia,
-			final BandLimitedOscillatorMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+			final BandLimitedOscillatorMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,

@@ -64,12 +64,13 @@ public class SampleAndHoldMadUiDefinition
 
 	private static final Class<SampleAndHoldMadUiInstance> INSTANCE_CLASS = SampleAndHoldMadUiInstance.class;
 
-	public SampleAndHoldMadUiDefinition( final BufferedImageAllocator bia, final SampleAndHoldMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public SampleAndHoldMadUiDefinition( final BufferedImageAllocator bia,
+			final SampleAndHoldMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 					definition,
 					SPAN,

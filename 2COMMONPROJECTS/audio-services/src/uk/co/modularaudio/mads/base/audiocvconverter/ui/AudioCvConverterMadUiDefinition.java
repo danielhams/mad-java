@@ -49,11 +49,10 @@ public class AudioCvConverterMadUiDefinition
 
 	public AudioCvConverterMadUiDefinition( final BufferedImageAllocator bia,
 			final AudioCvConverterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
-		super( bia, cif, imageRoot, MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY, definition, INSTANCE_CLASS );
+		super( bia, cif, MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

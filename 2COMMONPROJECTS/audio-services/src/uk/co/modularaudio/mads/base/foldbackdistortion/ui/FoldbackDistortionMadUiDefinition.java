@@ -76,13 +76,11 @@ public class FoldbackDistortionMadUiDefinition
 
 	public FoldbackDistortionMadUiDefinition( final BufferedImageAllocator bia,
 			final FoldbackDistortionMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_METALLIC,
 				definition,
 				SPAN,

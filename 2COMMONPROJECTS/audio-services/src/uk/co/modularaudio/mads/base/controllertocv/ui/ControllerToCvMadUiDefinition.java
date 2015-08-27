@@ -79,13 +79,11 @@ public class ControllerToCvMadUiDefinition
 
 	public ControllerToCvMadUiDefinition( final BufferedImageAllocator bia,
 			final ControllerToCvMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 					definition,
 					SPAN,

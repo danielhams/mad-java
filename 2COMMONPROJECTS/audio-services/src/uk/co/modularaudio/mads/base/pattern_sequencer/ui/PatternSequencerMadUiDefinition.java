@@ -93,12 +93,13 @@ public class PatternSequencerMadUiDefinition
 
 	private static final Class<PatternSequencerMadUiInstance> INSTANCE_CLASS = PatternSequencerMadUiInstance.class;
 
-	public PatternSequencerMadUiDefinition( final BufferedImageAllocator bia, final PatternSequencerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public PatternSequencerMadUiDefinition( final BufferedImageAllocator bia,
+			final PatternSequencerMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					definition.getId(),
 					definition,
 					SPAN,

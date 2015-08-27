@@ -82,12 +82,13 @@ public class DJEQMadUiDefinition
 
 	private static final Class<DJEQMadUiInstance> INSTANCE_CLASS = DJEQMadUiInstance.class;
 
-	public DJEQMadUiDefinition( final BufferedImageAllocator bia, final DJEQMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public DJEQMadUiDefinition( final BufferedImageAllocator bia,
+			final DJEQMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
 					definition,
 					SPAN,

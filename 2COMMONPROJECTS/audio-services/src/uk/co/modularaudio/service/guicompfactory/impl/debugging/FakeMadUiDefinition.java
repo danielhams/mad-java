@@ -32,11 +32,10 @@ class FakeMadUiDefinition extends MadUiDefinition<FakeMadDefinition, FakeMadInst
 
 	public FakeMadUiDefinition( final BufferedImageAllocator bia,
 			final ImageFactory cif,
-			final String imageRoot,
 			final String imagePrefix,
 			final FakeMadDefinition definition ) throws DatastoreException
 	{
-		super( bia, cif, imageRoot, imagePrefix, definition );
+		super( bia, cif, imagePrefix, definition );
 	}
 
 	@Override

@@ -6,7 +6,7 @@ sourceSets {
             srcDirs = ['src/test']
         }
         resources {
-            srcDirs = ['src']
+            srcDirs = ['src', '../audio-services-images/images']
         }
     }
 }

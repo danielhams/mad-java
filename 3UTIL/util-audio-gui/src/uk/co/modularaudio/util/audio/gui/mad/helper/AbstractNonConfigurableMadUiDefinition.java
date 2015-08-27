@@ -54,7 +54,6 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 
 	public AbstractNonConfigurableMadUiDefinition( final BufferedImageAllocator bia,
 			final ImageFactory cif,
-			final String imageRoot,
 			final String imagePrefix,
 			final D definition,
 			final Span span,
@@ -68,7 +67,7 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 		throws DatastoreException
 	{
 		// Use default (is draggable, is not configurable)
-		super( bia, cif, imageRoot, imagePrefix, definition );
+		super( bia, cif, imagePrefix, definition );
 
 		this.span = span;
 

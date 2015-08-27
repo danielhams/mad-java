@@ -45,14 +45,13 @@ public class FakeRackComponent extends RackComponent
 
 	public static FakeRackComponent createInstance( final BufferedImageAllocator bia,
 			final ImageFactory imageFactory,
-			final String imageRoot,
-			final String imagePrefix
-			) throws MadProcessingException, DatastoreException
+			final String imagePrefix )
+		throws MadProcessingException, DatastoreException
 	{
 		final MadClassification fakeClass = new MadClassification( CLASS_GROUP, FAKE_STR, FAKE_STR, FAKE_STR, ReleaseState.RELEASED );
 		final FakeMadDefinition md = new FakeMadDefinition( fakeClass );
 		final FakeMadInstance mi = new FakeMadInstance( md );
-		final FakeMadUiDefinition mud = new FakeMadUiDefinition( bia, imageFactory, imageRoot, imagePrefix, md );
+		final FakeMadUiDefinition mud = new FakeMadUiDefinition( bia, imageFactory, imagePrefix, md );
 		final FakeMadUiInstance mui = (FakeMadUiInstance) mud.createNewUiInstance( mi );
 		return new FakeRackComponent( "fakey", mi, mui );
 	}

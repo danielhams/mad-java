@@ -96,12 +96,13 @@ public class SuperSawModuleMadUiDefinition
 
 	private static final Class<SuperSawModuleMadUiInstance> INSTANCE_CLASS = SuperSawModuleMadUiInstance.class;
 
-	public SuperSawModuleMadUiDefinition( final BufferedImageAllocator bia, final SuperSawModuleMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public SuperSawModuleMadUiDefinition( final BufferedImageAllocator bia,
+			final SuperSawModuleMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
 					definition,
 					SPAN,

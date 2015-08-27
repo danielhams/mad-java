@@ -105,12 +105,13 @@ public class EnvelopeMadUiDefinition
 
 	private static final Class<EnvelopeMadUiInstance> INSTANCE_CLASS = EnvelopeMadUiInstance.class;
 
-	public EnvelopeMadUiDefinition( final BufferedImageAllocator bia, final EnvelopeMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public EnvelopeMadUiDefinition( final BufferedImageAllocator bia,
+			final EnvelopeMadDefinition definition,
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_2X4_BLUE,
 					definition,
 					SPAN,

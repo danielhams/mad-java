@@ -47,13 +47,12 @@ public abstract class AbstractConfigurableMadUiDefinition
 
 	public AbstractConfigurableMadUiDefinition( final BufferedImageAllocator bia,
 			final ImageFactory cif,
-			final String imageRoot,
 			final String imagePrefix,
 			final D definition,
 			final Class<U> instanceClass )
 		throws DatastoreException
 	{
-		super( bia, cif, imageRoot, imagePrefix, definition, true, true );
+		super( bia, cif, imagePrefix, definition, true, true );
 
 		this.instanceClass = instanceClass;
 	}

@@ -112,13 +112,11 @@ public class InterpTesterMadUiDefinition
 
 	public InterpTesterMadUiDefinition( final BufferedImageAllocator bia,
 			final InterpTesterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				definition,
 				SPAN,

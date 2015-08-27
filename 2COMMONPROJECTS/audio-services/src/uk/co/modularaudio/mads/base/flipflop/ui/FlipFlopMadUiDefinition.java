@@ -62,12 +62,13 @@ public class FlipFlopMadUiDefinition
 
 	private static final Class<FlipFlopMadUiInstance> INSTANCE_CLASS = FlipFlopMadUiInstance.class;
 
-	public FlipFlopMadUiDefinition( final BufferedImageAllocator bia, final FlipFlopMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public FlipFlopMadUiDefinition( final BufferedImageAllocator bia,
+			final FlipFlopMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,

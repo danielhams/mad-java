@@ -72,12 +72,13 @@ public class OscillatorMadUiDefinition
 
 	private static final Class<OscillatorMadUiInstance> INSTANCE_CLASS = OscillatorMadUiInstance.class;
 
-	public OscillatorMadUiDefinition( final BufferedImageAllocator bia, final OscillatorMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public OscillatorMadUiDefinition( final BufferedImageAllocator bia,
+			final OscillatorMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_METALLIC,
 				definition,
 				SPAN,

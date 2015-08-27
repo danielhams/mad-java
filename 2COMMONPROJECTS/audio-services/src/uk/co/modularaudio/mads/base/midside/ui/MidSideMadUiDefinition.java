@@ -72,13 +72,11 @@ public class MidSideMadUiDefinition extends
 
 	public MidSideMadUiDefinition( final BufferedImageAllocator bia,
 			final MidSideMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 			throws DatastoreException
 		{
 			super( bia,
 					cif,
-					imageRoot,
 					MadUIStandardBackgrounds.STD_2X1_METALLIC,
 					definition,
 					SPAN,

@@ -37,14 +37,12 @@ public class IMixer8MadUiDefinition extends MixerNMadUiDefinition<IMixer8MadDefi
 
 	public IMixer8MadUiDefinition( final BufferedImageAllocator bia,
 			final IMixer8MadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		this( bia,
 				definition,
 				cif,
-				imageRoot,
 				instanceConfigToUiConfig( IMixer8MadDefinition.INSTANCE_CONFIGURATION ) );
 	}
 
@@ -57,13 +55,11 @@ public class IMixer8MadUiDefinition extends MixerNMadUiDefinition<IMixer8MadDefi
 	private IMixer8MadUiDefinition( final BufferedImageAllocator bia,
 			final IMixer8MadDefinition definition,
 			final ImageFactory cif,
-			final String imageRoot,
 			final IMixer8UiInstanceConfiguration uiConfiguration ) throws DatastoreException
 	{
 		super( bia,
 				definition,
 				cif,
-				imageRoot,
 				MIXER8_IMAGE_PREFIX,
 				SPAN,
 				IMixer8MadUiInstance.class,

@@ -81,12 +81,13 @@ public class RBJFilterMadUiDefinition
 
 	private static final Class<RBJFilterMadUiInstance> INSTANCE_CLASS = RBJFilterMadUiInstance.class;
 
-	public RBJFilterMadUiDefinition( final BufferedImageAllocator bia, final RBJFilterMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public RBJFilterMadUiDefinition( final BufferedImageAllocator bia,
+			final RBJFilterMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,

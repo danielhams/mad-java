@@ -88,12 +88,13 @@ public class OscilloscopeMadUiDefinition
 
 	private static final Class<OscilloscopeMadUiInstance> INSTANCE_CLASS = OscilloscopeMadUiInstance.class;
 
-	public OscilloscopeMadUiDefinition( final BufferedImageAllocator bia, final OscilloscopeMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public OscilloscopeMadUiDefinition( final BufferedImageAllocator bia,
+			final OscilloscopeMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,

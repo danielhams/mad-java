@@ -74,13 +74,11 @@ public class Bessel4FilterMadUiDefinition
 
 	public Bessel4FilterMadUiDefinition( final BufferedImageAllocator bia,
 			final Bessel4FilterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,

@@ -44,7 +44,7 @@ public class SubRackComponentsUiFactory extends AbstractMadComponentUiFactory
 			if( aud instanceof SubRackMadDefinition )
 			{
 				final SubRackMadDefinition fi = (SubRackMadDefinition)aud;
-				final SubRackMadUiDefinition fiud = new SubRackMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory, imageRoot );
+				final SubRackMadUiDefinition fiud = new SubRackMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory );
 				componentDefinitionToUiDefinitionMap.put( aud, fiud );
 			}
 		}

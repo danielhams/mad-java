@@ -88,13 +88,11 @@ public class FrequencyFilterMadUiDefinition
 
 	public FrequencyFilterMadUiDefinition( final BufferedImageAllocator bia,
 			final FrequencyFilterMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,

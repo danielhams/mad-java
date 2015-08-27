@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.general.FontResetter;
 
 public class ComponentDesignerLauncher extends ComponentDesigner
@@ -86,6 +87,12 @@ public class ComponentDesignerLauncher extends ComponentDesigner
 				{
 					configResourcePath = CDJPROFILER_PROPERTIES;
 					log.info("In jprofiler mode - using jprofiler properties for configuration");
+				}
+				else
+				{
+					final String msg = "Unknown command line argument: " + arg;
+					log.error( msg );
+					throw new DatastoreException( msg );
 				}
 			}
 			if( useSystemLookAndFeel )

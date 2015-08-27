@@ -73,7 +73,6 @@ public class WaveRollerMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-//		new Rectangle( 116,  3, 434,  30 ),		// Capture Time
 		new Rectangle( 116,  3, 294,  30 ),		// Capture Time
 		new Rectangle( 438,  3, 112,  30 ),		// Wave Scale Choice
 		new Rectangle(   6, 36,  45, 110 ),		// Scale Display
@@ -83,12 +82,13 @@ public class WaveRollerMadUiDefinition
 
 	private static final Class<WaveRollerMadUiInstance> INSTANCE_CLASS = WaveRollerMadUiInstance.class;
 
-	public WaveRollerMadUiDefinition( final BufferedImageAllocator bia, final WaveRollerMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public WaveRollerMadUiDefinition( final BufferedImageAllocator bia,
+			final WaveRollerMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,

@@ -48,16 +48,14 @@ public abstract class MadUiDefinition
 
 	public MadUiDefinition( final BufferedImageAllocator bia,
 			final ImageFactory imageFactory,
-			final String imageRoot,
 			final String imagePrefix,
 			final D definition ) throws DatastoreException
 	{
-		this( bia, imageFactory, imageRoot, imagePrefix, definition, true, false );
+		this( bia, imageFactory, imagePrefix, definition, true, false );
 	}
 
 	public MadUiDefinition( final BufferedImageAllocator bia,
 			final ImageFactory imageFactory,
-			final String imageRoot,
 			final String imagePrefix,
 			final D definition,
 			final boolean isDraggable,
@@ -69,11 +67,9 @@ public abstract class MadUiDefinition
 		this.isDraggable = isDraggable;
 		this.isParametrable = isParametrable;
 
-		frontBufferedImage = imageFactory.getBufferedImage( imageRoot,
-				imagePrefix + "_front.png" );
+		frontBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_front.png" );
 
-		backBufferedImage = imageFactory.getBufferedImage( imageRoot,
-				imagePrefix + "_back.png");
+		backBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_back.png" );
 	}
 
 	public abstract AbstractMadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;

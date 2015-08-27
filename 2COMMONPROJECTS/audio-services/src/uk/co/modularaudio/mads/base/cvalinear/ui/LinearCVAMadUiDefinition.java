@@ -64,12 +64,13 @@ public class LinearCVAMadUiDefinition
 
 	private static final Class<LinearCVAMadUiInstance> INSTANCE_CLASS = LinearCVAMadUiInstance.class;
 
-	public LinearCVAMadUiDefinition( final BufferedImageAllocator bia, final LinearCVAMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public LinearCVAMadUiDefinition( final BufferedImageAllocator bia,
+			final LinearCVAMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_1X1_WHITE,
 				definition,
 				SPAN,

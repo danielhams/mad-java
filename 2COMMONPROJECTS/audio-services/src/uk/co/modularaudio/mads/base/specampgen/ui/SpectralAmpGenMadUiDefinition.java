@@ -47,7 +47,6 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 	public SpectralAmpGenMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,
 			final ImageFactory cif,
-			final String imageRoot,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,
@@ -61,7 +60,6 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				imagePrefix,
 				definition,
 				span,

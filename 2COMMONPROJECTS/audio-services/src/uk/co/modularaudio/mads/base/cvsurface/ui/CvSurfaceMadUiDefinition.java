@@ -67,12 +67,13 @@ public class CvSurfaceMadUiDefinition
 
 	private static final Class<CvSurfaceMadUiInstance> INSTANCE_CLASS = CvSurfaceMadUiInstance.class;
 
-	public CvSurfaceMadUiDefinition( final BufferedImageAllocator bia, final CvSurfaceMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public CvSurfaceMadUiDefinition( final BufferedImageAllocator bia,
+			final CvSurfaceMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

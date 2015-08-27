@@ -68,13 +68,11 @@ extends AbstractNonConfigurableMadUiDefinition<AudioAnalyserMadDefinition, Audio
 	private static final Class<AudioAnalyserMadUiInstance> INSTANCE_CLASS = AudioAnalyserMadUiInstance.class;
 
 	public AudioAnalyserMadUiDefinition( final BufferedImageAllocator bia, final AudioAnalyserMadDefinition definition,
-			final ComponentImageFactory cif,
-			final String imageRoot )
-					throws DatastoreException
+			final ComponentImageFactory cif )
+		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

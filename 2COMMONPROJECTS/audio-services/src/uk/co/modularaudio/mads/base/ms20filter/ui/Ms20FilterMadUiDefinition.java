@@ -87,12 +87,13 @@ public class Ms20FilterMadUiDefinition
 
 	private static final Class<Ms20FilterMadUiInstance> INSTANCE_CLASS = Ms20FilterMadUiInstance.class;
 
-	public Ms20FilterMadUiDefinition( final BufferedImageAllocator bia, final Ms20FilterMadDefinition definition, final ComponentImageFactory cif, final String imageRoot )
+	public Ms20FilterMadUiDefinition( final BufferedImageAllocator bia,
+			final Ms20FilterMadDefinition definition,
+			final ComponentImageFactory cif )
 		throws DatastoreException
 	{
 		super( bia,
 				cif,
-				imageRoot,
 				definition.getId(),
 				definition,
 				SPAN,
