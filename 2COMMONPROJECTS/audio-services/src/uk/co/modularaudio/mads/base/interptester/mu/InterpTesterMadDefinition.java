@@ -40,19 +40,21 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int PRODUCER_CV_RAW_NOTS = 2;
 	public final static int PRODUCER_CV_SUM_OF_RATIOS_NOTS = 3;
 	public final static int PRODUCER_CV_HALFHANN_NOTS = 4;
+	public final static int PRODUCER_CV_LOWPASS_NOTS = 5;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS = 6;
 
-	public final static int PRODUCER_CV_RAW = 5;
-	public final static int PRODUCER_CV_SUM_OF_RATIOS = 6;
-	public final static int PRODUCER_CV_LINEAR = 7;
-	public final static int PRODUCER_CV_HALFHANN = 8;
-	public final static int PRODUCER_CV_SPRINGDAMPER = 9;
-	public final static int PRODUCER_CV_LOWPASS = 10;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 11;
+	public final static int PRODUCER_CV_RAW = 7;
+	public final static int PRODUCER_CV_SUM_OF_RATIOS = 8;
+	public final static int PRODUCER_CV_LINEAR = 9;
+	public final static int PRODUCER_CV_HALFHANN = 10;
+	public final static int PRODUCER_CV_SPRINGDAMPER = 11;
+	public final static int PRODUCER_CV_LOWPASS = 12;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 13;
 
-	public final static int PRODUCER_AUDIO = 12;
-	public final static int PRODUCER_CV = 13;
+	public final static int PRODUCER_AUDIO = 14;
+	public final static int PRODUCER_CV = 15;
 
-	public final static int NUM_CHANNELS = 14;
+	public final static int NUM_CHANNELS = 16;
 
 	public static final String DEFINITION_ID = "interptester";
 
@@ -70,6 +72,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		"Raw Control NoTS CV Out",
 		"Sum Of Ratio NoTS CV Out",
 		"Half Hann NoTS CV Out",
+		"Low Pass NoTS CV Out",
+		"Spring Damper Double NoTS CV Out",
 
 		"Raw Control CV Out",
 		"Sum Of Ratio CV Out",
@@ -86,6 +90,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelType.AUDIO,
 		MadChannelType.CV,
 
+		MadChannelType.CV,
+		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -108,6 +114,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
 
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
@@ -121,6 +129,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
+		MadChannelPosition.MONO,
+		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,

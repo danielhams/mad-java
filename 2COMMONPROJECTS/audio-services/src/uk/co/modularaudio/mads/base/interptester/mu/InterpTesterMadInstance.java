@@ -26,6 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterModelChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterValueChaseMillisSliderUiJComponent;
 import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
@@ -35,6 +37,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -45,6 +48,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
@@ -63,10 +67,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
+	private final LowPassInterpolator lpInterpolatorNoTs = new LowPassInterpolator();
+	private final SpringAndDamperDoubleInterpolator sddInterpolatorNoTs = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
-	private int sampleRate;
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
-	private float desValueChaseMillis = 10.0f;
+	private float desValueChaseMillis = InterpTesterValueChaseMillisSliderUiJComponent.DEFAULT_CHASE_MILLIS;
+	private int desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+			desValueChaseMillis );
 
 //	private final byte[] lChannelMask;
 	private int framesBetweenUiEvents;
@@ -83,6 +91,19 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private boolean uiActive;
 
 	private final InterpTesterSliderModels sliderModels = new InterpTesterSliderModels();
+
+	private int modelIndex = InterpTesterModelChoiceUiJComponent.DEFAULT_MODEL_CHOICE.ordinal();
+
+	private enum ImpulseState
+	{
+		NO_IMPULSE,
+		IMPULSE_MAX,
+		IMPULSE_MIN
+	};
+
+	private boolean doImpulse = false;
+	private int numImpulseSamplesLeft = 0;
+	private ImpulseState impulseState = ImpulseState.NO_IMPULSE;
 
 	public InterpTesterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -103,6 +124,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 			throws MadProcessingException
 	{
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
 
 		sorInterpolator.reset( sampleRate, desValueChaseMillis );
 		liInterpolator.reset( sampleRate, desValueChaseMillis );
@@ -113,7 +135,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		sorInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
+		lpInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
+		sddInterpolatorNoTs.reset( sampleRate );
 
+		// 6 updates a second is fine for the period length
 		framesBetweenUiEvents = timingParameters.getSampleFramesPerFrontEndPeriod() * 10;
 		numFramesToNextUiEvent = 0;
 	}
@@ -129,9 +154,11 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			final int frameOffset,
-			final int numFrames  )
+			final int iFrameOffset,
+			final int iNumFrames  )
 	{
+		int frameOffset = iFrameOffset;
+		int numFrames = iNumFrames;
 //		final boolean lConnected = channelConnectedFlags.logicalAnd( lChannelMask );
 
 		if( numFramesToNextUiEvent <= 0 && uiActive )
@@ -181,6 +208,89 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 			numFramesToNextUiEvent = framesBetweenUiEvents;
 		}
 
+		if( doImpulse )
+		{
+			final SliderDisplayModel sdm = sliderModels.getModelAt( modelIndex );
+			final SliderModelValueConverter smvc = sliderModels.getValueConverterAt( modelIndex );
+			final float minModelValue = sdm.getMinValue();
+			final float maxModelValue = sdm.getMaxValue();
+
+			final float minValue = (smvc == null ? minModelValue : smvc.convertValue( minModelValue ) );
+			final float maxValue = (smvc == null ? maxModelValue : smvc.convertValue( maxModelValue ) );
+
+			while( numFrames > 0 )
+			{
+				final int framesThisRound = (numFrames < numImpulseSamplesLeft ? numFrames : numImpulseSamplesLeft );
+
+				switch( impulseState )
+				{
+					case NO_IMPULSE:
+					{
+						setDesiredAmp( maxValue );
+						setDesiredAmpNoTs( maxValue );
+						fillInterpolationBuffers( channelBuffers, frameOffset, 1 );
+						frameOffset++;
+						numFrames--;
+						numImpulseSamplesLeft--;
+						impulseState = ImpulseState.IMPULSE_MAX;
+						log.debug("Did one frame and switched to impulse max");
+						break;
+					}
+					case IMPULSE_MAX:
+					{
+						fillInterpolationBuffers( channelBuffers, frameOffset, framesThisRound );
+						frameOffset += framesThisRound;
+						numFrames -= framesThisRound;
+						numImpulseSamplesLeft -= framesThisRound;
+
+						log.debug("Did " + framesThisRound + " impulse max frames");
+
+						if( numImpulseSamplesLeft == 0 )
+						{
+							numImpulseSamplesLeft = desValueChaseSamples;
+							impulseState = ImpulseState.IMPULSE_MIN;
+							setDesiredAmp( minValue );
+							setDesiredAmpNoTs( minValue );
+							log.debug( "Finished impulse max, switched to impulse min" );
+						}
+						break;
+					}
+					case IMPULSE_MIN:
+					{
+						fillInterpolationBuffers( channelBuffers, frameOffset, framesThisRound );
+						frameOffset += framesThisRound;
+						numFrames -= framesThisRound;
+						numImpulseSamplesLeft -= framesThisRound;
+
+						log.debug("Did " + framesThisRound + " impulse min frames");
+
+						if( numImpulseSamplesLeft == 0 )
+						{
+							impulseState = ImpulseState.NO_IMPULSE;
+							doImpulse = false;
+							log.debug( "Finished impulse min, switched off impulse" );
+							fillInterpolationBuffers( channelBuffers, frameOffset, numFrames );
+							numFrames = 0;
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		if( numFrames > 0 )
+		{
+			fillInterpolationBuffers( channelBuffers, frameOffset, numFrames );
+		}
+
+		numFramesToNextUiEvent -= numFrames;
+
+		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	private void fillInterpolationBuffers( final MadChannelBuffer[] channelBuffers, final int frameOffset,
+			final int numFrames )
+	{
 		final float[] rawNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS ].floatBuffer;
 		noneInterpolatorNoTs.generateControlValues( rawNoTsBuf, frameOffset, numFrames );
 		noneInterpolatorNoTs.checkForDenormal();
@@ -192,6 +302,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		final float[] hhNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS ].floatBuffer;
 		hhInterpolatorNoTs.generateControlValues( hhNoTsBuf, frameOffset, numFrames );
 		hhInterpolatorNoTs.checkForDenormal();
+
+		final float[] lpNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LOWPASS_NOTS ].floatBuffer;
+		lpInterpolatorNoTs.generateControlValues( lpNoTsBuf, frameOffset, numFrames );
+		lpInterpolatorNoTs.checkForDenormal();
+
+		final float[] sddNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS ].floatBuffer;
+		sddInterpolatorNoTs.generateControlValues( sddNoTsBuf, frameOffset, numFrames );
+		sddInterpolatorNoTs.checkForDenormal();
 
 		final float[] rawBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_RAW ].floatBuffer;
 		long before = System.nanoTime();
@@ -241,10 +359,6 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sddInterpolator.checkForDenormal();
 		after = System.nanoTime();
 		lastSDDNanos = after - before;
-
-		numFramesToNextUiEvent -= numFrames;
-
-		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
 	public void setDesiredAmp( final float amp )
@@ -266,11 +380,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		noneInterpolatorNoTs.notifyOfNewValue( amp );
 		sorInterpolatorNoTs.notifyOfNewValue( amp );
 		hhInterpolatorNoTs.notifyOfNewValue( amp );
+		lpInterpolatorNoTs.notifyOfNewValue( amp );
+		sddInterpolatorNoTs.notifyOfNewValue( amp );
 	}
 
 	public void setChaseMillis( final float chaseMillis )
 	{
 		desValueChaseMillis = chaseMillis;
+		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
 		sorInterpolator.reset( sampleRate, chaseMillis );
 		liInterpolator.reset( sampleRate, chaseMillis );
 		hhInterpolator.reset( sampleRate, chaseMillis );
@@ -280,6 +397,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		sorInterpolatorNoTs.reset( sampleRate, chaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, chaseMillis );
+		lpInterpolatorNoTs.reset( sampleRate, chaseMillis );
+		sddInterpolatorNoTs.reset( sampleRate );
 	}
 
 	public void setUiActive( final boolean active )
@@ -289,8 +408,9 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	public void setModelIndex( final int value )
 	{
-		final SliderDisplayModel sdm = sliderModels.getModelAt( value );
-		final SliderModelValueConverter smvc = sliderModels.getValueConverterAt( value );
+		modelIndex = value;
+		final SliderDisplayModel sdm = sliderModels.getModelAt( modelIndex );
+		final SliderModelValueConverter smvc = sliderModels.getValueConverterAt( modelIndex );
 		final float minModelValue = sdm.getMinValue();
 		final float maxModelValue = sdm.getMaxValue();
 
@@ -312,10 +432,18 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		sorInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
+		lpInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
+		sddInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 	}
 
 	public InterpTesterSliderModels getModels()
 	{
 		return sliderModels;
+	}
+
+	public void startImpulse()
+	{
+		doImpulse = true;
+		numImpulseSamplesLeft = desValueChaseSamples;
 	}
 }

@@ -22,14 +22,14 @@ package uk.co.modularaudio.util.audio.fft;
 
 import uk.co.modularaudio.util.math.MathDefines;
 
-public class BlackmannHarrisFftWindow extends FftWindow
+public class BlackmanHarrisFftWindow extends FftWindow
 {
 	private final static double A1 = 0.35875;
 	private final static double A2 = 0.48829;
 	private final static double A3 = 0.14128;
 	private final static double A4 = 0.01168;
 
-	public BlackmannHarrisFftWindow( final int length )
+	public BlackmanHarrisFftWindow( final int length )
 	{
 		super( length );
 	}

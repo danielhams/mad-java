@@ -55,7 +55,7 @@
 		<property name="libraryService"><ref bean="libraryService"></ref></property>
 		<property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
         <property name="configurationService"><ref bean="configurationService"></ref></property>
->
+    </bean>
 	<bean id="blockResamplerService" class="uk.co.modularaudio.service.blockresampler.impl.BlockResamplerServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="sampleCachingService"><ref bean="sampleCachingService"></ref></property>
 	</bean>

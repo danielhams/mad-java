@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterIOQueueBridge;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
+import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterModelChoiceUiJComponent.ModelChoice;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -139,10 +140,11 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		super.doDisplayProcessing( guiTemporaryEventStorage, timingParameters, currentGuiTick );
 	}
 
-	public void setValueModelIndex( final int selectedIndex )
+	public void setModelChoice( final ModelChoice choice )
 	{
-		modelChangeReceiver.receiveNewModelIndex( selectedIndex );
-		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_SET_MODEL, selectedIndex );
+		final int index = choice.ordinal();
+		modelChangeReceiver.receiveNewModelIndex( index );
+		sendTemporalValueToInstance( InterpTesterIOQueueBridge.COMMAND_SET_MODEL, index );
 	}
 
 	public void setModelChangeReceiver( final ModelChangeReceiver changeReceiver )
@@ -172,4 +174,11 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_UIACTIVE, (active ? 1 : 0 ) );
 
 	}
+
+	public void triggerImpulse()
+	{
+		log.debug("Would trigger an impulse");
+		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_IMPULSE, 1 );
+	}
+
 }

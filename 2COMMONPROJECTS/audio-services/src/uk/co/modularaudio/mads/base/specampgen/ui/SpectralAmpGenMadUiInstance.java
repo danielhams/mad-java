@@ -39,7 +39,8 @@ import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenWindowChoiceUiJC
 import uk.co.modularaudio.mads.base.specampgen.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.specampgen.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
-import uk.co.modularaudio.util.audio.fft.BlackmannHarrisFftWindow;
+import uk.co.modularaudio.util.audio.fft.BlackmanHarrisFftWindow;
+import uk.co.modularaudio.util.audio.fft.BlackmanNuttallFftWindow;
 import uk.co.modularaudio.util.audio.fft.FftWindow;
 import uk.co.modularaudio.util.audio.fft.HammingFftWindow;
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
@@ -151,7 +152,8 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 	private final FftWindow hannWindow = new HannFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
 	private final FftWindow hammingWindow = new HammingFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
-	private final FftWindow blackmanHarrisWindow = new BlackmannHarrisFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanHarrisWindow = new BlackmanHarrisFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
+	private final FftWindow blackmanNuttallWindow = new BlackmanNuttallFftWindow( SpectralAmpGenMadDefinition.MAX_WINDOW_LENGTH );
 
 	private WindowChoice desiredWindow = SpectralAmpGenWindowChoiceUiJComponent.DEFAULT_WINDOW_CHOICE;
 
@@ -159,7 +161,8 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 			hannWindow,
 			hammingWindow,
-			blackmanHarrisWindow
+			blackmanHarrisWindow,
+			blackmanNuttallWindow
 	};
 
 	// The FFT processor and bits used to pull out the amplitudes

@@ -4,58 +4,34 @@
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 3" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 3" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
-        <rackPosition column="0" row="1"/>
-        <rackControl name="Frequency" value="400.0"/>
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Frequency" value="280.0"/>
         <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
-        <rackPosition column="0" row="6"/>
-        <rackControl name="Model Choice" value="DJ Deck Fader"/>
+        <rackPosition column="0" row="5"/>
+        <rackControl name="Impulse" value=""/>
+        <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="0.0"/>
-        <rackControl name="ValueChase" value="8.5696"/>
+        <rackControl name="Value" value="-0.1875"/>
+        <rackControl name="ValueChase" value="13.4982"/>
     </rackComponent>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
-        <rackPosition column="0" row="3"/>
+        <rackPosition column="0" row="2"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
-        <rackControl name="Slider" value="-1.0"/>
-    </rackComponent>
-    <rackComponent name="HHNoTs" definitionId="spectral_amp">
-        <rackPosition column="0" row="12"/>
-        <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1110.1"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
-        <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Resolution" value="16384"/>
-        <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
-    </rackComponent>
-    <rackComponent name="HHNoTsAmp" definitionId="linear_cva">
-        <rackPosition column="1" row="11"/>
-    </rackComponent>
-    <rackComponent name="HHVsS&amp;D" definitionId="oscilloscope">
-        <rackPosition column="2" row="6"/>
-        <rackControl name="CaptureTime" value="480.0"/>
-        <rackControl name="Display" value=""/>
-        <rackControl name="Recapture" value=""/>
-        <rackControl name="Repetitions" value="Continuous"/>
-        <rackControl name="TriggerType" value="On Rise"/>
+        <rackControl name="Slider" value="-0.78"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 3" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Master Lane" value="-5.0:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:M "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:M "/>
     </rackComponent>
-    <rackComponent name="NoTSRawNoTsHH" definitionId="oscilloscope">
+    <rackComponent name="NoTsHHvsTsHH" definitionId="oscilloscope">
         <rackPosition column="2" row="4"/>
         <rackControl name="CaptureTime" value="480.0"/>
         <rackControl name="Display" value=""/>
@@ -63,18 +39,15 @@
         <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
-    <rackComponent name="Raw+RawTS" definitionId="oscilloscope">
-        <rackPosition column="0" row="4"/>
+    <rackComponent name="NoTsHHvsTsSD" definitionId="oscilloscope">
+        <rackPosition column="2" row="6"/>
         <rackControl name="CaptureTime" value="480.0"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
-    <rackComponent name="RawNoTsAmp" definitionId="linear_cva">
-        <rackPosition column="0" row="11"/>
-    </rackComponent>
-    <rackComponent name="RawVsS&amp;D" definitionId="oscilloscope">
+    <rackComponent name="NoTsLPvsTsLP" definitionId="oscilloscope">
         <rackPosition column="2" row="8"/>
         <rackControl name="CaptureTime" value="480.0"/>
         <rackControl name="Display" value=""/>
@@ -82,8 +55,16 @@
         <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
-    <rackComponent name="S&amp;DTs" definitionId="spectral_amp">
-        <rackPosition column="2" row="12"/>
+    <rackComponent name="Raw+RawTS" definitionId="oscilloscope">
+        <rackPosition column="0" row="3"/>
+        <rackControl name="CaptureTime" value="480.0"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
+    </rackComponent>
+    <rackComponent name="Sig1Amps" definitionId="spectral_amp">
+        <rackPosition column="0" row="11"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
@@ -96,23 +77,45 @@
         <rackControl name="Running Average" value="Peak Hold"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
-    <rackComponent name="Static Value 1" definitionId="static_value">
-        <rackPosition column="0" row="0"/>
-        <rackControl name="Value" value="200.0"/>
+    <rackComponent name="Sig1LCVA" definitionId="linear_cva">
+        <rackPosition column="1" row="10"/>
+    </rackComponent>
+    <rackComponent name="Sig2Amps" definitionId="spectral_amp">
+        <rackPosition column="2" row="11"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="1110.1"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="Sig2LCVA" definitionId="linear_cva">
+        <rackPosition column="2" row="10"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 1" definitionId="sub_rack">
-        <rackPosition column="0" row="10"/>
+        <rackPosition column="0" row="9"/>
         <rack name="Sub Rack 1" cols="4" rows="19">
             <rackIOLink rackChannelName="Input CV Channel 1" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 1"/>
             <rackIOLink rackChannelName="Input CV Channel 2" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 2"/>
+            <rackIOLink rackChannelName="Input CV Channel 3" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 3"/>
             <rackIOLink rackChannelName="Input CV Channel 4" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 4"/>
             <rackIOLink rackChannelName="Input CV Channel 5" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 5"/>
             <rackIOLink rackChannelName="Input CV Channel 6" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 6"/>
+            <rackIOLink rackChannelName="Input CV Channel 7" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 7"/>
+            <rackIOLink rackChannelName="Input CV Channel 8" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Input Channel 8"/>
             <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 1"/>
             <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 2"/>
+            <rackIOLink rackChannelName="Output Channel 3" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 3"/>
             <rackIOLink rackChannelName="Output Channel 4" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 4"/>
             <rackIOLink rackChannelName="Output Channel 5" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 5"/>
             <rackIOLink rackChannelName="Output Channel 6" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 6"/>
+            <rackIOLink rackChannelName="Output Channel 7" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 7"/>
+            <rackIOLink rackChannelName="Output Channel 8" rackComponentName="Audio CV Converter 1" rackComponentChannelInstanceName="Output Channel 8"/>
             <rackComponent name="Audio CV Converter 1" definitionId="audio_cv_converter">
                 <rackPosition column="0" row="0"/>
                 <rackComponentParameterValue parameterName="inchanneltype" value="CV"/>
@@ -120,40 +123,32 @@
             </rackComponent>
         </rack>
     </rackComponent>
-    <rackComponent name="TsHH" definitionId="linear_cva">
-        <rackPosition column="2" row="11"/>
-    </rackComponent>
-    <rackComponent name="TsS&amp;DAmp" definitionId="linear_cva">
-        <rackPosition column="3" row="11"/>
-    </rackComponent>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 5"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann CV Out" consumerRackComponentName="TsHH" consumerChannelName="Input CV amplification factor"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann NoTS CV Out" consumerRackComponentName="HHNoTsAmp" consumerChannelName="Input CV amplification factor"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 4"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="HHVsS&amp;D" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="NoTSRawNoTsHH" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann CV Out" consumerRackComponentName="Sig1LCVA" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 6"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Sig2LCVA" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 7"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 4"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="NoTsHHvsTsHH" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="NoTsHHvsTsSD" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="NoTsLPvsTsLP" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Raw+RawTS" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="RawNoTsAmp" consumerChannelName="Input CV amplification factor"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="RawVsS&amp;D" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 1"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 6"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="TsS&amp;DAmp" consumerChannelName="Input CV amplification factor"/>
-    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="HHNoTsAmp" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="RawNoTsAmp" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="TsHH" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="TsS&amp;DAmp" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="HHNoTsAmp" producerChannelName="Output Wave" consumerRackComponentName="HHNoTs" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="HHNoTsAmp" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="NoTSRawNoTsHH" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 8"/>
+    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sig1LCVA" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sig2LCVA" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sig1LCVA" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sig1LCVA" producerChannelName="Output Wave" consumerRackComponentName="Sig1Amps" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sig2LCVA" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="Sig2LCVA" producerChannelName="Output Wave" consumerRackComponentName="Sig2Amps" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Raw+RawTS" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="HHVsS&amp;D" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="NoTSRawNoTsHH" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 4" consumerRackComponentName="Raw+RawTS" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 4" consumerRackComponentName="RawVsS&amp;D" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 6" consumerRackComponentName="HHVsS&amp;D" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 6" consumerRackComponentName="RawVsS&amp;D" consumerChannelName="Input Wave 0"/>
-    <rackLink producerRackComponentName="TsS&amp;DAmp" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 3" consumerChannelName="Lane 2 Input Wave Left"/>
-    <rackLink producerRackComponentName="TsS&amp;DAmp" producerChannelName="Output Wave" consumerRackComponentName="S&amp;DTs" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="Raw+RawTS" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 3" consumerRackComponentName="NoTsHHvsTsHH" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 3" consumerRackComponentName="NoTsHHvsTsSD" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 4" consumerRackComponentName="NoTsLPvsTsLP" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 6" consumerRackComponentName="NoTsHHvsTsHH" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 8" consumerRackComponentName="NoTsHHvsTsSD" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 8" consumerRackComponentName="NoTsLPvsTsLP" consumerChannelName="Input Wave 1"/>
 </rack>

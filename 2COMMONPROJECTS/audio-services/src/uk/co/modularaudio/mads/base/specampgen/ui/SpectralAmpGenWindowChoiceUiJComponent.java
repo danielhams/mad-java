@@ -52,7 +52,8 @@ public class SpectralAmpGenWindowChoiceUiJComponent<D extends SpectralAmpGenMadD
 	{
 		HANN( "Hann" ),
 		HAMMING( "Hamming" ),
-		BLACKMANN_HARRIS( "Blckmn-H." );
+		BLACKMAN_HARRIS( "Blckmn-H." ),
+		BLACKMAN_NUTTALL( "Blckmn-N." );
 
 		private WindowChoice( final String label )
 		{
@@ -75,7 +76,8 @@ public class SpectralAmpGenWindowChoiceUiJComponent<D extends SpectralAmpGenMadD
 	{
 		LABEL_TO_MAPPING.put( WindowChoice.HANN.getLabel(), WindowChoice.HANN );
 		LABEL_TO_MAPPING.put( WindowChoice.HAMMING.getLabel(), WindowChoice.HAMMING );
-		LABEL_TO_MAPPING.put( WindowChoice.BLACKMANN_HARRIS.getLabel(), WindowChoice.BLACKMANN_HARRIS );
+		LABEL_TO_MAPPING.put( WindowChoice.BLACKMAN_HARRIS.getLabel(), WindowChoice.BLACKMAN_HARRIS );
+		LABEL_TO_MAPPING.put( WindowChoice.BLACKMAN_NUTTALL.getLabel(), WindowChoice.BLACKMAN_NUTTALL );
 	}
 
 	private final DefaultComboBoxModel<String> model;
@@ -105,7 +107,8 @@ public class SpectralAmpGenWindowChoiceUiJComponent<D extends SpectralAmpGenMadD
 		model = new DefaultComboBoxModel<String>();
 		model.addElement( WindowChoice.HANN.getLabel() );
 		model.addElement( WindowChoice.HAMMING.getLabel() );
-		model.addElement( WindowChoice.BLACKMANN_HARRIS.getLabel() );
+		model.addElement( WindowChoice.BLACKMAN_HARRIS.getLabel() );
+		model.addElement( WindowChoice.BLACKMAN_NUTTALL.getLabel() );
 
 		model.setSelectedItem( DEFAULT_WINDOW_CHOICE.getLabel() );
 

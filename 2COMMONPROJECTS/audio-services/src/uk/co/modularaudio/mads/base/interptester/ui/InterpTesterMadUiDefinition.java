@@ -45,6 +45,8 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS,
 
 		InterpTesterMadDefinition.PRODUCER_CV_RAW,
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS,
@@ -65,6 +67,8 @@ public class InterpTesterMadUiDefinition
 		new Point( 150, 120 ),
 		new Point( 190, 120 ),
 		new Point( 230, 120 ),
+		new Point( 270, 120 ),
+		new Point( 310, 120 ),
 
 		new Point( 150, 160 ),
 		new Point( 190, 160 ),
@@ -81,6 +85,7 @@ public class InterpTesterMadUiDefinition
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Model Choice",
+		"Impulse",
 		"ValueChase",
 		"Value",
 		"Perf Table"
@@ -88,6 +93,7 @@ public class InterpTesterMadUiDefinition
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
+		ControlType.BUTTON,
 		ControlType.SLIDER,
 		ControlType.SLIDER,
 		ControlType.CUSTOM
@@ -95,17 +101,18 @@ public class InterpTesterMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		InterpTesterModelChoiceUiJComponent.class,
+		InterpTesterImpulseUiJComponent.class,
 		InterpTesterValueChaseMillisSliderUiJComponent.class,
 		InterpTesterValueSliderUiJComponent.class,
 		InterpTesterPerfTableUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  16, 30, 230,  30 ),		// Model Choice
-		new Rectangle(  16, 66,  80, 220 ),		// Value Chase
-//		new Rectangle( 106, 66,  80, 220 ),		// Value
-		new Rectangle( 106, 66, 120, 220 ),		// Value
-		new Rectangle( 230, 30, 300, 256 )		// Perf table
+		new Rectangle(  16,  30, 230,  30 ),		// Model Choice
+		new Rectangle( 250,  30, 130,  30 ),		// Impulse Button
+		new Rectangle(  16,  66,  80, 220 ),		// Value Chase
+		new Rectangle( 106,  66, 120, 220 ),		// Value
+		new Rectangle( 230,  60, 300, 256 )			// Perf table
 	};
 
 	private static final Class<InterpTesterMadUiInstance> INSTANCE_CLASS = InterpTesterMadUiInstance.class;

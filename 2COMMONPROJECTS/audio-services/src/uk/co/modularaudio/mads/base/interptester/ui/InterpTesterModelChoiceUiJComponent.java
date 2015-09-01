@@ -21,6 +21,8 @@
 package uk.co.modularaudio.mads.base.interptester.ui;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -45,6 +47,48 @@ public class InterpTesterModelChoiceUiJComponent extends JPanel
 	private static final long serialVersionUID = 28004477652791854L;
 
 	private final DefaultComboBoxModel<String> model;
+
+	public enum ModelChoice
+	{
+		DJ_CROSS_FADER("DJ Cross Fader"),
+		DJ_EQ_GAIN("DJ EQ Gain"),
+		DJ_DECK_FADER("DJ Deck Fader"),
+		MASTERING_MIXER_FADER("Mastering Mixer Fader"),
+		SPEED("Speed"),
+		FREQUENCY("Frequency"),
+		LEFT_RIGHT("Left Right"),
+		COMPRESSION_THRESHOLD("Compression Threshold"),
+		COMPRESSION_RATIO("Compression Ratio"),
+		OUTPUT_GAIN("Output Gain"),
+		TIME_5K_MS("Time (1->5000 ms)"),
+		SAO_SCALE("SAO Scale"),
+		SAO_OFFSET("SAO Offset"),
+		STATIC_VALUE("Static Value");
+
+		private String label;
+
+		private ModelChoice( final String label )
+		{
+			this.label = label;
+		}
+
+		public String getLabel()
+		{
+			return label;
+		}
+	};
+
+	public final static ModelChoice DEFAULT_MODEL_CHOICE = ModelChoice.DJ_CROSS_FADER;
+
+	private final static Map<String, ModelChoice> LABEL_TO_MODEL = new HashMap<>();
+
+	static
+	{
+		for( final ModelChoice choice : ModelChoice.values() )
+		{
+			LABEL_TO_MODEL.put( choice.getLabel(), choice );
+		}
+	}
 
 	public InterpTesterModelChoiceUiJComponent(
 			final InterpTesterMadDefinition definition,
@@ -71,20 +115,11 @@ public class InterpTesterModelChoiceUiJComponent extends JPanel
 		add( modelLabel, "");
 
 		model = new DefaultComboBoxModel<String>();
-		model.addElement( "DJ Cross Fader" );
-		model.addElement( "DJ EQ Gain" );
-		model.addElement( "DJ Deck Fader" );
-		model.addElement( "Mastering Mixer Fader" );
-		model.addElement( "Speed" );
-		model.addElement( "Frequency" );
-		model.addElement( "Left Right" );
-		model.addElement( "Compression Threshold" );
-		model.addElement( "Compression Ratio" );
-		model.addElement( "Output Gain" );
-		model.addElement( "Time (1->5000 ms)" );
-		model.addElement( "SAO Scale" );
-		model.addElement( "SAO Offset" );
-		model.addElement( "Static Value" );
+		for( final ModelChoice choice : ModelChoice.values() )
+		{
+			model.addElement( choice.getLabel() );
+		}
+		model.setSelectedItem( DEFAULT_MODEL_CHOICE.getLabel() );
 
 		final LWTCRotaryChoice choice = new LWTCRotaryChoice(
 				LWTCControlConstants.STD_ROTARY_CHOICE_COLOURS,
@@ -110,8 +145,8 @@ public class InterpTesterModelChoiceUiJComponent extends JPanel
 			public void contentsChanged( final ListDataEvent e )
 			{
 				final String newValue = (String)model.getSelectedItem();
-				final int index = model.getIndexOf( newValue );
-				uiInstance.setValueModelIndex( index );
+				final ModelChoice choice = LABEL_TO_MODEL.get( newValue );
+				uiInstance.setModelChoice( choice );
 			}
 		} );
 	}

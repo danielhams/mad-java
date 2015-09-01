@@ -36,16 +36,17 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 	public static final int COMMAND_CHASE_MILLIS = 2;
 	public static final int COMMAND_SET_MODEL = 3;
 
-	public static final int COMMAND_TO_UI_NONE_NANOS = 4;
-	public static final int COMMAND_TO_UI_SOR_NANOS = 5;
-	public static final int COMMAND_TO_UI_LIN_NANOS = 6;
-	public static final int COMMAND_TO_UI_HH_NANOS = 7;
-	public static final int COMMAND_TO_UI_SD_NANOS = 8;
-	public static final int COMMAND_TO_UI_LP_NANOS = 9;
-	public static final int COMMAND_TO_UI_SDD_NANOS = 10;
+	public static final int COMMAND_IMPULSE = 4;
 
-	public static final int COMMAND_UIACTIVE = 11;
+	public static final int COMMAND_TO_UI_NONE_NANOS = 5;
+	public static final int COMMAND_TO_UI_SOR_NANOS = 6;
+	public static final int COMMAND_TO_UI_LIN_NANOS = 7;
+	public static final int COMMAND_TO_UI_HH_NANOS = 8;
+	public static final int COMMAND_TO_UI_SD_NANOS = 9;
+	public static final int COMMAND_TO_UI_LP_NANOS = 10;
+	public static final int COMMAND_TO_UI_SDD_NANOS = 11;
 
+	public static final int COMMAND_UIACTIVE = 12;
 
 	public InterpTesterIOQueueBridge()
 	{
@@ -84,6 +85,11 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 			case COMMAND_SET_MODEL:
 			{
 				instance.setModelIndex( (int)queueEntry.value );
+				break;
+			}
+			case COMMAND_IMPULSE:
+			{
+				instance.startImpulse();
 				break;
 			}
 			case COMMAND_UIACTIVE:
