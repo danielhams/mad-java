@@ -59,9 +59,9 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	private final WaveOverviewPositionClickListener waveOverviewPositionClickListener;
 
 	private long currentSampleNumFrames;
-	private int desiredPositionOffset;
+	private float desiredNormalisedPositionOffset;
 
-	private int displayedPositionOffset;
+	private float displayedNormalisedPositionOffset;
 
 	private int lastWidth;
 	private int lastHeight;
@@ -103,7 +103,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		if( displayedPositionOffset != desiredPositionOffset )
+		if( displayedNormalisedPositionOffset != desiredNormalisedPositionOffset )
 		{
 			repaint();
 		}
@@ -154,10 +154,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		}
 
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_CURRENT_POSITION_COLOUR );
-		final int actualPos = xWaveOffset + desiredPositionOffset;
+		final int actualPos = (int)(xWaveOffset + (desiredNormalisedPositionOffset * lastOverviewWidth));
 		g.drawLine( actualPos, WAVE_OVERVIEW_BORDER_PIXELS, actualPos, lastOverviewHeight );
 
-		displayedPositionOffset = desiredPositionOffset;
+		displayedNormalisedPositionOffset = desiredNormalisedPositionOffset;
 	}
 
 	@Override
@@ -171,9 +171,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 
 	private void recomputeDesiredPositionOffset( final long newPosition )
 	{
-		final float normalisedPos = ((float)newPosition) / currentSampleNumFrames;
-
-		desiredPositionOffset = (int)(lastOverviewWidth * normalisedPos);
+		desiredNormalisedPositionOffset = ((float)newPosition) / currentSampleNumFrames;
 	}
 
 	@Override
@@ -197,10 +195,6 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 
 		this.lastOverviewWidth = lastWidth - (2 * WAVE_OVERVIEW_INTRO_PIXELS) - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
 		this.lastOverviewHeight = lastHeight - (2 * WAVE_OVERVIEW_BORDER_PIXELS);
-//		if( log.isTraceEnabled() )
-//		{
-//			log.trace("Overview w/h is(" + lastOverviewWidth + ", " + lastOverviewHeight + ")");
-//		}
 	}
 
 	public void handleOverviewClickAtPoint( final Point point )
@@ -208,10 +202,6 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final int clickX = point.x;
 		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS - WAVE_OVERVIEW_BORDER_PIXELS) /
 				(float)lastOverviewWidth;
-//		if( log.isDebugEnabled() )
-//		{
-//			log.debug("Received click at " + point.x + " normalised to " + normalisedPosition );
-//		}
 		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
 	}
 
