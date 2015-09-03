@@ -94,6 +94,8 @@ import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinit
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadInstance;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
 import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
@@ -213,6 +215,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadInstance.class );
 
 		defClassToInsClassMap.put( Bessel4FilterMadDefinition.class, Bessel4FilterMadInstance.class );
+
+		defClassToInsClassMap.put( ScopeMadDefinition.class, ScopeMadInstance.class );
 	}
 
 	@Override
