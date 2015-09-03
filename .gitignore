@@ -7,3 +7,4 @@ releasedir
 mad-pp-*
 .javamadpp.properties
 .javamadpp
+.DS_Store
