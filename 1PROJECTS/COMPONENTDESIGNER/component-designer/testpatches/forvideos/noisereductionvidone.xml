@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 4"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 4"/>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Frequency" value="923.236"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
+        <rackControl name="Shape" value="Sine"/>
+    </rackComponent>
+    <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Impulse" value=""/>
+        <rackControl name="Model Choice" value="DJ Deck Fader"/>
+        <rackControl name="Perf Table" value=""/>
+        <rackControl name="Value" value="0.0"/>
+        <rackControl name="ValueChase" value="10.4316"/>
+    </rackComponent>
+    <rackComponent name="HalfHann" definitionId="spectral_amp">
+        <rackPosition column="2" row="8"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="10564.4795"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="Linear" definitionId="spectral_amp">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="10564.4795"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="RawNoTS" definitionId="spectral_amp">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="10564.4795"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="RawTS" definitionId="spectral_amp">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="10564.4795"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 1" definitionId="sub_rack">
+        <rackPosition column="0" row="2"/>
+        <rack name="Empty Application Rack" cols="4" rows="19">
+            <rackIOLink rackChannelName="Input CV Channel 1" rackComponentName="Linear" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input CV Channel 2" rackComponentName="HH" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input CV Channel 3" rackComponentName="S&amp;D" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input CV Channel 4" rackComponentName="LP" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input CV Channel 7" rackComponentName="RawTS" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input CV Channel 8" rackComponentName="RawNoTS" rackComponentChannelInstanceName="Input CV amplification factor"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="HH" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="LP" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Linear" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="RawNoTS" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="RawTS" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="S&amp;D" rackComponentChannelInstanceName="Input Wave"/>
+            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Linear" rackComponentChannelInstanceName="Output Wave"/>
+            <rackIOLink rackChannelName="Output Channel 2" rackComponentName="HH" rackComponentChannelInstanceName="Output Wave"/>
+            <rackIOLink rackChannelName="Output Channel 3" rackComponentName="S&amp;D" rackComponentChannelInstanceName="Output Wave"/>
+            <rackIOLink rackChannelName="Output Channel 4" rackComponentName="LP" rackComponentChannelInstanceName="Output Wave"/>
+            <rackIOLink rackChannelName="Output Channel 7" rackComponentName="RawTS" rackComponentChannelInstanceName="Output Wave"/>
+            <rackIOLink rackChannelName="Output Channel 8" rackComponentName="RawNoTS" rackComponentChannelInstanceName="Output Wave"/>
+            <rackComponent name="HH" definitionId="linear_cva">
+                <rackPosition column="1" row="0"/>
+            </rackComponent>
+            <rackComponent name="LP" definitionId="linear_cva">
+                <rackPosition column="3" row="0"/>
+            </rackComponent>
+            <rackComponent name="Linear" definitionId="linear_cva">
+                <rackPosition column="0" row="0"/>
+            </rackComponent>
+            <rackComponent name="RawNoTS" definitionId="linear_cva">
+                <rackPosition column="0" row="2"/>
+            </rackComponent>
+            <rackComponent name="RawTS" definitionId="linear_cva">
+                <rackPosition column="1" row="2"/>
+            </rackComponent>
+            <rackComponent name="S&amp;D" definitionId="linear_cva">
+                <rackPosition column="2" row="0"/>
+            </rackComponent>
+        </rack>
+    </rackComponent>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Half Hann CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Interpolation CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 4"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 7"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 8"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Linear" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="HalfHann" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 7" consumerRackComponentName="RawTS" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 8" consumerRackComponentName="RawNoTS" consumerChannelName="Input Wave"/>
+</rack>
