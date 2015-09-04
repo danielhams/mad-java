@@ -107,6 +107,7 @@ public class SpectralPeakGraph extends JPanel
 		this.numFreqMarkers = numFreqMarkers;
 
 		setOpaque( true );
+		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 
 		runningBinPeaks = new float[ SpectralAmpGenMadDefinition.MAX_NUM_FFT_BINS ];
 		previousBinPeaks = new float[ SpectralAmpGenMadDefinition.MAX_NUM_FFT_BINS ];
