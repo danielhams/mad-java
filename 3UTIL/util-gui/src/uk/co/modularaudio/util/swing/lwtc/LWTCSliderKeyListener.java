@@ -83,13 +83,11 @@ public class LWTCSliderKeyListener implements KeyListener
 	@Override
 	public void keyReleased( final KeyEvent me )
 	{
-//		log.debug("Key released: " + arg0.toString() );
 	}
 
 	@Override
 	public void keyTyped( final KeyEvent me )
 	{
-//		log.debug("Key typed: " + arg0.toString() );
 	}
 
 	public void setModel( final SliderDisplayModel newModel )
