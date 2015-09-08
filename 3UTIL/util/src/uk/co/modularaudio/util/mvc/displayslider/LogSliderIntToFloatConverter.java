@@ -40,7 +40,7 @@ public class LogSliderIntToFloatConverter implements SliderIntToFloatConverter
 		final float diffValue = maxValue - minValue;
 		final float normalisedInVal = (inValue - minValue) / diffValue;
 		final float normalisedFloatVal = NormalisedValuesMapper.logMinMaxMapF( normalisedInVal, 0.0f, maxMappedValue );
-		final int intVal = (int)( numSteps * normalisedFloatVal );
+		final int intVal = Math.round( numSteps * normalisedFloatVal );
 		return intVal;
 	}
 
