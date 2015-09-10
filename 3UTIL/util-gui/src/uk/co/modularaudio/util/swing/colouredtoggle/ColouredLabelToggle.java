@@ -120,5 +120,6 @@ public class ColouredLabelToggle extends JPanel
 	public void receiveControlValue( final String value )
 	{
 		active = Boolean.parseBoolean( value );
+		toggleReceiver.receiveToggle( toggleId, active );
 	}
 }

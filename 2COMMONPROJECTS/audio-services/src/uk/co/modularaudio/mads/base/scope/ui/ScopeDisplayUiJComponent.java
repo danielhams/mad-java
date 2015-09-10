@@ -122,7 +122,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	@Override
 	public void receiveControlValue( final String value )
 	{
-		final String[] vals = value.split("|");
+		final String[] vals = value.split("\\|");
 		if( vals.length == 5 )
 		{
 			topTriggerToggle.receiveControlValue( vals[0] );
