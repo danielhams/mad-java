@@ -30,7 +30,7 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJCrossFaderSlider
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJDeckFaderSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.DJEQGainSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.LeftRightPanSliderModel;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisMinOneSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To5000SliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.OscillatorFrequencySliderModel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.PlaybackSpeedSliderModel;
@@ -55,7 +55,7 @@ public class InterpTesterSliderModels
 			new CompressionThresholdSliderModel(),
 			new CompressionRatioSliderModel(),
 			new CompressionOutputGainSliderModel(),
-			new LogarithmicTimeMillisMinOneSliderModel(),
+			new LogarithmicTimeMillis1To5000SliderModel(),
 			new SAOScaleSliderModel(),
 			new SAOOffsetSliderModel(),
 			new SVValueSliderModel()

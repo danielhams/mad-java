@@ -142,8 +142,8 @@ public class WaveRollerBufferSampleFactory
 
 	private void calcMinMaxForSamples( final int sampleStartIndex )
 	{
-		minMaxValues[0] = Float.MAX_VALUE;
-		minMaxValues[1] = -minMaxValues[0];
+		minMaxValues[0] = 1.1f;
+		minMaxValues[1] = -1.1f;
 
 		if( numSamplesPerPixel < 1.0f )
 		{
@@ -243,8 +243,8 @@ public class WaveRollerBufferSampleFactory
 	public void fullFillSamples( final RollPaintUpdate update, final WaveRollerBuffer buffer )
 	{
 		final Graphics2D g = buffer.graphics;
-		previousMinMaxValues[0] = 0.0f;
-		previousMinMaxValues[1] = 0.0f;
+		previousMinMaxValues[0] = 1.1f;
+		previousMinMaxValues[1] = -1.1f;
 
 //		log.debug( "Full repaint " + displayBounds );
 		g.setColor( Color.red );
@@ -269,12 +269,12 @@ public class WaveRollerBufferSampleFactory
 
 		if( numZeros > 0 )
 		{
-			previousMinMaxValues[0] = 0.0f;
-			previousMinMaxValues[1] = 0.0f;
+			previousMinMaxValues[0] = 1.1f;
+			previousMinMaxValues[1] = -1.1f;
 			for( int z = 0 ; z < numZeros ; ++z, ++numPixelsDone )
 			{
-				minMaxValues[0] = 0.0f;
-				minMaxValues[1] = 0.0f;
+				minMaxValues[0] = 1.1f;
+				minMaxValues[1] = -1.1f;
 				fillInMinMaxLine( g, numPixelsDone, minMaxValues[0], minMaxValues[1] );
 			}
 

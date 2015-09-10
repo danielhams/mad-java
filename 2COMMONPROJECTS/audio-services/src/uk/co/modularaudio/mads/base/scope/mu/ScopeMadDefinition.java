@@ -19,7 +19,8 @@ public class ScopeMadDefinition extends AbstractNonConfigurableMadDefinition<Sco
 	public final static int SCOPE_INPUT_1 = 2;
 	public final static int SCOPE_INPUT_2 = 3;
 	public final static int SCOPE_INPUT_3 = 4;
-	public final static int NUM_CHANNELS = 5;
+	private final static int NUM_CHANNELS = 5;
+	public final static int NUM_VIS_CHANNELS = NUM_CHANNELS - 1;
 
 	public static final String DEFINITION_ID = "scope";
 

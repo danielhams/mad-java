@@ -37,7 +37,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisMinOneSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To5000SliderModel;
 
 public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<WaveRollerMadDefinition, WaveRollerMadInstance>
 	implements IOQueueEventUiConsumer<WaveRollerMadInstance>
@@ -53,7 +53,7 @@ public class WaveRollerMadUiInstance extends AbstractNoNameChangeNonConfigurable
 
 	private float desiredAmpScaleLimitDb = 0.0f;
 
-	private float captureMillis = LogarithmicTimeMillisMinOneSliderModel.DEFAULT_MILLIS;
+	private float captureMillis = LogarithmicTimeMillis1To5000SliderModel.DEFAULT_MILLIS;
 
 	public WaveRollerMadUiInstance( final WaveRollerMadInstance instance,
 			final WaveRollerMadUiDefinition uiDefinition )

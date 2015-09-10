@@ -18,12 +18,12 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.oscilloscope.ui;
+package uk.co.modularaudio.mads.base.scope.ui;
 
 import javax.swing.JComponent;
 
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -35,8 +35,8 @@ import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class OscilloscopeCaptureLengthSliderUiJComponent
-	implements IMadUiControlInstance<OscilloscopeMadDefinition, OscilloscopeMadInstance, OscilloscopeMadUiInstance>
+public class ScopeCaptureLengthSliderUiJComponent
+	implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadUiInstance>
 {
 //	private static Log log = LogFactory.getLog( OscilloscopeCaptureLengthSliderUiJComponent.class.getName() );
 
@@ -44,9 +44,9 @@ public class OscilloscopeCaptureLengthSliderUiJComponent
 	private final SliderDisplayController controller;
 	private final LWTCSliderDisplayView view;
 
-	public OscilloscopeCaptureLengthSliderUiJComponent( final OscilloscopeMadDefinition definition,
-			final OscilloscopeMadInstance instance,
-			final OscilloscopeMadUiInstance uiInstance,
+	public ScopeCaptureLengthSliderUiJComponent( final ScopeMadDefinition definition,
+			final ScopeMadInstance instance,
+			final ScopeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 

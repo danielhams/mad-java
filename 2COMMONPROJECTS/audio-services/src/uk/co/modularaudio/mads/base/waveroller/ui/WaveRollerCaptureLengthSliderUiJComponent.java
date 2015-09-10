@@ -27,7 +27,7 @@ import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillisMinOneSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To5000SliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
@@ -40,7 +40,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 {
 //	private static Log log = LogFactory.getLog( WaveRollerCaptureLengthSliderUiJComponent.class.getName() );
 
-	private final LogarithmicTimeMillisMinOneSliderModel model;
+	private final LogarithmicTimeMillis1To5000SliderModel model;
 	private final SliderDisplayController controller;
 	private final LWTCSliderDisplayView view;
 
@@ -50,7 +50,7 @@ public class WaveRollerCaptureLengthSliderUiJComponent
 			final int controlIndex )
 	{
 
-		model = new LogarithmicTimeMillisMinOneSliderModel();
+		model = new LogarithmicTimeMillis1To5000SliderModel();
 
 		controller = new SliderDisplayController( model );
 

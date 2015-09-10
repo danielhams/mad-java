@@ -1,0 +1,146 @@
+package uk.co.modularaudio.mads.base.scope.ui;
+
+import java.awt.Component;
+
+import javax.swing.JPanel;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
+import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeAmpLabels;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeAmpMarks;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeEmptyPlot;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTimeLabels;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTimeMarks;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeWaveDisplay;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
+import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+
+public class ScopeDisplayUiJComponent extends JPanel
+implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadUiInstance>
+{
+	private static final long serialVersionUID = 5515402437483693770L;
+
+	private static Log log = LogFactory.getLog( ScopeDisplayUiJComponent.class.getName() );
+
+	public static final int AMP_LABELS_WIDTH = 30;
+	public static final int AXIS_MARKS_LENGTH = 6;
+	public static final int AMP_DISPLAY_RIGHT_PADDING = 20;
+	public static final int AMP_DISPLAY_TOP_PADDING = 20;
+	public static final int TIME_LABELS_HEIGHT = 40;
+
+	private static final int NUM_AMP_MARKS = 7;
+	private static final int NUM_TIME_MARKS = 11;
+
+	private final ScopeAmpLabels ampLabels;
+	private final ScopeEmptyPlot topEmptyPlot;
+	private final ScopeAmpMarks ampMarks;
+	private final ScopeWaveDisplay waveDisplay;
+	private final ScopeEmptyPlot rightEmptyPlot;
+	private final ScopeTimeMarks timeMarks;
+	private final ScopeTimeLabels timeLabels;
+
+	public ScopeDisplayUiJComponent( final ScopeMadDefinition definition,
+			final ScopeMadInstance instance,
+			final ScopeMadUiInstance uiInstance,
+			final int controlIndex )
+	{
+		setOpaque( true );
+		setBackground( ScopeColours.BACKGROUND_COLOR );
+		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
+
+//		msh.addLayoutConstraint( "debug" );
+		msh.addLayoutConstraint( "insets 0" );
+		msh.addLayoutConstraint( "gap 0" );
+		msh.addLayoutConstraint( "fill" );
+
+		msh.addColumnConstraint(
+				"[" + AMP_LABELS_WIDTH + "px]" +
+				"[" + AXIS_MARKS_LENGTH + "px]" +
+				"[]" +
+				"[" + AMP_DISPLAY_RIGHT_PADDING + "px]" );
+
+		msh.addRowConstraint(
+				"[" + AMP_DISPLAY_TOP_PADDING + "px]" +
+				"[]" +
+				"[" + AXIS_MARKS_LENGTH + "px]" +
+				"[" + TIME_LABELS_HEIGHT + "px]" );
+
+		setLayout( msh.createMigLayout() );
+
+		ampLabels = new ScopeAmpLabels( uiInstance, NUM_AMP_MARKS );
+		topEmptyPlot = new ScopeEmptyPlot();
+		ampMarks = new ScopeAmpMarks( NUM_AMP_MARKS );
+		waveDisplay = new ScopeWaveDisplay( uiInstance, NUM_TIME_MARKS, NUM_AMP_MARKS );
+		rightEmptyPlot = new ScopeEmptyPlot();
+		timeMarks = new ScopeTimeMarks( NUM_TIME_MARKS );
+		timeLabels = new ScopeTimeLabels( uiInstance, NUM_TIME_MARKS );
+
+		this.add( ampLabels, "cell 0 0, spany 3, growy" );
+		this.add( topEmptyPlot, "cell 1 0, spanx 3, growx" );
+		this.add( ampMarks, "cell 1 1, grow" );
+		this.add( waveDisplay, "cell 2 1, grow, push" );
+		this.add( rightEmptyPlot, "cell 3 1, grow" );
+		this.add( timeMarks, "cell 1 2, spanx 3, growx" );
+		this.add( timeLabels, "cell 0 3, spanx 4, growx" );
+	}
+
+	@Override
+	public boolean needsDisplayProcessing()
+	{
+		return true;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return "";
+	}
+
+	@Override
+	public void receiveControlValue( final String value )
+	{
+	}
+
+	@Override
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
+			final MadTimingParameters timingParameters, final long currentGuiTime )
+	{
+		waveDisplay.doDisplayProcessing( tempEventStorage, timingParameters, currentGuiTime );
+	}
+
+	@Override
+	public Component getControl()
+	{
+		return this;
+	}
+
+	@Override
+	public void destroy()
+	{
+	}
+
+	public static int getAdjustedHeightOfDisplay( final int height, final int numAmpMarkers )
+	{
+		return getAdjustedHeightBetweenMarkers( height, numAmpMarkers ) * (numAmpMarkers-1);
+	}
+
+	static public int getAdjustedHeightBetweenMarkers( final int height, final int numAmpMarkers )
+	{
+		return (int)Math.floor(height / (numAmpMarkers-1));
+	}
+
+	static public int getAdjustedWidthOfDisplay( final int width, final int numFreqMarkers )
+	{
+		return getAdjustedWidthBetweenMarkers( width, numFreqMarkers ) * (numFreqMarkers-1);
+	}
+
+	static public int getAdjustedWidthBetweenMarkers( final int width, final int numFreqMarkers )
+	{
+		return (int)Math.floor(width / (numFreqMarkers-1));
+	}
+}

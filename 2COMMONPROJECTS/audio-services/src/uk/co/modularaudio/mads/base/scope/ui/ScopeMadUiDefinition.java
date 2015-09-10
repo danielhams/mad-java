@@ -55,15 +55,35 @@ public class ScopeMadUiDefinition extends
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
+		"CaptureLength",
+		"TriggerChoice",
+		"RepetitionChoice",
+		"Recapture",
+		"WaveDisplay"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.SLIDER,
+		ControlType.COMBO,
+		ControlType.COMBO,
+		ControlType.BUTTON,
+		ControlType.CUSTOM
 	};
 
-	private static final Class<?>[] COTNROL_CLASSES = new Class<?>[] {
+	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		ScopeCaptureLengthSliderUiJComponent.class,
+		ScopeTriggerChoiceUiJComponent.class,
+		ScopeRepetitionsChoiceUiJComponent.class,
+		ScopeRecaptureButtonUiJComponent.class,
+		ScopeDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle( 116,   3, 434,  30 ),		// Capture Time
+		new Rectangle(  16,  40, 170,  30 ),		// Trigger Choice
+		new Rectangle( 210,  40, 165,  30 ),		// Repetition Choice
+		new Rectangle( 410,  40, 120,  30 ),		// Recapture
+		new Rectangle(   6,  75, 544, 232 )			// Scope Display
 	};
 
 	private static final Class<ScopeMadUiInstance> INSTANCE_CLASS = ScopeMadUiInstance.class;
@@ -75,7 +95,7 @@ public class ScopeMadUiDefinition extends
 	{
 		super( bia,
 				cif,
-				MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
+				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,
@@ -83,7 +103,7 @@ public class ScopeMadUiDefinition extends
 				CHAN_POSITIONS,
 				CONTROL_NAMES,
 				CONTROL_TYPES,
-				COTNROL_CLASSES,
+				CONTROL_CLASSES,
 				CONTROL_BOUNDS );
 	}
 }
