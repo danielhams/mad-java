@@ -72,14 +72,16 @@ public class ScopeWaveDisplay extends JPanel
 
 	static
 	{
+		// White - trigger
+		visColours[0] = Color.decode( "#BBBBBB" );
 		// Red
-		visColours[0] = Color.decode( "#FF5555" );
+		visColours[1] = Color.decode( "#FF5555" );
 		// Green
-		visColours[1] = Color.decode( "#55FF55" );
+		visColours[2] = Color.decode( "#55FF55" );
 		// Blue
-		visColours[2] = Color.decode( "#5555FF" );
+		visColours[3] = Color.decode( "#5555FF" );
 		// Purple
-		visColours[3] = Color.decode( "#FF55FF" );
+		visColours[4] = Color.decode( "#FF55FF" );
 	}
 
 	private final float[][] internalChannelBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
@@ -318,7 +320,7 @@ public class ScopeWaveDisplay extends JPanel
 	@Override
 	public void receiveCaptureLengthSamples( final int captureSamples )
 	{
-		log.trace("Received capture length samples of " + captureSamples );
+//		log.trace("Received capture length samples of " + captureSamples );
 		this.captureLengthSamples = captureSamples;
 		calculateChannelValues( internalChannelBuffers );
 		repaint();

@@ -115,16 +115,16 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		if( curWindowPos < lastWindowPos )
-		{
-			haveValWaiting = true;
-			nextVal = newValue;
-		}
-		else
+		if( curWindowPos == 0 || curWindowPos >= lastWindowPos )
 		{
 			// Restart the hann half window fade
 			curWindowPos = 0;
 			desVal = newValue;
+		}
+		else
+		{
+			haveValWaiting = true;
+			nextVal = newValue;
 		}
 	}
 
