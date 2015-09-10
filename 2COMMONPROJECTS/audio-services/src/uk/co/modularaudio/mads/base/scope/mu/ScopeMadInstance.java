@@ -72,7 +72,7 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 	{
 		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-				LogarithmicTimeMillis1To5000SliderModel.DEFAULT_MILLIS );
+				LogarithmicTimeMillis1To5000SliderModel.MAX_MILLIS );
 
 		dataRingBuffer = new MultiChannelBackendToFrontendDataRingBuffer( ScopeMadDefinition.NUM_VIS_CHANNELS, maxRingBufferingInSamples );
 
@@ -143,11 +143,12 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 
 					if( numToFrontEndPeriod <= 0 )
 					{
+//						final int numBackendFramesQueued = dataRingBuffer.backEndGetNumSamplesQueued();
+//						log.debug("Queuing write index update of queue samples(" + numBackendFramesQueued + ")");
 						queueWriteIndexUpdate( tempQueueEntryStorage,
 							dataRingBuffer.getWritePosition(),
 							timestampForIndexUpdate );
 						dataRingBuffer.backEndClearNumSamplesQueued();
-//						log.debug("Queued write index update");
 					}
 
 //					log.trace("Have " + numLeftToCapture + " left to capture, doing " + numThisRound + " this round");
@@ -159,7 +160,12 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 						outChannels[1] = input1Floats;
 						outChannels[2] = input2Floats;
 						outChannels[3] = input3Floats;
-						dataRingBuffer.backEndWrite( outChannels, frameOffset + currentFrameIndex, numThisRound );
+						final int numWritten = dataRingBuffer.backEndWrite( outChannels, frameOffset + currentFrameIndex, numThisRound );
+						if( numWritten != numThisRound )
+						{
+							log.error("Failed to write to back end ring buffer - attempted " +
+									numThisRound + " but ring returned " + numWritten );
+						}
 					}
 
 					numFramesLeft -= numThisRound;
@@ -172,8 +178,10 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 						state = ScopeState.IDLE;
 						numSamplesCaptured = 0;
 //						log.trace( "Completed capture, switching to idle" );
-						if( dataRingBuffer.backEndGetNumSamplesQueued() > 0 )
+						final int numBackendFramesQueued = dataRingBuffer.backEndGetNumSamplesQueued();
+						if( numBackendFramesQueued > 0 )
 						{
+//							log.debug( "Still have queued samples(" + numBackendFramesQueued + ")");
 							timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
 							queueWriteIndexUpdate( tempQueueEntryStorage,
 									dataRingBuffer.getWritePosition(),

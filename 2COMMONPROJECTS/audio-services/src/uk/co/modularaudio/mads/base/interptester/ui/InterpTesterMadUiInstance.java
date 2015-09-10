@@ -177,7 +177,7 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 
 	public void triggerImpulse()
 	{
-		log.debug("Would trigger an impulse");
+//		log.debug("Would trigger an impulse");
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_IMPULSE, 1 );
 	}
 

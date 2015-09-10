@@ -70,6 +70,7 @@ public class ScopeMadUiInstance extends
 			final ScopeMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
+		setupFrontEndBuffers( sampleRate );
 	}
 
 	@Override
@@ -81,17 +82,26 @@ public class ScopeMadUiInstance extends
 		backendRingBuffer = instance.getBackendRingBuffer();
 
 		sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
-		final int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
-		for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
-		{
-			frontEndBuffers[c] = new float[ frontEndBufferLength ];
-		}
-		frontEndWritePosition = 0;
+		setupFrontEndBuffers( sampleRate );
 
 		for( final ScopeSampleRateListener srl : sampleRateListeners )
 		{
 			srl.receiveSampleRateChange( sampleRate );
 		}
+	}
+
+	private void setupFrontEndBuffers( final int sampleRate )
+	{
+		final int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+		if( frontEndBuffers[0] == null ||
+				frontEndBuffers[0].length != frontEndBufferLength )
+		{
+			for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
+			{
+				frontEndBuffers[c] = new float[ frontEndBufferLength ];
+			}
+		}
+		frontEndWritePosition = 0;
 	}
 
 	@Override
@@ -185,7 +195,6 @@ public class ScopeMadUiInstance extends
 
 		if( newCaptureSamples > captureLengthSamples )
 		{
-			final int startIndex = newCaptureSamples - captureLengthSamples;
 			// Zero previously unseen buffers
 			for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 			{

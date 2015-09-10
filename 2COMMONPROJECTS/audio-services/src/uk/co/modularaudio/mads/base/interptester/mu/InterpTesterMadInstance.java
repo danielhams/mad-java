@@ -233,7 +233,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 						numFrames--;
 						numImpulseSamplesLeft--;
 						impulseState = ImpulseState.IMPULSE_MAX;
-						log.debug("Did one frame and switched to impulse max");
+//						log.trace("Did one frame and switched to impulse max");
 						break;
 					}
 					case IMPULSE_MAX:
@@ -243,7 +243,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 						numFrames -= framesThisRound;
 						numImpulseSamplesLeft -= framesThisRound;
 
-						log.debug("Did " + framesThisRound + " impulse max frames");
+//						log.trace("Did " + framesThisRound + " impulse max frames");
 
 						if( numImpulseSamplesLeft == 0 )
 						{
@@ -251,7 +251,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 							impulseState = ImpulseState.IMPULSE_MIN;
 							setDesiredAmp( minValue );
 							setDesiredAmpNoTs( minValue );
-							log.debug( "Finished impulse max, switched to impulse min" );
+//							log.trace( "Finished impulse max, switched to impulse min" );
 						}
 						break;
 					}
@@ -262,13 +262,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 						numFrames -= framesThisRound;
 						numImpulseSamplesLeft -= framesThisRound;
 
-						log.debug("Did " + framesThisRound + " impulse min frames");
+//						log.trace("Did " + framesThisRound + " impulse min frames");
 
 						if( numImpulseSamplesLeft == 0 )
 						{
 							impulseState = ImpulseState.NO_IMPULSE;
 							doImpulse = false;
-							log.debug( "Finished impulse min, switched off impulse" );
+//							log.trace( "Finished impulse min, switched off impulse" );
 							fillInterpolationBuffers( channelBuffers, frameOffset, numFrames );
 							numFrames = 0;
 						}

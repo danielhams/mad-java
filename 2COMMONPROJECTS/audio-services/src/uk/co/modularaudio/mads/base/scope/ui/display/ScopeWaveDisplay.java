@@ -240,7 +240,7 @@ public class ScopeWaveDisplay extends JPanel
 				System.arraycopy( frontEndBuffers[c], 0, internalChannelBuffers[c], 0, frontEndBuffers[c].length );
 			}
 		}
-		calculateChannelValues( frontEndBuffers );
+		calculateChannelValues( internalChannelBuffers );
 	}
 
 	private void calculateChannelValues( final float[][] channelBuffers )
@@ -255,8 +255,8 @@ public class ScopeWaveDisplay extends JPanel
 			{
 				for( int x = 0 ; x < magsWidth ; ++x )
 				{
-					final int startOffset = Math.round(x * numSamplesPerPixel);
-
+					int startOffset = Math.round(x * numSamplesPerPixel);
+					startOffset = (startOffset < 0 ? 0 : (startOffset >= captureLengthSamples ? captureLengthSamples - 1 : startOffset ) );
 					float min = channelBuffers[channel][startOffset];
 					float max = min;
 

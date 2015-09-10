@@ -4,9 +4,6 @@ import java.awt.Component;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
 import uk.co.modularaudio.mads.base.scope.ui.display.ScopeAmpLabels;
@@ -25,7 +22,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 {
 	private static final long serialVersionUID = 5515402437483693770L;
 
-	private static Log log = LogFactory.getLog( ScopeDisplayUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( ScopeDisplayUiJComponent.class.getName() );
 
 	public static final int AMP_LABELS_WIDTH = 30;
 	public static final int AXIS_MARKS_LENGTH = 6;
