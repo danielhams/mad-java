@@ -88,7 +88,8 @@ public class ScopeWaveDisplay extends JPanel
 
 	private final int[][] channelValues = new int[ScopeMadDefinition.NUM_VIS_CHANNELS][];
 
-	private int captureLengthSamples;
+	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+			DataRate.CD_QUALITY.getValue(), LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
 
 	public ScopeWaveDisplay( final ScopeMadUiInstance uiInstance,
 			final int numTimeMarkers,
