@@ -1,4 +1,4 @@
-package test.uk.co.modularaudio.util.swing.colouredtexttoggle;
+package test.uk.co.modularaudio.util.swing.colouredtoggle;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -12,14 +12,15 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.swing.colouredtexttoggle.ColouredTextToggle;
+import uk.co.modularaudio.util.swing.colouredtoggle.ColouredLabelToggle;
+import uk.co.modularaudio.util.swing.colouredtoggle.ToggleReceiver;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class TestUseColouredTextToggle
+public class TestUseColouredLabelToggle
 {
-	private static Log log = LogFactory.getLog( TestUseColouredTextToggle.class.getName() );
+	private static Log log = LogFactory.getLog( TestUseColouredLabelToggle.class.getName() );
 
-	public TestUseColouredTextToggle()
+	public TestUseColouredLabelToggle()
 	{
 	}
 
@@ -39,14 +40,29 @@ public class TestUseColouredTextToggle
 
 		contentPane.setLayout( msh.createMigLayout() );
 
-		final Color surroundColor = Color.decode( "#44BB44" );
+		final Color surroundColor = Color.decode( "#FFFFFF" );
 		final Color backgroundColor = Color.BLACK;
-		final ColouredTextToggle ctt = new ColouredTextToggle( "NoTS",
+		final Color foregroundColor = Color.white;
+
+		final ToggleReceiver testReceiver = new ToggleReceiver()
+		{
+
+			@Override
+			public void receiveToggle( final int toggleId, final boolean active )
+			{
+				log.trace("Received a toggle of " + toggleId + " to " + active );
+			}
+		};
+
+		final ColouredLabelToggle clt = new ColouredLabelToggle( "Trigger",
 				"Tooltip Text",
 				backgroundColor,
+				foregroundColor,
 				surroundColor,
-				false );
-		contentPane.add( ctt, "grow" );
+				false,
+				testReceiver,
+				0 );
+		contentPane.add( clt, "grow" );
 
 		testFrame.pack();
 
@@ -64,7 +80,7 @@ public class TestUseColouredTextToggle
 			@Override
 			public void windowClosing( final WindowEvent e )
 			{
-				log.trace("Window closing. Value of control is \"" + ctt.getControlValue() + "\"" );
+				log.trace("Window closing. Value of control is \"" + clt.getControlValue() + "\"" );
 			}
 			@Override
 			public void windowClosed( final WindowEvent e ){}
@@ -85,7 +101,7 @@ public class TestUseColouredTextToggle
 
 	public static void main( final String[] args ) throws Exception
 	{
-		final TestUseColouredTextToggle t = new TestUseColouredTextToggle();
+		final TestUseColouredLabelToggle t = new TestUseColouredLabelToggle();
 		t.go();
 		log.debug("Going past...");
 	}

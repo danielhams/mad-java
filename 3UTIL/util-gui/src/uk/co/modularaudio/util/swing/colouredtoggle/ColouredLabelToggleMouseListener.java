@@ -1,13 +1,13 @@
-package uk.co.modularaudio.util.swing.colouredtexttoggle;
+package uk.co.modularaudio.util.swing.colouredtoggle;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class ColouredTextToggleMouseListener implements MouseListener
+public class ColouredLabelToggleMouseListener implements MouseListener
 {
-	private final ColouredTextToggle originCtt;
+	private final ColouredLabelToggle originCtt;
 
-	public ColouredTextToggleMouseListener( final ColouredTextToggle originCtt )
+	public ColouredLabelToggleMouseListener( final ColouredLabelToggle originCtt )
 	{
 		this.originCtt = originCtt;
 	}

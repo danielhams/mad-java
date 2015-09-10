@@ -1,4 +1,4 @@
-package uk.co.modularaudio.util.swing.colouredtexttoggle;
+package uk.co.modularaudio.util.swing.colouredtoggle;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -28,15 +28,23 @@ public class ColouredTextToggle extends JPanel
 
 	private boolean active = false;
 
+	private final ToggleReceiver toggleReceiver;
+	private final int toggleId;
+
 	public ColouredTextToggle( final String defaultText,
 			final String tooltipText,
 			final Color backgroundColour,
 			final Color surroundColour,
-			final boolean isActive )
+			final boolean isActive,
+			final ToggleReceiver toggleReceiver,
+			final int toggleId )
 	{
 		this.backgroundColour = backgroundColour;
 		this.surroundColour = surroundColour;
 		this.active = isActive;
+
+		this.toggleReceiver = toggleReceiver;
+		this.toggleId = toggleId;
 
 		// We set the background to the surround colour as it means
 		// we only have to paint the on off bits of the clickable area
@@ -88,6 +96,7 @@ public class ColouredTextToggle extends JPanel
 	public void receiveClick()
 	{
 		active = !active;
+		toggleReceiver.receiveToggle( toggleId, active );
 		repaint();
 	}
 

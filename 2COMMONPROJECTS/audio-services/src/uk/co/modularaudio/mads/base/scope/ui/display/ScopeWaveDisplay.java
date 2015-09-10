@@ -68,20 +68,23 @@ public class ScopeWaveDisplay extends JPanel
 	private int horizPixelsPerMarker;
 	private int vertPixelsPerMarker;
 
-	private static final Color[] VIS_COLOURS = new Color[ScopeMadDefinition.NUM_VIS_CHANNELS];
+	public static final Color[] VIS_COLOURS = new Color[ScopeMadDefinition.NUM_VIS_CHANNELS];
 
 	static
 	{
-		// White - trigger
-		VIS_COLOURS[0] = Color.decode( "#BBBBBB" );
-		// Red
-		VIS_COLOURS[1] = Color.decode( "#FF5555" );
-		// Green
-		VIS_COLOURS[2] = Color.decode( "#55FF55" );
-		// Blue
-		VIS_COLOURS[3] = Color.decode( "#5555FF" );
-		// Purple
-		VIS_COLOURS[4] = Color.decode( "#FF55FF" );
+		// Trigger + four signals
+		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
+		VIS_COLOURS[1] = Color.decode( "#d31b00" );
+		VIS_COLOURS[2] = Color.decode( "#d38c00" );
+		VIS_COLOURS[3] = Color.decode( "#c1d300" );
+		VIS_COLOURS[4] = Color.decode( "#08af00" );
+
+		// Alternate colour scheme
+//		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
+//		VIS_COLOURS[1] = Color.decode( "#d31b00" );
+//		VIS_COLOURS[2] = Color.decode( "#bed300" );
+//		VIS_COLOURS[3] = Color.decode( "#00d37d" );
+//		VIS_COLOURS[4] = Color.decode( "#004dd3" );
 	}
 
 	private final float[][] internalChannelBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
@@ -90,6 +93,8 @@ public class ScopeWaveDisplay extends JPanel
 
 	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			DataRate.CD_QUALITY.getValue(), LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
+
+	private final boolean[] signalVisibility = new boolean[5];
 
 	public ScopeWaveDisplay( final ScopeMadUiInstance uiInstance,
 			final int numTimeMarkers,
@@ -108,6 +113,8 @@ public class ScopeWaveDisplay extends JPanel
 		final int maxSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.CD_QUALITY.getValue(),
 				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 		setupInternalChannelBuffers( maxSamples );
+
+		Arrays.fill( signalVisibility, true );
 	}
 
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
@@ -145,6 +152,8 @@ public class ScopeWaveDisplay extends JPanel
 	{
 		for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 		{
+			if( !signalVisibility[channel] ) continue;
+
 			g.setColor( VIS_COLOURS[channel] );
 
 			int previousMinY = -1;
@@ -350,5 +359,11 @@ public class ScopeWaveDisplay extends JPanel
 				internalChannelBuffers[c] = new float[maxSamples];
 			}
 		}
+	}
+
+	public void setSignalVisibility( final int signal, final boolean active )
+	{
+		signalVisibility[signal] = active;
+		repaint();
 	}
 }
