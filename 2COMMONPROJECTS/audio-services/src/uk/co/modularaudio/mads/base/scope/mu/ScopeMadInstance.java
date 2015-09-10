@@ -156,10 +156,11 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 					if( numThisRound > 0 )
 					{
 						final float[][] outChannels = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
-						outChannels[0] = input0Floats;
-						outChannels[1] = input1Floats;
-						outChannels[2] = input2Floats;
-						outChannels[3] = input3Floats;
+						outChannels[0] = triggerFloats;
+						outChannels[1] = input0Floats;
+						outChannels[2] = input1Floats;
+						outChannels[3] = input2Floats;
+						outChannels[4] = input3Floats;
 						final int numWritten = dataRingBuffer.backEndWrite( outChannels, frameOffset + currentFrameIndex, numThisRound );
 						if( numWritten != numThisRound )
 						{
@@ -259,7 +260,7 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 					}
 					case ON_RISE:
 					{
-						if( triggerValue < 0.0f )
+						if( triggerValue <= 0.0f )
 						{
 //							log.trace( "Found on rise pretrigger at index " + currentFrameIndex );
 							foundTrigger0 = true;
@@ -305,7 +306,7 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 					}
 					case ON_FALL:
 					{
-						if( triggerValue < 0.0f )
+						if( triggerValue <= 0.0f )
 						{
 							state = ScopeState.CAPTURING;
 							final long timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
