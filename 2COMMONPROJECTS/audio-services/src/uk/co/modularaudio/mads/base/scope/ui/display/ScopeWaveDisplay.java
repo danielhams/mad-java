@@ -68,18 +68,18 @@ public class ScopeWaveDisplay extends JPanel
 	private int horizPixelsPerMarker;
 	private int vertPixelsPerMarker;
 
-	private static final Color[] visColours = new Color[ScopeMadDefinition.NUM_VIS_CHANNELS];
+	private static final Color[] VIS_COLOURS = new Color[ScopeMadDefinition.NUM_VIS_CHANNELS];
 
 	static
 	{
 		// Red
-		visColours[0] = Color.decode( "#FF5555" );
+		VIS_COLOURS[0] = Color.decode( "#FF5555" );
 		// Green
-		visColours[1] = Color.decode( "#55FF55" );
+		VIS_COLOURS[1] = Color.decode( "#55FF55" );
 		// Blue
-		visColours[2] = Color.decode( "#5555FF" );
+		VIS_COLOURS[2] = Color.decode( "#5555FF" );
 		// Purple
-		visColours[3] = Color.decode( "#FF55FF" );
+		VIS_COLOURS[3] = Color.decode( "#FF55FF" );
 	}
 
 	private final float[][] internalChannelBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
@@ -142,7 +142,7 @@ public class ScopeWaveDisplay extends JPanel
 	{
 		for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 		{
-			g.setColor( visColours[channel] );
+			g.setColor( VIS_COLOURS[channel] );
 
 			int previousMinY = -1;
 			int previousMaxY = -1;
@@ -233,7 +233,12 @@ public class ScopeWaveDisplay extends JPanel
 		{
 			if( frontEndBuffers[c].length != internalChannelBuffers[c].length )
 			{
-				log.error("Buffer lengths don't match feb.length(" + frontEndBuffers[c].length + ") vs icb.length(" + internalChannelBuffers[c].length + ")");
+				if( log.isErrorEnabled() )
+				{
+					log.error("Buffer lengths don't match feb.length(" +
+							frontEndBuffers[c].length + ") vs icb.length(" +
+							internalChannelBuffers[c].length + ")");
+				}
 			}
 			else
 			{
@@ -318,7 +323,7 @@ public class ScopeWaveDisplay extends JPanel
 	@Override
 	public void receiveCaptureLengthSamples( final int captureSamples )
 	{
-		log.trace("Received capture length samples of " + captureSamples );
+//		log.trace("Received capture length samples of " + captureSamples );
 		this.captureLengthSamples = captureSamples;
 		calculateChannelValues( internalChannelBuffers );
 		repaint();

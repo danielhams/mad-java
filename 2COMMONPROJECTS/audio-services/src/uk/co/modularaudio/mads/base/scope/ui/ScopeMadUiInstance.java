@@ -173,7 +173,10 @@ public class ScopeMadUiInstance extends
 
 			if( numRead != numToRead )
 			{
-				log.warn( "Expected " + numToRead + " from mad instance ring but read " + numRead );
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Expected " + numToRead + " from mad instance ring but read " + numRead );
+				}
 			}
 			else
 			{

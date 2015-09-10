@@ -163,8 +163,11 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 						final int numWritten = dataRingBuffer.backEndWrite( outChannels, frameOffset + currentFrameIndex, numThisRound );
 						if( numWritten != numThisRound )
 						{
-							log.error("Failed to write to back end ring buffer - attempted " +
-									numThisRound + " but ring returned " + numWritten );
+							if( log.isErrorEnabled() )
+							{
+								log.error("Failed to write to back end ring buffer - attempted " +
+										numThisRound + " but ring returned " + numWritten );
+							}
 						}
 					}
 
@@ -234,9 +237,10 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 			final long periodStartFrameTime,
 			final int frameOffset,
 			final int numFrames,
-			int currentFrameIndex,
+			final int iCurrentFrameIndex,
 			final float[] triggerFloats )
 	{
+		int currentFrameIndex = iCurrentFrameIndex;
 		// Non capturing seek in incoming data
 		TRIGGER_LOOP:
 		while( currentFrameIndex < numFrames )
