@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Base64Utils;
 
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
@@ -22,6 +23,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.colouredtoggle.ToggleReceiver;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.xml.XmlCharacterEncoder;
 
 public class ScopeDisplayUiJComponent extends JPanel
 implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadUiInstance>, ToggleReceiver
@@ -106,12 +108,37 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	@Override
 	public String getControlValue()
 	{
-		return "";
+		final StringBuilder sb = new StringBuilder();
+		sb.append( topTriggerToggle.getControlValue() );
+		sb.append( '|' );
+		sb.append( bottomSignalToggles.getControlValue( 0 ) );
+		sb.append( '|' );
+		sb.append( bottomSignalToggles.getControlValue( 1 ) );
+		sb.append( '|' );
+		sb.append( bottomSignalToggles.getControlValue( 2 ) );
+		sb.append( '|' );
+		sb.append( bottomSignalToggles.getControlValue( 3 ) );
+		return sb.toString();
 	}
 
 	@Override
 	public void receiveControlValue( final String value )
 	{
+		final String[] vals = value.split("|");
+		if( vals.length == 5 )
+		{
+			topTriggerToggle.receiveControlValue( vals[0] );
+
+			bottomSignalToggles.receiveControlValue(
+					vals[1],
+					vals[2],
+					vals[3],
+					vals[4] );
+		}
+		else
+		{
+			log.error("Failed to obtain number of expected init params. Expected 5 got " + vals.length );
+		}
 	}
 
 	@Override

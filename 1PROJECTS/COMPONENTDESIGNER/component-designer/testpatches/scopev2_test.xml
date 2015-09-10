@@ -23,8 +23,8 @@
         <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="-0.140625"/>
-        <rackControl name="ValueChase" value="6.7152"/>
+        <rackControl name="Value" value="-0.453125"/>
+        <rackControl name="ValueChase" value="20.0"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="0" row="5"/>
@@ -71,6 +71,7 @@
         <rackPosition column="0" row="9"/>
         <rack name="Sub Rack 1" cols="4" rows="19"/>
     </rackComponent>
+    <rackLink producerRackComponentName="Audio CV Converter 2" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 2" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Audio CV Converter 2" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Left"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Right"/>

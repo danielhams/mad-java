@@ -26,6 +26,8 @@ public class ScopeBottomSignalToggles extends JPanel
 		msh.addLayoutConstraint( "gap 10" );
 		msh.addLayoutConstraint( "insets 0" );
 
+		msh.addColumnConstraint( "[25%][25%][25%][25%]" );
+
 		setLayout( msh.createMigLayout() );
 
 		setBackground( ScopeColours.BACKGROUND_COLOR );
@@ -68,6 +70,38 @@ public class ScopeBottomSignalToggles extends JPanel
 		this.add( signal1Toggle, "grow, shrink 0" );
 		this.add( signal2Toggle, "grow, shrink 0" );
 		this.add( signal3Toggle, "grow, shrink 0" );
+	}
+
+	public String getControlValue( final int i )
+	{
+		switch( i )
+		{
+			case 0:
+			{
+				return signal0Toggle.getControlValue();
+			}
+			case 1:
+			{
+				return signal1Toggle.getControlValue();
+			}
+			case 2:
+			{
+				return signal2Toggle.getControlValue();
+			}
+			case 3:
+			{
+				return signal3Toggle.getControlValue();
+			}
+		}
+		return "";
+	}
+
+	public void receiveControlValue( final String val0, final String val1, final String val2, final String val3 )
+	{
+		signal0Toggle.receiveControlValue( val0 );
+		signal1Toggle.receiveControlValue( val1 );
+		signal2Toggle.receiveControlValue( val2 );
+		signal3Toggle.receiveControlValue( val3 );
 	}
 
 }
