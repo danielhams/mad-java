@@ -35,10 +35,4 @@ public class SpectralPeakEmptyPlot extends JPanel
 		setBackground( SpectralAmpColours.BACKGROUND_COLOR );
 		this.setMinimumSize( new Dimension( SpectralAmpGenDisplayUiJComponent.AXIS_MARKS_LENGTH, SpectralAmpGenDisplayUiJComponent.AXIS_MARKS_LENGTH ) );
 	}
-
-	@Override
-	public void setBounds( final int x, final int y, final int width, final int height )
-	{
-		super.setBounds( x, y, width, height );
-	}
 }
