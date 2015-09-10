@@ -73,15 +73,15 @@ public class ScopeWaveDisplay extends JPanel
 	static
 	{
 		// White - trigger
-		visColours[0] = Color.decode( "#BBBBBB" );
+		VIS_COLOURS[0] = Color.decode( "#BBBBBB" );
 		// Red
-		visColours[1] = Color.decode( "#FF5555" );
+		VIS_COLOURS[1] = Color.decode( "#FF5555" );
 		// Green
-		visColours[2] = Color.decode( "#55FF55" );
+		VIS_COLOURS[2] = Color.decode( "#55FF55" );
 		// Blue
-		visColours[3] = Color.decode( "#5555FF" );
+		VIS_COLOURS[3] = Color.decode( "#5555FF" );
 		// Purple
-		visColours[4] = Color.decode( "#FF55FF" );
+		VIS_COLOURS[4] = Color.decode( "#FF55FF" );
 	}
 
 	private final float[][] internalChannelBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
