@@ -117,7 +117,13 @@ public class ColouredTextToggle extends JPanel
 	public void receiveControlValue( final String value )
 	{
 		final String[] parts = value.split( "\t" );
-		if( parts.length == 2 )
+		if( parts.length == 1 )
+		{
+			active = Boolean.parseBoolean( parts[0] );
+			toggleReceiver.receiveToggle( toggleId, active );
+			textField.setText( "" );
+		}
+		else if( parts.length == 2 )
 		{
 			active = Boolean.parseBoolean( parts[0] );
 			toggleReceiver.receiveToggle( toggleId, active );

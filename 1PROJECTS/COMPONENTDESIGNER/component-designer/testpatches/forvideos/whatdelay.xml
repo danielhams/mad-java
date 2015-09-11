@@ -16,7 +16,7 @@
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="false|true&#x9;NoTS Signal|true&#x9;TS Signal|true&#x9;Signal 3|true&#x9;Signal 4"/>
+        <rackControl name="WaveDisplay" value="false|true&#x9;NoTS Signal|true&#x9;TS Signal|true&#x9;|true&#x9;"/>
     </rackComponent>
     <rackComponent name="HH" definitionId="scope">
         <rackPosition column="2" row="4"/>
