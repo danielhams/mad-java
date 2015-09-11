@@ -180,7 +180,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	@Override
 	public void receiveToggle( final int toggleId, final boolean active )
 	{
-		log.trace("Received toggle of " + toggleId + " to " + active );
+//		log.trace("Received toggle of " + toggleId + " to " + active );
 		waveDisplay.setSignalVisibility( toggleId, active );
 	}
 }

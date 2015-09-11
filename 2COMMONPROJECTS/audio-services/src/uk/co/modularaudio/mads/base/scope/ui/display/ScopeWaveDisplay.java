@@ -36,7 +36,7 @@ import uk.co.modularaudio.mads.base.scope.ui.ScopeColours;
 import uk.co.modularaudio.mads.base.scope.ui.ScopeDataVisualiser;
 import uk.co.modularaudio.mads.base.scope.ui.ScopeDisplayUiJComponent;
 import uk.co.modularaudio.mads.base.scope.ui.ScopeMadUiInstance;
-import uk.co.modularaudio.mads.base.specampgen.ui.SampleRateListener;
+import uk.co.modularaudio.mads.base.scope.ui.ScopeSampleRateListener;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -44,7 +44,7 @@ import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMil
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class ScopeWaveDisplay extends JPanel
-	implements ScopeDataVisualiser, CaptureLengthListener, SampleRateListener
+	implements ScopeDataVisualiser, CaptureLengthListener, ScopeSampleRateListener
 {
 	private static final long serialVersionUID = 3612260008902851339L;
 
@@ -115,6 +115,8 @@ public class ScopeWaveDisplay extends JPanel
 		setupInternalChannelBuffers( maxSamples );
 
 		Arrays.fill( signalVisibility, true );
+		
+		uiInstance.addSampleRateListener(this);
 	}
 
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,

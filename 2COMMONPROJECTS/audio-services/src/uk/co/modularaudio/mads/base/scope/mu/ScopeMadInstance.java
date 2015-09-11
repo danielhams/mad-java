@@ -371,6 +371,7 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 
 	public void setCaptureSamples( final int captureSamples )
 	{
+//		log.trace("Set capture samples to " + captureSamples );
 		this.captureSamples = captureSamples;
 		this.numSamplesCaptured = 0;
 		startTriggerHunt();

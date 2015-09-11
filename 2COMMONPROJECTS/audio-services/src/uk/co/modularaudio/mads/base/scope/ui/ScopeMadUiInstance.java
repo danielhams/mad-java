@@ -52,7 +52,7 @@ public class ScopeMadUiInstance extends
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private final float[][] frontEndBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
-	private final int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+	private int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 
 	private int frontEndWritePosition = 0;
@@ -92,7 +92,7 @@ public class ScopeMadUiInstance extends
 
 	private void setupFrontEndBuffers( final int sampleRate )
 	{
-		final int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+		frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 		if( frontEndBuffers[0] == null ||
 				frontEndBuffers[0].length != frontEndBufferLength )
 		{
@@ -164,6 +164,10 @@ public class ScopeMadUiInstance extends
 //		log.trace("Received index update with timestamp " + indexUpdateTimestamp + " with " + numReadable + " readable");
 
 		final int spaceAvailable = frontEndBufferLength - frontEndWritePosition;
+		if( spaceAvailable <= 0 )
+		{
+			log.error("Ran out of front end buffer to place incoming samples in");
+		}
 		if( numReadable > 0 && spaceAvailable > 0 )
 		{
 //			log.trace( "Have space to put " + numReadable + " from back end - space is " + spaceAvailable +
