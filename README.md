@@ -30,7 +30,7 @@ Building from source is most easily accomplished using Gradle, but still needs s
 
 5. Run the build with:
    ./gradlew appRelease
-   (You can use ./gradle appRelease is you've got gradle already installed - I use 2.5)
+   (You can use ./gradle appRelease if you've got gradle already installed - I use 2.5)
 
 6. This will create mad-pp-$VERSION.tar.gz which you can safely extract where you would like it to live.
 
