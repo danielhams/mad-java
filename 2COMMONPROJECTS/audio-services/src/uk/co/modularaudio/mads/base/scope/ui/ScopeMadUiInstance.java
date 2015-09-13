@@ -21,8 +21,6 @@
 package uk.co.modularaudio.mads.base.scope.ui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -197,17 +195,17 @@ public class ScopeMadUiInstance extends
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
 		final int newCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, captureMillis );
-//		log.trace( "New capture num samples is " + newCaptureSamples );
+		log.trace( "New capture num samples is " + newCaptureSamples );
 		sendTemporalValueToInstance( ScopeIOQueueBridge.COMMAND_IN_CAPTURE_SAMPLES, newCaptureSamples );
 
-		if( newCaptureSamples > captureLengthSamples )
-		{
-			// Zero previously unseen buffers
-			for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
-			{
-				Arrays.fill( frontEndBuffers[channel], captureLengthSamples, newCaptureSamples, 0.0f );
-			}
-		}
+//		if( newCaptureSamples > captureLengthSamples )
+//		{
+//			// Zero previously unseen buffers
+//			for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
+//			{
+//				Arrays.fill( frontEndBuffers[channel], captureLengthSamples, newCaptureSamples, 0.0f );
+//			}
+//		}
 
 		for( final CaptureLengthListener cll : captureLengthListeners )
 		{

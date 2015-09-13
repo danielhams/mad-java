@@ -37,9 +37,9 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	// A bit too heavy and long delay
 //	private static final float LP_FREQ = 15.0f;
 	// Seems about right
-	private static final float LP_FREQ = 30.0f;
+//	private static final float LP_FREQ = 30.0f;
 	// Too fast, lets too much through
-//	private static final float LP_FREQ = 60.0f;
+	private static final float LP_FREQ = 60.0f;
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;

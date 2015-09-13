@@ -24,29 +24,39 @@ import java.io.File;
 
 import junit.framework.TestCase;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class TestCreateDCMonoFile extends TestCase
 {
 //	private static Log log = LogFactory.getLog( TestCreateDCMonoFile.class.getName() );
 
-	private final String outputFilename = "tmpoutput/dcmonooffset0_5.wav";
+	private final static String OUTPUT_FILENAME = "tmpoutput/dc-3.1dB_48000_30secs_mono.wav";
+
+	private final static float OUTPUT_LEVEL_DB = -3.1f;
+	private final static float OUTPUT_LEVEL_AMP = AudioMath.dbToLevelF( OUTPUT_LEVEL_DB );
+
+	private final static DataRate OUTPUT_SAMPLE_RATE = DataRate.SR_48000;
 
 	public void testWriteAFile()
 		throws Exception
 	{
-		final int sampleRate = 44100;
-		final short bitsPerSample = 16;
+		final int sampleRate = OUTPUT_SAMPLE_RATE.getValue();
+		final short bitsPerSample = 32;
 
-		final File outputFile = new File(outputFilename);
+		final File outputFile = new File(OUTPUT_FILENAME);
 		final File outputDir = outputFile.getParentFile();
 		outputDir.mkdirs();
-		final WaveFileWriter outputWriter = new WaveFileWriter( outputFile.getAbsolutePath(), 1, sampleRate, bitsPerSample );
+		final WaveFileWriter outputWriter = new WaveFileWriter( outputFile.getAbsolutePath(),
+				1,
+				sampleRate,
+				bitsPerSample );
 
-		final int testDataLength = sampleRate;
+		final int testDataLength = sampleRate * 30;
 		final float[] testData = new float[ testDataLength ];
 		for( int i = 0 ; i < testDataLength ; i++ )
 		{
-			testData[i] = 0.5f;
+			testData[i] = OUTPUT_LEVEL_AMP;
 		}
 
 		outputWriter.writeFrames( testData, 0, testDataLength );
