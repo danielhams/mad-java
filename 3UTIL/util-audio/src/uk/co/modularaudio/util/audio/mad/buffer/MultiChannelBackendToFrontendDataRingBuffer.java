@@ -95,6 +95,14 @@ public class MultiChannelBackendToFrontendDataRingBuffer
 		return calcNumReadable(curReadPosition, writePosition);
 	}
 
+	public void frontEndMoveUpToWriteIndex( final int writePosition )
+	{
+		int curReadPosition = readPosition.get();
+		final int numReadable = calcNumReadable(curReadPosition, writePosition);
+		curReadPosition += numReadable;
+		readPosition.set( curReadPosition );
+	}
+
 	public void clear()
 	{
 		numSamplesQueued = 0;
