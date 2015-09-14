@@ -23,7 +23,6 @@ package uk.co.modularaudio.mads.base.scope.ui;
 import java.util.ArrayList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.scope.mu.ScopeIOQueueBridge;
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
 import uk.co.modularaudio.mads.base.scope.mu.ScopeMadInstance;
@@ -49,13 +48,15 @@ public class ScopeMadUiInstance extends
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
-	private final float[][] frontEndBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
-	private int frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+	private int maxCaptureLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+
+	private final float[][] frontEndBuffers = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
 
 	private int frontEndWritePosition = 0;
 
-	private int captureLengthSamples = frontEndBufferLength;
+	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+			sampleRate, LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
 
 	private MultiChannelBackendToFrontendDataRingBuffer backendRingBuffer;
 
@@ -68,7 +69,7 @@ public class ScopeMadUiInstance extends
 			final ScopeMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
-		setupFrontEndBuffers( sampleRate );
+		setupFrontEndBuffers();
 	}
 
 	@Override
@@ -80,7 +81,9 @@ public class ScopeMadUiInstance extends
 		backendRingBuffer = instance.getBackendRingBuffer();
 
 		sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
-		setupFrontEndBuffers( sampleRate );
+		maxCaptureLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+				sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+		setupFrontEndBuffers();
 
 		for( final ScopeSampleRateListener srl : sampleRateListeners )
 		{
@@ -88,15 +91,14 @@ public class ScopeMadUiInstance extends
 		}
 	}
 
-	private void setupFrontEndBuffers( final int sampleRate )
+	private void setupFrontEndBuffers()
 	{
-		frontEndBufferLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 		if( frontEndBuffers[0] == null ||
-				frontEndBuffers[0].length != frontEndBufferLength )
+				frontEndBuffers[0].length != maxCaptureLength )
 		{
 			for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
 			{
-				frontEndBuffers[c] = new float[ frontEndBufferLength ];
+				frontEndBuffers[c] = new float[ maxCaptureLength ];
 			}
 		}
 		frontEndWritePosition = 0;
@@ -161,10 +163,11 @@ public class ScopeMadUiInstance extends
 		final int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 //		log.trace("Received index update with timestamp " + indexUpdateTimestamp + " with " + numReadable + " readable");
 
-		final int spaceAvailable = frontEndBufferLength - frontEndWritePosition;
+		final int spaceAvailable = maxCaptureLength - frontEndWritePosition;
 		if( spaceAvailable <= 0 )
 		{
-			log.error("Ran out of front end buffer to place incoming samples in");
+//			log.error("Ran out of front end buffer to place incoming samples in - needed " + numReadable );
+			backendRingBuffer.frontEndMoveUpToWriteIndex( writeIndex );
 		}
 		if( numReadable > 0 && spaceAvailable > 0 )
 		{
@@ -186,6 +189,11 @@ public class ScopeMadUiInstance extends
 			}
 			frontEndWritePosition += numRead;
 
+//			if( frontEndWritePosition == captureLengthSamples )
+//			{
+//				log.trace("Seems we've completed the capture read");
+//			}
+
 			scopeDataVisualiser.visualiseScopeBuffers( frontEndBuffers );
 		}
 
@@ -195,17 +203,22 @@ public class ScopeMadUiInstance extends
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
 		final int newCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, captureMillis );
-		log.trace( "New capture num samples is " + newCaptureSamples );
+//		log.trace( "New capture num samples is " + newCaptureSamples +
+//				" previous was " + captureLengthSamples );
 		sendTemporalValueToInstance( ScopeIOQueueBridge.COMMAND_IN_CAPTURE_SAMPLES, newCaptureSamples );
 
 //		if( newCaptureSamples > captureLengthSamples )
 //		{
 //			// Zero previously unseen buffers
+////			log.trace("Zeroing front end buffers from " + captureLengthSamples + " to " +
+////					maxCaptureLength );
 //			for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 //			{
-//				Arrays.fill( frontEndBuffers[channel], captureLengthSamples, newCaptureSamples, 0.0f );
+//				Arrays.fill( frontEndBuffers[channel], captureLengthSamples, maxCaptureLength, 0.0f );
 //			}
 //		}
+
+		captureLengthSamples = newCaptureSamples;
 
 		for( final CaptureLengthListener cll : captureLengthListeners )
 		{
@@ -213,7 +226,6 @@ public class ScopeMadUiInstance extends
 			cll.receiveCaptureLengthSamples( newCaptureSamples );
 		}
 
-		captureLengthSamples = newCaptureSamples;
 	}
 
 	public void sendUiActive( final boolean active )

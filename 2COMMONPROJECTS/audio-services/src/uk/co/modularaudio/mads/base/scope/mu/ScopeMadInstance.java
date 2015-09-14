@@ -200,8 +200,8 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 					if( numLeftToCapture == 0 )
 					{
 						state = ScopeState.IDLE;
+//						log.trace( "Completed capture of " + numSamplesCaptured + ", switching to idle" );
 						numSamplesCaptured = 0;
-//						log.trace( "Completed capture, switching to idle" );
 						final int numBackendFramesQueued = dataRingBuffer.backEndGetNumSamplesQueued();
 						if( numBackendFramesQueued > 0 )
 						{

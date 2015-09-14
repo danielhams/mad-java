@@ -91,8 +91,11 @@ public class ScopeWaveDisplay extends JPanel
 
 	private final int[][] channelValues = new int[ScopeMadDefinition.NUM_VIS_CHANNELS][];
 
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
+	private int maxCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+			LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
-			DataRate.CD_QUALITY.getValue(), LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
+			sampleRate, LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
 
 	private final boolean[] signalVisibility = new boolean[5];
 
@@ -110,12 +113,10 @@ public class ScopeWaveDisplay extends JPanel
 		uiInstance.addCaptureLengthListener( this );
 		uiInstance.setScopeDataVisualiser( this );
 
-		final int maxSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.CD_QUALITY.getValue(),
-				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
-		setupInternalChannelBuffers( maxSamples );
+		setupInternalChannelBuffers();
 
 		Arrays.fill( signalVisibility, true );
-		
+
 		uiInstance.addSampleRateListener(this);
 	}
 
@@ -337,7 +338,16 @@ public class ScopeWaveDisplay extends JPanel
 	@Override
 	public void receiveCaptureLengthSamples( final int captureSamples )
 	{
-//		log.trace("Received capture length samples of " + captureSamples );
+////		log.trace("Received capture length samples of " + captureSamples );
+//		if( captureSamples > captureLengthSamples )
+//		{
+////			log.trace("Zeroing internal buffers from " + captureSamples + " to"
+////					+ maxCaptureSamples );
+//			for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
+//			{
+//				Arrays.fill( internalChannelBuffers[c], captureSamples, maxCaptureSamples, 0.0f );
+//			}
+//		}
 		this.captureLengthSamples = captureSamples;
 		calculateChannelValues( internalChannelBuffers );
 		repaint();
@@ -346,19 +356,20 @@ public class ScopeWaveDisplay extends JPanel
 	@Override
 	public void receiveSampleRateChange( final int sampleRate )
 	{
-		final int maxSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+		this.sampleRate = sampleRate;
+		maxCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
 				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
-		setupInternalChannelBuffers( maxSamples );
+		setupInternalChannelBuffers();
 	}
 
-	private final void setupInternalChannelBuffers( final int maxSamples )
+	private final void setupInternalChannelBuffers()
 	{
 		if( internalChannelBuffers[0] == null ||
-				internalChannelBuffers[0].length != maxSamples )
+				internalChannelBuffers[0].length != maxCaptureSamples )
 		{
 			for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
 			{
-				internalChannelBuffers[c] = new float[maxSamples];
+				internalChannelBuffers[c] = new float[maxCaptureSamples];
 			}
 		}
 	}
