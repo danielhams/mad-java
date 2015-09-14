@@ -42,7 +42,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To5000SliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To1000SliderModel;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
@@ -50,30 +50,38 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 {
 	private static Log log = LogFactory.getLog( ScopeMadInstance.class.getName() );
 
-	private int maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( DataRate.CD_QUALITY.getValue(),
-			LogarithmicTimeMillis1To5000SliderModel.DEFAULT_MILLIS );
-
-	private MultiChannelBackendToFrontendDataRingBuffer dataRingBuffer;
-
-	private int numSamplePerFrontEndPeriod;
-
-	private boolean isActive = false;
-
-	private int captureSamples = maxRingBufferingInSamples;
-
-	private TriggerChoice trigger = ScopeTriggerChoiceUiJComponent.DEFAULT_TRIGGER_CHOICE;
-	private RepetitionChoice repetition = ScopeRepetitionsChoiceUiJComponent.DEFAULT_REPETITION_CHOICE;
-
-	private enum ScopeState
+	private enum State
 	{
 		IDLE,
-		TRIGGER_HUNT,
+		TRIGGER_HUNT_PRE,
+		TRIGGER_HUNT_POST,
 		CAPTURING
 	};
 
-	private ScopeState state = ScopeState.IDLE;
-	private int numSamplesCaptured = 0;
-	private boolean foundTrigger0 = false;
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
+
+	private int maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+			LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+
+	private MultiChannelBackendToFrontendDataRingBuffer backEndFrontEndBuffer;
+
+	private float captureMillis = LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS;
+	private int desiredFramesToCapture = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+			captureMillis );
+	// Little bit unrealistic. Rely on startup to fix it.
+	private int framesPerFrontEndPeriod = desiredFramesToCapture;
+
+	// Running state
+	private boolean isActive = false;
+
+	private State state = State.IDLE;
+	private TriggerChoice desiredTrigger = ScopeTriggerChoiceUiJComponent.DEFAULT_TRIGGER_CHOICE;
+	private TriggerChoice workingTrigger = desiredTrigger;
+	private RepetitionChoice repetition = ScopeRepetitionsChoiceUiJComponent.DEFAULT_REPETITION_CHOICE;
+
+	private int workingDesiredFramesToCapture = desiredFramesToCapture;
+	private int workingFramesCaptured;
+	private int workingFrontEndPeriodFramesCaptured;
 
 	public ScopeMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -90,24 +98,24 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
 	{
-		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-				LogarithmicTimeMillis1To5000SliderModel.MAX_MILLIS );
+				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
+		desiredFramesToCapture = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, captureMillis );
+		workingDesiredFramesToCapture = desiredFramesToCapture;
 
-		dataRingBuffer = new MultiChannelBackendToFrontendDataRingBuffer( ScopeMadDefinition.NUM_VIS_CHANNELS, maxRingBufferingInSamples );
+		backEndFrontEndBuffer = new MultiChannelBackendToFrontendDataRingBuffer( ScopeMadDefinition.NUM_VIS_CHANNELS, maxRingBufferingInSamples );
 
-		numSamplePerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
-	}
+		framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
-	private void startTriggerHunt()
-	{
-		state = ScopeState.TRIGGER_HUNT;
-		foundTrigger0 = false;
-		numSamplesCaptured = 0;
+		// Reset to idle
+		workingFramesCaptured = 0;
+		workingFrontEndPeriodFramesCaptured = 0;
+		state = State.IDLE;
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tses,
 			final MadTimingParameters timingParameters,
 			final long periodStartFrameTime,
 			final MadChannelConnectedFlags channelConnectedFlags,
@@ -115,234 +123,205 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 			final int frameOffset,
 			final int numFrames )
 	{
-		if( isActive )
+		if( !isActive )
 		{
-			if( state == ScopeState.IDLE &&
-					repetition == RepetitionChoice.ONCE )
+			return RealtimeMethodReturnCodeEnum.SUCCESS;
+		}
+		final float[] triggerFloats = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+
+		final float[] input0Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_0 ].floatBuffer;
+		final float[] input1Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_1 ].floatBuffer;
+		final float[] input2Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_2 ].floatBuffer;
+		final float[] input3Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_3 ].floatBuffer;
+
+		int currentFrameOffset = 0;
+
+		while( currentFrameOffset < numFrames )
+		{
+			final int numLeftThisRound = numFrames - currentFrameOffset;
+			int numFramesThisRound;
+
+			switch( state )
 			{
-				// Don't do anything.
-				return RealtimeMethodReturnCodeEnum.SUCCESS;
-			}
-
-			int numFramesLeft = numFrames;
-			int currentFrameIndex = 0;
-
-			final float[] triggerFloats = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
-
-			final float[] input0Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_0 ].floatBuffer;
-			final float[] input1Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_1 ].floatBuffer;
-			final float[] input2Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_2 ].floatBuffer;
-			final float[] input3Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_3 ].floatBuffer;
-
-			while( numFramesLeft > 0 )
-			{
-				if( state == ScopeState.TRIGGER_HUNT )
+				case IDLE:
 				{
-					currentFrameIndex = doTriggerSeek( tempQueueEntryStorage,
-							periodStartFrameTime,
-							frameOffset,
-							numFrames,
-							currentFrameIndex,
-							triggerFloats );
-				}
-
-				numFramesLeft = numFrames - currentFrameIndex;
-
-				// Capture to ui
-				while( state == ScopeState.CAPTURING )
-				{
-//					log.trace("Capturing from frame " + currentFrameIndex);
-					int numLeftToCapture = captureSamples - numSamplesCaptured;
-					final int numLeftLowerBound = (numLeftToCapture < numFramesLeft ? numLeftToCapture : numFramesLeft);
-
-					final int numToFrontEndPeriod = numSamplePerFrontEndPeriod - dataRingBuffer.backEndGetNumSamplesQueued();
-
-					final int numThisRound = (numLeftLowerBound < numToFrontEndPeriod ? numLeftLowerBound : numToFrontEndPeriod);
-
-					long timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
-
-					if( numToFrontEndPeriod <= 0 )
+					if( repetition == RepetitionChoice.CONTINUOUS )
 					{
-//						final int numBackendFramesQueued = dataRingBuffer.backEndGetNumSamplesQueued();
-//						log.debug("Queuing write index update of queue samples(" + numBackendFramesQueued + ")");
-						queueWriteIndexUpdate( tempQueueEntryStorage,
-							dataRingBuffer.getWritePosition(),
-							timestampForIndexUpdate );
-						dataRingBuffer.backEndClearNumSamplesQueued();
-					}
-
-//					log.trace("Have " + numLeftToCapture + " left to capture, doing " + numThisRound + " this round");
-
-					if( numThisRound > 0 )
-					{
-						final float[][] outChannels = new float[ScopeMadDefinition.NUM_VIS_CHANNELS][];
-						outChannels[0] = triggerFloats;
-						outChannels[1] = input0Floats;
-						outChannels[2] = input1Floats;
-						outChannels[3] = input2Floats;
-						outChannels[4] = input3Floats;
-						final int numWritten = dataRingBuffer.backEndWrite( outChannels, frameOffset + currentFrameIndex, numThisRound );
-						if( numWritten != numThisRound )
+						numFramesThisRound = 0;
+						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+						workingTrigger = desiredTrigger;
+						if( desiredTrigger == TriggerChoice.NONE )
 						{
-							if( log.isErrorEnabled() )
-							{
-								log.error("Failed to write to back end ring buffer - attempted " +
-										numThisRound + " but ring returned " + numWritten );
-							}
-						}
-					}
-
-					numFramesLeft -= numThisRound;
-					currentFrameIndex += numThisRound;
-					numLeftToCapture -= numThisRound;
-					numSamplesCaptured += numThisRound;
-
-					if( numLeftToCapture == 0 )
-					{
-						state = ScopeState.IDLE;
-//						log.trace( "Completed capture of " + numSamplesCaptured + ", switching to idle" );
-						numSamplesCaptured = 0;
-						final int numBackendFramesQueued = dataRingBuffer.backEndGetNumSamplesQueued();
-						if( numBackendFramesQueued > 0 )
-						{
-//							log.debug( "Still have queued samples(" + numBackendFramesQueued + ")");
-							timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
-							queueWriteIndexUpdate( tempQueueEntryStorage,
-									dataRingBuffer.getWritePosition(),
-									timestampForIndexUpdate );
-							dataRingBuffer.backEndClearNumSamplesQueued();
-						}
-					}
-
-					if( numFramesLeft == 0 )
-					{
-						break;
-					}
-				}
-
-				switch( state )
-				{
-					case IDLE:
-					{
-						if( repetition == RepetitionChoice.CONTINUOUS )
-						{
-//							log.trace( "In idle but continuous capture forcing trigger hunt" );
-							startTriggerHunt();
+							startCapture( tses, eventFrameTime );
 						}
 						else
 						{
-							// Finish
-							currentFrameIndex = numFrames;
-							numFramesLeft = 0;
+							startPreHunt();
 						}
-						break;
 					}
-					case TRIGGER_HUNT:
+					else
 					{
-						// Trigger hunting across periods
-						break;
+						// Keep idling
+						numFramesThisRound = numLeftThisRound;
 					}
-					case CAPTURING:
+					break;
+				}
+				case TRIGGER_HUNT_PRE:
+				{
+					// In case not found, skip over the frames we will check
+					numFramesThisRound = numLeftThisRound;
+					TRIGGER_PRE_FOUND:
+					for( int i = 0 ; i < numLeftThisRound ; ++i )
 					{
-						// Still capturing across periods
-						break;
+						final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
+						switch( workingTrigger )
+						{
+							case ON_RISE:
+							{
+								if( triggerValue <= 0.0f )
+								{
+									numFramesThisRound = i + 1;
+									startPostHunt();
+									break TRIGGER_PRE_FOUND;
+								}
+								break;
+							}
+							case ON_FALL:
+							{
+								if( triggerValue > 0.0f )
+								{
+									numFramesThisRound = i + 1;
+									startPostHunt();
+									break TRIGGER_PRE_FOUND;
+								}
+								break;
+							}
+							case NONE:
+							{
+								log.error("Fell into no trigger handling pre.");
+								return RealtimeMethodReturnCodeEnum.FAIL;
+							}
+						}
 					}
+					break;
+				}
+				case TRIGGER_HUNT_POST:
+				{
+					// In case not found, skip over the frames we will check
+					numFramesThisRound = numLeftThisRound;
+					TRIGGER_POST_FOUND:
+					for( int i = 0 ; i < numLeftThisRound ; ++i )
+					{
+						final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
+						switch( workingTrigger )
+						{
+							case ON_RISE:
+							{
+								if( triggerValue > 0.0f )
+								{
+									numFramesThisRound = i + 1;
+									final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
+									startCapture( tses, eventFrameTime );
+									break TRIGGER_POST_FOUND;
+								}
+								break;
+							}
+							case ON_FALL:
+							{
+								if( triggerValue <= 0.0f )
+								{
+									numFramesThisRound = i + 1;
+									final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
+									startCapture( tses, eventFrameTime );
+									break TRIGGER_POST_FOUND;
+								}
+								break;
+							}
+							case NONE:
+							{
+								log.error("Fell into no trigger handling post.");
+								return RealtimeMethodReturnCodeEnum.FAIL;
+							}
+						}
+					}
+					break;
+				}
+				case CAPTURING:
+				{
+					final int numFramesLeftToCapture = workingDesiredFramesToCapture - workingFramesCaptured;
+					final int numFramesToBufferEmit = framesPerFrontEndPeriod - workingFrontEndPeriodFramesCaptured;
+
+					numFramesThisRound = (numLeftThisRound < numFramesLeftToCapture ? numLeftThisRound : numFramesLeftToCapture);
+					numFramesThisRound = (numFramesThisRound < numFramesToBufferEmit ? numFramesThisRound : numFramesToBufferEmit);
+
+					// We've got a lower bound on how many to capture this time around
+
+					final float[][] sourceBuffers = new float[5][];
+					sourceBuffers[0] = triggerFloats;
+					sourceBuffers[1] = input0Floats;
+					sourceBuffers[2] = input1Floats;
+					sourceBuffers[3] = input2Floats;
+					sourceBuffers[4] = input3Floats;
+					final int numWritten = backEndFrontEndBuffer.backEndWrite( sourceBuffers, frameOffset + currentFrameOffset, numFramesThisRound );
+
+					if( numWritten != numFramesThisRound )
+					{
+						log.error("Failed to write frames to befe buffer - asked to write " + numFramesThisRound +
+								" only wrote " + numWritten );
+					}
+
+					workingFramesCaptured += numFramesThisRound;
+					workingFrontEndPeriodFramesCaptured += numFramesThisRound;
+
+					if( workingFramesCaptured == workingDesiredFramesToCapture )
+					{
+						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+						// Completed capture
+						emitWritePositionEvent( tses, eventFrameTime );
+
+						// Now if we need to re-trigger, set the state accordingly
+						// We check is active so we're only spamming one capture when
+						// we're inactive (not visible on screen) as the front end
+						// isn't picking up events when inactive.
+						if( isActive && repetition == RepetitionChoice.CONTINUOUS )
+						{
+							if( desiredTrigger == TriggerChoice.NONE )
+							{
+								startCapture( tses, eventFrameTime );
+							}
+							else
+							{
+								workingTrigger = desiredTrigger;
+								startPreHunt();
+							}
+						}
+						else
+						{
+							startIdling();
+						}
+					}
+					else if( workingFrontEndPeriodFramesCaptured == framesPerFrontEndPeriod )
+					{
+						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+						// mid capture, emit write position event
+						emitWritePositionEvent( tses, eventFrameTime );
+					}
+
+					break;
+				}
+				default:
+				{
+					log.error("Fell into non state handling of scope");
+					return RealtimeMethodReturnCodeEnum.FAIL;
 				}
 			}
+
+			// Round we go...
+
+			currentFrameOffset += numFramesThisRound;
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
-	}
-
-	private int doTriggerSeek( final ThreadSpecificTemporaryEventStorage tses,
-			final long periodStartFrameTime,
-			final int frameOffset,
-			final int numFrames,
-			final int iCurrentFrameIndex,
-			final float[] triggerFloats )
-	{
-		int currentFrameIndex = iCurrentFrameIndex;
-		// Non capturing seek in incoming data
-		TRIGGER_LOOP:
-		while( currentFrameIndex < numFrames )
-		{
-			final float triggerValue = triggerFloats[frameOffset + currentFrameIndex];
-
-			if( !foundTrigger0 )
-			{
-				switch( trigger )
-				{
-					case NONE:
-					{
-//						log.trace( "Found no trigger prevalue at index " + currentFrameIndex );
-						foundTrigger0 = true;
-						break;
-					}
-					case ON_RISE:
-					{
-						if( triggerValue <= 0.0f )
-						{
-//							log.trace( "Found on rise pretrigger at index " + currentFrameIndex );
-							foundTrigger0 = true;
-						}
-						break;
-					}
-					case ON_FALL:
-					{
-						if( triggerValue > 0.0f )
-						{
-//							log.trace( "Found on fall pretrigger at index " + currentFrameIndex );
-							foundTrigger0 = true;
-						}
-						break;
-					}
-				}
-			}
-			else
-			{
-				switch( trigger )
-				{
-					case NONE:
-					{
-						state = ScopeState.CAPTURING;
-						final long timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
-						queueTriggeredNotification( tses, timestampForIndexUpdate );
-						foundTrigger0 = false;
-//						log.trace("Found none trigger at index " + currentFrameIndex );
-						break TRIGGER_LOOP;
-					}
-					case ON_RISE:
-					{
-						if( triggerValue > 0.0f )
-						{
-							state = ScopeState.CAPTURING;
-							final long timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
-							queueTriggeredNotification( tses, timestampForIndexUpdate );
-							foundTrigger0 = false;
-//							log.trace("Found on rise trigger at index " + currentFrameIndex );
-							break TRIGGER_LOOP;
-						}
-						break;
-					}
-					case ON_FALL:
-					{
-						if( triggerValue <= 0.0f )
-						{
-							state = ScopeState.CAPTURING;
-							final long timestampForIndexUpdate = periodStartFrameTime + frameOffset + currentFrameIndex;
-							queueTriggeredNotification( tses, timestampForIndexUpdate );
-							foundTrigger0 = false;
-//							log.trace("Found on fall trigger at index " + currentFrameIndex );
-							break TRIGGER_LOOP;
-						}
-						break;
-					}
-				}
-			}
-			currentFrameIndex++;
-		}
-
-		return currentFrameIndex;
 	}
 
 	@Override
@@ -355,50 +334,39 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 		this.isActive = active;
 	}
 
-	private void queueTriggeredNotification( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime )
-	{
-//		// Flush any remaining write position
-//		localBridge.queueTemporalEventToUi( tses,
-//				frameTime,
-//				ScopeIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
-//				dataRingBuffer.getWritePosition(),
-//				null );
-		dataRingBuffer.backEndClearNumSamplesQueued();
-		localBridge.queueTemporalEventToUi( tses,
-				frameTime,
-				ScopeIOQueueBridge.COMMAND_OUT_DATA_START,
-				0,
-				null );
-	}
-
-	private void queueWriteIndexUpdate( final ThreadSpecificTemporaryEventStorage tses,
-			final int writePosition,
-			final long frameTime )
-	{
-//		log.trace( "Queued write index update with timestamp " + frameTime + " to " + writePosition );
-		localBridge.queueTemporalEventToUi( tses,
-			frameTime,
-			ScopeIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
-			writePosition,
-			null );
-	}
-
 	public MultiChannelBackendToFrontendDataRingBuffer getBackendRingBuffer()
 	{
-		return dataRingBuffer;
+		return backEndFrontEndBuffer;
 	}
 
-	public void setCaptureSamples( final int captureSamples )
+	public void setCaptureMillis( final float captureMillis )
 	{
-//		log.trace("Set capture samples to " + captureSamples );
-		this.captureSamples = captureSamples;
-		startTriggerHunt();
+		this.captureMillis = captureMillis;
+		this.desiredFramesToCapture = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+				captureMillis );
 	}
 
 	public void setTriggerChoice( final TriggerChoice trigger )
 	{
-		this.trigger  = trigger;
+		this.desiredTrigger = trigger;
+		// If a trigger was previously set and the new trigger is "none"
+		// we need to back out of the hunt state if it's active
+		if( desiredTrigger == TriggerChoice.NONE )
+		{
+			switch( state )
+			{
+				case TRIGGER_HUNT_POST:
+				case TRIGGER_HUNT_PRE:
+				{
+					state = State.IDLE;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+		}
 	}
 
 	public void setRepetitionChoice( final RepetitionChoice repetition )
@@ -406,8 +374,48 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 		this.repetition = repetition;
 	}
 
-	public void doRecapture()
+	private void emitWritePositionEvent( final ThreadSpecificTemporaryEventStorage tses,
+			final long eventFrameTime )
 	{
-		startTriggerHunt();
+		final int writePosition = backEndFrontEndBuffer.getWritePosition();
+
+		localBridge.queueTemporalEventToUi( tses,
+				eventFrameTime,
+				ScopeIOQueueBridge.COMMAND_OUT_RINGBUFFER_WRITE_INDEX,
+				writePosition,
+				null );
+		workingFrontEndPeriodFramesCaptured = 0;
+	}
+
+	public void startPreHunt()
+	{
+		state = State.TRIGGER_HUNT_PRE;
+	}
+
+	private void startPostHunt()
+	{
+		state = State.TRIGGER_HUNT_POST;
+	}
+
+	private void startCapture( final ThreadSpecificTemporaryEventStorage tses,
+			final long eventFrameTime )
+	{
+		state = State.CAPTURING;
+		// We need a constant "how many to capture" per capture
+		// so we set it here.
+		workingDesiredFramesToCapture = desiredFramesToCapture;
+		workingFramesCaptured = 0;
+		workingFrontEndPeriodFramesCaptured = 0;
+
+		localBridge.queueTemporalEventToUi( tses,
+				eventFrameTime,
+				ScopeIOQueueBridge.COMMAND_OUT_DATA_START,
+				1,
+				null );
+	}
+
+	private void startIdling()
+	{
+		state = State.IDLE;
 	}
 }

@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.base.scope.ui.ScopeRepetitionsChoiceUiJComponent.RepetitionChoice;
 import uk.co.modularaudio.mads.base.scope.ui.ScopeTriggerChoiceUiJComponent.TriggerChoice;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
@@ -35,7 +36,7 @@ public class ScopeIOQueueBridge extends MadLocklessQueueBridge<ScopeMadInstance>
 
 	public static final int COMMAND_IN_ACTIVE = 0;
 
-	public static final int COMMAND_IN_CAPTURE_SAMPLES = 1;
+	public static final int COMMAND_IN_CAPTURE_MILLIS = 1;
 	public static final int COMMAND_IN_TRIGGER = 2;
 	public static final int COMMAND_IN_REPETITION = 3;
 	public static final int COMMAND_IN_RECAPTURE = 4;
@@ -43,6 +44,14 @@ public class ScopeIOQueueBridge extends MadLocklessQueueBridge<ScopeMadInstance>
 	public static final int COMMAND_OUT_DATA_START = 5;
 	public static final int COMMAND_OUT_RINGBUFFER_WRITE_INDEX = 6;
 
+	public ScopeIOQueueBridge()
+	{
+		// Needs a bit of headroom for very short capture lengths < 2ms
+		super( 0,
+			MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
+			0,
+			MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 2 );
+	}
 
 	@Override
 	public void receiveQueuedEventsToInstance( final ScopeMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long periodTimestamp, final IOQueueEvent queueEntry )
@@ -55,10 +64,11 @@ public class ScopeIOQueueBridge extends MadLocklessQueueBridge<ScopeMadInstance>
 				instance.setActive( active );
 				break;
 			}
-			case COMMAND_IN_CAPTURE_SAMPLES:
+			case COMMAND_IN_CAPTURE_MILLIS:
 			{
-				final int captureSamples = (int)queueEntry.value;
-				instance.setCaptureSamples( captureSamples );
+				final int intBits = (int)queueEntry.value;
+				final float captureMillis = Float.intBitsToFloat( intBits );
+				instance.setCaptureMillis( captureMillis );
 				break;
 			}
 			case COMMAND_IN_TRIGGER:
@@ -75,7 +85,7 @@ public class ScopeIOQueueBridge extends MadLocklessQueueBridge<ScopeMadInstance>
 			}
 			case COMMAND_IN_RECAPTURE:
 			{
-				instance.doRecapture();
+				instance.startPreHunt();
 				break;
 			}
 			default:

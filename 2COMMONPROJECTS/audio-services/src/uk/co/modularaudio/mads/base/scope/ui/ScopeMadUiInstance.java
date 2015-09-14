@@ -55,9 +55,6 @@ public class ScopeMadUiInstance extends
 
 	private int frontEndWritePosition = 0;
 
-	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
-			sampleRate, LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
-
 	private MultiChannelBackendToFrontendDataRingBuffer backendRingBuffer;
 
 	private final ArrayList<CaptureLengthListener> captureLengthListeners = new ArrayList<CaptureLengthListener>();
@@ -189,11 +186,6 @@ public class ScopeMadUiInstance extends
 			}
 			frontEndWritePosition += numRead;
 
-//			if( frontEndWritePosition == captureLengthSamples )
-//			{
-//				log.trace("Seems we've completed the capture read");
-//			}
-
 			scopeDataVisualiser.visualiseScopeBuffers( frontEndBuffers );
 		}
 
@@ -202,23 +194,12 @@ public class ScopeMadUiInstance extends
 
 	public void setCaptureTimeMillis( final float captureMillis )
 	{
+		final int intBits = Float.floatToIntBits( captureMillis );
+		sendTemporalValueToInstance( ScopeIOQueueBridge.COMMAND_IN_CAPTURE_MILLIS, intBits );
+
 		final int newCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, captureMillis );
 //		log.trace( "New capture num samples is " + newCaptureSamples +
 //				" previous was " + captureLengthSamples );
-		sendTemporalValueToInstance( ScopeIOQueueBridge.COMMAND_IN_CAPTURE_SAMPLES, newCaptureSamples );
-
-//		if( newCaptureSamples > captureLengthSamples )
-//		{
-//			// Zero previously unseen buffers
-////			log.trace("Zeroing front end buffers from " + captureLengthSamples + " to " +
-////					maxCaptureLength );
-//			for( int channel = 0 ; channel < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++channel )
-//			{
-//				Arrays.fill( frontEndBuffers[channel], captureLengthSamples, maxCaptureLength, 0.0f );
-//			}
-//		}
-
-		captureLengthSamples = newCaptureSamples;
 
 		for( final CaptureLengthListener cll : captureLengthListeners )
 		{
