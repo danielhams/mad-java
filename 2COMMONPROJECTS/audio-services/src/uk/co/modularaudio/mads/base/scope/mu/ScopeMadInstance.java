@@ -127,201 +127,257 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 		{
 			return RealtimeMethodReturnCodeEnum.SUCCESS;
 		}
-		final float[] triggerFloats = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
-
-		final float[] input0Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_0 ].floatBuffer;
-		final float[] input1Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_1 ].floatBuffer;
-		final float[] input2Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_2 ].floatBuffer;
-		final float[] input3Floats = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_3 ].floatBuffer;
 
 		int currentFrameOffset = 0;
 
 		while( currentFrameOffset < numFrames )
 		{
 			final int numLeftThisRound = numFrames - currentFrameOffset;
-			int numFramesThisRound;
+			final int numFramesThisRound;
 
 			switch( state )
 			{
 				case IDLE:
 				{
-					if( repetition == RepetitionChoice.CONTINUOUS )
-					{
-						numFramesThisRound = 0;
-						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
-						workingTrigger = desiredTrigger;
-						if( desiredTrigger == TriggerChoice.NONE )
-						{
-							startCapture( tses, eventFrameTime );
-						}
-						else
-						{
-							startPreHunt();
-						}
-					}
-					else
-					{
-						// Keep idling
-						numFramesThisRound = numLeftThisRound;
-					}
+					numFramesThisRound = doOneIdlePass( tses,
+							periodStartFrameTime,
+							frameOffset,
+							currentFrameOffset,
+							numLeftThisRound );
 					break;
 				}
 				case TRIGGER_HUNT_PRE:
 				{
-					// In case not found, skip over the frames we will check
-					numFramesThisRound = numLeftThisRound;
-					TRIGGER_PRE_FOUND:
-					for( int i = 0 ; i < numLeftThisRound ; ++i )
-					{
-						final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
-						switch( workingTrigger )
-						{
-							case ON_RISE:
-							{
-								if( triggerValue <= 0.0f )
-								{
-									numFramesThisRound = i + 1;
-									startPostHunt();
-									break TRIGGER_PRE_FOUND;
-								}
-								break;
-							}
-							case ON_FALL:
-							{
-								if( triggerValue > 0.0f )
-								{
-									numFramesThisRound = i + 1;
-									startPostHunt();
-									break TRIGGER_PRE_FOUND;
-								}
-								break;
-							}
-							case NONE:
-							{
-								log.error("Fell into no trigger handling pre.");
-								return RealtimeMethodReturnCodeEnum.FAIL;
-							}
-						}
-					}
+					numFramesThisRound = doOneTriggerPrePass( frameOffset,
+							currentFrameOffset,
+							numLeftThisRound,
+							channelBuffers );
 					break;
 				}
 				case TRIGGER_HUNT_POST:
 				{
-					// In case not found, skip over the frames we will check
-					numFramesThisRound = numLeftThisRound;
-					TRIGGER_POST_FOUND:
-					for( int i = 0 ; i < numLeftThisRound ; ++i )
-					{
-						final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
-						switch( workingTrigger )
-						{
-							case ON_RISE:
-							{
-								if( triggerValue > 0.0f )
-								{
-									numFramesThisRound = i + 1;
-									final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
-									startCapture( tses, eventFrameTime );
-									break TRIGGER_POST_FOUND;
-								}
-								break;
-							}
-							case ON_FALL:
-							{
-								if( triggerValue <= 0.0f )
-								{
-									numFramesThisRound = i + 1;
-									final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
-									startCapture( tses, eventFrameTime );
-									break TRIGGER_POST_FOUND;
-								}
-								break;
-							}
-							case NONE:
-							{
-								log.error("Fell into no trigger handling post.");
-								return RealtimeMethodReturnCodeEnum.FAIL;
-							}
-						}
-					}
+					numFramesThisRound = doOneTriggerPostPass( tses,
+							periodStartFrameTime,
+							frameOffset,
+							currentFrameOffset,
+							numLeftThisRound,
+							channelBuffers );
 					break;
 				}
 				case CAPTURING:
 				{
-					final int numFramesLeftToCapture = workingDesiredFramesToCapture - workingFramesCaptured;
-					final int numFramesToBufferEmit = framesPerFrontEndPeriod - workingFrontEndPeriodFramesCaptured;
-
-					numFramesThisRound = (numLeftThisRound < numFramesLeftToCapture ? numLeftThisRound : numFramesLeftToCapture);
-					numFramesThisRound = (numFramesThisRound < numFramesToBufferEmit ? numFramesThisRound : numFramesToBufferEmit);
-
-					// We've got a lower bound on how many to capture this time around
-
-					final float[][] sourceBuffers = new float[5][];
-					sourceBuffers[0] = triggerFloats;
-					sourceBuffers[1] = input0Floats;
-					sourceBuffers[2] = input1Floats;
-					sourceBuffers[3] = input2Floats;
-					sourceBuffers[4] = input3Floats;
-					final int numWritten = backEndFrontEndBuffer.backEndWrite( sourceBuffers, frameOffset + currentFrameOffset, numFramesThisRound );
-
-					if( numWritten != numFramesThisRound )
-					{
-						log.error("Failed to write frames to befe buffer - asked to write " + numFramesThisRound +
-								" only wrote " + numWritten );
-					}
-
-					workingFramesCaptured += numFramesThisRound;
-					workingFrontEndPeriodFramesCaptured += numFramesThisRound;
-
-					if( workingFramesCaptured == workingDesiredFramesToCapture )
-					{
-						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
-						// Completed capture
-						emitWritePositionEvent( tses, eventFrameTime );
-
-						// Now if we need to re-trigger, set the state accordingly
-						// We check is active so we're only spamming one capture when
-						// we're inactive (not visible on screen) as the front end
-						// isn't picking up events when inactive.
-						if( isActive && repetition == RepetitionChoice.CONTINUOUS )
-						{
-							if( desiredTrigger == TriggerChoice.NONE )
-							{
-								startCapture( tses, eventFrameTime );
-							}
-							else
-							{
-								workingTrigger = desiredTrigger;
-								startPreHunt();
-							}
-						}
-						else
-						{
-							startIdling();
-						}
-					}
-					else if( workingFrontEndPeriodFramesCaptured == framesPerFrontEndPeriod )
-					{
-						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
-						// mid capture, emit write position event
-						emitWritePositionEvent( tses, eventFrameTime );
-					}
-
+					numFramesThisRound = doOneCapturePass( tses,
+							periodStartFrameTime,
+							frameOffset,
+							currentFrameOffset,
+							numLeftThisRound,
+							channelBuffers );
 					break;
 				}
 				default:
 				{
 					log.error("Fell into non state handling of scope");
-					return RealtimeMethodReturnCodeEnum.FAIL;
+					numFramesThisRound = numLeftThisRound;
 				}
 			}
-
-			// Round we go...
 
 			currentFrameOffset += numFramesThisRound;
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	private int doOneIdlePass( final ThreadSpecificTemporaryEventStorage tses,
+			final long periodStartFrameTime,
+			final int frameOffset,
+			final int currentFrameOffset,
+			final int numLeftThisRound )
+	{
+		int numFramesThisRound;
+		if( repetition == RepetitionChoice.CONTINUOUS )
+		{
+			numFramesThisRound = 0;
+			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+			workingTrigger = desiredTrigger;
+			if( desiredTrigger == TriggerChoice.NONE )
+			{
+				startCapture( tses, eventFrameTime );
+			}
+			else
+			{
+				startPreHunt();
+			}
+		}
+		else
+		{
+			// Keep idling
+			numFramesThisRound = numLeftThisRound;
+		}
+		return numFramesThisRound;
+	}
+
+	private int doOneTriggerPrePass( final int frameOffset,
+			final int currentFrameOffset,
+			final int numLeftThisRound,
+			final MadChannelBuffer[] channelBuffers )
+	{
+		final float[] triggerFloats = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+
+		// In case not found, skip over the frames we will check
+		int numFramesThisRound = numLeftThisRound;
+
+		TRIGGER_PRE_FOUND:
+		for( int i = 0 ; i < numLeftThisRound ; ++i )
+		{
+			final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
+			switch( workingTrigger )
+			{
+				case ON_RISE:
+				{
+					if( triggerValue <= 0.0f )
+					{
+						numFramesThisRound = i + 1;
+						startPostHunt();
+						break TRIGGER_PRE_FOUND;
+					}
+					break;
+				}
+				case ON_FALL:
+				{
+					if( triggerValue > 0.0f )
+					{
+						numFramesThisRound = i + 1;
+						startPostHunt();
+						break TRIGGER_PRE_FOUND;
+					}
+					break;
+				}
+				case NONE:
+				{
+					log.error("Fell into no trigger handling pre.");
+					return numLeftThisRound;
+				}
+			}
+		}
+		return numFramesThisRound;
+	}
+
+	private int doOneTriggerPostPass( final ThreadSpecificTemporaryEventStorage tses,
+			final long periodStartFrameTime,
+			final int frameOffset,
+			final int currentFrameOffset,
+			final int numLeftThisRound,
+			final MadChannelBuffer[] channelBuffers )
+	{
+		final float[] triggerFloats = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+
+		// In case not found, skip over the frames we will check
+		int numFramesThisRound = numLeftThisRound;
+
+		TRIGGER_POST_FOUND:
+		for( int i = 0 ; i < numLeftThisRound ; ++i )
+		{
+			final float triggerValue = triggerFloats[frameOffset+currentFrameOffset+i];
+			switch( workingTrigger )
+			{
+				case ON_RISE:
+				{
+					if( triggerValue > 0.0f )
+					{
+						numFramesThisRound = i + 1;
+						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
+						startCapture( tses, eventFrameTime );
+						break TRIGGER_POST_FOUND;
+					}
+					break;
+				}
+				case ON_FALL:
+				{
+					if( triggerValue <= 0.0f )
+					{
+						numFramesThisRound = i + 1;
+						final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset + i;
+						startCapture( tses, eventFrameTime );
+						break TRIGGER_POST_FOUND;
+					}
+					break;
+				}
+				case NONE:
+				{
+					log.error("Fell into no trigger handling post.");
+					return numLeftThisRound;
+				}
+			}
+		}
+		return numFramesThisRound;
+	}
+
+	private int doOneCapturePass( final ThreadSpecificTemporaryEventStorage tses,
+			final long periodStartFrameTime,
+			final int frameOffset,
+			final int currentFrameOffset,
+			final int numLeftThisRound,
+			final MadChannelBuffer[] channelBuffers )
+	{
+		final int numFramesLeftToCapture = workingDesiredFramesToCapture - workingFramesCaptured;
+		final int numFramesToBufferEmit = framesPerFrontEndPeriod - workingFrontEndPeriodFramesCaptured;
+
+		// Get a lower bound on how many to capture this time around
+		int numFramesThisRound = (numLeftThisRound < numFramesLeftToCapture ? numLeftThisRound : numFramesLeftToCapture);
+		numFramesThisRound = (numFramesThisRound < numFramesToBufferEmit ? numFramesThisRound : numFramesToBufferEmit);
+
+		final float[][] sourceBuffers = new float[5][];
+		sourceBuffers[0] = channelBuffers[ ScopeMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+		sourceBuffers[1] = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_0 ].floatBuffer;
+		sourceBuffers[2] = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_1 ].floatBuffer;
+		sourceBuffers[3] = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_2 ].floatBuffer;
+		sourceBuffers[4] = channelBuffers[ ScopeMadDefinition.SCOPE_INPUT_3 ].floatBuffer;
+
+		final int numWritten = backEndFrontEndBuffer.backEndWrite( sourceBuffers, frameOffset + currentFrameOffset, numFramesThisRound );
+
+		if( numWritten != numFramesThisRound )
+		{
+			log.error("Failed to write frames to befe buffer - asked to write " + numFramesThisRound +
+					" only wrote " + numWritten );
+		}
+
+		workingFramesCaptured += numFramesThisRound;
+		workingFrontEndPeriodFramesCaptured += numFramesThisRound;
+
+		if( workingFramesCaptured == workingDesiredFramesToCapture )
+		{
+			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+			// Completed capture
+			emitWritePositionEvent( tses, eventFrameTime );
+
+			// Now if we need to re-trigger, set the state accordingly
+			// We check is active so we're only spamming one capture when
+			// we're inactive (not visible on screen) as the front end
+			// isn't picking up events when inactive.
+			if( isActive && repetition == RepetitionChoice.CONTINUOUS )
+			{
+				if( desiredTrigger == TriggerChoice.NONE )
+				{
+					startCapture( tses, eventFrameTime );
+				}
+				else
+				{
+					workingTrigger = desiredTrigger;
+					startPreHunt();
+				}
+			}
+			else
+			{
+				startIdling();
+			}
+		}
+		else if( workingFrontEndPeriodFramesCaptured == framesPerFrontEndPeriod )
+		{
+			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+			// mid capture, emit write position event
+			emitWritePositionEvent( tses, eventFrameTime );
+		}
+		return numFramesThisRound;
 	}
 
 	@Override
