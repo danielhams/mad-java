@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackComponent name="Audio CV Converter 1" definitionId="audio_cv_converter">
+        <rackPosition column="0" row="3"/>
+        <rackComponentParameterValue parameterName="inchanneltype" value="AUDIO"/>
+        <rackComponentParameterValue parameterName="numchannels" value="4"/>
+    </rackComponent>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Frequency" value="40.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
+        <rackControl name="Shape" value="Sine"/>
+    </rackComponent>
+    <rackComponent name="DC Trap 1" definitionId="dc_trap">
+        <rackPosition column="0" row="2"/>
+    </rackComponent>
+    <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Master Lane" value="-5.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value="true|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="2" row="4"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Short Average"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="DC Trap 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio CV Converter 1" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+</rack>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
+        <rackPosition column="0" row="13"/>
+        <rackControl name="Master Lane" value="-24.5:0.0"/>
+        <rackControl name="Mixer Lane 0" value="-2.75:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Modulator" definitionId="band_limited_oscillator">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="Frequency" value="80.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
+        <rackControl name="Shape" value="Sine"/>
+    </rackComponent>
+    <rackComponent name="Moog Filter 1" definitionId="moog_filter">
+        <rackPosition column="2" row="13"/>
+        <rackControl name="Cutoff" value="0.13"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Q" value="0.99"/>
+    </rackComponent>
+    <rackComponent name="Oscilloscope 1" definitionId="oscilloscope">
+        <rackPosition column="2" row="5"/>
+        <rackControl name="CaptureTime" value="8.411"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="None"/>
+    </rackComponent>
+    <rackComponent name="RBJ Filter 1" definitionId="rbj_filter">
+        <rackPosition column="2" row="15"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Frequency" value="1257.3582"/>
+        <rackControl name="Q" value="5.309966"/>
+    </rackComponent>
+    <rackComponent name="Scale And Offset 1" definitionId="scale_and_offset">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="Offset" value="0.0"/>
+        <rackControl name="Scale" value="1.0"/>
+    </rackComponent>
+    <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="Offset" value="0.0"/>
+        <rackControl name="Scale" value="0.5"/>
+    </rackComponent>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="0" row="5"/>
+        <rackControl name="CaptureLength" value="49.99849"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value="false|true&#x9;Signal 1|true&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+    </rackComponent>
+    <rackComponent name="Signal" definitionId="band_limited_oscillator">
+        <rackPosition column="2" row="3"/>
+        <rackControl name="Frequency" value="80.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
+        <rackControl name="Shape" value="Sine"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="0" row="9"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Scale" value="dB"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
+        <rackPosition column="2" row="9"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="4096"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackComponent name="Static Value 1" definitionId="static_value">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Value" value="80.0"/>
+    </rackComponent>
+    <rackComponent name="Static Value 2" definitionId="static_value">
+        <rackPosition column="0" row="3"/>
+        <rackControl name="Value" value="1.0"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Modulator" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 2" consumerChannelName="Input CV"/>
+    <rackLink producerRackComponentName="Modulator" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Modulator" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Modulator" producerChannelName="Output Phase CV" consumerRackComponentName="Signal" consumerChannelName="Input Phase CV"/>
+    <rackLink producerRackComponentName="RBJ Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Scale And Offset 1" producerChannelName="Output CV" consumerRackComponentName="Oscilloscope 1" consumerChannelName="Input CV 0"/>
+    <rackLink producerRackComponentName="Scale And Offset 1" producerChannelName="Output CV" consumerRackComponentName="Signal" consumerChannelName="Input Frequency CV"/>
+    <rackLink producerRackComponentName="Scale And Offset 2" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 1" consumerChannelName="Input Offset"/>
+    <rackLink producerRackComponentName="Signal" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Signal" producerChannelName="Output Wave" consumerRackComponentName="RBJ Filter 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Signal" producerChannelName="Output Wave" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Static Value 1" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 1" consumerChannelName="Input CV"/>
+</rack>

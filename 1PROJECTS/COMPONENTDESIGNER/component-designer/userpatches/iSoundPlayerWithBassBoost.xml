@@ -25,10 +25,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-6.9321756"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Gain" value="-1.0278196"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 117 master.mp3|12569516"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 300 (17 August 2015).mp3|40168403"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -38,10 +38,10 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.64466"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-4.766859"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/LRCNTheBidness/20110416 - 140057- Live The Bidness 072 April 2011 w Shock Osugi Nilicule and LRCN.mp3|84268114"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|3809209"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -50,10 +50,10 @@
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="0" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="22050.0"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
@@ -76,7 +76,7 @@
         <rackControl name="Display" value=""/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
-        <rackControl name="ScaleChoice" value="-15dB"/>
+        <rackControl name="ScaleChoice" value="0dB"/>
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
