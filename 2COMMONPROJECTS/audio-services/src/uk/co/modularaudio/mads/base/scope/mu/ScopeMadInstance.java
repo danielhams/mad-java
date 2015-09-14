@@ -337,8 +337,11 @@ public class ScopeMadInstance extends MadInstance<ScopeMadDefinition, ScopeMadIn
 
 		if( numWritten != numFramesThisRound )
 		{
-			log.error("Failed to write frames to befe buffer - asked to write " + numFramesThisRound +
-					" only wrote " + numWritten );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Failed to write frames to befe buffer - asked to write " + numFramesThisRound +
+						" only wrote " + numWritten );
+			}
 		}
 
 		workingFramesCaptured += numFramesThisRound;

@@ -155,7 +155,10 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 		}
 		else
 		{
-			log.error("Failed to obtain number of expected init params. Expected 5 got " + vals.length );
+			if( log.isErrorEnabled() )
+			{
+				log.error("Failed to obtain number of expected init params. Expected 5 got " + vals.length );
+			}
 		}
 	}
 
