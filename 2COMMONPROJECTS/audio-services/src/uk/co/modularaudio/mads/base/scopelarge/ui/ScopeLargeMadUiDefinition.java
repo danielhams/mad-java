@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.scopelarge.ui;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
+import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenMadUiDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
@@ -40,11 +40,11 @@ public class ScopeLargeMadUiDefinition
 	private static final Span SPAN = new Span( 2, 4 );
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		ScopeMadDefinition.SCOPE_TRIGGER,
-		ScopeMadDefinition.SCOPE_INPUT_0,
-		ScopeMadDefinition.SCOPE_INPUT_1,
-		ScopeMadDefinition.SCOPE_INPUT_2,
-		ScopeMadDefinition.SCOPE_INPUT_3
+		ScopeGenMadDefinition.SCOPE_TRIGGER,
+		ScopeGenMadDefinition.SCOPE_INPUT_0,
+		ScopeGenMadDefinition.SCOPE_INPUT_1,
+		ScopeGenMadDefinition.SCOPE_INPUT_2,
+		ScopeGenMadDefinition.SCOPE_INPUT_3
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {

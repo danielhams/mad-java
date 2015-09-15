@@ -95,8 +95,6 @@ import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinit
 import uk.co.modularaudio.mads.base.sampleplayer.ui.SingleSamplePlayerMadUiDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.ui.ScaleAndOffsetMadUiDefinition;
-import uk.co.modularaudio.mads.base.scope.mu.ScopeMadDefinition;
-import uk.co.modularaudio.mads.base.scope.ui.ScopeMadUiDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.ui.ScopeLargeMadUiDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
@@ -213,8 +211,6 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadUiDefinition.class );
 
 		classToUiDefinition.put( Bessel4FilterMadDefinition.class, Bessel4FilterMadUiDefinition.class );
-
-		classToUiDefinition.put( ScopeMadDefinition.class, ScopeMadUiDefinition.class );
 
 		classToUiDefinition.put( ScopeSmallMadDefinition.class, ScopeSmallMadUiDefinition.class );
 		classToUiDefinition.put( ScopeLargeMadDefinition.class, ScopeLargeMadUiDefinition.class );

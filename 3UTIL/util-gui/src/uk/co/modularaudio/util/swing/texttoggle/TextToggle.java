@@ -6,9 +6,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
@@ -18,11 +15,10 @@ public class TextToggle extends JPanel
 {
 	private static final long serialVersionUID = -7644175161110078571L;
 
-	private static Log log = LogFactory.getLog( TextToggle.class.getName() );
+//	private static Log log = LogFactory.getLog( TextToggle.class.getName() );
 
 	private final Color activeTextColor;
 	private final Color inactiveTextColor;
-	private final Color backgroundColor;
 
 	private final LWTCLabel selectedLabel;
 	private final LWTCLabel unselectedLabel;
@@ -47,7 +43,6 @@ public class TextToggle extends JPanel
 	{
 		this.activeTextColor = activeTextColor;
 		this.inactiveTextColor = inactiveTextColor;
-		this.backgroundColor = backgroundColor;
 
 		this.isSelected = startSelected;
 
