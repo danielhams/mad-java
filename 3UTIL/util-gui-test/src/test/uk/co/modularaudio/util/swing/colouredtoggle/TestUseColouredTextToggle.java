@@ -33,8 +33,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.swing.colouredtoggle.ColouredTextToggle;
-import uk.co.modularaudio.util.swing.colouredtoggle.ToggleReceiver;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
 public class TestUseColouredTextToggle
 {

@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCTextField;
+import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
 public class ColouredTextToggle extends JPanel
 {

@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
+import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
 public class ColouredLabelToggle extends JPanel
 {

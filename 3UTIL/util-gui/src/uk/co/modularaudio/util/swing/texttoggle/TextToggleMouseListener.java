@@ -18,9 +18,44 @@
  *
  */
 
-package uk.co.modularaudio.util.swing.colouredtoggle;
+package uk.co.modularaudio.util.swing.texttoggle;
 
-public interface ToggleReceiver
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class TextToggleMouseListener implements MouseListener
 {
-	void receiveToggle( int toggleId, boolean active );
+	private final TextToggle originTt;
+
+	public TextToggleMouseListener( final TextToggle originTt )
+	{
+		this.originTt = originTt;
+	}
+
+	@Override
+	public void mouseClicked( final MouseEvent e )
+	{
+		originTt.receiveClick();
+	}
+
+	@Override
+	public void mousePressed( final MouseEvent e )
+	{
+	}
+
+	@Override
+	public void mouseReleased( final MouseEvent e )
+	{
+	}
+
+	@Override
+	public void mouseEntered( final MouseEvent e )
+	{
+	}
+
+	@Override
+	public void mouseExited( final MouseEvent e )
+	{
+	}
+
 }

@@ -1,24 +1,4 @@
-/**
- *
- * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
- *                      daniel.hams@gmail.com
- *
- * Mad is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * Mad is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
-package test.uk.co.modularaudio.util.swing.colouredtoggle;
+package test.uk.co.modularaudio.util.swing.texttoggle;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -32,15 +12,15 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.swing.colouredtoggle.ColouredLabelToggle;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.texttoggle.TextToggle;
 import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
-public class TestUseColouredLabelToggle
+public class TestUseTextToggle
 {
-	private static Log log = LogFactory.getLog( TestUseColouredLabelToggle.class.getName() );
+	private static Log log = LogFactory.getLog( TestUseTextToggle.class.getName() );
 
-	public TestUseColouredLabelToggle()
+	public TestUseTextToggle()
 	{
 	}
 
@@ -60,9 +40,14 @@ public class TestUseColouredLabelToggle
 
 		contentPane.setLayout( msh.createMigLayout() );
 
-		final Color surroundColor = Color.decode( "#FFFFFF" );
-		final Color backgroundColor = Color.BLACK;
-		final Color foregroundColor = Color.white;
+		final Color BACKGROUND_COLOR = Color.BLACK;
+		final Color SCOPE_BODY = new Color( 75, 131, 155 );
+		final Color SCOPE_AXIS_DETAIL = SCOPE_BODY.darker().darker();
+
+		final Color selectedTextColor = SCOPE_BODY;
+		final Color unselectedTextColor = SCOPE_AXIS_DETAIL;
+		final Color borderColor = SCOPE_AXIS_DETAIL;
+		final Color backgroundColor = BACKGROUND_COLOR;
 
 		final ToggleReceiver testReceiver = new ToggleReceiver()
 		{
@@ -74,15 +59,18 @@ public class TestUseColouredLabelToggle
 			}
 		};
 
-		final ColouredLabelToggle clt = new ColouredLabelToggle( "Trigger",
-				"Tooltip Text",
+		final TextToggle tt = new TextToggle( "Bi Polar",
+				"Uni Polar",
+				selectedTextColor,
+				unselectedTextColor,
 				backgroundColor,
-				foregroundColor,
-				surroundColor,
-				false,
+				borderColor,
+				true,
+				true,
 				testReceiver,
-				0 );
-		contentPane.add( clt, "grow" );
+				-1 );
+
+		contentPane.add( tt, "grow" );
 
 		testFrame.pack();
 
@@ -100,7 +88,7 @@ public class TestUseColouredLabelToggle
 			@Override
 			public void windowClosing( final WindowEvent e )
 			{
-				log.trace("Window closing. Value of control is \"" + clt.getControlValue() + "\"" );
+				log.trace("Window closing. Value of control is \"" + tt.getControlValue() + "\"" );
 			}
 			@Override
 			public void windowClosed( final WindowEvent e ){}
@@ -121,7 +109,7 @@ public class TestUseColouredLabelToggle
 
 	public static void main( final String[] args ) throws Exception
 	{
-		final TestUseColouredLabelToggle t = new TestUseColouredLabelToggle();
+		final TestUseTextToggle t = new TestUseTextToggle();
 		t.go();
 		log.debug("Going past...");
 	}
