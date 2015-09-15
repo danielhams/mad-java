@@ -22,9 +22,6 @@ package uk.co.modularaudio.mads.base.controllertocv.ui;
 
 import java.awt.Component;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
@@ -36,7 +33,7 @@ import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 public class ControllerToCvLearnButtonUiJComponent
 	implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadInstance, ControllerToCvMadUiInstance>
 {
-	private static Log log = LogFactory.getLog( ControllerToCvLearnButtonUiJComponent.class.getName() );
+//	private static Log log = LogFactory.getLog( ControllerToCvLearnButtonUiJComponent.class.getName() );
 
 	private final LWTCButton theButton;
 
@@ -53,7 +50,7 @@ public class ControllerToCvLearnButtonUiJComponent
 			@Override
 			public void receiveClick()
 			{
-				log.trace("Would activate midi learn");
+				uiInstance.sendLearn();
 			}
 		};
 	}

@@ -22,14 +22,17 @@ package uk.co.modularaudio.mads.base.controllertocv.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -39,20 +42,22 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefinition,ControllerToCvMadInstance>
 {
-//	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
 
 	private int notePeriodLength;
 
 	private int sampleRate;
 	private static final int VALUE_CHASE_MILLIS = 1;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
+	private float curValueRatio = 0.0f;
+	private float newValueRatio = 1.0f;
 
-	private ControllerEventProcessor eventProcessor = null;
+	private ControllerEventProcessor eventProcessor;
 
-	protected ControllerEventMapping desiredMapping = ControllerEventMapping.LINEAR;
-	protected int desiredChannel = 0;
-	protected int desiredController = 0;
+	private ControllerEventMapping desiredMapping = ControllerEventMapping.LINEAR;
+	private int desiredChannel = 0;
+	private int desiredController = 0;
+
+	private boolean isLearning;
 
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -108,35 +113,72 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		{
 			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
 			final int numNotes = noteCb.numElementsInBuffer;
-			// Process the messages
-			for( int n = 0 ; n < numNotes ; n++ )
+
+			if( isLearning )
 			{
-				final MadChannelNoteEvent ne = noteEvents[ n ];
-				switch( ne.getEventType() )
+				int lastController = -1;
+				int lastChannel = -1;
+				boolean wasController = false;
+				for( int n = 0 ; n < numNotes ; n++ )
 				{
-					case CONTROLLER:
+					final MadChannelNoteEvent ne = noteEvents[ n ];
+					switch( ne.getEventType() )
 					{
-						// Only process events on our channel
-						if( (desiredChannel == -1 || desiredChannel == ne.getChannel() )
-							&&
-							(desiredController == -1 || desiredController == ne.getParamOne() )
-							)
+						case CONTROLLER:
 						{
-//							log.debug("Processing event " + ne.toString() );
-							eventProcessor.processEvent( ne );
+							lastChannel = ne.getChannel();
+							lastController = ne.getParamOne();
+							wasController = true;
+							break;
 						}
-						break;
-					}
-					default:
-					{
-						break;
+						default:
+						{
+							break;
+						}
 					}
 				}
-			}
+				if( wasController )
+				{
+					// Encode channel and controller in a message back
+					// to the UI
+					sendDiscoveredController( tempQueueEntryStorage, periodStartFrameTime, lastChannel, lastController );
+					isLearning = false;
+				}
 
-			if( numNotes == 0 )
-			{
 				eventProcessor.emptyPeriod( numFrames );
+			}
+			else
+			{
+				// Process the messages
+				for( int n = 0 ; n < numNotes ; n++ )
+				{
+					final MadChannelNoteEvent ne = noteEvents[ n ];
+					switch( ne.getEventType() )
+					{
+						case CONTROLLER:
+						{
+							// Only process events on our channel
+							if( (desiredChannel == -1 || desiredChannel == ne.getChannel() )
+								&&
+								(desiredController == -1 || desiredController == ne.getParamOne() )
+								)
+							{
+	//							log.debug("Processing event " + ne.toString() );
+								eventProcessor.processEvent( ne );
+							}
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+				}
+
+				if( numNotes == 0 )
+				{
+					eventProcessor.emptyPeriod( numFrames );
+				}
 			}
 
 			if( outCvConnected )
@@ -153,13 +195,56 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		}
 		else if( outCvConnected )
 		{
-			final float[] outCvFloats = outCvCb.floatBuffer;
+			if( isLearning )
+			{
 
-			eventProcessor.emptyPeriod( numFrames );
+			}
+			else
+			{
+				final float[] outCvFloats = outCvCb.floatBuffer;
 
-			// Output nothing.
-			eventProcessor.outputCv( numFrames, outCvFloats );
+				eventProcessor.emptyPeriod( numFrames );
+
+				// Output nothing.
+				eventProcessor.outputCv( numFrames, outCvFloats );
+			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void beginLearn()
+	{
+		isLearning = true;
+		log.trace("Beginning note learn");
+	}
+
+	public void setDesiredMapping( final ControllerEventMapping mapping )
+	{
+		this.desiredMapping = mapping;
+	}
+
+	public void setDesiredChannel( final int channelNumber )
+	{
+		this.desiredChannel = channelNumber;
+	}
+
+	public void setDesiredController( final int controllerNumber )
+	{
+		this.desiredController = controllerNumber;
+	}
+
+	private void sendDiscoveredController( final ThreadSpecificTemporaryEventStorage tses,
+			final long frameTime,
+			final int lastChannel,
+			final int lastController )
+	{
+		log.trace("Sending discovered channel " + lastChannel + " and controller " + lastController );
+		final long value = (lastChannel << 32) | lastController;
+		localBridge.queueTemporalEventToUi( tses,
+				frameTime,
+				ControllerToCvIOQueueBridge.COMMAND_OUT_LEARNT_CONTROLLER,
+				value,
+				null );
+
 	}
 }

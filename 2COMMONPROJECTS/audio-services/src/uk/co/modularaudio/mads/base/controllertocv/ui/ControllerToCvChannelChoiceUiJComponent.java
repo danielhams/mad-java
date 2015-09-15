@@ -136,6 +136,17 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 				uiInstance.sendSelectedChannel( nc.getChannelNum() );
 			}
 		} );
+
+		uiInstance.addLearnListener( new ControllerToCvLearnListener()
+		{
+
+			@Override
+			public void receiveLearntController( final int channel, final int controller )
+			{
+				final String channelElement = model.getElementAt( channel + 1 );
+				model.setSelectedItem( channelElement );
+			}
+		} );
 	}
 
 	@Override

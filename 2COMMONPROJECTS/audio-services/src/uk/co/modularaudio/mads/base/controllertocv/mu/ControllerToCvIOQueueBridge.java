@@ -31,10 +31,13 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 {
 	private static Log log = LogFactory.getLog( ControllerToCvIOQueueBridge.class.getName() );
 
-	public static final int COMMAND_SILENCE = 0;
-	public static final int COMMAND_EVENT_MAPPING = 1;
-	public static final int COMMAND_CHANNEL_NUMBER = 2;
-	public static final int COMMAND_CONTROLLER_NUMBER = 3;
+	public static final int COMMAND_IN_SILENCE = 0;
+	public static final int COMMAND_IN_EVENT_MAPPING = 1;
+	public static final int COMMAND_IN_CHANNEL_NUMBER = 2;
+	public static final int COMMAND_IN_CONTROLLER_NUMBER = 3;
+	public static final int COMMAND_IN_BEGIN_LEARN = 4;
+
+	public static final int COMMAND_OUT_LEARNT_CONTROLLER = 5;
 
 	public ControllerToCvIOQueueBridge()
 	{
@@ -48,27 +51,32 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 	{
 		switch( queueEntry.command )
 		{
-			case COMMAND_SILENCE:
+			case COMMAND_IN_SILENCE:
 			{
 				break;
 			}
-			case COMMAND_EVENT_MAPPING:
+			case COMMAND_IN_EVENT_MAPPING:
 			{
 				final long value = queueEntry.value;
 				final ControllerEventMapping mapping = ControllerEventMapping.values()[ (int)value ];
-				instance.desiredMapping = mapping;
+				instance.setDesiredMapping( mapping );
 				break;
 			}
-			case COMMAND_CHANNEL_NUMBER:
+			case COMMAND_IN_CHANNEL_NUMBER:
 			{
 				final int channelNumber = (int)queueEntry.value;
-				instance.desiredChannel = channelNumber;
+				instance.setDesiredChannel( channelNumber );
 				break;
 			}
-			case COMMAND_CONTROLLER_NUMBER:
+			case COMMAND_IN_CONTROLLER_NUMBER:
 			{
 				final int controllerNumber = (int)queueEntry.value;
-				instance.desiredController = controllerNumber;
+				instance.setDesiredController( controllerNumber );
+				break;
+			}
+			case COMMAND_IN_BEGIN_LEARN:
+			{
+				instance.beginLearn();
 				break;
 			}
 			default:

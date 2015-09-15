@@ -34,6 +34,8 @@ import java.awt.font.GlyphVector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 public class LWTCRotaryChoice extends JPanel
 {
@@ -87,6 +89,20 @@ public class LWTCRotaryChoice extends JPanel
 
 			@Override
 			public void focusGained( final FocusEvent e )
+			{
+				repaint();
+			}
+		} );
+
+		model.addListDataListener( new ListDataListener()
+		{
+
+			@Override
+			public void intervalRemoved( final ListDataEvent e ){}
+			@Override
+			public void intervalAdded( final ListDataEvent e ){}
+			@Override
+			public void contentsChanged( final ListDataEvent e )
 			{
 				repaint();
 			}

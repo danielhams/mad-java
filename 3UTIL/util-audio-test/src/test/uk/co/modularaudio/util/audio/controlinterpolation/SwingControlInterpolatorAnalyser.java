@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
@@ -47,12 +48,12 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private static final long serialVersionUID = -4175746847701555282L;
 	private static Log log = LogFactory.getLog( SwingControlInterpolatorAnalyser.class.getName() );
 
-	private static final float VALUE_CHASE_MILLIS = 20.0f;
+//	private static final float VALUE_CHASE_MILLIS = 20.0f;
 //	private static final float VALUE_CHASE_MILLIS = 15.0f;
 //	private static final float VALUE_CHASE_MILLIS = 10.0f;
 //	private static final float VALUE_CHASE_MILLIS = 8.33f;
 //	private static final float VALUE_CHASE_MILLIS = 7.33f;
-//	private static final float VALUE_CHASE_MILLIS = 5.33f;
+	private static final float VALUE_CHASE_MILLIS = 5.33f;
 //	private static final float VALUE_CHASE_MILLIS = 3.7f;
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
@@ -67,7 +68,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_48k_5chan_processed.wav";
 
 	public final static String WAV_FILE_IN = "/home/dan/Temp/fadermovementsandmixxresponse_48k_1chan.wav";
-	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovementsandmixxresponse_48k_5chan_interpout.wav";
+	public final static String WAV_FILE_OUT = "/home/dan/Temp/fadermovements_interpout.wav";
 
 //	public static final int VIS_WIDTH = 100;
 //	public static final int VIS_WIDTH = 200;
@@ -86,14 +87,14 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private final LinearInterpolator lInterpolator;
 	private final HalfHannWindowInterpolator hhInterpolator;
 	private final SpringAndDamperInterpolator sdInterpolator;
-//	private final LowPassInterpolator lpInterpolator;
+	private final LowPassInterpolator lpInterpolator;
 	private final SpringAndDamperDoubleInterpolator sddInterpolator;
 
 	private final InterpolatorVisualiser noneVisualiser;
 	private final InterpolatorVisualiser lVisualiser;
 	private final InterpolatorVisualiser hhVisualiser;
 	private final InterpolatorVisualiser sdVisualiser;
-//	private final InterpolatorVisualiser lpVisualiser;
+	private final InterpolatorVisualiser lpVisualiser;
 	private final InterpolatorVisualiser sddVisualiser;
 
 	private final InterpolatorVisualiser[] visualisers;
@@ -107,22 +108,22 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		lInterpolator = new LinearInterpolator();
 		hhInterpolator = new HalfHannWindowInterpolator();
 		sdInterpolator = new SpringAndDamperInterpolator( 0.0f, 1.0f );
-//		lpInterpolator = new LowPassInterpolator();
+		lpInterpolator = new LowPassInterpolator();
 		sddInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
 
 		noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
 		lVisualiser = new InterpolatorVisualiser( lInterpolator, noneVisualiser );
 		hhVisualiser = new InterpolatorVisualiser( hhInterpolator, noneVisualiser );
 		sdVisualiser = new InterpolatorVisualiser( sdInterpolator, noneVisualiser );
-//		lpVisualiser = new InterpolatorVisualiser( lpInterpolator, noneVisualiser );
+		lpVisualiser = new InterpolatorVisualiser( lpInterpolator, noneVisualiser );
 		sddVisualiser = new InterpolatorVisualiser( sddInterpolator, noneVisualiser );
-		visualisers = new InterpolatorVisualiser[5];
+		visualisers = new InterpolatorVisualiser[6];
 		visualisers[0] = noneVisualiser;
 		visualisers[1] = lVisualiser;
 		visualisers[2] = hhVisualiser;
 		visualisers[3] = sdVisualiser;
-//		visualisers[4] = lpVisualiser;
-		visualisers[4] = sddVisualiser;
+		visualisers[4] = lpVisualiser;
+		visualisers[5] = sddVisualiser;
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint( "fill" );
@@ -140,8 +141,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		add( new JLabel("SpringAndDamper"), "wrap");
 		add( sdVisualiser, "grow,wrap");
 
-//		add( new JLabel("LowPass"), "wrap");
-//		add( lpVisualiser, "grow,wrap");
+		add( new JLabel("LowPass"), "wrap");
+		add( lpVisualiser, "grow,wrap");
 
 		add( new JLabel("SpringAndDamperDouble"), "wrap");
 		add( sddVisualiser, "grow");
@@ -182,8 +183,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		hhInterpolator.hardSetValue( firstValue );
 		sdInterpolator.reset( SAMPLE_RATE );
 		sdInterpolator.hardSetValue( firstValue );
-//		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
-//		lpInterpolator.hardSetValue( firstValue );
+		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lpInterpolator.hardSetValue( firstValue );
 		sddInterpolator.reset( SAMPLE_RATE );
 		sddInterpolator.hardSetValue( firstValue );
 
@@ -249,8 +250,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		sdInterpolator.reset( SAMPLE_RATE );
 		sdInterpolator.hardSetValue( samples[0] );
 
-//		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
-//		lpInterpolator.hardSetValue( samples[0] );
+		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lpInterpolator.hardSetValue( samples[0] );
 
 		sddInterpolator.reset( SAMPLE_RATE );
 		sddInterpolator.hardSetValue( samples[0] );
@@ -264,15 +265,15 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 			lInterpolator.notifyOfNewValue( sampleAtChange );
 			hhInterpolator.notifyOfNewValue( sampleAtChange );
 			sdInterpolator.notifyOfNewValue( sampleAtChange );
-//			lpInterpolator.notifyOfNewValue( sampleAtChange );
+			lpInterpolator.notifyOfNewValue( sampleAtChange );
 			sddInterpolator.notifyOfNewValue( sampleAtChange );
 
 			noneInterpolator.generateControlValues( processedSamples[0], prevOffset, valueChangeOffset - prevOffset );
 			lInterpolator.generateControlValues( processedSamples[1], prevOffset, valueChangeOffset - prevOffset );
 			hhInterpolator.generateControlValues( processedSamples[2], prevOffset, valueChangeOffset - prevOffset );
 			sdInterpolator.generateControlValues( processedSamples[3], prevOffset, valueChangeOffset - prevOffset );
-//			lpInterpolator.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
-			sddInterpolator.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
+			lpInterpolator.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
+			sddInterpolator.generateControlValues( processedSamples[5], prevOffset, valueChangeOffset - prevOffset );
 			prevOffset = valueChangeOffset;
 		}
 

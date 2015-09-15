@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
+import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
 public class LowPassInterpolator implements ControlValueInterpolator
@@ -32,14 +32,17 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	private float desVal;
 
 	private int sampleRate;
-	private final ButterworthFilter lpFilter = new ButterworthFilter();
+//	private final ButterworthFilter lpFilter = new ButterworthFilter();
+	private final ButterworthFilter24DB lpFilter = new ButterworthFilter24DB();
 
 	// A bit too heavy and long delay
 //	private static final float LP_FREQ = 15.0f;
 	// Seems about right
 //	private static final float LP_FREQ = 30.0f;
-	// Too fast, lets too much through
-	private static final float LP_FREQ = 60.0f;
+	// Still not quite damping enough
+//	private static final float LP_FREQ = 60.0f;
+	// Empirically arrived at ok value
+	private static final float LP_FREQ = 100.0f;
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;

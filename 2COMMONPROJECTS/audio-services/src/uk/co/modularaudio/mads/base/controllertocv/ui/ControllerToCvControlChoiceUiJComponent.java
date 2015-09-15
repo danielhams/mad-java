@@ -251,6 +251,17 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 				}
 			}
 		} );
+
+		uiInstance.addLearnListener( new ControllerToCvLearnListener()
+		{
+
+			@Override
+			public void receiveLearntController( final int channel, final int controller )
+			{
+				final String controllerElement = model.getElementAt( controller + 1 );
+				model.setSelectedItem( controllerElement );
+			}
+		} );
 	}
 
 	@Override

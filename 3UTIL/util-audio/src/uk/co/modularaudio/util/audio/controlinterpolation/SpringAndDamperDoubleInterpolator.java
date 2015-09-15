@@ -34,8 +34,10 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 	private static Log log = LogFactory.getLog( SpringAndDamperDoubleInterpolator.class.getName() );
 
 	// Kinda happy (but issues with settling)
-	public static final double FORCE_SCALE = 0.025;
-	public static final double DAMPING_FACTOR = 0.25;
+//	public static final double FORCE_SCALE = 0.025;
+//	public static final double DAMPING_FACTOR = 0.25;
+	public static final double FORCE_SCALE = 0.05;
+	public static final double DAMPING_FACTOR = 0.27;
 	public static final double INTEGRATION_TIMESTEP_FOR_48K = 0.03;
 
 	public static final double MIN_VALUE_DELTA_DB = -120.0;
@@ -202,6 +204,8 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 	private final double acceleration( final State state,
 			final double t )
 	{
+		final double FORCE_SCALE = 0.05;
+		final double DAMPING_FACTOR = 0.39;
 		final double k = FORCE_SCALE;
 		final double b = DAMPING_FACTOR;
 		final double posDiff = state.x - desPos;
