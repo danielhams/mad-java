@@ -35,13 +35,13 @@ import uk.co.modularaudio.mads.base.scope.ui.display.ScopeBottomSignalToggles;
 import uk.co.modularaudio.mads.base.scope.ui.display.ScopeEmptyPlot;
 import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTimeLabels;
 import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTimeMarks;
-import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTopTriggerToggle;
+import uk.co.modularaudio.mads.base.scope.ui.display.ScopeTopPanel;
 import uk.co.modularaudio.mads.base.scope.ui.display.ScopeWaveDisplay;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.swing.colouredtoggle.ToggleReceiver;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
 public class ScopeDisplayUiJComponent extends JPanel
 implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadUiInstance>, ToggleReceiver
@@ -61,7 +61,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	private static final int NUM_TIME_MARKS = 11;
 
 	private final ScopeAmpLabels ampLabels;
-	private final ScopeTopTriggerToggle topTriggerToggle;
+	private final ScopeTopPanel topPanel;
 	private final ScopeAmpMarks ampMarks;
 	private final ScopeWaveDisplay waveDisplay;
 	private final ScopeEmptyPlot rightEmptyPlot;
@@ -99,7 +99,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 		setLayout( msh.createMigLayout() );
 
 		ampLabels = new ScopeAmpLabels( uiInstance, NUM_AMP_MARKS );
-		topTriggerToggle = new ScopeTopTriggerToggle( this );
+		topPanel = new ScopeTopPanel( this, this );
 		ampMarks = new ScopeAmpMarks( NUM_AMP_MARKS );
 		waveDisplay = new ScopeWaveDisplay( uiInstance, NUM_TIME_MARKS, NUM_AMP_MARKS );
 		rightEmptyPlot = new ScopeEmptyPlot();
@@ -108,7 +108,7 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 		bottomSignalToggles = new ScopeBottomSignalToggles( this );
 
 		this.add( ampLabels, "cell 0 0, spany 3, growy" );
-		this.add( topTriggerToggle, "cell 1 0, spanx 3, center" );
+		this.add( topPanel, "cell 1 0, spanx 3, center, growx" );
 		this.add( ampMarks, "cell 1 1, grow" );
 		this.add( waveDisplay, "cell 2 1, grow, push" );
 		this.add( rightEmptyPlot, "cell 3 1, grow" );
@@ -127,7 +127,9 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	public String getControlValue()
 	{
 		final StringBuilder sb = new StringBuilder();
-		sb.append( topTriggerToggle.getControlValue() );
+		sb.append( topPanel.getBiUniPolarToggle().getControlValue() );
+		sb.append( '|' );
+		sb.append( topPanel.getTriggerToggle().getControlValue() );
 		sb.append( '|' );
 		sb.append( bottomSignalToggles.getControlValue( 0 ) );
 		sb.append( '|' );
@@ -143,21 +145,22 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	public void receiveControlValue( final String value )
 	{
 		final String[] vals = value.split("\\|");
-		if( vals.length == 5 )
+		if( vals.length == 6 )
 		{
-			topTriggerToggle.receiveControlValue( vals[0] );
+			topPanel.getBiUniPolarToggle().receiveControlValue( vals[0] );
+			topPanel.getTriggerToggle().receiveControlValue( vals[1] );
 
-			bottomSignalToggles.receiveControlValue(
-					vals[1],
+			bottomSignalToggles.receiveControlValues(
 					vals[2],
 					vals[3],
-					vals[4] );
+					vals[4],
+					vals[5] );
 		}
 		else
 		{
 			if( log.isErrorEnabled() )
 			{
-				log.error("Failed to obtain number of expected init params. Expected 5 got " + vals.length );
+				log.error("Failed to obtain number of expected init params. Expected 6 got " + vals.length );
 			}
 		}
 	}
@@ -204,6 +207,14 @@ implements IMadUiControlInstance<ScopeMadDefinition, ScopeMadInstance, ScopeMadU
 	public void receiveToggle( final int toggleId, final boolean active )
 	{
 //		log.trace("Received toggle of " + toggleId + " to " + active );
-		waveDisplay.setSignalVisibility( toggleId, active );
+		if( toggleId >= 0 )
+		{
+			waveDisplay.setSignalVisibility( toggleId, active );
+		}
+		else
+		{
+			ampLabels.setBiUniPolar( active );
+			waveDisplay.setBiUniPolar( active );
+		}
 	}
 }

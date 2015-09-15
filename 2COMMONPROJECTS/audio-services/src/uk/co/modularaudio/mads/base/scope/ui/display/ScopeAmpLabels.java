@@ -48,6 +48,8 @@ public class ScopeAmpLabels extends JPanel
 	private int yOffset;
 	private int vertPixelsPerMarker;
 
+	private boolean biUniPolar = true;
+
 	public ScopeAmpLabels( final ScopeMadUiInstance uiInstance,
 			final int numAmpMarkers )
 	{
@@ -94,21 +96,27 @@ public class ScopeAmpLabels extends JPanel
 		g.translate( 0, yOffset );
 		g.setColor( ScopeColours.SCOPE_AXIS_DETAIL );
 
-		final float diffPerMarker = 2.0f / (numAmpMarkers-1);
-		float curValue = -1.0f;
+		final float diffPerMarker = (biUniPolar ?
+				2.0f / (numAmpMarkers-1)
+				:
+				1.0f / (numAmpMarkers-1) );
+		float curValue = (biUniPolar ?
+				-1.0f
+				:
+				0.0f );
 
 		for( int i = 0 ; i < numAmpMarkers ; ++i )
 		{
 			final int y = magsHeight - (vertPixelsPerMarker * i);
 
-			paintScaleTextDb( g, width, curValue, y );
+			paintScaleText( g, width, curValue, y );
 			curValue += diffPerMarker;
 		}
 
 		g.translate( 0, -yOffset );
 	}
 
-	private final void paintScaleTextDb( final Graphics g,
+	private final void paintScaleText( final Graphics g,
 			final int width,
 			final float scaleFloat,
 			final int yOffset )
@@ -120,5 +128,11 @@ public class ScopeAmpLabels extends JPanel
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = width - 2;
 		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+	}
+
+	public void setBiUniPolar( final boolean active )
+	{
+		biUniPolar = active;
+		repaint();
 	}
 }

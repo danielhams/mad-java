@@ -68,6 +68,10 @@ public class ScopeWaveDisplay extends JPanel
 	private int horizPixelsPerMarker;
 	private int vertPixelsPerMarker;
 
+	// Whether we draw the negative axis (bipolar, true)
+	// or just the postive axis (unipolar, false)
+	private boolean biUniPolar = true;
+
 	public static final Color[] VIS_COLOURS = new Color[ScopeMadDefinition.NUM_VIS_CHANNELS];
 
 	static
@@ -316,8 +320,14 @@ public class ScopeWaveDisplay extends JPanel
 						}
 					}
 					// Now convert to normalised value
-					min = (min + 1.0f) / 2.0f;
-					max = (max + 1.0f) / 2.0f;
+					if( biUniPolar )
+					{
+						min = (min + 1.0f) / 2.0f;
+						max = (max + 1.0f) / 2.0f;
+					}
+					else
+					{
+					}
 					min = (min < 0.0f ? 0.0f : (min > 1.0f ? 1.0f : min));
 					max = (max < 0.0f ? 0.0f : (max > 1.0f ? 1.0f : max));
 					// And to pixel offset
@@ -338,16 +348,7 @@ public class ScopeWaveDisplay extends JPanel
 	@Override
 	public void receiveCaptureLengthSamples( final int captureSamples )
 	{
-////		log.trace("Received capture length samples of " + captureSamples );
-//		if( captureSamples > captureLengthSamples )
-//		{
-////			log.trace("Zeroing internal buffers from " + captureSamples + " to"
-////					+ maxCaptureSamples );
-//			for( int c = 0 ; c < ScopeMadDefinition.NUM_VIS_CHANNELS ; ++c )
-//			{
-//				Arrays.fill( internalChannelBuffers[c], captureSamples, maxCaptureSamples, 0.0f );
-//			}
-//		}
+//		log.trace("Received capture length samples of " + captureSamples );
 		this.captureLengthSamples = captureSamples;
 		calculateChannelValues( internalChannelBuffers );
 		repaint();
@@ -377,6 +378,13 @@ public class ScopeWaveDisplay extends JPanel
 	public void setSignalVisibility( final int signal, final boolean active )
 	{
 		signalVisibility[signal] = active;
+		repaint();
+	}
+
+	public void setBiUniPolar( final boolean active )
+	{
+		biUniPolar = active;
+		calculateChannelValues( internalChannelBuffers );
 		repaint();
 	}
 }

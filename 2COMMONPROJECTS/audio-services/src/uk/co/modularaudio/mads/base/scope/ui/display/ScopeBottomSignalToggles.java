@@ -24,8 +24,8 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.scope.ui.ScopeColours;
 import uk.co.modularaudio.util.swing.colouredtoggle.ColouredTextToggle;
-import uk.co.modularaudio.util.swing.colouredtoggle.ToggleReceiver;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
+import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
 public class ScopeBottomSignalToggles extends JPanel
 {
@@ -116,7 +116,7 @@ public class ScopeBottomSignalToggles extends JPanel
 		return "";
 	}
 
-	public void receiveControlValue( final String val0, final String val1, final String val2, final String val3 )
+	public void receiveControlValues( final String val0, final String val1, final String val2, final String val3 )
 	{
 		signal0Toggle.receiveControlValue( val0 );
 		signal1Toggle.receiveControlValue( val1 );
