@@ -37,7 +37,7 @@ import uk.co.modularaudio.util.table.Span;
 public class ScopeLargeMadUiDefinition
 	extends	ScopeGenMadUiDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
 {
-	private static final Span SPAN = new Span( 2, 4 );
+	private static final Span SPAN = new Span( 4, 6 );
 
 	private static final int[] CHAN_INDEXES = new int[] {
 		ScopeGenMadDefinition.SCOPE_TRIGGER,
@@ -81,13 +81,17 @@ public class ScopeLargeMadUiDefinition
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 116,   3, 434,  30 ),		// Capture Time
-		new Rectangle(  16,  40, 170,  30 ),		// Trigger Choice
-		new Rectangle( 210,  40, 165,  30 ),		// Repetition Choice
-		new Rectangle( 410,  40, 120,  30 ),		// Recapture
-		new Rectangle(   6,  75, 544, 232 )			// Scope Display
+		new Rectangle( 576,   3, 170,  30 ),		// Trigger Choice
+		new Rectangle( 770,   3, 165,  30 ),		// Repetition Choice
+		new Rectangle( 970,   3, 120,  30 ),		// Recapture
+		new Rectangle(   6,  40,1145, 428 )			// Scope Display
 	};
 
 	private static final Class<ScopeLargeMadUiInstance> INSTANCE_CLASS = ScopeLargeMadUiInstance.class;
+
+	protected static final int NUM_AMP_MARKS = 21;
+	protected static final int NUM_TIME_MARKS = 21;
+	protected static final int NUM_AMP_DECIMAL_PLACES = 2;
 
 	public ScopeLargeMadUiDefinition( final BufferedImageAllocator bia,
 			final ScopeLargeMadDefinition definition,
@@ -97,7 +101,7 @@ public class ScopeLargeMadUiDefinition
 		super( bia,
 				definition,
 				cif,
-				MadUIStandardBackgrounds.STD_2X4_BLUE,
+				MadUIStandardBackgrounds.STD_4X6_BLUE,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,

@@ -43,6 +43,7 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 
 	private final FontMetrics fm;
 	private final int numAmpMarkers;
+	private final int numDecimalPlaces;
 
 	private int realWidth;
 	private int realHeight;
@@ -56,11 +57,13 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 	private boolean biUniPolar = true;
 
 	public ScopeAmpLabels( final U uiInstance,
-			final int numAmpMarkers )
+			final int numAmpMarkers,
+			final int numDecimalPlaces )
 	{
 		this.setBackground( ScopeGenColours.BACKGROUND_COLOR );
 
 		this.numAmpMarkers = numAmpMarkers;
+		this.numDecimalPlaces = numDecimalPlaces;
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 		setMinimumSize( new Dimension( ScopeGenDisplayUiJComponent.AMP_LABELS_WIDTH, ScopeGenDisplayUiJComponent.AMP_LABELS_WIDTH  ) );
@@ -128,7 +131,7 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 	{
 		final int fontHeight = fm.getAscent();
 		final int fontHeightOver2 = fontHeight / 2;
-		final String scaleString = MathFormatter.fastFloatPrint( scaleFloat, 1, false );
+		final String scaleString = MathFormatter.fastFloatPrint( scaleFloat, numDecimalPlaces, false );
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = width - 2;

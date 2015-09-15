@@ -89,6 +89,10 @@ public class ScopeSmallMadUiDefinition
 
 	private static final Class<ScopeSmallMadUiInstance> INSTANCE_CLASS = ScopeSmallMadUiInstance.class;
 
+	protected static final int NUM_AMP_MARKS = 11;
+	protected static final int NUM_TIME_MARKS = 11;
+	protected static final int NUM_AMP_DECIMAL_PLACES = 1;
+
 	public ScopeSmallMadUiDefinition( final BufferedImageAllocator bia,
 			final ScopeSmallMadDefinition definition,
 			final ComponentImageFactory cif )

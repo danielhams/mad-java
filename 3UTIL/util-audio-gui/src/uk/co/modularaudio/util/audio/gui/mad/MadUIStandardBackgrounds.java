@@ -24,11 +24,12 @@ public class MadUIStandardBackgrounds
 {
 	public final static String STD_2X2_BLUE = "std2x2blue";
 	public final static String STD_2X4_BLUE = "std2x4blue";
+	public final static String STD_4X6_BLUE = "std4x6blue";
 
 	public final static String STD_2X4_RACINGGREEN = "std2x4racinggreen";
 
 	public final static String STD_2X4_ORANGE = "std2x4orange";
-	public final static String STD_4X8_ORANGE = "std4x8orange";
+	public final static String STD_4X6_ORANGE = "std4x6orange";
 
 	public final static String STD_1X4_DARKGRAY = "std1x4darkgray";
 	public final static String STD_2X1_DARKGRAY = "std2x1darkgray";

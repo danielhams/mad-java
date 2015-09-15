@@ -31,13 +31,13 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class ScopeSmallMadDefinition
 	extends ScopeGenMadDefinition<ScopeSmallMadDefinition, ScopeSmallMadInstance>
 {
-	public static final String DEFINITION_ID = "scope_small";
+	public static final String DEFINITION_ID = "scope";
 
-	private final static String USER_VISIBLE_NAME = "Scope (Small)";
+	private final static String USER_VISIBLE_NAME = "Scope";
 
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
-	private final static String CLASS_NAME = "Scope (Small)";
-	private final static String CLASS_DESC = "A small oscilloscope";
+	private final static String CLASS_NAME = "Scope";
+	private final static String CLASS_DESC = "A signal analysis oscilloscope";
 
 
 	public ScopeSmallMadDefinition( final BaseComponentsCreationContext creationContext,

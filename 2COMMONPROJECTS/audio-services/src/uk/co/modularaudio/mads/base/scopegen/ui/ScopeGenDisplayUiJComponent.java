@@ -60,9 +60,6 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 	public static final int TIME_LABELS_HEIGHT = 12;
 	public static final int TIME_DISPLAY_BOTTOM_PADDING = AMP_DISPLAY_TOP_PADDING;
 
-	private static final int NUM_AMP_MARKS = 7;
-	private static final int NUM_TIME_MARKS = 11;
-
 	private final ScopeAmpLabels<D, I, U> ampLabels;
 	private final ScopeTopPanel topPanel;
 	private final ScopeAmpMarks ampMarks;
@@ -75,7 +72,10 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 	public ScopeGenDisplayUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
-			final int controlIndex )
+			final int controlIndex,
+			final int numAmpMarks,
+			final int numTimeMarks,
+			final int ampNumDecimalPlaces )
 	{
 		setOpaque( true );
 		setBackground( ScopeGenColours.BACKGROUND_COLOR );
@@ -101,13 +101,13 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 
 		setLayout( msh.createMigLayout() );
 
-		ampLabels = new ScopeAmpLabels<D, I, U>( uiInstance, NUM_AMP_MARKS );
+		ampLabels = new ScopeAmpLabels<D, I, U>( uiInstance, numAmpMarks, ampNumDecimalPlaces );
 		topPanel = new ScopeTopPanel( this, this );
-		ampMarks = new ScopeAmpMarks( NUM_AMP_MARKS );
-		waveDisplay = new ScopeWaveDisplay<D, I, U>( uiInstance, NUM_TIME_MARKS, NUM_AMP_MARKS );
+		ampMarks = new ScopeAmpMarks( numAmpMarks );
+		waveDisplay = new ScopeWaveDisplay<D, I, U>( uiInstance, numTimeMarks, numAmpMarks );
 		rightEmptyPlot = new ScopeEmptyPlot();
-		timeMarks = new ScopeTimeMarks( NUM_TIME_MARKS );
-		timeLabels = new ScopeTimeLabels<D, I, U>( uiInstance, NUM_TIME_MARKS );
+		timeMarks = new ScopeTimeMarks( numTimeMarks );
+		timeLabels = new ScopeTimeLabels<D, I, U>( uiInstance, numTimeMarks );
 		bottomSignalToggles = new ScopeBottomSignalToggles( this );
 
 		this.add( ampLabels, "cell 0 0, spany 3, growy" );

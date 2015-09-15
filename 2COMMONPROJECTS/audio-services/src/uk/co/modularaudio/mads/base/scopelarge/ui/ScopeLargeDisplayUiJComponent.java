@@ -34,6 +34,9 @@ public class ScopeLargeDisplayUiJComponent
 			final ScopeLargeMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( definition, instance, uiInstance, controlIndex );
+		super( definition, instance, uiInstance, controlIndex,
+				ScopeLargeMadUiDefinition.NUM_AMP_MARKS,
+				ScopeLargeMadUiDefinition.NUM_TIME_MARKS,
+				ScopeLargeMadUiDefinition.NUM_AMP_DECIMAL_PLACES );
 	}
 }

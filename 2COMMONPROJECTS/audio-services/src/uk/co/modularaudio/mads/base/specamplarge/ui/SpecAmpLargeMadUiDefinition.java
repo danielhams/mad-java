@@ -113,7 +113,7 @@ public class SpecAmpLargeMadUiDefinition
 		super( bia,
 				definition,
 				cif,
-				MadUIStandardBackgrounds.STD_4X8_ORANGE,
+				MadUIStandardBackgrounds.STD_4X6_ORANGE,
 				SPAN,
 				INSTANCE_CLASS,
 				CHAN_INDEXES,
