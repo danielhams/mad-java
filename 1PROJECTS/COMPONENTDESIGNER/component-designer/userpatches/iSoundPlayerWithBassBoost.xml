@@ -25,10 +25,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-1.0278196"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-7.4131227"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 300 (17 August 2015).mp3|40168403"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP030_ERIC_SNEO.mp3|-1"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -41,7 +41,7 @@
         <rackControl name="Gain" value="-4.766859"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|3809209"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|0"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -50,7 +50,7 @@
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="0" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-96dB"/>
+        <rackControl name="Amp Floor" value="-192dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>
@@ -72,11 +72,11 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="0" row="10"/>
-        <rackControl name="CaptureTime" value="60.0"/>
+        <rackControl name="CaptureTime" value="166.5223"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
-        <rackControl name="ScaleChoice" value="0dB"/>
+        <rackControl name="ScaleChoice" value="-5dB"/>
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>

@@ -18,9 +18,9 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.scope.ui.display;
+package uk.co.modularaudio.mads.base.scopegen.ui;
 
-public interface ToggleReceiver
+public interface ScopeGenDataVisualiser
 {
-
+	void visualiseScopeBuffers( float[][] frontEndBuffers );
 }
