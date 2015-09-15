@@ -93,7 +93,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	// Not currently used, we only use Jack for the moment.
 	private static final String DEFAULT_BUFFER_SIZE_STRING = "1024";
 	private static final String DEFAULT_OUTPUT_DEVICE_ID = "jnajackout4";
-	private static final String DEFAULT_INPUT_DEVICE_ID = "jnajackin2";
+	private static final String DEFAULT_INPUT_DEVICE_ID = "jnajackin4";
 	private static final String DEFAULT_OUTPUT_MIDI_ID = "jnajackmidiout";
 	private static final String DEFAULT_INPUT_MIDI_ID = "jnajackmidiin";
 
