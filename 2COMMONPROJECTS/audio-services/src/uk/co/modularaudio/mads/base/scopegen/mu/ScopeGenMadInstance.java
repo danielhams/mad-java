@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent.RepetitionChoice;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenTriggerChoiceUiJComponent;
@@ -85,8 +84,7 @@ public class ScopeGenMadInstance<D extends ScopeGenMadDefinition<D, I>,
 	private int workingFramesCaptured;
 	private int workingFrontEndPeriodFramesCaptured;
 
-	public ScopeGenMadInstance( final BaseComponentsCreationContext creationContext,
-			final String instanceName,
+	public ScopeGenMadInstance( final String instanceName,
 			final D definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
