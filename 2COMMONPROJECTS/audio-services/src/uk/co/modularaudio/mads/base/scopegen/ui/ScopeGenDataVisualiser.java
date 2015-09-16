@@ -22,5 +22,5 @@ package uk.co.modularaudio.mads.base.scopegen.ui;
 
 public interface ScopeGenDataVisualiser
 {
-	void visualiseScopeBuffers( float[][] frontEndBuffers );
+	void visualiseScopeBuffers( float[][] frontEndBuffers, int framesChangedPosition, int framesChangedLength );
 }

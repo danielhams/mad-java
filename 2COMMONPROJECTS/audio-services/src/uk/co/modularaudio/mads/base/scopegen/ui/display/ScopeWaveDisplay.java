@@ -250,38 +250,56 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 	}
 
 	@Override
-	public void visualiseScopeBuffers( final float[][] frontEndBuffers )
+	public void visualiseScopeBuffers( final float[][] frontEndBuffers,
+			final int framesChangedOffset,
+			final int framesChangedLength )
 	{
-		for( int c = 0 ; c < ScopeGenMadDefinition.NUM_VIS_CHANNELS ; ++c )
+		if( frontEndBuffers[0].length != internalChannelBuffers[0].length )
 		{
-			if( frontEndBuffers[c].length != internalChannelBuffers[c].length )
+			if( log.isErrorEnabled() )
 			{
-				if( log.isErrorEnabled() )
-				{
-					log.error("Buffer lengths don't match feb.length(" +
-							frontEndBuffers[c].length + ") vs icb.length(" +
-							internalChannelBuffers[c].length + ")");
-				}
-			}
-			else
-			{
-				System.arraycopy( frontEndBuffers[c], 0, internalChannelBuffers[c], 0, frontEndBuffers[c].length );
+				log.error("Buffer lengths don't match feb.length(" +
+						frontEndBuffers[0].length + ") vs icb.length(" +
+						internalChannelBuffers[0].length + ")");
 			}
 		}
-		calculateChannelValues( internalChannelBuffers );
+		else
+		{
+			for( int c = 0 ; c < ScopeGenMadDefinition.NUM_VIS_CHANNELS ; ++c )
+			{
+				System.arraycopy( frontEndBuffers[c], framesChangedOffset,
+						internalChannelBuffers[c], framesChangedOffset,
+						framesChangedLength );
+			}
+			calculateChannelValues( internalChannelBuffers, framesChangedOffset, framesChangedLength );
+			repaint();
+		}
 	}
 
-	private void calculateChannelValues( final float[][] channelBuffers )
+	private void calculateChannelValues( final float[][] channelBuffers,
+			final int framesChangedOffset,
+			final int framesChangedLength )
 	{
 		final float numSamplesPerPixel = captureLengthSamples / (float)magsWidth;
 
 //		log.trace("Would attempt to revisualise with " + numSamplesPerPixel + " samples per pixel" );
 
+		int startPixel = (int)Math.floor(framesChangedOffset / numSamplesPerPixel);
+		startPixel = (startPixel < 0 ? 0 : startPixel);
+		final int numPixels = (int)Math.ceil(framesChangedLength / numSamplesPerPixel);
+		int endPixel = startPixel + numPixels;
+		endPixel = (endPixel < magsWidth ? endPixel : magsWidth);
+//		if( log.isTraceEnabled() )
+//		{
+//			log.trace( "Calculating channel values for frames " + framesChangedOffset + " of length " +
+//					framesChangedLength + " pixels(" + startPixel + "->" + endPixel + ")");
+//		}
+
 		if( numSamplesPerPixel <= 1.0f )
 		{
 			for( int channel = 0 ; channel < ScopeGenMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 			{
-				for( int x = 0 ; x < magsWidth ; ++x )
+				for( int x = startPixel ; x < endPixel ; ++x )
 				{
 					int startOffset = Math.round(x * numSamplesPerPixel);
 					startOffset = (startOffset < 0 ? 0 : (startOffset >= captureLengthSamples ? captureLengthSamples - 1 : startOffset ) );
@@ -309,7 +327,7 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 		{
 			for( int channel = 0 ; channel < ScopeGenMadDefinition.NUM_VIS_CHANNELS ; ++channel )
 			{
-				for( int x = 0 ; x < magsWidth ; ++x )
+				for( int x = startPixel ; x < endPixel ; ++x )
 				{
 					final int startOffset = (int)(x * numSamplesPerPixel);
 					final int endOffset = (int)((x+1) * numSamplesPerPixel);
@@ -346,7 +364,6 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 				}
 			}
 		}
-		repaint();
 	}
 
 	@Override
@@ -360,7 +377,7 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 	{
 //		log.trace("Received capture length samples of " + captureSamples );
 		this.captureLengthSamples = captureSamples;
-		calculateChannelValues( internalChannelBuffers );
+		calculateChannelValues( internalChannelBuffers, 0, captureLengthSamples );
 		repaint();
 	}
 
@@ -394,7 +411,7 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 	public void setBiUniPolar( final boolean active )
 	{
 		biUniPolar = active;
-		calculateChannelValues( internalChannelBuffers );
+		calculateChannelValues( internalChannelBuffers, 0, captureLengthSamples );
 		repaint();
 	}
 }

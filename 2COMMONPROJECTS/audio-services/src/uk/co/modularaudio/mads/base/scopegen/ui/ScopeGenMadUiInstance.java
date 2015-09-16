@@ -188,9 +188,9 @@ public class ScopeGenMadUiInstance<D extends ScopeGenMadDefinition<D, I>,
 			{
 //				log.trace( "Read " + numRead + " into front end buffers" );
 			}
-			frontEndWritePosition += numRead;
+			scopeDataVisualiser.visualiseScopeBuffers( frontEndBuffers, frontEndWritePosition, numRead );
 
-			scopeDataVisualiser.visualiseScopeBuffers( frontEndBuffers );
+			frontEndWritePosition += numRead;
 		}
 
 //		log.debug("Have " + numRead + " new samples to process");

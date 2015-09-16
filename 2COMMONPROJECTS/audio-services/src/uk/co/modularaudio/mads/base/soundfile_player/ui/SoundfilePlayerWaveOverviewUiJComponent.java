@@ -60,8 +60,9 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 
 	private long currentSampleNumFrames;
 	private float desiredNormalisedPositionOffset;
+	private int desiredNormalisedPositionPixel;
 
-	private float displayedNormalisedPositionOffset;
+	private int displayedNormalisedPositionPixel;
 
 	private int lastWidth;
 	private int lastHeight;
@@ -103,7 +104,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime )
 	{
-		if( displayedNormalisedPositionOffset != desiredNormalisedPositionOffset )
+		if( displayedNormalisedPositionPixel != desiredNormalisedPositionPixel )
 		{
 			repaint();
 		}
@@ -124,6 +125,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void paintComponent(final Graphics g)
 	{
+		log.trace("WaveOverview paint() called");
 		final int xWaveOffset = WAVE_OVERVIEW_BORDER_PIXELS + WAVE_OVERVIEW_INTRO_PIXELS;
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 		g.fillRect( 1, 1, lastWidth-1, lastHeight-1 );
@@ -154,10 +156,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		}
 
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_CURRENT_POSITION_COLOUR );
-		final int actualPos = (int)(xWaveOffset + (desiredNormalisedPositionOffset * lastOverviewWidth));
+		final int actualPos = xWaveOffset + desiredNormalisedPositionPixel;
 		g.drawLine( actualPos, WAVE_OVERVIEW_BORDER_PIXELS, actualPos, lastOverviewHeight );
 
-		displayedNormalisedPositionOffset = desiredNormalisedPositionOffset;
+		displayedNormalisedPositionPixel = desiredNormalisedPositionPixel;
 	}
 
 	@Override
@@ -172,6 +174,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	private void recomputeDesiredPositionOffset( final long newPosition )
 	{
 		desiredNormalisedPositionOffset = ((float)newPosition) / currentSampleNumFrames;
+		desiredNormalisedPositionPixel = (int)(desiredNormalisedPositionOffset * lastOverviewWidth);
 	}
 
 	@Override
@@ -202,7 +205,10 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 		final int clickX = point.x;
 		final float normalisedPosition = (clickX - WAVE_OVERVIEW_INTRO_PIXELS - WAVE_OVERVIEW_BORDER_PIXELS) /
 				(float)lastOverviewWidth;
+		desiredNormalisedPositionOffset = normalisedPosition;
+		desiredNormalisedPositionPixel = (int)(desiredNormalisedPositionOffset * lastOverviewWidth);
 		uiInstance.receiveOverviewPositionRequest( normalisedPosition );
+		repaint();
 	}
 
 	@Override

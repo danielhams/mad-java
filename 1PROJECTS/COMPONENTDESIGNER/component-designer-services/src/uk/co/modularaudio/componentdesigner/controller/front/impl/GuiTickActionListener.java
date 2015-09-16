@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.componentdesigner.controller.front.impl;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,19 +30,19 @@ public class GuiTickActionListener implements ActionListener
 //	private static Log log = LogFactory.getLog( GuiTickActionListener.class.getName() );
 
 	private final ComponentDesignerFrontController fc;
-	private final Toolkit defaultToolkit;
+//	private final Toolkit defaultToolkit;
 
 	public GuiTickActionListener( final ComponentDesignerFrontController fc )
 	{
 		this.fc = fc;
-		defaultToolkit = Toolkit.getDefaultToolkit();
+//		defaultToolkit = Toolkit.getDefaultToolkit();
 	}
 
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
 		fc.receiveDisplayTick();
-		defaultToolkit.sync();
+//		defaultToolkit.sync();
 	}
 
 }

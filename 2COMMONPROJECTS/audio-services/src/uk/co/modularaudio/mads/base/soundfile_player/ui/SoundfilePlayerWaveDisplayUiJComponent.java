@@ -175,6 +175,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 	@Override
 	public void paint(final Graphics g)
 	{
+//		log.trace("WaveDisplay paint() called");
 		if( rollPainter != null )
 		{
 			if( rollPainter.buffer0Visible() )
