@@ -289,8 +289,14 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 					float max = min;
 
 					// Now convert to normalised value
-					min = (min + 1.0f) / 2.0f;
-					max = (max + 1.0f) / 2.0f;
+					if( biUniPolar )
+					{
+						min = (min + 1.0f) / 2.0f;
+						max = (max + 1.0f) / 2.0f;
+					}
+					else
+					{
+					}
 					min = (min < 0.0f ? 0.0f : (min > 1.0f ? 1.0f : min));
 					max = (max < 0.0f ? 0.0f : (max > 1.0f ? 1.0f : max));
 					// And to pixel offset
