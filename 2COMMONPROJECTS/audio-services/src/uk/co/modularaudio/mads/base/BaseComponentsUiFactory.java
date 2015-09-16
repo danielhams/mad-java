@@ -29,6 +29,8 @@ import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserMadUiDefinition;
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefinition;
 import uk.co.modularaudio.mads.base.audiocvconverter.ui.AudioCvConverterMadUiDefinition;
+import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadDefinition;
+import uk.co.modularaudio.mads.base.audiotocv4.ui.AudioToCv4MadUiDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.ui.BandLimitedOscillatorMadUiDefinition;
 import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadDefinition;
@@ -41,6 +43,8 @@ import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.ui.LinearCVAMadUiDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.ui.CvSurfaceMadUiDefinition;
+import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
+import uk.co.modularaudio.mads.base.cvtoaudio4.ui.CvToAudio4MadUiDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.ui.DCTrapMadUiDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
@@ -214,6 +218,9 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 
 		classToUiDefinition.put( ScopeSmallMadDefinition.class, ScopeSmallMadUiDefinition.class );
 		classToUiDefinition.put( ScopeLargeMadDefinition.class, ScopeLargeMadUiDefinition.class );
+
+		classToUiDefinition.put( AudioToCv4MadDefinition.class, AudioToCv4MadUiDefinition.class );
+		classToUiDefinition.put( CvToAudio4MadDefinition.class, CvToAudio4MadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -4,6 +4,11 @@
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="Audio CV Converter 1" definitionId="audio_cv_converter">
+        <rackPosition column="1" row="12"/>
+        <rackComponentParameterValue parameterName="inchanneltype" value="AUDIO"/>
+        <rackComponentParameterValue parameterName="numchannels" value="2"/>
+    </rackComponent>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
         <rackPosition column="1" row="4"/>
         <rackControl name="AmpAKill" value="false"/>
@@ -21,14 +26,22 @@
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
+    <rackComponent name="Scope (Large) 1" definitionId="scope_large">
+        <rackPosition column="0" row="13"/>
+        <rackControl name="CaptureLength" value="26.152565"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="TriggerChoice" value="None"/>
+        <rackControl name="WaveDisplay" value="true|true|true&#x9;Signal 1|true&#x9;Signal 2|false&#x9;|false&#x9;"/>
+    </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.8667126"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-7.4094496"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP035_ERIC_SNEO.mp3|43509929"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP036_ERIC_SNEO.mp3|29227747"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -41,7 +54,7 @@
         <rackControl name="Gain" value="-4.766859"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|-1"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|-4"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -72,18 +85,23 @@
     </rackComponent>
     <rackComponent name="Wave Roller 6" definitionId="wave_roller">
         <rackPosition column="0" row="10"/>
-        <rackControl name="CaptureTime" value="166.5223"/>
+        <rackControl name="CaptureTime" value="26.153"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
         <rackControl name="ScaleChoice" value="-5dB"/>
     </rackComponent>
+    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 2" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Audio CV Converter 1" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 6" consumerChannelName="Input Wave 0"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Right" consumerRackComponentName="Audio CV Converter 1" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>

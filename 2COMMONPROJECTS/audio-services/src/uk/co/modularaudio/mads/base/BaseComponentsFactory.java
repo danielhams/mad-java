@@ -28,6 +28,8 @@ import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadInstance;
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefinition;
 import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadInstance;
+import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadDefinition;
+import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadInstance;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
 import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadDefinition;
@@ -40,6 +42,8 @@ import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
+import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
+import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadInstance;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
@@ -220,6 +224,9 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 
 		defClassToInsClassMap.put( ScopeSmallMadDefinition.class, ScopeSmallMadInstance.class );
 		defClassToInsClassMap.put( ScopeLargeMadDefinition.class, ScopeLargeMadInstance.class );
+
+		defClassToInsClassMap.put( AudioToCv4MadDefinition.class, AudioToCv4MadInstance.class );
+		defClassToInsClassMap.put( CvToAudio4MadDefinition.class, CvToAudio4MadInstance.class );
 	}
 
 	@Override
