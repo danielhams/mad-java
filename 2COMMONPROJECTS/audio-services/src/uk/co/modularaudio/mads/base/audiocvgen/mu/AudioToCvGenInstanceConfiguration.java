@@ -73,17 +73,17 @@ public class AudioToCvGenInstanceConfiguration
 		}
 	}
 
-	public int getNumConversionChannels()
+	public final int getNumConversionChannels()
 	{
 		return numConversionChannels;
 	}
 
-	public MadChannelType getConsumerChannelType()
+	public final MadChannelType getConsumerChannelType()
 	{
 		return consumerChannelType;
 	}
 
-	public int getNumTotalChannels()
+	public final int getNumTotalChannels()
 	{
 		return totalNumChannels;
 	}
@@ -108,12 +108,12 @@ public class AudioToCvGenInstanceConfiguration
 		return channelPositions;
 	}
 
-	public int getConsumerChannelIndex( final int consChanIndex )
+	public final int getConsumerChannelIndex( final int consChanIndex )
 	{
 		return (consChanIndex * 2);
 	}
 
-	public int getProducerChannelIndex( final int prodChanIndex )
+	public final int getProducerChannelIndex( final int prodChanIndex )
 	{
 		return (prodChanIndex * 2) + 1;
 	}
