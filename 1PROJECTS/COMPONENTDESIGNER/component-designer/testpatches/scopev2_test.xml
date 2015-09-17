@@ -22,11 +22,11 @@
         <rackPosition column="0" row="12"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1207.6"/>
+        <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
@@ -34,7 +34,7 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Master Lane" value="-2.5:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:M "/>
         <rackControl name="Mixer Lane 1" value="-1.0:0.0:M "/>
         <rackControl name="Mixer Lane 2" value="0.0:0.0:M "/>
@@ -43,11 +43,11 @@
         <rackPosition column="2" row="12"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1207.6"/>
+        <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
@@ -67,7 +67,7 @@
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="false|false|false&#x9;ASAP Signal|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;TSSD"/>
+        <rackControl name="WaveDisplay" value="false|false|true&#x9;ASAP Signal|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;TSSD"/>
     </rackComponent>
     <rackComponent name="Scope 3" definitionId="scope">
         <rackPosition column="2" row="4"/>

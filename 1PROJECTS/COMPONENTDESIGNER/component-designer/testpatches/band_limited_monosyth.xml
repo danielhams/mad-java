@@ -7,39 +7,39 @@
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Frequency" value="200.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
-        <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
         <rackPosition column="2" row="7"/>
         <rackControl name="Channel Selection" value="Channel 0"/>
         <rackControl name="Controller Selection" value="Control 16"/>
-        <rackControl name="Mapping Curve" value="Log"/>
         <rackControl name="Learn" value=""/>
+        <rackControl name="Mapping Curve" value="Log"/>
     </rackComponent>
     <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
         <rackPosition column="2" row="8"/>
         <rackControl name="Channel Selection" value="Channel 0"/>
         <rackControl name="Controller Selection" value="Control 17"/>
-        <rackControl name="Mapping Curve" value="Exp"/>
         <rackControl name="Learn" value=""/>
+        <rackControl name="Mapping Curve" value="Exp"/>
     </rackComponent>
     <rackComponent name="DC Trap 1" definitionId="dc_trap">
         <rackPosition column="2" row="2"/>
     </rackComponent>
     <rackComponent name="Envelope 1" definitionId="envelope">
         <rackPosition column="0" row="2"/>
-        <rackControl name="Display" value=""/>
         <rackControl name="Attack From Zero" value="0"/>
-        <rackControl name="Attack Wave Choice" value="LOG"/>
-        <rackControl name="Decay Wave Choice" value="LOG"/>
-        <rackControl name="Release Wave Choice" value="LOG"/>
         <rackControl name="Attack Slider" value="6.8999996"/>
-        <rackControl name="Decay Slider" value="80.04"/>
-        <rackControl name="Sustain Slider" value="0.957"/>
-        <rackControl name="Release Slider" value="240.12001"/>
+        <rackControl name="Attack Wave Choice" value="LOG"/>
+        <rackControl name="Decay Slider" value="10.0"/>
+        <rackControl name="Decay Wave Choice" value="LOG"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Release Slider" value="10.0"/>
+        <rackControl name="Release Wave Choice" value="LOG"/>
         <rackControl name="Scale Slider" value="460.0"/>
+        <rackControl name="Sustain Slider" value="0.957"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
         <rackPosition column="3" row="2"/>
@@ -68,10 +68,10 @@
     </rackComponent>
     <rackComponent name="Note To CV 1" definitionId="note_to_cv">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Note On Type" value="Follow Last"/>
         <rackControl name="ChannelNum" value="All Channels"/>
         <rackControl name="Frequency Glide" value="21.161467"/>
         <rackControl name="Learn" value=""/>
+        <rackControl name="Note On Type" value="Follow Last"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Osc1" definitionId="sub_rack">
         <rackPosition column="2" row="9"/>
@@ -80,15 +80,15 @@
         <rackPosition column="0" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log dB"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="22050.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="8192"/>
-        <rackControl name="Window" value="Hann"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="8192"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="/home/dan/Development/Runnables/testpatches/subrackpatches/super_saw_oscillator.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="1" row="10"/>

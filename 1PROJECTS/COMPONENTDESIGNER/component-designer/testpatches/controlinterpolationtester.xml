@@ -9,23 +9,24 @@
     </rackComponent>
     <rackComponent name="Band Limited Oscillator 10" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="11"/>
-        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Frequency" value="200.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
-        <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
+        <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="DJ Deck Fader"/>
-        <rackControl name="ValueChase" value="4.6522"/>
-        <rackControl name="Value" value="-Infinity"/>
         <rackControl name="Perf Table" value=""/>
+        <rackControl name="Value" value="-Infinity"/>
+        <rackControl name="ValueChase" value="4.6522"/>
     </rackComponent>
     <rackComponent name="Frequency Filter 8" definitionId="frequency_filter">
         <rackPosition column="0" row="5"/>
-        <rackControl name="Filter Type" value="None"/>
-        <rackControl name="Toggle 24 dB" value="false"/>
-        <rackControl name="Knee" value="40.0"/>
         <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="None"/>
+        <rackControl name="Knee" value="40.0"/>
+        <rackControl name="Toggle 24 dB" value="false"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 11" definitionId="linear_cva">
         <rackPosition column="0" row="13"/>
@@ -41,40 +42,40 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Raw+LP" definitionId="oscilloscope">
         <rackPosition column="2" row="6"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Raw+SD" definitionId="oscilloscope">
         <rackPosition column="2" row="2"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Raw+SDD" definitionId="oscilloscope">
         <rackPosition column="2" row="4"/>
         <rackControl name="CaptureTime" value="240.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Spectral Roll 6" definitionId="spectral_roll">
         <rackPosition column="0" row="7"/>
+        <rackControl name="Amp Scale" value="4096"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Amp Scale" value="8192"/>
-        <rackControl name="Freq Scale" value="Log"/>
-        <rackControl name="Resolution" value="Log-Log"/>
+        <rackControl name="Freq Scale" value="Lin"/>
+        <rackControl name="Resolution" value="Lin"/>
     </rackComponent>
     <rackComponent name="Static Value 13" definitionId="static_value">
         <rackPosition column="0" row="14"/>

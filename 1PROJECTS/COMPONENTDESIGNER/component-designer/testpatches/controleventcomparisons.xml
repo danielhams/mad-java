@@ -11,16 +11,17 @@
     </rackComponent>
     <rackComponent name="Band Limited Oscillator 15" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="5"/>
-        <rackControl name="Frequency" value="200"/>
+        <rackControl name="Frequency" value="200.0"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Square"/>
-        <rackControl name="Pulsewidth" value="100"/>
     </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
+        <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="Left Right"/>
-        <rackControl name="ValueChase" value="8.3"/>
-        <rackControl name="Value" value="0.029999971"/>
         <rackControl name="Perf Table" value=""/>
+        <rackControl name="Value" value="-1.0"/>
+        <rackControl name="ValueChase" value="8.3"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 2" definitionId="linear_cva">
         <rackPosition column="3" row="4"/>
@@ -37,60 +38,61 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 7" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Master Lane" value="3.875:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:M "/>
-        <rackControl name="Mixer Lane 2" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="0.0:0.0:M "/>
     </rackComponent>
     <rackComponent name="NoTS HH &lt;-&gt; TSSD" definitionId="oscilloscope">
         <rackPosition column="0" row="9"/>
         <rackControl name="CaptureTime" value="500.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="NoTs Raw + HH" definitionId="oscilloscope">
         <rackPosition column="0" row="7"/>
         <rackControl name="CaptureTime" value="500.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Oscilloscope 15" definitionId="oscilloscope">
         <rackPosition column="2" row="9"/>
         <rackControl name="CaptureTime" value="500.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Spectral Roll 15" definitionId="spectral_roll">
         <rackPosition column="0" row="11"/>
-        <rackControl name="Display" value=""/>
         <rackControl name="Amp Scale" value="8192"/>
+        <rackControl name="Display" value=""/>
         <rackControl name="Freq Scale" value="Log"/>
         <rackControl name="Resolution" value="Log"/>
     </rackComponent>
     <rackComponent name="Static Value 6" definitionId="static_value">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Value" value="44.0"/>
+        <rackControl name="Value" value="20.0"/>
     </rackComponent>
     <rackComponent name="Ts Ctrl + SD" definitionId="oscilloscope">
         <rackPosition column="2" row="7"/>
         <rackControl name="CaptureTime" value="500.0"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="TriggerType" value="On Rise"/>
-        <rackControl name="Repetitions" value="Continuous"/>
         <rackControl name="Recapture" value=""/>
+        <rackControl name="Repetitions" value="Continuous"/>
+        <rackControl name="TriggerType" value="On Rise"/>
     </rackComponent>
     <rackComponent name="Wave Roller 14" definitionId="wave_roller">
         <rackPosition column="2" row="11"/>
         <rackControl name="CaptureTime" value="2500.0"/>
-        <rackControl name="Left Scale" value=""/>
         <rackControl name="Display" value=""/>
+        <rackControl name="Left Scale" value=""/>
         <rackControl name="Right Scale" value=""/>
+        <rackControl name="ScaleChoice" value="0dB"/>
     </rackComponent>
     <rackLink producerRackComponentName="Audio CV Converter 14" producerChannelName="Output Channel 1" consumerRackComponentName="NoTs Raw + HH" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Audio CV Converter 14" producerChannelName="Output Channel 2" consumerRackComponentName="NoTS HH &lt;-&gt; TSSD" consumerChannelName="Input Wave 0"/>

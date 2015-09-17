@@ -13,27 +13,29 @@
         <rackPosition column="2" row="2"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log dB"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="22050.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="8192"/>
-        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="BWResponse" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
-        <rackControl name="Amp Scale" value="Log dB"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="22050.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="8192"/>
-        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Bessel4" definitionId="bessel4">
         <rackPosition column="2" row="0"/>
@@ -41,10 +43,10 @@
     </rackComponent>
     <rackComponent name="Butterworth" definitionId="frequency_filter">
         <rackPosition column="0" row="6"/>
-        <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Toggle 24 dB" value="true"/>
-        <rackControl name="Knee" value="246.0"/>
         <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="246.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="0" row="8"/>
@@ -58,13 +60,14 @@
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="Log"/>
-        <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Max" value="22050.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Resolution" value="8192"/>
-        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackLink producerRackComponentName="Bessel4" producerChannelName="Output Wave Left" consumerRackComponentName="BSResponse" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Bessel4" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Left"/>
