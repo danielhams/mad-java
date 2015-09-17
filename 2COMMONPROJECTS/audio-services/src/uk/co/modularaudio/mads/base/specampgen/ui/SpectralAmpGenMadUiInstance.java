@@ -460,7 +460,16 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 	public void setDesiredAmpMapping( final AmpMapping mapping )
 	{
-		desiredAmpScaleComputer = ampScaleComputers[ mapping.ordinal() ];
+		final int index = (mapping == null ? -1 : mapping.ordinal() );
+		if( index >= 0 && index < ampScaleComputers.length )
+		{
+			desiredAmpScaleComputer = ampScaleComputers[ index ];
+		}
+		else
+		{
+			log.warn("Failed to load amp mapping - using default");
+			desiredAmpScaleComputer = ampScaleComputers[SpectralAmpGenAmpMappingChoiceUiJComponent.DEFAULT_AMP_MAPPING.ordinal()];
+		}
 
 		desiredAmpScaleComputer.setParameters( displayPeaksHeight,
 				desiredAmpMinDb,

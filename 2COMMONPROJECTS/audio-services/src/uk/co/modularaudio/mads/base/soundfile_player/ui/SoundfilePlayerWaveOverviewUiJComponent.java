@@ -125,7 +125,7 @@ public class SoundfilePlayerWaveOverviewUiJComponent extends PacPanel
 	@Override
 	public void paintComponent(final Graphics g)
 	{
-		log.trace("WaveOverview paint() called");
+//		log.trace("WaveOverview paint() called");
 		final int xWaveOffset = WAVE_OVERVIEW_BORDER_PIXELS + WAVE_OVERVIEW_INTRO_PIXELS;
 		g.setColor( SoundfilePlayerColorDefines.WAVE_DISPLAY_BACKGROUND_COLOR );
 		g.fillRect( 1, 1, lastWidth-1, lastHeight-1 );
