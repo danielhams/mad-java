@@ -60,7 +60,8 @@ public class ScopeSmallMadUiDefinition
 		"TriggerChoice",
 		"RepetitionChoice",
 		"Recapture",
-		"WaveDisplay"
+		"WaveDisplay",
+		"SaveButton"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
@@ -68,6 +69,7 @@ public class ScopeSmallMadUiDefinition
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.BUTTON,
+		ControlType.CUSTOM,
 		ControlType.CUSTOM
 	};
 
@@ -76,14 +78,16 @@ public class ScopeSmallMadUiDefinition
 		ScopeSmallTriggerChoiceUiJComponent.class,
 		ScopeSmallRepetitionsChoiceUiJComponent.class,
 		ScopeSmallRecaptureButtonUiJComponent.class,
+		ScopeSmallSaveImageButtonUiJComponent.class,
 		ScopeSmallDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 116,   3, 434,  30 ),		// Capture Time
 		new Rectangle(  16,  40, 170,  30 ),		// Trigger Choice
-		new Rectangle( 210,  40, 165,  30 ),		// Repetition Choice
-		new Rectangle( 410,  40, 120,  30 ),		// Recapture
+		new Rectangle( 200,  40, 165,  30 ),		// Repetition Choice
+		new Rectangle( 382,  40, 110,  30 ),		// Recapture
+		new Rectangle( 510,  40,  35,  30 ),		// Save Image
 		new Rectangle(   6,  75, 544, 232 )			// Scope Display
 	};
 

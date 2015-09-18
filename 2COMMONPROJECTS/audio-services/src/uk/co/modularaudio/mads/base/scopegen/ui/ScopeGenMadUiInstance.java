@@ -65,6 +65,7 @@ public class ScopeGenMadUiInstance<D extends ScopeGenMadDefinition<D, I>,
 	private final ArrayList<ScopeGenSampleRateListener> sampleRateListeners = new ArrayList<ScopeGenSampleRateListener>();
 
 	private ScopeGenDataVisualiser scopeDataVisualiser;
+	private ScopeImageSaver scopeImageSaver;
 
 	public ScopeGenMadUiInstance( final I instance,
 			final MadUiDefinition<D, I> uiDefinition )
@@ -246,5 +247,15 @@ public class ScopeGenMadUiInstance<D extends ScopeGenMadDefinition<D, I>,
 	public void addSampleRateListener( final ScopeGenSampleRateListener srl )
 	{
 		sampleRateListeners.add( srl );
+	}
+
+	public void setScopeImageSaver( final ScopeImageSaver scopeImageSaver )
+	{
+		this.scopeImageSaver = scopeImageSaver;
+	}
+
+	public void saveImage()
+	{
+		scopeImageSaver.saveImage();
 	}
 }

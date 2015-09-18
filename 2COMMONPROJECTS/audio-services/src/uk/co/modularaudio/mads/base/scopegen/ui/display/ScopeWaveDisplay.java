@@ -414,4 +414,5 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 		calculateChannelValues( internalChannelBuffers, 0, captureLengthSamples );
 		repaint();
 	}
+
 }

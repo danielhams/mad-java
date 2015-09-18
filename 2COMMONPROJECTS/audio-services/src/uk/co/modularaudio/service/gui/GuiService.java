@@ -28,6 +28,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.yesnoquestion.YesNoQuestionDialogCallback;
@@ -122,4 +123,24 @@ public interface GuiService
 			String title,
 			int messageType,
 			DirectorySelectionDialogCallback callback );
+
+	/**
+	 * <p>Helper method for displaying a file save dialog
+	 * with a suggested directory and filename to the user.</p>
+	 *
+	 * @param parentComponent the enclosing component (user for centering)
+	 * @param message the message for the dialog
+	 * @param title the title for the dialog
+	 * @param messageType the message type
+	 * @param suggestedDirectory the directory the dialog will open in
+	 * @param suggestedFilename the initial filename proposed in the dialog
+	 * @param callback a callback called with the directory result or null when the dialog closes
+	 */
+	void showFileSaveDialog( Component parentComponent,
+			String message,
+			String title,
+			int messageType,
+			String suggestedDirectory,
+			String suggestedFilename,
+			FileSaveDialogCallback callback );
 }

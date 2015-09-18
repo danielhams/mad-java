@@ -47,6 +47,8 @@ import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialog;
 import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialog;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialog;
@@ -73,6 +75,8 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 
 	private DirectorySelectionDialog directorySelectionDialog;
 
+	private FileSaveDialog fileSaveDialog;
+
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
@@ -87,6 +91,15 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 			textInputDialog.dispose();
 		if( yesNoQuestionDialog != null )
 			yesNoQuestionDialog.dispose();
+		// These are not needed for these dialogs.
+//		if( directorySelectionDialog != null )
+//		{
+//			directorySelectionDialog.dispose();
+//		}
+//		if( fileSaveDialog != null )
+//		{
+//			fileSaveDialog.dispose();
+//		}
 	}
 
 	public void setGuiComponentFactoryService(final GuiComponentFactoryService guiComponentFactoryService)
@@ -186,7 +199,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showYesNoQuestionDialog( final Component parentComponent,
+	public synchronized void showYesNoQuestionDialog( final Component parentComponent,
 			final String message,
 			final String title,
 			final int messageType,
@@ -219,7 +232,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showTextInputDialog( final Component parentComponent,
+	public synchronized void showTextInputDialog( final Component parentComponent,
 			final String message,
 			final String title,
 			final int messageType,
@@ -240,7 +253,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showMessageDialog( final Component parentComponent, final String message,
+	public synchronized void showMessageDialog( final Component parentComponent, final String message,
 			final String title,
 			final int messageType,
 			final MessageDialogCallback callback )
@@ -267,7 +280,7 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 	}
 
 	@Override
-	public void showDirectorySelectionDialog( final Component parentComponent,
+	public synchronized void showDirectorySelectionDialog( final Component parentComponent,
 			final String message,
 			final String title,
 			final int messageType,
@@ -277,4 +290,27 @@ public class GuiServiceImpl implements ComponentWithLifecycle, GuiService
 		directorySelectionDialog.setValues( parentComponent, message, title, messageType, callback );
 		directorySelectionDialog.go();
 	}
+
+	private synchronized void checkFsDialog()
+	{
+		if( fileSaveDialog == null )
+		{
+			fileSaveDialog = new FileSaveDialog();
+		}
+	}
+
+	@Override
+	public synchronized void showFileSaveDialog( final Component parentComponent,
+			final String message,
+			final String title,
+			final int messageType,
+			final String suggestedDirectory,
+			final String suggestedFilename,
+			final FileSaveDialogCallback callback )
+	{
+		checkFsDialog();
+		fileSaveDialog.setValues( parentComponent, message, title, messageType, suggestedDirectory, suggestedFilename, callback );
+		fileSaveDialog.go();
+	}
+
 }

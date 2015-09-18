@@ -21,7 +21,16 @@
 package uk.co.modularaudio.mads.base.scopegen.ui;
 
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
+import java.util.concurrent.locks.ReentrantLock;
 
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +49,15 @@ import uk.co.modularaudio.mads.base.scopegen.ui.display.ScopeWaveDisplay;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
+import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;
+import uk.co.modularaudio.util.bufferedimage.AllocationMatch;
+import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
+import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
+import uk.co.modularaudio.util.date.DateConverter;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialog;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialogCallback;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
 
@@ -47,7 +65,7 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 	I extends ScopeGenMadInstance<D, I>,
 	U extends ScopeGenMadUiInstance<D, I>>
 	extends JPanel
-	implements IMadUiControlInstance<D, I, U>, ToggleReceiver
+	implements IMadUiControlInstance<D, I, U>, ToggleReceiver, ScopeImageSaver
 {
 	private static final long serialVersionUID = 5515402437483693770L;
 
@@ -60,6 +78,10 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 	public static final int TIME_LABELS_HEIGHT = 12;
 	public static final int TIME_DISPLAY_BOTTOM_PADDING = AMP_DISPLAY_TOP_PADDING;
 
+	private static final String IMAGE_SAVE_DATE_TIME_STR_FORMAT = "yyyy_MM_dd_HH_mm_ss";
+
+	private final U uiInstance;
+
 	private final ScopeAmpLabels<D, I, U> ampLabels;
 	private final ScopeTopPanel topPanel;
 	private final ScopeAmpMarks ampMarks;
@@ -69,6 +91,9 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 	private final ScopeTimeLabels<D, I, U> timeLabels;
 	private final ScopeBottomSignalToggles bottomSignalToggles;
 
+	private final ReentrantLock paintingLock = new ReentrantLock( true );
+	private final AllocationMatch localAllocationMatch = new AllocationMatch();
+
 	public ScopeGenDisplayUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
@@ -77,6 +102,8 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 			final int numTimeMarks,
 			final int ampNumDecimalPlaces )
 	{
+		this.uiInstance = uiInstance;
+
 		setOpaque( true );
 		setBackground( ScopeGenColours.BACKGROUND_COLOR );
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
@@ -118,6 +145,8 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 		this.add( timeMarks, "cell 1 2, spanx 3, growx" );
 		this.add( timeLabels, "cell 0 3, spanx 4, growx" );
 		this.add( bottomSignalToggles, "cell 0 4, spanx 4, center, growx" );
+
+		uiInstance.setScopeImageSaver( this );
 	}
 
 	@Override
@@ -219,5 +248,101 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 			ampLabels.setBiUniPolar( active );
 			waveDisplay.setBiUniPolar( active );
 		}
+	}
+
+	@Override
+	public void paint( final Graphics g )
+	{
+		try
+		{
+			paintingLock.lock();
+			super.paint( g );
+		}
+		finally
+		{
+			paintingLock.unlock();
+		}
+	}
+
+	@Override
+	public void saveImage()
+	{
+		log.debug("Would save an image");
+
+		// Allocate an appropriately sized buffered image, paint into it
+		// and then show a save dialog to select where to save
+		// We need a mutex on the paint so that we aren't making a mess
+		final BufferedImageAllocator bia = uiInstance.getUiDefinition().getBufferedImageAllocator();
+		TiledBufferedImage tbi = null;
+		try
+		{
+			final int width = getWidth();
+			final int height = getHeight();
+			tbi = bia.allocateBufferedImage( "ScopeWaveDisplay",
+					localAllocationMatch  ,
+					AllocationLifetime.SHORT,
+					AllocationBufferType.TYPE_INT_RGB,
+					width, height );
+			final BufferedImage bi = tbi.getUnderlyingBufferedImage();
+			final Graphics2D g2d = bi.createGraphics();
+			paint( g2d );
+
+			final FileSaveDialog fsd = new FileSaveDialog();
+
+			final String dateTimeStr = DateConverter.javaDateToCustomDateTimeStr( new Date(),
+					IMAGE_SAVE_DATE_TIME_STR_FORMAT );
+
+			final String suggestedFilename = dateTimeStr + ".png";
+
+			final FileSaveDialogCallback saveCallback = new FileSaveDialogCallback()
+			{
+
+				@Override
+				public void receiveFileSaveDialogClosed( final String fileSavePath )
+				{
+					try
+					{
+						ImageIO.write( bi, "png", new File(fileSavePath) );
+					}
+					catch( final IOException e )
+					{
+						final String msg = "IOExcepiton caught saving image: " + e.toString();
+						log.error( msg, e );
+					}
+				}
+			};
+
+			fsd.setValues( this,
+					"Where would like the image saved?",
+					"Save Scope Image",
+					JOptionPane.QUESTION_MESSAGE,
+					".",
+					suggestedFilename,
+					saveCallback );
+
+			fsd.go();
+		}
+		catch( final DatastoreException e )
+		{
+			final String msg = "DatastoreExcepiton caught saving image: " + e.toString();
+			log.error( msg, e );
+		}
+		finally
+		{
+			if( tbi != null )
+			{
+				try
+				{
+					bia.freeBufferedImage( tbi );
+				}
+				catch( final DatastoreException e )
+				{
+					final String msg = "Failed during release of tiled buffered image: " + e.toString();
+					log.error( msg, e );
+				}
+			}
+		}
+
+
 	}
 }

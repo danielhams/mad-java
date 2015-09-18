@@ -60,6 +60,7 @@ public class ScopeLargeMadUiDefinition
 		"TriggerChoice",
 		"RepetitionChoice",
 		"Recapture",
+		"SaveImage",
 		"WaveDisplay"
 	};
 
@@ -68,6 +69,7 @@ public class ScopeLargeMadUiDefinition
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.BUTTON,
+		ControlType.CUSTOM,
 		ControlType.CUSTOM
 	};
 
@@ -76,14 +78,16 @@ public class ScopeLargeMadUiDefinition
 		ScopeLargeTriggerChoiceUiJComponent.class,
 		ScopeLargeRepetitionsChoiceUiJComponent.class,
 		ScopeLargeRecaptureButtonUiJComponent.class,
+		ScopeLargeSaveImageButtonUiJComponent.class,
 		ScopeLargeDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 116,   3, 434,  30 ),		// Capture Time
-		new Rectangle( 576,   3, 170,  30 ),		// Trigger Choice
-		new Rectangle( 770,   3, 165,  30 ),		// Repetition Choice
-		new Rectangle( 970,   3, 120,  30 ),		// Recapture
+		new Rectangle( 116,   5, 434,  30 ),		// Capture Time
+		new Rectangle( 576,   5, 170,  30 ),		// Trigger Choice
+		new Rectangle( 770,   5, 165,  30 ),		// Repetition Choice
+		new Rectangle( 970,   5, 120,  30 ),		// Recapture
+		new Rectangle( 1104,  5,  35,  30 ),		// Save Image
 		new Rectangle(   6,  40,1145, 428 )			// Scope Display
 	};
 

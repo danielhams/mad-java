@@ -31,9 +31,9 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 public class SubRackSavePatchButtonUiControlInstance
 	extends AbstractMadUiControlInstance<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>
 {
-	private SubRackMadInstance instance = null;
+	private final SubRackMadInstance instance;
 
-	private SubRackSavePatchButtonUiJComponent jComponent = null;
+	private final SubRackSavePatchButtonUiJComponent jComponent;
 
 	public SubRackSavePatchButtonUiControlInstance( final SubRackMadInstance instance,
 			final SubRackMadUiInstance uiInstance,

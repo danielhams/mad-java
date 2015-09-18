@@ -27,6 +27,8 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialog;
 import uk.co.modularaudio.util.swing.dialog.directoryselection.DirectorySelectionDialogCallback;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialog;
+import uk.co.modularaudio.util.swing.dialog.filesave.FileSaveDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialog;
 import uk.co.modularaudio.util.swing.dialog.message.MessageDialogCallback;
 import uk.co.modularaudio.util.swing.dialog.textinput.TextInputDialog;
@@ -110,6 +112,31 @@ public class TestUseDialogs
 		dsd.go();
 	}
 
+	public void testFileSave() throws Exception
+	{
+		final FileSaveDialog fsd = new FileSaveDialog();
+
+		final FileSaveDialogCallback testCallback = new FileSaveDialogCallback()
+		{
+
+			@Override
+			public void receiveFileSaveDialogClosed( final String fileSavePath )
+			{
+				log.debug("Test received file save callback closed - " + fileSavePath );
+			}
+		};
+
+		final String saveDir = "/tmp";
+		final String saveFilename = "testFilename.xml";
+
+		fsd.setValues( null, "Some message", "Some title", JOptionPane.QUESTION_MESSAGE,
+				saveDir,
+				saveFilename,
+				testCallback );
+
+		fsd.go();
+	}
+
 	public static void main( final String[] args ) throws Exception
 	{
 		final TestUseDialogs tud = new TestUseDialogs();
@@ -117,6 +144,7 @@ public class TestUseDialogs
 		tud.testUseYesNoQuestion();
 		tud.testMessage();
 		tud.testDirectorySelection();
+		tud.testFileSave();
 	}
 }
 
