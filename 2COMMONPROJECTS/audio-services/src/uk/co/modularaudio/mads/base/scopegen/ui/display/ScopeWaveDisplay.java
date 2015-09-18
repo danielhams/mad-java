@@ -290,7 +290,7 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 		int startPixel = (int)Math.floor(framesChangedOffset / numSamplesPerPixel);
 		startPixel = (startPixel < 0 ? 0 : startPixel);
 		final int numPixels = (int)Math.ceil(framesChangedLength / numSamplesPerPixel);
-		int endPixel = startPixel + numPixels;
+		int endPixel = startPixel + numPixels + 1;
 		endPixel = (endPixel < magsWidth ? endPixel : magsWidth);
 //		if( log.isTraceEnabled() )
 //		{

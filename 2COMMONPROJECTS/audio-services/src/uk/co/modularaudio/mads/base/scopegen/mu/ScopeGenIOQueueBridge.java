@@ -89,7 +89,7 @@ public class ScopeGenIOQueueBridge<I extends ScopeGenMadInstance<?,I>>
 			}
 			case COMMAND_IN_RECAPTURE:
 			{
-				instance.startPreHunt();
+				instance.doRecapture( tses, periodTimestamp );
 				break;
 			}
 			default:

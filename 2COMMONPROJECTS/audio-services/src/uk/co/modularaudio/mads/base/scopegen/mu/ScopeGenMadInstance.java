@@ -376,9 +376,14 @@ public class ScopeGenMadInstance<D extends ScopeGenMadDefinition<D, I>,
 		}
 		else if( workingFrontEndPeriodFramesCaptured == framesPerFrontEndPeriod )
 		{
-			final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
-			// mid capture, emit write position event
-			emitWritePositionEvent( tses, eventFrameTime );
+			// Only emit events when the length of what we're capturing is larger than
+			// number of front end frames
+			if( workingDesiredFramesToCapture >= framesPerFrontEndPeriod )
+			{
+				final long eventFrameTime = periodStartFrameTime + frameOffset + currentFrameOffset;
+				// mid capture, emit write position event
+				emitWritePositionEvent( tses, eventFrameTime );
+			}
 		}
 		return numFramesThisRound;
 	}
@@ -449,6 +454,7 @@ public class ScopeGenMadInstance<D extends ScopeGenMadDefinition<D, I>,
 	public void startPreHunt()
 	{
 		state = State.TRIGGER_HUNT_PRE;
+		workingTrigger = desiredTrigger;
 	}
 
 	private void startPostHunt()
@@ -476,5 +482,27 @@ public class ScopeGenMadInstance<D extends ScopeGenMadDefinition<D, I>,
 	private void startIdling()
 	{
 		state = State.IDLE;
+	}
+
+	public void doRecapture( final ThreadSpecificTemporaryEventStorage tses,
+			final long eventFrameTime )
+	{
+		if( repetition == RepetitionChoice.ONCE &&
+				state == State.IDLE )
+		{
+			switch( desiredTrigger )
+			{
+				case NONE:
+				{
+					startCapture( tses, eventFrameTime );
+					break;
+				}
+				default:
+				{
+					startPreHunt();
+					break;
+				}
+			}
+		}
 	}
 }
