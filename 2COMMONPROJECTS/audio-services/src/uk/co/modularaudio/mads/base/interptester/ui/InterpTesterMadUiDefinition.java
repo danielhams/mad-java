@@ -39,11 +39,9 @@ public class InterpTesterMadUiDefinition
 	private static final Span SPAN = new Span(2,4);
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		InterpTesterMadDefinition.CONSUMER_AUDIO,
-		InterpTesterMadDefinition.CONSUMER_CV,
-
 		InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_LINEAR_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS,
@@ -55,20 +53,15 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER,
 		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE,
-
-		InterpTesterMadDefinition.PRODUCER_AUDIO,
-		InterpTesterMadDefinition.PRODUCER_CV
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {
-		new Point( 150, 80 ),
-		new Point( 190, 80 ),
-
 		new Point( 150, 120 ),
 		new Point( 190, 120 ),
 		new Point( 230, 120 ),
 		new Point( 270, 120 ),
 		new Point( 310, 120 ),
+		new Point( 350, 120 ),
 
 		new Point( 150, 160 ),
 		new Point( 190, 160 ),
@@ -77,10 +70,6 @@ public class InterpTesterMadUiDefinition
 		new Point( 310, 160 ),
 		new Point( 350, 160 ),
 		new Point( 390, 160 ),
-
-
-		new Point( 150, 200 ),
-		new Point( 190, 200 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

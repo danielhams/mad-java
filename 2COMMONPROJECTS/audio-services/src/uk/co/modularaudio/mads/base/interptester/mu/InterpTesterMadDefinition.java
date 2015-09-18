@@ -34,27 +34,22 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
 	// Indexes into the channels
-	public final static int CONSUMER_AUDIO = 0;
-	public final static int CONSUMER_CV = 1;
+	public final static int PRODUCER_CV_RAW_NOTS = 0;
+	public final static int PRODUCER_CV_SUM_OF_RATIOS_NOTS = 1;
+	public final static int PRODUCER_CV_LINEAR_NOTS = 2;
+	public final static int PRODUCER_CV_HALFHANN_NOTS = 3;
+	public final static int PRODUCER_CV_LOWPASS_NOTS = 4;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS = 5;
 
-	public final static int PRODUCER_CV_RAW_NOTS = 2;
-	public final static int PRODUCER_CV_SUM_OF_RATIOS_NOTS = 3;
-	public final static int PRODUCER_CV_HALFHANN_NOTS = 4;
-	public final static int PRODUCER_CV_LOWPASS_NOTS = 5;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS = 6;
+	public final static int PRODUCER_CV_RAW = 6;
+	public final static int PRODUCER_CV_SUM_OF_RATIOS = 7;
+	public final static int PRODUCER_CV_LINEAR = 8;
+	public final static int PRODUCER_CV_HALFHANN = 9;
+	public final static int PRODUCER_CV_SPRINGDAMPER = 10;
+	public final static int PRODUCER_CV_LOWPASS = 11;
+	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 12;
 
-	public final static int PRODUCER_CV_RAW = 7;
-	public final static int PRODUCER_CV_SUM_OF_RATIOS = 8;
-	public final static int PRODUCER_CV_LINEAR = 9;
-	public final static int PRODUCER_CV_HALFHANN = 10;
-	public final static int PRODUCER_CV_SPRINGDAMPER = 11;
-	public final static int PRODUCER_CV_LOWPASS = 12;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 13;
-
-	public final static int PRODUCER_AUDIO = 14;
-	public final static int PRODUCER_CV = 15;
-
-	public final static int NUM_CHANNELS = 16;
+	public final static int NUM_CHANNELS = 13;
 
 	public static final String DEFINITION_ID = "interptester";
 
@@ -66,11 +61,9 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 
 	// These must match the channel indexes given above
 	private final static String[] CHAN_NAMES = new String[] {
-		"Audio In",
-		"CV In",
-
 		"Raw Control NoTS CV Out",
 		"Sum Of Ratio NoTS CV Out",
+		"Linear Inteprolation NoTS CV Out",
 		"Half Hann NoTS CV Out",
 		"Low Pass NoTS CV Out",
 		"Spring Damper Double NoTS CV Out",
@@ -82,12 +75,14 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		"Spring Damper CV Out",
 		"Low Pass CV Out",
 		"Spring Damper Double CV Out",
-		"Audio Out",
-		"CV Out"
 	};
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
-		MadChannelType.AUDIO,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
+		MadChannelType.CV,
 		MadChannelType.CV,
 
 		MadChannelType.CV,
@@ -95,37 +90,25 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
-
 		MadChannelType.CV,
 		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.AUDIO,
-		MadChannelType.CV
 	};
 
 	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
-		MadChannelDirection.CONSUMER,
-		MadChannelDirection.CONSUMER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
 
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
-
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
@@ -142,9 +125,6 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO
 	};
 
 	public InterpTesterMadDefinition( final BaseComponentsCreationContext creationContext,

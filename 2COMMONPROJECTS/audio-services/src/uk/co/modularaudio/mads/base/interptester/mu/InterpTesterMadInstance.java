@@ -66,6 +66,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
+	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 	private final LowPassInterpolator lpInterpolatorNoTs = new LowPassInterpolator();
 	private final SpringAndDamperDoubleInterpolator sddInterpolatorNoTs = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
@@ -134,6 +135,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sddInterpolator.reset( sampleRate );
 
 		sorInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
+		liInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 		lpInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
 		sddInterpolatorNoTs.reset( sampleRate );
@@ -299,6 +301,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolatorNoTs.generateControlValues( sorNoTsBuf, frameOffset, numFrames );
 		sorInterpolatorNoTs.checkForDenormal();
 
+		final float[] liNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_LINEAR_NOTS ].floatBuffer;
+		liInterpolatorNoTs.generateControlValues( liNoTsBuf, frameOffset, numFrames );
+		liInterpolatorNoTs.checkForDenormal();
+
 		final float[] hhNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS ].floatBuffer;
 		hhInterpolatorNoTs.generateControlValues( hhNoTsBuf, frameOffset, numFrames );
 		hhInterpolatorNoTs.checkForDenormal();
@@ -379,6 +385,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 		noneInterpolatorNoTs.notifyOfNewValue( amp );
 		sorInterpolatorNoTs.notifyOfNewValue( amp );
+		liInterpolatorNoTs.notifyOfNewValue( amp );
 		hhInterpolatorNoTs.notifyOfNewValue( amp );
 		lpInterpolatorNoTs.notifyOfNewValue( amp );
 		sddInterpolatorNoTs.notifyOfNewValue( amp );
@@ -396,6 +403,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sddInterpolator.reset( sampleRate );
 
 		sorInterpolatorNoTs.reset( sampleRate, chaseMillis );
+		liInterpolatorNoTs.reset( sampleRate, chaseMillis );
 		hhInterpolatorNoTs.reset( sampleRate, chaseMillis );
 		lpInterpolatorNoTs.reset( sampleRate, chaseMillis );
 		sddInterpolatorNoTs.reset( sampleRate );
@@ -431,6 +439,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sddInterpolator.resetLowerUpperBounds( minValue, maxValue );
 
 		sorInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
+		liInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		lpInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		sddInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );

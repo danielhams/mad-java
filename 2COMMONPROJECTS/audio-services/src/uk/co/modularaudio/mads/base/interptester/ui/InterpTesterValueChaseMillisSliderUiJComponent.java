@@ -46,7 +46,7 @@ public class InterpTesterValueChaseMillisSliderUiJComponent extends TimeSlider
 
 	public final static float MIN_CHASE_MILLIS = 1.0f;
 	public final static float DEFAULT_CHASE_MILLIS = 3.7f;
-	public final static float MAX_CHASE_MILLIS = 20.0f;
+	public final static float MAX_CHASE_MILLIS = 100.0f;
 
 	public InterpTesterValueChaseMillisSliderUiJComponent( final InterpTesterMadDefinition definition,
 			final InterpTesterMadInstance instance,
