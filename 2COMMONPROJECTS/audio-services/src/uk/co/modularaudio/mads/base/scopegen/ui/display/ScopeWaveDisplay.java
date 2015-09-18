@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
 import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadInstance;
+import uk.co.modularaudio.mads.base.scopegen.ui.DisplayPoles;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenCaptureLengthListener;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenColours;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenDataVisualiser;
@@ -74,7 +75,7 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 
 	// Whether we draw the negative axis (bipolar, true)
 	// or just the postive axis (unipolar, false)
-	private boolean biUniPolar = true;
+
 
 	public static final Color[] VIS_COLOURS = new Color[ScopeGenMadDefinition.NUM_VIS_CHANNELS];
 
@@ -106,6 +107,8 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 			sampleRate, LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
 
 	private final boolean[] signalVisibility = new boolean[5];
+
+	private DisplayPoles displayPoles = ScopeGenDisplayUiJComponent.DEFAULT_DISPLAY_POLES;
 
 	public ScopeWaveDisplay( final U uiInstance,
 			final int numTimeMarkers,
@@ -307,14 +310,12 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 					float max = min;
 
 					// Now convert to normalised value
-					if( biUniPolar )
+					if( displayPoles == DisplayPoles.BIPOLE )
 					{
 						min = (min + 1.0f) / 2.0f;
 						max = (max + 1.0f) / 2.0f;
 					}
-					else
-					{
-					}
+
 					min = (min < 0.0f ? 0.0f : (min > 1.0f ? 1.0f : min));
 					max = (max < 0.0f ? 0.0f : (max > 1.0f ? 1.0f : max));
 					// And to pixel offset
@@ -348,14 +349,12 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 						}
 					}
 					// Now convert to normalised value
-					if( biUniPolar )
+					if( displayPoles == DisplayPoles.BIPOLE )
 					{
 						min = (min + 1.0f) / 2.0f;
 						max = (max + 1.0f) / 2.0f;
 					}
-					else
-					{
-					}
+
 					min = (min < 0.0f ? 0.0f : (min > 1.0f ? 1.0f : min));
 					max = (max < 0.0f ? 0.0f : (max > 1.0f ? 1.0f : max));
 					// And to pixel offset
@@ -408,9 +407,9 @@ public class ScopeWaveDisplay<D extends ScopeGenMadDefinition<D, I>,
 		repaint();
 	}
 
-	public void setBiUniPolar( final boolean active )
+	public void setDisplayPoles( final DisplayPoles displayPoles )
 	{
-		biUniPolar = active;
+		this.displayPoles = displayPoles;
 		calculateChannelValues( internalChannelBuffers, 0, captureLengthSamples );
 		repaint();
 	}

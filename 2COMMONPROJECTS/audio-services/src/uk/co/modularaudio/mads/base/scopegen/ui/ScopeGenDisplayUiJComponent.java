@@ -80,6 +80,8 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 
 	private static final String IMAGE_SAVE_DATE_TIME_STR_FORMAT = "yyyy_MM_dd_HH_mm_ss";
 
+	public static final DisplayPoles DEFAULT_DISPLAY_POLES = DisplayPoles.BIPOLE;
+
 	private final U uiInstance;
 
 	private final ScopeAmpLabels<D, I, U> ampLabels;
@@ -245,8 +247,9 @@ public class ScopeGenDisplayUiJComponent<D extends ScopeGenMadDefinition<D, I>,
 		}
 		else
 		{
-			ampLabels.setBiUniPolar( active );
-			waveDisplay.setBiUniPolar( active );
+			final DisplayPoles displayPoles = active ?  DisplayPoles.BIPOLE : DisplayPoles.MONOPOLE;
+			ampLabels.setDisplayPoles( displayPoles );
+			waveDisplay.setDisplayPoles( displayPoles );
 		}
 	}
 

@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
 import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadInstance;
+import uk.co.modularaudio.mads.base.scopegen.ui.DisplayPoles;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenColours;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenDisplayUiJComponent;
 import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenMadUiInstance;
@@ -54,7 +55,7 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 	private int yOffset;
 	private int vertPixelsPerMarker;
 
-	private boolean biUniPolar = true;
+	private DisplayPoles displayPoles = ScopeGenDisplayUiJComponent.DEFAULT_DISPLAY_POLES;
 
 	public ScopeAmpLabels( final U uiInstance,
 			final int numAmpMarkers,
@@ -104,11 +105,11 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 		g.translate( 0, yOffset );
 		g.setColor( ScopeGenColours.SCOPE_AXIS_DETAIL );
 
-		final float diffPerMarker = (biUniPolar ?
+		final float diffPerMarker = (displayPoles == DisplayPoles.BIPOLE ?
 				2.0f / (numAmpMarkers-1)
 				:
 				1.0f / (numAmpMarkers-1) );
-		float curValue = (biUniPolar ?
+		float curValue = (displayPoles == DisplayPoles.BIPOLE ?
 				-1.0f
 				:
 				0.0f );
@@ -138,9 +139,9 @@ public class ScopeAmpLabels<D extends ScopeGenMadDefinition<D, I>,
 		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
 	}
 
-	public void setBiUniPolar( final boolean active )
+	public void setDisplayPoles( final DisplayPoles displayPoles )
 	{
-		biUniPolar = active;
+		this.displayPoles = displayPoles;
 		repaint();
 	}
 }

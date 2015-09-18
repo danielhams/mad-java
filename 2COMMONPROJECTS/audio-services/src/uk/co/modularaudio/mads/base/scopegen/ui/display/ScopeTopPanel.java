@@ -38,7 +38,7 @@ public class ScopeTopPanel extends JPanel
 
 	private final ColouredLabelToggle triggerToggle;
 
-	private final TextToggle biUniPolarToggle;
+	private final TextToggle monoBiPolarToggle;
 
 	public ScopeTopPanel( final ToggleReceiver triggerToggleReceiver,
 			final ToggleReceiver biUniPolarToggleReceiver )
@@ -68,9 +68,9 @@ public class ScopeTopPanel extends JPanel
 
 		add( triggerToggle, "align center" );
 
-		biUniPolarToggle = new TextToggle(
-				"Bi Polar",
-				"Uni Polar",
+		monoBiPolarToggle = new TextToggle(
+				"Bipole",
+				"Monopole",
 				ScopeGenColours.SCOPE_BODY,
 				ScopeGenColours.SCOPE_AXIS_DETAIL,
 				ScopeGenColours.BACKGROUND_COLOR,
@@ -80,7 +80,7 @@ public class ScopeTopPanel extends JPanel
 				biUniPolarToggleReceiver,
 				-1 );
 
-		add( biUniPolarToggle, "align center" );
+		add( monoBiPolarToggle, "align center" );
 	}
 
 	public ColouredLabelToggle getTriggerToggle()
@@ -90,6 +90,6 @@ public class ScopeTopPanel extends JPanel
 
 	public TextToggle getBiUniPolarToggle()
 	{
-		return biUniPolarToggle;
+		return monoBiPolarToggle;
 	}
 }
