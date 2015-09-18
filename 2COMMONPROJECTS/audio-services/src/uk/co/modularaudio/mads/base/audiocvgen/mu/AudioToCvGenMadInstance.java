@@ -22,7 +22,6 @@ package uk.co.modularaudio.mads.base.audiocvgen.mu;
 
 import java.util.Map;
 
-import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -43,9 +42,9 @@ public class AudioToCvGenMadInstance<D extends AudioToCvGenMadDefinition<D, I>, 
 	private final AudioToCvGenInstanceConfiguration instanceConfiguration;
 
 	// Used for CV to audio conversions
-	private final Limiter limiterRt = new Limiter( 0.99, 5 );
+//	private final Limiter limiterRt = new Limiter( 0.99, 5 );
 
-	private boolean active;
+//	private boolean active;
 
 	public AudioToCvGenMadInstance( final String instanceName,
 			final D definition,
