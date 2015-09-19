@@ -32,11 +32,11 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
@@ -88,7 +88,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	private final HalfHannWindowInterpolator hhInterpolator;
 	private final SpringAndDamperInterpolator sdInterpolator;
 	private final LowPassInterpolator lpInterpolator;
-	private final SpringAndDamperDoubleInterpolator sddInterpolator;
+	private final CDSpringAndDamperDoubleInterpolator sddInterpolator;
 
 	private final InterpolatorVisualiser noneVisualiser;
 	private final InterpolatorVisualiser lVisualiser;
@@ -109,7 +109,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		hhInterpolator = new HalfHannWindowInterpolator();
 		sdInterpolator = new SpringAndDamperInterpolator( 0.0f, 1.0f );
 		lpInterpolator = new LowPassInterpolator();
-		sddInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+		sddInterpolator = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
 
 		noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
 		lVisualiser = new InterpolatorVisualiser( lInterpolator, noneVisualiser );

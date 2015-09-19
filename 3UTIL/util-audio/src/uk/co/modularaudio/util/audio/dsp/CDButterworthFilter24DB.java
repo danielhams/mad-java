@@ -73,9 +73,7 @@ public class CDButterworthFilter24DB
 		{
 			case LP:
 				tanthe = (float) (1.0f / FastMath.tan( MathDefines.ONE_PI_D * freq / sr ));
-				// tanthe = 0.0f;
-				sqrtan = MathDefines.SQRT_TWO_F * tanthe;
-				// sqrtan = 0.0f;
+				sqrtan = 2.0f * tanthe;
 				tansq = tanthe * tanthe;
 				a = 1.0f / (1.0f + sqrtan + tansq);
 				a1 = 2.0f * a;
