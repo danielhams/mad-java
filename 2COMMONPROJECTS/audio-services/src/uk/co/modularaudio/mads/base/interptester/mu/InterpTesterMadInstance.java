@@ -30,11 +30,11 @@ import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterModelChoiceUiJCo
 import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterValueChaseMillisSliderUiJComponent;
 import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -62,14 +62,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
 	private final LowPassInterpolator lpInterpolator = new LowPassInterpolator();
-	private final SpringAndDamperDoubleInterpolator sddInterpolator = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final CDSpringAndDamperDoubleInterpolator sddInterpolator = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 	private final LowPassInterpolator lpInterpolatorNoTs = new LowPassInterpolator();
-	private final SpringAndDamperDoubleInterpolator sddInterpolatorNoTs = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final CDSpringAndDamperDoubleInterpolator sddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
