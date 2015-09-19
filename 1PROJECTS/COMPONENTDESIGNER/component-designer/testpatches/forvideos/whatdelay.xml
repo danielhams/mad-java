@@ -7,7 +7,7 @@
     </rackComponent>
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
         <rackPosition column="2" row="15"/>
-        <rackControl name="Frequency" value="60.0"/>
+        <rackControl name="Frequency" value="500.0"/>
         <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
     </rackComponent>
@@ -19,8 +19,21 @@
         <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="0.0"/>
+        <rackControl name="Value" value="-0.03125"/>
         <rackControl name="ValueChase" value="5.3"/>
+    </rackComponent>
+    <rackComponent name="Critically Damped Frequency Filter 1" definitionId="cd_frequency_filter">
+        <rackPosition column="0" row="19"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="100.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
+    </rackComponent>
+    <rackComponent name="Frequency Filter 1" definitionId="frequency_filter">
+        <rackPosition column="2" row="19"/>
+        <rackControl name="Bandwidth" value="440.0"/>
+        <rackControl name="Filter Type" value="Low Pass"/>
+        <rackControl name="Knee" value="100.0"/>
+        <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
         <rackPosition column="2" row="17"/>
@@ -37,7 +50,7 @@
     </rackComponent>
     <rackComponent name="Scope (Large) 1" definitionId="scope_large">
         <rackPosition column="0" row="4"/>
-        <rackControl name="CaptureLength" value="100.0"/>
+        <rackControl name="CaptureLength" value="169.97514"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveImage" value=""/>
@@ -57,29 +70,29 @@
         <rackPosition column="2" row="10"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="8405.2"/>
+        <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
         <rackPosition column="0" row="10"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="8405.2"/>
+        <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input CV amplification factor"/>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 3"/>
@@ -87,18 +100,20 @@
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 1" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
-    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 2" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Inteprolation NoTS CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 1"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 1" consumerRackComponentName="Critically Damped Frequency Filter 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 2" consumerRackComponentName="Frequency Filter 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 1"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 2"/>
+    <rackLink producerRackComponentName="Critically Damped Frequency Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
+    <rackLink producerRackComponentName="Frequency Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Spectral Amp 2" consumerChannelName="Input Wave"/>

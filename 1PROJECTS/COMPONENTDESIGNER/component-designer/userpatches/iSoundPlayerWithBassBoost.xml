@@ -15,7 +15,7 @@
         <rackPosition column="2" row="5"/>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
-        <rackPosition column="1" row="7"/>
+        <rackPosition column="0" row="7"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
@@ -25,10 +25,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-6.38477"/>
+        <rackControl name="Gain" value="-1.0278196"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Sasha &amp; Digweed/Sasha_-_Live___Fabric_Club_(London)_-_25.09.2010-Mixing.mp3|121568695"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 300 (17 August 2015).mp3|3919950"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -41,16 +41,16 @@
         <rackControl name="Gain" value="-4.766859"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|-16"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/LFO - Frequencies (1991)/11 - Mentok 1.mp3|0"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="ZoomToggleGroup" value="2"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
-        <rackPosition column="0" row="11"/>
+        <rackPosition column="2" row="7"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>
@@ -58,7 +58,7 @@
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
-        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
