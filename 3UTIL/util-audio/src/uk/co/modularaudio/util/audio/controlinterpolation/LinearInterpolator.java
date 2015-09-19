@@ -23,7 +23,6 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 import java.util.Arrays;
 
 import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class LinearInterpolator implements ControlValueInterpolator
 {
@@ -41,18 +40,6 @@ public class LinearInterpolator implements ControlValueInterpolator
 
 	public LinearInterpolator()
 	{
-	}
-
-	public void reset( final int sampleRate, final float valueChaseMillis )
-	{
-		final int interpolationLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, valueChaseMillis );
-		interpolationBuffer = new float[interpolationLength];
-		for( int i = 0 ; i < interpolationLength ; ++i )
-		{
-			interpolationBuffer[i] = ((float)i) / (float)(interpolationLength - 1);
-		}
-		curWindowPos = 0;
-		lastWindowPos = interpolationLength;
 	}
 
 	@Override
@@ -152,5 +139,17 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
+	}
+
+	@Override
+	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	{
+		interpolationBuffer = new float[periodLengthFrames];
+		for( int i = 0 ; i < periodLengthFrames ; ++i )
+		{
+			interpolationBuffer[i] = ((float)i) / (float)(periodLengthFrames - 1);
+		}
+		curWindowPos = 0;
+		lastWindowPos = periodLengthFrames;
 	}
 }

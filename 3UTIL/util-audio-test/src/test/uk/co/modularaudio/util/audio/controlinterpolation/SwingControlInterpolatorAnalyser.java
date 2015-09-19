@@ -41,6 +41,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpo
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class SwingControlInterpolatorAnalyser extends JFrame
@@ -58,6 +59,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	private static final float VALUE_CHASE_MILLIS = 1.0f;
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
+
+	private static final int VALUE_CHASE_SAMPLES = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 
 	private final static String SRC_DIR = "control_interpolation_events";
 //	private final static String SRC_FILE = "zero_to_one_events.txt";
@@ -176,16 +179,17 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		final float firstValue = firstEvent.getEventValue();
 
 		// The none interpolator doesn't have a reset.
+
 		noneInterpolator.hardSetValue( firstValue );
-		lInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		lInterpolator.hardSetValue( firstValue );
-		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		hhInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		hhInterpolator.hardSetValue( firstValue );
-		sdInterpolator.reset( SAMPLE_RATE );
+		sdInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		sdInterpolator.hardSetValue( firstValue );
-		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lpInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		lpInterpolator.hardSetValue( firstValue );
-		sddInterpolator.reset( SAMPLE_RATE );
+		sddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		sddInterpolator.hardSetValue( firstValue );
 
 		// Pass it to all the visualisers for each interpolation
@@ -238,22 +242,22 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 			processedSamples[i] = new float[numSamplesInt];
 		}
 
-		noneInterpolator.reset();
+		noneInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		noneInterpolator.hardSetValue( samples[0] );
 
-		lInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		lInterpolator.hardSetValue( samples[0] );
 
-		hhInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		hhInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		hhInterpolator.hardSetValue( samples[0] );
 
-		sdInterpolator.reset( SAMPLE_RATE );
+		sdInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		sdInterpolator.hardSetValue( samples[0] );
 
-		lpInterpolator.reset( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+		lpInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		lpInterpolator.hardSetValue( samples[0] );
 
-		sddInterpolator.reset( SAMPLE_RATE );
+		sddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
 		sddInterpolator.hardSetValue( samples[0] );
 
 		int prevOffset = 0;

@@ -23,8 +23,9 @@ package uk.co.modularaudio.mads.base.controllertocv.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
+import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent.InterpolationChoice;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<ControllerToCvMadInstance>
@@ -36,8 +37,9 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 	public static final int COMMAND_IN_CHANNEL_NUMBER = 2;
 	public static final int COMMAND_IN_CONTROLLER_NUMBER = 3;
 	public static final int COMMAND_IN_BEGIN_LEARN = 4;
+	public static final int COMMAND_IN_INTERPOLATION = 5;
 
-	public static final int COMMAND_OUT_LEARNT_CONTROLLER = 5;
+	public static final int COMMAND_OUT_LEARNT_CONTROLLER = 6;
 
 	public ControllerToCvIOQueueBridge()
 	{
@@ -57,8 +59,7 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 			}
 			case COMMAND_IN_EVENT_MAPPING:
 			{
-				final long value = queueEntry.value;
-				final ControllerEventMapping mapping = ControllerEventMapping.values()[ (int)value ];
+				final ControllerEventMapping mapping = ControllerEventMapping.values()[ (int)queueEntry.value ];
 				instance.setDesiredMapping( mapping );
 				break;
 			}
@@ -77,6 +78,12 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 			case COMMAND_IN_BEGIN_LEARN:
 			{
 				instance.beginLearn();
+				break;
+			}
+			case COMMAND_IN_INTERPOLATION:
+			{
+				final InterpolationChoice interpolation = InterpolationChoice.values()[ (int)queueEntry.value ];
+				instance.setDesiredInterpolation( interpolation );
 				break;
 			}
 			default:

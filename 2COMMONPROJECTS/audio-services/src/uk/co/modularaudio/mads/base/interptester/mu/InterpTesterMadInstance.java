@@ -127,18 +127,18 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
 
-		sorInterpolator.reset( sampleRate, desValueChaseMillis );
-		liInterpolator.reset( sampleRate, desValueChaseMillis );
-		hhInterpolator.reset( sampleRate, desValueChaseMillis );
-		sdInterpolator.reset( sampleRate );
-		lpInterpolator.reset( sampleRate, desValueChaseMillis );
-		sddInterpolator.reset( sampleRate );
+		sorInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		liInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		hhInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sdInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		lpInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sddInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 
-		sorInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
-		liInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
-		hhInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
-		lpInterpolatorNoTs.reset( sampleRate, desValueChaseMillis );
-		sddInterpolatorNoTs.reset( sampleRate );
+		sorInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		liInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		hhInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		lpInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sddInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 
 		// 6 updates a second is fine for the period length
 		framesBetweenUiEvents = timingParameters.getSampleFramesPerFrontEndPeriod() * 10;
@@ -395,18 +395,19 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	{
 		desValueChaseMillis = chaseMillis;
 		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
-		sorInterpolator.reset( sampleRate, chaseMillis );
-		liInterpolator.reset( sampleRate, chaseMillis );
-		hhInterpolator.reset( sampleRate, chaseMillis );
-		sdInterpolator.reset( sampleRate );
-		lpInterpolator.reset( sampleRate, chaseMillis );
-		sddInterpolator.reset( sampleRate );
 
-		sorInterpolatorNoTs.reset( sampleRate, chaseMillis );
-		liInterpolatorNoTs.reset( sampleRate, chaseMillis );
-		hhInterpolatorNoTs.reset( sampleRate, chaseMillis );
-		lpInterpolatorNoTs.reset( sampleRate, chaseMillis );
-		sddInterpolatorNoTs.reset( sampleRate );
+		sorInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		liInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		hhInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sdInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		lpInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sddInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+
+		sorInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		liInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		hhInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		lpInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		sddInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 	}
 
 	public void setUiActive( final boolean active )

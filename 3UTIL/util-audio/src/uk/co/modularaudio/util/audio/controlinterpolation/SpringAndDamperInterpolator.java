@@ -226,7 +226,8 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 		state.v = (state.v + dvdt * dt);
 	}
 
-	public final void reset( final int sampleRate )
+	@Override
+	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
 		deltaTimestep = (DataRate.SR_48000.getValue() * INTEGRATION_TIMESTEP_FOR_48K) / sampleRate;
 	}

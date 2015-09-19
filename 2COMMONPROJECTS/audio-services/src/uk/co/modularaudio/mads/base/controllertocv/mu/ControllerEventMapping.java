@@ -24,13 +24,13 @@ public enum ControllerEventMapping
 {
 	LINEAR( "Linear" ),
 	LOG( "Log" ),
-	LOG_FREQUENCY( "Log Frequency" ),
-	EXP_FREQUENCY( "Exp Frequency" ),
+	LOG_FREQUENCY( "Log Frq" ),
+	EXP_FREQUENCY( "Exp Frq" ),
 	EXP( "Exp" ),
-	CIRC_Q1( "Circle, Quad 1" ),
-	CIRC_Q2( "Circle, Quad 2" ),
-	CIRC_Q3( "Circle, Quad 3" ),
-	CIRC_Q4( "Circle, Quad 4" );
+	CIRC_Q1( "Circle Q1" ),
+	CIRC_Q2( "Circle Q2" ),
+	CIRC_Q3( "Circle Q3" ),
+	CIRC_Q4( "Circle Q4" );
 
 	private String label;
 

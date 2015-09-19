@@ -22,28 +22,45 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-public class NoneInterpolator implements ControlValueInterpolator
-{
+import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
+import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
-	private float curVal;
+public class CDLowPassInterpolator implements ControlValueInterpolator
+{
+//	private static Log log = LogFactory.getLog( LowPassInterpolator.class.getName() );
+
 	private float desVal;
 
-	public NoneInterpolator()
+	private int sampleRate;
+	private final CDButterworthFilter24DB lpFilter = new CDButterworthFilter24DB();
+
+	// A bit too heavy and long delay
+//	private static final float LP_FREQ = 15.0f;
+	// Seems about right
+	private static final float LP_FREQ = 60.0f;
+	// Empirically lets too much hf noise through with
+	// low freq controllers
+//	private static final float LP_FREQ = 100.0f;
+
+	private static final int TMP_LENGTH = 1024;
+	private static final int NUM_RESET_ITERS = 10;
+
+	public CDLowPassInterpolator()
 	{
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		curVal = desVal;
-
-		Arrays.fill( output, outputIndex, outputIndex + length, curVal );
+		final int lastIndex = outputIndex + length;
+		Arrays.fill( output, outputIndex, lastIndex, desVal );
+		lpFilter.filter( output, outputIndex, length, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
 	}
 
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		this.desVal = newValue;
+		desVal = newValue;
 	}
 
 	@Override
@@ -55,8 +72,14 @@ public class NoneInterpolator implements ControlValueInterpolator
 	@Override
 	public void hardSetValue( final float value )
 	{
-		this.curVal = value;
 		this.desVal = value;
+		final float[] tmpArray = new float[TMP_LENGTH];
+		Arrays.fill( tmpArray, desVal );
+
+		for( int i = 0 ; i < NUM_RESET_ITERS ; ++i )
+		{
+			lpFilter.filter( tmpArray, 0, TMP_LENGTH, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
+		}
 	}
 
 	@Override
@@ -67,6 +90,6 @@ public class NoneInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
-		// Don't care
+		this.sampleRate = sampleRate;
 	}
 }

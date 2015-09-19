@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
+import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
 public class LowPassInterpolator implements ControlValueInterpolator
@@ -32,9 +32,7 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	private float desVal;
 
 	private int sampleRate;
-//	private final ButterworthFilter lpFilter = new ButterworthFilter();
-	private final CDButterworthFilter24DB lpFilter = new CDButterworthFilter24DB();
-//	private final CDButterworthFilter lpFilter = new CDButterworthFilter();
+	private final ButterworthFilter24DB lpFilter = new ButterworthFilter24DB();
 
 	// A bit too heavy and long delay
 //	private static final float LP_FREQ = 15.0f;
@@ -49,11 +47,6 @@ public class LowPassInterpolator implements ControlValueInterpolator
 
 	public LowPassInterpolator()
 	{
-	}
-
-	public void reset( final int sampleRate, final float valueChaseMillis )
-	{
-		this.sampleRate = sampleRate;
 	}
 
 	@Override
@@ -92,5 +85,11 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
+	}
+
+	@Override
+	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	{
+		this.sampleRate = sampleRate;
 	}
 }

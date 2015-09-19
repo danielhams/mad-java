@@ -24,7 +24,6 @@ import java.util.Arrays;
 
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class HalfHannWindowInterpolator implements ControlValueInterpolator
 {
@@ -43,18 +42,6 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 
 	public HalfHannWindowInterpolator()
 	{
-	}
-
-	public void reset( final int sampleRate, final float valueChaseMillis )
-	{
-		final int halfWindowLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, valueChaseMillis );
-//		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
-		fullHannWindow = new HannFftWindow( halfWindowLength * 2 );
-		final float[] hwAmps = fullHannWindow.getAmps();
-		hannBuffer = new float[halfWindowLength];
-		System.arraycopy( hwAmps, 1, hannBuffer, 0, halfWindowLength );
-		curWindowPos = 0;
-		lastWindowPos = halfWindowLength;
 	}
 
 	@Override
@@ -154,5 +141,18 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
+	}
+
+	@Override
+	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	{
+		final int halfWindowLength = periodLengthFrames;
+//		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
+		fullHannWindow = new HannFftWindow( halfWindowLength * 2 );
+		final float[] hwAmps = fullHannWindow.getAmps();
+		hannBuffer = new float[halfWindowLength];
+		System.arraycopy( hwAmps, 1, hannBuffer, 0, halfWindowLength );
+		curWindowPos = 0;
+		lastWindowPos = halfWindowLength;
 	}
 }

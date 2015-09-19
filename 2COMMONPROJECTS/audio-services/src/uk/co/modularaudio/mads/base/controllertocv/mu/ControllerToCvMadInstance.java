@@ -20,12 +20,25 @@
 
 package uk.co.modularaudio.mads.base.controllertocv.mu;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent.InterpolationChoice;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -44,12 +57,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 {
 	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
 
+	private int numFramesPerPeriod;
 	private int notePeriodLength;
 
-	private int sampleRate;
-	private static final int VALUE_CHASE_MILLIS = 1;
-	private float curValueRatio = 0.0f;
-	private float newValueRatio = 1.0f;
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private ControllerEventProcessor eventProcessor;
 
@@ -59,6 +70,22 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	private boolean isLearning;
 
+	private final Map<InterpolationChoice, ControlValueInterpolator> freeInterpolators =
+			new HashMap<InterpolationChoice, ControlValueInterpolator>();
+
+	private final static float FIXED_INTERP_MILLIS = 5.3f;
+
+	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
+			sampleRate, FIXED_INTERP_MILLIS );
+
+	private final Map<InterpolationChoice, ControlValueInterpolator> fixedInterpolators =
+			new HashMap<InterpolationChoice, ControlValueInterpolator>();
+
+	private final Map<InterpolationChoice, ControlValueInterpolator> interpolators =
+			new HashMap<InterpolationChoice, ControlValueInterpolator>();
+
+	private ControlValueInterpolator currentInterpolator;
+
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
 			final ControllerToCvMadDefinition definition,
@@ -66,6 +93,31 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		freeInterpolators.put( InterpolationChoice.NONE, new NoneInterpolator() );
+		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS, new SumOfRatiosInterpolator() );
+		freeInterpolators.put( InterpolationChoice.LINEAR, new LinearInterpolator() );
+		freeInterpolators.put( InterpolationChoice.HALF_HANN, new HalfHannWindowInterpolator() );
+		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPassInterpolator() );
+		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
+		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
+
+		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
+		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator() );
+		fixedInterpolators.put( InterpolationChoice.HALF_HANN_FIXED, new HalfHannWindowInterpolator() );
+
+		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : fixedInterpolators.entrySet() )
+		{
+			interpolators.put( e.getKey(), e.getValue() );
+		}
+
+		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : freeInterpolators.entrySet() )
+		{
+			interpolators.put( e.getKey(), e.getValue() );
+		}
+
+		currentInterpolator = interpolators.get( ControllerToCvInterpolationChoiceUiJComponent.DEFAULT_INTERPOLATION );
 	}
 
 	@Override
@@ -74,14 +126,30 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	{
 		try
 		{
+			numFramesPerPeriod = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 			notePeriodLength = hardwareChannelSettings.getNoteChannelSetting().getChannelBufferLength();
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
+			fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+					FIXED_INTERP_MILLIS );
 
 			eventProcessor = new ControllerEventProcessor( notePeriodLength );
-			eventProcessor.setNewRatios( curValueRatio, newValueRatio );
+			eventProcessor.setNewRatios();
+
+			final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+
+			if( log.isTraceEnabled() )
+			{
+				log.trace("Setting interpolator period length to " + periodLengthFrames );
+			}
+			for( final ControlValueInterpolator cvi : freeInterpolators.values() )
+			{
+				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames );
+			}
+			for( final ControlValueInterpolator cvi : fixedInterpolators.values() )
+			{
+				cvi.resetSampleRateAndPeriod( sampleRate, fixedInterpolatorsPeriodLength );
+			}
 		}
 		catch (final Exception e)
 		{
@@ -106,7 +174,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		final boolean outCvConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.PRODUCER_CV_OUT );
 		final MadChannelBuffer outCvCb = channelBuffers[ ControllerToCvMadDefinition.PRODUCER_CV_OUT ];
 
-//		eventProcessor.setNewRatios( curValueRatio, newValueRatio );
 		eventProcessor.setDesiredMapping( desiredMapping );
 
 		if( noteConnected )
@@ -145,10 +212,22 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 					isLearning = false;
 				}
 
+				// Hack until I get unified event/note processing working
+				if( frameOffset != 0 || numFrames != numFramesPerPeriod )
+				{
+					return RealtimeMethodReturnCodeEnum.SUCCESS;
+				}
+
 				eventProcessor.emptyPeriod( numFrames );
 			}
 			else
 			{
+				// Hack until I get unified event/note processing working
+				if( frameOffset != 0 || numFrames != numFramesPerPeriod )
+				{
+					return RealtimeMethodReturnCodeEnum.SUCCESS;
+				}
+
 				// Process the messages
 				for( int n = 0 ; n < numNotes ; n++ )
 				{
@@ -185,7 +264,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			{
 				final float[] outCvFloats = outCvCb.floatBuffer;
 				// Spit out values.
-				eventProcessor.outputCv( numFrames, outCvFloats );
+				eventProcessor.outputCv( numFrames, outCvFloats, currentInterpolator );
 				eventProcessor.done();
 			}
 			else
@@ -206,9 +285,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 				eventProcessor.emptyPeriod( numFrames );
 
 				// Output nothing.
-				eventProcessor.outputCv( numFrames, outCvFloats );
+				eventProcessor.outputCv( numFrames, outCvFloats, currentInterpolator );
 			}
 		}
+		currentInterpolator.checkForDenormal();
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
@@ -246,5 +327,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 				value,
 				null );
 
+	}
+
+	public void setDesiredInterpolation( final InterpolationChoice interpolation )
+	{
+		log.trace( "Would set interpolation to " + interpolation.toString() );
+		currentInterpolator = interpolators.get( interpolation );
 	}
 }

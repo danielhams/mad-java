@@ -36,13 +36,6 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 	{
 	}
 
-	public void reset( final long sampleRate, final float valueChaseMillis )
-	{
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, valueChaseMillis );
-		curValueRatio = 1.0f - newValueRatio;
-	}
-
-
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
@@ -84,5 +77,14 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
+	}
+
+	@Override
+	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	{
+		final long valueChaseNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, periodLengthFrames );
+		final float valueChaseMillis = (valueChaseNanos / 1000000.0f);
+		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, valueChaseMillis );
+		curValueRatio = 1.0f - newValueRatio;
 	}
 }

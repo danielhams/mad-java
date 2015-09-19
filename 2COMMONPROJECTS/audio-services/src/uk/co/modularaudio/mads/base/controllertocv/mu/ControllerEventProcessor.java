@@ -23,6 +23,7 @@ package uk.co.modularaudio.mads.base.controllertocv.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
@@ -32,13 +33,6 @@ public class ControllerEventProcessor
 
 	private final ControllerEvent[] events;
 	private int numEvents;
-
-	private float previousCvValue = 0.0f;
-
-	private float curValueRatio = 1.0f;
-	private float newValueRatio = 0.0f;
-
-	private float curDesiredValue = 0.0f;
 
 	private ControllerEventMapping mapping = ControllerEventMapping.LINEAR;
 
@@ -52,12 +46,8 @@ public class ControllerEventProcessor
 		numEvents = 0;
 	}
 
-	public void setNewRatios( final float newCurValueRatio, final float newNewValueRatio )
+	public void setNewRatios()
 	{
-//		this.curValueRatio = newCurValueRatio;
-//		this.newValueRatio = newNewValueRatio;
-		this.curValueRatio = 0.0f;
-		this.newValueRatio = 1.0f;
 	}
 
 	public void processEvent( final MadChannelNoteEvent ne )
@@ -125,7 +115,9 @@ public class ControllerEventProcessor
 	{
 	}
 
-	public void outputCv( final int numFrames, final float[] outCvFloats )
+	public void outputCv( final int numFrames,
+			final float[] outCvFloats,
+			final ControlValueInterpolator interpolator )
 	{
 		boolean loopDone = false;
 		int previousSampleIndex = 0;
@@ -137,28 +129,14 @@ public class ControllerEventProcessor
 			{
 				loopDone = true;
 			}
-			curDesiredValue = event.desiredValue;
+			interpolator.notifyOfNewValue( event.desiredValue );
 
-			for( int s = previousSampleIndex ; s < sampleIndex ; s++ )
-			{
-				previousCvValue = (previousCvValue * curValueRatio) + (curDesiredValue * newValueRatio);
-				outCvFloats[ s ] = previousCvValue;
-			}
+			interpolator.generateControlValues( outCvFloats, previousSampleIndex, sampleIndex - previousSampleIndex );
+
 			previousSampleIndex = sampleIndex;
 		}
 
-		for( int s = previousSampleIndex ; s < numFrames ; s++ )
-		{
-			if( previousCvValue != curDesiredValue && (previousCvValue - curDesiredValue) < Float.MIN_VALUE * 2000 )
-			{
-				previousCvValue = curDesiredValue;
-			}
-			else
-			{
-				previousCvValue = (previousCvValue * curValueRatio) + (curDesiredValue * newValueRatio);
-			}
-			outCvFloats[ s ] = previousCvValue;
-		}
+		interpolator.generateControlValues( outCvFloats, previousSampleIndex, numFrames - previousSampleIndex );
 	}
 
 	public void done()

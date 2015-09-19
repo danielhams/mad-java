@@ -48,31 +48,37 @@ public class ControllerToCvMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
-		"Channel Selection",
-		"Controller Selection",
-		"Mapping Curve",
-		"Learn"
+		"ChannelSelection",
+		"ControllerSelection",
+		"Learn",
+		"MappingCurve",
+		"InterpolationChoice"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
 		ControlType.COMBO,
 		ControlType.COMBO,
+		ControlType.BUTTON,
 		ControlType.COMBO,
-		ControlType.BUTTON
+		ControlType.COMBO
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		ControllerToCvChannelChoiceUiJComponent.class,
 		ControllerToCvControlChoiceUiJComponent.class,
+		ControllerToCvLearnButtonUiJComponent.class,
 		ControllerToCvMappingChoiceUiJComponent.class,
-		ControllerToCvLearnButtonUiJComponent.class
+		ControllerToCvInterpolationChoiceUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(  30,  30, 120,  30 ),
-		new Rectangle( 160,  30, 120,  30 ),
-		new Rectangle( 290,  30, 130,  30 ),
-		new Rectangle( 430,  30,  90,  30 )
+		new Rectangle(  10,  30, 100,  30 ),		// Channel
+		new Rectangle( 120,  30, 100,  30 ),		// Controller
+//		new Rectangle( 430,  30,  90,  30 ),		// Learn
+//		new Rectangle( 290,  30, 130,  30 )			// Mapping
+		new Rectangle( 230,  30,  90,  30 ),		// Learn
+		new Rectangle( 340,  30, 100,  30 ),		// Mapping
+		new Rectangle( 450,  30, 100,  30 )			// Interpolation
 	};
 
 	private static final Class<ControllerToCvMadUiInstance> INSTANCE_CLASS = ControllerToCvMadUiInstance.class;
