@@ -73,7 +73,8 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	private final Map<InterpolationChoice, ControlValueInterpolator> freeInterpolators =
 			new HashMap<InterpolationChoice, ControlValueInterpolator>();
 
-	private final static float FIXED_INTERP_MILLIS = 5.3f;
+//	private final static float FIXED_INTERP_MILLIS = 5.3f;
+	private final static float FIXED_INTERP_MILLIS = 9.8f;
 
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
@@ -134,7 +135,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 					FIXED_INTERP_MILLIS );
 
 			eventProcessor = new ControllerEventProcessor( notePeriodLength );
-			eventProcessor.setNewRatios();
 
 			final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 

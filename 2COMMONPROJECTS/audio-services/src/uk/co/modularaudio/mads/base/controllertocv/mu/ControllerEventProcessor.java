@@ -46,10 +46,6 @@ public class ControllerEventProcessor
 		numEvents = 0;
 	}
 
-	public void setNewRatios()
-	{
-	}
-
 	public void processEvent( final MadChannelNoteEvent ne )
 	{
 		final int sampleIndex = ne.getEventSampleIndex();
