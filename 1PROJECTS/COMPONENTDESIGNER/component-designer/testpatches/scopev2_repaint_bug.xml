@@ -2,14 +2,12 @@
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="19">
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
-    <rackComponent name="Audio CV Converter 1" definitionId="audio_cv_converter">
+    <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
         <rackPosition column="0" row="3"/>
-        <rackComponentParameterValue parameterName="inchanneltype" value="AUDIO"/>
-        <rackComponentParameterValue parameterName="numchannels" value="4"/>
     </rackComponent>
     <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
         <rackPosition column="0" row="0"/>
-        <rackControl name="Frequency" value="50.7603"/>
+        <rackControl name="Frequency" value="1963.0441"/>
         <rackControl name="Pulsewidth" value="1.0"/>
         <rackControl name="Shape" value="Sine"/>
     </rackComponent>
@@ -18,22 +16,32 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Master Lane" value="10.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="-11.0:0.0:M "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
-    <rackComponent name="Scope 1" definitionId="scope">
-        <rackPosition column="0" row="4"/>
-        <rackControl name="CaptureLength" value="60.0"/>
+    <rackComponent name="Scope (Large) 1" definitionId="scope_large">
+        <rackPosition column="0" row="8"/>
+        <rackControl name="CaptureLength" value="300.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="TriggerChoice" value="None"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
         <rackControl name="WaveDisplay" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
     </rackComponent>
-    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
-    <rackLink producerRackComponentName="Audio CV Converter 1" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="0" row="4"/>
+        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="DC Trap 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio CV Converter 1" consumerChannelName="Input Channel 1"/>
+    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
 </rack>

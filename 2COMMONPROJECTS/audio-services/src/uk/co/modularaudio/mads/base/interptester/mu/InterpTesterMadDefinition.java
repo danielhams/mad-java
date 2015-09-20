@@ -46,8 +46,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int PRODUCER_CV_LINEAR = 8;
 	public final static int PRODUCER_CV_HALFHANN = 9;
 	public final static int PRODUCER_CV_SPRINGDAMPER = 10;
-	public final static int PRODUCER_CV_LOWPASS = 11;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE = 12;
+	public final static int PRODUCER_CV_CD_LOWPASS = 11;
+	public final static int PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE = 12;
 
 	public final static int NUM_CHANNELS = 13;
 

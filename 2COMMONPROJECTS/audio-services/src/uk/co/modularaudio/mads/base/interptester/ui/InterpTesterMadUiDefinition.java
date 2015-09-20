@@ -51,8 +51,8 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER,
-		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS,
-		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE,
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {

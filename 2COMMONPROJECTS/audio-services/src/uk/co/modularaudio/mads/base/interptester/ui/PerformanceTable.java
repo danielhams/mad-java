@@ -38,8 +38,8 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	private final LWTCLabel lPerf;
 	private final LWTCLabel hhPerf;
 	private final LWTCLabel sdPerf;
-	private final LWTCLabel lpPerf;
-	private final LWTCLabel sddPerf;
+	private final LWTCLabel cdLpPerf;
+	private final LWTCLabel cdSddPerf;
 
 	private class DarkLabel extends LWTCLabel
 	{
@@ -93,13 +93,13 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 		sdPerf = new DarkLabel();
 		add( sdPerf, "wrap");
 
-		add( new DarkLabel("Low Pass:"), "");
-		lpPerf = new DarkLabel();
-		add( lpPerf, "wrap");
+		add( new DarkLabel("CD Low Pass:"), "");
+		cdLpPerf = new DarkLabel();
+		add( cdLpPerf, "wrap");
 
-		add( new DarkLabel("Spring Damper (D):"), "");
-		sddPerf = new DarkLabel();
-		add( sddPerf, "wrap");
+		add( new DarkLabel("CD Spring Damper (D):"), "");
+		cdSddPerf = new DarkLabel();
+		add( cdSddPerf, "wrap");
 	}
 
 	@Override
@@ -133,14 +133,14 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	}
 
 	@Override
-	public void setLPNanos( final long value )
+	public void setCdLpNanos( final long value )
 	{
-		lpPerf.setText( Long.toString( value ) );
+		cdLpPerf.setText( Long.toString( value ) );
 	}
 
 	@Override
-	public void setSDDNanos( final long value )
+	public void setCdSddNanos( final long value )
 	{
-		sddPerf.setText( Long.toString( value ) );
+		cdSddPerf.setText( Long.toString( value ) );
 	}
 }

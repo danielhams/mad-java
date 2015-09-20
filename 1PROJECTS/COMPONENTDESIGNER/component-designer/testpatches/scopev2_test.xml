@@ -21,14 +21,14 @@
         <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="-1.0"/>
-        <rackControl name="ValueChase" value="21.4"/>
+        <rackControl name="Value" value="-0.96875"/>
+        <rackControl name="ValueChase" value="15.077799"/>
     </rackComponent>
     <rackComponent name="Frequency Filter 1" definitionId="frequency_filter">
         <rackPosition column="0" row="13"/>
         <rackControl name="Bandwidth" value="440.0"/>
         <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Knee" value="100.0"/>
+        <rackControl name="Knee" value="40.0"/>
         <rackControl name="Toggle 24 dB" value="true"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
@@ -40,15 +40,15 @@
     </rackComponent>
     <rackComponent name="Scope (Large) 1" definitionId="scope_large">
         <rackPosition column="0" row="17"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="true|false|false&#x9;Raw|false&#x9;Linear|true&#x9;LinearLP|true&#x9;TS LP"/>
+        <rackControl name="WaveDisplay" value="true|true|true&#x9;Raw|false&#x9;Linear|false&#x9;LinearLP|false&#x9;TS LP"/>
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="2" row="8"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
@@ -56,7 +56,7 @@
     </rackComponent>
     <rackComponent name="Scope 2" definitionId="scope">
         <rackPosition column="0" row="8"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
@@ -64,7 +64,7 @@
     </rackComponent>
     <rackComponent name="Scope 3" definitionId="scope">
         <rackPosition column="2" row="4"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="600.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
@@ -72,7 +72,7 @@
     </rackComponent>
     <rackComponent name="Scope 4" definitionId="scope">
         <rackPosition column="2" row="13"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
@@ -81,10 +81,10 @@
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="2" row="24"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-120dB"/>
+        <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1207.6"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
@@ -95,10 +95,10 @@
     <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
         <rackPosition column="0" row="24"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-120dB"/>
+        <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1207.6"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
@@ -147,6 +147,8 @@
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Inteprolation NoTS CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Inteprolation NoTS CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Inteprolation NoTS CV Out" consumerRackComponentName="Scope 4" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 4"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Low Pass NoTS CV Out" consumerRackComponentName="Scope 3" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
@@ -162,8 +164,6 @@
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope 4" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope 4" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 4"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Scope 4" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Spring Damper Double CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 8"/>
