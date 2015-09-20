@@ -22,7 +22,7 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
+import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
 public class CDLowPassInterpolator implements ControlValueInterpolator
@@ -32,15 +32,7 @@ public class CDLowPassInterpolator implements ControlValueInterpolator
 	private float desVal;
 
 	private int sampleRate;
-	private final CDButterworthFilter24DB lpFilter = new CDButterworthFilter24DB();
-
-	// A bit too heavy and long delay
-//	private static final float LP_FREQ = 15.0f;
-	// Seems about right
-	private static final float LP_FREQ = 60.0f;
-	// Empirically lets too much hf noise through with
-	// low freq controllers
-//	private static final float LP_FREQ = 100.0f;
+	private final CDButterworthFilter lpFilter = new CDButterworthFilter();
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;
@@ -54,7 +46,14 @@ public class CDLowPassInterpolator implements ControlValueInterpolator
 	{
 		final int lastIndex = outputIndex + length;
 		Arrays.fill( output, outputIndex, lastIndex, desVal );
-		lpFilter.filter( output, outputIndex, length, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
+		lpFilter.filter(
+				output,
+				outputIndex,
+				length,
+				LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
+				0.5f,
+				FrequencyFilterMode.LP,
+				sampleRate );
 	}
 
 	@Override
@@ -78,7 +77,13 @@ public class CDLowPassInterpolator implements ControlValueInterpolator
 
 		for( int i = 0 ; i < NUM_RESET_ITERS ; ++i )
 		{
-			lpFilter.filter( tmpArray, 0, TMP_LENGTH, LP_FREQ, 0.5f, FrequencyFilterMode.LP, sampleRate );
+			lpFilter.filter( tmpArray,
+					0,
+					TMP_LENGTH,
+					LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
+					0.5f,
+					FrequencyFilterMode.LP,
+					sampleRate );
 		}
 	}
 

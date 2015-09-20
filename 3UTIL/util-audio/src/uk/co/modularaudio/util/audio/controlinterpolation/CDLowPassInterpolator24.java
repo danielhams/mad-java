@@ -22,22 +22,22 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
+import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
-public class LowPassInterpolator implements ControlValueInterpolator
+public class CDLowPassInterpolator24 implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LowPassInterpolator.class.getName() );
 
 	private float desVal;
 
 	private int sampleRate;
-	private final ButterworthFilter lpFilter = new ButterworthFilter();
+	private final CDButterworthFilter24DB lpFilter = new CDButterworthFilter24DB();
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;
 
-	public LowPassInterpolator()
+	public CDLowPassInterpolator24()
 	{
 	}
 
@@ -46,7 +46,8 @@ public class LowPassInterpolator implements ControlValueInterpolator
 	{
 		final int lastIndex = outputIndex + length;
 		Arrays.fill( output, outputIndex, lastIndex, desVal );
-		lpFilter.filter( output,
+		lpFilter.filter(
+				output,
 				outputIndex,
 				length,
 				LowPassInterpolatorConstants.LOW_PASS_CUTOFF,

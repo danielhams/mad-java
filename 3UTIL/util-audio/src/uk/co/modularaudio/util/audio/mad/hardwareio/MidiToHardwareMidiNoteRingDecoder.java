@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 import uk.co.modularaudio.util.audio.midi.MidiUtils;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MidiToHardwareMidiNoteRingDecoder
@@ -48,10 +47,10 @@ public class MidiToHardwareMidiNoteRingDecoder
 			final int data2,
 			final long timestampNanoseconds )
 	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug( "SO EV (" + AudioTimingUtils.formatTimestampForLogging( timestampNanoseconds ) + ")");
-		}
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug( "SO EV (" + AudioTimingUtils.formatTimestampForLogging( timestampNanoseconds ) + ")");
+//		}
 
 		switch( command )
 		{
@@ -129,10 +128,10 @@ public class MidiToHardwareMidiNoteRingDecoder
 			}
 			case 0xb0:
 			{
-				if( log.isDebugEnabled() )
-				{
-					log.debug( "Control change on channel " + channel + " " + data1 + " value " + data2  + " with timestamp " + timestampNanoseconds );
-				}
+//				if( log.isDebugEnabled() )
+//				{
+//					log.debug( "Control change on channel " + channel + " " + data1 + " value " + data2  + " with timestamp " + timestampNanoseconds );
+//				}
 				internalEvent.set( channel, timestampNanoseconds, MadChannelNoteEventType.CONTROLLER, data1, data2, -1 );
 				noteEventRing.writeOne( internalEvent );
 				break;

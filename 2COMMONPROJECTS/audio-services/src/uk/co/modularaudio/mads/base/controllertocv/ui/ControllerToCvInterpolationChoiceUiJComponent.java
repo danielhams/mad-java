@@ -56,6 +56,7 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 		SPRING_DAMPER( "SD" ),
 		LOW_PASS( "LP" ),
 		CD_LOW_PASS( "CDLP" ),
+		CD_LOW_PASS_24( "CDLP24" ),
 		CD_SPRING_DAMPER( "CDSD" );
 
 		private String label;

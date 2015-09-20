@@ -28,10 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpolator
+public class CDSpringAndDamperDoubleInterpolator24 implements ControlValueInterpolator
 {
 	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog( CDSpringAndDamperDoubleInterpolator.class.getName() );
+	private static Log log = LogFactory.getLog( CDSpringAndDamperDoubleInterpolator24.class.getName() );
 
 	// Critically damped tests
 //	private static final double FORCE_SCALE = 0.09;
@@ -74,7 +74,7 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 
 	private double desPos = 0.0f;
 
-	public CDSpringAndDamperDoubleInterpolator( final float lowerBound, final float upperBound )
+	public CDSpringAndDamperDoubleInterpolator24( final float lowerBound, final float upperBound )
 	{
 		curState.x = 0.0;
 		curState.v = 0.0;

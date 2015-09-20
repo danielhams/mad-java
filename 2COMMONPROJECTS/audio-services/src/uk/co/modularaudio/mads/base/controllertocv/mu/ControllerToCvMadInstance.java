@@ -30,6 +30,7 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent.InterpolationChoice;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
@@ -73,8 +74,8 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	private final Map<InterpolationChoice, ControlValueInterpolator> freeInterpolators =
 			new HashMap<InterpolationChoice, ControlValueInterpolator>();
 
-//	private final static float FIXED_INTERP_MILLIS = 5.3f;
-	private final static float FIXED_INTERP_MILLIS = 9.8f;
+	private final static float FIXED_INTERP_MILLIS = 5.3f;
+//	private final static float FIXED_INTERP_MILLIS = 9.8f;
 
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
@@ -86,6 +87,9 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			new HashMap<InterpolationChoice, ControlValueInterpolator>();
 
 	private ControlValueInterpolator currentInterpolator;
+
+	private final long nextNoteEventFrameCount = -1;
+	private final long numNoteEventsCounter = 0;
 
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -102,6 +106,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
 		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPassInterpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
+		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPassInterpolator24() );
 		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
 
 		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
@@ -141,6 +146,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			if( log.isTraceEnabled() )
 			{
 				log.trace("Setting interpolator period length to " + periodLengthFrames );
+				log.trace("Setting fixed interpolator period length to " + fixedInterpolatorsPeriodLength );
 			}
 			for( final ControlValueInterpolator cvi : freeInterpolators.values() )
 			{
@@ -180,6 +186,19 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		{
 			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
 			final int numNotes = noteCb.numElementsInBuffer;
+
+//			if( log.isTraceEnabled() )
+//			{
+//				if( nextNoteEventFrameCount == -1 ||
+//						nextNoteEventFrameCount < periodStartFrameTime )
+//				{
+//					log.trace("Received roughly " +
+//							numNoteEventsCounter + " events in last second of counting" );
+//					numNoteEventsCounter = 0;
+//					nextNoteEventFrameCount = periodStartFrameTime + sampleRate;
+//				}
+//				numNoteEventsCounter += numNotes;
+//			}
 
 			if( isLearning )
 			{
