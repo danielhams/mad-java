@@ -32,11 +32,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
@@ -79,8 +83,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	public static final int VIS_WIDTH = 100;
 //	public static final int VIS_WIDTH = 200;
 //	public static final int VIS_WIDTH = 1600;
-	public static final int VIS_WIDTH = 1400;
-	public static final int VIS_HEIGHT = 100;
+//	public static final int VIS_WIDTH = 1400;
+	public static final int VIS_WIDTH = 500;
+	public static final int VIS_HEIGHT = 200;
 //	public static final int VIS_WIDTH = 1024;
 //	public static final int VIS_HEIGHT = 75;
 //	public static final int VIS_SAMPLES_PER_PIXEL=10;
@@ -89,85 +94,110 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	public static final int VIS_SAMPLES_PER_PIXEL=1;
 	private static final float DIFF_FOR_7BIT_CONTROLLER = 1.0f / 128.0f;
 
-	private final NoneInterpolator noneInterpolator;
-	private final LinearInterpolator lInterpolator;
-	private final HalfHannWindowInterpolator hhInterpolator;
-	private final SpringAndDamperInterpolator sdInterpolator;
-	private final LowPassInterpolator lpInterpolator;
-	private final CDLowPassInterpolator24 lpInterpolator24;
-	private final SpringAndDamperDoubleInterpolator sddInterpolator;
-	private final CDSpringAndDamperDoubleInterpolator cdsddInterpolator;
+	private enum INTERPOLATOR
+	{
+		NONE,
+		LINEAR,
+		HALFHANN,
+		SPRINGANDDAMPER,
+		LOWPASS,
+		LOWPASS24,
+		CDLOWPASS,
+		CDLOWPASS24,
+		SPRINGANDDAMPERDOUBLE,
+		CDSPRINGANDDAMPERDOUBLE,
+		CDSPRINGANDDAMPERDOUBLE24,
+	};
+	private final static int NUM_INTERPOLATORS = INTERPOLATOR.values().length;
 
-	private final InterpolatorVisualiser noneVisualiser;
-	private final InterpolatorVisualiser lVisualiser;
-	private final InterpolatorVisualiser hhVisualiser;
-	private final InterpolatorVisualiser sdVisualiser;
-	private final InterpolatorVisualiser lpVisualiser;
-	private final InterpolatorVisualiser lpVisualiser24;
-	private final InterpolatorVisualiser sddVisualiser;
-	private final InterpolatorVisualiser cdsddVisualiser;
+	private final static ControlValueInterpolator[] interpolators;
 
-	private final InterpolatorVisualiser[] visualisers;
+	static
+	{
+		interpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
+		interpolators[INTERPOLATOR.NONE.ordinal()] = new NoneInterpolator();
+		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator();
+		interpolators[INTERPOLATOR.HALFHANN.ordinal()] = new HalfHannWindowInterpolator();
+		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPassInterpolator();
+		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPassInterpolator24();
+		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPassInterpolator();
+		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPassInterpolator24();
+		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f );
+	}
+
+	private final InterpolatorVisualiser[] visualisers = new InterpolatorVisualiser[NUM_INTERPOLATORS];
 
 	public SwingControlInterpolatorAnalyser()
 	{
 //		setSize( 1024, 768 );
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
-		noneInterpolator = new NoneInterpolator();
-		lInterpolator = new LinearInterpolator();
-		hhInterpolator = new HalfHannWindowInterpolator();
-		sdInterpolator = new SpringAndDamperInterpolator( 0.0f, 1.0f );
-		lpInterpolator = new LowPassInterpolator();
-		lpInterpolator24 = new CDLowPassInterpolator24();
-		sddInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
-		cdsddInterpolator = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+		final ControlValueInterpolator noneInterpolator = interpolators[INTERPOLATOR.NONE.ordinal()];
+		final InterpolatorVisualiser noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
+		visualisers[INTERPOLATOR.NONE.ordinal()] = noneVisualiser;
 
-		noneVisualiser = new InterpolatorVisualiser( noneInterpolator, null );
-		lVisualiser = new InterpolatorVisualiser( lInterpolator, noneVisualiser );
-		hhVisualiser = new InterpolatorVisualiser( hhInterpolator, noneVisualiser );
-		sdVisualiser = new InterpolatorVisualiser( sdInterpolator, noneVisualiser );
-		lpVisualiser = new InterpolatorVisualiser( lpInterpolator, noneVisualiser );
-		lpVisualiser24 = new InterpolatorVisualiser( lpInterpolator24, noneVisualiser );
-		sddVisualiser = new InterpolatorVisualiser( sddInterpolator, noneVisualiser );
-		cdsddVisualiser = new InterpolatorVisualiser( cdsddInterpolator, noneVisualiser );
-		visualisers = new InterpolatorVisualiser[8];
-		visualisers[0] = noneVisualiser;
-		visualisers[1] = lVisualiser;
-		visualisers[2] = hhVisualiser;
-		visualisers[3] = sdVisualiser;
-		visualisers[4] = lpVisualiser;
-		visualisers[5] = lpVisualiser24;
-		visualisers[6] = sddVisualiser;
-		visualisers[7] = cdsddVisualiser;
+		for( int i = INTERPOLATOR.NONE.ordinal() + 1 ; i < NUM_INTERPOLATORS ; ++i )
+		{
+			final ControlValueInterpolator interpolator = interpolators[i];
+			visualisers[i] = new InterpolatorVisualiser( interpolator,
+					interpolator == noneInterpolator ? null : noneVisualiser );
+		}
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 		msh.addLayoutConstraint( "fill" );
 		setLayout( msh.createMigLayout() );
 
-		add( new JLabel("Control"), "wrap");
-		add( noneVisualiser, "grow, wrap");
+		// In rows:
+		//	Linear		Low Pass			CD Low Pass			CDSpringAndDamperDouble
+		//	Half Hann	Low Pass 24			CD Low Pass 24		CDSpringAndDamperDouble24
 
-		add( new JLabel("Linear"), "wrap");
-		add( lVisualiser, "grow,wrap");
+		add( new JLabel("Linear"), "cell 0 0");
+		add( visualisers[INTERPOLATOR.LINEAR.ordinal()], "cell 0 1");
 
-		add( new JLabel("HalfHann"), "wrap");
-		add( hhVisualiser, "grow,wrap");
+		add( new JLabel("Half Hann"), "cell 0 2");
+		add( visualisers[INTERPOLATOR.HALFHANN.ordinal()], "cell 0 3");
 
-		add( new JLabel("SpringAndDamper"), "wrap");
-		add( sdVisualiser, "grow,wrap");
+		add( new JLabel("Low Pass"), "cell 1 0");
+		add( visualisers[INTERPOLATOR.LOWPASS.ordinal()], "cell 1 1");
 
-		add( new JLabel("LowPass"), "wrap");
-		add( lpVisualiser, "grow,wrap");
+		add( new JLabel("Low Pass 24"), "cell 1 2");
+		add( visualisers[INTERPOLATOR.LOWPASS24.ordinal()], "cell 1 3");
 
-		add( new JLabel("CDLowPass24"), "wrap");
-		add( lpVisualiser24, "grow,wrap");
+		add( new JLabel("CD Low Pass"), "cell 2 0");
+		add( visualisers[INTERPOLATOR.CDLOWPASS.ordinal()], "cell 2 1");
 
-		add( new JLabel("SpringAndDamperDouble"), "wrap");
-		add( sddVisualiser, "grow,wrap");
+		add( new JLabel("CD Low Pass 24"), "cell 2 2");
+		add( visualisers[INTERPOLATOR.CDLOWPASS24.ordinal()], "cell 2 3");
 
-		add( new JLabel("CDSpringAndDamperDouble"), "wrap");
-		add( cdsddVisualiser, "grow");
+		add( new JLabel("CDSpringAndDamperDouble"), "cell 3 0");
+		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()], "cell 3 1");
+
+		add( new JLabel("CDSpringAndDamperDouble24"), "cell 3 2");
+		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()], "cell 3 3");
+
+//		add( new JLabel("Control"), "");
+//		add( new JLabel("Linear"), "wrap");
+//
+//		add( noneVisualiser, "grow");
+//		add( visualisers[INTERPOLATOR.LINEAR.ordinal()], "grow,wrap");
+//
+//		add( new JLabel("HalfHann"), "");
+//		add( new JLabel("SpringAndDamper"), "wrap");
+//		add( visualisers[INTERPOLATOR.HALFHANN.ordinal()], "grow");
+//		add( visualisers[INTERPOLATOR.SPRINGANDDAMPER.ordinal()], "grow,wrap");
+//
+//		add( new JLabel("LowPass"), "");
+//		add( new JLabel("CDLowPass24"), "wrap");
+//		add( visualisers[INTERPOLATOR.LOWPASS.ordinal()], "grow");
+//		add( visualisers[INTERPOLATOR.CDLOWPASS24.ordinal()], "grow,wrap");
+//
+//		add( new JLabel("SpringAndDamperDouble"), "");
+//		add( new JLabel("CDSpringAndDamperDouble"), "wrap");
+//		add( visualisers[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()], "grow");
+//		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()], "grow");
 
 		this.pack();
 	}
@@ -197,23 +227,11 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		final TestEvent firstEvent = events[0];
 		final float firstValue = firstEvent.getEventValue();
 
-		// The none interpolator doesn't have a reset.
-
-		noneInterpolator.hardSetValue( firstValue );
-		lInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lInterpolator.hardSetValue( firstValue );
-		hhInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		hhInterpolator.hardSetValue( firstValue );
-		sdInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		sdInterpolator.hardSetValue( firstValue );
-		lpInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lpInterpolator.hardSetValue( firstValue );
-		lpInterpolator24.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lpInterpolator24.hardSetValue( firstValue );
-		sddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		sddInterpolator.hardSetValue( firstValue );
-		cdsddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		cdsddInterpolator.hardSetValue( firstValue );
+		for( final ControlValueInterpolator cvi : interpolators )
+		{
+			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
+			cvi.hardSetValue( firstValue );
+		}
 
 		// Pass it to all the visualisers for each interpolation
 		// type - we'll use the "none" interpolator to show the orginal signal
@@ -265,52 +283,32 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 			processedSamples[i] = new float[numSamplesInt];
 		}
 
-		noneInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		noneInterpolator.hardSetValue( samples[0] );
-
-		lInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lInterpolator.hardSetValue( samples[0] );
-
-		hhInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		hhInterpolator.hardSetValue( samples[0] );
-
-		sdInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		sdInterpolator.hardSetValue( samples[0] );
-
-		lpInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lpInterpolator.hardSetValue( samples[0] );
-
-		lpInterpolator24.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		lpInterpolator24.hardSetValue( samples[0] );
-
-		sddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		sddInterpolator.hardSetValue( samples[0] );
-
-		cdsddInterpolator.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
-		cdsddInterpolator.hardSetValue( samples[0] );
+		for( final ControlValueInterpolator cvi : interpolators )
+		{
+			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
+			cvi.hardSetValue( samples[0] );
+		}
 
 		int prevOffset = 0;
 		for( final int valueChangeOffset : controlValueChanges )
 		{
 			final float sampleAtChange = samples[valueChangeOffset];
 
-			noneInterpolator.notifyOfNewValue( sampleAtChange );
-			lInterpolator.notifyOfNewValue( sampleAtChange );
-			hhInterpolator.notifyOfNewValue( sampleAtChange );
-			sdInterpolator.notifyOfNewValue( sampleAtChange );
-			lpInterpolator.notifyOfNewValue( sampleAtChange );
-			lpInterpolator24.notifyOfNewValue( sampleAtChange );
-			sddInterpolator.notifyOfNewValue( sampleAtChange );
-			cdsddInterpolator.notifyOfNewValue( sampleAtChange );
+			for( final ControlValueInterpolator cvi : interpolators )
+			{
+				cvi.notifyOfNewValue( sampleAtChange );
+			}
 
-			noneInterpolator.generateControlValues( processedSamples[0], prevOffset, valueChangeOffset - prevOffset );
-			lInterpolator.generateControlValues( processedSamples[1], prevOffset, valueChangeOffset - prevOffset );
-			hhInterpolator.generateControlValues( processedSamples[2], prevOffset, valueChangeOffset - prevOffset );
-			sdInterpolator.generateControlValues( processedSamples[3], prevOffset, valueChangeOffset - prevOffset );
-			lpInterpolator.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
-			lpInterpolator24.generateControlValues( processedSamples[4], prevOffset, valueChangeOffset - prevOffset );
-			sddInterpolator.generateControlValues( processedSamples[5], prevOffset, valueChangeOffset - prevOffset );
-			cdsddInterpolator.generateControlValues( processedSamples[5], prevOffset, valueChangeOffset - prevOffset );
+			final int lengthToGenerate = valueChangeOffset - prevOffset;
+
+			for( int i = 0 ; i < interpolators.length ; ++i )
+			{
+				interpolators[i].generateControlValues(
+						processedSamples[i],
+						prevOffset,
+						lengthToGenerate );
+			}
+
 			prevOffset = valueChangeOffset;
 		}
 
@@ -342,7 +340,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 				try
 				{
 					scia.setVisible( true );
-					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
+//					scia.applyToWavFile( WAV_FILE_IN,WAV_FILE_OUT );
 					scia.go();
 				}
 				catch( final Exception e )

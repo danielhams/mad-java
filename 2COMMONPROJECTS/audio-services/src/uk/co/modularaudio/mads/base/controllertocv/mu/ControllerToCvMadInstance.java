@@ -32,10 +32,12 @@ import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolatio
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
@@ -88,8 +90,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	private ControlValueInterpolator currentInterpolator;
 
-	private final long nextNoteEventFrameCount = -1;
-	private final long numNoteEventsCounter = 0;
+	private long minSamplesBetweenNotes = 1000000000L; // A second
 
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -105,9 +106,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		freeInterpolators.put( InterpolationChoice.HALF_HANN, new HalfHannWindowInterpolator() );
 		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
 		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPassInterpolator() );
+		freeInterpolators.put( InterpolationChoice.LOW_PASS24, new LowPassInterpolator24() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPassInterpolator24() );
 		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f ) );
 
 		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
 		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator() );
@@ -156,6 +159,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			{
 				cvi.resetSampleRateAndPeriod( sampleRate, fixedInterpolatorsPeriodLength );
 			}
+			minSamplesBetweenNotes = 1000000000L; // A second
 		}
 		catch (final Exception e)
 		{
@@ -187,18 +191,24 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
 			final int numNotes = noteCb.numElementsInBuffer;
 
-//			if( log.isTraceEnabled() )
-//			{
-//				if( nextNoteEventFrameCount == -1 ||
-//						nextNoteEventFrameCount < periodStartFrameTime )
-//				{
-//					log.trace("Received roughly " +
-//							numNoteEventsCounter + " events in last second of counting" );
-//					numNoteEventsCounter = 0;
-//					nextNoteEventFrameCount = periodStartFrameTime + sampleRate;
-//				}
-//				numNoteEventsCounter += numNotes;
-//			}
+			if( numNotes >= 2 )
+			{
+				final int firstNoteIndex = noteEvents[0].getEventSampleIndex();
+				final int secondNoteIndex = noteEvents[1].getEventSampleIndex();
+
+				final int diff = secondNoteIndex - firstNoteIndex;
+
+				if( diff > 0 && diff < minSamplesBetweenNotes )
+				{
+					minSamplesBetweenNotes = diff;
+					final long nanosBetween = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, (int)minSamplesBetweenNotes );
+					final float millisBetween = (nanosBetween / 1000000.0f);
+					log.trace("Minimum samples between notes is now " + minSamplesBetweenNotes + " which is " + millisBetween + " millis" );
+					final float secondsBetween = millisBetween / 1000.0f;
+					final float numEventsPerSecond = 1.0f / secondsBetween;
+					log.trace("This is " + secondsBetween + " seconds between with " + numEventsPerSecond + " eps");
+				}
+			}
 
 			if( isLearning )
 			{
