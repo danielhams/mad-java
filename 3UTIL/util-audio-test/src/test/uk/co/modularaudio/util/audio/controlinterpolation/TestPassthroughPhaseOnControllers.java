@@ -63,54 +63,64 @@ public class TestPassthroughPhaseOnControllers
 		controlReader.close();
 
 		// Linear interpolate the values into the source floats array
-		float liStartValue = origFloats[0];
-		final int periodLengthFrames = 1024;
 
-		final ControlValueInterpolator valueInterpolator = new LinearInterpolator();
-		final int LINEAR_INTERPOLATION_LENGTH = 16;
-		valueInterpolator.resetSampleRateAndPeriod( sampleRate, LINEAR_INTERPOLATION_LENGTH );
-		valueInterpolator.hardSetValue( liStartValue );
+		final boolean USE_LINEAR_INTERPOLATION_FIRST = false;
 
-		int currentFramePos = 0;
-		int numLeft = numFramesInt;
-
-		while( numLeft > 0 )
+		if( USE_LINEAR_INTERPOLATION_FIRST )
 		{
-			int numToCheck = ( numLeft < periodLengthFrames ? numLeft : periodLengthFrames );
+			float liStartValue = origFloats[0];
+			final int periodLengthFrames = 1024;
 
-			while( numToCheck > 0 )
+			final ControlValueInterpolator valueInterpolator = new LinearInterpolator();
+			final int LINEAR_INTERPOLATION_LENGTH = 8;
+			valueInterpolator.resetSampleRateAndPeriod( sampleRate, LINEAR_INTERPOLATION_LENGTH );
+			valueInterpolator.hardSetValue( liStartValue );
+
+			int currentFramePos = 0;
+			int numLeft = numFramesInt;
+
+			while( numLeft > 0 )
 			{
-				int numThisRound = numToCheck;
-				boolean wasChange = false;
-				float checkValue;
-				int f=0;
-				do
+				int numToCheck = ( numLeft < periodLengthFrames ? numLeft : periodLengthFrames );
+
+				while( numToCheck > 0 )
 				{
-					checkValue = origFloats[currentFramePos+f];
-					if( checkValue != liStartValue )
+					int numThisRound = numToCheck;
+					boolean wasChange = false;
+					float checkValue;
+					int f=0;
+					do
 					{
-						numThisRound = f;
-						wasChange = true;
-						break;
+						checkValue = origFloats[currentFramePos+f];
+						if( checkValue != liStartValue )
+						{
+							numThisRound = f;
+							wasChange = true;
+							break;
+						}
+						f++;
 					}
-					f++;
+					while( f < numToCheck );
+
+					valueInterpolator.generateControlValues( sourceFloats, currentFramePos, numThisRound );
+					valueInterpolator.checkForDenormal();
+
+					if( wasChange )
+					{
+						valueInterpolator.notifyOfNewValue( checkValue );
+						liStartValue = checkValue;
+					}
+
+					currentFramePos += numThisRound;
+					numLeft -= numThisRound;
+
+					numToCheck -= numThisRound;
 				}
-				while( f < numToCheck );
-
-				valueInterpolator.generateControlValues( sourceFloats, currentFramePos, numThisRound );
-				valueInterpolator.checkForDenormal();
-
-				if( wasChange )
-				{
-					valueInterpolator.notifyOfNewValue( checkValue );
-					liStartValue = checkValue;
-				}
-
-				currentFramePos += numThisRound;
-				numLeft -= numThisRound;
-
-				numToCheck -= numThisRound;
 			}
+		}
+		else
+		{
+			System.arraycopy( origFloats, 0, sourceFloats, 0, numFramesInt );
 		}
 
 		final int NUM_PASSES = 2;
