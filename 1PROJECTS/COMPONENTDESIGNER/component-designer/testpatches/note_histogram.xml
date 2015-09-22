@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Note Time Diff Histogram 1" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackComponent name="Note Time Diff Histogram 1" definitionId="note_histogram">
+        <rackPosition column="0" row="0"/>
+    </rackComponent>
+</rack>

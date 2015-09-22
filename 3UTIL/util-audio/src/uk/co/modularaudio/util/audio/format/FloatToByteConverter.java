@@ -149,8 +149,11 @@ public class FloatToByteConverter
 		return numFloats;
 	}
 
-	private static int floatToMultiByteConversion( final float[] sourceFloats, final int position, final int numFloats,
-			final byte[] destination, final int bpos,
+	private static int floatToMultiByteConversion( final float[] sourceFloats,
+			final int position,
+			final int numFloats,
+			final byte[] destination,
+			final int bpos,
 			final int bytesPerSample )
 		throws ArrayIndexOutOfBoundsException
 	{

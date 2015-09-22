@@ -22,21 +22,21 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class LinearInterpolator implements ControlValueInterpolator
 {
-//	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
-
-	private float[] interpolationBuffer;
+	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
 	private int curWindowPos;
 	private int lastWindowPos;
 
 	private float curVal;
 	private float desVal;
-	private boolean haveValWaiting = false;
-	private float nextVal;
+	private float deltaVal;
 
 	public LinearInterpolator()
 	{
@@ -45,51 +45,23 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		int numLeftInInterpolation = lastWindowPos - curWindowPos;
-		int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
-		int numAfter = length - numWithInterpolation;
+		final int numLeftInInterpolation = lastWindowPos - curWindowPos;
+		final int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
+		final int numAfter = length - numWithInterpolation;
 		int curIndex = outputIndex;
 
-		while( numWithInterpolation > 0 )
+		if( numWithInterpolation > 0 )
 		{
 			for( int i = 0 ; i < numWithInterpolation ; ++i )
 			{
-				final float interpVal = interpolationBuffer[curWindowPos++];
-				final float nonInterpVal = 1.0f - interpVal;
-				final float newVal = (curVal * nonInterpVal) + (desVal * interpVal );
-				output[ curIndex + i ] = newVal;
+				output[ curIndex + i ] = curVal;
+				curVal += deltaVal;
 			}
 			curIndex += numWithInterpolation;
-
-			if( curWindowPos == lastWindowPos )
-			{
-				curVal = desVal;
-				if( haveValWaiting )
-				{
-					desVal = nextVal;
-					haveValWaiting = false;
-					curWindowPos = 0;
-
-					numLeftInInterpolation = lastWindowPos;
-					numWithInterpolation = (numLeftInInterpolation < numAfter ? numLeftInInterpolation : numAfter );
-					numAfter -= numWithInterpolation;
-
-					// We go back around the loop again with the next value
-				}
-				else
-				{
-					// Fall out of loop and fill in with curVal;
-					break;
-				}
-			}
-			else
-			{
-				// Haven't exhausted the window and have filled the length
-				return;
-			}
+			curWindowPos += numWithInterpolation;
 		}
 
-		// No further use of window necessary, move to desVal
+		// No further use of interpolation necessary, move to desVal
 		// and make it curVal
 		if( numAfter > 0 )
 		{
@@ -100,17 +72,14 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		if( curWindowPos == 0 || curWindowPos >= lastWindowPos )
-		{
-			// Restart the hann half window fade
-			curWindowPos = 0;
-			desVal = newValue;
-		}
-		else
-		{
-			haveValWaiting = true;
-			nextVal = newValue;
-		}
+//		if( curVal != desVal )
+//		{
+//			log.debug("Restarting interpolation");
+//		}
+		// Restart the interpolation
+		curWindowPos = 0;
+		desVal = newValue;
+		deltaVal = (desVal - curVal) / (lastWindowPos - 1);
 	}
 
 	@Override
@@ -132,7 +101,6 @@ public class LinearInterpolator implements ControlValueInterpolator
 	{
 		this.curVal = value;
 		this.desVal = value;
-		haveValWaiting = false;
 		curWindowPos = lastWindowPos;
 	}
 
@@ -144,11 +112,6 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
-		interpolationBuffer = new float[periodLengthFrames];
-		for( int i = 0 ; i < periodLengthFrames ; ++i )
-		{
-			interpolationBuffer[i] = ((float)i) / (float)(periodLengthFrames - 1);
-		}
 		curWindowPos = 0;
 		lastWindowPos = periodLengthFrames;
 	}

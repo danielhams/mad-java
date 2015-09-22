@@ -81,6 +81,8 @@ import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadDefinition;
 import uk.co.modularaudio.mads.base.ms20filter.ui.Ms20FilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.ui.NoteDebugMadUiDefinition;
+import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.notehistogram.ui.NoteHistogramMadUiDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.ui.NoteMultiplexerMadUiDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
@@ -225,6 +227,8 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( CvToAudio4MadDefinition.class, CvToAudio4MadUiDefinition.class );
 
 		classToUiDefinition.put( CDFrequencyFilterMadDefinition.class, CDFrequencyFilterMadUiDefinition.class );
+
+		classToUiDefinition.put( NoteHistogramMadDefinition.class, NoteHistogramMadUiDefinition.class );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

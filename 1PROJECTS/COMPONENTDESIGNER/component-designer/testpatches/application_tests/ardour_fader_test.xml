@@ -48,15 +48,15 @@
     <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
         <rackPosition column="0" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 3"/>
-        <rackControl name="InterpolationChoice" value="Lin"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="LP"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
     </rackComponent>
     <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
         <rackPosition column="0" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 3"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -64,7 +64,7 @@
     <rackComponent name="Controller To CV 3" definitionId="controller_to_cv">
         <rackPosition column="0" row="2"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 3"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -89,15 +89,15 @@
         <rackPosition column="0" row="15"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-192dB"/>
-        <rackControl name="Amp Scale" value="Log"/>
+        <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="1207.6"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Blckmn-H."/>
+        <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="0" row="7"/>
@@ -122,7 +122,7 @@
     </rackComponent>
     <rackComponent name="OscFreq" definitionId="static_value">
         <rackPosition column="2" row="4"/>
-        <rackControl name="Value" value="45.0"/>
+        <rackControl name="Value" value="20.0"/>
     </rackComponent>
     <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
         <rackPosition column="0" row="1"/>
@@ -134,7 +134,7 @@
         <rackControl name="CaptureLength" value="200.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="false|false|true&#x9;Raw|true&#x9;Ardour|true&#x9;Mixxx|true&#x9;Controller2CV"/>
+        <rackControl name="SaveButton" value="false|false|true&#x9;Raw|false&#x9;Ardour|false&#x9;Mixxx|true&#x9;Controller2CV"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>

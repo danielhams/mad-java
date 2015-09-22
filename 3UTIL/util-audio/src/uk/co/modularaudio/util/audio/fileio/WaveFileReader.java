@@ -160,6 +160,11 @@ public class WaveFileReader
 		numTotalFrames = numTotalFloats / numChannels;
 	}
 
+	public int getSampleRate()
+	{
+		return sampleRate;
+	}
+
 	public int getNumChannels()
 	{
 		return numChannels;

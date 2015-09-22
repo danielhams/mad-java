@@ -80,6 +80,8 @@ import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadDefinition;
 import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadInstance;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadInstance;
+import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstance;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
@@ -231,6 +233,8 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( CvToAudio4MadDefinition.class, CvToAudio4MadInstance.class );
 
 		defClassToInsClassMap.put( CDFrequencyFilterMadDefinition.class, CDFrequencyFilterMadInstance.class );
+
+		defClassToInsClassMap.put( NoteHistogramMadDefinition.class, NoteHistogramMadInstance.class );
 	}
 
 	@Override
