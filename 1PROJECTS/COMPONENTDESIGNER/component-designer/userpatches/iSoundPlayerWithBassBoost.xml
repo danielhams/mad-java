@@ -39,10 +39,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-3.359151"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="5.809313"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/renaissance_worldwide_robert_miles_disc_2/09ascendence__drop.mp3|97781104"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/ProgressiveTechHouseLogic_hifi.mp3|141261065"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -55,7 +55,7 @@
         <rackControl name="Gain" value="-8.110222"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/OriginalAiffs/20150801/6701562_Bouncer_Original_Mix.aiff|-2"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/OriginalAiffs/20150801/6701562_Bouncer_Original_Mix.aiff|-3"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -65,7 +65,7 @@
         <rackPosition column="1" row="7"/>
         <rackControl name="Amp Ceil" value="0dB"/>
         <rackControl name="Amp Floor" value="-96dB"/>
-        <rackControl name="Amp Scale" value="dB"/>
+        <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>

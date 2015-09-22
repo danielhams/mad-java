@@ -18,11 +18,14 @@ public class TestPassthroughPhaseOnControllers
 {
 	private static Log log = LogFactory.getLog( TestPassthroughPhaseOnControllers.class.getName() );
 
-	private static final String SOURCE_CONTROL_WAV = "/home/dan/Temp/source_control2.wav";
+	private static final String FILES_DIR = "/home/dan/Temp/";
+	private static final String CONTROL_NAME = "bcd3000fadermovements";
+	private static final String IN_CONTROL_FILENAME = FILES_DIR + CONTROL_NAME + ".wav";
+	private static final String OUT_CONTROL_FILENAME = FILES_DIR + CONTROL_NAME + "_out.wav";
 
-	private static final String OUT_FILE = "/home/dan/Temp/processed_control.wav";
-
-	private static final float FILTER_FREQ = 70.0f;
+	private static final float FILTER_FREQ = 100.0f;
+//	private static final float FILTER_FREQ = 70.0f;
+//	private static final float FILTER_FREQ = 50.0f;
 
 	public TestPassthroughPhaseOnControllers()
 	{
@@ -30,9 +33,9 @@ public class TestPassthroughPhaseOnControllers
 
 	public void go() throws Exception
 	{
-		log.info("Reading source control file from " + SOURCE_CONTROL_WAV );
+		log.info("Reading source control file from " + IN_CONTROL_FILENAME );
 
-		final WaveFileReader controlReader = new WaveFileReader( SOURCE_CONTROL_WAV );
+		final WaveFileReader controlReader = new WaveFileReader( IN_CONTROL_FILENAME );
 
 		final int numChannels = controlReader.getNumChannels();
 		final int sampleRate = controlReader.getSampleRate();
@@ -64,7 +67,7 @@ public class TestPassthroughPhaseOnControllers
 		final int periodLengthFrames = 1024;
 
 		final ControlValueInterpolator valueInterpolator = new LinearInterpolator();
-		final int LINEAR_INTERPOLATION_LENGTH = 32;
+		final int LINEAR_INTERPOLATION_LENGTH = 16;
 		valueInterpolator.resetSampleRateAndPeriod( sampleRate, LINEAR_INTERPOLATION_LENGTH );
 		valueInterpolator.hardSetValue( liStartValue );
 
@@ -150,8 +153,8 @@ public class TestPassthroughPhaseOnControllers
 		float prevSourceValue = 0.0f;
 		for( int i = 0 ; i < numFramesInt ; ++i )
 		{
-			final float sourceFloat = sourceFloats[i];
-			final float diffFloat = sourceFloat - onePassFloats[i];
+			final float sourceFloat = origFloats[i];
+			final float diffFloat = onePassFloats[i] - sourceFloat;
 			diffFloats[i] = diffFloat;
 			if( sourceFloat != prevSourceValue )
 			{
@@ -168,7 +171,7 @@ public class TestPassthroughPhaseOnControllers
 
 		final int NUM_OUT_CHANNELS = 4;
 
-		final WaveFileWriter controlWriter = new WaveFileWriter( OUT_FILE, NUM_OUT_CHANNELS, sampleRate, (short)32 );
+		final WaveFileWriter controlWriter = new WaveFileWriter( OUT_CONTROL_FILENAME, NUM_OUT_CHANNELS, sampleRate, (short)32 );
 
 		final float[] tmpFrame = new float[NUM_OUT_CHANNELS];
 
