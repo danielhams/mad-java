@@ -42,11 +42,10 @@ public class InterpTesterIOQueueBridge extends MadLocklessQueueBridge<InterpTest
 	public static final int COMMAND_TO_UI_SOR_NANOS = 6;
 	public static final int COMMAND_TO_UI_LIN_NANOS = 7;
 	public static final int COMMAND_TO_UI_HH_NANOS = 8;
-	public static final int COMMAND_TO_UI_SD_NANOS = 9;
-	public static final int COMMAND_TO_UI_CD_LP_NANOS = 10;
-	public static final int COMMAND_TO_UI_CD_SDD_NANOS = 11;
+	public static final int COMMAND_TO_UI_CD_LP_NANOS = 9;
+	public static final int COMMAND_TO_UI_CD_SDD_NANOS = 10;
 
-	public static final int COMMAND_UIACTIVE = 12;
+	public static final int COMMAND_UIACTIVE = 11;
 
 	public InterpTesterIOQueueBridge()
 	{

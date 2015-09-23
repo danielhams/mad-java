@@ -105,11 +105,6 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 				perfDataReceiver.setHHNanos( nextOutgoingEntry.value );
 				break;
 			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_SD_NANOS:
-			{
-				perfDataReceiver.setSDNanos( nextOutgoingEntry.value );
-				break;
-			}
 			case InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_LP_NANOS:
 			{
 				perfDataReceiver.setCdLpNanos( nextOutgoingEntry.value );

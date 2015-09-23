@@ -44,10 +44,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.5190125"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Gain" value="-6.5113635"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/OriginalAiffs/20150801/6591964_Fcuk_Me_Cristian_Varela___Gary_Beck_Remix.aiff|7226283"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/Better_Days_hifi.mp3|118652194"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -67,10 +67,10 @@
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="three_way_eqcomp.xml" name="Sub Rack 2" definitionId="sub_rack">
         <rackPosition column="2" row="3"/>
     </rackComponent>
     <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input CV amplification factor"/>

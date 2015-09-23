@@ -43,14 +43,13 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_LOWPASS_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS,
 
 		InterpTesterMadDefinition.PRODUCER_CV_RAW,
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
-		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER,
 		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS,
 		InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE,
 	};
@@ -68,8 +67,7 @@ public class InterpTesterMadUiDefinition
 		new Point( 230, 160 ),
 		new Point( 270, 160 ),
 		new Point( 310, 160 ),
-		new Point( 350, 160 ),
-		new Point( 390, 160 ),
+		new Point( 350, 160 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
