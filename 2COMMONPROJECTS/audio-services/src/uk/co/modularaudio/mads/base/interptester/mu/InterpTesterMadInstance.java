@@ -58,7 +58,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
-	private final LinearInterpolator liInterpolator = new LinearInterpolator();
+	private final LinearInterpolator liInterpolator = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final SpringAndDamperInterpolator sdInterpolator = new SpringAndDamperInterpolator( -1.0f, 1.0f );
 	private final CDLowPassInterpolator cdLpInterpolator = new CDLowPassInterpolator();
@@ -66,7 +66,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
-	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator();
+	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 	private final CDLowPassInterpolator cdLpInterpolatorNoTs = new CDLowPassInterpolator();
 	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );

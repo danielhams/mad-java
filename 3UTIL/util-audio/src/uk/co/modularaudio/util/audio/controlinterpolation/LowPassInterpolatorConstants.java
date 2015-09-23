@@ -23,5 +23,6 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 public class LowPassInterpolatorConstants
 {
 	// The low pass inflection
-	public final static float LOW_PASS_CUTOFF = 60.0f;
+//	public final static float LOW_PASS_CUTOFF = 60.0f;
+	public final static float LOW_PASS_CUTOFF = 100.0f;
 }

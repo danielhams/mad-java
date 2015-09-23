@@ -1,3 +1,23 @@
+/**
+ *
+ * Copyright (C) 2015 - Daniel Hams, Modular Audio Limited
+ *                      daniel.hams@gmail.com
+ *
+ * Mad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Mad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Mad.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 package test.uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.io.IOException;
@@ -20,6 +40,7 @@ public class TestPassthroughPhaseOnControllers
 
 	private static final String FILES_DIR = "/home/dan/Temp/";
 	private static final String CONTROL_NAME = "bcd3000fadermovements";
+//	private static final String CONTROL_NAME = "bcd3000eqknob";
 	private static final String IN_CONTROL_FILENAME = FILES_DIR + CONTROL_NAME + ".wav";
 	private static final String OUT_CONTROL_FILENAME = FILES_DIR + CONTROL_NAME + "_out.wav";
 
@@ -64,16 +85,17 @@ public class TestPassthroughPhaseOnControllers
 
 		// Linear interpolate the values into the source floats array
 
-		final boolean USE_LINEAR_INTERPOLATION_FIRST = false;
+		final boolean USE_INTERPOLATION_FIRST = false;
 
-		if( USE_LINEAR_INTERPOLATION_FIRST )
+		if( USE_INTERPOLATION_FIRST )
 		{
 			float liStartValue = origFloats[0];
 			final int periodLengthFrames = 1024;
 
-			final ControlValueInterpolator valueInterpolator = new LinearInterpolator();
-			final int LINEAR_INTERPOLATION_LENGTH = 8;
-			valueInterpolator.resetSampleRateAndPeriod( sampleRate, LINEAR_INTERPOLATION_LENGTH );
+			final ControlValueInterpolator valueInterpolator = new LinearInterpolator(-1.0f, 1.0f);
+//			final ControlValueInterpolator valueInterpolator = new HalfHannWindowInterpolator();
+			final int INTERPOLATION_LENGTH = 512;
+			valueInterpolator.resetSampleRateAndPeriod( sampleRate, INTERPOLATION_LENGTH );
 			valueInterpolator.hardSetValue( liStartValue );
 
 			int currentFramePos = 0;
@@ -123,7 +145,7 @@ public class TestPassthroughPhaseOnControllers
 			System.arraycopy( origFloats, 0, sourceFloats, 0, numFramesInt );
 		}
 
-		final int NUM_PASSES = 2;
+		final int NUM_PASSES = 1;
 
 		// Initialise our low pass filters
 		// We only use non 24 db since we are doing two passes it's equivalent.

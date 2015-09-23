@@ -118,9 +118,11 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	@Override
 	public boolean checkForDenormal()
 	{
-		if( curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		float diffVal = desVal - curVal;
+		diffVal = (diffVal < 0.0f ? -diffVal : diffVal);
+		if( diffVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 		{
-			curVal = 0.0f;
+			curVal = desVal;
 			return true;
 		}
 		else

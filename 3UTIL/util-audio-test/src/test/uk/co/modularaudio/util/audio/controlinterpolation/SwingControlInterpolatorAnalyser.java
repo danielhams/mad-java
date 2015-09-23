@@ -58,7 +58,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	private static final float VALUE_CHASE_MILLIS = 20.0f;
 //	private static final float VALUE_CHASE_MILLIS = 15.0f;
 //	private static final float VALUE_CHASE_MILLIS = 10.0f;
-	private static final float VALUE_CHASE_MILLIS = 9.8f;
+//	private static final float VALUE_CHASE_MILLIS = 9.8f;
+	private static final float VALUE_CHASE_MILLIS = 9.5f;
 //	private static final float VALUE_CHASE_MILLIS = 8.33f;
 //	private static final float VALUE_CHASE_MILLIS = 7.33f;
 //	private static final float VALUE_CHASE_MILLIS = 5.33f;
@@ -67,7 +68,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
 
-	private static final int VALUE_CHASE_SAMPLES = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( SAMPLE_RATE, VALUE_CHASE_MILLIS );
+	private static final int VALUE_CHASE_SAMPLES =
+			AudioTimingUtils.getNumSamplesForMillisAtSampleRate( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 
 	private final static String SRC_DIR = "control_interpolation_events";
 //	private final static String SRC_FILE = "zero_to_one_events.txt";
@@ -116,7 +118,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	{
 		interpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
 		interpolators[INTERPOLATOR.NONE.ordinal()] = new NoneInterpolator();
-		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator();
+		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.HALFHANN.ordinal()] = new HalfHannWindowInterpolator();
 		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPassInterpolator();

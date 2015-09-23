@@ -33,11 +33,8 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( CDSpringAndDamperDoubleInterpolator.class.getName() );
 
-	// Critically damped tests
-//	private static final double FORCE_SCALE = 0.09;
-	// Gets us close to a critically damped single pass 60hz low pass
-//	private static final double FORCE_SCALE = 0.02;
-	private static final double FORCE_SCALE = 0.06;
+	// Vaguely close to low pass non 24
+	private static final double FORCE_SCALE = 0.17;
 	private static final double DAMPING_FACTOR = 2.0 * Math.sqrt( FORCE_SCALE );
 	private static final double INTEGRATION_TIMESTEP_FOR_48K = 0.03;
 

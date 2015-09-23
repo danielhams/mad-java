@@ -46,6 +46,7 @@ import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
+import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
@@ -54,18 +55,14 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefinition,ControllerToCvMadInstance>
 {
 	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
 
-	private int numFramesPerPeriod;
-	private int notePeriodLength;
-
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
-
-	private ControllerEventProcessor eventProcessor;
 
 	private ControllerEventMapping desiredMapping = ControllerEventMapping.LINEAR;
 	private int desiredChannel = 0;
@@ -76,8 +73,8 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	private final Map<InterpolationChoice, ControlValueInterpolator> freeInterpolators =
 			new HashMap<InterpolationChoice, ControlValueInterpolator>();
 
-	private final static float FIXED_INTERP_MILLIS = 5.3f;
-//	private final static float FIXED_INTERP_MILLIS = 9.8f;
+//	private final static float FIXED_INTERP_MILLIS = 5.3f;
+	private final static float FIXED_INTERP_MILLIS = 9.8f;
 
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
@@ -90,8 +87,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	private ControlValueInterpolator currentInterpolator;
 
-	private long minSamplesBetweenNotes = 1000000000L; // A second
-
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
 			final ControllerToCvMadDefinition definition,
@@ -102,7 +97,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 		freeInterpolators.put( InterpolationChoice.NONE, new NoneInterpolator() );
 		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS, new SumOfRatiosInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR, new LinearInterpolator() );
+		freeInterpolators.put( InterpolationChoice.LINEAR, new LinearInterpolator( 0.0f, 1.0f ) );
 		freeInterpolators.put( InterpolationChoice.HALF_HANN, new HalfHannWindowInterpolator() );
 		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
 		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPassInterpolator() );
@@ -113,7 +108,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f ) );
 
 		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
-		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator() );
+		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator( 0.0f, 1.0f ) );
 		fixedInterpolators.put( InterpolationChoice.HALF_HANN_FIXED, new HalfHannWindowInterpolator() );
 
 		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : fixedInterpolators.entrySet() )
@@ -130,19 +125,17 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
-			throws MadProcessingException
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+		throws MadProcessingException
 	{
 		try
 		{
-			numFramesPerPeriod = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
-			notePeriodLength = hardwareChannelSettings.getNoteChannelSetting().getChannelBufferLength();
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
 			fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
 					FIXED_INTERP_MILLIS );
-
-			eventProcessor = new ControllerEventProcessor( notePeriodLength );
 
 			final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 
@@ -159,7 +152,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			{
 				cvi.resetSampleRateAndPeriod( sampleRate, fixedInterpolatorsPeriodLength );
 			}
-			minSamplesBetweenNotes = 1000000000L; // A second
 		}
 		catch (final Exception e)
 		{
@@ -179,147 +171,183 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
-		final boolean noteConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.CONSUMER_NOTE );
 		final MadChannelBuffer noteCb = channelBuffers[ ControllerToCvMadDefinition.CONSUMER_NOTE ];
-		final boolean outCvConnected = channelConnectedFlags.get( ControllerToCvMadDefinition.PRODUCER_CV_OUT );
 		final MadChannelBuffer outCvCb = channelBuffers[ ControllerToCvMadDefinition.PRODUCER_CV_OUT ];
 
-		eventProcessor.setDesiredMapping( desiredMapping );
+		final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
+		final int numNotes = noteCb.numElementsInBuffer;
 
-		if( noteConnected )
+		final float[] outCvFlots = outCvCb.floatBuffer;
+
+		if( isLearning )
 		{
-			final MadChannelNoteEvent[] noteEvents = noteCb.noteBuffer;
-			final int numNotes = noteCb.numElementsInBuffer;
-
-			if( numNotes >= 2 )
+			int lastController = -1;
+			int lastChannel = -1;
+			boolean wasController = false;
+			for( int n = 0 ; n < numNotes ; n++ )
 			{
-				final int firstNoteIndex = noteEvents[0].getEventSampleIndex();
-				final int secondNoteIndex = noteEvents[1].getEventSampleIndex();
-
-				final int diff = secondNoteIndex - firstNoteIndex;
-
-				if( diff > 0 && diff < minSamplesBetweenNotes )
+				final MadChannelNoteEvent ne = noteEvents[ n ];
+				switch( ne.getEventType() )
 				{
-					minSamplesBetweenNotes = diff;
-					final long nanosBetween = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, (int)minSamplesBetweenNotes );
-					final float millisBetween = (nanosBetween / 1000000.0f);
-					log.trace("Minimum samples between notes is now " + minSamplesBetweenNotes + " which is " + millisBetween + " millis" );
-					final float secondsBetween = millisBetween / 1000.0f;
-					final float numEventsPerSecond = 1.0f / secondsBetween;
-					log.trace("This is " + secondsBetween + " seconds between with " + numEventsPerSecond + " eps");
-				}
-			}
-
-			if( isLearning )
-			{
-				int lastController = -1;
-				int lastChannel = -1;
-				boolean wasController = false;
-				for( int n = 0 ; n < numNotes ; n++ )
-				{
-					final MadChannelNoteEvent ne = noteEvents[ n ];
-					switch( ne.getEventType() )
+					case CONTROLLER:
 					{
-						case CONTROLLER:
-						{
-							lastChannel = ne.getChannel();
-							lastController = ne.getParamOne();
-							wasController = true;
-							break;
-						}
-						default:
-						{
-							break;
-						}
+						lastChannel = ne.getChannel();
+						lastController = ne.getParamOne();
+						wasController = true;
+						break;
+					}
+					default:
+					{
+						break;
 					}
 				}
-				if( wasController )
-				{
-					// Encode channel and controller in a message back
-					// to the UI
-					sendDiscoveredController( tempQueueEntryStorage, periodStartFrameTime, lastChannel, lastController );
-					isLearning = false;
-				}
-
-				// Hack until I get unified event/note processing working
-				if( frameOffset != 0 || numFrames != numFramesPerPeriod )
-				{
-					return RealtimeMethodReturnCodeEnum.SUCCESS;
-				}
-
-				eventProcessor.emptyPeriod( numFrames );
 			}
-			else
+			if( wasController )
 			{
-				// Hack until I get unified event/note processing working
-				if( frameOffset != 0 || numFrames != numFramesPerPeriod )
-				{
-					return RealtimeMethodReturnCodeEnum.SUCCESS;
-				}
-
-				// Process the messages
-				for( int n = 0 ; n < numNotes ; n++ )
-				{
-					final MadChannelNoteEvent ne = noteEvents[ n ];
-					switch( ne.getEventType() )
-					{
-						case CONTROLLER:
-						{
-							// Only process events on our channel
-							if( (desiredChannel == -1 || desiredChannel == ne.getChannel() )
-								&&
-								(desiredController == -1 || desiredController == ne.getParamOne() )
-								)
-							{
-	//							log.debug("Processing event " + ne.toString() );
-								eventProcessor.processEvent( ne );
-							}
-							break;
-						}
-						default:
-						{
-							break;
-						}
-					}
-				}
-
-				if( numNotes == 0 )
-				{
-					eventProcessor.emptyPeriod( numFrames );
-				}
-			}
-
-			if( outCvConnected )
-			{
-				final float[] outCvFloats = outCvCb.floatBuffer;
-				// Spit out values.
-				eventProcessor.outputCv( numFrames, outCvFloats, currentInterpolator );
-				eventProcessor.done();
-			}
-			else
-			{
-				eventProcessor.done();
+				// Encode channel and controller in a message back
+				// to the UI
+				sendDiscoveredController( tempQueueEntryStorage, periodStartFrameTime, lastChannel, lastController );
+				isLearning = false;
 			}
 		}
-		else if( outCvConnected )
+
+		int currentFrameOffset = frameOffset;
+		int numFramesLeft = numFrames;
+
+		int startFrameOffset = frameOffset;
+
+		int currentNoteEvent = 0;
+
+		while( numFramesLeft > 0 )
 		{
-			if( isLearning )
-			{
+			int numFramesThisRound = numFramesLeft;
 
+			if( currentNoteEvent < numNotes )
+			{
+				// Get index of last note event for the next
+				// sample index where it is a controller.
+
+				// We do this by finding the next controller event
+				// and then hunting for any further controller events
+				// with the same sample index
+				final int nextControllerEventIndex = findNextControllerEvent( noteEvents,
+						numNotes,
+						currentNoteEvent );
+
+				if( nextControllerEventIndex == -1 )
+				{
+					// Didn't find any, just process the rest as is
+					// by leaving numFramesThisRound alone
+				}
+				else
+				{
+					currentNoteEvent = nextControllerEventIndex;
+					// This will return "currentNoteEvent" if there isn't any
+					// following events with the same sample index
+					currentNoteEvent = findLastControllerEventWithSampleIndex( noteEvents,
+							numNotes,
+							currentNoteEvent );
+
+					final MadChannelNoteEvent ne = noteEvents[currentNoteEvent];
+					int noteSampleIndex = ne.getEventSampleIndex();
+
+					noteSampleIndex = (noteSampleIndex < 0
+							?
+							0
+							:
+							(noteSampleIndex > numFrames-1 ? numFrames-1 : noteSampleIndex)
+					);
+
+					numFramesThisRound = noteSampleIndex - currentFrameOffset;
+
+					final float rawNoteValue = ne.getParamTwo() / 127.0f;
+					final float mappedValueToUse = mapValue( desiredMapping, rawNoteValue );
+
+					currentInterpolator.notifyOfNewValue( mappedValueToUse );
+//					if( log.isTraceEnabled() )
+//					{
+//						log.trace( "Notifying interpolator to change to value " +
+//								MathFormatter.fastFloatPrint( mappedValueToUse, 8, true ) );
+//					}
+
+					// Fall onto next (or end) note
+					currentNoteEvent++;
+				}
+			}
+			// else no note events to process
+
+//			log.trace("Generating " + numFramesThisRound + " frames from offset " + startFrameOffset );
+			if( numFramesThisRound < 0
+					|| startFrameOffset > (frameOffset + numFrames + 1) )
+			{
+				// Until I have unified GUI and midi event handling, this is the best I can do
+				log.error("Failed sanity check for interpolator call");
 			}
 			else
 			{
-				final float[] outCvFloats = outCvCb.floatBuffer;
-
-				eventProcessor.emptyPeriod( numFrames );
-
-				// Output nothing.
-				eventProcessor.outputCv( numFrames, outCvFloats, currentInterpolator );
+				currentInterpolator.generateControlValues( outCvFlots, startFrameOffset, numFramesThisRound );
 			}
+
+			currentInterpolator.checkForDenormal();
+
+			numFramesLeft -= numFramesThisRound;
+			currentFrameOffset += numFramesThisRound;
+			startFrameOffset += numFramesThisRound;
 		}
-		currentInterpolator.checkForDenormal();
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	private int findNextControllerEvent( final MadChannelNoteEvent[] noteEvents,
+			final int numNoteEvents,
+			final int iCurrentNoteEvent )
+	{
+		int currentNoteEvent = iCurrentNoteEvent;
+		do
+		{
+			final MadChannelNoteEvent ne = noteEvents[currentNoteEvent];
+			if( ne.getEventType() == MadChannelNoteEventType.CONTROLLER &&
+					ne.getChannel() == desiredChannel &&
+					ne.getParamOne() == desiredController )
+			{
+				return currentNoteEvent;
+			}
+			currentNoteEvent++;
+		}
+		while( currentNoteEvent < numNoteEvents );
+
+		return -1;
+	}
+
+	private int findLastControllerEventWithSampleIndex( final MadChannelNoteEvent[] noteEvents,
+			final int numNoteEvents,
+			final int iCurrentNoteEvent )
+	{
+		int currentNoteEvent = iCurrentNoteEvent;
+		final int existingSampleIndex = noteEvents[iCurrentNoteEvent].getEventSampleIndex();
+
+		int lastEventIndex = iCurrentNoteEvent;
+
+		while( currentNoteEvent < (numNoteEvents - 1) )
+		{
+			final MadChannelNoteEvent nextEvent = noteEvents[currentNoteEvent+1];
+			if( nextEvent.getEventSampleIndex() == existingSampleIndex )
+			{
+				if( nextEvent.getEventType() == MadChannelNoteEventType.CONTROLLER &&
+						nextEvent.getChannel() == desiredChannel &&
+						nextEvent.getParamOne() == desiredController )
+				{
+					lastEventIndex = currentNoteEvent+1;
+				}
+			}
+			else
+			{
+				// We're done, don't use this one.
+			}
+			currentNoteEvent++;
+		}
+
+		return lastEventIndex;
 	}
 
 	public void beginLearn()
@@ -362,5 +390,56 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	{
 		log.trace( "Would set interpolation to " + interpolation.toString() );
 		currentInterpolator = interpolators.get( interpolation );
+	}
+
+	private float mapValue( final ControllerEventMapping mapping, final float valToMap )
+	{
+		switch( mapping )
+		{
+			case LINEAR:
+			{
+				return valToMap;
+			}
+			case LOG:
+			{
+				return NormalisedValuesMapper.logMapF( valToMap );
+			}
+			case LOG_FREQUENCY:
+			{
+				return NormalisedValuesMapper.logMinMaxMapF( valToMap, 0.0f, 22050.0f );
+			}
+			case EXP:
+			{
+				return NormalisedValuesMapper.expMapF( valToMap );
+			}
+			case EXP_FREQUENCY:
+			{
+				return NormalisedValuesMapper.expMinMaxMapF( valToMap, 0.0f, 22050.0f );
+			}
+			case CIRC_Q1:
+			{
+				return NormalisedValuesMapper.circleQuadOneF( valToMap );
+			}
+			case CIRC_Q2:
+			{
+				return NormalisedValuesMapper.circleQuadTwoF( valToMap );
+			}
+			case CIRC_Q3:
+			{
+				return NormalisedValuesMapper.circleQuadThreeF( valToMap );
+			}
+			case CIRC_Q4:
+			{
+				return NormalisedValuesMapper.circleQuadFourF( valToMap );
+			}
+			default:
+			{
+				if( log.isErrorEnabled() )
+				{
+					log.error("Unknown mapping: " + mapping.toString() );
+				}
+			}
+		}
+		return valToMap;
 	}
 }

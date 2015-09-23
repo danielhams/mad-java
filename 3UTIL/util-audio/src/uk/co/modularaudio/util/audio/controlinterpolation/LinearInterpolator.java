@@ -33,29 +33,42 @@ public class LinearInterpolator implements ControlValueInterpolator
 
 	private int curWindowPos;
 	private int lastWindowPos;
+	private int interpolationLength;
 
 	private float curVal;
 	private float desVal;
 	private float deltaVal;
 
-	public LinearInterpolator()
+	private float lowerBound;
+	private float upperBound;
+
+	public LinearInterpolator( final float lowerBound, final float upperBound )
 	{
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		final int numLeftInInterpolation = lastWindowPos - curWindowPos;
+		final int numLeftInInterpolation = interpolationLength - curWindowPos;
+//		log.trace( "Interpolation has " + numLeftInInterpolation + " left" );
 		final int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
 		final int numAfter = length - numWithInterpolation;
+//		log.trace( "Will do " + numWithInterpolation + " this round along with fill of " + numAfter );
 		int curIndex = outputIndex;
 
 		if( numWithInterpolation > 0 )
 		{
 			for( int i = 0 ; i < numWithInterpolation ; ++i )
 			{
-				output[ curIndex + i ] = curVal;
 				curVal += deltaVal;
+//				log.trace( "Moved to value " +
+//						MathFormatter.fastFloatPrint( curVal, 8, true ));
+				curVal = (curVal < lowerBound ? lowerBound :
+					(curVal > upperBound ? upperBound :
+						curVal ) );
+				output[ curIndex + i ] = curVal;
 			}
 			curIndex += numWithInterpolation;
 			curWindowPos += numWithInterpolation;
@@ -65,6 +78,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 		// and make it curVal
 		if( numAfter > 0 )
 		{
+			curVal = desVal;
 			Arrays.fill( output, curIndex, outputIndex + length, curVal );
 		}
 	}
@@ -72,22 +86,35 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-//		if( curVal != desVal )
+//		if( log.isTraceEnabled() )
 //		{
-//			log.debug("Restarting interpolation");
+//			log.trace( "Received notification of new value " +
+//					MathFormatter.fastFloatPrint( newValue, 8, true ) );
+//			log.trace( "CurWindowPos(" + curWindowPos + ") curVal(" +
+//					MathFormatter.fastFloatPrint( curVal, 8, true ) +
+//					") desVal(" +
+//					MathFormatter.fastFloatPrint( desVal, 8, true ) +
+//					")");
 //		}
 		// Restart the interpolation
 		curWindowPos = 0;
 		desVal = newValue;
-		deltaVal = (desVal - curVal) / (lastWindowPos - 1);
+		deltaVal = (desVal - curVal) / interpolationLength;
+//		if( log.isTraceEnabled() )
+//		{
+//			log.trace("Reset cur window pos and reset desVal.");
+//			log.trace("deltaVal is now (" + MathFormatter.fastFloatPrint( deltaVal, 8, true ) + ")");
+//		}
 	}
 
 	@Override
 	public boolean checkForDenormal()
 	{
-		if( curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		float diffVal = desVal - curVal;
+		diffVal = (diffVal < 0.0f ? -diffVal : diffVal);
+		if( diffVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
 		{
-			curVal = 0.0f;
+			curVal = desVal;
 			return true;
 		}
 		else
@@ -101,18 +128,21 @@ public class LinearInterpolator implements ControlValueInterpolator
 	{
 		this.curVal = value;
 		this.desVal = value;
-		curWindowPos = lastWindowPos;
+		curWindowPos = interpolationLength;
 	}
 
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
 	}
 
 	@Override
 	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
 		curWindowPos = 0;
-		lastWindowPos = periodLengthFrames;
+		interpolationLength = periodLengthFrames;
+		lastWindowPos = periodLengthFrames - 1;
 	}
 }

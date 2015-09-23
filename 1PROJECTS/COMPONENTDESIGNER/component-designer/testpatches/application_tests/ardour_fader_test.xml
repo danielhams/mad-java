@@ -49,9 +49,9 @@
         <rackPosition column="0" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 1"/>
-        <rackControl name="InterpolationChoice" value="LP"/>
+        <rackControl name="InterpolationChoice" value="CDSD"/>
         <rackControl name="Learn" value=""/>
-        <rackControl name="MappingCurve" value="Exp"/>
+        <rackControl name="MappingCurve" value="Linear"/>
     </rackComponent>
     <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
         <rackPosition column="0" row="0"/>
@@ -59,7 +59,7 @@
         <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
-        <rackControl name="MappingCurve" value="Exp"/>
+        <rackControl name="MappingCurve" value="Linear"/>
     </rackComponent>
     <rackComponent name="Controller To CV 3" definitionId="controller_to_cv">
         <rackPosition column="0" row="2"/>
@@ -67,7 +67,7 @@
         <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
-        <rackControl name="MappingCurve" value="Exp"/>
+        <rackControl name="MappingCurve" value="Linear"/>
     </rackComponent>
     <rackComponent name="Frequency Filter 1" definitionId="frequency_filter">
         <rackPosition column="0" row="19"/>
@@ -122,7 +122,7 @@
     </rackComponent>
     <rackComponent name="OscFreq" definitionId="static_value">
         <rackPosition column="2" row="4"/>
-        <rackControl name="Value" value="20.0"/>
+        <rackControl name="Value" value="50.0"/>
     </rackComponent>
     <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
         <rackPosition column="0" row="1"/>
@@ -131,7 +131,7 @@
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="2" row="0"/>
-        <rackControl name="CaptureLength" value="200.0"/>
+        <rackControl name="CaptureLength" value="100.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveButton" value="false|false|true&#x9;Raw|false&#x9;Ardour|false&#x9;Mixxx|true&#x9;Controller2CV"/>
