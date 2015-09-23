@@ -38,7 +38,7 @@ public final class HardKneePulseWidthMapper implements PulseWidthMapper
 		else if( pw == 0.0f )
 		{
 			// Just in case pulsewidth = 0.0f;
-			pw = AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+			pw = AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F;
 		}
 
 		float retVal;

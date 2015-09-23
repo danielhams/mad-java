@@ -146,7 +146,7 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 
 			// Nudge by two bits towards desired value
 			final int sigNum = (delta < 0 ? -2 : 2 );
-			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D;
+			curState.x = curState.x + sigNum * AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_D;
 		}
 
 		if( absX <= MIN_VALUE_DELTA &&

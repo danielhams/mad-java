@@ -147,7 +147,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 
 			// Nudge by two bits towards desired value
 			final int sigNum = (delta < 0 ? -2 : 2 );
-			curState.x = curState.x + sigNum * AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F;
+			curState.x = curState.x + sigNum * AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F;
 		}
 
 		if( absX <= MIN_VALUE_DELTA &&

@@ -151,8 +151,8 @@ public class ButterworthFilter24DB
 		{
 			final float w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
 			float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
-			if( result < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-					result > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( result < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+					result > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				result = 0.0f;
 			}
@@ -163,8 +163,8 @@ public class ButterworthFilter24DB
 			// And second pass (for 24 db)
 			final float we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
 			float resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
-			if( resulte < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-					resulte > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( resulte < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+					resulte > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				resulte = 0.0f;
 			}
@@ -175,23 +175,23 @@ public class ButterworthFilter24DB
 			input[offset + i] = resulte;
 		}
 
-		if( feedbackDelaySamples[0] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[0] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[0] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[0] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[0] = 0.0f;
 		}
-		if( feedbackDelaySamples[1] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[1] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[1] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[1] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[1] = 0.0f;
 		}
-		if( feedbackDelaySamples[2] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[2] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[2] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[2] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[2] = 0.0f;
 		}
-		if( feedbackDelaySamples[3] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[3] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[3] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[3] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[3] = 0.0f;
 		}
@@ -219,8 +219,8 @@ public class ButterworthFilter24DB
 
 			final float w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
 			float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
-			if( result < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-					result > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( result < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+					result > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				result = 0.0f;
 			}
@@ -231,8 +231,8 @@ public class ButterworthFilter24DB
 			// And second pass (for 24 db)
 			final float we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
 			float resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
-			if( resulte < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-					resulte > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( resulte < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+					resulte > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				resulte = 0.0f;
 			}
@@ -243,23 +243,23 @@ public class ButterworthFilter24DB
 			input[offset + i] = resulte;
 		}
 
-		if( feedbackDelaySamples[0] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[0] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[0] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[0] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[0] = 0.0f;
 		}
-		if( feedbackDelaySamples[1] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[1] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[1] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[1] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[1] = 0.0f;
 		}
-		if( feedbackDelaySamples[2] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[2] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[2] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[2] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[2] = 0.0f;
 		}
-		if( feedbackDelaySamples[3] < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F &&
-				feedbackDelaySamples[3] > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( feedbackDelaySamples[3] < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+				feedbackDelaySamples[3] > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			feedbackDelaySamples[3] = 0.0f;
 		}

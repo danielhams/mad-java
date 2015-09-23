@@ -194,7 +194,7 @@ public class TestPassthroughPhaseOnControllers
 			}
 			else
 			{
-				if( Math.abs(diffFloat) < AudioMath.MIN_FLOATING_POINT_16BIT_VAL_F )
+				if( Math.abs(diffFloat) < AudioMath.MIN_SIGNED_FLOATING_POINT_16BIT_VAL_F )
 				{
 					prevSourceValue = sourceFloat;
 				}

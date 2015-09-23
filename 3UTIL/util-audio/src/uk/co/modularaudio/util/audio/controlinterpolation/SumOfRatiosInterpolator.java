@@ -56,7 +56,7 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 	@Override
 	public boolean checkForDenormal()
 	{
-		if( curVal > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( curVal > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F && curVal < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			curVal = 0.0f;
 			return true;

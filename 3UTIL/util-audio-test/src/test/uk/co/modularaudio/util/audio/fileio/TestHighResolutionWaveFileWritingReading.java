@@ -112,10 +112,10 @@ public class TestHighResolutionWaveFileWritingReading extends TestCase
 				NUM_BITS_32
 		};
 		final double[] acceptableDiffs = {
-				AudioMath.MIN_FLOATING_POINT_8BIT_VAL_D,
-				AudioMath.MIN_FLOATING_POINT_16BIT_VAL_D,
-				AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D,
-				AudioMath.MIN_FLOATING_POINT_32BIT_VAL_D
+				AudioMath.MIN_SIGNED_FLOATING_POINT_8BIT_VAL_D,
+				AudioMath.MIN_SIGNED_FLOATING_POINT_16BIT_VAL_D,
+				AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_D,
+				AudioMath.MIN_SIGNED_FLOATING_POINT_32BIT_VAL_D
 		};
 
 		for( int index = 0 ; index < bitsToUse.length ; ++index )

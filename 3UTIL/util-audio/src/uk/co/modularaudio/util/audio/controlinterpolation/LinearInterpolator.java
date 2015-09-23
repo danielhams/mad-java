@@ -112,7 +112,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 	{
 		float diffVal = desVal - curVal;
 		diffVal = (diffVal < 0.0f ? -diffVal : diffVal);
-		if( diffVal < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+		if( diffVal < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 		{
 			curVal = desVal;
 			return true;

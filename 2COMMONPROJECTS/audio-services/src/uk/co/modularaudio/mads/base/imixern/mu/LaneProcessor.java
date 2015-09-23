@@ -210,11 +210,11 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 			rightAmp = NormalisedValuesMapper.expMapF( rightAmp );
 			desiredRightAmpMultiplier = desiredAmpMultiplier * rightAmp;
 
-			if( desiredLeftAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( desiredLeftAmpMultiplier < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				desiredLeftAmpMultiplier = 0.0f;
 			}
-			if( desiredRightAmpMultiplier < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( desiredRightAmpMultiplier < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				desiredRightAmpMultiplier = 0.0f;
 			}

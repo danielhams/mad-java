@@ -71,7 +71,6 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		"Sum Of Ratio CV Out",
 		"Linear Interpolation CV Out",
 		"Half Hann CV Out",
-		"Spring Damper CV Out",
 		"Low Pass CV Out",
 		"Spring Damper Double CV Out",
 	};
@@ -84,7 +83,6 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelType.CV,
 		MadChannelType.CV,
 
-		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -107,11 +105,9 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
-		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,

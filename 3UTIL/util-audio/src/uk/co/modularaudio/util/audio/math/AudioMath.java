@@ -38,21 +38,29 @@ public class AudioMath
 
 	public static final int MAX_SHORT_VALUE = Short.MAX_VALUE;
 
+	public static final long MAX_7BIT_UINT_VALUE = (1L << 7) - 1;
+	public static final double MIN_SIGNED_FLOATING_POINT_7BIT_VAL_D = 2.0 / MAX_7BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_7BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_7BIT_VAL_D;
+
 	public static final long MAX_8BIT_UINT_VALUE = (1L << 8) - 1;
-	public static final double MIN_FLOATING_POINT_8BIT_VAL_D = 2.0 / MAX_8BIT_UINT_VALUE;
-	public static final float MIN_FLOATING_POINT_8BIT_VAL_F = (float)MIN_FLOATING_POINT_8BIT_VAL_D;
+	public static final double MIN_SIGNED_FLOATING_POINT_8BIT_VAL_D = 2.0 / MAX_8BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_8BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_8BIT_VAL_D;
+
+	public static final long MAX_14BIT_UINT_VALUE = (1L << 14) - 1;
+	public static final double MIN_SIGNED_FLOATING_POINT_14BIT_VAL_D = 2.0 / MAX_14BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_14BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_14BIT_VAL_D;
 
 	public static final long MAX_16BIT_UINT_VALUE = (1L << 16) - 1;
-	public static final double MIN_FLOATING_POINT_16BIT_VAL_D = 2.0 / MAX_16BIT_UINT_VALUE;
-	public static final float MIN_FLOATING_POINT_16BIT_VAL_F = (float)MIN_FLOATING_POINT_16BIT_VAL_D;
+	public static final double MIN_SIGNED_FLOATING_POINT_16BIT_VAL_D = 2.0 / MAX_16BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_16BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_16BIT_VAL_D;
 
 	public static final long MAX_24BIT_UINT_VALUE = (1L << 24) - 1;
-	public static final double MIN_FLOATING_POINT_24BIT_VAL_D = 2.0 / MAX_24BIT_UINT_VALUE;
-	public static final float MIN_FLOATING_POINT_24BIT_VAL_F = (float)MIN_FLOATING_POINT_24BIT_VAL_D;
+	public static final double MIN_SIGNED_FLOATING_POINT_24BIT_VAL_D = 2.0 / MAX_24BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_24BIT_VAL_D;
 
 	public static final long MAX_32BIT_UINT_VALUE = (1L << 32) - 1;
-	public static final double MIN_FLOATING_POINT_32BIT_VAL_D = 2.0 / MAX_32BIT_UINT_VALUE;
-	public static final float MIN_FLOATING_POINT_32BIT_VAL_F = (float)MIN_FLOATING_POINT_32BIT_VAL_D;
+	public static final double MIN_SIGNED_FLOATING_POINT_32BIT_VAL_D = 2.0 / MAX_32BIT_UINT_VALUE;
+	public static final float MIN_SIGNED_FLOATING_POINT_32BIT_VAL_F = (float)MIN_SIGNED_FLOATING_POINT_32BIT_VAL_D;
 
 
 //	static

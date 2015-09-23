@@ -167,7 +167,6 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	public void sendUiActive( final boolean active )
 	{
 		sendCommandValueToInstance( InterpTesterIOQueueBridge.COMMAND_UIACTIVE, (active ? 1 : 0 ) );
-
 	}
 
 	public void triggerImpulse()

@@ -145,14 +145,14 @@ public class ButterworthFilter
 			w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
 			final float absW = ( w < 0.0f ? -w : w );
 
-			if( absW < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( absW < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				w = 0.0f;
 			}
 			float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
 
-			if ((result > 0.0f && result < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F)
-					|| (result < 0.0f && result > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F))
+			if ((result > 0.0f && result < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F)
+					|| (result < 0.0f && result > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F))
 			{
 				result = 0.0f;
 			}

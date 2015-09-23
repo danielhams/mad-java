@@ -36,7 +36,7 @@ public class FloatToByteConverterTester extends TestCase
 	public FloatToByteConverterTester()
 	{
 		log.info( "Float to byte conversion tests with min float 16bit value as " +
-				MathFormatter.slowFloatPrint( AudioMath.MIN_FLOATING_POINT_16BIT_VAL_F, 8, false ) );
+				MathFormatter.slowFloatPrint( AudioMath.MIN_SIGNED_FLOATING_POINT_16BIT_VAL_F, 8, false ) );
 	}
 
 	public void testFloatToBytesMultiByte() throws Exception
@@ -68,7 +68,7 @@ public class FloatToByteConverterTester extends TestCase
 					MathFormatter.slowFloatPrint( absDiff, 8, true )
 					);
 
-			if( absDiff > AudioMath.MIN_FLOATING_POINT_16BIT_VAL_F )
+			if( absDiff > AudioMath.MIN_SIGNED_FLOATING_POINT_16BIT_VAL_F )
 			{
 				log.error("Failed on conversion of float: " + expectedFloat + " to " +
 						computedFloat );

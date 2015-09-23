@@ -48,12 +48,12 @@ public class DcTrapFilter
 		for( int i = position ; i < position + length ; ++i )
 		{
 			float curValue = samples[i];
-			if( curValue > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && curValue < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( curValue > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F && curValue < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				curValue = 0.0f;
 			}
 			previousOutValue = curValue - tmpPrevValue + (r * previousOutValue );
-			if( previousOutValue > -AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F && previousOutValue < AudioMath.MIN_FLOATING_POINT_24BIT_VAL_F )
+			if( previousOutValue > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F && previousOutValue < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
 			{
 				previousOutValue = 0.0f;
 			}
