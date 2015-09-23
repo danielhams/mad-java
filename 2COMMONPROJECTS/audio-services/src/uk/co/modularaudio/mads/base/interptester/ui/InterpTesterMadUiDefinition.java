@@ -43,14 +43,14 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_NOTS,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24_NOTS,
 		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS,
 
 		InterpTesterMadDefinition.PRODUCER_CV_RAW,
 		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS,
 		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24,
 		InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE,
 	};
 

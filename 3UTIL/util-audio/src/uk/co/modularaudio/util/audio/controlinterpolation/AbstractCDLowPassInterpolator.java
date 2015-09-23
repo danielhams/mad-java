@@ -22,65 +22,70 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.math.AudioMath;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.audio.dsp.FrequencyFilter;
+import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
-public class SumOfRatiosInterpolator implements ControlValueInterpolator
+public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 {
+//	private static Log log = LogFactory.getLog( AbstractCDLowPassInterpolator.class.getName() );
 
-	private float curValueRatio = 0.5f;
-	private float newValueRatio = 0.5f;
-
-	private float curVal;
 	private float desVal;
 
-	public SumOfRatiosInterpolator()
+	private int sampleRate;
+	private final FrequencyFilter lpFilter;
+
+	private static final int TMP_LENGTH = 1024;
+	private static final int NUM_RESET_ITERS = 10;
+
+	public AbstractCDLowPassInterpolator( final FrequencyFilter lpFilter )
 	{
+		this.lpFilter = lpFilter;
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
 		final int lastIndex = outputIndex + length;
-		if( curVal == desVal )
-		{
-			Arrays.fill( output, outputIndex, lastIndex, curVal );
-			return;
-		}
-		for( int i = outputIndex ; i < lastIndex ; ++i )
-		{
-			curVal = (curVal * curValueRatio) + (desVal * newValueRatio);
-			output[i] = curVal;
-		}
+		Arrays.fill( output, outputIndex, lastIndex, desVal );
+		lpFilter.filter(
+				output,
+				outputIndex,
+				length,
+				LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
+				0.5f,
+				FrequencyFilterMode.LP,
+				sampleRate );
 	}
 
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		this.desVal = newValue;
+		desVal = newValue;
 	}
 
 	@Override
 	public boolean checkForDenormal()
 	{
-		float diffVal = desVal - curVal;
-		diffVal = (diffVal < 0.0f ? -diffVal : diffVal);
-		if( diffVal < AudioMath.MIN_SIGNED_FLOATING_POINT_16BIT_VAL_F )
-		{
-			curVal = desVal;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	@Override
 	public void hardSetValue( final float value )
 	{
-		this.curVal = value;
 		this.desVal = value;
+		final float[] tmpArray = new float[TMP_LENGTH];
+		Arrays.fill( tmpArray, desVal );
+
+		for( int i = 0 ; i < NUM_RESET_ITERS ; ++i )
+		{
+			lpFilter.filter( tmpArray,
+					0,
+					TMP_LENGTH,
+					LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
+					0.5f,
+					FrequencyFilterMode.LP,
+					sampleRate );
+		}
 	}
 
 	@Override
@@ -91,9 +96,6 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 	@Override
 	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
-		final long valueChaseNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, periodLengthFrames );
-		final float valueChaseMillis = (valueChaseNanos / 1000000.0f);
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, valueChaseMillis );
-		curValueRatio = 1.0f - newValueRatio;
+		this.sampleRate = sampleRate;
 	}
 }

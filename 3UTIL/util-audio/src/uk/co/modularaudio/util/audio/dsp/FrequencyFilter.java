@@ -18,15 +18,14 @@
  *
  */
 
-package uk.co.modularaudio.util.audio.controlinterpolation;
+package uk.co.modularaudio.util.audio.dsp;
 
-import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
-
-
-public class CDLowPassInterpolator24 extends AbstractCDLowPassInterpolator
+public interface FrequencyFilter
 {
-	public CDLowPassInterpolator24()
-	{
-		super( new CDButterworthFilter24DB() );
-	}
+	void filter( float[] output, int outputIndex, int length,
+			float freq,
+			float bw,
+			FrequencyFilterMode lp,
+			float sampleRate );
+
 }

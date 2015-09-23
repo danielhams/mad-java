@@ -38,14 +38,14 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int PRODUCER_CV_SUM_OF_RATIOS_NOTS = 1;
 	public final static int PRODUCER_CV_LINEAR_NOTS = 2;
 	public final static int PRODUCER_CV_HALFHANN_NOTS = 3;
-	public final static int PRODUCER_CV_CD_LOWPASS_NOTS = 4;
+	public final static int PRODUCER_CV_CD_LOWPASS_24_NOTS = 4;
 	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS = 5;
 
 	public final static int PRODUCER_CV_RAW = 6;
 	public final static int PRODUCER_CV_SUM_OF_RATIOS = 7;
 	public final static int PRODUCER_CV_LINEAR = 8;
 	public final static int PRODUCER_CV_HALFHANN = 9;
-	public final static int PRODUCER_CV_CD_LOWPASS = 10;
+	public final static int PRODUCER_CV_CD_LOWPASS_24 = 10;
 	public final static int PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE = 11;
 
 	public final static int NUM_CHANNELS = 12;
@@ -64,14 +64,14 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		"Sum Of Ratio NoTS CV Out",
 		"Linear Inteprolation NoTS CV Out",
 		"Half Hann NoTS CV Out",
-		"Low Pass NoTS CV Out",
+		"CD Low Pass 24 NoTS CV Out",
 		"Spring Damper Double NoTS CV Out",
 
 		"Raw Control CV Out",
 		"Sum Of Ratio CV Out",
 		"Linear Interpolation CV Out",
 		"Half Hann CV Out",
-		"Low Pass CV Out",
+		"CD Low Pass 24 CV Out",
 		"Spring Damper Double CV Out",
 	};
 

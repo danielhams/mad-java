@@ -24,7 +24,7 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
 
-public class CDButterworthFilter24DB
+public class CDButterworthFilter24DB implements FrequencyFilter
 {
 //	private static Log log = LogFactory.getLog( OptimisedButterworthFilter.class.getName() );
 
@@ -96,6 +96,7 @@ public class CDButterworthFilter24DB
 		prevBw = bw;
 	}
 
+	@Override
 	public final void filter( final float[] input,
 			final int offset,
 			final int length,

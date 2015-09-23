@@ -31,7 +31,7 @@ public interface PerfDataReceiver
 
 	void setHHNanos( long value );
 
-	void setCdLpNanos( long value );
+	void setCdLp24Nanos( long value );
 
 	void setCdSddNanos( long value );
 

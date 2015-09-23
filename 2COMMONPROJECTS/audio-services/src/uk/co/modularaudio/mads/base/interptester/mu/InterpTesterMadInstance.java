@@ -59,14 +59,14 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolator = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
-	private final CDLowPassInterpolator24 cdLpInterpolator = new CDLowPassInterpolator24();
+	private final CDLowPassInterpolator24 cdLp24Interpolator = new CDLowPassInterpolator24();
 	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolator = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
-	private final CDLowPassInterpolator24 cdLpInterpolatorNoTs = new CDLowPassInterpolator24();
+	private final CDLowPassInterpolator24 cdLp24InterpolatorNoTs = new CDLowPassInterpolator24();
 	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
@@ -83,7 +83,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private long lastSorNanos;
 	private long lastLinNanos;
 	private long lastHHNanos;
-	private long lastCdLpNanos;
+	private long lastCdLp24Nanos;
 	private long lastCdSddNanos;
 
 	private boolean uiActive;
@@ -127,13 +127,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		liInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		hhInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
-		cdLpInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		cdLp24Interpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		cdSddInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 
 		sorInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		liInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		hhInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
-		cdLpInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		cdLp24InterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		cdSddInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 
 		// 6 updates a second is fine for the period length
@@ -187,8 +187,8 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
 					periodStartFrameTime,
-					InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_LP_NANOS,
-					lastCdLpNanos,
+					InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_LP_24_NANOS,
+					lastCdLp24Nanos,
 					null );
 
 			localBridge.queueTemporalEventToUi( tempQueueEntryStorage,
@@ -299,9 +299,9 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		hhInterpolatorNoTs.generateControlValues( hhNoTsBuf, frameOffset, numFrames );
 		hhInterpolatorNoTs.checkForDenormal();
 
-		final float[] lpNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_NOTS ].floatBuffer;
-		cdLpInterpolatorNoTs.generateControlValues( lpNoTsBuf, frameOffset, numFrames );
-		cdLpInterpolatorNoTs.checkForDenormal();
+		final float[] lpNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24_NOTS ].floatBuffer;
+		cdLp24InterpolatorNoTs.generateControlValues( lpNoTsBuf, frameOffset, numFrames );
+		cdLp24InterpolatorNoTs.checkForDenormal();
 
 		final float[] sddNoTsBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS ].floatBuffer;
 		cdSddInterpolatorNoTs.generateControlValues( sddNoTsBuf, frameOffset, numFrames );
@@ -335,12 +335,12 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		after = System.nanoTime();
 		lastHHNanos = after - before;
 
-		final float[] lpBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS ].floatBuffer;
+		final float[] lpBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24 ].floatBuffer;
 		before = System.nanoTime();
-		cdLpInterpolator.generateControlValues( lpBuf, frameOffset, numFrames );
-		cdLpInterpolator.checkForDenormal();
+		cdLp24Interpolator.generateControlValues( lpBuf, frameOffset, numFrames );
+		cdLp24Interpolator.checkForDenormal();
 		after = System.nanoTime();
-		lastCdLpNanos = after - before;
+		lastCdLp24Nanos = after - before;
 
 		final float[] sddBuf = channelBuffers[ InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE ].floatBuffer;
 		before = System.nanoTime();
@@ -359,7 +359,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolator.notifyOfNewValue( amp );
 		liInterpolator.notifyOfNewValue( amp );
 		hhInterpolator.notifyOfNewValue( amp );
-		cdLpInterpolator.notifyOfNewValue( amp );
+		cdLp24Interpolator.notifyOfNewValue( amp );
 		cdSddInterpolator.notifyOfNewValue( amp );
 	}
 
@@ -369,7 +369,7 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolatorNoTs.notifyOfNewValue( amp );
 		liInterpolatorNoTs.notifyOfNewValue( amp );
 		hhInterpolatorNoTs.notifyOfNewValue( amp );
-		cdLpInterpolatorNoTs.notifyOfNewValue( amp );
+		cdLp24InterpolatorNoTs.notifyOfNewValue( amp );
 		cdSddInterpolatorNoTs.notifyOfNewValue( amp );
 	}
 
@@ -381,13 +381,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		liInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		hhInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
-		cdLpInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		cdLp24Interpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		cdSddInterpolator.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 
 		sorInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		liInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		hhInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
-		cdLpInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
+		cdLp24InterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 		cdSddInterpolatorNoTs.resetSampleRateAndPeriod( sampleRate, desValueChaseSamples );
 	}
 
@@ -417,13 +417,13 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		sorInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		liInterpolator.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolator.resetLowerUpperBounds( minValue, maxValue );
-		cdLpInterpolator.resetLowerUpperBounds( minValue, maxValue );
+		cdLp24Interpolator.resetLowerUpperBounds( minValue, maxValue );
 		cdSddInterpolator.resetLowerUpperBounds( minValue, maxValue );
 
 		sorInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		liInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		hhInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
-		cdLpInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
+		cdLp24InterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 		cdSddInterpolatorNoTs.resetLowerUpperBounds( minValue, maxValue );
 	}
 

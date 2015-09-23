@@ -22,17 +22,13 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class LinearInterpolator implements ControlValueInterpolator
 {
-	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
+//	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
 	private int curWindowPos;
-	private int lastWindowPos;
 	private int interpolationLength;
 
 	private float curVal;
@@ -143,6 +139,5 @@ public class LinearInterpolator implements ControlValueInterpolator
 	{
 		curWindowPos = 0;
 		interpolationLength = periodLengthFrames;
-		lastWindowPos = periodLengthFrames - 1;
 	}
 }
