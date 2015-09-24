@@ -47,8 +47,9 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	public final static int PRODUCER_CV_HALFHANN = 9;
 	public final static int PRODUCER_CV_CD_LOWPASS_24 = 10;
 	public final static int PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE = 11;
+	public final static int PRODUCER_CV_CD_SC_LOWPASS_24 = 12;
 
-	public final static int NUM_CHANNELS = 12;
+	public final static int NUM_CHANNELS = 13;
 
 	public static final String DEFINITION_ID = "interptester";
 
@@ -73,6 +74,7 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		"Half Hann CV Out",
 		"CD Low Pass 24 CV Out",
 		"Spring Damper Double CV Out",
+		"CD Stability Checked Low Pass 24 CV Out",
 	};
 
 	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
@@ -83,6 +85,7 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelType.CV,
 		MadChannelType.CV,
 
+		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
 		MadChannelType.CV,
@@ -105,9 +108,11 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
 		MadChannelDirection.PRODUCER,
+		MadChannelDirection.PRODUCER,
 	};
 
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
+		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,
 		MadChannelPosition.MONO,

@@ -231,4 +231,10 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 	{
 		deltaTimestep = (DataRate.SR_48000.getValue() * INTEGRATION_TIMESTEP_FOR_48K) / sampleRate;
 	}
+
+	@Override
+	public float getValue()
+	{
+		return (float)desPos;
+	}
 }

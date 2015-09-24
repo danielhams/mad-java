@@ -96,4 +96,10 @@ public class SumOfRatiosInterpolator implements ControlValueInterpolator
 		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, valueChaseMillis );
 		curValueRatio = 1.0f - newValueRatio;
 	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
+	}
 }

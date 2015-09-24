@@ -116,24 +116,24 @@ public class CDButterworthFilter24DB implements FrequencyFilter
 		for (int i = 0; i < length; i++)
 		{
 			final float w = input[offset + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
-			float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
-			if( result < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
-					result > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
-			{
-				result = 0.0f;
-			}
+			final float result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
+//			if( result < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+//					result > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
+//			{
+//				result = 0.0f;
+//			}
 
 			feedbackDelaySamples[1] = feedbackDelaySamples[0];
 			feedbackDelaySamples[0] = w;
 
 			// And second pass (for 24 db)
 			final float we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
-			float resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
-			if( resulte < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
-					resulte > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
-			{
-				resulte = 0.0f;
-			}
+			final float resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
+//			if( resulte < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F &&
+//					resulte > -AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
+//			{
+//				resulte = 0.0f;
+//			}
 
 			feedbackDelaySamples[3] = feedbackDelaySamples[2];
 			feedbackDelaySamples[2] = we;

@@ -29,10 +29,10 @@ public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( AbstractCDLowPassInterpolator.class.getName() );
 
-	private float desVal;
+	protected float desVal;
 
-	private int sampleRate;
-	private final FrequencyFilter lpFilter;
+	protected int sampleRate;
+	protected final FrequencyFilter lpFilter;
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;
@@ -97,5 +97,11 @@ public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
 	{
 		this.sampleRate = sampleRate;
+	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
 	}
 }

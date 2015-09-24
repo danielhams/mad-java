@@ -69,4 +69,10 @@ public class NoneInterpolator implements ControlValueInterpolator
 	{
 		// Don't care
 	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
+	}
 }

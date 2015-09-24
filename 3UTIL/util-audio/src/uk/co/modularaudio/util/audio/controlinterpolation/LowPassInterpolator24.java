@@ -96,4 +96,10 @@ public class LowPassInterpolator24 implements ControlValueInterpolator
 	{
 		this.sampleRate = sampleRate;
 	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
+	}
 }

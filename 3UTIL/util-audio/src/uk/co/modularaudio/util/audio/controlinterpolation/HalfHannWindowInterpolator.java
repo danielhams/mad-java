@@ -157,4 +157,10 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 		curWindowPos = 0;
 		lastWindowPos = halfWindowLength;
 	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
+	}
 }

@@ -39,6 +39,7 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	private final LWTCLabel hhPerf;
 	private final LWTCLabel cdLp24Perf;
 	private final LWTCLabel cdSddPerf;
+	private final LWTCLabel cdScLp24Perf;
 
 	private class DarkLabel extends LWTCLabel
 	{
@@ -95,6 +96,11 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 		add( new DarkLabel("CD Spring Damper (D):"), "");
 		cdSddPerf = new DarkLabel();
 		add( cdSddPerf, "wrap");
+
+		add( new DarkLabel("CD SC Low Pass 24:"), "");
+		cdScLp24Perf = new DarkLabel();
+		add( cdScLp24Perf, "wrap");
+
 	}
 
 	@Override
@@ -132,4 +138,11 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 	{
 		cdSddPerf.setText( Long.toString( value ) );
 	}
+
+	@Override
+	public void setCdScLp24Nanos( final long value )
+	{
+		cdScLp24Perf.setText( Long.toString( value ) );
+	}
+
 }

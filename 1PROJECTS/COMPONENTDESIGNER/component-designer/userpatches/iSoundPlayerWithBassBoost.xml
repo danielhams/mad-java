@@ -9,9 +9,10 @@
         <rackPosition column="2" row="1"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 0"/>
-        <rackControl name="InterpolationChoice" value="CDLP"/>
+        <rackControl name="InterpolationChoice" value="CDSD24"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
+        <rackControl name="RespectTimestamps" value="true"/>
     </rackComponent>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
         <rackPosition column="0" row="4"/>
@@ -53,10 +54,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-6.5113635"/>
+        <rackControl name="Gain" value="-6.1784115"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/Better_Days_hifi.mp3|127472388"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/The_Red_Planet_hifi.mp3|138238400"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

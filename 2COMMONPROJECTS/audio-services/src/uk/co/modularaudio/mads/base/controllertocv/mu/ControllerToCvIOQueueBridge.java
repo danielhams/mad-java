@@ -38,8 +38,9 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 	public static final int COMMAND_IN_CONTROLLER_NUMBER = 3;
 	public static final int COMMAND_IN_BEGIN_LEARN = 4;
 	public static final int COMMAND_IN_INTERPOLATION = 5;
+	public static final int COMMAND_IN_USE_TIMESTAMPS = 6;
 
-	public static final int COMMAND_OUT_LEARNT_CONTROLLER = 6;
+	public static final int COMMAND_OUT_LEARNT_CONTROLLER = 7;
 
 	public ControllerToCvIOQueueBridge()
 	{
@@ -84,6 +85,12 @@ public class ControllerToCvIOQueueBridge extends MadLocklessQueueBridge<Controll
 			{
 				final InterpolationChoice interpolation = InterpolationChoice.values()[ (int)queueEntry.value ];
 				instance.setDesiredInterpolation( interpolation );
+				break;
+			}
+			case COMMAND_IN_USE_TIMESTAMPS:
+			{
+				final boolean useTimestamps = queueEntry.value == 1;
+				instance.setUseTimestamps( useTimestamps );
 				break;
 			}
 			default:

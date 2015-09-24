@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPassInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
@@ -59,8 +60,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 //	private static final float VALUE_CHASE_MILLIS = 15.0f;
 //	private static final float VALUE_CHASE_MILLIS = 10.0f;
 //	private static final float VALUE_CHASE_MILLIS = 9.8f;
-	private static final float VALUE_CHASE_MILLIS = 9.5f;
+//	private static final float VALUE_CHASE_MILLIS = 9.5f;
 //	private static final float VALUE_CHASE_MILLIS = 8.33f;
+	private static final float VALUE_CHASE_MILLIS = 8.2f;
 //	private static final float VALUE_CHASE_MILLIS = 7.33f;
 //	private static final float VALUE_CHASE_MILLIS = 5.33f;
 //	private static final float VALUE_CHASE_MILLIS = 3.7f;
@@ -109,6 +111,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		SPRINGANDDAMPERDOUBLE,
 		CDSPRINGANDDAMPERDOUBLE,
 		CDSPRINGANDDAMPERDOUBLE24,
+		CDSCLOWPASS24,
 	};
 	private final static int NUM_INTERPOLATORS = INTERPOLATOR.values().length;
 
@@ -128,6 +131,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.CDSCLOWPASS24.ordinal()] = new CDSCLowPassInterpolator24();
 	}
 
 	private final InterpolatorVisualiser[] visualisers = new InterpolatorVisualiser[NUM_INTERPOLATORS];
@@ -174,32 +178,14 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		add( new JLabel("CD Low Pass 24"), "cell 2 2");
 		add( visualisers[INTERPOLATOR.CDLOWPASS24.ordinal()], "cell 2 3");
 
+		add( new JLabel("CDSCLowPass24"), "cell 2 4");
+		add( visualisers[INTERPOLATOR.CDSCLOWPASS24.ordinal()], "cell 2 5");
+
 		add( new JLabel("CDSpringAndDamperDouble"), "cell 3 0");
 		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()], "cell 3 1");
 
 		add( new JLabel("CDSpringAndDamperDouble24"), "cell 3 2");
 		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()], "cell 3 3");
-
-//		add( new JLabel("Control"), "");
-//		add( new JLabel("Linear"), "wrap");
-//
-//		add( noneVisualiser, "grow");
-//		add( visualisers[INTERPOLATOR.LINEAR.ordinal()], "grow,wrap");
-//
-//		add( new JLabel("HalfHann"), "");
-//		add( new JLabel("SpringAndDamper"), "wrap");
-//		add( visualisers[INTERPOLATOR.HALFHANN.ordinal()], "grow");
-//		add( visualisers[INTERPOLATOR.SPRINGANDDAMPER.ordinal()], "grow,wrap");
-//
-//		add( new JLabel("LowPass"), "");
-//		add( new JLabel("CDLowPass24"), "wrap");
-//		add( visualisers[INTERPOLATOR.LOWPASS.ordinal()], "grow");
-//		add( visualisers[INTERPOLATOR.CDLOWPASS24.ordinal()], "grow,wrap");
-//
-//		add( new JLabel("SpringAndDamperDouble"), "");
-//		add( new JLabel("CDSpringAndDamperDouble"), "wrap");
-//		add( visualisers[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()], "grow");
-//		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()], "grow");
 
 		this.pack();
 	}

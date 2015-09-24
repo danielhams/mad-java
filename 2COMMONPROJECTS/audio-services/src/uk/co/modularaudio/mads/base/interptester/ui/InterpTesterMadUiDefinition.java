@@ -52,6 +52,7 @@ public class InterpTesterMadUiDefinition
 		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
 		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24,
 		InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE,
+		InterpTesterMadDefinition.PRODUCER_CV_CD_SC_LOWPASS_24,
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {
@@ -67,7 +68,8 @@ public class InterpTesterMadUiDefinition
 		new Point( 230, 160 ),
 		new Point( 270, 160 ),
 		new Point( 310, 160 ),
-		new Point( 350, 160 )
+		new Point( 350, 160 ),
+		new Point( 390, 160 )
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {

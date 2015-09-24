@@ -35,4 +35,6 @@ public interface ControlValueInterpolator
 	void resetLowerUpperBounds( float lowerBound, float upperBound );
 
 	void resetSampleRateAndPeriod( int sampleRate, int periodLengthFrames );
+
+	float getValue();
 }

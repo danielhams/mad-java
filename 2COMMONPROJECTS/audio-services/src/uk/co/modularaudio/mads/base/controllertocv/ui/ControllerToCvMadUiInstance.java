@@ -113,4 +113,10 @@ public class ControllerToCvMadUiInstance extends AbstractNoNameChangeNonConfigur
 	{
 		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_IN_INTERPOLATION, ic.ordinal() );
 	}
+
+	public void setUseTimestamps( final boolean active )
+	{
+		sendTemporalValueToInstance( ControllerToCvIOQueueBridge.COMMAND_IN_USE_TIMESTAMPS,
+				active ? 1 : 0 );
+	}
 }

@@ -48,6 +48,7 @@ public class ControllerToCvMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
+		"RespectTimestamps",
 		"ChannelSelection",
 		"ControllerSelection",
 		"Learn",
@@ -56,6 +57,7 @@ public class ControllerToCvMadUiDefinition
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.CHECKBOX,
 		ControlType.COMBO,
 		ControlType.COMBO,
 		ControlType.BUTTON,
@@ -64,6 +66,7 @@ public class ControllerToCvMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		ControllerToCvUseTimestampingUiJComponent.class,
 		ControllerToCvChannelChoiceUiJComponent.class,
 		ControllerToCvControlChoiceUiJComponent.class,
 		ControllerToCvLearnButtonUiJComponent.class,
@@ -72,11 +75,10 @@ public class ControllerToCvMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle( 200,   6, 156,  18 ),		// Use timestamps
 		new Rectangle(  10,  30, 100,  30 ),		// Channel
 		new Rectangle( 120,  30, 100,  30 ),		// Controller
-//		new Rectangle( 430,  30,  90,  30 ),		// Learn
-//		new Rectangle( 290,  30, 130,  30 )			// Mapping
-		new Rectangle( 230,  30,  90,  30 ),		// Learn
+ 		new Rectangle( 230,  30,  90,  30 ),		// Learn
 		new Rectangle( 340,  30, 100,  30 ),		// Mapping
 		new Rectangle( 450,  30, 100,  30 )			// Interpolation
 	};

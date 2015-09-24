@@ -140,4 +140,10 @@ public class LinearInterpolator implements ControlValueInterpolator
 		curWindowPos = 0;
 		interpolationLength = periodLengthFrames;
 	}
+
+	@Override
+	public float getValue()
+	{
+		return desVal;
+	}
 }
