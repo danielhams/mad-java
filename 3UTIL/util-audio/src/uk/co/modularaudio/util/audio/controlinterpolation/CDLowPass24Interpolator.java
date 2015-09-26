@@ -23,9 +23,9 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
 
 
-public class CDLowPassInterpolator24 extends AbstractCDLowPassInterpolator
+public class CDLowPass24Interpolator extends AbstractCDLowPassInterpolator
 {
-	public CDLowPassInterpolator24()
+	public CDLowPass24Interpolator()
 	{
 		super( new CDButterworthFilter24DB() );
 	}

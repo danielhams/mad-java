@@ -30,8 +30,8 @@ import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterModelChoiceUiJCo
 import uk.co.modularaudio.mads.base.interptester.ui.InterpTesterValueChaseMillisSliderUiJComponent;
 import uk.co.modularaudio.mads.base.interptester.utils.InterpTesterSliderModels;
 import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -60,15 +60,15 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolator = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
-	private final CDLowPassInterpolator24 cdLp24Interpolator = new CDLowPassInterpolator24();
+	private final CDLowPass24Interpolator cdLp24Interpolator = new CDLowPass24Interpolator();
 	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolator = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
-	private final CDSCLowPassInterpolator24 cdScLp24Interpolator = new CDSCLowPassInterpolator24();
+	private final CDSCLowPass24Interpolator cdScLp24Interpolator = new CDSCLowPass24Interpolator();
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
 	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator( -1.0f, 1.0f );
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
-	private final CDLowPassInterpolator24 cdLp24InterpolatorNoTs = new CDLowPassInterpolator24();
+	private final CDLowPass24Interpolator cdLp24InterpolatorNoTs = new CDLowPass24Interpolator();
 	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();

@@ -47,12 +47,12 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 	public enum InterpolationChoice
 	{
 		NONE( "None" ),
-		SUM_OF_RATIOS( "SOR" ),
-		SUM_OF_RATIOS_FIXED( "SORF" ),
-		LINEAR( "Lin" ),
-		LINEAR_FIXED( "LinF" ),
-		HALF_HANN( "HH" ),
-		HALF_HANN_FIXED( "HHF" ),
+		SUM_OF_RATIOS_FREE( "SORFree" ),
+		SUM_OF_RATIOS_FIXED( "SORFixed" ),
+		LINEAR_FREE( "LinFree" ),
+		LINEAR_FIXED( "LinFixed" ),
+		HALF_HANN_FREE( "HHFree" ),
+		HALF_HANN_FIXED( "HHFixed" ),
 		SPRING_DAMPER( "SD" ),
 		LOW_PASS( "LP" ),
 		LOW_PASS24( "LP24" ),
@@ -60,7 +60,9 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 		CD_LOW_PASS_24( "CDLP24" ),
 		CD_SC_LOW_PASS_24( "CDSCLP24" ),
 		CD_SPRING_DAMPER( "CDSD" ),
-		CD_SPRING_DAMPER24( "CDSD24" );
+		CD_SPRING_DAMPER24( "CDSD24" ),
+		LINEAR_FREE_SC_LOW_PASS_12( "LinFrLP12" ),
+		LINEAR_FREE_SC_LOW_PASS_24( "LinFrLP24" );
 
 		private String label;
 
@@ -144,7 +146,10 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 	@Override
 	public void receiveControlValue( final String value )
 	{
-		model.setSelectedItem( value );
+		if( LABEL_TO_ENUM.containsKey( value ) )
+		{
+			model.setSelectedItem( value );
+		}
 	}
 
 	@Override

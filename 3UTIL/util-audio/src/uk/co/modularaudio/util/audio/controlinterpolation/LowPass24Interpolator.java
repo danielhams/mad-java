@@ -22,22 +22,22 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.ButterworthFilter;
+import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 
-public class LowPassInterpolator implements ControlValueInterpolator
+public class LowPass24Interpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LowPassInterpolator.class.getName() );
 
 	private float desVal;
 
 	private int sampleRate;
-	private final ButterworthFilter lpFilter = new ButterworthFilter();
+	private final ButterworthFilter24DB lpFilter = new ButterworthFilter24DB();
 
 	private static final int TMP_LENGTH = 1024;
 	private static final int NUM_RESET_ITERS = 10;
 
-	public LowPassInterpolator()
+	public LowPass24Interpolator()
 	{
 	}
 

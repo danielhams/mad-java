@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
 
-public class CDSCLowPassInterpolator24 implements ControlValueInterpolator
+public class CDSCLowPass24Interpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( CDSCLowPassInterpolator24.class.getName() );
 
@@ -43,7 +43,7 @@ public class CDSCLowPassInterpolator24 implements ControlValueInterpolator
 
 	private final double[] internalDoubleArray = new double[TMP_LENGTH];
 
-	public CDSCLowPassInterpolator24()
+	public CDSCLowPass24Interpolator()
 	{
 		lpFilter = new CDButterworthFilter24DBDouble();
 	}

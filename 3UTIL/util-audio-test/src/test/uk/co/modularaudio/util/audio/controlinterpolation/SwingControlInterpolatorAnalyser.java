@@ -33,15 +33,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass12Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPass12Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
@@ -112,6 +113,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		CDSPRINGANDDAMPERDOUBLE,
 		CDSPRINGANDDAMPERDOUBLE24,
 		CDSCLOWPASS24,
+		LINEARLOWPASS12
 	};
 	private final static int NUM_INTERPOLATORS = INTERPOLATOR.values().length;
 
@@ -124,14 +126,15 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.HALFHANN.ordinal()] = new HalfHannWindowInterpolator();
 		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator( 0.0f, 1.0f );
-		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPassInterpolator();
-		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPassInterpolator24();
+		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPass12Interpolator();
+		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPass24Interpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPassInterpolator();
-		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPassInterpolator24();
+		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPass24Interpolator();
 		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
 		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
-		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f );
-		interpolators[INTERPOLATOR.CDSCLOWPASS24.ordinal()] = new CDSCLowPassInterpolator24();
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDouble24Interpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.CDSCLOWPASS24.ordinal()] = new CDSCLowPass24Interpolator();
+		interpolators[INTERPOLATOR.LINEARLOWPASS12.ordinal()] = new LinearLowPass12Interpolator( 0.0f, 1.0f );
 	}
 
 	private final InterpolatorVisualiser[] visualisers = new InterpolatorVisualiser[NUM_INTERPOLATORS];
@@ -171,6 +174,9 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 		add( new JLabel("Low Pass 24"), "cell 1 2");
 		add( visualisers[INTERPOLATOR.LOWPASS24.ordinal()], "cell 1 3");
+
+		add( new JLabel("Linear Low Pass "), "cell 1 4");
+		add( visualisers[INTERPOLATOR.LINEARLOWPASS12.ordinal()], "cell 1 5");
 
 		add( new JLabel("CD Low Pass"), "cell 2 0");
 		add( visualisers[INTERPOLATOR.CDLOWPASS.ordinal()], "cell 2 1");

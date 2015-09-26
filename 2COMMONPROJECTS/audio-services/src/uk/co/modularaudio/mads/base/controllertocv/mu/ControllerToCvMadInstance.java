@@ -28,18 +28,20 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent;
-import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvUseTimestampingUiJComponent;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent.InterpolationChoice;
+import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvUseTimestampingUiJComponent;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator24;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator24;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPassInterpolator24;
+import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass12Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPass12Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.LowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
@@ -79,6 +81,12 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 //	private final static float FIXED_INTERP_MILLIS = 9.8f;
 	private final static float FIXED_INTERP_MILLIS = 8.2f;
 
+	// For BCD EQ:
+//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
+//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
+	// For BCD Faders
+	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
+
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
 
@@ -101,17 +109,19 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
 		freeInterpolators.put( InterpolationChoice.NONE, new NoneInterpolator() );
-		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS, new SumOfRatiosInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR, new LinearInterpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.HALF_HANN, new HalfHannWindowInterpolator() );
+		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FREE, new SumOfRatiosInterpolator() );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE, new LinearInterpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.HALF_HANN_FREE, new HalfHannWindowInterpolator() );
 		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPassInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LOW_PASS24, new LowPassInterpolator24() );
+		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPass12Interpolator() );
+		freeInterpolators.put( InterpolationChoice.LOW_PASS24, new LowPass24Interpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPassInterpolator24() );
-		freeInterpolators.put( InterpolationChoice.CD_SC_LOW_PASS_24, new CDSCLowPassInterpolator24() );
+		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPass24Interpolator() );
+		freeInterpolators.put( InterpolationChoice.CD_SC_LOW_PASS_24, new CDSCLowPass24Interpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDoubleInterpolator24( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDouble24Interpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_12, new LinearLowPass12Interpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_24, new LinearLowPass24Interpolator( 0.0f, 1.0f ) );
 
 		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
 		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator( 0.0f, 1.0f ) );
@@ -144,15 +154,22 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 					FIXED_INTERP_MILLIS );
 
 			final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+			// The free ones.
+			// Quick hack to force the min length here to be double some controller period
+			final int minInterpolatorLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+					MIN_CONTROLLER_PERIOD_MILLIS * 2 );
+			final int freeInterpolatorsPeriodLength = Math.max( minInterpolatorLength, periodLengthFrames );
 
 			if( log.isTraceEnabled() )
 			{
-				log.trace("Setting interpolator period length to " + periodLengthFrames );
+				log.trace("Period length is " + periodLengthFrames );
+				log.trace("MinInterpolatorLength is " + minInterpolatorLength );
 				log.trace("Setting fixed interpolator period length to " + fixedInterpolatorsPeriodLength );
+				log.trace("Setting free interpolator period length to " + freeInterpolatorsPeriodLength );
 			}
 			for( final ControlValueInterpolator cvi : freeInterpolators.values() )
 			{
-				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames );
+				cvi.resetSampleRateAndPeriod( sampleRate, freeInterpolatorsPeriodLength );
 			}
 			for( final ControlValueInterpolator cvi : fixedInterpolators.values() )
 			{
@@ -226,6 +243,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			int startFrameOffset = frameOffset;
 
 			int currentNoteEvent = 0;
+//			if( numNotes > 0 )
+//			{
+//				log.trace("Beginning timestamped note processing");
+//			}
 
 			while( numFramesLeft > 0 )
 			{
@@ -233,29 +254,34 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 				if( currentNoteEvent < numNotes )
 				{
+//					log.trace( "Hunting for next event" );
 					// Get index of last note event for the next
 					// sample index where it is a controller.
 
 					// We do this by finding the next controller event
 					// and then hunting for any further controller events
 					// with the same sample index
-					final int nextControllerEventIndex = findNextControllerEvent( noteEvents,
+					currentNoteEvent = findNextControllerEvent( noteEvents,
 							numNotes,
 							currentNoteEvent );
+//					log.trace( "Found next event at index " + currentNoteEvent );
 
-					if( nextControllerEventIndex == -1 )
+					if( currentNoteEvent == numNotes )
 					{
 						// Didn't find any, just process the rest as is
 						// by leaving numFramesThisRound alone
+//						log.trace( "No further notes, generating " + numFramesThisRound + " from index " +
+//								currentFrameOffset );
 					}
 					else
 					{
-						currentNoteEvent = nextControllerEventIndex;
 						// This will return "currentNoteEvent" if there isn't any
 						// following events with the same sample index
-						currentNoteEvent = findLastControllerEventWithSampleIndex( noteEvents,
+						currentNoteEvent = findLastControllerEventWithMatchingSampleIndex( noteEvents,
 								numNotes,
 								currentNoteEvent );
+//						log.trace( "After attempting to find last, event to process at index " +
+//								currentNoteEvent );
 
 						final MadChannelNoteEvent ne = noteEvents[currentNoteEvent];
 						int noteSampleIndex = ne.getEventSampleIndex();
@@ -267,25 +293,22 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 								(noteSampleIndex > numFrames-1 ? numFrames-1 : noteSampleIndex)
 						);
 
-						numFramesThisRound = noteSampleIndex - currentFrameOffset;
+//						log.trace( "After bounds checking that is " + noteSampleIndex );
 
-						final float rawNoteValue = ne.getParamTwo() / 127.0f;
-						final float mappedValueToUse = mapValue( desiredMapping, rawNoteValue );
-
-						currentInterpolator.notifyOfNewValue( mappedValueToUse );
-	//					if( log.isTraceEnabled() )
-	//					{
-	//						log.trace( "Notifying interpolator to change to value " +
-	//								MathFormatter.fastFloatPrint( mappedValueToUse, 8, true ) );
-	//					}
-
-						// Fall onto next (or end) note
-						currentNoteEvent++;
+						if( noteSampleIndex < currentFrameOffset )
+						{
+							log.error("Skipping CV generation - position goes backwards");
+							numFramesThisRound = 0;
+						}
+						else
+						{
+							numFramesThisRound = noteSampleIndex - currentFrameOffset;
+//							log.trace("Generating " + numFramesThisRound + " frames from offset " + startFrameOffset );
+						}
 					}
 				}
 				// else no note events to process
 
-	//			log.trace("Generating " + numFramesThisRound + " frames from offset " + startFrameOffset );
 				if( numFramesThisRound < 0
 						|| startFrameOffset > (frameOffset + numFrames + 1) )
 				{
@@ -298,6 +321,24 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 				}
 
 				currentInterpolator.checkForDenormal();
+
+				if( currentNoteEvent < numNotes )
+				{
+					final MadChannelNoteEvent ne = noteEvents[currentNoteEvent];
+
+					final float rawNoteValue = ne.getParamTwo() / 127.0f;
+					final float mappedValueToUse = mapValue( desiredMapping, rawNoteValue );
+
+					currentInterpolator.notifyOfNewValue( mappedValueToUse );
+//					if( log.isTraceEnabled() )
+//					{
+//						log.trace( "Notifying interpolator to change to value " +
+//								MathFormatter.fastFloatPrint( mappedValueToUse, 8, true ) );
+//					}
+
+					// Fall onto next (or end) note
+					currentNoteEvent++;
+				}
 
 				numFramesLeft -= numFramesThisRound;
 				currentFrameOffset += numFramesThisRound;
@@ -351,10 +392,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		}
 		while( currentNoteEvent < numNoteEvents );
 
-		return -1;
+		return numNoteEvents;
 	}
 
-	private int findLastControllerEventWithSampleIndex( final MadChannelNoteEvent[] noteEvents,
+	private int findLastControllerEventWithMatchingSampleIndex( final MadChannelNoteEvent[] noteEvents,
 			final int numNoteEvents,
 			final int iCurrentNoteEvent )
 	{
@@ -365,12 +406,13 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 		while( currentNoteEvent < (numNoteEvents - 1) )
 		{
-			final MadChannelNoteEvent nextEvent = noteEvents[currentNoteEvent+1];
+			final int nextEventIndex = currentNoteEvent + 1;
+			final MadChannelNoteEvent nextEvent = noteEvents[nextEventIndex];
 			if( nextEvent.getEventSampleIndex() == existingSampleIndex )
 			{
 				if( isValidControllerEvent( nextEvent ) )
 				{
-					lastEventIndex = currentNoteEvent+1;
+					lastEventIndex = nextEventIndex;
 				}
 			}
 			else
