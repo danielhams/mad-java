@@ -13,9 +13,9 @@
     </rackComponent>
     <rackComponent name="Moog Filter 1" definitionId="moog_filter">
         <rackPosition column="2" row="0"/>
-        <rackControl name="Cutoff" value="0.752"/>
+        <rackControl name="Cutoff" value="1.0"/>
         <rackControl name="Filter Type" value="Low Pass"/>
-        <rackControl name="Q" value="0.781"/>
+        <rackControl name="Q" value="0.0"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
         <rackPosition column="2" row="2"/>
