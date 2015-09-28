@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="SoundfilePlayerWithBassBoost" cols="4" rows="20">
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Left"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="InProcessing" rackComponentChannelInstanceName="Input Channel 1"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="InProcessing" rackComponentChannelInstanceName="Input Channel 2"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Output Amp" rackComponentChannelInstanceName="Output Wave Right"/>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
@@ -11,14 +11,28 @@
         <rackControl name="PowerCurve" value="Equal Power"/>
         <rackControl name="Slider" value="0.0"/>
     </rackComponent>
-    <rackComponent name="DC Trap 1" definitionId="dc_trap">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="InProcessing" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
+        <rack name="InProcessing" cols="4" rows="29">
+            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Left"/>
+            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Right"/>
+            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 1"/>
+            <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 2"/>
+            <rackComponent name="DC Trap 1" definitionId="dc_trap">
+                <rackPosition column="0" row="0"/>
+            </rackComponent>
+            <rackComponent xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
+                <rackPosition column="0" row="1"/>
+            </rackComponent>
+            <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
+            <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
+        </rack>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="5"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-5.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
@@ -28,7 +42,7 @@
         <rackControl name="Gain" value="-0.22513008"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 304 (14 September 2015).mp3|102830419"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 304 (14 September 2015).mp3|131633814"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -48,7 +62,7 @@
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 1" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="2" row="3"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
@@ -56,8 +70,8 @@
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
-    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
-    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="InProcessing" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
+    <rackLink producerRackComponentName="InProcessing" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Right"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>

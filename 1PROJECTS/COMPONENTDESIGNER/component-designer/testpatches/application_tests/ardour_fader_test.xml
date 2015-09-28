@@ -20,7 +20,7 @@
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
         <rackPosition column="2" row="4"/>
@@ -28,7 +28,7 @@
     <rackComponent name="CVLinear" definitionId="controller_to_cv">
         <rackPosition column="0" row="4"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 5"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="LinFree"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -37,7 +37,7 @@
     <rackComponent name="CVNoTs" definitionId="controller_to_cv">
         <rackPosition column="0" row="2"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 5"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -46,16 +46,16 @@
     <rackComponent name="CVPremium" definitionId="controller_to_cv">
         <rackPosition column="0" row="5"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 5"/>
-        <rackControl name="InterpolationChoice" value="CDSCLP24"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="LinFrLP24"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
-        <rackControl name="RespectTimestamps" value="true"/>
+        <rackControl name="RespectTimestamps" value="false"/>
     </rackComponent>
     <rackComponent name="CVTrigger" definitionId="controller_to_cv">
         <rackPosition column="0" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 5"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
@@ -64,7 +64,7 @@
     <rackComponent name="CVTs" definitionId="controller_to_cv">
         <rackPosition column="0" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 5"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -89,7 +89,7 @@
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="NoTSLinear" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
@@ -103,12 +103,21 @@
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
         <rackPosition column="0" row="1"/>
         <rackControl name="Offset" value="-1.0"/>
         <rackControl name="Scale" value="2.0"/>
+    </rackComponent>
+    <rackComponent name="Scope (Large) 1" definitionId="scope_large">
+        <rackPosition column="0" row="14"/>
+        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveImage" value=""/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value="false|true|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;Signal 3|true&#x9;Signal 4"/>
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="0" row="6"/>
@@ -148,7 +157,7 @@
             </rackComponent>
             <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
                 <rackPosition column="0" row="3"/>
-                <rackControl name="Frequency" value="40.0"/>
+                <rackControl name="Frequency" value="1803.0"/>
                 <rackControl name="Pulsewidth" value="1.0"/>
                 <rackControl name="Shape" value="Sine"/>
             </rackComponent>
@@ -183,7 +192,6 @@
             <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 3" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 3"/>
             <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 4" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 4"/>
             <rackLink producerRackComponentName="CV To Audio (Four Channels) 2" producerChannelName="Audio Output 1" consumerRackComponentName="Audio To CV (Four Channels) 2" consumerChannelName="Audio Input 1"/>
-            <rackLink producerRackComponentName="Static Value 1" producerChannelName="Output CV" consumerRackComponentName="Band Limited Oscillator 1" consumerChannelName="Input Frequency CV"/>
         </rack>
     </rackComponent>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 5"/>
@@ -192,10 +200,15 @@
     <rackLink producerRackComponentName="CVPremium" producerChannelName="Output CV" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 4"/>
     <rackLink producerRackComponentName="CVTrigger" producerChannelName="Output CV" consumerRackComponentName="Scale And Offset 2" consumerChannelName="Input CV"/>
     <rackLink producerRackComponentName="CVTs" producerChannelName="Output CV" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 2" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 3" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 3" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 4" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 4" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 5" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output CV Channel 5" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 3" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 3" consumerRackComponentName="NoTSLinear" consumerChannelName="Input Wave"/>
