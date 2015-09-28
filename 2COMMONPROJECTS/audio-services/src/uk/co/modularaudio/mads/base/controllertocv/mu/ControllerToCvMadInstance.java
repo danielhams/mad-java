@@ -82,10 +82,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	private final static float FIXED_INTERP_MILLIS = 8.2f;
 
 	// For BCD EQ:
-//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
+	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
 //	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
 	// For BCD Faders
-	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
+//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
 
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
@@ -153,7 +153,9 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
 					FIXED_INTERP_MILLIS );
 
-			final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+			final int periodLengthFrames =
+					hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+
 			// The free ones.
 			// Quick hack to force the min length here to be double some controller period
 			final int minInterpolatorLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
@@ -297,7 +299,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 						if( noteSampleIndex < currentFrameOffset )
 						{
-							log.error("Skipping CV generation - position goes backwards");
+							if( log.isErrorEnabled() )
+							{
+								log.error("Skipping CV generation - position goes backwards by "
+										+ (currentFrameOffset - noteSampleIndex) );
+							}
 							numFramesThisRound = 0;
 						}
 						else
@@ -350,16 +356,14 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			// Find value from last controller event
 			// set it in the interpolator and generate a complete period
 			// using that one value.
-			for( int n = 0 ; n < numNotes ; ++n )
-			{
-				final MadChannelNoteEvent ne = noteEvents[n];
-				if( isValidControllerEvent( ne ) )
-				{
-					final float rawNoteValue = ne.getParamTwo() / 127.0f;
-					final float mappedValueToUse = mapValue( desiredMapping, rawNoteValue );
+			final int lastControlEventIndex = findLastValidControllerEvent( noteEvents, numNotes );
 
-					currentInterpolator.notifyOfNewValue( mappedValueToUse );
-				}
+			if( lastControlEventIndex != numNotes )
+			{
+				final MadChannelNoteEvent ne = noteEvents[lastControlEventIndex];
+				final float rawNoteValue = ne.getParamTwo() / 127.0f;
+				final float mappedValueToUse = mapValue( desiredMapping, rawNoteValue );
+				currentInterpolator.notifyOfNewValue( mappedValueToUse );
 			}
 
 			currentInterpolator.generateControlValues( outCvFlots, frameOffset, numFrames );
@@ -367,6 +371,23 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	private int findLastValidControllerEvent( final MadChannelNoteEvent[] noteEvents,
+			final int numNoteEvents )
+	{
+		int lastValidEventIndex = -1;
+
+		for( int i = 0 ; i < numNoteEvents ; ++i )
+		{
+			final MadChannelNoteEvent ne = noteEvents[i];
+			if( isValidControllerEvent( ne ) )
+			{
+				lastValidEventIndex = i;
+			}
+		}
+
+		return( lastValidEventIndex == -1 ? numNoteEvents : lastValidEventIndex );
 	}
 
 	private boolean isValidControllerEvent( final MadChannelNoteEvent ne )
