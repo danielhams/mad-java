@@ -90,15 +90,15 @@ public class ScopeLargeMadUiDefinition
 		// Trigger + four signals
 		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
 
-		VIS_COLOURS[1] = Color.decode( "#ab47d6" );
-		VIS_COLOURS[2] = Color.decode( "#4d3cdf" );
-		VIS_COLOURS[3] = Color.decode( "#00af92" );
-		VIS_COLOURS[4] = Color.decode( "#3cdf68" );
+		VIS_COLOURS[1] = Color.decode( "#d31b00" );
+		VIS_COLOURS[2] = Color.decode( "#d38c00" );
+		VIS_COLOURS[3] = Color.decode( "#e4f439" );
+		VIS_COLOURS[4] = Color.decode( "#5e9c00" );
 
-		VIS_COLOURS[5] = Color.decode( "#9edf3c" );
-		VIS_COLOURS[6] = Color.decode( "#c1d300" );
-		VIS_COLOURS[7] = Color.decode( "#d38c00" );
-		VIS_COLOURS[8] = Color.decode( "#d31b00" );
+		VIS_COLOURS[5] = Color.decode( "#3cdf68" );
+		VIS_COLOURS[6] = Color.decode( "#00af92" );
+		VIS_COLOURS[7] = Color.decode( "#4d3cdf" );
+		VIS_COLOURS[8] = Color.decode( "#ab47d6" );
 	}
 
 	public ScopeLargeMadUiDefinition( final BufferedImageAllocator bia,
