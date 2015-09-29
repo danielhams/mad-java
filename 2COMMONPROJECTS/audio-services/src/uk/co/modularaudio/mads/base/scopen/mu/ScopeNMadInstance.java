@@ -25,10 +25,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent.RepetitionChoice;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenTriggerChoiceUiJComponent;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenTriggerChoiceUiJComponent.TriggerChoice;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRepetitionsChoiceUiJComponent.RepetitionChoice;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNTriggerChoiceUiJComponent.TriggerChoice;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;

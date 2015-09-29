@@ -23,8 +23,8 @@ package uk.co.modularaudio.mads.base.scopen.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent.RepetitionChoice;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenTriggerChoiceUiJComponent.TriggerChoice;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRepetitionsChoiceUiJComponent.RepetitionChoice;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNTriggerChoiceUiJComponent.TriggerChoice;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessIOQueue;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
