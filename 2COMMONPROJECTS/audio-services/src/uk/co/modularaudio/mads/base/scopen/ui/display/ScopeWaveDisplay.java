@@ -39,6 +39,7 @@ import uk.co.modularaudio.mads.base.scopen.ui.ScopeNDataVisualiser;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNDisplayUiJComponent;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNMadUiInstance;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNSampleRateListener;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -77,28 +78,31 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	// or just the postive axis (unipolar, false)
 
 
-	public static final Color[] VIS_COLOURS = new Color[ScopeNMadDefinition.NUM_VIS_CHANNELS];
-
-	static
-	{
-		// Trigger + four signals
-		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
-		VIS_COLOURS[1] = Color.decode( "#d31b00" );
-		VIS_COLOURS[2] = Color.decode( "#d38c00" );
-		VIS_COLOURS[3] = Color.decode( "#c1d300" );
-		VIS_COLOURS[4] = Color.decode( "#08af00" );
-
-		// Alternate colour scheme
+	// Maximum of eight scope channels for now (plus the trigger)
+	public static final int MAX_VIS_COLOURS = 9;
+//	public static final Color[] VIS_COLOURS = new Color[MAX_VIS_COLOURS];
+//
+//	static
+//	{
+//		// Trigger + four signals
 //		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
-//		VIS_COLOURS[1] = Color.decode( "#d31b00" );
-//		VIS_COLOURS[2] = Color.decode( "#bed300" );
-//		VIS_COLOURS[3] = Color.decode( "#00d37d" );
-//		VIS_COLOURS[4] = Color.decode( "#004dd3" );
-	}
+//
+//		VIS_COLOURS[1] = Color.decode( "#ab47d6" );
+//		VIS_COLOURS[2] = Color.decode( "#4d3cdf" );
+//		VIS_COLOURS[3] = Color.decode( "#00af92" );
+//		VIS_COLOURS[4] = Color.decode( "#3cdf68" );
+//
+//		VIS_COLOURS[5] = Color.decode( "#9edf3c" );
+//		VIS_COLOURS[6] = Color.decode( "#c1d300" );
+//		VIS_COLOURS[7] = Color.decode( "#d38c00" );
+//		VIS_COLOURS[8] = Color.decode( "#d31b00" );
+//	}
 
-	private final float[][] internalChannelBuffers = new float[ScopeNMadDefinition.NUM_VIS_CHANNELS][];
+	private final ScopeNUiInstanceConfiguration uiInstanceConfiguration;
 
-	private final int[][] channelValues = new int[ScopeNMadDefinition.NUM_VIS_CHANNELS][];
+	private final float[][] internalChannelBuffers;
+	private final int[][] channelValues;
+	private final Color[] visColours;
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 	private int maxCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
@@ -106,17 +110,27 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	private int captureLengthSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, LogarithmicTimeMillis1To1000SliderModel.DEFAULT_MILLIS );
 
-	private final boolean[] signalVisibility = new boolean[5];
+	private final boolean[] signalVisibility;
 
 	private DisplayPoles displayPoles = ScopeNDisplayUiJComponent.DEFAULT_DISPLAY_POLES;
 
 	public ScopeWaveDisplay( final U uiInstance,
+			final ScopeNUiInstanceConfiguration uiInstanceConfiguration,
 			final int numTimeMarkers,
 			final int numAmpMarkers )
 	{
 		this.uiInstance = uiInstance;
 		this.numTimeMarkers = numTimeMarkers;
 		this.numAmpMarkers = numAmpMarkers;
+
+		this.uiInstanceConfiguration = uiInstanceConfiguration;
+
+		final int numTotalChannels = uiInstanceConfiguration.getNumTotalChannels();
+		internalChannelBuffers = new float[ numTotalChannels ][];
+		channelValues = new int[ numTotalChannels ][];
+		signalVisibility = new boolean[ numTotalChannels ];
+
+		this.visColours = uiInstanceConfiguration.getVisColours();
 
 		setOpaque( true );
 		setBackground( ScopeNColours.BACKGROUND_COLOR );
@@ -164,11 +178,11 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 	private void paintData( final Graphics g )
 	{
-		for( int channel = 0 ; channel < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++channel )
+		for( int channel = 0 ; channel < uiInstanceConfiguration.getNumTotalChannels() ; ++channel )
 		{
 			if( !signalVisibility[channel] ) continue;
 
-			g.setColor( VIS_COLOURS[channel] );
+			g.setColor( visColours[channel] );
 
 			int previousMinY = -1;
 			int previousMaxY = -1;
@@ -230,7 +244,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		horizPixelsPerMarker = ScopeNDisplayUiJComponent.getAdjustedWidthBetweenMarkers( this.width, numTimeMarkers );
 		vertPixelsPerMarker = ScopeNDisplayUiJComponent.getAdjustedHeightBetweenMarkers( this.height, numAmpMarkers );
 
-		for( int c = 0 ; c < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++c )
+		for( int c = 0 ; c < uiInstanceConfiguration.getNumTotalChannels() ; ++c )
 		{
 			// Enough space for a min and max per point
 			channelValues[c] = new int[ 2 * magsWidth ];
@@ -268,7 +282,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		}
 		else
 		{
-			for( int c = 0 ; c < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++c )
+			for( int c = 0 ; c < uiInstanceConfiguration.getNumTotalChannels() ; ++c )
 			{
 				System.arraycopy( frontEndBuffers[c], framesChangedOffset,
 						internalChannelBuffers[c], framesChangedOffset,
@@ -300,7 +314,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 		if( numSamplesPerPixel <= 1.0f )
 		{
-			for( int channel = 0 ; channel < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++channel )
+			for( int channel = 0 ; channel < uiInstanceConfiguration.getNumTotalChannels() ; ++channel )
 			{
 				for( int x = startPixel ; x < endPixel ; ++x )
 				{
@@ -326,7 +340,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		}
 		else
 		{
-			for( int channel = 0 ; channel < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++channel )
+			for( int channel = 0 ; channel < uiInstanceConfiguration.getNumTotalChannels() ; ++channel )
 			{
 				for( int x = startPixel ; x < endPixel ; ++x )
 				{
@@ -394,7 +408,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		if( internalChannelBuffers[0] == null ||
 				internalChannelBuffers[0].length != maxCaptureSamples )
 		{
-			for( int c = 0 ; c < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++c )
+			for( int c = 0 ; c < uiInstanceConfiguration.getNumTotalChannels() ; ++c )
 			{
 				internalChannelBuffers[c] = new float[maxCaptureSamples];
 			}

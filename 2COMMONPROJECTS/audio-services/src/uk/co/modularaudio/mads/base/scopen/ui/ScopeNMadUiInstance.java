@@ -50,12 +50,14 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 {
 	private static Log log = LogFactory.getLog( ScopeNMadUiInstance.class.getName() );
 
+	private final ScopeNUiInstanceConfiguration uiInstanceConfiguration;
+
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private int maxCaptureLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 
-	private final float[][] frontEndBuffers = new float[ScopeNMadDefinition.NUM_VIS_CHANNELS][];
+	private final float[][] frontEndBuffers;
 
 	private int frontEndWritePosition = 0;
 
@@ -67,10 +69,13 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 	private ScopeNDataVisualiser scopeDataVisualiser;
 	private ScopeImageSaver scopeImageSaver;
 
+	@SuppressWarnings("unchecked")
 	public ScopeNMadUiInstance( final I instance,
 			final MadUiDefinition<D, I> uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
+		uiInstanceConfiguration = ((ScopeNMadUiDefinition<D,I,?>)uiDefinition).getUiInstanceConfiguration();
+		frontEndBuffers = new float[uiInstanceConfiguration.getNumTotalChannels()][];
 		setupFrontEndBuffers();
 	}
 
@@ -98,7 +103,7 @@ public class ScopeNMadUiInstance<D extends ScopeNMadDefinition<D, I>,
 		if( frontEndBuffers[0] == null ||
 				frontEndBuffers[0].length != maxCaptureLength )
 		{
-			for( int c = 0 ; c < ScopeNMadDefinition.NUM_VIS_CHANNELS ; ++c )
+			for( int c = 0 ; c < uiInstanceConfiguration.getNumTotalChannels() ; ++c )
 			{
 				frontEndBuffers[c] = new float[ maxCaptureLength ];
 			}

@@ -59,6 +59,8 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 		CAPTURING
 	};
 
+	private final ScopeNInstanceConfiguration instanceConfiguration;
+
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private int maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
@@ -84,12 +86,17 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	private int workingFramesCaptured;
 	private int workingFrontEndPeriodFramesCaptured;
 
+	final float[][] sourceBuffers;
+
 	public ScopeNMadInstance( final String instanceName,
 			final D definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		instanceConfiguration = definition.getScopeInstanceConfiguration();
+
+		sourceBuffers = new float[instanceConfiguration.getNumTotalChannels()][];
 	}
 
 	@Override
@@ -104,7 +111,8 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 		desiredFramesToCapture = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, captureMillis );
 		workingDesiredFramesToCapture = desiredFramesToCapture;
 
-		backEndFrontEndBuffer = new MultiChannelBackendToFrontendDataRingBuffer( ScopeNMadDefinition.NUM_VIS_CHANNELS, maxRingBufferingInSamples );
+		backEndFrontEndBuffer = new MultiChannelBackendToFrontendDataRingBuffer( instanceConfiguration.getNumTotalChannels(),
+				maxRingBufferingInSamples );
 
 		framesPerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
 
@@ -221,7 +229,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 			final int numLeftThisRound,
 			final MadChannelBuffer[] channelBuffers )
 	{
-		final float[] triggerFloats = channelBuffers[ ScopeNMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+		final float[] triggerFloats = channelBuffers[ ScopeNInstanceConfiguration.TRIGGER_INDEX ].floatBuffer;
 
 		// In case not found, skip over the frames we will check
 		int numFramesThisRound = numLeftThisRound;
@@ -269,7 +277,7 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 			final int numLeftThisRound,
 			final MadChannelBuffer[] channelBuffers )
 	{
-		final float[] triggerFloats = channelBuffers[ ScopeNMadDefinition.SCOPE_TRIGGER ].floatBuffer;
+		final float[] triggerFloats = channelBuffers[ ScopeNInstanceConfiguration.TRIGGER_INDEX ].floatBuffer;
 
 		// In case not found, skip over the frames we will check
 		int numFramesThisRound = numLeftThisRound;
@@ -326,12 +334,10 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 		int numFramesThisRound = (numLeftThisRound < numFramesLeftToCapture ? numLeftThisRound : numFramesLeftToCapture);
 		numFramesThisRound = (numFramesThisRound < numFramesToBufferEmit ? numFramesThisRound : numFramesToBufferEmit);
 
-		final float[][] sourceBuffers = new float[5][];
-		sourceBuffers[0] = channelBuffers[ ScopeNMadDefinition.SCOPE_TRIGGER ].floatBuffer;
-		sourceBuffers[1] = channelBuffers[ ScopeNMadDefinition.SCOPE_INPUT_0 ].floatBuffer;
-		sourceBuffers[2] = channelBuffers[ ScopeNMadDefinition.SCOPE_INPUT_1 ].floatBuffer;
-		sourceBuffers[3] = channelBuffers[ ScopeNMadDefinition.SCOPE_INPUT_2 ].floatBuffer;
-		sourceBuffers[4] = channelBuffers[ ScopeNMadDefinition.SCOPE_INPUT_3 ].floatBuffer;
+		for( int i = 0 ; i < instanceConfiguration.getNumTotalChannels() ; ++i )
+		{
+			sourceBuffers[i] = channelBuffers[ i ].floatBuffer;
+		}
 
 		final int numWritten = backEndFrontEndBuffer.backEndWrite( sourceBuffers, frameOffset + currentFrameOffset, numFramesThisRound );
 

@@ -83,6 +83,7 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 	public static final DisplayPoles DEFAULT_DISPLAY_POLES = DisplayPoles.BIPOLE;
 
 	private final U uiInstance;
+	private final ScopeNUiInstanceConfiguration uiInstanceConfiguration;
 
 	private final ScopeAmpLabels<D, I, U> ampLabels;
 	private final ScopeTopPanel topPanel;
@@ -96,6 +97,7 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 	private final ReentrantLock paintingLock = new ReentrantLock( true );
 	private final AllocationMatch localAllocationMatch = new AllocationMatch();
 
+	@SuppressWarnings("unchecked")
 	public ScopeNDisplayUiJComponent( final D definition,
 			final I instance,
 			final U uiInstance,
@@ -105,6 +107,7 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 			final int ampNumDecimalPlaces )
 	{
 		this.uiInstance = uiInstance;
+		this.uiInstanceConfiguration = ((ScopeNMadUiDefinition<D,I,U>)uiInstance.getUiDefinition()).getUiInstanceConfiguration();
 
 		setOpaque( true );
 		setBackground( ScopeNColours.BACKGROUND_COLOR );
@@ -131,13 +134,14 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 		setLayout( msh.createMigLayout() );
 
 		ampLabels = new ScopeAmpLabels<D, I, U>( uiInstance, numAmpMarks, ampNumDecimalPlaces );
-		topPanel = new ScopeTopPanel( this, this );
+		topPanel = new ScopeTopPanel( uiInstanceConfiguration, this, this );
 		ampMarks = new ScopeAmpMarks( numAmpMarks );
-		waveDisplay = new ScopeWaveDisplay<D, I, U>( uiInstance, numTimeMarks, numAmpMarks );
+		waveDisplay = new ScopeWaveDisplay<D, I, U>( uiInstance, uiInstanceConfiguration, numTimeMarks, numAmpMarks );
 		rightEmptyPlot = new ScopeEmptyPlot();
 		timeMarks = new ScopeTimeMarks( numTimeMarks );
 		timeLabels = new ScopeTimeLabels<D, I, U>( uiInstance, numTimeMarks );
-		bottomSignalToggles = new ScopeBottomSignalToggles( this );
+		bottomSignalToggles = new ScopeBottomSignalToggles( uiInstanceConfiguration,
+				this );
 
 		this.add( ampLabels, "cell 0 0, spany 3, growy" );
 		this.add( topPanel, "cell 1 0, spanx 3, center, growx" );
@@ -178,23 +182,25 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void receiveControlValue( final String value )
 	{
+		final int numScopeChannels = uiInstanceConfiguration.getNumScopeChannels();
+
 		final String[] vals = value.split("\\|");
-		if( vals.length == 6 )
+		if( vals.length == (numScopeChannels + 2) )
 		{
 			topPanel.getBiUniPolarToggle().receiveControlValue( vals[0] );
 			topPanel.getTriggerToggle().receiveControlValue( vals[1] );
 
-			bottomSignalToggles.receiveControlValues(
-					vals[2],
-					vals[3],
-					vals[4],
-					vals[5] );
+			for( int i = 0 ; i < numScopeChannels ; ++i )
+			{
+				bottomSignalToggles.receiveControlValue( i, vals[i+2] );
+			}
 		}
 		else
 		{
 			if( log.isErrorEnabled() )
 			{
-				log.error("Failed to obtain number of expected init params. Expected 6 got " + vals.length );
+				log.error("Failed to obtain number of expected init params. Expected " +
+						(numScopeChannels + 2) + " got " + vals.length );
 			}
 		}
 	}

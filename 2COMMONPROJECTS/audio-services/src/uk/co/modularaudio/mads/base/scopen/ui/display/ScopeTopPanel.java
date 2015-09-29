@@ -25,6 +25,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNColours;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
 import uk.co.modularaudio.util.swing.colouredtoggle.ColouredLabelToggle;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.texttoggle.TextToggle;
@@ -40,7 +41,8 @@ public class ScopeTopPanel extends JPanel
 
 	private final TextToggle monoBiPolarToggle;
 
-	public ScopeTopPanel( final ToggleReceiver triggerToggleReceiver,
+	public ScopeTopPanel( final ScopeNUiInstanceConfiguration uiInstanceConfiguration,
+			final ToggleReceiver triggerToggleReceiver,
 			final ToggleReceiver biUniPolarToggleReceiver )
 	{
 		this.setOpaque( true );
@@ -61,7 +63,7 @@ public class ScopeTopPanel extends JPanel
 				"Click to toggle display of the trigger signal",
 				ScopeNColours.BACKGROUND_COLOR,
 				Color.WHITE,
-				ScopeWaveDisplay.VIS_COLOURS[0],
+				uiInstanceConfiguration.getVisColours()[0],
 				true,
 				triggerToggleReceiver,
 				0 );

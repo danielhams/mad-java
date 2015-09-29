@@ -23,6 +23,7 @@ package uk.co.modularaudio.mads.base.scopen.ui.display;
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNColours;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
 import uk.co.modularaudio.util.swing.colouredtoggle.ColouredTextToggle;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
@@ -33,12 +34,10 @@ public class ScopeBottomSignalToggles extends JPanel
 
 //	private static Log log = LogFactory.getLog( ScopeBottomSignalToggles.class.getName() );
 
-	private final ColouredTextToggle signal0Toggle;
-	private final ColouredTextToggle signal1Toggle;
-	private final ColouredTextToggle signal2Toggle;
-	private final ColouredTextToggle signal3Toggle;
+	private final ColouredTextToggle signalToggles[];
 
-	public ScopeBottomSignalToggles( final ToggleReceiver toggleReceiver )
+	public ScopeBottomSignalToggles( final ScopeNUiInstanceConfiguration uiInstanceConfiguration,
+			final ToggleReceiver toggleReceiver )
 	{
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 //		msh.addLayoutConstraint( "debug" );
@@ -53,75 +52,33 @@ public class ScopeBottomSignalToggles extends JPanel
 		setBackground( ScopeNColours.BACKGROUND_COLOR );
 		setOpaque( true );
 
-		signal0Toggle = new ColouredTextToggle(
-				"Signal 1",
-				"Click to toggle display of signal 1",
-				ScopeNColours.BACKGROUND_COLOR,
-				ScopeWaveDisplay.VIS_COLOURS[1],
-				true,
-				toggleReceiver,
-				1 );
-		signal1Toggle = new ColouredTextToggle(
-				"Signal 2",
-				"Click to toggle display of signal 2",
-				ScopeNColours.BACKGROUND_COLOR,
-				ScopeWaveDisplay.VIS_COLOURS[2],
-				true,
-				toggleReceiver,
-				2 );
-		signal2Toggle = new ColouredTextToggle(
-				"Signal 3",
-				"Click to toggle display of signal 3",
-				ScopeNColours.BACKGROUND_COLOR,
-				ScopeWaveDisplay.VIS_COLOURS[3],
-				true,
-				toggleReceiver,
-				3 );
-		signal3Toggle = new ColouredTextToggle(
-				"Signal 4",
-				"Click to toggle display of signal 4",
-				ScopeNColours.BACKGROUND_COLOR,
-				ScopeWaveDisplay.VIS_COLOURS[4],
-				true,
-				toggleReceiver,
-				4 );
+		final int numScopeChannels = uiInstanceConfiguration.getNumScopeChannels();
+		signalToggles = new ColouredTextToggle[numScopeChannels];
 
-		this.add( signal0Toggle, "grow, shrink 0" );
-		this.add( signal1Toggle, "grow, shrink 0" );
-		this.add( signal2Toggle, "grow, shrink 0" );
-		this.add( signal3Toggle, "grow, shrink 0" );
+		for( int i = 0 ; i < numScopeChannels ; ++i )
+		{
+			final int displayNum = i+1;
+			signalToggles[i] = new ColouredTextToggle(
+					"Signal " + displayNum,
+					"Click to toggle display of signal " + i,
+					ScopeNColours.BACKGROUND_COLOR,
+					uiInstanceConfiguration.getVisColours()[displayNum],
+					true,
+					toggleReceiver,
+					displayNum );
+
+			this.add( signalToggles[i], "grow, shrink 0" );
+		}
 	}
 
 	public String getControlValue( final int i )
 	{
-		switch( i )
-		{
-			case 0:
-			{
-				return signal0Toggle.getControlValue();
-			}
-			case 1:
-			{
-				return signal1Toggle.getControlValue();
-			}
-			case 2:
-			{
-				return signal2Toggle.getControlValue();
-			}
-			case 3:
-			{
-				return signal3Toggle.getControlValue();
-			}
-		}
-		return "";
+		return signalToggles[i].getControlValue();
 	}
 
-	public void receiveControlValues( final String val0, final String val1, final String val2, final String val3 )
+	public void receiveControlValue( final int i, final String val )
 	{
-		signal0Toggle.receiveControlValue( val0 );
-		signal1Toggle.receiveControlValue( val1 );
-		signal2Toggle.receiveControlValue( val2 );
-		signal3Toggle.receiveControlValue( val3 );
+		signalToggles[i].receiveControlValue( val );
 	}
 
 }

@@ -41,8 +41,6 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 {
 //	private static Log log = LogFactory.getLog( MixerNMadInstance.class.getName() );
 
-	private final MixerNInstanceConfiguration instanceConfiguration;
-
 	private int sampleFramesPerFrontEndPeriod = 0;
 	private int numSamplesProcessed = 0;
 
@@ -65,7 +63,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
-		instanceConfiguration = definition.getMixerInstanceConfiguration();
+		final MixerNInstanceConfiguration instanceConfiguration = definition.getMixerInstanceConfiguration();
 
 		numInputLanes = instanceConfiguration.getNumInputLanes();
 		channelLaneProcessors = new LaneProcessor[ numInputLanes ];

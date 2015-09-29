@@ -20,17 +20,24 @@
 
 package uk.co.modularaudio.mads.base.scopelarge.mu;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNInstanceConfiguration;
 import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class ScopeLargeMadDefinition
 	extends ScopeNMadDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance>
 {
+	private static Log log = LogFactory.getLog( ScopeLargeMadDefinition.class.getName() );
+
 	public static final String DEFINITION_ID = "scope_large";
 
 	private final static String USER_VISIBLE_NAME = "Scope (Large)";
@@ -39,16 +46,39 @@ public class ScopeLargeMadDefinition
 	private final static String CLASS_NAME = "Scope (Large)";
 	private final static String CLASS_DESC = "A large oscilloscope";
 
+	private final static int NUM_SCOPE_TRACES = 8;
+
+	public final static ScopeNInstanceConfiguration INSTANCE_CONFIGURATION = getScopeLargeInstanceConfiguration();
+
+	private static ScopeNInstanceConfiguration getScopeLargeInstanceConfiguration()
+	{
+		try
+		{
+			final ScopeNInstanceConfiguration retVal = new ScopeNInstanceConfiguration( NUM_SCOPE_TRACES );
+			return retVal;
+		}
+		catch( final MadProcessingException de )
+		{
+			if( log.isErrorEnabled() )
+			{
+				log.error("Exception caught initialising instance configuration: " + de.toString(), de );
+			}
+			return null;
+		}
+	}
+
 
 	public ScopeLargeMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService )
 		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, USER_VISIBLE_NAME,
+		super( DEFINITION_ID,
+				USER_VISIBLE_NAME,
 				new MadClassification( classService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ) );
+						ReleaseState.RELEASED ),
+				INSTANCE_CONFIGURATION );
 	}
 }

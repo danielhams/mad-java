@@ -20,9 +20,6 @@
 
 package uk.co.modularaudio.mads.base.scopen.mu;
 
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
-import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -32,62 +29,30 @@ public class ScopeNMadDefinition<D extends ScopeNMadDefinition<D,I>,
 	I extends ScopeNMadInstance<D,I>>
 	extends	AbstractNonConfigurableMadDefinition<D, I>
 {
-	// Indexes into the channels
-	public final static int SCOPE_TRIGGER = 0;
-	public final static int SCOPE_INPUT_0 = 1;
-	public final static int SCOPE_INPUT_1 = 2;
-	public final static int SCOPE_INPUT_2 = 3;
-	public final static int SCOPE_INPUT_3 = 4;
-	private final static int NUM_CHANNELS = 5;
-	public final static int NUM_VIS_CHANNELS = NUM_CHANNELS;
-
-	// These must match the channel indexes given above
-	private final static String[] CHAN_NAMES = new String[] {
-		"Input Trigger",
-		"Input Signal 1",
-		"Input Signal 2",
-		"Input Signal 3",
-		"Input Signal 4"
-	};
-
-	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV
-	};
-
-	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
-		MadChannelDirection.CONSUMER,
-		MadChannelDirection.CONSUMER,
-		MadChannelDirection.CONSUMER,
-		MadChannelDirection.CONSUMER,
-		MadChannelDirection.CONSUMER
-	};
-
-	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO
-	};
+	private final ScopeNInstanceConfiguration instanceConfiguration;
 
 	public ScopeNMadDefinition(
 			final String definitionId,
 			final String userVisibleName,
-			final MadClassification classification )
+			final MadClassification classification,
+			final ScopeNInstanceConfiguration instanceConfiguration )
 		throws RecordNotFoundException, DatastoreException
 	{
-		super( definitionId, userVisibleName,
+		super( definitionId,
+				userVisibleName,
 				classification,
 				new ScopeNIOQueueBridge<I>(),
-				NUM_CHANNELS,
-				CHAN_NAMES,
-				CHAN_TYPES,
-				CHAN_DIRS,
-				CHAN_POSI );
+				instanceConfiguration.getNumTotalChannels(),
+				instanceConfiguration.getChannelNames(),
+				instanceConfiguration.getChannelTypes(),
+				instanceConfiguration.getChannelDirections(),
+				instanceConfiguration.getChannelPositions() );
 
+		this.instanceConfiguration = instanceConfiguration;
+	}
+
+	public ScopeNInstanceConfiguration getScopeInstanceConfiguration()
+	{
+		return instanceConfiguration;
 	}
 }

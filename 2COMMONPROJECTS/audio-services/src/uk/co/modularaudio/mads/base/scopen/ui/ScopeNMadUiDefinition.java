@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.base.scopen.ui;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadDefinition;
@@ -37,14 +36,15 @@ I extends ScopeNMadInstance<D, I>,
 U extends ScopeNMadUiInstance<D,I>>
 	extends AbstractNonConfigurableMadUiDefinition<D, I, U>
 {
+	private final ScopeNUiInstanceConfiguration uiInstanceConfiguration;
+
 	public ScopeNMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,
 			final ImageFactory cif,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,
-			final int[] uiChannelInstanceIndexes,
-			final Point[] uiChannelPositions,
+			final ScopeNUiInstanceConfiguration uiInstanceConfiguration,
 			final String[] uiControlNames,
 			final ControlType[] uiControlTypes,
 			final Class<?>[] uiControlClasses,
@@ -57,11 +57,17 @@ U extends ScopeNMadUiInstance<D,I>>
 				definition,
 				span,
 				instanceClass,
-				uiChannelInstanceIndexes,
-				uiChannelPositions,
+				uiInstanceConfiguration.getChanIndexes(),
+				uiInstanceConfiguration.getChanPosis(),
 				uiControlNames,
 				uiControlTypes,
 				uiControlClasses,
 				uiControlBounds );
+		this.uiInstanceConfiguration = uiInstanceConfiguration;
+	}
+
+	public ScopeNUiInstanceConfiguration getUiInstanceConfiguration()
+	{
+		return uiInstanceConfiguration;
 	}
 }
