@@ -18,20 +18,13 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.scopelarge.ui;
+package uk.co.modularaudio.mads.base.scopen.ui;
 
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
-import uk.co.modularaudio.mads.base.scopen.ui.ScopeNCaptureLengthSliderUiJComponent;
+import java.awt.Color;
 
-public class ScopeLargeCaptureLengthSliderUiJComponent
-	extends ScopeNCaptureLengthSliderUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+public class ScopeNColours
 {
-	public ScopeLargeCaptureLengthSliderUiJComponent( final ScopeLargeMadDefinition definition,
-			final ScopeLargeMadInstance instance,
-			final ScopeLargeMadUiInstance uiInstance,
-			final int controlIndex )
-	{
-		super( definition, instance, uiInstance, controlIndex );
-	}
+	public final static Color BACKGROUND_COLOR = Color.BLACK;
+	public final static Color SCOPE_BODY = new Color( 75, 131, 155 );
+	public final static Color SCOPE_AXIS_DETAIL = SCOPE_BODY.darker().darker();
 }

@@ -18,20 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.scopelarge.ui;
+package uk.co.modularaudio.mads.base.scopen.ui.display;
 
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
-import uk.co.modularaudio.mads.base.scopen.ui.ScopeNCaptureLengthSliderUiJComponent;
+import java.awt.Dimension;
 
-public class ScopeLargeCaptureLengthSliderUiJComponent
-	extends ScopeNCaptureLengthSliderUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+import javax.swing.JPanel;
+
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNColours;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNDisplayUiJComponent;
+
+public class ScopeEmptyPlot extends JPanel
 {
-	public ScopeLargeCaptureLengthSliderUiJComponent( final ScopeLargeMadDefinition definition,
-			final ScopeLargeMadInstance instance,
-			final ScopeLargeMadUiInstance uiInstance,
-			final int controlIndex )
+	private static final long serialVersionUID = -290572139583210940L;
+
+	public ScopeEmptyPlot()
 	{
-		super( definition, instance, uiInstance, controlIndex );
+		setBackground( ScopeNColours.BACKGROUND_COLOR );
+		this.setMinimumSize( new Dimension( ScopeNDisplayUiJComponent.AXIS_MARKS_LENGTH, ScopeNDisplayUiJComponent.AXIS_MARKS_LENGTH ) );
 	}
 }

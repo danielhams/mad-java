@@ -23,10 +23,10 @@ package uk.co.modularaudio.mads.base.scopelarge.ui;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenMadUiDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadDefinition;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNMadUiDefinition;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
@@ -35,16 +35,16 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
 public class ScopeLargeMadUiDefinition
-	extends	ScopeGenMadUiDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+	extends	ScopeNMadUiDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
 {
 	private static final Span SPAN = new Span( 4, 6 );
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		ScopeGenMadDefinition.SCOPE_TRIGGER,
-		ScopeGenMadDefinition.SCOPE_INPUT_0,
-		ScopeGenMadDefinition.SCOPE_INPUT_1,
-		ScopeGenMadDefinition.SCOPE_INPUT_2,
-		ScopeGenMadDefinition.SCOPE_INPUT_3
+		ScopeNMadDefinition.SCOPE_TRIGGER,
+		ScopeNMadDefinition.SCOPE_INPUT_0,
+		ScopeNMadDefinition.SCOPE_INPUT_1,
+		ScopeNMadDefinition.SCOPE_INPUT_2,
+		ScopeNMadDefinition.SCOPE_INPUT_3
 	};
 
 	private static final Point[] CHAN_POSITIONS = new Point[] {

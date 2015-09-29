@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.base.scopelarge.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRecaptureButtonUiJComponent;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRecaptureButtonUiJComponent;
 
 public class ScopeLargeRecaptureButtonUiJComponent
-	extends ScopeGenRecaptureButtonUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+	extends ScopeNRecaptureButtonUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
 {
 	public ScopeLargeRecaptureButtonUiJComponent( final ScopeLargeMadDefinition definition,
 			final ScopeLargeMadInstance instance,

@@ -21,7 +21,7 @@
 package uk.co.modularaudio.mads.base.scopelarge.mu;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
@@ -29,7 +29,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class ScopeLargeMadDefinition
-	extends ScopeGenMadDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance>
+	extends ScopeNMadDefinition<ScopeLargeMadDefinition, ScopeLargeMadInstance>
 {
 	public static final String DEFINITION_ID = "scope_large";
 

@@ -18,20 +18,9 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.scopelarge.ui;
+package uk.co.modularaudio.mads.base.scopen.ui;
 
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
-import uk.co.modularaudio.mads.base.scopen.ui.ScopeNCaptureLengthSliderUiJComponent;
-
-public class ScopeLargeCaptureLengthSliderUiJComponent
-	extends ScopeNCaptureLengthSliderUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+public interface ScopeImageSaver
 {
-	public ScopeLargeCaptureLengthSliderUiJComponent( final ScopeLargeMadDefinition definition,
-			final ScopeLargeMadInstance instance,
-			final ScopeLargeMadUiInstance uiInstance,
-			final int controlIndex )
-	{
-		super( definition, instance, uiInstance, controlIndex );
-	}
+	void saveImage();
 }

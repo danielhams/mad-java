@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.base.scopelarge.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenDisplayUiJComponent;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNDisplayUiJComponent;
 
 public class ScopeLargeDisplayUiJComponent
-	extends ScopeGenDisplayUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
+	extends ScopeNDisplayUiJComponent<ScopeLargeMadDefinition, ScopeLargeMadInstance, ScopeLargeMadUiInstance>
 {
 	private static final long serialVersionUID = -1857532354579036054L;
 

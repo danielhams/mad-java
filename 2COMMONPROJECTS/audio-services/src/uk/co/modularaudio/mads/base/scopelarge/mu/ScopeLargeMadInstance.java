@@ -23,12 +23,12 @@ package uk.co.modularaudio.mads.base.scopelarge.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadInstance;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 
 public class ScopeLargeMadInstance
-	extends ScopeGenMadInstance<ScopeLargeMadDefinition, ScopeLargeMadInstance>
+	extends ScopeNMadInstance<ScopeLargeMadDefinition, ScopeLargeMadInstance>
 {
 	public ScopeLargeMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
