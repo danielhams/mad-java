@@ -25,7 +25,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRepetitionsChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRepetitionsChoiceUiJComponent.RepetitionChoice;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNTriggerChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNTriggerChoiceUiJComponent.TriggerChoice;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -76,9 +78,9 @@ public class ScopeNMadInstance<D extends ScopeNMadDefinition<D, I>,
 	private boolean isActive = false;
 
 	private State state = State.IDLE;
-	private TriggerChoice desiredTrigger = ScopeGenTriggerChoiceUiJComponent.DEFAULT_TRIGGER_CHOICE;
+	private TriggerChoice desiredTrigger = ScopeNTriggerChoiceUiJComponent.DEFAULT_TRIGGER_CHOICE;
 	private TriggerChoice workingTrigger = desiredTrigger;
-	private RepetitionChoice repetition = ScopeGenRepetitionsChoiceUiJComponent.DEFAULT_REPETITION_CHOICE;
+	private RepetitionChoice repetition = ScopeNRepetitionsChoiceUiJComponent.DEFAULT_REPETITION_CHOICE;
 
 	private int workingDesiredFramesToCapture = desiredFramesToCapture;
 	private int workingFramesCaptured;
