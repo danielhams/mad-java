@@ -146,9 +146,11 @@ public class HalfHannWindowInterpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	public void resetSampleRateAndPeriod( final int sampleRate,
+			final int periodLengthFrames,
+			final int interpolatorLengthFrames )
 	{
-		final int halfWindowLength = periodLengthFrames;
+		final int halfWindowLength = interpolatorLengthFrames;
 //		log.debug("Using a half window length of " + valueChaseMillis + " ms or " + halfWindowLength + " samples");
 		fullHannWindow = new HannFftWindow( halfWindowLength * 2 );
 		final float[] hwAmps = fullHannWindow.getAmps();

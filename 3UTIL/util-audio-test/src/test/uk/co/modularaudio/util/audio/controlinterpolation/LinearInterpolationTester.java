@@ -44,7 +44,7 @@ public class LinearInterpolationTester
 		final int TEST_PERIOD_LENGTH = 4;
 		final int TEST_INTERPOLATION_LENGTH = 10;
 
-		li.resetSampleRateAndPeriod( TEST_SAMPLE_RATE, TEST_INTERPOLATION_LENGTH );
+		li.resetSampleRateAndPeriod( TEST_SAMPLE_RATE, TEST_PERIOD_LENGTH, TEST_INTERPOLATION_LENGTH );
 
 		li.hardSetValue( 1.0f );
 		li.notifyOfNewValue( 0.0f );

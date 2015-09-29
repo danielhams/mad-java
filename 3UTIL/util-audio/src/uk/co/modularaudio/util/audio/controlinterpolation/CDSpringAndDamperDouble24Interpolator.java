@@ -226,7 +226,9 @@ public class CDSpringAndDamperDouble24Interpolator implements ControlValueInterp
 	}
 
 	@Override
-	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	public void resetSampleRateAndPeriod( final int sampleRate,
+			final int periodLengthFrames,
+			final int interpolatorLengthFrames )
 	{
 		deltaTimestep = (DataRate.SR_48000.getValue() * INTEGRATION_TIMESTEP_FOR_48K) / sampleRate;
 	}

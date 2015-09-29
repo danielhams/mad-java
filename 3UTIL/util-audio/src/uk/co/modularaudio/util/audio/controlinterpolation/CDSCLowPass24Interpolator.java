@@ -134,7 +134,9 @@ public class CDSCLowPass24Interpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	public void resetSampleRateAndPeriod( final int sampleRate,
+			final int periodLengthFrames,
+			final int interpolatorLengthFrames )
 	{
 		this.sampleRate = sampleRate;
 	}

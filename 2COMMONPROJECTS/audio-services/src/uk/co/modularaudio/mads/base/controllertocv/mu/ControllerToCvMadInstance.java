@@ -82,10 +82,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	private final static float FIXED_INTERP_MILLIS = 8.2f;
 
 	// For BCD EQ:
-	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
+//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
 //	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
 	// For BCD Faders
-//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
+	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
 
 	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
 			sampleRate, FIXED_INTERP_MILLIS );
@@ -160,7 +160,7 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			// Quick hack to force the min length here to be double some controller period
 			final int minInterpolatorLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
 					MIN_CONTROLLER_PERIOD_MILLIS * 2 );
-			final int freeInterpolatorsPeriodLength = Math.max( minInterpolatorLength, periodLengthFrames );
+			final int freeInterpolatorsPeriodLength = minInterpolatorLength;
 
 			if( log.isTraceEnabled() )
 			{
@@ -171,11 +171,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			}
 			for( final ControlValueInterpolator cvi : freeInterpolators.values() )
 			{
-				cvi.resetSampleRateAndPeriod( sampleRate, freeInterpolatorsPeriodLength );
+				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, freeInterpolatorsPeriodLength );
 			}
 			for( final ControlValueInterpolator cvi : fixedInterpolators.values() )
 			{
-				cvi.resetSampleRateAndPeriod( sampleRate, fixedInterpolatorsPeriodLength );
+				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, fixedInterpolatorsPeriodLength );
 			}
 		}
 		catch (final Exception e)

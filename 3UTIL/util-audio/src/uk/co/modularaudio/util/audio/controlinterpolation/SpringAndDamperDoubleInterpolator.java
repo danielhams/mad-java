@@ -232,7 +232,9 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 	}
 
 	@Override
-	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	public void resetSampleRateAndPeriod( final int sampleRate,
+			final int periodLengthFrames,
+			final int interpolatorLengthFrames )
 	{
 		reset( sampleRate );
 	}

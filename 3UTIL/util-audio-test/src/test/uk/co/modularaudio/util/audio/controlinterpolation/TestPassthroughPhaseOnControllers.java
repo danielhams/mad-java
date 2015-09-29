@@ -95,7 +95,7 @@ public class TestPassthroughPhaseOnControllers
 			final ControlValueInterpolator valueInterpolator = new LinearInterpolator(-1.0f, 1.0f);
 //			final ControlValueInterpolator valueInterpolator = new HalfHannWindowInterpolator();
 			final int INTERPOLATION_LENGTH = 512;
-			valueInterpolator.resetSampleRateAndPeriod( sampleRate, INTERPOLATION_LENGTH );
+			valueInterpolator.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, INTERPOLATION_LENGTH );
 			valueInterpolator.hardSetValue( liStartValue );
 
 			int currentFramePos = 0;

@@ -71,6 +71,8 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 	private static final int SAMPLE_RATE = DataRate.SR_48000.getValue();
 
+	private static final int TEST_PERIOD_LENGTH = 1024;
+
 	private static final int VALUE_CHASE_SAMPLES =
 			AudioTimingUtils.getNumSamplesForMillisAtSampleRate( SAMPLE_RATE, VALUE_CHASE_MILLIS );
 
@@ -223,7 +225,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 		for( final ControlValueInterpolator cvi : interpolators )
 		{
-			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
+			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, TEST_PERIOD_LENGTH, VALUE_CHASE_SAMPLES );
 			cvi.hardSetValue( firstValue );
 		}
 
@@ -279,7 +281,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 		for( final ControlValueInterpolator cvi : interpolators )
 		{
-			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, VALUE_CHASE_SAMPLES );
+			cvi.resetSampleRateAndPeriod( SAMPLE_RATE, TEST_PERIOD_LENGTH, VALUE_CHASE_SAMPLES );
 			cvi.hardSetValue( samples[0] );
 		}
 

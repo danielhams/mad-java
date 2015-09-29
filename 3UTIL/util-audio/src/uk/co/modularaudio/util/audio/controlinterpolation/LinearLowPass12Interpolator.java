@@ -164,10 +164,12 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 	}
 
 	@Override
-	public void resetSampleRateAndPeriod( final int sampleRate, final int periodLengthFrames )
+	public void resetSampleRateAndPeriod( final int sampleRate,
+			final int periodLengthFrames,
+			final int interpolatorLengthFrames )
 	{
 		curWindowPos = 0;
-		interpolationLength = periodLengthFrames;
+		interpolationLength = interpolatorLengthFrames;
 
 		double freq = lowPassFrequency;
 		if (freq < 10.0)

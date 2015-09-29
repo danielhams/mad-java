@@ -24,7 +24,7 @@ import java.util.Arrays;
 
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class LinearInterpolator implements ControlValueInterpolator
+public class RecalculatingLinearInterpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
@@ -38,10 +38,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 	private float lowerBound;
 	private float upperBound;
 
-	private boolean hasValueWaiting = false;
-	private float waitingVal;
-
-	public LinearInterpolator( final float lowerBound, final float upperBound )
+	public RecalculatingLinearInterpolator( final float lowerBound, final float upperBound )
 	{
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
@@ -53,7 +50,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 		final int numLeftInInterpolation = interpolationLength - curWindowPos;
 //		log.trace( "Interpolation has " + numLeftInInterpolation + " left" );
 		final int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
-		int numAfter = length - numWithInterpolation;
+		final int numAfter = length - numWithInterpolation;
 //		log.trace( "Will do " + numWithInterpolation + " this round along with fill of " + numAfter );
 		int curIndex = outputIndex;
 
@@ -73,28 +70,6 @@ public class LinearInterpolator implements ControlValueInterpolator
 			curWindowPos += numWithInterpolation;
 		}
 
-		if( curWindowPos == interpolationLength && hasValueWaiting )
-		{
-			curWindowPos = 0;
-			desVal = waitingVal;
-			deltaVal = (desVal - curVal) / interpolationLength;
-			hasValueWaiting = false;
-
-			final int numWaitingToInterpolate = (numAfter < interpolationLength ? numAfter : interpolationLength );
-
-			for( int i = 0 ; i < numWaitingToInterpolate ; ++i )
-			{
-				curVal += deltaVal;
-				curVal = (curVal < lowerBound ? lowerBound :
-					(curVal > upperBound ? upperBound :
-						curVal ) );
-				output[ curIndex + i ] = curVal;
-			}
-			curIndex += numWaitingToInterpolate;
-			curWindowPos += numWaitingToInterpolate;
-			numAfter -= numWaitingToInterpolate;
-		}
-
 		// No further use of interpolation necessary, move to desVal
 		// and make it curVal
 		if( numAfter > 0 )
@@ -107,19 +82,25 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		if( !hasValueWaiting && curWindowPos == interpolationLength )
-		{
-			// Restart the interpolation
-			curWindowPos = 0;
-			desVal = newValue;
-			deltaVal = (desVal - curVal) / interpolationLength;
-			hasValueWaiting = false;
-		}
-		else
-		{
-			hasValueWaiting = true;
-			waitingVal = newValue;
-		}
+//		if( log.isTraceEnabled() )
+//		{
+//			log.trace( "Received notification of new value " +
+//					MathFormatter.fastFloatPrint( newValue, 8, true ) );
+//			log.trace( "CurWindowPos(" + curWindowPos + ") curVal(" +
+//					MathFormatter.fastFloatPrint( curVal, 8, true ) +
+//					") desVal(" +
+//					MathFormatter.fastFloatPrint( desVal, 8, true ) +
+//					")");
+//		}
+		// Restart the interpolation
+		curWindowPos = 0;
+		desVal = newValue;
+		deltaVal = (desVal - curVal) / interpolationLength;
+//		if( log.isTraceEnabled() )
+//		{
+//			log.trace("Reset cur window pos and reset desVal.");
+//			log.trace("deltaVal is now (" + MathFormatter.fastFloatPrint( deltaVal, 8, true ) + ")");
+//		}
 	}
 
 	@Override
@@ -144,7 +125,6 @@ public class LinearInterpolator implements ControlValueInterpolator
 		this.curVal = value;
 		this.desVal = value;
 		curWindowPos = interpolationLength;
-		hasValueWaiting = false;
 	}
 
 	@Override
@@ -159,8 +139,8 @@ public class LinearInterpolator implements ControlValueInterpolator
 			final int periodLengthFrames,
 			final int interpolatorLengthFrames )
 	{
+		curWindowPos = 0;
 		interpolationLength = interpolatorLengthFrames;
-		curWindowPos = interpolationLength;
 	}
 
 	@Override
