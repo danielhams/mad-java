@@ -26,16 +26,18 @@
         <rackControl name="CaptureLength" value="300.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveImage" value=""/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+        <rackControl name="WaveDisplay" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4|false&#x9;Signal 5|false&#x9;Signal 6|false&#x9;Signal 7|false&#x9;Signal 8"/>
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="0" row="4"/>
         <rackControl name="CaptureLength" value="300.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveButton" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+        <rackControl name="WaveDisplay" value=""/>
     </rackComponent>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope (Large) 1" consumerChannelName="Input Trigger"/>

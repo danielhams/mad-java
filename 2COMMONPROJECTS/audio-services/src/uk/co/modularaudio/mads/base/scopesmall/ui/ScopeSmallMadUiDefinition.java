@@ -20,40 +20,26 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.ui;
 
-import java.awt.Point;
+import java.awt.Color;
 import java.awt.Rectangle;
 
-import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenMadUiDefinition;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNMadUiDefinition;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
+import uk.co.modularaudio.mads.base.scopen.ui.display.ScopeWaveDisplay;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
 public class ScopeSmallMadUiDefinition
-	extends	ScopeGenMadUiDefinition<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
+	extends	ScopeNMadUiDefinition<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
 {
 	private static final Span SPAN = new Span( 2, 4 );
-
-	private static final int[] CHAN_INDEXES = new int[] {
-		ScopeGenMadDefinition.SCOPE_TRIGGER,
-		ScopeGenMadDefinition.SCOPE_INPUT_0,
-		ScopeGenMadDefinition.SCOPE_INPUT_1,
-		ScopeGenMadDefinition.SCOPE_INPUT_2,
-		ScopeGenMadDefinition.SCOPE_INPUT_3
-	};
-
-	private static final Point[] CHAN_POSITIONS = new Point[] {
-		new Point( 120,  70 ),
-		new Point( 140,  70 ),
-		new Point( 140,  90 ),
-		new Point( 140, 110 ),
-		new Point( 140, 130 ),
-	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"CaptureLength",
@@ -97,9 +83,33 @@ public class ScopeSmallMadUiDefinition
 	protected static final int NUM_TIME_MARKS = 11;
 	protected static final int NUM_AMP_DECIMAL_PLACES = 1;
 
+	private static final Color[] VIS_COLOURS = new Color[ScopeWaveDisplay.MAX_VIS_COLOURS];
+
+	static
+	{
+		VIS_COLOURS[0] = Color.decode( "#d3d3d3" );
+		VIS_COLOURS[1] = Color.decode( "#d31b00" );
+		VIS_COLOURS[2] = Color.decode( "#d38c00" );
+		VIS_COLOURS[3] = Color.decode( "#c1d300" );
+		VIS_COLOURS[4] = Color.decode( "#08af00" );
+	}
+
 	public ScopeSmallMadUiDefinition( final BufferedImageAllocator bia,
 			final ScopeSmallMadDefinition definition,
 			final ComponentImageFactory cif )
+		throws DatastoreException, MadProcessingException
+	{
+		this( bia,
+				definition,
+				cif,
+				new ScopeNUiInstanceConfiguration( ScopeSmallMadDefinition.INSTANCE_CONFIGURATION,
+						VIS_COLOURS ) );
+	}
+
+	public ScopeSmallMadUiDefinition( final BufferedImageAllocator bia,
+			final ScopeSmallMadDefinition definition,
+			final ComponentImageFactory cif,
+			final ScopeNUiInstanceConfiguration uiInstanceConfiguration )
 		throws DatastoreException
 	{
 		super( bia,
@@ -108,8 +118,7 @@ public class ScopeSmallMadUiDefinition
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				SPAN,
 				INSTANCE_CLASS,
-				CHAN_INDEXES,
-				CHAN_POSITIONS,
+				uiInstanceConfiguration,
 				CONTROL_NAMES,
 				CONTROL_TYPES,
 				CONTROL_CLASSES,

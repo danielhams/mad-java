@@ -20,13 +20,13 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenMadUiInstance;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNMadUiInstance;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEventUiConsumer;
 
 public class ScopeSmallMadUiInstance
-	extends ScopeGenMadUiInstance<ScopeSmallMadDefinition, ScopeSmallMadInstance>
+	extends ScopeNMadUiInstance<ScopeSmallMadDefinition, ScopeSmallMadInstance>
 	implements IOQueueEventUiConsumer<ScopeSmallMadInstance>
 {
 	public ScopeSmallMadUiInstance( final ScopeSmallMadInstance instance,

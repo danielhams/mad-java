@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenSaveImageButtonUiJComponent;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNSaveImageButtonUiJComponent;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 
 public class ScopeSmallSaveImageButtonUiJComponent
-	extends ScopeGenSaveImageButtonUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
+	extends ScopeNSaveImageButtonUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
 {
 	public ScopeSmallSaveImageButtonUiJComponent( final ScopeSmallMadDefinition definition,
 			final ScopeSmallMadInstance instance,

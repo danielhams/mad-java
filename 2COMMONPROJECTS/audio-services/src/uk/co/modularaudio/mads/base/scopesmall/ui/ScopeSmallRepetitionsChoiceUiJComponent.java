@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenRepetitionsChoiceUiJComponent;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNRepetitionsChoiceUiJComponent;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 
 public class ScopeSmallRepetitionsChoiceUiJComponent
-	extends ScopeGenRepetitionsChoiceUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
+	extends ScopeNRepetitionsChoiceUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
 {
 	private static final long serialVersionUID = 2489044177637232714L;
 

@@ -20,17 +20,24 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.mu;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.scopegen.mu.ScopeGenMadDefinition;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNInstanceConfiguration;
+import uk.co.modularaudio.mads.base.scopen.mu.ScopeNMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class ScopeSmallMadDefinition
-	extends ScopeGenMadDefinition<ScopeSmallMadDefinition, ScopeSmallMadInstance>
+	extends ScopeNMadDefinition<ScopeSmallMadDefinition, ScopeSmallMadInstance>
 {
+	private static Log log = LogFactory.getLog( ScopeSmallMadDefinition.class.getName() );
+
 	public static final String DEFINITION_ID = "scope";
 
 	private final static String USER_VISIBLE_NAME = "Scope";
@@ -39,16 +46,38 @@ public class ScopeSmallMadDefinition
 	private final static String CLASS_NAME = "Scope";
 	private final static String CLASS_DESC = "A signal analysis oscilloscope";
 
+	private final static int NUM_SCOPE_TRACES = 4;
+
+	public final static ScopeNInstanceConfiguration INSTANCE_CONFIGURATION = getScopeSmallInstanceConfiguration();
+
+	private static ScopeNInstanceConfiguration getScopeSmallInstanceConfiguration()
+	{
+		try
+		{
+			final ScopeNInstanceConfiguration retVal = new ScopeNInstanceConfiguration( NUM_SCOPE_TRACES );
+			return retVal;
+		}
+		catch( final MadProcessingException de )
+		{
+			if( log.isErrorEnabled() )
+			{
+				log.error("Exception caught initialising instance configuration: " + de.toString(), de );
+			}
+			return null;
+		}
+	}
 
 	public ScopeSmallMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService )
 		throws RecordNotFoundException, DatastoreException
 	{
-		super( DEFINITION_ID, USER_VISIBLE_NAME,
+		super( DEFINITION_ID,
+				USER_VISIBLE_NAME,
 				new MadClassification( classService.findGroupById( CLASS_GROUP ),
 						DEFINITION_ID,
 						CLASS_NAME,
 						CLASS_DESC,
-						ReleaseState.RELEASED ) );
+						ReleaseState.RELEASED ),
+				INSTANCE_CONFIGURATION );
 	}
 }

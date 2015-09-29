@@ -20,12 +20,12 @@
 
 package uk.co.modularaudio.mads.base.scopesmall.ui;
 
-import uk.co.modularaudio.mads.base.scopegen.ui.ScopeGenCaptureLengthSliderUiJComponent;
+import uk.co.modularaudio.mads.base.scopen.ui.ScopeNCaptureLengthSliderUiJComponent;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 
 public class ScopeSmallCaptureLengthSliderUiJComponent
-	extends ScopeGenCaptureLengthSliderUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
+	extends ScopeNCaptureLengthSliderUiJComponent<ScopeSmallMadDefinition, ScopeSmallMadInstance, ScopeSmallMadUiInstance>
 {
 	public ScopeSmallCaptureLengthSliderUiJComponent( final ScopeSmallMadDefinition definition,
 			final ScopeSmallMadInstance instance,

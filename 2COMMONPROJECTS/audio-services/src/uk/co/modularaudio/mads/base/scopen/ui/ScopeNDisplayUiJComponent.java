@@ -168,14 +168,13 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 		sb.append( topPanel.getBiUniPolarToggle().getControlValue() );
 		sb.append( '|' );
 		sb.append( topPanel.getTriggerToggle().getControlValue() );
-		sb.append( '|' );
-		sb.append( bottomSignalToggles.getControlValue( 0 ) );
-		sb.append( '|' );
-		sb.append( bottomSignalToggles.getControlValue( 1 ) );
-		sb.append( '|' );
-		sb.append( bottomSignalToggles.getControlValue( 2 ) );
-		sb.append( '|' );
-		sb.append( bottomSignalToggles.getControlValue( 3 ) );
+
+		for( int st = 0 ; st < uiInstanceConfiguration.getNumScopeChannels() ; ++st )
+		{
+			sb.append( '|' );
+			sb.append( bottomSignalToggles.getControlValue( st ) );
+		}
+
 		return sb.toString();
 	}
 

@@ -11,22 +11,8 @@
         <rackControl name="PowerCurve" value="Equal Power"/>
         <rackControl name="Slider" value="0.0"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="InProcessing" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="InProcessing" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
-        <rack name="InProcessing" cols="4" rows="29">
-            <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Left"/>
-            <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Right"/>
-            <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 1"/>
-            <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 2"/>
-            <rackComponent name="DC Trap 1" definitionId="dc_trap">
-                <rackPosition column="0" row="0"/>
-            </rackComponent>
-            <rackComponent xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
-                <rackPosition column="0" row="1"/>
-            </rackComponent>
-            <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
-            <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 2"/>
-        </rack>
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="5"/>
@@ -39,10 +25,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-0.22513008"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-7.386459"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 304 (14 September 2015).mp3|131633814"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 119 master.mp3|23408344"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
