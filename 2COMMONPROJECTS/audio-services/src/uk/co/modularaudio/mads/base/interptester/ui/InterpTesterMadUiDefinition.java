@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
+import uk.co.modularaudio.mads.base.interptester.mu.InterpolatorType;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
@@ -38,39 +39,30 @@ public class InterpTesterMadUiDefinition
 {
 	private static final Span SPAN = new Span(2,4);
 
-	private static final int[] CHAN_INDEXES = new int[] {
-		InterpTesterMadDefinition.PRODUCER_CV_RAW_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_LINEAR_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24_NOTS,
-		InterpTesterMadDefinition.PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS,
+	private final static int PLUG_START_X = 150;
+	private final static int PLUG_NOTS_Y = 120;
+	private final static int PLUG_TS_Y = 160;
 
-		InterpTesterMadDefinition.PRODUCER_CV_RAW,
-		InterpTesterMadDefinition.PRODUCER_CV_SUM_OF_RATIOS,
-		InterpTesterMadDefinition.PRODUCER_CV_LINEAR,
-		InterpTesterMadDefinition.PRODUCER_CV_HALFHANN,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_LOWPASS_24,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE,
-		InterpTesterMadDefinition.PRODUCER_CV_CD_SC_LOWPASS_24,
-	};
+	private static final int[] CHAN_INDEXES;
+	private static final Point[] CHAN_POSITIONS;
 
-	private static final Point[] CHAN_POSITIONS = new Point[] {
-		new Point( 150, 120 ),
-		new Point( 190, 120 ),
-		new Point( 230, 120 ),
-		new Point( 270, 120 ),
-		new Point( 310, 120 ),
-		new Point( 350, 120 ),
+	static
+	{
+		CHAN_INDEXES = new int[InterpTesterMadDefinition.NUM_CHANNELS];
+		CHAN_POSITIONS = new Point[InterpTesterMadDefinition.NUM_CHANNELS];
 
-		new Point( 150, 160 ),
-		new Point( 190, 160 ),
-		new Point( 230, 160 ),
-		new Point( 270, 160 ),
-		new Point( 310, 160 ),
-		new Point( 350, 160 ),
-		new Point( 390, 160 )
-	};
+		for( int i = 0 ; i < InterpTesterMadDefinition.NUM_CHANNELS ; ++i )
+		{
+			CHAN_INDEXES[i] = i;
+		}
+		final int numInterpolators = InterpolatorType.values().length;
+
+		for( int i = 0 ; i < numInterpolators ; ++i )
+		{
+			CHAN_POSITIONS[i] = new Point( PLUG_START_X + (i*40), PLUG_NOTS_Y );
+			CHAN_POSITIONS[numInterpolators+i] = new Point( PLUG_START_X + (i*40), PLUG_TS_Y );
+		}
+	}
 
 	private static final String[] CONTROL_NAMES = new String[] {
 		"Model Choice",

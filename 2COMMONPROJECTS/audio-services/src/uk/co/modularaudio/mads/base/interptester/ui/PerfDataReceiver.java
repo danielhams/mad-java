@@ -22,19 +22,5 @@ package uk.co.modularaudio.mads.base.interptester.ui;
 
 public interface PerfDataReceiver
 {
-
-	void setNoneNanos( long value );
-
-	void setSorNanos( long value );
-
-	void setLNanos( long value );
-
-	void setHHNanos( long value );
-
-	void setCdLp24Nanos( long value );
-
-	void setCdSddNanos( long value );
-
-	void setCdScLp24Nanos( long value );
-
+	void setInterpolatorNanos( int interpolator, int nanos );
 }

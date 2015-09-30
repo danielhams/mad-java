@@ -33,24 +33,6 @@ import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
 public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
 {
-	// Indexes into the channels
-	public final static int PRODUCER_CV_RAW_NOTS = 0;
-	public final static int PRODUCER_CV_SUM_OF_RATIOS_NOTS = 1;
-	public final static int PRODUCER_CV_LINEAR_NOTS = 2;
-	public final static int PRODUCER_CV_HALFHANN_NOTS = 3;
-	public final static int PRODUCER_CV_CD_LOWPASS_24_NOTS = 4;
-	public final static int PRODUCER_CV_SPRINGDAMPER_DOUBLE_NOTS = 5;
-
-	public final static int PRODUCER_CV_RAW = 6;
-	public final static int PRODUCER_CV_SUM_OF_RATIOS = 7;
-	public final static int PRODUCER_CV_LINEAR = 8;
-	public final static int PRODUCER_CV_HALFHANN = 9;
-	public final static int PRODUCER_CV_CD_LOWPASS_24 = 10;
-	public final static int PRODUCER_CV_CD_SPRINGDAMPER_DOUBLE = 11;
-	public final static int PRODUCER_CV_CD_SC_LOWPASS_24 = 12;
-
-	public final static int NUM_CHANNELS = 13;
-
 	public static final String DEFINITION_ID = "interptester";
 
 	private final static String USER_VISIBLE_NAME = "Control Interpolation Tester";
@@ -59,73 +41,37 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 	private final static String CLASS_NAME = "Control Interpolation Tester";
 	private final static String CLASS_DESC = "A tester of control interpolation";
 
-	// These must match the channel indexes given above
-	private final static String[] CHAN_NAMES = new String[] {
-		"Raw Control NoTS CV Out",
-		"Sum Of Ratio NoTS CV Out",
-		"Linear Inteprolation NoTS CV Out",
-		"Half Hann NoTS CV Out",
-		"CD Low Pass 24 NoTS CV Out",
-		"Spring Damper Double NoTS CV Out",
+	public final static int NUM_CHANNELS = InterpolatorType.values().length * 2;
+	private final static String[] CHAN_NAMES;
+	private final static MadChannelType[] CHAN_TYPES;
+	private final static MadChannelDirection[] CHAN_DIRS;
+	private final static MadChannelPosition[] CHAN_POSI;
 
-		"Raw Control CV Out",
-		"Sum Of Ratio CV Out",
-		"Linear Interpolation CV Out",
-		"Half Hann CV Out",
-		"CD Low Pass 24 CV Out",
-		"Spring Damper Double CV Out",
-		"CD Stability Checked Low Pass 24 CV Out",
-	};
+	static
+	{
+		CHAN_NAMES = new String[NUM_CHANNELS];
+		CHAN_TYPES = new MadChannelType[NUM_CHANNELS];
+		CHAN_DIRS = new MadChannelDirection[NUM_CHANNELS];
+		CHAN_POSI = new MadChannelPosition[NUM_CHANNELS];
 
-	private final static MadChannelType[] CHAN_TYPES = new MadChannelType[] {
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-		MadChannelType.CV,
-	};
-
-	private final static MadChannelDirection[] CHAN_DIRS = new MadChannelDirection[] {
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-		MadChannelDirection.PRODUCER,
-	};
-
-	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] {
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-		MadChannelPosition.MONO,
-	};
+		int chanNum = 0;
+		for( final InterpolatorType it : InterpolatorType.values() )
+		{
+			CHAN_NAMES[chanNum] = it.getChannelPrefix() + " NoTS CV Out";
+			CHAN_TYPES[chanNum] = MadChannelType.CV;
+			CHAN_DIRS[chanNum] = MadChannelDirection.PRODUCER;
+			CHAN_POSI[chanNum] = MadChannelPosition.MONO;
+			chanNum++;
+		}
+		for( final InterpolatorType it : InterpolatorType.values() )
+		{
+			CHAN_NAMES[chanNum] = it.getChannelPrefix() + " CV Out";
+			CHAN_TYPES[chanNum] = MadChannelType.CV;
+			CHAN_DIRS[chanNum] = MadChannelDirection.PRODUCER;
+			CHAN_POSI[chanNum] = MadChannelPosition.MONO;
+			chanNum++;
+		}
+	}
 
 	public InterpTesterMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException

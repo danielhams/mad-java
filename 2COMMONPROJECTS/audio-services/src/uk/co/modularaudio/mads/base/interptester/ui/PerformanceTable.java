@@ -25,6 +25,7 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.mads.base.interptester.mu.InterpolatorType;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
@@ -33,13 +34,7 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 {
 	private static final long serialVersionUID = -6944278603929566358L;
 
-	private final LWTCLabel nonePerf;
-	private final LWTCLabel sorPerf;
-	private final LWTCLabel lPerf;
-	private final LWTCLabel hhPerf;
-	private final LWTCLabel cdLp24Perf;
-	private final LWTCLabel cdSddPerf;
-	private final LWTCLabel cdScLp24Perf;
+	private final LWTCLabel[] perfLabels;
 
 	private class DarkLabel extends LWTCLabel
 	{
@@ -62,6 +57,8 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 
 	public PerformanceTable()
 	{
+		perfLabels = new LWTCLabel[InterpolatorType.values().length];
+
 		setOpaque( false );
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
@@ -73,76 +70,23 @@ public class PerformanceTable extends JPanel implements PerfDataReceiver
 
 		setLayout( msh.createMigLayout() );
 
-		add( new DarkLabel("None:"), "");
-		nonePerf = new DarkLabel();
-		add( nonePerf, "wrap");
-
-		add( new DarkLabel("Sum Of Ratios:"), "");
-		sorPerf = new DarkLabel();
-		add( sorPerf, "wrap");
-
-		add( new DarkLabel("Linear:"), "");
-		lPerf = new DarkLabel();
-		add( lPerf, "wrap");
-
-		add( new DarkLabel("Half Hann:"), "");
-		hhPerf = new DarkLabel();
-		add( hhPerf, "wrap");
-
-		add( new DarkLabel("CD Low Pass 24:"), "");
-		cdLp24Perf = new DarkLabel();
-		add( cdLp24Perf, "wrap");
-
-		add( new DarkLabel("CD Spring Damper (D):"), "");
-		cdSddPerf = new DarkLabel();
-		add( cdSddPerf, "wrap");
-
-		add( new DarkLabel("CD SC Low Pass 24:"), "");
-		cdScLp24Perf = new DarkLabel();
-		add( cdScLp24Perf, "wrap");
-
+		int channelNum = 0;
+		for( final InterpolatorType it : InterpolatorType.values() )
+		{
+			final DarkLabel label = new DarkLabel(it.getChannelPrefix() + ":" );
+			final DarkLabel perfEntry = new DarkLabel();
+			add( label, "" );
+			add( perfEntry, "wrap" );
+			perfLabels[channelNum] = perfEntry;
+			channelNum++;
+		}
 	}
 
 	@Override
-	public void setNoneNanos( final long value )
+	public void setInterpolatorNanos( final int interpolator,
+			final int nanos )
 	{
-		nonePerf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setSorNanos( final long value )
-	{
-		sorPerf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setLNanos( final long value )
-	{
-		lPerf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setHHNanos( final long value )
-	{
-		hhPerf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setCdLp24Nanos( final long value )
-	{
-		cdLp24Perf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setCdSddNanos( final long value )
-	{
-		cdSddPerf.setText( Long.toString( value ) );
-	}
-
-	@Override
-	public void setCdScLp24Nanos( final long value )
-	{
-		cdScLp24Perf.setText( Long.toString( value ) );
+		perfLabels[interpolator].setText( Integer.toString( nanos ) );
 	}
 
 }

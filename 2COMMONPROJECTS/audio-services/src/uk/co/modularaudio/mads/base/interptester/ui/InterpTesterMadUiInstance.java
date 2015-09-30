@@ -85,39 +85,12 @@ public class InterpTesterMadUiInstance extends AbstractNoNameChangeNonConfigurab
 	{
 		switch( nextOutgoingEntry.command )
 		{
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_NONE_NANOS:
+			case InterpTesterIOQueueBridge.COMMAND_TO_UI_INTERP_NANOS:
 			{
-				perfDataReceiver.setNoneNanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_SOR_NANOS:
-			{
-				perfDataReceiver.setSorNanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_LIN_NANOS:
-			{
-				perfDataReceiver.setLNanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_HH_NANOS:
-			{
-				perfDataReceiver.setHHNanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_LP_24_NANOS:
-			{
-				perfDataReceiver.setCdLp24Nanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_SDD_NANOS:
-			{
-				perfDataReceiver.setCdSddNanos( nextOutgoingEntry.value );
-				break;
-			}
-			case InterpTesterIOQueueBridge.COMMAND_TO_UI_CD_SC_LP_24_NANOS:
-			{
-				perfDataReceiver.setCdScLp24Nanos( nextOutgoingEntry.value );
+				final long value = nextOutgoingEntry.value;
+				final int interpolator = (int)(value >> 32);
+				final int nanos = (int)(value & 0xffff);
+				perfDataReceiver.setInterpolatorNanos( interpolator, nanos );
 				break;
 			}
 			default:

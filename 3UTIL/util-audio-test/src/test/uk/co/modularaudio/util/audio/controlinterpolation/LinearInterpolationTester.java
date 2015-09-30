@@ -30,8 +30,15 @@ public class LinearInterpolationTester
 {
 	private static Log log = LogFactory.getLog( LinearInterpolationTester.class.getName() );
 
+	private final static int MAX_PERIOD_LENGTH = 1024;
+
 	public LinearInterpolationTester()
 	{
+	}
+
+	private String fp( final float value )
+	{
+		return MathFormatter.fastFloatPrint( value, 8, true );
 	}
 
 	public void go() throws Exception
@@ -50,7 +57,7 @@ public class LinearInterpolationTester
 		li.hardSetValue( 1.0f );
 		li.notifyOfNewValue( 0.0f );
 
-		final float[] results = new float[TEST_PERIOD_LENGTH];
+		final float[] results = new float[MAX_PERIOD_LENGTH];
 
 		final int NUM_ITERATIONS = 6;
 
@@ -58,7 +65,7 @@ public class LinearInterpolationTester
 		{
 			li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
 			log.info( "Last value in iteration " + i + " is " +
-					MathFormatter.fastFloatPrint( results[TEST_PERIOD_LENGTH-1], 8, true ) );
+					fp( results[TEST_PERIOD_LENGTH-1] ) );
 		}
 
 		li.notifyOfNewValue( 0.1f );
@@ -67,7 +74,7 @@ public class LinearInterpolationTester
 		{
 			li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
 			log.info( "Last value in iteration " + i + " is " +
-					MathFormatter.fastFloatPrint( results[TEST_PERIOD_LENGTH-1], 8, true ) );
+					fp( results[TEST_PERIOD_LENGTH-1] ) );
 		}
 
 		li.notifyOfNewValue( 1.0f );
@@ -76,8 +83,22 @@ public class LinearInterpolationTester
 		{
 			li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
 			log.info( "Last value in iteration " + i + " is " +
-					MathFormatter.fastFloatPrint( results[TEST_PERIOD_LENGTH-1], 8, true ) );
+					fp( results[TEST_PERIOD_LENGTH-1] ) );
 		}
+
+
+		final float curValue = li.getValue();
+		log.info("Value after iterations is " + curValue );
+		// Now check the value reset thingy
+
+		li.notifyOfNewValue( 0.75f );
+		li.generateControlValues( results, 0, 2 );
+		li.notifyOfNewValue( 0.5f );
+		li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
+		li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
+		li.generateControlValues( results, 0, TEST_PERIOD_LENGTH );
+		li.notifyOfNewValue( 0.25f );
+		li.generateControlValues( results, 0, MAX_PERIOD_LENGTH );
 
 	}
 

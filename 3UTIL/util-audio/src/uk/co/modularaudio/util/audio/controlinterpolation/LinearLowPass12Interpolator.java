@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.audio.controlinterpolation;
 
-import java.util.Arrays;
-
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
@@ -30,15 +28,7 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
-	private int curWindowPos;
-	private int interpolationLength;
-
-	private float curVal;
-	private float desVal;
-	private float deltaVal;
-
-	private float lowerBound;
-	private float upperBound;
+	private final LinearInterpolator li;
 
 	private final double[] feedbackDelaySamples = new double[4];
 
@@ -47,46 +37,19 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 
 	private final float lowPassFrequency;
 
+	private float desVal;
+	private float curVal;
+
 	public LinearLowPass12Interpolator()
 	{
-		this.lowerBound = Float.NEGATIVE_INFINITY;
-		this.upperBound = Float.POSITIVE_INFINITY;
+		this.li = new LinearInterpolator();
 		this.lowPassFrequency = LowPassInterpolatorConstants.LOW_PASS_CUTOFF;
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		final int numLeftInInterpolation = interpolationLength - curWindowPos;
-//		log.trace( "Interpolation has " + numLeftInInterpolation + " left" );
-		final int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
-		final int numAfter = length - numWithInterpolation;
-//		log.trace( "Will do " + numWithInterpolation + " this round along with fill of " + numAfter );
-		int curIndex = outputIndex;
-
-		if( numWithInterpolation > 0 )
-		{
-			for( int i = 0 ; i < numWithInterpolation ; ++i )
-			{
-				curVal += deltaVal;
-//				log.trace( "Moved to value " +
-//						MathFormatter.fastFloatPrint( curVal, 8, true ));
-				curVal = (curVal < lowerBound ? lowerBound :
-					(curVal > upperBound ? upperBound :
-						curVal ) );
-				output[ curIndex + i ] = curVal;
-			}
-			curIndex += numWithInterpolation;
-			curWindowPos += numWithInterpolation;
-		}
-
-		// No further use of interpolation necessary, move to desVal
-		// and make it curVal
-		if( numAfter > 0 )
-		{
-			curVal = desVal;
-			Arrays.fill( output, curIndex, outputIndex + length, curVal );
-		}
+		li.generateControlValues( output, outputIndex, length );
 
 		for (int i = 0; i < length; i++)
 		{
@@ -105,30 +68,15 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 
 			output[outputIndex + i] = (float)result;
 		}
+
+		curVal = output[outputIndex + (length-1)];
 	}
 
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-//		if( log.isTraceEnabled() )
-//		{
-//			log.trace( "Received notification of new value " +
-//					MathFormatter.fastFloatPrint( newValue, 8, true ) );
-//			log.trace( "CurWindowPos(" + curWindowPos + ") curVal(" +
-//					MathFormatter.fastFloatPrint( curVal, 8, true ) +
-//					") desVal(" +
-//					MathFormatter.fastFloatPrint( desVal, 8, true ) +
-//					")");
-//		}
-		// Restart the interpolation
-		curWindowPos = 0;
 		desVal = newValue;
-		deltaVal = (desVal - curVal) / interpolationLength;
-//		if( log.isTraceEnabled() )
-//		{
-//			log.trace("Reset cur window pos and reset desVal.");
-//			log.trace("deltaVal is now (" + MathFormatter.fastFloatPrint( deltaVal, 8, true ) + ")");
-//		}
+		li.notifyOfNewValue( newValue );
 	}
 
 	@Override
@@ -150,16 +98,14 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 	@Override
 	public void hardSetValue( final float value )
 	{
-		this.curVal = value;
+		li.hardSetValue( value );
 		this.desVal = value;
-		curWindowPos = interpolationLength;
 	}
 
 	@Override
 	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
 	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		li.resetLowerUpperBounds( lowerBound, upperBound );
 	}
 
 	@Override
@@ -167,8 +113,7 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 			final int periodLengthFrames,
 			final int interpolatorLengthFrames )
 	{
-		curWindowPos = 0;
-		interpolationLength = interpolatorLengthFrames;
+		li.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, interpolatorLengthFrames );
 
 		double freq = lowPassFrequency;
 		if (freq < 10.0)

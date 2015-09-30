@@ -28,8 +28,8 @@ public class LinearInterpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
-	private int curWindowPos;
 	private int interpolationLength;
+	private int numLeftToInterpolate;
 
 	private float curVal;
 	private float desVal;
@@ -50,56 +50,61 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		final int numLeftInInterpolation = interpolationLength - curWindowPos;
-//		log.trace( "Interpolation has " + numLeftInInterpolation + " left" );
-		final int numWithInterpolation = (numLeftInInterpolation < length ? numLeftInInterpolation : length );
-		int numAfter = length - numWithInterpolation;
-//		log.trace( "Will do " + numWithInterpolation + " this round along with fill of " + numAfter );
+//		log.trace( "Interpolation has " + numLeftToInterpolate + " left" );
+		int interpolationLoopFrames = (numLeftToInterpolate < length ? numLeftToInterpolate : length );
+		int numLeft = length;
 		int curIndex = outputIndex;
 
-		if( numWithInterpolation > 0 )
+		// Interpolation loop
+		if( interpolationLoopFrames > 0 )
 		{
-			for( int i = 0 ; i < numWithInterpolation ; ++i )
+			do
 			{
-				curVal += deltaVal;
-//				log.trace( "Moved to value " +
-//						MathFormatter.fastFloatPrint( curVal, 8, true ));
-				curVal = (curVal < lowerBound ? lowerBound :
-					(curVal > upperBound ? upperBound :
-						curVal ) );
-				output[ curIndex + i ] = curVal;
+//				log.trace( "Will do " + interpolationLoopFrames + " this round of interpolation");
+				for( int i = 0 ; i < interpolationLoopFrames ; ++i )
+				{
+					curVal += deltaVal;
+//					log.trace( "Moved to value " +
+//							MathFormatter.fastFloatPrint( curVal, 8, true ));
+					curVal = (curVal < lowerBound ? lowerBound :
+						(curVal > upperBound ? upperBound :
+							curVal ) );
+					output[ curIndex + i ] = curVal;
+				}
+				curIndex += interpolationLoopFrames;
+				numLeftToInterpolate -= interpolationLoopFrames;
+				numLeft -= interpolationLoopFrames;
+
+				if( numLeftToInterpolate == 0 )
+				{
+					curVal = desVal;
+
+					if( hasValueWaiting )
+					{
+						numLeftToInterpolate = interpolationLength;
+						desVal = waitingVal;
+						deltaVal = (desVal - curVal) / interpolationLength;
+						hasValueWaiting = false;
+
+						interpolationLoopFrames = (numLeftToInterpolate < numLeft ? numLeftToInterpolate : numLeft );
+					}
+					else
+					{
+						interpolationLoopFrames = 0;
+					}
+				}
+				else
+				{
+					interpolationLoopFrames = 0;
+				}
 			}
-			curIndex += numWithInterpolation;
-			curWindowPos += numWithInterpolation;
+			while( interpolationLoopFrames > 0 );
 		}
 
-		if( curWindowPos == interpolationLength && hasValueWaiting )
+		// Fill in any steady state
+		if( numLeft > 0 )
 		{
-			curWindowPos = 0;
-			desVal = waitingVal;
-			deltaVal = (desVal - curVal) / interpolationLength;
-			hasValueWaiting = false;
-
-			final int numWaitingToInterpolate = (numAfter < interpolationLength ? numAfter : interpolationLength );
-
-			for( int i = 0 ; i < numWaitingToInterpolate ; ++i )
-			{
-				curVal += deltaVal;
-				curVal = (curVal < lowerBound ? lowerBound :
-					(curVal > upperBound ? upperBound :
-						curVal ) );
-				output[ curIndex + i ] = curVal;
-			}
-			curIndex += numWaitingToInterpolate;
-			curWindowPos += numWaitingToInterpolate;
-			numAfter -= numWaitingToInterpolate;
-		}
-
-		// No further use of interpolation necessary, move to desVal
-		// and make it curVal
-		if( numAfter > 0 )
-		{
-			curVal = desVal;
+//			log.trace("Have " + numLeft + " left to steady state fill");
 			Arrays.fill( output, curIndex, outputIndex + length, curVal );
 		}
 	}
@@ -107,16 +112,17 @@ public class LinearInterpolator implements ControlValueInterpolator
 	@Override
 	public void notifyOfNewValue( final float newValue )
 	{
-		if( !hasValueWaiting && curWindowPos == interpolationLength )
+		if( !hasValueWaiting && numLeftToInterpolate == 0 )
 		{
+//			log.trace("Notified of value " + newValue + " and is currently steady state");
 			// Restart the interpolation
-			curWindowPos = 0;
+			numLeftToInterpolate = interpolationLength;
 			desVal = newValue;
 			deltaVal = (desVal - curVal) / interpolationLength;
-			hasValueWaiting = false;
 		}
 		else
 		{
+//			log.trace("Notified of value " + newValue + " but we are already interpolating or have value waiting");
 			hasValueWaiting = true;
 			waitingVal = newValue;
 		}
@@ -143,7 +149,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 	{
 		this.curVal = value;
 		this.desVal = value;
-		curWindowPos = interpolationLength;
+		numLeftToInterpolate = 0;
 		hasValueWaiting = false;
 	}
 
@@ -160,7 +166,7 @@ public class LinearInterpolator implements ControlValueInterpolator
 			final int interpolatorLengthFrames )
 	{
 		interpolationLength = interpolatorLengthFrames;
-		curWindowPos = interpolationLength;
+		hardSetValue( desVal );
 	}
 
 	@Override
