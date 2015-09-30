@@ -207,7 +207,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numToOutput = numFramesToOutput;
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
-		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator( -MAX_SPEED, MAX_SPEED );
+		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
+		speedSad.resetLowerUpperBounds( -MAX_SPEED, MAX_SPEED );
 		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );
 
@@ -327,7 +328,8 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numToOutput = numFramesToOutput;
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
-		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator( -MAX_SPEED, MAX_SPEED );
+		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
+		speedSad.resetLowerUpperBounds( -MAX_SPEED, MAX_SPEED );
 		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );
 

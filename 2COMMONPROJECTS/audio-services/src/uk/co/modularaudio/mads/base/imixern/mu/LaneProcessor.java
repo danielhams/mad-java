@@ -51,12 +51,8 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 	private float currentLeftMeterReading;
 	private float currentRightMeterReading;
 
-	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator(
-			0.0f,
-			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
-	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator(
-			0.0f,
-			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
+	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator();
 
 	public LaneProcessor( final I instance,
 			final MixerNInstanceConfiguration channelConfiguration,
@@ -70,6 +66,10 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 
 		leftAmpInterpolator.hardSetValue( 0.0f );
 		rightAmpInterpolator.hardSetValue( 0.0f );
+
+		final float linearHighestLevel = AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB );
+		leftAmpInterpolator.resetLowerUpperBounds( 0.0f, linearHighestLevel );
+		rightAmpInterpolator.resetLowerUpperBounds( 0.0f, linearHighestLevel );
 	}
 
 	public void processLaneMixToOutput( final ThreadSpecificTemporaryEventStorage tses,

@@ -125,18 +125,18 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 	{
 		interpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
 		interpolators[INTERPOLATOR.NONE.ordinal()] = new NoneInterpolator();
-		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator();
 		interpolators[INTERPOLATOR.HALFHANN.ordinal()] = new HalfHannWindowInterpolator();
-		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator();
 		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPass12Interpolator();
 		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPass24Interpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPassInterpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPass24Interpolator();
-		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
-		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
-		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDouble24Interpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator();
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator();
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDouble24Interpolator();
 		interpolators[INTERPOLATOR.CDSCLOWPASS24.ordinal()] = new CDSCLowPass24Interpolator();
-		interpolators[INTERPOLATOR.LINEARLOWPASS12.ordinal()] = new LinearLowPass12Interpolator( 0.0f, 1.0f );
+		interpolators[INTERPOLATOR.LINEARLOWPASS12.ordinal()] = new LinearLowPass12Interpolator();
 	}
 
 	private final InterpolatorVisualiser[] visualisers = new InterpolatorVisualiser[NUM_INTERPOLATORS];

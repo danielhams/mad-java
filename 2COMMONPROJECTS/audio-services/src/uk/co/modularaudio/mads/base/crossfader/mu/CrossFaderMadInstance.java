@@ -42,8 +42,8 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 	private int sampleRate;
 
-	private final SpringAndDamperDoubleInterpolator ampAInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
-	private final SpringAndDamperDoubleInterpolator ampBInterpolator = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+	private final SpringAndDamperDoubleInterpolator ampAInterpolator = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator ampBInterpolator = new SpringAndDamperDoubleInterpolator();
 
 	public CrossFaderMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -53,7 +53,9 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
+		ampAInterpolator.resetLowerUpperBounds( 0.0f, 1.0f );
 		ampAInterpolator.hardSetValue( 0.5f );
+		ampBInterpolator.resetLowerUpperBounds( 0.0f, 1.0f );
 		ampBInterpolator.hardSetValue( 0.5f );
 	}
 

@@ -29,6 +29,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleI
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter;
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -49,7 +50,7 @@ public class CDFrequencyFilterMadInstance extends MadInstance<CDFrequencyFilterM
 	public final static float FREQ_MAX_VAL = 22050.0f;
 	public final static float FREQ_DEFAULT_VAL = 500.0f;
 
-	private int sampleRate;
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private FrequencyFilterMode desiredFilterMode = FrequencyFilterMode.LP;
 	private float desiredFrequency = FREQ_DEFAULT_VAL;
@@ -58,8 +59,7 @@ public class CDFrequencyFilterMadInstance extends MadInstance<CDFrequencyFilterM
 
 	private boolean was24dB = false;
 
-	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator(
-			FREQ_MIN_VAL, FREQ_MAX_VAL );
+	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator();
 
 	private final CDButterworthFilter leftChannelButterworth = new CDButterworthFilter();
 	private final CDButterworthFilter rightChannelButterworth = new CDButterworthFilter();
@@ -73,6 +73,8 @@ public class CDFrequencyFilterMadInstance extends MadInstance<CDFrequencyFilterM
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		freqSad.resetLowerUpperBounds( FREQ_MIN_VAL, FREQ_MAX_VAL );
 	}
 
 	@Override

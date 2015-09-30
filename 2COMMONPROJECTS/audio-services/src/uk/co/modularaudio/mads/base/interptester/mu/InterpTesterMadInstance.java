@@ -33,9 +33,11 @@ import uk.co.modularaudio.mads.base.interptester.utils.SliderModelValueConverter
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -56,20 +58,51 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 {
 	private static Log log = LogFactory.getLog( InterpTesterMadInstance.class.getName() );
 
+	private enum InterpolatorType
+	{
+		NONE( NoneInterpolator.class ),
+		SOR( SumOfRatiosInterpolator.class ),
+		HH( HalfHannWindowInterpolator.class ),
+		LINEAR( LinearInterpolator.class ),
+		RECALC_LINEAR( RecalculatingLinearInterpolator.class ),
+		CDLP24( CDLowPass24Interpolator.class ),
+		CDSCLP24( CDSCLowPass24Interpolator.class );
+
+		private Class<? extends ControlValueInterpolator> interpolatorClass;
+
+		private InterpolatorType( final Class clazz )
+		{
+			this.interpolatorClass = clazz;
+		}
+
+		public Class<? extends ControlValueInterpolator> getInterpolatorClass()
+		{
+			return interpolatorClass;
+		}
+
+	};
+
+	private static final int NUM_INTERPOLATORS = InterpolatorType.values().length;
+
+	private final ControlValueInterpolator[] noTsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
+	private final ControlValueInterpolator[] tsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
+
+	private final long[] tsInterpolatorsDurations = new long[NUM_INTERPOLATORS];
+
 	private final NoneInterpolator noneInterpolator = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolator = new SumOfRatiosInterpolator();
-	private final LinearInterpolator liInterpolator = new LinearInterpolator( -1.0f, 1.0f );
+	private final LinearInterpolator liInterpolator = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolator = new HalfHannWindowInterpolator();
 	private final CDLowPass24Interpolator cdLp24Interpolator = new CDLowPass24Interpolator();
-	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolator = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolator = new CDSpringAndDamperDoubleInterpolator();
 	private final CDSCLowPass24Interpolator cdScLp24Interpolator = new CDSCLowPass24Interpolator();
 
 	private final NoneInterpolator noneInterpolatorNoTs = new NoneInterpolator();
 	private final SumOfRatiosInterpolator sorInterpolatorNoTs = new SumOfRatiosInterpolator();
-	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator( -1.0f, 1.0f );
+	private final LinearInterpolator liInterpolatorNoTs = new LinearInterpolator();
 	private final HalfHannWindowInterpolator hhInterpolatorNoTs = new HalfHannWindowInterpolator();
 	private final CDLowPass24Interpolator cdLp24InterpolatorNoTs = new CDLowPass24Interpolator();
-	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final CDSpringAndDamperDoubleInterpolator cdSddInterpolatorNoTs = new CDSpringAndDamperDoubleInterpolator();
 
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 	private int periodLengthFrames = 1024;
@@ -119,6 +152,25 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 //		lMaskCcf.set( InterpTesterMadDefinition.CONSUMER_CHAN1_LEFT );
 //		lMaskCcf.set( InterpTesterMadDefinition.PRODUCER_OUT_LEFT );
 //		lChannelMask = lMaskCcf.createMaskForSetChannels();
+
+		try
+		{
+			for( final InterpolatorType it : InterpolatorType.values() )
+			{
+				final Class<? extends ControlValueInterpolator> clazz = it.getInterpolatorClass();
+
+				final ControlValueInterpolator noTsI = clazz.newInstance();
+				noTsInterpolators[it.ordinal()] = noTsI;
+
+				final ControlValueInterpolator tsI = clazz.newInstance();
+				tsInterpolators[it.ordinal()] = tsI;
+			}
+		}
+		catch( final Exception e )
+		{
+			final String msg = "Exception caught instantiating interpolators: " + e.toString();
+			log.error( msg, e );
+		}
 	}
 
 	@Override

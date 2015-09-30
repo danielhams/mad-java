@@ -47,11 +47,10 @@ public class LinearLowPass24Interpolator implements ControlValueInterpolator
 
 	private final float lowPassFrequency;
 
-	public LinearLowPass24Interpolator( final float lowerBound,
-			final float upperBound )
+	public LinearLowPass24Interpolator()
 	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 		this.lowPassFrequency = LowPassInterpolatorConstants.LOW_PASS_CUTOFF;
 	}
 

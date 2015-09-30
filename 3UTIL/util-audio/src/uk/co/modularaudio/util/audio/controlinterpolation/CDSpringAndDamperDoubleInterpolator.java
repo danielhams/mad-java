@@ -71,12 +71,12 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 
 	private double desPos = 0.0f;
 
-	public CDSpringAndDamperDoubleInterpolator( final float lowerBound, final float upperBound )
+	public CDSpringAndDamperDoubleInterpolator()
 	{
 		curState.x = 0.0;
 		curState.v = 0.0;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
 	}
 

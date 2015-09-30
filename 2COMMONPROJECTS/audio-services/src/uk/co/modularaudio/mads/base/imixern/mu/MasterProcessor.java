@@ -44,12 +44,8 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 	private float leftMeterLevel;
 	private float rightMeterLevel;
 
-	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator(
-			0.0f,
-			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
-	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator(
-			0.0f,
-			AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB ) );
+	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator();
 
 	public MasterProcessor( final I instance,
 			final MixerNInstanceConfiguration channelConfiguration )
@@ -57,6 +53,10 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		this.instance = instance;
 		leftAmpInterpolator.hardSetValue( 0.0f );
 		rightAmpInterpolator.hardSetValue( 0.0f );
+
+		final float linearHighestLevel = AudioMath.dbToLevelF( MixdownSliderDbToLevelComputer.LINEAR_HIGHEST_DB );
+		leftAmpInterpolator.resetLowerUpperBounds( 0.0f, linearHighestLevel );
+		rightAmpInterpolator.resetLowerUpperBounds( 0.0f, linearHighestLevel );
 	}
 
 	public void processMasterOutput( final ThreadSpecificTemporaryEventStorage tses,

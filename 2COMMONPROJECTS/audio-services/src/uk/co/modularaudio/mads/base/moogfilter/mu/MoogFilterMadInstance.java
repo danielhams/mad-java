@@ -77,9 +77,9 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	protected MoogFilter leftFilter = new MoogFilter();
 	protected MoogFilter rightFilter = new MoogFilter();
 
-	private final SpringAndDamperDoubleInterpolator cutoffSad = new SpringAndDamperDoubleInterpolator( CUTOFF_MIN, CUTOFF_MAX );
-	private final SpringAndDamperDoubleInterpolator qSad = new SpringAndDamperDoubleInterpolator( Q_MIN, Q_MAX );
-	private final SpringAndDamperDoubleInterpolator ampSad = new SpringAndDamperDoubleInterpolator( AMP_CORR_MIN, AMP_CORR_MAX );
+	private final SpringAndDamperDoubleInterpolator cutoffSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator qSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator ampSad = new SpringAndDamperDoubleInterpolator();
 
 	private final Limiter outputLimiter = new Limiter( 0.99f, 20 );
 
@@ -90,6 +90,10 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		cutoffSad.resetLowerUpperBounds( CUTOFF_MIN, CUTOFF_MAX );
+		qSad.resetLowerUpperBounds( Q_MIN, Q_MAX );
+		ampSad.resetLowerUpperBounds( AMP_CORR_MIN, AMP_CORR_MAX );
 	}
 
 	@Override

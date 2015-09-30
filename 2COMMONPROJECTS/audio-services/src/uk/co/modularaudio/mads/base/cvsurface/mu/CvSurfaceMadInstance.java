@@ -45,8 +45,8 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 	private float desiredX;
 	private float desiredY;
 
-	private final SpringAndDamperDoubleInterpolator xSad = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
-	private final SpringAndDamperDoubleInterpolator ySad = new SpringAndDamperDoubleInterpolator( -1.0f, 1.0f );
+	private final SpringAndDamperDoubleInterpolator xSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator ySad = new SpringAndDamperDoubleInterpolator();
 
 	public CvSurfaceMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -55,7 +55,9 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		xSad.resetLowerUpperBounds( -1.0f, 1.0f );
 		xSad.hardSetValue( 0.0f );
+		ySad.resetLowerUpperBounds( -1.0f, 1.0f );
 		ySad.hardSetValue( 0.0f );
 	}
 

@@ -70,12 +70,12 @@ public class CDSpringAndDamperDouble24Interpolator implements ControlValueInterp
 
 	private double desPos = 0.0f;
 
-	public CDSpringAndDamperDouble24Interpolator( final float lowerBound, final float upperBound )
+	public CDSpringAndDamperDouble24Interpolator()
 	{
 		curState.x = 0.0;
 		curState.v = 0.0;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
 	}
 

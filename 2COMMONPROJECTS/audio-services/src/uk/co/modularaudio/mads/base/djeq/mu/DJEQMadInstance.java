@@ -58,11 +58,11 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	private float curLeftMeterReading;
 	private float curRightMeterReading;
 
-	private final SpringAndDamperDoubleInterpolator highSad = new SpringAndDamperDoubleInterpolator( 0.0f, MAX_EQ_OVERDRIVE );
-	private final SpringAndDamperDoubleInterpolator midSad = new SpringAndDamperDoubleInterpolator( 0.0f, MAX_EQ_OVERDRIVE );
-	private final SpringAndDamperDoubleInterpolator lowSad = new SpringAndDamperDoubleInterpolator( 0.0f, MAX_EQ_OVERDRIVE );
+	private final SpringAndDamperDoubleInterpolator highSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator midSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator lowSad = new SpringAndDamperDoubleInterpolator();
 
-	private final SpringAndDamperDoubleInterpolator faderSad = new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f );
+	private final SpringAndDamperDoubleInterpolator faderSad = new SpringAndDamperDoubleInterpolator();
 
 	private final ButterworthFilter24DB leftLpFilter = new ButterworthFilter24DB();
 	private final ButterworthFilter24DB leftNonLpFilter = new ButterworthFilter24DB();
@@ -84,10 +84,14 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
+		highSad.resetLowerUpperBounds( 0.0f, MAX_EQ_OVERDRIVE );
 		highSad.hardSetValue( 1.0f );
+		midSad.resetLowerUpperBounds( 0.0f, MAX_EQ_OVERDRIVE );
 		midSad.hardSetValue( 1.0f );
+		lowSad.resetLowerUpperBounds( 0.0f, MAX_EQ_OVERDRIVE );
 		lowSad.hardSetValue( 1.0f );
 
+		faderSad.resetLowerUpperBounds( 0.0f, 1.0f );
 		faderSad.hardSetValue( 0.0f );
 	}
 

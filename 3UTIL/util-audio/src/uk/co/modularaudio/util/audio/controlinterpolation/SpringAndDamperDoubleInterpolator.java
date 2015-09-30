@@ -76,12 +76,12 @@ public class SpringAndDamperDoubleInterpolator implements ControlValueInterpolat
 
 	private double desPos = 0.0f;
 
-	public SpringAndDamperDoubleInterpolator( final float lowerBound, final float upperBound )
+	public SpringAndDamperDoubleInterpolator()
 	{
 		curState.x = 0.0;
 		curState.v = 0.0;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 		deltaTimestep = INTEGRATION_TIMESTEP_FOR_48K;
 	}
 

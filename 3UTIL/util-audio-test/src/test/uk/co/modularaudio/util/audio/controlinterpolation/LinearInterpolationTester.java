@@ -38,7 +38,8 @@ public class LinearInterpolationTester
 	{
 		log.info( "Off we go" );
 
-		final LinearInterpolator li = new LinearInterpolator( 0.0f, 1.0f );
+		final LinearInterpolator li = new LinearInterpolator();
+		li.resetLowerUpperBounds( 0.0f, 1.0f );
 
 		final int TEST_SAMPLE_RATE = 48000;
 		final int TEST_PERIOD_LENGTH = 4;

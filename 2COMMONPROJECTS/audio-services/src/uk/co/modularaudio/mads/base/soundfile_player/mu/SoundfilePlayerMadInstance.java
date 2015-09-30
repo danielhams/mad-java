@@ -68,6 +68,7 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	public static final float PLAYBACK_SPEED_MAX = 1.5f;
 
 	public static final float GAIN_MAX_DB = 20.0f;
+	public static final float GAIN_MAX_LEVEL = AudioMath.dbToLevelF( GAIN_MAX_DB );
 
 	private int numSamplesPerFrontEndPeriod = -1;
 
@@ -91,11 +92,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private int numSamplesTillNextEvent;
 
 	private float desiredPlaySpeed = 1.0f;
-	private final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator(
-			-PLAYBACK_SPEED_MAX, PLAYBACK_SPEED_MAX );
+	private final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
 	private float desiredGain = 1.0f;
-	private final SpringAndDamperDoubleInterpolator gainSad = new SpringAndDamperDoubleInterpolator(
-			0.0f, AudioMath.dbToLevelF( GAIN_MAX_DB ) );
+	private final SpringAndDamperDoubleInterpolator gainSad = new SpringAndDamperDoubleInterpolator();
 
 	private FadeInWaveTable fadeInWaveTable;
 	private FadeOutWaveTable fadeOutWaveTable;
@@ -116,6 +115,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		leftDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
 		rightDcTrap = new DcTrapFilter( DataRate.SR_44100.getValue() );
 
+		speedSad.resetLowerUpperBounds( -PLAYBACK_SPEED_MAX, PLAYBACK_SPEED_MAX );
+		gainSad.resetLowerUpperBounds( 0.0f, GAIN_MAX_LEVEL );
 	}
 
 	@Override

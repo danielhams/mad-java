@@ -60,9 +60,8 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 
 	private boolean was24dB = false;
 
-	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator(
-			FREQ_MIN_VAL, FREQ_MAX_VAL );
-	private final SpringAndDamperDoubleInterpolator bwSad = new SpringAndDamperDoubleInterpolator( BW_MIN_VAL, BW_MAX_VAL );
+	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator bwSad = new SpringAndDamperDoubleInterpolator();
 
 	private final ButterworthFilter leftChannelButterworth = new ButterworthFilter();
 	private final ButterworthFilter rightChannelButterworth = new ButterworthFilter();
@@ -76,6 +75,9 @@ public class FrequencyFilterMadInstance extends MadInstance<FrequencyFilterMadDe
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		freqSad.resetLowerUpperBounds( FREQ_MIN_VAL, FREQ_MAX_VAL );
+		bwSad.resetLowerUpperBounds( BW_MIN_VAL, BW_MAX_VAL );
 	}
 
 	@Override

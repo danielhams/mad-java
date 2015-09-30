@@ -38,10 +38,10 @@ public class RecalculatingLinearInterpolator implements ControlValueInterpolator
 	private float lowerBound;
 	private float upperBound;
 
-	public RecalculatingLinearInterpolator( final float lowerBound, final float upperBound )
+	public RecalculatingLinearInterpolator()
 	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 	}
 
 	@Override

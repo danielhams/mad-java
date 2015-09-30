@@ -41,10 +41,10 @@ public class LinearInterpolator implements ControlValueInterpolator
 	private boolean hasValueWaiting = false;
 	private float waitingVal;
 
-	public LinearInterpolator( final float lowerBound, final float upperBound )
+	public LinearInterpolator()
 	{
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.lowerBound = Float.NEGATIVE_INFINITY;
+		this.upperBound = Float.POSITIVE_INFINITY;
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 {
 //	private static Log log = LogFactory.getLog( BandLimitedOscillatorMadInstance.class.getName() );
 
-	private int sampleRate;
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private final BandLimitedOscillatorInstances oscillatorInstances;
 
@@ -56,10 +56,8 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 	private OscillatorWaveShape usedWaveShape = OscillatorWaveShape.SAW;
 	private Oscillator oscillator;
 
-	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator(
-			0.0f, DataRate.CD_QUALITY.getValue() / 2.0f );
-	private final SpringAndDamperDoubleInterpolator pwSad = new SpringAndDamperDoubleInterpolator( 0.01f,
-			1.0f );
+	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDoubleInterpolator pwSad = new SpringAndDamperDoubleInterpolator();
 
 	public BandLimitedOscillatorMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -71,7 +69,9 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 
 		oscillatorInstances = new BandLimitedOscillatorInstances( creationContext.getOscillatorFactory() );
 
+		freqSad.resetLowerUpperBounds( 0.0f, sampleRate / 2.0f );
 		freqSad.hardSetValue( OscillatorFrequencySliderModel.DEFAULT_OSCILLATOR_FREQUENCY );
+		pwSad.resetLowerUpperBounds( 0.01f, 1.0f );
 		pwSad.hardSetValue( OscillatorPulseWidthSliderModel.DEFAULT_PULSE_WIDTH );
 	}
 

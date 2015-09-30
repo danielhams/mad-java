@@ -110,21 +110,21 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 		freeInterpolators.put( InterpolationChoice.NONE, new NoneInterpolator() );
 		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FREE, new SumOfRatiosInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE, new LinearInterpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE, new LinearInterpolator() );
 		freeInterpolators.put( InterpolationChoice.HALF_HANN_FREE, new HalfHannWindowInterpolator() );
-		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator() );
 		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPass12Interpolator() );
 		freeInterpolators.put( InterpolationChoice.LOW_PASS24, new LowPass24Interpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPass24Interpolator() );
 		freeInterpolators.put( InterpolationChoice.CD_SC_LOW_PASS_24, new CDSCLowPass24Interpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDouble24Interpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_12, new LinearLowPass12Interpolator( 0.0f, 1.0f ) );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_24, new LinearLowPass24Interpolator( 0.0f, 1.0f ) );
+		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator() );
+		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDouble24Interpolator() );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_12, new LinearLowPass12Interpolator() );
+		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_24, new LinearLowPass24Interpolator() );
 
 		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
-		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator( 0.0f, 1.0f ) );
+		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator() );
 		fixedInterpolators.put( InterpolationChoice.HALF_HANN_FIXED, new HalfHannWindowInterpolator() );
 
 		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : fixedInterpolators.entrySet() )

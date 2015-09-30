@@ -92,7 +92,7 @@ public class TestPassthroughPhaseOnControllers
 			float liStartValue = origFloats[0];
 			final int periodLengthFrames = 1024;
 
-			final ControlValueInterpolator valueInterpolator = new LinearInterpolator(-1.0f, 1.0f);
+			final ControlValueInterpolator valueInterpolator = new LinearInterpolator();
 //			final ControlValueInterpolator valueInterpolator = new HalfHannWindowInterpolator();
 			final int INTERPOLATION_LENGTH = 512;
 			valueInterpolator.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, INTERPOLATION_LENGTH );
