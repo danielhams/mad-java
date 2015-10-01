@@ -9,7 +9,7 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 0"/>
-        <rackControl name="InterpolationChoice" value="LinFrLP12"/>
+        <rackControl name="InterpolationChoice" value="LinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
         <rackControl name="RespectTimestamps" value="false"/>
@@ -20,6 +20,13 @@
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Equal Power"/>
         <rackControl name="Slider" value="0.0"/>
+    </rackComponent>
+    <rackComponent name="DJ EQ 1" definitionId="djeq">
+        <rackPosition column="0" row="9"/>
+        <rackControl name="Fader" value="0.0"/>
+        <rackControl name="HighLane" value="0.0:false"/>
+        <rackControl name="LowLane" value="0.0:false"/>
+        <rackControl name="MidLane" value="0.0:false"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="InProcessing" definitionId="sub_rack">
         <rackPosition column="2" row="4"/>
@@ -41,10 +48,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-5.565608"/>
+        <rackControl name="Gain" value="-3.5046768"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 100 China master.mp3|57222351"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/LRCNTheBidness/LRCN - The Bidness 007 (08 NOV 2005).mp3|127720861"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -74,13 +81,15 @@
     <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input CV amplification factor"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
+    <rackLink producerRackComponentName="DJ EQ 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="InProcessing" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
     <rackLink producerRackComponentName="InProcessing" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Right"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="DJ EQ 1" consumerChannelName="Input Wave Left"/>
+    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="DJ EQ 1" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 2" producerChannelName="Output Channel 1" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>

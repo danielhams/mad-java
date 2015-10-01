@@ -20,9 +20,8 @@
 
 package uk.co.modularaudio.mads.base.interptester.mu;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -30,6 +29,8 @@ import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass12Interpo
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearLowPass12Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 
 public enum InterpolatorType
@@ -39,11 +40,12 @@ public enum InterpolatorType
 	HH( "Half Hann", HalfHannWindowInterpolator.class ),
 	LINEAR( "Linear Interpolation", LinearInterpolator.class ),
 	RECALC_LINEAR( "Recalculating Linear Interpolation", RecalculatingLinearInterpolator.class ),
-	LINLP12( "Linear And Low Pass 12", LinearLowPass12Interpolator.class ),
+	CDLP12( "CD Low Pass 12", CDLowPass12Interpolator.class ),
 	CDLP24( "CD Low Pass 24", CDLowPass24Interpolator.class ),
-	CDSCLP24( "CDSC Low Pass 24", CDSCLowPass24Interpolator.class ),
-	CDSD24( "CD Spring Damper 24", CDSpringAndDamperDouble24Interpolator.class ),
-	LINLP24( "Linear And Low Pass 24", LinearLowPass24Interpolator.class );
+	LINLP12( "Linear And Low Pass 12", LinearLowPass12Interpolator.class ),
+	LINLP24( "Linear And Low Pass 24", LinearLowPass24Interpolator.class ),
+	RECALC_LINLP12( "Recalculating Linear Low Pass 12", RecalculatingLinearLowPass12Interpolator.class ),
+	RECALC_LINLP24( "Recalculating Linear Low Pass 24", RecalculatingLinearLowPass24Interpolator.class );
 
 	private String channelPrefix;
 	private Class<? extends ControlValueInterpolator> interpolatorClass;

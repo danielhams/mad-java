@@ -39,7 +39,8 @@ public class InterpTesterMadUiDefinition
 {
 	private static final Span SPAN = new Span(2,4);
 
-	private final static int PLUG_START_X = 150;
+	private final static int PLUG_START_X = 50;
+	private final static int PLUG_DELTA_X = 30;
 	private final static int PLUG_NOTS_Y = 120;
 	private final static int PLUG_TS_Y = 160;
 
@@ -59,8 +60,8 @@ public class InterpTesterMadUiDefinition
 
 		for( int i = 0 ; i < numInterpolators ; ++i )
 		{
-			CHAN_POSITIONS[i] = new Point( PLUG_START_X + (i*40), PLUG_NOTS_Y );
-			CHAN_POSITIONS[numInterpolators+i] = new Point( PLUG_START_X + (i*40), PLUG_TS_Y );
+			CHAN_POSITIONS[i] = new Point( PLUG_START_X + (i*PLUG_DELTA_X), PLUG_NOTS_Y );
+			CHAN_POSITIONS[numInterpolators+i] = new Point( PLUG_START_X + (i*PLUG_DELTA_X), PLUG_TS_Y );
 		}
 	}
 

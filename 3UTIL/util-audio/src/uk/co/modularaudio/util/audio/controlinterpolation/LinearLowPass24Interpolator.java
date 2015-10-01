@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.audio.controlinterpolation;
 
+import java.util.Arrays;
+
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
@@ -49,27 +51,34 @@ public class LinearLowPass24Interpolator implements ControlValueInterpolator
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		li.generateControlValues( output, outputIndex, length );
-
-		for (int i = 0; i < length; i++)
+		if( curVal == desVal )
 		{
-			final double w = output[outputIndex + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
-			final double result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
-
-			feedbackDelaySamples[1] = feedbackDelaySamples[0];
-			feedbackDelaySamples[0] = w;
-
-			// And second pass (for 24 db)
-			final double we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
-			final double resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
-
-			feedbackDelaySamples[3] = feedbackDelaySamples[2];
-			feedbackDelaySamples[2] = we;
-
-			output[outputIndex + i] = (float)resulte;
+			Arrays.fill( output, outputIndex, outputIndex + length, curVal );
 		}
+		else
+		{
+			li.generateControlValues( output, outputIndex, length );
 
-		curVal = output[outputIndex + (length - 1)];
+			for (int i = 0; i < length; i++)
+			{
+				final double w = output[outputIndex + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
+				final double result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
+
+				feedbackDelaySamples[1] = feedbackDelaySamples[0];
+				feedbackDelaySamples[0] = w;
+
+				// And second pass (for 24 db)
+				final double we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
+				final double resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
+
+				feedbackDelaySamples[3] = feedbackDelaySamples[2];
+				feedbackDelaySamples[2] = we;
+
+				output[outputIndex + i] = (float)resulte;
+			}
+
+			curVal = output[outputIndex + (length - 1)];
+		}
 	}
 
 	@Override

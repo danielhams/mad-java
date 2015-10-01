@@ -22,9 +22,9 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter;
 
-public class CDLowPassInterpolator extends AbstractCDLowPassInterpolator
+public class CDLowPass12Interpolator extends AbstractCDLowPassInterpolator
 {
-	public CDLowPassInterpolator()
+	public CDLowPass12Interpolator()
 	{
 		super( new CDButterworthFilter() );
 	}

@@ -32,7 +32,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
@@ -130,7 +130,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator();
 		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPass12Interpolator();
 		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPass24Interpolator();
-		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPassInterpolator();
+		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPass12Interpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPass24Interpolator();
 		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator();
 		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator();
