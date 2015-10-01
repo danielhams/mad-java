@@ -28,7 +28,6 @@ public class NoteHistogram
 	private static Log log = LogFactory.getLog( NoteHistogram.class.getName() );
 
 	private final int numBuckets;
-	private final int framesPerBucket;
 
 	private final NoteHistogramBucket[] buckets;
 	private int nonBucketCount;
@@ -39,7 +38,6 @@ public class NoteHistogram
 			final int framesPerBucket )
 	{
 		this.numBuckets = numBuckets;
-		this.framesPerBucket = framesPerBucket;
 
 		buckets = new NoteHistogramBucket[numBuckets];
 
@@ -84,13 +82,16 @@ public class NoteHistogram
 
 	public void dumpStats()
 	{
-		for( final NoteHistogramBucket b : buckets )
+		if( log.isDebugEnabled() )
 		{
-			log.debug( "Bucket (" + b.getBucketStartDiff() + "->" + b.getBucketEndDiff() +
-					") has " + b.getBucketCount() + " entries" );
+			for( final NoteHistogramBucket b : buckets )
+			{
+				log.debug( "Bucket (" + b.getBucketStartDiff() + "->" + b.getBucketEndDiff() +
+						") has " + b.getBucketCount() + " entries" );
+			}
+			log.debug("Nonbucket has " + nonBucketCount );
+			log.debug("The lowest seen was " + lowestDiff );
+			log.debug("The highest seen was " + highestDiff );
 		}
-		log.debug("Nonbucket has " + nonBucketCount );
-		log.debug("The lowest seen was " + lowestDiff );
-		log.debug("The highest seen was " + highestDiff );
 	}
 }

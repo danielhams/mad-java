@@ -65,7 +65,10 @@ public class ControllerToCvMadUiInstance extends AbstractNoNameChangeNonConfigur
 				final long value = nextOutgoingEntry.value;
 				final int channelBits = (int)(value >> 32);
 				final int controllerBits = (int)(value & 0xffff);
-				log.trace("Received learnt channel: " + channelBits + " and controller " + controllerBits );
+				if( log.isTraceEnabled() )
+				{
+					log.trace("Received learnt channel: " + channelBits + " and controller " + controllerBits );
+				}
 
 				for( final ControllerToCvLearnListener ll : learnListeners )
 				{

@@ -444,7 +444,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 			final int lastChannel,
 			final int lastController )
 	{
-		log.trace("Sending discovered channel " + lastChannel + " and controller " + lastController );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Sending discovered channel " + lastChannel + " and controller " + lastController );
+		}
 		final long value = (lastChannel << 32) | lastController;
 		localBridge.queueTemporalEventToUi( tses,
 				frameTime,
@@ -456,7 +459,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	public void setDesiredInterpolation( final InterpolationChoice interpolation )
 	{
-		log.trace( "Would set interpolation to " + interpolation.toString() );
+		if( log.isTraceEnabled() )
+		{
+			log.trace( "Would set interpolation to " + interpolation.toString() );
+		}
 		desiredInterpolator = interpolation;
 		resetInterpolator();
 	}
