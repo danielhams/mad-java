@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.base.controllertocv.mu;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -28,23 +27,9 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent;
-import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvInterpolationChoiceUiJComponent.InterpolationChoice;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvUseTimestampingUiJComponent;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPassInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.mads.base.controllertocv.ui.InterpolationChoice;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass12Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPass12Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.LowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -66,6 +51,8 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 {
 	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
 
+	public final static int NUM_INTERPOLATORS = InterpolationChoice.values().length;
+
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	private ControllerEventMapping desiredMapping = ControllerEventMapping.LINEAR;
@@ -74,31 +61,27 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	private boolean isLearning;
 
-	private final Map<InterpolationChoice, ControlValueInterpolator> freeInterpolators =
-			new HashMap<InterpolationChoice, ControlValueInterpolator>();
-
 //	private final static float FIXED_INTERP_MILLIS = 5.3f;
 //	private final static float FIXED_INTERP_MILLIS = 9.8f;
-	private final static float FIXED_INTERP_MILLIS = 8.2f;
+	private final static float NOTS_INTERP_MILLIS = 8.2f;
 
 	// For BCD EQ:
-//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
-//	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
+//	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
+	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 4.1f;
+//	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
 	// For BCD Faders
-	private static final float MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
+//	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
 
-	private int fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate(
-			sampleRate, FIXED_INTERP_MILLIS );
+	private final ControlValueInterpolator[] tsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
+	private final ControlValueInterpolator[] noTsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
 
-	private final Map<InterpolationChoice, ControlValueInterpolator> fixedInterpolators =
-			new HashMap<InterpolationChoice, ControlValueInterpolator>();
-
-	private final Map<InterpolationChoice, ControlValueInterpolator> interpolators =
-			new HashMap<InterpolationChoice, ControlValueInterpolator>();
-
-	private ControlValueInterpolator currentInterpolator;
-
+	private InterpolationChoice desiredInterpolator = ControllerToCvInterpolationChoiceUiJComponent.DEFAULT_INTERPOLATION;
 	private boolean useTimestamps = ControllerToCvUseTimestampingUiJComponent.DEFAULT_STATE;
+	private ControlValueInterpolator currentInterpolator = (useTimestamps
+			?
+			tsInterpolators[desiredInterpolator.ordinal()]
+			:
+			noTsInterpolators[desiredInterpolator.ordinal()] );
 
 	public ControllerToCvMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -108,36 +91,23 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
-		freeInterpolators.put( InterpolationChoice.NONE, new NoneInterpolator() );
-		freeInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FREE, new SumOfRatiosInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE, new LinearInterpolator() );
-		freeInterpolators.put( InterpolationChoice.HALF_HANN_FREE, new HalfHannWindowInterpolator() );
-		freeInterpolators.put( InterpolationChoice.SPRING_DAMPER, new SpringAndDamperDoubleInterpolator() );
-		freeInterpolators.put( InterpolationChoice.LOW_PASS, new LowPass12Interpolator() );
-		freeInterpolators.put( InterpolationChoice.LOW_PASS24, new LowPass24Interpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS, new CDLowPassInterpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_LOW_PASS_24, new CDLowPass24Interpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_SC_LOW_PASS_24, new CDSCLowPass24Interpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER, new CDSpringAndDamperDoubleInterpolator() );
-		freeInterpolators.put( InterpolationChoice.CD_SPRING_DAMPER24, new CDSpringAndDamperDouble24Interpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_12, new LinearLowPass12Interpolator() );
-		freeInterpolators.put( InterpolationChoice.LINEAR_FREE_SC_LOW_PASS_24, new LinearLowPass24Interpolator() );
-
-		fixedInterpolators.put( InterpolationChoice.SUM_OF_RATIOS_FIXED, new SumOfRatiosInterpolator() );
-		fixedInterpolators.put( InterpolationChoice.LINEAR_FIXED, new LinearInterpolator() );
-		fixedInterpolators.put( InterpolationChoice.HALF_HANN_FIXED, new HalfHannWindowInterpolator() );
-
-		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : fixedInterpolators.entrySet() )
+		try
 		{
-			interpolators.put( e.getKey(), e.getValue() );
-		}
+			int interpolatorNum = 0;
+			for( final InterpolationChoice ic : InterpolationChoice.values() )
+			{
+				tsInterpolators[interpolatorNum] = ic.getInterpolatorClass().newInstance();
+				noTsInterpolators[interpolatorNum] = ic.getInterpolatorClass().newInstance();
+				interpolatorNum++;
+			}
 
-		for( final Map.Entry<InterpolationChoice, ControlValueInterpolator> e : freeInterpolators.entrySet() )
+			currentInterpolator = tsInterpolators[0];
+		}
+		catch( final Exception e )
 		{
-			interpolators.put( e.getKey(), e.getValue() );
+			final String msg = "Exception caught instantiating interpolators: " + e.toString();
+			log.error( msg, e );
 		}
-
-		currentInterpolator = interpolators.get( ControllerToCvInterpolationChoiceUiJComponent.DEFAULT_INTERPOLATION );
 	}
 
 	@Override
@@ -150,32 +120,34 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 		{
 			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 
-			fixedInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-					FIXED_INTERP_MILLIS );
-
 			final int periodLengthFrames =
 					hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
 
-			// The free ones.
+			// When not using timestamps, use a default interpolation period that
+			// should be long enough we cover a period
+//			final int noTsInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+//					NOTS_INTERP_MILLIS );
+			final int noTsInterpolatorsPeriodLength = periodLengthFrames;
+
 			// Quick hack to force the min length here to be double some controller period
 			final int minInterpolatorLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-					MIN_CONTROLLER_PERIOD_MILLIS * 2 );
-			final int freeInterpolatorsPeriodLength = minInterpolatorLength;
+					TS_MIN_CONTROLLER_PERIOD_MILLIS * 2 );
+			final int tsInterpolatorsPeriodLength = minInterpolatorLength;
 
 			if( log.isTraceEnabled() )
 			{
 				log.trace("Period length is " + periodLengthFrames );
 				log.trace("MinInterpolatorLength is " + minInterpolatorLength );
-				log.trace("Setting fixed interpolator period length to " + fixedInterpolatorsPeriodLength );
-				log.trace("Setting free interpolator period length to " + freeInterpolatorsPeriodLength );
+				log.trace("Setting timestamped interpolator period length to " + tsInterpolatorsPeriodLength );
+				log.trace("Setting nots interpolator period length to " + noTsInterpolatorsPeriodLength );
 			}
-			for( final ControlValueInterpolator cvi : freeInterpolators.values() )
+			for( final ControlValueInterpolator cvi : noTsInterpolators )
 			{
-				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, freeInterpolatorsPeriodLength );
+				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, noTsInterpolatorsPeriodLength );
 			}
-			for( final ControlValueInterpolator cvi : fixedInterpolators.values() )
+			for( final ControlValueInterpolator cvi : tsInterpolators )
 			{
-				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, fixedInterpolatorsPeriodLength );
+				cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, tsInterpolatorsPeriodLength );
 			}
 		}
 		catch (final Exception e)
@@ -485,8 +457,18 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	public void setDesiredInterpolation( final InterpolationChoice interpolation )
 	{
 		log.trace( "Would set interpolation to " + interpolation.toString() );
+		desiredInterpolator = interpolation;
+		resetInterpolator();
+	}
+
+	private void resetInterpolator()
+	{
 		final float currentValue = currentInterpolator.getValue();
-		currentInterpolator = interpolators.get( interpolation );
+		currentInterpolator = ( useTimestamps
+				?
+				tsInterpolators[desiredInterpolator.ordinal()]
+				:
+				noTsInterpolators[desiredInterpolator.ordinal()] );
 		currentInterpolator.hardSetValue( currentValue );
 	}
 
@@ -544,5 +526,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 	public void setUseTimestamps( final boolean useTimestamps )
 	{
 		this.useTimestamps = useTimestamps;
+		resetInterpolator();
 	}
 }

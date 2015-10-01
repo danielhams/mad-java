@@ -24,11 +24,11 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
 
-public class LinearLowPass12Interpolator implements ControlValueInterpolator
+public class RecalculatingLinearLowPass12Interpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( LinearInterpolator.class.getName() );
 
-	private final LinearInterpolator li;
+	private final RecalculatingLinearInterpolator li;
 
 	private final double[] feedbackDelaySamples = new double[4];
 
@@ -40,9 +40,9 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 	private float desVal;
 	private float curVal;
 
-	public LinearLowPass12Interpolator()
+	public RecalculatingLinearLowPass12Interpolator()
 	{
-		this.li = new LinearInterpolator();
+		this.li = new RecalculatingLinearInterpolator();
 		this.lowPassFrequency = LowPassInterpolatorConstants.LOW_PASS_CUTOFF;
 	}
 
@@ -59,7 +59,7 @@ public class LinearLowPass12Interpolator implements ControlValueInterpolator
 			feedbackDelaySamples[1] = feedbackDelaySamples[0];
 			feedbackDelaySamples[0] = w;
 
-//			// A second pass (for 24 db)
+//			// And second pass (for 24 db)
 //			final double we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
 //			final double resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
 //

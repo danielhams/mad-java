@@ -14,13 +14,13 @@
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="3606.8"/>
+        <rackControl name="Frequency Max" value="6006.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
         <rackPosition column="2" row="4"/>
@@ -29,7 +29,7 @@
         <rackPosition column="0" row="4"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 1"/>
-        <rackControl name="InterpolationChoice" value="LinFree"/>
+        <rackControl name="InterpolationChoice" value="LinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
         <rackControl name="RespectTimestamps" value="false"/>
@@ -47,7 +47,7 @@
         <rackPosition column="0" row="5"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 1"/>
-        <rackControl name="InterpolationChoice" value="LinFrLP24"/>
+        <rackControl name="InterpolationChoice" value="RecLinLP24"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
         <rackControl name="RespectTimestamps" value="true"/>
@@ -83,13 +83,13 @@
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="3606.8"/>
+        <rackControl name="Frequency Max" value="6006.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="NoTSLinear" definitionId="spectral_amp">
         <rackPosition column="2" row="6"/>
@@ -97,13 +97,13 @@
         <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="3606.8"/>
+        <rackControl name="Frequency Max" value="6006.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-H."/>
     </rackComponent>
     <rackComponent name="Scale And Offset 2" definitionId="scale_and_offset">
         <rackPosition column="0" row="1"/>
@@ -112,7 +112,7 @@
     </rackComponent>
     <rackComponent name="Scope (Large) 1" definitionId="scope_large">
         <rackPosition column="0" row="14"/>
-        <rackControl name="CaptureLength" value="200.0"/>
+        <rackControl name="CaptureLength" value="500.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveImage" value=""/>
@@ -121,10 +121,10 @@
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="0" row="6"/>
-        <rackControl name="CaptureLength" value="200.0"/>
+        <rackControl name="CaptureLength" value="500.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="false|true|true&#x9;TS Events|true&#x9;NoTS Linear|true&#x9;24dB CDLowPass|true&#x9;Mixxx"/>
+        <rackControl name="SaveButton" value="false|true|true&#x9;TS Events|true&#x9;NoTS Lin12|true&#x9;TsRecLin24|true&#x9;Mixxx"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>

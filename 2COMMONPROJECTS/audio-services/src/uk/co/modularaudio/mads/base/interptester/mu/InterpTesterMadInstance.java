@@ -141,9 +141,11 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 
 		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
 
+		// The nots interpolators default the interpolation period
+		// to the current audio period
 		for( final ControlValueInterpolator cvi : noTsInterpolators )
 		{
-			cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, desValueChaseSamples );
+			cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, periodLengthFrames );
 		}
 		for( final ControlValueInterpolator cvi : tsInterpolators )
 		{
@@ -337,10 +339,10 @@ public class InterpTesterMadInstance extends MadInstance<InterpTesterMadDefiniti
 		desValueChaseMillis = chaseMillis;
 		desValueChaseSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, desValueChaseMillis );
 
-		for( final ControlValueInterpolator cvi : noTsInterpolators )
-		{
-			cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, desValueChaseSamples );
-		}
+//		for( final ControlValueInterpolator cvi : noTsInterpolators )
+//		{
+//			cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, desValueChaseSamples );
+//		}
 		for( final ControlValueInterpolator cvi : tsInterpolators )
 		{
 			cvi.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, desValueChaseSamples );

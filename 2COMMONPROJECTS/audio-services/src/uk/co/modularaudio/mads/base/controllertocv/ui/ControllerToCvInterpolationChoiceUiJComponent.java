@@ -44,39 +44,6 @@ implements IMadUiControlInstance<ControllerToCvMadDefinition, ControllerToCvMadI
 	private final DefaultComboBoxModel<String> model;
 	private final LWTCRotaryChoice rotaryChoice;
 
-	public enum InterpolationChoice
-	{
-		NONE( "None" ),
-		SUM_OF_RATIOS_FREE( "SORFree" ),
-		SUM_OF_RATIOS_FIXED( "SORFixed" ),
-		LINEAR_FREE( "LinFree" ),
-		LINEAR_FIXED( "LinFixed" ),
-		HALF_HANN_FREE( "HHFree" ),
-		HALF_HANN_FIXED( "HHFixed" ),
-		SPRING_DAMPER( "SD" ),
-		LOW_PASS( "LP" ),
-		LOW_PASS24( "LP24" ),
-		CD_LOW_PASS( "CDLP" ),
-		CD_LOW_PASS_24( "CDLP24" ),
-		CD_SC_LOW_PASS_24( "CDSCLP24" ),
-		CD_SPRING_DAMPER( "CDSD" ),
-		CD_SPRING_DAMPER24( "CDSD24" ),
-		LINEAR_FREE_SC_LOW_PASS_12( "LinFrLP12" ),
-		LINEAR_FREE_SC_LOW_PASS_24( "LinFrLP24" );
-
-		private String label;
-
-		private InterpolationChoice( final String label )
-		{
-			this.label = label;
-		}
-
-		public String getLabel()
-		{
-			return label;
-		}
-	};
-
 	public final static Map<String, InterpolationChoice> LABEL_TO_ENUM = buildLabelToEnumMap();
 
 	private static Map<String, InterpolationChoice> buildLabelToEnumMap()

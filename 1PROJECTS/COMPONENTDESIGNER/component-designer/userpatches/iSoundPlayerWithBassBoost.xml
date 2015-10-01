@@ -9,10 +9,10 @@
         <rackPosition column="2" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
         <rackControl name="ControllerSelection" value="Cntl 0"/>
-        <rackControl name="InterpolationChoice" value="CDSCLP24"/>
+        <rackControl name="InterpolationChoice" value="LinFrLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
-        <rackControl name="RespectTimestamps" value="true"/>
+        <rackControl name="RespectTimestamps" value="false"/>
     </rackComponent>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
         <rackPosition column="0" row="4"/>
@@ -32,19 +32,19 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="2" row="5"/>
-        <rackControl name="Master Lane" value="-5.0:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="-5.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.5471773"/>
+        <rackControl name="Gain" value="-5.565608"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 101 master.mp3|5556705"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 100 China master.mp3|57222351"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
