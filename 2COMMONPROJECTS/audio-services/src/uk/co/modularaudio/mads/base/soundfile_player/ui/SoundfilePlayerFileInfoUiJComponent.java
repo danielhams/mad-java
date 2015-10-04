@@ -47,7 +47,7 @@ public class SoundfilePlayerFileInfoUiJComponent extends LWTCLabel
 			final SoundfilePlayerMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		super( LWTCControlConstants.STD_LABEL_COLOURS, "" );
+		super( LWTCControlConstants.STD_LABEL_COLOURS, "", 5 );
 		this.setOpaque( true );
 		setFont( LWTCControlConstants.LABEL_FONT );
 

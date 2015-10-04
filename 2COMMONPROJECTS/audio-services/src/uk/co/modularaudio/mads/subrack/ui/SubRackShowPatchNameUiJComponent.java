@@ -45,7 +45,7 @@ public class SubRackShowPatchNameUiJComponent extends LWTCLabel
 			final SubRackMadUiInstance uiInstance,
 			final SubRackShowPatchNameUiControlDefinition def )
 	{
-		super( LWTCControlConstants.STD_LABEL_COLOURS, "" );
+		super( LWTCControlConstants.STD_LABEL_COLOURS, "", 5 );
 		setOpaque( true );
 		setFont( LWTCControlConstants.LABEL_FONT );
 
