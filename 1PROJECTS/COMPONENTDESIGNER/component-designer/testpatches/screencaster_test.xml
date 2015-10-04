@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 1" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 2" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 3" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackIOLink rackChannelName="Input Note Channel 1" rackComponentName="Controller To CV 4" rackComponentChannelInstanceName="Input Controller Note"/>
+    <rackComponent name="CV To Audio (Four Channels) 1" definitionId="cvtoaudio4">
+        <rackPosition column="0" row="4"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="ChannelSelection" value="Chan 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="None"/>
+        <rackControl name="Learn" value=""/>
+        <rackControl name="MappingCurve" value="Linear"/>
+        <rackControl name="RespectTimestamps" value="true"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
+        <rackPosition column="0" row="3"/>
+        <rackControl name="ChannelSelection" value="Chan 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="RecLinLP24"/>
+        <rackControl name="Learn" value=""/>
+        <rackControl name="MappingCurve" value="Linear"/>
+        <rackControl name="RespectTimestamps" value="true"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 3" definitionId="controller_to_cv">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="ChannelSelection" value="Chan 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="None"/>
+        <rackControl name="Learn" value=""/>
+        <rackControl name="MappingCurve" value="Linear"/>
+        <rackControl name="RespectTimestamps" value="false"/>
+    </rackComponent>
+    <rackComponent name="Controller To CV 4" definitionId="controller_to_cv">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="ChannelSelection" value="Chan 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="RecLin"/>
+        <rackControl name="Learn" value=""/>
+        <rackControl name="MappingCurve" value="Linear"/>
+        <rackControl name="RespectTimestamps" value="true"/>
+    </rackComponent>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="2" row="0"/>
+        <rackControl name="CaptureLength" value="1000.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveButton" value="false|true|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;Signal 3|true&#x9;Signal 4"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value=""/>
+    </rackComponent>
+    <rackComponent name="Screencaster 1" definitionId="screencaster">
+        <rackPosition column="0" row="5"/>
+        <rackControl name="Audio Checkbox" value="true"/>
+        <rackControl name="Choose Directory" value="/home/dan/Screencasts/ComponentDesigner"/>
+        <rackControl name="Directory Label" value=""/>
+        <rackControl name="File Label" value=""/>
+        <rackControl name="Toggle Recording" value=""/>
+        <rackControl name="Video Checkbox" value="false"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 1" consumerRackComponentName="Screencaster 1" consumerChannelName="Input Wave Front Left"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 2" consumerRackComponentName="Screencaster 1" consumerChannelName="Input Wave Front Right"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 3" consumerRackComponentName="Screencaster 1" consumerChannelName="Input Wave Back Left"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 4" consumerRackComponentName="Screencaster 1" consumerChannelName="Input Wave Back Right"/>
+    <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 2"/>
+    <rackLink producerRackComponentName="Controller To CV 1" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Controller To CV 2" producerChannelName="Output CV" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 4"/>
+    <rackLink producerRackComponentName="Controller To CV 2" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
+    <rackLink producerRackComponentName="Controller To CV 3" producerChannelName="Output CV" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 1"/>
+    <rackLink producerRackComponentName="Controller To CV 3" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Controller To CV 3" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Controller To CV 4" producerChannelName="Output CV" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 3"/>
+    <rackLink producerRackComponentName="Controller To CV 4" producerChannelName="Output CV" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
+</rack>

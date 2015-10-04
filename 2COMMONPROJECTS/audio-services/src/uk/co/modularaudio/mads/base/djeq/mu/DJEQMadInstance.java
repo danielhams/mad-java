@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
@@ -58,11 +58,11 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	private float curLeftMeterReading;
 	private float curRightMeterReading;
 
-	private final SpringAndDamperDoubleInterpolator highSad = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator midSad = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator lowSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator highSad = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator midSad = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator lowSad = new SpringAndDamperDouble24Interpolator();
 
-	private final SpringAndDamperDoubleInterpolator faderSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator faderSad = new SpringAndDamperDouble24Interpolator();
 
 	private final ButterworthFilter24DB leftLpFilter = new ButterworthFilter24DB();
 	private final ButterworthFilter24DB leftNonLpFilter = new ButterworthFilter24DB();

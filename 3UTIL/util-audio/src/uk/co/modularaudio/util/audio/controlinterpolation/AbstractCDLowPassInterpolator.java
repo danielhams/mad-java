@@ -22,39 +22,38 @@ package uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.util.Arrays;
 
-import uk.co.modularaudio.util.audio.dsp.FrequencyFilter;
-import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
+public abstract class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 {
 //	private static Log log = LogFactory.getLog( AbstractCDLowPassInterpolator.class.getName() );
 
 	protected float desVal;
+	protected float curVal;
 
 	protected int sampleRate;
-	protected final FrequencyFilter lpFilter;
+	protected float lowPassFrequency;
 
-	private static final int TMP_LENGTH = 1024;
-	private static final int NUM_RESET_ITERS = 10;
-
-	public AbstractCDLowPassInterpolator( final FrequencyFilter lpFilter )
+	public AbstractCDLowPassInterpolator()
 	{
-		this.lpFilter = lpFilter;
+		this.lowPassFrequency = LowPassInterpolatorConstants.LOW_PASS_CUTOFF;
 	}
 
 	@Override
 	public void generateControlValues( final float[] output, final int outputIndex, final int length )
 	{
-		final int lastIndex = outputIndex + length;
-		Arrays.fill( output, outputIndex, lastIndex, desVal );
-		lpFilter.filter(
-				output,
-				outputIndex,
-				length,
-				LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
-				0.5f,
-				FrequencyFilterMode.LP,
-				sampleRate );
+		if( curVal == desVal )
+		{
+			Arrays.fill( output, outputIndex, outputIndex + length, curVal );
+		}
+		else
+		{
+			final int lastIndex = outputIndex + length;
+			Arrays.fill( output, outputIndex, lastIndex, desVal );
+			lowPassFilter( output, outputIndex, length );
+
+			curVal = output[outputIndex + length - 1 ];
+		}
 	}
 
 	@Override
@@ -66,26 +65,25 @@ public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 	@Override
 	public boolean checkForDenormal()
 	{
-		return false;
+		float diffVal = desVal - curVal;
+		diffVal = (diffVal < 0.0f ? -diffVal : diffVal);
+		if( diffVal < AudioMath.MIN_SIGNED_FLOATING_POINT_24BIT_VAL_F )
+		{
+			curVal = desVal;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
 	public void hardSetValue( final float value )
 	{
 		this.desVal = value;
-		final float[] tmpArray = new float[TMP_LENGTH];
-		Arrays.fill( tmpArray, desVal );
-
-		for( int i = 0 ; i < NUM_RESET_ITERS ; ++i )
-		{
-			lpFilter.filter( tmpArray,
-					0,
-					TMP_LENGTH,
-					LowPassInterpolatorConstants.LOW_PASS_CUTOFF,
-					0.5f,
-					FrequencyFilterMode.LP,
-					sampleRate );
-		}
+		hardSetLowPass( value );
+		curVal = desVal;
 	}
 
 	@Override
@@ -99,6 +97,7 @@ public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 			final int interpolatorLengthFrames )
 	{
 		this.sampleRate = sampleRate;
+		resetLowPass( sampleRate );
 	}
 
 	@Override
@@ -106,4 +105,10 @@ public class AbstractCDLowPassInterpolator implements ControlValueInterpolator
 	{
 		return desVal;
 	}
+
+	protected abstract void lowPassFilter( float[] output, int outputIndex, int length );
+
+	protected abstract void hardSetLowPass( float value );
+
+	protected abstract void resetLowPass( int sampleRate );
 }

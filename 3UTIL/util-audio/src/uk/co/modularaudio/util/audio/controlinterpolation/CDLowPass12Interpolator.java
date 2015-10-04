@@ -20,12 +20,74 @@
 
 package uk.co.modularaudio.util.audio.controlinterpolation;
 
-import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter;
+import java.util.Arrays;
+
+import uk.co.modularaudio.util.math.FastMath;
+import uk.co.modularaudio.util.math.MathDefines;
+
 
 public class CDLowPass12Interpolator extends AbstractCDLowPassInterpolator
 {
+	private final static int TEST_VALUES_LENGTH = 16;
+
+	private final double[] feedbackDelaySamples = new double[4];
+
+	private double a, a1, a2, b1, b2;
+	private double tanthe, sqrtan, tansq;
+
 	public CDLowPass12Interpolator()
 	{
-		super( new CDButterworthFilter() );
+	}
+
+	@Override
+	protected void lowPassFilter( final float[] output, final int outputIndex, final int length )
+	{
+		for (int i = 0; i < length; i++)
+		{
+			final double w = output[outputIndex + i] - b1 * feedbackDelaySamples[0] - b2 * feedbackDelaySamples[1];
+			final double result = (a * w + a1 * feedbackDelaySamples[0] + a2 * feedbackDelaySamples[1]);
+
+			feedbackDelaySamples[1] = feedbackDelaySamples[0];
+			feedbackDelaySamples[0] = w;
+
+//			// And second pass (for 24 db)
+//			final double we = result - b1 * feedbackDelaySamples[2] - b2 * feedbackDelaySamples[3];
+//			final double resulte = (a * we + a1 * feedbackDelaySamples[2] + a2 * feedbackDelaySamples[3]);
+//
+//			feedbackDelaySamples[3] = feedbackDelaySamples[2];
+//			feedbackDelaySamples[2] = we;
+
+			output[outputIndex + i] = (float)result;
+		}
+	}
+
+	@Override
+	protected void hardSetLowPass( final float value )
+	{
+		final float[] testValues = new float[TEST_VALUES_LENGTH];
+		Arrays.fill( testValues, value );
+		for( int i = 0; i < 100 ; ++i )
+		{
+			lowPassFilter( testValues, 0, TEST_VALUES_LENGTH );
+		}
+	}
+
+	@Override
+	protected void resetLowPass( final int sampleRate )
+	{
+		double freq = lowPassFrequency;
+		if (freq < 10.0)
+		{
+			freq = 10.0;
+		}
+
+		tanthe = (1.0 / FastMath.tan( MathDefines.ONE_PI_D * freq / sampleRate ));
+		sqrtan = 2.0 * tanthe;
+		tansq = tanthe * tanthe;
+		a = 1.0 / (1.0 + sqrtan + tansq);
+		a1 = 2.0 * a;
+		a2 = a;
+		b1 = 2.0 * (1.0 - tansq) * a;
+		b2 = (1.0 - sqrtan + tansq) * a;
 	}
 }

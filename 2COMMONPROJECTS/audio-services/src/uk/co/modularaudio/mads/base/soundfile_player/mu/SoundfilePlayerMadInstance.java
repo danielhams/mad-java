@@ -35,7 +35,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.DcTrapFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -92,9 +92,9 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 	private int numSamplesTillNextEvent;
 
 	private float desiredPlaySpeed = 1.0f;
-	private final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator speedSad = new SpringAndDamperDouble24Interpolator();
 	private float desiredGain = 1.0f;
-	private final SpringAndDamperDoubleInterpolator gainSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator gainSad = new SpringAndDamperDouble24Interpolator();
 
 	private FadeInWaveTable fadeInWaveTable;
 	private FadeOutWaveTable fadeOutWaveTable;

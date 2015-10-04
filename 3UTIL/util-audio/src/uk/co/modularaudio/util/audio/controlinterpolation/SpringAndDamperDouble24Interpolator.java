@@ -28,18 +28,23 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpolator
+public class SpringAndDamperDouble24Interpolator implements ControlValueInterpolator
 {
 	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog( CDSpringAndDamperDoubleInterpolator.class.getName() );
+	private static Log log = LogFactory.getLog( SpringAndDamperDouble24Interpolator.class.getName() );
 
-	// Vaguely close to low pass non 24
-	private static final double FORCE_SCALE = 0.17;
-	private static final double DAMPING_FACTOR = 2.0 * Math.sqrt( FORCE_SCALE );
+	// Kinda happy (but issues with settling)
+//	public static final double FORCE_SCALE = 0.025;
+//	public static final double DAMPING_FACTOR = 0.25;
+//	public static final double FORCE_SCALE = 0.05;
+//	public static final double DAMPING_FACTOR = 0.27;
+	private static final double FORCE_SCALE = 0.06;
+	private static final double DAMPING_FACTOR = 0.39;
 	private static final double INTEGRATION_TIMESTEP_FOR_48K = 0.03;
 
 	private static final double MIN_VALUE_DELTA_DB = -120.0;
 	private static final double MIN_VALUE_DELTA = AudioMath.dbToLevel( MIN_VALUE_DELTA_DB );
+//	private static final double MIN_VALUE_DELTA = AudioMath.MIN_FLOATING_POINT_24BIT_VAL_D;
 	private static final double MIN_VELOCITY = 0.00001;
 
 	private class State
@@ -71,7 +76,7 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 
 	private double desPos = 0.0f;
 
-	public CDSpringAndDamperDoubleInterpolator()
+	public SpringAndDamperDouble24Interpolator()
 	{
 		curState.x = 0.0;
 		curState.v = 0.0;
@@ -230,6 +235,11 @@ public class CDSpringAndDamperDoubleInterpolator implements ControlValueInterpol
 	public void resetSampleRateAndPeriod( final int sampleRate,
 			final int periodLengthFrames,
 			final int interpolatorLengthFrames )
+	{
+		reset( sampleRate );
+	}
+
+	public void reset( final int sampleRate )
 	{
 		deltaTimestep = (DataRate.SR_48000.getValue() * INTEGRATION_TIMESTEP_FOR_48K) / sampleRate;
 	}

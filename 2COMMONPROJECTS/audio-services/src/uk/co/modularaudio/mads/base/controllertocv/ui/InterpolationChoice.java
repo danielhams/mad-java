@@ -22,9 +22,8 @@ package uk.co.modularaudio.mads.base.controllertocv.ui;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -36,7 +35,7 @@ import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.RecalculatingLinearLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.SumOfRatiosInterpolator;
 
 public enum InterpolationChoice
@@ -46,13 +45,12 @@ public enum InterpolationChoice
 	LINEAR( "Lin", LinearInterpolator.class ),
 	RECALC_LINEAR( "RecLin", RecalculatingLinearInterpolator.class ),
 	HALF_HANN_FREE( "HH", HalfHannWindowInterpolator.class ),
-	SPRING_DAMPER( "SD", SpringAndDamperDoubleInterpolator.class ),
+	SPRING_DAMPER( "SD", SpringAndDamperDouble24Interpolator.class ),
 	LOW_PASS12( "LP12", LowPass12Interpolator.class ),
 	LOW_PASS24( "LP24", LowPass24Interpolator.class ),
 	CD_LOW_PASS( "CDLP", CDLowPass12Interpolator.class ),
 	CD_LOW_PASS_24( "CDLP24", CDLowPass24Interpolator.class ),
-	CD_SC_LOW_PASS_24( "CDSCLP24", CDSCLowPass24Interpolator.class ),
-	CD_SPRING_DAMPER( "CDSD", CDSpringAndDamperDoubleInterpolator.class ),
+	CD_SPRING_DAMPER( "CDSD", CDSpringAndDamperDouble12Interpolator.class ),
 	CD_SPRING_DAMPER24( "CDSD24", CDSpringAndDamperDouble24Interpolator.class ),
 	LINEAR_SC_LOW_PASS_12( "LinLP12", LinearLowPass12Interpolator.class ),
 	LINEAR_SC_LOW_PASS_24( "LinLP24", LinearLowPass24Interpolator.class ),

@@ -45,7 +45,7 @@ public class ScopeNSaveImageButtonUiJComponent<D extends ScopeNMadDefinition<D, 
 	{
 		button = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS,
 				"*",
-				true )
+				false )
 		{
 			private static final long serialVersionUID = 1L;
 

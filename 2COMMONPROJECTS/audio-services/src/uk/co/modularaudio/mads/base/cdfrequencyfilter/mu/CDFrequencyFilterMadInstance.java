@@ -25,7 +25,7 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter;
 import uk.co.modularaudio.util.audio.dsp.CDButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
@@ -59,7 +59,7 @@ public class CDFrequencyFilterMadInstance extends MadInstance<CDFrequencyFilterM
 
 	private boolean was24dB = false;
 
-	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator freqSad = new SpringAndDamperDouble24Interpolator();
 
 	private final CDButterworthFilter leftChannelButterworth = new CDButterworthFilter();
 	private final CDButterworthFilter rightChannelButterworth = new CDButterworthFilter();

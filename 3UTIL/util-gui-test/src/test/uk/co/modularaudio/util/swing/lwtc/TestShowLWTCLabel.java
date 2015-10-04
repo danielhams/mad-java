@@ -39,7 +39,7 @@ public class TestShowLWTCLabel
 
 	public TestShowLWTCLabel()
 	{
-		tml = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "A label" );
+		tml = new LWTCLabel( LWTCControlConstants.STD_LABEL_COLOURS, "A label", 5 );
 		tml.setMinimumSize( new Dimension( 75, 30 ) );
 	}
 

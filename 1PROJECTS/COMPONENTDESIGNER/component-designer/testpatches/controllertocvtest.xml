@@ -32,7 +32,7 @@
     <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
         <rackPosition column="0" row="2"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -41,7 +41,7 @@
     <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
         <rackPosition column="0" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -50,7 +50,7 @@
     <rackComponent name="Controller To CV 3" definitionId="controller_to_cv">
         <rackPosition column="0" row="4"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="Lin"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -59,7 +59,7 @@
     <rackComponent name="Controller To CV 4" definitionId="controller_to_cv">
         <rackPosition column="0" row="5"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="Lin"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -68,7 +68,7 @@
     <rackComponent name="Controller To CV 5" definitionId="controller_to_cv">
         <rackPosition column="2" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
@@ -77,7 +77,7 @@
     <rackComponent name="Controller To CV 6" definitionId="controller_to_cv">
         <rackPosition column="2" row="2"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="RecLin"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -86,7 +86,7 @@
     <rackComponent name="Controller To CV 7" definitionId="controller_to_cv">
         <rackPosition column="2" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="LinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -95,7 +95,7 @@
     <rackComponent name="Controller To CV 8" definitionId="controller_to_cv">
         <rackPosition column="2" row="4"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="LinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -104,7 +104,7 @@
     <rackComponent name="Controller To CV 9" definitionId="controller_to_cv">
         <rackPosition column="2" row="5"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="ControllerSelection" value="Cntl 5"/>
         <rackControl name="InterpolationChoice" value="RecLinLP24"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Exp"/>
@@ -151,7 +151,7 @@
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveImage" value=""/>
         <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value="false|false|true&#x9;NoTS|true&#x9;Ts|true&#x9;NoTSLin|true&#x9;TSLin|true&#x9;TSRecLin|true&#x9;NoTSLinLP12|true&#x9;TSLinLP12|true&#x9;TSLinLP24"/>
+        <rackControl name="WaveDisplay" value="false|false|true&#x9;NoTS|true&#x9;Ts|true&#x9;NoTSLin|false&#x9;TSLin|false&#x9;TSRecLin|false&#x9;NoTSLinLP12|false&#x9;TSLinLP12|true&#x9;TSLinLP24"/>
     </rackComponent>
     <rackComponent name="Scope 2" definitionId="scope">
         <rackPosition column="2" row="25"/>
@@ -165,30 +165,30 @@
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="0" row="13"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-120dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-N."/>
     </rackComponent>
     <rackComponent name="Spectral Amp 2" definitionId="spectral_amp">
         <rackPosition column="2" row="13"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-144dB"/>
+        <rackControl name="Amp Floor" value="-120dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="3606.8"/>
         <rackControl name="Frequency Min" value="0.0"/>
-        <rackControl name="Frequency Scale" value="Log"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
         <rackControl name="Running Average" value="Peak Hold"/>
-        <rackControl name="Window" value="Hann"/>
+        <rackControl name="Window" value="Blckmn-N."/>
     </rackComponent>
     <rackComponent name="Spectral Amp 3" definitionId="spectral_amp">
         <rackPosition column="0" row="25"/>

@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.cvsurface.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -45,8 +45,8 @@ public class CvSurfaceMadInstance extends MadInstance<CvSurfaceMadDefinition, Cv
 	private float desiredX;
 	private float desiredY;
 
-	private final SpringAndDamperDoubleInterpolator xSad = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator ySad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator xSad = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator ySad = new SpringAndDamperDouble24Interpolator();
 
 	public CvSurfaceMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,

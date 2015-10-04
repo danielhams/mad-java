@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.crossfader.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -42,8 +42,8 @@ public class CrossFaderMadInstance extends MadInstance<CrossFaderMadDefinition, 
 
 	private int sampleRate;
 
-	private final SpringAndDamperDoubleInterpolator ampAInterpolator = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator ampBInterpolator = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator ampAInterpolator = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator ampBInterpolator = new SpringAndDamperDouble24Interpolator();
 
 	public CrossFaderMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,

@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.mads.base.imixern.mu;
 
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -44,8 +44,8 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 	private float leftMeterLevel;
 	private float rightMeterLevel;
 
-	private final SpringAndDamperDoubleInterpolator leftAmpInterpolator = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator rightAmpInterpolator = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator leftAmpInterpolator = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator rightAmpInterpolator = new SpringAndDamperDouble24Interpolator();
 
 	public MasterProcessor( final I instance,
 			final MixerNInstanceConfiguration channelConfiguration )

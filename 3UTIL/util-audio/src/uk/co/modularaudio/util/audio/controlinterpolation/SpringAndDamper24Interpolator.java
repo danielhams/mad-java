@@ -28,10 +28,10 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 
-public class SpringAndDamperInterpolator implements ControlValueInterpolator
+public class SpringAndDamper24Interpolator implements ControlValueInterpolator
 {
 	@SuppressWarnings("unused")
-	private static Log log = LogFactory.getLog( SpringAndDamperInterpolator.class.getName() );
+	private static Log log = LogFactory.getLog( SpringAndDamper24Interpolator.class.getName() );
 
 	// initial values
 //	private static final float FORCE_SCALE = 0.025f;
@@ -74,7 +74,7 @@ public class SpringAndDamperInterpolator implements ControlValueInterpolator
 
 	private float desPos = 0.0f;
 
-	public SpringAndDamperInterpolator()
+	public SpringAndDamper24Interpolator()
 	{
 		curState.x = 0.0f;
 		curState.v = 0.0f;

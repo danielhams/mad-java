@@ -23,7 +23,7 @@ package uk.co.modularaudio.mads.base.bandlimitedoscillator.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -56,8 +56,8 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 	private OscillatorWaveShape usedWaveShape = OscillatorWaveShape.SAW;
 	private Oscillator oscillator;
 
-	private final SpringAndDamperDoubleInterpolator freqSad = new SpringAndDamperDoubleInterpolator();
-	private final SpringAndDamperDoubleInterpolator pwSad = new SpringAndDamperDoubleInterpolator();
+	private final SpringAndDamperDouble24Interpolator freqSad = new SpringAndDamperDouble24Interpolator();
+	private final SpringAndDamperDouble24Interpolator pwSad = new SpringAndDamperDouble24Interpolator();
 
 	public BandLimitedOscillatorMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,

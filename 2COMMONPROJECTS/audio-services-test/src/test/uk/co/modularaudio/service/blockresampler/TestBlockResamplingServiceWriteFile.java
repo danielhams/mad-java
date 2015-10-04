@@ -45,7 +45,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -207,7 +207,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numToOutput = numFramesToOutput;
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
-		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
+		final SpringAndDamperDouble24Interpolator speedSad = new SpringAndDamperDouble24Interpolator();
 		speedSad.resetLowerUpperBounds( -MAX_SPEED, MAX_SPEED );
 		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );
@@ -328,7 +328,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 		long numToOutput = numFramesToOutput;
 		long numSoFar = 0;
 		float playbackSpeed = PLAYBACK_SPEED * PLAYBACK_DIRECTION;
-		final SpringAndDamperDoubleInterpolator speedSad = new SpringAndDamperDoubleInterpolator();
+		final SpringAndDamperDouble24Interpolator speedSad = new SpringAndDamperDouble24Interpolator();
 		speedSad.resetLowerUpperBounds( -MAX_SPEED, MAX_SPEED );
 		speedSad.reset( outputSampleRate );
 		speedSad.hardSetValue( playbackSpeed );

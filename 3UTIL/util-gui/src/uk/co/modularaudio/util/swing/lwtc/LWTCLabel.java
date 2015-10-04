@@ -41,6 +41,20 @@ public class LWTCLabel extends JLabel
 		this.setBorder( BorderFactory.createLineBorder( borderColor, 1 ) );
 	}
 
+	public LWTCLabel( final LWTCLabelColours colours, final String text, final int textInsetBorder )
+	{
+		super( text );
+		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
+
+		this.setBackground( colours.getBackground() );
+		this.setForeground( colours.getForeground() );
+		final Color borderColor = colours.getBorder();
+
+		this.setBorder( BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder( borderColor, 1 ),
+				BorderFactory.createEmptyBorder(0, textInsetBorder, 0, textInsetBorder ) ) );
+	}
+
 	public LWTCLabel( final String text )
 	{
 		this( LWTCControlConstants.STD_LABEL_COLOURS, text);

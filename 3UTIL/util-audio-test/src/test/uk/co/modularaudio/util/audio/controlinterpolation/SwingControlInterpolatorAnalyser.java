@@ -34,9 +34,8 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSCLowPass24Interpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDoubleInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -44,8 +43,8 @@ import uk.co.modularaudio.util.audio.controlinterpolation.LinearLowPass12Interpo
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LowPass24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.NoneInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDoubleInterpolator;
-import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperInterpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamper24Interpolator;
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -114,7 +113,6 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		SPRINGANDDAMPERDOUBLE,
 		CDSPRINGANDDAMPERDOUBLE,
 		CDSPRINGANDDAMPERDOUBLE24,
-		CDSCLOWPASS24,
 		LINEARLOWPASS12
 	};
 	private final static int NUM_INTERPOLATORS = INTERPOLATOR.values().length;
@@ -127,15 +125,14 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		interpolators[INTERPOLATOR.NONE.ordinal()] = new NoneInterpolator();
 		interpolators[INTERPOLATOR.LINEAR.ordinal()] = new LinearInterpolator();
 		interpolators[INTERPOLATOR.HALFHANN.ordinal()] = new HalfHannWindowInterpolator();
-		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamperInterpolator();
+		interpolators[INTERPOLATOR.SPRINGANDDAMPER.ordinal()] = new SpringAndDamper24Interpolator();
 		interpolators[INTERPOLATOR.LOWPASS.ordinal()] = new LowPass12Interpolator();
 		interpolators[INTERPOLATOR.LOWPASS24.ordinal()] = new LowPass24Interpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS.ordinal()] = new CDLowPass12Interpolator();
 		interpolators[INTERPOLATOR.CDLOWPASS24.ordinal()] = new CDLowPass24Interpolator();
-		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDoubleInterpolator();
-		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDoubleInterpolator();
+		interpolators[INTERPOLATOR.SPRINGANDDAMPERDOUBLE.ordinal()] = new SpringAndDamperDouble24Interpolator();
+		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()] = new CDSpringAndDamperDouble12Interpolator();
 		interpolators[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE24.ordinal()] = new CDSpringAndDamperDouble24Interpolator();
-		interpolators[INTERPOLATOR.CDSCLOWPASS24.ordinal()] = new CDSCLowPass24Interpolator();
 		interpolators[INTERPOLATOR.LINEARLOWPASS12.ordinal()] = new LinearLowPass12Interpolator();
 	}
 
@@ -185,9 +182,6 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 
 		add( new JLabel("CD Low Pass 24"), "cell 2 2");
 		add( visualisers[INTERPOLATOR.CDLOWPASS24.ordinal()], "cell 2 3");
-
-		add( new JLabel("CDSCLowPass24"), "cell 2 4");
-		add( visualisers[INTERPOLATOR.CDSCLOWPASS24.ordinal()], "cell 2 5");
 
 		add( new JLabel("CDSpringAndDamperDouble"), "cell 3 0");
 		add( visualisers[INTERPOLATOR.CDSPRINGANDDAMPERDOUBLE.ordinal()], "cell 3 1");

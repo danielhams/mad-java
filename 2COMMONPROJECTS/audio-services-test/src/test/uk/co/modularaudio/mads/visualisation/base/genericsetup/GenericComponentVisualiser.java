@@ -57,7 +57,7 @@ public class GenericComponentVisualiser
 {
 //	private static Log log = LogFactory.getLog( GenericComponentVisualiser.class.getName() );
 
-	private GenericApplicationContext gac;
+	protected GenericApplicationContext gac;
 	public MadComponentService componentService;
 	public MadComponentUiService componentUiService;
 	public GuiComponentFactoryService guiComponentFactoryService;
