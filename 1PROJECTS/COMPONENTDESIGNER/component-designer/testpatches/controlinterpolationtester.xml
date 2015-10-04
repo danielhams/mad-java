@@ -5,7 +5,7 @@
         <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="-1.0"/>
+        <rackControl name="Value" value="-0.71875"/>
         <rackControl name="ValueChase" value="4.1"/>
     </rackComponent>
     <rackComponent name="LinCDLP NoTS" definitionId="scope">
@@ -71,10 +71,21 @@
         <rackControl name="TriggerChoice" value="On Rise"/>
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>
+    <rackComponent name="SpringAndDamper" definitionId="scope">
+        <rackPosition column="0" row="16"/>
+        <rackControl name="CaptureLength" value="200.0"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveButton" value="true|true|true&#x9;RawTS|true&#x9;CDSD24NoTs|true&#x9;CDSD24Ts|false&#x9;"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value=""/>
+    </rackComponent>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD Low Pass 12 CV Out" consumerRackComponentName="LowPass TS" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD Low Pass 12 NoTS CV Out" consumerRackComponentName="LowPass NoTS" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD Low Pass 24 CV Out" consumerRackComponentName="LowPass TS" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD Low Pass 24 NoTS CV Out" consumerRackComponentName="LowPass NoTS" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD SD 24 CV Out" consumerRackComponentName="SpringAndDamper" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD SD 24 NoTS CV Out" consumerRackComponentName="SpringAndDamper" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 12 CV Out" consumerRackComponentName="LinCDLP TS" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 12 CV Out" consumerRackComponentName="RecalcLinCDLP TS" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 12 NoTS CV Out" consumerRackComponentName="LinCDLP NoTS" consumerChannelName="Input Signal 2"/>
@@ -89,6 +100,7 @@
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="LowPass NoTS" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="LowPass TS" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="RecalcLinCDLP TS" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="SpringAndDamper" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="LinCDLP NoTS" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="LinCDLP TS" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Linear NoTS" consumerChannelName="Input Trigger"/>
@@ -96,6 +108,7 @@
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="LowPass NoTS" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="LowPass TS" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="RecalcLinCDLP TS" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="SpringAndDamper" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Recalculating Linear Interpolation CV Out" consumerRackComponentName="Linear TS" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Recalculating Linear Interpolation NoTS CV Out" consumerRackComponentName="Linear NoTS" consumerChannelName="Input Signal 3"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Recalculating Linear Low Pass 12 CV Out" consumerRackComponentName="RecalcLinCDLP TS" consumerChannelName="Input Signal 3"/>

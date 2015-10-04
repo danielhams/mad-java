@@ -22,6 +22,7 @@ package uk.co.modularaudio.mads.base.interptester.mu;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.ControlValueInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.HalfHannWindowInterpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.LinearInterpolator;
@@ -42,6 +43,7 @@ public enum InterpolatorType
 	RECALC_LINEAR( "Recalculating Linear Interpolation", RecalculatingLinearInterpolator.class ),
 	CDLP12( "CD Low Pass 12", CDLowPass12Interpolator.class ),
 	CDLP24( "CD Low Pass 24", CDLowPass24Interpolator.class ),
+	CDSD24( "CD SD 24", CDSpringAndDamperDouble24Interpolator.class ),
 	LINLP12( "Linear And Low Pass 12", LinearLowPass12Interpolator.class ),
 	LINLP24( "Linear And Low Pass 24", LinearLowPass24Interpolator.class ),
 	RECALC_LINLP12( "Recalculating Linear Low Pass 12", RecalculatingLinearLowPass12Interpolator.class ),
