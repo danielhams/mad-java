@@ -129,17 +129,12 @@ public class WaveFileReader
 			final char c1 = (char)( (nextChunkId & 0xff00 ) >> 8 );
 			final char c2 = (char)( (nextChunkId & 0xff0000 ) >> 16 );
 			final char c3 = (char)( (nextChunkId & 0xff000000 ) >> 24 );
-//			StringBuilder sb = new StringBuilder();
-//			sb.append( c0 );
-//			sb.append( c1 );
-//			sb.append( c2 );
-//			sb.append( c3 );
-//			log.debug("Found chunk to skip: " + sb.toString() );
+			final int sizeToSkip = readInt();
 			if( log.isDebugEnabled() )
 			{
 				log.debug("Found chunk to skip: '" + c0 + "' '" + c1 + "' '" + c2 + "' '" + c3 + "'" );
+				log.debug("Will skip " + sizeToSkip );
 			}
-			final int sizeToSkip = readInt();
 			if( sizeToSkip < 0 )
 			{
 				throw new IOException("Didn't find DATA CHUNK ID during chunk parsing.");
@@ -179,32 +174,6 @@ public class WaveFileReader
 	{
 		return numTotalFrames;
 	}
-
-//	public void read( final float[] result, final int resultStartIndex, final long waveReadPosition, final int numFloatsToRead )
-//		throws IOException
-//	{
-//		final long seekPosition = dataChunkOffset + (waveReadPosition * bytesPerSample);
-//		if( seekPosition != raf.getFilePointer() )
-//		{
-//			raf.seek( seekPosition );
-//		}
-//
-//		int curOutputPos = resultStartIndex;
-//		int numFloatsLeft = numFloatsToRead;
-//
-//		while( numFloatsLeft > 0 )
-//		{
-//			final int numFloatsThisRound = (numFloatsLeft < internalFloatBufferLength ? numFloatsLeft : internalFloatBufferLength );
-//			final int numBytesThisRound = numFloatsThisRound * bytesPerSample;
-//			raf.read( internalByteBuffer, 0, numBytesThisRound );
-//			FloatToByteConverter.byteToFloatConversion( internalByteBuffer, 0,
-//					result, curOutputPos, numFloatsThisRound,
-//					bytesPerSample );
-//
-//			curOutputPos += numFloatsThisRound;
-//			numFloatsLeft -= numFloatsThisRound;
-//		}
-//	}
 
 	public void readFrames( final float[] result, final int outFrameStartIndex, final long frameReadPosition, final int numFramesToRead )
 		throws IOException

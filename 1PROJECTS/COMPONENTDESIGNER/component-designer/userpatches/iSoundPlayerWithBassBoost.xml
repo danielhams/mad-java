@@ -48,10 +48,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-4.746993"/>
+        <rackControl name="Gain" value="-3.6407042"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 252 (3 November 2014).mp3|141450785"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/Various/ETS presents Niklas Harding October 2004 guestmix.mp3|138363129"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -60,7 +60,7 @@
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
         <rackPosition column="0" row="5"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Floor" value="-144dB"/>
         <rackControl name="Amp Scale" value="Log"/>
         <rackControl name="Display" value=""/>
         <rackControl name="Frequency Max" value="24000.0"/>

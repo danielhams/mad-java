@@ -24,7 +24,7 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathDefines;
 
-public class ButterworthFilter
+public class ButterworthFilter implements FrequencyFilter
 {
 //	private static Log log = LogFactory.getLog( OptimisedButterworthFilter.class.getName() );
 
@@ -130,6 +130,7 @@ public class ButterworthFilter
 		prevBw = bw;
 	}
 
+	@Override
 	public final void filter( final float[] input, final int offset, final int length, final float freq, final float bw,
 			final FrequencyFilterMode mode, final float sr )
 	{
