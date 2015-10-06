@@ -36,6 +36,7 @@ import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenAmpMinChoiceUiJC
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenFreqMappingChoiceUiJComponent.FreqMapping;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenRunAvChoiceUiJComponent.RunningAverage;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenWindowChoiceUiJComponent.WindowChoice;
+import uk.co.modularaudio.mads.base.specampgen.util.OneshotStftProcessor;
 import uk.co.modularaudio.mads.base.specampgen.util.SpecDataListener;
 import uk.co.modularaudio.mads.base.specampgen.util.SpectralPeakAmpAccumulator;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
@@ -71,7 +72,6 @@ import uk.co.modularaudio.util.audio.spectraldisplay.runav.PeakHoldComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.RunningAverageComputer;
 import uk.co.modularaudio.util.audio.spectraldisplay.runav.ShortAverageComputer;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
-import uk.co.modularaudio.util.audio.stft.streaming.StreamingWolaProcessor;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D, I>,
@@ -166,9 +166,9 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	};
 
 	// The FFT processor and bits used to pull out the amplitudes
-	private StreamingWolaProcessor wolaProcessor;
+	private OneshotStftProcessor oneshotStftProcessor;
 	private SpecDataListener specDataListener;
-	private final float[][] wolaArray = new float[1][];
+	private final float[][] stftArray = new float[1][];
 	private SpectralPeakAmpAccumulator peakAmpAccumulator;
 
 	private final List<AmpAxisChangeListener> ampAxisChangeListeners = new ArrayList<>();
@@ -241,7 +241,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 					SpectralAmpGenMadDefinition.NUM_OVERLAPS, fftSize, fftWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
-			wolaProcessor = new StreamingWolaProcessor( params, peakAmpAccumulator );
+			oneshotStftProcessor = new OneshotStftProcessor( params, peakAmpAccumulator );
 		}
 		catch (final Exception e)
 		{
@@ -254,7 +254,8 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		this.desiredFftSize = resolution;
 		reinitialiseFrequencyProcessor();
-		final StftParameters params = wolaProcessor.getWolaProcessor().getParameters();
+		final StftParameters params = oneshotStftProcessor.getParameters();
+
 		for( final FreqAxisChangeListener facl : freqAxisChangeListeners )
 		{
 			facl.receiveFftParams( params );
@@ -292,7 +293,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 	private void receiveBufferIndexUpdate( final long indexUpdateTimestamp, final int writeIndex )
 	{
-		final int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
+		int numReadable = backendRingBuffer.frontEndGetNumReadableWithWriteIndex( writeIndex );
 
 		final int spaceAvailable = frontendRingBuffer.getNumWriteable();
 		if( spaceAvailable < numReadable )
@@ -317,9 +318,21 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 		{
 			// Need to pass new data to the wola and check if there is new data to be displayed here
 //			log.trace( "Successfully passed " + numRead + " samples from mad instance to UI ring buffer" );
+			final int numNeededForStft = oneshotStftProcessor.getParameters().getWindowLength();
+			numReadable = frontendRingBuffer.getNumReadable();
+
+			if( numNeededForStft > numReadable )
+			{
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Need " + numNeededForStft + " but only " + numReadable + " available." );
+				}
+				return;
+			}
+
 			final int ferbWp = frontendRingBuffer.writePosition;
 
-			int readStartOffset = ferbWp - numReadable;
+			int readStartOffset = ferbWp - numNeededForStft;
 			if( readStartOffset < 0 )
 			{
 				readStartOffset += frontendRingBuffer.bufferLength;
@@ -330,39 +343,28 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 			if( ferbWp > readStartOffset )
 			{
 				// Straight read of how many we want
-				numStraightRead = numReadable;
+				numStraightRead = numNeededForStft;
 			}
 			else
 			{
 				// Some wrapping going on
 				numStraightRead = frontendRingBuffer.bufferLength - readStartOffset;
+				numStraightRead = (numStraightRead > numNeededForStft ? numNeededForStft : numStraightRead );
 			}
 
-			numStraightRead = (numStraightRead > numReadable ? numReadable : numStraightRead );
+			final int numWrappedRead = numNeededForStft - numStraightRead;
 
-			final int numWrappedRead = numReadable - numStraightRead;
+			stftArray[0] = frontendRingBuffer.buffer;
 
-			wolaArray[0] = frontendRingBuffer.buffer;
-
-			if( numStraightRead > 0 )
+			if( numWrappedRead == 0 )
 			{
-//				log.debug("(1)Pushing " + numStraightRead + " straight frames into wola processor");
-				wolaProcessor.write(  wolaArray, readStartOffset, numStraightRead, 1.0, 1.0 );
-
-				if( numWrappedRead > 0 )
-				{
-//					log.debug("Read start off set is " + readStartOffset );
-//					log.debug("(1)Pushing " + numWrappedRead + " wrapped frames into wola processor");
-					wolaProcessor.write(  wolaArray, 0, numWrappedRead, 1.0, 1.0 );
-				}
+				oneshotStftProcessor.doStftSingleArg( stftArray, readStartOffset, numStraightRead );
 			}
-			else if( numWrappedRead > 0 )
+			else
 			{
-//				if( log.isDebugEnabled() )
-//				{
-//					log.debug("(2)Pushing " + numWrappedRead + " wrapped frames into wola processor");
-//				}
-				wolaProcessor.write(  wolaArray, 0, numWrappedRead, 1.0, 1.0 );
+				oneshotStftProcessor.doStftDoubleArg( stftArray,
+						readStartOffset, numStraightRead,
+						0, numWrappedRead );
 			}
 		}
 
@@ -443,7 +445,7 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 	{
 		freqAxisChangeListeners.add( cl );
 		cl.receiveFreqScaleChange( desiredFreqScaleComputer );
-		cl.receiveFftParams( wolaProcessor.getWolaProcessor().getParameters() );
+		cl.receiveFftParams( oneshotStftProcessor.getParameters() );
 	}
 
 	public void addRunAvChangeListener( final RunningAvChangeListener racl )

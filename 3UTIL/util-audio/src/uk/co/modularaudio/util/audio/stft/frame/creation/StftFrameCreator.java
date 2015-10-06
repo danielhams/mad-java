@@ -39,34 +39,34 @@ public class StftFrameCreator
 {
 	public static Log log = LogFactory.getLog( StftFrameCreator.class.getName() );
 
-	private StftParameters params = null;
+	private final StftParameters params;
 
 	// Useful values
-	private int numChannels = -1;
-	private int windowLength = -1;
-	private int stepSize = -1;
-	private int numReals = -1;
-	private int complexArraySize = -1;
+	private final int numChannels;
+	private final int windowLength;
+	private final int stepSize;
+	private final int numReals;
+	private final int complexArraySize;
 
-	private float inputScal = 0.0f;
-	private float inputFac = 0.0f;
-	private int sampleRate = 0;
+	private final float inputScal;
+	private final float inputFac;
+	private final int sampleRate;
 
-	private StftPlayPosition curPos = null;
+	private StftPlayPosition curPos;
 
-	private FftWindow fftWindow = null;
+	private final FftWindow fftWindow;
 
-	private StftFrameCreatorBuffers buffers = null;
+	private StftFrameCreatorBuffers buffers;
 
-	private FrameRotatorPaddedTimeDomain frameRotator = null;
+	private final FrameRotatorPaddedTimeDomain frameRotator;
 
-	private FloatFFT_1D fftComputer = null;
+	private final FloatFFT_1D fftComputer;
 
-	private float[] internalComplexBuffer = null;
+	private final float[] internalComplexBuffer;
 
-	private UnsafeFloatRingBuffer[] cumulativeWindowRingBuffer = null;
+	private final UnsafeFloatRingBuffer[] cumulativeWindowRingBuffer;
 
-	private StftDataFrame lastAnalFrame = null;
+	private StftDataFrame lastAnalFrame;
 
 	public StftFrameCreator( final StftParameters params )
 	{
