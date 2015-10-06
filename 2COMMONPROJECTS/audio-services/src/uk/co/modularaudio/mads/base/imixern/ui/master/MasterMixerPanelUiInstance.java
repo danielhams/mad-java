@@ -32,7 +32,6 @@ import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderAndMarks;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -53,8 +52,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		I extends MixerNMadInstance<D, I>,
 		U extends MixerNMadUiInstance<D, I>>
 	extends PacPanel
-	implements IMadUiControlInstance<D,I,U>,
-	MeterValueReceiver
+	implements IMadUiControlInstance<D,I,U>
 {
 	private static final long serialVersionUID = 24665241385474657L;
 
@@ -168,7 +166,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 
 		this.add( ampSliderTextbox, "cell 0 2, spanx 2, grow 0" );
 
-		uiInstance.registerMasterMeterReceiver( this );
+		uiInstance.registerMasterMeterReceiver( stereoAmpMeter );
 	}
 
 	@Override
@@ -211,13 +209,6 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
-	{
-		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
-	}
-
-	@Override
 	public void destroy()
 	{
 		stereoAmpMeter.destroy();
@@ -227,11 +218,5 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	public boolean needsDisplayProcessing()
 	{
 		return true;
-	}
-
-	@Override
-	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
-	{
-		stereoAmpMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
 	}
 }

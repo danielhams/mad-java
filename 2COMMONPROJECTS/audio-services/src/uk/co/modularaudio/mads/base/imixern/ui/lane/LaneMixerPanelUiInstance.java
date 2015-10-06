@@ -51,8 +51,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		I extends MixerNMadInstance<D,I>,
 		U extends MixerNMadUiInstance<D,I>>
 	extends PacPanel
-	implements IMadUiControlInstance<D,I,U>,
-	MeterValueReceiver
+	implements IMadUiControlInstance<D,I,U>
 {
 	private static final long serialVersionUID = -3862457210177904367L;
 
@@ -174,13 +173,11 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		faderAndMarks = new LaneFaderAndMarks<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
-				SLIDER_COLORS,
-				new SliderDisplayModel.ValueChangeListener()
+				SLIDER_COLORS, new SliderDisplayModel.ValueChangeListener()
 				{
 					@Override
 					public void receiveValueChange( final Object source, final float newValue )
 					{
-						// Now translate this into amplitude
 						final float ampForDb = (float)AudioMath.dbToLevel( newValue );
 						uiInstance.sendLaneAmp( laneNumber, ampForDb );
 					}
@@ -202,7 +199,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 		this.add( ampSliderTextbox, "cell 0 2, spanx 2, grow 0" );
 
-		uiInstance.registerLaneMeterReceiver( laneNumber, this );
+		uiInstance.registerLaneMeterReceiver( laneNumber, stereoAmpMeter );
 	}
 
 	@Override
@@ -244,13 +241,6 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNum, final float meterReadingLevel )
-	{
-		final float meterReadingDb = (float)AudioMath.levelToDb( meterReadingLevel );
-		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
-	}
-
-	@Override
 	public void destroy()
 	{
 		stereoAmpMeter.destroy();
@@ -261,11 +251,4 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	{
 		return true;
 	}
-
-	@Override
-	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
-	{
-		stereoAmpMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
-	}
-
 }

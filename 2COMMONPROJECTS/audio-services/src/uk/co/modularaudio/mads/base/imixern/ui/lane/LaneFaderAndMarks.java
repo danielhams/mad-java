@@ -28,7 +28,7 @@ import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownSliderModel;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
-import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplaySlider;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
@@ -50,7 +50,7 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 			final BufferedImageAllocator bia,
 			final boolean showClipBox,
 			final LWTCSliderViewColors colors,
-			final ValueChangeListener changeReceiver )
+			final SliderDisplayModel.ValueChangeListener changeReceiver )
 	{
 		this.setOpaque( false );
 

@@ -32,11 +32,13 @@ import uk.co.modularaudio.mads.base.common.ampmeter.DPAmpMeter;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
 public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
 	extends JPanel
+	implements MeterValueReceiver
 {
 	private static final long serialVersionUID = 1358562457507980606L;
 
@@ -46,7 +48,9 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 	private final AmpMeterMarks meterMarks;
 	private final DPAmpMeter rightMeter;
 
-	public LaneStereoAmpMeter( final MixerNMadUiInstance<D,I> uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
+	public LaneStereoAmpMeter( final MixerNMadUiInstance<D,I> uiInstance,
+			final BufferedImageAllocator bia,
+			final boolean showClipBox )
 	{
 		super();
 		setOpaque( false );
@@ -68,14 +72,32 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 		rightMeter = new DPAmpMeter( bia, showClipBox );
 		this.add( rightMeter, "gapbottom "+
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
-
-		this.validate();
 	}
 
-	public void receiveMeterReadingInDb( final long currentTimestamp, final int channelNum,
-			final float meterReadingDb )
+	public void receiveDisplayTick( final long currentGuiTime )
 	{
-		switch( channelNum )
+		leftMeter.receiveDisplayTick( currentGuiTime );
+		rightMeter.receiveDisplayTick( currentGuiTime );
+	}
+
+	public void destroy()
+	{
+		leftMeter.destroy();
+		rightMeter.destroy();
+	}
+
+	@Override
+	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
+	{
+		leftMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
+		rightMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
+	}
+
+	@Override
+	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNumber, final float meterReading )
+	{
+		final float meterReadingDb = AudioMath.levelToDbF( meterReading );
+		switch( channelNumber )
 		{
 			case 0:
 			{
@@ -93,24 +115,6 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 				break;
 			}
 		}
-	}
-
-	public void receiveDisplayTick( final long currentGuiTime )
-	{
-		leftMeter.receiveDisplayTick( currentGuiTime );
-		rightMeter.receiveDisplayTick( currentGuiTime );
-	}
-
-	public void destroy()
-	{
-		leftMeter.destroy();
-		rightMeter.destroy();
-	}
-
-	public void setFramesBetweenPeakReset( final int framesBetweenPeakReset )
-	{
-		leftMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
-		rightMeter.setFramesBetweenPeakReset( framesBetweenPeakReset );
 	}
 
 }
