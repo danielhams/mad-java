@@ -237,8 +237,12 @@ public class SpectralAmpGenMadUiInstance<D extends SpectralAmpGenMadDefinition<D
 
 			fftWindow.resetWindowLength( windowLength );
 
-			final StftParameters params = new StftParameters( dataRate, 1, windowLength,
-					SpectralAmpGenMadDefinition.NUM_OVERLAPS, fftSize, fftWindow );
+			final StftParameters params = new StftParameters( dataRate,
+					1,
+					windowLength,
+					SpectralAmpGenMadDefinition.NUM_OVERLAPS,
+					fftSize,
+					fftWindow );
 
 			peakAmpAccumulator = new SpectralPeakAmpAccumulator();
 			oneshotStftProcessor = new OneshotStftProcessor( params, peakAmpAccumulator );

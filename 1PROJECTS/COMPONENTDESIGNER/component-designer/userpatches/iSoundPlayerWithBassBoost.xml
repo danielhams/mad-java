@@ -19,7 +19,7 @@
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Equal Power"/>
-        <rackControl name="Slider" value="0.0"/>
+        <rackControl name="Slider" value="-1.0"/>
     </rackComponent>
     <rackComponent name="DJ EQ 1" definitionId="djeq">
         <rackPosition column="0" row="9"/>
@@ -48,10 +48,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-7.89127"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-7.832225"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/eric_sneo_lets_go_techno_125.mp3|21767189"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/eric_sneo_lets_go_techno_126.mp3|126934736"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

@@ -52,11 +52,9 @@ public class SpectralAmpGenMadDefinition<D extends SpectralAmpGenMadDefinition<D
 
 	// STFT parameters
 	public static final int NUM_OVERLAPS = 4;
-	public static final int DEFAULT_FFT_SIZE = 512;
-	public static final int MAX_WINDOW_LENGTH = 2048;
+	public static final int MAX_WINDOW_LENGTH = 4096;
 
-	public static final int SAMPLES_PER_FRAME = 2048;
-	public static final int MIN_SAMPLES_FOR_WOLA = SAMPLES_PER_FRAME / NUM_OVERLAPS;
+	public static final int MIN_SAMPLES_FOR_WOLA = MAX_WINDOW_LENGTH / NUM_OVERLAPS;
 
 	public SpectralAmpGenMadDefinition(
 			final String definitionId,
