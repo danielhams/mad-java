@@ -23,7 +23,7 @@
     <rackComponent name="Wet Mixdown" definitionId="imixer3">
         <rackPosition column="1" row="2"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="7.0:0.0:  "/>
+        <rackControl name="Mixer Lane 0" value="5.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
