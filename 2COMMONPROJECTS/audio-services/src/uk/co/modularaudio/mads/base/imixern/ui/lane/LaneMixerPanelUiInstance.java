@@ -37,7 +37,8 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.MixerLanePanRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
@@ -51,7 +52,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		U extends MixerNMadUiInstance<D,I>>
 	extends PacPanel
 	implements IMadUiControlInstance<D,I,U>,
-	LaneFaderChangeReceiver, MeterValueReceiver, PanChangeReceiver
+	MeterValueReceiver
 {
 	private static final long serialVersionUID = -3862457210177904367L;
 
@@ -123,8 +124,6 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	private final RotaryDisplayKnob panControl;
 	private final LaneMuteSolo<D,I,U> muteSolo;
 
-	private final U uiInstance;
-
 	private final LWTCSliderDisplayTextbox ampSliderTextbox;
 
 	public LaneMixerPanelUiInstance( final D definition,
@@ -134,7 +133,6 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	{
 		this.setOpaque( true );
 		this.setBackground( MixerNMadUiDefinition.LANE_BG_COLOR );
-		this.uiInstance = uiInstance;
 
 		laneNumber = controlIndex - 1;
 
@@ -152,12 +150,12 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 
 		panModel = new MixerLanePanRotaryDisplayModel();
 
-		panModel.addChangeListener( new ValueChangeListener()
+		panModel.addChangeListener( new RotaryDisplayModel.ValueChangeListener()
 		{
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				receivePanChange( newValue );
+				uiInstance.sendLanePan( laneNumber, newValue );
 			}
 		} );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
@@ -170,17 +168,25 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		this.add( panControl, "cell 0 0, pushx 50, width 33, height 33, growy 0, align center" );
 		panControl.setDiameter( 31 );
 
-		muteSolo = new LaneMuteSolo<D,I,U>( this );
+		muteSolo = new LaneMuteSolo<D,I,U>( uiInstance, laneNumber );
 		this.add( muteSolo, "cell 1 0, pushx 50, growy 0, align center" );
 
 		faderAndMarks = new LaneFaderAndMarks<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
-				SLIDER_COLORS );
+				SLIDER_COLORS,
+				new SliderDisplayModel.ValueChangeListener()
+				{
+					@Override
+					public void receiveValueChange( final Object source, final float newValue )
+					{
+						// Now translate this into amplitude
+						final float ampForDb = (float)AudioMath.dbToLevel( newValue );
+						uiInstance.sendLaneAmp( laneNumber, ampForDb );
+					}
+				} );
 
 		this.add( faderAndMarks, "cell 0 1, grow, pushy 100" );
-
-		faderAndMarks.setChangeReceiver( this );
 
 		stereoAmpMeter = new LaneStereoAmpMeter<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
@@ -214,14 +220,6 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 	}
 
 	@Override
-	public void receiveFaderAmpChange( final Object source, final float newValue )
-	{
-		// Now translate this into amplitude
-		final float ampForDb = (float)AudioMath.dbToLevel( newValue );
-		uiInstance.sendLaneAmp( laneNumber, ampForDb );
-	}
-
-	@Override
 	public String getControlValue()
 	{
 		return faderAndMarks.getControlValue() + ":" + panModel.getValue() + ":" + muteSolo.getControlValue();
@@ -252,42 +250,10 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		stereoAmpMeter.receiveMeterReadingInDb( currentTimestamp, channelNum, meterReadingDb );
 	}
 
-	public void setMuteValue( final boolean muteValue )
-	{
-//		log.debug("Lane " + laneNumber + " setting mute (" + muteValue + ")");
-		uiInstance.sendLaneMute( laneNumber, muteValue );
-	}
-
-	public void setSoloValue( final boolean soloValue )
-	{
-//		log.debug("Lane " + laneNumber + " setting solo (" + soloValue + ")");
-		uiInstance.sendSoloValue( laneNumber, soloValue );
-	}
-
-	@Override
-	public void receiveMuteSet( final long currentTimestamp, final boolean muted )
-	{
-//		log.debug("Lane " + laneNumber + " received mute set(" + muted + ")");
-		muteSolo.receiveMuteSet( muted );
-	}
-
-	@Override
-	public void receiveSoloSet( final long currentTimestamp, final boolean solod )
-	{
-//		log.debug("Lane " + laneNumber + " received solo set(" + solod + ")");
-		muteSolo.receiveSoloSet( solod );
-	}
-
 	@Override
 	public void destroy()
 	{
 		stereoAmpMeter.destroy();
-	}
-
-	@Override
-	public void receivePanChange( final float panValue )
-	{
-		uiInstance.sendLanePan( laneNumber, panValue );
 	}
 
 	@Override

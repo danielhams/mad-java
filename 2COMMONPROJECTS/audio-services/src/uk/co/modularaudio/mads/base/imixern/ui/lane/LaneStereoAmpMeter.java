@@ -28,7 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.common.ampmeter.AmpMeterMarks;
-import uk.co.modularaudio.mads.base.common.ampmeter.BIAmpMeter;
+import uk.co.modularaudio.mads.base.common.ampmeter.DPAmpMeter;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
@@ -42,9 +42,9 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 
 	private static Log log = LogFactory.getLog( LaneStereoAmpMeter.class.getName() );
 
-	private final BIAmpMeter leftMeter;
+	private final DPAmpMeter leftMeter;
 	private final AmpMeterMarks meterMarks;
-	private final BIAmpMeter rightMeter;
+	private final DPAmpMeter rightMeter;
 
 	public LaneStereoAmpMeter( final MixerNMadUiInstance<D,I> uiInstance, final BufferedImageAllocator bia, final boolean showClipBox )
 	{
@@ -58,14 +58,14 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 
 		this.setLayout( msh.createMigLayout() );
 
-		leftMeter = new BIAmpMeter( bia, showClipBox );
+		leftMeter = new DPAmpMeter( bia, showClipBox );
 		this.add( leftMeter, "gapbottom " +
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx right, growy" );
 
 		meterMarks = new AmpMeterMarks( Color.BLACK, false );
 		this.add( meterMarks, "growy, growx 0");
 
-		rightMeter = new BIAmpMeter( bia, showClipBox );
+		rightMeter = new DPAmpMeter( bia, showClipBox );
 		this.add( rightMeter, "gapbottom "+
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
 

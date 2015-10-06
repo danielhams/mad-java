@@ -38,15 +38,12 @@ public class LaneMuteSolo<D extends MixerNMadDefinition<D, I>,
 
 //	private static Log log = LogFactory.getLog( AmpMuteSolo.class.getName() );
 
-	private final LaneMixerPanelUiInstance<D,I,U> laneMixerUiInstance;
-
 	private final MuteSoloToggleButton muteButton;
 	private final MuteSoloToggleButton soloButton;
 
-	public LaneMuteSolo( final LaneMixerPanelUiInstance<D,I,U> channelLaneMixerPanelUiInstance )
+	public LaneMuteSolo( final MixerNMadUiInstance<D,I> uiInstance,
+			final int laneNumber )
 	{
-		laneMixerUiInstance = channelLaneMixerPanelUiInstance;
-
 		this.setBackground( Color.cyan );
 
 		this.setOpaque( false );
@@ -60,7 +57,7 @@ public class LaneMuteSolo<D extends MixerNMadDefinition<D, I>,
 			@Override
 			public void receiveToggleEvent( final boolean value )
 			{
-				muteButtonClick( value );
+				uiInstance.sendLaneMute( laneNumber, value );
 			}
 		};
 		this.add( muteButton, "bottom, alignx center, shrink, wrap" );
@@ -71,32 +68,12 @@ public class LaneMuteSolo<D extends MixerNMadDefinition<D, I>,
 			@Override
 			public void receiveToggleEvent( final boolean value )
 			{
-				soloButtonClick( value );
+				uiInstance.sendSoloValue( laneNumber, value );
 			}
 		};
 		this.add( soloButton, "top, alignx center, shrink" );
 
 		this.validate();
-	}
-
-	private void muteButtonClick( final boolean toggleValue )
-	{
-		laneMixerUiInstance.setMuteValue( toggleValue );
-	}
-
-	private void soloButtonClick( final boolean toggleValue )
-	{
-		laneMixerUiInstance.setSoloValue( toggleValue );
-	}
-
-	public void receiveMuteSet( final boolean muted )
-	{
-		muteButton.setSelected( muted );
-	}
-
-	public void receiveSoloSet( final boolean solod )
-	{
-		soloButton.setSelected( solod );
 	}
 
 	public void receiveControlValue( final Object source, final String muteSoloSetting )

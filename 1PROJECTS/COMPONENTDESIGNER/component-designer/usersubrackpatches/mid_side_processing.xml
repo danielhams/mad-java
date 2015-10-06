@@ -1,96 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Mid Side Processing" cols="4" rows="20">
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="Mid Side Processor 18" rackComponentChannelInstanceName="Input Wave 1"/>
-    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="ToCvConverter" rackComponentChannelInstanceName="Input Channel 1"/>
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mid Side Processor 18" rackComponentChannelInstanceName="Input Wave 2"/>
-    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="ToCvConverter" rackComponentChannelInstanceName="Input Channel 2"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Right"/>
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="OutMixer" rackComponentChannelInstanceName="Output Wave Left"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="OutMixer" rackComponentChannelInstanceName="Output Wave Right"/>
-    <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
-        <rackPosition column="0" row="12"/>
-    </rackComponent>
     <rackComponent name="Mid Side Processor 18" definitionId="midside">
-        <rackPosition column="0" row="1"/>
+        <rackPosition column="0" row="0"/>
         <rackControl name="MidSideType" value="Left Right To Mid Side"/>
     </rackComponent>
     <rackComponent name="Mid Side Processor 19" definitionId="midside">
-        <rackPosition column="0" row="6"/>
+        <rackPosition column="0" row="5"/>
         <rackControl name="MidSideType" value="Mid Side To Left Right"/>
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 20" definitionId="imixer3">
-        <rackPosition column="0" row="2"/>
+        <rackPosition column="0" row="1"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="OutMixer" definitionId="imixer3">
-        <rackPosition column="0" row="8"/>
+        <rackPosition column="2" row="2"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
-    <rackComponent name="Scope 1" definitionId="scope">
-        <rackPosition column="2" row="0"/>
-        <rackControl name="CaptureLength" value="48.0"/>
-        <rackControl name="Recapture" value=""/>
-        <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="true|false|true&#x9;In Left|true&#x9;In Right|false&#x9;|false&#x9;"/>
-        <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value=""/>
-    </rackComponent>
-    <rackComponent name="Scope 2" definitionId="scope">
-        <rackPosition column="2" row="4"/>
-        <rackControl name="CaptureLength" value="48.0"/>
-        <rackControl name="Recapture" value=""/>
-        <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="true|false|true&#x9;Mid|true&#x9;Side|false&#x9;|false&#x9;"/>
-        <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value=""/>
-    </rackComponent>
-    <rackComponent name="Scope 3" definitionId="scope">
-        <rackPosition column="2" row="8"/>
-        <rackControl name="CaptureLength" value="48.0"/>
-        <rackControl name="Recapture" value=""/>
-        <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="true|false|true&#x9;Decode Left|true&#x9;Decode Right|false&#x9;|false&#x9;"/>
-        <rackControl name="TriggerChoice" value="On Rise"/>
-        <rackControl name="WaveDisplay" value=""/>
-    </rackComponent>
-    <rackComponent name="ToCvConverter" definitionId="audio_cv_converter">
-        <rackPosition column="0" row="0"/>
-        <rackComponentParameterValue parameterName="inchanneltype" value="AUDIO"/>
-        <rackComponentParameterValue parameterName="numchannels" value="2"/>
-    </rackComponent>
     <rackComponent name="WetDryMixer" definitionId="cross_fader">
-        <rackPosition column="0" row="7"/>
+        <rackPosition column="2" row="1"/>
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="1.0"/>
     </rackComponent>
-    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 2" consumerChannelName="Input Signal 1"/>
-    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope 2" consumerChannelName="Input Signal 2"/>
-    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 3" consumerRackComponentName="Scope 3" consumerChannelName="Input Signal 1"/>
-    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 4" consumerRackComponentName="Scope 3" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 2 Input Wave Right"/>
     <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 1" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 2" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Right"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 2"/>
-    <rackLink producerRackComponentName="OutMixer" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 3"/>
-    <rackLink producerRackComponentName="OutMixer" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 4"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="Scope 2" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="ToCvConverter" producerChannelName="Output Channel 2" consumerRackComponentName="Scope 3" consumerChannelName="Input Trigger"/>
     <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="OutMixer" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Right" consumerRackComponentName="OutMixer" consumerChannelName="Lane 1 Input Wave Right"/>
 </rack>

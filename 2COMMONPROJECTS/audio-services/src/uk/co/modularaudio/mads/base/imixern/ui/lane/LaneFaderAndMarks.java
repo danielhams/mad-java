@@ -49,7 +49,8 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 	public LaneFaderAndMarks( final MixerNMadUiInstance<D,I> uiInstance,
 			final BufferedImageAllocator bia,
 			final boolean showClipBox,
-			final LWTCSliderViewColors colors )
+			final LWTCSliderViewColors colors,
+			final ValueChangeListener changeReceiver )
 	{
 		this.setOpaque( false );
 
@@ -75,6 +76,8 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 				colors.labelColor,
 				false );
 		this.add( mixerFaderLabels, "growy" );
+
+		faderModel.addChangeListener( changeReceiver );
 	}
 
 	public String getControlValue()
@@ -88,18 +91,6 @@ public class LaneFaderAndMarks<D extends MixerNMadDefinition<D,I>, I extends Mix
 		{
 			faderController.setValue( source, Float.parseFloat( value ) );
 		}
-	}
-
-	public void setChangeReceiver( final LaneFaderChangeReceiver changeReceiver )
-	{
-		faderModel.addChangeListener( new ValueChangeListener()
-		{
-			@Override
-			public void receiveValueChange( final Object source, final float newValue )
-			{
-				changeReceiver.receiveFaderAmpChange( source, newValue );
-			}
-		} );
 	}
 
 	public MixdownSliderModel getFaderModel()

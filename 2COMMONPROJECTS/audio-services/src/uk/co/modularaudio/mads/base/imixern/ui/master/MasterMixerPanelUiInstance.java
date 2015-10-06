@@ -30,11 +30,9 @@ import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderAndMarks;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneFaderChangeReceiver;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneMixerPanelUiInstance;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.LaneStereoAmpMeter;
 import uk.co.modularaudio.mads.base.imixern.ui.lane.MeterValueReceiver;
-import uk.co.modularaudio.mads.base.imixern.ui.lane.PanChangeReceiver;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
@@ -42,7 +40,8 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.MixerLanePanRotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
-import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel.ValueChangeListener;
+import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayTextbox;
@@ -55,7 +54,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 		U extends MixerNMadUiInstance<D, I>>
 	extends PacPanel
 	implements IMadUiControlInstance<D,I,U>,
-	LaneFaderChangeReceiver, MeterValueReceiver, PanChangeReceiver
+	MeterValueReceiver
 {
 	private static final long serialVersionUID = 24665241385474657L;
 
@@ -120,12 +119,12 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 
 		panModel = new MixerLanePanRotaryDisplayModel();
 
-		panModel.addChangeListener( new ValueChangeListener()
+		panModel.addChangeListener( new RotaryDisplayModel.ValueChangeListener()
 		{
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				receivePanChange( newValue );
+				uiInstance.sendMasterPan( newValue );
 			}
 		} );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
@@ -142,12 +141,18 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 				uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
 				true,
-				SLIDER_COLORS );
+				SLIDER_COLORS,
+				new SliderDisplayModel.ValueChangeListener()
+				{
+					@Override
+					public void receiveValueChange( final Object source, final float newValue )
+					{
+						final float ampForDb = (float)AudioMath.dbToLevel( newValue );
+						uiInstance.sendMasterAmp( ampForDb );
+					}
+				});
 
 		this.add( faderAndMarks, "cell 0 1, grow, pushy 100" );
-
-		faderAndMarks.setChangeReceiver( this );
-
 
 		stereoAmpMeter = new LaneStereoAmpMeter<D,I>( uiInstance,
 				uiInstance.getUiDefinition().getBufferedImageAllocator(),
@@ -189,14 +194,6 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void receiveFaderAmpChange( final Object source, final float newValue )
-	{
-		// Now translate this into amplitude
-		final float ampForDb = (float)AudioMath.dbToLevel( newValue );
-		uiInstance.sendMasterAmp( ampForDb );
-	}
-
-	@Override
 	public String getControlValue()
 	{
 		return faderAndMarks.getControlValue() + ":" + panModel.getValue();
@@ -221,27 +218,9 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 	}
 
 	@Override
-	public void receiveMuteSet( final long currentTimestamp, final boolean muted )
-	{
-		// Ignore
-	}
-
-	@Override
-	public void receiveSoloSet( final long currentTimestamp, final boolean muted )
-	{
-		// Ignore
-	}
-
-	@Override
 	public void destroy()
 	{
 		stereoAmpMeter.destroy();
-	}
-
-	@Override
-	public void receivePanChange( final float panValue )
-	{
-		uiInstance.sendMasterPan( panValue );
 	}
 
 	@Override

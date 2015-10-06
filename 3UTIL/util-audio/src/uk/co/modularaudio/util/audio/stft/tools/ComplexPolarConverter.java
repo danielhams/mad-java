@@ -43,21 +43,18 @@ public class ComplexPolarConverter
 		final float[][] complexFrame = frame.complexFrame;
 		final float[][] amps = frame.amps;
 		final float[][] phases = frame.phases;
-		float real;
-		float imag;
-		float amp;
-		float phase;
 
+		final int lastBinIndex = numBins - 1;
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-
-			for( int i = 1 ; i < numBins - 1 ; i++ )
+			// Don't do DC and nyquist in this loop
+			for( int i = 1 ; i < lastBinIndex ; i++ )
 			{
-				real = complexFrame[chan][ (i*2) ];
-				imag = complexFrame[chan][ (i * 2) + 1 ];
-				amp = (float)Math.sqrt( ((real * real) + (imag * imag)) );
+				final float real = complexFrame[chan][ (i*2) ];
+				final float imag = complexFrame[chan][ (i * 2) + 1 ];
+				final float amp = (float)Math.sqrt( ((real * real) + (imag * imag)) );
 				amps[chan][i] = amp;
-			    phase = FastMath.atan2( imag, real );
+				final float phase = FastMath.atan2( imag, real );
 				phases[chan][i] = phase;
 			}
 			// Copy over the amps for 0 and nyquist/2
@@ -72,17 +69,16 @@ public class ComplexPolarConverter
 	{
 		final float[][] complexFrame = frame.complexFrame;
 		final float[][] amps = frame.amps;
-		float real;
-		float imag;
-		float amp;
 
+		final int lastBinIndex = numBins - 1;
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-			for( int i = 1 ; i < numBins - 1 ; i++ )
+			// Don't do DC and nyquist in this loop
+			for( int i = 1 ; i < lastBinIndex ; i++ )
 			{
-				real = complexFrame[chan][ (i*2) ];
-				imag = complexFrame[chan][ (i * 2) + 1 ];
-				amp = (float)Math.sqrt( ((real * real) + (imag * imag)) );
+				final float real = complexFrame[chan][ (i*2) ];
+				final float imag = complexFrame[chan][ (i * 2) + 1 ];
+				final float amp = (float)Math.sqrt( ((real * real) + (imag * imag)) );
 				amps[chan][i] = amp;
 			}
 			// Copy over the amps for 0 and nyquist/2
@@ -98,22 +94,21 @@ public class ComplexPolarConverter
 		final float[][] complexFrame = frame.complexFrame;
 		final float[][] amps = frame.amps;
 		final float[][] phases = frame.phases;
-		float amp;
-		float phase;
 
+		final int lastBinIndex = numBins - 1;
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
-
 			// Copy over the amps for 0 and nyquist/2
 			complexFrame[chan][0] = amps[chan][0] * frame.dcSign[chan];
 			complexFrame[chan][1] = amps[chan][numBins - 1 ] * frame.nySign[chan];
 
 			// Now loop over the amps and freqs, computing the needed phase before turning it
 			// back to complex
-			for( int i = 1 ; i < numBins - 1 ; i++ )
+			// Don't do DC and nyquist
+			for( int i = 1 ; i < lastBinIndex ; i++ )
 			{
-				amp = amps[chan][ i ];
-				phase = phases[chan][ i ];
+				final float amp = amps[chan][ i ];
+				final float phase = phases[chan][ i ];
 				complexFrame[chan][ i*2 ] = (float)(amp * Math.cos( phase ) );
 				complexFrame[chan][ (i*2) + 1 ] = (float)(amp * Math.sin( phase ) );
 			}
@@ -125,9 +120,8 @@ public class ComplexPolarConverter
 		final double[][] complexFrame = frame.complexFrame;
 		final double[][] amps = frame.amps;
 		final double[][] phases = frame.phases;
-		double amp;
-		double phase;
 
+		final int lastBinIndex = numBins - 1;
 		for( int chan = 0 ; chan < numChannels ; chan++ )
 		{
 
@@ -137,10 +131,11 @@ public class ComplexPolarConverter
 
 			// Now loop over the amps and freqs, computing the needed phase before turning it
 			// back to complex
-			for( int i = 1 ; i < numBins - 1 ; i++ )
+			// Don't do DC and nyquist
+			for( int i = 1 ; i < lastBinIndex ; i++ )
 			{
-				amp = amps[chan][ i ];
-				phase = phases[chan][ i ];
+				final double amp = amps[chan][ i ];
+				final double phase = phases[chan][ i ];
 				complexFrame[chan][ i*2 ] = amp * Math.cos( phase );
 				complexFrame[chan][ (i*2) + 1 ] = amp * Math.sin( phase );
 			}
@@ -155,11 +150,9 @@ public class ComplexPolarConverter
 		final float[] complexFrame = outputFftBuffer;
 		final float[] amps = outputAmps;
 		final float[] phases = outputPhases;
-		float amp;
-		float phase;
 
-		amp = amps[ binNumber ];
-		phase = phases[ binNumber ];
+		final float amp = amps[ binNumber ];
+		final float phase = phases[ binNumber ];
 		complexFrame[ binNumber*2 ] = (float)(amp * Math.cos( phase ) );
 		complexFrame[ (binNumber*2) + 1 ] = (float)(amp * Math.sin( phase ) );
 
@@ -170,27 +163,19 @@ public class ComplexPolarConverter
 			final float[] phases,
 			final int binNumber )
 	{
-		float real;
-		float imag;
-		float amp;
-		float phase;
-
-		real = complexFrame[ ( binNumber*2) ];
-		imag = complexFrame[ (binNumber * 2) + 1 ];
-		amp = (float)( Math.sqrt( (real*real) + (imag*imag)) );
+		final float real = complexFrame[ ( binNumber*2) ];
+		final float imag = complexFrame[ (binNumber * 2) + 1 ];
+		final float amp = (float)( Math.sqrt( (real*real) + (imag*imag)) );
 		amps[binNumber] = amp;
-		phase = FastMath.atan2( imag, real );
+		final float phase = FastMath.atan2( imag, real );
 		phases[binNumber] = phase;
 	}
 
 	public final float oneComplexToPolarPhaseOnly( final float[] complexFrame,
 			final int binNumber )
 	{
-		float real;
-		float imag;
-
-		real = complexFrame[ ( binNumber*2) ];
-		imag = complexFrame[ (binNumber * 2) + 1 ];
+		final float real = complexFrame[ ( binNumber*2) ];
+		final float imag = complexFrame[ (binNumber * 2) + 1 ];
 		return FastMath.atan2( imag, real );
 	}
 }
