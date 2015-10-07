@@ -24,128 +24,73 @@ package uk.co.modularaudio.util.audio.oscillatortable;
 public class FixedFreqTreeMap
 {
 //	private static Log log = LogFactory.getLog( FixedFreqTreeMap.class.getName() );
-	
-	private int lastPivotIndex = -1;
-	private float[] pivotsArray = null;
-	private CubicPaddedRawWaveTable[] valuesArray = null;
 
-	public FixedFreqTreeMap( float[] pivotsArray, CubicPaddedRawWaveTable[] valuesArray )
+	private final int startPivotIndex;
+	private final float[] pivotsArray;
+	private final CubicPaddedRawWaveTable[] valuesArray;
+
+	public FixedFreqTreeMap( final float[] pivotsArray, final CubicPaddedRawWaveTable[] valuesArray )
 	{
 		this.pivotsArray = pivotsArray;
 		this.valuesArray = valuesArray;
-		this.lastPivotIndex = pivotsArray.length - 1;
+		this.startPivotIndex = (pivotsArray.length) / 2;
 	}
 
-	public CubicPaddedRawWaveTable lookupWavetableForFreq( float freq )
-	{
-		int indexToStartAt = lastPivotIndex / 2;
-		return findWavetableFromPivot( 0, lastPivotIndex, indexToStartAt, freq );
-	}
-	
-	private CubicPaddedRawWaveTable findWavetableFromPivot( int lowerInclusiveBound,
-				int upperInclusiveBound,
-				int indexToStartAt,
-				float freq )
-	{
-		float freqAtPivot = pivotsArray[ indexToStartAt ];
-
-		int boundsDiff = upperInclusiveBound - lowerInclusiveBound;
-		if( boundsDiff == 0 )
-		{
-			if( freq < freqAtPivot && lowerInclusiveBound > 0 )
-			{
-				int retIndex = lowerInclusiveBound - 1;
-				return valuesArray[ retIndex];
-			}
-			else
-			{
-				return valuesArray[ lowerInclusiveBound ];
-			}
-		}
-		else if( boundsDiff == 1 )
-		{
-			if( freq < pivotsArray[ upperInclusiveBound ] )
-			{
-				return valuesArray[ lowerInclusiveBound ];
-			}
-			else
-			{
-				return valuesArray[ upperInclusiveBound ];
-			}
-		}
-		else
-		{
-			if( freq < freqAtPivot )
-			{
-				int newUpperBound = indexToStartAt -1;
-				int indexBetween = (newUpperBound + lowerInclusiveBound) / 2;
-				return findWavetableFromPivot( lowerInclusiveBound, indexToStartAt - 1, indexBetween, freq );
-			}
-			else
-			{
-				int newLowerBound = indexToStartAt;
-				int indexBetween = (upperInclusiveBound + newLowerBound) / 2;
-				return findWavetableFromPivot( newLowerBound, upperInclusiveBound, indexBetween, freq );
-			}
-		}
-	}
-
-	public CubicPaddedRawWaveTable iterativeLookupWavetableForFreq( float freq )
+	public CubicPaddedRawWaveTable iterativeLookupWavetableForFreq( final float freq )
 	{
 		int lowerInclusiveBound = 0;
-		int upperInclusiveBound = lastPivotIndex;
-		int curPivotIndex = lastPivotIndex / 2;
-		
+		int upperExclusiveBound = pivotsArray.length;
+		int curPivotIndex = startPivotIndex;
+
 		while( true )
 		{
-//			log.debug("iterativeFindWaveTableFromPivot [" + lowerInclusiveBound + "->" + upperInclusiveBound + "] curPivotIndex(" + curPivotIndex + ") with freq(" + MathFormatter.fastFloatPrint( freq, 1, false ) + ")");
-			float freqAtPivot = pivotsArray[ curPivotIndex ];
+//			log.debug("iterativeFindWaveTableFromPivot [" + lowerInclusiveBound + "->" +
+//					upperExclusiveBound + ") curPivotIndex(" +
+//					curPivotIndex + ") with freq(" +
+//					MathFormatter.fastFloatPrint( freq, 1, false ) + ")");
+
+			final float freqAtPivot = pivotsArray[ curPivotIndex ];
 //			log.debug("FreqAtTestIndex(" + MathFormatter.fastFloatPrint( freqAtPivot, 1, false ) + ")");
-			
+
 			if( freq < freqAtPivot )
 			{
-//				log.debug( "Moving upper bound to below pivot index" );
-				upperInclusiveBound = curPivotIndex  - 1;
+//				log.debug( "Moving upper bound to below tested pivot index" );
+				upperExclusiveBound = curPivotIndex;
 			}
 			else
 			{
-//				log.debug( "Moving lower bound to pivot index" );
+//				log.debug( "Moving lower bound to tested pivot index" );
 				lowerInclusiveBound = curPivotIndex;
 			}
 
-			int boundsDiff = upperInclusiveBound - lowerInclusiveBound;
-			
-			if( boundsDiff == 0 )
+			final int boundsDiff = upperExclusiveBound - lowerInclusiveBound;
+
+			if( boundsDiff == 1 )
 			{
-//				log.debug("Only one candidate now.");
-				if( freq < pivotsArray[ curPivotIndex ] && lowerInclusiveBound > 0 )
-				{
-					int retIndex = lowerInclusiveBound - 1;
-//					log.debug("Iterative lookup returning index " + retIndex );
-					return valuesArray[ retIndex ];
-				}
-				else
-				{
-//					log.debug("Iterative lookup returning index " + lowerInclusiveBound );
-					return valuesArray[ lowerInclusiveBound ];
-				}
+//				log.debug("Only one candidate now at freq(" + pivotsArray[lowerInclusiveBound] + ")");
+//				log.debug("Iterative lookup returning index " + lowerInclusiveBound );
+				return valuesArray[ lowerInclusiveBound ];
 			}
-			else if( boundsDiff == 1 )
+			else if( boundsDiff == 2 )
 			{
-//				log.debug("Two candidates - will check freq on upper bound.");
-				if( freq < pivotsArray[ upperInclusiveBound ] )
+//				log.debug("Two candidates");
+				final int upperCandidateIndex = lowerInclusiveBound+1;
+				if( freq < pivotsArray[ upperCandidateIndex ] )
 				{
+//					log.debug("Is lower candidate freq(" + pivotsArray[lowerInclusiveBound] + ")");
 //					log.debug("Iterative lookup returning index " + lowerInclusiveBound );
 					return valuesArray[ lowerInclusiveBound ];
 				}
 				else
 				{
-//					log.debug("Iterative lookup returning index " + upperInclusiveBound );
-					return valuesArray[ upperInclusiveBound ];
+//					log.debug("Is upper candidate freq(" + pivotsArray[upperCandidateIndex] + ")");
+//					log.debug("Iterative lookup returning index " + upperCandidateIndex );
+					return valuesArray[ upperCandidateIndex ];
 				}
 			}
-			
-			curPivotIndex = (upperInclusiveBound + lowerInclusiveBound) / 2;
+
+			curPivotIndex = (upperExclusiveBound + lowerInclusiveBound) / 2;
+//			log.debug( "Moved pivot index to " + curPivotIndex );
 		}
 	}
 }

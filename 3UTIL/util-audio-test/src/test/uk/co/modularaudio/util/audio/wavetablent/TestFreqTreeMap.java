@@ -45,8 +45,8 @@ public class TestFreqTreeMap extends TestCase
 		final int outputLength = 2048;
 		final float[] dumbOutput = new float[ outputLength ];
 
-//		float[] testFrequencies = new float[] { -10.0f, 0.0f, 100.0f, 1000.0f, 2000.0f, 32000.0f };
-		final float[] testFrequencies = new float[] { 0.0f, 61.7f, 61.8f, 99.0f, 124.0f, 248.0f };
+		final float[] testFrequencies = new float[] { -10.0f, 0.0f, 100.0f, 1000.0f, 2000.0f, 32000.0f };
+//		final float[] testFrequencies = new float[] { 0.0f, 61.7f, 61.8f, 99.0f, 124.0f, 248.0f };
 		for( final float testFrequency : testFrequencies )
 		{
 			log.info( "Using oscillator at frequency: " + testFrequency );

@@ -41,7 +41,6 @@ public class FourierTableGenerator
 			{
 				for( int n = 0 ; n < length ; n++ )
 				{
-//					w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / (length - 1) );
 					w = ( i + 1 ) * ( n * MathDefines.TWO_PI_D / length );
 					buffer[ position + n ] += (a * Math.cos( w + doublePhase ) );
 				}

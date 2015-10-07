@@ -42,7 +42,7 @@ public class BandLimitedWaveTableOscillator extends AbstractWavetableOscillator
 		// Only check for a new table every 20hz of difference
 		if( absFreqDiff > 20.0f || waveTableForFreq == null )
 		{
-			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( Math.abs(freq) );
+			waveTableForFreq = bandWaveTableMap.getWaveTableForFrequency( (freq < 0.0f ? -freq : freq) );
 			prevFreq = freq;
 		}
 		final double incr = freq / sampleRate;
