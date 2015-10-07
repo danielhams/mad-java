@@ -22,6 +22,7 @@ package uk.co.modularaudio.mads.base.imixern.ui;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNIOQueueBridge;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadInstance;
@@ -99,18 +100,9 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 				final int laneNum = laneChanNum / 2;
 				final int channelNum = laneChanNum % 2;
 
-				final MeterValueReceiver laneReceiver = laneMeterReceiversMap[ laneNum ];
-				if( laneReceiver == null )
-				{
-					if( log.isWarnEnabled() )
-					{
-						log.warn( "Missing meter receiver for lane " + laneNum );
-					}
-				}
-				else
-				{
-					laneReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, channelNum, ampValue );
-				}
+				laneMeterReceiversMap[ laneNum ].receiveMeterReadingLevel( nextOutgoingEntry.frameTime,
+						channelNum,
+						ampValue );
 				break;
 			}
 			case MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER:
@@ -122,14 +114,10 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 
 				final int channelNum = laneChanNum % 2;
 
-				if( masterMeterReceiver == null )
-				{
-					log.warn( "Missing master meter receiver");
-				}
-				else
-				{
-					masterMeterReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime, channelNum, ampValue );
-				}
+				masterMeterReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime,
+						channelNum,
+						ampValue );
+
 				break;
 			}
 			case MixerNIOQueueBridge.COMMAND_IN_LANE_AMP:

@@ -150,7 +150,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			{
 				cvFreqFloats = cvFreqBuf.floatBuffer;
 				freqIndex = frameOffset;
-				constantFreq = true;
+				constantFreq = false;
 			}
 			else
 			{
@@ -161,7 +161,7 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			{
 				pwFloats = pwBuf.floatBuffer;
 				pwIndex = frameOffset;
-				constantPw = true;
+				constantPw = false;
 			}
 			else
 			{
