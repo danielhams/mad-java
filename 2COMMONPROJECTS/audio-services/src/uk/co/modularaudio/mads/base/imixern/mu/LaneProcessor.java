@@ -86,6 +86,9 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 		final float[] leftMasterOutputChannel = channelBuffers[ 0 ].floatBuffer;
 		final float[] rightMasterOutputChannel = channelBuffers[ 1 ].floatBuffer;
 
+		float leftMeterReading = currentLeftMeterReading;
+		float rightMeterReading = currentRightMeterReading;
+
 		if( inputConnected )
 		{
 			final float[] tmpBuffer = tses.temporaryFloatArray;
@@ -104,9 +107,9 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 						final float oneFloat = leftInputChannel[frameOffset + s] * tmpBuffer[s];
 						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-						if( absFloat > currentLeftMeterReading )
+						if( absFloat > leftMeterReading )
 						{
-							currentLeftMeterReading = absFloat;
+							leftMeterReading = absFloat;
 						}
 
 						leftMasterOutputChannel[frameOffset + s] += oneFloat;
@@ -114,14 +117,15 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 				}
 				else
 				{
+					final float ampToUse = leftAmpInterpolator.getValue();
 					for( int s = 0 ; s < numFrames ; ++s )
 					{
-						final float oneFloat = leftInputChannel[frameOffset + s] * desiredLeftAmpMultiplier;
+						final float oneFloat = leftInputChannel[frameOffset + s] * ampToUse;
 						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-						if( absFloat > currentLeftMeterReading )
+						if( absFloat > leftMeterReading )
 						{
-							currentLeftMeterReading = absFloat;
+							leftMeterReading = absFloat;
 						}
 
 						leftMasterOutputChannel[frameOffset + s] += oneFloat;
@@ -140,9 +144,9 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 						final float oneFloat = rightInputChannel[frameOffset + s] * tmpBuffer[s];
 						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-						if( absFloat > currentRightMeterReading )
+						if( absFloat > rightMeterReading )
 						{
-							currentRightMeterReading = absFloat;
+							rightMeterReading = absFloat;
 						}
 
 						rightMasterOutputChannel[frameOffset + s] += oneFloat;
@@ -150,14 +154,15 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 				}
 				else
 				{
+					final float ampToUse = rightAmpInterpolator.getValue();
 					for( int s = 0 ; s < numFrames ; ++s )
 					{
-						final float oneFloat = rightInputChannel[frameOffset + s] * desiredRightAmpMultiplier;
+						final float oneFloat = rightInputChannel[frameOffset + s] * ampToUse;
 						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-						if( absFloat > currentRightMeterReading )
+						if( absFloat > rightMeterReading )
 						{
-							currentRightMeterReading = absFloat;
+							rightMeterReading = absFloat;
 						}
 
 						rightMasterOutputChannel[frameOffset + s] += oneFloat;
@@ -167,9 +172,11 @@ public class LaneProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerN
 		}
 		else
 		{
-			currentLeftMeterReading = 0.0f;
-			currentRightMeterReading = 0.0f;
+			leftMeterReading = 0.0f;
+			rightMeterReading = 0.0f;
 		}
+		currentLeftMeterReading = leftMeterReading;
+		currentRightMeterReading = rightMeterReading;
 	}
 
 	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long meterTimestamp )

@@ -41,8 +41,8 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 
 	private float desiredPanValue;
 
-	private float leftMeterLevel;
-	private float rightMeterLevel;
+	private float currentLeftMeterReading;
+	private float currentRightMeterReading;
 
 	private final SpringAndDamperDouble24Interpolator leftAmpInterpolator = new SpringAndDamperDouble24Interpolator();
 	private final SpringAndDamperDouble24Interpolator rightAmpInterpolator = new SpringAndDamperDouble24Interpolator();
@@ -68,6 +68,10 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		final float[] tmpBuffer = tses.temporaryFloatArray;
 
 		final float[] leftOutputFloats = channelBuffers[ 0 ].floatBuffer;
+
+		float leftMeterReading = currentLeftMeterReading;
+		float rightMeterReading = currentRightMeterReading;
+
 		if( !leftAmpInterpolator.checkForDenormal() )
 		{
 			// First left
@@ -77,9 +81,9 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 				final float oneFloat = leftOutputFloats[ frameOffset + s ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-				if( absFloat > leftMeterLevel )
+				if( absFloat > leftMeterReading )
 				{
-					leftMeterLevel = absFloat;
+					leftMeterReading = absFloat;
 				}
 
 				leftOutputFloats[ frameOffset + s ] = oneFloat;
@@ -87,14 +91,15 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		}
 		else
 		{
+			final float ampToUse = leftAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = leftOutputFloats[ frameOffset + s ] * desiredLeftAmpMultiplier;
+				final float oneFloat = leftOutputFloats[ frameOffset + s ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-				if( absFloat > leftMeterLevel )
+				if( absFloat > leftMeterReading )
 				{
-					leftMeterLevel = absFloat;
+					leftMeterReading = absFloat;
 				}
 
 				leftOutputFloats[ frameOffset + s ] = oneFloat;
@@ -110,9 +115,9 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 				final float oneFloat = rightOutputFloats[ frameOffset + s ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-				if( absFloat > rightMeterLevel )
+				if( absFloat > rightMeterReading )
 				{
-					rightMeterLevel = absFloat;
+					rightMeterReading = absFloat;
 				}
 
 				rightOutputFloats[ frameOffset + s ] = oneFloat;
@@ -120,27 +125,31 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		}
 		else
 		{
+			final float ampToUse = rightAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = rightOutputFloats[ frameOffset + s ] * desiredRightAmpMultiplier;
+				final float oneFloat = rightOutputFloats[ frameOffset + s ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-				if( absFloat > rightMeterLevel )
+				if( absFloat > rightMeterReading )
 				{
-					rightMeterLevel = absFloat;
+					rightMeterReading = absFloat;
 				}
 
 				rightOutputFloats[ frameOffset + s ] = oneFloat;
 			}
 		}
+
+		currentLeftMeterReading = leftMeterReading;
+		currentRightMeterReading = rightMeterReading;
 	}
 
 	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
 	{
 //		log.debug("Emitting one at " + emitTimestamp);
-		instance.emitMasterMeterReading( tses, emitTimestamp, leftMeterLevel, rightMeterLevel );
-		leftMeterLevel = 0.0f;
-		rightMeterLevel = 0.0f;
+		instance.emitMasterMeterReading( tses, emitTimestamp, currentLeftMeterReading, currentRightMeterReading );
+		currentLeftMeterReading = 0.0f;
+		currentRightMeterReading = 0.0f;
 	}
 
 	public void setMasterAmp( final float ampValue )
