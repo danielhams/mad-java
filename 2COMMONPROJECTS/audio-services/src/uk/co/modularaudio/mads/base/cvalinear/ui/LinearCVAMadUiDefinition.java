@@ -46,7 +46,7 @@ public class LinearCVAMadUiDefinition
 
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point(  80, 40 ),
-		new Point( 130, 40 ),
+		new Point( 120, 40 ),
 		new Point( 160, 40 )
 	};
 
