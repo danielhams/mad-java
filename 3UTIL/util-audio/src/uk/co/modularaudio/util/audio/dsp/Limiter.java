@@ -26,41 +26,41 @@ import org.apache.commons.logging.LogFactory;
 public class Limiter
 {
 	public static Log log = LogFactory.getLog( Limiter.class.getName() );
-	
+
 	private double knee = 0.0;
 	private double upperLeg = 0.0;
 	private double falloff = 0.0;
-	
+
 	private float kneeFloat = 0.0f;
 	private float upperLegFloat = 0.0f;
 	private float falloffFloat = 0.0f;
-	
-	public Limiter( double knee, double falloff )
+
+	public Limiter( final double knee, final double falloff )
 	{
 		this.knee = knee;
 		this.upperLeg = 1.0 - knee;
 		this.falloff = falloff;
-		
+
 		kneeFloat = (float)knee;
 		upperLegFloat = (float)upperLeg;
 		falloffFloat = (float)falloff;
 	}
-	
-	public double filter( double[] testVals, int position, int length )
+
+	public double filter( final double[] testVals, final int position, final int length )
 	{
 		for( int i = position ; i < position + length ; i++ )
 		{
-			double testVal = testVals[ i ];
-			int sign = ( testVal < 0.0f ? -1 : 1 );
-			double absVal = testVal * sign;
+			final double testVal = testVals[ i ];
+			final int sign = ( testVal < 0.0f ? -1 : 1 );
+			final double absVal = testVal * sign;
 			if( absVal > kneeFloat )
 			{
-				double amountOver = absVal - kneeFloat;
-				double firstCompute = 1.0 / (( amountOver * falloffFloat ) + 1.0);
+				final double amountOver = absVal - kneeFloat;
+				final double firstCompute = 1.0 / (( amountOver * falloffFloat ) + 1.0);
 //				double secondCompute = (-1.0 * firstCompute) + 1.0;
-				double secondCompute = 1.0 - firstCompute;
-				double scaledVal = upperLegFloat * secondCompute;
-				double retVal = (kneeFloat + scaledVal) * sign;
+				final double secondCompute = 1.0 - firstCompute;
+				final double scaledVal = upperLegFloat * secondCompute;
+				final double retVal = (kneeFloat + scaledVal) * sign;
 				testVals[i] = retVal;
 			}
 //			else
@@ -71,21 +71,21 @@ public class Limiter
 		return testVals[0];
 	}
 
-	public float filter( float[] testVals, int position, int length )
+	public float filter( final float[] testVals, final int position, final int length )
 	{
 		for( int i = position ; i < position + length ; i++ )
 		{
-			float testVal = testVals[ i ];
-			int sign = ( testVal < 0.0f ? -1 : 1 );
-			float absVal = testVal * sign;
+			final float testVal = testVals[ i ];
+			final int sign = ( testVal < 0.0f ? -1 : 1 );
+			final float absVal = testVal * sign;
 			if( absVal > kneeFloat )
 			{
-				float amountOver = absVal - kneeFloat;
-				float firstCompute = 1.0f / (( amountOver * falloffFloat ) + 1.0f);
+				final float amountOver = absVal - kneeFloat;
+				final float firstCompute = 1.0f / (( amountOver * falloffFloat ) + 1.0f);
 //				float secondCompute = (-1.0f * firstCompute) + 1.0f;
-				float secondCompute = 1.0f - firstCompute;
-				float scaledVal = upperLegFloat * secondCompute;
-				float retVal = (kneeFloat + scaledVal) * sign;
+				final float secondCompute = 1.0f - firstCompute;
+				final float scaledVal = upperLegFloat * secondCompute;
+				final float retVal = (kneeFloat + scaledVal) * sign;
 				testVals[i] = retVal;
 			}
 //			else
@@ -101,7 +101,7 @@ public class Limiter
 		return knee;
 	}
 
-	public void setKnee(double knee)
+	public void setKnee(final double knee)
 	{
 		this.knee = knee;
 		this.upperLeg = 1.0 - knee;
@@ -114,9 +114,35 @@ public class Limiter
 		return falloff;
 	}
 
-	public void setFalloff(double falloff)
+	public void setFalloff(final double falloff)
 	{
 		this.falloff = falloff;
 		this.falloffFloat = (float)falloff;
+	}
+
+	public void filter( final float[] output, final int outOffset, final int length,
+			final float[] kneeFloats, final int kneeTmpIndex,
+			final float[] falloffFloats, final int falloffTmpIndex )
+	{
+		for( int s = 0 ; s < length ; ++s )
+		{
+			final float knee = kneeFloats[kneeTmpIndex+s];
+			final float value = output[outOffset+s];
+
+			final int sign = ( value < 0.0f ? -1 : 1 );
+			final float absVal = value * sign;
+			if( absVal > knee )
+			{
+				final float upperLeg = 1.0f - knee;
+				final float falloff = falloffFloats[falloffTmpIndex+s];
+
+				final float amountOver = absVal - knee;
+				final float firstCompute = 1.0f / (( amountOver * falloff ) + 1.0f);
+				final float secondCompute = 1.0f - firstCompute;
+				final float scaledVal = upperLeg * secondCompute;
+				final float retVal = (knee + scaledVal) * sign;
+				output[outOffset+s] = retVal;
+			}
+		}
 	}
 }

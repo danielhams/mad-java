@@ -48,8 +48,8 @@ public class LimiterMadUiDefinition
 	private static final Point[] CHAN_POSIS = new Point[] {
 		new Point( 150, 40 ),
 		new Point( 170, 40 ),
-		new Point( 150, 70 ),
-		new Point( 170, 70 )
+		new Point( 350, 40 ),
+		new Point( 370, 40 )
 	};
 
 	private static final String[] CONTORL_NAMES = new String[] {
@@ -68,8 +68,8 @@ public class LimiterMadUiDefinition
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle( 113, 3, 75, 43 ),
-		new Rectangle( 113, 53, 75, 43 )
+		new Rectangle(   16,  30, 255,  30 ),
+		new Rectangle(  285,  30, 255,  30 )
 	};
 
 	private static final Class<LimiterMadUiInstance> INSTANCE_CLASS = LimiterMadUiInstance.class;

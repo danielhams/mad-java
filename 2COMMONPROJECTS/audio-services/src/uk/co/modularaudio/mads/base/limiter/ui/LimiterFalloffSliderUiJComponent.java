@@ -25,16 +25,23 @@ import javax.swing.JComponent;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacSlider;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LimiterFallofSliderModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
+import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.SatelliteOrientation;
 
-public class LimiterFalloffSliderUiJComponent extends PacSlider
-		implements IMadUiControlInstance<LimiterMadDefinition, LimiterMadInstance, LimiterMadUiInstance>
+public class LimiterFalloffSliderUiJComponent
+	implements IMadUiControlInstance<LimiterMadDefinition, LimiterMadInstance, LimiterMadUiInstance>
 {
-	private static final long serialVersionUID = 6068897521037173787L;
+	private final LimiterFallofSliderModel model;
 
-	private final LimiterMadUiInstance uiInstance;
+	private final SliderDisplayController sliderController;
+	private final LWTCSliderDisplayView sliderDisplayView;
 
 	public LimiterFalloffSliderUiJComponent(
 			final LimiterMadDefinition definition,
@@ -42,28 +49,34 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 			final LimiterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		this.uiInstance = uiInstance;
+		model = new LimiterFallofSliderModel();
+		sliderController = new SliderDisplayController( model );
+		sliderDisplayView = new LWTCSliderDisplayView(
+				model,
+				sliderController,
+				SatelliteOrientation.LEFT,
+				DisplayOrientation.HORIZONTAL,
+				SatelliteOrientation.RIGHT,
+				LWTCControlConstants.SLIDER_VIEW_COLORS,
+				"Falloff:",
+				false,
+				true );
 
-		this.setOpaque( false );
-		setFont( this.getFont().deriveFont( 9f ) );
-		this.setPaintLabels( true );
-		this.setMinimum( 0 );
-		this.setMaximum( 1000 );
-		// Default value
-		this.setValue( 500 );
+		model.addChangeListener( new SliderDisplayModel.ValueChangeListener()
+		{
+
+			@Override
+			public void receiveValueChange( final Object source, final float newValue )
+			{
+				uiInstance.sendFalloffChange( newValue );
+			}
+		} );
 	}
 
 	@Override
 	public JComponent getControl()
 	{
-		return this;
-	}
-
-	private void passChangeToInstanceData( final int value )
-	{
-		// Convert it into a float
-		final float valToSend = (value) / 1000.0f;
-		uiInstance.sendFalloffChange( valToSend );
+		return sliderDisplayView;
 	}
 
 	@Override
@@ -71,24 +84,13 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-		// log.debug("Received display tick");
 	}
 
 	@Override
 	public void receiveControlValue( final String strValue )
 	{
-		super.receiveControlValue( strValue );
-		final float initialValue = this.getValue() / 1000.0f;
-		uiInstance.sendFalloffChange( initialValue );
-	}
-
-	@Override
-	public void processValueChange( final int previousValue, final int newValue )
-	{
-		if( previousValue != newValue )
-		{
-			passChangeToInstanceData( newValue );
-		}
+		final float value = Float.parseFloat( strValue );
+		model.setValue( this, value );
 	}
 
 	@Override
@@ -100,5 +102,11 @@ public class LimiterFalloffSliderUiJComponent extends PacSlider
 	public boolean needsDisplayProcessing()
 	{
 		return false;
+	}
+
+	@Override
+	public String getControlValue()
+	{
+		return Float.toString( model.getValue() );
 	}
 }

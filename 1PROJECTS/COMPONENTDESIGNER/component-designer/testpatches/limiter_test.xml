@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Limiter 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Limiter 1" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
+        <rackPosition column="3" row="2"/>
+    </rackComponent>
+    <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+        <rackPosition column="0" row="0"/>
+        <rackControl name="Frequency" value="2284.827"/>
+        <rackControl name="Pulsewidth" value="1.0"/>
+        <rackControl name="Shape" value="Sine"/>
+    </rackComponent>
+    <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Impulse" value=""/>
+        <rackControl name="Model Choice" value="Mastering Mixer Fader"/>
+        <rackControl name="Perf Table" value=""/>
+        <rackControl name="Value" value="-Infinity"/>
+        <rackControl name="ValueChase" value="3.7"/>
+    </rackComponent>
+    <rackComponent name="Limiter 1" definitionId="limiter">
+        <rackPosition column="2" row="1"/>
+        <rackControl name="Falloff" value="20.0"/>
+        <rackControl name="Knee" value="0.98"/>
+    </rackComponent>
+    <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
+        <rackPosition column="2" row="0"/>
+    </rackComponent>
+    <rackComponent name="Scope 1" definitionId="scope">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="CaptureLength" value="5.7421412"/>
+        <rackControl name="Recapture" value=""/>
+        <rackControl name="RepetitionChoice" value="Continuous"/>
+        <rackControl name="SaveButton" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+        <rackControl name="TriggerChoice" value="On Rise"/>
+        <rackControl name="WaveDisplay" value=""/>
+    </rackComponent>
+    <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
+        <rackPosition column="2" row="6"/>
+        <rackControl name="Amp Ceil" value="0dB"/>
+        <rackControl name="Amp Floor" value="-100dB"/>
+        <rackControl name="Amp Scale" value="dB"/>
+        <rackControl name="Display" value=""/>
+        <rackControl name="Frequency Max" value="24000.0"/>
+        <rackControl name="Frequency Min" value="0.0"/>
+        <rackControl name="Frequency Scale" value="Lin"/>
+        <rackControl name="Peak Reset" value=""/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Fast Fall"/>
+        <rackControl name="Window" value="Hann"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 24 CV Out" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
+    <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Limiter 1" consumerChannelName="Input Wave Left"/>
+</rack>

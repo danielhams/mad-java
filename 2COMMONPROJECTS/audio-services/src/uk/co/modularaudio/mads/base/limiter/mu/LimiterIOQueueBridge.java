@@ -52,7 +52,7 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float kn = Float.intBitsToFloat( truncVal );
-				instance.desiredKnee = kn;
+				instance.setKnee( kn );
 				break;
 			}
 			case COMMAND_FALLOFF:
@@ -61,7 +61,7 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 				final long value = queueEntry.value;
 				final int truncVal = (int)value;
 				final float f = Float.intBitsToFloat( truncVal );
-				instance.desiredFalloff = f;
+				instance.setFalloff( f );
 				break;
 			}
 			default:

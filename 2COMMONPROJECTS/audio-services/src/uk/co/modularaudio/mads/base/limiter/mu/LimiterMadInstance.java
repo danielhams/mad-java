@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.Limiter;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -35,29 +36,18 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LimiterFallofSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.LimiterKneeSliderModel;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,LimiterMadInstance>
 {
 //	private static Log log = LogFactory.getLog( LimiterMadInstance.class.getName() );
 
-	private static final int VALUE_CHASE_MILLIS = 1;
-	protected float curValueRatio = 0.0f;
-	protected float newValueRatio = 1.0f;
+	private final CDSpringAndDamperDouble24Interpolator kneeSad = new CDSpringAndDamperDouble24Interpolator();
+	private final CDSpringAndDamperDouble24Interpolator falloffSad = new CDSpringAndDamperDouble24Interpolator();
 
-	private long sampleRate = -1;
-
-	public float hardLimit = 0.0f;
-
-	private Limiter leftLimiterRt;
-	private Limiter rightLimiterRt;
-
-	protected float desiredKnee = 0.9f;
-	protected float desiredFalloff = 0.0f;
-
-	public float currentKnee = 0.9f;
-	public float currentFalloff = 0.0f;
+	private final Limiter limiter = new Limiter( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
 
 	public LimiterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -69,23 +59,17 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
+	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		try
-		{
-			sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		final int periodLengthFrames = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+		final int interpolatorLengthFrames = periodLengthFrames;
 
-			newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( sampleRate, VALUE_CHASE_MILLIS );
-			curValueRatio = 1.0f - newValueRatio;
-
-			leftLimiterRt = new Limiter( currentKnee, currentFalloff );
-			rightLimiterRt = new Limiter( currentKnee, currentFalloff );
-		}
-		catch (final Exception e)
-		{
-			throw new MadProcessingException( e );
-		}
+		kneeSad.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, interpolatorLengthFrames );
+		falloffSad.resetSampleRateAndPeriod( sampleRate, periodLengthFrames, interpolatorLengthFrames );
 	}
 
 	@Override
@@ -95,10 +79,12 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		//
 		final boolean inLConnected = channelConnectedFlags.get( LimiterMadDefinition.CONSUMER_IN_LEFT );
@@ -117,36 +103,52 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		final MadChannelBuffer outRcb = channelBuffers[ LimiterMadDefinition.PRODUCER_OUT_RIGHT ];
 		final float[] outRfloats = (outRConnected ? outRcb.floatBuffer : null );
 
-		// TODO find out why falloff doesn't seem to do what it should
+		final float[] tmpArray = tempQueueEntryStorage.temporaryFloatArray;
 
-		currentKnee = (currentKnee * curValueRatio ) + (desiredKnee * newValueRatio );
-		currentFalloff = (currentFalloff * curValueRatio ) + (desiredFalloff * newValueRatio );
+		final int kneeTmpIndex = 0;
+		final int falloffTmpIndex = kneeTmpIndex + numFrames;
 
-		leftLimiterRt.setKnee( currentKnee );
-		leftLimiterRt.setFalloff( currentFalloff );
-		rightLimiterRt.setKnee( currentKnee );
-		rightLimiterRt.setFalloff( currentFalloff );
+		kneeSad.generateControlValues( tmpArray, kneeTmpIndex, numFrames );
+		kneeSad.checkForDenormal();
 
-		// Copy over the data from ins to outs then apply the filtering
+		falloffSad.generateControlValues( tmpArray, falloffTmpIndex, numFrames );
+		falloffSad.checkForDenormal();
+
+		// Copy over the data from ins to outs and then filter
 		if( !inLConnected && outLConnected )
 		{
-			Arrays.fill( outLfloats, 0.0f );
+			Arrays.fill( outLfloats, frameOffset, frameOffset + numFrames, 0.0f );
 		}
 		else if( inLConnected && outLConnected )
 		{
-			System.arraycopy( inLfloats, 0, outLfloats, 0, numFrames );
-			leftLimiterRt.filter( outLfloats, 0, numFrames );
+			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
+			limiter.filter( outLfloats, frameOffset, numFrames,
+					tmpArray, kneeTmpIndex,
+					tmpArray, falloffTmpIndex );
 		}
 
 		if( !inRConnected && outRConnected )
 		{
-			Arrays.fill( outRfloats, 0.0f );
+			Arrays.fill( outRfloats, frameOffset, frameOffset + numFrames, 0.0f );
 		}
 		else if( inRConnected && outRConnected )
 		{
-			System.arraycopy( inRfloats, 0, outRfloats, 0, numFrames );
-			rightLimiterRt.filter( outRfloats, 0, numFrames );
+			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
+			limiter.filter( outRfloats, frameOffset, numFrames,
+					tmpArray, kneeTmpIndex,
+					tmpArray, falloffTmpIndex );
 		}
+
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void setKnee( final float kn )
+	{
+		kneeSad.notifyOfNewValue( kn );
+	}
+
+	public void setFalloff( final float fo )
+	{
+		falloffSad.notifyOfNewValue( fo );
 	}
 }
