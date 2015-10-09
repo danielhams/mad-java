@@ -208,4 +208,34 @@ public class AudioMath
 	{
 		return valueToLimit > upperLimit ? upperLimit : (valueToLimit < lowerLimit ? lowerLimit : valueToLimit );
 	}
+
+	public static float tanhNoClip( final float inVal )
+	{
+		// Ugly hack not particularly musically great tanh approximation
+		if( inVal < -3.0f )
+		{
+			return -1.0f;
+		}
+		else if( inVal > 3.0f )
+		{
+			return 1.0f;
+		}
+		else
+		{
+			return inVal * (27 + inVal * inVal) / (27 + 9 * inVal * inVal);
+		}
+	}
+
+	public static float tanhNoClipOnlyPositive( final float inVal )
+	{
+		// Ugly hack not particularly musically great tanh approximation
+		if( inVal > 3.0f )
+		{
+			return 1.0f;
+		}
+		else
+		{
+			return inVal * (27 + inVal * inVal) / (27 + 9 * inVal * inVal);
+		}
+	}
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterHardLimitCheckboxUiJComponent;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.dsp.LimiterTanhApprox;
+import uk.co.modularaudio.util.audio.dsp.LimiterFast;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -48,7 +48,8 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 	private final CDSpringAndDamperDouble24Interpolator kneeSad = new CDSpringAndDamperDouble24Interpolator();
 	private final CDSpringAndDamperDouble24Interpolator falloffSad = new CDSpringAndDamperDouble24Interpolator();
 
-	private final LimiterTanhApprox limiter = new LimiterTanhApprox( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
+//	private final LimiterTanhApprox limiter = new LimiterTanhApprox( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
+	private final LimiterFast limiter = new LimiterFast( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
 
 	private boolean desiredUseHardLimit = LimiterHardLimitCheckboxUiJComponent.DEFAULT_USE_HARD_LIMIT;
 

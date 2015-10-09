@@ -16,7 +16,7 @@
         <rackControl name="Impulse" value=""/>
         <rackControl name="Model Choice" value="Mastering Mixer Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="5.0"/>
+        <rackControl name="Value" value="0.0"/>
         <rackControl name="ValueChase" value="3.7"/>
     </rackComponent>
     <rackComponent name="Cross Fader 1" definitionId="cross_fader">
@@ -24,12 +24,12 @@
         <rackControl name="AmpAKill" value="false"/>
         <rackControl name="AmpBKill" value="false"/>
         <rackControl name="PowerCurve" value="Additive"/>
-        <rackControl name="Slider" value="-1.0"/>
+        <rackControl name="Slider" value="1.0"/>
     </rackComponent>
     <rackComponent name="Limiter 1" definitionId="limiter">
         <rackPosition column="2" row="1"/>
-        <rackControl name="Falloff" value="0.612"/>
-        <rackControl name="Knee" value="0.635"/>
+        <rackControl name="Falloff" value="0.64"/>
+        <rackControl name="Knee" value="0.4205"/>
         <rackControl name="UseHardLimit" value="false"/>
     </rackComponent>
     <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
@@ -40,17 +40,17 @@
     </rackComponent>
     <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
         <rackPosition column="2" row="12"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Master Lane" value="5.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="-7.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="0" row="6"/>
-        <rackControl name="CaptureLength" value="30.0"/>
+        <rackControl name="CaptureLength" value="60.0"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
-        <rackControl name="SaveButton" value="true|false|true&#x9;Signal 1|false&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
+        <rackControl name="SaveButton" value="true|false|true&#x9;Signal 1|true&#x9;Signal 2|false&#x9;Signal 3|false&#x9;Signal 4"/>
         <rackControl name="TriggerChoice" value="On Rise"/>
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>
@@ -59,9 +59,9 @@
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
         <rackControl name="Gain" value="0.0"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/OriginalAiffs/20150801/6663385_Steel_Swan_Original_Mix.aiff|18387811"/>
+        <rackControl name="SelectFile" value="PreferNotToLoseMusic/SetSources/OriginalAiffs/20150801/6663385_Steel_Swan_Original_Mix.aiff|8806570"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -99,9 +99,12 @@
     </rackComponent>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 24 CV Out" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input CV amplification factor"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 24 CV Out" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input CV amplification factor"/>
+    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 2" consumerChannelName="Input Wave 0"/>
@@ -111,9 +114,7 @@
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Limiter 1" consumerChannelName="Input Wave Right"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Right" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
     <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input Wave"/>
 </rack>
