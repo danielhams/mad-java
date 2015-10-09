@@ -25,15 +25,15 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class LimiterFallofSliderModel extends SliderDisplayModel
 {
-	public final static float DEFAULT_FALLOFF = 20.0f;
+	public final static float DEFAULT_FALLOFF = 1.0f;
 
 	public LimiterFallofSliderModel()
 	{
-		super(  1.0f, 40.0f,
+		super(  0.001f, 2.0f,
 				DEFAULT_FALLOFF,
 				DEFAULT_FALLOFF,
-				3900,
-				100,
+				1999,
+				200,
 				new SimpleSliderIntToFloatConverter(),
 				2,
 				3,

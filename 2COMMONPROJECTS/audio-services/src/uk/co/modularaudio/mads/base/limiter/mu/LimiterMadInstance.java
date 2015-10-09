@@ -24,8 +24,9 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.limiter.ui.LimiterHardLimitCheckboxUiJComponent;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterTanhApprox;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -47,7 +48,9 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 	private final CDSpringAndDamperDouble24Interpolator kneeSad = new CDSpringAndDamperDouble24Interpolator();
 	private final CDSpringAndDamperDouble24Interpolator falloffSad = new CDSpringAndDamperDouble24Interpolator();
 
-	private final Limiter limiter = new Limiter( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
+	private final LimiterTanhApprox limiter = new LimiterTanhApprox( LimiterKneeSliderModel.DEFAULT_KNEE, LimiterFallofSliderModel.DEFAULT_FALLOFF );;
+
+	private boolean desiredUseHardLimit = LimiterHardLimitCheckboxUiJComponent.DEFAULT_USE_HARD_LIMIT;
 
 	public LimiterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
@@ -109,11 +112,16 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		final int falloffTmpIndex = kneeTmpIndex + numFrames;
 
 		kneeSad.generateControlValues( tmpArray, kneeTmpIndex, numFrames );
-		kneeSad.checkForDenormal();
+		boolean isSteadyState = kneeSad.checkForDenormal();
 
 		falloffSad.generateControlValues( tmpArray, falloffTmpIndex, numFrames );
-		falloffSad.checkForDenormal();
+		isSteadyState = isSteadyState & falloffSad.checkForDenormal();
 
+		if( isSteadyState )
+		{
+			limiter.setFalloff( falloffSad.getValue() );
+			limiter.setKnee( kneeSad.getValue() );
+		}
 		// Copy over the data from ins to outs and then filter
 		if( !inLConnected && outLConnected )
 		{
@@ -122,9 +130,35 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		else if( inLConnected && outLConnected )
 		{
 			System.arraycopy( inLfloats, frameOffset, outLfloats, frameOffset, numFrames );
-			limiter.filter( outLfloats, frameOffset, numFrames,
-					tmpArray, kneeTmpIndex,
-					tmpArray, falloffTmpIndex );
+
+			if( desiredUseHardLimit )
+			{
+				for( int s = 0 ; s < numFrames ; ++s )
+				{
+					final float curVal = outLfloats[frameOffset+s];
+					final float knee = tmpArray[kneeTmpIndex+s];
+					final int sign = curVal < 0.0f ? -1 : 1;
+					float absVal = curVal * sign;
+					if( absVal > knee )
+					{
+						absVal = knee;
+					}
+					outLfloats[frameOffset+s] = absVal * sign;
+				}
+			}
+			else
+			{
+				if( isSteadyState )
+				{
+					limiter.filter( outLfloats, frameOffset, numFrames );
+				}
+				else
+				{
+					limiter.filter( outLfloats, frameOffset, numFrames,
+							tmpArray, kneeTmpIndex,
+							tmpArray, falloffTmpIndex );
+				}
+			}
 		}
 
 		if( !inRConnected && outRConnected )
@@ -134,9 +168,34 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 		else if( inRConnected && outRConnected )
 		{
 			System.arraycopy( inRfloats, frameOffset, outRfloats, frameOffset, numFrames );
-			limiter.filter( outRfloats, frameOffset, numFrames,
-					tmpArray, kneeTmpIndex,
-					tmpArray, falloffTmpIndex );
+			if( desiredUseHardLimit )
+			{
+				for( int s = 0 ; s < numFrames ; ++s )
+				{
+					final float curVal = outRfloats[frameOffset+s];
+					final float knee = tmpArray[kneeTmpIndex+s];
+					final int sign = curVal < 0.0f ? -1 : 1;
+					float absVal = curVal * sign;
+					if( absVal > knee )
+					{
+						absVal = knee;
+					}
+					outRfloats[frameOffset+s] = absVal * sign;
+				}
+			}
+			else
+			{
+				if( isSteadyState )
+				{
+					limiter.filter( outRfloats, frameOffset, numFrames );
+				}
+				else
+				{
+					limiter.filter( outRfloats, frameOffset, numFrames,
+							tmpArray, kneeTmpIndex,
+							tmpArray, falloffTmpIndex );
+				}
+			}
 		}
 
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
@@ -150,5 +209,10 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 	public void setFalloff( final float fo )
 	{
 		falloffSad.notifyOfNewValue( fo );
+	}
+
+	public void setUseHardLimit( final boolean useHardLimit )
+	{
+		this.desiredUseHardLimit = useHardLimit;
 	}
 }

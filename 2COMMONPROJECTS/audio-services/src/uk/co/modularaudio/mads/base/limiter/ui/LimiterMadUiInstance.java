@@ -41,4 +41,9 @@ public class LimiterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMad
 	{
 		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_FALLOFF, Float.floatToIntBits( incomingFalloff ) );
 	}
+
+	public void setUseHardLimit( final boolean active )
+	{
+		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_USE_HARD_LIMIT, active ? 1 : 0 );
+	}
 }

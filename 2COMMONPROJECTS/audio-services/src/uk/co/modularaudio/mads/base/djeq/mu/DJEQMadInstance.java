@@ -27,7 +27,7 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.ButterworthFilter24DB;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -74,7 +74,7 @@ public class DJEQMadInstance extends MadInstance<DJEQMadDefinition, DJEQMadInsta
 	private final ButterworthFilter24DB rightMpFilter = new ButterworthFilter24DB();
 	private final ButterworthFilter24DB rightHpFilter = new ButterworthFilter24DB();
 
-	private final Limiter limiterRt = new Limiter( 0.99, 5 );
+	private final LimiterCrude limiterRt = new LimiterCrude( 0.99, 5 );
 
 	public DJEQMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,

@@ -46,7 +46,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -77,7 +77,7 @@ public class TestBlockResamplingServiceWriteFile extends TestCase
 	private SampleCachingService scsi;
 	private BlockResamplerService brsi;
 
-	private final Limiter limiter = new Limiter( 0.98, 25 );
+	private final LimiterCrude limiter = new LimiterCrude( 0.98, 25 );
 
 //	float playbackSpeed = 2.0f;
 //	float playbackSpeed = 1.19572734683248646f;

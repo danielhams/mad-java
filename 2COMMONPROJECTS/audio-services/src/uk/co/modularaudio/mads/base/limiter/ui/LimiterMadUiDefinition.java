@@ -53,23 +53,27 @@ public class LimiterMadUiDefinition
 	};
 
 	private static final String[] CONTORL_NAMES = new String[] {
+		"UseHardLimit",
 		"Knee",
 		"Falloff"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.CHECKBOX,
 		ControlType.SLIDER,
 		ControlType.SLIDER
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		LimiterHardLimitCheckboxUiJComponent.class,
 		LimiterKneeSliderUiJComponent.class,
 		LimiterFalloffSliderUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
-		new Rectangle(   16,  30, 255,  30 ),
-		new Rectangle(  285,  30, 255,  30 )
+		new Rectangle( 200,   6, 156,  18 ),		// Use hard limit
+		new Rectangle(  16,  30, 255,  30 ),		// Knee slider
+		new Rectangle( 285,  30, 255,  30 )			// Falloff slider
 	};
 
 	private static final Class<LimiterMadUiInstance> INSTANCE_CLASS = LimiterMadUiInstance.class;

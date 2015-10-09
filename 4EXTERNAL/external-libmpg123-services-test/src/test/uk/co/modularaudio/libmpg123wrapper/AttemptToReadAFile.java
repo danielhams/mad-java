@@ -36,7 +36,7 @@ import uk.co.modularaudio.libmpg123wrapper.swig.libmpg123;
 import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_errors;
 import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_param_flags;
 import uk.co.modularaudio.libmpg123wrapper.swig.mpg123_parms;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 
 public class AttemptToReadAFile extends TestCase
@@ -52,7 +52,7 @@ public class AttemptToReadAFile extends TestCase
 	private final String inputFileName = "../../5TEST/audio-test-files/audiofiles/ExampleBeats.mp3";
 	private final String outputFileName = "tmpoutput/javalibmpg123reader.wav";
 
-	private final Limiter limiter = new Limiter( 0.98f, 25 );
+	private final LimiterCrude limiter = new LimiterCrude( 0.98f, 25 );
 
 	public AttemptToReadAFile() throws IOException
 	{

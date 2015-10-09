@@ -26,7 +26,7 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.stereo_gate.ui.ThresholdTypeEnum;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.envelope.FixedTransitionAdsrEnvelope;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -96,7 +96,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 
 	protected boolean active;
 
-	private Limiter limiterRt;
+	private LimiterCrude limiterRt;
 
 	private float[] internalAbsCompFloats;
 	private float[] internalThresholdDbFloats;
@@ -145,7 +145,7 @@ public class StereoCompressorMadInstance extends MadInstance<StereoCompressorMad
 			internalEnvelopeFloats = new float[ periodLength ];
 			internalAmpFloats = new float[ periodLength ];
 
-			limiterRt = new Limiter( 0.99f, 5f );
+			limiterRt = new LimiterCrude( 0.99f, 5f );
 		}
 		catch (final Exception e)
 		{

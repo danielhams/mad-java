@@ -26,7 +26,7 @@ import java.util.Map;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.FrequencyFilterMode;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.dsp.MoogFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -81,7 +81,7 @@ public class MoogFilterMadInstance extends MadInstance<MoogFilterMadDefinition,M
 	private final SpringAndDamperDouble24Interpolator qSad = new SpringAndDamperDouble24Interpolator();
 	private final SpringAndDamperDouble24Interpolator ampSad = new SpringAndDamperDouble24Interpolator();
 
-	private final Limiter outputLimiter = new Limiter( 0.99f, 20 );
+	private final LimiterCrude outputLimiter = new LimiterCrude( 0.99f, 20 );
 
 	public MoogFilterMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,

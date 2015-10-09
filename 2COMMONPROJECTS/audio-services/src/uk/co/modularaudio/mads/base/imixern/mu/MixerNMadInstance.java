@@ -24,7 +24,7 @@ import java.nio.BufferOverflowException;
 import java.util.Arrays;
 import java.util.Map;
 
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -52,7 +52,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	private final int leftOutputChannelIndex = 0;
 	private final int rightOutputChannelIndex = 1;
 
-	private final Limiter limiterRt = new Limiter( 0.99, 5 );
+	private final LimiterCrude limiterRt = new LimiterCrude( 0.99, 5 );
 
 	private boolean active;
 

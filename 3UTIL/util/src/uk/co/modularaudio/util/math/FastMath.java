@@ -70,4 +70,13 @@ public strictfp class FastMath
 	{
 		return Math.cos( theta );
 	}
+
+	public static float fastApproxTanh( final float halfInVal )
+	{
+		final float inVal = 2 * halfInVal;
+		final int sign = (inVal < 0.0f ? -1 : 1 );
+		float abs = inVal * sign;
+		abs = 6+abs * (6+abs * (3+abs));
+		return sign * (abs-6)/(abs+6);
+	}
 }

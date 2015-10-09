@@ -40,7 +40,7 @@ import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.samplecaching.SampleCacheClient;
 import uk.co.modularaudio.service.samplecaching.impl.SampleCachingServiceImpl;
-import uk.co.modularaudio.util.audio.dsp.Limiter;
+import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.hibernate.ThreadLocalSessionResource;
@@ -66,7 +66,7 @@ public class TestBlockResamplingServiceOverReadOneFile extends TestCase
 	private SampleCachingServiceImpl scsi;
 	private BlockResamplerService brs;
 
-	private final Limiter LIM = new Limiter( 0.98f, 22 );
+	private final LimiterCrude LIM = new LimiterCrude( 0.98f, 22 );
 
 	private final CyclicBarrier cb = new CyclicBarrier( 2 );
 	private final CacheFillListener cfl = new CacheFillListener( cb );

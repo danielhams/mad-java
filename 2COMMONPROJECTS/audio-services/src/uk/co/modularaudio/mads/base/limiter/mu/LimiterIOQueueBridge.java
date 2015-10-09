@@ -33,6 +33,7 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 
 	public static final int COMMAND_KNEE = 0;
 	public static final int COMMAND_FALLOFF = 1;
+	public static final int COMMAND_USE_HARD_LIMIT = 2;
 
 	public LimiterIOQueueBridge()
 	{
@@ -62,6 +63,12 @@ public class LimiterIOQueueBridge extends MadLocklessQueueBridge<LimiterMadInsta
 				final int truncVal = (int)value;
 				final float f = Float.intBitsToFloat( truncVal );
 				instance.setFalloff( f );
+				break;
+			}
+			case COMMAND_USE_HARD_LIMIT:
+			{
+				final boolean useHardLimit = queueEntry.value == 1;
+				instance.setUseHardLimit( useHardLimit );
 				break;
 			}
 			default:

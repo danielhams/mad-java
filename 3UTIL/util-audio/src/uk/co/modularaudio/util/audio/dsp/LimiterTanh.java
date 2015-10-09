@@ -23,9 +23,9 @@ package uk.co.modularaudio.util.audio.dsp;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class Limiter
+public class LimiterTanh
 {
-	public static Log log = LogFactory.getLog( Limiter.class.getName() );
+	public static Log log = LogFactory.getLog( LimiterTanh.class.getName() );
 
 	private double knee = 0.0;
 	private double upperLeg = 0.0;
@@ -35,7 +35,7 @@ public class Limiter
 	private float upperLegFloat = 0.0f;
 	private float falloffFloat = 0.0f;
 
-	public Limiter( final double knee, final double falloff )
+	public LimiterTanh( final double knee, final double falloff )
 	{
 		this.knee = knee;
 		this.upperLeg = 1.0 - knee;
@@ -44,56 +44,6 @@ public class Limiter
 		kneeFloat = (float)knee;
 		upperLegFloat = (float)upperLeg;
 		falloffFloat = (float)falloff;
-	}
-
-	public double filter( final double[] testVals, final int position, final int length )
-	{
-		for( int i = position ; i < position + length ; i++ )
-		{
-			final double testVal = testVals[ i ];
-			final int sign = ( testVal < 0.0f ? -1 : 1 );
-			final double absVal = testVal * sign;
-			if( absVal > kneeFloat )
-			{
-				final double amountOver = absVal - kneeFloat;
-				final double firstCompute = 1.0 / (( amountOver * falloffFloat ) + 1.0);
-//				double secondCompute = (-1.0 * firstCompute) + 1.0;
-				final double secondCompute = 1.0 - firstCompute;
-				final double scaledVal = upperLegFloat * secondCompute;
-				final double retVal = (kneeFloat + scaledVal) * sign;
-				testVals[i] = retVal;
-			}
-//			else
-//			{
-//				testVals[i] = testVal;
-//			}
-		}
-		return testVals[0];
-	}
-
-	public float filter( final float[] testVals, final int position, final int length )
-	{
-		for( int i = position ; i < position + length ; i++ )
-		{
-			final float testVal = testVals[ i ];
-			final int sign = ( testVal < 0.0f ? -1 : 1 );
-			final float absVal = testVal * sign;
-			if( absVal > kneeFloat )
-			{
-				final float amountOver = absVal - kneeFloat;
-				final float firstCompute = 1.0f / (( amountOver * falloffFloat ) + 1.0f);
-//				float secondCompute = (-1.0f * firstCompute) + 1.0f;
-				final float secondCompute = 1.0f - firstCompute;
-				final float scaledVal = upperLegFloat * secondCompute;
-				final float retVal = (kneeFloat + scaledVal) * sign;
-				testVals[i] = retVal;
-			}
-//			else
-//			{
-//				testVals[i] = testVal;
-//			}
-		}
-		return testVals[0];
 	}
 
 	public double getKnee()
@@ -131,18 +81,65 @@ public class Limiter
 
 			final int sign = ( value < 0.0f ? -1 : 1 );
 			final float absVal = value * sign;
-			if( absVal > knee )
+
+			if( knee >= 1.0f )
+			{
+				output[outOffset+s] = sign * (absVal < 1.0f ? absVal : 1.0f );
+			}
+			else if( absVal > knee )
 			{
 				final float upperLeg = 1.0f - knee;
 				final float falloff = falloffFloats[falloffTmpIndex+s];
 
 				final float amountOver = absVal - knee;
-				final float firstCompute = 1.0f / (( amountOver * falloff ) + 1.0f);
-				final float secondCompute = 1.0f - firstCompute;
-				final float scaledVal = upperLeg * secondCompute;
-				final float retVal = (knee + scaledVal) * sign;
-				output[outOffset+s] = retVal;
+				final float normalisedAmountOver = (amountOver / upperLeg);
+
+				final float normalisedScalor = normalisedAmountOver * falloff;
+
+				final float mappedValue = (float)Math.tanh( normalisedScalor );
+
+				final float scaledAmountOverValue = upperLeg * mappedValue;
+				output[outOffset+s] = (knee + scaledAmountOverValue) * sign;
 			}
 		}
 	}
+
+	public void filter( final float[] output, final int outOffset, final int length )
+	{
+		if( knee >= 1.0f )
+		{
+			final int lastIndex = outOffset + length;
+			for( int s = outOffset ; s < lastIndex ; ++s )
+			{
+				final float value = output[outOffset+s];
+
+				final int sign = ( value < 0.0f ? -1 : 1 );
+				final float absVal = value * sign;
+				output[s] = sign * (absVal < 1.0f ? absVal : 1.0f);
+			}
+		}
+		else
+		{
+			for( int s = 0 ; s < length ; ++s )
+			{
+				final float value = output[outOffset+s];
+
+				final int sign = ( value < 0.0f ? -1 : 1 );
+				final float absVal = value * sign;
+				if( absVal > knee )
+				{
+					final float amountOver = absVal - kneeFloat;
+					final float normalisedAmountOver = (amountOver / upperLegFloat);
+
+					final float normalisedScalor = normalisedAmountOver * falloffFloat;
+
+					final float mappedValue = (float)Math.tanh( normalisedScalor );
+
+					final float scaledAmountOverValue = upperLegFloat * mappedValue;
+					output[outOffset+s] = (kneeFloat + scaledAmountOverValue) * sign;
+				}
+			}
+		}
+	}
+
 }
