@@ -24,9 +24,6 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.mads.base.common.ampmeter.AmpMeterMarks;
 import uk.co.modularaudio.mads.base.common.ampmeter.DPAmpMeter;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
@@ -42,7 +39,7 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 {
 	private static final long serialVersionUID = 1358562457507980606L;
 
-	private static Log log = LogFactory.getLog( LaneStereoAmpMeter.class.getName() );
+//	private static Log log = LogFactory.getLog( LaneStereoAmpMeter.class.getName() );
 
 	private final DPAmpMeter leftMeter;
 	private final AmpMeterMarks meterMarks;

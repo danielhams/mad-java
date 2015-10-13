@@ -20,9 +20,6 @@
 
 package uk.co.modularaudio.mads.base.imixern.mu;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -34,7 +31,7 @@ import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
 	implements LaneProcessor
 {
-	private static final Log log = LogFactory.getLog( MasterOutProcessor.class.getName() );
+//	private static final Log log = LogFactory.getLog( MasterOutProcessor.class.getName() );
 
 	private final I instance;
 

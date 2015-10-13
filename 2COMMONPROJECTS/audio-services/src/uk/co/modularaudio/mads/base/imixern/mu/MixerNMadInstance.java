@@ -24,9 +24,6 @@ import java.nio.BufferOverflowException;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -43,7 +40,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D,I>> extends MadInstance<D,I>
 {
-	private static Log log = LogFactory.getLog( MixerNMadInstance.class.getName() );
+//	private static Log log = LogFactory.getLog( MixerNMadInstance.class.getName() );
 
 	private int sampleFramesPerFrontEndPeriod = 0;
 	private int numSamplesProcessed = 0;
