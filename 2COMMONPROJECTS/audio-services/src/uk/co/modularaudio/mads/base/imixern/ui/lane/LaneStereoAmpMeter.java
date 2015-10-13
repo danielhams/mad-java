@@ -94,27 +94,14 @@ public class LaneStereoAmpMeter<D extends MixerNMadDefinition<D, I>, I extends M
 	}
 
 	@Override
-	public void receiveMeterReadingLevel( final long currentTimestamp, final int channelNumber, final float meterReading )
+	public void receiveMeterReadingLevel( final long currentTimestamp,
+			final float leftMeterReading,
+			final float rightMeterReading )
 	{
-		final float meterReadingDb = AudioMath.levelToDbF( meterReading );
-		switch( channelNumber )
-		{
-			case 0:
-			{
-				leftMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
-				break;
-			}
-			case 1:
-			{
-				rightMeter.receiveMeterReadingInDb( currentTimestamp, meterReadingDb );
-				break;
-			}
-			default:
-			{
-				log.error("Oops. Which channel was this for?");
-				break;
-			}
-		}
+		final float leftMeterReadingDb = AudioMath.levelToDbF( leftMeterReading );
+		final float rightMeterReadingDb = AudioMath.levelToDbF( rightMeterReading );
+		leftMeter.receiveMeterReadingInDb( currentTimestamp, leftMeterReadingDb );
+		rightMeter.receiveMeterReadingInDb( currentTimestamp, rightMeterReadingDb );
 	}
 
 }

@@ -131,80 +131,86 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 	@Override
 	public void mousePressed( final MouseEvent me )
 	{
-		switch( pushedState )
+		if( me.getButton() == MouseEvent.BUTTON1 )
 		{
-			case IN_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case IN_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					break;
+				}
+				case OUT_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					break;
+				}
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
+			if( !hasFocus() )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				break;
+				requestFocusInWindow();
 			}
-			case OUT_MOUSE:
+			repaint();
+			if( isImmediate )
 			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
+				receiveClick();
 			}
-			case OUT_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			me.consume();
 		}
-		if( !hasFocus() )
-		{
-			requestFocusInWindow();
-		}
-		repaint();
-		if( isImmediate )
-		{
-			receiveClick();
-		}
-		me.consume();
 	}
 
 	@Override
 	public void mouseReleased( final MouseEvent me )
 	{
-		switch( pushedState )
+		if( me.getButton() == MouseEvent.BUTTON1 )
 		{
-			case IN_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case IN_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					break;
+				}
+				case OUT_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					break;
+				}
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					break;
+				}
+				default:
+				{
+					log.error( "Oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
+			repaint();
+			if( !isImmediate )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				break;
+				receiveClick();
 			}
-			case OUT_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				break;
-			}
-			case OUT_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				break;
-			}
-			default:
-			{
-				log.error( "Oops - state issue" );
-			}
+			me.consume();
 		}
-		repaint();
-		if( !isImmediate )
-		{
-			receiveClick();
-		}
-		me.consume();
 	}
 }

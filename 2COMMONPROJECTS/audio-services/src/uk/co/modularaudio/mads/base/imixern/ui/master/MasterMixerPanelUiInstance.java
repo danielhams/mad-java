@@ -122,7 +122,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
-				uiInstance.sendMasterPan( newValue );
+				uiInstance.sendLanePan( 0, newValue );
 			}
 		} );
 		final RotaryDisplayController panController = new RotaryDisplayController( panModel );
@@ -146,7 +146,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 					public void receiveValueChange( final Object source, final float newValue )
 					{
 						final float ampForDb = (float)AudioMath.dbToLevel( newValue );
-						uiInstance.sendMasterAmp( ampForDb );
+						uiInstance.sendLaneAmp( 0, ampForDb );
 					}
 				});
 
@@ -166,7 +166,7 @@ public class MasterMixerPanelUiInstance<D extends MixerNMadDefinition<D, I>,
 
 		this.add( ampSliderTextbox, "cell 0 2, spanx 2, grow 0" );
 
-		uiInstance.registerMasterMeterReceiver( stereoAmpMeter );
+		uiInstance.registerLaneMeterReceiver( 0, stereoAmpMeter );
 	}
 
 	@Override

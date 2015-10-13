@@ -41,10 +41,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-5.084877"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-1.0"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/LRCNTheBidness/LRCN - The Bidness 009 (10 JAN 2006).mp3|289048733"/>
+        <rackControl name="SelectFile" value="/data_d2d/NeedsWork/ForNoiseReduction/Old Cassettes/DJ Staden May 1995 - Epiphany/Side2RockTheDiscotheque.flac|47000047"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

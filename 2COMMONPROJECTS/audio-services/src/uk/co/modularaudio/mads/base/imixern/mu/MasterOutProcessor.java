@@ -20,6 +20,9 @@
 
 package uk.co.modularaudio.mads.base.imixern.mu;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -28,9 +31,10 @@ import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.math.MixdownSliderDbToLevelComputer;
 import uk.co.modularaudio.util.math.NormalisedValuesMapper;
 
-public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
+public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D, I>>
+	implements LaneProcessor
 {
-//	private static final Log log = LogFactory.getLog( MasterProcessor.class.getName() );
+	private static final Log log = LogFactory.getLog( MasterOutProcessor.class.getName() );
 
 	private final I instance;
 
@@ -47,7 +51,7 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 	private final SpringAndDamperDouble24Interpolator leftAmpInterpolator = new SpringAndDamperDouble24Interpolator();
 	private final SpringAndDamperDouble24Interpolator rightAmpInterpolator = new SpringAndDamperDouble24Interpolator();
 
-	public MasterProcessor( final I instance,
+	public MasterOutProcessor( final I instance,
 			final MixerNInstanceConfiguration channelConfiguration )
 	{
 		this.instance = instance;
@@ -59,7 +63,8 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		rightAmpInterpolator.resetLowerUpperBounds( 0.0f, linearHighestLevel );
 	}
 
-	public void processMasterOutput( final ThreadSpecificTemporaryEventStorage tses,
+	@Override
+	public void processLane( final ThreadSpecificTemporaryEventStorage tses,
 			final MadChannelConnectedFlags channelConnectedFlags,
 			final MadChannelBuffer[] channelBuffers,
 			final int frameOffset,
@@ -144,21 +149,25 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		currentRightMeterReading = rightMeterReading;
 	}
 
-	public void emitMasterMeterReadings( final ThreadSpecificTemporaryEventStorage tses, final long emitTimestamp )
+	@Override
+	public void emitLaneMeterReadings( final ThreadSpecificTemporaryEventStorage tses,
+			final long emitTimestamp )
 	{
-//		log.debug("Emitting one at " + emitTimestamp);
-		instance.emitMasterMeterReading( tses, emitTimestamp, currentLeftMeterReading, currentRightMeterReading );
+//		log.debug("Emitting master reading at " + emitTimestamp);
+		instance.emitMeterReading( tses, emitTimestamp, 0, currentLeftMeterReading, currentRightMeterReading );
 		currentLeftMeterReading = 0.0f;
 		currentRightMeterReading = 0.0f;
 	}
 
-	public void setMasterAmp( final float ampValue )
+	@Override
+	public void setLaneAmp( final float ampValue )
 	{
 		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
 	}
 
-	public void setMasterPan( final float panValue )
+	@Override
+	public void setLanePan( final float panValue )
 	{
 		desiredPanValue = panValue;
 		recomputeDesiredChannelAmps();
@@ -187,9 +196,16 @@ public class MasterProcessor<D extends MixerNMadDefinition<D, I>, I extends Mixe
 		rightAmpInterpolator.notifyOfNewValue( desiredRightAmpMultiplier );
 	}
 
+	@Override
 	public void setSampleRate( final int sampleRate )
 	{
 		leftAmpInterpolator.reset( sampleRate );
 		rightAmpInterpolator.reset( sampleRate );
+	}
+
+	@Override
+	public void setLaneActive( final boolean active )
+	{
+		// Doesn't apply to master
 	}
 }
