@@ -22,19 +22,19 @@ package uk.co.modularaudio.service.bufferedimageallocation.impl.cache;
 
 public class Decomposition
 {
-	public int smallerBlockX = -1;
-	public int smallerBlockY = -1;
-	public int smallerBlockWidth = -1;
-	public int smallerBlockHeight = -1;
-	public int largerBlockX = -1;
-	public int largerBlockY = -1;
-	public int largerBlockWidth = -1;
-	public int largerBlockHeight = -1;
-	public boolean hasLarger = false;
+	public int smallerBlockX;
+	public int smallerBlockY;
+	public int smallerBlockWidth;
+	public int smallerBlockHeight;
+	public int largerBlockX;
+	public int largerBlockY;
+	public int largerBlockWidth;
+	public int largerBlockHeight;
+	public boolean hasLarger;
 
 	public String smallBlockToString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append( "xy(" );
 		sb.append( smallerBlockX );
 		sb.append( "," );
@@ -53,7 +53,7 @@ public class Decomposition
 	{
 		if( hasLarger )
 		{
-			StringBuilder sb = new StringBuilder();
+			final StringBuilder sb = new StringBuilder();
 			sb.append( "xy(" );
 			sb.append( largerBlockX );
 			sb.append( "," );

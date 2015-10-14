@@ -22,6 +22,8 @@ package test.uk.co.modularaudio.util.math;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.list.IntArrayList;
+import org.apache.mahout.math.map.OpenIntLongHashMap;
 import org.junit.Test;
 
 import uk.co.modularaudio.util.math.Float16;
@@ -52,6 +54,20 @@ public class Float16Tester
 			0.9f,
 			1.1f,
 
+			// Some "steady" values
+			0.1f,
+			0.125f,
+			0.2f,
+			0.25f,
+			0.3f,
+			0.4f,
+			0.5f,
+			0.6f,
+			0.7f,
+			0.75f,
+			0.8f,
+			0.825f,
+
 			// And some values to examine precision
 			192000.0f,
 			41000.0f,
@@ -72,6 +88,72 @@ public class Float16Tester
 					") F16(" +
 					MathFormatter.slowFloatPrint( andBack, 16, true ) +
 					")");
+		}
+	}
+
+	@Test
+	public void testHaveEnoughPrecision()
+	{
+		final int f16One = Float16.fromFloat( 1.0f );
+
+		final float teensyFloat = 1.0f / 1000000.0f;
+
+		int testf16;
+		float curTestFloat = 1.0f;
+		do
+		{
+			curTestFloat -= teensyFloat;
+			testf16 = Float16.fromFloat( curTestFloat );
+		}
+		while( testf16 == f16One );
+
+		final float nextLargestToOne = Float16.fromInt( testf16 );
+		log.debug( "The next largest f16 near to 1.0f16 is " +
+				MathFormatter.slowFloatPrint( nextLargestToOne, 12, true ) );
+
+		final float minDiffNearOne = 1.0f - nextLargestToOne;
+		log.debug("This is a diff of " +
+				MathFormatter.slowFloatPrint( minDiffNearOne, 12, true ) );
+
+		final OpenIntLongHashMap f16ToCountMap = new OpenIntLongHashMap( 50000 );
+
+		final double delta = minDiffNearOne;
+
+		double valueToCheck = 1.0;
+
+		while( valueToCheck >= 0.0 )
+		{
+			final int f16 = Float16.fromFloat( (float)valueToCheck );
+			final long curValue = f16ToCountMap.get( f16 );
+			f16ToCountMap.put( f16, curValue+1 );
+
+			valueToCheck -= delta;
+		}
+		final int f16Zero = Float16.fromFloat( 0.0f );
+		final long curValue = f16ToCountMap.get( f16Zero );
+		f16ToCountMap.put( f16Zero, curValue+1 );
+
+		final IntArrayList keyList = f16ToCountMap.keys();
+
+		final int numUniqueValues = keyList.size();
+		log.debug( "Have " + numUniqueValues + " equidistant unique values between 0.0f16 and 1.0f16" );
+		for( int i = 0 ; i < numUniqueValues ; ++i )
+		{
+			final int value = keyList.get( i );
+			final float f16AsFloat = Float16.fromInt( value );
+			final long count = f16ToCountMap.get( value );
+
+			final boolean shouldPrint = (i < 10 || i > (numUniqueValues-10));
+//			final boolean shouldPrint = count > 1;
+
+			if( shouldPrint )
+			{
+				log.debug("For key f16(" +
+						MathFormatter.slowFloatPrint( f16AsFloat, 12, true ) +
+						") numHits(" +
+						count +
+						")");
+			}
 		}
 	}
 

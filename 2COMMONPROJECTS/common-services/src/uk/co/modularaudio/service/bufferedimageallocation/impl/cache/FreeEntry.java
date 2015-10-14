@@ -22,13 +22,13 @@ package uk.co.modularaudio.service.bufferedimageallocation.impl.cache;
 
 public class FreeEntry
 {
-	private RawImage sourceRawImage = null;
-	private int x = -1;
-	private int y = -1;
-	private int width = -1;
-	private int height = -1;
-	
-	public FreeEntry( RawImage sourceRawImage, int x, int y, int width, int height )
+	private final RawImage sourceRawImage;
+	private final int x;
+	private final int y;
+	private final int width;
+	private final int height;
+
+	public FreeEntry( final RawImage sourceRawImage, final int x, final int y, final int width, final int height )
 	{
 		this.sourceRawImage = sourceRawImage;
 		this.x = x;
@@ -61,10 +61,11 @@ public class FreeEntry
 	{
 		return height;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder("sri(");
+		final StringBuilder sb = new StringBuilder("sri(");
 		sb.append(sourceRawImage.getRawImageId());
 		sb.append(")xy(");
 		sb.append(x);
@@ -75,9 +76,9 @@ public class FreeEntry
 		sb.append(",");
 		sb.append(height);
 		sb.append(")");
-		
+
 		return sb.toString();
 	}
-	
-	
+
+
 }

@@ -138,6 +138,8 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 						myHeight );
 				outBufferedImage = tiledBufferedImage.getUnderlyingBufferedImage();
 				outBufferedImageGraphics = outBufferedImage.createGraphics();
+				outBufferedImageGraphics.setColor( Color.black );
+				outBufferedImageGraphics.fillRect( 0, 0, myWidth, myHeight );
 			}
 			catch( final Exception e )
 			{
