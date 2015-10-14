@@ -275,7 +275,8 @@ public class LibSndfileAudioFileIOService implements ComponentWithLifecycle, Aud
 		{
 			if( log.isTraceEnabled() )
 			{
-				log.trace("Current frame offset requires a seek from " + realAtom.currentHandleFrameOffset + " to " + frameReadOffset );
+				log.trace( "Performing a seek from current(" + realAtom.currentHandleFrameOffset +
+						") to needed(" + frameReadOffset + ")");
 			}
 
 			final long actualOffset = libsndfile.sf_seek( sndfilePtr, frameReadOffset, SEEK_SET );

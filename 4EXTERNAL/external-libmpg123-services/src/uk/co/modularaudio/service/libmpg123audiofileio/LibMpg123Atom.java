@@ -42,7 +42,6 @@ public class LibMpg123Atom implements AudioFileHandleAtom
 
 	protected SWIGTYPE_p_mpg123_handle_struct handle;
 
-	protected long currentPosition;
 	protected CArrayInt doneArray;
 	protected SWIGTYPE_p_int donePtr;
 

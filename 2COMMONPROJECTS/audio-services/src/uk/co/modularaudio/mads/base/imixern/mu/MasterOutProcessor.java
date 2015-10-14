@@ -80,7 +80,8 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = leftOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+				int chanIndex = frameOffset + s;
+				final float oneFloat = leftOutputFloats[ chanIndex ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 				if( absFloat > leftMeterReading )
@@ -88,7 +89,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 					leftMeterReading = absFloat;
 				}
 
-				leftOutputFloats[ frameOffset + s ] = oneFloat;
+				leftOutputFloats[ chanIndex ] = oneFloat;
 			}
 		}
 		else
@@ -96,7 +97,8 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			final float ampToUse = leftAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = leftOutputFloats[ frameOffset + s ] * ampToUse;
+				int chanIndex = frameOffset + s;
+				final float oneFloat = leftOutputFloats[ chanIndex ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 				if( absFloat > leftMeterReading )
@@ -104,7 +106,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 					leftMeterReading = absFloat;
 				}
 
-				leftOutputFloats[ frameOffset + s ] = oneFloat;
+				leftOutputFloats[ chanIndex ] = oneFloat;
 			}
 		}
 
@@ -114,7 +116,8 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = rightOutputFloats[ frameOffset + s ] * tmpBuffer[s];
+				int chanIndex = frameOffset + s;
+				final float oneFloat = rightOutputFloats[ chanIndex ] * tmpBuffer[s];
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 				if( absFloat > rightMeterReading )
@@ -122,7 +125,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 					rightMeterReading = absFloat;
 				}
 
-				rightOutputFloats[ frameOffset + s ] = oneFloat;
+				rightOutputFloats[ chanIndex ] = oneFloat;
 			}
 		}
 		else
@@ -130,7 +133,8 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			final float ampToUse = rightAmpInterpolator.getValue();
 			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				final float oneFloat = rightOutputFloats[ frameOffset + s ] * ampToUse;
+				int chanIndex = frameOffset + s;
+				final float oneFloat = rightOutputFloats[ chanIndex ] * ampToUse;
 				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
 				if( absFloat > rightMeterReading )
@@ -138,7 +142,7 @@ public class MasterOutProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 					rightMeterReading = absFloat;
 				}
 
-				rightOutputFloats[ frameOffset + s ] = oneFloat;
+				rightOutputFloats[ chanIndex ] = oneFloat;
 			}
 		}
 

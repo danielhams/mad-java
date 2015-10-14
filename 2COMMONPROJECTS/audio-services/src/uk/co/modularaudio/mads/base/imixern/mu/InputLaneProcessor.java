@@ -81,103 +81,89 @@ public class InputLaneProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 			final int frameOffset,
 			final int numFrames )
 	{
-		// Only process if something is connected to us!
-		final boolean leftConnected = channelConnectedFlags.get( leftIndex );
-		final boolean rightConnected = channelConnectedFlags.get( rightIndex );
-		final boolean inputConnected = ( leftConnected | rightConnected );
-
 		final float[] leftMasterOutputChannel = channelBuffers[ 0 ].floatBuffer;
 		final float[] rightMasterOutputChannel = channelBuffers[ 1 ].floatBuffer;
 
 		float leftMeterReading = currentLeftMeterReading;
 		float rightMeterReading = currentRightMeterReading;
 
-		if( inputConnected )
+		final float[] tmpBuffer = tses.temporaryFloatArray;
+
+		final float[] leftInputChannel = channelBuffers[ leftIndex ].floatBuffer;
+		final float[] rightInputChannel = channelBuffers[ rightIndex ].floatBuffer;
+
+		if( !leftAmpInterpolator.checkForDenormal() )
 		{
-			final float[] tmpBuffer = tses.temporaryFloatArray;
+			leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
 
-			final float[] leftInputChannel = channelBuffers[ leftIndex ].floatBuffer;
-			final float[] rightInputChannel = channelBuffers[ rightIndex ].floatBuffer;
-
-			if( leftConnected )
+			for( int s = 0 ; s < numFrames ; ++s )
 			{
-				if( !leftAmpInterpolator.checkForDenormal() )
+				final int chanIndex = frameOffset + s;
+				final float oneFloat = leftInputChannel[chanIndex] * tmpBuffer[s];
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > leftMeterReading )
 				{
-					leftAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
-
-					for( int s = 0 ; s < numFrames ; ++s )
-					{
-						final float oneFloat = leftInputChannel[frameOffset + s] * tmpBuffer[s];
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-						if( absFloat > leftMeterReading )
-						{
-							leftMeterReading = absFloat;
-						}
-
-						leftMasterOutputChannel[frameOffset + s] += oneFloat;
-					}
+					leftMeterReading = absFloat;
 				}
-				else
-				{
-					final float ampToUse = leftAmpInterpolator.getValue();
-					for( int s = 0 ; s < numFrames ; ++s )
-					{
-						final float oneFloat = leftInputChannel[frameOffset + s] * ampToUse;
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
 
-						if( absFloat > leftMeterReading )
-						{
-							leftMeterReading = absFloat;
-						}
-
-						leftMasterOutputChannel[frameOffset + s] += oneFloat;
-					}
-				}
-			}
-
-			if( rightConnected )
-			{
-				if( !rightAmpInterpolator.checkForDenormal() )
-				{
-					rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
-
-					for( int s = 0 ; s < numFrames ; ++s )
-					{
-						final float oneFloat = rightInputChannel[frameOffset + s] * tmpBuffer[s];
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-						if( absFloat > rightMeterReading )
-						{
-							rightMeterReading = absFloat;
-						}
-
-						rightMasterOutputChannel[frameOffset + s] += oneFloat;
-					}
-				}
-				else
-				{
-					final float ampToUse = rightAmpInterpolator.getValue();
-					for( int s = 0 ; s < numFrames ; ++s )
-					{
-						final float oneFloat = rightInputChannel[frameOffset + s] * ampToUse;
-						final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
-
-						if( absFloat > rightMeterReading )
-						{
-							rightMeterReading = absFloat;
-						}
-
-						rightMasterOutputChannel[frameOffset + s] += oneFloat;
-					}
-				}
+				leftMasterOutputChannel[chanIndex] += oneFloat;
 			}
 		}
 		else
 		{
-			leftMeterReading = 0.0f;
-			rightMeterReading = 0.0f;
+			final float ampToUse = leftAmpInterpolator.getValue();
+			for( int s = 0 ; s < numFrames ; ++s )
+			{
+				final int chanIndex = frameOffset + s;
+				final float oneFloat = leftInputChannel[chanIndex] * ampToUse;
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > leftMeterReading )
+				{
+					leftMeterReading = absFloat;
+				}
+
+				leftMasterOutputChannel[chanIndex] += oneFloat;
+			}
 		}
+
+		if( !rightAmpInterpolator.checkForDenormal() )
+		{
+			rightAmpInterpolator.generateControlValues( tmpBuffer, 0, numFrames );
+
+			for( int s = 0 ; s < numFrames ; ++s )
+			{
+				final int chanIndex = frameOffset + s;
+				final float oneFloat = rightInputChannel[chanIndex] * tmpBuffer[s];
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > rightMeterReading )
+				{
+					rightMeterReading = absFloat;
+				}
+
+				rightMasterOutputChannel[chanIndex] += oneFloat;
+			}
+		}
+		else
+		{
+			final float ampToUse = rightAmpInterpolator.getValue();
+			for( int s = 0 ; s < numFrames ; ++s )
+			{
+				final int chanIndex = frameOffset + s;
+				final float oneFloat = rightInputChannel[chanIndex] * ampToUse;
+				final float absFloat = (oneFloat < 0.0f ? -oneFloat : oneFloat );
+
+				if( absFloat > rightMeterReading )
+				{
+					rightMeterReading = absFloat;
+				}
+
+				rightMasterOutputChannel[chanIndex] += oneFloat;
+			}
+		}
+
 		currentLeftMeterReading = leftMeterReading;
 		currentRightMeterReading = rightMeterReading;
 	}
@@ -201,6 +187,7 @@ public class InputLaneProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 //		log.debug("Setting lane " + laneNumber + " to amp " + ampValue );
 		desiredAmpMultiplier = ampValue;
 		recomputeDesiredChannelAmps();
+
 	}
 
 	@Override
@@ -208,6 +195,7 @@ public class InputLaneProcessor<D extends MixerNMadDefinition<D, I>, I extends M
 	{
 		desiredPanValue = panValue;
 		recomputeDesiredChannelAmps();
+
 	}
 
 	@Override
