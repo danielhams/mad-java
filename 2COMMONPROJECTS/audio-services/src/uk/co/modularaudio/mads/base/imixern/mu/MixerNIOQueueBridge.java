@@ -41,25 +41,15 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 	public static final int COMMAND_IN_LANE_MUTE = 3;
 	public static final int COMMAND_IN_LANE_SOLO = 4;
 
-	// Just lower 32 bits float amp
-	public final static int COMMAND_IN_MASTER_AMP = 5;
-	public final static int COMMAND_IN_MASTER_PAN = 6;
-
 	// Outgoing messages
-	public static final int COMMAND_OUT_LANE_METER = 7;
-
-	public static final int COMMAND_OUT_MASTER_METER = 10;
-
-	// Extra capacity for messages
-	private static final int CUSTOM_COMMAND_TO_UI_QUEUE_LENGTH = MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 2;
-	private static final int CUSTOM_TEMPORAL_TO_UI_QUEUE_LENGTH = MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 4;
+	public static final int COMMAND_OUT_METER = 5;
 
 	public MixerNIOQueueBridge()
 	{
 		super( MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
 				MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
-				CUSTOM_COMMAND_TO_UI_QUEUE_LENGTH,
-				CUSTOM_TEMPORAL_TO_UI_QUEUE_LENGTH );
+				MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH,
+				MadLocklessIOQueue.DEFAULT_QUEUE_LENGTH * 2 );
 	}
 
 	@Override
@@ -83,7 +73,7 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 				final int lower32Bits = (int)((value ) & 0xFFFFFFFF);
 				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
 				final float ampValue = Float.intBitsToFloat( upper32Bits );
-//				log.debug("Received lane amp change " + lower32Bits + ", " + ampValue );
+//				log.debug("Received lane amp on lane " + lower32Bits + " change " + lower32Bits + ", " + ampValue );
 				instance.setLaneAmp( lower32Bits, ampValue );
 				break;
 			}
@@ -114,26 +104,6 @@ public class MixerNIOQueueBridge<I extends MixerNMadInstance<?,I>> extends
 				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
 				final boolean soloValue = ( upper32Bits != 0);
 				instance.setLaneSolo( tses, currentTimestamp, laneNumber, soloValue );
-				break;
-			}
-			case COMMAND_IN_MASTER_AMP:
-			{
-				// float
-				final long value = queueEntry.value;
-				final int truncVal = (int)value;
-				final float masterAmp = Float.intBitsToFloat( truncVal );
-				instance.setMasterAmp( masterAmp );
-//				log.debug("Received master amp change at " + currentTimestamp );
-//				debugTimestamp("RecAm", currentTimestamp );
-				break;
-			}
-			case COMMAND_IN_MASTER_PAN:
-			{
-				// float
-				final long value = queueEntry.value;
-				final float panValue = Float.intBitsToFloat( (int)value );
-//				log.debug("Received lane amp change " + lower32Bits + ", " + ampValue );
-				instance.setMasterPan( panValue );
 				break;
 			}
 			default:

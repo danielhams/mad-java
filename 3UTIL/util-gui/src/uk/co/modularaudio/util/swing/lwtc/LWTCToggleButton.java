@@ -170,48 +170,51 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	@Override
 	public void mousePressed( final MouseEvent me )
 	{
-		switch( pushedState )
+		if( me.getButton() == MouseEvent.BUTTON1 )
 		{
-			case IN_MOUSE:
+			switch( pushedState )
 			{
-				pushedState = MadButtonState.OUT_MOUSE;
-				break;
+				case IN_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_MOUSE;
+					break;
+				}
+				case IN_NO_MOUSE:
+				{
+					pushedState = MadButtonState.OUT_NO_MOUSE;
+					isOn = true;
+					break;
+				}
+				case OUT_MOUSE:
+				{
+					pushedState = MadButtonState.IN_MOUSE;
+					isOn = false;
+					break;
+				}
+				case OUT_NO_MOUSE:
+				{
+					pushedState = MadButtonState.IN_NO_MOUSE;
+					isOn = false;
+					break;
+				}
+				default:
+				{
+					log.error( "mpressed oops - state issue" );
+				}
 			}
-			case IN_NO_MOUSE:
+			if( !hasFocus() )
 			{
-				pushedState = MadButtonState.OUT_NO_MOUSE;
-				isOn = true;
-				break;
+				requestFocusInWindow();
 			}
-			case OUT_MOUSE:
-			{
-				pushedState = MadButtonState.IN_MOUSE;
-				isOn = false;
-				break;
-			}
-			case OUT_NO_MOUSE:
-			{
-				pushedState = MadButtonState.IN_NO_MOUSE;
-				isOn = false;
-				break;
-			}
-			default:
-			{
-				log.error( "mpressed oops - state issue" );
-			}
-		}
-		if( !hasFocus() )
-		{
-			requestFocusInWindow();
-		}
 
-		if( isImmediate )
-		{
-			doStateSwitch();
+			if( isImmediate )
+			{
+				doStateSwitch();
+			}
+	//		log.debug("mousePressed repaint");
+			repaint();
+			me.consume();
 		}
-//		log.debug("mousePressed repaint");
-		repaint();
-		me.consume();
 	}
 
 	private void doStateSwitch()
@@ -244,12 +247,15 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	@Override
 	public void mouseReleased( final MouseEvent me )
 	{
-//		log.debug("mouseReleased repaint");
-		if( !isImmediate )
+		if( me.getButton() == MouseEvent.BUTTON1 )
 		{
-			doStateSwitch();
+	//		log.debug("mouseReleased repaint");
+			if( !isImmediate )
+			{
+				doStateSwitch();
+			}
+			repaint();
+			me.consume();
 		}
-		repaint();
-		me.consume();
 	}
 }

@@ -327,10 +327,13 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 		final LibMpg123Atom realAtom = (LibMpg123Atom)handle;
 		final SWIGTYPE_p_mpg123_handle_struct mh = realAtom.handle;
 
-		final long currentPosition = realAtom.currentPosition;
-
-		if( currentPosition != frameReadOffset )
+		if( realAtom.currentHandleFrameOffset != frameReadOffset )
 		{
+			if( log.isTraceEnabled() )
+			{
+				log.trace( "Performing a seek from current(" + realAtom.currentHandleFrameOffset +
+						") to needed(" + frameReadOffset + ")");
+			}
 			// Need to seek
 			final long setPosition = libmpg123.mpg123_seek( mh, frameReadOffset, SEEK_SET );
 
@@ -339,6 +342,7 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 				throw new DatastoreException("Seek failed to move to desired(" +
 						frameReadOffset + ") set(" + setPosition );
 			}
+			realAtom.currentHandleFrameOffset = frameReadOffset;
 		}
 
 		final int numChannels = realAtom.getStaticMetadata().numChannels;
@@ -374,7 +378,7 @@ public class LibMpg123AudioFileIOService implements ComponentWithLifecycle, Audi
 
 		final int numFramesRead = numFloatsRead / numChannels;
 
-		realAtom.currentPosition += numFramesRead;
+		realAtom.currentHandleFrameOffset += numFramesRead;
 
 		return numFramesRead;
 	}

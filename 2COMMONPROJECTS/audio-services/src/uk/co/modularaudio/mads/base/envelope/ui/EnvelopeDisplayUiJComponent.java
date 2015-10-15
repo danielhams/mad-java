@@ -165,6 +165,8 @@ public class EnvelopeDisplayUiJComponent extends JPanel
 						localAllocationMatch, AllocationLifetime.SHORT, AllocationBufferType.TYPE_INT_RGB, width, height );
 				envelopeImage = tiledBufferedImage.getUnderlyingBufferedImage();
 				envelopeImageGraphics = envelopeImage.createGraphics();
+				envelopeImageGraphics.setColor( Color.black );
+				envelopeImageGraphics.fillRect( 0, 0, width, height );
 				imageWidth = width;
 				imageHeight = height;
 			}

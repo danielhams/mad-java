@@ -83,6 +83,10 @@ public class SampleCachePopulatorThread extends AbstractInterruptableThread
 
 	public void addOneJobToDo()
 	{
+		if( SampleCache.DEBUG_SAMPLE_CACHE_ACTIVITY )
+		{
+			log.trace( "Adding a job to refresh cache" );
+		}
 		jobsToDoSemaphore.release();
 	}
 

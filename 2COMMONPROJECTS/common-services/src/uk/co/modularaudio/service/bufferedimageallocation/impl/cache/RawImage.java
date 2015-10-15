@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.bufferedimageallocation.impl.cache;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -28,11 +27,11 @@ import java.awt.image.BufferedImage;
 public class RawImage
 {
 //	private static Log log = LogFactory.getLog( RawImage.class.getName() );
-	private BufferedImage rawImage = null;
-	private Graphics2D rawGraphics = null;
-	private long rawImageId = -1;
-	
-	public RawImage( BufferedImage rawImage, Graphics2D rawGraphics, long rawImageId )
+	private final BufferedImage rawImage;
+	private final Graphics2D rawGraphics;
+	private final long rawImageId;
+
+	public RawImage( final BufferedImage rawImage, final Graphics2D rawGraphics, final long rawImageId )
 	{
 		this.rawImage = rawImage;
 		this.rawGraphics = rawGraphics;
@@ -43,7 +42,7 @@ public class RawImage
 	{
 		return rawImage;
 	}
-	
+
 	public Graphics getRootGraphics()
 	{
 		return rawGraphics;
@@ -53,11 +52,11 @@ public class RawImage
 	{
 		return rawImageId;
 	}
-	
-	public void clearRegion( int x, int y, int width, int height )
-	{
-//		log.debug("Clearing region (" + x + ", " + y + "-" + width + ", " + height + ")");
-		rawGraphics.setComposite( AlphaComposite.Clear );
-		rawGraphics.fillRect( x, y, width, height );
-	}
+
+//	public void clearRegion( int x, int y, int width, int height )
+//	{
+////		log.debug("Clearing region (" + x + ", " + y + "-" + width + ", " + height + ")");
+//		rawGraphics.setComposite( AlphaComposite.Clear );
+//		rawGraphics.fillRect( x, y, width, height );
+//	}
 }

@@ -27,8 +27,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -98,15 +96,14 @@ public class PatternSequenceNoteGrid extends JPanel implements PatternSequenceMo
 		this.addMouseListener( mouseListener );
 		this.addMouseMotionListener( mouseListener );
 
-		SwingUtilities.invokeLater( new Runnable()
-		{
-
-			@Override
-			public void run()
-			{
-				scrollRectToVisible( new Rectangle( 0, (int)size.getHeight() - 1, (int)size.getWidth(), cellDimensions.height ) );
-			}
-		} );
+//		SwingUtilities.invokeLater( new Runnable()
+//		{
+//			@Override
+//			public void run()
+//			{
+//				scrollRectToVisible( new Rectangle( 0, (int)size.getHeight() - 1, (int)size.getWidth(), cellDimensions.height ) );
+//			}
+//		} );
 	}
 
 	private void fullRefreshFromModel()

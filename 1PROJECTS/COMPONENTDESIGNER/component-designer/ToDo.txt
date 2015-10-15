@@ -19,3 +19,11 @@ Oustanding issues:
 * Component versioning
 * Database versioning + migration
 * Exporting soundfile + metadata library as XML/json
+
+Cheap Wins:
+-----------
+
+* Instead of calling repaint() in the UI code, look into a "changed" boolean and use that in the scheduled displayTick callback to cause a repaint.
+* Fix up textbox in mixer lanes to be speedy textbox
+* Amp meters - maybe think about redoing this component as it's very expensive for something that should be relatively cheap.
+* Work out sensible strategy for getting two floats plus a parameter out in a single message.

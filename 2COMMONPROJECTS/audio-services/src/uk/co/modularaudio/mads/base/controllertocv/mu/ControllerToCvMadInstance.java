@@ -61,10 +61,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	private boolean isLearning;
 
-//	private final static float FIXED_INTERP_MILLIS = 5.3f;
-//	private final static float FIXED_INTERP_MILLIS = 9.8f;
-	private final static float NOTS_INTERP_MILLIS = 8.2f;
-
 	// For BCD EQ:
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
 	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 4.1f;
@@ -125,8 +121,6 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 			// When not using timestamps, use a default interpolation period that
 			// should be long enough we cover a period
-//			final int noTsInterpolatorsPeriodLength = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-//					NOTS_INTERP_MILLIS );
 			final int noTsInterpolatorsPeriodLength = periodLengthFrames;
 
 			// Quick hack to force the min length here to be double some controller period

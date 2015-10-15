@@ -35,6 +35,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.math.Float16;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends MixerNMadInstance<D,I>> extends MadInstance<D,I>
@@ -45,8 +46,10 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	private int numSamplesProcessed = 0;
 
 	private final int numInputLanes;
-	private final LaneProcessor<D,I>[] channelLaneProcessors;
-	private final MasterProcessor<D,I> masterProcessor;
+	private final int numTotalLanes;
+
+	private final LaneProcessor[] laneProcessors;
+
 	private final MixerMuteAndSoloMachine<D,I> muteAndSoloMachine;
 
 	private final int leftOutputChannelIndex = 0;
@@ -66,14 +69,16 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		final MixerNInstanceConfiguration instanceConfiguration = definition.getMixerInstanceConfiguration();
 
 		numInputLanes = instanceConfiguration.getNumInputLanes();
-		channelLaneProcessors = new LaneProcessor[ numInputLanes ];
-		for( int i = 0 ; i < numInputLanes ; i++ )
-		{
-			channelLaneProcessors[ i ] = new LaneProcessor<D,I>( (I)this, instanceConfiguration, i );
-		}
-		masterProcessor = new MasterProcessor<D,I>( (I)this, instanceConfiguration );
+		numTotalLanes = instanceConfiguration.getNumTotalLanes();
 
-		muteAndSoloMachine = new MixerMuteAndSoloMachine<D,I>( channelLaneProcessors );
+		laneProcessors = new LaneProcessor[ numTotalLanes ];
+		laneProcessors[0] = new MasterOutProcessor<D,I>( (I)this, instanceConfiguration );
+		for( int il = 0 ; il < numInputLanes ; ++il )
+		{
+			laneProcessors[il+1] = new InputLaneProcessor<D,I>( (I)this, instanceConfiguration, il+1 );
+		}
+
+		muteAndSoloMachine = new MixerMuteAndSoloMachine<D,I>( laneProcessors );
 	}
 
 	@Override
@@ -85,11 +90,11 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		numSamplesProcessed = 0;
 
 		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
-		for( final LaneProcessor<D, I> lp : channelLaneProcessors )
+
+		for( final LaneProcessor lp : laneProcessors )
 		{
 			lp.setSampleRate( sampleRate );
 		}
-		masterProcessor.setSampleRate( sampleRate );
 	}
 
 	@Override
@@ -118,11 +123,10 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 //				log.debug("Emitting meter readings at " + emitTimestamp );
 				final long emitFrameTime = periodStartFrameTime + currentSampleIndex;
 
-				for( int il = 0 ; il < numInputLanes ; il++ )
+				for( final LaneProcessor lp : laneProcessors )
 				{
-					channelLaneProcessors[ il ].emitLaneMeterReadings( tempQueueEntryStorage, emitFrameTime );
+					lp.emitLaneMeterReadings( tempQueueEntryStorage, emitFrameTime );
 				}
-				masterProcessor.emitMasterMeterReadings( tempQueueEntryStorage, emitFrameTime );
 
 //				postProcess( tempQueueEntryStorage, timingParameters, emitFrameTime );
 
@@ -134,21 +138,21 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 			final int numLeftForPeriod = ( active ? sampleFramesPerFrontEndPeriod - numSamplesProcessed : numFramesAvail );
 			final int numThisRound = (numLeftForPeriod < numFramesAvail ? numLeftForPeriod : numFramesAvail );
 
-			// Get each channel to add it's output in
-			for( int il = 0 ; il < numInputLanes ; il++ )
+			final int frameProcessingOffset = frameOffset + currentSampleIndex;
+
+			// Do the input lanes first, then the master
+			for( int il = 0 ; il < numInputLanes ; ++il )
 			{
-				channelLaneProcessors[ il ].processLaneMixToOutput( tempQueueEntryStorage,
+				laneProcessors[il+1].processLane( tempQueueEntryStorage,
 						channelConnectedFlags,
 						channelBuffers,
-						frameOffset + currentSampleIndex,
+						frameProcessingOffset,
 						numThisRound );
 			}
-
-			// Now apply master mix multiplier
-			masterProcessor.processMasterOutput( tempQueueEntryStorage,
+			laneProcessors[0].processLane( tempQueueEntryStorage,
 					channelConnectedFlags,
 					channelBuffers,
-					frameOffset + currentSampleIndex,
+					frameProcessingOffset,
 					numThisRound );
 
 			currentSampleIndex += numThisRound;
@@ -169,7 +173,7 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 		// Nothing for now.
 	}
 
-	public void emitLaneMeterReading( final ThreadSpecificTemporaryEventStorage tses,
+	public void emitMeterReading( final ThreadSpecificTemporaryEventStorage tses,
 			final long frameTime,
 			final int laneNumber,
 			final float leftMeterLevel,
@@ -178,53 +182,24 @@ public class MixerNMadInstance<D extends MixerNMadDefinition<D, I>, I extends Mi
 	{
 		if( active )
 		{
-			long floatIntBits = Float.floatToIntBits( leftMeterLevel );
-			long joinedParts = (floatIntBits << 32) | (laneNumber * 2);
-			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_LANE_METER, joinedParts, null );
-
-			floatIntBits = Float.floatToIntBits( rightMeterLevel );
-			joinedParts = (floatIntBits << 32) | (laneNumber * 2) + 1;
-			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_LANE_METER, joinedParts, null );
-		}
-	}
-
-	public void emitMasterMeterReading( final ThreadSpecificTemporaryEventStorage tses,
-			final long frameTime,
-			final float leftMeterLevel,
-			final float rightMeterLevel )
-		throws BufferOverflowException
-	{
-		if( active )
-		{
-			long floatIntBits = Float.floatToIntBits( leftMeterLevel );
-			long joinedParts = (floatIntBits << 32 ) | (0);
-
-			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER, joinedParts, null );
-
-			floatIntBits = Float.floatToIntBits( rightMeterLevel );
-			joinedParts = (floatIntBits << 32 ) | (1);
-			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER, joinedParts, null );
+//			log.debug("Emitting meter reading for lane " + laneNumber );
+			final long leftFloatIntBits = Float16.fromFloat( leftMeterLevel );
+			final long rightFloatIntBits = Float16.fromFloat( rightMeterLevel );
+			final long joinedParts = (leftFloatIntBits << 48) |
+					(rightFloatIntBits << 32) |
+					laneNumber;
+			localBridge.queueTemporalEventToUi( tses, frameTime, MixerNIOQueueBridge.COMMAND_OUT_METER, joinedParts, null );
 		}
 	}
 
 	protected void setLaneAmp( final int laneNum, final float ampValue )
 	{
-		channelLaneProcessors[ laneNum ].setLaneAmp( ampValue );
-	}
-
-	protected void setMasterAmp( final float masterAmp )
-	{
-		masterProcessor.setMasterAmp( masterAmp );
+		laneProcessors[ laneNum ].setLaneAmp( ampValue );
 	}
 
 	protected void setLanePan( final int laneNum, final float panValue )
 	{
-		channelLaneProcessors[ laneNum ].setLanePan( panValue );
-	}
-
-	protected void setMasterPan( final float panValue )
-	{
-		masterProcessor.setMasterPan( panValue );
+		laneProcessors[ laneNum ].setLanePan( panValue );
 	}
 
 	protected void setLaneMute( final ThreadSpecificTemporaryEventStorage tses,

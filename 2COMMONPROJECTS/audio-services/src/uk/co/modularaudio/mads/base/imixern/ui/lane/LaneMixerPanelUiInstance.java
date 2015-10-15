@@ -133,7 +133,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		this.setOpaque( true );
 		this.setBackground( MixerNMadUiDefinition.LANE_BG_COLOR );
 
-		laneNumber = controlIndex - 1;
+		laneNumber = controlIndex;
 
 		final MigLayoutStringHelper msh = new MigLayoutStringHelper();
 
