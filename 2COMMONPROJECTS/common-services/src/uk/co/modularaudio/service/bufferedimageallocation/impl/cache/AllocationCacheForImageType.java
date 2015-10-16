@@ -52,8 +52,8 @@ public class AllocationCacheForImageType
 	private final int stdAllocImageHeight;
 	private final int initialPages;
 
-	private long imageAllocationRawIdCounter = 0;
-	private long imageAllocationAssignedIdCounter = 0;
+	private long imageAllocationRawIdCounter;
+	private long imageAllocationAssignedIdCounter;
 
 	private final Set<RawImage> rawImageSet = new HashSet<RawImage>();
 	private final OpenLongObjectHashMap<RawImage> rawImageIdToImageMap = new OpenLongObjectHashMap<RawImage>();
@@ -167,8 +167,8 @@ public class AllocationCacheForImageType
 
 		final BufferedImage rootBufferedImage = rawImage.getRootBufferedImage();
 
-		// Clear the region we'll use
-		rawImage.clearRegion( freeEntryStartX, freeEntryStartY, imageWidthToUse, imageHeightToUse );
+		// Don't clear the image, leave it up to consumer to fix up properly
+		// Since we don't know if they want it transparent, black etc
 
 		final BufferedImage subImage = rootBufferedImage.getSubimage( freeEntryStartX,
 				freeEntryStartY,

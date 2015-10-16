@@ -30,6 +30,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.map.OpenIntObjectHashMap;
 import org.apache.mahout.math.map.OpenLongObjectHashMap;
 
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
@@ -56,14 +57,11 @@ public class SampleCache
 
 	private final BlockBufferingConfiguration blockBufferingConfiguration;
 
-	// Various maps for internal maintenance that go from
-	// Client -> SampleCacheEntry						(used when determining which blocks all clients need)
-	// LibraryEntry -> SampleCacheEntry			(used to lookup existing entry for a particular library entry)
-	// SampleCacheEntry -> referenceCount		(used to schedule release of blocks when entries not used)
 	private final Lock cacheAccessMutex = new ReentrantLock( true );
 
-	private final OpenLongObjectHashMap<SampleCacheEntry> libraryEntryToSampleCacheEntryMap =
-			new OpenLongObjectHashMap<SampleCacheEntry>();
+	// LibraryEntryId -> SampleCacheEntry		(used to lookup existing entry for a particular library entry)
+	private final OpenIntObjectHashMap<SampleCacheEntry> libraryEntryIdToSampleCacheEntryMap =
+			new OpenIntObjectHashMap<SampleCacheEntry>();
 
 	private SampleCachePopulatorThread cachePopulatorThread;
 
@@ -127,7 +125,7 @@ public class SampleCache
 		try
 		{
 			cacheAccessMutex.lock();
-			SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntry.getLibraryEntryId() );
+			SampleCacheEntry sce = libraryEntryIdToSampleCacheEntryMap.get( libraryEntry.getLibraryEntryId() );
 
 			if( sce == null )
 			{
@@ -137,7 +135,7 @@ public class SampleCache
 				final int extraSamples = (int)(numFloats % blockBufferingConfiguration.blockLengthInFloats);
 				final int numCacheBlocks = numBlockDivisor + (extraSamples > 0 ? 1 : 0 );
 				sce = new SampleCacheEntry( libraryEntry, fileHandle, numCacheBlocks );
-				libraryEntryToSampleCacheEntryMap.put( libraryEntry.getLibraryEntryId(), sce );
+				libraryEntryIdToSampleCacheEntryMap.put( libraryEntry.getLibraryEntryId(), sce );
 			}
 			else
 			{
@@ -171,7 +169,7 @@ public class SampleCache
 		try
 		{
 			cacheAccessMutex.lock();
-			final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntry.getLibraryEntryId() );
+			final SampleCacheEntry sce = libraryEntryIdToSampleCacheEntryMap.get( libraryEntry.getLibraryEntryId() );
 			if( sce == null )
 			{
 				throw new RecordNotFoundException( "No such cache entry for clients library entry");
@@ -188,7 +186,7 @@ public class SampleCache
 				{
 					log.trace("Reference count of \"" + libraryEntry.getTitle() + "\" dropped to zero. Will remove");
 				}
-				libraryEntryToSampleCacheEntryMap.removeKey( libraryEntry.getLibraryEntryId() );
+				libraryEntryIdToSampleCacheEntryMap.removeKey( libraryEntry.getLibraryEntryId() );
 				try
 				{
 					final AudioFileHandleAtom afha = sce.getAudioFileHandleAtom();
@@ -294,7 +292,7 @@ public class SampleCache
 			}
 		}
 
-		final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntryId );
+		final SampleCacheEntry sce = libraryEntryIdToSampleCacheEntryMap.get( libraryEntryId );
 
 		long rawFloatPosition = SampleCache.frameToRawFloat( readFramePosition, leNumChannels );
 		int blockNumber = (int)(rawFloatPosition / blockBufferingConfiguration.blockLengthInFloats );
@@ -362,12 +360,12 @@ public class SampleCache
 
 		if( clientChangedBlocks )
 		{
-//			if( log.isDebugEnabled() )
-//			{
-//				log.debug("Client " + client.hashCode() + " for " +
-//						client.getLibraryEntry().getTitle() +
-//						" changed blocks, will wake population thread");
-//			}
+			if( DEBUG_SAMPLE_CACHE_ACTIVITY )
+			{
+				log.debug("Client " + client.hashCode() + " for " +
+						client.getLibraryEntry().getTitle() +
+						" changed blocks, will wake population thread");
+			}
 			client.setLastReadBlockNumber( blockNumber );
 			cachePopulatorThread.addOneJobToDo();
 		}
@@ -423,7 +421,7 @@ public class SampleCache
 		final int numZerosAtEnd = (framesOver > 0 ? (int)framesOver : 0 );
 		numFramesToRead -= numZerosAtEnd;
 
-		final SampleCacheEntry sce = libraryEntryToSampleCacheEntryMap.get( libraryEntryId );
+		final SampleCacheEntry sce = libraryEntryIdToSampleCacheEntryMap.get( libraryEntryId );
 
 		long rawFloatPosition = SampleCache.frameToRawFloat( readFramePosition, leNumChannels );
 
@@ -517,6 +515,10 @@ public class SampleCache
 				for( int i = 0 ; i < numBlocksForCacheEntry ; ++i )
 				{
 					final boolean shouldCacheBlock = blocksNeedToBeCached[ i ];
+					if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() && shouldCacheBlock )
+					{
+						log.trace( "Need block " + i + " to be populated");
+					}
 					final long curBlockMapIndex = buildBlockMapIndex( libraryEntryId, i );
 					final SampleCacheBlock curBlock = temperatureBufferBlockMap.getBlockById( curBlockMapIndex );
 
@@ -526,7 +528,9 @@ public class SampleCache
 						{
 							if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() )
 							{
-								log.trace("Will populate entry " + le.getTitle() + " offset " + (i*blockBufferingConfiguration.blockLengthInFloats) + " - block " + curBlockMapIndex );
+								log.trace("Will populate entry " + le.getTitle() +
+										" block " + i + " at offset " +
+										(i*blockBufferingConfiguration.blockLengthInFloats) + " - blockid " + curBlockMapIndex );
 							}
 							final SampleCacheBlock newlyPopulatedBlock = populateCacheForSampleCacheEntryBlock( sce, le, i, curBlockMapIndex );
 							blocksForCacheEntry.put( curBlockMapIndex, newlyPopulatedBlock );
@@ -546,7 +550,7 @@ public class SampleCache
 									// Re-warm the cache entry
 									if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() )
 									{
-										log.trace("Will re-warm existing block " + curBlockMapIndex );
+										log.trace("Will re-warm existing block " + i + " with blockid " + curBlockMapIndex );
 									}
 									temperatureBufferBlockMap.reheatBlock( curBlock );
 									break;
@@ -563,7 +567,7 @@ public class SampleCache
 					{
 						if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() )
 						{
-							log.trace("Will cool hot block " + curBlockMapIndex );
+							log.trace("Will cool hot block " + i + " with blockid " + curBlockMapIndex );
 						}
 						temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( curBlockMapIndex );
 						hotBlocksToCoolSet.remove( curBlock );
@@ -578,7 +582,7 @@ public class SampleCache
 			{
 				if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() )
 				{
-					log.trace("Will set orphaned block " + hotBlock.blockID + " to warm");
+					log.trace("Will set orphaned block with id " + hotBlock.blockID + " to warm");
 				}
 
 				temperatureBufferBlockMap.moveBlockFromHotToWarmQueue( hotBlock.blockID );
@@ -732,7 +736,7 @@ public class SampleCache
 
 	private final static long buildBlockMapIndex( final int libraryEntryID, final int blockNumber )
 	{
-		final long combined = ((long)libraryEntryID << 32 ) | blockNumber;
+		final long combined = ((long)blockNumber << 32 ) | libraryEntryID;
 		return combined;
 	}
 
@@ -741,16 +745,17 @@ public class SampleCache
 		return frameOffset * numChannels;
 	}
 
+	@SuppressWarnings("unused")
 	public void registerForBufferFillCompletion( final InternalSampleCacheClient client,
 			final BufferFillCompletionListener completionListener )
 	{
 		try
 		{
 			cacheAccessMutex.lock();
-//			if( log.isDebugEnabled() )
-//			{
-//				log.debug("Adding " + client.getLibraryEntry().getLocation() + " to listeners to notify list");
-//			}
+			if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isDebugEnabled() )
+			{
+				log.debug("Adding " + client.getLibraryEntry().getLocation() + " to listeners to notify list");
+			}
 			listenersToNotifyOnNextCompletion.add( new TwoTuple<BufferFillCompletionListener, SampleCacheClient>( completionListener, client ) );
 			cachePopulatorThread.addOneJobToDo();
 		}

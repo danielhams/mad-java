@@ -30,11 +30,12 @@ public class Recomposition
 	public int y = -1;
 	public int width = -1;
 	public int height = -1;
-	public Set<FreeEntry> freeEntriesToRemove = new HashSet<FreeEntry>();
-	
+	public final Set<FreeEntry> freeEntriesToRemove = new HashSet<FreeEntry>();
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("xy(");
 		sb.append(x);
 		sb.append(",");
@@ -44,7 +45,7 @@ public class Recomposition
 		sb.append(",");
 		sb.append(height);
 		sb.append(")");
-		
+
 		return sb.toString();
 	}
 }

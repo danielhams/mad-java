@@ -20,9 +20,9 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +70,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	protected final boolean hasQueueProcessing;
 
-	protected final Vector<InstanceLifecycleListener> lifecycleListeners = new Vector<InstanceLifecycleListener>();
+	protected final ArrayList<InstanceLifecycleListener> lifecycleListeners = new ArrayList<InstanceLifecycleListener>(1);
 	protected int temporalUiToInstanceFrameOffset;
 
 	public MadInstance( final String instanceName,
@@ -471,7 +471,14 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		}
 		else
 		{
-			throw new RecordNotFoundException( "No such channel: " + channelName );
+			if( log.isTraceEnabled() )
+			{
+				throw new RecordNotFoundException( "No such channel: " + channelName );
+			}
+			else
+			{
+				throw new RecordNotFoundException( "No such channel." );
+			}
 		}
 	}
 

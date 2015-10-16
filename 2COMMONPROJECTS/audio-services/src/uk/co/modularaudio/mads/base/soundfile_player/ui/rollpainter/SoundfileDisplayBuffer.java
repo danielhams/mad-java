@@ -33,21 +33,21 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 public class SoundfileDisplayBuffer
 {
 //	private static Log log = LogFactory.getLog( SoundfileDisplayBuffer.class.getName());
-	
+
 	public final int bufNum;
 	public final TiledBufferedImage tbi;
 	public final BufferedImage bi;
 	public final Graphics2D g;
 
-	public SoundfileDisplayBuffer( int bufNum,
-			BufferedImageAllocator bia,
-			int displayWidth,
-			int displayHeight,
-			AllocationMatch allocationMatch )
+	public SoundfileDisplayBuffer( final int bufNum,
+			final BufferedImageAllocator bia,
+			final int displayWidth,
+			final int displayHeight,
+			final AllocationMatch allocationMatch )
 		throws DatastoreException
 	{
 		this.bufNum = bufNum;
-		tbi = bia.allocateBufferedImage("SoundfileDisplayBuffer", 
+		tbi = bia.allocateBufferedImage("SoundfileDisplayBuffer",
 				allocationMatch,
 				AllocationLifetime.SHORT,
 				AllocationBufferType.TYPE_INT_RGB,

@@ -30,6 +30,7 @@ public class MixerNInstanceConfiguration
 	private static final int NUM_CHANNELS_PER_LANE = 2;
 
 	private final int numMixerLanes;
+	private final int numTotalLanes;
 
 	private final int numChannelsPerLane;
 	private final int numInputChannels;
@@ -46,6 +47,7 @@ public class MixerNInstanceConfiguration
 		throws MadProcessingException
 	{
 		this.numMixerLanes = numMixerLanes;
+		this.numTotalLanes = numMixerLanes + 1;
 
 		numChannelsPerLane = NUM_CHANNELS_PER_LANE;
 		numInputChannels = (numMixerLanes * numChannelsPerLane );
@@ -89,6 +91,11 @@ public class MixerNInstanceConfiguration
 	public int getNumMixerLanes()
 	{
 		return numMixerLanes;
+	}
+
+	public int getNumTotalLanes()
+	{
+		return numTotalLanes;
 	}
 
 	public int getNumInputChannels()

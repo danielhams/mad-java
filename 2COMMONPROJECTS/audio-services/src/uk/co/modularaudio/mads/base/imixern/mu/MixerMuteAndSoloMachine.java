@@ -28,22 +28,22 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 {
 //	private static Log log = LogFactory.getLog( MixerMuteAndSoloMachine.class.getName() );
 
-	private final LaneProcessor<D,I>[] channelLaneProcessors;
+	private final LaneProcessor[] laneProcessors;
 
-	private final int numChannels;
+	private final int numLanes;
 
 	private final boolean[] channelMuteValues;
 	private final boolean[] channelSoloValues;
 	private int numChannelsInSolo;
 
-	public MixerMuteAndSoloMachine( final LaneProcessor<D,I>[] channelLaneProcessors )
+	public MixerMuteAndSoloMachine( final LaneProcessor[] laneProcessors )
 	{
-		this.channelLaneProcessors = channelLaneProcessors;
+		this.laneProcessors = laneProcessors;
 
-		numChannels = channelLaneProcessors.length;
+		numLanes = laneProcessors.length;
 
-		channelMuteValues = new boolean[ numChannels ];
-		channelSoloValues = new boolean[ numChannels ];
+		channelMuteValues = new boolean[ numLanes ];
+		channelSoloValues = new boolean[ numLanes ];
 		Arrays.fill( channelMuteValues, false );
 		Arrays.fill( channelSoloValues, false );
 	}
@@ -83,19 +83,19 @@ public class MixerMuteAndSoloMachine<D extends MixerNMadDefinition<D, I>, I exte
 		if( soloMode )
 		{
 //			log.debug("Updating in solo mode");
-			for( int i = 0 ; i < numChannels ; i++ )
+			for( int i = 0 ; i < numLanes ; i++ )
 			{
 				final boolean channelSolod = channelSoloValues[ i ];
-				channelLaneProcessors[ i ].setLaneActive( channelSolod );
+				laneProcessors[i].setLaneActive( channelSolod );
 			}
 		}
 		else
 		{
 //			log.debug("Updating in mute mode");
-			for( int i = 0 ; i < numChannels ; i++ )
+			for( int i = 0 ; i < numLanes ; i++ )
 			{
 				final boolean channelMuted = channelMuteValues[ i ];
-				channelLaneProcessors[ i ].setLaneActive( !channelMuted );
+				laneProcessors[i].setLaneActive( !channelMuted );
 			}
 		}
 	}

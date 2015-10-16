@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.gui.impl.racktable.back;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -128,64 +129,71 @@ public abstract class AbstractLinkImage
 					AllocationBufferType.TYPE_INT_ARGB,
 					imageWidthToUse,
 					imageHeightToUse );
+
+			bufferedImage = tiledBufferedImage.getUnderlyingBufferedImage();
+			final Graphics2D g2d = bufferedImage.createGraphics();
+
+			g2d.setComposite( AlphaComposite.Clear );
+			g2d.fillRect( 0, 0, imageWidthToUse, imageHeightToUse );
+
+			g2d.setComposite( AlphaComposite.SrcOver );
+
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
+
+			f1 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
+			f2 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
+			f3 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
+			f4 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
+			f5 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
+			f6 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
+			f7 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
+			f8 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
+
+			final CubicCurve2D offSetCubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
+
+			// Draw the highlight and shadow
+			if( DRAW_HIGHTLIGHT_AND_SHADOW )
+			{
+				final Graphics2D sG2d = (Graphics2D)g2d.create();
+				sG2d.translate(WIRE_SHADOW_X_OFFSET, WIRE_SHADOW_Y_OFFSET);
+				sG2d.setColor( Color.BLUE.darker());
+				sG2d.setStroke( new BasicStroke( WIRE_SHADOW_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
+				sG2d.draw( offSetCubicCurve );
+
+				final Graphics2D hG2d = (Graphics2D)g2d.create();
+				hG2d.translate(WIRE_HIGHLIGHT_X_OFFSET, WIRE_HIGHLIGHT_Y_OFFSET);
+				hG2d.setColor( Color.WHITE );
+				hG2d.setStroke( new BasicStroke( WIRE_HIGHLIGHT_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
+				hG2d.draw( offSetCubicCurve );
+			}
+
+			g2d.setColor( Color.BLACK );
+			g2d.setStroke( wireStroke );
+			g2d.draw( offSetCubicCurve );
+
+			g2d.setColor( Color.BLUE );
+			g2d.setStroke( wireBodyStroke );
+			g2d.draw( offSetCubicCurve );
+
+			// For debugging, draw a green line around the outside of this image.
+			if( DRAW_WIRE_BOUNDING_BOX )
+			{
+				g2d.setStroke( basicStrokeOfOne );
+				g2d.setColor( Color.GREEN );
+				g2d.drawRect( 0, 0, imageWidthToUse - 1, imageHeightToUse - 1);
+			}
+
+			rectangle.x = cubicCurveBounds.x - LINK_IMAGE_DIST_TO_CENTER;
+			rectangle.y = cubicCurveBounds.y - LINK_IMAGE_DIST_TO_CENTER;
+			rectangle.width = imageWidthToUse;
+			rectangle.height = imageHeightToUse;
 		}
 		catch ( final Exception e)
 		{
 			final String msg = "Exception caught allocating buffered image: " + e.toString();
 			log.error( msg, e );
 		}
-		bufferedImage = tiledBufferedImage.getUnderlyingBufferedImage();
-		final Graphics2D g2d = bufferedImage.createGraphics();
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-
-		f1 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
-		f2 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
-		f3 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
-		f4 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
-		f5 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
-		f6 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
-		f7 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.x;
-		f8 += LINK_IMAGE_DIST_TO_CENTER - cubicCurveBounds.y;
-
-		final CubicCurve2D offSetCubicCurve = new CubicCurve2D.Float( f1, f2, f3, f4, f5, f6, f7, f8 );
-
-		// Draw the highlight and shadow
-		if( DRAW_HIGHTLIGHT_AND_SHADOW )
-		{
-			final Graphics2D sG2d = (Graphics2D)g2d.create();
-			sG2d.translate(WIRE_SHADOW_X_OFFSET, WIRE_SHADOW_Y_OFFSET);
-			sG2d.setColor( Color.BLUE.darker());
-			sG2d.setStroke( new BasicStroke( WIRE_SHADOW_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
-			sG2d.draw( offSetCubicCurve );
-
-			final Graphics2D hG2d = (Graphics2D)g2d.create();
-			hG2d.translate(WIRE_HIGHLIGHT_X_OFFSET, WIRE_HIGHLIGHT_Y_OFFSET);
-			hG2d.setColor( Color.WHITE );
-			hG2d.setStroke( new BasicStroke( WIRE_HIGHLIGHT_WIDTH, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND ) );
-			hG2d.draw( offSetCubicCurve );
-		}
-
-		g2d.setColor( Color.BLACK );
-		g2d.setStroke( wireStroke );
-		g2d.draw( offSetCubicCurve );
-
-		g2d.setColor( Color.BLUE );
-		g2d.setStroke( wireBodyStroke );
-		g2d.draw( offSetCubicCurve );
-
-		// For debugging, draw a green line around the outside of this image.
-		if( DRAW_WIRE_BOUNDING_BOX )
-		{
-			g2d.setStroke( basicStrokeOfOne );
-			g2d.setColor( Color.GREEN );
-			g2d.drawRect( 0, 0, imageWidthToUse - 1, imageHeightToUse - 1);
-		}
-
-		rectangle.x = cubicCurveBounds.x - LINK_IMAGE_DIST_TO_CENTER;
-		rectangle.y = cubicCurveBounds.y - LINK_IMAGE_DIST_TO_CENTER;
-		rectangle.width = imageWidthToUse;
-		rectangle.height = imageHeightToUse;
 	}
 
 	public void redrawWireWithNewPoints( final Point sourcePoint, final Point sinkPoint )

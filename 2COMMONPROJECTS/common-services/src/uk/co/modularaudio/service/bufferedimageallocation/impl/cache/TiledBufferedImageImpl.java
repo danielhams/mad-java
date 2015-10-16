@@ -26,11 +26,13 @@ import uk.co.modularaudio.util.bufferedimage.TiledBufferedImage;
 
 public class TiledBufferedImageImpl implements TiledBufferedImage
 {
-	private AllocationCacheForImageType sourceCache = null;
-	private UsedEntry usedEntry = null;
-	private BufferedImage underlyingBufferedImage = null;
-	
-	public TiledBufferedImageImpl( AllocationCacheForImageType sourceCache, UsedEntry usedEntry, BufferedImage underlyingBufferedImage )
+	private final AllocationCacheForImageType sourceCache;
+	private final UsedEntry usedEntry;
+	private final BufferedImage underlyingBufferedImage;
+
+	public TiledBufferedImageImpl( final AllocationCacheForImageType sourceCache,
+			final UsedEntry usedEntry,
+			final BufferedImage underlyingBufferedImage )
 	{
 		this.sourceCache = sourceCache;
 		this.usedEntry = usedEntry;

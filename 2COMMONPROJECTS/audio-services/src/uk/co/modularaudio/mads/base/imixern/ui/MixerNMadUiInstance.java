@@ -34,6 +34,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.math.Float16;
 import uk.co.modularaudio.util.table.Span;
 
 public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends MixerNMadInstance<D,I>>
@@ -42,7 +43,6 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	private static Log log = LogFactory.getLog( MixerNMadUiInstance.class.getName() );
 
 	private final MeterValueReceiver[] laneMeterReceiversMap;
-	private MeterValueReceiver masterMeterReceiver;
 
 	public MixerNMadUiInstance( final Span span,
 			final I instance,
@@ -50,7 +50,8 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	{
 		super( span, instance, componentUiDefinition );
 
-		laneMeterReceiversMap = new MeterValueReceiver[ instance.getDefinition().getMixerInstanceConfiguration().getNumMixerLanes() ];
+		laneMeterReceiversMap = new MeterValueReceiver[
+		    instance.getDefinition().getMixerInstanceConfiguration().getNumTotalLanes() ];
 	}
 
 	@Override
@@ -63,11 +64,10 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 		// Use the sample rate (i.e. one second between peak reset)
 		final int framesBetweenPeakReset = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
 
-		for( int i = 0 ; i < laneMeterReceiversMap.length ; ++i )
+		for( final MeterValueReceiver mvr : laneMeterReceiversMap )
 		{
-			laneMeterReceiversMap[i].setFramesBetweenPeakReset( framesBetweenPeakReset );
+			mvr.setFramesBetweenPeakReset( framesBetweenPeakReset );
 		}
-		masterMeterReceiver.setFramesBetweenPeakReset( framesBetweenPeakReset );
 	}
 
 	@Override
@@ -86,37 +86,25 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 	@Override
 	public void consumeQueueEntry( final I instance, final IOQueueEvent nextOutgoingEntry )
 	{
-//		log.debug("Consuming one");
 		switch( nextOutgoingEntry.command )
 		{
-			case MixerNIOQueueBridge.COMMAND_OUT_LANE_METER:
+			case MixerNIOQueueBridge.COMMAND_OUT_METER:
 			{
-				// float
+				// lane number, left + right amps as float16 values
 				final long value = nextOutgoingEntry.value;
-				final int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				final float ampValue = Float.intBitsToFloat( upper32Bits );
+				final int laneNum = (int)(value & 0xFFFFFFFF);
+				final int leftChannelF16 = (int)((value >> 48) & 0xFFFF);
+				final int rightChannelF16 = (int)((value >> 32) & 0xFFFF);
 
-				final int laneNum = laneChanNum / 2;
-				final int channelNum = laneChanNum % 2;
+				final float leftChannelAmp = Float16.fromInt( leftChannelF16 );
+				final float rightChannelAmp = Float16.fromInt( rightChannelF16 );
 
-				laneMeterReceiversMap[ laneNum ].receiveMeterReadingLevel( nextOutgoingEntry.frameTime,
-						channelNum,
-						ampValue );
-				break;
-			}
-			case MixerNIOQueueBridge.COMMAND_OUT_MASTER_METER:
-			{
-				final long value = nextOutgoingEntry.value;
-				final int laneChanNum = (int)((value ) & 0xFFFFFFFF);
-				final int upper32Bits = (int)((value >> 32 ) & 0xFFFFFFFF);
-				final float ampValue = Float.intBitsToFloat( upper32Bits );
+//				log.debug("Consuming one for lane " + laneNum );
 
-				final int channelNum = laneChanNum % 2;
-
-				masterMeterReceiver.receiveMeterReadingLevel( nextOutgoingEntry.frameTime,
-						channelNum,
-						ampValue );
+				laneMeterReceiversMap[ laneNum ].receiveMeterReadingLevel(
+						nextOutgoingEntry.frameTime,
+						leftChannelAmp,
+						rightChannelAmp );
 
 				break;
 			}
@@ -144,11 +132,6 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 		laneMeterReceiversMap[ laneNum ] = meterReceiver;
 	}
 
-	public void registerMasterMeterReceiver( final MeterValueReceiver meterReceiver )
-	{
-		masterMeterReceiver = meterReceiver;
-	}
-
 	public void sendLaneMute( final int laneNumber, final boolean muteValue )
 	{
 		final long muteBits = (muteValue ? 1 : 0 );
@@ -170,25 +153,16 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 		sendTemporalValueToInstance( MixerNIOQueueBridge.COMMAND_IN_LANE_AMP, joinedParts );
 	}
 
-	public void sendMasterAmp( final float newValue )
-	{
-		final int floatIntBits = Float.floatToIntBits( newValue );
-		sendTemporalValueToInstance( MixerNIOQueueBridge.COMMAND_IN_MASTER_AMP,  floatIntBits );
-	}
-
 	public void sendUiActive( final boolean active )
 	{
 		sendCommandValueToInstance( MixerNIOQueueBridge.COMMAND_IN_ACTIVE, (active ? 1 : 0 ) );
 		if( active )
 		{
 			// Reset meters to zero so they start as intended
-			for( int i = 0 ; i < laneMeterReceiversMap.length ; ++i )
+			for( final MeterValueReceiver mvr : laneMeterReceiversMap )
 			{
-				laneMeterReceiversMap[i].receiveMeterReadingLevel( 0, 0, 0.0f );
-				laneMeterReceiversMap[i].receiveMeterReadingLevel( 0, 1, 0.0f );
+				mvr.receiveMeterReadingLevel( 0, 0.0f, 0.0f );
 			}
-			masterMeterReceiver.receiveMeterReadingLevel( 0, 0, 0.0f );
-			masterMeterReceiver.receiveMeterReadingLevel( 0, 1, 0.0f );
 		}
 	}
 
@@ -198,11 +172,4 @@ public class MixerNMadUiInstance<D extends MixerNMadDefinition<D,I>, I extends M
 		final long joinedParts = (floatIntBits << 32) | laneNumber;
 		sendTemporalValueToInstance( MixerNIOQueueBridge.COMMAND_IN_LANE_PAN, joinedParts);
 	}
-
-	public void sendMasterPan( final float panValue )
-	{
-		final long floatIntBits = Float.floatToIntBits( panValue );
-		sendTemporalValueToInstance( MixerNIOQueueBridge.COMMAND_IN_MASTER_PAN, floatIntBits);
-	}
-
 }
