@@ -21,9 +21,13 @@
 package uk.co.modularaudio.mads.base;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
 import uk.co.modularaudio.mads.base.audioanalyser.ui.AudioAnalyserMadUiDefinition;
@@ -53,12 +57,6 @@ import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.ui.DJEQMadUiDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.ui.EnvelopeMadUiDefinition;
-import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
-import uk.co.modularaudio.mads.base.feedbackdelay.ui.FeedbackDelayMadUiDefinition;
-import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadDefinition;
-import uk.co.modularaudio.mads.base.flipflop.ui.FlipFlopMadUiDefinition;
-import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadDefinition;
-import uk.co.modularaudio.mads.base.foldbackdistortion.ui.FoldbackDistortionMadUiDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.ui.FrequencyFilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
@@ -73,34 +71,20 @@ import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.ui.LimiterMadUiDefinition;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
 import uk.co.modularaudio.mads.base.midside.ui.MidSideMadUiDefinition;
-import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
-import uk.co.modularaudio.mads.base.mono_compressor.ui.MonoCompressorMadUiDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.ui.MoogFilterMadUiDefinition;
-import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadDefinition;
-import uk.co.modularaudio.mads.base.ms20filter.ui.Ms20FilterMadUiDefinition;
-import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
-import uk.co.modularaudio.mads.base.notedebug.ui.NoteDebugMadUiDefinition;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.notehistogram.ui.NoteHistogramMadUiDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.ui.NoteMultiplexerMadUiDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.ui.NoteToCvMadUiDefinition;
-import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
-import uk.co.modularaudio.mads.base.oscillator.ui.OscillatorMadUiDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.ui.OscilloscopeMadUiDefinition;
-import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
-import uk.co.modularaudio.mads.base.pattern_sequencer.ui.PatternSequencerMadUiDefinition;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
 import uk.co.modularaudio.mads.base.prng.ui.PrngMadUiDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.ui.RBJFilterMadUiDefinition;
-import uk.co.modularaudio.mads.base.sampleandhold.mu.SampleAndHoldMadDefinition;
-import uk.co.modularaudio.mads.base.sampleandhold.ui.SampleAndHoldMadUiDefinition;
-import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinition;
-import uk.co.modularaudio.mads.base.sampleplayer.ui.SingleSamplePlayerMadUiDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.ui.ScaleAndOffsetMadUiDefinition;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
@@ -121,14 +105,10 @@ import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.ui.StaticValueMadUiDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.ui.StereoCompressorMadUiDefinition;
-import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateMadDefinition;
-import uk.co.modularaudio.mads.base.stereo_gate.ui.StereoGateMadUiDefinition;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinition;
 import uk.co.modularaudio.mads.base.supersawmodule.ui.SuperSawModuleMadUiDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerMadUiDefinition;
-import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
-import uk.co.modularaudio.mads.base.xrunner.ui.XRunnerMadUiDefinition;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
@@ -138,7 +118,9 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 {
-	private BaseComponentsFactory baseComponentsFactory = null;
+	private static Log log = LogFactory.getLog( BaseComponentsUiFactory.class.getName() );
+
+	private BaseComponentsFactory baseComponentsFactory;
 
 	@SuppressWarnings("rawtypes")
 	private final Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
@@ -152,16 +134,16 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		classToUiDefinition.put( OscilloscopeMadDefinition.class, OscilloscopeMadUiDefinition.class );
 		classToUiDefinition.put( CrossFaderMadDefinition.class, CrossFaderMadUiDefinition.class );
 		classToUiDefinition.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadUiDefinition.class );
-		classToUiDefinition.put( Ms20FilterMadDefinition.class, Ms20FilterMadUiDefinition.class );
-		classToUiDefinition.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadUiDefinition.class );
+//		classToUiDefinition.put( Ms20FilterMadDefinition.class, Ms20FilterMadUiDefinition.class );
+//		classToUiDefinition.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadUiDefinition.class );
 
-		classToUiDefinition.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadUiDefinition.class );
+//		classToUiDefinition.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadUiDefinition.class );
 		classToUiDefinition.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadUiDefinition.class );
 		classToUiDefinition.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadUiDefinition.class );
 		classToUiDefinition.put( SpectralRollMadDefinition.class, SpectralRollMadUiDefinition.class );
 		classToUiDefinition.put( InverterMadDefinition.class, InverterMadUiDefinition.class );
 		classToUiDefinition.put( CvSurfaceMadDefinition.class, CvSurfaceMadUiDefinition.class );
-		classToUiDefinition.put( PatternSequencerMadDefinition.class, PatternSequencerMadUiDefinition.class );
+//		classToUiDefinition.put( PatternSequencerMadDefinition.class, PatternSequencerMadUiDefinition.class );
 		classToUiDefinition.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadUiDefinition.class );
 		classToUiDefinition.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadUiDefinition.class );
 
@@ -175,19 +157,19 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 
 		classToUiDefinition.put( DCTrapMadDefinition.class, DCTrapMadUiDefinition.class );
 
-		classToUiDefinition.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadUiDefinition.class );
+//		classToUiDefinition.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadUiDefinition.class );
 
-		classToUiDefinition.put( FlipFlopMadDefinition.class, FlipFlopMadUiDefinition.class );
+//		classToUiDefinition.put( FlipFlopMadDefinition.class, FlipFlopMadUiDefinition.class );
 
-		classToUiDefinition.put( StereoGateMadDefinition.class, StereoGateMadUiDefinition.class );
-		classToUiDefinition.put( MonoCompressorMadDefinition.class, MonoCompressorMadUiDefinition.class );
+//		classToUiDefinition.put( StereoGateMadDefinition.class, StereoGateMadUiDefinition.class );
+//		classToUiDefinition.put( MonoCompressorMadDefinition.class, MonoCompressorMadUiDefinition.class );
 		classToUiDefinition.put( StereoCompressorMadDefinition.class, StereoCompressorMadUiDefinition.class );
 
-		classToUiDefinition.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadUiDefinition.class );
+//		classToUiDefinition.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadUiDefinition.class );
 
 		classToUiDefinition.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadUiDefinition.class );
 
-		classToUiDefinition.put( OscillatorMadDefinition.class, OscillatorMadUiDefinition.class );
+//		classToUiDefinition.put( OscillatorMadDefinition.class, OscillatorMadUiDefinition.class );
 
 		classToUiDefinition.put( EnvelopeMadDefinition.class, EnvelopeMadUiDefinition.class );
 
@@ -201,11 +183,11 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 
 		classToUiDefinition.put( MoogFilterMadDefinition.class, MoogFilterMadUiDefinition.class );
 
-		classToUiDefinition.put( NoteDebugMadDefinition.class, NoteDebugMadUiDefinition.class );
+//		classToUiDefinition.put( NoteDebugMadDefinition.class, NoteDebugMadUiDefinition.class );
 
 		classToUiDefinition.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadUiDefinition.class );
 
-		classToUiDefinition.put( XRunnerMadDefinition.class, XRunnerMadUiDefinition.class );
+//		classToUiDefinition.put( XRunnerMadDefinition.class, XRunnerMadUiDefinition.class );
 
 		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
 
@@ -238,9 +220,12 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		try
 		{
 			final Collection<MadDefinition<?,?>> auds = baseComponentsFactory.listDefinitions();
+			final ArrayList<Class> defsNeedingUi = new ArrayList<Class>(classToUiDefinition.keySet());
 			for( final MadDefinition<?,?> aud : auds )
 			{
-				final Class classToInstantiate = classToUiDefinition.get( aud.getClass() );
+				final Class defClass = aud.getClass();
+				final Class classToInstantiate = classToUiDefinition.get( defClass );
+				defsNeedingUi.remove( defClass );
 				final Class[] constructorParamTypes = new Class[] {
 						BufferedImageAllocator.class,
 						aud.getClass(),
@@ -254,6 +239,15 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
 
 				componentDefinitionToUiDefinitionMap.put( aud, instanceAsUiDefinition );
+			}
+
+			// Sanity check that we have a definition for each ui
+			for( final Class d : defsNeedingUi )
+			{
+				if( log.isWarnEnabled() )
+				{
+					log.warn( "Have ui definition but no mad def for " + d.getSimpleName() );
+				}
 			}
 		}
 		catch (final Exception e)

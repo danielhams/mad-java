@@ -515,6 +515,10 @@ public class SampleCache
 				for( int i = 0 ; i < numBlocksForCacheEntry ; ++i )
 				{
 					final boolean shouldCacheBlock = blocksNeedToBeCached[ i ];
+					if( DEBUG_SAMPLE_CACHE_ACTIVITY && log.isTraceEnabled() && shouldCacheBlock )
+					{
+						log.trace( "Need block " + i + " to be populated");
+					}
 					final long curBlockMapIndex = buildBlockMapIndex( libraryEntryId, i );
 					final SampleCacheBlock curBlock = temperatureBufferBlockMap.getBlockById( curBlockMapIndex );
 

@@ -52,12 +52,6 @@ import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
 import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
-import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadDefinition;
-import uk.co.modularaudio.mads.base.feedbackdelay.mu.FeedbackDelayMadInstance;
-import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadDefinition;
-import uk.co.modularaudio.mads.base.flipflop.mu.FlipFlopMadInstance;
-import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadDefinition;
-import uk.co.modularaudio.mads.base.foldbackdistortion.mu.FoldbackDistortionMadInstance;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
@@ -72,34 +66,20 @@ import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadInstance;
-import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadDefinition;
-import uk.co.modularaudio.mads.base.mono_compressor.mu.MonoCompressorMadInstance;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
-import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadDefinition;
-import uk.co.modularaudio.mads.base.ms20filter.mu.Ms20FilterMadInstance;
-import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
-import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadInstance;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstance;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
-import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadDefinition;
-import uk.co.modularaudio.mads.base.oscillator.mu.OscillatorMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
-import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadDefinition;
-import uk.co.modularaudio.mads.base.pattern_sequencer.mu.PatternSequencerMadInstance;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadInstance;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
-import uk.co.modularaudio.mads.base.sampleandhold.mu.SampleAndHoldMadDefinition;
-import uk.co.modularaudio.mads.base.sampleandhold.mu.SampleAndHoldMadInstance;
-import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinition;
-import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadInstance;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
@@ -120,14 +100,10 @@ import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
-import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateMadDefinition;
-import uk.co.modularaudio.mads.base.stereo_gate.mu.StereoGateMadInstance;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinition;
 import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadInstance;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
-import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadDefinition;
-import uk.co.modularaudio.mads.base.xrunner.mu.XRunnerMadInstance;
 import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
 import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -154,16 +130,16 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 		defClassToInsClassMap.put( OscilloscopeMadDefinition.class, OscilloscopeMadInstance.class );
 		defClassToInsClassMap.put( CrossFaderMadDefinition.class, CrossFaderMadInstance.class );
 		defClassToInsClassMap.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadInstance.class );
-		defClassToInsClassMap.put( Ms20FilterMadDefinition.class, Ms20FilterMadInstance.class );
-		defClassToInsClassMap.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadInstance.class );
+//		defClassToInsClassMap.put( Ms20FilterMadDefinition.class, Ms20FilterMadInstance.class );
+//		defClassToInsClassMap.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadInstance.class );
 
-		defClassToInsClassMap.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadInstance.class );
+//		defClassToInsClassMap.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadInstance.class );
 		defClassToInsClassMap.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadInstance.class );
 		defClassToInsClassMap.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadInstance.class );
 		defClassToInsClassMap.put( SpectralRollMadDefinition.class, SpectralRollMadInstance.class );
 		defClassToInsClassMap.put( InverterMadDefinition.class, InverterMadInstance.class );
 
-		defClassToInsClassMap.put( PatternSequencerMadDefinition.class, PatternSequencerMadInstance.class );
+//		defClassToInsClassMap.put( PatternSequencerMadDefinition.class, PatternSequencerMadInstance.class );
 
 		defClassToInsClassMap.put( NoteToCvMadDefinition.class, NoteToCvMadInstance.class );
 
@@ -177,23 +153,23 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 
 		defClassToInsClassMap.put( DCTrapMadDefinition.class, DCTrapMadInstance.class );
 
-		defClassToInsClassMap.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadInstance.class );
+//		defClassToInsClassMap.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadInstance.class );
 
-		defClassToInsClassMap.put( FlipFlopMadDefinition.class, FlipFlopMadInstance.class );
+//		defClassToInsClassMap.put( FlipFlopMadDefinition.class, FlipFlopMadInstance.class );
 
-		defClassToInsClassMap.put( StereoGateMadDefinition.class, StereoGateMadInstance.class );
-		defClassToInsClassMap.put( MonoCompressorMadDefinition.class, MonoCompressorMadInstance.class );
+//		defClassToInsClassMap.put( StereoGateMadDefinition.class, StereoGateMadInstance.class );
+//		defClassToInsClassMap.put( MonoCompressorMadDefinition.class, MonoCompressorMadInstance.class );
 		defClassToInsClassMap.put( StereoCompressorMadDefinition.class, StereoCompressorMadInstance.class );
 
 		// Parameterised instances
 		defClassToInsClassMap.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadInstance.class );
 		defClassToInsClassMap.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadInstance.class );
 
-		defClassToInsClassMap.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadInstance.class );
+//		defClassToInsClassMap.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadInstance.class );
 
 		defClassToInsClassMap.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadInstance.class );
 
-		defClassToInsClassMap.put( OscillatorMadDefinition.class, OscillatorMadInstance.class );
+//		defClassToInsClassMap.put( OscillatorMadDefinition.class, OscillatorMadInstance.class );
 
 		defClassToInsClassMap.put( EnvelopeMadDefinition.class, EnvelopeMadInstance.class );
 
@@ -207,11 +183,11 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 
 		defClassToInsClassMap.put( MoogFilterMadDefinition.class, MoogFilterMadInstance.class );
 
-		defClassToInsClassMap.put( NoteDebugMadDefinition.class, NoteDebugMadInstance.class );
+//		defClassToInsClassMap.put( NoteDebugMadDefinition.class, NoteDebugMadInstance.class );
 
 		defClassToInsClassMap.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadInstance.class );
 
-		defClassToInsClassMap.put( XRunnerMadDefinition.class, XRunnerMadInstance.class );
+//		defClassToInsClassMap.put( XRunnerMadDefinition.class, XRunnerMadInstance.class );
 
 		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
 
