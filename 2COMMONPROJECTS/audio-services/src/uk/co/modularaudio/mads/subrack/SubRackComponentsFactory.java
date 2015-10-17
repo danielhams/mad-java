@@ -20,33 +20,45 @@
 
 package uk.co.modularaudio.mads.subrack;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
-import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
+import uk.co.modularaudio.service.madclassification.MadClassificationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class SubRackComponentsFactory extends AbstractMadComponentFactory
+public class SubRackComponentsFactory
+	implements ComponentWithLifecycle, MadComponentFactory
 {
-	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
-			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
-
-	private ConfigurationService configurationService;
+	private static Log log = LogFactory.getLog( SubRackComponentsFactory.class.getName() );
 
 	private SubRackCreationContext creationContext;
 
+	private ConfigurationService configurationService;
+	private MadClassificationService classificationService;
+	private MadComponentService componentService;
 	private MadGraphService graphService;
 	private RackService rackService;
 	private RackMarshallingService rackMarshallingService;
@@ -54,28 +66,19 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	private JobExecutorService jobExecutorService;
 	private UserPreferencesService userPreferencesService;
 
+	private SubRackMadDefinition subRackMD;
+	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
 	public SubRackComponentsFactory()
 	{
-		defClassToInsClassMap.put( SubRackMadDefinition.class, SubRackMadInstance.class );
-	}
-
-	@Override
-	public Map<Class<? extends MadDefinition<?, ?>>, Class<? extends MadInstance<?, ?>>> provideDefClassToInsClassMap()
-			throws ComponentConfigurationException
-	{
-		return defClassToInsClassMap;
-	}
-
-	@Override
-	public MadCreationContext getCreationContext()
-	{
-		return creationContext;
 	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
 		if( configurationService == null ||
+				classificationService == null ||
+				componentService == null ||
 				graphService == null ||
 				rackService == null ||
 				rackMarshallingService == null ||
@@ -93,12 +96,32 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 				jobExecutorService,
 				userPreferencesService );
 
-		super.init();
+		try
+		{
+			subRackMD = new SubRackMadDefinition( creationContext, classificationService );
+			mds.add( subRackMD );
+
+			componentService.registerComponentFactory( this );
+		}
+		catch( final DatastoreException | RecordNotFoundException | MAConstraintViolationException e )
+		{
+			throw new ComponentConfigurationException( "Unable to create mad definitions: " + e.toString() );
+		}
 	}
 
 	public void setConfigurationService( final ConfigurationService configurationService )
 	{
 		this.configurationService = configurationService;
+	}
+
+	public void setClassificationService( final MadClassificationService classificationService )
+	{
+		this.classificationService = classificationService;
+	}
+
+	public void setComponentService( final MadComponentService componentService )
+	{
+		this.componentService = componentService;
 	}
 
 	public void setGraphService( final MadGraphService graphService )
@@ -130,5 +153,52 @@ public class SubRackComponentsFactory extends AbstractMadComponentFactory
 	public void setUserPreferencesService( final UserPreferencesService userPreferencesService )
 	{
 		this.userPreferencesService = userPreferencesService;
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentService.unregisterComponentFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
+
+	@Override
+	public Collection<MadDefinition<?, ?>> listDefinitions()
+	{
+		return mds;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues,
+			final String instanceName )
+		throws DatastoreException
+	{
+		assert( definition == subRackMD );
+		try
+		{
+			return new SubRackMadInstance( creationContext,
+					instanceName,
+					subRackMD,
+					parameterValues,
+					subRackMD.getChannelConfigurationForParameters( parameterValues ) );
+		}
+		catch( final MAConstraintViolationException | RecordNotFoundException | IOException e )
+		{
+			throw new DatastoreException( "Failed creating mad instance: " + e.toString() );
+		}
+	}
+
+	@Override
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	{
+		// Java GC will take care of most of this
+		instanceToDestroy.destroy();
 	}
 }

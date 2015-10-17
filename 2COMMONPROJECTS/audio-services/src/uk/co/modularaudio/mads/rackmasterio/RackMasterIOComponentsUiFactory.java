@@ -20,36 +20,132 @@
 
 package uk.co.modularaudio.mads.rackmasterio;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
+import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
 import uk.co.modularaudio.mads.rackmasterio.ui.RackMasterIOMadUiDefinition;
-import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
+import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
+import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
+import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.table.Span;
 
-public class RackMasterIOComponentsUiFactory extends AbstractMadComponentUiFactory
+public class RackMasterIOComponentsUiFactory
+	implements ComponentWithLifecycle, MadComponentUiFactory
 {
-	private RackMasterIOComponentsFactory rackMasterIOComponentsFactory = null;
+	private static Log log = LogFactory.getLog( RackMasterIOComponentsUiFactory.class.getName() );
 
-	@Override
-	public void setupTypeToDefinitionClasses() throws DatastoreException
-	{
-		final Collection<MadDefinition<?,?>> auds = rackMasterIOComponentsFactory.listDefinitions();
-		for( final MadDefinition<?,?> aud : auds )
-		{
-			if( aud instanceof RackMasterIOMadDefinition )
-			{
-				final RackMasterIOMadDefinition fi = (RackMasterIOMadDefinition)aud;
-				final RackMasterIOMadUiDefinition fiud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService, fi, componentImageFactory );
-				componentDefinitionToUiDefinitionMap.put( aud, fiud );
-			}
-		}
-	}
+
+	private BufferedImageAllocationService bufferedImageAllocationService;
+	private ComponentImageFactory componentImageFactory;
+	private MadComponentService componentService;
+	private MadComponentUiService componentUiService;
+	private RackMasterIOComponentsFactory rackMasterIOComponentsFactory;
+
+	private final ArrayList<MadUiDefinition<?,?>> muds = new ArrayList<MadUiDefinition<?,?>>();
+	private RackMasterIOMadUiDefinition rmMud;
 
 	public void setRackMasterIOComponentsFactory( final RackMasterIOComponentsFactory internalComponentsFactory )
 	{
 		this.rackMasterIOComponentsFactory = internalComponentsFactory;
+	}
+
+	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
+	{
+		this.bufferedImageAllocationService = bufferedImageAllocationService;
+	}
+
+	public void setComponentImageFactory( final ComponentImageFactory componentImageFactory )
+	{
+		this.componentImageFactory = componentImageFactory;
+	}
+
+	public void setComponentService( final MadComponentService componentService )
+	{
+		this.componentService = componentService;
+	}
+
+	public void setComponentUiService( final MadComponentUiService componentUiService )
+	{
+		this.componentUiService = componentUiService;
+	}
+
+	@Override
+	public List<MadUiDefinition<?, ?>> listComponentUiDefinitions()
+	{
+		return muds;
+	}
+
+	@Override
+	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> componentInstance )
+			throws DatastoreException, RecordNotFoundException
+	{
+		return rmMud.createNewUiInstance( (RackMasterIOMadInstance)componentInstance );
+	}
+
+	@Override
+	public void destroyUiInstance( final IMadUiInstance<?, ?> uiInstanceToDestroy )
+			throws DatastoreException, RecordNotFoundException
+	{
+	}
+
+	@Override
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
+			throws DatastoreException, RecordNotFoundException
+	{
+		return rmMud.getCellSpan();
+	}
+
+	@Override
+	public void init() throws ComponentConfigurationException
+	{
+		if( bufferedImageAllocationService == null ||
+				componentImageFactory == null ||
+				componentUiService == null ||
+				rackMasterIOComponentsFactory == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
+		}
+
+		try
+		{
+			final RackMasterIOMadDefinition rmMd = (RackMasterIOMadDefinition) componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
+			rmMud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService, rmMd, componentImageFactory );
+			muds.add( rmMud );
+
+			componentUiService.registerComponentUiFactory( this );
+		}
+		catch( final DatastoreException | RecordNotFoundException e )
+		{
+			throw new ComponentConfigurationException( "Unable to create muds: " + e.toString(), e );
+		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentUiService.unregisterComponentUiFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
 	}
 
 }

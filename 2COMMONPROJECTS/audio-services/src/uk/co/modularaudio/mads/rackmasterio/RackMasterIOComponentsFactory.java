@@ -20,39 +20,112 @@
 
 package uk.co.modularaudio.mads.rackmasterio;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
-import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
+import uk.co.modularaudio.service.madclassification.MadClassificationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class RackMasterIOComponentsFactory extends AbstractMadComponentFactory
+public class RackMasterIOComponentsFactory
+	implements ComponentWithLifecycle, MadComponentFactory
 {
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
-			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
+	private static Log log = LogFactory.getLog( RackMasterIOComponentsFactory.class.getName() );
 
-	private RackMasterIOCreationContext creationContext = new RackMasterIOCreationContext();
-	
+	private final RackMasterIOCreationContext creationContext = new RackMasterIOCreationContext();
+
+	private MadClassificationService classificationService;
+	private MadComponentService componentService;
+
+	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
+	private RackMasterIOMadDefinition rmDef;
+
 	public RackMasterIOComponentsFactory()
 	{
-		defClassToInsClassMap.put( RackMasterIOMadDefinition.class, RackMasterIOMadInstance.class );
 	}
 
 	@Override
-	public Map<Class<? extends MadDefinition<?, ?>>, Class<? extends MadInstance<?, ?>>> provideDefClassToInsClassMap()
-			throws ComponentConfigurationException
+	public Collection<MadDefinition<?, ?>> listDefinitions()
 	{
-		return defClassToInsClassMap;
+		return mds;
 	}
 
 	@Override
-	public MadCreationContext getCreationContext()
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues, final String instanceName ) throws DatastoreException
 	{
-		return creationContext;
+		assert( definition == rmDef );
+
+		return new RackMasterIOMadInstance( creationContext,
+				instanceName,
+				rmDef,
+				parameterValues,
+				rmDef.getChannelConfigurationForParameters( parameterValues ) );
+	}
+
+	@Override
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	{
+		instanceToDestroy.destroy();
+	}
+
+	@Override
+	public void init() throws ComponentConfigurationException
+	{
+		if( classificationService == null ||
+				componentService == null )
+		{
+			throw new ComponentConfigurationException( "Factory missing dependencies. Check configuration" );
+		}
+
+		try
+		{
+			rmDef = new RackMasterIOMadDefinition( creationContext, classificationService );
+			mds.add( rmDef );
+
+			componentService.registerComponentFactory( this );
+		}
+		catch( final DatastoreException | MAConstraintViolationException | RecordNotFoundException e )
+		{
+			throw new ComponentConfigurationException( "Unable to register as MAD component factory: " + e.toString(), e );
+		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentService.unregisterComponentFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
+
+	public void setClassificationService( final MadClassificationService classificationService )
+	{
+		this.classificationService = classificationService;
+	}
+
+	public void setComponentService( final MadComponentService componentService )
+	{
+		this.componentService = componentService;
 	}
 }

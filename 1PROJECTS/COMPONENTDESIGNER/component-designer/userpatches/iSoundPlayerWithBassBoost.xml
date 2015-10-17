@@ -26,7 +26,7 @@
     </rackComponent>
     <rackComponent name="Limiter 1" definitionId="limiter">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Falloff" value="0.672"/>
+        <rackControl name="Falloff" value="0.643"/>
         <rackControl name="Knee" value="0.1975"/>
         <rackControl name="UseHardLimit" value="false"/>
     </rackComponent>
@@ -40,17 +40,17 @@
         <rackPosition column="2" row="5"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="-10.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
     </rackComponent>
     <rackComponent name="Soundfile Player" definitionId="soundfile_player">
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-3.6000004"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Gain" value="-5.481898"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP083_ERIC_SNEO.mp3|117335016"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGTP087_ERIC_SNEO.mp3|70936487"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

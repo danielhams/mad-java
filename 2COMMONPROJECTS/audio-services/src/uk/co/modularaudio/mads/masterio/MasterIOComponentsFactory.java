@@ -20,51 +20,131 @@
 
 package uk.co.modularaudio.mads.masterio;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
-import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.mads.masterio.mu.MasterInMadDefinition;
-import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
+import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
-import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
+import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
+import uk.co.modularaudio.service.madclassification.MadClassificationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class MasterIOComponentsFactory extends AbstractMadComponentFactory
+public class MasterIOComponentsFactory
+	implements ComponentWithLifecycle, MadComponentFactory
 {
-//	private static Log log = LogFactory.getLog( MasterIOComponentsFactory.class.getName());
-	
-	private Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
-			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
-	
-	private MasterIOComponentsCreationContext creationContext = null;
-	
+	private static Log log = LogFactory.getLog( MasterIOComponentsFactory.class.getName());
+
+	private MadClassificationService classificationService;
+	private MadComponentService componentService;
+
+	private final MasterIOComponentsCreationContext creationContext = new MasterIOComponentsCreationContext();
+
+	private MasterInMadDefinition inMd;
+	private MasterOutMadDefinition outMd;
+
+	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
 	public MasterIOComponentsFactory()
 	{
-		defClassToInsClassMap.put( MasterInMadDefinition.class, MasterInMadInstance.class );
-		defClassToInsClassMap.put( MasterOutMadDefinition.class, MasterOutMadInstance.class );
-	}
-	
-	@Override
-	public Map<Class<? extends MadDefinition<?, ?>>, Class<? extends MadInstance<?, ?>>> provideDefClassToInsClassMap()
-			throws ComponentConfigurationException
-	{
-		return defClassToInsClassMap;
 	}
 
 	@Override
-	public MadCreationContext getCreationContext()
+	public Collection<MadDefinition<?, ?>> listDefinitions()
 	{
-		return creationContext;
+		return mds;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues, final String instanceName ) throws DatastoreException
+	{
+		if( definition == inMd )
+		{
+			return new MasterInMadInstance( creationContext,
+					instanceName,
+					inMd,
+					parameterValues,
+					inMd.getChannelConfigurationForParameters( parameterValues ) );
+		}
+		else if( definition == outMd )
+		{
+			return new MasterOutMadInstance( creationContext,
+					instanceName,
+					outMd,
+					parameterValues,
+					outMd.getChannelConfigurationForParameters( parameterValues ) );
+		}
+		else
+		{
+			throw new DatastoreException("Unknown mad: " + definition.getName() );
+		}
+	}
+
+	@Override
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	{
+		instanceToDestroy.destroy();
 	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		creationContext = new MasterIOComponentsCreationContext();
-		super.init();
+		if( classificationService == null ||
+				componentService == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Please check config." );
+		}
+
+		try
+		{
+			inMd = new MasterInMadDefinition( creationContext, classificationService );
+			mds.add( inMd );
+
+			outMd = new MasterOutMadDefinition( creationContext, classificationService );
+			mds.add( outMd );
+
+			componentService.registerComponentFactory( this );
+		}
+		catch( final DatastoreException | MAConstraintViolationException | RecordNotFoundException e )
+		{
+			throw new ComponentConfigurationException( e );
+		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentService.unregisterComponentFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
+
+	public void setClassificationService( final MadClassificationService classificationService )
+	{
+		this.classificationService = classificationService;
+	}
+
+	public void setComponentService( final MadComponentService componentService )
+	{
+		this.componentService = componentService;
 	}
 }

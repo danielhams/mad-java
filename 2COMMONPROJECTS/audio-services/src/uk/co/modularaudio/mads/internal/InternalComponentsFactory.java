@@ -20,8 +20,12 @@
 
 package uk.co.modularaudio.mads.internal;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadDefinition;
@@ -40,51 +44,53 @@ import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadInstance;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadDefinition;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadInstance;
-import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
+import uk.co.modularaudio.service.madclassification.MadClassificationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class InternalComponentsFactory extends AbstractMadComponentFactory
+public class InternalComponentsFactory
+	implements ComponentWithLifecycle, MadComponentFactory
 {
-	// Definitions to instances
-	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
-			new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
+	private static Log log = LogFactory.getLog( InternalComponentsFactory.class.getName() );
+
+
+	private MadClassificationService classificationService;
+	private MadComponentService componentService;
 
 	private AdvancedComponentsFrontController advancedComponentsFrontController;
 
 	private InternalComponentsCreationContext creationContext;
 
+	private FadeOutMadDefinition fadeOutMD;
+	private FadeInMadDefinition fadeInMD;
+	private FeedbackLinkConsumerMadDefinition fblinkConsumerMD;
+	private FeedbackLinkProducerMadDefinition fblinkProducerMD;
+	private AudioSystemTesterMadDefinition asTesterMD;
+	private PFadeOutMadDefinition pfadeOutMD;
+	private PFadeInMadDefinition pfadeInMD;
+	private BlockingWriteRingMadDefinition bwrMD;
+
+	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
 	public InternalComponentsFactory()
 	{
-		defClassToInsClassMap.put( FadeOutMadDefinition.class, FadeOutMadInstance.class );
-		defClassToInsClassMap.put( FadeInMadDefinition.class, FadeInMadInstance.class );
-		defClassToInsClassMap.put( FeedbackLinkConsumerMadDefinition.class, FeedbackLinkConsumerMadInstance.class );
-		defClassToInsClassMap.put( FeedbackLinkProducerMadDefinition.class, FeedbackLinkProducerMadInstance.class );
-		defClassToInsClassMap.put( AudioSystemTesterMadDefinition.class, AudioSystemTesterMadInstance.class );
-		defClassToInsClassMap.put( PFadeInMadDefinition.class, PFadeInMadInstance.class );
-		defClassToInsClassMap.put( PFadeOutMadDefinition.class, PFadeOutMadInstance.class );
-		defClassToInsClassMap.put( BlockingWriteRingMadDefinition.class, BlockingWriteRingMadInstance.class );
-	}
-
-	@Override
-	public Map<Class<? extends MadDefinition<?, ?>>, Class<? extends MadInstance<?, ?>>> provideDefClassToInsClassMap()
-			throws ComponentConfigurationException
-	{
-		return defClassToInsClassMap;
-	}
-
-	@Override
-	public MadCreationContext getCreationContext()
-	{
-		return creationContext;
 	}
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( advancedComponentsFrontController == null )
+		if( classificationService == null ||
+				componentService == null ||
+				advancedComponentsFrontController == null )
 		{
 			final String msg = "InternalComponentsFactory has missing service dependencies. Check configuration";
 			throw new ComponentConfigurationException( msg );
@@ -92,11 +98,151 @@ public class InternalComponentsFactory extends AbstractMadComponentFactory
 
 		creationContext = new InternalComponentsCreationContext( advancedComponentsFrontController );
 
-		super.init();
+		try
+		{
+			fadeOutMD = new FadeOutMadDefinition( creationContext, classificationService );
+			mds.add( fadeOutMD );
+			fadeInMD = new FadeInMadDefinition( creationContext, classificationService );
+			mds.add( fadeInMD );
+			fblinkConsumerMD = new FeedbackLinkConsumerMadDefinition( creationContext, classificationService );
+			mds.add( fblinkConsumerMD );
+			fblinkProducerMD = new FeedbackLinkProducerMadDefinition( creationContext, classificationService );
+			mds.add( fblinkProducerMD );
+			asTesterMD = new AudioSystemTesterMadDefinition( creationContext, classificationService );
+			mds.add( asTesterMD );
+			pfadeOutMD = new PFadeOutMadDefinition( creationContext, classificationService );
+			mds.add( pfadeOutMD );
+			pfadeInMD = new PFadeInMadDefinition( creationContext, classificationService );
+			mds.add( pfadeInMD );
+			bwrMD = new BlockingWriteRingMadDefinition( creationContext, classificationService );
+			mds.add( bwrMD );
+
+			componentService.registerComponentFactory( this );
+		}
+		catch( final DatastoreException | RecordNotFoundException | MAConstraintViolationException e )
+		{
+			throw new ComponentConfigurationException( "Failed instantiating MADS: " + e.toString(), e );
+		}
+
 	}
 
 	public void setAdvancedComponentsFrontController( final AdvancedComponentsFrontController advancedComponentsFrontController )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
+	}
+
+	@Override
+	public Collection<MadDefinition<?, ?>> listDefinitions()
+	{
+		return mds;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+		throws DatastoreException
+	{
+		try
+		{
+			if( definition == fadeOutMD )
+			{
+				return new FadeOutMadInstance( creationContext,
+						instanceName,
+						fadeOutMD,
+						parameterValues,
+						fadeOutMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == fadeInMD )
+			{
+				return new FadeInMadInstance( creationContext,
+						instanceName,
+						fadeInMD,
+						parameterValues,
+						fadeInMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == fblinkConsumerMD )
+			{
+				return new FeedbackLinkConsumerMadInstance( creationContext,
+						instanceName,
+						fblinkConsumerMD,
+						parameterValues,
+						fblinkConsumerMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == fblinkProducerMD )
+			{
+				return new FeedbackLinkProducerMadInstance( creationContext,
+						instanceName,
+						fblinkProducerMD,
+						parameterValues,
+						fblinkProducerMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == asTesterMD )
+			{
+				return new AudioSystemTesterMadInstance( creationContext,
+						instanceName,
+						asTesterMD,
+						parameterValues,
+						asTesterMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == pfadeOutMD )
+			{
+				return new PFadeOutMadInstance( creationContext,
+						instanceName,
+						pfadeOutMD,
+						parameterValues,
+						pfadeOutMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == pfadeInMD )
+			{
+				return new PFadeInMadInstance( creationContext,
+						instanceName,
+						pfadeInMD,
+						parameterValues,
+						pfadeInMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			else if( definition == bwrMD )
+			{
+				return new BlockingWriteRingMadInstance( creationContext,
+						instanceName,
+						bwrMD,
+						parameterValues,
+						bwrMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+		}
+		catch( final MadProcessingException e )
+		{
+			throw new DatastoreException( e );
+		}
+
+		throw new DatastoreException( "Unknown MAD: " + definition.getName() );
+	}
+
+	@Override
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	{
+		instanceToDestroy.destroy();
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentService.unregisterComponentFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
+
+	public void setClassificationService( final MadClassificationService classificationService )
+	{
+		this.classificationService = classificationService;
+	}
+
+	public void setComponentService( final MadComponentService componentService )
+	{
+		this.componentService = componentService;
 	}
 }

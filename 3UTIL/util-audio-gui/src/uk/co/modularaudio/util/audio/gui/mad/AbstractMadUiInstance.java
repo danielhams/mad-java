@@ -89,7 +89,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	{
 		instance.removeLifecycleListener( this );
 		// Call destroy on all our child controls
-		for( int i =0 ; i < controlInstances.length ; i++)
+		for( int i = 0 ; i < controlInstances.length ; i++)
 		{
 			final AbstractMadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
 			ci.destroy();
