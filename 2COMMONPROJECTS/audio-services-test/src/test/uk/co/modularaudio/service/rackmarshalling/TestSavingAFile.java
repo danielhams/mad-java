@@ -62,9 +62,7 @@ public class TestSavingAFile extends TestCase
 		final int channelBufferLength = 64;
 		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		final long nanosLatency = 1000;
-		final int sfLatency = 10;
-		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
+		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration );
 		final RenderingPlan emptyRenderingPlan = tc.renderingPlanService.createRenderingPlan( emptyRackRootGraph, dataRateConfiguration, tc );
 		tc.renderingPlanService.dumpRenderingPlan( emptyRenderingPlan );
 

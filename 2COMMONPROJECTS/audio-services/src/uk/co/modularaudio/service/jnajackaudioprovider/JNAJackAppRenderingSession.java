@@ -27,8 +27,10 @@ import org.apache.commons.logging.LogFactory;
 import org.jaudiolibs.jnajack.Jack;
 import org.jaudiolibs.jnajack.JackClient;
 import org.jaudiolibs.jnajack.JackException;
+import org.jaudiolibs.jnajack.JackLatencyCallbackMode;
 import org.jaudiolibs.jnajack.JackMidi;
 import org.jaudiolibs.jnajack.JackPort;
+import org.jaudiolibs.jnajack.JackPort.JackLatencyRange;
 import org.jaudiolibs.jnajack.JackPortFlags;
 import org.jaudiolibs.jnajack.JackPortType;
 import org.jaudiolibs.jnajack.JackProcessCallback;
@@ -55,7 +57,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.LocklessHardwareMidiNoteRing
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.MidiToHardwareMidiNoteRingDecoder;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.thread.ThreadUtils;
@@ -69,12 +70,14 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //	private final Jack jack;
 	private final JackClient client;
 
-//	private final JackLatencyRange latencyRange = new JackLatencyRange();
+	private final JackLatencyRange latencyRange = new JackLatencyRange();
 
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
+	private int[] producerAudioPortLatencies;
 	private int numConsumerAudioPorts;
 	private JackPort[] consumerAudioPorts;
+	private int[] consumerAudioPortLatencies;
 	private int numProducerMidiPorts;
 	private JackPort[] producerMidiPorts;
 	private int numConsumerMidiPorts;
@@ -129,11 +132,13 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			{
 				numProducerAudioPorts = phs.getNumChannels();
 				producerAudioPorts = new JackPort[ numProducerAudioPorts ];
+				producerAudioPortLatencies = new int[ numProducerAudioPorts ];
 				for( int c = 0 ; c < numProducerAudioPorts ; ++c )
 				{
 					final String portName = "In " + (c+1);
 					final JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
 					producerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
+					producerAudioPortLatencies[ c ] = 0;
 				}
 			}
 
@@ -152,11 +157,13 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			{
 				numConsumerAudioPorts = chs.getNumChannels();
 				consumerAudioPorts = new JackPort[ numConsumerAudioPorts ];
+				consumerAudioPortLatencies = new int[ numConsumerAudioPorts ];
 				for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
 				{
 					final String portName = "Out " + (c+1);
 					final JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
 					consumerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
+					consumerAudioPortLatencies[ c ] = 0;
 				}
 			}
 
@@ -170,17 +177,16 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 				consumerMidiPorts[0] = client.registerPort( portName, JackPortType.MIDI, portFlags );
 			}
 
-			// Assume 2 periods of buffer length in jack
-			final int sampleFramesOutputLatency = bufferSize * 2;
-			final long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength(sampleRate, sampleFramesOutputLatency );
-
 			final MadTimingParameters dtp = new MadTimingParameters(
 					dataRate,
 					bufferSize,
 					hardwareConfiguration.getFps() );
 
-			final HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(dataRate, bufferSize);
-			final HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(oneChannelSetting, nanosOutputLatency, sampleFramesOutputLatency);
+			final HardwareIOOneChannelSetting oneChannelSetting = new HardwareIOOneChannelSetting(
+					dataRate,
+					bufferSize );
+			final HardwareIOChannelSettings dcs = new HardwareIOChannelSettings(
+					oneChannelSetting );
 
 			emptyFloatBuffer = new MadChannelBuffer( MadChannelType.AUDIO,  bufferSize );
 //			emptyNoteBuffer = new MadChannelBuffer( MadChannelType.NOTE, dcs.getNoteChannelSetting().getChannelBufferLength() );
@@ -284,9 +290,16 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //		int jackMaxLatency;
 		try
 		{
-//			consumerAudioPorts[0].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
-//			jackMaxLatency = latencyRange.getMax();
-//			log.debug("MaxLatency(" + jackMaxLatency + ")");
+			for( int p = 0 ; p < numProducerAudioPorts ; ++p )
+			{
+				producerAudioPorts[p].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackCaptureLatency );
+				producerAudioPortLatencies[p] = latencyRange.getMax();
+			}
+			for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
+			{
+				consumerAudioPorts[c].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
+				consumerAudioPortLatencies[c] = latencyRange.getMax();
+			}
 
 //			final long jackTime = client.getFrameTime();
 			periodStartFrameTime = client.getLastFrameTime();

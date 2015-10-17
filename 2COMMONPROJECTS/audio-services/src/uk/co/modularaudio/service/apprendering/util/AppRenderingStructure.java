@@ -62,6 +62,7 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.hardwareio.IOBuffers;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
@@ -211,7 +212,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		{
 			final DataRate tmpDataRate = DataRate.SR_44100;
 			final HardwareIOOneChannelSetting dumpChannelSetting = new HardwareIOOneChannelSetting( tmpDataRate,  1024 );
-			final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings(dumpChannelSetting, 40000, 1024 );
+			final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings(dumpChannelSetting);
 			final MadFrameTimeFactory frameTimeFactory = new HotspotFrameTimeFactory();
 			final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( internalRootGraph, dataRateConfiguration, frameTimeFactory );
 			renderingPlanService.dumpRenderingPlan( renderingPlan );
@@ -491,14 +492,18 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 			case POST_START:
 			{
 				// Wait for the fade in to complete
-				final int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
-				final long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
-				final int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
+				// by sleeping an audio period and checking the fade
+				final int framesPerPeriod = coreEngineChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+				final long nanosPerPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength(
+						coreEngineChannelSettings.getAudioChannelSetting().getDataRate().getValue(), framesPerPeriod );
+				final int numFramesToWaitForFade = framesPerPeriod * 2;
+
+				final int sleepWaitingForFadeMillis = (int)((nanosPerPeriod / 1000000) / 2);
 				final long endTimeMillis = System.currentTimeMillis() + maxWaitForTransitionMillis;
 				long curTimeMillis;
 				while( (curTimeMillis = System.currentTimeMillis()) < endTimeMillis )
 				{
-					if( !masterOutInstance.isFadeFinished( numSamplesLatencyClockBuffer ) )
+					if( !masterOutInstance.isFadeFinished( numFramesToWaitForFade ) )
 					{
 						try
 						{
@@ -521,9 +526,12 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 			}
 			case PRE_STOP:
 			{
-				final int numSamplesLatencyClockBuffer = coreEngineChannelSettings.getSampleFramesOutputLatency();
-				final long nanosOutputLatency = coreEngineChannelSettings.getNanosOutputLatency();
-				final int sleepWaitingForFadeMillis = (int)((nanosOutputLatency / 1000000) / 2);
+				final int framesPerPeriod = coreEngineChannelSettings.getAudioChannelSetting().getChannelBufferLength();
+				final long nanosPerPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength(
+						coreEngineChannelSettings.getAudioChannelSetting().getDataRate().getValue(), framesPerPeriod );
+				final int numFramesToWaitForFade = framesPerPeriod * 2;
+
+				final int sleepWaitingForFadeMillis = (int)((nanosPerPeriod / 1000000) / 2);
 
 				masterOutInstance.setAndStartFade( FadeType.OUT );
 				// Wait for fade out to finish
@@ -531,7 +539,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 				long curTimeMillis;
 				while( (curTimeMillis = System.currentTimeMillis()) < endTimeMillis )
 				{
-					if( !masterOutInstance.isFadeFinished( numSamplesLatencyClockBuffer ) )
+					if( !masterOutInstance.isFadeFinished( numFramesToWaitForFade ) )
 					{
 						try
 						{
@@ -602,8 +610,10 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		{
 			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
 			final HardwareIOChannelSettings previousPlanChannelSettings = previousPlan.getPlanChannelSettings();
-			final long nanosOutputLatency = previousPlanChannelSettings.getNanosOutputLatency();
-			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
+			final int sampleRate = previousPlanChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+			final long nanosPerPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate,
+					previousPlanChannelSettings.getAudioChannelSetting().getChannelBufferLength() );
+			sleepWaitingForPlanMillis = (int)((nanosPerPeriod / 1000000) / 2);
 		}
 		else // Both non-null
 		{
@@ -622,8 +632,10 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 				}
 			}
 			needWaitForUse = graphService.graphHasListeners( internalRootGraph );
-			final long nanosOutputLatency = planChannelSettings.getNanosOutputLatency();
-			sleepWaitingForPlanMillis = (int)((nanosOutputLatency / 1000000) / 2);
+			final int sampleRate = planChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+			final long nanosPerPeriod = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate,
+					planChannelSettings.getAudioChannelSetting().getChannelBufferLength() );
+			sleepWaitingForPlanMillis = (int)((nanosPerPeriod / 1000000) / 2);
 		}
 
 		this.renderingPlan.set( newRenderingPlan );

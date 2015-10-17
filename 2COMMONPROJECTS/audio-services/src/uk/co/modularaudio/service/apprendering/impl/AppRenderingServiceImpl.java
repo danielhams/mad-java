@@ -41,16 +41,15 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassificationGroup;
+import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinitionListModel;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadClassificationGroup.Visibility;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
@@ -316,13 +315,10 @@ public class AppRenderingServiceImpl
 
 		final int outputLatencyFrames = HOTSPOT_SAMPLES_PER_RENDER_PERIOD;
 
-		final HardwareIOOneChannelSetting hotspotCelc= new HardwareIOOneChannelSetting( DataRate.SR_44100,
+		final HardwareIOOneChannelSetting hotspotCelc = new HardwareIOOneChannelSetting( DataRate.SR_44100,
 				outputLatencyFrames );
 
-		final long outputLatencyNanos = AudioTimingUtils.getNumNanosecondsForBufferLength(DataRate.SR_44100.getValue(),
-				outputLatencyFrames );
-
-		final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc, outputLatencyNanos, outputLatencyFrames );
+		final HardwareIOChannelSettings hotspotDrc = new HardwareIOChannelSettings( hotspotCelc );
 		final MadFrameTimeFactory hotspotFrameTimeFactory = new HotspotFrameTimeFactory();
 		final RenderingPlan renderingPlan = renderingPlanService.createRenderingPlan( hotspotGraph, hotspotDrc, hotspotFrameTimeFactory );
 

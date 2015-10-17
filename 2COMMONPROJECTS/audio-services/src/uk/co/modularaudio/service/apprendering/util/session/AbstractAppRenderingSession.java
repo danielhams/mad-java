@@ -51,7 +51,6 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.IOBuffers;
 import uk.co.modularaudio.util.audio.mad.timing.MadChannelPeriodData;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 import uk.co.modularaudio.util.tuple.TwoTuple;
@@ -133,13 +132,10 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 		{
 			// Some fake values we'll use to start off discovery
 			final DataRate dataRate = DataRate.SR_44100;
-			final long nanosOutputLatency = 10000;
 			final int sampleFramesOutputLatency = 1024;
 
 			final HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
-			HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,
-					nanosOutputLatency,
-					sampleFramesOutputLatency );
+			HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings( audioChannelSetting );
 
 			try
 			{
@@ -186,7 +182,7 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 		final AtomicReference<RenderingPlan> atomicRenderingPlan = appRenderingStructure.getAtomicRenderingPlan();
 		final RenderingPlan renderingPlan = atomicRenderingPlan.get();
 		final HardwareIOOneChannelSetting fakeAudioChannelSetting = new HardwareIOOneChannelSetting(DataRate.SR_44100, 1024);
-		final HardwareIOChannelSettings fakeChannelSettings = new HardwareIOChannelSettings(fakeAudioChannelSetting, AudioTimingUtils.getNumNanosecondsForBufferLength(44100, 1024), 1024);
+		final HardwareIOChannelSettings fakeChannelSettings = new HardwareIOChannelSettings( fakeAudioChannelSetting );
 		final HardwareIOChannelSettings hardwareChannelSettings = (renderingPlan != null ? renderingPlan.getPlanChannelSettings() : fakeChannelSettings);
 
 		try
@@ -236,13 +232,10 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 		final AudioTestResults retVal = new AudioTestResults();
 
 		final DataRate dataRate = DataRate.SR_44100;
-		final long nanosOutputLatency = 10000;
 		final int sampleFramesOutputLatency = 1024;
 
 		final HardwareIOOneChannelSetting audioChannelSetting = new HardwareIOOneChannelSetting( dataRate,  sampleFramesOutputLatency );
-		HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting,
-				nanosOutputLatency,
-				sampleFramesOutputLatency );
+		HardwareIOChannelSettings hardwareChannelSettings = new HardwareIOChannelSettings(audioChannelSetting);
 
 		errorQueue.removeCallbackForRenderingIO( this );
 		final TestRenderingErrorCallback testErrorCallback = new TestRenderingErrorCallback();

@@ -106,9 +106,7 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 		final int channelBufferLength = 64;
 		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		final long nanosLatency = 1000;
-		final int sfLatency = 10;
-		final HardwareIOChannelSettings planDataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosLatency, sfLatency );
+		final HardwareIOChannelSettings planDataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration );
 		for( int i =0 ; i < 1 ; i++ )
 		{
 			if( i == 0 || i == 999 )

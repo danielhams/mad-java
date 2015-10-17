@@ -31,16 +31,9 @@ public class HardwareIOChannelSettings
 	private final HardwareIOOneChannelSetting audioChannelSetting;
 	private final HardwareIOOneChannelSetting noteChannelSetting;
 
-	private final long nanosOutputLatency;
-	private final int sampleFramesOutputLatency;
-
-	public HardwareIOChannelSettings( final HardwareIOOneChannelSetting coreEngineAudioChannelSetting,
-			final long nanosOutputLatency,
-			final int sampleFramesOutputLatency )
+	public HardwareIOChannelSettings( final HardwareIOOneChannelSetting coreEngineAudioChannelSetting )
 	{
 		audioChannelSetting = coreEngineAudioChannelSetting;
-		this.nanosOutputLatency = nanosOutputLatency;
-		this.sampleFramesOutputLatency = sampleFramesOutputLatency;
 
 		// Note data is transmitted at 22khz
 		final DataRate defaultNoteDataRate = DataRate.SR_22050;
@@ -84,16 +77,6 @@ public class HardwareIOChannelSettings
 		}
 	}
 
-	public long getNanosOutputLatency()
-	{
-		return nanosOutputLatency;
-	}
-
-	public int getSampleFramesOutputLatency()
-	{
-		return sampleFramesOutputLatency;
-	}
-
 	@Override
 	public String toString()
 	{
@@ -102,10 +85,6 @@ public class HardwareIOChannelSettings
 		sb.append( audioChannelSetting.toString() );
 		sb.append(" NoteChannelSetting: ");
 		sb.append( noteChannelSetting.toString() );
-		sb.append(" NanosOutputLatency: ");
-		sb.append( nanosOutputLatency );
-		sb.append(" SampleFramesOutputLatency: ");
-		sb.append( sampleFramesOutputLatency );
 
 		return sb.toString();
 	}

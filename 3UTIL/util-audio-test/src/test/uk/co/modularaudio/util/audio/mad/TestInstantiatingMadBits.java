@@ -42,7 +42,6 @@ import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class TestInstantiatingMadBits
 {
@@ -70,10 +69,7 @@ public class TestInstantiatingMadBits
 		final int channelBufferLength = 64;
 		final HardwareIOOneChannelSetting coreEngineLatencyConfiguration = new HardwareIOOneChannelSetting( dataRate, channelBufferLength );
 
-		final long nanosOutputLatency = AudioTimingUtils.getNumNanosecondsForBufferLength( dataRate.getValue(), channelBufferLength );
-		final int sampleFramesOutputLatency = channelBufferLength;
-
-		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration, nanosOutputLatency, sampleFramesOutputLatency );
+		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration );
 
 		final MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
 
