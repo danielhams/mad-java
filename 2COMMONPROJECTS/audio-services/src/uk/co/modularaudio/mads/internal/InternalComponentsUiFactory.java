@@ -166,7 +166,7 @@ public class InternalComponentsUiFactory
 					(FeedbackLinkConsumerMadDefinition)componentService.findDefinitionById(
 							FeedbackLinkConsumerMadDefinition.DEFINITION_ID );
 			flConsumerMud = new FeedbackLinkConsumerMadUiDefinition( bufferedImageAllocationService,
-					flConsumerMd, componentImageFactory );
+					flConsumerMd );
 			muds.add( flConsumerMud );
 			mdIdToMudMap.put( FeedbackLinkConsumerMadDefinition.DEFINITION_ID, flConsumerMud );
 
@@ -174,7 +174,7 @@ public class InternalComponentsUiFactory
 					(FeedbackLinkProducerMadDefinition)componentService.findDefinitionById(
 							FeedbackLinkProducerMadDefinition.DEFINITION_ID );
 			flProducerMud = new FeedbackLinkProducerMadUiDefinition( bufferedImageAllocationService,
- 					flProducerMd, componentImageFactory );
+ 					flProducerMd );
 			muds.add( flProducerMud );
 			mdIdToMudMap.put( FeedbackLinkProducerMadDefinition.DEFINITION_ID, flProducerMud );
 
@@ -182,7 +182,7 @@ public class InternalComponentsUiFactory
 					(AudioSystemTesterMadDefinition)componentService.findDefinitionById(
 							AudioSystemTesterMadDefinition.DEFINITION_ID );
 			asTesterMud = new AudioSystemTesterMadUiDefinition( bufferedImageAllocationService,
-					asMd, componentImageFactory );
+					asMd );
 			muds.add( asTesterMud );
 			mdIdToMudMap.put( AudioSystemTesterMadDefinition.DEFINITION_ID, asTesterMud );
 
@@ -190,7 +190,7 @@ public class InternalComponentsUiFactory
 					(BlockingWriteRingMadDefinition)componentService.findDefinitionById(
 							BlockingWriteRingMadDefinition.DEFINITION_ID );
 			bwrMud = new BlockingWriteRingMadUiDefinition( bufferedImageAllocationService,
-					bwrMd, componentImageFactory );
+					bwrMd );
 			muds.add( bwrMud );
 			mdIdToMudMap.put( BlockingWriteRingMadDefinition.DEFINITION_ID, bwrMud );
 
@@ -198,7 +198,7 @@ public class InternalComponentsUiFactory
 					(FadeInMadDefinition)componentService.findDefinitionById(
 							FadeInMadDefinition.DEFINITION_ID );
 			fadeInMud = new FadeInMadUiDefinition( bufferedImageAllocationService,
-					fiMd, componentImageFactory );
+					fiMd );
 			muds.add( fadeInMud );
 			mdIdToMudMap.put( FadeInMadDefinition.DEFINITION_ID, fadeInMud );
 
@@ -206,7 +206,7 @@ public class InternalComponentsUiFactory
 					(FadeOutMadDefinition)componentService.findDefinitionById(
 							FadeOutMadDefinition.DEFINITION_ID );
 			fadeOutMud = new FadeOutMadUiDefinition( bufferedImageAllocationService,
-					foMd, componentImageFactory );
+					foMd );
 			muds.add( fadeOutMud );
 			mdIdToMudMap.put( FadeOutMadDefinition.DEFINITION_ID, fadeOutMud );
 

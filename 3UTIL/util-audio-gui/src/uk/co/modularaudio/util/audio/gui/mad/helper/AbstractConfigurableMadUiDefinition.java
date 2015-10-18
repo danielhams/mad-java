@@ -37,7 +37,6 @@ import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 
 public abstract class AbstractConfigurableMadUiDefinition
 	<D extends MadDefinition<D,I>, I extends MadInstance<D, I>, U extends AbstractMadUiInstance<D, I>>
@@ -46,13 +45,12 @@ public abstract class AbstractConfigurableMadUiDefinition
 	private final Class<U> instanceClass;
 
 	public AbstractConfigurableMadUiDefinition( final BufferedImageAllocator bia,
-			final ImageFactory cif,
 			final String imagePrefix,
 			final D definition,
 			final Class<U> instanceClass )
 		throws DatastoreException
 	{
-		super( bia, cif, imagePrefix, definition, true, true );
+		super( bia, imagePrefix, definition, true, true );
 
 		this.instanceClass = instanceClass;
 	}

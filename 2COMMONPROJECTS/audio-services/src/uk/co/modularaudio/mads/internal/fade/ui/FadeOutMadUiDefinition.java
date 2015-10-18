@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
@@ -44,11 +43,10 @@ public class FadeOutMadUiDefinition extends MadUiDefinition<FadeOutMadDefinition
 	private static final Point PRODUCER_CHANNEL_CENTER = new Point( 160, 30 );
 
 	public FadeOutMadUiDefinition( final BufferedImageAllocator bia,
-			final FadeOutMadDefinition definition,
-			final ComponentImageFactory cif )
+			final FadeOutMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

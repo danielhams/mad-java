@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import uk.co.modularaudio.service.gui.plugs.GuiAudioChannelPlug;
 import uk.co.modularaudio.service.gui.plugs.GuiCVChannelPlug;
@@ -51,7 +52,9 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 	private final RealComponentBack realComponentBack;
 
-	public ResizableBackContainer( final ContainerImages backImages, final RackComponent rc )
+	public ResizableBackContainer( final ContainerImages backImages,
+			final BufferedImage backBufferedImage,
+			final RackComponent rc )
 	{
 		super( rc );
 		this.setOpaque( false );
@@ -95,7 +98,7 @@ public class ResizableBackContainer extends AbstractGuiAudioComponent
 
 		setLayout( msh.createMigLayout() );
 
-		realComponentBack = new RealComponentBack( this, rc );
+		realComponentBack = new RealComponentBack( this, rc, backBufferedImage );
 
 		containerLeft = new ResizableContainerLeft( backImages );
 

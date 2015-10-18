@@ -20,8 +20,6 @@
 
 package uk.co.modularaudio.util.audio.gui.mad;
 
-import java.awt.image.BufferedImage;
-
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 
@@ -29,7 +27,5 @@ public interface IMadUiDefinition
 	<D extends MadDefinition<D,I>,
 	I extends MadInstance<D,I> >
 {
-	BufferedImage getFrontBufferedImage();
-	BufferedImage getBackBufferedImage();
-
+	String getUiImagePrefix();
 }

@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -86,12 +85,10 @@ public class ControllerToCvMadUiDefinition
 	private static final Class<ControllerToCvMadUiInstance> INSTANCE_CLASS = ControllerToCvMadUiInstance.class;
 
 	public ControllerToCvMadUiDefinition( final BufferedImageAllocator bia,
-			final ControllerToCvMadDefinition definition,
-			final ComponentImageFactory cif )
+			final ControllerToCvMadDefinition definition )
 			throws DatastoreException
 		{
 			super( bia,
-					cif,
 					MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 					definition,
 					SPAN,

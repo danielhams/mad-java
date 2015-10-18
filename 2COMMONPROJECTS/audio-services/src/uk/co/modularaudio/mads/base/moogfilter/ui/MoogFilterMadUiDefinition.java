@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -85,12 +84,10 @@ public class MoogFilterMadUiDefinition
 	protected final static int SLIDER_LABEL_MIN_WIDTH = 40;
 
 	public MoogFilterMadUiDefinition( final BufferedImageAllocator bia,
-			final MoogFilterMadDefinition definition,
-			final ComponentImageFactory cif )
+			final MoogFilterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,

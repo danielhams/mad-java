@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 import uk.co.modularaudio.service.gui.plugs.GuiChannelPlug;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
@@ -44,7 +45,9 @@ public class ResizableFrontContainer extends AbstractGuiAudioComponent
 	private final Rectangle renderedRectangle;
 
 
-	public ResizableFrontContainer( final ContainerImages frontImages, final RackComponent rc )
+	public ResizableFrontContainer( final ContainerImages frontImages,
+			final BufferedImage frontBufferedImage,
+			final RackComponent rc )
 	{
 		super( rc );
 		this.setOpaque( false );
@@ -61,7 +64,7 @@ public class ResizableFrontContainer extends AbstractGuiAudioComponent
 		setLayout( msh.createMigLayout() );
 
 		containerLeft = new ResizableContainerLeft( frontImages );
-		containerMiddle = new ResizableFrontContainerMiddle( frontImages, rc );
+		containerMiddle = new ResizableFrontContainerMiddle( frontImages, frontBufferedImage, rc );
 		containerRight = new ResizableContainerRight( frontImages );
 
 		this.add( containerLeft, "growy, width " + frontImages.ltbi.getWidth() + "!");

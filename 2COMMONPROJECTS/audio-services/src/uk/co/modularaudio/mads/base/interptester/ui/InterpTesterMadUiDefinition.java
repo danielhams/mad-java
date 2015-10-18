@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpolatorType;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -100,12 +99,10 @@ public class InterpTesterMadUiDefinition
 	private static final Class<InterpTesterMadUiInstance> INSTANCE_CLASS = InterpTesterMadUiInstance.class;
 
 	public InterpTesterMadUiDefinition( final BufferedImageAllocator bia,
-			final InterpTesterMadDefinition definition,
-			final ComponentImageFactory cif )
+			final InterpTesterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				definition,
 				SPAN,

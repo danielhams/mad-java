@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadDefinition;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstance;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstanceConfiguration;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
@@ -46,11 +45,10 @@ public class AudioSystemTesterMadUiDefinition
 	private static final Span SPAN = new Span(1,1);
 
 	public AudioSystemTesterMadUiDefinition( final BufferedImageAllocator bia,
-			final AudioSystemTesterMadDefinition definition,
-			final ComponentImageFactory cif )
+			final AudioSystemTesterMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
+		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,

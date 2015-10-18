@@ -72,7 +72,7 @@
         <property name="configurationService"><ref bean="configurationService"></ref></property>
 	</bean>
 	<bean id="guiComponentFactoryService" class="uk.co.modularaudio.service.guicompfactory.impl.GuiComponentFactoryServiceImpl" init-method="init" destroy-method="destroy">
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
+		<property name="componentImageFactory"><ref bean="componentImageFactory"></ref></property>
 	</bean>
 	<bean id="baseComponentsFactory" class="uk.co.modularaudio.mads.base.BaseComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>
@@ -110,7 +110,6 @@
 		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="subRackComponentsFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsFactory" init-method="init" destroy-method="destroy">
-		<property name="configurationService"><ref bean="configurationService"></ref></property>
 		<property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="graphService"><ref bean="graphService"></ref></property>
 		<property name="rackService"><ref bean="rackService"></ref></property>

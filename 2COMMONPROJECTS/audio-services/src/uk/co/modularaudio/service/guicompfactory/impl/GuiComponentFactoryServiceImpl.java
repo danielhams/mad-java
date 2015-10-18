@@ -23,9 +23,9 @@ package uk.co.modularaudio.service.guicompfactory.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
+import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
@@ -36,17 +36,20 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 {
 	private static Log log = LogFactory.getLog( GuiComponentFactoryServiceImpl.class.getName() );
 
-	private BufferedImageAllocationService bufferedImageAllocationService;
+	private ComponentImageFactory componentImageFactory;
 
 	private MemReducedComponentFactory memReducedComponentFactory;
 
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
+		if( componentImageFactory == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
+		}
 		try
 		{
-			memReducedComponentFactory = new MemReducedComponentFactory( bufferedImageAllocationService );
-//			final SwingDebugger swingDebugger = new SwingDebugger( bufferedImageAllocationService, memReducedComponentFactory );
+			memReducedComponentFactory = new MemReducedComponentFactory( componentImageFactory );
 		}
 		catch( final DatastoreException | MadProcessingException de )
 		{
@@ -62,20 +65,19 @@ public class GuiComponentFactoryServiceImpl implements ComponentWithLifecycle, G
 	}
 
 	@Override
-	public AbstractGuiAudioComponent createBackGuiComponent(final RackComponent inComponent)
+	public AbstractGuiAudioComponent createBackGuiComponent(final RackComponent inComponent) throws DatastoreException
 	{
 		return memReducedComponentFactory.createBackGuiComponent( inComponent );
 	}
 
 	@Override
-	public AbstractGuiAudioComponent createFrontGuiComponent(final RackComponent inComponent)
+	public AbstractGuiAudioComponent createFrontGuiComponent(final RackComponent inComponent) throws DatastoreException
 	{
 		return memReducedComponentFactory.createFrontGuiComponent( inComponent );
 	}
 
-	public void setBufferedImageAllocationService(
-			final BufferedImageAllocationService bufferedImageAllocationService )
+	public void setComponentImageFactory( final ComponentImageFactory componentImageFactory )
 	{
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
+		this.componentImageFactory = componentImageFactory;
 	}
 }

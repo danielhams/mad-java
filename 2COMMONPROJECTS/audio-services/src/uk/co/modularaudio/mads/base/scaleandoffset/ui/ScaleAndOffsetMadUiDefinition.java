@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -76,12 +75,10 @@ public class ScaleAndOffsetMadUiDefinition
 	private static final Class<ScaleAndOffsetMadUiInstance> INSTANCE_CLASS = ScaleAndOffsetMadUiInstance.class;
 
 	public ScaleAndOffsetMadUiDefinition( final BufferedImageAllocator bia,
-			final ScaleAndOffsetMadDefinition definition,
-			final ComponentImageFactory cif )
+			final ScaleAndOffsetMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,

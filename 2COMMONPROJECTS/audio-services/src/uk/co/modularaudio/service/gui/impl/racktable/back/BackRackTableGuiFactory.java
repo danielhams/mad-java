@@ -24,6 +24,7 @@ import uk.co.modularaudio.service.gui.impl.racktable.RackTableGuiFactory;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.GuiComponentFactoryService;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class BackRackTableGuiFactory implements RackTableGuiFactory
 {
@@ -35,7 +36,7 @@ public class BackRackTableGuiFactory implements RackTableGuiFactory
 	}
 
 	@Override
-	public AbstractGuiAudioComponent generateSwingComponent( final RackComponent inComponent )
+	public AbstractGuiAudioComponent generateSwingComponent( final RackComponent inComponent ) throws DatastoreException
 	{
 		return guiComponentFactoryService.createBackGuiComponent( inComponent );
 	}

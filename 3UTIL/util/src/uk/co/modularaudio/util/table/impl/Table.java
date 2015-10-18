@@ -133,14 +133,14 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 
 	@Override
 	public void addContentsAtPosition( final A contents, final int x, final int y)
-		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
+		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException
 	{
 		this.addContentsAndPropertiesAtPosition(contents, null, x, y);
 	}
 
 	@Override
 	public void addContentsAndPropertiesAtPosition(final A contents, final B properties, final int x, final int y)
-			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException
+			throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException
 	{
 		final int newContentsIndex = noEventFireAddContentsAndProperties(contents, properties, x, y);
 
@@ -174,7 +174,7 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 	}
 
 	@Override
-	public void removeContents(final A contents) throws NoSuchContentsException
+	public void removeContents(final A contents) throws NoSuchContentsException, DatastoreException
 	{
 		final int indexOfRemovedObject = noEventFireRemoveContents(contents);
 
@@ -253,7 +253,7 @@ public class Table<A extends RackModelTableSpanningContents, B extends SpanningC
 		fireTableChangedEvent( outEvent );
 	}
 
-	protected void fireTableChangedEvent(final TableModelEvent<A, B> outEvent)
+	protected void fireTableChangedEvent(final TableModelEvent<A, B> outEvent) throws DatastoreException
 	{
 		for( final TableModelListener<A, B> lis : listeners )
 		{

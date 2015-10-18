@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -60,12 +59,10 @@ public class NoteDebugMadUiDefinition
 	private static final Class<NoteDebugMadUiInstance> INSTANCE_CLASS = NoteDebugMadUiInstance.class;
 
 	public NoteDebugMadUiDefinition( final BufferedImageAllocator bia,
-			final NoteDebugMadDefinition definition,
-			final ComponentImageFactory cif )
+			final NoteDebugMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,

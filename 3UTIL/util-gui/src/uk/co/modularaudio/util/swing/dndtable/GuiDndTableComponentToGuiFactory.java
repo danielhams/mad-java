@@ -22,12 +22,14 @@ package uk.co.modularaudio.util.swing.dndtable;
 
 import java.awt.Component;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.table.GuiTableComponentToGuiFactory;
 import uk.co.modularaudio.util.table.RackModelTableSpanningContents;
 
-public interface GuiDndTableComponentToGuiFactory<A extends RackModelTableSpanningContents, 
+public interface GuiDndTableComponentToGuiFactory<A extends RackModelTableSpanningContents,
 	B extends Component & GuiDndTableComponent>
 	extends GuiTableComponentToGuiFactory<A,B>
 {
-	public B generateSwingComponent( A tableModelComponent );
+	@Override
+	public B generateSwingComponent( A tableModelComponent ) throws DatastoreException;
 }

@@ -140,7 +140,7 @@ public class SubRackComponentsUiFactory
 		try
 		{
 			final SubRackMadDefinition srMd = (SubRackMadDefinition)componentService.findDefinitionById( SubRackMadDefinition.DEFINITION_ID );
-			srMud = new SubRackMadUiDefinition( bufferedImageAllocationService, srMd, componentImageFactory );
+			srMud = new SubRackMadUiDefinition( bufferedImageAllocationService, srMd );
 
 			muds.add( srMud );
 

@@ -26,9 +26,9 @@ import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.guicompfactory.AbstractGuiAudioComponent;
 import uk.co.modularaudio.service.guicompfactory.impl.components.PaintedComponentDefines;
+import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -37,13 +37,18 @@ public class MemReducedComponentFactory
 {
 //	private static Log log = LogFactory.getLog( MemReducedComponentFactory.class.getName() );
 
+	private final ComponentImageFactory componentImageFactory;
+
 	private final ContainerImages frontDecorationImages;
 	private final ContainerImages backDecorationImages;
 
 //	private final SwingDebugger swingDebugger;
 
-	public MemReducedComponentFactory( final BufferedImageAllocationService bias ) throws MadProcessingException, DatastoreException
+	public MemReducedComponentFactory( final ComponentImageFactory componentImageFactory )
+		throws MadProcessingException, DatastoreException
 	{
+		this.componentImageFactory = componentImageFactory;
+
 		frontDecorationImages = drawFrontDecorations();
 		backDecorationImages = drawBackDecorations();
 
@@ -309,13 +314,17 @@ public class MemReducedComponentFactory
 		return backDecorationImages;
 	}
 
-	public AbstractGuiAudioComponent createFrontGuiComponent( final RackComponent rc )
+	public AbstractGuiAudioComponent createFrontGuiComponent( final RackComponent rc ) throws DatastoreException
 	{
-		return new ResizableFrontContainer( frontDecorationImages, rc );
+		final String frontBufferedImageName = rc.getUiDefinition().getUiImagePrefix() + "_front.png";
+		final BufferedImage fbi = componentImageFactory.getBufferedImage( frontBufferedImageName );
+		return new ResizableFrontContainer( frontDecorationImages, fbi, rc );
 	}
 
-	public AbstractGuiAudioComponent createBackGuiComponent( final RackComponent rc )
+	public AbstractGuiAudioComponent createBackGuiComponent( final RackComponent rc ) throws DatastoreException
 	{
-		return new ResizableBackContainer( backDecorationImages, rc );
+		final String backBufferedImageName = rc.getUiDefinition().getUiImagePrefix() + "_back.png";
+		final BufferedImage bbi = componentImageFactory.getBufferedImage( backBufferedImageName );
+		return new ResizableBackContainer( backDecorationImages, bbi, rc );
 	}
 }

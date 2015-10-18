@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.ui.controller.CvSurfaceControllerUiJComponent;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -68,12 +67,10 @@ public class CvSurfaceMadUiDefinition
 	private static final Class<CvSurfaceMadUiInstance> INSTANCE_CLASS = CvSurfaceMadUiInstance.class;
 
 	public CvSurfaceMadUiDefinition( final BufferedImageAllocator bia,
-			final CvSurfaceMadDefinition definition,
-			final ComponentImageFactory cif )
+			final CvSurfaceMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

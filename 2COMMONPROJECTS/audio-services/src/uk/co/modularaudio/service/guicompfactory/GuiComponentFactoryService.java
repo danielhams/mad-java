@@ -21,12 +21,13 @@
 package uk.co.modularaudio.service.guicompfactory;
 
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponent;
+import uk.co.modularaudio.util.exception.DatastoreException;
 
 public interface GuiComponentFactoryService
 {
 
-	AbstractGuiAudioComponent createFrontGuiComponent( RackComponent inComponent );
+	AbstractGuiAudioComponent createFrontGuiComponent( RackComponent inComponent ) throws DatastoreException;
 
-	AbstractGuiAudioComponent createBackGuiComponent( RackComponent inComponent );
+	AbstractGuiAudioComponent createBackGuiComponent( RackComponent inComponent ) throws DatastoreException;
 
 }

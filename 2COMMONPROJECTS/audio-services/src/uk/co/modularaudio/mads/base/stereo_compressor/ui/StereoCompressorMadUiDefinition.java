@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -116,12 +115,10 @@ public class StereoCompressorMadUiDefinition
 	private static final Class<StereoCompressorMadUiInstance> INSTANCE_CLASS = StereoCompressorMadUiInstance.class;
 
 	public StereoCompressorMadUiDefinition( final BufferedImageAllocator bia,
-			final StereoCompressorMadDefinition definition,
-			final ComponentImageFactory cif )
+			final StereoCompressorMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,

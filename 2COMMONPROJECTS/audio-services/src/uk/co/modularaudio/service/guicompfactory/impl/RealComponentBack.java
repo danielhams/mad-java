@@ -43,10 +43,12 @@ class RealComponentBack extends JPanel
 	private final RackComponent rc;
 	private final BufferedImage backBufferedImage;
 
-	public RealComponentBack( final ResizableBackContainer resizableBackContainer, final RackComponent rc )
+	public RealComponentBack( final ResizableBackContainer resizableBackContainer,
+			final RackComponent rc,
+			final BufferedImage backBufferedImage )
 	{
 		this.rc = rc;
-		this.backBufferedImage = rc.getUiDefinition().getBackBufferedImage();
+		this.backBufferedImage = backBufferedImage;
 
 		this.setOpaque( true );
 		this.setLayout( null );

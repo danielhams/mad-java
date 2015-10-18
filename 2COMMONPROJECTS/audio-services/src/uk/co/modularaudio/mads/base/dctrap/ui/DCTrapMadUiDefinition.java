@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -67,12 +66,10 @@ public class DCTrapMadUiDefinition
 	private static final Class<DCTrapMadUiInstance> INSTANCE_CLASS = DCTrapMadUiInstance.class;
 
 	public DCTrapMadUiDefinition( final BufferedImageAllocator bia,
-			final DCTrapMadDefinition definition,
-			final ComponentImageFactory cif )
+			final DCTrapMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,

@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.guicompfactory.impl;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -38,7 +39,9 @@ public class ResizableFrontContainerMiddle extends JPanel
 
 	private final ComponentNameLabel componentNameLabel;
 
-	public ResizableFrontContainerMiddle( final ContainerImages ci, final RackComponent rc )
+	public ResizableFrontContainerMiddle( final ContainerImages ci,
+			final BufferedImage frontBufferedImage,
+			final RackComponent rc )
 	{
 		this.setOpaque( false );
 
@@ -57,7 +60,7 @@ public class ResizableFrontContainerMiddle extends JPanel
 		bBorder = new FixedYTransparentBorder( ci.bibi );
 
 		this.add( tBorder, "growx, wrap" );
-		this.add( new RealComponentFront( ci, rc ), "grow, wrap" );
+		this.add( new RealComponentFront( ci, rc, frontBufferedImage ), "grow, wrap" );
 		this.add( bBorder, "growx" );
 
 		componentNameLabel = new ComponentNameLabel( rc, this );

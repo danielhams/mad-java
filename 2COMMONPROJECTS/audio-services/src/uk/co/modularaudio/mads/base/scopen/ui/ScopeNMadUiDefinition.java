@@ -28,7 +28,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public class ScopeNMadUiDefinition<D extends ScopeNMadDefinition<D, I>,
@@ -40,7 +39,6 @@ U extends ScopeNMadUiInstance<D,I>>
 
 	public ScopeNMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,
-			final ImageFactory cif,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,
@@ -52,7 +50,6 @@ U extends ScopeNMadUiInstance<D,I>>
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				imagePrefix,
 				definition,
 				span,

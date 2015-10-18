@@ -24,10 +24,8 @@ import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
 import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadInstance;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNInstanceConfiguration;
 import uk.co.modularaudio.mads.base.imixern.ui.MixerNMadUiDefinition;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public class IMixer8MadUiDefinition extends MixerNMadUiDefinition<IMixer8MadDefinition, IMixer8MadInstance, IMixer8MadUiInstance>
@@ -36,13 +34,11 @@ public class IMixer8MadUiDefinition extends MixerNMadUiDefinition<IMixer8MadDefi
 	final static Span SPAN = new Span( 4, 4 );
 
 	public IMixer8MadUiDefinition( final BufferedImageAllocator bia,
-			final IMixer8MadDefinition definition,
-			final ComponentImageFactory cif )
+			final IMixer8MadDefinition definition )
 		throws DatastoreException
 	{
 		this( bia,
 				definition,
-				cif,
 				instanceConfigToUiConfig( IMixer8MadDefinition.INSTANCE_CONFIGURATION ) );
 	}
 
@@ -54,12 +50,10 @@ public class IMixer8MadUiDefinition extends MixerNMadUiDefinition<IMixer8MadDefi
 
 	private IMixer8MadUiDefinition( final BufferedImageAllocator bia,
 			final IMixer8MadDefinition definition,
-			final ImageFactory cif,
 			final IMixer8UiInstanceConfiguration uiConfiguration ) throws DatastoreException
 	{
 		super( bia,
 				definition,
-				cif,
 				MIXER8_IMAGE_PREFIX,
 				SPAN,
 				IMixer8MadUiInstance.class,

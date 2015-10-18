@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstance;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstanceConfiguration;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
@@ -48,11 +47,10 @@ public class NoteMultiplexerMadUiDefinition extends
 
 	public NoteMultiplexerMadUiDefinition(
 			final BufferedImageAllocator bia,
-			final NoteMultiplexerMadDefinition definition,
-			final ComponentImageFactory cif )
+			final NoteMultiplexerMadDefinition definition )
 			throws DatastoreException
 	{
-		super( bia, cif, definition.getId(), definition, INSTANCE_CLASS );
+		super( bia, definition.getId(), definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

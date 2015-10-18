@@ -139,7 +139,7 @@ public class TestTable extends TestCase
 	}
 
 	public void testAddingProperties()
-		throws ContentsAlreadyAddedException, TableCellFullException, NoSuchContentsException, TableIndexOutOfBoundsException
+		throws ContentsAlreadyAddedException, TableCellFullException, NoSuchContentsException, TableIndexOutOfBoundsException, DatastoreException
 	{
 		log.info("testAddingProperties beginning.");
 		final TableInterface<AudioComponent, AudioComponentProperties> table = new Table<AudioComponent, AudioComponentProperties>( 10, 10 );

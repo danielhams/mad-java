@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 import uk.co.modularaudio.util.swing.table.GuiTableDataModel;
 import uk.co.modularaudio.util.table.NoSuchContentsException;
@@ -163,7 +164,7 @@ public class RackDataModel extends GuiTableDataModel<RackComponent, RackComponen
 		}
 	}
 
-	public void removeAllComponents()
+	public void removeAllComponents() throws DatastoreException
 	{
 		try
 		{

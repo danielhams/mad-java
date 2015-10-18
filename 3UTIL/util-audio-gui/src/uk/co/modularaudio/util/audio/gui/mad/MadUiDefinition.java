@@ -20,13 +20,10 @@
 
 package uk.co.modularaudio.util.audio.gui.mad;
 
-import java.awt.image.BufferedImage;
-
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public abstract class MadUiDefinition
@@ -38,26 +35,20 @@ public abstract class MadUiDefinition
 
 	protected final D definition;
 	protected final BufferedImageAllocator bufferedImageAllocator;
-	protected final ImageFactory imageFactory;
 
 	protected String imagePrefix;
-
-	protected BufferedImage frontBufferedImage;
-	protected BufferedImage backBufferedImage;
 
 	protected boolean isDraggable;
 	protected boolean isParametrable;
 
 	public MadUiDefinition( final BufferedImageAllocator bia,
-			final ImageFactory imageFactory,
 			final String imagePrefix,
 			final D definition ) throws DatastoreException
 	{
-		this( bia, imageFactory, imagePrefix, definition, true, false );
+		this( bia, imagePrefix, definition, true, false );
 	}
 
 	public MadUiDefinition( final BufferedImageAllocator bia,
-			final ImageFactory imageFactory,
 			final String imagePrefix,
 			final D definition,
 			final boolean isDraggable,
@@ -69,9 +60,6 @@ public abstract class MadUiDefinition
 		this.imagePrefix = imagePrefix;
 
 		this.bufferedImageAllocator = bia;
-		this.imageFactory = imageFactory;
-		frontBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_front.png" );
-		backBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_back.png" );
 	}
 
 	public abstract AbstractMadUiInstance<D,I> createNewUiInstance( I instance ) throws DatastoreException;
@@ -103,18 +91,6 @@ public abstract class MadUiDefinition
 		return bufferedImageAllocator;
 	}
 
-	@Override
-	public final BufferedImage getFrontBufferedImage()
-	{
-		return frontBufferedImage;
-	}
-
-	@Override
-	public final BufferedImage getBackBufferedImage()
-	{
-		return backBufferedImage;
-	}
-
 	@SuppressWarnings("unchecked")
 	public AbstractMadUiInstance<D, I> createNewUiInstanceUT( final MadInstance<?,?> componentInstance )
 		throws DatastoreException
@@ -122,4 +98,9 @@ public abstract class MadUiDefinition
 		return createNewUiInstance( (I)componentInstance);
 	}
 
+	@Override
+	public String getUiImagePrefix()
+	{
+		return imagePrefix;
+	}
 }

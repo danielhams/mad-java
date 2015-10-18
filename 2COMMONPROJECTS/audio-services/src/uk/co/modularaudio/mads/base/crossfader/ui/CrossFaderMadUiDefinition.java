@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -87,12 +86,10 @@ public class CrossFaderMadUiDefinition
 	private static final Class<CrossFaderMadUiInstance> INSTANCE_CLASS = CrossFaderMadUiInstance.class;
 
 	public CrossFaderMadUiDefinition( final BufferedImageAllocator bia,
-			final CrossFaderMadDefinition definition,
-			final ComponentImageFactory cif )
+			final CrossFaderMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 				definition,
 				SPAN,

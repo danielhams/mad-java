@@ -93,7 +93,6 @@ import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefi
 import uk.co.modularaudio.mads.base.stereo_compressor.ui.StereoCompressorMadUiDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerMadUiDefinition;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
@@ -175,12 +174,11 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 				defsNeedingUi.remove( defClass );
 				final Class[] constructorParamTypes = new Class[] {
 						BufferedImageAllocator.class,
-						aud.getClass(),
-						ComponentImageFactory.class };
+						aud.getClass() };
 				final Object[] constructorParams = new Object[] {
 						bufferedImageAllocationService,
-						aud,
-						componentImageFactory };
+						aud };
+
 				final Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
 				final Object newInstance = c.newInstance( constructorParams );
 				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;

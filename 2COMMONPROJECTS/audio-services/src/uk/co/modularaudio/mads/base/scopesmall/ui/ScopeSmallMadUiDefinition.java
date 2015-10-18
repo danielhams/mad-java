@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
 import uk.co.modularaudio.mads.base.scopen.ui.display.ScopeWaveDisplay;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
@@ -95,26 +94,22 @@ public class ScopeSmallMadUiDefinition
 	}
 
 	public ScopeSmallMadUiDefinition( final BufferedImageAllocator bia,
-			final ScopeSmallMadDefinition definition,
-			final ComponentImageFactory cif )
+			final ScopeSmallMadDefinition definition )
 		throws DatastoreException, MadProcessingException
 	{
 		this( bia,
 				definition,
-				cif,
 				new ScopeNUiInstanceConfiguration( ScopeSmallMadDefinition.INSTANCE_CONFIGURATION,
 						VIS_COLOURS ) );
 	}
 
 	public ScopeSmallMadUiDefinition( final BufferedImageAllocator bia,
 			final ScopeSmallMadDefinition definition,
-			final ComponentImageFactory cif,
 			final ScopeNUiInstanceConfiguration uiInstanceConfiguration )
 		throws DatastoreException
 	{
 		super( bia,
 				definition,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_BLUE,
 				SPAN,
 				INSTANCE_CLASS,

@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -61,12 +60,10 @@ public class PrngMadUiDefinition
 	private static final Class<PrngMadUiInstance> INSTANCE_CLASS = PrngMadUiInstance.class;
 
 	public PrngMadUiDefinition( final BufferedImageAllocator bia,
-			final PrngMadDefinition definition,
-			final ComponentImageFactory cif )
+			final PrngMadDefinition definition )
 			throws DatastoreException
 		{
 			super( bia,
-					cif,
 					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 					definition,
 					SPAN,

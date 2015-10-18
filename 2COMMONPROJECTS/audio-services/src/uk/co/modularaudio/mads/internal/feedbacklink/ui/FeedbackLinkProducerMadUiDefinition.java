@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
@@ -43,10 +42,11 @@ public class FeedbackLinkProducerMadUiDefinition extends MadUiDefinition<Feedbac
 
 	private static final Point PRODUCER_CV_CHANNEL_CENTER = new Point( 160, 30 );
 
-	public FeedbackLinkProducerMadUiDefinition( final BufferedImageAllocator bia, final FeedbackLinkProducerMadDefinition definition,
-			final ComponentImageFactory cif ) throws DatastoreException
+	public FeedbackLinkProducerMadUiDefinition( final BufferedImageAllocator bia,
+			final FeedbackLinkProducerMadDefinition definition )
+		throws DatastoreException
 	{
-		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

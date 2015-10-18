@@ -22,7 +22,9 @@ package uk.co.modularaudio.util.table;
 
 import java.util.EventListener;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
+
 public interface TableModelListener<A extends RackModelTableSpanningContents, B extends SpanningContentsProperties> extends EventListener
 {
-    public void tableChanged(TableModelEvent<A, B> outEvent);
+    public void tableChanged(TableModelEvent<A, B> outEvent) throws DatastoreException;
 }

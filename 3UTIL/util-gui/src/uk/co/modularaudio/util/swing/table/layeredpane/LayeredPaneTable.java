@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.swing.JLayeredPane;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.table.GuiTable;
 import uk.co.modularaudio.util.swing.table.GuiTableComponentTableDataModelListener;
 import uk.co.modularaudio.util.swing.table.GuiTableComponentToGuiFactory;
@@ -83,6 +84,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 			final boolean showGrid,
 			final Color gridColour,
 			final GuiTableEmptyCellPainter emptyCellPainter )
+		throws DatastoreException
 	{
 		this.dataModel = dataModel;
 		this.gridSize = gridSize;
@@ -101,7 +103,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		fullRefreshFromModel();
 	}
 
-	private void fullRefreshFromModel()
+	private void fullRefreshFromModel() throws DatastoreException
 	{
 		// Reset metadata
 		numCols = dataModel.getNumCols();
@@ -216,7 +218,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 	}
 
 	@Override
-	public void insertGuiComponentFromModelIndex(final int index)
+	public void insertGuiComponentFromModelIndex(final int index) throws DatastoreException
 	{
 		// We don't have a gui component yet, so fetch the table model component at that index,
 		// create a new gui component for it, and add it in the appropriate place.
@@ -345,7 +347,7 @@ public class LayeredPaneTable<A extends RackModelTableSpanningContents, B extend
 		return gridSize;
 	}
 
-	public void setDataModel( final TableInterface<A, B> dataModel )
+	public void setDataModel( final TableInterface<A, B> dataModel ) throws DatastoreException
 	{
 		if( this.dataModel != null )
 		{

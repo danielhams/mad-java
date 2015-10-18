@@ -29,7 +29,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public class SpectralAmpGenMadUiDefinition<D extends SpectralAmpGenMadDefinition<D, I>,
@@ -46,7 +45,6 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 
 	public SpectralAmpGenMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,
-			final ImageFactory cif,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,
@@ -59,7 +57,6 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				imagePrefix,
 				definition,
 				span,

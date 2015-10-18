@@ -22,9 +22,10 @@ package uk.co.modularaudio.util.swing.table;
 
 import java.awt.Component;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.RackModelTableSpanningContents;
 
 public interface GuiTableComponentToGuiFactory<A extends RackModelTableSpanningContents, B extends Component>
 {
-	public B generateSwingComponent( A tableModelComponent );
+	public B generateSwingComponent( A tableModelComponent ) throws DatastoreException;
 }

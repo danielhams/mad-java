@@ -26,7 +26,6 @@ import java.awt.Rectangle;
 import uk.co.modularaudio.mads.base.specampgen.ui.SpectralAmpGenMadUiDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
@@ -105,13 +104,11 @@ public class SpecAmpSmallMadUiDefinition
 	private static final Class<SpecAmpSmallMadUiInstance> INSTANCE_CLASS = SpecAmpSmallMadUiInstance.class;
 
 	public SpecAmpSmallMadUiDefinition( final BufferedImageAllocator bia,
-			final SpecAmpSmallMadDefinition definition,
-			final ComponentImageFactory cif )
+			final SpecAmpSmallMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
 				definition,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				SPAN,
 				INSTANCE_CLASS,

@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSamplePlayerMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -87,12 +86,10 @@ public class SingleSamplePlayerMadUiDefinition
 	private static final Class<SingleSamplePlayerMadUiInstance> INSTANCE_CLASS = SingleSamplePlayerMadUiInstance.class;
 
 	public SingleSamplePlayerMadUiDefinition( final BufferedImageAllocator bia,
-			final SingleSamplePlayerMadDefinition definition,
-			final ComponentImageFactory cif )
+			final SingleSamplePlayerMadDefinition definition )
 			throws DatastoreException
 		{
 			super( bia,
-					cif,
 					MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 					definition,
 					SPAN,

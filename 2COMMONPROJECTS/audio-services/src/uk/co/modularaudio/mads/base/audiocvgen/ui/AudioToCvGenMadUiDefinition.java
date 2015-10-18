@@ -29,7 +29,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
-import uk.co.modularaudio.util.image.ImageFactory;
 import uk.co.modularaudio.util.table.Span;
 
 public class AudioToCvGenMadUiDefinition<D extends AudioToCvGenMadDefinition<D,I>,
@@ -39,7 +38,6 @@ public class AudioToCvGenMadUiDefinition<D extends AudioToCvGenMadDefinition<D,I
 {
 	public AudioToCvGenMadUiDefinition( final BufferedImageAllocator bia,
 			final D definition,
-			final ImageFactory cif,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,
@@ -52,7 +50,6 @@ public class AudioToCvGenMadUiDefinition<D extends AudioToCvGenMadDefinition<D,I
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				imagePrefix,
 				definition,
 				span,

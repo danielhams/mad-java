@@ -54,6 +54,7 @@ public class RackTable
 			final Dimension gridSize,
 			final boolean showGrid,
 			final Color gridColour)
+		throws DatastoreException
 	{
 		super( rackDataModel, factory, dndPolicy, dndDecorations, gridSize, showGrid, gridColour, emptyCellPainter);
 		this.dndPolicy = dndPolicy;

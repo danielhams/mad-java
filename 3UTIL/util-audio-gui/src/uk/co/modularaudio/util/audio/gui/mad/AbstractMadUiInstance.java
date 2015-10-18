@@ -41,7 +41,7 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 	private static Log log = LogFactory.getLog( AbstractMadUiInstance.class.getName() );
 
 	protected final I instance;
-	protected final MadUiDefinition<D,  I> uiDefinition;
+	protected final MadUiDefinition<D,I> uiDefinition;
 
 	protected MadUiChannelInstance[] channelInstances = new MadUiChannelInstance[0];
 	protected AbstractMadUiControlInstance<?,?,?>[] controlInstances = new AbstractMadUiControlInstance[0];

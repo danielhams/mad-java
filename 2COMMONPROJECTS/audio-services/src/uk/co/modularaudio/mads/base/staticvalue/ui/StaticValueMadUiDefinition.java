@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -65,12 +64,10 @@ public class StaticValueMadUiDefinition
 	private static final Class<StaticValueMadUiInstance> INSTANCE_CLASS = StaticValueMadUiInstance.class;
 
 	public StaticValueMadUiDefinition( final BufferedImageAllocator bia,
-			final StaticValueMadDefinition definition,
-			final ComponentImageFactory cif )
+			final StaticValueMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,

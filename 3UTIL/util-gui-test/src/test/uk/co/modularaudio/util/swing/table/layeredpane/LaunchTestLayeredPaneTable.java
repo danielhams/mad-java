@@ -51,27 +51,27 @@ import uk.co.modularaudio.util.table.impl.Table;
 public class LaunchTestLayeredPaneTable extends JFrame
 {
 	private static final long serialVersionUID = -2122532132398178239L;
-	
+
 	private static Log log = LogFactory.getLog( LaunchTestLayeredPaneTable.class.getName() );
 
 	private LayoutManager layoutManager = null;
-	
+
 	private JScrollPane frontScrollpane = null;
 
 	private JComponent frontAudioComponentTable = null;
-	
+
 	public LaunchTestLayeredPaneTable() throws RecordNotFoundException, DatastoreException
 	{
 		this.setTitle("Test Layerd Pane Table.");
 		this.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
 		this.setSize( new Dimension( 800, 600 ) );
 		this.setLayout( getLayoutManager() );
-		
+
 		// The scrollpane contains the front view
 		this.add( getFrontScrollpane(), "growx, growy 100");
 	}
-	
-	public JScrollPane getFrontScrollpane()
+
+	public JScrollPane getFrontScrollpane() throws DatastoreException
 	{
 		if( frontScrollpane == null )
 		{
@@ -80,18 +80,18 @@ public class LaunchTestLayeredPaneTable extends JFrame
 			frontScrollpane.setVerticalScrollBarPolicy( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
 			frontScrollpane.getVerticalScrollBar().setUnitIncrement( 16 );
 			frontScrollpane.setAutoscrolls( true );
-			JViewport viewport = frontScrollpane.getViewport();
-			JComponent fact = getFrontAudioComponentTable();
+			final JViewport viewport = frontScrollpane.getViewport();
+			final JComponent fact = getFrontAudioComponentTable();
 			viewport.add( fact, "grow" );
 		}
 		return frontScrollpane;
 	}
-	
-	public JComponent getFrontAudioComponentTable()
+
+	public JComponent getFrontAudioComponentTable() throws DatastoreException
 	{
 		if( frontAudioComponentTable == null )
 		{
-			TableInterface<TestTC, TestTP> tableModel = new Table<TestTC, TestTP>(100, 100);
+			final TableInterface<TestTC, TestTP> tableModel = new Table<TestTC, TestTP>(100, 100);
 			try
 			{
 				int num = 0;
@@ -99,7 +99,7 @@ public class LaunchTestLayeredPaneTable extends JFrame
 				{
 					for( int y = 0 ; y < 20 ; y+=2 )
 					{
-						TestTC contents = new TestTC( num );
+						final TestTC contents = new TestTC( num );
 						num++;
 						tableModel.addContentsAtPosition(contents, x, y );
 					}
@@ -109,28 +109,28 @@ public class LaunchTestLayeredPaneTable extends JFrame
 //				TestTC contentsTwo = new TestTC( 2 );
 //				tableModel.addContentsAtPosition( contentsTwo, 0, 2 );
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				log.error( e );
 			}
-			
-			Dimension gridSize = new Dimension( 50, 50 );
-			boolean showGrid = true;
-			Color gridColor = Color.GREEN;
-			TestCTGF componentToGuiFactory = new TestCTGF();
-			TestECP emptyCellPainter = new TestECP();
-			LayeredPaneTable<TestTC, TestTP, TestGC> testSwingTable = new LayeredPaneTable<TestTC, TestTP, TestGC>( tableModel,
+
+			final Dimension gridSize = new Dimension( 50, 50 );
+			final boolean showGrid = true;
+			final Color gridColor = Color.GREEN;
+			final TestCTGF componentToGuiFactory = new TestCTGF();
+			final TestECP emptyCellPainter = new TestECP();
+			final LayeredPaneTable<TestTC, TestTP, TestGC> testSwingTable = new LayeredPaneTable<TestTC, TestTP, TestGC>( tableModel,
 					componentToGuiFactory,
 					gridSize,
 					showGrid,
 					gridColor,
 					emptyCellPainter );
-			
+
 			frontAudioComponentTable = testSwingTable;
 		}
 		return frontAudioComponentTable;
 	}
-	
+
 	private LayoutManager getLayoutManager()
 	{
 		if( layoutManager == null )
@@ -144,7 +144,7 @@ public class LaunchTestLayeredPaneTable extends JFrame
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		SwingUtilities.invokeLater( new Runnable()
 		{
@@ -157,10 +157,10 @@ public class LaunchTestLayeredPaneTable extends JFrame
 //					UIManager.setLookAndFeel( newLookAndFeel );
 					UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
 
-					LaunchTestLayeredPaneTable launcher = new LaunchTestLayeredPaneTable();
+					final LaunchTestLayeredPaneTable launcher = new LaunchTestLayeredPaneTable();
 					launcher.setVisible( true );
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					log.error( e );
 				}

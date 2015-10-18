@@ -36,7 +36,7 @@ public interface TableInterface<A extends RackModelTableSpanningContents, B exte
 		throws DatastoreException, ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException;
 
 	void addContentsAndPropertiesAtPosition( A contents, B properties, int x, int y)
-		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException;
+		throws ContentsAlreadyAddedException, TableCellFullException, TableIndexOutOfBoundsException, DatastoreException;
 
 	boolean canStoreContentsAtPosition( A contents, int x, int y )
 		throws ContentsAlreadyAddedException, TableIndexOutOfBoundsException;
@@ -49,7 +49,7 @@ public interface TableInterface<A extends RackModelTableSpanningContents, B exte
 
 
 	void removeContents( A contents )
-		throws NoSuchContentsException;
+		throws NoSuchContentsException, DatastoreException;
 
 	// Table dimensions
 	Span getSpan();

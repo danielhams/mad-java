@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
@@ -42,10 +41,11 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 	private static final Point PRODUCER_LEFT_CHANNEL_CENTER = new Point( 160, 30 );
 	private static final Point PRODUCER_RIGHT_CHANNEL_CENTER = new Point( 180, 30 );
 
-	public BlockingWriteRingMadUiDefinition( final BufferedImageAllocator bia, final BlockingWriteRingMadDefinition definition,
-			final ComponentImageFactory cif ) throws DatastoreException
+	public BlockingWriteRingMadUiDefinition( final BufferedImageAllocator bia,
+			final BlockingWriteRingMadDefinition definition )
+		throws DatastoreException
 	{
-		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

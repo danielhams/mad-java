@@ -22,6 +22,7 @@ package uk.co.modularaudio.util.swing.table;
 
 import java.awt.Component;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.RackModelTableSpanningContents;
 import uk.co.modularaudio.util.table.SpanningContentsProperties;
 import uk.co.modularaudio.util.table.TableModelEvent;
@@ -42,7 +43,7 @@ public class GuiTableComponentTableDataModelListener<A extends RackModelTableSpa
 	}
 
 	@Override
-	public void tableChanged(final TableModelEvent<A, B> event)
+	public void tableChanged(final TableModelEvent<A, B> event) throws DatastoreException
 	{
 //		log.debug("Event received: " + event.toString());
 

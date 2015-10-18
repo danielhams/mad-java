@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -65,12 +64,10 @@ public class LinearCVAMadUiDefinition
 	private static final Class<LinearCVAMadUiInstance> INSTANCE_CLASS = LinearCVAMadUiInstance.class;
 
 	public LinearCVAMadUiDefinition( final BufferedImageAllocator bia,
-			final LinearCVAMadDefinition definition,
-			final ComponentImageFactory cif )
+			final LinearCVAMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_1X1_WHITE,
 				definition,
 				SPAN,

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
@@ -73,12 +72,11 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	private static final Rectangle SAVE_PATCH_BOUNDS = new Rectangle( 490, 25, 60, 30 );
 
 	public SubRackMadUiDefinition( final BufferedImageAllocator bia,
-			final SubRackMadDefinition definition,
-			final ComponentImageFactory cif )
+			final SubRackMadDefinition definition )
 		throws DatastoreException
 	{
 		// Sub rack is draggable
-		super( bia, cif, MadUIStandardBackgrounds.STD_2X1_DARKGRAY, definition, true, false );
+		super( bia, MadUIStandardBackgrounds.STD_2X1_DARKGRAY, definition, true, false );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

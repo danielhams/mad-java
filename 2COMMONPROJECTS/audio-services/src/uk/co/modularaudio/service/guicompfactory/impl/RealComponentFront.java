@@ -42,9 +42,11 @@ class RealComponentFront extends JPanel
 	private final BufferedImage frontBufferedImage;
 	private final RackComponent rc;
 
-	public RealComponentFront( final ContainerImages ci, final RackComponent rc )
+	public RealComponentFront( final ContainerImages ci,
+			final RackComponent rc,
+			final BufferedImage frontBufferedImage )
 	{
-		this.frontBufferedImage = rc.getUiDefinition().getFrontBufferedImage();
+		this.frontBufferedImage = frontBufferedImage;
 		this.rc = rc;
 		this.setOpaque( true );
 		this.setLayout( null );

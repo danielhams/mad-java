@@ -29,6 +29,7 @@ import java.awt.Point;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.swing.dndtable.GuiDndTable;
 import uk.co.modularaudio.util.swing.dndtable.GuiDndTableComponent;
 import uk.co.modularaudio.util.swing.dndtable.GuiDndTableComponentToGuiFactory;
@@ -67,6 +68,7 @@ public class LayeredPaneDndTable<A extends RackModelTableSpanningContents,
 			final boolean showGrid,
 			final Color gridColour,
 			final GuiTableEmptyCellPainter emptyCellPainter)
+		throws DatastoreException
 	{
 		super(dataModel, factory, gridSize, showGrid, gridColour, emptyCellPainter );
 

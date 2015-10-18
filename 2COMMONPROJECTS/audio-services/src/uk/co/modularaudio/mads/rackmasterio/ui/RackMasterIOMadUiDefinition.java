@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
@@ -68,12 +67,11 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 			new Point( CONSUMER_NOTE_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
 
 	public RackMasterIOMadUiDefinition( final BufferedImageAllocator bia,
-			final RackMasterIOMadDefinition definition,
-			final ComponentImageFactory cif )
+			final RackMasterIOMadDefinition definition )
 		throws DatastoreException
 	{
 		// master io is not draggable.
-		super( bia, cif, MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
+		super( bia, MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
 	}
 
 	@Override

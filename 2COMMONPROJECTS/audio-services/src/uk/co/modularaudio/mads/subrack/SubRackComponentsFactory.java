@@ -30,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
-import uk.co.modularaudio.service.configuration.ConfigurationService;
 import uk.co.modularaudio.service.gui.GuiService;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
@@ -56,7 +55,6 @@ public class SubRackComponentsFactory
 
 	private SubRackCreationContext creationContext;
 
-	private ConfigurationService configurationService;
 	private MadClassificationService classificationService;
 	private MadComponentService componentService;
 	private MadGraphService graphService;
@@ -76,8 +74,7 @@ public class SubRackComponentsFactory
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( configurationService == null ||
-				classificationService == null ||
+		if( classificationService == null ||
 				componentService == null ||
 				graphService == null ||
 				rackService == null ||
@@ -107,11 +104,6 @@ public class SubRackComponentsFactory
 		{
 			throw new ComponentConfigurationException( "Unable to create mad definitions: " + e.toString() );
 		}
-	}
-
-	public void setConfigurationService( final ConfigurationService configurationService )
-	{
-		this.configurationService = configurationService;
 	}
 
 	public void setClassificationService( final MadClassificationService classificationService )

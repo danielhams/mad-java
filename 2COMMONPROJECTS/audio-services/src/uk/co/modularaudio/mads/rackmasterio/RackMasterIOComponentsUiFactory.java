@@ -123,7 +123,8 @@ public class RackMasterIOComponentsUiFactory
 		try
 		{
 			final RackMasterIOMadDefinition rmMd = (RackMasterIOMadDefinition) componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
-			rmMud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService, rmMd, componentImageFactory );
+			rmMud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService,
+					rmMd );
 			muds.add( rmMud );
 
 			componentUiService.registerComponentUiFactory( this );

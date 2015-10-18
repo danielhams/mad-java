@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -83,12 +82,10 @@ public class DJEQMadUiDefinition
 	private static final Class<DJEQMadUiInstance> INSTANCE_CLASS = DJEQMadUiInstance.class;
 
 	public DJEQMadUiDefinition( final BufferedImageAllocator bia,
-			final DJEQMadDefinition definition,
-			final ComponentImageFactory cif )
+			final DJEQMadDefinition definition )
 			throws DatastoreException
 		{
 			super( bia,
-					cif,
 					MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
 					definition,
 					SPAN,

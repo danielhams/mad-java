@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -89,12 +88,10 @@ public class OscilloscopeMadUiDefinition
 	private static final Class<OscilloscopeMadUiInstance> INSTANCE_CLASS = OscilloscopeMadUiInstance.class;
 
 	public OscilloscopeMadUiDefinition( final BufferedImageAllocator bia,
-			final OscilloscopeMadDefinition definition,
-			final ComponentImageFactory cif )
+			final OscilloscopeMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,

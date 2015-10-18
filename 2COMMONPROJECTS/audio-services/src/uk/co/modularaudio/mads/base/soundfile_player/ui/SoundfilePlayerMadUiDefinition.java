@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
@@ -105,12 +104,10 @@ public class SoundfilePlayerMadUiDefinition extends
 	private static final Class<SoundfilePlayerMadUiInstance> INSTANCE_CLASS = SoundfilePlayerMadUiInstance.class;
 
 	public SoundfilePlayerMadUiDefinition( final BufferedImageAllocator bia,
-			final SoundfilePlayerMadDefinition definition,
-			final ComponentImageFactory cif )
+			final SoundfilePlayerMadDefinition definition )
 		throws DatastoreException
 	{
 		super( bia,
-				cif,
 				MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
 				definition,
 				SPAN,

@@ -22,6 +22,7 @@ package uk.co.modularaudio.util.swing.table;
 
 import java.awt.Component;
 
+import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.RackModelTableSpanningContents;
 import uk.co.modularaudio.util.table.SpanningContentsProperties;
 
@@ -32,7 +33,7 @@ public interface GuiTable<A extends RackModelTableSpanningContents, B extends Sp
 			int indexInModel,
 			int gridStartX, int gridStartY, int gridEndX, int gridEndY );
 
-	public void insertGuiComponentFromModelIndex(int iCounter);
+	public void insertGuiComponentFromModelIndex(int iCounter) throws DatastoreException;
 
 	public void updateGuiComponentFromModelIndex(int uCounter);
 
@@ -41,6 +42,6 @@ public interface GuiTable<A extends RackModelTableSpanningContents, B extends Sp
 	public void contentsChangeBegin();
 
 	public void contentsChangeEnd();
-	
+
 	public void destroy();
 }
