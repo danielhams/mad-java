@@ -27,12 +27,11 @@ import java.util.ArrayList;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -84,10 +83,11 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public AbstractMadUiInstance<?,?> createNewUiInstance( final SubRackMadInstance madInstance )
+	public SubRackMadUiInstance createNewUiInstance( final SubRackMadInstance madInstance )
 		throws DatastoreException
 	{
-		AbstractMadUiInstance<SubRackMadDefinition,SubRackMadInstance> retVal = null;
+		final SubRackMadInstance srMadInstance = madInstance;
+		SubRackMadUiInstance retVal = null;
 		try
 		{
 			// Setup where the channels live
@@ -100,7 +100,7 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 				uiChannelInstances.add( new MadUiChannelInstance( computeCenterForChannel( c, auci), auci ) );
 			}
 
-			retVal = new SubRackMadUiInstance( madInstance, this );
+			retVal = new SubRackMadUiInstance( srMadInstance, this );
 
 			// And setup the controls
 			final ArrayList<MadUiControlDefinition<?,?,?>> controlDefinitions = new ArrayList<MadUiControlDefinition<?,?,?>>();

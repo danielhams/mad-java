@@ -36,7 +36,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 class FakeMadInstance extends MadInstance<FakeMadDefinition, FakeMadInstance>
 {
 
-	public FakeMadInstance( final FakeMadDefinition definition ) throws MadProcessingException
+	public FakeMadInstance( final FakeMadDefinition definition )
 	{
 		super( FakeRackComponent.FAKE_STR, definition, new HashMap<MadParameterDefinition,String>(),
 				definition.getChannelConfigurationForParameters( null ) );
@@ -51,7 +51,7 @@ class FakeMadInstance extends MadInstance<FakeMadDefinition, FakeMadInstance>
 	@Override
 	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
 			final MadTimingParameters timingParameters , final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags , final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelConnectedFlags channelConnectedFlags , final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}

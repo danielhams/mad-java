@@ -20,20 +20,27 @@
 
 package uk.co.modularaudio.mads.base.imixer3.mu;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.mads.base.imixern.mu.MixerNInstanceConfiguration;
+import uk.co.modularaudio.mads.base.imixern.mu.MixerNMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class IMixer3MadDefinition extends MixerNMadDefinition<IMixer3MadDefinition, IMixer3MadInstance>
+public class IMixer3MadDefinition
+	extends MixerNMadDefinition<IMixer3MadDefinition, IMixer3MadInstance>
+	implements BaseMadDefinition
 {
 	private static Log log = LogFactory.getLog( IMixer3MadDefinition.class.getName() );
 
@@ -66,7 +73,9 @@ public class IMixer3MadDefinition extends MixerNMadDefinition<IMixer3MadDefiniti
 		}
 	}
 
-	public IMixer3MadDefinition( final BaseComponentsCreationContext creationContent,
+	private final BaseComponentsCreationContext creationContext;
+
+	public IMixer3MadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService )
 		throws DatastoreException, RecordNotFoundException
 	{
@@ -77,6 +86,19 @@ public class IMixer3MadDefinition extends MixerNMadDefinition<IMixer3MadDefiniti
 						CLASS_DESC,
 						ReleaseState.RELEASED ),
 				INSTANCE_CONFIGURATION );
+		this.creationContext = creationContext;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+			throws MadProcessingException
+	{
+		return new IMixer3MadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 
 }

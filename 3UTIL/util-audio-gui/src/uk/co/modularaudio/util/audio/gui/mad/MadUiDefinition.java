@@ -40,6 +40,8 @@ public abstract class MadUiDefinition
 	protected final BufferedImageAllocator bufferedImageAllocator;
 	protected final ImageFactory imageFactory;
 
+	protected String imagePrefix;
+
 	protected BufferedImage frontBufferedImage;
 	protected BufferedImage backBufferedImage;
 
@@ -61,18 +63,18 @@ public abstract class MadUiDefinition
 			final boolean isDraggable,
 			final boolean isParametrable ) throws DatastoreException
 	{
-		this.bufferedImageAllocator = bia;
-		this.imageFactory = imageFactory;
 		this.definition = definition;
 		this.isDraggable = isDraggable;
 		this.isParametrable = isParametrable;
+		this.imagePrefix = imagePrefix;
 
+		this.bufferedImageAllocator = bia;
+		this.imageFactory = imageFactory;
 		frontBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_front.png" );
-
 		backBufferedImage = imageFactory.getBufferedImage( imagePrefix + "_back.png" );
 	}
 
-	public abstract AbstractMadUiInstance<?, ?> createNewUiInstance( I instance ) throws DatastoreException;
+	public abstract AbstractMadUiInstance<D,I> createNewUiInstance( I instance ) throws DatastoreException;
 
 	public final D getDefinition()
 	{
@@ -89,12 +91,17 @@ public abstract class MadUiDefinition
 		return isParametrable;
 	}
 
+	public final String getImagePrefix()
+	{
+		return imagePrefix;
+	}
+
+	public abstract Span getCellSpan();
+
 	public final BufferedImageAllocator getBufferedImageAllocator()
 	{
 		return bufferedImageAllocator;
 	}
-
-	public abstract Span getCellSpan();
 
 	@Override
 	public final BufferedImage getFrontBufferedImage()
@@ -106,6 +113,13 @@ public abstract class MadUiDefinition
 	public final BufferedImage getBackBufferedImage()
 	{
 		return backBufferedImage;
+	}
+
+	@SuppressWarnings("unchecked")
+	public AbstractMadUiInstance<D, I> createNewUiInstanceUT( final MadInstance<?,?> componentInstance )
+		throws DatastoreException
+	{
+		return createNewUiInstance( (I)componentInstance);
 	}
 
 }

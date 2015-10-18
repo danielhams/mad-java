@@ -23,9 +23,9 @@ package uk.co.modularaudio.mads.base.stereo_compressor.mu;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.stereo_gate.ui.ThresholdTypeEnum;
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
+import uk.co.modularaudio.mads.base.stereo_compressor.ui.ThresholdTypeEnum;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;

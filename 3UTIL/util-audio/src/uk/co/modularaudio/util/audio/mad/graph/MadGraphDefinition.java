@@ -32,20 +32,20 @@ import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 public class MadGraphDefinition<D extends MadGraphDefinition<D,I>, I extends MadGraphInstance<D,I>>
 	extends MadDefinition<D,I>
 {
-	public MadGraphDefinition( String id,
-			String name,
-			boolean isParametrable,
-			MadClassification classification,
-			Collection<MadParameterDefinition> parameterDefinitions,
-			MadGraphQueueBridge<I> ioQueueBridge )
+	public MadGraphDefinition( final String id,
+			final String name,
+			final boolean isParametrable,
+			final MadClassification classification,
+			final Collection<MadParameterDefinition> parameterDefinitions,
+			final MadGraphQueueBridge<I> ioQueueBridge )
 	{
 		super( id, name, isParametrable, classification, parameterDefinitions, ioQueueBridge );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters(Map<MadParameterDefinition, String> paramValues)
+	public MadChannelConfiguration getChannelConfigurationForParameters(final Map<MadParameterDefinition, String> paramValues)
 		throws MadProcessingException
 	{
-			throw new MadProcessingException( "NI" );
+		throw new MadProcessingException( "NI" );
 	}
 }

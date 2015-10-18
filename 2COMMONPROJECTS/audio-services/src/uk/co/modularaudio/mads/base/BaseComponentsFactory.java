@@ -20,214 +20,124 @@
 
 package uk.co.modularaudio.mads.base;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
-import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadDefinition;
-import uk.co.modularaudio.mads.base.audioanalyser.mu.AudioAnalyserMadInstance;
-import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadDefinition;
-import uk.co.modularaudio.mads.base.audiocvconverter.mu.AudioCvConverterMadInstance;
 import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadDefinition;
-import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadInstance;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
-import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadInstance;
-import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadDefinition;
-import uk.co.modularaudio.mads.base.bessel4.mu.Bessel4FilterMadInstance;
-import uk.co.modularaudio.mads.base.cdfrequencyfilter.mu.CDFrequencyFilterMadDefinition;
-import uk.co.modularaudio.mads.base.cdfrequencyfilter.mu.CDFrequencyFilterMadInstance;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
-import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
-import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
-import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadInstance;
 import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadDefinition;
-import uk.co.modularaudio.mads.base.cvsurface.mu.CvSurfaceMadInstance;
 import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
-import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadInstance;
 import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadDefinition;
-import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
 import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadDefinition;
-import uk.co.modularaudio.mads.base.djeq.mu.DJEQMadInstance;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadDefinition;
-import uk.co.modularaudio.mads.base.envelope.mu.EnvelopeMadInstance;
 import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadDefinition;
-import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstance;
 import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadDefinition;
-import uk.co.modularaudio.mads.base.imixer3.mu.IMixer3MadInstance;
 import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadDefinition;
-import uk.co.modularaudio.mads.base.imixer8.mu.IMixer8MadInstance;
 import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadDefinition;
-import uk.co.modularaudio.mads.base.interptester.mu.InterpTesterMadInstance;
-import uk.co.modularaudio.mads.base.inverter.mu.InverterMadDefinition;
-import uk.co.modularaudio.mads.base.inverter.mu.InverterMadInstance;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
-import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
-import uk.co.modularaudio.mads.base.midside.mu.MidSideMadInstance;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
-import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadInstance;
+import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
-import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstance;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
-import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadInstance;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
-import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadInstance;
 import uk.co.modularaudio.mads.base.prng.mu.PrngMadDefinition;
-import uk.co.modularaudio.mads.base.prng.mu.PrngMadInstance;
 import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadDefinition;
-import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
 import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinition;
-import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadInstance;
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
-import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadInstance;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
-import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadInstance;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
-import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadInstance;
-import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
-import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadInstance;
 import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
-import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadInstance;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
-import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
-import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadDefinition;
-import uk.co.modularaudio.mads.base.spectralroll.mu.SpectralRollMadInstance;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
-import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
 import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefinition;
-import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadInstance;
-import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadDefinition;
-import uk.co.modularaudio.mads.base.supersawmodule.mu.SuperSawModuleMadInstance;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
-import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadInstance;
-import uk.co.modularaudio.service.madcomponent.AbstractMadComponentFactory;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
+import uk.co.modularaudio.service.madclassification.MadClassificationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
+import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.MAConstraintViolationException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class BaseComponentsFactory extends AbstractMadComponentFactory
+public class BaseComponentsFactory
+	implements ComponentWithLifecycle, MadComponentFactory
 {
-//	private static Log log = LogFactory.getLog( BaseComponentsFactory.class.getName() );
+	private static Log log = LogFactory.getLog( BaseComponentsFactory.class.getName() );
 
-	// Definitions to instances
-	private final Map<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>> > defClassToInsClassMap =
-		new HashMap<Class<? extends MadDefinition<?,?>>, Class<? extends MadInstance<?,?>>>();
+	private MadClassificationService classificationService;
+	private MadComponentService componentService;
+	private AdvancedComponentsFrontController advancedComponentsFrontController;
 
-	private BaseComponentsCreationContext creationContext = null;
+	private BaseComponentsCreationContext creationContext;
 
-	private AdvancedComponentsFrontController advancedComponentsFrontController = null;
+	private ScaleAndOffsetMadDefinition saoMD;
+	private StaticValueMadDefinition svMD;
+	private LimiterMadDefinition limMD;
+	private OscilloscopeMadDefinition oscMD;
+	private CrossFaderMadDefinition cfMD;
+	private FrequencyFilterMadDefinition ffMD;
+	private SpecAmpSmallMadDefinition sasMD;
+	private SpecAmpLargeMadDefinition salMD;
+	private NoteToCvMadDefinition ntcMD;
+	private CvSurfaceMadDefinition cvsMD;
+	private LinearCVAMadDefinition lcvaMD;
+	private PrngMadDefinition prngMD;
+	private DCTrapMadDefinition dctrapMD;
+	private StereoCompressorMadDefinition stcompMD;
+	private NoteMultiplexerMadDefinition nmpMD;
+	private BandLimitedOscillatorMadDefinition bloMD;
+	private WaveRollerMadDefinition wrMD;
+	private SoundfilePlayerMadDefinition sfpMD;
+	private RBJFilterMadDefinition rjbMD;
+	private MoogFilterMadDefinition moogMD;
+	private InterpTesterMadDefinition interpMD;
+	private IMixer3MadDefinition mix3MD;
+	private IMixer8MadDefinition mix8MD;
+	private DJEQMadDefinition djeqMD;
+	private MidSideMadDefinition midsideMD;
+	private ScopeSmallMadDefinition scopesMD;
+	private ScopeLargeMadDefinition scopelMD;
+	private AudioToCv4MadDefinition atc4MD;
+	private CvToAudio4MadDefinition cta4MD;
+	private NoteHistogramMadDefinition notehMD;
+	private NoteDebugMadDefinition notedMD;
+	private ControllerToCvMadDefinition con2cvMD;
+
+	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
+	private final Map<String, BaseMadDefinition> defIdToImd = new HashMap<String, BaseMadDefinition>();
 
 	public BaseComponentsFactory()
 	{
-		defClassToInsClassMap.put( ScaleAndOffsetMadDefinition.class, ScaleAndOffsetMadInstance.class );
-		defClassToInsClassMap.put( StaticValueMadDefinition.class, StaticValueMadInstance.class );
-		defClassToInsClassMap.put( LimiterMadDefinition.class, LimiterMadInstance.class );
-		defClassToInsClassMap.put( OscilloscopeMadDefinition.class, OscilloscopeMadInstance.class );
-		defClassToInsClassMap.put( CrossFaderMadDefinition.class, CrossFaderMadInstance.class );
-		defClassToInsClassMap.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadInstance.class );
-//		defClassToInsClassMap.put( Ms20FilterMadDefinition.class, Ms20FilterMadInstance.class );
-//		defClassToInsClassMap.put( FoldbackDistortionMadDefinition.class, FoldbackDistortionMadInstance.class );
-
-//		defClassToInsClassMap.put( FeedbackDelayMadDefinition.class, FeedbackDelayMadInstance.class );
-		defClassToInsClassMap.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadInstance.class );
-		defClassToInsClassMap.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadInstance.class );
-		defClassToInsClassMap.put( SpectralRollMadDefinition.class, SpectralRollMadInstance.class );
-		defClassToInsClassMap.put( InverterMadDefinition.class, InverterMadInstance.class );
-
-//		defClassToInsClassMap.put( PatternSequencerMadDefinition.class, PatternSequencerMadInstance.class );
-
-		defClassToInsClassMap.put( NoteToCvMadDefinition.class, NoteToCvMadInstance.class );
-
-		defClassToInsClassMap.put( ControllerToCvMadDefinition.class, ControllerToCvMadInstance.class );
-
-		defClassToInsClassMap.put( CvSurfaceMadDefinition.class, CvSurfaceMadInstance.class );
-
-		defClassToInsClassMap.put( LinearCVAMadDefinition.class, LinearCVAMadInstance.class );
-
-		defClassToInsClassMap.put( PrngMadDefinition.class, PrngMadInstance.class );
-
-		defClassToInsClassMap.put( DCTrapMadDefinition.class, DCTrapMadInstance.class );
-
-//		defClassToInsClassMap.put( SampleAndHoldMadDefinition.class, SampleAndHoldMadInstance.class );
-
-//		defClassToInsClassMap.put( FlipFlopMadDefinition.class, FlipFlopMadInstance.class );
-
-//		defClassToInsClassMap.put( StereoGateMadDefinition.class, StereoGateMadInstance.class );
-//		defClassToInsClassMap.put( MonoCompressorMadDefinition.class, MonoCompressorMadInstance.class );
-		defClassToInsClassMap.put( StereoCompressorMadDefinition.class, StereoCompressorMadInstance.class );
-
-		// Parameterised instances
-		defClassToInsClassMap.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadInstance.class );
-		defClassToInsClassMap.put( AudioCvConverterMadDefinition.class, AudioCvConverterMadInstance.class );
-
-//		defClassToInsClassMap.put( SingleSamplePlayerMadDefinition.class, SingleSamplePlayerMadInstance.class );
-
-		defClassToInsClassMap.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadInstance.class );
-
-//		defClassToInsClassMap.put( OscillatorMadDefinition.class, OscillatorMadInstance.class );
-
-		defClassToInsClassMap.put( EnvelopeMadDefinition.class, EnvelopeMadInstance.class );
-
-		defClassToInsClassMap.put( SuperSawModuleMadDefinition.class, SuperSawModuleMadInstance.class );
-
-		defClassToInsClassMap.put( WaveRollerMadDefinition.class, WaveRollerMadInstance.class );
-
-		defClassToInsClassMap.put( SoundfilePlayerMadDefinition.class, SoundfilePlayerMadInstance.class );
-
-		defClassToInsClassMap.put( RBJFilterMadDefinition.class, RBJFilterMadInstance.class );
-
-		defClassToInsClassMap.put( MoogFilterMadDefinition.class, MoogFilterMadInstance.class );
-
-//		defClassToInsClassMap.put( NoteDebugMadDefinition.class, NoteDebugMadInstance.class );
-
-		defClassToInsClassMap.put( AudioAnalyserMadDefinition.class, AudioAnalyserMadInstance.class );
-
-//		defClassToInsClassMap.put( XRunnerMadDefinition.class, XRunnerMadInstance.class );
-
-		defClassToInsClassMap.put( InterpTesterMadDefinition.class, InterpTesterMadInstance.class );
-
-		defClassToInsClassMap.put( IMixer3MadDefinition.class, IMixer3MadInstance.class );
-		defClassToInsClassMap.put( IMixer8MadDefinition.class, IMixer8MadInstance.class );
-
-		defClassToInsClassMap.put( DJEQMadDefinition.class, DJEQMadInstance.class );
-
-		defClassToInsClassMap.put( MidSideMadDefinition.class, MidSideMadInstance.class );
-
-		defClassToInsClassMap.put( SoundfilePlayer2MadDefinition.class, SoundfilePlayer2MadInstance.class );
-
-		defClassToInsClassMap.put( Bessel4FilterMadDefinition.class, Bessel4FilterMadInstance.class );
-
-		defClassToInsClassMap.put( ScopeSmallMadDefinition.class, ScopeSmallMadInstance.class );
-		defClassToInsClassMap.put( ScopeLargeMadDefinition.class, ScopeLargeMadInstance.class );
-
-		defClassToInsClassMap.put( AudioToCv4MadDefinition.class, AudioToCv4MadInstance.class );
-		defClassToInsClassMap.put( CvToAudio4MadDefinition.class, CvToAudio4MadInstance.class );
-
-		defClassToInsClassMap.put( CDFrequencyFilterMadDefinition.class, CDFrequencyFilterMadInstance.class );
-
-		defClassToInsClassMap.put( NoteHistogramMadDefinition.class, NoteHistogramMadInstance.class );
 	}
 
-	@Override
-	public Map<Class<? extends MadDefinition<?, ?>>, Class<? extends MadInstance<?, ?>>> provideDefClassToInsClassMap()
-			throws ComponentConfigurationException
+	public void setClassificationService( final MadClassificationService classificationService )
 	{
-		return defClassToInsClassMap;
+		this.classificationService = classificationService;
 	}
 
-	@Override
-	public MadCreationContext getCreationContext()
+	public void setComponentService( final MadComponentService componentService )
 	{
-		return creationContext;
+		this.componentService = componentService;
 	}
 
-	public void setAdvancedComponentsFrontController(
-			final AdvancedComponentsFrontController advancedComponentsFrontController )
+	public void setAdvancedComponentsFrontController( final AdvancedComponentsFrontController advancedComponentsFrontController )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
 	}
@@ -235,15 +145,143 @@ public class BaseComponentsFactory extends AbstractMadComponentFactory
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( advancedComponentsFrontController == null )
+		if( classificationService == null ||
+				componentService == null ||
+				advancedComponentsFrontController == null )
 		{
-			final String msg = "BaseComponentsFactory has missing service dependencies. Check configuration";
-			throw new ComponentConfigurationException( msg );
+			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
 		}
 
-		creationContext = new BaseComponentsCreationContext( advancedComponentsFrontController,
-				advancedComponentsFrontController.getOscillatorFactory() );
+		final OscillatorFactory oscillatorFactory = advancedComponentsFrontController.getOscillatorFactory();
+		creationContext = new BaseComponentsCreationContext( advancedComponentsFrontController, oscillatorFactory );
 
-		super.init();
+		try
+		{
+			saoMD = new ScaleAndOffsetMadDefinition( creationContext, classificationService );
+			addDef( saoMD );
+			svMD = new StaticValueMadDefinition( creationContext, classificationService );
+			addDef( svMD );
+			limMD = new LimiterMadDefinition( creationContext, classificationService );
+			addDef( limMD );
+			oscMD = new OscilloscopeMadDefinition( creationContext, classificationService );
+			addDef( oscMD );
+			cfMD = new CrossFaderMadDefinition( creationContext, classificationService );
+			addDef( cfMD );
+			ffMD = new FrequencyFilterMadDefinition( creationContext, classificationService );
+			addDef( ffMD );
+			sasMD = new SpecAmpSmallMadDefinition( creationContext, classificationService );
+			addDef( sasMD );
+			salMD = new SpecAmpLargeMadDefinition( creationContext, classificationService );
+			addDef( salMD );
+			ntcMD = new NoteToCvMadDefinition( creationContext, classificationService );
+			addDef( ntcMD );
+			cvsMD = new CvSurfaceMadDefinition( creationContext, classificationService );
+			addDef( cvsMD );
+			lcvaMD = new LinearCVAMadDefinition( creationContext, classificationService );
+			addDef( lcvaMD );
+			prngMD = new PrngMadDefinition( creationContext, classificationService );
+			addDef( prngMD );
+			dctrapMD = new DCTrapMadDefinition( creationContext, classificationService );
+			addDef( dctrapMD );
+			stcompMD = new StereoCompressorMadDefinition( creationContext, classificationService );
+			addDef( stcompMD );
+			nmpMD = new NoteMultiplexerMadDefinition( creationContext, classificationService );
+			addDef( nmpMD );
+			bloMD = new BandLimitedOscillatorMadDefinition( creationContext, classificationService );
+			addDef( bloMD );
+			wrMD = new WaveRollerMadDefinition( creationContext, classificationService );
+			addDef( wrMD );
+			sfpMD = new SoundfilePlayerMadDefinition( creationContext, classificationService );
+			addDef( sfpMD );
+			rjbMD = new RBJFilterMadDefinition( creationContext, classificationService );
+			addDef( rjbMD );
+			moogMD = new MoogFilterMadDefinition( creationContext, classificationService );
+			addDef( moogMD );
+			interpMD = new InterpTesterMadDefinition( creationContext, classificationService );
+			addDef( interpMD );
+			mix3MD = new IMixer3MadDefinition( creationContext, classificationService );
+			addDef( mix3MD );
+			mix8MD = new IMixer8MadDefinition( creationContext, classificationService );
+			addDef( mix8MD );
+			djeqMD = new DJEQMadDefinition( creationContext, classificationService );
+			addDef( djeqMD );
+			midsideMD = new MidSideMadDefinition( creationContext, classificationService );
+			addDef( midsideMD );
+			scopesMD = new ScopeSmallMadDefinition( creationContext, classificationService );
+			addDef( scopesMD );
+			scopelMD = new ScopeLargeMadDefinition( creationContext, classificationService);
+			addDef( scopelMD );
+			atc4MD = new AudioToCv4MadDefinition( creationContext, classificationService );
+			addDef( atc4MD );
+			cta4MD = new CvToAudio4MadDefinition( creationContext, classificationService );
+			addDef( cta4MD );
+			notehMD = new NoteHistogramMadDefinition( creationContext, classificationService );
+			addDef( notehMD );
+			notedMD = new NoteDebugMadDefinition( creationContext, classificationService );
+			addDef( notedMD );
+			con2cvMD = new ControllerToCvMadDefinition( creationContext, classificationService );
+			addDef( con2cvMD );
+
+			componentService.registerComponentFactory( this );
+
+		}
+		catch( final DatastoreException | RecordNotFoundException | MAConstraintViolationException e )
+		{
+			throw new ComponentConfigurationException( "Failed instantiating MADS: " + e.toString(), e );
+		}
+
+	}
+
+	private <A extends MadDefinition<?, ?> & BaseMadDefinition> void addDef( final A d )
+	{
+		mds.add( d );
+		defIdToImd.put( d.getId(), d );
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentService.unregisterComponentFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
+
+	@Override
+	public Collection<MadDefinition<?, ?>> listDefinitions()
+	{
+		return mds;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
+			final Map<MadParameterDefinition, String> parameterValues, final String instanceName ) throws DatastoreException
+	{
+		final BaseMadDefinition bmd = defIdToImd.get( definition.getId() );
+		if( bmd == null )
+		{
+			throw new DatastoreException("Unknown mad: " + definition.getId() );
+		}
+		else
+		{
+			try
+			{
+				return bmd.createInstance( parameterValues, instanceName );
+			}
+			catch( final MadProcessingException e )
+			{
+				throw new DatastoreException( e );
+			}
+		}
+	}
+
+	@Override
+	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	{
+		instanceToDestroy.destroy();
 	}
 }

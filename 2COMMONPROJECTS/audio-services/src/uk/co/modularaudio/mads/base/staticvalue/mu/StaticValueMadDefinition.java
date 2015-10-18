@@ -20,18 +20,25 @@
 
 package uk.co.modularaudio.mads.base.staticvalue.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class StaticValueMadDefinition extends AbstractNonConfigurableMadDefinition<StaticValueMadDefinition,StaticValueMadInstance>
+public class StaticValueMadDefinition
+	extends AbstractNonConfigurableMadDefinition<StaticValueMadDefinition,StaticValueMadInstance>
+	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int PRODUCER_CV_OUT_IDX = 0;
@@ -54,6 +61,8 @@ public class StaticValueMadDefinition extends AbstractNonConfigurableMadDefiniti
 
 	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO };
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public StaticValueMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -69,6 +78,17 @@ public class StaticValueMadDefinition extends AbstractNonConfigurableMadDefiniti
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSIS );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new StaticValueMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

@@ -1,8 +1,8 @@
 apply plugin: 'java'
 
 version = '0.0.4dev'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 def applicationName = 'mad-pp'
 def applicationNameAndVersion = applicationName + '-' + version
 def releasedir = applicationNameAndVersion

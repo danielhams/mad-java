@@ -23,35 +23,22 @@ package uk.co.modularaudio.mads.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadDefinition;
-import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstance;
 import uk.co.modularaudio.mads.internal.audiosystemtester.ui.AudioSystemTesterMadUiDefinition;
-import uk.co.modularaudio.mads.internal.audiosystemtester.ui.AudioSystemTesterMadUiInstance;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
-import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
 import uk.co.modularaudio.mads.internal.blockingwritering.ui.BlockingWriteRingMadUiDefinition;
-import uk.co.modularaudio.mads.internal.blockingwritering.ui.BlockingWriteRingMadUiInstance;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadInstance;
 import uk.co.modularaudio.mads.internal.fade.ui.FadeInMadUiDefinition;
-import uk.co.modularaudio.mads.internal.fade.ui.FadeInMadUiInstance;
 import uk.co.modularaudio.mads.internal.fade.ui.FadeOutMadUiDefinition;
-import uk.co.modularaudio.mads.internal.fade.ui.FadeOutMadUiInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkProducerMadUiDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkProducerMadUiInstance;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -88,7 +75,7 @@ public class InternalComponentsUiFactory
 	private FadeInMadUiDefinition fadeInMud;
 	private FadeOutMadUiDefinition fadeOutMud;
 
-	private final Map<String, Span> madIdToSpan = new HashMap<String, Span>();
+	private final HashMap<String, MadUiDefinition<?,?>> mdIdToMudMap = new HashMap<String, MadUiDefinition<?,?>>();
 
 	public InternalComponentsUiFactory()
 	{
@@ -129,35 +116,10 @@ public class InternalComponentsUiFactory
 	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> componentInstance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		if( componentInstance instanceof FeedbackLinkConsumerMadInstance )
+		final MadUiDefinition<?, ?> mud = mdIdToMudMap.get( componentInstance.getDefinition().getId() );
+		if( mud != null )
 		{
-			return new FeedbackLinkConsumerMadUiInstance(
-					(FeedbackLinkConsumerMadInstance) componentInstance, flConsumerMud );
-		}
-		else if( componentInstance instanceof FeedbackLinkProducerMadInstance )
-		{
-			return new FeedbackLinkProducerMadUiInstance(
-					(FeedbackLinkProducerMadInstance) componentInstance, flProducerMud );
-		}
-		else if( componentInstance instanceof AudioSystemTesterMadInstance )
-		{
-			return new AudioSystemTesterMadUiInstance(
-					(AudioSystemTesterMadInstance)componentInstance, asTesterMud );
-		}
-		else if( componentInstance instanceof BlockingWriteRingMadInstance )
-		{
-			return new BlockingWriteRingMadUiInstance(
-					(BlockingWriteRingMadInstance)componentInstance, bwrMud );
-		}
-		else if( componentInstance instanceof FadeInMadInstance )
-		{
-			return new FadeInMadUiInstance(
-					(FadeInMadInstance)componentInstance, fadeInMud );
-		}
-		else if( componentInstance instanceof FadeOutMadInstance )
-		{
-			return new FadeOutMadUiInstance(
-					(FadeOutMadInstance)componentInstance, fadeOutMud );
+			return mud.createNewUiInstanceUT( componentInstance );
 		}
 		else
 		{
@@ -175,7 +137,15 @@ public class InternalComponentsUiFactory
 	public Span getUiSpanForDefinition( final MadDefinition<?, ?> definition )
 			throws DatastoreException, RecordNotFoundException
 	{
-		return madIdToSpan.get( definition.getId() );
+		final MadUiDefinition<?, ?> madUiDefinition = mdIdToMudMap.get( definition.getId() );
+		if( madUiDefinition != null )
+		{
+			return madUiDefinition.getCellSpan();
+		}
+		else
+		{
+			throw new RecordNotFoundException();
+		}
 	}
 
 	@Override
@@ -198,7 +168,7 @@ public class InternalComponentsUiFactory
 			flConsumerMud = new FeedbackLinkConsumerMadUiDefinition( bufferedImageAllocationService,
 					flConsumerMd, componentImageFactory );
 			muds.add( flConsumerMud );
-			madIdToSpan.put( FeedbackLinkConsumerMadDefinition.DEFINITION_ID, flConsumerMud.getCellSpan() );
+			mdIdToMudMap.put( FeedbackLinkConsumerMadDefinition.DEFINITION_ID, flConsumerMud );
 
 			final FeedbackLinkProducerMadDefinition flProducerMd =
 					(FeedbackLinkProducerMadDefinition)componentService.findDefinitionById(
@@ -206,7 +176,7 @@ public class InternalComponentsUiFactory
 			flProducerMud = new FeedbackLinkProducerMadUiDefinition( bufferedImageAllocationService,
  					flProducerMd, componentImageFactory );
 			muds.add( flProducerMud );
-			madIdToSpan.put( FeedbackLinkProducerMadDefinition.DEFINITION_ID, flProducerMud.getCellSpan() );
+			mdIdToMudMap.put( FeedbackLinkProducerMadDefinition.DEFINITION_ID, flProducerMud );
 
 			final AudioSystemTesterMadDefinition asMd =
 					(AudioSystemTesterMadDefinition)componentService.findDefinitionById(
@@ -214,7 +184,7 @@ public class InternalComponentsUiFactory
 			asTesterMud = new AudioSystemTesterMadUiDefinition( bufferedImageAllocationService,
 					asMd, componentImageFactory );
 			muds.add( asTesterMud );
-			madIdToSpan.put( AudioSystemTesterMadDefinition.DEFINITION_ID, asTesterMud.getCellSpan() );
+			mdIdToMudMap.put( AudioSystemTesterMadDefinition.DEFINITION_ID, asTesterMud );
 
 			final BlockingWriteRingMadDefinition bwrMd =
 					(BlockingWriteRingMadDefinition)componentService.findDefinitionById(
@@ -222,7 +192,7 @@ public class InternalComponentsUiFactory
 			bwrMud = new BlockingWriteRingMadUiDefinition( bufferedImageAllocationService,
 					bwrMd, componentImageFactory );
 			muds.add( bwrMud );
-			madIdToSpan.put( BlockingWriteRingMadDefinition.DEFINITION_ID, bwrMud.getCellSpan() );
+			mdIdToMudMap.put( BlockingWriteRingMadDefinition.DEFINITION_ID, bwrMud );
 
 			final FadeInMadDefinition fiMd =
 					(FadeInMadDefinition)componentService.findDefinitionById(
@@ -230,7 +200,7 @@ public class InternalComponentsUiFactory
 			fadeInMud = new FadeInMadUiDefinition( bufferedImageAllocationService,
 					fiMd, componentImageFactory );
 			muds.add( fadeInMud );
-			madIdToSpan.put( FadeInMadDefinition.DEFINITION_ID, fadeInMud.getCellSpan() );
+			mdIdToMudMap.put( FadeInMadDefinition.DEFINITION_ID, fadeInMud );
 
 			final FadeOutMadDefinition foMd =
 					(FadeOutMadDefinition)componentService.findDefinitionById(
@@ -238,7 +208,7 @@ public class InternalComponentsUiFactory
 			fadeOutMud = new FadeOutMadUiDefinition( bufferedImageAllocationService,
 					foMd, componentImageFactory );
 			muds.add( fadeOutMud );
-			madIdToSpan.put( FadeOutMadDefinition.DEFINITION_ID, fadeOutMud.getCellSpan() );
+			mdIdToMudMap.put( FadeOutMadDefinition.DEFINITION_ID, fadeOutMud );
 
 			componentUiService.registerComponentUiFactory( this );
 		}

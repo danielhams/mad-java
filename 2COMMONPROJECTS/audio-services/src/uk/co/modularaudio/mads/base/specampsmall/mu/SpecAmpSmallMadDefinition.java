@@ -20,15 +20,22 @@
 
 package uk.co.modularaudio.mads.base.specampsmall.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class SpecAmpSmallMadDefinition extends SpectralAmpGenMadDefinition<SpecAmpSmallMadDefinition, SpecAmpSmallMadInstance>
+public class SpecAmpSmallMadDefinition
+	extends SpectralAmpGenMadDefinition<SpecAmpSmallMadDefinition, SpecAmpSmallMadInstance>
+	implements BaseMadDefinition
 {
 	public static final String DEFINITION_ID = "spectral_amp";
 
@@ -37,6 +44,8 @@ public class SpecAmpSmallMadDefinition extends SpectralAmpGenMadDefinition<SpecA
 	private final static String CLASS_GROUP = MadClassificationService.SOUND_ANALYSIS_GROUP_ID;
 	private final static String CLASS_NAME = "Spectral Amp";
 	private final static String CLASS_DESC = "A spectral amplitude display";
+
+	private final BaseComponentsCreationContext creationContext;
 
 	public SpecAmpSmallMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
@@ -47,5 +56,17 @@ public class SpecAmpSmallMadDefinition extends SpectralAmpGenMadDefinition<SpecA
 						CLASS_NAME,
 						CLASS_DESC,
 						ReleaseState.RELEASED ) );
+		this.creationContext = creationContext;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new SpecAmpSmallMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

@@ -43,24 +43,24 @@ public class SingleChannelVolumeMadDefinition extends MadDefinition<SingleChanne
 	public final static int CONSUMER = 0;
 	public final static int PRODUCER = 1;
 	public final static int NUM_CHANNELS = 2;
-	
+
 	private MadChannelConfiguration defaultChannelConfiguration = null;
 
-	public SingleChannelVolumeMadDefinition( MadClassification classification )
+	public SingleChannelVolumeMadDefinition( final MadClassification classification )
 	{
 		// constructor is super(name, isParametrable, parameterDefinitions);
 		super( "single_channel_volume", "Single Channel Volume", false, classification, new ArrayList<MadParameterDefinition>(), new SingleChannelVolumeMadQueueBridge());
-		
-		MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
+
+		final MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
 		defaultChannelConfiguration = new MadChannelConfiguration( defaultChannelDefsArray );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters( Map<MadParameterDefinition,String> paramValues )
+	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition,String> paramValues )
 	{
 		return defaultChannelConfiguration;
 	}
-	
+
 	// METHODS FOR MadChannelDefinitionIndexedCreator
 
 	@Override
@@ -69,7 +69,8 @@ public class SingleChannelVolumeMadDefinition extends MadDefinition<SingleChanne
 		return NUM_CHANNELS;
 	}
 
-	public MadChannelDefinition buildChannelDefinitionForIndex( int index )
+	@Override
+	public MadChannelDefinition buildChannelDefinitionForIndex( final int index )
 	{
 		MadChannelDefinition retVal = null;
 		String name = null;

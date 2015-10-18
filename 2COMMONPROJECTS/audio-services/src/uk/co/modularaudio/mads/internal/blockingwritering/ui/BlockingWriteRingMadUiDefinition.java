@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -50,7 +49,7 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 	}
 
 	@Override
-	public AbstractMadUiInstance<?,?> createNewUiInstance( final BlockingWriteRingMadInstance instance )
+	public BlockingWriteRingMadUiInstance createNewUiInstance( final BlockingWriteRingMadInstance instance )
 		throws DatastoreException
 	{
 		try
@@ -67,7 +66,8 @@ public class BlockingWriteRingMadUiDefinition extends MadUiDefinition<BlockingWr
 
 			// We don't have any controls...
 
-			final AbstractMadUiInstance<?,?> retVal = new BlockingWriteRingMadUiInstance( instance,
+			final BlockingWriteRingMadUiInstance retVal = new BlockingWriteRingMadUiInstance(
+					instance,
 					this );
 
 			retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],

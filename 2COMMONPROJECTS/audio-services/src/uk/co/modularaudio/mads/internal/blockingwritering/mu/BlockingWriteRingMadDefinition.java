@@ -20,19 +20,26 @@
 
 package uk.co.modularaudio.mads.internal.blockingwritering.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
+import uk.co.modularaudio.mads.internal.InternalMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class BlockingWriteRingMadDefinition extends AbstractNonConfigurableMadDefinition<BlockingWriteRingMadDefinition,BlockingWriteRingMadInstance>
+public class BlockingWriteRingMadDefinition
+	extends AbstractNonConfigurableMadDefinition<BlockingWriteRingMadDefinition,BlockingWriteRingMadInstance>
+	implements InternalMadDefinition
 {
 	// Indexes into the channels
 	public final static int PRODUCER_LEFT = 0;
@@ -59,6 +66,8 @@ public class BlockingWriteRingMadDefinition extends AbstractNonConfigurableMadDe
 	private final static MadChannelPosition[] CHAN_POSI = new MadChannelPosition[] { MadChannelPosition.MONO,
 		MadChannelPosition.MONO };
 
+	private final InternalComponentsCreationContext creationContext;
+
 	public BlockingWriteRingMadDefinition( final InternalComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -74,6 +83,17 @@ public class BlockingWriteRingMadDefinition extends AbstractNonConfigurableMadDe
 				CHAN_TYPES,
 				CHAN_DIRECTIONS,
 				CHAN_POSI );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new BlockingWriteRingMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

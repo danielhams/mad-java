@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
-import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
 import uk.co.modularaudio.mads.rackmasterio.ui.RackMasterIOMadUiDefinition;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
@@ -94,7 +93,7 @@ public class RackMasterIOComponentsUiFactory
 	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> componentInstance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		return rmMud.createNewUiInstance( (RackMasterIOMadInstance)componentInstance );
+		return rmMud.createNewUiInstanceUT( componentInstance );
 	}
 
 	@Override

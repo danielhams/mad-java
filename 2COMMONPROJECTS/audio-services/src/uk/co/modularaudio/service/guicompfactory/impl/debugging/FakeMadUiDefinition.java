@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.service.guicompfactory.impl.debugging;
 
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -39,7 +38,8 @@ class FakeMadUiDefinition extends MadUiDefinition<FakeMadDefinition, FakeMadInst
 	}
 
 	@Override
-	public AbstractMadUiInstance<?, ?> createNewUiInstance( final FakeMadInstance instance ) throws DatastoreException
+	public FakeMadUiInstance createNewUiInstance( final FakeMadInstance instance )
+			throws DatastoreException
 	{
 		return new FakeMadUiInstance( instance, this );
 	}

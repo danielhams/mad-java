@@ -25,17 +25,20 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class NoteMultiplexerMadDefinition extends MadDefinition<NoteMultiplexerMadDefinition,NoteMultiplexerMadInstance>
+public class NoteMultiplexerMadDefinition
+	extends MadDefinition<NoteMultiplexerMadDefinition,NoteMultiplexerMadInstance>
+	implements BaseMadDefinition
 {
 	protected static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition( "numchannels", "Num Channels" );
 
@@ -53,6 +56,8 @@ public class NoteMultiplexerMadDefinition extends MadDefinition<NoteMultiplexerM
 	private final static String CLASS_NAME = "Note Multiplexer";
 	private final static String CLASS_DESC = "Multiplex incoming notes to multiple polyphonic channels";
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public NoteMultiplexerMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws DatastoreException, RecordNotFoundException
 	{
@@ -66,13 +71,24 @@ public class NoteMultiplexerMadDefinition extends MadDefinition<NoteMultiplexerM
 						ReleaseState.ALPHA ),
 				PARAM_DEFS,
 				new NoteMultiplexerIOQueueBridge() );
+		this.creationContext = creationContext;
 	}
 
 	@Override
 	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
-		throws MadProcessingException
 	{
 		final NoteMultiplexerMadInstanceConfiguration ic = new NoteMultiplexerMadInstanceConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new NoteMultiplexerMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

@@ -22,15 +22,14 @@ package uk.co.modularaudio.mads.masterio;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.masterio.mu.MasterInMadDefinition;
-import uk.co.modularaudio.mads.masterio.mu.MasterInMadInstance;
 import uk.co.modularaudio.mads.masterio.mu.MasterOutMadDefinition;
-import uk.co.modularaudio.mads.masterio.mu.MasterOutMadInstance;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
@@ -58,6 +57,8 @@ public class MasterIOComponentsFactory
 
 	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
 
+	private final Map<String, MasterIOMadDefinition> defIdToImd = new HashMap<String, MasterIOMadDefinition>();
+
 	public MasterIOComponentsFactory()
 	{
 	}
@@ -72,25 +73,15 @@ public class MasterIOComponentsFactory
 	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
 			final Map<MadParameterDefinition, String> parameterValues, final String instanceName ) throws DatastoreException
 	{
-		if( definition == inMd )
+		final MasterIOMadDefinition mim = defIdToImd.get( definition.getId() );
+
+		if( mim == null )
 		{
-			return new MasterInMadInstance( creationContext,
-					instanceName,
-					inMd,
-					parameterValues,
-					inMd.getChannelConfigurationForParameters( parameterValues ) );
-		}
-		else if( definition == outMd )
-		{
-			return new MasterOutMadInstance( creationContext,
-					instanceName,
-					outMd,
-					parameterValues,
-					outMd.getChannelConfigurationForParameters( parameterValues ) );
+			throw new DatastoreException("Unknown mad: " + definition.getName() );
 		}
 		else
 		{
-			throw new DatastoreException("Unknown mad: " + definition.getName() );
+			return mim.createInstance( parameterValues, instanceName );
 		}
 	}
 
@@ -113,9 +104,11 @@ public class MasterIOComponentsFactory
 		{
 			inMd = new MasterInMadDefinition( creationContext, classificationService );
 			mds.add( inMd );
+			defIdToImd.put( MasterInMadDefinition.DEFINITION_ID, inMd );
 
 			outMd = new MasterOutMadDefinition( creationContext, classificationService );
 			mds.add( outMd );
+			defIdToImd.put( MasterOutMadDefinition.DEFINITION_ID, outMd );
 
 			componentService.registerComponentFactory( this );
 		}

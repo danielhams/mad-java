@@ -20,17 +20,24 @@
 
 package uk.co.modularaudio.mads.masterio.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
+import uk.co.modularaudio.mads.masterio.MasterIOMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class MasterOutMadDefinition extends AbstractNonConfigurableMadDefinition<MasterOutMadDefinition, MasterOutMadInstance>
+public class MasterOutMadDefinition
+	extends AbstractNonConfigurableMadDefinition<MasterOutMadDefinition, MasterOutMadInstance>
+	implements MasterIOMadDefinition
 {
 	public final static String DEFINITION_ID = "master_out";
 
@@ -47,8 +54,10 @@ public class MasterOutMadDefinition extends AbstractNonConfigurableMadDefinition
 	public final static IOMadConfiguration CHAN_CONFIG = new IOMadConfiguration( NUM_AUDIO_CHANNELS,
 			NUM_NOTE_CHANNELS, MadChannelDirection.CONSUMER );
 
-	public MasterOutMadDefinition( MasterIOComponentsCreationContext creationContext,
-			MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	private final MasterIOComponentsCreationContext creationContext;
+
+	public MasterOutMadDefinition( final MasterIOComponentsCreationContext creationContext,
+			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID,
 				USER_VISIBLE_NAME,
@@ -63,5 +72,17 @@ public class MasterOutMadDefinition extends AbstractNonConfigurableMadDefinition
 				CHAN_CONFIG.getChannelTypes(),
 				CHAN_CONFIG.getChannelDirections(),
 				CHAN_CONFIG.getChannelPositions() );
+		this.creationContext = creationContext;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new MasterOutMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

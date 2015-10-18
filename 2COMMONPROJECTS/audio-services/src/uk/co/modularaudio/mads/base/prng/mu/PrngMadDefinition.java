@@ -20,19 +20,26 @@
 
 package uk.co.modularaudio.mads.base.prng.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class PrngMadDefinition extends AbstractNonConfigurableMadDefinition<PrngMadDefinition, PrngMadInstance>
+public class PrngMadDefinition
+	extends AbstractNonConfigurableMadDefinition<PrngMadDefinition, PrngMadInstance>
+	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int PRODUCER_CV_OUT = 0;
@@ -55,6 +62,8 @@ public class PrngMadDefinition extends AbstractNonConfigurableMadDefinition<Prng
 
 	private final static MadChannelPosition[] CHAN_POSIS = new MadChannelPosition[] { MadChannelPosition.MONO};
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public PrngMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -70,6 +79,17 @@ public class PrngMadDefinition extends AbstractNonConfigurableMadDefinition<Prng
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSIS );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new PrngMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

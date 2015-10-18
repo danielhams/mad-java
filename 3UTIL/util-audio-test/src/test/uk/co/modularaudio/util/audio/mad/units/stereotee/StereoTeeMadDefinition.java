@@ -50,17 +50,17 @@ public class StereoTeeMadDefinition extends MadDefinition<StereoTeeMadDefinition
 
 	private MadChannelConfiguration defaultChannelConfiguration = null;
 
-	public StereoTeeMadDefinition( MadClassification classification )
+	public StereoTeeMadDefinition( final MadClassification classification )
 	{
 		// constructor is super(name, isParametrable, parameterDefinitions);
 		super( DEFINITION_ID, "Stereo Tee", false, classification, new ArrayList<MadParameterDefinition>(), new StereoTeeMadQueueBridge());
 
-		MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
+		final MadChannelDefinition[] defaultChannelDefsArray = MadChannelDefinitionBuilder.buildDefaultChannelDefinitions( this );
 		defaultChannelConfiguration = new MadChannelConfiguration( defaultChannelDefsArray );
 	}
 
 	@Override
-	public MadChannelConfiguration getChannelConfigurationForParameters(Map<MadParameterDefinition, String> paramValues)
+	public MadChannelConfiguration getChannelConfigurationForParameters(final Map<MadParameterDefinition, String> paramValues)
 	{
 		return defaultChannelConfiguration;
 	}
@@ -74,7 +74,7 @@ public class StereoTeeMadDefinition extends MadDefinition<StereoTeeMadDefinition
 	}
 
 	@Override
-	public MadChannelDefinition buildChannelDefinitionForIndex( int index )
+	public MadChannelDefinition buildChannelDefinitionForIndex( final int index )
 	{
 		MadChannelDefinition retVal = null;
 		String name = null;

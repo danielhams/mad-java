@@ -22,6 +22,7 @@ package uk.co.modularaudio.mads.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -29,28 +30,19 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadDefinition;
-import uk.co.modularaudio.mads.internal.audiosystemtester.mu.AudioSystemTesterMadInstance;
 import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadDefinition;
-import uk.co.modularaudio.mads.internal.blockingwritering.mu.BlockingWriteRingMadInstance;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadInstance;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
-import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadInstance;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadDefinition;
-import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadInstance;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadDefinition;
-import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadInstance;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -61,7 +53,6 @@ public class InternalComponentsFactory
 	implements ComponentWithLifecycle, MadComponentFactory
 {
 	private static Log log = LogFactory.getLog( InternalComponentsFactory.class.getName() );
-
 
 	private MadClassificationService classificationService;
 	private MadComponentService componentService;
@@ -80,6 +71,8 @@ public class InternalComponentsFactory
 	private BlockingWriteRingMadDefinition bwrMD;
 
 	private final ArrayList<MadDefinition<?,?>> mds = new ArrayList<MadDefinition<?,?>>();
+
+	private final Map<String, InternalMadDefinition> defIdToImd = new HashMap<String, InternalMadDefinition>();
 
 	public InternalComponentsFactory()
 	{
@@ -102,20 +95,28 @@ public class InternalComponentsFactory
 		{
 			fadeOutMD = new FadeOutMadDefinition( creationContext, classificationService );
 			mds.add( fadeOutMD );
+			defIdToImd.put( FadeOutMadDefinition.DEFINITION_ID, fadeOutMD );
 			fadeInMD = new FadeInMadDefinition( creationContext, classificationService );
 			mds.add( fadeInMD );
+			defIdToImd.put( FadeInMadDefinition.DEFINITION_ID, fadeInMD );
 			fblinkConsumerMD = new FeedbackLinkConsumerMadDefinition( creationContext, classificationService );
 			mds.add( fblinkConsumerMD );
+			defIdToImd.put( FeedbackLinkConsumerMadDefinition.DEFINITION_ID, fblinkConsumerMD );
 			fblinkProducerMD = new FeedbackLinkProducerMadDefinition( creationContext, classificationService );
 			mds.add( fblinkProducerMD );
+			defIdToImd.put( FeedbackLinkProducerMadDefinition.DEFINITION_ID, fblinkProducerMD );
 			asTesterMD = new AudioSystemTesterMadDefinition( creationContext, classificationService );
 			mds.add( asTesterMD );
+			defIdToImd.put( AudioSystemTesterMadDefinition.DEFINITION_ID, asTesterMD );
 			pfadeOutMD = new PFadeOutMadDefinition( creationContext, classificationService );
 			mds.add( pfadeOutMD );
+			defIdToImd.put( PFadeOutMadDefinition.DEFINITION_ID, pfadeOutMD );
 			pfadeInMD = new PFadeInMadDefinition( creationContext, classificationService );
 			mds.add( pfadeInMD );
+			defIdToImd.put( PFadeInMadDefinition.DEFINITION_ID, pfadeInMD );
 			bwrMD = new BlockingWriteRingMadDefinition( creationContext, classificationService );
 			mds.add( bwrMD );
+			defIdToImd.put( BlockingWriteRingMadDefinition.DEFINITION_ID, bwrMD );
 
 			componentService.registerComponentFactory( this );
 		}
@@ -123,7 +124,6 @@ public class InternalComponentsFactory
 		{
 			throw new ComponentConfigurationException( "Failed instantiating MADS: " + e.toString(), e );
 		}
-
 	}
 
 	public void setAdvancedComponentsFrontController( final AdvancedComponentsFrontController advancedComponentsFrontController )
@@ -142,79 +142,15 @@ public class InternalComponentsFactory
 			final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
 		throws DatastoreException
 	{
-		try
+		final InternalMadDefinition md = defIdToImd.get( definition.getId() );
+		if( md == null )
 		{
-			if( definition == fadeOutMD )
-			{
-				return new FadeOutMadInstance( creationContext,
-						instanceName,
-						fadeOutMD,
-						parameterValues,
-						fadeOutMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == fadeInMD )
-			{
-				return new FadeInMadInstance( creationContext,
-						instanceName,
-						fadeInMD,
-						parameterValues,
-						fadeInMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == fblinkConsumerMD )
-			{
-				return new FeedbackLinkConsumerMadInstance( creationContext,
-						instanceName,
-						fblinkConsumerMD,
-						parameterValues,
-						fblinkConsumerMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == fblinkProducerMD )
-			{
-				return new FeedbackLinkProducerMadInstance( creationContext,
-						instanceName,
-						fblinkProducerMD,
-						parameterValues,
-						fblinkProducerMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == asTesterMD )
-			{
-				return new AudioSystemTesterMadInstance( creationContext,
-						instanceName,
-						asTesterMD,
-						parameterValues,
-						asTesterMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == pfadeOutMD )
-			{
-				return new PFadeOutMadInstance( creationContext,
-						instanceName,
-						pfadeOutMD,
-						parameterValues,
-						pfadeOutMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == pfadeInMD )
-			{
-				return new PFadeInMadInstance( creationContext,
-						instanceName,
-						pfadeInMD,
-						parameterValues,
-						pfadeInMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
-			else if( definition == bwrMD )
-			{
-				return new BlockingWriteRingMadInstance( creationContext,
-						instanceName,
-						bwrMD,
-						parameterValues,
-						bwrMD.getChannelConfigurationForParameters( parameterValues ) );
-			}
+			throw new DatastoreException( "Unknown MAD: " + definition.getName() );
 		}
-		catch( final MadProcessingException e )
+		else
 		{
-			throw new DatastoreException( e );
+			return md.createInstance( parameterValues, instanceName );
 		}
-
-		throw new DatastoreException( "Unknown MAD: " + definition.getName() );
 	}
 
 	@Override

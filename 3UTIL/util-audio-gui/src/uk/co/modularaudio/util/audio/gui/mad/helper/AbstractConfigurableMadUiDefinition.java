@@ -25,13 +25,13 @@ import java.awt.Rectangle;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -59,7 +59,7 @@ public abstract class AbstractConfigurableMadUiDefinition
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public AbstractMadUiInstance<D, I> createNewUiInstance( final I instance )
+	public AbstractMadUiInstance<D,I> createNewUiInstance( final I instance )
 		throws DatastoreException
 	{
 		AbstractMadUiInstance<D, I> retVal = null;

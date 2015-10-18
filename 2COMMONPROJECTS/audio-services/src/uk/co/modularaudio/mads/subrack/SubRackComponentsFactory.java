@@ -180,18 +180,24 @@ public class SubRackComponentsFactory
 			final String instanceName )
 		throws DatastoreException
 	{
-		assert( definition == subRackMD );
-		try
+		if( !SubRackMadDefinition.DEFINITION_ID.equals( definition.getId() ) )
 		{
-			return new SubRackMadInstance( creationContext,
-					instanceName,
-					subRackMD,
-					parameterValues,
-					subRackMD.getChannelConfigurationForParameters( parameterValues ) );
+			throw new DatastoreException( "Unknown mad: " + definition.getId() );
 		}
-		catch( final MAConstraintViolationException | RecordNotFoundException | IOException e )
+		else
 		{
-			throw new DatastoreException( "Failed creating mad instance: " + e.toString() );
+			try
+			{
+				return new SubRackMadInstance( creationContext,
+						instanceName,
+						subRackMD,
+						parameterValues,
+						subRackMD.getChannelConfigurationForParameters( parameterValues ) );
+			}
+			catch( final IOException | MAConstraintViolationException | RecordNotFoundException e )
+			{
+				throw new DatastoreException("Exception caught creating subrack: " + e.toString(), e );
+			}
 		}
 	}
 

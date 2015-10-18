@@ -20,18 +20,25 @@
 
 package uk.co.modularaudio.mads.base.frequencyfilter.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefinition<FrequencyFilterMadDefinition,FrequencyFilterMadInstance>
+public class FrequencyFilterMadDefinition
+	extends AbstractNonConfigurableMadDefinition<FrequencyFilterMadDefinition,FrequencyFilterMadInstance>
+	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int CONSUMER_IN_LEFT = 0;
@@ -74,6 +81,8 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public FrequencyFilterMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -89,6 +98,17 @@ public class FrequencyFilterMadDefinition extends AbstractNonConfigurableMadDefi
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSIS );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new FrequencyFilterMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

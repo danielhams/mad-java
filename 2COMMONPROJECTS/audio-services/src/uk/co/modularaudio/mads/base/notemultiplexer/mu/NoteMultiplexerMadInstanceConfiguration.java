@@ -22,16 +22,20 @@ package uk.co.modularaudio.mads.base.notemultiplexer.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
 public class NoteMultiplexerMadInstanceConfiguration
 {
+	private static Log log = LogFactory.getLog( NoteMultiplexerMadInstanceConfiguration.class.getName() );
+
 	private int numOutputChannels;
 
 	private final int totalNumChannels;
@@ -39,7 +43,7 @@ public class NoteMultiplexerMadInstanceConfiguration
 	private final MadChannelConfiguration channelConfiguration;
 	private final MadChannelDefinition[] channelDefinitions;
 
-	public NoteMultiplexerMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+	public NoteMultiplexerMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues )
 	{
 		final String numChannelsStr = parameterValues.get( NoteMultiplexerMadDefinition.NUM_CHANNELS_PARAMETER );
 		boolean parsed = true;
@@ -56,8 +60,7 @@ public class NoteMultiplexerMadInstanceConfiguration
 
 		if( !parsed )
 		{
-//			String msg = "Note Multiplexer requires the NumChannels parameter to be set for instance creation.";
-//			throw new MadProcessingException(  msg  );
+			log.error("Note Multiplexer requires the NumChannels parameter to be set for instance creation.");
 			numOutputChannels = 2;
 		}
 

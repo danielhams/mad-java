@@ -22,22 +22,25 @@ package uk.co.modularaudio.mads.internal.paramfade.mu;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
 public class PFadeConfiguration
 {
+	private static Log log = LogFactory.getLog( PFadeConfiguration.class.getName() );
+
 	protected final int numChannels;
 
 	private final MadChannelConfiguration channelConfiguration;
 
 	public PFadeConfiguration( final Map<MadParameterDefinition, String> parameterValues )
-		throws MadProcessingException
 	{
 		final String numChannelsStr = parameterValues.get( PFadeDefinitions.NUM_CHANNELS_PARAMETER );
 		boolean parsed = true;
@@ -49,7 +52,8 @@ public class PFadeConfiguration
 		}
 		else
 		{
-			throw new MadProcessingException("Missing num channels parameter");
+			log.warn("Missing num channels parameter");
+			numChannels = 1;
 		}
 
 		// Consumers and producers for each channel

@@ -23,18 +23,21 @@ package uk.co.modularaudio.mads.internal.paramfade.mu;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
+import uk.co.modularaudio.mads.internal.InternalMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class PFadeOutMadDefinition extends MadDefinition<PFadeOutMadDefinition,PFadeOutMadInstance>
+public class PFadeOutMadDefinition
+	extends MadDefinition<PFadeOutMadDefinition,PFadeOutMadInstance>
+	implements InternalMadDefinition
 {
 	public final static String DEFINITION_ID = "pfade_out";
 
@@ -43,6 +46,8 @@ public class PFadeOutMadDefinition extends MadDefinition<PFadeOutMadDefinition,P
 	private final static String CLASS_GROUP = MadClassificationService.INTERNAL_GROUP_ID;
 	private final static String CLASS_NAME = "Parametric Fade Out";
 	private final static String CLASS_DESC = "Fade out a source with a configurable number of channels";
+
+	private final InternalComponentsCreationContext creationContext;
 
 	public PFadeOutMadDefinition( final InternalComponentsCreationContext creationContext,
 			final MadClassificationService classificationService )
@@ -56,13 +61,24 @@ public class PFadeOutMadDefinition extends MadDefinition<PFadeOutMadDefinition,P
 						ReleaseState.RELEASED ),
 				PFadeDefinitions.PARAM_DEFS,
 				new MadNullLocklessQueueBridge<PFadeOutMadInstance>() );
+		this.creationContext = creationContext;
 	}
 
 	@Override
 	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
-		throws MadProcessingException
 	{
 		final PFadeConfiguration ic = new PFadeConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new PFadeOutMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

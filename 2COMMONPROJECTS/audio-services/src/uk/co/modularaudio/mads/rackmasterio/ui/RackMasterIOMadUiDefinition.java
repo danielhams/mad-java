@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
@@ -78,7 +77,7 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 	}
 
 	@Override
-	public AbstractMadUiInstance<?, ?> createNewUiInstance( final RackMasterIOMadInstance instance )
+	public RackMasterIOMadUiInstance createNewUiInstance( final RackMasterIOMadInstance instance )
 		throws DatastoreException
 	{
 		// Setup where the channels live
@@ -93,7 +92,7 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 
 		// We don't have any controls...
 
-		final AbstractMadUiInstance<?,?> retVal = new RackMasterIOMadUiInstance( instance,
+		final RackMasterIOMadUiInstance retVal = new RackMasterIOMadUiInstance( instance,
 				this );
 
 		retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],

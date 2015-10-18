@@ -51,7 +51,6 @@ public class PFadeOutMadInstance extends MadInstance<PFadeOutMadDefinition, PFad
 			final PFadeOutMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
-		 throws MadProcessingException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		instanceConfiguration = new PFadeConfiguration( creationParameterValues );

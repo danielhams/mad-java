@@ -96,7 +96,7 @@ public class SubRackComponentsUiFactory
 	{
 		if( componentInstance instanceof SubRackMadInstance )
 		{
-			return srMud.createNewUiInstance( (SubRackMadInstance) componentInstance );
+			return srMud.createNewUiInstanceUT( componentInstance );
 		}
 		else
 		{

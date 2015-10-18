@@ -25,18 +25,21 @@ import java.util.Map;
 import java.util.Set;
 
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
+import uk.co.modularaudio.mads.internal.InternalMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class AudioSystemTesterMadDefinition extends MadDefinition<AudioSystemTesterMadDefinition,AudioSystemTesterMadInstance>
+public class AudioSystemTesterMadDefinition
+	extends MadDefinition<AudioSystemTesterMadDefinition,AudioSystemTesterMadInstance>
+	implements InternalMadDefinition
 {
 	public static final Set<MadParameterDefinition> PARAM_DEFS;
 	public static final MadParameterDefinition NUM_CHANNELS_PARAMETER = new MadParameterDefinition( "numchannels",
@@ -54,8 +57,10 @@ public class AudioSystemTesterMadDefinition extends MadDefinition<AudioSystemTes
 	private final static String CLASS_DESC = "Produce a nicely attenuated sine wave output for audio io testing";
 	private final static String CLASS_NAME = CLASS_DESC;
 
-	public AudioSystemTesterMadDefinition( InternalComponentsCreationContext creationContext,
-			MadClassificationService classificationService )
+	private final InternalComponentsCreationContext creationContext;
+
+	public AudioSystemTesterMadDefinition( final InternalComponentsCreationContext creationContext,
+			final MadClassificationService classificationService )
 		throws DatastoreException, RecordNotFoundException
 	{
 		// Default super constructor is
@@ -68,13 +73,25 @@ public class AudioSystemTesterMadDefinition extends MadDefinition<AudioSystemTes
 						ReleaseState.RELEASED ),
 				PARAM_DEFS,
 				new MadNullLocklessQueueBridge<AudioSystemTesterMadInstance>() );
+
+		this.creationContext = creationContext;
 	}
 
 	@Override
 	public MadChannelConfiguration getChannelConfigurationForParameters( final Map<MadParameterDefinition, String> parameterValues )
-		throws MadProcessingException
 	{
 		final AudioSystemTesterMadInstanceConfiguration ic = new AudioSystemTesterMadInstanceConfiguration( parameterValues );
 		return ic.getChannelConfiguration();
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new AudioSystemTesterMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

@@ -26,11 +26,10 @@ import java.util.ArrayList;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadInstance;
 import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
+import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
-import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -51,7 +50,7 @@ public class FeedbackLinkConsumerMadUiDefinition extends MadUiDefinition<Feedbac
 	}
 
 	@Override
-	public AbstractMadUiInstance<?,?> createNewUiInstance( final FeedbackLinkConsumerMadInstance instance )
+	public FeedbackLinkConsumerMadUiInstance createNewUiInstance( final FeedbackLinkConsumerMadInstance instance )
 			throws DatastoreException
 	{
 		try
@@ -66,7 +65,7 @@ public class FeedbackLinkConsumerMadUiDefinition extends MadUiDefinition<Feedbac
 
 			// We don't have any controls...
 
-			final AbstractMadUiInstance<?,?> retVal = new FeedbackLinkConsumerMadUiInstance( instance,
+			final FeedbackLinkConsumerMadUiInstance retVal = new FeedbackLinkConsumerMadUiInstance( instance,
 					this );
 
 			retVal.setUiControlsAndChannels( new AbstractMadUiControlInstance<?,?,?>[ 0 ],

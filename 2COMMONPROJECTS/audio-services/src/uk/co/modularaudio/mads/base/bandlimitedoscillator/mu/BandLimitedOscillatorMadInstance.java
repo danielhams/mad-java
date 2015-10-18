@@ -63,7 +63,8 @@ public class BandLimitedOscillatorMadInstance extends MadInstance<BandLimitedOsc
 			final String instanceName,
 			final BandLimitedOscillatorMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
-			final MadChannelConfiguration channelConfiguration ) throws NoWaveTableForShapeException, OscillatorFactoryException
+			final MadChannelConfiguration channelConfiguration )
+		throws NoWaveTableForShapeException, OscillatorFactoryException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 

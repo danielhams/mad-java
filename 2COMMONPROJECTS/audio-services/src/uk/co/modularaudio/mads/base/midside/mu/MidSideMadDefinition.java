@@ -20,18 +20,26 @@
 
 package uk.co.modularaudio.mads.base.midside.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class MidSideMadDefinition extends AbstractNonConfigurableMadDefinition<MidSideMadDefinition, MidSideMadInstance>
+public class MidSideMadDefinition
+	extends AbstractNonConfigurableMadDefinition<MidSideMadDefinition, MidSideMadInstance>
+	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int CONSUMER_AUDIO_IN_1 = 0;
@@ -77,6 +85,8 @@ public class MidSideMadDefinition extends AbstractNonConfigurableMadDefinition<M
 		MadChannelPosition.MONO
 	};
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public MidSideMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -92,6 +102,18 @@ public class MidSideMadDefinition extends AbstractNonConfigurableMadDefinition<M
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSIS );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+			throws MadProcessingException
+	{
+		return new MidSideMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

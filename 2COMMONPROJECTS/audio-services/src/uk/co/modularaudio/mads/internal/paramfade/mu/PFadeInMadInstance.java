@@ -51,7 +51,6 @@ public class PFadeInMadInstance extends MadInstance<PFadeInMadDefinition, PFadeI
 			final PFadeInMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
-		 throws MadProcessingException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 		instanceConfiguration = new PFadeConfiguration( creationParameterValues );

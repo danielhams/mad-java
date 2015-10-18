@@ -26,14 +26,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -42,7 +41,7 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class NoteDebugMadInstance extends MadInstance<NoteDebugMadDefinition,NoteDebugMadInstance>
 {
-	private static Log log = LogFactory.getLog( ControllerToCvMadInstance.class.getName() );
+	private static Log log = LogFactory.getLog( NoteDebugMadInstance.class.getName() );
 
 //	private int notePeriodLength = -1;
 
@@ -72,7 +71,7 @@ public class NoteDebugMadInstance extends MadInstance<NoteDebugMadDefinition,Not
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( NoteDebugMadDefinition.CONSUMER_NOTE );
 		final MadChannelBuffer noteCb = channelBuffers[ NoteDebugMadDefinition.CONSUMER_NOTE ];

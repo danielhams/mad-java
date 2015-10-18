@@ -57,7 +57,7 @@ public class ResizableFrontContainerMiddle extends JPanel
 		bBorder = new FixedYTransparentBorder( ci.bibi );
 
 		this.add( tBorder, "growx, wrap" );
-		this.add( new RealComponentFront( ci ,rc ), "grow, wrap" );
+		this.add( new RealComponentFront( ci, rc ), "grow, wrap" );
 		this.add( bBorder, "growx" );
 
 		componentNameLabel = new ComponentNameLabel( rc, this );

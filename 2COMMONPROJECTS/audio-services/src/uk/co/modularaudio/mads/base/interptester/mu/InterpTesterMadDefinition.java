@@ -20,18 +20,26 @@
 
 package uk.co.modularaudio.mads.base.interptester.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
+public class InterpTesterMadDefinition
+	extends AbstractNonConfigurableMadDefinition<InterpTesterMadDefinition, InterpTesterMadInstance>
+	implements BaseMadDefinition
 {
 	public static final String DEFINITION_ID = "interptester";
 
@@ -73,6 +81,8 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 		}
 	}
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public InterpTesterMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -88,6 +98,18 @@ public class InterpTesterMadDefinition extends AbstractNonConfigurableMadDefinit
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSI );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+			throws MadProcessingException
+	{
+		return new InterpTesterMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

@@ -28,12 +28,10 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 
 class FakeMadDefinition extends MadDefinition<FakeMadDefinition, FakeMadInstance>
 {
-
 	public FakeMadDefinition( final MadClassification classification )
 	{
 		super( FakeRackComponent.FAKE_STR,
@@ -46,7 +44,7 @@ class FakeMadDefinition extends MadDefinition<FakeMadDefinition, FakeMadInstance
 
 	@Override
 	public MadChannelConfiguration getChannelConfigurationForParameters(
-			final Map<MadParameterDefinition, String> parameterValues ) throws MadProcessingException
+			final Map<MadParameterDefinition, String> parameterValues )
 	{
 		return new MadChannelConfiguration( new MadChannelDefinition[0] );
 	}

@@ -58,7 +58,6 @@ public class AudioSystemTesterMadInstance extends MadInstance<AudioSystemTesterM
 			final AudioSystemTesterMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
-		throws MadProcessingException
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 

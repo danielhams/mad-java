@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.base.stereo_gate.ui.ThresholdTypeEnum;
+import uk.co.modularaudio.mads.base.stereo_compressor.ui.ThresholdTypeEnum;
 import uk.co.modularaudio.util.audio.buffer.UnsafeFloatRingBuffer;
 import uk.co.modularaudio.util.audio.dsp.LimiterCrude;
 import uk.co.modularaudio.util.audio.envelope.FixedTransitionAdsrEnvelope;

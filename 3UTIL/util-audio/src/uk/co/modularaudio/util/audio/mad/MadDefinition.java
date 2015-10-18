@@ -87,5 +87,4 @@ public abstract class MadDefinition<D extends MadDefinition<D,I>, I extends MadI
 	{
 		return ioQueueBridge;
 	}
-
 }

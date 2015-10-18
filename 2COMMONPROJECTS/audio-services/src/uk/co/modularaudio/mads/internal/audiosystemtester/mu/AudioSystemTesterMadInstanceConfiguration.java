@@ -31,7 +31,6 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
-import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
 public class AudioSystemTesterMadInstanceConfiguration
 {
@@ -45,7 +44,6 @@ public class AudioSystemTesterMadInstanceConfiguration
 	private final MadChannelDefinition[] channelDefinitions;
 
 	public AudioSystemTesterMadInstanceConfiguration( final Map<MadParameterDefinition, String> parameterValues )
-		throws MadProcessingException
 	{
 		numOutputChannels = 2;
 		if( parameterValues.containsKey( AudioSystemTesterMadDefinition.NUM_CHANNELS_PARAMETER ) )
@@ -57,7 +55,7 @@ public class AudioSystemTesterMadInstanceConfiguration
 				{
 					numOutputChannels = Integer.parseInt(  numChannelsStr );
 				}
-				catch( NumberFormatException nfe )
+				catch( final NumberFormatException nfe )
 				{
 					log.warn( "NumChannels failed parsing as an int - defaulting to two channels" );
 				}

@@ -20,18 +20,25 @@
 
 package uk.co.modularaudio.mads.base.crossfader.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
+import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class CrossFaderMadDefinition extends AbstractNonConfigurableMadDefinition<CrossFaderMadDefinition, CrossFaderMadInstance>
+public class CrossFaderMadDefinition
+	extends AbstractNonConfigurableMadDefinition<CrossFaderMadDefinition, CrossFaderMadInstance>
+	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int CONSUMER_CHAN1_LEFT = 0;
@@ -79,6 +86,8 @@ public class CrossFaderMadDefinition extends AbstractNonConfigurableMadDefinitio
 		MadChannelPosition.STEREO_LEFT,
 		MadChannelPosition.STEREO_RIGHT };
 
+	private final BaseComponentsCreationContext creationContext;
+
 	public CrossFaderMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classService ) throws RecordNotFoundException, DatastoreException
 	{
@@ -94,6 +103,17 @@ public class CrossFaderMadDefinition extends AbstractNonConfigurableMadDefinitio
 				CHAN_TYPES,
 				CHAN_DIRS,
 				CHAN_POSI );
+		this.creationContext = creationContext;
+	}
 
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new CrossFaderMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

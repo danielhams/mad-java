@@ -20,17 +20,24 @@
 
 package uk.co.modularaudio.mads.masterio.mu;
 
+import java.util.Map;
+
 import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
+import uk.co.modularaudio.mads.masterio.MasterIOMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadNullLocklessQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class MasterInMadDefinition extends AbstractNonConfigurableMadDefinition<MasterInMadDefinition, MasterInMadInstance>
+public class MasterInMadDefinition
+	extends AbstractNonConfigurableMadDefinition<MasterInMadDefinition, MasterInMadInstance>
+	implements MasterIOMadDefinition
 {
 	public final static String DEFINITION_ID = "master_in";
 
@@ -45,6 +52,8 @@ public class MasterInMadDefinition extends AbstractNonConfigurableMadDefinition<
 
 	public final static IOMadConfiguration CHAN_CONFIG = new IOMadConfiguration( NUM_AUDIO_CHANNELS,
 			NUM_NOTE_CHANNELS, MadChannelDirection.PRODUCER );
+
+	private final MasterIOComponentsCreationContext creationContext;
 
 	public MasterInMadDefinition( final MasterIOComponentsCreationContext creationContext,
 			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
@@ -62,5 +71,17 @@ public class MasterInMadDefinition extends AbstractNonConfigurableMadDefinition<
 				CHAN_CONFIG.getChannelTypes(),
 				CHAN_CONFIG.getChannelDirections(),
 				CHAN_CONFIG.getChannelPositions() );
+		this.creationContext = creationContext;
+	}
+
+	@Override
+	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+	{
+		return new MasterInMadInstance(
+				creationContext,
+				instanceName,
+				this,
+				parameterValues,
+				getChannelConfigurationForParameters( parameterValues ) );
 	}
 }

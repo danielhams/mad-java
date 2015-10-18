@@ -29,10 +29,10 @@ import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.notestate.NoteStateManager;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
@@ -59,7 +59,7 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 			final String instanceName,
 			final NoteMultiplexerMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
-			final MadChannelConfiguration channelConfiguration ) throws MadProcessingException
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 
@@ -95,7 +95,7 @@ public class NoteMultiplexerMadInstance extends MadInstance<NoteMultiplexerMadDe
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , final int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final boolean noteConnected = channelConnectedFlags.get( noteInChannelIndex );
 

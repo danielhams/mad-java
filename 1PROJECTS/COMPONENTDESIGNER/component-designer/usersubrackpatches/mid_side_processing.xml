@@ -4,8 +4,22 @@
     <rackIOLink rackChannelName="Input Channel 1" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Left"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="Mid Side Processor 18" rackComponentChannelInstanceName="Input Wave 2"/>
     <rackIOLink rackChannelName="Input Channel 2" rackComponentName="WetDryMixer" rackComponentChannelInstanceName="Input Channel 1 Right"/>
-    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="OutMixer" rackComponentChannelInstanceName="Output Wave Left"/>
-    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="OutMixer" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="BackToStereoMixer" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="BackToStereoMixer" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="BackToStereoMixer" definitionId="imixer3">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mid Side Level Mixer" definitionId="imixer3">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
     <rackComponent name="Mid Side Processor 18" definitionId="midside">
         <rackPosition column="0" row="0"/>
         <rackControl name="MidSideType" value="Left Right To Mid Side"/>
@@ -14,20 +28,6 @@
         <rackPosition column="0" row="5"/>
         <rackControl name="MidSideType" value="Mid Side To Left Right"/>
     </rackComponent>
-    <rackComponent name="Mixer (Three Stereo Lanes, Interpolated) 20" definitionId="imixer3">
-        <rackPosition column="0" row="1"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
-    </rackComponent>
-    <rackComponent name="OutMixer" definitionId="imixer3">
-        <rackPosition column="2" row="2"/>
-        <rackControl name="Master Lane" value="0.0:0.0"/>
-        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
-        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
-        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
-    </rackComponent>
     <rackComponent name="WetDryMixer" definitionId="cross_fader">
         <rackPosition column="2" row="1"/>
         <rackControl name="AmpAKill" value="false"/>
@@ -35,12 +35,12 @@
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="1.0"/>
     </rackComponent>
-    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 1" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 2" consumerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mid Side Level Mixer" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Mid Side Level Mixer" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 2"/>
+    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 1" consumerRackComponentName="Mid Side Level Mixer" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 2" consumerRackComponentName="Mid Side Level Mixer" consumerChannelName="Lane 2 Input Wave Right"/>
     <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 1" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Left"/>
     <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 2" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Right"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 1"/>
-    <rackLink producerRackComponentName="Mixer (Three Stereo Lanes, Interpolated) 20" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 2"/>
-    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="OutMixer" consumerChannelName="Lane 1 Input Wave Left"/>
-    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Right" consumerRackComponentName="OutMixer" consumerChannelName="Lane 1 Input Wave Right"/>
+    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="BackToStereoMixer" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Right" consumerRackComponentName="BackToStereoMixer" consumerChannelName="Lane 1 Input Wave Right"/>
 </rack>

@@ -67,15 +67,24 @@ public class RackMasterIOComponentsFactory
 
 	@Override
 	public MadInstance<?, ?> createInstanceForDefinition( final MadDefinition<?, ?> definition,
-			final Map<MadParameterDefinition, String> parameterValues, final String instanceName ) throws DatastoreException
+			final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
+		throws DatastoreException
 	{
 		assert( definition == rmDef );
 
-		return new RackMasterIOMadInstance( creationContext,
-				instanceName,
-				rmDef,
-				parameterValues,
-				rmDef.getChannelConfigurationForParameters( parameterValues ) );
+		if( !RackMasterIOMadDefinition.DEFINITION_ID.equals( definition.getId() ) )
+		{
+			throw new DatastoreException("Unknown mad: " + definition.getId() );
+		}
+		else
+		{
+			return new RackMasterIOMadInstance( creationContext,
+					instanceName,
+					rmDef,
+					parameterValues,
+					rmDef.getChannelConfigurationForParameters( parameterValues ) );
+		}
+
 	}
 
 	@Override

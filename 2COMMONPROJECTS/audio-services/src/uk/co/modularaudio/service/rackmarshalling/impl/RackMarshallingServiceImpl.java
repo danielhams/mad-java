@@ -33,6 +33,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -132,9 +133,12 @@ public class RackMarshallingServiceImpl implements ComponentWithLifecycle, RackM
 			retVal.setDirty( false );
 			return retVal;
 		}
-		catch (final Exception e)
+		catch( final RecordNotFoundException | MadProcessingException |
+				MAConstraintViolationException | ContentsAlreadyAddedException |
+				TableCellFullException | TableIndexOutOfBoundsException | JAXBException e)
 		{
-			final String msg = "Exception caught loading rack from file: " + e.toString();
+			final String msg = "Exception caught loading rack from file \"" +
+					filename + "\": " + e.toString();
 			log.error( msg, e );
 			throw new DatastoreException( msg, e );
 		}
