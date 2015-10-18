@@ -28,7 +28,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.ui.RackMasterIOMadUiDefinition;
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -48,7 +47,6 @@ public class RackMasterIOComponentsUiFactory
 	private static Log log = LogFactory.getLog( RackMasterIOComponentsUiFactory.class.getName() );
 
 
-	private BufferedImageAllocationService bufferedImageAllocationService;
 	private MadComponentService componentService;
 	private MadComponentUiService componentUiService;
 	private RackMasterIOComponentsFactory rackMasterIOComponentsFactory;
@@ -59,11 +57,6 @@ public class RackMasterIOComponentsUiFactory
 	public void setRackMasterIOComponentsFactory( final RackMasterIOComponentsFactory internalComponentsFactory )
 	{
 		this.rackMasterIOComponentsFactory = internalComponentsFactory;
-	}
-
-	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
-	{
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	public void setComponentService( final MadComponentService componentService )
@@ -105,8 +98,7 @@ public class RackMasterIOComponentsUiFactory
 	@Override
 	public void init() throws ComponentConfigurationException
 	{
-		if( bufferedImageAllocationService == null ||
-				componentUiService == null ||
+		if( componentUiService == null ||
 				rackMasterIOComponentsFactory == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
@@ -115,8 +107,7 @@ public class RackMasterIOComponentsUiFactory
 		try
 		{
 			final RackMasterIOMadDefinition rmMd = (RackMasterIOMadDefinition) componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
-			rmMud = new RackMasterIOMadUiDefinition( bufferedImageAllocationService,
-					rmMd );
+			rmMud = new RackMasterIOMadUiDefinition( rmMd );
 			muds.add( rmMud );
 
 			componentUiService.registerComponentUiFactory( this );

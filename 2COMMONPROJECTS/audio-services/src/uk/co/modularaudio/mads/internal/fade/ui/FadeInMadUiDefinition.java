@@ -30,7 +30,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -42,11 +41,10 @@ public class FadeInMadUiDefinition extends MadUiDefinition<FadeInMadDefinition, 
 
 	private static final Point PRODUCER_CHANNEL_CENTER = new Point( 160, 30 );
 
-	public FadeInMadUiDefinition( final BufferedImageAllocator bia,
-			final FadeInMadDefinition definition )
+	public FadeInMadUiDefinition( final FadeInMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

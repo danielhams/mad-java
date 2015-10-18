@@ -56,8 +56,7 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 			final Rectangle[] uiControlBounds )
 		throws DatastoreException
 	{
-		super( bia,
-				imagePrefix,
+		super( imagePrefix,
 				definition,
 				span,
 				instanceClass,

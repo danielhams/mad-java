@@ -46,7 +46,9 @@ public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
 	public static final Color MASTER_FG_COLOR = Color.black;
 	public static final Color MASTER_INDICATOR_COLOR = Color.decode( "#00ff00" );
 
-	public MixerNMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public MixerNMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final D definition,
 			final String imagePrefix,
 			final Span span,
@@ -59,8 +61,7 @@ public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
 			final Rectangle[] uiControlBounds )
 		throws DatastoreException
 	{
-		super( bia,
-				imagePrefix,
+		super( imagePrefix,
 				definition,
 				span,
 				instanceClass,
@@ -70,6 +71,12 @@ public class MixerNMadUiDefinition<D extends MixerNMadDefinition<D,I>,
 				uiControlTypes,
 				uiControlClasses,
 				uiControlBounds );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 
 }

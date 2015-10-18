@@ -114,12 +114,13 @@ public class StereoCompressorMadUiDefinition
 
 	private static final Class<StereoCompressorMadUiInstance> INSTANCE_CLASS = StereoCompressorMadUiInstance.class;
 
-	public StereoCompressorMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public StereoCompressorMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final StereoCompressorMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X4_BLUE,
+		super( MadUIStandardBackgrounds.STD_2X4_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,
@@ -129,5 +130,11 @@ public class StereoCompressorMadUiDefinition
 				CONTROL_TYPES,
 				CONTROL_CLASSES,
 				CONTROL_BOUNDS );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 }

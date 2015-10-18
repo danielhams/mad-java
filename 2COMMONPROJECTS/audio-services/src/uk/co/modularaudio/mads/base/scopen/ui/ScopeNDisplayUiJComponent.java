@@ -280,7 +280,7 @@ public class ScopeNDisplayUiJComponent<D extends ScopeNMadDefinition<D, I>,
 		// Allocate an appropriately sized buffered image, paint into it
 		// and then show a save dialog to select where to save
 		// We need a mutex on the paint so that we aren't making a mess
-		final BufferedImageAllocator bia = uiInstance.getUiDefinition().getBufferedImageAllocator();
+		final BufferedImageAllocator bia = ((ScopeNMadUiDefinition<?,?,?>)uiInstance.getUiDefinition()).getBufferedImageAllocator();
 		TiledBufferedImage tbi = null;
 		try
 		{

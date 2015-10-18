@@ -33,7 +33,6 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -66,12 +65,11 @@ public class RackMasterIOMadUiDefinition extends MadUiDefinition<RackMasterIOMad
 	private static final Point PRODUCER_NOTE_CHANNEL_START =
 			new Point( CONSUMER_NOTE_CHANNEL_START.x + CONSUMER_TO_PRODUCER_X_INCR, CHANNEL_START_Y );
 
-	public RackMasterIOMadUiDefinition( final BufferedImageAllocator bia,
-			final RackMasterIOMadDefinition definition )
+	public RackMasterIOMadUiDefinition( final RackMasterIOMadDefinition definition )
 		throws DatastoreException
 	{
 		// master io is not draggable.
-		super( bia, MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
+		super( MadUIStandardBackgrounds.STD_4X1_DARKGRAY, definition, false, false );
 	}
 
 	@Override

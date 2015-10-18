@@ -102,8 +102,7 @@ public class InterpTesterMadUiDefinition
 			final InterpTesterMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X4_ORANGE,
+		super( MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

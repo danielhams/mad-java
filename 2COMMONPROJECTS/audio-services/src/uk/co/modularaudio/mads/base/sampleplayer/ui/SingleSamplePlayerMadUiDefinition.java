@@ -89,8 +89,7 @@ public class SingleSamplePlayerMadUiDefinition
 			final SingleSamplePlayerMadDefinition definition )
 			throws DatastoreException
 		{
-			super( bia,
-					MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
+			super( MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

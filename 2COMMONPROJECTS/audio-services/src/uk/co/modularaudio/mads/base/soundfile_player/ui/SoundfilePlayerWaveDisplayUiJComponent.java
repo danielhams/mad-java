@@ -93,7 +93,7 @@ public class SoundfilePlayerWaveDisplayUiJComponent extends PacPanel
 		this.uiInstance = uiInstance;
 		this.advancedComponentsFrontController = instance.getAdvancedComponentsFrontController();
 
-		this.bia = uiInstance.getUiDefinition().getBufferedImageAllocator();
+		this.bia = ((SoundfilePlayerMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator();
 
 		uiInstance.addSampleEventListener( this );
 		uiInstance.addZoomListener( this );

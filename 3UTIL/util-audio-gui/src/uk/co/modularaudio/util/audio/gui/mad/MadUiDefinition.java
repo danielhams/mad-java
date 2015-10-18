@@ -22,7 +22,6 @@ package uk.co.modularaudio.util.audio.gui.mad;
 
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -34,22 +33,19 @@ public abstract class MadUiDefinition
 //	private static Log log = LogFactory.getLog( MadUiDefinition.class.getName() );
 
 	protected final D definition;
-	protected final BufferedImageAllocator bufferedImageAllocator;
 
 	protected String imagePrefix;
 
 	protected boolean isDraggable;
 	protected boolean isParametrable;
 
-	public MadUiDefinition( final BufferedImageAllocator bia,
-			final String imagePrefix,
+	public MadUiDefinition( final String imagePrefix,
 			final D definition ) throws DatastoreException
 	{
-		this( bia, imagePrefix, definition, true, false );
+		this( imagePrefix, definition, true, false );
 	}
 
-	public MadUiDefinition( final BufferedImageAllocator bia,
-			final String imagePrefix,
+	public MadUiDefinition( final String imagePrefix,
 			final D definition,
 			final boolean isDraggable,
 			final boolean isParametrable ) throws DatastoreException
@@ -58,8 +54,6 @@ public abstract class MadUiDefinition
 		this.isDraggable = isDraggable;
 		this.isParametrable = isParametrable;
 		this.imagePrefix = imagePrefix;
-
-		this.bufferedImageAllocator = bia;
 	}
 
 	public abstract AbstractMadUiInstance<D,I> createNewUiInstance( I instance ) throws DatastoreException;
@@ -85,11 +79,6 @@ public abstract class MadUiDefinition
 	}
 
 	public abstract Span getCellSpan();
-
-	public final BufferedImageAllocator getBufferedImageAllocator()
-	{
-		return bufferedImageAllocator;
-	}
 
 	@SuppressWarnings("unchecked")
 	public AbstractMadUiInstance<D, I> createNewUiInstanceUT( final MadInstance<?,?> componentInstance )

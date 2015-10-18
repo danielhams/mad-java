@@ -89,7 +89,7 @@ public class WaveRollerDisplayUiJComponent extends PacPanel
 
 		uiInstance.setScopeDataListener( this );
 
-		this.bufferImageAllocator = uiInstance.getUiDefinition().getBufferedImageAllocator();
+		this.bufferImageAllocator = ((WaveRollerMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator();
 	}
 
 	@Override

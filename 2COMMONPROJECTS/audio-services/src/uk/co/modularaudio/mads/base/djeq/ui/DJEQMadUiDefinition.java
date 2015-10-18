@@ -81,20 +81,27 @@ public class DJEQMadUiDefinition
 
 	private static final Class<DJEQMadUiInstance> INSTANCE_CLASS = DJEQMadUiInstance.class;
 
-	public DJEQMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public DJEQMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final DJEQMadDefinition definition )
-			throws DatastoreException
-		{
-			super( bia,
-					MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
-					definition,
-					SPAN,
-					INSTANCE_CLASS,
-					CHAN_INDEXES,
-					CHAN_POSIS,
-					CONTROL_NAMES,
-					CONTROL_TYPES,
-					CONTROL_CLASSES,
-					CONTROL_BOUNDS );
-		}
+		throws DatastoreException
+	{
+		super( MadUIStandardBackgrounds.STD_1X4_DARKGRAY,
+				definition,
+				SPAN,
+				INSTANCE_CLASS,
+				CHAN_INDEXES,
+				CHAN_POSIS,
+				CONTROL_NAMES,
+				CONTROL_TYPES,
+				CONTROL_CLASSES,
+				CONTROL_BOUNDS );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
+	}
 }

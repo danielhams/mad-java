@@ -47,10 +47,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.032394"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-9.718199"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 95 master.mp3|82948094"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 97 master.mp3|-1"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

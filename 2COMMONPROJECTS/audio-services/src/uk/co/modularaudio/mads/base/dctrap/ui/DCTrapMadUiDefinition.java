@@ -69,8 +69,7 @@ public class DCTrapMadUiDefinition
 			final DCTrapMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
+		super( MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

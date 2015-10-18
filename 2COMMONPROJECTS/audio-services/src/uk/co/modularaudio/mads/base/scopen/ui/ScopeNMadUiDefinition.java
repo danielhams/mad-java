@@ -37,7 +37,9 @@ U extends ScopeNMadUiInstance<D,I>>
 {
 	private final ScopeNUiInstanceConfiguration uiInstanceConfiguration;
 
-	public ScopeNMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public ScopeNMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final D definition,
 			final String imagePrefix,
 			final Span span,
@@ -49,8 +51,7 @@ U extends ScopeNMadUiInstance<D,I>>
 			final Rectangle[] uiControlBounds )
 		throws DatastoreException
 	{
-		super( bia,
-				imagePrefix,
+		super( imagePrefix,
 				definition,
 				span,
 				instanceClass,
@@ -61,10 +62,16 @@ U extends ScopeNMadUiInstance<D,I>>
 				uiControlClasses,
 				uiControlBounds );
 		this.uiInstanceConfiguration = uiInstanceConfiguration;
+		this.bufferedImageAllocator = bufferedImageAllocator;
 	}
 
 	public ScopeNUiInstanceConfiguration getUiInstanceConfiguration()
 	{
 		return uiInstanceConfiguration;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 }

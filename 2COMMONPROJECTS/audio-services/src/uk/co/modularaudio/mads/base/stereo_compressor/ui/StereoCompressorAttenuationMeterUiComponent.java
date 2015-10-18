@@ -58,7 +58,8 @@ public class StereoCompressorAttenuationMeterUiComponent extends PacPanel
 		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
 
-		attenuationMeter = new AttenuationMeterAndLabels( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator() );
+		attenuationMeter = new AttenuationMeterAndLabels( uiInstance,
+				((StereoCompressorMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator() );
 		this.add( attenuationMeter, "grow" );
 
 		uiInstance.registerAttenuationSignalMeterValueReceiver( this );

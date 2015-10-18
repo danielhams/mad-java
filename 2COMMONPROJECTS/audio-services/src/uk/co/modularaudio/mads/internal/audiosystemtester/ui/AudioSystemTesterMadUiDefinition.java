@@ -30,7 +30,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -44,11 +43,10 @@ public class AudioSystemTesterMadUiDefinition
 
 	private static final Span SPAN = new Span(1,1);
 
-	public AudioSystemTesterMadUiDefinition( final BufferedImageAllocator bia,
-			final AudioSystemTesterMadDefinition definition )
+	public AudioSystemTesterMadUiDefinition( final AudioSystemTesterMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
+		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final AudioSystemTesterMadInstanceConfiguration instanceConfiguration,

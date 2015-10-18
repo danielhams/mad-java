@@ -75,8 +75,7 @@ public class OscillatorMadUiDefinition
 			final OscillatorMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X1_METALLIC,
+		super( MadUIStandardBackgrounds.STD_2X1_METALLIC,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

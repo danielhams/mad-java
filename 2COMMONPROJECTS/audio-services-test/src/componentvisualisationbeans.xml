@@ -98,7 +98,6 @@
         <property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="componentUiService"><ref bean="componentUiService"></ref></property>
 		<property name="internalComponentsFactory"><ref bean="internalComponentsFactory"></ref></property>
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="rackMasterIOComponentsFactory" class="uk.co.modularaudio.mads.rackmasterio.RackMasterIOComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>
@@ -108,7 +107,6 @@
         <property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="componentUiService"><ref bean="componentUiService"></ref></property>
 		<property name="rackMasterIOComponentsFactory"><ref bean="rackMasterIOComponentsFactory"></ref></property>
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="subRackComponentsFactory" class="uk.co.modularaudio.mads.subrack.SubRackComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>
@@ -124,7 +122,6 @@
         <property name="componentService"><ref bean="componentService"></ref></property>
 		<property name="componentUiService"><ref bean="componentUiService"></ref></property>
 		<property name="subRackComponentsFactory"><ref bean="subRackComponentsFactory"></ref></property>
-		<property name="bufferedImageAllocationService"><ref bean="bufferedImageAllocationService"></ref></property>
 	</bean>
 	<bean id="masterIOComponentsFactory" class="uk.co.modularaudio.mads.masterio.MasterIOComponentsFactory" init-method="init" destroy-method="destroy">
 		<property name="componentService"><ref bean="componentService"></ref></property>

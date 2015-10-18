@@ -87,12 +87,13 @@ public class OscilloscopeMadUiDefinition
 
 	private static final Class<OscilloscopeMadUiInstance> INSTANCE_CLASS = OscilloscopeMadUiInstance.class;
 
-	public OscilloscopeMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public OscilloscopeMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final OscilloscopeMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X2_BLUE,
+		super( MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,
@@ -102,5 +103,11 @@ public class OscilloscopeMadUiDefinition
 				CONTROL_TYPES,
 				CONTROL_CLASSES,
 				COUNTROL_BOUNDS );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 }

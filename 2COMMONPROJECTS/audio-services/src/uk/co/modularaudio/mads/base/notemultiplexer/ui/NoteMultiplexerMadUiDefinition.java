@@ -50,7 +50,7 @@ public class NoteMultiplexerMadUiDefinition extends
 			final NoteMultiplexerMadDefinition definition )
 			throws DatastoreException
 	{
-		super( bia, definition.getId(), definition, INSTANCE_CLASS );
+		super( definition.getId(), definition, INSTANCE_CLASS );
 	}
 
 	private Point[] getUiChannelPositionsForAui( final int numInputChannels, final int numOutputChannels, final int numTotalChannels )

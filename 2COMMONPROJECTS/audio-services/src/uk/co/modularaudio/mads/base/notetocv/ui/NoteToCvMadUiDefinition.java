@@ -89,8 +89,7 @@ public class NoteToCvMadUiDefinition
 			final NoteToCvMadDefinition definition )
 			throws DatastoreException
 		{
-			super( bia,
-					MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
+			super( MadUIStandardBackgrounds.STD_2X1_DARKGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

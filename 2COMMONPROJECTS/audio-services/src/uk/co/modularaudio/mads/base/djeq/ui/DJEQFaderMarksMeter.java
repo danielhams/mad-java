@@ -111,7 +111,9 @@ public class DJEQFaderMarksMeter extends PacPanel
 		faderMarks = new DJEQFaderMarks( sdm, Color.BLACK, false );
 		this.add( faderMarks, "cell 1 0, growy, pushy 100" );
 
-		sam = new LaneStereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
+		sam = new LaneStereoAmpMeter( uiInstance,
+				((DJEQMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator(),
+				true );
 		this.add( sam, "cell 2 0, growy");
 
 		faderTextbox = new LWTCSliderDisplayTextbox( sdm, sdc,

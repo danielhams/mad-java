@@ -67,8 +67,7 @@ public class LinearCVAMadUiDefinition
 			final LinearCVAMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_1X1_WHITE,
+		super( MadUIStandardBackgrounds.STD_1X1_WHITE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

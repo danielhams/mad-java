@@ -34,7 +34,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -51,8 +50,7 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 	private final int[] uiChannelInstanceIndexes;
 	private final Point[] uiChannelPositions;
 
-	public AbstractNonConfigurableMadUiDefinition( final BufferedImageAllocator bia,
-			final String imagePrefix,
+	public AbstractNonConfigurableMadUiDefinition( final String imagePrefix,
 			final D definition,
 			final Span span,
 			final Class<U> instanceClass,
@@ -65,7 +63,7 @@ public abstract class AbstractNonConfigurableMadUiDefinition<D extends MadDefini
 		throws DatastoreException
 	{
 		// Use default (is draggable, is not configurable)
-		super( bia, imagePrefix, definition );
+		super( imagePrefix, definition );
 
 		this.span = span;
 

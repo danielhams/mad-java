@@ -30,7 +30,6 @@ import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiChannelInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -42,11 +41,10 @@ public class FeedbackLinkConsumerMadUiDefinition extends MadUiDefinition<Feedbac
 
 	private static final Point CONSUMER_CV_CHANNEL_CENTER = new Point( 160, 30 );
 
-	public FeedbackLinkConsumerMadUiDefinition( final BufferedImageAllocator bia,
-			final FeedbackLinkConsumerMadDefinition definition )
+	public FeedbackLinkConsumerMadUiDefinition( final FeedbackLinkConsumerMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia, MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
+		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY, definition );
 	}
 
 	@Override

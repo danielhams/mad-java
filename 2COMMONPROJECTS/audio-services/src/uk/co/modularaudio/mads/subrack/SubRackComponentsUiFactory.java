@@ -30,7 +30,6 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -52,7 +51,6 @@ public class SubRackComponentsUiFactory
 	private MadComponentService componentService;
 	private MadComponentUiService componentUiService;
 	private SubRackComponentsFactory subRackComponentsFactory;
-	private BufferedImageAllocationService bufferedImageAllocationService;
 
 	private SubRackMadUiDefinition srMud;
 	private final ArrayList<MadUiDefinition<?,?>> muds = new ArrayList<MadUiDefinition<?,?>>();
@@ -70,11 +68,6 @@ public class SubRackComponentsUiFactory
 	public void setComponentService( final MadComponentService componentService )
 	{
 		this.componentService = componentService;
-	}
-
-	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
-	{
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	@Override
@@ -123,8 +116,7 @@ public class SubRackComponentsUiFactory
 	{
 		if( componentService == null ||
 				componentUiService == null ||
-				subRackComponentsFactory == null ||
-				bufferedImageAllocationService == null )
+				subRackComponentsFactory == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
 		}
@@ -132,7 +124,7 @@ public class SubRackComponentsUiFactory
 		try
 		{
 			final SubRackMadDefinition srMd = (SubRackMadDefinition)componentService.findDefinitionById( SubRackMadDefinition.DEFINITION_ID );
-			srMud = new SubRackMadUiDefinition( bufferedImageAllocationService, srMd );
+			srMud = new SubRackMadUiDefinition( srMd );
 
 			muds.add( srMud );
 

@@ -39,7 +39,6 @@ import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkConsumerMadD
 import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkProducerMadUiDefinition;
-import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -60,7 +59,6 @@ public class InternalComponentsUiFactory
 
 	private MadComponentService componentService;
 	private MadComponentUiService componentUiService;
-	private BufferedImageAllocationService bufferedImageAllocationService;
 
 	private InternalComponentsFactory internalComponentsFactory;
 
@@ -92,11 +90,6 @@ public class InternalComponentsUiFactory
 	public void setComponentUiService( final MadComponentUiService componentUiService )
 	{
 		this.componentUiService = componentUiService;
-	}
-
-	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
-	{
-		this.bufferedImageAllocationService = bufferedImageAllocationService;
 	}
 
 	@Override
@@ -146,7 +139,6 @@ public class InternalComponentsUiFactory
 	{
 		if( componentService == null ||
 				componentUiService == null ||
-				bufferedImageAllocationService == null ||
 				internalComponentsFactory == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
@@ -157,48 +149,42 @@ public class InternalComponentsUiFactory
 			final FeedbackLinkConsumerMadDefinition flConsumerMd =
 					(FeedbackLinkConsumerMadDefinition)componentService.findDefinitionById(
 							FeedbackLinkConsumerMadDefinition.DEFINITION_ID );
-			flConsumerMud = new FeedbackLinkConsumerMadUiDefinition( bufferedImageAllocationService,
-					flConsumerMd );
+			flConsumerMud = new FeedbackLinkConsumerMadUiDefinition( flConsumerMd );
 			muds.add( flConsumerMud );
 			mdIdToMudMap.put( FeedbackLinkConsumerMadDefinition.DEFINITION_ID, flConsumerMud );
 
 			final FeedbackLinkProducerMadDefinition flProducerMd =
 					(FeedbackLinkProducerMadDefinition)componentService.findDefinitionById(
 							FeedbackLinkProducerMadDefinition.DEFINITION_ID );
-			flProducerMud = new FeedbackLinkProducerMadUiDefinition( bufferedImageAllocationService,
- 					flProducerMd );
+			flProducerMud = new FeedbackLinkProducerMadUiDefinition( flProducerMd );
 			muds.add( flProducerMud );
 			mdIdToMudMap.put( FeedbackLinkProducerMadDefinition.DEFINITION_ID, flProducerMud );
 
 			final AudioSystemTesterMadDefinition asMd =
 					(AudioSystemTesterMadDefinition)componentService.findDefinitionById(
 							AudioSystemTesterMadDefinition.DEFINITION_ID );
-			asTesterMud = new AudioSystemTesterMadUiDefinition( bufferedImageAllocationService,
-					asMd );
+			asTesterMud = new AudioSystemTesterMadUiDefinition( asMd );
 			muds.add( asTesterMud );
 			mdIdToMudMap.put( AudioSystemTesterMadDefinition.DEFINITION_ID, asTesterMud );
 
 			final BlockingWriteRingMadDefinition bwrMd =
 					(BlockingWriteRingMadDefinition)componentService.findDefinitionById(
 							BlockingWriteRingMadDefinition.DEFINITION_ID );
-			bwrMud = new BlockingWriteRingMadUiDefinition( bufferedImageAllocationService,
-					bwrMd );
+			bwrMud = new BlockingWriteRingMadUiDefinition( bwrMd );
 			muds.add( bwrMud );
 			mdIdToMudMap.put( BlockingWriteRingMadDefinition.DEFINITION_ID, bwrMud );
 
 			final FadeInMadDefinition fiMd =
 					(FadeInMadDefinition)componentService.findDefinitionById(
 							FadeInMadDefinition.DEFINITION_ID );
-			fadeInMud = new FadeInMadUiDefinition( bufferedImageAllocationService,
-					fiMd );
+			fadeInMud = new FadeInMadUiDefinition( fiMd );
 			muds.add( fadeInMud );
 			mdIdToMudMap.put( FadeInMadDefinition.DEFINITION_ID, fadeInMud );
 
 			final FadeOutMadDefinition foMd =
 					(FadeOutMadDefinition)componentService.findDefinitionById(
 							FadeOutMadDefinition.DEFINITION_ID );
-			fadeOutMud = new FadeOutMadUiDefinition( bufferedImageAllocationService,
-					foMd );
+			fadeOutMud = new FadeOutMadUiDefinition( foMd );
 			muds.add( fadeOutMud );
 			mdIdToMudMap.put( FadeOutMadDefinition.DEFINITION_ID, fadeOutMud );
 

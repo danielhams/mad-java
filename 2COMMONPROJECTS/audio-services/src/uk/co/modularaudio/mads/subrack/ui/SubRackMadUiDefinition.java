@@ -35,7 +35,6 @@ import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -71,12 +70,11 @@ public class SubRackMadUiDefinition extends MadUiDefinition<SubRackMadDefinition
 	private static final Rectangle EDIT_PATCH_BOUNDS = new Rectangle( 425, 25, 60, 30 );
 	private static final Rectangle SAVE_PATCH_BOUNDS = new Rectangle( 490, 25, 60, 30 );
 
-	public SubRackMadUiDefinition( final BufferedImageAllocator bia,
-			final SubRackMadDefinition definition )
+	public SubRackMadUiDefinition( final SubRackMadDefinition definition )
 		throws DatastoreException
 	{
 		// Sub rack is draggable
-		super( bia, MadUIStandardBackgrounds.STD_2X1_DARKGRAY, definition, true, false );
+		super( MadUIStandardBackgrounds.STD_2X1_DARKGRAY, definition, true, false );
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

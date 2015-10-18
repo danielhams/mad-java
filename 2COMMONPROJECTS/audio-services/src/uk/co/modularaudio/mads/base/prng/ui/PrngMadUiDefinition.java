@@ -63,8 +63,7 @@ public class PrngMadUiDefinition
 			final PrngMadDefinition definition )
 			throws DatastoreException
 		{
-			super( bia,
-					MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
+			super( MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

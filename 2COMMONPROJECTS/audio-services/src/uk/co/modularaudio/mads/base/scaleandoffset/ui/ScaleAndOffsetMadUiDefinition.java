@@ -78,8 +78,7 @@ public class ScaleAndOffsetMadUiDefinition
 			final ScaleAndOffsetMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
+		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

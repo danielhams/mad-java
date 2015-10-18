@@ -81,12 +81,13 @@ public class WaveRollerMadUiDefinition
 
 	private static final Class<WaveRollerMadUiInstance> INSTANCE_CLASS = WaveRollerMadUiInstance.class;
 
-	public WaveRollerMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public WaveRollerMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final WaveRollerMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X2_BLUE,
+		super( MadUIStandardBackgrounds.STD_2X2_BLUE,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,
@@ -96,5 +97,11 @@ public class WaveRollerMadUiDefinition
 				CONTROL_TYPES,
 				CONTROL_CLASSES,
 				CONTROL_BOUNDS );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 }

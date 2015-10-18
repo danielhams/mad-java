@@ -52,7 +52,9 @@ public class StereoCompressorOutSignalMeterUiComponent extends PacPanel
 		final MigLayout compLayout = new MigLayout("insets 1, gap 0, fill");
 		this.setLayout( compLayout );
 
-		stereoAmpMeter = new OutSignalStereoAmpMeter( uiInstance, uiInstance.getUiDefinition().getBufferedImageAllocator(), true );
+		stereoAmpMeter = new OutSignalStereoAmpMeter( uiInstance,
+				((StereoCompressorMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator(),
+				true );
 		this.add( stereoAmpMeter, "grow" );
 
 		uiInstance.registerOutSignalMeterValueReceiver( this );

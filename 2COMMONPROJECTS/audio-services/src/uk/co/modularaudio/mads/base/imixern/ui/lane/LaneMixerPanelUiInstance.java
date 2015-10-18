@@ -36,6 +36,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.audio.mvc.rotarydisplay.models.MixerLanePanRotaryDisplayModel;
+import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayController;
 import uk.co.modularaudio.util.mvc.displayrotary.RotaryDisplayModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
@@ -170,8 +171,10 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		muteSolo = new LaneMuteSolo<D,I,U>( uiInstance, laneNumber );
 		this.add( muteSolo, "cell 1 0, pushx 50, growy 0, align center" );
 
+		final BufferedImageAllocator bufferedImageAllocator = ((MixerNMadUiDefinition<?,?,?>)uiInstance.getUiDefinition()).getBufferedImageAllocator();
+
 		faderAndMarks = new LaneFaderAndMarks<D,I>( uiInstance,
-				uiInstance.getUiDefinition().getBufferedImageAllocator(),
+				bufferedImageAllocator,
 				true,
 				SLIDER_COLORS, new SliderDisplayModel.ValueChangeListener()
 				{
@@ -186,7 +189,7 @@ public class LaneMixerPanelUiInstance<D extends MixerNMadDefinition<D,I>,
 		this.add( faderAndMarks, "cell 0 1, grow, pushy 100" );
 
 		stereoAmpMeter = new LaneStereoAmpMeter<D,I>( uiInstance,
-				uiInstance.getUiDefinition().getBufferedImageAllocator(),
+				bufferedImageAllocator,
 				true );
 
 		this.add( stereoAmpMeter, "cell 1 1, grow, pushy 100" );

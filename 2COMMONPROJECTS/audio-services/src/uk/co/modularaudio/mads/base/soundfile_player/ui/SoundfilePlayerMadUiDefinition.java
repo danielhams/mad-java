@@ -103,12 +103,13 @@ public class SoundfilePlayerMadUiDefinition extends
 
 	private static final Class<SoundfilePlayerMadUiInstance> INSTANCE_CLASS = SoundfilePlayerMadUiInstance.class;
 
-	public SoundfilePlayerMadUiDefinition( final BufferedImageAllocator bia,
+	private final BufferedImageAllocator bufferedImageAllocator;
+
+	public SoundfilePlayerMadUiDefinition( final BufferedImageAllocator bufferedImageAllocator,
 			final SoundfilePlayerMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
+		super( MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,
@@ -118,5 +119,11 @@ public class SoundfilePlayerMadUiDefinition extends
 				CONTROL_TYPES,
 				COTNROL_CLASSES,
 				CONTROL_BOUNDS );
+		this.bufferedImageAllocator = bufferedImageAllocator;
+	}
+
+	public BufferedImageAllocator getBufferedImageAllocator()
+	{
+		return bufferedImageAllocator;
 	}
 }

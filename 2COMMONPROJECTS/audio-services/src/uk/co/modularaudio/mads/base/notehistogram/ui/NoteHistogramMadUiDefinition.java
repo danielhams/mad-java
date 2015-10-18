@@ -64,8 +64,7 @@ public class NoteHistogramMadUiDefinition
 			final NoteHistogramMadDefinition definition )
 			throws DatastoreException
 		{
-			super( bia,
-					MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
+			super( MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,
 					definition,
 					SPAN,
 					INSTANCE_CLASS,

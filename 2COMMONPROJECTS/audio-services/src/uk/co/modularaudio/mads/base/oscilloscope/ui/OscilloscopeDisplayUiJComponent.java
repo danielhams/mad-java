@@ -81,7 +81,7 @@ public class OscilloscopeDisplayUiJComponent extends PacPanel
 		this.uiInstance = uiInstance;
 		uiInstance.registerScopeDataListener( this );
 
-		this.bufferImageAllocator = uiInstance.getUiDefinition().getBufferedImageAllocator();
+		this.bufferImageAllocator = ((OscilloscopeMadUiDefinition)uiInstance.getUiDefinition()).getBufferedImageAllocator();
 	}
 
 	@Override
