@@ -31,7 +31,6 @@ import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiDefinition;
 import uk.co.modularaudio.mads.subrack.ui.SubRackMadUiInstance;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -54,7 +53,6 @@ public class SubRackComponentsUiFactory
 	private MadComponentUiService componentUiService;
 	private SubRackComponentsFactory subRackComponentsFactory;
 	private BufferedImageAllocationService bufferedImageAllocationService;
-	private ComponentImageFactory componentImageFactory;
 
 	private SubRackMadUiDefinition srMud;
 	private final ArrayList<MadUiDefinition<?,?>> muds = new ArrayList<MadUiDefinition<?,?>>();
@@ -77,11 +75,6 @@ public class SubRackComponentsUiFactory
 	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
-	}
-
-	public void setComponentImageFactory( final ComponentImageFactory componentImageFactory )
-	{
-		this.componentImageFactory = componentImageFactory;
 	}
 
 	@Override
@@ -131,8 +124,7 @@ public class SubRackComponentsUiFactory
 		if( componentService == null ||
 				componentUiService == null ||
 				subRackComponentsFactory == null ||
-				bufferedImageAllocationService == null ||
-				componentImageFactory == null )
+				bufferedImageAllocationService == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
 		}

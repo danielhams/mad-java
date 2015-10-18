@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.mads.rackmasterio.mu.RackMasterIOMadDefinition;
 import uk.co.modularaudio.mads.rackmasterio.ui.RackMasterIOMadUiDefinition;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -50,7 +49,6 @@ public class RackMasterIOComponentsUiFactory
 
 
 	private BufferedImageAllocationService bufferedImageAllocationService;
-	private ComponentImageFactory componentImageFactory;
 	private MadComponentService componentService;
 	private MadComponentUiService componentUiService;
 	private RackMasterIOComponentsFactory rackMasterIOComponentsFactory;
@@ -66,11 +64,6 @@ public class RackMasterIOComponentsUiFactory
 	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
-	}
-
-	public void setComponentImageFactory( final ComponentImageFactory componentImageFactory )
-	{
-		this.componentImageFactory = componentImageFactory;
 	}
 
 	public void setComponentService( final MadComponentService componentService )
@@ -113,7 +106,6 @@ public class RackMasterIOComponentsUiFactory
 	public void init() throws ComponentConfigurationException
 	{
 		if( bufferedImageAllocationService == null ||
-				componentImageFactory == null ||
 				componentUiService == null ||
 				rackMasterIOComponentsFactory == null )
 		{

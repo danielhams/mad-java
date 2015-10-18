@@ -40,7 +40,6 @@ import uk.co.modularaudio.mads.internal.feedbacklink.mu.FeedbackLinkProducerMadD
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkConsumerMadUiDefinition;
 import uk.co.modularaudio.mads.internal.feedbacklink.ui.FeedbackLinkProducerMadUiDefinition;
 import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
-import uk.co.modularaudio.service.imagefactory.ComponentImageFactory;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
 import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
@@ -62,7 +61,6 @@ public class InternalComponentsUiFactory
 	private MadComponentService componentService;
 	private MadComponentUiService componentUiService;
 	private BufferedImageAllocationService bufferedImageAllocationService;
-	private ComponentImageFactory componentImageFactory;
 
 	private InternalComponentsFactory internalComponentsFactory;
 
@@ -99,11 +97,6 @@ public class InternalComponentsUiFactory
 	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
 	{
 		this.bufferedImageAllocationService = bufferedImageAllocationService;
-	}
-
-	public void setComponentImageFactory( final ComponentImageFactory componentImageFactory )
-	{
-		this.componentImageFactory = componentImageFactory;
 	}
 
 	@Override
@@ -154,7 +147,6 @@ public class InternalComponentsUiFactory
 		if( componentService == null ||
 				componentUiService == null ||
 				bufferedImageAllocationService == null ||
-				componentImageFactory == null ||
 				internalComponentsFactory == null )
 		{
 			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
