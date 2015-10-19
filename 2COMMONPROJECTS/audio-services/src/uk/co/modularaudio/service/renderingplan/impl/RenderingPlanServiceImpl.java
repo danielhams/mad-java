@@ -19,6 +19,7 @@
  */
 
 package uk.co.modularaudio.service.renderingplan.impl;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -154,7 +155,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
-		final Set<MadLink> producerLinks = graphService.getProducerInstanceLinks( graph, madInstance );
+		final Collection<MadLink> producerLinks = graphService.getProducerInstanceLinks( graph, madInstance );
 		for( final MadLink link : producerLinks )
 		{
 			final MadChannelInstance producerChannelInstance = link.getProducerChannelInstance();
@@ -179,7 +180,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 //			log.debug("Created buffer for " + producerInstance.toString() + " channel instance: " + producerChannelInstance.toString());
 		}
 
-		final Set<MadLink> consumerLinks = graphService.getConsumerInstanceLinks( graph, madInstance );
+		final Collection<MadLink> consumerLinks = graphService.getConsumerInstanceLinks( graph, madInstance );
 		for( final MadLink link : consumerLinks )
 		{
 			final MadChannelInstance consumerChannelInstance = link.getConsumerChannelInstance();
@@ -282,9 +283,9 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		for( final FlattenedRenderJob flatJob : allFlattenedJobs )
 		{
 			// Who do this job depend on, and who depends on this job
-			final Set<FlattenedRenderJob> flatProducerJobsWeWaitFor = flatJob.getProducerJobsWeWaitFor();
+			final Collection<FlattenedRenderJob> flatProducerJobsWeWaitFor = flatJob.getProducerJobsWeWaitFor();
 			final int numProducersWeWaitFor = flatProducerJobsWeWaitFor.size();
-			final Set<FlattenedRenderJob> flatConsJobsWaitingForUs = flatJob.getConsumerJobsWaitingForUs();
+			final Collection<FlattenedRenderJob> flatConsJobsWaitingForUs = flatJob.getConsumerJobsWaitingForUs();
 			final int numConsumersWaitForUs = flatConsJobsWaitingForUs.size();
 
 			final MadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );

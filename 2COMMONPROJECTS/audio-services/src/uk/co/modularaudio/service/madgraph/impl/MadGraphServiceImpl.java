@@ -428,14 +428,14 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 	}
 
 	@Override
-	public Set<MadLink> getProducerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
+	public Collection<MadLink> getProducerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
 			throws DatastoreException
 	{
 		return graph.getProducerInstanceLinks( instance );
 	}
 
 	@Override
-	public Set<MadLink> getConsumerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
+	public Collection<MadLink> getConsumerInstanceLinks( final MadGraphInstance<?, ?> graph, final MadInstance<?, ?> instance )
 			throws DatastoreException
 	{
 		return graph.getConsumerInstanceLinks( instance );
@@ -463,7 +463,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 			}
 			else
 			{
-				final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelInstanceMap = g
+				final Map<MadChannelInstance, Collection<MadChannelInstance>> graphInputChannelInstanceMap = g
 						.getGraphInputChannelInstanceMap();
 				final Map<MadChannelInstance, MadChannelInstance> graphOutputChannelInstanceMap = g
 						.getGraphOutputChannelInstanceMap();
@@ -482,7 +482,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 					}
 					else
 					{
-						final ArrayList<MadChannelInstance> mappedList = graphInputChannelInstanceMap.get( gci );
+						final Collection<MadChannelInstance> mappedList = graphInputChannelInstanceMap.get( gci );
 						if (mappedList != null)
 						{
 							for (final MadChannelInstance auci : mappedList)
@@ -766,7 +766,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 						producerSubGraph, producerChannelInstance );
 
 				final MadGraphInstance<?, ?> consumerSubGraph = (MadGraphInstance<?, ?>) linkConsumerInstance;
-				final ArrayList<MadChannelInstance> consumerAucis = recursiveFindConnectedConsumers( foundSubGraphs,
+				final Collection<MadChannelInstance> consumerAucis = recursiveFindConnectedConsumers( foundSubGraphs,
 						consumerSubGraph, consumerChannelInstance );
 
 				if (producerAuci == null || consumerAucis.size() == 0)
@@ -813,7 +813,7 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 				final MadChannelInstance subGraphChannelInstance = sgl.getConsumerChannelInstance();
 				final MadGraphInstance<?, ?> subGraph = (MadGraphInstance<?, ?>) linkConsumerInstance;
 
-				final ArrayList<MadChannelInstance> foundChannelInstances = recursiveFindConnectedConsumers(
+				final Collection<MadChannelInstance> foundChannelInstances = recursiveFindConnectedConsumers(
 						foundSubGraphs, subGraph, subGraphChannelInstance );
 
 				if (foundChannelInstances.size() == 0)
@@ -842,14 +842,14 @@ public class MadGraphServiceImpl implements ComponentWithLifecycle, ComponentWit
 		}
 	}
 
-	private ArrayList<MadChannelInstance> recursiveFindConnectedConsumers(
+	private Collection<MadChannelInstance> recursiveFindConnectedConsumers(
 			final Set<MadGraphInstance<?, ?>> foundSubGraphs, final MadGraphInstance<?, ?> graph,
 			final MadChannelInstance subGraphChannelInstance )
 	{
-		final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphInputChannelMap = graph
+		final Map<MadChannelInstance, Collection<MadChannelInstance>> graphInputChannelMap = graph
 				.getGraphInputChannelInstanceMap();
-		final ArrayList<MadChannelInstance> mappedChannelInstances = graphInputChannelMap.get( subGraphChannelInstance );
-		final ArrayList<MadChannelInstance> retVal = new ArrayList<MadChannelInstance>();
+		final Collection<MadChannelInstance> mappedChannelInstances = graphInputChannelMap.get( subGraphChannelInstance );
+		final Collection<MadChannelInstance> retVal = new ArrayList<MadChannelInstance>();
 		if (mappedChannelInstances == null)
 		{
 			return retVal;

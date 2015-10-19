@@ -69,10 +69,10 @@ public class DirectedDependencyGraphHelper
 		}
 
 		// Now fill in all the consumerComponentsWaitingForUs
-		final List<FlattenedRenderJob> flatJobs = retVal.getJobs();
+		final Collection<FlattenedRenderJob> flatJobs = retVal.getJobs();
 		for( final FlattenedRenderJob flatJob : flatJobs )
 		{
-			final Set<FlattenedRenderJob> jobsThisInstanceWaitsFor = flatJob.getProducerJobsWeWaitFor();
+			final Collection<FlattenedRenderJob> jobsThisInstanceWaitsFor = flatJob.getProducerJobsWeWaitFor();
 			for( final FlattenedRenderJob jobProducingForUs : jobsThisInstanceWaitsFor )
 			{
 				jobProducingForUs.addConsumerJobWaitingForUs( flatJob );
@@ -110,7 +110,7 @@ public class DirectedDependencyGraphHelper
 			final Set<FlattenedRenderJob> producerComponentsWeWaitFor = new HashSet<FlattenedRenderJob>();
 
 			// Check for the components connected to the sinks of this instance
-			final Set<MadLink> linksTo = graphService.getConsumerInstanceLinks( graph, drivingMadInstance );
+			final Collection<MadLink> linksTo = graphService.getConsumerInstanceLinks( graph, drivingMadInstance );
 			for( final MadLink link : linksTo )
 			{
 				// Recurse on the source component
@@ -150,7 +150,7 @@ public class DirectedDependencyGraphHelper
 
 	public static void annotateDependencyGraph( final DirectedDependencyGraph flatGraph )
 	{
-		final List<FlattenedRenderJob> jobs = flatGraph.getJobs();
+		final Collection<FlattenedRenderJob> jobs = flatGraph.getJobs();
 		for( final FlattenedRenderJob job : jobs )
 		{
 			recursiveAnnotedFlatJob( job );
@@ -170,7 +170,7 @@ public class DirectedDependencyGraphHelper
 		else
 		{
 			int maxCardinality = 0;
-			final Set<FlattenedRenderJob> producerJobsWeWaitFor = job.getProducerJobsWeWaitFor();
+			final Collection<FlattenedRenderJob> producerJobsWeWaitFor = job.getProducerJobsWeWaitFor();
 			for( final FlattenedRenderJob producerJob : producerJobsWeWaitFor )
 			{
 				recursiveAnnotedFlatJob( producerJob );

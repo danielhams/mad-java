@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.mad.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +40,8 @@ public class GraphIOLinkMap
 
 	private static final boolean RUNTIME_CHECKING = false;
 
-	private final Map<MadChannelInstance, ArrayList<MadChannelInstance>> graphConsumerChannelToMadChannelInstanceMap =
-			new HashMap<MadChannelInstance, ArrayList<MadChannelInstance>>();
+	private final Map<MadChannelInstance, Collection<MadChannelInstance>> graphConsumerChannelToMadChannelInstanceMap =
+			new HashMap<MadChannelInstance, Collection<MadChannelInstance>>();
 
 	private final Map<MadChannelInstance, MadChannelInstance> graphProducerChannelToMadChannelInstanceMap =
 			new HashMap<MadChannelInstance, MadChannelInstance>();
@@ -48,14 +49,14 @@ public class GraphIOLinkMap
 	private final Map<MadChannelInstance, MadChannelInstance> madChannelInstanceToGraphConsumerMap =
 			new HashMap<MadChannelInstance, MadChannelInstance>();
 
-	private final Map<MadChannelInstance, ArrayList<MadChannelInstance>> madChannelInstanceToGraphProducerMap =
-			new HashMap<MadChannelInstance, ArrayList<MadChannelInstance>>();
+	private final Map<MadChannelInstance, Collection<MadChannelInstance>> madChannelInstanceToGraphProducerMap =
+			new HashMap<MadChannelInstance, Collection<MadChannelInstance>>();
 
 	public GraphIOLinkMap()
 	{
 	}
 
-	public Map<MadChannelInstance, ArrayList<MadChannelInstance>> getGraphConsumerChannelInstanceMap()
+	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphConsumerChannelInstanceMap()
 	{
 		return graphConsumerChannelToMadChannelInstanceMap;
 	}
@@ -83,7 +84,7 @@ public class GraphIOLinkMap
 			}
 		}
 
-		ArrayList<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
+		Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
 
 		if( mcis == null )
 		{
@@ -129,7 +130,7 @@ public class GraphIOLinkMap
 
 		graphProducerChannelToMadChannelInstanceMap.put( graphChannelInstance, channelInstanceToExpose );
 
-		ArrayList<MadChannelInstance> mcis = madChannelInstanceToGraphProducerMap.get( channelInstanceToExpose );
+		Collection<MadChannelInstance> mcis = madChannelInstanceToGraphProducerMap.get( channelInstanceToExpose );
 
 		if( mcis == null )
 		{
@@ -161,7 +162,7 @@ public class GraphIOLinkMap
 			}
 		}
 
-		final ArrayList<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
+		final Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
 
 		if( RUNTIME_CHECKING )
 		{
@@ -214,7 +215,7 @@ public class GraphIOLinkMap
 		}
 		graphProducerChannelToMadChannelInstanceMap.remove( graphChannelInstance );
 
-		final ArrayList<MadChannelInstance> gcis = madChannelInstanceToGraphProducerMap.get( channelInstanceExposed );
+		final Collection<MadChannelInstance> gcis = madChannelInstanceToGraphProducerMap.get( channelInstanceExposed );
 
 		if( RUNTIME_CHECKING )
 		{
@@ -243,7 +244,7 @@ public class GraphIOLinkMap
 		madChannelInstanceToGraphProducerMap.clear();
 	}
 
-	public ArrayList<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
+	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
 	{
 		return madChannelInstanceToGraphProducerMap.get( auci );
 	}
@@ -260,9 +261,9 @@ public class GraphIOLinkMap
 						gcmc.getValue().instance.getInstanceName() + " " + gcmc.getValue().toString() );
 			}
 
-			for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
+			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
 			{
-				final ArrayList<MadChannelInstance> mcs = gpma.getValue();
+				final Collection<MadChannelInstance> mcs = gpma.getValue();
 				if( mcs != null )
 				{
 					for( final MadChannelInstance ci : mcs )
@@ -273,9 +274,9 @@ public class GraphIOLinkMap
 				}
 			}
 
-			for( final Map.Entry<MadChannelInstance, ArrayList<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
+			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
 			{
-				final ArrayList<MadChannelInstance> gcs = mcga.getValue();
+				final Collection<MadChannelInstance> gcs = mcga.getValue();
 				if( gcs != null )
 				{
 					for( final MadChannelInstance gi : gcs )
@@ -320,7 +321,7 @@ public class GraphIOLinkMap
 					}
 					default:
 					{
-						final ArrayList<MadChannelInstance> graphChannels = madChannelInstanceToGraphProducerMap.get( mci );
+						final Collection<MadChannelInstance> graphChannels = madChannelInstanceToGraphProducerMap.get( mci );
 						if( graphChannels != null )
 						{
 							final ArrayList<MadChannelInstance> localCopy = new ArrayList<MadChannelInstance>( graphChannels );
@@ -343,7 +344,7 @@ public class GraphIOLinkMap
 
 	public boolean isProducerChannelExposed( final MadChannelInstance auci )
 	{
-		final ArrayList<MadChannelInstance> mgcs = madChannelInstanceToGraphProducerMap.get( auci );
+		final Collection<MadChannelInstance> mgcs = madChannelInstanceToGraphProducerMap.get( auci );
 		return mgcs != null && mgcs.size() > 0;
 	}
 }

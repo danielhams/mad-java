@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.mad.helper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
 
@@ -29,7 +30,7 @@ public class MadChannelDefinitionBuilder
 	public static MadChannelDefinition[] buildDefaultChannelDefinitions( final MadChannelDefinitionIndexedCreator indexedCreator )
 	{
 		final int numChannelDefinitions = indexedCreator.getNumChannelDefinitions();
-		final ArrayList<MadChannelDefinition> defsList = new ArrayList<MadChannelDefinition>( numChannelDefinitions );
+		final Collection<MadChannelDefinition> defsList = new ArrayList<MadChannelDefinition>( numChannelDefinitions );
 
 		for( int c = 0 ; c < numChannelDefinitions ; c++ )
 		{

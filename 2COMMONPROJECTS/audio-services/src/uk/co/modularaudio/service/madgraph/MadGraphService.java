@@ -21,8 +21,6 @@
 package uk.co.modularaudio.service.madgraph;
 
 import java.util.Collection;
-import java.util.Set;
-
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -87,11 +85,11 @@ public interface MadGraphService
 	public Collection<MadLink> findAllLinks( MadGraphInstance<?,?> graph )
 		throws DatastoreException;
 
-	public Set<MadLink> getProducerInstanceLinks( MadGraphInstance<?,?> graph,
+	public Collection<MadLink> getProducerInstanceLinks( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
 
-	public Set<MadLink> getConsumerInstanceLinks( MadGraphInstance<?,?> graph,
+	public Collection<MadLink> getConsumerInstanceLinks( MadGraphInstance<?,?> graph,
 			MadInstance<?,?> instance )
 		throws DatastoreException;
 

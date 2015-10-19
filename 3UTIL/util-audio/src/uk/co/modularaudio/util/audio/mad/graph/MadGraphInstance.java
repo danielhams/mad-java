@@ -23,10 +23,7 @@ package uk.co.modularaudio.util.audio.mad.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,10 +63,10 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	protected GraphIOLinkMap ioLinkMap = new GraphIOLinkMap();
 
 	// Listeners
-	protected final Set<MadGraphListener> listeners = new HashSet<MadGraphListener>();
+	protected final Collection<MadGraphListener> listeners = new ArrayList<MadGraphListener>();
 
 	// Sub graphs
-	protected final Set<MadGraphInstance<?,?>> subGraphs = new HashSet<MadGraphInstance<?,?>>();
+	protected final Collection<MadGraphInstance<?,?>> subGraphs = new ArrayList<MadGraphInstance<?,?>>();
 
 	public MadGraphInstance( final String graphName,
 			final D graphDefinition,
@@ -164,12 +161,12 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return linkMap.getLinks();
 	}
 
-	public Set<MadLink> getProducerInstanceLinks( final MadInstance<?,?> instance )
+	public Collection<MadLink> getProducerInstanceLinks( final MadInstance<?,?> instance )
 	{
 		return linkMap.getProducerInstanceLinks( instance );
 	}
 
-	public Set<MadLink> getConsumerInstanceLinks( final MadInstance<?,?> instance )
+	public Collection<MadLink> getConsumerInstanceLinks( final MadInstance<?,?> instance )
 	{
 		return linkMap.getConsumerInstanceLinks( instance );
 	}
@@ -299,12 +296,12 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return ioLinkMap.getGraphProducerChannelInstanceMap();
 	}
 
-	public Map<MadChannelInstance, ArrayList<MadChannelInstance>> getGraphInputChannelInstanceMap()
+	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphInputChannelInstanceMap()
 	{
 		return ioLinkMap.getGraphConsumerChannelInstanceMap();
 	}
 
-	public Set<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
+	public Collection<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
 	{
 		return linkMap.findProducerInstanceLinksReturnNull( channelInstance );
 	}
@@ -394,7 +391,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return true;
 	}
 
-	public ArrayList<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
+	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
 	{
 		return ioLinkMap.getGraphChannelsExposedForProducerChannel( auci );
 	}

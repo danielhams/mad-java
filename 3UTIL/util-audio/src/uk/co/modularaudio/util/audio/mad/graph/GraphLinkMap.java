@@ -23,9 +23,7 @@ package uk.co.modularaudio.util.audio.mad.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,9 +40,11 @@ public class GraphLinkMap
 
 	private static final boolean RUNTIME_CHECKING = true;
 
+	private static final int DEFAULT_LINKS_PER_PLUG = 4;
+
 	private final Collection<MadLink> instanceLinks = new ArrayList<MadLink>();
-	private final Map<MadInstance<?,?>, Set<MadLink>> consumerInstanceLinks = new HashMap<MadInstance<?,?>, Set<MadLink>>();
-	private final Map<MadInstance<?,?>, Set<MadLink>> producerInstanceLinks = new HashMap<MadInstance<?,?>, Set<MadLink>>();
+	private final Map<MadInstance<?,?>, Collection<MadLink>> consumerInstanceLinks = new HashMap<MadInstance<?,?>, Collection<MadLink>>();
+	private final Map<MadInstance<?,?>, Collection<MadLink>> producerInstanceLinks = new HashMap<MadInstance<?,?>, Collection<MadLink>>();
 
 	public GraphLinkMap()
 	{
@@ -55,19 +55,19 @@ public class GraphLinkMap
 		return instanceLinks;
 	}
 
-	public Set<MadLink> getProducerInstanceLinks( final MadInstance<?, ?> instance )
+	public Collection<MadLink> getProducerInstanceLinks( final MadInstance<?, ?> instance )
 	{
 		return producerInstanceLinks.get( instance );
 	}
 
-	public Set<MadLink> getConsumerInstanceLinks( final MadInstance<?, ?> instance )
+	public Collection<MadLink> getConsumerInstanceLinks( final MadInstance<?, ?> instance )
 	{
 		return consumerInstanceLinks.get( instance );
 	}
 
 	public void removeMadInstance( final MadInstance<?, ?> instance )
 	{
-		final Set<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
+		final Collection<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
 		if( consumerLinks != null )
 		{
 			final Collection<MadLink> toRemove = new ArrayList<MadLink>( consumerLinks );
@@ -76,12 +76,12 @@ public class GraphLinkMap
 				instanceLinks.remove( link );
 				final MadChannelInstance pci = link.getProducerChannelInstance();
 				final MadInstance<?,?> mi = pci.instance;
-				final Set<MadLink> mls = producerInstanceLinks.get( mi );
+				final Collection<MadLink> mls = producerInstanceLinks.get( mi );
 				mls.remove( link );
 			}
 			consumerInstanceLinks.remove( instance );
 		}
-		final Set<MadLink> producerLinks = producerInstanceLinks.get( instance );
+		final Collection<MadLink> producerLinks = producerInstanceLinks.get( instance );
 		if( producerLinks != null )
 		{
 			final Collection<MadLink> toRemove = new ArrayList<MadLink>( producerLinks );
@@ -90,7 +90,7 @@ public class GraphLinkMap
 				instanceLinks.remove( link );
 				final MadChannelInstance cci = link.getConsumerChannelInstance();
 				final MadInstance<?,?> mi = cci.instance;
-				final Set<MadLink> mls = consumerInstanceLinks.get( mi );
+				final Collection<MadLink> mls = consumerInstanceLinks.get( mi );
 				mls.remove( link );
 			}
 			producerInstanceLinks.remove( instance );
@@ -114,7 +114,7 @@ public class GraphLinkMap
 
 		assert( instanceLinks.contains( link ) );
 
-		final Set<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
+		final Collection<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
 		if( consumerLinks.contains( link ) )
 		{
 			consumerLinks.remove( link );
@@ -127,7 +127,7 @@ public class GraphLinkMap
 			}
 		}
 
-		final Set<MadLink> producerLinks = producerInstanceLinks.get( pmi );
+		final Collection<MadLink> producerLinks = producerInstanceLinks.get( pmi );
 		if( producerLinks.contains( link ) )
 		{
 			producerLinks.remove( link );
@@ -143,7 +143,7 @@ public class GraphLinkMap
 		instanceLinks.remove( link );
 	}
 
-	public Set<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
+	public Collection<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
 	{
 		return producerInstanceLinks.get( channelInstance.instance );
 	}
@@ -162,7 +162,7 @@ public class GraphLinkMap
 		final MadChannelInstance pci = link.getProducerChannelInstance();
 		final MadInstance<?,?> pmi = pci.instance;
 
-		final Set<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
+		final Collection<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
 		if( RUNTIME_CHECKING &&
 				consumerLinks.contains( link ) )
 		{
@@ -170,7 +170,7 @@ public class GraphLinkMap
 		}
 		consumerLinks.add( link );
 
-		final Set<MadLink> producerLinks = producerInstanceLinks.get( pmi );
+		final Collection<MadLink> producerLinks = producerInstanceLinks.get( pmi );
 		if( RUNTIME_CHECKING &&
 				producerLinks.contains( link ) )
 		{
@@ -192,7 +192,7 @@ public class GraphLinkMap
 				log.debug("Link: " + link.toString() );
 			}
 
-			for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> cils : consumerInstanceLinks.entrySet() )
+			for( final Map.Entry<MadInstance<?, ?>, Collection<MadLink>> cils : consumerInstanceLinks.entrySet() )
 			{
 				log.debug("InstanceLinksFrom: " + cils.getKey().getInstanceName() + " count(" +
 						cils.getValue().size() + ")" );
@@ -202,7 +202,7 @@ public class GraphLinkMap
 				}
 			}
 
-			for( final Map.Entry<MadInstance<?, ?>, Set<MadLink>> pils : producerInstanceLinks.entrySet() )
+			for( final Map.Entry<MadInstance<?, ?>, Collection<MadLink>> pils : producerInstanceLinks.entrySet() )
 			{
 				log.debug("InstanceLinksTo: " + pils.getKey().getInstanceName() + " count(" +
 						pils.getValue().size() + ")" );
@@ -216,16 +216,16 @@ public class GraphLinkMap
 
 	public void addMadInstance( final MadInstance<?,?> instance )
 	{
-		Set<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
+		Collection<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
 		if( consumerLinks == null )
 		{
-			consumerLinks = new HashSet<MadLink>();
+			consumerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
 			consumerInstanceLinks.put( instance, consumerLinks );
 		}
-		Set<MadLink> producerLinks = producerInstanceLinks.get( instance );
+		Collection<MadLink> producerLinks = producerInstanceLinks.get( instance );
 		if( producerLinks == null )
 		{
-			producerLinks = new HashSet<MadLink>();
+			producerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
 			producerInstanceLinks.put( instance, producerLinks );
 		}
 	}

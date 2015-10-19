@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.mad;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +71,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 	protected final boolean hasQueueProcessing;
 
-	protected final ArrayList<InstanceLifecycleListener> lifecycleListeners = new ArrayList<InstanceLifecycleListener>(1);
+	protected final Collection<InstanceLifecycleListener> lifecycleListeners = new ArrayList<InstanceLifecycleListener>(1);
 	protected int temporalUiToInstanceFrameOffset;
 
 	public MadInstance( final String instanceName,

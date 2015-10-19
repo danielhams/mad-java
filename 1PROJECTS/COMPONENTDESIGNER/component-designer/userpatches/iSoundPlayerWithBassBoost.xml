@@ -26,7 +26,7 @@
     </rackComponent>
     <rackComponent name="Limiter 1" definitionId="limiter">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Falloff" value="0.643"/>
+        <rackControl name="Falloff" value="0.671"/>
         <rackControl name="Knee" value="0.1975"/>
         <rackControl name="UseHardLimit" value="false"/>
     </rackComponent>
@@ -47,10 +47,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-5.565608"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-7.5471773"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 100 China master.mp3|35659273"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 101 master.mp3|-1"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -76,14 +76,6 @@
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
         <rackPosition column="2" row="2"/>
     </rackComponent>
-    <rackComponent name="Wave Roller 1" definitionId="wave_roller">
-        <rackPosition column="2" row="9"/>
-        <rackControl name="CaptureTime" value="5000.0"/>
-        <rackControl name="Display" value=""/>
-        <rackControl name="Left Scale" value=""/>
-        <rackControl name="Right Scale" value=""/>
-        <rackControl name="ScaleChoice" value="0dB"/>
-    </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Linear CV Amplifier 2" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="InProcessing" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
@@ -93,7 +85,6 @@
     <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Linear CV Amplifier 2" producerChannelName="Output Wave" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
-    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Limiter 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>

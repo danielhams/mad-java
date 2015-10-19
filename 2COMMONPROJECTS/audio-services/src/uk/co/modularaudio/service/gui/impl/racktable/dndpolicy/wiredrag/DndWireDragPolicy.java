@@ -23,6 +23,7 @@ package uk.co.modularaudio.service.gui.impl.racktable.dndpolicy.wiredrag;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -482,7 +483,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 
 		final MadGraphInstance<?,?> graph = dataModel.getRackGraph();
 
-		final Set<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( producerInstance );
+		final Collection<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( producerInstance );
 		final Set<MadInstance<?,?>> doneInstances = new HashSet<MadInstance<?,?>>();
 
 		for( final MadLink ml : consumerInstanceLinks )
@@ -520,7 +521,7 @@ public class DndWireDragPolicy implements RackTableDndPolicy
 		{
 			// Pull out all links to the test instance as consumer
 			// and recurse on the producer mad instances
-			final Set<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( testInstance );
+			final Collection<MadLink> consumerInstanceLinks = graph.getConsumerInstanceLinks( testInstance );
 
 			for( final MadLink ml : consumerInstanceLinks )
 			{

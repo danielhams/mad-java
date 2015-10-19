@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.renderingplan.impl.flatgraph;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,8 +31,8 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 	public final static int CARDINALITY_NOT_SET = -1;
 
 	private final MadInstance<?,?> madInstance;
-	private final Set<FlattenedRenderJob> producerJobsWeWaitFor;
-	private final Set<FlattenedRenderJob> consumerJobsWaitingForUs = new HashSet<FlattenedRenderJob>();
+	private final Collection<FlattenedRenderJob> producerJobsWeWaitFor;
+	private final Collection<FlattenedRenderJob> consumerJobsWaitingForUs = new HashSet<FlattenedRenderJob>();
 	private int cardinality = CARDINALITY_NOT_SET;
 
 	public FlattenedRenderJob( final MadInstance<?,?> madInstance, final Set<FlattenedRenderJob> producerJobsWeWaitFor )
@@ -45,7 +46,7 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 		return madInstance;
 	}
 
-	public Set<FlattenedRenderJob> getProducerJobsWeWaitFor()
+	public Collection<FlattenedRenderJob> getProducerJobsWeWaitFor()
 	{
 		return producerJobsWeWaitFor;
 	}
@@ -66,7 +67,7 @@ public class FlattenedRenderJob implements Comparable<FlattenedRenderJob>
 		return this.cardinality - c.cardinality;
 	}
 
-	public Set<FlattenedRenderJob> getConsumerJobsWaitingForUs()
+	public Collection<FlattenedRenderJob> getConsumerJobsWaitingForUs()
 	{
 		return consumerJobsWaitingForUs;
 	}

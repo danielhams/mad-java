@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.madgraph.impl.helper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -237,7 +238,7 @@ public class FadeInOutLinkHelper
 				final boolean channelIsGraphMapped = graph.isProducerChannelExposedOnGraph( auci );
 				if( channelIsGraphMapped )
 				{
-					final ArrayList<MadChannelInstance> mappedGraphChannels = graph.getGraphChannelsExposedForProducerChannel( auci );
+					final Collection<MadChannelInstance> mappedGraphChannels = graph.getGraphChannelsExposedForProducerChannel( auci );
 //					log.debug("Channel instance " + auci.toString() + " is mapped as one or more graph channels - will insert fade out for it");
 					for( final MadChannelInstance mgci : mappedGraphChannels )
 					{
@@ -249,7 +250,7 @@ public class FadeInOutLinkHelper
 				{
 //					log.debug("Checking if channel instance " + auci.toString() + " is linked as a producer");
 					// Find if it's exposed as a regular link
-					final Set<MadLink> linksWithAuciAsProducer = graph.findProducerInstanceLinksReturnNull(auci);
+					final Collection<MadLink> linksWithAuciAsProducer = graph.findProducerInstanceLinksReturnNull(auci);
 					if( linksWithAuciAsProducer != null && linksWithAuciAsProducer.size() > 0 )
 					{
 //						log.debug("Have " + linksWithAuciAsProducer.size() + " links to fade out");
