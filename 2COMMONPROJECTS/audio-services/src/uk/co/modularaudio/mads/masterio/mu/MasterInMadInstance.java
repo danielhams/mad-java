@@ -65,7 +65,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException

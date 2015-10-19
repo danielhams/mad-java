@@ -50,7 +50,7 @@ public class MidSideMadInstance extends MadInstance<MidSideMadDefinition, MidSid
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters,
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory ) throws MadProcessingException
 	{
 	}

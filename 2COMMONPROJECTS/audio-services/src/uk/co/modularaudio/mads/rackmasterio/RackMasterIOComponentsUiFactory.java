@@ -76,14 +76,15 @@ public class RackMasterIOComponentsUiFactory
 	}
 
 	@Override
-	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> componentInstance )
+	public IMadUiInstance<?, ?> createUiInstanceForMad( final MadInstance<?, ?> componentInstance )
 			throws DatastoreException, RecordNotFoundException
 	{
-		return rmMud.createNewUiInstanceUT( componentInstance );
+		final IMadUiInstance<?, ?> muui = rmMud.createNewUiInstanceUT( componentInstance );
+		return muui;
 	}
 
 	@Override
-	public void destroyUiInstance( final IMadUiInstance<?, ?> uiInstanceToDestroy )
+	public void cleanupUiInstance( final IMadUiInstance<?, ?> uiInstanceToDestroy )
 			throws DatastoreException, RecordNotFoundException
 	{
 	}

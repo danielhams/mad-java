@@ -36,7 +36,7 @@ public interface MadComponentUiService
 			throws DatastoreException;
 
 	// Creating the UiComponentInstance for a particular mad instance
-	public IMadUiInstance<?,?> createUiInstanceForInstance( MadInstance<?,?> instance )
+	public IMadUiInstance<?,?> createUiInstanceForMad( MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException;
 	public void destroyUiInstance( IMadUiInstance<?,?> uiInstanceToDestroy ) throws DatastoreException, RecordNotFoundException;
 

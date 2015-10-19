@@ -52,7 +52,7 @@ public class RackMasterIOMadInstance extends MadInstance<RackMasterIOMadDefiniti
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void start( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		// Do nothing, we're not a "scheduled" component

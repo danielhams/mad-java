@@ -192,6 +192,7 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 			}
 			else
 			{
+				factoryCreatedInstance.init();
 				return factoryCreatedInstance;
 			}
 		}
@@ -228,7 +229,8 @@ public class MadComponentServiceImpl implements ComponentWithLifecycle, MadCompo
 		final IMadInstanceFactory instanceFactory = definitionToFactoryMap.get( definition  );
 		if( instanceFactory != null )
 		{
-			instanceFactory.destroyInstance( instance );
+			instanceFactory.cleanupInstance( instance );
+			instance.destroy();
 		}
 		else
 		{

@@ -34,6 +34,6 @@ public interface IMadInstanceFactory
 			String instanceName )
 		throws DatastoreException;
 	
-	public void destroyInstance( MadInstance<?,?> instanceToDestroy )
+	public void cleanupInstance( MadInstance<?,?> instanceToCleanup )
 		throws DatastoreException;
 }

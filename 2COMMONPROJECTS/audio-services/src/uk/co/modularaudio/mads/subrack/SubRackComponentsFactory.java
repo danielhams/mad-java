@@ -194,9 +194,7 @@ public class SubRackComponentsFactory
 	}
 
 	@Override
-	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	public void cleanupInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
 	{
-		// Java GC will take care of most of this
-		instanceToDestroy.destroy();
 	}
 }

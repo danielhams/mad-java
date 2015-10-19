@@ -80,7 +80,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
@@ -98,6 +98,19 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		{
 			child.internalEngineStop();
 		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		instances.clear();
+		nameToInstanceMap.clear();
+		instanceToNameInGraphMap.clear();
+		linkMap.clear();
+		ioLinkMap.clear();
+		listeners.clear();
+		subGraphs.clear();
+		super.destroy();
 	}
 
 	@Override
@@ -379,19 +392,6 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	public boolean isContainer()
 	{
 		return true;
-	}
-
-	@Override
-	public void destroy()
-	{
-		super.destroy();
-		instances.clear();
-		nameToInstanceMap.clear();
-		instanceToNameInGraphMap.clear();
-		linkMap.clear();
-		ioLinkMap.clear();
-		listeners.clear();
-		subGraphs.clear();
 	}
 
 	public ArrayList<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )

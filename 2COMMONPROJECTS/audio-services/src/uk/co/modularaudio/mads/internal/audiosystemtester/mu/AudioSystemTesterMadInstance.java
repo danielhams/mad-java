@@ -67,7 +67,7 @@ public class AudioSystemTesterMadInstance extends MadInstance<AudioSystemTesterM
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException

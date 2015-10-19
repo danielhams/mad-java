@@ -22,5 +22,8 @@ package uk.co.modularaudio.util.audio.mad;
 
 public enum MadState
 {
-	STOPPED, RUNNING
+	CREATED,
+	INITIALISED,
+	STARTED,
+	DESTROYED
 }

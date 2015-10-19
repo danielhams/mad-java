@@ -58,7 +58,7 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	protected final OpenObjectIntHashMap<MadChannelInstance> channelInstanceToIndexMap = new OpenObjectIntHashMap<MadChannelInstance>();
 	protected final Map<String,MadChannelInstance> nameToChannelInstanceMap = new HashMap<String,MadChannelInstance>();
 
-	protected MadState state = MadState.STOPPED;
+	protected MadState state = MadState.CREATED;
 
 	protected final MadLocklessQueueBridge<MI> localBridge;
 
@@ -105,6 +105,26 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		}
 	}
 
+	public void init()
+	{
+		if( state != MadState.CREATED )
+		{
+			log.warn( "init() called on mad not in state created" );
+		}
+		// Any setup of necessary things here.
+		state = MadState.INITIALISED;
+	}
+
+	public void destroy()
+	{
+		if( state != MadState.INITIALISED )
+		{
+			log.warn( "destroy() called on mad not in state initialised" );
+		}
+		// Any cleanup of the instance (samples, buffers etc) in here.
+		state = MadState.DESTROYED;
+	}
+
 	private MadChannelInstance[] createChannelInstances()
 	{
 		final MadChannelDefinition[] channelDefinitionArray = channelConfiguration.getOrderedChannelDefinitions();
@@ -125,21 +145,41 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
 	{
-		state = MadState.RUNNING;
+		if( state != MadState.INITIALISED )
+		{
+			log.warn( "internalEngineStartup() called on mad not in state initialised" );
+		}
 		// One buffer length delay for events from the UI so we get
 		// smooth temporal spacing
 		temporalUiToInstanceFrameOffset = hardwareChannelSettings.getAudioChannelSetting().getChannelBufferLength();
-		startup( hardwareChannelSettings, timingParameters, frameTimeFactory );
+		start( hardwareChannelSettings, timingParameters, frameTimeFactory );
+		state = MadState.STARTED;
 		for( final InstanceLifecycleListener ill : lifecycleListeners )
 		{
 			ill.receiveStartup(hardwareChannelSettings, timingParameters, frameTimeFactory );
 		}
 	}
 
-	public abstract void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+	protected abstract void start( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException;
+
+	public void internalEngineStop() throws MadProcessingException
+	{
+		if( state != MadState.STARTED )
+		{
+			log.warn( "internalEngineStop() called on mad not in state started" );
+		}
+		stop();
+		state = MadState.INITIALISED;
+		for( final InstanceLifecycleListener ill : lifecycleListeners )
+		{
+			ill.receiveStop();
+		}
+	}
+
+	protected abstract void stop() throws MadProcessingException;
 
 	// Check the instance queues and push into the temp storage
 	@SuppressWarnings("unchecked")
@@ -398,27 +438,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		tempQueueEntryStorage.resetEventsToUi();
 
 		return retVal;
-	}
-
-	public abstract void stop() throws MadProcessingException;
-
-	public void internalEngineStop() throws MadProcessingException
-	{
-		stop();
-		state = MadState.STOPPED;
-		for( final InstanceLifecycleListener ill : lifecycleListeners )
-		{
-			ill.receiveStop();
-		}
-	}
-
-	public void destroy()
-	{
-		commandToInstanceQueue = null;
-		temporalToInstanceQueue = null;
-		commandToUiQueue = null;
-		temporalToUiQueue = null;
-		// Any cleanup of the instance (samples, buffers etc) in here.
 	}
 
 	public String getInstanceName()

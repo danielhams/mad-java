@@ -105,7 +105,7 @@ public class GenericComponentVisualiser
 		final String instanceName = "panel_test";
 		final MadInstance<?,?> aui = componentService.createInstanceFromDefinition( compressorDef, parameterValues, instanceName );
 
-		final IMadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
+		final IMadUiInstance<?,?> auui = componentUiService.createUiInstanceForMad( aui );
 
 		final JFrame testFrame = new JFrame();
 		final JPanel testPanel = new JPanel();
@@ -167,7 +167,6 @@ public class GenericComponentVisualiser
 			Thread.sleep( 100 );
 		}
 		testFrame.dispose();
-		auui.destroy();
 		componentUiService.destroyUiInstance(auui);
 		componentService.destroyInstance(aui);
 	}

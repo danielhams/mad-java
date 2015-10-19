@@ -62,7 +62,7 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> instance )
+	public IMadUiInstance<?, ?> createUiInstanceForMad( final MadInstance<?, ?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
 		final MadDefinition<?, ?> definition = instance.getDefinition();
@@ -74,10 +74,9 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	}
 
 	@Override
-	public void destroyUiInstance( final IMadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 22/01/15 07:22
+	public void cleanupUiInstance( final IMadUiInstance<?,?> instanceToDestroy )
 			throws DatastoreException, RecordNotFoundException
 	{
-		// Do nothing, java is easy :-)
 	}
 
 	@Override

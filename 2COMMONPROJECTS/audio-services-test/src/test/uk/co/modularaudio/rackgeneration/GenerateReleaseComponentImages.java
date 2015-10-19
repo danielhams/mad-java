@@ -117,7 +117,7 @@ public class GenerateReleaseComponentImages
 		final Map<MadParameterDefinition, String> emptyParams = new HashMap<MadParameterDefinition, String>();
 		final MadInstance<?,?> aui = componentService.createInstanceFromDefinition( def, emptyParams, def.getName() );
 
-		final IMadUiInstance<?,?> auui = componentUiService.createUiInstanceForInstance( aui );
+		final IMadUiInstance<?,?> auui = componentUiService.createUiInstanceForMad( aui );
 
 		final RackComponent rackComponent = new RackComponent( def.getName(), aui, auui );
 		final AbstractGuiAudioComponent frontComponent = guiComponentFactoryService.createFrontGuiComponent( rackComponent );

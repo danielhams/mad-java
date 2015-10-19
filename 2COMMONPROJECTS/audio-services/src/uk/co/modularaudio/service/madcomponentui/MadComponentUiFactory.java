@@ -34,12 +34,12 @@ public interface MadComponentUiFactory
 {
 	public List<MadUiDefinition<?, ?>> listComponentUiDefinitions();
 
-	public IMadUiInstance<?,?> createNewComponentUiInstanceForComponent( MadInstance<?,?> componentInstance )
+	public IMadUiInstance<?,?> createUiInstanceForMad( MadInstance<?,?> madInstance )
 		throws DatastoreException, RecordNotFoundException;
 
-	public void destroyUiInstance( IMadUiInstance<?, ?> uiInstanceToDestroy )
+	public void cleanupUiInstance( IMadUiInstance<?, ?> uiInstance )
 		throws DatastoreException, RecordNotFoundException;
 
-	public Span getUiSpanForDefinition( MadDefinition<?, ?> definition )
+	public Span getUiSpanForDefinition( MadDefinition<?, ?> madDefinition )
 		throws DatastoreException, RecordNotFoundException;
 }

@@ -80,7 +80,11 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 			commandToInstanceQueue = instance.getCommandToInstanceQueue();
 			temporalToInstanceQueue = instance.getTemporalToInstanceQueue();
 		}
+	}
 
+	@Override
+	public void init()
+	{
 		instance.addLifecycleListener( this );
 	}
 
@@ -94,13 +98,6 @@ public abstract class AbstractMadUiInstance<D extends MadDefinition<D, I>, I ext
 			final AbstractMadUiControlInstance<?, ?, ?> ci = controlInstances[ i ];
 			ci.destroy();
 		}
-		controlInstances = null;
-		displayProcessingControlInstances = null;
-		channelInstances = null;
-		commandToUiQueue = null;
-		temporalToUiQueue = null;
-		commandToInstanceQueue = null;
-		temporalToInstanceQueue = null;
 	}
 
 	@Override

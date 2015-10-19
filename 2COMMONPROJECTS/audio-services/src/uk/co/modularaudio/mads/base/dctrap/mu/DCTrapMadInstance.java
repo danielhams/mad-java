@@ -54,7 +54,7 @@ public class DCTrapMadInstance extends MadInstance<DCTrapMadDefinition,DCTrapMad
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		final int sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();

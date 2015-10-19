@@ -29,22 +29,23 @@ import uk.co.modularaudio.util.table.Span;
 public interface IMadUiInstance
 	<D extends MadDefinition<D,I>, I extends MadInstance<D, I> >
 {
-	
+
 	Span getCellSpan();
-	
+
 	I getInstance();
-	
+
 	MadUiDefinition<D, I> getUiDefinition();
-	
+
 	AbstractMadUiControlInstance<?,?,?>[] getUiControlInstances();
-	
+
 	MadUiChannelInstance[] getUiChannelInstances();
-	
+
 	void receiveDisplayTick( ThreadSpecificTemporaryEventStorage guiTemporaryEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime );
-	
+
 	void receiveComponentNameChange( String newName );
-	
+
+	void init();
 	void destroy();
 }

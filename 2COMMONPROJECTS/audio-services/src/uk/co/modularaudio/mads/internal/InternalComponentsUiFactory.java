@@ -99,13 +99,14 @@ public class InternalComponentsUiFactory
 	}
 
 	@Override
-	public IMadUiInstance<?, ?> createNewComponentUiInstanceForComponent( final MadInstance<?, ?> componentInstance )
+	public IMadUiInstance<?, ?> createUiInstanceForMad( final MadInstance<?, ?> componentInstance )
 			throws DatastoreException, RecordNotFoundException
 	{
 		final MadUiDefinition<?, ?> mud = mdIdToMudMap.get( componentInstance.getDefinition().getId() );
 		if( mud != null )
 		{
-			return mud.createNewUiInstanceUT( componentInstance );
+			final IMadUiInstance<?, ?> muui = mud.createNewUiInstanceUT( componentInstance );
+			return muui;
 		}
 		else
 		{
@@ -114,7 +115,7 @@ public class InternalComponentsUiFactory
 	}
 
 	@Override
-	public void destroyUiInstance( final IMadUiInstance<?, ?> uiInstanceToDestroy )
+	public void cleanupUiInstance( final IMadUiInstance<?, ?> uiInstanceToDestroy )
 			throws DatastoreException, RecordNotFoundException
 	{
 	}

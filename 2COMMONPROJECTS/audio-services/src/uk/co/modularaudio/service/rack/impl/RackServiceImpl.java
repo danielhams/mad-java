@@ -107,7 +107,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 				// Add our IO component to the graph at the top
 				final MadDefinition<?,?> rackMasterIoDefinition = componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
 				final MadInstance<?,?> rackMasterIoInstance = componentService.createInstanceFromDefinition( rackMasterIoDefinition, null, RM_INSTANCE_NAME );
-				final IMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
+				final IMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForMad( rackMasterIoInstance );
 				final RackComponent rackMasterIORackComponent = new RackComponent( RM_INSTANCE_NAME,
 						rackMasterIoInstance,
 						rackMasterUiInstance );
@@ -150,7 +150,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 				// Add our IO component to the graph at the top
 				final MadDefinition<?,?> rackMasterIoDefinition = componentService.findDefinitionById( RackMasterIOMadDefinition.DEFINITION_ID );
 				final MadInstance<?,?> rackMasterIoInstance = componentService.createInstanceFromDefinition( rackMasterIoDefinition, null, RM_INSTANCE_NAME );
-				final IMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForInstance( rackMasterIoInstance );
+				final IMadUiInstance<?,?> rackMasterUiInstance = componentUiService.createUiInstanceForMad( rackMasterIoInstance );
 				final RackComponent rackMasterIORackComponent = new RackComponent( RM_INSTANCE_NAME,
 						rackMasterIoInstance,
 						rackMasterUiInstance );
@@ -245,7 +245,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		try
 		{
 			final MadInstance<?,?> newAuInstance = componentService.createInstanceFromDefinition( madDefinition, parameterValues, name );
-			final IMadUiInstance<?,?> uiInstance = componentUiService.createUiInstanceForInstance( newAuInstance );
+			final IMadUiInstance<?,?> uiInstance = componentUiService.createUiInstanceForMad( newAuInstance );
 			final RackComponent rci = new RackComponent( name,
 					newAuInstance,
 					uiInstance );
@@ -274,7 +274,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		try
 		{
 			final MadInstance<?,?> madInstance = componentService.createInstanceFromDefinition( madDefinition, parameterValues, name );
-			final IMadUiInstance<?,?> madUiInstance = componentUiService.createUiInstanceForInstance( madInstance );
+			final IMadUiInstance<?,?> madUiInstance = componentUiService.createUiInstanceForMad( madInstance );
 			final RackComponent rci = new RackComponent( name, madInstance, madUiInstance );
 			int testRow = 0;
 			for( ; !canAdd && testRow < rack.getNumRows() ; testRow++ )
@@ -592,7 +592,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		graphService.removeInstanceFromGraph( rackDataModel.getRackGraph(), madInstance );
 
 		// Now halt the component
-		if( madInstance.getState() == MadState.RUNNING )
+		if( madInstance.getState() == MadState.STARTED )
 		{
 			try
 			{
@@ -609,7 +609,6 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 
 		// Call destroy on the ui instance
 		final IMadUiInstance<?, ?> componentUiInstance = componentForAction.getUiInstance();
-		componentUiInstance.destroy();
 
 		// Now destroy the component UI instance itself
 		componentUiService.destroyUiInstance( componentUiInstance );

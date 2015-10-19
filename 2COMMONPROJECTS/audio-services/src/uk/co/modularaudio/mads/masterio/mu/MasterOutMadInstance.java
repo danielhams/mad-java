@@ -79,7 +79,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 	}
 
 	@Override
-	public void startup( final HardwareIOChannelSettings hardwareChannelSettings,
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters,
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
@@ -99,7 +99,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 			fadeOutWaveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
 			fadeTableLength = fadeInWaveTable.getBufferCapacity();
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught starting up master out instance: " + e.toString();
 			throw new MadProcessingException( msg, e );
@@ -118,7 +118,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 			final MadTimingParameters timingParameters ,
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		final FadeType localFadeTable = curFadeTable.get();
 
@@ -211,7 +211,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 
 	public boolean isFadeFinished( final int numSamplesClockSourceLatency )
 	{
-		if( state == MadState.RUNNING )
+		if( state == MadState.STARTED )
 		{
 			final int fadePosition = curTablePosition.get();
 //			log.debug("FadePosition is " + fadePosition + " while ftl("  +fadeTableLength + ") NSCSL(" + numSamplesClockSourceLatency + ")");

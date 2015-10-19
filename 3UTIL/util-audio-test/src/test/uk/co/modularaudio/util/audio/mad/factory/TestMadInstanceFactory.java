@@ -71,7 +71,7 @@ public class TestMadInstanceFactory implements IMadInstanceFactory
 	}
 
 	@Override
-	public void destroyInstance( MadInstance<?,?> instanceToDestroy )
+	public void cleanupInstance( MadInstance<?,?> instanceToDestroy )
 			throws DatastoreException
 	{
 	}

@@ -64,7 +64,7 @@ public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVol
 	}
 
 	@Override
-	public void startup( HardwareIOChannelSettings dataRateConfiguration, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void start( HardwareIOChannelSettings dataRateConfiguration, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		HardwareIOOneChannelSetting audioChannelSetting = dataRateConfiguration.getAudioChannelSetting();

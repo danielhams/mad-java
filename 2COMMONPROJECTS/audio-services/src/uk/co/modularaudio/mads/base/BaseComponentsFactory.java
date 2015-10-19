@@ -280,8 +280,7 @@ public class BaseComponentsFactory
 	}
 
 	@Override
-	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
+	public void cleanupInstance( final MadInstance<?, ?> instanceToDestroy ) throws DatastoreException
 	{
-		instanceToDestroy.destroy();
 	}
 }

@@ -125,7 +125,7 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 	}
 
 	@Override
-	public IMadUiInstance<?,?> createUiInstanceForInstance( final MadInstance<?,?> instance )
+	public IMadUiInstance<?,?> createUiInstanceForMad( final MadInstance<?,?> instance )
 			throws DatastoreException, RecordNotFoundException
 	{
 		final MadDefinition<?,?> definition = instance.getDefinition();
@@ -137,7 +137,9 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 		}
 		else
 		{
-			return factory.createNewComponentUiInstanceForComponent( instance );
+			final IMadUiInstance<?, ?> muui = factory.createUiInstanceForMad( instance );
+			muui.init();
+			return muui;
 		}
 	}
 
@@ -153,7 +155,8 @@ public class MadComponentUiServiceImpl implements ComponentWithLifecycle, MadCom
 		}
 		else
 		{
-			factory.destroyUiInstance( uiInstance );
+			factory.cleanupUiInstance( uiInstance );
+			uiInstance.destroy();
 		}
 	}
 

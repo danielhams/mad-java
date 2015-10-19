@@ -164,7 +164,6 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 //			log.debug("Creating new instance of " + definition.getName() );
 			retVal = (MadInstance<?,?>)constructor.newInstance( constructorParamValues );
 //			log.debug("Created new instance of " + definition.getName() );
-
 		}
 		catch ( final Exception e )
 		{
@@ -176,13 +175,9 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 	}
 
 	@Override
-	public void destroyInstance( final MadInstance<?, ?> instanceToDestroy )
+	public void cleanupInstance( final MadInstance<?, ?> instanceToDestroy )
 		throws DatastoreException
 	{
-//		MadDefinition<?,?> definition = instanceToDestroy.getDefinition();
-//		log.debug("Destroying instance of " + definition.getName() );
-		instanceToDestroy.destroy();
-//		log.debug("Destroyed instance of " + definition.getName() );
 	}
 
 }
