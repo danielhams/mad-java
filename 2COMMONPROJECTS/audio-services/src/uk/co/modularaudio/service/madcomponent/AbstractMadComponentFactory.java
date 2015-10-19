@@ -175,9 +175,10 @@ public abstract class AbstractMadComponentFactory implements ComponentWithLifecy
 	}
 
 	@Override
-	public void cleanupInstance( final MadInstance<?, ?> instanceToDestroy )
+	public void cleanupInstance( final MadInstance<?, ?> instanceToDestroy ) // NOPMD by dan on 19/10/15 10:12
 		throws DatastoreException
 	{
+		// Default is to do nothing.
 	}
 
 }

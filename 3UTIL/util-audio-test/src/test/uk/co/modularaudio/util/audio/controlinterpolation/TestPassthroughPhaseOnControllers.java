@@ -145,7 +145,8 @@ public class TestPassthroughPhaseOnControllers
 			System.arraycopy( origFloats, 0, sourceFloats, 0, numFramesInt );
 		}
 
-		final int NUM_PASSES = 1;
+		int NUM_PASSES;
+		NUM_PASSES = 1;
 
 		// Initialise our low pass filters
 		// We only use non 24 db since we are doing two passes it's equivalent.

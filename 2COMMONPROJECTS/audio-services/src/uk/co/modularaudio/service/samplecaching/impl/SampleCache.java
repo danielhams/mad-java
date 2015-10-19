@@ -362,9 +362,12 @@ public class SampleCache
 		{
 			if( DEBUG_SAMPLE_CACHE_ACTIVITY )
 			{
-				log.debug("Client " + client.hashCode() + " for " +
-						client.getLibraryEntry().getTitle() +
-						" changed blocks, will wake population thread");
+				if( log.isDebugEnabled() )
+				{
+					log.debug("Client " + client.hashCode() + " for " +
+							client.getLibraryEntry().getTitle() +
+							" changed blocks, will wake population thread");
+				}
 			}
 			client.setLastReadBlockNumber( blockNumber );
 			cachePopulatorThread.addOneJobToDo();

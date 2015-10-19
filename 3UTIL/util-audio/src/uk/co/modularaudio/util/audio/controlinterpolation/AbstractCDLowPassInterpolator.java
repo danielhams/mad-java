@@ -87,8 +87,9 @@ public abstract class AbstractCDLowPassInterpolator implements ControlValueInter
 	}
 
 	@Override
-	public void resetLowerUpperBounds( final float lowerBound, final float upperBound )
+	public void resetLowerUpperBounds( final float lowerBound, final float upperBound ) // NOPMD by dan on 19/10/15 10:10
 	{
+		// Dependant on implementation what happens here.
 	}
 
 	@Override

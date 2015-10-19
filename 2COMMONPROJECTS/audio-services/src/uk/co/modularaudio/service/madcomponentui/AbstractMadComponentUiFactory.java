@@ -74,9 +74,10 @@ public abstract class AbstractMadComponentUiFactory implements MadComponentUiFac
 	}
 
 	@Override
-	public void cleanupUiInstance( final IMadUiInstance<?,?> instanceToDestroy )
+	public void cleanupUiInstance( final IMadUiInstance<?,?> instanceToDestroy ) // NOPMD by dan on 19/10/15 10:12
 			throws DatastoreException, RecordNotFoundException
 	{
+		// Default is to do nothing.
 	}
 
 	@Override

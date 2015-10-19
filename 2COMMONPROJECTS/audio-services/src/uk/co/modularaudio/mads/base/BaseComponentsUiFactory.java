@@ -168,7 +168,10 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 
 				if( classToInstantiate == null )
 				{
-					log.warn("Found component without UI: " + aud.getId() );
+					if( log.isWarnEnabled() )
+					{
+						log.warn("Found component without UI: " + aud.getId() );
+					}
 					continue;
 				}
 				defsNeedingUi.remove( defClass );
