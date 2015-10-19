@@ -8,10 +8,14 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="test.uk.co.modularaudio" level="ERROR"/>
+    <!-- -->
     <Logger name="uk.co.modularaudio" level="INFO"/>
-    <!-- <Logger name="uk.co.modularaudio.service.samplecaching.impl" level="TRACE"/> -->
-    <!-- <Logger name="uk.co.modularaudio.mads.base.soundfile_player" level="TRACE"/> -->
+    <Logger name="test.uk.co.modularaudio" level="ERROR"/>
+    <!--  -->
+    <!--
+    <Logger name="uk.co.modularaudio" level="TRACE"/>
+    <Logger name="test.uk.co.modularaudio" level="TRACE"/>
+    -->
     <Logger name="org" level="ERROR"/>
     <Logger name="com" level="ERROR"/>
     <Root level="ERROR">

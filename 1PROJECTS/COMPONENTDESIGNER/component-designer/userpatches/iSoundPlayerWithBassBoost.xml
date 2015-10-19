@@ -48,9 +48,9 @@
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
         <rackControl name="Gain" value="-7.727335"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 102 Phobiq master.mp3|-1"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT Podcast 102 Phobiq master.mp3|109073166"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
