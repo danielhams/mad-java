@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -84,8 +83,7 @@ public class ControllerToCvMadUiDefinition
 
 	private static final Class<ControllerToCvMadUiInstance> INSTANCE_CLASS = ControllerToCvMadUiInstance.class;
 
-	public ControllerToCvMadUiDefinition( final BufferedImageAllocator bia,
-			final ControllerToCvMadDefinition definition )
+	public ControllerToCvMadUiDefinition( final ControllerToCvMadDefinition definition )
 			throws DatastoreException
 		{
 			super( MadUIStandardBackgrounds.STD_2X1_DARKGRAY,

@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -63,8 +62,7 @@ public class StaticValueMadUiDefinition
 
 	private static final Class<StaticValueMadUiInstance> INSTANCE_CLASS = StaticValueMadUiInstance.class;
 
-	public StaticValueMadUiDefinition( final BufferedImageAllocator bia,
-			final StaticValueMadDefinition definition )
+	public StaticValueMadUiDefinition( final StaticValueMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,

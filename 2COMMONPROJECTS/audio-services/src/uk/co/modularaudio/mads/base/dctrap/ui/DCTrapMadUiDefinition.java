@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.dctrap.mu.DCTrapMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -65,8 +64,7 @@ public class DCTrapMadUiDefinition
 
 	private static final Class<DCTrapMadUiInstance> INSTANCE_CLASS = DCTrapMadUiInstance.class;
 
-	public DCTrapMadUiDefinition( final BufferedImageAllocator bia,
-			final DCTrapMadDefinition definition )
+	public DCTrapMadUiDefinition( final DCTrapMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,

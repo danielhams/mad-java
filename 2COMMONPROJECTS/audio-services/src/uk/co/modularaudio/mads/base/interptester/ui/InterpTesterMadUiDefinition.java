@@ -29,7 +29,6 @@ import uk.co.modularaudio.mads.base.interptester.mu.InterpolatorType;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -98,8 +97,7 @@ public class InterpTesterMadUiDefinition
 
 	private static final Class<InterpTesterMadUiInstance> INSTANCE_CLASS = InterpTesterMadUiInstance.class;
 
-	public InterpTesterMadUiDefinition( final BufferedImageAllocator bia,
-			final InterpTesterMadDefinition definition )
+	public InterpTesterMadUiDefinition( final InterpTesterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X4_ORANGE,

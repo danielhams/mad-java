@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.rbjfilter.mu.RBJFilterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -80,8 +79,7 @@ public class RBJFilterMadUiDefinition
 
 	private static final Class<RBJFilterMadUiInstance> INSTANCE_CLASS = RBJFilterMadUiInstance.class;
 
-	public RBJFilterMadUiDefinition( final BufferedImageAllocator bia,
-			final RBJFilterMadDefinition definition )
+	public RBJFilterMadUiDefinition( final RBJFilterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,

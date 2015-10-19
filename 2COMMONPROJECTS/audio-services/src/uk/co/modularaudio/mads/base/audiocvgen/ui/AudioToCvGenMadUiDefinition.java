@@ -27,7 +27,6 @@ import uk.co.modularaudio.mads.base.audiocvgen.mu.AudioToCvGenMadDefinition;
 import uk.co.modularaudio.mads.base.audiocvgen.mu.AudioToCvGenMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -36,8 +35,7 @@ public class AudioToCvGenMadUiDefinition<D extends AudioToCvGenMadDefinition<D,I
 		U extends AudioToCvGenMadUiInstance<D,I>>
 	extends AbstractNonConfigurableMadUiDefinition<D, I, U>
 {
-	public AudioToCvGenMadUiDefinition( final BufferedImageAllocator bia,
-			final D definition,
+	public AudioToCvGenMadUiDefinition( final D definition,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,

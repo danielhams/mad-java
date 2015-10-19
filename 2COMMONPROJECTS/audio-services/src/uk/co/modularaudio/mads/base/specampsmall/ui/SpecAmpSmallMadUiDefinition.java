@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -103,12 +102,10 @@ public class SpecAmpSmallMadUiDefinition
 
 	private static final Class<SpecAmpSmallMadUiInstance> INSTANCE_CLASS = SpecAmpSmallMadUiInstance.class;
 
-	public SpecAmpSmallMadUiDefinition( final BufferedImageAllocator bia,
-			final SpecAmpSmallMadDefinition definition )
+	public SpecAmpSmallMadUiDefinition( final SpecAmpSmallMadDefinition definition )
 		throws DatastoreException
 	{
-		super( bia,
-				definition,
+		super( definition,
 				MadUIStandardBackgrounds.STD_2X4_ORANGE,
 				SPAN,
 				INSTANCE_CLASS,

@@ -29,7 +29,6 @@ import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadInstanc
 import uk.co.modularaudio.util.audio.gui.mad.MadUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -46,7 +45,6 @@ public class NoteMultiplexerMadUiDefinition extends
 	private final static Span DEFAULT_SPAN = new Span(1,1);
 
 	public NoteMultiplexerMadUiDefinition(
-			final BufferedImageAllocator bia,
 			final NoteMultiplexerMadDefinition definition )
 			throws DatastoreException
 	{

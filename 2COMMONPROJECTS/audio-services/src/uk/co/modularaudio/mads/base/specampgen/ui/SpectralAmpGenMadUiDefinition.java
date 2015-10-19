@@ -27,7 +27,6 @@ import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -43,8 +42,7 @@ U extends SpectralAmpGenMadUiInstance<D,I>>
 
 	public static final float MIN_FREQ_DIFF = 8.0f;
 
-	public SpectralAmpGenMadUiDefinition( final BufferedImageAllocator bia,
-			final D definition,
+	public SpectralAmpGenMadUiDefinition( final D definition,
 			final String imagePrefix,
 			final Span span,
 			final Class<U> instanceClass,

@@ -25,7 +25,6 @@ import uk.co.modularaudio.mads.base.audiocvgen.ui.AudioToCvGenMadUiDefinition;
 import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadDefinition;
 import uk.co.modularaudio.mads.base.cvtoaudio4.mu.CvToAudio4MadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -33,12 +32,10 @@ public class CvToAudio4MadUiDefinition extends AudioToCvGenMadUiDefinition<CvToA
 {
 	final static Span SPAN = new Span( 1, 1 );
 
-	public CvToAudio4MadUiDefinition( final BufferedImageAllocator bia,
-			final CvToAudio4MadDefinition definition )
+	public CvToAudio4MadUiDefinition( final CvToAudio4MadDefinition definition )
 		throws DatastoreException
 	{
-		this( bia,
-				definition,
+		this( definition,
 				instanceConfigToUiConfig( CvToAudio4MadDefinition.INSTANCE_CONFIGURATION ) );
 	}
 
@@ -48,12 +45,10 @@ public class CvToAudio4MadUiDefinition extends AudioToCvGenMadUiDefinition<CvToA
 		return new CvToAudio4UiInstanceConfiguration( instanceConfiguration );
 	}
 
-	private CvToAudio4MadUiDefinition( final BufferedImageAllocator bia,
-			final CvToAudio4MadDefinition definition,
+	private CvToAudio4MadUiDefinition( final CvToAudio4MadDefinition definition,
 			final CvToAudio4UiInstanceConfiguration uiConfiguration ) throws DatastoreException
 	{
-		super( bia,
-				definition,
+		super( definition,
 				MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,
 				SPAN,
 				CvToAudio4MadUiInstance.class,

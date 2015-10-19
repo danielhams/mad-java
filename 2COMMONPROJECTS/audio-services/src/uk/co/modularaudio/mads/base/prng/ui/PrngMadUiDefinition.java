@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.prng.mu.PrngMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -59,8 +58,7 @@ public class PrngMadUiDefinition
 
 	private static final Class<PrngMadUiInstance> INSTANCE_CLASS = PrngMadUiInstance.class;
 
-	public PrngMadUiDefinition( final BufferedImageAllocator bia,
-			final PrngMadDefinition definition )
+	public PrngMadUiDefinition( final PrngMadDefinition definition )
 			throws DatastoreException
 		{
 			super( MadUIStandardBackgrounds.STD_1X1_LIGHTGRAY,

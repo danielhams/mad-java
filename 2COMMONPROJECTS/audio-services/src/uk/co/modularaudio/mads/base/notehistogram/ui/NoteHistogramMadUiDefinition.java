@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -60,8 +59,7 @@ public class NoteHistogramMadUiDefinition
 
 	private static final Class<NoteHistogramMadUiInstance> INSTANCE_CLASS = NoteHistogramMadUiInstance.class;
 
-	public NoteHistogramMadUiDefinition( final BufferedImageAllocator bia,
-			final NoteHistogramMadDefinition definition )
+	public NoteHistogramMadUiDefinition( final NoteHistogramMadDefinition definition )
 			throws DatastoreException
 		{
 			super( MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,

@@ -29,7 +29,6 @@ import uk.co.modularaudio.mads.base.cvsurface.ui.controller.CvSurfaceControllerU
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -66,8 +65,7 @@ public class CvSurfaceMadUiDefinition
 
 	private static final Class<CvSurfaceMadUiInstance> INSTANCE_CLASS = CvSurfaceMadUiInstance.class;
 
-	public CvSurfaceMadUiDefinition( final BufferedImageAllocator bia,
-			final CvSurfaceMadDefinition definition )
+	public CvSurfaceMadUiDefinition( final CvSurfaceMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X4_BLUE,

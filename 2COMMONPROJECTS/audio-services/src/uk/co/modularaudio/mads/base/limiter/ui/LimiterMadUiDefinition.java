@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -77,8 +76,7 @@ public class LimiterMadUiDefinition
 
 	private static final Class<LimiterMadUiInstance> INSTANCE_CLASS = LimiterMadUiInstance.class;
 
-	public LimiterMadUiDefinition( final BufferedImageAllocator bia,
-			final LimiterMadDefinition definition )
+	public LimiterMadUiDefinition( final LimiterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,

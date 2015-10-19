@@ -82,6 +82,7 @@ public class BaseComponentsFactory
 
 	private MadClassificationService classificationService;
 	private MadComponentService componentService;
+
 	private AdvancedComponentsFrontController advancedComponentsFrontController;
 
 	private BaseComponentsCreationContext creationContext;

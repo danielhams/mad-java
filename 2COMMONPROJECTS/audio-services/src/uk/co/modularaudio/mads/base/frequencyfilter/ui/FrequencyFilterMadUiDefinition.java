@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.frequencyfilter.mu.FrequencyFilterMadInstanc
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -85,8 +84,7 @@ public class FrequencyFilterMadUiDefinition
 
 	protected final static int SLIDER_LABEL_MIN_WIDTH = 40;
 
-	public FrequencyFilterMadUiDefinition( final BufferedImageAllocator bia,
-			final FrequencyFilterMadDefinition definition )
+	public FrequencyFilterMadUiDefinition( final FrequencyFilterMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X2_DARKGRAY,

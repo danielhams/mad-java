@@ -28,7 +28,6 @@ import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
@@ -85,8 +84,7 @@ public class CrossFaderMadUiDefinition
 
 	private static final Class<CrossFaderMadUiInstance> INSTANCE_CLASS = CrossFaderMadUiInstance.class;
 
-	public CrossFaderMadUiDefinition( final BufferedImageAllocator bia,
-			final CrossFaderMadDefinition definition )
+	public CrossFaderMadUiDefinition( final CrossFaderMadDefinition definition )
 		throws DatastoreException
 	{
 		super( MadUIStandardBackgrounds.STD_2X1_DARKGRAY,

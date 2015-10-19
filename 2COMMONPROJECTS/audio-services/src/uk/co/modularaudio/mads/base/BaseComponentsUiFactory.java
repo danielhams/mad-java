@@ -20,11 +20,9 @@
 
 package uk.co.modularaudio.mads.base;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -93,116 +91,81 @@ import uk.co.modularaudio.mads.base.stereo_compressor.mu.StereoCompressorMadDefi
 import uk.co.modularaudio.mads.base.stereo_compressor.ui.StereoCompressorMadUiDefinition;
 import uk.co.modularaudio.mads.base.waveroller.mu.WaveRollerMadDefinition;
 import uk.co.modularaudio.mads.base.waveroller.ui.WaveRollerMadUiDefinition;
-import uk.co.modularaudio.service.madcomponentui.AbstractMadComponentUiFactory;
+import uk.co.modularaudio.service.bufferedimageallocation.BufferedImageAllocationService;
+import uk.co.modularaudio.service.madcomponent.MadComponentService;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiFactory;
+import uk.co.modularaudio.service.madcomponentui.MadComponentUiService;
+import uk.co.modularaudio.util.audio.gui.mad.IMadUiInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiDefinition;
 import uk.co.modularaudio.util.audio.mad.MadDefinition;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.MadProcessingException;
+import uk.co.modularaudio.util.component.ComponentWithLifecycle;
+import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.exception.RecordNotFoundException;
+import uk.co.modularaudio.util.table.Span;
 
-public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
+public class BaseComponentsUiFactory
+	implements ComponentWithLifecycle, MadComponentUiFactory
 {
 	private static Log log = LogFactory.getLog( BaseComponentsUiFactory.class.getName() );
 
+	private MadComponentService componentService;
+	private MadComponentUiService componentUiService;
+	private BufferedImageAllocationService bufferedImageAllocationService;
+
 	private BaseComponentsFactory baseComponentsFactory;
 
-	@SuppressWarnings("rawtypes")
-	private final Map<Class, Class> classToUiDefinition = new HashMap<Class, Class>();
+	private final ArrayList<MadUiDefinition<?, ?>> muds = new ArrayList<MadUiDefinition<?,?>>();
+
+	private ScaleAndOffsetMadUiDefinition saoMud;
+	private StaticValueMadUiDefinition svMud;
+	private LimiterMadUiDefinition limMud;
+	private OscilloscopeMadUiDefinition oscMud;
+	private CrossFaderMadUiDefinition cfMud;
+	private FrequencyFilterMadUiDefinition ffMud;
+	private SpecAmpSmallMadUiDefinition sasMud;
+	private SpecAmpLargeMadUiDefinition salMud;
+	private NoteToCvMadUiDefinition ntcMud;
+	private CvSurfaceMadUiDefinition cvsMud;
+	private LinearCVAMadUiDefinition lcvaMud;
+	private PrngMadUiDefinition prngMud;
+	private DCTrapMadUiDefinition dctrapMud;
+	private StereoCompressorMadUiDefinition stcompMud;
+	private NoteMultiplexerMadUiDefinition nmpMud;
+	private BandLimitedOscillatorMadUiDefinition bloMud;
+	private WaveRollerMadUiDefinition wrMud;
+	private SoundfilePlayerMadUiDefinition sfpMud;
+	private RBJFilterMadUiDefinition rjbMud;
+	private MoogFilterMadUiDefinition moogMud;
+	private InterpTesterMadUiDefinition interpMud;
+	private IMixer3MadUiDefinition mix3Mud;
+	private IMixer8MadUiDefinition mix8Mud;
+	private DJEQMadUiDefinition djeqMud;
+	private MidSideMadUiDefinition midsideMud;
+	private ScopeSmallMadUiDefinition scopesMud;
+	private ScopeLargeMadUiDefinition scopelMud;
+	private AudioToCv4MadUiDefinition atc4Mud;
+	private CvToAudio4MadUiDefinition cta4Mud;
+	private NoteHistogramMadUiDefinition notehMud;
+	private NoteDebugMadUiDefinition notedMud;
+	private ControllerToCvMadUiDefinition con2cvMud;
+
+	private final HashMap<String, MadUiDefinition<?, ?>> mdIdToMudMap = new HashMap<String, MadUiDefinition<?,?>>();
 
 	public BaseComponentsUiFactory()
 	{
-		// Definitions to UiDefinitions
-		classToUiDefinition.put( ScaleAndOffsetMadDefinition.class, ScaleAndOffsetMadUiDefinition.class );
-		classToUiDefinition.put( StaticValueMadDefinition.class, StaticValueMadUiDefinition.class );
-		classToUiDefinition.put( LimiterMadDefinition.class, LimiterMadUiDefinition.class );
-		classToUiDefinition.put( OscilloscopeMadDefinition.class, OscilloscopeMadUiDefinition.class );
-		classToUiDefinition.put( CrossFaderMadDefinition.class, CrossFaderMadUiDefinition.class );
-		classToUiDefinition.put( FrequencyFilterMadDefinition.class, FrequencyFilterMadUiDefinition.class );
-		classToUiDefinition.put( SpecAmpSmallMadDefinition.class, SpecAmpSmallMadUiDefinition.class );
-		classToUiDefinition.put( SpecAmpLargeMadDefinition.class, SpecAmpLargeMadUiDefinition.class );
-		classToUiDefinition.put( CvSurfaceMadDefinition.class, CvSurfaceMadUiDefinition.class );
-		classToUiDefinition.put( NoteMultiplexerMadDefinition.class, NoteMultiplexerMadUiDefinition.class );
-		classToUiDefinition.put( NoteToCvMadDefinition.class, NoteToCvMadUiDefinition.class );
-		classToUiDefinition.put( LinearCVAMadDefinition.class, LinearCVAMadUiDefinition.class );
-		classToUiDefinition.put( PrngMadDefinition.class, PrngMadUiDefinition.class );
-		classToUiDefinition.put( DCTrapMadDefinition.class, DCTrapMadUiDefinition.class );
-		classToUiDefinition.put( StereoCompressorMadDefinition.class, StereoCompressorMadUiDefinition.class );
-		classToUiDefinition.put( BandLimitedOscillatorMadDefinition.class, BandLimitedOscillatorMadUiDefinition.class );
-		classToUiDefinition.put( WaveRollerMadDefinition.class, WaveRollerMadUiDefinition.class );
-
-		classToUiDefinition.put( SoundfilePlayerMadDefinition.class, SoundfilePlayerMadUiDefinition.class );
-
-		classToUiDefinition.put( RBJFilterMadDefinition.class, RBJFilterMadUiDefinition.class );
-
-		classToUiDefinition.put( MoogFilterMadDefinition.class, MoogFilterMadUiDefinition.class );
-		classToUiDefinition.put( InterpTesterMadDefinition.class, InterpTesterMadUiDefinition.class );
-
-		classToUiDefinition.put( IMixer3MadDefinition.class, IMixer3MadUiDefinition.class );
-		classToUiDefinition.put( IMixer8MadDefinition.class, IMixer8MadUiDefinition.class );
-
-		classToUiDefinition.put( DJEQMadDefinition.class, DJEQMadUiDefinition.class );
-
-		classToUiDefinition.put( MidSideMadDefinition.class, MidSideMadUiDefinition.class );
-
-		classToUiDefinition.put( ScopeSmallMadDefinition.class, ScopeSmallMadUiDefinition.class );
-		classToUiDefinition.put( ScopeLargeMadDefinition.class, ScopeLargeMadUiDefinition.class );
-
-		classToUiDefinition.put( AudioToCv4MadDefinition.class, AudioToCv4MadUiDefinition.class );
-		classToUiDefinition.put( CvToAudio4MadDefinition.class, CvToAudio4MadUiDefinition.class );
-		classToUiDefinition.put( NoteHistogramMadDefinition.class, NoteHistogramMadUiDefinition.class );
-		classToUiDefinition.put( NoteDebugMadDefinition.class, NoteDebugMadUiDefinition.class );
-		classToUiDefinition.put( ControllerToCvMadDefinition.class, ControllerToCvMadUiDefinition.class );
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public void setupTypeToDefinitionClasses() throws DatastoreException
+	public void setComponentService( final MadComponentService componentService )
 	{
-		try
-		{
-			final Collection<MadDefinition<?,?>> auds = baseComponentsFactory.listDefinitions();
-			final ArrayList<Class> defsNeedingUi = new ArrayList<Class>(classToUiDefinition.keySet());
-			for( final MadDefinition<?,?> aud : auds )
-			{
-				final Class defClass = aud.getClass();
-				final Class classToInstantiate = classToUiDefinition.get( defClass );
+		this.componentService = componentService;
+	}
 
-				if( classToInstantiate == null )
-				{
-					if( log.isWarnEnabled() )
-					{
-						log.warn("Found component without UI: " + aud.getId() );
-					}
-					continue;
-				}
-				defsNeedingUi.remove( defClass );
-				final Class[] constructorParamTypes = new Class[] {
-						BufferedImageAllocator.class,
-						aud.getClass() };
-				final Object[] constructorParams = new Object[] {
-						bufferedImageAllocationService,
-						aud };
-
-				final Constructor c = classToInstantiate.getConstructor( constructorParamTypes );
-				final Object newInstance = c.newInstance( constructorParams );
-				final MadUiDefinition instanceAsUiDefinition = (MadUiDefinition)newInstance;
-
-				componentDefinitionToUiDefinitionMap.put( aud, instanceAsUiDefinition );
-			}
-
-			// Sanity check that we have a definition for each ui
-			for( final Class d : defsNeedingUi )
-			{
-				if( log.isWarnEnabled() )
-				{
-					log.warn( "Have ui definition but no mad def for " + d.getSimpleName() );
-				}
-			}
-		}
-		catch (final Exception e)
-		{
-			final String msg = "Exception caught setting up UI definitions: " + e.toString();
-			throw new DatastoreException( msg, e );
-		}
+	public void setComponentUiService( final MadComponentUiService componentUiService )
+	{
+		this.componentUiService = componentUiService;
 	}
 
 	public void setBaseComponentsFactory( final BaseComponentsFactory baseComponentsFactory )
@@ -210,4 +173,243 @@ public class BaseComponentsUiFactory extends AbstractMadComponentUiFactory
 		this.baseComponentsFactory = baseComponentsFactory;
 	}
 
+	public void setBufferedImageAllocationService( final BufferedImageAllocationService bufferedImageAllocationService )
+	{
+		this.bufferedImageAllocationService = bufferedImageAllocationService;
+	}
+
+	@Override
+	public List<MadUiDefinition<?, ?>> listComponentUiDefinitions()
+	{
+		return muds;
+	}
+
+	@Override
+	public IMadUiInstance<?, ?> createUiInstanceForMad( final MadInstance<?, ?> madInstance )
+			throws DatastoreException, RecordNotFoundException
+	{
+		final MadUiDefinition<?, ?> mud = mdIdToMudMap.get( madInstance.getDefinition().getId() );
+		if( mud != null )
+		{
+			return mud.createNewUiInstanceUT( madInstance );
+		}
+		else
+		{
+			throw new RecordNotFoundException( "Unknown mad definition: " + madInstance.getDefinition().getName() );
+		}
+	}
+
+	@Override
+	public void cleanupUiInstance( final IMadUiInstance<?, ?> uiInstance ) throws DatastoreException, RecordNotFoundException
+	{
+	}
+
+	@Override
+	public Span getUiSpanForDefinition( final MadDefinition<?, ?> madDefinition )
+			throws DatastoreException, RecordNotFoundException
+	{
+		final MadUiDefinition<?, ?> mud = mdIdToMudMap.get( madDefinition.getId() );
+		if( mud != null )
+		{
+			return mud.getCellSpan();
+		}
+		else
+		{
+			throw new RecordNotFoundException( "Unknown mad definition: " + madDefinition.getName() );
+		}
+	}
+
+	@Override
+	public void init() throws ComponentConfigurationException
+	{
+		if( componentService == null ||
+				componentUiService == null ||
+				baseComponentsFactory == null )
+		{
+			throw new ComponentConfigurationException( "Service missing dependencies. Check config." );
+		}
+
+		try
+		{
+			final ScaleAndOffsetMadDefinition saoMd = (ScaleAndOffsetMadDefinition)
+					componentService.findDefinitionById( ScaleAndOffsetMadDefinition.DEFINITION_ID );
+            saoMud = new ScaleAndOffsetMadUiDefinition( saoMd );
+            muds.add( saoMud );
+            mdIdToMudMap.put( ScaleAndOffsetMadDefinition.DEFINITION_ID, saoMud );
+			final StaticValueMadDefinition svMd = (StaticValueMadDefinition)
+					componentService.findDefinitionById( StaticValueMadDefinition.DEFINITION_ID );
+            svMud = new StaticValueMadUiDefinition( svMd );
+            muds.add( svMud );
+            mdIdToMudMap.put( StaticValueMadDefinition.DEFINITION_ID, svMud );
+			final LimiterMadDefinition limMd = (LimiterMadDefinition)
+					componentService.findDefinitionById( LimiterMadDefinition.DEFINITION_ID );
+            limMud = new LimiterMadUiDefinition( limMd );
+            muds.add( limMud );
+            mdIdToMudMap.put( LimiterMadDefinition.DEFINITION_ID, limMud );
+			final OscilloscopeMadDefinition oscMd = (OscilloscopeMadDefinition)
+					componentService.findDefinitionById( OscilloscopeMadDefinition.DEFINITION_ID );
+            oscMud = new OscilloscopeMadUiDefinition( bufferedImageAllocationService, oscMd );
+            muds.add( oscMud );
+            mdIdToMudMap.put( OscilloscopeMadDefinition.DEFINITION_ID, oscMud );
+			final CrossFaderMadDefinition cfMd = (CrossFaderMadDefinition)
+                componentService.findDefinitionById( CrossFaderMadDefinition.DEFINITION_ID );
+            cfMud = new CrossFaderMadUiDefinition( cfMd );
+            muds.add( cfMud );
+            mdIdToMudMap.put( CrossFaderMadDefinition.DEFINITION_ID, cfMud );
+			final FrequencyFilterMadDefinition ffMd = (FrequencyFilterMadDefinition)
+                componentService.findDefinitionById( FrequencyFilterMadDefinition.DEFINITION_ID );
+            ffMud = new FrequencyFilterMadUiDefinition( ffMd );
+            muds.add( ffMud );
+            mdIdToMudMap.put( FrequencyFilterMadDefinition.DEFINITION_ID, ffMud );
+			final SpecAmpSmallMadDefinition sasMd = (SpecAmpSmallMadDefinition)
+                componentService.findDefinitionById( SpecAmpSmallMadDefinition.DEFINITION_ID );
+            sasMud = new SpecAmpSmallMadUiDefinition( sasMd );
+            muds.add( sasMud );
+            mdIdToMudMap.put( SpecAmpSmallMadDefinition.DEFINITION_ID, sasMud );
+			final SpecAmpLargeMadDefinition salMd = (SpecAmpLargeMadDefinition)
+                componentService.findDefinitionById( SpecAmpLargeMadDefinition.DEFINITION_ID );
+            salMud = new SpecAmpLargeMadUiDefinition( salMd );
+            muds.add( salMud );
+            mdIdToMudMap.put( SpecAmpLargeMadDefinition.DEFINITION_ID, salMud );
+			final NoteToCvMadDefinition ntcMd = (NoteToCvMadDefinition)
+                componentService.findDefinitionById( NoteToCvMadDefinition.DEFINITION_ID );
+            ntcMud = new NoteToCvMadUiDefinition( ntcMd );
+            muds.add( ntcMud );
+            mdIdToMudMap.put( NoteToCvMadDefinition.DEFINITION_ID, ntcMud );
+			final CvSurfaceMadDefinition cvsMd = (CvSurfaceMadDefinition)
+                componentService.findDefinitionById( CvSurfaceMadDefinition.DEFINITION_ID );
+            cvsMud = new CvSurfaceMadUiDefinition( cvsMd );
+            muds.add( cvsMud );
+            mdIdToMudMap.put( CvSurfaceMadDefinition.DEFINITION_ID, cvsMud );
+			final LinearCVAMadDefinition lcvaMd = (LinearCVAMadDefinition)
+                componentService.findDefinitionById( LinearCVAMadDefinition.DEFINITION_ID );
+            lcvaMud = new LinearCVAMadUiDefinition( lcvaMd );
+            muds.add( lcvaMud );
+            mdIdToMudMap.put( LinearCVAMadDefinition.DEFINITION_ID, lcvaMud );
+			final PrngMadDefinition prngMd = (PrngMadDefinition)
+                componentService.findDefinitionById( PrngMadDefinition.DEFINITION_ID );
+            prngMud = new PrngMadUiDefinition( prngMd );
+            muds.add( prngMud );
+            mdIdToMudMap.put( PrngMadDefinition.DEFINITION_ID, prngMud );
+			final DCTrapMadDefinition dctrapMd = (DCTrapMadDefinition)
+                componentService.findDefinitionById( DCTrapMadDefinition.DEFINITION_ID );
+            dctrapMud = new DCTrapMadUiDefinition( dctrapMd );
+            muds.add( dctrapMud );
+            mdIdToMudMap.put( DCTrapMadDefinition.DEFINITION_ID, dctrapMud );
+			final StereoCompressorMadDefinition stcompMd = (StereoCompressorMadDefinition)
+                componentService.findDefinitionById( StereoCompressorMadDefinition.DEFINITION_ID );
+            stcompMud = new StereoCompressorMadUiDefinition( bufferedImageAllocationService, stcompMd );
+            muds.add( stcompMud );
+            mdIdToMudMap.put( StereoCompressorMadDefinition.DEFINITION_ID, stcompMud );
+			final NoteMultiplexerMadDefinition nmpMd = (NoteMultiplexerMadDefinition)
+                componentService.findDefinitionById( NoteMultiplexerMadDefinition.DEFINITION_ID );
+            nmpMud = new NoteMultiplexerMadUiDefinition( nmpMd );
+            muds.add( nmpMud );
+            mdIdToMudMap.put( NoteMultiplexerMadDefinition.DEFINITION_ID, nmpMud );
+			final BandLimitedOscillatorMadDefinition bloMd = (BandLimitedOscillatorMadDefinition)
+                componentService.findDefinitionById( BandLimitedOscillatorMadDefinition.DEFINITION_ID );
+            bloMud = new BandLimitedOscillatorMadUiDefinition( bloMd );
+            muds.add( bloMud );
+            mdIdToMudMap.put( BandLimitedOscillatorMadDefinition.DEFINITION_ID, bloMud );
+			final WaveRollerMadDefinition wrMd = (WaveRollerMadDefinition)
+                componentService.findDefinitionById( WaveRollerMadDefinition.DEFINITION_ID );
+            wrMud = new WaveRollerMadUiDefinition( bufferedImageAllocationService, wrMd );
+            muds.add( wrMud );
+            mdIdToMudMap.put( WaveRollerMadDefinition.DEFINITION_ID, wrMud );
+			final SoundfilePlayerMadDefinition sfpMd = (SoundfilePlayerMadDefinition)
+                componentService.findDefinitionById( SoundfilePlayerMadDefinition.DEFINITION_ID );
+            sfpMud = new SoundfilePlayerMadUiDefinition( bufferedImageAllocationService, sfpMd );
+            muds.add( sfpMud );
+            mdIdToMudMap.put( SoundfilePlayerMadDefinition.DEFINITION_ID, sfpMud );
+			final RBJFilterMadDefinition rjbMd = (RBJFilterMadDefinition)
+                componentService.findDefinitionById( RBJFilterMadDefinition.DEFINITION_ID );
+            rjbMud = new RBJFilterMadUiDefinition( rjbMd );
+            muds.add( rjbMud );
+            mdIdToMudMap.put( RBJFilterMadDefinition.DEFINITION_ID, rjbMud );
+			final MoogFilterMadDefinition moogMd = (MoogFilterMadDefinition)
+                componentService.findDefinitionById( MoogFilterMadDefinition.DEFINITION_ID );
+            moogMud = new MoogFilterMadUiDefinition( moogMd );
+            muds.add( moogMud );
+            mdIdToMudMap.put( MoogFilterMadDefinition.DEFINITION_ID, moogMud );
+			final InterpTesterMadDefinition interpMd = (InterpTesterMadDefinition)
+                componentService.findDefinitionById( InterpTesterMadDefinition.DEFINITION_ID );
+            interpMud = new InterpTesterMadUiDefinition( interpMd );
+            muds.add( interpMud );
+            mdIdToMudMap.put( InterpTesterMadDefinition.DEFINITION_ID, interpMud );
+			final IMixer3MadDefinition mix3Md = (IMixer3MadDefinition)
+                componentService.findDefinitionById( IMixer3MadDefinition.DEFINITION_ID );
+            mix3Mud = new IMixer3MadUiDefinition( bufferedImageAllocationService, mix3Md );
+            muds.add( mix3Mud );
+            mdIdToMudMap.put( IMixer3MadDefinition.DEFINITION_ID, mix3Mud );
+			final IMixer8MadDefinition mix8Md = (IMixer8MadDefinition)
+                componentService.findDefinitionById( IMixer8MadDefinition.DEFINITION_ID );
+            mix8Mud = new IMixer8MadUiDefinition( bufferedImageAllocationService, mix8Md );
+            muds.add( mix8Mud );
+            mdIdToMudMap.put( IMixer8MadDefinition.DEFINITION_ID, mix8Mud );
+			final DJEQMadDefinition djeqMd = (DJEQMadDefinition)
+                componentService.findDefinitionById( DJEQMadDefinition.DEFINITION_ID );
+            djeqMud = new DJEQMadUiDefinition( bufferedImageAllocationService, djeqMd );
+            muds.add( djeqMud );
+            mdIdToMudMap.put( DJEQMadDefinition.DEFINITION_ID, djeqMud );
+			final MidSideMadDefinition midsideMd = (MidSideMadDefinition)
+                componentService.findDefinitionById( MidSideMadDefinition.DEFINITION_ID );
+            midsideMud = new MidSideMadUiDefinition( midsideMd );
+            muds.add( midsideMud );
+            mdIdToMudMap.put( MidSideMadDefinition.DEFINITION_ID, midsideMud );
+			final ScopeSmallMadDefinition scopesMd = (ScopeSmallMadDefinition)
+                componentService.findDefinitionById( ScopeSmallMadDefinition.DEFINITION_ID );
+            scopesMud = new ScopeSmallMadUiDefinition( bufferedImageAllocationService, scopesMd );
+            muds.add( scopesMud );
+            mdIdToMudMap.put( ScopeSmallMadDefinition.DEFINITION_ID, scopesMud );
+			final ScopeLargeMadDefinition scopelMd = (ScopeLargeMadDefinition)
+                componentService.findDefinitionById( ScopeLargeMadDefinition.DEFINITION_ID );
+            scopelMud = new ScopeLargeMadUiDefinition( bufferedImageAllocationService, scopelMd );
+            muds.add( scopelMud );
+            mdIdToMudMap.put( ScopeLargeMadDefinition.DEFINITION_ID, scopelMud );
+			final AudioToCv4MadDefinition atc4Md = (AudioToCv4MadDefinition)
+                componentService.findDefinitionById( AudioToCv4MadDefinition.DEFINITION_ID );
+            atc4Mud = new AudioToCv4MadUiDefinition( atc4Md );
+            muds.add( atc4Mud );
+            mdIdToMudMap.put( AudioToCv4MadDefinition.DEFINITION_ID, atc4Mud );
+			final CvToAudio4MadDefinition cta4Md = (CvToAudio4MadDefinition)
+                componentService.findDefinitionById( CvToAudio4MadDefinition.DEFINITION_ID );
+            cta4Mud = new CvToAudio4MadUiDefinition( cta4Md );
+            muds.add( cta4Mud );
+            mdIdToMudMap.put( CvToAudio4MadDefinition.DEFINITION_ID, cta4Mud );
+			final NoteHistogramMadDefinition notehMd = (NoteHistogramMadDefinition)
+                componentService.findDefinitionById( NoteHistogramMadDefinition.DEFINITION_ID );
+            notehMud = new NoteHistogramMadUiDefinition( notehMd );
+            muds.add( notehMud );
+            mdIdToMudMap.put( NoteHistogramMadDefinition.DEFINITION_ID, notehMud );
+			final NoteDebugMadDefinition notedMd = (NoteDebugMadDefinition)
+                componentService.findDefinitionById( NoteDebugMadDefinition.DEFINITION_ID );
+            notedMud = new NoteDebugMadUiDefinition( notedMd );
+            muds.add( notedMud );
+            mdIdToMudMap.put( NoteDebugMadDefinition.DEFINITION_ID, notedMud );
+			final ControllerToCvMadDefinition con2cvMd = (ControllerToCvMadDefinition)
+                componentService.findDefinitionById( ControllerToCvMadDefinition.DEFINITION_ID );
+            con2cvMud = new ControllerToCvMadUiDefinition( con2cvMd );
+            muds.add( con2cvMud );
+            mdIdToMudMap.put( ControllerToCvMadDefinition.DEFINITION_ID, con2cvMud );
+
+			componentUiService.registerComponentUiFactory( this );
+		}
+		catch( DatastoreException | RecordNotFoundException | MadProcessingException e )
+		{
+			throw new ComponentConfigurationException( "Unable to create muds: " + e.toString(), e );
+		}
+	}
+
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			componentUiService.unregisterComponentUiFactory( this );
+		}
+		catch( final DatastoreException e )
+		{
+			log.error( e );
+		}
+	}
 }
