@@ -37,7 +37,6 @@ public class RackComponent implements RackModelTableSpanningContents
 {
 	private String name;
 	private MadInstance<?,?> ci;
-	private MadUiDefinition<?, ?> uiDefinition;
 	private IMadUiInstance<?,?> cui;
 	private final List<RackComponentNameChangeListener> nameChangeListeners = new ArrayList<RackComponentNameChangeListener>();
 
@@ -46,7 +45,6 @@ public class RackComponent implements RackModelTableSpanningContents
 		this.name = name;
 		this.ci = ci;
 		this.cui = cui;
-		uiDefinition = cui.getUiDefinition();
 	}
 
 	public MadUiDefinition<?,?> getUiDefinition()
@@ -100,7 +98,7 @@ public class RackComponent implements RackModelTableSpanningContents
 
 	public boolean isDraggable()
 	{
-		return uiDefinition.isDraggable();
+		return cui.getUiDefinition().isDraggable();
 	}
 
 	public void setComponentName( final String newName )
@@ -126,7 +124,6 @@ public class RackComponent implements RackModelTableSpanningContents
 	{
 		nameChangeListeners.clear();
 		ci = null;
-		uiDefinition = null;
 		cui = null;
 	}
 }
