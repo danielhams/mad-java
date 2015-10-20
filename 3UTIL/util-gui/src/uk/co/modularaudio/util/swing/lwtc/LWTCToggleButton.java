@@ -129,7 +129,8 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 				}
 				default:
 				{
-					log.error( "menter oops - state issue" );
+					log.error( "menter oops - state issue - pushed state is " +
+							pushedState.name() );
 				}
 			}
 			repaint();
@@ -159,7 +160,8 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 				}
 				default:
 				{
-					log.error( "mexit oops - state issue" );
+					log.error( "mexit oops - state issue - pushed state is " +
+							pushedState.name() );
 				}
 			}
 			repaint();
@@ -199,7 +201,8 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 				}
 				default:
 				{
-					log.error( "mpressed oops - state issue" );
+					log.error( "mpressed oops - state issue - pushed state is " +
+							pushedState.name() );
 				}
 			}
 			if( !hasFocus() )
