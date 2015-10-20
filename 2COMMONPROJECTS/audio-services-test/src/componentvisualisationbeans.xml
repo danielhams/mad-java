@@ -42,12 +42,6 @@
     <bean id="audioFileIORegistryService" class="uk.co.modularaudio.service.audiofileioregistry.impl.AudioFileIORegistryServiceImpl" init-method="init" destroy-method="destroy">
         <property name="userPreferencesService"><ref bean="userPreferencesService"></ref></property>
     </bean>
-    <bean id="libSndfileAudioFileIOService" class="uk.co.modularaudio.service.libsndfileaudiofileio.LibSndfileAudioFileIOService" init-method="init" destroy-method="destroy">
-        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
-    </bean>
-    <bean id="libMpg123AudioFileIOService" class="uk.co.modularaudio.service.libmpg123audiofileio.LibMpg123AudioFileIOService" init-method="init" destroy-method="destroy">
-        <property name="audioFileIORegistryService"><ref bean="audioFileIORegistryService"></ref></property>
-    </bean>
 	<bean id="libraryService" class="uk.co.modularaudio.service.library.impl.LibraryServiceImpl" init-method="init" destroy-method="destroy">
 		<property name="hibernateSessionService"><ref bean="hibernateSessionService"></ref></property>
 	</bean>
