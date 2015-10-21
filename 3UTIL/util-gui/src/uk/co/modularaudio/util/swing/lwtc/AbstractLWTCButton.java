@@ -28,7 +28,6 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 
@@ -38,16 +37,7 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 {
 	private static final long serialVersionUID = -7622401208667882019L;
 
-//	private static Log log = LogFactory.getLog( AbstractMadButton.class.getName() );
-
-	protected enum MadButtonState
-	{
-		OUT_NO_MOUSE,
-		OUT_MOUSE,
-		IN_NO_MOUSE,
-		IN_MOUSE,
-		NUM_STATES
-	};
+//	private static Log log = LogFactory.getLog( AbstractLWTCButton.class.getName() );
 
 	private static final int OUTLINE_ARC_WIDTH = 6;
 	private static final int OUTLINE_ARC_HEIGHT = OUTLINE_ARC_WIDTH;
@@ -57,9 +47,6 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 
 	protected final LWTCButtonColours colours;
 
-	protected MadButtonState pushedState = MadButtonState.OUT_NO_MOUSE;
-
-	protected LWTCButtonStateColours[] coloursForState;
 	protected GradientPaint[] gradientPaintsForState;
 
 	protected String text = "";
@@ -67,24 +54,20 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 	protected int fontHeight = 0;
 	protected FontMetrics fm;
 
+	protected boolean isPushed;
+	protected boolean currentlyFocused;
+	protected boolean mouseEntered;
+
 	public AbstractLWTCButton( final LWTCButtonColours colours )
 	{
 		this( colours, null );
 	}
 
-	public AbstractLWTCButton( final LWTCButtonColours colours, final String textContent )
+	public AbstractLWTCButton( final LWTCButtonColours colours,
+			final String textContent )
 	{
 		setUI( LWTCLookAndFeelHelper.getInstance().getComponentUi( this ) );
 		this.colours = colours;
-
-		this.coloursForState = new LWTCButtonStateColours[MadButtonState.NUM_STATES.ordinal()];
-		this.gradientPaintsForState = new GradientPaint[MadButtonState.NUM_STATES.ordinal()];
-		for( int i = 0 ; i < MadButtonState.NUM_STATES.ordinal() ; ++i )
-		{
-			final LWTCButtonStateColours stateColours = colours.getButtonColoursForState( MadButtonState.values()[i] );
-			coloursForState[i] = stateColours;
-			gradientPaintsForState[i] = null;
-		}
 
 		this.text = textContent;
 		setOpaque( false );
@@ -96,11 +79,8 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 
 		setFocusable( true );
 
-		this.addMouseListener( getMouseListener() );
 		this.addFocusListener( this );
 	}
-
-	protected abstract MouseListener getMouseListener();
 
 	private final void paintButton( final Graphics2D g2d,
 			final LWTCButtonStateColours stateColours,
@@ -121,7 +101,7 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 		g2d.drawLine( 2, 1, width-3, 1 );
 
 		// Focus outline
-		if( hasFocus() )
+		if( currentlyFocused )
 		{
 			g2d.setColor( stateColours.getFocus() );
 			g2d.drawRect( 5, 5, width-11, height-11 );
@@ -154,11 +134,11 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 
 //		log.debug("Paint called we are in state " + pushedState.toString() );
 
-		final int stateIndex = pushedState.ordinal();
+		final LWTCButtonStateColours stateColours =
+				colours.getButtonColoursForState( isPushed, mouseEntered, currentlyFocused );
 
-		final LWTCButtonStateColours stateColours = coloursForState[ stateIndex ];
-
-		GradientPaint gpGrad = gradientPaintsForState[ stateIndex ];
+		GradientPaint gpGrad =
+				colours.getGradientPaintForState( isPushed, mouseEntered, currentlyFocused );
 
 		if( gpGrad == null )
 		{
@@ -166,7 +146,6 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 					stateColours.getContentGradStart(),
 					0, height,
 					stateColours.getContentGradEnd() );
-			gradientPaintsForState[ stateIndex ] = gpGrad;
 		}
 
 		paintButton( g2d,
@@ -178,14 +157,22 @@ public abstract class AbstractLWTCButton extends JPanel implements FocusListener
 	@Override
 	public void focusGained( final FocusEvent fe )
 	{
-//		log.debug("Gained focus repaint");
+//		log.trace("Received focus gain");
+		if( !currentlyFocused )
+		{
+			currentlyFocused = true;
+		}
 		repaint();
 	}
 
 	@Override
 	public void focusLost( final FocusEvent fe )
 	{
-//		log.debug("Lost focus repaint");
+//		log.trace("Received focus lost");
+		if( currentlyFocused )
+		{
+			currentlyFocused = false;
+		}
 		repaint();
 	}
 }

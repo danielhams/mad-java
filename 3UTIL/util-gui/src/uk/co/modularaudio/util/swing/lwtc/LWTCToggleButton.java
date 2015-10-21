@@ -22,19 +22,135 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public abstract class LWTCToggleButton extends AbstractLWTCButton implements MouseListener
+public abstract class LWTCToggleButton extends AbstractLWTCButton
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
-	private static Log log = LogFactory.getLog( LWTCToggleButton.class.getName() );
+//	private static Log log = LogFactory.getLog( LWTCToggleButton.class.getName() );
+
+	private class ToggleButtonMouseListener implements MouseListener, MouseMotionListener
+	{
+		private boolean pushedStateBeforeDrag;
+
+		public ToggleButtonMouseListener( final boolean defaultPushedState )
+		{
+			this.pushedStateBeforeDrag = defaultPushedState;
+		}
+
+		@Override
+		public void mouseDragged( final MouseEvent e )
+		{
+			if( !isImmediate )
+			{
+				if( isPushed )
+				{
+					if( !contains( e.getPoint() ) )
+					{
+						isPushed = false;
+						repaint();
+					}
+				}
+				else
+				{
+					if( contains( e.getPoint() ) )
+					{
+						isPushed = true;
+						repaint();
+					}
+				}
+			}
+		}
+
+		@Override
+		public void mouseMoved( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void mouseClicked( final MouseEvent e )
+		{
+		}
+
+		@Override
+		public void mousePressed( final MouseEvent me )
+		{
+			if( me.getButton() == MouseEvent.BUTTON1 )
+			{
+				if( !hasFocus() )
+				{
+					requestFocusInWindow();
+				}
+
+				pushedStateBeforeDrag = isPushed;
+				isPushed = !pushedStateBeforeDrag;
+				if( isImmediate )
+				{
+					setSelected( isPushed );
+				}
+
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseReleased( final MouseEvent me )
+		{
+			if( me.getButton() == MouseEvent.BUTTON1 )
+			{
+				if( !isImmediate )
+				{
+					if( contains( me.getPoint() ) )
+					{
+						isPushed = !pushedStateBeforeDrag;
+						setSelected( isPushed );
+					}
+					else
+					{
+						isPushed = pushedStateBeforeDrag;
+					}
+				}
+
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseEntered( final MouseEvent me )
+		{
+			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+			if( (me.getModifiersEx() & onmask) != onmask )
+			{
+				if( !mouseEntered )
+				{
+					mouseEntered = true;
+				}
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseExited( final MouseEvent me )
+		{
+			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+			if( (me.getModifiersEx() & onmask) != onmask )
+			{
+				if( mouseEntered )
+				{
+					mouseEntered = false;
+				}
+				repaint();
+				me.consume();
+			}
+		}
+	};
 
 	protected boolean isImmediate;
-
-	protected boolean isOn;
+	protected boolean isSelected;
 
 	public LWTCToggleButton( final LWTCButtonColours colours,
 			final String text,
@@ -43,31 +159,35 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 	{
 		super( colours, text );
 		this.isImmediate = isImmediate;
-		pushedState = (defaultValue ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
-		isOn = defaultValue;
+		isSelected = defaultValue;
+		isPushed = isSelected;
+
+		final ToggleButtonMouseListener tbml = new ToggleButtonMouseListener( isSelected );
+		addMouseListener( tbml );
+		addMouseMotionListener( tbml );
 	}
 
-	public void setSelected( final boolean selected )
+	public void setSelected( final boolean newSelected )
 	{
-		final boolean previousValue = isOn;
-		setSelectedNoPropogate( selected );
-		receiveUpdateEvent( previousValue, isOn );
+		final boolean previousValue = isSelected;
+		setSelectedNoPropogate( newSelected );
+		receiveUpdateEvent( previousValue, newSelected );
 	}
 
-	public void setSelectedNoPropogate( final boolean selected )
+	public void setSelectedNoPropogate( final boolean newSelected )
 	{
-		isOn = selected;
-		setupPushedState();
+		isSelected = newSelected;
+		isPushed = newSelected;
 	}
 
 	public boolean isSelected()
 	{
-		return isOn;
+		return isSelected;
 	}
 
 	public String getControlValue()
 	{
-		return Boolean.toString( isOn );
+		return Boolean.toString( isSelected );
 	}
 
 	public void receiveControlValue( final String strValue )
@@ -75,190 +195,6 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton implements Mou
 		setSelected( Boolean.parseBoolean( strValue ) );
 	}
 
-	private void setupPushedState()
-	{
-		switch( pushedState )
-		{
-			case IN_NO_MOUSE:
-			case OUT_NO_MOUSE:
-			{
-				pushedState = (isOn ? MadButtonState.IN_NO_MOUSE : MadButtonState.OUT_NO_MOUSE );
-				break;
-			}
-			case IN_MOUSE:
-			case OUT_MOUSE:
-			default:
-			{
-				pushedState = (isOn ? MadButtonState.IN_MOUSE : MadButtonState.OUT_MOUSE );
-				break;
-			}
-		}
-	}
-
 	public abstract void receiveUpdateEvent( boolean previousValue, boolean newValue );
 
-	@Override
-	public MouseListener getMouseListener()
-	{
-		return this;
-	}
-
-	@Override
-	public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
-	{
-		// Do nothing
-	}
-
-	@Override
-	public void mouseEntered( final MouseEvent me )
-	{
-		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-	    if( (me.getModifiersEx() & onmask) != onmask)
-	    {
-			switch( pushedState )
-			{
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "menter oops - state issue - pushed state is " +
-							pushedState.name() );
-				}
-			}
-			repaint();
-			me.consume();
-	    }
-	}
-
-	@Override
-	public void mouseExited( final MouseEvent me )
-	{
-		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-	    if( (me.getModifiersEx() & onmask) != onmask)
-	    {
-			switch( pushedState )
-			{
-				case OUT_MOUSE:
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case IN_MOUSE:
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "mexit oops - state issue - pushed state is " +
-							pushedState.name() );
-				}
-			}
-			repaint();
-			me.consume();
-	    }
-	}
-
-	@Override
-	public void mousePressed( final MouseEvent me )
-	{
-		if( me.getButton() == MouseEvent.BUTTON1 )
-		{
-			switch( pushedState )
-			{
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					isOn = true;
-					break;
-				}
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					isOn = false;
-					break;
-				}
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					isOn = false;
-					break;
-				}
-				default:
-				{
-					log.error( "mpressed oops - state issue - pushed state is " +
-							pushedState.name() );
-				}
-			}
-			if( !hasFocus() )
-			{
-				requestFocusInWindow();
-			}
-
-			if( isImmediate )
-			{
-				doStateSwitch();
-			}
-	//		log.debug("mousePressed repaint");
-			repaint();
-			me.consume();
-		}
-	}
-
-	private void doStateSwitch()
-	{
-		// We only change state on press and stay in that
-		// state until next click
-		final boolean previousValue = isOn;
-		switch( pushedState )
-		{
-			case IN_MOUSE:
-			case IN_NO_MOUSE:
-			{
-				isOn = true;
-				break;
-			}
-			case OUT_MOUSE:
-			case OUT_NO_MOUSE:
-			default:
-			{
-				isOn = false;
-				break;
-			}
-		}
-		if( isOn != previousValue )
-		{
-			receiveUpdateEvent( previousValue, isOn );
-		}
-	}
-
-	@Override
-	public void mouseReleased( final MouseEvent me )
-	{
-		if( me.getButton() == MouseEvent.BUTTON1 )
-		{
-	//		log.debug("mouseReleased repaint");
-			if( !isImmediate )
-			{
-				doStateSwitch();
-			}
-			repaint();
-			me.consume();
-		}
-	}
 }
