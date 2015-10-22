@@ -142,17 +142,17 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 	}
 
 	private void fillInBuffersAndConnectedFlags( final HardwareIOChannelSettings planHardwareChannelSettings,
-			final MadRenderingJob renderingJob,
+			final AbstractMadParallelRenderingJob parallelRenderingJob,
 			final MadGraphInstance<?,?> graph,
 			final Map<MadChannelInstance, MadChannelBuffer> channelInstanceToBufferMap,
 			final Set<MadChannelBuffer> allChannelBuffersSet )
 		throws DatastoreException, RecordNotFoundException, MadProcessingException
 	{
-		final MadInstance<?,?> madInstance = renderingJob.getMadInstance();
+		final MadInstance<?,?> madInstance = parallelRenderingJob.getMadInstance();
 		final MadChannelInstance[] allAuChannelInstances = madInstance.getChannelInstances();
-		final MadChannelConnectedFlags channelActiveBitset = renderingJob.getChannelConnectedFlags();
+		final MadChannelConnectedFlags channelActiveBitset = parallelRenderingJob.getChannelConnectedFlags();
 
-		final MadChannelBuffer[] channelBufferArray = renderingJob.getChannelBuffers();
+		final MadChannelBuffer[] channelBufferArray = parallelRenderingJob.getChannelBuffers();
 
 		// Now loop around consumer and producer links to this component, filling in as necessary
 		final Collection<MadLink> producerLinks = graphService.getProducerInstanceLinks( graph, madInstance );
@@ -238,7 +238,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 
 		Collections.sort( allFlattenedJobs );
 
-		final Map<FlattenedRenderJob, MadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, MadParallelRenderingJob>();
+		final Map<FlattenedRenderJob, AbstractMadParallelRenderingJob> flatToParallelJobMap = new HashMap<FlattenedRenderJob, AbstractMadParallelRenderingJob>();
 		// Places we keep track of all, initial and final jobs
 		// As we want to insert a FAN job at the front, and a SYNC job at the end.
 		final Set<RenderingJob> allJobSet = new HashSet<RenderingJob>();
@@ -261,16 +261,12 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		{
 			final MadInstance<?,?> madInstance = flatJob.getMadInstance();
 			allMadInstancesSet.add( madInstance );
-			final MadRenderingJob renderingJob = ( madInstance.hasQueueProcessing() ?
-					new MadRenderingJobWithEvents( madInstance ) :
-					new MadRenderingJobNoEvents( madInstance ) );
 
-			fillInBuffersAndConnectedFlags( planHardwareSettings,  renderingJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
+			final AbstractMadParallelRenderingJob parallelJob = ( madInstance.hasQueueProcessing() ?
+					new MadParallelRenderingJobWithEvents( flatJob.getCardinality(), timingSource, madInstance ) :
+					new MadParallelRenderingJobNoEvents( flatJob.getCardinality(), timingSource, madInstance ) );
 
-			final MadParallelRenderingJob parallelJob = new MadParallelRenderingJob(
-					flatJob.getCardinality(),
-					timingSource,
-					renderingJob );
+			fillInBuffersAndConnectedFlags( planHardwareSettings,  parallelJob,  graph,  channelInstanceToBufferMap,  allChannelBuffersSet );
 
 			flatToParallelJobMap.put( flatJob, parallelJob );
 
@@ -288,13 +284,13 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final Collection<FlattenedRenderJob> flatConsJobsWaitingForUs = flatJob.getConsumerJobsWaitingForUs();
 			final int numConsumersWaitForUs = flatConsJobsWaitingForUs.size();
 
-			final MadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );
+			final AbstractMadParallelRenderingJob parallelJob = flatToParallelJobMap.get( flatJob );
 
 			// Now look up the jobs waiting for us
 			final Set<RenderingJob> consJobsThatWaitForUsSet = new HashSet<RenderingJob>();
 			for( final FlattenedRenderJob flatConJobWaitingForUs : flatConsJobsWaitingForUs )
 			{
-				final MadParallelRenderingJob relatedParallelRenderJob = flatToParallelJobMap.get( flatConJobWaitingForUs );
+				final AbstractMadParallelRenderingJob relatedParallelRenderJob = flatToParallelJobMap.get( flatConJobWaitingForUs );
 				if( relatedParallelRenderJob == null )
 				{
 					throw new RecordNotFoundException( "Unable to find related parallel job for one waiting for us. Sort order incorrect maybe?");

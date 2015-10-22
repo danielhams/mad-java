@@ -27,32 +27,33 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class MadRenderingJobWithEvents extends AbstractMadRenderingJob
+public class MadParallelRenderingJobWithEvents extends AbstractMadParallelRenderingJob
 {
-	public MadRenderingJobWithEvents( final MadInstance<?,?> madInstance )
+	public MadParallelRenderingJobWithEvents( final int cardinality,
+			final MadTimingSource timingSource,
+			final MadInstance<?,?> madInstance )
 	{
-		super( madInstance );
+		super( cardinality, timingSource, madInstance );
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#go(uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage, uk.co.modularaudio.util.audio.mad.timing.MadTimingSource)
-	 */
 	@Override
-	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
-			final MadTimingSource timingSource )
+	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
 		errctx.reset();
 
 		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
 		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
 		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
-		final int numFrames = timingPeriodData.getNumFramesThisPeriod();
-
-		return madInstance.processWithEvents( tempQueueEntryStorage,
+		if( !errctx.andWith( madInstance.processWithEvents( tempQueueEntryStorage,
 				timingParameters,
 				periodTimestamp,
 				channelActiveBitset,
 				channelBuffers,
-				numFrames );
+				timingPeriodData.getNumFramesThisPeriod() ) ) )
+		{
+			return errctx.getCurRetCode();
+		}
+
+		return errctx.getCurRetCode();
 	}
 }

@@ -20,69 +20,64 @@
 
 package uk.co.modularaudio.service.renderingplan.impl;
 
+import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 import uk.co.modularaudio.util.thread.RealtimeMethodErrorContext;
 
-public abstract class AbstractMadRenderingJob implements MadRenderingJob
+public abstract class AbstractMadParallelRenderingJob extends AbstractRenderingJob
 {
-//	private static Log log = LogFactory.getLog( MadRenderingJob.class.getName() );
+	protected final MadTimingSource timingSource;
+	protected final int cardinality;
 
-	protected final String jobName;
 	protected final MadInstance<?,?> madInstance;
 	protected final MadChannelConnectedFlags channelActiveBitset;
 	protected final MadChannelBuffer[] channelBuffers;
 	protected final RealtimeMethodErrorContext errctx = new RealtimeMethodErrorContext();
 
-	public AbstractMadRenderingJob( final MadInstance<?,?> madInstance )
+	public AbstractMadParallelRenderingJob( final int cardinality,
+			final MadTimingSource timingSource,
+			final MadInstance<?,?> madInstance )
 	{
-		this.jobName = madInstance.getInstanceName() + " of type " + madInstance.getDefinition().getName();
+		super( madInstance.getInstanceName() + " of type " + madInstance.getDefinition().getName(),
+				null,
+				0 );
+		this.timingSource = timingSource;
+		this.cardinality = cardinality;
+
 		this.madInstance = madInstance;
 		final int numChannelInstances = madInstance.getChannelInstances().length;
 		channelBuffers = new MadChannelBuffer[ numChannelInstances ];
 		channelActiveBitset = new MadChannelConnectedFlags( numChannelInstances );
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getJobName()
-	 */
-	@Override
-	public String getJobName()
+	public void setDependencies( final RenderingJob[] consJobsThatWaitForUs,
+			final int numSourcesWeWaitFor )
 	{
-		return jobName;
+		this.consJobsThatWaitForUs = consJobsThatWaitForUs;
+		this.numProducersWeWaitFor = numSourcesWeWaitFor;
+		this.numProducersStillToComplete.set(numSourcesWeWaitFor);
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getMadInstance()
-	 */
-	@Override
+	public int getCardinality()
+	{
+		return cardinality;
+	}
+
 	public MadInstance<?,?> getMadInstance()
 	{
 		return madInstance;
 	}
 
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getChannelBuffers()
-	 */
-	@Override
-	public MadChannelBuffer[] getChannelBuffers()
-	{
-		return channelBuffers;
-	}
-
-	@Override
-	public String toString()
-	{
-		return madInstance.getInstanceName() + " of type " + madInstance.getDefinition().getName();
-	}
-
-	/* (non-Javadoc)
-	 * @see uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob#getChannelConnectedFlags()
-	 */
-	@Override
 	public MadChannelConnectedFlags getChannelConnectedFlags()
 	{
 		return channelActiveBitset;
+	}
+
+	public MadChannelBuffer[] getChannelBuffers()
+	{
+		return channelBuffers;
 	}
 }

@@ -20,48 +20,40 @@
 
 package uk.co.modularaudio.service.renderingplan.impl;
 
-import uk.co.modularaudio.service.renderingplan.RenderingJob;
+import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadChannelPeriodData;
+import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class MadParallelRenderingJob extends AbstractRenderingJob
+public class MadParallelRenderingJobNoEvents extends AbstractMadParallelRenderingJob
 {
-	private final MadTimingSource timingSource;
-	private final MadRenderingJob renderingJob;
-	private final int cardinality;
-
-	public MadParallelRenderingJob( final int cardinality,
+	public MadParallelRenderingJobNoEvents( final int cardinality,
 			final MadTimingSource timingSource,
-			final MadRenderingJob renderingJob )
+			final MadInstance<?,?> madInstance )
 	{
-		super( renderingJob.getJobName(), null, 0 );
-		this.timingSource = timingSource;
-		this.cardinality = cardinality;
-		this.renderingJob = renderingJob;
-	}
-
-	public void setDependencies( final RenderingJob[] consJobsThatWaitForUs,
-			final int numSourcesWeWaitFor )
-	{
-		this.consJobsThatWaitForUs = consJobsThatWaitForUs;
-		this.numProducersWeWaitFor = numSourcesWeWaitFor;
-		this.numProducersStillToComplete.set(numSourcesWeWaitFor);
-	}
-
-	public MadRenderingJob getRenderingJob()
-	{
-		return renderingJob;
+		super( cardinality, timingSource, madInstance );
 	}
 
 	@Override
 	public RealtimeMethodReturnCodeEnum go( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
 	{
-		return renderingJob.go( tempQueueEntryStorage, timingSource );
-	}
+		errctx.reset();
 
-	public int getCardinality()
-	{
-		return cardinality;
+		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
+		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
+		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
+		if( !errctx.andWith( madInstance.processNoEvents( tempQueueEntryStorage,
+				timingParameters,
+				periodTimestamp,
+				channelActiveBitset,
+				channelBuffers,
+				timingPeriodData.getNumFramesThisPeriod() ) ) )
+		{
+			return errctx.getCurRetCode();
+		}
+
+		return errctx.getCurRetCode();
 	}
 }

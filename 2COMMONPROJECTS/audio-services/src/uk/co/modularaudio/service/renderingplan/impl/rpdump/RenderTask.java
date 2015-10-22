@@ -24,8 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.renderingplan.RenderingJob;
-import uk.co.modularaudio.service.renderingplan.impl.MadParallelRenderingJob;
-import uk.co.modularaudio.service.renderingplan.impl.MadRenderingJob;
+import uk.co.modularaudio.service.renderingplan.impl.AbstractMadParallelRenderingJob;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -56,16 +55,15 @@ public class RenderTask implements Runnable
 	public void run()
 	{
 		final String renderJobName = parallelRenderingJob.toString();
-		if( parallelRenderingJob instanceof MadParallelRenderingJob )
+		if( parallelRenderingJob instanceof AbstractMadParallelRenderingJob )
 		{
-			final MadParallelRenderingJob prj = (MadParallelRenderingJob)parallelRenderingJob;
-			final MadRenderingJob auJob = prj.getRenderingJob();
-			final MadInstance<?,?> renderJobInstance = auJob.getMadInstance();
+			final AbstractMadParallelRenderingJob prj = (AbstractMadParallelRenderingJob)parallelRenderingJob;
+			final MadInstance<?,?> renderJobInstance = prj.getMadInstance();
 			try
 			{
 				final MadChannelInstance[] channelInstances = renderJobInstance.getChannelInstances();
 				final int numChannels = channelInstances.length;
-				final MadChannelConnectedFlags channelActiveBitset = auJob.getChannelConnectedFlags();
+				final MadChannelConnectedFlags channelActiveBitset = prj.getChannelConnectedFlags();
 				final StringBuilder bsBuffer = new StringBuilder();
 				for( int i = 0 ; i < numChannels ; i++ )
 				{
