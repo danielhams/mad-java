@@ -23,17 +23,118 @@ package uk.co.modularaudio.util.swing.lwtc;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-public abstract class LWTCButton extends AbstractLWTCButton implements MouseListener
+public abstract class LWTCButton extends AbstractLWTCButton
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
-	private static Log log = LogFactory.getLog( LWTCButton.class.getName() );
-
 	private final boolean isImmediate;
+
+	private class ButtonMouseListener implements MouseListener, MouseMotionListener
+	{
+		@Override
+		public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
+		{
+			// Do nothing
+		}
+
+		@Override
+		public void mouseEntered( final MouseEvent me )
+		{
+			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+			if( (me.getModifiersEx() & onmask) != onmask )
+			{
+				if( !mouseEntered )
+				{
+					mouseEntered = true;
+				}
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseExited( final MouseEvent me )
+		{
+			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
+			if( (me.getModifiersEx() & onmask) != onmask )
+			{
+				if( mouseEntered )
+				{
+					mouseEntered = false;
+				}
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mousePressed( final MouseEvent me )
+		{
+			if( me.getButton() == MouseEvent.BUTTON1 )
+			{
+				if( !isPushed )
+				{
+					isPushed = true;
+				}
+				if( !hasFocus() )
+				{
+					requestFocusInWindow();
+				}
+				if( isImmediate )
+				{
+					receiveClick();
+				}
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseReleased( final MouseEvent me )
+		{
+			if( me.getButton() == MouseEvent.BUTTON1 )
+			{
+				if( contains( me.getPoint() ) && isPushed )
+				{
+					isPushed = false;
+					if( !isImmediate )
+					{
+						receiveClick();
+					}
+				}
+				repaint();
+				me.consume();
+			}
+		}
+
+		@Override
+		public void mouseDragged( final MouseEvent e )
+		{
+			if( isPushed )
+			{
+				if( !contains( e.getPoint() ) )
+				{
+					isPushed = false;
+					repaint();
+				}
+			}
+			else
+			{
+				if( contains( e.getPoint() ) )
+				{
+					isPushed = true;
+					repaint();
+				}
+			}
+		}
+
+		@Override
+		public void mouseMoved( final MouseEvent e )
+		{
+		}
+	};
 
 	public LWTCButton( final LWTCButtonColours colours, final String text,
 			final boolean isImmediate )
@@ -48,6 +149,10 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 		final Dimension minSize = new Dimension( minWidth, minHeight );
 
 		this.setMinimumSize( minSize );
+
+		final ButtonMouseListener ml = new ButtonMouseListener();
+		this.addMouseListener( ml );
+		this.addMouseMotionListener( ml );
 	}
 
 	public String getControlValue() // NOPMD by dan on 27/04/15 12:22
@@ -61,156 +166,4 @@ public abstract class LWTCButton extends AbstractLWTCButton implements MouseList
 
 	public abstract void receiveClick();
 
-	@Override
-	public MouseListener getMouseListener()
-	{
-		return this;
-	}
-
-	@Override
-	public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
-	{
-		// Do nothing
-	}
-
-	@Override
-	public void mouseEntered( final MouseEvent me )
-	{
-		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-	    if( (me.getModifiersEx() & onmask) != onmask)
-	    {
-			switch( pushedState )
-			{
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
-			}
-			repaint();
-			me.consume();
-	    }
-	}
-
-	@Override
-	public void mouseExited( final MouseEvent me )
-	{
-		final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-	    if( (me.getModifiersEx() & onmask) != onmask) {
-			switch( pushedState )
-			{
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
-			}
-			repaint();
-			me.consume();
-	    }
-	}
-
-	@Override
-	public void mousePressed( final MouseEvent me )
-	{
-		if( me.getButton() == MouseEvent.BUTTON1 )
-		{
-			switch( pushedState )
-			{
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
-			}
-			if( !hasFocus() )
-			{
-				requestFocusInWindow();
-			}
-			repaint();
-			if( isImmediate )
-			{
-				receiveClick();
-			}
-			me.consume();
-		}
-	}
-
-	@Override
-	public void mouseReleased( final MouseEvent me )
-	{
-		if( me.getButton() == MouseEvent.BUTTON1 )
-		{
-			switch( pushedState )
-			{
-				case IN_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_MOUSE;
-					break;
-				}
-				case IN_NO_MOUSE:
-				{
-					pushedState = MadButtonState.OUT_NO_MOUSE;
-					break;
-				}
-				case OUT_MOUSE:
-				{
-					pushedState = MadButtonState.IN_MOUSE;
-					break;
-				}
-				case OUT_NO_MOUSE:
-				{
-					pushedState = MadButtonState.IN_NO_MOUSE;
-					break;
-				}
-				default:
-				{
-					log.error( "Oops - state issue" );
-				}
-			}
-			repaint();
-			if( !isImmediate )
-			{
-				receiveClick();
-			}
-			me.consume();
-		}
-	}
 }

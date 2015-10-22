@@ -20,9 +20,15 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
-import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
+import java.awt.GradientPaint;
 
 public interface LWTCButtonColours
 {
-	LWTCButtonStateColours getButtonColoursForState( MadButtonState state );
+	LWTCButtonStateColours getButtonColoursForState( boolean isPushed,
+			boolean mouseEntered,
+			boolean currentlyFocused );
+
+	GradientPaint getGradientPaintForState( boolean isPushed,
+			boolean mouseEntered,
+			boolean currentlyFocused );
 }

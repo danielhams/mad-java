@@ -8,7 +8,10 @@
     </Console>
   </Appenders>
   <Loggers>
+    <!--
     <Logger name="test.uk.co.modularaudio" level="DEBUG"/>
+    -->
+    <Logger name="test.uk.co.modularaudio" level="TRACE"/>
     <Root level="ERROR">
       <AppenderRef ref="Console"/>
     </Root>

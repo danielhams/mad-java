@@ -22,8 +22,8 @@ package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 
-import uk.co.modularaudio.util.swing.lwtc.AbstractLWTCButton.MadButtonState;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderViewColors;
 import uk.co.modularaudio.util.swing.mvc.rotarydisplay.RotaryViewColors;
 
@@ -342,347 +342,399 @@ public class LWTCControlConstants
 
 	public static class StdButtonColours implements LWTCButtonColours
 	{
-		private final LWTCButtonStateColours[] stateToColoursMap;
+		// Not pressed, no mouse
+		private final LWTCButtonStateColours npnmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_OUT_HILIGHT;
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_UNSELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_START;
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_END;
+			}
+		};
+
+		// Not pressed, mouse
+		private final LWTCButtonStateColours npwmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_OUT_HILIGHT.brighter();
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_UNSELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_START.brighter();
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_END.brighter();
+			}
+		};
+
+		// Is pushed, no mouse
+		private final LWTCButtonStateColours ipnmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_IN_HILIGHT.brighter();
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_SELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_IN_GRAD_START.brighter();
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_IN_GRAD_END.brighter();
+			}
+		};
+
+		// Is pushed, mouse
+		private final LWTCButtonStateColours ipwmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_IN_HILIGHT;
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_SELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_IN_GRAD_START;
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_IN_GRAD_END;
+			}
+		};
 
 		public StdButtonColours()
 		{
-			stateToColoursMap = new LWTCButtonStateColours[ MadButtonState.values().length ];
-
-			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_OUT_HILIGHT;
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_UNSELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_START;
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_END;
-				}
-			};
-			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_OUT_HILIGHT.brighter();
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_UNSELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_START.brighter();
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_END.brighter();
-				}
-			};
-			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_IN_HILIGHT;
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_SELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_IN_GRAD_START;
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_IN_GRAD_END;
-				}
-			};
-			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_IN_HILIGHT.brighter();
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_SELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_IN_GRAD_START.brighter();
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_IN_GRAD_END.brighter();
-				}
-			};
 		}
 
 		@Override
-		public LWTCButtonStateColours getButtonColoursForState( final MadButtonState state )
+		public LWTCButtonStateColours getButtonColoursForState( final boolean isPushed, final boolean mouseEntered,
+				final boolean currentlyFocused )
 		{
-			return stateToColoursMap[ state.ordinal() ];
+			if( isPushed )
+			{
+				if( mouseEntered )
+				{
+					return ipwmnf;
+				}
+				else
+				{
+					return ipnmnf;
+				}
+			}
+			else
+			{
+				if( mouseEntered )
+				{
+					return npwmnf;
+				}
+				else
+				{
+					return npnmnf;
+				}
+			}
+		}
+
+		@Override
+		public GradientPaint getGradientPaintForState( final boolean isPushed, final boolean mouseEntered, final boolean currentlyFocused )
+		{
+			return null;
 		}
 	};
 
 	public static class StdToggleButtonColours implements LWTCButtonColours
 	{
-		private final LWTCButtonStateColours[] stateToColoursMap;
+		private final LWTCButtonStateColours npnmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_OUT_HILIGHT;
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_UNSELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_START;
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_END;
+			}
+		};
+
+		private final LWTCButtonStateColours npwmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_OUT_HILIGHT.brighter();
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_UNSELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_START.brighter();
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_BUTTON_OUT_GRAD_END.brighter();
+			}
+		};
+
+		private final LWTCButtonStateColours ipnmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_IN_HILIGHT.brighter();
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_SELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_FLAT_BACKGROUND;
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_FLAT_BACKGROUND;
+			}
+		};
+
+		private final LWTCButtonStateColours ipwmnf = new LWTCButtonStateColours()
+		{
+			@Override
+			public Color getHighlight()
+			{
+				return CONTROL_BUTTON_IN_HILIGHT;
+			}
+
+			@Override
+			public Color getForegroundText()
+			{
+				return CONTROL_FOREGROUND_TEXT_SELECTED;
+			}
+
+			@Override
+			public Color getFocus()
+			{
+				return CONTROL_FOCUS;
+			}
+
+			@Override
+			public Color getControlOutline()
+			{
+				return CONTROL_OUTLINE;
+			}
+
+			@Override
+			public Color getContentGradStart()
+			{
+				return CONTROL_FLAT_BACKGROUND;
+			}
+
+			@Override
+			public Color getContentGradEnd()
+			{
+				return CONTROL_FLAT_BACKGROUND;
+			}
+		};
 
 		public StdToggleButtonColours()
 		{
-			stateToColoursMap = new LWTCButtonStateColours[ MadButtonState.values().length ];
-
-			stateToColoursMap[ MadButtonState.OUT_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_OUT_HILIGHT;
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_UNSELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_START;
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_END;
-				}
-			};
-			stateToColoursMap[ MadButtonState.OUT_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_OUT_HILIGHT.brighter();
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_UNSELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_START.brighter();
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_BUTTON_OUT_GRAD_END.brighter();
-				}
-			};
-			stateToColoursMap[ MadButtonState.IN_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_IN_HILIGHT;
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_SELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_FLAT_BACKGROUND;
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_FLAT_BACKGROUND;
-				}
-			};
-			stateToColoursMap[ MadButtonState.IN_NO_MOUSE.ordinal() ] = new LWTCButtonStateColours()
-			{
-
-				@Override
-				public Color getHighlight()
-				{
-					return CONTROL_BUTTON_IN_HILIGHT.brighter();
-				}
-
-				@Override
-				public Color getForegroundText()
-				{
-					return CONTROL_FOREGROUND_TEXT_SELECTED;
-				}
-
-				@Override
-				public Color getFocus()
-				{
-					return CONTROL_FOCUS;
-				}
-
-				@Override
-				public Color getControlOutline()
-				{
-					return CONTROL_OUTLINE;
-				}
-
-				@Override
-				public Color getContentGradStart()
-				{
-					return CONTROL_FLAT_BACKGROUND;
-				}
-
-				@Override
-				public Color getContentGradEnd()
-				{
-					return CONTROL_FLAT_BACKGROUND;
-				}
-			};
 		}
 
 		@Override
-		public LWTCButtonStateColours getButtonColoursForState( final MadButtonState state )
+		public LWTCButtonStateColours getButtonColoursForState( final boolean isPushed, final boolean mouseEntered,
+				final boolean currentlyFocused )
 		{
-			return stateToColoursMap[ state.ordinal() ];
+			if( isPushed )
+			{
+				if( mouseEntered )
+				{
+					return ipwmnf;
+				}
+				else
+				{
+					return ipnmnf;
+				}
+			}
+			else
+			{
+				if( mouseEntered )
+				{
+					return npwmnf;
+				}
+				else
+				{
+					return npnmnf;
+				}
+			}
+		}
+
+		@Override
+		public GradientPaint getGradientPaintForState( final boolean isPushed, final boolean mouseEntered, final boolean currentlyFocused )
+		{
+			return null;
 		}
 	}
 
@@ -785,5 +837,5 @@ public class LWTCControlConstants
 					ILABELCOLOR,
 					IUNITSCOLOR );
 		}
-	};
+	}
 }

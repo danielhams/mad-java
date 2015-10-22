@@ -64,7 +64,7 @@ public class FrequencyFilterDbToggleUiJComponent extends LWTCToggleButton
 	@Override
 	public void receiveUpdateEvent( final boolean previousValue, final boolean newValue )
 	{
-		uiInstance.send24dBChange( this.isSelected() );
+		uiInstance.send24dBChange( newValue );
 	}
 
 	@Override
