@@ -21,6 +21,8 @@
 package uk.co.modularaudio.util.swing.lwtc;
 
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -29,16 +31,12 @@ public abstract class LWTCButton extends AbstractLWTCButton
 {
 	private static final long serialVersionUID = -2594637398951298132L;
 
+//	private static Log log = LogFactory.getLog( LWTCButton.class.getName() );
+
 	private final boolean isImmediate;
 
 	private class ButtonMouseListener implements MouseListener, MouseMotionListener
 	{
-		@Override
-		public void mouseClicked( final MouseEvent me ) // NOPMD by dan on 27/04/15 12:23
-		{
-			// Do nothing
-		}
-
 		@Override
 		public void mouseEntered( final MouseEvent me )
 		{
@@ -131,10 +129,72 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseMoved( final MouseEvent e )
-		{
-		}
+		public void mouseClicked( final MouseEvent me ) {} // NOPMD by dan on 27/04/15 12:23
+
+		@Override
+		public void mouseMoved( final MouseEvent e ) {} // NOPMD by dan on 27/04/15 12:23
 	};
+
+	private class ButtonKeyListener implements KeyListener
+	{
+		@Override
+		public void keyPressed( final KeyEvent ke )
+		{
+			final int keyCode = ke.getKeyCode();
+			final int modMask = ke.getModifiers();
+
+			if( modMask != 0 )
+			{
+				return;
+			}
+			switch( keyCode )
+			{
+				case KeyEvent.VK_SPACE:
+				case KeyEvent.VK_ENTER:
+				{
+					isPushed = true;
+					repaint();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			ke.consume();
+		}
+
+		@Override
+		public void keyReleased( final KeyEvent ke )
+		{
+			final int keyCode = ke.getKeyCode();
+			final int modMask = ke.getModifiers();
+
+			if( modMask != 0 )
+			{
+				return;
+			}
+			switch( keyCode )
+			{
+				case KeyEvent.VK_SPACE:
+				case KeyEvent.VK_ENTER:
+				{
+					isPushed = false;
+					receiveClick();
+					repaint();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			ke.consume();
+		}
+
+		@Override
+		public void keyTyped( final KeyEvent me ) {} // NOPMD by dan on 27/04/15 12:23
+	}
 
 	public LWTCButton( final LWTCButtonColours colours, final String text,
 			final boolean isImmediate )
@@ -153,6 +213,9 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		final ButtonMouseListener ml = new ButtonMouseListener();
 		this.addMouseListener( ml );
 		this.addMouseMotionListener( ml );
+
+		final ButtonKeyListener kl = new ButtonKeyListener();
+		this.addKeyListener( kl );
 	}
 
 	public String getControlValue() // NOPMD by dan on 27/04/15 12:22

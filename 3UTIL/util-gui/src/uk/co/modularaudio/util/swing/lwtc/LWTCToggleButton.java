@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.swing.lwtc;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -134,19 +136,89 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseExited( final MouseEvent me )
+		public void mouseExited( final MouseEvent ke )
 		{
 			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-			if( (me.getModifiersEx() & onmask) != onmask )
+			if( (ke.getModifiersEx() & onmask) != onmask )
 			{
 				if( mouseEntered )
 				{
 					mouseEntered = false;
 				}
 				repaint();
-				me.consume();
+				ke.consume();
 			}
 		}
+	};
+
+	private class ButtonKeyListener implements KeyListener
+	{
+		@Override
+		public void keyPressed( final KeyEvent me )
+		{
+			final int keyCode = me.getKeyCode();
+			final int modMask = me.getModifiers();
+
+			if( modMask != 0 )
+			{
+				return;
+			}
+			switch( keyCode )
+			{
+				case KeyEvent.VK_SPACE:
+				case KeyEvent.VK_ENTER:
+				{
+					final boolean previousValue = isPushed;
+					isPushed = !previousValue;
+					if( isImmediate )
+					{
+						setSelected( isPushed );
+					}
+
+					repaint();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			me.consume();
+		}
+
+		@Override
+		public void keyReleased( final KeyEvent ke )
+		{
+			final int keyCode = ke.getKeyCode();
+			final int modMask = ke.getModifiers();
+
+			if( modMask != 0 )
+			{
+				return;
+			}
+			switch( keyCode )
+			{
+				case KeyEvent.VK_SPACE:
+				case KeyEvent.VK_ENTER:
+				{
+					if( !isImmediate )
+					{
+						setSelected( isPushed );
+					}
+
+					repaint();
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			ke.consume();
+		}
+
+		@Override
+		public void keyTyped( final KeyEvent me ) {} // NOPMD by dan on 27/04/15 12:23
 	};
 
 	protected boolean isImmediate;
@@ -165,6 +237,9 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		final ToggleButtonMouseListener tbml = new ToggleButtonMouseListener( isSelected );
 		addMouseListener( tbml );
 		addMouseMotionListener( tbml );
+
+		final ButtonKeyListener kl = new ButtonKeyListener();
+		addKeyListener( kl );
 	}
 
 	public void setSelected( final boolean newSelected )
