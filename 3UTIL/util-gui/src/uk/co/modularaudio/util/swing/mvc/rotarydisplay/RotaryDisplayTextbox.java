@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.util.swing.mvc.rotarydisplay;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -105,10 +104,6 @@ public class RotaryDisplayTextbox extends JPanel implements ValueChangeListener,
 		model.addChangeListener( this );
 
 		textField.addActionListener( this );
-
-		this.validate();
-		final Dimension minimumSize = this.getPreferredSize();
-		this.setMinimumSize( minimumSize );
 	}
 
 	private void extractModelVars( final RotaryDisplayModel model )

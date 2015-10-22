@@ -41,7 +41,10 @@ import uk.co.modularaudio.mads.base.scopen.ui.ScopeNMadUiInstance;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNSampleRateListener;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.mad.MadInstance.InstanceLifecycleListener;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.LogarithmicTimeMillis1To1000SliderModel;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
@@ -50,7 +53,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	I extends ScopeNMadInstance<D, I>,
 	U extends ScopeNMadUiInstance<D, I>>
 	extends JPanel
-	implements ScopeNDataVisualiser, ScopeNCaptureLengthListener, ScopeNSampleRateListener
+	implements ScopeNDataVisualiser, ScopeNCaptureLengthListener, ScopeNSampleRateListener, InstanceLifecycleListener
 {
 	private static final long serialVersionUID = 3612260008902851339L;
 
@@ -138,11 +141,10 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		uiInstance.addCaptureLengthListener( this );
 		uiInstance.setScopeDataVisualiser( this );
 
-		setupInternalChannelBuffers();
-
 		Arrays.fill( signalVisibility, true );
 
 		uiInstance.addSampleRateListener(this);
+		uiInstance.getInstance().addLifecycleListener( this );
 	}
 
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
@@ -428,4 +430,15 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 		repaint();
 	}
 
+	@Override
+	public void receiveStartup( final HardwareIOChannelSettings hardwareChannelSettings,
+			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
+	{
+		setupInternalChannelBuffers();
+	}
+
+	@Override
+	public void receiveStop()
+	{
+	}
 }

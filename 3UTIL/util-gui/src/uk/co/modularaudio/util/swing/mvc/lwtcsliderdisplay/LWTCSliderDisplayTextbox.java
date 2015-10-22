@@ -105,10 +105,6 @@ public class LWTCSliderDisplayTextbox extends JPanel implements ValueChangeListe
 		model.addChangeListener( this );
 
 		textField.addActionListener( this );
-
-		this.validate();
-		final Dimension minimumSize = this.getPreferredSize();
-		this.setMinimumSize( minimumSize );
 	}
 
 	private void extractModelVars( final SliderDisplayModel model )
