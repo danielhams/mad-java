@@ -46,8 +46,6 @@ public class RackMasterIOComponentsFactory
 {
 	private static Log log = LogFactory.getLog( RackMasterIOComponentsFactory.class.getName() );
 
-	private final RackMasterIOCreationContext creationContext = new RackMasterIOCreationContext();
-
 	private MadClassificationService classificationService;
 	private MadComponentService componentService;
 
@@ -78,8 +76,7 @@ public class RackMasterIOComponentsFactory
 		}
 		else
 		{
-			return new RackMasterIOMadInstance( creationContext,
-					instanceName,
+			return new RackMasterIOMadInstance( instanceName,
 					rmDef,
 					parameterValues,
 					rmDef.getChannelConfigurationForParameters( parameterValues ) );
@@ -103,7 +100,7 @@ public class RackMasterIOComponentsFactory
 
 		try
 		{
-			rmDef = new RackMasterIOMadDefinition( creationContext, classificationService );
+			rmDef = new RackMasterIOMadDefinition( classificationService );
 			mds.add( rmDef );
 
 			componentService.registerComponentFactory( this );

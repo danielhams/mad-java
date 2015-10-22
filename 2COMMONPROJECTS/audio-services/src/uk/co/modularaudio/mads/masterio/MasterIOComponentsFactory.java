@@ -50,8 +50,6 @@ public class MasterIOComponentsFactory
 	private MadClassificationService classificationService;
 	private MadComponentService componentService;
 
-	private final MasterIOComponentsCreationContext creationContext = new MasterIOComponentsCreationContext();
-
 	private MasterInMadDefinition inMd;
 	private MasterOutMadDefinition outMd;
 
@@ -101,11 +99,11 @@ public class MasterIOComponentsFactory
 
 		try
 		{
-			inMd = new MasterInMadDefinition( creationContext, classificationService );
+			inMd = new MasterInMadDefinition( classificationService );
 			mds.add( inMd );
 			defIdToImd.put( MasterInMadDefinition.DEFINITION_ID, inMd );
 
-			outMd = new MasterOutMadDefinition( creationContext, classificationService );
+			outMd = new MasterOutMadDefinition( classificationService );
 			mds.add( outMd );
 			defIdToImd.put( MasterOutMadDefinition.DEFINITION_ID, outMd );
 

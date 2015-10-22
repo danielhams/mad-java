@@ -22,7 +22,6 @@ package uk.co.modularaudio.mads.masterio.mu;
 
 import java.util.Map;
 
-import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
 import uk.co.modularaudio.mads.masterio.MasterIOMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
@@ -53,10 +52,8 @@ public class MasterInMadDefinition
 	public final static IOMadConfiguration CHAN_CONFIG = new IOMadConfiguration( NUM_AUDIO_CHANNELS,
 			NUM_NOTE_CHANNELS, MadChannelDirection.PRODUCER );
 
-	private final MasterIOComponentsCreationContext creationContext;
-
-	public MasterInMadDefinition( final MasterIOComponentsCreationContext creationContext,
-			final MadClassificationService classificationService ) throws RecordNotFoundException, DatastoreException
+	public MasterInMadDefinition( final MadClassificationService classificationService )
+			throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID,
 				USER_VISIBLE_NAME,
@@ -71,14 +68,12 @@ public class MasterInMadDefinition
 				CHAN_CONFIG.getChannelTypes(),
 				CHAN_CONFIG.getChannelDirections(),
 				CHAN_CONFIG.getChannelPositions() );
-		this.creationContext = creationContext;
 	}
 
 	@Override
 	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
 	{
 		return new MasterInMadInstance(
-				creationContext,
 				instanceName,
 				this,
 				parameterValues,

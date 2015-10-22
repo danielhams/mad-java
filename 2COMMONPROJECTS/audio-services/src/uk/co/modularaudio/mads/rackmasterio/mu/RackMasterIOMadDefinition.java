@@ -20,7 +20,6 @@
 
 package uk.co.modularaudio.mads.rackmasterio.mu;
 
-import uk.co.modularaudio.mads.rackmasterio.RackMasterIOCreationContext;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
@@ -163,8 +162,7 @@ public class RackMasterIOMadDefinition  extends AbstractNonConfigurableMadDefini
 	private final static String CLASS_NAME = "Rack MasterIO";
 	private final static String CLASS_DESC = "Internal component used to represent the IO channels available inside a rack";
 
-	public RackMasterIOMadDefinition( final RackMasterIOCreationContext creationContext,
-			final MadClassificationService classificationService )
+	public RackMasterIOMadDefinition( final MadClassificationService classificationService )
 		throws RecordNotFoundException, DatastoreException
 	{
 		super( DEFINITION_ID, USER_VISIBLE_NAME,

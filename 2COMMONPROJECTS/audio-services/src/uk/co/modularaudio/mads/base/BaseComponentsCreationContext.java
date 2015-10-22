@@ -21,21 +21,20 @@
 package uk.co.modularaudio.mads.base;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorFactory;
 
-public class BaseComponentsCreationContext extends MadCreationContext
+public class BaseComponentsCreationContext
 {
 	private final AdvancedComponentsFrontController advancedComponentsFrontController;
 	private final OscillatorFactory oscillatorFactory;
 
-	public BaseComponentsCreationContext( AdvancedComponentsFrontController advancedComponentsFrontController,
-			OscillatorFactory oscillatorFactory )
+	public BaseComponentsCreationContext( final AdvancedComponentsFrontController advancedComponentsFrontController,
+			final OscillatorFactory oscillatorFactory )
 	{
 		this.advancedComponentsFrontController = advancedComponentsFrontController;
 		this.oscillatorFactory = oscillatorFactory;
 	}
-	
+
 	public AdvancedComponentsFrontController getAdvancedComponentsFrontController()
 	{
 		return advancedComponentsFrontController;

@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInWaveTable;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
-import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -69,8 +68,7 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 
 	private float[] emptyFloatBuffer;
 
-	public MasterOutMadInstance( final MasterIOComponentsCreationContext creationContext,
-			final String instanceName,
+	public MasterOutMadInstance( final String instanceName,
 			final MasterOutMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )

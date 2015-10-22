@@ -25,7 +25,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.rackmasterio.RackMasterIOCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -41,18 +40,17 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 public class RackMasterIOMadInstance extends MadInstance<RackMasterIOMadDefinition,RackMasterIOMadInstance>
 {
 	private static Log log = LogFactory.getLog( RackMasterIOMadInstance.class.getName() );
-	
-	public RackMasterIOMadInstance( RackMasterIOCreationContext creationContext,
-			String instanceName,
-			RackMasterIOMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+
+	public RackMasterIOMadInstance( final String instanceName,
+			final RackMasterIOMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void start( HardwareIOChannelSettings hardwareChannelSettings, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void start( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
 		// Do nothing, we're not a "scheduled" component
@@ -64,11 +62,11 @@ public class RackMasterIOMadInstance extends MadInstance<RackMasterIOMadDefiniti
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			MadTimingParameters timingParameters ,
-			long periodStartFrameTime ,
-			MadChannelConnectedFlags channelConnectedFlags ,
-			MadChannelBuffer[] channelBuffers , int frameOffset , int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
+			final MadTimingParameters timingParameters ,
+			final long periodStartFrameTime ,
+			final MadChannelConnectedFlags channelConnectedFlags ,
+			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
 	{
 		log.error( "RackMasterIO shouldn't be scheduled!");
 		return RealtimeMethodReturnCodeEnum.FAIL_FATAL;

@@ -22,7 +22,6 @@ package uk.co.modularaudio.mads.masterio.mu;
 
 import java.util.Map;
 
-import uk.co.modularaudio.mads.masterio.MasterIOComponentsCreationContext;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -52,8 +51,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 	private int noteBufferLength;
 	private IOBuffers producerBuffers;
 
-	public MasterInMadInstance( final MasterIOComponentsCreationContext creationContext,
-			final String instanceName,
+	public MasterInMadInstance( final String instanceName,
 			final MasterInMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
@@ -80,7 +78,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 					numNoteChannels,
 					noteBufferLength);
 		}
-		catch (Exception e)
+		catch (final Exception e)
 		{
 			final String msg = "Exception caught starting up master in instance: " + e.toString();
 			throw new MadProcessingException( msg, e );
@@ -99,7 +97,7 @@ public class MasterInMadInstance extends MadInstance<MasterInMadDefinition,Maste
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+			final int frameOffset , final int numFrames  )
 	{
 		// We assume that the actual card IO has already filled in the necessary data in the buffers
 		// Iterate over the channels only processing them if they are connected

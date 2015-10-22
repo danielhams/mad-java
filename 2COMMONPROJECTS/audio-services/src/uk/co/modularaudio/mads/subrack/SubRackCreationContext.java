@@ -26,9 +26,8 @@ import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.rack.RackService;
 import uk.co.modularaudio.service.rackmarshalling.RackMarshallingService;
 import uk.co.modularaudio.service.userpreferences.UserPreferencesService;
-import uk.co.modularaudio.util.audio.mad.MadCreationContext;
 
-public class SubRackCreationContext extends MadCreationContext
+public class SubRackCreationContext
 {
 	private final RackService rackService;
 	private final MadGraphService graphService;
