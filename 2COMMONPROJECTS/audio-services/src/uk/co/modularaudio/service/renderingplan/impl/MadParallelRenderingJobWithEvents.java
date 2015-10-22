@@ -44,12 +44,13 @@ public class MadParallelRenderingJobWithEvents extends AbstractMadParallelRender
 		final MadTimingParameters timingParameters = timingSource.getTimingParameters();
 		final MadChannelPeriodData timingPeriodData = timingSource.getTimingPeriodData();
 		final long periodTimestamp = timingPeriodData.getPeriodStartFrameTimes();
+		final int numFrames = timingPeriodData.getNumFramesThisPeriod();
 		if( !errctx.andWith( madInstance.processWithEvents( tempQueueEntryStorage,
 				timingParameters,
 				periodTimestamp,
 				channelActiveBitset,
 				channelBuffers,
-				timingPeriodData.getNumFramesThisPeriod() ) ) )
+				numFrames ) ) )
 		{
 			return errctx.getCurRetCode();
 		}
