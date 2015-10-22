@@ -42,13 +42,13 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseDragged( final MouseEvent e )
+		public void mouseDragged( final MouseEvent me )
 		{
 			if( !isImmediate )
 			{
 				if( isPushed )
 				{
-					if( !contains( e.getPoint() ) )
+					if( !contains( me.getPoint() ) )
 					{
 						isPushed = false;
 						repaint();
@@ -56,7 +56,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 				}
 				else
 				{
-					if( contains( e.getPoint() ) )
+					if( contains( me.getPoint() ) )
 					{
 						isPushed = true;
 						repaint();
@@ -66,12 +66,12 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseMoved( final MouseEvent e )
+		public void mouseMoved( final MouseEvent me )
 		{
 		}
 
 		@Override
-		public void mouseClicked( final MouseEvent e )
+		public void mouseClicked( final MouseEvent me )
 		{
 		}
 
@@ -136,17 +136,17 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseExited( final MouseEvent ke )
+		public void mouseExited( final MouseEvent me )
 		{
 			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-			if( (ke.getModifiersEx() & onmask) != onmask )
+			if( (me.getModifiersEx() & onmask) != onmask )
 			{
 				if( mouseEntered )
 				{
 					mouseEntered = false;
 				}
 				repaint();
-				ke.consume();
+				me.consume();
 			}
 		}
 	};
@@ -154,10 +154,10 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 	private class ButtonKeyListener implements KeyListener
 	{
 		@Override
-		public void keyPressed( final KeyEvent me )
+		public void keyPressed( final KeyEvent ke )
 		{
-			final int keyCode = me.getKeyCode();
-			final int modMask = me.getModifiers();
+			final int keyCode = ke.getKeyCode();
+			final int modMask = ke.getModifiers();
 
 			if( modMask != 0 )
 			{
@@ -183,7 +183,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 					break;
 				}
 			}
-			me.consume();
+			ke.consume();
 		}
 
 		@Override
@@ -218,7 +218,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void keyTyped( final KeyEvent me ) {} // NOPMD by dan on 27/04/15 12:23
+		public void keyTyped( final KeyEvent ke ) {} // NOPMD by dan on 27/04/15 12:23
 	};
 
 	protected boolean isImmediate;

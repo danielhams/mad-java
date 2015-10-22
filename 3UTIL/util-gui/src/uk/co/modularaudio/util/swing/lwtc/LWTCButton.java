@@ -108,11 +108,11 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		}
 
 		@Override
-		public void mouseDragged( final MouseEvent e )
+		public void mouseDragged( final MouseEvent me )
 		{
 			if( isPushed )
 			{
-				if( !contains( e.getPoint() ) )
+				if( !contains( me.getPoint() ) )
 				{
 					isPushed = false;
 					repaint();
@@ -120,7 +120,7 @@ public abstract class LWTCButton extends AbstractLWTCButton
 			}
 			else
 			{
-				if( contains( e.getPoint() ) )
+				if( contains( me.getPoint() ) )
 				{
 					isPushed = true;
 					repaint();
@@ -132,7 +132,7 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		public void mouseClicked( final MouseEvent me ) {} // NOPMD by dan on 27/04/15 12:23
 
 		@Override
-		public void mouseMoved( final MouseEvent e ) {} // NOPMD by dan on 27/04/15 12:23
+		public void mouseMoved( final MouseEvent me ) {} // NOPMD by dan on 27/04/15 12:23
 	};
 
 	private class ButtonKeyListener implements KeyListener
