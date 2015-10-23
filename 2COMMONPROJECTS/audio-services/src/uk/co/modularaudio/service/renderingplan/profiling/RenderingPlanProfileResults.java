@@ -36,8 +36,7 @@ public class RenderingPlanProfileResults
 	private long clockCallbackPostRpFetch;
 	private long clockCallbackPostLoop;
 
-//	private AtomicBoolean filled = new AtomicBoolean( false );
-	private volatile boolean filled = false; // NOPMD by dan on 01/02/15 07:07
+	private boolean filled = false; // NOPMD by dan on 01/02/15 07:07
 
 	public RenderingPlanProfileResults( final RenderingJob[] jobsToProfile )
 	{
@@ -67,20 +66,12 @@ public class RenderingPlanProfileResults
 			final JobProfileResult jobResult = jobToProfileResultMap.get( job );
 			jobResult.pullResultsFromJob( job );
 		}
-//		filled.set( true );
 		filled = true;
 	}
 
 	public boolean isFilled()
 	{
-//		return filled.get();
 		return filled;
-	}
-
-	public void setFilled( final boolean targetFilled )
-	{
-//		filled.set( targetFilled );
-		filled = targetFilled;
 	}
 
 	public HashMap<RenderingJob, JobProfileResult> getJobToProfileResultMap()
@@ -108,19 +99,18 @@ public class RenderingPlanProfileResults
 		return clockCallbackPostLoop;
 	}
 
-	public static void copyFromTo( final RenderingPlanProfileResults from, final RenderingPlanProfileResults to )
+	public void copyOutAndEmpty( final RenderingPlanProfileResults to )
 	{
-		to.numRenderingThreads = from.numRenderingThreads;
-		to.clockCallbackStart = from.clockCallbackStart;
-		to.clockCallbackPostProducer = from.clockCallbackPostProducer;
-		to.clockCallbackPostRpFetch = from.clockCallbackPostRpFetch;
-		to.clockCallbackPostLoop = from.clockCallbackPostLoop;
-		to.jobsToProfile = from.jobsToProfile;
-		to.numJobs = from.numJobs;
-		to.jobToProfileResultMap = new HashMap<RenderingJob, JobProfileResult>( from.jobToProfileResultMap );
-		// Mark the original as able to be filled again
-//		from.filled = new AtomicBoolean( false );
-		from.filled = false;
+		to.numRenderingThreads = numRenderingThreads;
+		to.clockCallbackStart = clockCallbackStart;
+		to.clockCallbackPostProducer = clockCallbackPostProducer;
+		to.clockCallbackPostRpFetch = clockCallbackPostRpFetch;
+		to.clockCallbackPostLoop = clockCallbackPostLoop;
+		to.jobsToProfile = jobsToProfile;
+		to.numJobs = numJobs;
+		to.jobToProfileResultMap = new HashMap<RenderingJob, JobProfileResult>( jobToProfileResultMap );
+
+		filled = false;
 	}
 
 	public int getNumRenderingThreads()

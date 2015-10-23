@@ -102,6 +102,19 @@ public abstract class AbstractRenderingJob implements RenderingJob
 	}
 
 	/* (non-Javadoc)
+	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#goNoTimestamps(int, uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage)
+	 */
+	@Override
+	public final RealtimeMethodReturnCodeEnum goNoTimestamps( final int jobThreadExecutor,
+			final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage )
+	{
+		this.jobThreadExecutor = jobThreadExecutor;
+		final RealtimeMethodReturnCodeEnum retVal = go( tempQueueEntryStorage );
+		numProducersStillToComplete.set( numProducersWeWaitFor );
+		return retVal;
+	}
+
+	/* (non-Javadoc)
 	 * @see uk.co.modularaudio.service.renderingplan.RenderingJob#forDumpResetNumProducersStillToComplete()
 	 */
 	@Override

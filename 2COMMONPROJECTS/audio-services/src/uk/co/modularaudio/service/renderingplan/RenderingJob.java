@@ -33,7 +33,10 @@ public interface RenderingJob
 
 	boolean markOneProducerAsCompleteCheckIfReadyToGo();
 
-	RealtimeMethodReturnCodeEnum goWithTimestamps( int jobThreadExecutor, ThreadSpecificTemporaryEventStorage tempQueueEntryStorage );
+	RealtimeMethodReturnCodeEnum goWithTimestamps( int jobThreadExecutor,
+			ThreadSpecificTemporaryEventStorage tempQueueEntryStorage );
+	RealtimeMethodReturnCodeEnum goNoTimestamps( int jobThreadExecutor,
+			ThreadSpecificTemporaryEventStorage tempQueueEntryStorage );
 
 	void forDumpResetNumProducersStillToComplete();
 

@@ -51,13 +51,15 @@ public interface RenderingPlan
 	void resetPlanExecution();
 	boolean wasPlanExecuted();
 
-	void fillProfilingIfNotFilled(
+	boolean isProfilingFilled();
+
+	void fillProfiling(
 			int numRenderingThreads,
 			long clockCallbackStart,
 			long clockCallbackPostProducer,
 			long clockCallbackPostRpFetch,
 			long clockCallbackPostLoop );
 
-	boolean getProfileResultsIfFilled( RenderingPlanProfileResults destinationResults );
+	void getProfileResults( RenderingPlanProfileResults destinationResults );
 
 }

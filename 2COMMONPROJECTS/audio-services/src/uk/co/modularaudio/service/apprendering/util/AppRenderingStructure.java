@@ -43,8 +43,8 @@ import uk.co.modularaudio.service.apprendering.util.structure.JobDataListCompara
 import uk.co.modularaudio.service.apprendering.util.structure.ParsedJobData;
 import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
-import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.madgraph.GraphType;
+import uk.co.modularaudio.service.madgraph.MadGraphService;
 import uk.co.modularaudio.service.renderingplan.RenderingJob;
 import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
@@ -233,12 +233,10 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		final RenderingPlan rp = renderingPlan.get();
 		if( rp != null )
 		{
-			final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
-
-			final boolean success = rp.getProfileResultsIfFilled(profileResults);
-
-			if( success )
+			if( rp.isProfilingFilled() )
 			{
+				final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
+				rp.getProfileResults( profileResults );
 				final long clockCallbackStart = profileResults.getClockCallbackStart();
 				final long clockCallbackPostProducer = profileResults.getClockCallbackPostProducer();
 				final long clockCallbackPostRpFetch = profileResults.getClockCallbackPostRpFetch();
@@ -298,8 +296,11 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		else
 		{
 			final RenderingPlanProfileResults profileResults = new RenderingPlanProfileResults( rp.getAllJobs() );
-
-			if( !rp.getProfileResultsIfFilled(profileResults) )
+			if( rp.isProfilingFilled() )
+			{
+				rp.getProfileResults( profileResults );
+			}
+			else
 			{
 				log.warn( "Failed to fetch profiling results");
 			}

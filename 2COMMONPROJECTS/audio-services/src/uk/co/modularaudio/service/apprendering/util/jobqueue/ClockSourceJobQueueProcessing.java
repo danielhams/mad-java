@@ -41,7 +41,8 @@ public class ClockSourceJobQueueProcessing
 		renderingJobQueue = jobQueue;
 	}
 
-	public RealtimeMethodReturnCodeEnum doUnblockedJobQueueProcessing( final RenderingPlan renderingPlan, final boolean shouldProfileRenderingJobs )
+	public RealtimeMethodReturnCodeEnum doUnblockedJobQueueProcessing( final RenderingPlan renderingPlan,
+			final boolean shouldProfileRenderingJobs )
 	{
 		errCtx.reset();
 

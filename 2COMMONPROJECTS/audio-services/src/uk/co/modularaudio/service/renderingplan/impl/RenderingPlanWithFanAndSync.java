@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class RenderingPlanWithFanAndSync implements RenderingPlan
 {
-//	private static Log log = LogFactory.getLog( RenderingPlan.class.getName() );
+//	private static Log log = LogFactory.getLog( RenderingPlanWithFanAndSync.class.getName() );
 
 	private final HardwareIOChannelSettings planChannelSettings;
 	private final MadTimingParameters planTimingParameters;
@@ -118,32 +118,26 @@ public class RenderingPlanWithFanAndSync implements RenderingPlan
 	}
 
 	@Override
-	public void fillProfilingIfNotFilled(
+	public boolean isProfilingFilled()
+	{
+		return profileResults.isFilled();
+	}
+
+	@Override
+	public void fillProfiling(
 			final int numRenderingThreads,
 			final long clockCallbackStart,
 			final long clockCallbackPostProducer,
 			final long clockCallbackPostRpFetch,
 			final long clockCallbackPostLoop )
 	{
-		if( !profileResults.isFilled() )
-		{
-			profileResults.fillIn( numRenderingThreads, clockCallbackStart, clockCallbackPostProducer, clockCallbackPostRpFetch, clockCallbackPostLoop );
-		}
+		profileResults.fillIn( numRenderingThreads, clockCallbackStart, clockCallbackPostProducer, clockCallbackPostRpFetch, clockCallbackPostLoop );
 	}
 
 	@Override
-	public boolean getProfileResultsIfFilled( final RenderingPlanProfileResults toFillIn )
+	public void getProfileResults( final RenderingPlanProfileResults toFillIn )
 	{
-		if( profileResults.isFilled() )
-		{
-			RenderingPlanProfileResults.copyFromTo( profileResults, toFillIn );
-			profileResults.setFilled( false );
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		profileResults.copyOutAndEmpty( toFillIn );
 	}
 
 	@Override

@@ -57,7 +57,8 @@ public abstract class AbstractRenderingJobQueueProcessing
 		return processJobAndDependants( true, shouldProfileRenderingJobs );
 	}
 
-	protected final RealtimeMethodReturnCodeEnum processJobAndDependants( final boolean canBlock, final boolean shouldProfileRenderingJobs )
+	protected final RealtimeMethodReturnCodeEnum processJobAndDependants( final boolean canBlock,
+			final boolean shouldProfileRenderingJobs )
 	{
 		RenderingJob job = renderingJobQueue.getAJob( canBlock );
 
@@ -73,20 +74,28 @@ public abstract class AbstractRenderingJobQueueProcessing
 	protected final RenderingJob processOneJobReturnFirstDependant( final RenderingJob iJob,
 			final boolean shouldProfileRenderingJobs )
 	{
-		RenderingJob job = iJob;
-		job.goWithTimestamps( threadNum, tempQueueEntryStorage );
-
-		final RenderingJob consJobs[] = job.getConsJobsThatWaitForUs();
-		job = null;
-
-		for( final RenderingJob consJob : consJobs )
+		if( shouldProfileRenderingJobs )
 		{
-			final boolean readyToGo = consJob.markOneProducerAsCompleteCheckIfReadyToGo();
-			if( readyToGo )
+			iJob.goWithTimestamps( threadNum, tempQueueEntryStorage );
+		}
+		else
+		{
+			iJob.goNoTimestamps( threadNum, tempQueueEntryStorage );
+		}
+
+		final RenderingJob consJobs[] = iJob.getConsJobsThatWaitForUs();
+
+		RenderingJob retJob = null;
+
+		final int numConsJobs = consJobs.length;
+		for( int i = 0 ; i < numConsJobs ; ++i )
+		{
+			final RenderingJob consJob = consJobs[i];
+			if( consJob.markOneProducerAsCompleteCheckIfReadyToGo() )
 			{
-				if( job == null )
+				if( retJob == null )
 				{
-					job = consJob;
+					retJob = consJob;
 				}
 				else
 				{
@@ -95,7 +104,7 @@ public abstract class AbstractRenderingJobQueueProcessing
 			}
 		}
 
-		return job;
+		return retJob;
 	}
 
 	public long getNumJobsProcessed()

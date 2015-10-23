@@ -493,18 +493,24 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 	{
 		RenderingPlan rp = null;
 		long clockCallbackPostRpFetch = -1;
+
+		boolean localShouldProfileRenderingJobs = shouldProfileRenderingJobs;
 		try
 		{
 			rp = appRenderingStructure.getAtomicRenderingPlan().get();
+			localShouldProfileRenderingJobs = localShouldProfileRenderingJobs & !rp.isProfilingFilled();
 
-			clockCallbackPostRpFetch = System.nanoTime();
+			if( localShouldProfileRenderingJobs )
+			{
+				clockCallbackPostRpFetch = System.nanoTime();
+			}
 
 			// We set up the channel period data here so that it's accessible to any threads that
 			// do work on the job queue items
 			final MadChannelPeriodData autpd = timingService.getTimingSource().getTimingPeriodData();
 			autpd.reset( periodStartFrameTime,  numFrames);
 
-			clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing(rp, shouldProfileRenderingJobs );
+			clockSourceJobQueueProcessing.doUnblockedJobQueueProcessing( rp, localShouldProfileRenderingJobs );
 		}
 		catch( final Exception e )
 		{
@@ -512,11 +518,11 @@ public abstract class AbstractAppRenderingSession implements MadFrameTimeFactory
 			log.error( msg, e );
 			return RealtimeMethodReturnCodeEnum.FAIL_FATAL;
 		}
-		final long clockCallbackPostLoop = System.nanoTime();
+		final long clockCallbackPostLoop = localShouldProfileRenderingJobs ? System.nanoTime() : -1 ;
 
-		if( shouldProfileRenderingJobs )
+		if( localShouldProfileRenderingJobs && !rp.isProfilingFilled() )
 		{
-			rp.fillProfilingIfNotFilled( numHelperThreads,
+			rp.fillProfiling( numHelperThreads,
 					clockCallbackStartTimestamp,
 					clockCallbackPostProducer,
 					clockCallbackPostRpFetch,
