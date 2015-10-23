@@ -113,8 +113,8 @@
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
-        <rackControl name="Resolution" value="4096"/>
-        <rackControl name="Running Average" value="Long Average"/>
+        <rackControl name="Resolution" value="16384"/>
+        <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent name="ThreeWayCompDryMixer" definitionId="imixer3">
