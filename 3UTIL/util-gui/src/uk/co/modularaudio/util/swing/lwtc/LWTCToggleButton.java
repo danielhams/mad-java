@@ -44,6 +44,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		@Override
 		public void mouseDragged( final MouseEvent me )
 		{
+//			log.debug("mouseDragged event");
 			if( !isImmediate )
 			{
 				if( isPushed )
@@ -73,11 +74,13 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		@Override
 		public void mouseClicked( final MouseEvent me )
 		{
+//			log.debug("mouseClicked event");
 		}
 
 		@Override
 		public void mousePressed( final MouseEvent me )
 		{
+//			log.debug("mousePressed event");
 			if( me.getButton() == MouseEvent.BUTTON1 )
 			{
 				if( !hasFocus() )
@@ -100,6 +103,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		@Override
 		public void mouseReleased( final MouseEvent me )
 		{
+//			log.debug("mouseReleased event");
 			if( me.getButton() == MouseEvent.BUTTON1 )
 			{
 				if( !isImmediate )
@@ -123,6 +127,7 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		@Override
 		public void mouseEntered( final MouseEvent me )
 		{
+//			log.debug("mouseEntered event");
 			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
 			if( (me.getModifiersEx() & onmask) != onmask )
 			{
@@ -138,16 +143,13 @@ public abstract class LWTCToggleButton extends AbstractLWTCButton
 		@Override
 		public void mouseExited( final MouseEvent me )
 		{
-			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-			if( (me.getModifiersEx() & onmask) != onmask )
+//			log.debug("mouseExited event");
+			if( mouseEntered )
 			{
-				if( mouseEntered )
-				{
-					mouseEntered = false;
-				}
-				repaint();
-				me.consume();
+				mouseEntered = false;
 			}
+			repaint();
+			me.consume();
 		}
 	};
 
