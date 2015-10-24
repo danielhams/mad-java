@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="Empty Application Rack" cols="4" rows="29">
+    <rackComponent name="Audio To CV (Four Channels) 1" definitionId="audiotocv4">
+        <rackPosition column="2" row="3"/>
+    </rackComponent>
+    <rackComponent name="CV To Audio (Four Channels) 1" definitionId="cvtoaudio4">
+        <rackPosition column="2" row="2"/>
+    </rackComponent>
     <rackComponent name="Control Interpolation Tester 1" definitionId="interptester">
         <rackPosition column="0" row="0"/>
         <rackControl name="Impulse" value=""/>
-        <rackControl name="Model Choice" value="DJ Deck Fader"/>
+        <rackControl name="Model Choice" value="DJ Cross Fader"/>
         <rackControl name="Perf Table" value=""/>
-        <rackControl name="Value" value="0.0"/>
-        <rackControl name="ValueChase" value="5.3"/>
+        <rackControl name="Value" value="-1.0"/>
+        <rackControl name="ValueChase" value="2.3"/>
     </rackComponent>
     <rackComponent name="LinearNOTS" definitionId="spectral_amp">
         <rackPosition column="2" row="4"/>
@@ -28,7 +34,7 @@
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="0" row="4"/>
-        <rackControl name="CaptureLength" value="500.0"/>
+        <rackControl name="CaptureLength" value="35.70583"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveButton" value="false|true|true&#x9;TS|true&#x9;NoTSLinear|true&#x9;TSLinear|true&#x9;TSSpringAndDamper"/>
@@ -93,14 +99,20 @@
         <rackControl name="Running Average" value="Peak Hold"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD SD 24 CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 3"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="CD SD 24 NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Interpolation NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Interpolation NoTS CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 2"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 1" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 1"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 2" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 3" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 4"/>
+    <rackLink producerRackComponentName="Audio To CV (Four Channels) 1" producerChannelName="CV Output 3" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 3"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 1" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 1"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 2" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 2"/>
+    <rackLink producerRackComponentName="CV To Audio (Four Channels) 1" producerChannelName="Audio Output 3" consumerRackComponentName="Audio To CV (Four Channels) 1" consumerChannelName="Audio Input 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 12 CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 3"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear And Low Pass 12 NoTS CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 2"/>
+    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Linear Interpolation NoTS CV Out" consumerRackComponentName="CV To Audio (Four Channels) 1" consumerChannelName="CV Input 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 1"/>
     <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Raw Control NoTS CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Trigger"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Recalculating Linear Interpolation CV Out" consumerRackComponentName="Scope 1" consumerChannelName="Input Signal 3"/>
-    <rackLink producerRackComponentName="Control Interpolation Tester 1" producerChannelName="Recalculating Linear Interpolation CV Out" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 2"/>
     <rackLink producerRackComponentName="OscillatorFrequency" producerChannelName="Output CV" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input CV Channel 8"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="LinearNOTS" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="TSLinear" consumerChannelName="Input Wave"/>
