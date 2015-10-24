@@ -55,16 +55,12 @@ public abstract class LWTCButton extends AbstractLWTCButton
 		@Override
 		public void mouseExited( final MouseEvent me )
 		{
-			final int onmask = MouseEvent.BUTTON1_DOWN_MASK;
-			if( (me.getModifiersEx() & onmask) != onmask )
+			if( mouseEntered )
 			{
-				if( mouseEntered )
-				{
-					mouseEntered = false;
-				}
-				repaint();
-				me.consume();
+				mouseEntered = false;
 			}
+			repaint();
+			me.consume();
 		}
 
 		@Override
