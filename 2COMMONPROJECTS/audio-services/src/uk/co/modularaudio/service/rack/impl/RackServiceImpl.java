@@ -410,7 +410,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		//		graphService.dumpGraph(g);
 
 		// Let the graph model do the validation for us
-		graphService.exposeAudioInstanceChannelAsGraphChannel( g,  graphChannelInstance,
+		graphService.exposeAudioInstanceChannelAsGraphChannel( g, graphChannelInstance,
 				rackIOLink.getRackComponentChannelInstance() );
 		rack.addRackIOLink( rackIOLink );
 		rack.setDirty( true );
