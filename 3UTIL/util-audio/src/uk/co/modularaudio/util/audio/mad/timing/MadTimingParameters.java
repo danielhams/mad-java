@@ -34,11 +34,11 @@ public class MadTimingParameters
 	protected int sampleFramesPerFrontEndPeriod;
 	protected int sampleFramesPerBackEndPeriod;
 
-	private final FadeInWaveTable fadeInWaveTable;
-	private final FadeOutWaveTable fadeOutWaveTable;
+	private FadeInWaveTable fadeInWaveTable;
+	private FadeOutWaveTable fadeOutWaveTable;
 
-	private final FadeInWaveTable slowFadeInWaveTable;
-	private final FadeOutWaveTable slowFadeOutWaveTable;
+	private FadeInWaveTable slowFadeInWaveTable;
+	private FadeOutWaveTable slowFadeOutWaveTable;
 
 	public MadTimingParameters( final DataRate dataRate,
 			final int sampleFramesPerBackEndPeriod,
@@ -86,6 +86,11 @@ public class MadTimingParameters
 		this.nanosPerFrontEndPeriod = from.nanosPerFrontEndPeriod;
 		this.sampleFramesPerFrontEndPeriod = from.sampleFramesPerFrontEndPeriod;
 		this.sampleFramesPerBackEndPeriod = from.sampleFramesPerBackEndPeriod;
+
+		this.fadeInWaveTable = from.fadeInWaveTable;
+		this.fadeOutWaveTable = from.fadeOutWaveTable;
+		this.slowFadeInWaveTable = from.slowFadeInWaveTable;
+		this.slowFadeOutWaveTable = from.slowFadeOutWaveTable;
 	}
 
 	public long getNanosPerBackEndPeriod()
