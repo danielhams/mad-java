@@ -20,23 +20,15 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MadChannelConfiguration
 {
 	private static MadChannelConfiguration emptyChannelConfiguration = new MadChannelConfiguration( new MadChannelDefinition[0] );
 
 	private final MadChannelDefinition[] channelDefinitions;
-	private final Map<String,MadChannelDefinition> nameToChannelDefinitionMap = new HashMap<String, MadChannelDefinition>();
 
 	public MadChannelConfiguration( final MadChannelDefinition[] channelDefinitions )
 	{
 		this.channelDefinitions = channelDefinitions;
-		for( final MadChannelDefinition cd : channelDefinitions )
-		{
-			nameToChannelDefinitionMap.put( cd.name, cd );
-		}
 	}
 
 	public MadChannelDefinition[] getOrderedChannelDefinitions()
