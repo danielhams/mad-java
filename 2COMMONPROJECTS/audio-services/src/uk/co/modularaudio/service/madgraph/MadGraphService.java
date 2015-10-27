@@ -27,7 +27,7 @@ import uk.co.modularaudio.util.audio.mad.MadDefinition;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance.MadGraphListener;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.MAConstraintViolationException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;

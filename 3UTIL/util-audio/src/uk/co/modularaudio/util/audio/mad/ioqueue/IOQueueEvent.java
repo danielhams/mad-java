@@ -22,18 +22,19 @@ package uk.co.modularaudio.util.audio.mad.ioqueue;
 
 public class IOQueueEvent
 {
-	public long frameTime = -1;
-	public int command = -1;
-	public long value = -1;
-	public Object object = null;
-	
+	public long frameTime;
+	public int command;
+	public long value;
+	public Object object;
+
 	public IOQueueEvent()
 	{
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append( "FrameTime( " );
 		sb.append( frameTime );
 		sb.append( " ) Command( " );
@@ -43,7 +44,7 @@ public class IOQueueEvent
 		sb.append( " ) Object( " );
 		sb.append( object );
 		sb.append( " )" );
-		
+
 		return sb.toString();
 	}
 }

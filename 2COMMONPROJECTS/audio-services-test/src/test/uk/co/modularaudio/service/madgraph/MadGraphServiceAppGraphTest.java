@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import test.uk.co.modularaudio.service.madgraph.config.GraphTestConfig;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
@@ -39,7 +40,7 @@ import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance.MadGraphListener;
 import uk.co.modularaudio.util.timing.TestTimer;
 
 public class MadGraphServiceAppGraphTest extends TestCase

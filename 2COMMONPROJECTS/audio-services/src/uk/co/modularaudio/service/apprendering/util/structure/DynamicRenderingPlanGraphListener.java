@@ -28,7 +28,7 @@ import uk.co.modularaudio.service.renderingplan.RenderingPlan;
 import uk.co.modularaudio.service.renderingplan.RenderingPlanService;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance.MadGraphListener;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.exception.DatastoreException;

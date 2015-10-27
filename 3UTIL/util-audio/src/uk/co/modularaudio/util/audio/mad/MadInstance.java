@@ -40,6 +40,14 @@ import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends MadInstance<MD, MI>>
 {
+	public enum MadState
+	{
+		CREATED,
+		INITIALISED,
+		STARTED,
+		DESTROYED
+	};
+
 	public interface InstanceLifecycleListener
 	{
 		void receiveStartup( final HardwareIOChannelSettings hardwareChannelSettings,

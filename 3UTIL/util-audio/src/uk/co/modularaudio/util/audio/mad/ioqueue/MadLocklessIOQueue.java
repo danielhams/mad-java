@@ -33,7 +33,6 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 	public MadLocklessIOQueue( final Class<IOQueueEvent> clazz, final int capacity )
 	{
 		super( clazz, COPIER, capacity );
-
 	}
 
 	public final int copyToTemp( final IOQueueEvent[] destinationEventStorage )

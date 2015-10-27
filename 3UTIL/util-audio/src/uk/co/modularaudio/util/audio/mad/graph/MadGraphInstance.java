@@ -52,6 +52,12 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 {
 	private static Log log = LogFactory.getLog( MadGraphInstance.class.getName() );
 
+	public interface MadGraphListener
+	{
+		public String getName();
+		public void receiveGraphChangeSignal();
+	};
+
 	// Mad instances within the graph
 	protected final Collection<MadInstance<?,?>> instances = new ArrayList<MadInstance<?,?>>();
 	protected final Map<String, MadInstance<?,?>> nameToInstanceMap = new HashMap<String, MadInstance<?,?>>();

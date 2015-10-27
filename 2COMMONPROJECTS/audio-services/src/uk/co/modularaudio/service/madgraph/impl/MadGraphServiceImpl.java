@@ -59,7 +59,7 @@ import uk.co.modularaudio.util.audio.mad.MadLink;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphListener;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphInstance.MadGraphListener;
 import uk.co.modularaudio.util.audio.mad.graph.MadGraphQueueBridge;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.component.ComponentWithPostInitPreShutdown;
