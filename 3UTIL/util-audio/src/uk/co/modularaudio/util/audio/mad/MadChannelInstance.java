@@ -22,13 +22,17 @@ package uk.co.modularaudio.util.audio.mad;
 
 public class MadChannelInstance
 {
-	public final MadChannelDefinition definition;
 	public final MadInstance<?,?> instance;
+	public final MadChannelDefinition definition;
+	public final int channelIndex;
 
-	public MadChannelInstance( final MadChannelDefinition definition, final MadInstance<?,?> instance )
+	public MadChannelInstance( final MadInstance<?,?> instance,
+			final MadChannelDefinition definition,
+			final int channelIndex )
 	{
-		this.definition = definition;
 		this.instance = instance;
+		this.definition = definition;
+		this.channelIndex = channelIndex;
 	}
 
 	@Override

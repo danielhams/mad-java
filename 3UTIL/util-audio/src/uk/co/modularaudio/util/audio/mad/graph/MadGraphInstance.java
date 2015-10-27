@@ -256,13 +256,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	public void exposeAudioInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
 			final MadChannelInstance channelInstanceToExpose ) throws RecordNotFoundException, MAConstraintViolationException
 	{
-		// Check the graph channel exists
-		if( !channelInstanceToIndexMap.containsKey( graphChannelInstance ) )
-		{
-			final String msg = "Unknown graph channel passed when attempting to expose mad instance channel as graph channel";
-			throw new RecordNotFoundException( msg );
-		}
-		else if( graphChannelInstance.definition.direction != channelInstanceToExpose.definition.direction )
+		if( graphChannelInstance.definition.direction != channelInstanceToExpose.definition.direction )
 		{
 			final String msg = "Graph channel must match mad instance channel direction when exposing it";
 			throw new MAConstraintViolationException( msg );

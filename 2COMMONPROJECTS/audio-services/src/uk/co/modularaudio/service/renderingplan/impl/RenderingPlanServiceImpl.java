@@ -167,7 +167,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final MadInstance<?,?> producerInstance = producerChannelInstance.instance;
 			assert( producerInstance == madInstance );
 
-			final int channelIndex = madInstance.getChannelInstanceIndex( producerChannelInstance );
+			final int channelIndex = producerChannelInstance.channelIndex;
 
 			channelActiveBitset.set( channelIndex );
 
@@ -187,7 +187,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final MadInstance<?,?> consumerInstance = link.getConsumerChannelInstance().instance;
 			assert( consumerInstance == madInstance );
 
-			final int channelIndex = madInstance.getChannelInstanceIndex( consumerChannelInstance );
+			final int channelIndex = consumerChannelInstance.channelIndex;
 
 			channelActiveBitset.set( channelIndex );
 

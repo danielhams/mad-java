@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mahout.math.map.OpenObjectIntHashMap;
 
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -56,7 +55,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	protected final Map<MadParameterDefinition, String> creationParameterValues;
 	protected final MadChannelConfiguration channelConfiguration;
 	protected final MadChannelInstance[] channelInstances;
-	protected final OpenObjectIntHashMap<MadChannelInstance> channelInstanceToIndexMap = new OpenObjectIntHashMap<MadChannelInstance>();
 	protected final Map<String,MadChannelInstance> nameToChannelInstanceMap = new HashMap<String,MadChannelInstance>();
 
 	protected MadState state = MadState.CREATED;
@@ -87,13 +85,17 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 
 		this.creationParameterValues = creationParameterValues;
 		this.channelConfiguration = channelConfiguration;
-		this.channelInstances = createChannelInstances();
-		for( int c = 0 ; c < channelInstances.length ; c++ )
+
+		final MadChannelDefinition[] orderedChannelDefinitions = channelConfiguration.getOrderedChannelDefinitions();
+		final int numChannels = orderedChannelDefinitions.length;
+		this.channelInstances = new MadChannelInstance[numChannels];
+
+		for( int c = 0 ; c < numChannels ; c++ )
 		{
-			final MadChannelInstance ci = channelInstances[ c ];
-			final MadChannelDefinition cd = ci.definition;
+			final MadChannelDefinition cd = orderedChannelDefinitions[c];
+			final MadChannelInstance ci = new MadChannelInstance( this, cd, c );
+			channelInstances[c] = ci;
 			nameToChannelInstanceMap.put( cd.name, ci );
-			channelInstanceToIndexMap.put( ci, c );
 		}
 
 		if( hasQueueProcessing )
@@ -124,21 +126,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 		}
 		// Any cleanup of the instance (samples, buffers etc) in here.
 		state = MadState.DESTROYED;
-	}
-
-	private MadChannelInstance[] createChannelInstances()
-	{
-		final MadChannelDefinition[] channelDefinitionArray = channelConfiguration.getOrderedChannelDefinitions();
-		final int numChannels = channelDefinitionArray.length;
-
-		final MadChannelInstance[] retVal = new MadChannelInstance[ numChannels ];
-
-		for( int i = 0 ; i < numChannels ; i++ )
-		{
-			retVal[ i ] = new MadChannelInstance( channelDefinitionArray[ i ], this );
-		}
-
-		return retVal;
 	}
 
 	public void internalEngineStartup( final HardwareIOChannelSettings hardwareChannelSettings,
@@ -459,27 +446,6 @@ public abstract class MadInstance<MD extends MadDefinition<MD,MI>, MI extends Ma
 	public MadChannelInstance[] getChannelInstances()
 	{
 		return channelInstances;
-	}
-
-	public int getChannelInstanceIndex( final MadChannelInstance channelToLookFor )
-		throws RecordNotFoundException
-	{
-		if( channelInstanceToIndexMap.containsKey( channelToLookFor ) )
-		{
-			return channelInstanceToIndexMap.get( channelToLookFor );
-		}
-		else
-		{
-			final String msg = "Failed to find channel instance index for channel called " + channelToLookFor.definition.name + " in instance named " + getInstanceName();
-			throw new RecordNotFoundException( msg );
-		}
-	}
-
-	public int getChannelInstanceIndexByName( final String channelInstanceName )
-		throws RecordNotFoundException
-	{
-		final MadChannelInstance ci = getChannelInstanceByName( channelInstanceName );
-		return getChannelInstanceIndex( ci );
 	}
 
 	public MadChannelInstance getChannelInstanceByName( final String channelName )

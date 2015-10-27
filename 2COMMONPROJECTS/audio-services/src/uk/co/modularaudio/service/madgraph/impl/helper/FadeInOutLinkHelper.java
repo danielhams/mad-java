@@ -406,10 +406,19 @@ public class FadeInOutLinkHelper
 			// Only need to remap audio ones - others were already mapped
 			if( graphChannel.definition.type == MadChannelType.AUDIO )
 			{
+				final String graphChannelNameToExpose = graphChannel.definition.name;
 				final MadChannelInstance instanceChannel = instanceToMap.getChannelInstanceByNameReturnNull(
-						graphChannel.definition.name );
+						graphChannelNameToExpose );
 
-				graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
+				if( instanceChannel != null )
+				{
+					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
+				}
+				else if( log.isWarnEnabled() )
+				{
+					log.warn("Failed to remove fade out for instance channel " +
+							graphChannelNameToExpose );
+				}
 			}
 		}
 	}
