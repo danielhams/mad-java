@@ -76,8 +76,13 @@ public abstract class AbstractMadParallelRenderingJob extends AbstractRenderingJ
 		return channelActiveBitset;
 	}
 
-	public MadChannelBuffer[] getChannelBuffers()
+	public void setChannelBuffer( final int channelIndex, final MadChannelBuffer buf )
 	{
-		return channelBuffers;
+		channelBuffers[channelIndex] = buf;
+	}
+
+	public MadChannelBuffer getChannelBuffer( final int channelIndex )
+	{
+		return channelBuffers[channelIndex];
 	}
 }

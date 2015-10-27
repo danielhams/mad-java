@@ -152,8 +152,6 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		final MadChannelInstance[] allAuChannelInstances = madInstance.getChannelInstances();
 		final MadChannelConnectedFlags channelActiveBitset = parallelRenderingJob.getChannelConnectedFlags();
 
-		final MadChannelBuffer[] channelBufferArray = parallelRenderingJob.getChannelBuffers();
-
 		// Now loop around consumer and producer links to this component, filling in as necessary
 		final Collection<MadLink> producerLinks = graphService.getProducerInstanceLinks( graph, madInstance );
 		for( final MadLink link : producerLinks )
@@ -174,7 +172,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 			final MadChannelType channelType = producerChannelInstance.definition.type;
 			final MadChannelBuffer buf = new MadChannelBuffer( channelType,
 					planHardwareChannelSettings.getChannelBufferLengthForChannelType( channelType ) );
-			channelBufferArray[ channelIndex ] = buf;
+			parallelRenderingJob.setChannelBuffer( channelIndex, buf );
 			allChannelBuffersSet.add( buf );
 			channelInstanceToBufferMap.put( producerChannelInstance, buf );
 //			log.debug("Created buffer for " + producerInstance.toString() + " channel instance: " + producerChannelInstance.toString());
@@ -203,7 +201,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 //				MadInstance<?,?> producerInstance = producerChannelInstance.instance;
 //				log.debug("Using predefined buffer of " + producerInstance + " - " +
 //						producerChannelInstance.toString() );
-				channelBufferArray[ channelIndex ] = producerBuffer;
+				parallelRenderingJob.setChannelBuffer( channelIndex, producerBuffer );
 			}
 		}
 
@@ -211,12 +209,13 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 		for( int i = 0 ; i < allAuChannelInstances.length ; i++ )
 		{
 			final MadChannelInstance auci = allAuChannelInstances[i];
-			if( channelBufferArray[i] == null )
+			final MadChannelBuffer rjChannelBuffer = parallelRenderingJob.getChannelBuffer( i );
+			if( rjChannelBuffer == null )
 			{
 				final MadChannelType channelType = auci.definition.type;
 				final MadChannelBuffer buf = new MadChannelBuffer( channelType,
 						planHardwareChannelSettings.getChannelBufferLengthForChannelType( channelType ) );
-				channelBufferArray[ i ] = buf;
+				parallelRenderingJob.setChannelBuffer( i, buf );
 				allChannelBuffersSet.add( buf );
 				channelInstanceToBufferMap.put( auci, buf );
 //				log.debug("Creating unconnected buffer of " + auci.instance + " - " +
