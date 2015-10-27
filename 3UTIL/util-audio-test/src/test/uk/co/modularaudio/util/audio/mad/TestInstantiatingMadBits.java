@@ -71,7 +71,7 @@ public class TestInstantiatingMadBits
 
 		final HardwareIOChannelSettings dataRateConfiguration = new HardwareIOChannelSettings( coreEngineLatencyConfiguration );
 
-		final MadTimingParameters timingParameters = new MadTimingParameters( 100, 100, 100, 100, 100 );
+		final MadTimingParameters timingParameters = new MadTimingParameters( DataRate.CD_QUALITY, 100, 100, 100, 100, 100 );
 
 		final TestMadDefinitionFactory defFactory = new TestMadDefinitionFactory();
 		final TestMadInstanceFactory inFactory = new TestMadInstanceFactory();

@@ -28,9 +28,6 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.BaseComponentsCreationContext;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeInWaveTable;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
 import uk.co.modularaudio.service.jobexecutor.JobExecutorService;
@@ -38,6 +35,8 @@ import uk.co.modularaudio.service.samplecaching.SampleCachingService;
 import uk.co.modularaudio.util.audio.controlinterpolation.SpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.dsp.DcTrapFilter;
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeInWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeOutWaveTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -139,8 +138,8 @@ public class SoundfilePlayerMadInstance extends MadInstance<SoundfilePlayerMadDe
 		leftDcTrap.recomputeR( sampleRate );
 		rightDcTrap.recomputeR( sampleRate );
 
-		fadeInWaveTable = new FadeInWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
-		fadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeDefinitions.FADE_MILLIS );
+		fadeInWaveTable = timingParameters.getFadeInWaveTable();
+		fadeOutWaveTable = timingParameters.getFadeOutWaveTable();
 		fadePosition = 0;
 	}
 

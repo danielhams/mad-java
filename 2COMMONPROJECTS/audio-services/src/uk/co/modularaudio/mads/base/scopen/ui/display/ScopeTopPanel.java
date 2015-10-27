@@ -20,13 +20,11 @@
 
 package uk.co.modularaudio.mads.base.scopen.ui.display;
 
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNColours;
 import uk.co.modularaudio.mads.base.scopen.ui.ScopeNUiInstanceConfiguration;
-import uk.co.modularaudio.util.swing.colouredtoggle.ColouredLabelToggle;
+import uk.co.modularaudio.util.swing.colouredtoggle.ColouredTextToggle;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.texttoggle.TextToggle;
 import uk.co.modularaudio.util.swing.toggle.ToggleReceiver;
@@ -37,7 +35,7 @@ public class ScopeTopPanel extends JPanel
 
 //	private static Log log = LogFactory.getLog( ScopeTopTriggerToggle.class.getName() );
 
-	private final ColouredLabelToggle triggerToggle;
+	private final ColouredTextToggle triggerToggle;
 
 	private final TextToggle monoBiPolarToggle;
 
@@ -58,17 +56,16 @@ public class ScopeTopPanel extends JPanel
 
 		setLayout( msh.createMigLayout() );
 
-		triggerToggle = new ColouredLabelToggle(
+		triggerToggle = new ColouredTextToggle(
 				"Trigger",
 				"Click to toggle display of the trigger signal",
 				ScopeNColours.BACKGROUND_COLOR,
-				Color.WHITE,
 				uiInstanceConfiguration.getVisColours()[0],
 				true,
 				triggerToggleReceiver,
 				0 );
 
-		add( triggerToggle, "align center" );
+		add( triggerToggle, "align center, width 120px" );
 
 		monoBiPolarToggle = new TextToggle(
 				"Bipole",
@@ -85,7 +82,7 @@ public class ScopeTopPanel extends JPanel
 		add( monoBiPolarToggle, "align center" );
 	}
 
-	public ColouredLabelToggle getTriggerToggle()
+	public ColouredTextToggle getTriggerToggle()
 	{
 		return triggerToggle;
 	}

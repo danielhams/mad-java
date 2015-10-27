@@ -50,7 +50,7 @@ public class SpectralAmpGenIOQueueBridge<I extends SpectralAmpGenMadInstance<?,I
 			case COMMAND_IN_ACTIVE:
 			{
 				final boolean isActive = (queueEntry.value == 1 );
-				instance.active = isActive;
+				instance.setActive( isActive );
 				break;
 			}
 			default:

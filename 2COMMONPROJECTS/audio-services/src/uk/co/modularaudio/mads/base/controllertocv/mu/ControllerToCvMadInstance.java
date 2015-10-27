@@ -63,8 +63,10 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 
 	// For BCD EQ:
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
-	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 4.1f;
+//	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 4.1f;
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
+
+	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1000.0f / 160.0f;
 	// For BCD Faders
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
 

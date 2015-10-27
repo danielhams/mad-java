@@ -24,9 +24,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeInWaveTable;
-import uk.co.modularaudio.mads.internal.fade.mu.FadeOutWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeInWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeOutWaveTable;
 import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
@@ -93,8 +92,8 @@ public class MasterOutMadInstance extends MadInstance<MasterOutMadDefinition, Ma
 					MasterOutMadDefinition.NUM_NOTE_CHANNELS,
 					noteBufferLength );
 
-			fadeInWaveTable = new FadeInWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
-			fadeOutWaveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
+			fadeInWaveTable = timingParameters.getFadeInWaveTable();
+			fadeOutWaveTable = timingParameters.getFadeOutWaveTable();
 			fadeTableLength = fadeInWaveTable.getBufferCapacity();
 		}
 		catch (final Exception e)

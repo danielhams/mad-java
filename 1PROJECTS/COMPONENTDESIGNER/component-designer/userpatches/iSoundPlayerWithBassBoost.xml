@@ -19,7 +19,7 @@
     </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="4"/>
-        <rackControl name="Master Lane" value="-15.0:0.0"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
         <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
         <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
@@ -28,10 +28,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-4.3204274"/>
+        <rackControl name="Gain" value="-8.4640875"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/renaissance_worldwide_robert_miles_disc_2/11the_delta__as_a_child_i_could_walk_on_the_ceiling.mp3|8519722"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/Renaissance- Transitions, Vol. 3 Disc 1/19 Ricochet Effect.mp3|9360488"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

@@ -21,6 +21,9 @@
 package uk.co.modularaudio.util.audio.mad.timing;
 
 import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeConstants;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeInWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeOutWaveTable;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 
 public class MadTimingParameters
@@ -30,6 +33,12 @@ public class MadTimingParameters
 	protected long nanosPerFrontEndPeriod;
 	protected int sampleFramesPerFrontEndPeriod;
 	protected int sampleFramesPerBackEndPeriod;
+
+	private final FadeInWaveTable fadeInWaveTable;
+	private final FadeOutWaveTable fadeOutWaveTable;
+
+	private final FadeInWaveTable slowFadeInWaveTable;
+	private final FadeOutWaveTable slowFadeOutWaveTable;
 
 	public MadTimingParameters( final DataRate dataRate,
 			final int sampleFramesPerBackEndPeriod,
@@ -42,9 +51,16 @@ public class MadTimingParameters
 		this.nanosPerFrontEndPeriod = (long)(secondsPerFrontEndPeriod * 1000000000L);
 		this.sampleFramesPerFrontEndPeriod = AudioTimingUtils.getNumSamplesForNanosAtSampleRate(sampleRate, nanosPerFrontEndPeriod );
 		this.sampleFramesPerBackEndPeriod = sampleFramesPerBackEndPeriod;
+
+		fadeInWaveTable = new FadeInWaveTable( dataRate, FadeConstants.FADE_MILLIS );
+		fadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeConstants.FADE_MILLIS );
+
+		slowFadeInWaveTable = new FadeInWaveTable( dataRate, FadeConstants.SLOW_FADE_MILLIS );
+		slowFadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeConstants.SLOW_FADE_MILLIS );
 	}
 
-	public MadTimingParameters( final long nanosPerBackEndPeriod,
+	public MadTimingParameters( final DataRate dataRate,
+			final long nanosPerBackEndPeriod,
 			final long nanosPerBackEndSample,
 			final long nanosPerFrontEndPeriod,
 			final int sampleFramesPerFrontEndPeriod,
@@ -55,6 +71,12 @@ public class MadTimingParameters
 		this.nanosPerFrontEndPeriod = nanosPerFrontEndPeriod;
 		this.sampleFramesPerFrontEndPeriod = sampleFramesPerFrontEndPeriod;
 		this.sampleFramesPerBackEndPeriod = sampleFramesPerBackEndPeriod;
+
+		fadeInWaveTable = new FadeInWaveTable( dataRate, FadeConstants.FADE_MILLIS );
+		fadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeConstants.FADE_MILLIS );
+
+		slowFadeInWaveTable = new FadeInWaveTable( dataRate, FadeConstants.SLOW_FADE_MILLIS );
+		slowFadeOutWaveTable = new FadeOutWaveTable( dataRate, FadeConstants.SLOW_FADE_MILLIS );
 	}
 
 	public final void reset( final MadTimingParameters from )
@@ -122,5 +144,23 @@ public class MadTimingParameters
 		return sb.toString();
 	}
 
+	public FadeInWaveTable getFadeInWaveTable()
+	{
+		return fadeInWaveTable;
+	}
 
+	public FadeOutWaveTable getFadeOutWaveTable()
+	{
+		return fadeOutWaveTable;
+	}
+
+	public FadeInWaveTable getSlowFadeInWaveTable()
+	{
+		return slowFadeInWaveTable;
+	}
+
+	public FadeOutWaveTable getSlowFadeOutWaveTable()
+	{
+		return slowFadeOutWaveTable;
+	}
 }

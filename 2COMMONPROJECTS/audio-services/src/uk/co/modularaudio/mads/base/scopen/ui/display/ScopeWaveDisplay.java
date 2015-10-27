@@ -145,6 +145,8 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 		uiInstance.addSampleRateListener(this);
 		uiInstance.getInstance().addLifecycleListener( this );
+
+		setupInternalChannelBuffers();
 	}
 
 	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
@@ -219,6 +221,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void paint( final Graphics g )
 	{
+		log.debug("paint");
 		g.setColor( ScopeNColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, width, height );
 
@@ -235,6 +238,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 	private void setupInternalBuffersFromSize( final int width, final int height )
 	{
+		log.debug("setupInternalBuffersFromSize");
 		this.width = width - 1;
 		this.height = height - 1;
 
@@ -273,6 +277,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 			final int framesChangedOffset,
 			final int framesChangedLength )
 	{
+		log.debug("visualiseScopeBuffers");
 		if( frontEndBuffers[0].length != internalChannelBuffers[0].length )
 		{
 			if( log.isErrorEnabled() )
@@ -390,7 +395,10 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void receiveCaptureLengthSamples( final int captureSamples )
 	{
-//		log.trace("Received capture length samples of " + captureSamples );
+		if( log.isTraceEnabled() )
+		{
+			log.trace("Received capture length samples of " + captureSamples );
+		}
 		this.captureLengthSamples = captureSamples;
 		calculateChannelValues( internalChannelBuffers, 0, captureLengthSamples );
 		repaint();
@@ -399,14 +407,11 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void receiveSampleRateChange( final int sampleRate )
 	{
-		this.sampleRate = sampleRate;
-		maxCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
-				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
-		setupInternalChannelBuffers();
 	}
 
 	private final void setupInternalChannelBuffers()
 	{
+		log.debug("setupInternalChannelBuffers");
 		if( internalChannelBuffers[0] == null ||
 				internalChannelBuffers[0].length != maxCaptureSamples )
 		{
@@ -419,6 +424,10 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 	public void setSignalVisibility( final int signal, final boolean active )
 	{
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Setting signal visability on " + signal + " to " + active );
+		}
 		signalVisibility[signal] = active;
 		repaint();
 	}
@@ -434,6 +443,9 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	public void receiveStartup( final HardwareIOChannelSettings hardwareChannelSettings,
 			final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 	{
+		this.sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
+		maxCaptureSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+				LogarithmicTimeMillis1To1000SliderModel.MAX_MILLIS );
 		setupInternalChannelBuffers();
 	}
 

@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.internal.fade.mu;
+package uk.co.modularaudio.util.audio.lookuptable.fade;
 
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;

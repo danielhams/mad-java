@@ -18,11 +18,11 @@
  *
  */
 
-package uk.co.modularaudio.mads.internal.fade.mu;
+package uk.co.modularaudio.util.audio.lookuptable.fade;
 
-public class FadeDefinitions
+public class FadeConstants
 {
-	public final static long FADE_200_MILLIS = 200;
+	public final static int FADE_200_MILLIS = 200;
 	public final static int FADE_100_MILLIS = 100;
 	public final static int FADE_10_MILLIS = 10;
 	public final static int FADE_5_MILLIS = 5;
@@ -31,4 +31,6 @@ public class FadeDefinitions
 
 //	public final static int FADE_MILLIS = FADE_5_MILLIS;
 	public final static int FADE_MILLIS = FADE_10_MILLIS;
+
+	public final static int SLOW_FADE_MILLIS = FADE_100_MILLIS;
 }

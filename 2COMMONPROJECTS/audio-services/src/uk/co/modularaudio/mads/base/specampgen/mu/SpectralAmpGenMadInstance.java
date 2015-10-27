@@ -20,11 +20,16 @@
 
 package uk.co.modularaudio.mads.base.specampgen.mu;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeConstants;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeInWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeOutWaveTable;
+import uk.co.modularaudio.util.audio.lookuptable.raw.RawLookupTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -45,13 +50,18 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 {
 	private static Log log = LogFactory.getLog( SpectralAmpGenMadInstance.class.getName() );
 
-	protected boolean active;
+	private boolean active;
+	private boolean desiredActive;
 
-	protected int maxRingBufferingInSamples;
+	private int maxRingBufferingInSamples;
 
 	private BackendToFrontendDataRingBuffer dataRingBuffer;
 
 	private int numSamplePerFrontEndPeriod;
+
+	private FadeInWaveTable fadeInTable;
+	private FadeOutWaveTable fadeOutTable;
+	private int fadePosition;
 
 	public SpectralAmpGenMadInstance( final String instanceName,
 			final D definition,
@@ -76,13 +86,17 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			final long nanosBeBuffering = timingParameters.getNanosPerBackEndPeriod() * 2;
 			final long nanosForBuffering = nanosFeBuffering + nanosBeBuffering;
 
-			maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate, 16 ) +
+			maxRingBufferingInSamples = AudioTimingUtils.getNumSamplesForMillisAtSampleRate( sampleRate,
+					FadeConstants.SLOW_FADE_MILLIS ) +
 				AudioTimingUtils.getNumSamplesForNanosAtSampleRate( sampleRate, nanosForBuffering );
 
 			dataRingBuffer = new BackendToFrontendDataRingBuffer( maxRingBufferingInSamples );
 			dataRingBuffer.backEndClearNumSamplesQueued();
 
 			numSamplePerFrontEndPeriod = timingParameters.getSampleFramesPerFrontEndPeriod();
+
+			fadeInTable = timingParameters.getSlowFadeInWaveTable();
+			fadeOutTable = timingParameters.getSlowFadeOutWaveTable();
 		}
 		catch (final Exception e)
 		{
@@ -105,12 +119,59 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 			final int numFrames  )
 	{
 		final boolean inConnected = channelConnectedFlags.get( SpectralAmpGenMadDefinition.CONSUMER_IN);
+		final MadChannelBuffer inCb = channelBuffers[ SpectralAmpGenMadDefinition.CONSUMER_IN ];
+		final float[] inFloats = inCb.floatBuffer;
 
-		if( active )
+		if( desiredActive != active )
 		{
-			final MadChannelBuffer inCb = channelBuffers[ SpectralAmpGenMadDefinition.CONSUMER_IN ];
-			final float[] inFloats = inCb.floatBuffer;
+			// Need to swap over until we run out of fade.
+			final RawLookupTable fadeTable = ( desiredActive ? fadeInTable : fadeOutTable );
+			final int numLeftInFade = fadeTable.capacity - fadePosition;
+//			log.debug("Have " + numLeftInFade + " left to fade and need " + numFrames + " frames in process");
 
+			final int numThisRound = (numLeftInFade < numFrames ? numLeftInFade : numFrames );
+//			log.debug("Can fade " + numThisRound + " this round");
+			final int numWithoutFade = numFrames - numThisRound;
+//			log.debug("Filling remaining " + numWithoutFade + " with zeros");
+
+			final int tmpPosition = 0;
+			final float[] tmpFloats = tempQueueEntryStorage.temporaryFloatArray;
+
+			System.arraycopy( inFloats, frameOffset, tmpFloats, tmpPosition, numFrames );
+
+			for( int s = 0 ; s < numThisRound ; ++s )
+			{
+				final float fadeVal = fadeTable.getValueAt( fadePosition );
+				tmpFloats[s] *= fadeVal;
+				fadePosition++;
+			}
+
+			if( !desiredActive && numWithoutFade > 0 )
+			{
+				Arrays.fill( tmpFloats, numThisRound, numFrames, 0.0f );
+			}
+
+			// And push to the front end
+			final long timestampForIndexUpdate = periodStartTimestamp + numFrames;
+			final int numWritten = dataRingBuffer.backEndWrite( tmpFloats, tmpPosition, numFrames );
+			if( numWritten != numFrames )
+			{
+				log.warn("Missed out on some data in back end write");
+			}
+			queueWriteIndexUpdate( tempQueueEntryStorage,
+					0,
+					dataRingBuffer.getWritePosition(),
+					timestampForIndexUpdate );
+			dataRingBuffer.backEndClearNumSamplesQueued();
+
+			if( fadePosition >= fadeTable.capacity )
+			{
+//				log.debug("Completed fade, switching over active flag");
+				active = desiredActive;
+			}
+		}
+		else if( active )
+		{
 			try
 			{
 				if( inConnected )
@@ -178,5 +239,11 @@ public class SpectralAmpGenMadInstance<D extends SpectralAmpGenMadDefinition<D, 
 	public BackendToFrontendDataRingBuffer getDataRingBuffer()
 	{
 		return dataRingBuffer;
+	}
+
+	public void setActive( final boolean desiredActive )
+	{
+		this.desiredActive = desiredActive;
+		fadePosition = 0;
 	}
 }

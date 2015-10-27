@@ -20,6 +20,7 @@
 
 package uk.co.modularaudio.service.timing.impl;
 
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.timing.MadChannelPeriodData;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
@@ -27,7 +28,7 @@ import uk.co.modularaudio.util.audio.mad.timing.MadTimingSource;
 public class InternalTimingSource implements MadTimingSource
 {
 	private final MadChannelPeriodData periodData = new MadChannelPeriodData();
-	private final MadTimingParameters timingParameters = new MadTimingParameters( 0, 0, 0, 0, 0 );
+	private final MadTimingParameters timingParameters = new MadTimingParameters( DataRate.CD_QUALITY, 0, 0, 0, 0, 0 );
 
 	public InternalTimingSource()
 	{

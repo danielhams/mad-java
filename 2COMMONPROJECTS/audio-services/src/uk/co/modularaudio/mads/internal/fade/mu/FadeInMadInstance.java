@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeInWaveTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
@@ -56,7 +57,7 @@ public class FadeInMadInstance extends MadInstance<FadeInMadDefinition, FadeInMa
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
 	{
-		waveTable = new FadeInWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
+		waveTable = timingParameters.getFadeInWaveTable();
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class FadeInMadInstance extends MadInstance<FadeInMadDefinition, FadeInMa
 			final long periodStartFrameTime ,
 			final MadChannelConnectedFlags channelConnectedFlags ,
 			final MadChannelBuffer[] channelBuffers ,
-			int frameOffset , final int numFrames  )
+			final int frameOffset , final int numFrames  )
 	{
 		// Only do some processing if we are connected
 		int runningTablePosition = curTablePosition.get();

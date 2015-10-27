@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.modularaudio.mads.internal.InternalComponentsCreationContext;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeConstants;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeOutWaveTable;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
@@ -56,7 +58,7 @@ public class FadeOutMadInstance extends MadInstance<FadeOutMadDefinition, FadeOu
 			final MadFrameTimeFactory frameTimeFactory )
 		throws MadProcessingException
 	{
-		waveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeDefinitions.FADE_MILLIS );
+		waveTable = new FadeOutWaveTable( hardwareChannelSettings.getAudioChannelSetting().getDataRate(), FadeConstants.FADE_MILLIS );
 	}
 
 	@Override

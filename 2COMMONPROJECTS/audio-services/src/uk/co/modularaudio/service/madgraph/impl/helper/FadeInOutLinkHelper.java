@@ -30,7 +30,6 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.internal.fade.mu.FadeDefinitions;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadDefinition;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeInMadInstance;
 import uk.co.modularaudio.mads.internal.fade.mu.FadeOutMadDefinition;
@@ -42,6 +41,7 @@ import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeInMadInstance;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadDefinition;
 import uk.co.modularaudio.mads.internal.paramfade.mu.PFadeOutMadInstance;
 import uk.co.modularaudio.service.madcomponent.MadComponentService;
+import uk.co.modularaudio.util.audio.lookuptable.fade.FadeConstants;
 import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadChannelType;
@@ -101,7 +101,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
@@ -134,7 +134,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
@@ -169,7 +169,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
@@ -208,7 +208,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
@@ -277,7 +277,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
@@ -379,7 +379,7 @@ public class FadeInOutLinkHelper
 		{
 			try
 			{
-				Thread.sleep( FadeDefinitions.FADE_MILLIS );
+				Thread.sleep( FadeConstants.FADE_MILLIS );
 			}
 			catch (final InterruptedException e)
 			{
