@@ -20,10 +20,21 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
-
-
 public class MadChannelNoteEvent
 {
+	public enum MadChannelNoteEventType
+	{
+		EMPTY,
+		NOTE_ON,
+		NOTE_CONTINUATION,
+		NOTE_OFF,
+		NOTE_AFTERTOUCH,
+		CONTROLLER,
+		PROGRAM_CHANGE,
+		CHANNEL_AFTERTOUCH,
+		PITCH_BEND
+	};
+
 	protected int channel;
 	protected int eventSampleIndex;
 	protected MadChannelNoteEventType eventType;

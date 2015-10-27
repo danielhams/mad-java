@@ -23,7 +23,7 @@ package uk.co.modularaudio.util.audio.mad.hardwareio;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
+import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent.MadChannelNoteEventType;
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 import uk.co.modularaudio.util.audio.midi.MidiUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;

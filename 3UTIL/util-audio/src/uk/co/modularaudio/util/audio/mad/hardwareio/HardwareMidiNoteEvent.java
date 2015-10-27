@@ -20,7 +20,7 @@
 
 package uk.co.modularaudio.util.audio.mad.hardwareio;
 
-import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
+import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent.MadChannelNoteEventType;
 
 
 

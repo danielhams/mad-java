@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.mad;
 
 import uk.co.modularaudio.util.audio.buffer.BufferObjectCopier;
+import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent.MadChannelNoteEventType;
 
 public class MadChannelNoteEventCopier implements BufferObjectCopier<MadChannelNoteEvent>
 {
