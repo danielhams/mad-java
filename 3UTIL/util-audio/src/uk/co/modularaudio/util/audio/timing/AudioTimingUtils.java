@@ -29,22 +29,6 @@ public class AudioTimingUtils
 
 	private final static long HERTZ_TO_NANOSECONDS_RATIO = 1000 * 1000 * 1000;
 
-	public static float calculateNewValueRatioForMillisAtSampleRate( final long inSampleRate, final float millisForChase )
-	{
-		if( millisForChase <= 0.0f )
-		{
-			return 1.0f;
-		}
-		else
-		{
-			final float samplesPerMilli = inSampleRate / 1000.0f;
-			final float samplesForChase = samplesPerMilli * millisForChase;
-			final float ratio = 1.0f / samplesForChase;
-
-			return ratio;
-		}
-	}
-
 	public static float calculateNewValueRatioHandwaveyVersion( final long inSampleRate, final float millisForChase )
 	{
 		if( millisForChase <= 0.0f )
@@ -63,11 +47,21 @@ public class AudioTimingUtils
 
 	public static int getNumSamplesForMillisAtSampleRate( final int sampleRate, final float millis )
 	{
+		return (int)getNumSamplesFloatForMillisAtSampleRate( sampleRate, millis );
+	}
+
+	public static float getNumSamplesFloatForMillisAtSampleRate( final int sampleRate, final float millis )
+	{
 		// Assume we have a high enough sample rate that this returns sensible things
-		return (int)((sampleRate / 1000.0) * millis);
+		return (float)((sampleRate / 1000.0) * millis);
 	}
 
 	public static long getNumNanosecondsForBufferLength( final int sampleRate, final int hardwareBufferLength )
+	{
+		return getNumNanosecondsForBufferLengthFloat( sampleRate, hardwareBufferLength );
+	}
+
+	public static long getNumNanosecondsForBufferLengthFloat( final int sampleRate, final float hardwareBufferLength )
 	{
 		final double numNanosecondsPerSample = (HERTZ_TO_NANOSECONDS_RATIO / (double)sampleRate);
 		return (long)(numNanosecondsPerSample * hardwareBufferLength);
@@ -77,6 +71,12 @@ public class AudioTimingUtils
 	{
 		final float timeInMillis = nanos / 1000000.0f;
 		return getNumSamplesForMillisAtSampleRate( sampleRate, timeInMillis );
+	}
+
+	public static float getNumSamplesFloatForNanosAtSampleRate( final int sampleRate, final long nanos )
+	{
+		final float timeInMillis = nanos / 1000000.0f;
+		return getNumSamplesFloatForMillisAtSampleRate( sampleRate, timeInMillis );
 	}
 
 	public static String formatTimestampForLogging( final long rawNanosTimestamp )

@@ -27,18 +27,18 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 public class SingleChannelVolumeMadQueueBridge extends MadLocklessQueueBridge<SingleChannelVolumeMadInstance>
 {
 	public static final int COMMAND_VOLUME = 0;
-	
+
 	public SingleChannelVolumeMadQueueBridge()
 	{
 	}
-	
+
 	@Override
-	public void receiveQueuedEventsToInstance( SingleChannelVolumeMadInstance instance, ThreadSpecificTemporaryEventStorage tses, long timingInfo, IOQueueEvent queueEntry )
+	public void receiveQueuedEventsToInstance( final SingleChannelVolumeMadInstance instance, final ThreadSpecificTemporaryEventStorage tses, final long timingInfo, final IOQueueEvent queueEntry )
 	{
 		switch( queueEntry.command )
 		{
 			case COMMAND_VOLUME:
-				instance.inVolumeMultiplier = Float.intBitsToFloat( (int)(queueEntry.value) );
+				instance.setInVolumeMultiplier( Float.intBitsToFloat( (int)(queueEntry.value) ) );
 				break;
 		}
 	}

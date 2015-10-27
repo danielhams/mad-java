@@ -20,75 +20,66 @@
 
 package test.uk.co.modularaudio.util.audio.timing;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.math.MathFormatter;
 
-public class AudioTimingUtilsTest
+public class AudioTimingUtilsTest extends TestCase
 {
 	private static Log log = LogFactory.getLog( AudioTimingUtilsTest.class.getName() );
+
+	private static final float MAX_ROUNDTRIP_DIFF_MILLIS = 0.01f;
 
 	public AudioTimingUtilsTest()
 	{
 	}
 
-	public void doit()
-		throws Exception
+	public void testTimingMillisRoundtrip() throws Exception
 	{
-		log.debug("Doing timing tests.");
-		final float newRatio22050And10 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  22050, 10 );
-		log.debug("For 22050 and 10 it is " + newRatio22050And10 );
-		final float newRatio44100And20 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 20 );
-		log.debug("For 44100 and 20 it is " + newRatio44100And20 );
-		final float newRatio44100And5 = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  44100, 5 );
-		log.debug("For 44100 and 5 it is " + newRatio44100And5 );
+		final DataRate dataRate = DataRate.CD_QUALITY;
+		final int sampleRate = dataRate.getValue();
+		final float[] testMilliFloats = new float[] {
+			1.0f,
+			0.72389f,
+			10.0f,
+			20.0f,
+			123.11265f,
+			1.9f,
+			0.1f
+		};
 
-		testOne( 44100, 10 );
-		testOne( 44100, 20 );
-		testOne( 44100, 40 );
-		testOne( 22050, 10 );
-		testOne( 22050, 20 );
-		testOne( 22050, 40 );
-		testOne( 11025, 10 );
-		testOne( 11025, 20 );
-		testOne( 11025, 40 );
-	}
-
-	public void testOne( final int sampleRate, final int millis )
-	{
-		final float testValue= AudioTimingUtils.calculateNewValueRatioHandwaveyVersion(  sampleRate, millis );
-		final float oldRatio = 1.0f - testValue;
-		float value = 1.0f;
-		int numSamplesToHalf = 0;
-
-		while( value >= 0.5f )
+		for( final float testMillis : testMilliFloats )
 		{
-			value = value * oldRatio;
-			numSamplesToHalf++;
-		}
-		log.debug("The number of samples to half at " + sampleRate +" and " + millis + "ms is " + numSamplesToHalf );
-		final int numSamplesPerMilli = sampleRate / 1000;
-		final float numMillisToHalf = numSamplesToHalf / (float)numSamplesPerMilli;
-		log.debug("This is " + numMillisToHalf + " milliseconds to half");
-		final int numSamplesForMillisAtSampleRate = sampleRate / 1000 * millis;
-		log.debug("And " + millis + "ms at " + sampleRate + " is " + numSamplesForMillisAtSampleRate + " samples");
-		value = 1.0f;
-		for( int i = 0 ; i < numSamplesForMillisAtSampleRate ; i++ )
-		{
-			value = value * oldRatio;
-		}
-		log.debug("And after this many samples, the value is " + value );
-	}
+			final float numSamplesFloat = AudioTimingUtils.getNumSamplesFloatForMillisAtSampleRate( sampleRate, testMillis );
+			final int numSamples = (int)numSamplesFloat;
+			final long andBackNanos = AudioTimingUtils.getNumNanosecondsForBufferLengthFloat( sampleRate, numSamplesFloat );
+			final float andBackMillis = (float)(andBackNanos / 1000000.0);
 
-	/**
-	 * @param args
-	 */
-	public static void main( final String[] args )
-		throws Exception
-	{
-		final AudioTimingUtilsTest atut = new AudioTimingUtilsTest();
-		atut.doit();
-	}
+			final float roundtripDiff = Math.abs(andBackMillis - testMillis);
 
+			if(! (roundtripDiff < MAX_ROUNDTRIP_DIFF_MILLIS ) )
+			{
+				log.error("Failed round trip of " + testMillis + " with diff " +
+						MathFormatter.slowFloatPrint( roundtripDiff, 12, true ) );
+			}
+
+			assertTrue( roundtripDiff < MAX_ROUNDTRIP_DIFF_MILLIS );
+
+			final float andBackToSamplesFloat = AudioTimingUtils.getNumSamplesFloatForNanosAtSampleRate( sampleRate, andBackNanos );
+			final int andBackToSamplesInt = (int)andBackToSamplesFloat;
+
+			if( andBackToSamplesInt != numSamples )
+			{
+				log.error("Failed round trip nanos to samples of " + testMillis + " with back to samples " +
+						andBackToSamplesInt + " expected " + numSamples );
+			}
+
+			assertTrue( andBackToSamplesInt == numSamples );
+		}
+	}
 }

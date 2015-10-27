@@ -23,55 +23,48 @@ package test.uk.co.modularaudio.util.audio.mad.units.singlechanvolume;
 import java.util.Arrays;
 import java.util.Map;
 
+import uk.co.modularaudio.util.audio.controlinterpolation.CDSpringAndDamperDouble24Interpolator;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
+import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
-import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOOneChannelSetting;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVolumeMadDefinition,
 	SingleChannelVolumeMadInstance>
 {
-	// Try with 5 milliseconds as the upper limit for volume changes
-	private static final int MILLIS_FOR_CHASE = 5;
+	protected SingleChannelVolumeMadDefinition definition;
 
-	protected SingleChannelVolumeMadDefinition definition = null;
-	
-	private float currentVolumeMultiplier = 0.5f;
-	
-	// Calculated ratios based on temporal fades using the latency configuration
-	private float newValueRatio = 0.0f;
-	private float oldValueRatio = 0.0f;
-	
+	private final CDSpringAndDamperDouble24Interpolator volSad = new CDSpringAndDamperDouble24Interpolator();
+
 	// Values set / read by the queue bridge
-	protected float inVolumeMultiplier = 0.0f;
-	
-	public SingleChannelVolumeMadInstance( String instanceName,
-			SingleChannelVolumeMadDefinition definition,
-			Map<MadParameterDefinition, String> creationParameterValues,
-			MadChannelConfiguration channelConfiguration )
+	private float inVolumeMultiplier;
+
+	public SingleChannelVolumeMadInstance( final String instanceName,
+			final SingleChannelVolumeMadDefinition definition,
+			final Map<MadParameterDefinition, String> creationParameterValues,
+			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
 	}
 
 	@Override
-	public void start( HardwareIOChannelSettings dataRateConfiguration, MadTimingParameters timingParameters, MadFrameTimeFactory frameTimeFactory )
+	public void start( final HardwareIOChannelSettings dataRateConfiguration, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
-		HardwareIOOneChannelSetting audioChannelSetting = dataRateConfiguration.getAudioChannelSetting();
-		DataRate dataRate = audioChannelSetting.getDataRate();
-		// Ideally I should really be simulating volume slider velocity
-		newValueRatio = AudioTimingUtils.calculateNewValueRatioHandwaveyVersion( dataRate.getValue(), MILLIS_FOR_CHASE );
-		oldValueRatio = 1.0f - newValueRatio;
+		final HardwareIOOneChannelSetting audioChannelSetting = dataRateConfiguration.getAudioChannelSetting();
+		final DataRate dataRate = audioChannelSetting.getDataRate();
+
+		volSad.resetSampleRateAndPeriod( dataRate.getValue(), audioChannelSetting.getChannelBufferLength(), 200 );
+		volSad.hardSetValue( inVolumeMultiplier );
 	}
 
 	@Override
@@ -80,33 +73,34 @@ public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVol
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			MadTimingParameters timingParameters ,
-			long currentTime ,
-			MadChannelConnectedFlags channelConnectedFlags ,
-			MadChannelBuffer[] channelBuffers ,
-			int frameOffset , int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long currentTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames  )
 	{
-//		float volumeMultiplier = realPeriodValues.volumeMultiplier;
-		
-		// Recompute our current volume multiplier
-		currentVolumeMultiplier = (this.inVolumeMultiplier * newValueRatio) + (currentVolumeMultiplier * oldValueRatio );
-		
-		int inputIndex = SingleChannelVolumeMadDefinition.CONSUMER;
-		MadChannelBuffer inputChannelBuffer = channelBuffers[ inputIndex ];
-		float[] inputFloats = inputChannelBuffer.floatBuffer;
-		
-		int outputIndex = SingleChannelVolumeMadDefinition.PRODUCER;
-		MadChannelBuffer outputChannelBuffer = channelBuffers[ outputIndex ];
-		float[] outputFloats = outputChannelBuffer.floatBuffer;
-		
+		final float[] tmpFloats = tempQueueEntryStorage.temporaryFloatArray;
+		volSad.checkForDenormal();
+		volSad.generateControlValues( tmpFloats, 0, numFrames );
+
+		final int inputIndex = SingleChannelVolumeMadDefinition.CONSUMER;
+		final MadChannelBuffer inputChannelBuffer = channelBuffers[ inputIndex ];
+		final float[] inputFloats = inputChannelBuffer.floatBuffer;
+
+		final int outputIndex = SingleChannelVolumeMadDefinition.PRODUCER;
+		final MadChannelBuffer outputChannelBuffer = channelBuffers[ outputIndex ];
+		final float[] outputFloats = outputChannelBuffer.floatBuffer;
+
 		if( channelConnectedFlags.get( inputIndex ) )
 		{
 			if( channelConnectedFlags.get(  outputIndex ) )
 			{
 				for( int i = 0 ; i < inputFloats.length ; i++ )
 				{
-					outputFloats[ i ] = inputFloats[ i ] * currentVolumeMultiplier;
+					outputFloats[ frameOffset + i ] = inputFloats[ frameOffset + i ] *
+							tmpFloats[ i ];
 				}
 			}
 		}
@@ -119,5 +113,11 @@ public class SingleChannelVolumeMadInstance extends MadInstance<SingleChannelVol
 			}
 		}
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
+	}
+
+	public void setInVolumeMultiplier( final float volMultiplier )
+	{
+		volSad.notifyOfNewValue( volMultiplier );
+		inVolumeMultiplier = volMultiplier;
 	}
 }

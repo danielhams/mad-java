@@ -44,7 +44,7 @@ public class SingleChannelVolumeMadDefinition extends MadDefinition<SingleChanne
 	public final static int PRODUCER = 1;
 	public final static int NUM_CHANNELS = 2;
 
-	private MadChannelConfiguration defaultChannelConfiguration = null;
+	private final MadChannelConfiguration defaultChannelConfiguration;
 
 	public SingleChannelVolumeMadDefinition( final MadClassification classification )
 	{
