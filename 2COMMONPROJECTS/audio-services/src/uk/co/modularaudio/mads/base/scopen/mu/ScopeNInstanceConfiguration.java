@@ -21,9 +21,9 @@
 package uk.co.modularaudio.mads.base.scopen.mu;
 
 import uk.co.modularaudio.mads.base.scopen.ui.display.ScopeWaveDisplay;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
-import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelPosition;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;
 
 public class ScopeNInstanceConfiguration

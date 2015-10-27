@@ -20,8 +20,8 @@
 
 package test.uk.co.modularaudio.util.audio.mad.units.stereotee;
 
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class StereoTeeMadQueueBridge extends MadLocklessQueueBridge<StereoTeeMadInstance>

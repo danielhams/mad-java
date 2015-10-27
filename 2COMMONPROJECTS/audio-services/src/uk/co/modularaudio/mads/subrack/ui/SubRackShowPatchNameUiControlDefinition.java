@@ -24,8 +24,8 @@ import java.awt.Rectangle;
 
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadDefinition;
 import uk.co.modularaudio.mads.subrack.mu.SubRackMadInstance;
-import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 import uk.co.modularaudio.util.audio.gui.mad.AbstractMadUiControlInstance;
+import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition;
 
 // Yes, it's a hack - java generics blow
 public class SubRackShowPatchNameUiControlDefinition extends MadUiControlDefinition<SubRackMadDefinition, SubRackMadInstance, SubRackMadUiInstance>

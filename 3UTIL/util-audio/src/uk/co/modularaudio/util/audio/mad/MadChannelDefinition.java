@@ -22,12 +22,34 @@ package uk.co.modularaudio.util.audio.mad;
 
 public class MadChannelDefinition
 {
+	public enum MadChannelType
+	{
+		AUDIO, CV, NOTE
+	};
+
+	public enum MadChannelDirection
+	{
+		PRODUCER, CONSUMER
+	};
+
+	public enum MadChannelPosition {
+		STEREO_LEFT,
+		STEREO_RIGHT,
+		QUAD_FRONT_LEFT,
+		QUAD_FRONT_RIGHT,
+		QUAD_BACK_LEFT,
+		QUAD_BACK_RIGHT,
+		MONO
+	};
+
 	public final String name;
 	public final MadChannelType type;
 	public final MadChannelDirection direction;
 	public final MadChannelPosition position;
 
-	public MadChannelDefinition( final String name, final MadChannelType type, final MadChannelDirection direction,
+	public MadChannelDefinition( final String name,
+			final MadChannelType type,
+			final MadChannelDirection direction,
 			final MadChannelPosition position )
 	{
 		this.name = name;

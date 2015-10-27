@@ -20,8 +20,8 @@
 
 package uk.co.modularaudio.mads.internal.feedbacklink.mu;
 
-import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
+import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
 public class FeedbackLinkProducerIOQueueBridge extends MadLocklessQueueBridge<FeedbackLinkProducerMadInstance>

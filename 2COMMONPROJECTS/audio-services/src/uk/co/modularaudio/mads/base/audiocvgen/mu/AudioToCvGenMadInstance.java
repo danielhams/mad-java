@@ -25,7 +25,7 @@ import java.util.Map;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelConnectedFlags;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.audio.mad.MadProcessingException;

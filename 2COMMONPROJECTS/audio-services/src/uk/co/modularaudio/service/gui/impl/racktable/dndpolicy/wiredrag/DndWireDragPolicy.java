@@ -44,7 +44,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackComponentProperties;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackDataModel;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLink;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.audio.mad.MadInstance;
 import uk.co.modularaudio.util.audio.mad.MadLink;

@@ -22,8 +22,6 @@ package uk.co.modularaudio.util.audio.mad;
 
 import java.util.Comparator;
 
-import uk.co.modularaudio.util.audio.mad.MadDefinition;
-
 public class MadDefinitionComparator implements Comparator<MadDefinition<?,?>>
 {
 

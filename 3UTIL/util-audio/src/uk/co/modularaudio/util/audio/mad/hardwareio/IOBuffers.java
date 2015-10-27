@@ -21,7 +21,7 @@
 package uk.co.modularaudio.util.audio.mad.hardwareio;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 
 public class IOBuffers
 {

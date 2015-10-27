@@ -20,9 +20,9 @@
 
 package uk.co.modularaudio.mads.base.specampgen.mu;
 
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
-import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelPosition;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;

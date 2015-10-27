@@ -48,7 +48,7 @@ import uk.co.modularaudio.util.audio.gui.mad.rack.RackIOLinkListener;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackLink;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackLinkEvent;
 import uk.co.modularaudio.util.audio.gui.mad.rack.RackLinkListener;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadChannelInstance;
 import uk.co.modularaudio.util.bufferedimage.AllocationBufferType;
 import uk.co.modularaudio.util.bufferedimage.AllocationLifetime;

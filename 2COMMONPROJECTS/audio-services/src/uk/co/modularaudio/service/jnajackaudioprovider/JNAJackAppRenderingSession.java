@@ -45,9 +45,9 @@ import uk.co.modularaudio.service.audioproviderregistry.AppRenderingErrorQueue.E
 import uk.co.modularaudio.service.timing.TimingService;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEvent;
 import uk.co.modularaudio.util.audio.mad.MadChannelNoteEventType;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.hardwareio.AudioHardwareDevice;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOConfiguration;

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import uk.co.modularaudio.mads.masterio.MasterIOMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadInstance;

@@ -29,13 +29,13 @@ import uk.co.modularaudio.service.madclassification.MadClassificationService;
 import uk.co.modularaudio.service.madgraph.MadSubGraphDefinition;
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
-import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelPosition;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
-import uk.co.modularaudio.util.audio.mad.graph.MadGraphQueueBridge;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
+import uk.co.modularaudio.util.audio.mad.graph.MadGraphQueueBridge;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 

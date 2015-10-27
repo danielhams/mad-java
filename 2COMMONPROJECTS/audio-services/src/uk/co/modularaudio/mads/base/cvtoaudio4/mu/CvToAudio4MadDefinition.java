@@ -30,7 +30,7 @@ import uk.co.modularaudio.mads.base.BaseMadDefinition;
 import uk.co.modularaudio.mads.base.audiocvgen.mu.AudioToCvGenInstanceConfiguration;
 import uk.co.modularaudio.mads.base.audiocvgen.mu.AudioToCvGenMadDefinition;
 import uk.co.modularaudio.service.madclassification.MadClassificationService;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadClassification;
 import uk.co.modularaudio.util.audio.mad.MadClassification.ReleaseState;
 import uk.co.modularaudio.util.audio.mad.MadInstance;

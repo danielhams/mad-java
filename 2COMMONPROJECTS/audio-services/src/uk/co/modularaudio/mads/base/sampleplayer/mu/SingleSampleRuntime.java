@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.sampleplayer.mu.SingleSampleState.Event;
 import uk.co.modularaudio.service.blockresampler.BlockResamplerService;
-import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.service.blockresampler.BlockResamplingClient;
+import uk.co.modularaudio.service.blockresampler.BlockResamplingMethod;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 

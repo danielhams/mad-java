@@ -27,9 +27,9 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelConfiguration;
 import uk.co.modularaudio.util.audio.mad.MadChannelDefinition;
-import uk.co.modularaudio.util.audio.mad.MadChannelDirection;
-import uk.co.modularaudio.util.audio.mad.MadChannelPosition;
-import uk.co.modularaudio.util.audio.mad.MadChannelType;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelDirection;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelPosition;
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
 import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 
 public class AudioSystemTesterMadInstanceConfiguration

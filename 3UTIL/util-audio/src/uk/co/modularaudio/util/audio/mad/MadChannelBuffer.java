@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.util.audio.mad;
 
+import uk.co.modularaudio.util.audio.mad.MadChannelDefinition.MadChannelType;
+
 
 public class MadChannelBuffer
 {
