@@ -59,6 +59,8 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	};
 
 	// Mad instances within the graph
+	protected boolean ownsMadInstances;
+
 	protected final Collection<MadInstance<?,?>> instances = new ArrayList<MadInstance<?,?>>();
 	protected final Map<String, MadInstance<?,?>> nameToInstanceMap = new HashMap<String, MadInstance<?,?>>();
 	protected final Map<MadInstance<?,?>, String> instanceToNameInGraphMap = new HashMap<MadInstance<?,?>, String>();
@@ -78,9 +80,16 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 	public MadGraphInstance( final String graphName,
 			final D graphDefinition,
 			final Map<MadParameterDefinition, String> parameterValues,
-			final MadChannelConfiguration channelConfiguration )
+			final MadChannelConfiguration channelConfiguration,
+			final boolean ownsMadInstances )
 	{
 		super( graphName, graphDefinition, parameterValues, channelConfiguration );
+		this.ownsMadInstances = ownsMadInstances;
+	}
+
+	public boolean doesOwnMadInstances()
+	{
+		return ownsMadInstances;
 	}
 
 	@Override
@@ -178,6 +187,11 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return linkMap.getConsumerInstanceLinks( instance );
 	}
 
+	public Collection<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
+	{
+		return linkMap.findProducerInstanceLinksReturnNull( channelInstance );
+	}
+
 	public boolean checkCanAddInstanceWithName( final String nameInGraph )
 	{
 		return !nameToInstanceMap.containsKey( nameInGraph );
@@ -259,7 +273,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		ioLinkMap.removeMadInstance( this, instanceToRemove );
 	}
 
-	public void exposeAudioInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
+	public void exposeMadInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
 			final MadChannelInstance channelInstanceToExpose ) throws RecordNotFoundException, MAConstraintViolationException
 	{
 		if( graphChannelInstance.definition.direction != channelInstanceToExpose.definition.direction )
@@ -278,7 +292,7 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		}
 	}
 
-	public void removeAudioInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
+	public void removeMadInstanceChannelAsGraphChannel( final MadChannelInstance graphChannelInstance,
 			final MadChannelInstance channelInstanceExposed )
 		throws RecordNotFoundException, MAConstraintViolationException
 	{
@@ -292,19 +306,24 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		}
 	}
 
-	public Map<MadChannelInstance, MadChannelInstance> getGraphOutputChannelInstanceMap()
+	public Map<MadChannelInstance, MadChannelInstance> getGraphProducerChannelInstanceMap()
 	{
 		return ioLinkMap.getGraphProducerChannelInstanceMap();
 	}
 
-	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphInputChannelInstanceMap()
+	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphConsumerChannelInstanceMap()
 	{
 		return ioLinkMap.getGraphConsumerChannelInstanceMap();
 	}
 
-	public Collection<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
+	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
 	{
-		return linkMap.findProducerInstanceLinksReturnNull( channelInstance );
+		return ioLinkMap.getGraphChannelsExposedForProducerChannel( auci );
+	}
+
+	public boolean isProducerChannelExposedOnGraph( final MadChannelInstance auci )
+	{
+		return ioLinkMap.isProducerChannelExposed( auci );
 	}
 
 	public MadInstance<?,?> getInstanceByName( final String name )
@@ -392,19 +411,10 @@ public class MadGraphInstance<D extends MadGraphDefinition<D,I>, I extends MadGr
 		return true;
 	}
 
-	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
-	{
-		return ioLinkMap.getGraphChannelsExposedForProducerChannel( auci );
-	}
-
 	public void debugLinks()
 	{
 		linkMap.debug();
 		ioLinkMap.debug();
 	}
 
-	public boolean isProducerChannelExposedOnGraph( final MadChannelInstance auci )
-	{
-		return ioLinkMap.isProducerChannelExposed( auci );
-	}
 }

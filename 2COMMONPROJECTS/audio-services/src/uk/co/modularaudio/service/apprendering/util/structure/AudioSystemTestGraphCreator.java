@@ -43,6 +43,7 @@ public class AudioSystemTestGraphCreator
 	{
 		final MadGraphInstance<?, ?> graph = graphService.createNewParameterisedGraph( "AudioSystemTestGraph",
 				GraphType.APP_GRAPH,
+				true,
 				16, 16,
 				16, 16,
 				16, 16 );

@@ -97,6 +97,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		{
 			final MadGraphInstance<?,?> rackGraph = graphService.createNewParameterisedGraph( rackName + " Graph",
 					GraphType.APP_GRAPH,
+					true,
 					16, 16,
 					16, 16,
 					16, 16 );
@@ -139,6 +140,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 		{
 			final MadGraphInstance<?,?> subRackGraph = graphService.createNewParameterisedGraph( subRackName + " Graph",
 					GraphType.SUB_GRAPH,
+					true,
 					16, 16,
 					16, 16,
 					16, 16 );
@@ -536,7 +538,7 @@ public class RackServiceImpl implements ComponentWithLifecycle, RackService
 				rmToDelete.destroy();
 			}
 			rack.dirtyFixToCleanupReferences();
-			graphService.destroyGraph( rackGraph, true, true );
+			graphService.destroyGraph( rackGraph );
 		}
 		catch( final Exception e )
 		{

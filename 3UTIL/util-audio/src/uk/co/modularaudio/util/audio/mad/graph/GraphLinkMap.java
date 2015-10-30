@@ -50,19 +50,20 @@ public class GraphLinkMap
 	{
 	}
 
-	public Collection<MadLink> getLinks()
+	public void addMadInstance( final MadInstance<?,?> instance )
 	{
-		return instanceLinks;
-	}
-
-	public Collection<MadLink> getProducerInstanceLinks( final MadInstance<?, ?> instance )
-	{
-		return producerInstanceLinks.get( instance );
-	}
-
-	public Collection<MadLink> getConsumerInstanceLinks( final MadInstance<?, ?> instance )
-	{
-		return consumerInstanceLinks.get( instance );
+		Collection<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
+		if( consumerLinks == null )
+		{
+			consumerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
+			consumerInstanceLinks.put( instance, consumerLinks );
+		}
+		Collection<MadLink> producerLinks = producerInstanceLinks.get( instance );
+		if( producerLinks == null )
+		{
+			producerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
+			producerInstanceLinks.put( instance, producerLinks );
+		}
 	}
 
 	public void removeMadInstance( final MadInstance<?, ?> instance )
@@ -95,6 +96,37 @@ public class GraphLinkMap
 			}
 			producerInstanceLinks.remove( instance );
 		}
+	}
+
+	public void addLink( final MadLink link ) throws MAConstraintViolationException
+	{
+		final MadChannelInstance cci = link.getConsumerChannelInstance();
+		final MadInstance<?,?> cmi = cci.instance;
+		final MadChannelInstance pci = link.getProducerChannelInstance();
+		final MadInstance<?,?> pmi = pci.instance;
+
+		final Collection<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
+		if( RUNTIME_CHECKING &&
+				consumerLinks.contains( link ) )
+		{
+			throw new MAConstraintViolationException("Existing link from entry found");
+		}
+		consumerLinks.add( link );
+
+		final Collection<MadLink> producerLinks = producerInstanceLinks.get( pmi );
+		if( RUNTIME_CHECKING &&
+				producerLinks.contains( link ) )
+		{
+			throw new MAConstraintViolationException("Existing link to entry found");
+		}
+		producerLinks.add( link );
+
+		instanceLinks.add( link );
+	}
+
+	public Collection<MadLink> getLinks()
+	{
+		return instanceLinks;
 	}
 
 	public void deleteLink( final MadLink link ) throws RecordNotFoundException
@@ -143,6 +175,16 @@ public class GraphLinkMap
 		instanceLinks.remove( link );
 	}
 
+	public Collection<MadLink> getProducerInstanceLinks( final MadInstance<?, ?> instance )
+	{
+		return producerInstanceLinks.get( instance );
+	}
+
+	public Collection<MadLink> getConsumerInstanceLinks( final MadInstance<?, ?> instance )
+	{
+		return consumerInstanceLinks.get( instance );
+	}
+
 	public Collection<MadLink> findProducerInstanceLinksReturnNull( final MadChannelInstance channelInstance )
 	{
 		return producerInstanceLinks.get( channelInstance.instance );
@@ -153,32 +195,6 @@ public class GraphLinkMap
 		instanceLinks.clear();
 		consumerInstanceLinks.clear();
 		producerInstanceLinks.clear();
-	}
-
-	public void addLink( final MadLink link ) throws MAConstraintViolationException
-	{
-		final MadChannelInstance cci = link.getConsumerChannelInstance();
-		final MadInstance<?,?> cmi = cci.instance;
-		final MadChannelInstance pci = link.getProducerChannelInstance();
-		final MadInstance<?,?> pmi = pci.instance;
-
-		final Collection<MadLink> consumerLinks = consumerInstanceLinks.get( cmi );
-		if( RUNTIME_CHECKING &&
-				consumerLinks.contains( link ) )
-		{
-			throw new MAConstraintViolationException("Existing link from entry found");
-		}
-		consumerLinks.add( link );
-
-		final Collection<MadLink> producerLinks = producerInstanceLinks.get( pmi );
-		if( RUNTIME_CHECKING &&
-				producerLinks.contains( link ) )
-		{
-			throw new MAConstraintViolationException("Existing link to entry found");
-		}
-		producerLinks.add( link );
-
-		instanceLinks.add( link );
 	}
 
 	public void debug()
@@ -211,22 +227,6 @@ public class GraphLinkMap
 					log.debug( "\t" + l.toString() );
 				}
 			}
-		}
-	}
-
-	public void addMadInstance( final MadInstance<?,?> instance )
-	{
-		Collection<MadLink> consumerLinks = consumerInstanceLinks.get( instance );
-		if( consumerLinks == null )
-		{
-			consumerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
-			consumerInstanceLinks.put( instance, consumerLinks );
-		}
-		Collection<MadLink> producerLinks = producerInstanceLinks.get( instance );
-		if( producerLinks == null )
-		{
-			producerLinks = new ArrayList<MadLink>(DEFAULT_LINKS_PER_PLUG);
-			producerInstanceLinks.put( instance, producerLinks );
 		}
 	}
 }

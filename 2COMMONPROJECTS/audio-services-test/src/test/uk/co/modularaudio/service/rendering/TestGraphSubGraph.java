@@ -58,6 +58,7 @@ public class TestGraphSubGraph extends TestCase
 	{
 		final MadGraphInstance<?,?> appGraph = rt.graphService.createNewParameterisedGraph( "Component Designer Application Graph",
 				GraphType.APP_GRAPH,
+				true,
 				// Audio Ins/Outs
 				1, 1,
 				// CV Ins/Outs
@@ -69,8 +70,8 @@ public class TestGraphSubGraph extends TestCase
 
 		rt.graphService.dumpGraph( appGraph );
 
-		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph(  "Root graph" );
-		rt.graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
+		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph( "Root graph", true );
+		rt.graphService.addInstanceToGraphWithName( rootGraph, appGraph, appGraph.getInstanceName());
 		setupRootGraph( rootGraph, appGraph );
 
 		rt.graphService.dumpGraph( rootGraph );
@@ -99,7 +100,7 @@ public class TestGraphSubGraph extends TestCase
 
 		rt.renderingPlanService.destroyRenderingPlan( magic );
 
-		rt.graphService.destroyGraph( rootGraph, true, true );
+		rt.graphService.destroyGraph( rootGraph );
 	}
 
 	private void setupAppGraph( final MadGraphInstance<?,?> appGraph ) throws RecordNotFoundException, DatastoreException, MAConstraintViolationException, UnknownDataRateException, MadProcessingException

@@ -147,9 +147,11 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		this.shouldProfileRenderingJobs = shouldProfileRenderingJobs;
 		this.maxWaitForTransitionMillis = maxWaitForTransitionMillis;
 
-		internalRootGraph = graphService.createNewRootGraph( "Component Designer IO Graph" );
+		internalRootGraph = graphService.createNewRootGraph( "Component Designer IO Graph",
+				true );
 		internalHostingGraph = graphService.createNewParameterisedGraph( "Component Designer Hosting Graph",
 				GraphType.APP_GRAPH,
+				false,
 				16, 16,
 				16, 16,
 				16, 16 );
@@ -159,6 +161,7 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		// Temporary empty graph to render
 		emptyGraphWhenNotRendering = graphService.createNewParameterisedGraph( "Graph When Not Rendering",
 				GraphType.SUB_GRAPH,
+				true,
 				16, 16,
 				16, 16,
 				16, 16 );
@@ -190,9 +193,9 @@ public class AppRenderingStructure implements AppRenderingLifecycleListener
 		}
 		try
 		{
-			graphService.destroyGraph( internalRootGraph, true, true );
+			graphService.destroyGraph( internalRootGraph );
 
-			graphService.destroyGraph( audioSystemTesterGraph, true, true );
+			graphService.destroyGraph( audioSystemTesterGraph );
 		}
 		catch ( final DatastoreException e)
 		{

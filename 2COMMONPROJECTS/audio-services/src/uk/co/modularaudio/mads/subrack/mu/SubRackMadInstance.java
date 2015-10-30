@@ -77,7 +77,7 @@ public class SubRackMadInstance extends MadGraphInstance<SubRackMadDefinition, S
 			final MadChannelConfiguration channelConfiguration )
 		throws DatastoreException, MAConstraintViolationException, RecordNotFoundException, IOException
 	{
-		super( instanceName, definition, creationParameterValues, channelConfiguration );
+		super( instanceName, definition, creationParameterValues, channelConfiguration, true );
 		this.rackService = creationContext.getRackService();
 		this.graphService = creationContext.getGraphService();
 		this.rackMarshallingService = creationContext.getRackMarshallingService();

@@ -58,6 +58,7 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 	{
 		final MadGraphInstance<?,?> subSubGraph = rt.graphService.createNewParameterisedGraph( "Silly Sub Sub Graph",
 				GraphType.SUB_GRAPH,
+				true,
 				4, 4,
 				0, 0,
 				0, 0 );
@@ -68,6 +69,7 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 
 		final MadGraphInstance<?,?> subGraph = rt.graphService.createNewParameterisedGraph( "Vol And Pan Subgraph",
 				GraphType.SUB_GRAPH,
+				true,
 				2, 2,
 				2, 2,
 				0, 0 );
@@ -80,6 +82,7 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 
 		final MadGraphInstance<?,?> appGraph = rt.graphService.createNewParameterisedGraph( "Component Designer Application Graph",
 				GraphType.APP_GRAPH,
+				true,
 				// Audio Ins/Outs
 				4, 4,
 				// CV Ins/Outs
@@ -93,7 +96,8 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 
 		rt.graphService.dumpGraph( appGraph );
 
-		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph(  "Root graph" );
+		final MadGraphInstance<?,?> rootGraph = rt.graphService.createNewRootGraph( "Root graph",
+				true );
 		rt.graphService.addInstanceToGraphWithName( rootGraph,  appGraph,  appGraph.getInstanceName());
 		setupRootGraph( rootGraph, appGraph );
 
@@ -123,7 +127,7 @@ public class TestRootGraphAppGraphSubGraph extends TestCase
 
 		rt.renderingPlanService.destroyRenderingPlan( magic );
 
-		rt.graphService.destroyGraph( rootGraph, true, true );
+		rt.graphService.destroyGraph( rootGraph );
 	}
 
 	private void setupSubSubGraph( final MadGraphInstance<?,?> subSubGraph ) throws DatastoreException, RecordNotFoundException, MadProcessingException, MAConstraintViolationException

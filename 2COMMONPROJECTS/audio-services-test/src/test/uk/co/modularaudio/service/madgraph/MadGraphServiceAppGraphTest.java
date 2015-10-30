@@ -71,7 +71,11 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		log.debug("Starting create new app graph test");
 		// 4 audio ins and outs
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
+				GraphType.APP_GRAPH,
+				true,
+				4, 4,
+				0, 0,
+				0, 0 );
 		log.debug("Got an app graph: " + appGraph.toString() );
 		final MadChannelInstance[] channelIns = appGraph.getChannelInstances();
 		assertTrue( channelIns.length == 8 );
@@ -80,14 +84,18 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		final Collection<MadLink> links = appGraph.getLinks();
 		assertTrue( links.size() == 0 );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	public void testAddComponentToAppGraph()
 		throws Exception
 	{
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
+				GraphType.APP_GRAPH,
+				true,
+				4, 4,
+				0, 0,
+				0, 0 );
 		final MadDefinitionListModel definitions = gt.componentService.listDefinitionsAvailable();
 		assertTrue( definitions.getSize() > 0 );
 		final MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
@@ -98,14 +106,18 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		final Collection<MadInstance<?,?>> instanceIns = appGraph.getInstances();
 		assertTrue( instanceIns.size() == 1 );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	public void testLinkComponentsInAppGraph()
 			throws Exception
 	{
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
+				GraphType.APP_GRAPH,
+				true,
+				4, 4,
+				0, 0,
+				0, 0 );
 
 		final MadDefinition<?,?> definition = gt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
@@ -132,14 +144,18 @@ public class MadGraphServiceAppGraphTest extends TestCase
 
 		gt.graphService.dumpGraph( appGraph );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	public void testExposedComponentChannelInAppGraph()
 		throws Exception
 	{
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 4, 4, 0, 0, 0, 0 );
+				GraphType.APP_GRAPH,
+				true,
+				4, 4,
+				0, 0,
+				0, 0 );
 
 		final FakeGraphListener fgl = new FakeGraphListener();
 
@@ -165,7 +181,7 @@ public class MadGraphServiceAppGraphTest extends TestCase
 
 		gt.graphService.removeGraphListener( appGraph, fgl );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	public void testExposedSubGraphInAppGraph()
@@ -176,7 +192,11 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		tt.markBoundary( "Begin" );
 
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 4, 4, 4, 4, 4, 4 );
+				GraphType.APP_GRAPH,
+				true,
+				4, 4,
+				4, 4,
+				4, 4 );
 
 		tt.markBoundary( "Create app graph" );
 
@@ -185,7 +205,11 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		gt.graphService.addGraphListener( appGraph, fgl );
 
 		final MadGraphInstance<?,?> subGraph = gt.graphService.createNewParameterisedGraph( "Test Sub Graph",
-				GraphType.SUB_GRAPH, 4, 4, 4, 4, 4, 4 );
+				GraphType.SUB_GRAPH,
+				true,
+				4, 4,
+				4, 4,
+				4, 4 );
 
 		tt.markBoundary( "Create sub graph" );
 
@@ -208,11 +232,11 @@ public class MadGraphServiceAppGraphTest extends TestCase
 
 		tt.markBoundary( "Remove graph listener" );
 
-		gt.graphService.destroyGraph( subGraph, true, true );
+		gt.graphService.destroyGraph( subGraph );
 
 		tt.markBoundary( "Destroy sub graph" );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 
 		tt.markBoundary( "Destroy app graph" );
 
@@ -223,7 +247,11 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		throws Exception
 	{
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "Test App Graph",
-				GraphType.APP_GRAPH, 0, 0, 0, 0, 0, 0 );
+				GraphType.APP_GRAPH,
+				true,
+				0, 0,
+				0, 0,
+				0, 0 );
 
 		final MadDefinition<?,?> definition = gt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
@@ -252,7 +280,7 @@ public class MadGraphServiceAppGraphTest extends TestCase
 
 		gt.graphService.dumpGraph(appGraph);
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	public void testAddAndRemoveLinksInGraphCheckLinks()
@@ -260,6 +288,7 @@ public class MadGraphServiceAppGraphTest extends TestCase
 	{
 		final MadGraphInstance<?,?> appGraph = gt.graphService.createNewParameterisedGraph( "LinkAddRemoveGraph",
 				GraphType.APP_GRAPH,
+				true,
 				0, 0,
 				0, 0,
 				0, 0 );
@@ -305,7 +334,7 @@ public class MadGraphServiceAppGraphTest extends TestCase
 		assertTrue( appGraph.getConsumerInstanceLinks( pi ).size() == 0 );
 		assertTrue( appGraph.getConsumerInstanceLinks( ci ).size() == 0 );
 
-		gt.graphService.destroyGraph( appGraph, true, true );
+		gt.graphService.destroyGraph( appGraph );
 	}
 
 	@Override

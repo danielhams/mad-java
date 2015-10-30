@@ -36,11 +36,13 @@ public interface MadGraphService
 {
 	// CRUD on the graph
 	// Can only create and delete graphs.
-	public MadGraphInstance<?,?> createNewRootGraph( String name )
+	public MadGraphInstance<?,?> createNewRootGraph( String name,
+			boolean ownsMadInstances )
 		throws DatastoreException;
 
 	public MadGraphInstance<?,?> createNewParameterisedGraph( String name,
 			GraphType graphType,
+			boolean ownsMadInstances,
 			int numInputAudioChannels,
 			int numOutputAudioChannels,
 			int numInputCvChannels,
@@ -49,7 +51,7 @@ public interface MadGraphService
 			int numOutputNoteChannels )
 		throws DatastoreException;
 
-	public void destroyGraph( MadGraphInstance<?,?> graph, boolean deleteLinks, boolean deleteMadInstances ) throws DatastoreException;
+	public void destroyGraph( MadGraphInstance<?,?> graph ) throws DatastoreException;
 
 	// CRUD on listeners on the graph
 	public void addGraphListener( MadGraphInstance<?,?> graph, MadGraphListener listener );

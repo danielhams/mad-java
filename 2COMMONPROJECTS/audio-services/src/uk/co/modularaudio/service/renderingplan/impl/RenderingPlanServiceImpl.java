@@ -113,7 +113,7 @@ public class RenderingPlanServiceImpl implements ComponentWithLifecycle, Renderi
 					frameTimeFactory,
 					timingSource );
 
-			graphService.destroyGraph( zeroDepthGraph, true, false );
+			graphService.destroyGraph( zeroDepthGraph );
 
 			return retVal;
 		}

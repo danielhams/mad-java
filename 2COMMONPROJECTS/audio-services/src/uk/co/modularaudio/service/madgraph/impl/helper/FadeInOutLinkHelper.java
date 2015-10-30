@@ -181,7 +181,7 @@ public class FadeInOutLinkHelper
 		// Will clean up the links
 		graph.removeInstance( fadeInInstance );
 
-		graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceToExpose );
+		graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceToExpose );
 	}
 
 	public FadeOutMadInstance fadeOutRemoveExposeAsGraphChannel(
@@ -287,7 +287,7 @@ public class FadeInOutLinkHelper
 		}
 
 		graph.removeInstance( waitInstance );
-		graph.removeInstance(instanceToRemove);
+		graph.removeInstance( instanceToRemove );
 	}
 
 	public TwoTuple<PFadeInMadInstance, PFadeInMadInstance> fadeInGraphChannelMap( final MadGraphInstance<?,?> graph,
@@ -333,7 +333,7 @@ public class FadeInOutLinkHelper
 				}
 				else
 				{
-					graph.exposeAudioInstanceChannelAsGraphChannel( matchingGraphChannel, instanceChannel );
+					graph.exposeMadInstanceChannelAsGraphChannel( matchingGraphChannel, instanceChannel );
 				}
 			}
 			else
@@ -412,7 +412,7 @@ public class FadeInOutLinkHelper
 
 				if( instanceChannel != null )
 				{
-					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
+					graph.exposeMadInstanceChannelAsGraphChannel( graphChannel, instanceChannel );
 				}
 				else if( log.isWarnEnabled() )
 				{
@@ -492,7 +492,7 @@ public class FadeInOutLinkHelper
 	{
 		final String uniqueInstanceName = graphChannelInstance.toString();
 
-		graph.removeAudioInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceWasExposed );
+		graph.removeMadInstanceChannelAsGraphChannel( graphChannelInstance, channelInstanceWasExposed );
 
 		// Now insert a fade out component and map it in
 		final FadeOutMadInstance fadeOutInstance = (FadeOutMadInstance)componentService.createInstanceFromDefinition( fadeOutDefinition,
@@ -515,7 +515,7 @@ public class FadeInOutLinkHelper
 			graph.addLink( consumerLink );
 
 			// And expose the fade in consumer channel as the graph channel
-			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutConsumerChannel );
+			graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutConsumerChannel );
 		}
 		else
 		{
@@ -524,7 +524,7 @@ public class FadeInOutLinkHelper
 			final MadLink producerLink = new MadLink( producerChannel, fadeOutConsumerChannel );
 			graph.addLink( producerLink );
 
-			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutProducerChannel );
+			graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeOutProducerChannel );
 
 		}
 		return fadeOutInstance;
@@ -585,7 +585,7 @@ public class FadeInOutLinkHelper
 			graph.addLink( consumerLink );
 
 			// And expose the fade in consumer channel as the graph channel
-			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
+			graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
 		}
 		else
 		{
@@ -594,7 +594,7 @@ public class FadeInOutLinkHelper
 			final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
 			graph.addLink( producerLink );
 
-			graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
+			graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
 
 		}
 		return fadeInInstance;
@@ -638,7 +638,7 @@ public class FadeInOutLinkHelper
 					final MadLink producerLink = new MadLink( producerChannel, fadeInConsumerChannel );
 					graph.addLink( producerLink );
 
-					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
+					graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeInProducerChannel );
 					break;
 				}
 				case CONSUMER:
@@ -656,7 +656,7 @@ public class FadeInOutLinkHelper
 					final MadLink consumerLink = new MadLink( fadeInProducerChannel, consumerChannel );
 					graph.addLink( consumerLink );
 
-					graph.exposeAudioInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
+					graph.exposeMadInstanceChannelAsGraphChannel( graphChannelInstance, fadeInConsumerChannel );
 					break;
 				}
 			}
@@ -699,10 +699,10 @@ public class FadeInOutLinkHelper
 			final MadChannelInstance fadeOutConsumerChannel = pfadeChannelInstances[ consumerIndex ];
 
 			// Remove existing IO link
-			graph.removeAudioInstanceChannelAsGraphChannel(graphChannelInstance, channelInstanceToRemove);
+			graph.removeMadInstanceChannelAsGraphChannel(graphChannelInstance, channelInstanceToRemove);
 
 			// Wire through fade channel
-			graph.exposeAudioInstanceChannelAsGraphChannel(graphChannelInstance, fadeOutProducerChannel);
+			graph.exposeMadInstanceChannelAsGraphChannel(graphChannelInstance, fadeOutProducerChannel);
 			final MadLink graphToFadeLink = new MadLink( channelInstanceToRemove, fadeOutConsumerChannel );
 			graph.addLink( graphToFadeLink );
 			fadeIndex++;

@@ -56,245 +56,6 @@ public class GraphIOLinkMap
 	{
 	}
 
-	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphConsumerChannelInstanceMap()
-	{
-		return graphConsumerChannelToMadChannelInstanceMap;
-	}
-
-	public Map<MadChannelInstance, MadChannelInstance> getGraphProducerChannelInstanceMap()
-	{
-		return graphProducerChannelToMadChannelInstanceMap;
-	}
-
-	public void mapConsumerChannel( final MadChannelInstance graphChannelInstance,
-			final MadChannelInstance channelInstanceToExpose )
-			throws MAConstraintViolationException
-	{
-		if( RUNTIME_CHECKING )
-		{
-			if( graphChannelInstance.definition.direction != MadChannelDirection.CONSUMER ||
-					channelInstanceToExpose.definition.direction != MadChannelDirection.CONSUMER )
-				{
-					throw new MAConstraintViolationException("Consumer channel mapping directions incorrect");
-				}
-
-			if( graphConsumerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
-			{
-				throw new MAConstraintViolationException("Consumer channel mapping failed as already mapped");
-			}
-		}
-
-		Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
-
-		if( mcis == null )
-		{
-			mcis = new ArrayList<MadChannelInstance>();
-			graphConsumerChannelToMadChannelInstanceMap.put( graphChannelInstance, mcis );
-		}
-
-		mcis.add( channelInstanceToExpose );
-
-
-		if( RUNTIME_CHECKING )
-		{
-			if( madChannelInstanceToGraphConsumerMap.containsKey( channelInstanceToExpose ) )
-			{
-				throw new MAConstraintViolationException("Consumer channel mapping failed mci checks");
-			}
-		}
-
-		madChannelInstanceToGraphConsumerMap.put( channelInstanceToExpose, graphChannelInstance );
-
-//		log.debug("Mapped graph consumer channel \"" + graphChannelInstance.toString() + "\" to ");
-//		log.debug( channelInstanceToExpose.instance.getInstanceName() + " \"" +
-//				channelInstanceToExpose.toString() + "\"");
-	}
-
-	public void mapProducerChannel( final MadChannelInstance graphChannelInstance,
-			final MadChannelInstance channelInstanceToExpose )
-			throws MAConstraintViolationException
-	{
-		if( RUNTIME_CHECKING )
-		{
-			if( graphChannelInstance.definition.direction != MadChannelDirection.PRODUCER ||
-					channelInstanceToExpose.definition.direction != MadChannelDirection.PRODUCER )
-			{
-				throw new MAConstraintViolationException("Producer channel mapping directions incorrect");
-			}
-
-			if( graphProducerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
-			{
-				throw new MAConstraintViolationException("Producer channel mapping failed as channel already mapped");
-			}
-		}
-
-		graphProducerChannelToMadChannelInstanceMap.put( graphChannelInstance, channelInstanceToExpose );
-
-		Collection<MadChannelInstance> mcis = madChannelInstanceToGraphProducerMap.get( channelInstanceToExpose );
-
-		if( mcis == null )
-		{
-			mcis = new ArrayList<MadChannelInstance>();
-			madChannelInstanceToGraphProducerMap.put( channelInstanceToExpose, mcis );
-		}
-		mcis.add( graphChannelInstance );
-
-//		log.debug("Mapped graph producer channel \"" + graphChannelInstance.toString() + "\" to ");
-//		log.debug( channelInstanceToExpose.instance.getInstanceName() + " \"" +
-//				channelInstanceToExpose.toString() + "\"");
-	}
-
-	public void unmapConsumerChannel( final MadChannelInstance graphChannelInstance,
-			final MadChannelInstance channelInstanceExposed )
-			throws RecordNotFoundException, MAConstraintViolationException
-	{
-		if( RUNTIME_CHECKING )
-		{
-			if( graphChannelInstance.definition.direction != MadChannelDirection.CONSUMER ||
-					channelInstanceExposed.definition.direction != MadChannelDirection.CONSUMER )
-				{
-					throw new MAConstraintViolationException("Consumer channel unmapping directions incorrect");
-				}
-
-			if( !graphConsumerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
-			{
-				throw new RecordNotFoundException("Consumer channel unmapping failed as not mapped");
-			}
-		}
-
-		final Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
-
-		if( RUNTIME_CHECKING )
-		{
-			if( mcis == null || !mcis.contains( channelInstanceExposed ) )
-			{
-				throw new MAConstraintViolationException( "Consumer channel unmapping failed to find existing map" );
-			}
-		}
-
-		mcis.remove( channelInstanceExposed );
-		if( mcis.size() == 0 )
-		{
-			graphConsumerChannelToMadChannelInstanceMap.remove( graphChannelInstance );
-		}
-
-		if( RUNTIME_CHECKING )
-		{
-			if( !madChannelInstanceToGraphConsumerMap.containsKey( channelInstanceExposed ) )
-			{
-				throw new MAConstraintViolationException( "Consumer channel unmapping failed to find specific channel" );
-			}
-		}
-
-		madChannelInstanceToGraphConsumerMap.remove( channelInstanceExposed );
-
-//		log.debug("Unmapped graph consumer channel \"" + graphChannelInstance.toString() + "\" to ");
-//		log.debug( channelInstanceExposed.instance.getInstanceName() + " \"" +
-//				channelInstanceExposed.toString() + "\"");
-	}
-
-	public void unmapProducerChannel( final MadChannelInstance graphChannelInstance,
-			final MadChannelInstance channelInstanceExposed )
-			throws RecordNotFoundException, MAConstraintViolationException
-	{
-		if( RUNTIME_CHECKING )
-		{
-			if( graphChannelInstance.definition.direction != MadChannelDirection.PRODUCER ||
-					channelInstanceExposed.definition.direction != MadChannelDirection.PRODUCER )
-			{
-				throw new MAConstraintViolationException("Producer channel unmapping directions incorrect");
-			}
-		}
-
-		if( RUNTIME_CHECKING )
-		{
-			if( !graphProducerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
-			{
-				throw new RecordNotFoundException("Producer channel unmapping failed as not mapped");
-			}
-		}
-		graphProducerChannelToMadChannelInstanceMap.remove( graphChannelInstance );
-
-		final Collection<MadChannelInstance> gcis = madChannelInstanceToGraphProducerMap.get( channelInstanceExposed );
-
-		if( RUNTIME_CHECKING )
-		{
-			if( gcis == null || !gcis.contains( graphChannelInstance ) )
-			{
-				throw new RecordNotFoundException("Producer channel unmapping failed as not mapped");
-			}
-		}
-
-		gcis.remove( graphChannelInstance );
-		if( gcis.size() == 0 )
-		{
-			madChannelInstanceToGraphProducerMap.remove( channelInstanceExposed );
-		}
-
-//		log.debug("Unmapped graph producer channel \"" + graphChannelInstance.toString() + "\" to ");
-//		log.debug( channelInstanceExposed.instance.getInstanceName() + " \"" +
-//				channelInstanceExposed.toString() + "\"");
-	}
-
-	public void clear()
-	{
-		graphConsumerChannelToMadChannelInstanceMap.clear();
-		madChannelInstanceToGraphConsumerMap.clear();
-		graphProducerChannelToMadChannelInstanceMap.clear();
-		madChannelInstanceToGraphProducerMap.clear();
-	}
-
-	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
-	{
-		return madChannelInstanceToGraphProducerMap.get( auci );
-	}
-
-	public void debug()
-	{
-		if( log.isDebugEnabled() )
-		{
-			log.debug("Graph IO link map contains:");
-
-			for( final Map.Entry<MadChannelInstance, MadChannelInstance> gcmc : graphProducerChannelToMadChannelInstanceMap.entrySet() )
-			{
-				log.debug("GraphProducerToMadChannel: " + gcmc.getKey().toString() + " " +
-						gcmc.getValue().instance.getInstanceName() + " " + gcmc.getValue().toString() );
-			}
-
-			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
-			{
-				final Collection<MadChannelInstance> mcs = gpma.getValue();
-				if( mcs != null )
-				{
-					for( final MadChannelInstance ci : mcs )
-					{
-						log.debug("GraphConsumerToMadChannel: " + gpma.getKey().toString() + " " +
-								ci.instance.getInstanceName() + " " + ci.toString() );
-					}
-				}
-			}
-
-			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
-			{
-				final Collection<MadChannelInstance> gcs = mcga.getValue();
-				if( gcs != null )
-				{
-					for( final MadChannelInstance gi : gcs )
-					{
-						log.debug("MadChannelToGraphProducerChannel: " + mcga.getKey().instance.getInstanceName() + " " + mcga.getKey().toString() + " " +
-								gi.toString() );
-					}
-				}
-			}
-
-			for( final Map.Entry<MadChannelInstance, MadChannelInstance> mcgc : madChannelInstanceToGraphConsumerMap.entrySet() )
-			{
-				log.debug("MadChannelToGraphConsumerChannel: " + mcgc.getKey().instance.getInstanceName() + " " + mcgc.getKey().toString() + " " +
-						mcgc.getValue().toString());
-			}
-		}
-	}
-
 	public void addMadInstance( final MadInstance<?, ?> instance )
 	{
 	}
@@ -342,9 +103,227 @@ public class GraphIOLinkMap
 		}
 	}
 
+	public void mapConsumerChannel( final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
+			throws MAConstraintViolationException
+	{
+		Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
+
+		if( RUNTIME_CHECKING )
+		{
+			if( graphChannelInstance.definition.direction != MadChannelDirection.CONSUMER ||
+				channelInstanceToExpose.definition.direction != MadChannelDirection.CONSUMER )
+			{
+				throw new MAConstraintViolationException("Consumer channel mapping directions incorrect");
+			}
+
+			if( mcis != null && mcis.contains( channelInstanceToExpose ) )
+			{
+				throw new MAConstraintViolationException("Consumer channel mapping failed as already mapped");
+			}
+
+			if( madChannelInstanceToGraphConsumerMap.containsKey( channelInstanceToExpose ) )
+			{
+				throw new MAConstraintViolationException("Consumer channel mapping failed mci checks");
+			}
+		}
+
+		if( mcis == null )
+		{
+			mcis = new ArrayList<MadChannelInstance>();
+			graphConsumerChannelToMadChannelInstanceMap.put( graphChannelInstance, mcis );
+		}
+
+		mcis.add( channelInstanceToExpose );
+
+		madChannelInstanceToGraphConsumerMap.put( channelInstanceToExpose, graphChannelInstance );
+
+//		log.debug("Mapped graph consumer channel \"" + graphChannelInstance.toString() + "\" to ");
+//		log.debug( channelInstanceToExpose.instance.getInstanceName() + " \"" +
+//				channelInstanceToExpose.toString() + "\"");
+	}
+
+	public Map<MadChannelInstance, Collection<MadChannelInstance>> getGraphConsumerChannelInstanceMap()
+	{
+		return graphConsumerChannelToMadChannelInstanceMap;
+	}
+
+	public void unmapConsumerChannel( final MadChannelInstance graphChannelInstance,
+				final MadChannelInstance channelInstanceExposed )
+				throws RecordNotFoundException, MAConstraintViolationException
+	{
+		final Collection<MadChannelInstance> mcis = graphConsumerChannelToMadChannelInstanceMap.get( graphChannelInstance );
+
+		if( RUNTIME_CHECKING )
+		{
+			if( !graphConsumerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
+			{
+				throw new RecordNotFoundException("Consumer channel unmapping failed as not mapped");
+			}
+
+			if( mcis == null || !mcis.contains( channelInstanceExposed ) )
+			{
+				throw new MAConstraintViolationException( "Consumer channel unmapping failed to find existing map" );
+			}
+
+			if( !madChannelInstanceToGraphConsumerMap.containsKey( channelInstanceExposed ) )
+			{
+				throw new MAConstraintViolationException( "Consumer channel unmapping failed to find specific channel" );
+			}
+		}
+
+		mcis.remove( channelInstanceExposed );
+		if( mcis.size() == 0 )
+		{
+			graphConsumerChannelToMadChannelInstanceMap.remove( graphChannelInstance );
+		}
+
+		madChannelInstanceToGraphConsumerMap.remove( channelInstanceExposed );
+
+//		log.debug("Unmapped graph consumer channel \"" + graphChannelInstance.toString() + "\" to ");
+//		log.debug( channelInstanceExposed.instance.getInstanceName() + " \"" +
+//				channelInstanceExposed.toString() + "\"");
+	}
+
+	public void mapProducerChannel( final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceToExpose )
+			throws MAConstraintViolationException
+	{
+		if( RUNTIME_CHECKING )
+		{
+			if( graphChannelInstance.definition.direction != MadChannelDirection.PRODUCER ||
+					channelInstanceToExpose.definition.direction != MadChannelDirection.PRODUCER )
+			{
+				throw new MAConstraintViolationException("Producer channel mapping directions incorrect");
+			}
+
+			if( graphProducerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
+			{
+				throw new MAConstraintViolationException("Producer channel mapping failed as channel already mapped");
+			}
+		}
+
+		graphProducerChannelToMadChannelInstanceMap.put( graphChannelInstance, channelInstanceToExpose );
+
+		Collection<MadChannelInstance> mcis = madChannelInstanceToGraphProducerMap.get( channelInstanceToExpose );
+
+		if( mcis == null )
+		{
+			mcis = new ArrayList<MadChannelInstance>();
+			madChannelInstanceToGraphProducerMap.put( channelInstanceToExpose, mcis );
+		}
+		mcis.add( graphChannelInstance );
+
+//		log.debug("Mapped graph producer channel \"" + graphChannelInstance.toString() + "\" to ");
+//		log.debug( channelInstanceToExpose.instance.getInstanceName() + " \"" +
+//				channelInstanceToExpose.toString() + "\"");
+	}
+
+	public Map<MadChannelInstance, MadChannelInstance> getGraphProducerChannelInstanceMap()
+	{
+		return graphProducerChannelToMadChannelInstanceMap;
+	}
+
 	public boolean isProducerChannelExposed( final MadChannelInstance auci )
 	{
 		final Collection<MadChannelInstance> mgcs = madChannelInstanceToGraphProducerMap.get( auci );
 		return mgcs != null && mgcs.size() > 0;
+	}
+
+	public void unmapProducerChannel( final MadChannelInstance graphChannelInstance,
+			final MadChannelInstance channelInstanceExposed )
+			throws RecordNotFoundException, MAConstraintViolationException
+	{
+		final Collection<MadChannelInstance> gcis = madChannelInstanceToGraphProducerMap.get( channelInstanceExposed );
+
+		if( RUNTIME_CHECKING )
+		{
+			if( !graphProducerChannelToMadChannelInstanceMap.containsKey( graphChannelInstance ) )
+			{
+				throw new RecordNotFoundException("Producer channel unmapping failed as not mapped");
+			}
+
+			if( gcis == null || !gcis.contains( graphChannelInstance ) )
+			{
+				throw new RecordNotFoundException("Producer channel unmapping failed as not mapped");
+			}
+		}
+
+		graphProducerChannelToMadChannelInstanceMap.remove( graphChannelInstance );
+
+		gcis.remove( graphChannelInstance );
+		if( gcis.size() == 0 )
+		{
+			madChannelInstanceToGraphProducerMap.remove( channelInstanceExposed );
+		}
+
+//		log.debug("Unmapped graph producer channel \"" + graphChannelInstance.toString() + "\" to ");
+//		log.debug( channelInstanceExposed.instance.getInstanceName() + " \"" +
+//				channelInstanceExposed.toString() + "\"");
+	}
+
+	public Collection<MadChannelInstance> getGraphChannelsExposedForProducerChannel( final MadChannelInstance auci )
+	{
+		return madChannelInstanceToGraphProducerMap.get( auci );
+	}
+
+	public void clear()
+	{
+		graphConsumerChannelToMadChannelInstanceMap.clear();
+		madChannelInstanceToGraphConsumerMap.clear();
+		graphProducerChannelToMadChannelInstanceMap.clear();
+		madChannelInstanceToGraphProducerMap.clear();
+	}
+
+	public void debug()
+	{
+		if( log.isDebugEnabled() )
+		{
+			log.debug("Graph IO link map contains:");
+
+			for( final Map.Entry<MadChannelInstance, MadChannelInstance> gcmc : graphProducerChannelToMadChannelInstanceMap.entrySet() )
+			{
+				log.debug("GraphProducerToMadChannel: " + gcmc.getKey().toString() + " " +
+						gcmc.getValue().instance.getInstanceName() + " " +
+						gcmc.getValue().toString() );
+			}
+
+			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> gpma : graphConsumerChannelToMadChannelInstanceMap.entrySet() )
+			{
+				final Collection<MadChannelInstance> mcs = gpma.getValue();
+				if( mcs != null )
+				{
+					for( final MadChannelInstance ci : mcs )
+					{
+						log.debug("GraphConsumerToMadChannel: " +
+								gpma.getKey().toString() + " " +
+								ci.instance.getInstanceName() + " " + ci.toString() );
+					}
+				}
+			}
+
+			for( final Map.Entry<MadChannelInstance, Collection<MadChannelInstance>> mcga : madChannelInstanceToGraphProducerMap.entrySet() )
+			{
+				final Collection<MadChannelInstance> gcs = mcga.getValue();
+				if( gcs != null )
+				{
+					for( final MadChannelInstance gi : gcs )
+					{
+						log.debug("MadChannelToGraphProducerChannel: " +
+								mcga.getKey().instance.getInstanceName() + " " +
+								mcga.getKey().toString() + " " +
+								gi.toString() );
+					}
+				}
+			}
+
+			for( final Map.Entry<MadChannelInstance, MadChannelInstance> mcgc : madChannelInstanceToGraphConsumerMap.entrySet() )
+			{
+				log.debug("MadChannelToGraphConsumerChannel: " +
+						mcgc.getKey().instance.getInstanceName() + " " +
+						mcgc.getKey().toString() + " " +
+						mcgc.getValue().toString());
+			}
+		}
 	}
 }

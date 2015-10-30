@@ -48,7 +48,8 @@ public class MadGraphServiceRootGraphTest extends TestCase
 		throws Exception
 	{
 		log.debug("Starting create new root graph test");
-		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph(  "Test Root Graph" );
+		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph( "Test Root Graph",
+				true );
 		log.debug("Got a root graph: " + rootGraph.toString() );
 		final MadChannelInstance[] channelIns = rootGraph.getChannelInstances();
 		assertTrue( channelIns.length == 0 );
@@ -57,13 +58,14 @@ public class MadGraphServiceRootGraphTest extends TestCase
 		final Collection<MadLink> links = rootGraph.getLinks();
 		assertTrue( links.size() == 0 );
 
-		gt.graphService.destroyGraph( rootGraph, true, true );
+		gt.graphService.destroyGraph( rootGraph );
 	}
 
 	public void testAddComponentToRootGraph()
 		throws Exception
 	{
-		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph(  "Test root graph" );
+		final MadGraphInstance<?,?> rootGraph = gt.graphService.createNewRootGraph( "Test root graph",
+				true );
 		final MadDefinitionListModel definitions = gt.componentService.listDefinitionsAvailable();
 		assertTrue( definitions.getSize() > 0 );
 		final MadDefinition<?,?> firstDefinition = definitions.getElementAt( 0 );
@@ -74,7 +76,7 @@ public class MadGraphServiceRootGraphTest extends TestCase
 		final Collection<MadInstance<?,?>> instanceIns = rootGraph.getInstances();
 		assertTrue( instanceIns.size() == 1 );
 
-		gt.graphService.destroyGraph( rootGraph, true, true );
+		gt.graphService.destroyGraph( rootGraph );
 	}
 
 	@Override

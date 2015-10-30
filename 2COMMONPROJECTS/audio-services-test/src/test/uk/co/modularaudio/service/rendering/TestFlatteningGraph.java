@@ -51,7 +51,8 @@ public class TestFlatteningGraph extends TestCase
 		throws Exception
 	{
 		log.debug("SimpleGraphFlattenTest beginning.");
-		final MadGraphInstance<?,?> graphToRender = rt.graphService.createNewRootGraph(  "Test Simple Graph" );
+		final MadGraphInstance<?,?> graphToRender = rt.graphService.createNewRootGraph( "Test Simple Graph",
+				true );
 
 		final MadDefinition<?,?> definition = rt.componentService.findDefinitionById( FadeInMadDefinition.DEFINITION_ID );
 
@@ -108,7 +109,7 @@ public class TestFlatteningGraph extends TestCase
 		rt.graphService.dumpGraph(  graphToRender  );
 		rt.renderingPlanService.dumpRenderingPlan( renderingPlan );
 
-		rt.graphService.destroyGraph( graphToRender, true, true );
+		rt.graphService.destroyGraph( graphToRender );
 	}
 
 	@Override

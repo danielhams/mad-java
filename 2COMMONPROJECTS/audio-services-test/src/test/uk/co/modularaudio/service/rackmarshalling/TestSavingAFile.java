@@ -102,7 +102,7 @@ public class TestSavingAFile extends TestCase
 		final RenderingPlan testRenderingPlan = tc.renderingPlanService.createRenderingPlan( rackModelRootGraph, dataRateConfiguration, tc );
 		tc.renderingPlanService.dumpRenderingPlan( testRenderingPlan );
 
-		tc.graphService.destroyGraph( rackModelRootGraph, true, true );
+		tc.graphService.destroyGraph( rackModelRootGraph );
 	}
 
 	@Override
