@@ -27,9 +27,10 @@ import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
-import uk.co.modularaudio.util.audio.mvc.displayslider.models.LimiterKneeSliderModel;
+import uk.co.modularaudio.util.audio.mvc.displayslider.models.CompressionThresholdSliderModel;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayController;
 import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
+import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel.ValueChangeListener;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView;
 import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView.DisplayOrientation;
@@ -38,22 +39,20 @@ import uk.co.modularaudio.util.swing.mvc.lwtcsliderdisplay.LWTCSliderDisplayView
 public class LimiterKneeSliderUiJComponent
 	implements IMadUiControlInstance<LimiterMadDefinition, LimiterMadInstance, LimiterMadUiInstance>
 {
-	private final LimiterKneeSliderModel model;
+//	private static Log log = LogFactory.getLog( StereoCompressorThresholdSliderUiJComponent.class.getName() );
 
-	private final SliderDisplayController sliderController;
-	private final LWTCSliderDisplayView sliderDisplayView;
+	private final SliderDisplayModel model;
+	private final LWTCSliderDisplayView view;
 
-	public LimiterKneeSliderUiJComponent(
-			final LimiterMadDefinition definition,
+	public LimiterKneeSliderUiJComponent( final LimiterMadDefinition definition,
 			final LimiterMadInstance instance,
 			final LimiterMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		model = new LimiterKneeSliderModel();
-		sliderController = new SliderDisplayController( model );
-		sliderDisplayView = new LWTCSliderDisplayView(
-				model,
-				sliderController,
+		model = new CompressionThresholdSliderModel();
+		final SliderDisplayController controller = new SliderDisplayController( model );
+		view = new LWTCSliderDisplayView( model,
+				controller,
 				SatelliteOrientation.LEFT,
 				DisplayOrientation.HORIZONTAL,
 				SatelliteOrientation.RIGHT,
@@ -62,9 +61,8 @@ public class LimiterKneeSliderUiJComponent
 				false,
 				true );
 
-		model.addChangeListener( new SliderDisplayModel.ValueChangeListener()
+		model.addChangeListener( new ValueChangeListener()
 		{
-
 			@Override
 			public void receiveValueChange( final Object source, final float newValue )
 			{
@@ -76,21 +74,15 @@ public class LimiterKneeSliderUiJComponent
 	@Override
 	public JComponent getControl()
 	{
-		return sliderDisplayView;
+		return view;
 	}
 
 	@Override
-	public void doDisplayProcessing(final ThreadSpecificTemporaryEventStorage tempEventStorage,
+	public void doDisplayProcessing( final ThreadSpecificTemporaryEventStorage tempEventStorage,
 			final MadTimingParameters timingParameters,
 			final long currentGuiTime)
 	{
-	}
-
-	@Override
-	public void receiveControlValue( final String strValue )
-	{
-		final float value = Float.parseFloat( strValue );
-		model.setValue( this, value );
+		// log.debug("Received display tick");
 	}
 
 	@Override
@@ -99,14 +91,20 @@ public class LimiterKneeSliderUiJComponent
 	}
 
 	@Override
-	public boolean needsDisplayProcessing()
+	public String getControlValue()
 	{
-		return false;
+		return Float.toString(model.getValue());
 	}
 
 	@Override
-	public String getControlValue()
+	public void receiveControlValue( final String valueStr )
 	{
-		return Float.toString( model.getValue() );
+		model.setValue( this, Float.parseFloat( valueStr ) );
+	}
+
+	@Override
+	public boolean needsDisplayProcessing()
+	{
+		return false;
 	}
 }

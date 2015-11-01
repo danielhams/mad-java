@@ -117,12 +117,14 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 		public void focusGained( final FocusEvent e )
 		{
 			hasFocus = true;
+			sutf.setupForActualTextbox();
 		}
 
 		@Override
 		public void focusLost( final FocusEvent e )
 		{
 			hasFocus = false;
+			sutf.setupForSpeedyTextbox();
 		}
 	}
 

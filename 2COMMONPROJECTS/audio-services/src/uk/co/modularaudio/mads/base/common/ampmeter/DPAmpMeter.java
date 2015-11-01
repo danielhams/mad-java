@@ -28,7 +28,6 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.gui.madswingcontrols.PacPanel;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterIntToFloatConverter;
 import uk.co.modularaudio.util.audio.mvc.displayslider.models.MixdownMeterModel;
-import uk.co.modularaudio.util.bufferedimage.BufferedImageAllocator;
 
 public class DPAmpMeter	extends PacPanel implements AmpMeter
 {
@@ -62,8 +61,7 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 
 	private int framesBetweenPeakReset = DataRate.SR_44100.getValue();
 
-	public DPAmpMeter( final BufferedImageAllocator bia,
-			final boolean showClipBox )
+	public DPAmpMeter( final boolean showClipBox )
 	{
 		this.setOpaque( true );
 
@@ -103,10 +101,10 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 	}
 
 	@Override
-	public void paint( final Graphics outBufferedImageGraphics )
+	public void paint( final Graphics g )
 	{
-		outBufferedImageGraphics.setColor( Color.BLACK );
-		outBufferedImageGraphics.fillRect( 0,  0, componentWidth, componentHeight );
+		g.setColor( Color.BLACK );
+		g.fillRect( 0,  0, componentWidth, componentHeight );
 
 		final int meterWidth = AmpMeter.PREFERRED_METER_WIDTH;
 
@@ -114,11 +112,11 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 		final float normalisedlevelValue = (sliderIntValue / numTotalSteps);
 		final int numPixelsHigh = (int)(normalisedlevelValue * numPixelsInMeter);
 
-		outBufferedImageGraphics.setColor( Color.GREEN );
+		g.setColor( Color.GREEN );
 		final int greenBarHeightInPixels = (numPixelsHigh > numGreenPixels ? numGreenPixels : numPixelsHigh );
 
 		final int greenStartY = numPixelsInMeter - greenBarHeightInPixels + 1 + meterHeightOffset;
-		outBufferedImageGraphics.fillRect( 3, greenStartY, meterWidth - 4, greenBarHeightInPixels );
+		g.fillRect( 3, greenStartY, meterWidth - 4, greenBarHeightInPixels );
 
 		int pixelsLeft = numPixelsHigh - greenBarHeightInPixels;
 
@@ -127,8 +125,8 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 		final int orangeStartY = greenStartY - orangeBarHeightInPixels;
 		if( orangeBarHeightInPixels > 0 )
 		{
-			outBufferedImageGraphics.setColor( Color.ORANGE );
-			outBufferedImageGraphics.fillRect( 3, orangeStartY, meterWidth - 4, orangeBarHeightInPixels );
+			g.setColor( Color.ORANGE );
+			g.fillRect( 3, orangeStartY, meterWidth - 4, orangeBarHeightInPixels );
 		}
 
 		pixelsLeft -= orangeBarHeightInPixels;
@@ -136,9 +134,9 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 
 		if( redBarHeightInPixels > 0 )
 		{
-			outBufferedImageGraphics.setColor( Color.RED );
+			g.setColor( Color.RED );
 			final int redStartY = orangeStartY - redBarHeightInPixels;
-			outBufferedImageGraphics.fillRect( 3, redStartY, meterWidth - 4, redBarHeightInPixels );
+			g.fillRect( 3, redStartY, meterWidth - 4, redBarHeightInPixels );
 		}
 
 		pixelsLeft -= redBarHeightInPixels;
@@ -148,18 +146,18 @@ public class DPAmpMeter	extends PacPanel implements AmpMeter
 			INT_TO_FLOAT_CONVERTER.toSliderIntFromDb( currentMaxValueDb ) /	numTotalSteps );
 		final int maxBarPixelsHigh = (int)(maxNormalisedValue * numPixelsInMeter);
 		final Color maxDbColor = getColorForDb( currentMaxValueDb );
-		outBufferedImageGraphics.setColor( maxDbColor );
+		g.setColor( maxDbColor );
 
 		final int yReverser = numPixelsInMeter + 1;
 		final int maxStartY = yReverser - maxBarPixelsHigh + meterHeightOffset;
-		outBufferedImageGraphics.drawLine( 1, maxStartY, meterWidth, maxStartY );
+		g.drawLine( 1, maxStartY, meterWidth, maxStartY );
 
 		if( showClipBox )
 		{
 			if( currentMaxValueDb >= 0.0f )
 			{
 				// Should already be the right colour
-				outBufferedImageGraphics.fillRect( 1, 1, meterWidth, meterWidth - 1 );
+				g.fillRect( 1, 1, meterWidth, meterWidth - 1 );
 			}
 		}
 	}

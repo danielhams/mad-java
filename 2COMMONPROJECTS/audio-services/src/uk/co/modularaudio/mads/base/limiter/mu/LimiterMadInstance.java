@@ -60,6 +60,9 @@ public class LimiterMadInstance extends MadInstance<LimiterMadDefinition,Limiter
 			final MadChannelConfiguration channelConfiguration )
 	{
 		super( instanceName, definition, creationParameterValues, channelConfiguration );
+
+		kneeSad.hardSetValue( LimiterKneeSliderModel.DEFAULT_KNEE );
+		falloffSad.hardSetValue( LimiterFallofSliderModel.DEFAULT_FALLOFF );
 	}
 
 	@Override

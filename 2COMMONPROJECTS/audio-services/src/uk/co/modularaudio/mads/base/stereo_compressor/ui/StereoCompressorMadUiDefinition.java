@@ -87,7 +87,8 @@ public class StereoCompressorMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		StereoCompressorThresholdTypeComboUiJComponent.class,
-		StereoCompressorLookaheadCheckboxUiJComponent.class,
+//		StereoCompressorLookaheadCheckboxUiJComponent.class,
+		StereoCompressor4msLookaheadCheckboxUiJComponent.class,
 		StereoCompressorSourceSignalMeterUiComponent.class,
 		StereoCompressorThresholdSliderUiJComponent.class,
 		StereoCompressorRatioSliderUiJComponent.class,
@@ -101,7 +102,7 @@ public class StereoCompressorMadUiDefinition
 	// 6 Between sliders
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
 		new Rectangle( 200,  3,  80,  30 ),			// Threshold Type
-		new Rectangle( 280,  3, 120,  30 ),			// Lookahead Checkbox
+		new Rectangle( 290,  9, 130,  18 ),			// Lookahead Checkbox
 		new Rectangle(  16, 40,  50, 250 ),			// In Signal Meter
 		new Rectangle(  75, 40,  70, 250 ),			// Threshold
 		new Rectangle( 145, 40,  70, 250 ),			// Ratio

@@ -53,12 +53,12 @@ public class LaneStereoAmpMeter extends JPanel
 
 		this.setLayout( msh.createMigLayout() );
 
-		leftMeter = new DPAmpMeter( bia, showClipBox );
+		leftMeter = new DPAmpMeter( showClipBox );
 		this.add( leftMeter, "gapbottom " +
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx right, growy" );
 		meterMarks = new AmpMeterMarks( Color.BLACK, false );
 		this.add( meterMarks, "growy, growx 0");
-		rightMeter = new DPAmpMeter( bia, showClipBox );
+		rightMeter = new DPAmpMeter( showClipBox );
 		this.add( rightMeter, "gapbottom "+
 				AmpMeterMarks.METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS + ", alignx left, growy" );
 		this.validate();

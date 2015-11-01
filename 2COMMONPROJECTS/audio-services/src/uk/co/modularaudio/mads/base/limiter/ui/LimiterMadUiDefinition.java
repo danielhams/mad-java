@@ -34,7 +34,7 @@ import uk.co.modularaudio.util.table.Span;
 public class LimiterMadUiDefinition
 	extends AbstractNonConfigurableMadUiDefinition<LimiterMadDefinition, LimiterMadInstance, LimiterMadUiInstance>
 {
-	private static final Span SPAN = new Span(2,1);
+	private static final Span SPAN = new Span(2,2);
 
 	private static final int[] CHAN_INDEXES = new int[] {
 		LimiterMadDefinition.CONSUMER_IN_LEFT,
@@ -64,6 +64,7 @@ public class LimiterMadUiDefinition
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
 		LimiterHardLimitCheckboxUiJComponent.class,
+//		LimiterKneeSliderUiJComponent.class,
 		LimiterKneeSliderUiJComponent.class,
 		LimiterFalloffSliderUiJComponent.class
 	};
@@ -79,7 +80,7 @@ public class LimiterMadUiDefinition
 	public LimiterMadUiDefinition( final LimiterMadDefinition definition )
 		throws DatastoreException
 	{
-		super( MadUIStandardBackgrounds.STD_2X1_LIGHTGRAY,
+		super( MadUIStandardBackgrounds.STD_2X2_DARKGRAY,
 				definition,
 				SPAN,
 				INSTANCE_CLASS,

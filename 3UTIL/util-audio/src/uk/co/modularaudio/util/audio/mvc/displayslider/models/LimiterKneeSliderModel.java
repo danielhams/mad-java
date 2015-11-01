@@ -25,18 +25,17 @@ import uk.co.modularaudio.util.mvc.displayslider.SliderDisplayModel;
 
 public class LimiterKneeSliderModel extends SliderDisplayModel
 {
-	public final static float DEFAULT_KNEE = 0.98f;
+	public final static float DEFAULT_KNEE = 0.0f;
 
 	public LimiterKneeSliderModel()
 	{
-		super(  0.0f, 1.0f,
-				DEFAULT_KNEE,
-				DEFAULT_KNEE,
-				2000,
+		super(  -36.0f, 0.0f, 0.0f,
+				0.0f,
+				3600,
 				100,
 				new SimpleSliderIntToFloatConverter(),
+				2,
 				3,
-				3,
-				"" );
+				"dB" );
 	}
 }

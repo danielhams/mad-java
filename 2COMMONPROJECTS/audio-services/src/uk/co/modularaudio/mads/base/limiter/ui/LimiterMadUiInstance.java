@@ -20,13 +20,16 @@
 
 package uk.co.modularaudio.mads.base.limiter.ui;
 
+import uk.co.modularaudio.mads.base.limiter.mu.LimiterIOQueueBridge;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadInstance;
-import uk.co.modularaudio.mads.base.limiter.mu.LimiterIOQueueBridge;
 import uk.co.modularaudio.util.audio.gui.mad.helper.NoEventsNoNameChangeNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class LimiterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMadUiInstance<LimiterMadDefinition, LimiterMadInstance>
 {
+//	private static Log log = LogFactory.getLog( LimiterMadUiInstance.class.getName() );
+
 	public LimiterMadUiInstance( final LimiterMadInstance instance, final LimiterMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
@@ -34,7 +37,8 @@ public class LimiterMadUiInstance extends NoEventsNoNameChangeNonConfigurableMad
 
 	public void sendKneeChange( final float incomingKnee )
 	{
-		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_KNEE, Float.floatToIntBits( incomingKnee ) );
+		final float asValue = AudioMath.dbToLevelF( incomingKnee );
+		sendTemporalValueToInstance( LimiterIOQueueBridge.COMMAND_KNEE, Float.floatToIntBits( asValue ) );
 	}
 
 	public void sendFalloffChange( final float incomingFalloff )

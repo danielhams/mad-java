@@ -229,11 +229,6 @@ public class SourceSignalAmpMeter extends PacPanel
 		currentMeterValueDb = meterReadingDb;
 	}
 
-//	public float calcLevelValueFromDb( float dbIn )
-//	{
-//		return dbToLevelComputer.toNormalisedSliderLevelFromDb( dbIn );
-//	}
-
 	public void destroy()
 	{
 		if( tiledBufferedImage != null )
@@ -247,9 +242,6 @@ public class SourceSignalAmpMeter extends PacPanel
 				final String msg = "Failed to free up allocated image: " + e.toString();
 				log.error( msg );
 			}
-			tiledBufferedImage = null;
-			outBufferedImage = null;
-			outBufferedImageGraphics = null;
 		}
 	}
 
