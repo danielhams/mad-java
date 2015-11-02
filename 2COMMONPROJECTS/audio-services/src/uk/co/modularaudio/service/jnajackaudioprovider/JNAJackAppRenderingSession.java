@@ -27,10 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jaudiolibs.jnajack.Jack;
 import org.jaudiolibs.jnajack.JackClient;
 import org.jaudiolibs.jnajack.JackException;
-import org.jaudiolibs.jnajack.JackLatencyCallbackMode;
 import org.jaudiolibs.jnajack.JackMidi;
 import org.jaudiolibs.jnajack.JackPort;
-import org.jaudiolibs.jnajack.JackPort.JackLatencyRange;
 import org.jaudiolibs.jnajack.JackPortFlags;
 import org.jaudiolibs.jnajack.JackPortType;
 import org.jaudiolibs.jnajack.JackProcessCallback;
@@ -70,14 +68,14 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //	private final Jack jack;
 	private final JackClient client;
 
-	private final JackLatencyRange latencyRange = new JackLatencyRange();
+//	private final JackLatencyRange latencyRange = new JackLatencyRange();
 
 	private int numProducerAudioPorts;
 	private JackPort[] producerAudioPorts;
-	private int[] producerAudioPortLatencies;
+//	private int[] producerAudioPortLatencies;
 	private int numConsumerAudioPorts;
 	private JackPort[] consumerAudioPorts;
-	private int[] consumerAudioPortLatencies;
+//	private int[] consumerAudioPortLatencies;
 	private int numProducerMidiPorts;
 	private JackPort[] producerMidiPorts;
 	private int numConsumerMidiPorts;
@@ -132,13 +130,13 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			{
 				numProducerAudioPorts = phs.getNumChannels();
 				producerAudioPorts = new JackPort[ numProducerAudioPorts ];
-				producerAudioPortLatencies = new int[ numProducerAudioPorts ];
+//				producerAudioPortLatencies = new int[ numProducerAudioPorts ];
 				for( int c = 0 ; c < numProducerAudioPorts ; ++c )
 				{
 					final String portName = "In " + (c+1);
 					final JackPortFlags portFlags = JackPortFlags.JackPortIsInput;
 					producerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
-					producerAudioPortLatencies[ c ] = 0;
+//					producerAudioPortLatencies[ c ] = 0;
 				}
 			}
 
@@ -157,13 +155,13 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			{
 				numConsumerAudioPorts = chs.getNumChannels();
 				consumerAudioPorts = new JackPort[ numConsumerAudioPorts ];
-				consumerAudioPortLatencies = new int[ numConsumerAudioPorts ];
+//				consumerAudioPortLatencies = new int[ numConsumerAudioPorts ];
 				for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
 				{
 					final String portName = "Out " + (c+1);
 					final JackPortFlags portFlags = JackPortFlags.JackPortIsOutput;
 					consumerAudioPorts[ c ] = client.registerPort(portName, JackPortType.AUDIO, portFlags );
-					consumerAudioPortLatencies[ c ] = 0;
+//					consumerAudioPortLatencies[ c ] = 0;
 				}
 			}
 
@@ -290,16 +288,16 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 //		int jackMaxLatency;
 		try
 		{
-			for( int p = 0 ; p < numProducerAudioPorts ; ++p )
-			{
-				producerAudioPorts[p].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackCaptureLatency );
-				producerAudioPortLatencies[p] = latencyRange.getMax();
-			}
-			for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
-			{
-				consumerAudioPorts[c].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
-				consumerAudioPortLatencies[c] = latencyRange.getMax();
-			}
+//			for( int p = 0 ; p < numProducerAudioPorts ; ++p )
+//			{
+//				producerAudioPorts[p].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackCaptureLatency );
+//				producerAudioPortLatencies[p] = latencyRange.getMax();
+//			}
+//			for( int c = 0 ; c < numConsumerAudioPorts ; ++c )
+//			{
+//				consumerAudioPorts[c].getLatencyRange( latencyRange, JackLatencyCallbackMode.JackPlaybackLatency );
+//				consumerAudioPortLatencies[c] = latencyRange.getMax();
+//			}
 
 //			final long jackTime = client.getFrameTime();
 			periodStartFrameTime = client.getLastFrameTime();
