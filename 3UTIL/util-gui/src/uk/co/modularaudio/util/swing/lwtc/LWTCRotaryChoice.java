@@ -146,6 +146,7 @@ public class LWTCRotaryChoice extends JPanel
 		g2d.fillRect( rotaryLeftEdge, 2, 4, height - 4 );
 
 		final int halfHeight = (height / 2) - 1;
+		final int quarterHeight = halfHeight / 2;
 
 		g2d.setColor( colours.getInnerOutline() );
 		g2d.drawLine( rotaryLeftBoundary, halfHeight, width - 3, halfHeight );
@@ -191,10 +192,11 @@ public class LWTCRotaryChoice extends JPanel
 		}
 
 		final int flecheDrawX = textpartWidth + 9;
-		final int flecheYIndent = 6;
+		final int firstFlecheY = quarterHeight - 2;
+		final int secondFlecheY = (halfHeight + quarterHeight) - 2;
 
-		drawFleche( g2d, flecheDrawX, flecheYIndent, FlecheIndex.BACKWARDS, backwardsActive );
-		drawFleche( g2d, flecheDrawX, halfHeight - 1 + flecheYIndent, FlecheIndex.FORWARDS, forwardsActive );
+		drawFleche( g2d, flecheDrawX, firstFlecheY, FlecheIndex.BACKWARDS, backwardsActive );
+		drawFleche( g2d, flecheDrawX, secondFlecheY, FlecheIndex.FORWARDS, forwardsActive );
 
 		// Focus outline
 		if( hasFocus() )
@@ -209,7 +211,6 @@ public class LWTCRotaryChoice extends JPanel
 
 			final Font f = getFont();
 			final FontRenderContext frc = g2d.getFontRenderContext();
-//			final Rectangle2D stringBounds = f.getStringBounds( text.toCharArray(), 0, text.length(), frc);
 			final GlyphVector glyphVector = f.createGlyphVector( frc, text );
 			final Rectangle visualBounds = glyphVector.getLogicalBounds().getBounds();
 
