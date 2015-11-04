@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.springframework.context.support.GenericApplicationContext;
 
 import uk.co.modularaudio.componentdesigner.ComponentDesigner;
+import uk.co.modularaudio.service.configuration.impl.ConfigurationServiceImpl;
 import uk.co.modularaudio.service.hibsession.impl.HibernateSessionServiceImpl;
 import uk.co.modularaudio.util.audio.fft.JTransformsConfigurator;
 import uk.co.modularaudio.util.audio.oscillatortable.OscillatorWaveShape;
@@ -47,14 +48,10 @@ public class ComponentDesignerSupportFileGenerator
 
 	private final ComponentDesigner cd;
 
-	private final String outputDirectory;
-
-	public ComponentDesignerSupportFileGenerator( final String outputDirectory )
+	public ComponentDesignerSupportFileGenerator()
 			throws Exception
 	{
 		cd = new ComponentDesigner();
-
-		this.outputDirectory = outputDirectory;
 	}
 
 	public void init() throws Exception
@@ -70,7 +67,11 @@ public class ComponentDesignerSupportFileGenerator
 
 	public void generateFiles() throws Exception
 	{
-		generateBlw();
+		final GenericApplicationContext gac = cd.getApplicationContext();
+		final ConfigurationServiceImpl configurationService = gac.getBean( ConfigurationServiceImpl.class );
+		final String waveTablesOutputDirectory = configurationService.getSingleStringValue( "AdvancedComponents.WavetablesCacheRoot" );
+
+		generateBlw( waveTablesOutputDirectory );
 	}
 
 	public void initialiseThingsNeedingComponentGraph() throws Exception
@@ -87,6 +88,14 @@ public class ComponentDesignerSupportFileGenerator
 		{
 			log.info("Creating output in '" + args[0] + "'");
 		}
+		final File outputDir = new File( args[0] );
+		if( !outputDir.exists() )
+		{
+			if( !outputDir.mkdirs() )
+			{
+				throw new IOException( "Unable to create output directory" );
+			}
+		}
 
 		JTransformsConfigurator.setThreadsToOne();
 
@@ -96,10 +105,14 @@ public class ComponentDesignerSupportFileGenerator
 		loggerConfig.setLevel( Level.INFO );
 		ctx.updateLoggers();
 
-		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator( args[0] );
-		sfg.generateFiles();
+		final ComponentDesignerSupportFileGenerator sfg = new ComponentDesignerSupportFileGenerator();
+
 		sfg.init();
+
+		sfg.generateFiles();
+
 		sfg.initialiseThingsNeedingComponentGraph();
+
 		final String[] dbFilesToMove = sfg.getDatabaseFiles();
 		sfg.destroy();
 
@@ -127,11 +140,11 @@ public class ComponentDesignerSupportFileGenerator
 		return dbFiles;
 	}
 
-	private void generateBlw() throws Exception
+	private void generateBlw( final String waveTablesOutputDirectory ) throws Exception
 	{
 		log.info( "Check if wave tables need to be generated..." );
 
-		final String waveTablesOutputDirectory = outputDirectory + File.separatorChar + "wavetables";
+//		final String waveTablesOutputDirectory = outputDirectory + File.separatorChar + "wavetables";
 
 		final StandardWaveTables swt = StandardWaveTables.getInstance( waveTablesOutputDirectory );
 		final StandardBandLimitedWaveTables sblwt = StandardBandLimitedWaveTables

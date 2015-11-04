@@ -11,12 +11,6 @@
         <rackControl name="PowerCurve" value="Additive"/>
         <rackControl name="Slider" value="-1.0"/>
     </rackComponent>
-    <rackComponent name="Limiter 1" definitionId="limiter">
-        <rackPosition column="2" row="0"/>
-        <rackControl name="Falloff" value="0.761"/>
-        <rackControl name="Knee" value="0.1975"/>
-        <rackControl name="UseHardLimit" value="false"/>
-    </rackComponent>
     <rackComponent name="Output Amp" definitionId="imixer3">
         <rackPosition column="0" row="4"/>
         <rackControl name="Master Lane" value="0.0:0.0"/>
@@ -28,10 +22,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-8.4640875"/>
-        <rackControl name="PlayStop" value="false"/>
+        <rackControl name="Gain" value="-8.64466"/>
+        <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/House/Renaissance/Renaissance- Transitions, Vol. 3 Disc 1/19 Ricochet Effect.mp3|9360488"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/LRCNTheBidness/20110416 - 140057- Live The Bidness 072 April 2011 w Shock Osugi Nilicule and LRCN.mp3|386481361"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -59,13 +53,9 @@
     </rackComponent>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Left" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 1"/>
     <rackLink producerRackComponentName="Cross Fader 1" producerChannelName="Output Wave Right" consumerRackComponentName="Sub Rack 2" consumerChannelName="Input Channel 2"/>
-    <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>
-    <rackLink producerRackComponentName="Limiter 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Limiter 1" consumerChannelName="Input Wave Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
-    <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Limiter 1" consumerChannelName="Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 2" producerChannelName="Output Channel 1" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>
