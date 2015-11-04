@@ -221,7 +221,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void paint( final Graphics g )
 	{
-		log.debug("paint");
+//		log.debug("paint");
 		g.setColor( ScopeNColours.BACKGROUND_COLOR );
 		g.fillRect( 0, 0, width, height );
 
@@ -238,7 +238,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 
 	private void setupInternalBuffersFromSize( final int width, final int height )
 	{
-		log.debug("setupInternalBuffersFromSize");
+//		log.debug("setupInternalBuffersFromSize");
 		this.width = width - 1;
 		this.height = height - 1;
 
@@ -277,7 +277,7 @@ public class ScopeWaveDisplay<D extends ScopeNMadDefinition<D, I>,
 			final int framesChangedOffset,
 			final int framesChangedLength )
 	{
-		log.debug("visualiseScopeBuffers");
+//		log.debug("visualiseScopeBuffers");
 		if( frontEndBuffers[0].length != internalChannelBuffers[0].length )
 		{
 			if( log.isErrorEnabled() )
