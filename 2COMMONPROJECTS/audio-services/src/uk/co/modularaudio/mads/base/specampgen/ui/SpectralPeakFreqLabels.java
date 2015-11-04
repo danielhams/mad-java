@@ -23,6 +23,8 @@ package uk.co.modularaudio.mads.base.specampgen.ui;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -103,26 +105,29 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 	@Override
 	public void paint( final Graphics g )
 	{
-		g.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
-		g.fillRect( 0, 0, realWidth, realHeight );
+		g2d.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
-		g.translate( xOffset, 0 );
-		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
+		g2d.setColor( SpectralAmpColours.BACKGROUND_COLOR );
+		g2d.fillRect( 0, 0, realWidth, realHeight );
+
+		g2d.translate( xOffset, 0 );
+		g2d.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
 		for( int i = 0 ; i < numFreqMarkers ; ++i )
 		{
 			final int x = horizPixelsPerMarker * i;
 
 			final float result = freqScaleComputer.mappedBucketToRawMinMax( magsWidth + 1, x );
-			paintScaleText( g, result, x );
+			paintScaleText( g2d, result, x );
 		}
 
-		g.translate( -xOffset, 0 );
+		g2d.translate( -xOffset, 0 );
 	}
 
-	private final void paintScaleText( final Graphics g,
+	private final void paintScaleText( final Graphics2D g2d,
 			final float displayFloat,
 			final int xOffset )
 	{
@@ -132,6 +137,6 @@ public class SpectralPeakFreqLabels extends JPanel implements FreqAxisChangeList
 		final char[] bscs = displayString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 
-		g.drawChars( bscs, 0, bscs.length, xOffset - (charsWidth / 2), fontHeight );
+		g2d.drawChars( bscs, 0, bscs.length, xOffset - (charsWidth / 2), fontHeight );
 	}
 }

@@ -174,6 +174,8 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 		else
 		{
 			final Graphics2D g2d = (Graphics2D)g;
+			g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
 			final int width = getWidth();
 			final int height = getHeight();
 
@@ -185,7 +187,6 @@ public class LWTCSpeedyUpdateTextField extends LWTCTextField
 
 			super.paintBorder( g2d );
 
-			g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 			g2d.setColor( getForeground() );
 			g2d.setFont( f );
 

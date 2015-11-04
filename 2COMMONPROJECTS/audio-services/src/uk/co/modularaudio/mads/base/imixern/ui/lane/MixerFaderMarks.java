@@ -106,7 +106,7 @@ public class MixerFaderMarks extends JPanel
 
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
 			// Draw a marker line at the appropriate height
-			g.drawLine( 0, offsetY, 2, offsetY );
+			g2d.drawLine( 0, offsetY, 2, offsetY );
 
 			if( offsetY < minMarkY )
 			{
@@ -120,10 +120,10 @@ public class MixerFaderMarks extends JPanel
 			final String labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, (levelToMark != 0)  );
 
 			final int stringWidth = fm.stringWidth( labelStr );
-			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
+			g2d.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 
 		}
 
-		g.drawLine( 0, minMarkY, 0, maxMarkY );
+		g2d.drawLine( 0, minMarkY, 0, maxMarkY );
 	}
 }

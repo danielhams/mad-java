@@ -51,6 +51,7 @@ import uk.co.modularaudio.util.audio.mad.MadParameterDefinition;
 import uk.co.modularaudio.util.spring.PostInitPreShutdownContextHelper;
 import uk.co.modularaudio.util.spring.SpringComponentHelper;
 import uk.co.modularaudio.util.spring.SpringContextHelper;
+import uk.co.modularaudio.util.swing.general.FontResetter;
 import uk.co.modularaudio.util.table.Span;
 
 public class GenericComponentVisualiser
@@ -70,6 +71,7 @@ public class GenericComponentVisualiser
 
 	public GenericComponentVisualiser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
+		FontResetter.turnOnGlobalAaText();
 		if( USE_LAF )
 		{
 			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );

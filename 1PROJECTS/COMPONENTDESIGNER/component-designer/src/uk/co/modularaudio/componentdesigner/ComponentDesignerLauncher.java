@@ -39,6 +39,8 @@ public class ComponentDesignerLauncher extends ComponentDesigner
 
 	public static void main(final String[] args) throws Exception
 	{
+		FontResetter.turnOnGlobalAaText();
+
 		boolean useSystemLookAndFeel = false;
 
 		boolean showAlpha = false;

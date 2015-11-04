@@ -23,6 +23,8 @@ package uk.co.modularaudio.mads.base.scopen.ui.display;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -97,13 +99,16 @@ public class ScopeAmpLabels<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void paint( final Graphics g )
 	{
-		g.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-		g.setColor( ScopeNColours.BACKGROUND_COLOR );
-		g.fillRect( 0, 0, realWidth, realHeight );
+		g2d.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
-		g.translate( 0, yOffset );
-		g.setColor( ScopeNColours.SCOPE_AXIS_DETAIL );
+		g2d.setColor( ScopeNColours.BACKGROUND_COLOR );
+		g2d.fillRect( 0, 0, realWidth, realHeight );
+
+		g2d.translate( 0, yOffset );
+		g2d.setColor( ScopeNColours.SCOPE_AXIS_DETAIL );
 
 		final float diffPerMarker = (displayPoles == DisplayPoles.BIPOLE ?
 				2.0f / (numAmpMarkers-1)
@@ -118,14 +123,14 @@ public class ScopeAmpLabels<D extends ScopeNMadDefinition<D, I>,
 		{
 			final int y = magsHeight - (vertPixelsPerMarker * i);
 
-			paintScaleText( g, width, curValue, y );
+			paintScaleText( g2d, width, curValue, y );
 			curValue += diffPerMarker;
 		}
 
-		g.translate( 0, -yOffset );
+		g2d.translate( 0, -yOffset );
 	}
 
-	private final void paintScaleText( final Graphics g,
+	private final void paintScaleText( final Graphics2D g2d,
 			final int width,
 			final float scaleFloat,
 			final int yOffset )
@@ -136,7 +141,7 @@ public class ScopeAmpLabels<D extends ScopeNMadDefinition<D, I>,
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = width - 2;
-		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+		g2d.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
 	}
 
 	public void setDisplayPoles( final DisplayPoles displayPoles )

@@ -23,6 +23,8 @@ package uk.co.modularaudio.mads.base.waveroller.ui;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -71,53 +73,56 @@ public class WaveRollerScaleDisplay extends JPanel
 	@Override
 	public void paintComponent( final Graphics g )
 	{
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
 		final int width = getWidth();
 		final int height = getHeight();
 
 		// Clear
-		g.setColor(  WaveRollerColours.BACKGROUND_COLOR  );
-		g.fillRect( 0, 0, width, height );
+		g2d.setColor(  WaveRollerColours.BACKGROUND_COLOR  );
+		g2d.fillRect( 0, 0, width, height );
 
 		// Draw scale margin
-		g.setColor( WaveRollerColours.SCALE_AXIS_DETAIL );
+		g2d.setColor( WaveRollerColours.SCALE_AXIS_DETAIL );
 		final int x = ( isLeftDisplay ? width - 1 : 0 );
 		final int bottomScaleY = SCALE_MARGIN;
 		final int topScaleY = height - SCALE_MARGIN - 1;
-		g.drawLine( x, bottomScaleY, x, topScaleY );
+		g2d.drawLine( x, bottomScaleY, x, topScaleY );
 
 		// Draw three little lines we'll mark against
 		final int midY = height / 2;
 		final int llStartX = ( isLeftDisplay ? width - 1 - LL_WIDTH : 0 );
 		final int llEndX = ( isLeftDisplay ? width - 1 : LL_WIDTH );
-		g.drawLine( llStartX, bottomScaleY, llEndX, bottomScaleY );
+		g2d.drawLine( llStartX, bottomScaleY, llEndX, bottomScaleY );
 
 		final int midBottomY = (bottomScaleY + midY) / 2;
-		g.drawLine( llStartX, midBottomY, llEndX, midBottomY );
+		g2d.drawLine( llStartX, midBottomY, llEndX, midBottomY );
 
-		g.drawLine( llStartX, midY, llEndX, midY );
+		g2d.drawLine( llStartX, midY, llEndX, midY );
 
 		final int topMidY = (topScaleY + midY) / 2;
 
-		g.drawLine( llStartX, topMidY, llEndX, topMidY );
+		g2d.drawLine( llStartX, topMidY, llEndX, topMidY );
 
-		g.drawLine( llStartX, topScaleY, llEndX, topScaleY );
+		g2d.drawLine( llStartX, topScaleY, llEndX, topScaleY );
 
 		// Draw the scale bits
 		final float currentMaxAsAbs = AudioMath.dbToLevelF( currentScaleLimitDb );
 		final float halfwayDb = AudioMath.levelToDbF( currentMaxAsAbs / 2.0f );
 
-		paintScaleText( g, width, currentScaleLimitDb, bottomScaleY );
+		paintScaleText( g2d, width, currentScaleLimitDb, bottomScaleY );
 
-		paintScaleText( g, width, halfwayDb, midBottomY );
+		paintScaleText( g2d, width, halfwayDb, midBottomY );
 
-		paintScaleText( g, width, Float.NEGATIVE_INFINITY, midY );
+		paintScaleText( g2d, width, Float.NEGATIVE_INFINITY, midY );
 
-		paintScaleText( g, width, halfwayDb, topMidY );
+		paintScaleText( g2d, width, halfwayDb, topMidY );
 
-		paintScaleText( g, width, currentScaleLimitDb, topScaleY );
+		paintScaleText( g2d, width, currentScaleLimitDb, topScaleY );
 	}
 
-	private final void paintScaleText( final Graphics g,
+	private final void paintScaleText( final Graphics2D g2d,
 			final int width,
 			final float scaleFloat,
 			final int yOffset )
@@ -128,7 +133,7 @@ public class WaveRollerScaleDisplay extends JPanel
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = ( isLeftDisplay ? width - LL_WIDTH - 2 : LL_WIDTH + 2 + charsWidth );
-		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+		g2d.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
 	}
 
 	@Override

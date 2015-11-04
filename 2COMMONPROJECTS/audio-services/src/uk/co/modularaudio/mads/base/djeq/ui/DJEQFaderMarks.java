@@ -79,6 +79,8 @@ public class DJEQFaderMarks extends JPanel
 	public void paintComponent( final Graphics g )
 	{
 		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
 		final int width = getWidth();
 		final int height = getHeight();
 		final int heightForMarks = height - (LWTCSliderKnobImage.V_KNOB_HEIGHT-1) - 6;
@@ -89,7 +91,6 @@ public class DJEQFaderMarks extends JPanel
 			g2d.fillRect( 0, 0, width, height );
 		}
 
-		g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
 		g2d.setColor( getForeground() );
 		g2d.setFont( getFont() );
 		final SliderIntToFloatConverter intToFloatConverter = model.getIntToFloatConverter();
@@ -106,7 +107,7 @@ public class DJEQFaderMarks extends JPanel
 
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
 			// Draw a marker line at the appropriate height
-			g.drawLine( 0, offsetY, 2, offsetY );
+			g2d.drawLine( 0, offsetY, 2, offsetY );
 
 			if( offsetY < minMarkY )
 			{
@@ -120,9 +121,9 @@ public class DJEQFaderMarks extends JPanel
 			final String labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, (levelToMark != 0)  );
 
 			final int stringWidth = fm.stringWidth( labelStr );
-			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
+			g2d.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 		}
 
-		g.drawLine( 0, minMarkY, 0, maxMarkY );
+		g2d.drawLine( 0, minMarkY, 0, maxMarkY );
 	}
 }

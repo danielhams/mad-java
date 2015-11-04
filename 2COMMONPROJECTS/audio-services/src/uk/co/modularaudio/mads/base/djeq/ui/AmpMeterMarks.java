@@ -103,13 +103,13 @@ public class AmpMeterMarks extends JPanel
 
 			final int offsetY = (height - knobOffset) - ( (int)yValForMark );
 			// Draw a marker line at the appropriate height
-			g.drawLine( 0, offsetY, 2, offsetY );
-			g.drawLine( width - 3, offsetY, width - 1, offsetY );
+			g2d.drawLine( 0, offsetY, 2, offsetY );
+			g2d.drawLine( width - 3, offsetY, width - 1, offsetY );
 
 			final String labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
 
 			final int stringWidth = fm.stringWidth( labelStr );
-			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
+			g2d.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 
 		}
 	}

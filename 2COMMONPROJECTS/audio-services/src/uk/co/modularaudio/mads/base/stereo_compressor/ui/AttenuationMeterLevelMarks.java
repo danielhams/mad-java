@@ -59,17 +59,17 @@ public class AttenuationMeterLevelMarks extends JComponent
 	}
 
 	@Override
-	public void paint( final Graphics og )
+	public void paint( final Graphics g )
 	{
-		final Graphics2D g = (Graphics2D)og;
-		g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,  RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON );
 
 		final int width = getWidth();
 		final int height = getHeight();
-//		g.setColor( Color.GREEN );
-//		g.fillRect( 0, 0, width, height );
+//		g2d.setColor( Color.GREEN );
+//		g2d.fillRect( 0, 0, width, height );
 
-		g.setColor( Color.BLACK );
+		g2d.setColor( Color.BLACK );
 
 		// If show clip box is set, we need to subtract that from the height too
 		final int heightForMarks = height - (2 * METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS) - 2;
@@ -84,13 +84,13 @@ public class AttenuationMeterLevelMarks extends JComponent
 
 			final int offsetY = (height - 2) - ( ((int)yValForMark) + METER_LABEL_NEEDED_TOP_BOTTOM_INSET_PIXELS );
 			// Draw a black line at the appropriate height
-			g.drawLine( 0, offsetY, 1, offsetY );
-//			g.drawLine( width - 2, offsetY, width - 1, offsetY );
+			g2d.drawLine( 0, offsetY, 1, offsetY );
+//			g2d.drawLine( width - 2, offsetY, width - 1, offsetY );
 
 			final String labelStr = MathFormatter.fastFloatPrint( levelToMark, 0, false );
 
 			final int stringWidth = fm.stringWidth( labelStr );
-			g.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
+			g2d.drawString( labelStr, (width - stringWidth) / 2, (int)(offsetY + (fontHeight / 2.0)) - 1 );
 		}
 	}
 }

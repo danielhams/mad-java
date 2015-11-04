@@ -27,6 +27,12 @@ import javax.swing.plaf.FontUIResource;
 
 public class FontResetter
 {
+	public static void turnOnGlobalAaText()
+	{
+		System.setProperty("awt.useSystemAAFontSettings","on");
+		System.setProperty("swing.aatext", "true");
+	}
+
 	public static void setUIFontFromString( final String fontName, final int fontStyle, final int fontSize )
 	{
 		final FontUIResource f = new FontUIResource( fontName, fontStyle, fontSize );

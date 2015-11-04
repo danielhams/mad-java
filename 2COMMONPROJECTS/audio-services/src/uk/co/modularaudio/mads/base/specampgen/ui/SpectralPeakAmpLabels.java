@@ -23,6 +23,8 @@ package uk.co.modularaudio.mads.base.specampgen.ui;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -98,13 +100,16 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 	@Override
 	public void paint( final Graphics g )
 	{
-		g.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-		g.setColor( SpectralAmpColours.BACKGROUND_COLOR );
-		g.fillRect( 0, 0, realWidth, realHeight );
+		g2d.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
-		g.translate( 0, yOffset );
-		g.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
+		g2d.setColor( SpectralAmpColours.BACKGROUND_COLOR );
+		g2d.fillRect( 0, 0, realWidth, realHeight );
+
+		g2d.translate( 0, yOffset );
+		g2d.setColor( SpectralAmpColours.SCALE_AXIS_DETAIL );
 
 		for( int i = 0 ; i < numAmpMarkers ; ++i )
 		{
@@ -115,13 +120,13 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 
 			final float asDb = AudioMath.levelToDbF( result );
 
-			paintScaleTextDb( g, width, asDb, y );
+			paintScaleTextDb( g2d, width, asDb, y );
 		}
 
-		g.translate( 0, -yOffset );
+		g2d.translate( 0, -yOffset );
 	}
 
-	private final void paintScaleTextDb( final Graphics g,
+	private final void paintScaleTextDb( final Graphics2D g2d,
 			final int width,
 			final float scaleFloat,
 			final int yOffset )
@@ -132,6 +137,6 @@ public class SpectralPeakAmpLabels extends JPanel implements AmpAxisChangeListen
 		final char[] bscs = scaleString.toCharArray();
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsEndX = width - 2;
-		g.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
+		g2d.drawChars( bscs, 0, bscs.length, charsEndX - charsWidth, yOffset + fontHeightOver2 );
 	}
 }

@@ -23,6 +23,8 @@ package uk.co.modularaudio.mads.base.scopen.ui.display;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
@@ -93,12 +95,15 @@ public class ScopeTimeLabels<D extends ScopeNMadDefinition<D, I>,
 	@Override
 	public void paint( final Graphics g )
 	{
-		g.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 
-		g.setColor( ScopeNColours.BACKGROUND_COLOR );
-		g.fillRect( 0, 0, realWidth, realHeight );
+		g2d.setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
-		g.setColor( ScopeNColours.SCOPE_AXIS_DETAIL );
+		g2d.setColor( ScopeNColours.BACKGROUND_COLOR );
+		g2d.fillRect( 0, 0, realWidth, realHeight );
+
+		g2d.setColor( ScopeNColours.SCOPE_AXIS_DETAIL );
 
 		final float diffPerMarker = captureTimeMillis / (numTimeMarkers-1);
 		float curValue = 0.0f;
@@ -107,12 +112,12 @@ public class ScopeTimeLabels<D extends ScopeNMadDefinition<D, I>,
 		{
 			final int x = (horizPixelsPerMarker * i) + ScopeNDisplayUiJComponent.AXIS_MARKS_LENGTH;
 
-			paintScaleText( g, LABEL_Y_OFFSET, curValue, ScopeNDisplayUiJComponent.AMP_LABELS_WIDTH + x );
+			paintScaleText( g2d, LABEL_Y_OFFSET, curValue, ScopeNDisplayUiJComponent.AMP_LABELS_WIDTH + x );
 			curValue += diffPerMarker;
 		}
 	}
 
-	private final void paintScaleText( final Graphics g,
+	private final void paintScaleText( final Graphics2D g2d,
 			final int height,
 			final float scaleFloat,
 			final int xOffset )
@@ -122,7 +127,7 @@ public class ScopeTimeLabels<D extends ScopeNMadDefinition<D, I>,
 		final int charsWidth = fm.charsWidth( bscs, 0, bscs.length );
 		final int charsWidthOver2 = charsWidth / 2;
 
-		g.drawChars( bscs, 0, bscs.length, xOffset - charsWidthOver2, height );
+		g2d.drawChars( bscs, 0, bscs.length, xOffset - charsWidthOver2, height );
 	}
 
 	@Override
