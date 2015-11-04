@@ -66,9 +66,11 @@ public class ControllerToCvMadInstance extends MadInstance<ControllerToCvMadDefi
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 4.1f;
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 2.0f;
 
-	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1000.0f / 160.0f;
+//	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1000.0f / 160.0f;
 	// For BCD Faders
 //	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 1.0f;
+
+	private static final float TS_MIN_CONTROLLER_PERIOD_MILLIS = 5.7f;
 
 	private final ControlValueInterpolator[] tsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
 	private final ControlValueInterpolator[] noTsInterpolators = new ControlValueInterpolator[NUM_INTERPOLATORS];
