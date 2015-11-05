@@ -63,11 +63,13 @@ public class NoteHistogramMadInstance extends MadInstance<NoteHistogramMadDefini
 	}
 
 	@Override
-	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage ,
-			final MadTimingParameters timingParameters ,
-			final long periodStartFrameTime ,
-			final MadChannelConnectedFlags channelConnectedFlags ,
-			final MadChannelBuffer[] channelBuffers , final int frameOffset , final int numFrames  )
+	public RealtimeMethodReturnCodeEnum process( final ThreadSpecificTemporaryEventStorage tempQueueEntryStorage,
+			final MadTimingParameters timingParameters,
+			final long periodStartFrameTime,
+			final MadChannelConnectedFlags channelConnectedFlags,
+			final MadChannelBuffer[] channelBuffers,
+			final int frameOffset,
+			final int numFrames )
 	{
 		final MadChannelBuffer noteBuffer = channelBuffers[NoteHistogramMadDefinition.CONSUMER_NOTE];
 		final MadChannelNoteEvent[] noteEvents = noteBuffer.noteBuffer;

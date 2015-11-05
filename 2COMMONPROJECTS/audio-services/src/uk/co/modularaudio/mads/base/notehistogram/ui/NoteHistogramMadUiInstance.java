@@ -20,31 +20,43 @@
 
 package uk.co.modularaudio.mads.base.notehistogram.ui;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramIOQueueBridge;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteHistogram;
+import uk.co.modularaudio.mads.base.notehistogram.util.NoteHistogramDisplay;
+import uk.co.modularaudio.mads.base.notehistogram.util.NoteReceivedListener;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
+import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
+import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<NoteHistogramMadDefinition, NoteHistogramMadInstance>
 {
 	private static Log log = LogFactory.getLog( NoteHistogramMadUiInstance.class.getName() );
 
-	private final static int NUM_HISTOGRAM_BUCKETS = 40;
-	private final static int NUM_FRAMES_PER_BUCKET = 25;
-
-	private final NoteHistogram noteHistogram = new NoteHistogram( NUM_HISTOGRAM_BUCKETS, NUM_FRAMES_PER_BUCKET );
+	private NoteHistogramDisplay noteHistogramDisplay;
+	private final ArrayList<NoteReceivedListener> noteReceivedListeners = new ArrayList<NoteReceivedListener>();
 
 	public NoteHistogramMadUiInstance( final NoteHistogramMadInstance instance,
 			final NoteHistogramMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
+	}
+
+	@Override
+	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency, final MadTimingParameters timingParameters,
+			final MadFrameTimeFactory frameTimeFactory )
+	{
+		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
+		final int sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
+		noteHistogramDisplay.setSampleRate( sampleRate );
 	}
 
 	@Override
@@ -57,17 +69,20 @@ public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigura
 	}
 
 	@Override
-	public void consumeQueueEntry( final NoteHistogramMadInstance instance, final IOQueueEvent nextOutgoingEntry )
+	public void consumeQueueEntry( final NoteHistogramMadInstance instance,
+			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
 			case NoteHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF:
 			{
 				final int value = (int)nextOutgoingEntry.value;
-
-				noteHistogram.addNoteDiff( value );
-				noteHistogram.dumpStats();
-
+//				log.debug( "Received note diff" );
+				noteHistogramDisplay.addNoteDiff( value );
+				for( final NoteReceivedListener nrl : noteReceivedListeners )
+				{
+					nrl.receivedNote();
+				}
 				break;
 			}
 			default:
@@ -78,5 +93,20 @@ public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigura
 				}
 			}
 		}
+	}
+
+	public void resetHistogram()
+	{
+		noteHistogramDisplay.reset();
+	}
+
+	public void setNoteHistogramDisplay( final NoteHistogramDisplay nhd )
+	{
+		this.noteHistogramDisplay = nhd;
+	}
+
+	public void addNoteReceivedListener( final NoteReceivedListener nrl )
+	{
+		noteReceivedListeners.add( nrl );
 	}
 }

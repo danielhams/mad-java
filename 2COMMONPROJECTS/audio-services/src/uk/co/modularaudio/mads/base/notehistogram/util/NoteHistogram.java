@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.mads.base.notehistogram.util;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -29,10 +31,19 @@ public class NoteHistogram
 
 	private final int numBuckets;
 
+	private int totalNumEvents;
+
 	private final NoteHistogramBucket[] buckets;
 	private int nonBucketCount;
 	private int lowestDiff = Integer.MAX_VALUE;
 	private int highestDiff = Integer.MIN_VALUE;
+
+	public interface HistogramListener
+	{
+		void receiveHistogramUpdate();
+	};
+
+	private final ArrayList<HistogramListener> listeners = new ArrayList<HistogramListener>();
 
 	public NoteHistogram( final int numBuckets,
 			final int framesPerBucket )
@@ -58,15 +69,30 @@ public class NoteHistogram
 		{
 			highestDiff = noteDiffFrames;
 		}
+
+		boolean matchedBucket = false;
 		for( int b = 0 ; b < numBuckets ; ++b )
 		{
 			if( buckets[b].addCountForBucket( noteDiffFrames ) )
 			{
-				return;
+				matchedBucket = true;
+				break;
 			}
 		}
 
-		nonBucketCount++;
+		if( matchedBucket )
+		{
+			totalNumEvents++;
+		}
+		else
+		{
+			nonBucketCount++;
+		}
+
+		for( final HistogramListener hl : listeners )
+		{
+			hl.receiveHistogramUpdate();
+		}
 	}
 
 	public void reset()
@@ -78,12 +104,14 @@ public class NoteHistogram
 		nonBucketCount = 0;
 		lowestDiff = Integer.MAX_VALUE;
 		highestDiff = Integer.MIN_VALUE;
+		totalNumEvents = 0;
 	}
 
 	public void dumpStats()
 	{
 		if( log.isDebugEnabled() )
 		{
+			log.debug("Have " + totalNumEvents + " total events");
 			for( final NoteHistogramBucket b : buckets )
 			{
 				log.debug( "Bucket (" + b.getBucketStartDiff() + "->" + b.getBucketEndDiff() +
@@ -93,5 +121,20 @@ public class NoteHistogram
 			log.debug("The lowest seen was " + lowestDiff );
 			log.debug("The highest seen was " + highestDiff );
 		}
+	}
+
+	public void addHistogramListener( final HistogramListener listener )
+	{
+		listeners.add( listener );
+	}
+
+	public int getNumTotalEvents()
+	{
+		return totalNumEvents;
+	}
+
+	public NoteHistogramBucket[] getBuckets()
+	{
+		return buckets;
 	}
 }

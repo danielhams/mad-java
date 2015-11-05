@@ -46,15 +46,27 @@ public class NoteHistogramMadUiDefinition
 	};
 
 	private static final String[] CONTROL_NAMES = new String[] {
+		"DataReceivedLight",
+		"ResetButton",
+		"Display"
 	};
 
 	private static final ControlType[] CONTROL_TYPES = new ControlType[] {
+		ControlType.DISPLAY,
+		ControlType.BUTTON,
+		ControlType.DISPLAY
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
+		NoteHistogramDataReceivedLightUiJComponent.class,
+		NoteHistogramResetButtonUiJComponent.class,
+		NoteHistogramDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
+		new Rectangle( 210,  6, 150,  30 ),
+		new Rectangle( 400,  6, 150,  30 ),
+		new Rectangle(   6, 42, 544, 264 )
 	};
 
 	private static final Class<NoteHistogramMadUiInstance> INSTANCE_CLASS = NoteHistogramMadUiInstance.class;
