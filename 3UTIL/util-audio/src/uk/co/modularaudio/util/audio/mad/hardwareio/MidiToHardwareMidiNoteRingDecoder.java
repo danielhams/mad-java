@@ -50,6 +50,7 @@ public class MidiToHardwareMidiNoteRingDecoder
 //		if( log.isDebugEnabled() )
 //		{
 //			log.debug( "SO EV (" + AudioTimingUtils.formatTimestampForLogging( timestampNanoseconds ) + ")");
+//			log.debug( "Event is " + command + " " + channel + " " + data1 );
 //		}
 
 		switch( command )
@@ -128,9 +129,9 @@ public class MidiToHardwareMidiNoteRingDecoder
 			}
 			case 0xb0:
 			{
-//				if( log.isdebugenabled() )
+//				if( log.isDebugEnabled() )
 //				{
-//					log.debug( "control change on channel " + channel + " " + data1 + " value " + data2  + " with timestamp " + timestampnanoseconds );
+//					log.debug( "control change on channel " + channel + " " + data1 + " value " + data2  + " with timestamp " + timestampNanoseconds );
 //				}
 				internalEvent.set( channel, timestampNanoseconds, MadChannelNoteEventType.CONTROLLER, data1, data2, -1 );
 				noteEventRing.writeOne( internalEvent );
