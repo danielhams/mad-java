@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 
 import java.awt.Color;
@@ -14,10 +14,10 @@ public class HistogramBinAxisMarkers extends JPanel
 
 	private int pixelsPerMarker = 10;
 
-	public HistogramBinAxisMarkers( final NoteHistogram histogram )
+	public HistogramBinAxisMarkers( final Histogram histogram )
 	{
 		setBackground( Color.LIGHT_GRAY );
-		setMinimumSize( new Dimension( 5, NoteHistogramDisplay.AXIS_MARKER_LENGTH ) );
+		setMinimumSize( new Dimension( 5, HistogramDisplay.AXIS_MARKER_LENGTH ) );
 	}
 
 	@Override
@@ -27,9 +27,9 @@ public class HistogramBinAxisMarkers extends JPanel
 
 		g.setColor( HistogramColours.AXIS_LINES );
 
-		for( int x = 0 ; x < NoteHistogramDisplay.NUM_BIN_MARKERS ; ++x )
+		for( int x = 0 ; x < HistogramDisplay.NUM_BIN_MARKERS ; ++x )
 		{
-			final int xPixelOffset = NoteHistogramDisplay.AXIS_MARKER_LENGTH + (x * pixelsPerMarker);
+			final int xPixelOffset = HistogramDisplay.AXIS_MARKER_LENGTH + (x * pixelsPerMarker);
 			g.drawLine( xPixelOffset, 0, xPixelOffset, height );
 		}
 	}
@@ -39,6 +39,6 @@ public class HistogramBinAxisMarkers extends JPanel
 	{
 		super.setBounds( x, y, width, height );
 
-		pixelsPerMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing( width - NoteHistogramDisplay.AXIS_MARKER_LENGTH );
+		pixelsPerMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing( width - HistogramDisplay.AXIS_MARKER_LENGTH );
 	}
 }

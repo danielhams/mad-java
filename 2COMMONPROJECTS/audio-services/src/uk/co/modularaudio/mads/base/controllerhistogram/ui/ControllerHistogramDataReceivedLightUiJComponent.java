@@ -1,13 +1,13 @@
-package uk.co.modularaudio.mads.base.notehistogram.ui;
+package uk.co.modularaudio.mads.base.controllerhistogram.ui;
 
 import java.awt.Component;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteReceivedLight;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.util.ReceivedLight;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
@@ -15,16 +15,16 @@ import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.swing.lwtc.LWTCLabel;
 
-public class NoteHistogramDataReceivedLightUiJComponent
-	implements IMadUiControlInstance<NoteHistogramMadDefinition, NoteHistogramMadInstance, NoteHistogramMadUiInstance>
+public class ControllerHistogramDataReceivedLightUiJComponent
+	implements IMadUiControlInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance, ControllerHistogramMadUiInstance>
 {
 	private final JPanel lightPanel = new JPanel();
-	private final NoteReceivedLight receivedLight = new NoteReceivedLight();
+	private final ReceivedLight receivedLight = new ReceivedLight();
 
-	public NoteHistogramDataReceivedLightUiJComponent(
-			final NoteHistogramMadDefinition definition,
-			final NoteHistogramMadInstance instance,
-			final NoteHistogramMadUiInstance uiInstance,
+	public ControllerHistogramDataReceivedLightUiJComponent(
+			final ControllerHistogramMadDefinition definition,
+			final ControllerHistogramMadInstance instance,
+			final ControllerHistogramMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		uiInstance.addNoteReceivedListener( receivedLight );

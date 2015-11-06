@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,10 +14,10 @@ public class HistogramEventAxisMarkers extends JPanel
 
 	private int pixelsPerMarker = 10;
 
-	public HistogramEventAxisMarkers( final NoteHistogram histogram )
+	public HistogramEventAxisMarkers( final Histogram histogram )
 	{
 		this.setBackground( Color.CYAN );
-		setMinimumSize( new Dimension( NoteHistogramDisplay.AXIS_MARKER_LENGTH, 5 ) );
+		setMinimumSize( new Dimension( HistogramDisplay.AXIS_MARKER_LENGTH, 5 ) );
 	}
 
 	@Override
@@ -29,7 +29,7 @@ public class HistogramEventAxisMarkers extends JPanel
 
 		g.setColor( HistogramColours.AXIS_LINES );
 
-		for( int y = 0 ; y < NoteHistogramDisplay.NUM_EVENT_MARKERS ; ++y )
+		for( int y = 0 ; y < HistogramDisplay.NUM_EVENT_MARKERS ; ++y )
 		{
 			final int yPixelOffset = heightMinusOne - (y * pixelsPerMarker);
 

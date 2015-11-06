@@ -18,26 +18,26 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.ui;
+package uk.co.modularaudio.mads.base.controllerhistogram.ui;
 
 import java.awt.Point;
 import java.awt.Rectangle;
 
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.MadUIStandardBackgrounds;
 import uk.co.modularaudio.util.audio.gui.mad.MadUiControlDefinition.ControlType;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNonConfigurableMadUiDefinition;
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.table.Span;
 
-public class NoteHistogramMadUiDefinition
-	extends AbstractNonConfigurableMadUiDefinition<NoteHistogramMadDefinition, NoteHistogramMadInstance, NoteHistogramMadUiInstance>
+public class ControllerHistogramMadUiDefinition
+	extends AbstractNonConfigurableMadUiDefinition<ControllerHistogramMadDefinition, ControllerHistogramMadInstance, ControllerHistogramMadUiInstance>
 {
 	private static final Span SPAN = new Span(2, 4);
 
 	private static final int[] CHAN_INDEXES = new int[] {
-		NoteHistogramMadDefinition.CONSUMER_NOTE
+		ControllerHistogramMadDefinition.CONSUMER_NOTE
 	};
 
 	private static final Point[] CHAN_POSIS = new Point[] {
@@ -58,9 +58,9 @@ public class NoteHistogramMadUiDefinition
 	};
 
 	private static final Class<?>[] CONTROL_CLASSES = new Class<?>[] {
-		NoteHistogramDataReceivedLightUiJComponent.class,
-		NoteHistogramResetButtonUiJComponent.class,
-		NoteHistogramDisplayUiJComponent.class
+		ControllerHistogramDataReceivedLightUiJComponent.class,
+		ControllerHistogramResetButtonUiJComponent.class,
+		ControllerHistogramDisplayUiJComponent.class
 	};
 
 	private static final Rectangle[] CONTROL_BOUNDS = new Rectangle[] {
@@ -69,9 +69,9 @@ public class NoteHistogramMadUiDefinition
 		new Rectangle(   6, 42, 544, 264 )
 	};
 
-	private static final Class<NoteHistogramMadUiInstance> INSTANCE_CLASS = NoteHistogramMadUiInstance.class;
+	private static final Class<ControllerHistogramMadUiInstance> INSTANCE_CLASS = ControllerHistogramMadUiInstance.class;
 
-	public NoteHistogramMadUiDefinition( final NoteHistogramMadDefinition definition )
+	public ControllerHistogramMadUiDefinition( final ControllerHistogramMadDefinition definition )
 			throws DatastoreException
 		{
 			super( MadUIStandardBackgrounds.STD_2X4_RACINGGREEN,

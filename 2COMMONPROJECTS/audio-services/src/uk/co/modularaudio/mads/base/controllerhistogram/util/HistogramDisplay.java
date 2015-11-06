@@ -1,14 +1,18 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.mads.base.notehistogram.ui.NoteHistogramMadUiInstance;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteHistogram.HistogramListener;
+import uk.co.modularaudio.mads.base.controllerhistogram.ui.ControllerHistogramMadUiInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.util.Histogram.HistogramListener;
+import uk.co.modularaudio.util.audio.format.DataRate;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
+import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
 
-public class NoteHistogramDisplay extends JPanel implements HistogramListener
+public class HistogramDisplay extends JPanel implements HistogramListener
 {
 	private static final long serialVersionUID = 4876392781636639883L;
 
@@ -21,20 +25,22 @@ public class NoteHistogramDisplay extends JPanel implements HistogramListener
 	public final static int NUM_HISTOGRAM_BUCKETS = 100;
 	public final static int NUM_FRAMES_PER_BUCKET = 10;
 
-	protected final static int PIXELS_PER_BIN = 3;
-
 	protected final static int NUM_EVENT_MARKERS = 11;
 	protected final static int NUM_BIN_MARKERS = 11;
 	protected final static int MARKER_PADDING = 15;
 
-	private final NoteHistogram histogram = new NoteHistogram( NUM_HISTOGRAM_BUCKETS, NUM_FRAMES_PER_BUCKET );
+	private final Histogram histogram = new Histogram( NUM_HISTOGRAM_BUCKETS, NUM_FRAMES_PER_BUCKET );
 
 	private final HistogramGraph graph;
 	private final HistogramBinAxisLabels binAxisLabels;
 
 	private boolean shouldRepaint;
 
-	public NoteHistogramDisplay( final NoteHistogramMadUiInstance uiInstance )
+	private int mouseX = -1;
+
+	private int sampleRate = DataRate.CD_QUALITY.getValue();
+
+	public HistogramDisplay( final ControllerHistogramMadUiInstance uiInstance )
 	{
 		histogram.addHistogramListener( this );
 
@@ -70,6 +76,56 @@ public class NoteHistogramDisplay extends JPanel implements HistogramListener
 		this.add( binAxisLabels, "cell 0 2, spanx 3, growx" );
 
 		uiInstance.setNoteHistogramDisplay( this );
+
+		final HistogramDisplayMouseListener hdml = new HistogramDisplayMouseListener( this, graph );
+
+		addMouseListener( hdml );
+		addMouseMotionListener( hdml );
+	}
+
+	@Override
+	public void paint( final Graphics g )
+	{
+		super.paint( g );
+
+		if( mouseX != -1 )
+		{
+			final HistogramBucket[] buckets = histogram.getBuckets();
+			final int numBuckets = buckets.length;
+
+			g.setColor( HistogramColours.AXIS_LINES);
+
+			final int graphWidth = graph.getGraphWidth();
+			final float normPos = (float)mouseX / (graphWidth - 1);
+
+//			log.debug( "Calculated normalised position for pixel " + mouseX + " as " + normPos );
+			final int normFrames = (int)(normPos * buckets[numBuckets-1].getBucketEndDiff());
+			final long numNanosAtPos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, normFrames );
+			final float numMillisAtPos = numNanosAtPos/1000000.0f;
+
+			final StringBuilder tooltipTextBuilder = new StringBuilder();
+
+			final String timeText = MathFormatter.fastFloatPrint( numMillisAtPos, 2, false ) + "ms";
+
+			tooltipTextBuilder.append( "<html><center>" );
+			tooltipTextBuilder.append( timeText );
+
+			final float numSecondsAtPos = numMillisAtPos / 1000.0f;
+
+			final String freqText = ( numSecondsAtPos > 0.0f ?
+					"~" + MathFormatter.fastFloatPrint( 1.0f / numSecondsAtPos, 1, false ) + "hz" :
+						"-" );
+
+			tooltipTextBuilder.append( "<br>" );
+			tooltipTextBuilder.append( freqText );
+			tooltipTextBuilder.append( "</center></html>" );
+
+			setToolTipText( tooltipTextBuilder.toString() );
+		}
+		else
+		{
+			setToolTipText( null );
+		}
 	}
 
 	public void doDisplayProcessing()
@@ -104,6 +160,17 @@ public class NoteHistogramDisplay extends JPanel implements HistogramListener
 
 	public void setSampleRate( final int sampleRate )
 	{
+		this.sampleRate = sampleRate;
 		binAxisLabels.setSampleRate( sampleRate );
+	}
+
+	public void setMousePosition( final int mouseX )
+	{
+		this.mouseX = mouseX;
+	}
+
+	public void unsetMousePosition()
+	{
+		setMousePosition( -1 );
 	}
 }

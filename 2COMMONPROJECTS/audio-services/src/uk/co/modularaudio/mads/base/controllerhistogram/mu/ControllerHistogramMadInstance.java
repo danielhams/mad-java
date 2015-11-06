@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.mu;
+package uk.co.modularaudio.mads.base.controllerhistogram.mu;
 
 import java.util.Map;
 
@@ -36,15 +36,15 @@ import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
-public class NoteHistogramMadInstance extends MadInstance<NoteHistogramMadDefinition,NoteHistogramMadInstance>
+public class ControllerHistogramMadInstance extends MadInstance<ControllerHistogramMadDefinition,ControllerHistogramMadInstance>
 {
 //	private static Log log = LogFactory.getLog( NoteHistogramMadInstance.class.getName() );
 
 	private long lastNoteFrameTime = -1;
 
-	public NoteHistogramMadInstance( final BaseComponentsCreationContext creationContext,
+	public ControllerHistogramMadInstance( final BaseComponentsCreationContext creationContext,
 			final String instanceName,
-			final NoteHistogramMadDefinition definition,
+			final ControllerHistogramMadDefinition definition,
 			final Map<MadParameterDefinition, String> creationParameterValues,
 			final MadChannelConfiguration channelConfiguration )
 	{
@@ -71,7 +71,7 @@ public class NoteHistogramMadInstance extends MadInstance<NoteHistogramMadDefini
 			final int frameOffset,
 			final int numFrames )
 	{
-		final MadChannelBuffer noteBuffer = channelBuffers[NoteHistogramMadDefinition.CONSUMER_NOTE];
+		final MadChannelBuffer noteBuffer = channelBuffers[ControllerHistogramMadDefinition.CONSUMER_NOTE];
 		final MadChannelNoteEvent[] noteEvents = noteBuffer.noteBuffer;
 
 		final int numNotes = noteBuffer.numElementsInBuffer;
@@ -114,7 +114,7 @@ public class NoteHistogramMadInstance extends MadInstance<NoteHistogramMadDefini
 	{
 		localBridge.queueTemporalEventToUi( tses,
 				frameTime,
-				NoteHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF,
+				ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF,
 				noteDiff,
 				null );
 

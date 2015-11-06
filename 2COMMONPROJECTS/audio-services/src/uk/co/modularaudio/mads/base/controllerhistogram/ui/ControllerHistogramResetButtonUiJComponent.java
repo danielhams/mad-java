@@ -1,24 +1,24 @@
-package uk.co.modularaudio.mads.base.notehistogram.ui;
+package uk.co.modularaudio.mads.base.controllerhistogram.ui;
 
 import java.awt.Component;
 
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadInstance;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 import uk.co.modularaudio.util.swing.lwtc.LWTCButton;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class NoteHistogramResetButtonUiJComponent
-	implements IMadUiControlInstance<NoteHistogramMadDefinition, NoteHistogramMadInstance, NoteHistogramMadUiInstance>
+public class ControllerHistogramResetButtonUiJComponent
+	implements IMadUiControlInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance, ControllerHistogramMadUiInstance>
 {
 	private final LWTCButton resetButton;
 
-	public NoteHistogramResetButtonUiJComponent(
-			final NoteHistogramMadDefinition definition,
-			final NoteHistogramMadInstance instance,
-			final NoteHistogramMadUiInstance uiInstance,
+	public ControllerHistogramResetButtonUiJComponent(
+			final ControllerHistogramMadDefinition definition,
+			final ControllerHistogramMadInstance instance,
+			final ControllerHistogramMadUiInstance uiInstance,
 			final int controlIndex )
 	{
 		resetButton = new LWTCButton( LWTCControlConstants.STD_BUTTON_COLOURS,

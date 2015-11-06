@@ -18,22 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class NoteHistogram
+public class Histogram
 {
-	private static Log log = LogFactory.getLog( NoteHistogram.class.getName() );
+	private static Log log = LogFactory.getLog( Histogram.class.getName() );
 
 	private final int numBuckets;
 
 	private int totalNumEvents;
 
-	private final NoteHistogramBucket[] buckets;
+	private final HistogramBucket[] buckets;
 	private int nonBucketCount;
 	private int lowestDiff = Integer.MAX_VALUE;
 	private int highestDiff = Integer.MIN_VALUE;
@@ -45,16 +45,16 @@ public class NoteHistogram
 
 	private final ArrayList<HistogramListener> listeners = new ArrayList<HistogramListener>();
 
-	public NoteHistogram( final int numBuckets,
+	public Histogram( final int numBuckets,
 			final int framesPerBucket )
 	{
 		this.numBuckets = numBuckets;
 
-		buckets = new NoteHistogramBucket[numBuckets];
+		buckets = new HistogramBucket[numBuckets];
 
 		for( int b = 0 ; b < numBuckets ; ++b )
 		{
-			buckets[b] = new NoteHistogramBucket( framesPerBucket * b,
+			buckets[b] = new HistogramBucket( framesPerBucket * b,
 					(framesPerBucket * (b + 1)) );
 		}
 	}
@@ -112,7 +112,7 @@ public class NoteHistogram
 		if( log.isDebugEnabled() )
 		{
 			log.debug("Have " + totalNumEvents + " total events");
-			for( final NoteHistogramBucket b : buckets )
+			for( final HistogramBucket b : buckets )
 			{
 				log.debug( "Bucket (" + b.getBucketStartDiff() + "->" + b.getBucketEndDiff() +
 						") has " + b.getBucketCount() + " entries" );
@@ -133,7 +133,7 @@ public class NoteHistogram
 		return totalNumEvents;
 	}
 
-	public NoteHistogramBucket[] getBuckets()
+	public HistogramBucket[] getBuckets()
 	{
 		return buckets;
 	}

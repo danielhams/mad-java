@@ -31,6 +31,8 @@ import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadDefinition;
 import uk.co.modularaudio.mads.base.audiotocv4.ui.AudioToCv4MadUiDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.ui.BandLimitedOscillatorMadUiDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.ui.ControllerHistogramMadUiDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.ui.ControllerToCvMadUiDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
@@ -61,8 +63,6 @@ import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.ui.MoogFilterMadUiDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.ui.NoteDebugMadUiDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.ui.NoteHistogramMadUiDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.ui.NoteMultiplexerMadUiDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
@@ -148,7 +148,7 @@ public class BaseComponentsUiFactory
 	private ScopeLargeMadUiDefinition scopelMud;
 	private AudioToCv4MadUiDefinition atc4Mud;
 	private CvToAudio4MadUiDefinition cta4Mud;
-	private NoteHistogramMadUiDefinition notehMud;
+	private ControllerHistogramMadUiDefinition notehMud;
 	private NoteDebugMadUiDefinition notedMud;
 	private ControllerToCvMadUiDefinition con2cvMud;
 
@@ -376,11 +376,11 @@ public class BaseComponentsUiFactory
             cta4Mud = new CvToAudio4MadUiDefinition( cta4Md );
             muds.add( cta4Mud );
             mdIdToMudMap.put( CvToAudio4MadDefinition.DEFINITION_ID, cta4Mud );
-			final NoteHistogramMadDefinition notehMd = (NoteHistogramMadDefinition)
-                componentService.findDefinitionById( NoteHistogramMadDefinition.DEFINITION_ID );
-            notehMud = new NoteHistogramMadUiDefinition( notehMd );
+			final ControllerHistogramMadDefinition notehMd = (ControllerHistogramMadDefinition)
+                componentService.findDefinitionById( ControllerHistogramMadDefinition.DEFINITION_ID );
+            notehMud = new ControllerHistogramMadUiDefinition( notehMd );
             muds.add( notehMud );
-            mdIdToMudMap.put( NoteHistogramMadDefinition.DEFINITION_ID, notehMud );
+            mdIdToMudMap.put( ControllerHistogramMadDefinition.DEFINITION_ID, notehMud );
 			final NoteDebugMadDefinition notedMd = (NoteDebugMadDefinition)
                 componentService.findDefinitionById( NoteDebugMadDefinition.DEFINITION_ID );
             notedMud = new NoteDebugMadUiDefinition( notedMd );

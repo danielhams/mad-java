@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -23,13 +23,13 @@ public class HistogramBinAxisLabels extends JPanel
 	private int sampleRate = DataRate.CD_QUALITY.getValue();
 	private int pixelsPerMarker = 10;
 
-	private final NoteHistogram histogram;
+	private final Histogram histogram;
 
-	public HistogramBinAxisLabels( final NoteHistogram histogram )
+	public HistogramBinAxisLabels( final Histogram histogram )
 	{
 		setBackground( Color.BLACK );
 		setOpaque( true );
-		this.setMinimumSize( new Dimension( 5, NoteHistogramDisplay.BINS_LABELS_HEIGHT ) );
+		this.setMinimumSize( new Dimension( 5, HistogramDisplay.BINS_LABELS_HEIGHT ) );
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
@@ -54,20 +54,20 @@ public class HistogramBinAxisLabels extends JPanel
 
 		final FontMetrics fm = getFontMetrics( LWTCControlConstants.LABEL_SMALL_FONT );
 
-		final NoteHistogramBucket[] buckets = histogram.getBuckets();
+		final HistogramBucket[] buckets = histogram.getBuckets();
 		final int numBuckets = buckets.length;
 
-		final int lastBucketStart = buckets[numBuckets-1].getBucketEndDiff();
+		final int lastBucketEnd = buckets[numBuckets-1].getBucketEndDiff();
 //		log.debug( "Last bucket end is "  + lastBucketStart );
 
-		final float incrementPerBucket = lastBucketStart / (NoteHistogramDisplay.NUM_BIN_MARKERS-1);
+		final float incrementPerBucket = lastBucketEnd / (HistogramDisplay.NUM_BIN_MARKERS);
 
 		final int yOffset = fm.getAscent() + 2;
 
-		for( int b = 0 ; b < NoteHistogramDisplay.NUM_BIN_MARKERS ; ++b )
+		for( int b = 0 ; b < HistogramDisplay.NUM_BIN_MARKERS ; ++b )
 		{
-			final int xOffset = NoteHistogramDisplay.EVENTS_LABELS_WIDTH +
-					NoteHistogramDisplay.AXIS_MARKER_LENGTH +
+			final int xOffset = HistogramDisplay.EVENTS_LABELS_WIDTH +
+					HistogramDisplay.AXIS_MARKER_LENGTH +
 					(b * pixelsPerMarker);
 
 			final int bucketStartDifference = (int)(b * incrementPerBucket);
@@ -76,7 +76,7 @@ public class HistogramBinAxisLabels extends JPanel
 			final long asNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, bucketStartDifference );
 			final float asMillis = (asNanos / 1000000.0f);
 
-			final String labelString = MathFormatter.fastFloatPrint( asMillis, 1, false ) + "ms";
+			final String labelString = MathFormatter.fastFloatPrint( asMillis, 2, false ) + "ms";
 
 //			log.debug( "Drawing bin text " + labelString + " at " + xOffset + ", " + yOffset );
 			drawCenteredText( g2d, fm, xOffset, yOffset, labelString );
@@ -100,7 +100,7 @@ public class HistogramBinAxisLabels extends JPanel
 		super.setBounds( x, y, width, height );
 
 		pixelsPerMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing(
-				(width - NoteHistogramDisplay.AXIS_MARKER_LENGTH - NoteHistogramDisplay.EVENTS_LABELS_WIDTH) );
+				(width - HistogramDisplay.AXIS_MARKER_LENGTH - HistogramDisplay.EVENTS_LABELS_WIDTH) );
 	}
 
 	public void setSampleRate( final int sampleRate )

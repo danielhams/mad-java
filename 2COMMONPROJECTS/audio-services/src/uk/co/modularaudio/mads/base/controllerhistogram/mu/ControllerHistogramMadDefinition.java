@@ -18,7 +18,7 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.mu;
+package uk.co.modularaudio.mads.base.controllerhistogram.mu;
 
 import java.util.Map;
 
@@ -37,21 +37,21 @@ import uk.co.modularaudio.util.audio.mad.helper.AbstractNonConfigurableMadDefini
 import uk.co.modularaudio.util.exception.DatastoreException;
 import uk.co.modularaudio.util.exception.RecordNotFoundException;
 
-public class NoteHistogramMadDefinition
-	extends AbstractNonConfigurableMadDefinition<NoteHistogramMadDefinition,NoteHistogramMadInstance>
+public class ControllerHistogramMadDefinition
+	extends AbstractNonConfigurableMadDefinition<ControllerHistogramMadDefinition,ControllerHistogramMadInstance>
 	implements BaseMadDefinition
 {
 	// Indexes into the channels
 	public final static int CONSUMER_NOTE = 0;
 	public final static int NUM_CHANNELS = 1;
 
-	public final static String DEFINITION_ID = "note_histogram";
+	public final static String DEFINITION_ID = "controller_histogram";
 
-	private final static String USER_VISIBLE_NAME = "Note Time Diff Histogram";
+	private final static String USER_VISIBLE_NAME = "Controller Event Histogram";
 
 	private final static String CLASS_GROUP = MadClassificationService.CONTROL_PROCESSING_GROUP_ID;
-	private final static String CLASS_NAME = "Note Time Diff Histogram";
-	private final static String CLASS_DESC = "Display a histogram of time differences between notes";
+	private final static String CLASS_NAME = "Controller Event Histogram";
+	private final static String CLASS_DESC = "Display a histogram of time differences between controller events";
 
 	// These must match the channel indexes given above
 	private final static String[] CHAN_NAMES = new String[] {
@@ -72,7 +72,7 @@ public class NoteHistogramMadDefinition
 
 	private final BaseComponentsCreationContext creationContext;
 
-	public NoteHistogramMadDefinition( final BaseComponentsCreationContext creationContext,
+	public ControllerHistogramMadDefinition( final BaseComponentsCreationContext creationContext,
 			final MadClassificationService classificationService )
 		throws RecordNotFoundException, DatastoreException
 	{
@@ -82,7 +82,7 @@ public class NoteHistogramMadDefinition
 						CLASS_NAME,
 						CLASS_DESC,
 						ReleaseState.ALPHA ),
-				new NoteHistogramIOQueueBridge(),
+				new ControllerHistogramIOQueueBridge(),
 				NUM_CHANNELS,
 				CHAN_NAMES,
 				CHAN_TYPES,
@@ -95,7 +95,7 @@ public class NoteHistogramMadDefinition
 	public MadInstance<?, ?> createInstance( final Map<MadParameterDefinition, String> parameterValues, final String instanceName )
 			throws MadProcessingException
 	{
-		return new NoteHistogramMadInstance(
+		return new ControllerHistogramMadInstance(
 				creationContext,
 				instanceName,
 				this,

@@ -18,16 +18,16 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
-public class NoteHistogramBucket
+public class HistogramBucket
 {
 	private int bucketCount;
 
 	private final int bucketStartDiff;
 	private final int bucketEndDiff;
 
-	public NoteHistogramBucket( final int bucketStartDiff,
+	public HistogramBucket( final int bucketStartDiff,
 			final int bucketEndDiff )
 	{
 		this.bucketStartDiff = bucketStartDiff;

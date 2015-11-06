@@ -23,13 +23,13 @@ package test.uk.co.modularaudio.mads.visualisation.base;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import test.uk.co.modularaudio.mads.visualisation.base.genericsetup.GenericComponentVisualiser;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
 
-public class TestCreateNoteHistogram
+public class TestCreateControllerHistogram
 {
 	private final GenericComponentVisualiser gcv;
 
-	public TestCreateNoteHistogram() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
+	public TestCreateControllerHistogram() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		gcv = new GenericComponentVisualiser();
 	}
@@ -37,13 +37,13 @@ public class TestCreateNoteHistogram
 	protected void go() throws Exception
 	{
 		gcv.setUp();
-		gcv.testAndShowComponent( NoteHistogramMadDefinition.DEFINITION_ID );
+		gcv.testAndShowComponent( ControllerHistogramMadDefinition.DEFINITION_ID );
 		gcv.tearDown();
 	}
 
 	public static void main( final String[] args ) throws Exception
 	{
-		final TestCreateNoteHistogram tc = new TestCreateNoteHistogram();
+		final TestCreateControllerHistogram tc = new TestCreateControllerHistogram();
 		tc.go();
 	}
 }

@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class NoteReceivedLight extends JPanel
-	implements NoteReceivedListener
+public class ReceivedLight extends JPanel
+	implements ControllerEventReceivedListener
 {
 	private static final long serialVersionUID = 8276674761933079784L;
 
@@ -25,7 +25,7 @@ public class NoteReceivedLight extends JPanel
 	private final static Color LIT_COLOR = LWTCControlConstants.ROTARY_VIEW_INDICATOR_COLOR;
 	private final static Color UNLIT_COLOR = LIT_COLOR.darker().darker().darker();
 
-	public NoteReceivedLight()
+	public ReceivedLight()
 	{
 		setMinimumSize( new Dimension(14,14) );
 		lampLitFrames = 8000;

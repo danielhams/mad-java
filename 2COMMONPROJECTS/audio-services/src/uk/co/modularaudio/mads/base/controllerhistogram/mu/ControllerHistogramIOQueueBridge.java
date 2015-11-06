@@ -18,22 +18,22 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.mu;
+package uk.co.modularaudio.mads.base.controllerhistogram.mu;
 
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.MadLocklessQueueBridge;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 
-public class NoteHistogramIOQueueBridge extends MadLocklessQueueBridge<NoteHistogramMadInstance>
+public class ControllerHistogramIOQueueBridge extends MadLocklessQueueBridge<ControllerHistogramMadInstance>
 {
 	public static final int COMMAND_OUT_NOTE_DIFF = 0;
 
-	public NoteHistogramIOQueueBridge()
+	public ControllerHistogramIOQueueBridge()
 	{
 	}
 
 	@Override
-	public void receiveQueuedEventsToInstance( final NoteHistogramMadInstance instance,
+	public void receiveQueuedEventsToInstance( final ControllerHistogramMadInstance instance,
 			final ThreadSpecificTemporaryEventStorage tses,
 			final long periodTimestamp,
 			final IOQueueEvent queueEntry )

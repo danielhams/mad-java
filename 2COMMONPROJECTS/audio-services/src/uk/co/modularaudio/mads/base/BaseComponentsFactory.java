@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.controller.advancedcomponents.AdvancedComponentsFrontController;
 import uk.co.modularaudio.mads.base.audiotocv4.mu.AudioToCv4MadDefinition;
 import uk.co.modularaudio.mads.base.bandlimitedoscillator.mu.BandLimitedOscillatorMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.controllertocv.mu.ControllerToCvMadDefinition;
 import uk.co.modularaudio.mads.base.crossfader.mu.CrossFaderMadDefinition;
 import uk.co.modularaudio.mads.base.cvalinear.mu.LinearCVAMadDefinition;
@@ -46,7 +47,6 @@ import uk.co.modularaudio.mads.base.limiter.mu.LimiterMadDefinition;
 import uk.co.modularaudio.mads.base.midside.mu.MidSideMadDefinition;
 import uk.co.modularaudio.mads.base.moogfilter.mu.MoogFilterMadDefinition;
 import uk.co.modularaudio.mads.base.notedebug.mu.NoteDebugMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
 import uk.co.modularaudio.mads.base.notemultiplexer.mu.NoteMultiplexerMadDefinition;
 import uk.co.modularaudio.mads.base.notetocv.mu.NoteToCvMadDefinition;
 import uk.co.modularaudio.mads.base.oscilloscope.mu.OscilloscopeMadDefinition;
@@ -116,7 +116,7 @@ public class BaseComponentsFactory
 	private ScopeLargeMadDefinition scopelMD;
 	private AudioToCv4MadDefinition atc4MD;
 	private CvToAudio4MadDefinition cta4MD;
-	private NoteHistogramMadDefinition notehMD;
+	private ControllerHistogramMadDefinition notehMD;
 	private NoteDebugMadDefinition notedMD;
 	private ControllerToCvMadDefinition con2cvMD;
 
@@ -216,7 +216,7 @@ public class BaseComponentsFactory
 			addDef( atc4MD );
 			cta4MD = new CvToAudio4MadDefinition( creationContext, classificationService );
 			addDef( cta4MD );
-			notehMD = new NoteHistogramMadDefinition( creationContext, classificationService );
+			notehMD = new ControllerHistogramMadDefinition( creationContext, classificationService );
 			addDef( notehMD );
 			notedMD = new NoteDebugMadDefinition( creationContext, classificationService );
 			addDef( notedMD );

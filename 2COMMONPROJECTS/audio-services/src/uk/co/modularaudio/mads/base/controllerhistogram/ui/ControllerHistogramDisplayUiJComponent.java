@@ -1,26 +1,26 @@
-package uk.co.modularaudio.mads.base.notehistogram.ui;
+package uk.co.modularaudio.mads.base.controllerhistogram.ui;
 
 import java.awt.Component;
 
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteHistogramDisplay;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.util.HistogramDisplay;
 import uk.co.modularaudio.util.audio.gui.mad.IMadUiControlInstance;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class NoteHistogramDisplayUiJComponent
-	implements IMadUiControlInstance<NoteHistogramMadDefinition, NoteHistogramMadInstance, NoteHistogramMadUiInstance>
+public class ControllerHistogramDisplayUiJComponent
+	implements IMadUiControlInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance, ControllerHistogramMadUiInstance>
 {
-	private final NoteHistogramDisplay display;
+	private final HistogramDisplay display;
 
-	public NoteHistogramDisplayUiJComponent(
-			final NoteHistogramMadDefinition definition,
-			final NoteHistogramMadInstance instance,
-			final NoteHistogramMadUiInstance uiInstance,
+	public ControllerHistogramDisplayUiJComponent(
+			final ControllerHistogramMadDefinition definition,
+			final ControllerHistogramMadInstance instance,
+			final ControllerHistogramMadUiInstance uiInstance,
 			final int controlIndex )
 	{
-		display = new NoteHistogramDisplay( uiInstance );
+		display = new HistogramDisplay( uiInstance );
 	}
 
 	@Override

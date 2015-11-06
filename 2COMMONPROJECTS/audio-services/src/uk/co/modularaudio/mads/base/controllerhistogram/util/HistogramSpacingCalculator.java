@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 public class HistogramSpacingCalculator
 {
@@ -8,8 +8,8 @@ public class HistogramSpacingCalculator
 		// Work out rounded num pixels per marker so we have integer number
 		// and don't exceed the specified height.
 		final int roundedNum = (int)Math.floor(
-				(height-NoteHistogramDisplay.MARKER_PADDING) /
-				(NoteHistogramDisplay.NUM_EVENT_MARKERS-1) );
+				(height-HistogramDisplay.MARKER_PADDING) /
+				(HistogramDisplay.NUM_EVENT_MARKERS-1) );
 
 		return roundedNum;
 	}
@@ -17,8 +17,8 @@ public class HistogramSpacingCalculator
 	public static int calculateBinMarkerSpacing( final int width )
 	{
 		final int roundedNum = (int)Math.floor(
-				(width-NoteHistogramDisplay.MARKER_PADDING) /
-				(NoteHistogramDisplay.NUM_BIN_MARKERS-1) );
+				(width-HistogramDisplay.MARKER_PADDING) /
+				(HistogramDisplay.NUM_BIN_MARKERS-1) );
 		return roundedNum;
 	}
 

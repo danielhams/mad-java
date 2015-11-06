@@ -1,4 +1,4 @@
-package uk.co.modularaudio.mads.base.notehistogram.util;
+package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,10 +19,10 @@ public class HistogramEventAxisLabels extends JPanel
 	private int pixelsPerMarker = 10;
 	private final FontMetrics fm;
 
-	public HistogramEventAxisLabels( final NoteHistogram histogram )
+	public HistogramEventAxisLabels( final Histogram histogram )
 	{
 		setBackground( Color.BLACK );
-		setMinimumSize( new Dimension( NoteHistogramDisplay.EVENTS_LABELS_WIDTH, 5 ) );
+		setMinimumSize( new Dimension( HistogramDisplay.EVENTS_LABELS_WIDTH, 5 ) );
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 		fm = getFontMetrics( getFont() );
@@ -40,14 +40,14 @@ public class HistogramEventAxisLabels extends JPanel
 
 		g2d.setColor( HistogramColours.AXIS_LINES );
 
-		for( int y = 0 ; y < NoteHistogramDisplay.NUM_EVENT_MARKERS ; ++y )
+		for( int y = 0 ; y < HistogramDisplay.NUM_EVENT_MARKERS ; ++y )
 		{
-			final int yPixelOffset = (heightMinusOne - ((y * pixelsPerMarker) + NoteHistogramDisplay.AXIS_MARKER_LENGTH));
+			final int yPixelOffset = (heightMinusOne - ((y * pixelsPerMarker) + HistogramDisplay.AXIS_MARKER_LENGTH));
 
 //			log.debug("Drawing marker at y=" + yPixelOffset );
 //			g.drawLine( 0, yPixelOffset, width, yPixelOffset );
 
-			final int percent = (int)((y / (float)(NoteHistogramDisplay.NUM_EVENT_MARKERS-1))*100.0f);
+			final int percent = (int)((y / (float)(HistogramDisplay.NUM_EVENT_MARKERS-1))*100.0f);
 			drawCenteredText( g, width, yPixelOffset, percent );
 		}
 	}
@@ -69,6 +69,6 @@ public class HistogramEventAxisLabels extends JPanel
 	{
 		super.setBounds( x, y, width, height );
 
-		pixelsPerMarker = HistogramSpacingCalculator.calculateEventMarkerSpacing( (height - NoteHistogramDisplay.AXIS_MARKER_LENGTH) );
+		pixelsPerMarker = HistogramSpacingCalculator.calculateEventMarkerSpacing( (height - HistogramDisplay.AXIS_MARKER_LENGTH) );
 	}
 }

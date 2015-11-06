@@ -18,18 +18,18 @@
  *
  */
 
-package uk.co.modularaudio.mads.base.notehistogram.ui;
+package uk.co.modularaudio.mads.base.controllerhistogram.ui;
 
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramIOQueueBridge;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadDefinition;
-import uk.co.modularaudio.mads.base.notehistogram.mu.NoteHistogramMadInstance;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteHistogramDisplay;
-import uk.co.modularaudio.mads.base.notehistogram.util.NoteReceivedListener;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramIOQueueBridge;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadDefinition;
+import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMadInstance;
+import uk.co.modularaudio.mads.base.controllerhistogram.util.HistogramDisplay;
+import uk.co.modularaudio.mads.base.controllerhistogram.util.ControllerEventReceivedListener;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
 import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
@@ -37,15 +37,15 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<NoteHistogramMadDefinition, NoteHistogramMadInstance>
+public class ControllerHistogramMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance>
 {
-	private static Log log = LogFactory.getLog( NoteHistogramMadUiInstance.class.getName() );
+	private static Log log = LogFactory.getLog( ControllerHistogramMadUiInstance.class.getName() );
 
-	private NoteHistogramDisplay noteHistogramDisplay;
-	private final ArrayList<NoteReceivedListener> noteReceivedListeners = new ArrayList<NoteReceivedListener>();
+	private HistogramDisplay noteHistogramDisplay;
+	private final ArrayList<ControllerEventReceivedListener> noteReceivedListeners = new ArrayList<ControllerEventReceivedListener>();
 
-	public NoteHistogramMadUiInstance( final NoteHistogramMadInstance instance,
-			final NoteHistogramMadUiDefinition uiDefinition )
+	public ControllerHistogramMadUiInstance( final ControllerHistogramMadInstance instance,
+			final ControllerHistogramMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
 	}
@@ -69,17 +69,17 @@ public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigura
 	}
 
 	@Override
-	public void consumeQueueEntry( final NoteHistogramMadInstance instance,
+	public void consumeQueueEntry( final ControllerHistogramMadInstance instance,
 			final IOQueueEvent nextOutgoingEntry )
 	{
 		switch( nextOutgoingEntry.command )
 		{
-			case NoteHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF:
+			case ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF:
 			{
 				final int value = (int)nextOutgoingEntry.value;
 //				log.debug( "Received note diff" );
 				noteHistogramDisplay.addNoteDiff( value );
-				for( final NoteReceivedListener nrl : noteReceivedListeners )
+				for( final ControllerEventReceivedListener nrl : noteReceivedListeners )
 				{
 					nrl.receivedNote();
 				}
@@ -100,12 +100,12 @@ public class NoteHistogramMadUiInstance extends AbstractNoNameChangeNonConfigura
 		noteHistogramDisplay.reset();
 	}
 
-	public void setNoteHistogramDisplay( final NoteHistogramDisplay nhd )
+	public void setNoteHistogramDisplay( final HistogramDisplay nhd )
 	{
 		this.noteHistogramDisplay = nhd;
 	}
 
-	public void addNoteReceivedListener( final NoteReceivedListener nrl )
+	public void addNoteReceivedListener( final ControllerEventReceivedListener nrl )
 	{
 		noteReceivedListeners.add( nrl );
 	}
