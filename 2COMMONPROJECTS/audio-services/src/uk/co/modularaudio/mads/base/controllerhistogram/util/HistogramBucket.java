@@ -24,20 +24,20 @@ public class HistogramBucket
 {
 	private int bucketCount;
 
-	private final int bucketStartDiff;
-	private final int bucketEndDiff;
+	private final long bucketStartNanos;
+	private final long bucketEndNanos;
 
-	public HistogramBucket( final int bucketStartDiff,
-			final int bucketEndDiff )
+	public HistogramBucket( final long bucketStartNanos,
+			final long bucketEndNanos )
 	{
-		this.bucketStartDiff = bucketStartDiff;
-		this.bucketEndDiff = bucketEndDiff;
+		this.bucketStartNanos = bucketStartNanos;
+		this.bucketEndNanos = bucketEndNanos;
 	}
 
-	public boolean addCountForBucket( final int timeDiff )
+	public boolean addCountForBucket( final long nanosDiff )
 	{
-		if( timeDiff >= bucketStartDiff &&
-				timeDiff < bucketEndDiff )
+		if( nanosDiff >= bucketStartNanos &&
+				nanosDiff < bucketEndNanos )
 		{
 			bucketCount++;
 			return true;
@@ -53,14 +53,14 @@ public class HistogramBucket
 		return bucketCount;
 	}
 
-	public int getBucketStartDiff()
+	public long getBucketStartNanos()
 	{
-		return bucketStartDiff;
+		return bucketStartNanos;
 	}
 
-	public int getBucketEndDiff()
+	public long getBucketEndNanos()
 	{
-		return bucketEndDiff;
+		return bucketEndNanos;
 	}
 
 	public void reset()

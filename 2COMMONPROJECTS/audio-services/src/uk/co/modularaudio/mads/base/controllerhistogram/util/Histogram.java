@@ -35,8 +35,8 @@ public class Histogram
 
 	private final HistogramBucket[] buckets;
 	private int nonBucketCount;
-	private int lowestDiff = Integer.MAX_VALUE;
-	private int highestDiff = Integer.MIN_VALUE;
+	private long lowestNanos = Long.MAX_VALUE;
+	private long highestNanos = Long.MIN_VALUE;
 
 	public interface HistogramListener
 	{
@@ -46,28 +46,32 @@ public class Histogram
 	private final ArrayList<HistogramListener> listeners = new ArrayList<HistogramListener>();
 
 	public Histogram( final int numBuckets,
-			final int framesPerBucket )
+			final long lastBucketUpperNanos )
 	{
 		this.numBuckets = numBuckets;
 
 		buckets = new HistogramBucket[numBuckets];
 
+		final double nanosPerBucket = lastBucketUpperNanos / numBuckets;
+
 		for( int b = 0 ; b < numBuckets ; ++b )
 		{
-			buckets[b] = new HistogramBucket( framesPerBucket * b,
-					(framesPerBucket * (b + 1)) );
+			final long bucketStartNanos = (long)(b * nanosPerBucket);
+			final long bucketEndNanos = (long)((b+1) * nanosPerBucket);
+			buckets[b] = new HistogramBucket( bucketStartNanos,
+					bucketEndNanos );
 		}
 	}
 
-	public void addNoteDiff( final int noteDiffFrames )
+	public void addNoteDiffNanos( final long noteDiffFrames )
 	{
-		if( noteDiffFrames < lowestDiff )
+		if( noteDiffFrames < lowestNanos )
 		{
-			lowestDiff = noteDiffFrames;
+			lowestNanos = noteDiffFrames;
 		}
-		if( noteDiffFrames > highestDiff )
+		if( noteDiffFrames > highestNanos )
 		{
-			highestDiff = noteDiffFrames;
+			highestNanos = noteDiffFrames;
 		}
 
 		boolean matchedBucket = false;
@@ -102,8 +106,8 @@ public class Histogram
 			buckets[b].reset();
 		}
 		nonBucketCount = 0;
-		lowestDiff = Integer.MAX_VALUE;
-		highestDiff = Integer.MIN_VALUE;
+		lowestNanos = Long.MAX_VALUE;
+		highestNanos = Long.MIN_VALUE;
 		totalNumEvents = 0;
 	}
 
@@ -114,12 +118,12 @@ public class Histogram
 			log.debug("Have " + totalNumEvents + " total events");
 			for( final HistogramBucket b : buckets )
 			{
-				log.debug( "Bucket (" + b.getBucketStartDiff() + "->" + b.getBucketEndDiff() +
+				log.debug( "Bucket (" + b.getBucketStartNanos() + "->" + b.getBucketEndNanos() +
 						") has " + b.getBucketCount() + " entries" );
 			}
 			log.debug("Nonbucket has " + nonBucketCount );
-			log.debug("The lowest seen was " + lowestDiff );
-			log.debug("The highest seen was " + highestDiff );
+			log.debug("The lowest seen was " + lowestNanos );
+			log.debug("The highest seen was " + highestNanos );
 		}
 	}
 

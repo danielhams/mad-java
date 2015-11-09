@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 
 import uk.co.modularaudio.mads.base.controllerhistogram.ui.ControllerHistogramMadUiInstance;
 import uk.co.modularaudio.mads.base.controllerhistogram.util.Histogram.HistogramListener;
-import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.general.MigLayoutStringHelper;
@@ -16,20 +15,23 @@ public class HistogramDisplay extends JPanel implements HistogramListener
 {
 	private static final long serialVersionUID = 4876392781636639883L;
 
-//	private static Log log = LogFactory.getLog( NoteHistogramDisplay.class.getName() );
+//	private static Log log = LogFactory.getLog( HistogramDisplay.class.getName() );
 
 	protected final static int EVENTS_LABELS_WIDTH = 35;
 	protected final static int BINS_LABELS_HEIGHT = 20;
 	protected final static int AXIS_MARKER_LENGTH = 5;
 
+	// Define our histogram in terms of the final marker that appears on the graph
+	public final static int HISTOGRAM_LAST_BUCKET_UPPER_MILLIS = 25;
+	public final static long HISTOGRAM_LAST_BUCKET_UPPER_NANOS = HISTOGRAM_LAST_BUCKET_UPPER_MILLIS * AudioTimingUtils.MILLIS_TO_NANOS_RATIO;
+
 	public final static int NUM_HISTOGRAM_BUCKETS = 100;
-	public final static int NUM_FRAMES_PER_BUCKET = 10;
 
 	protected final static int NUM_EVENT_MARKERS = 11;
 	protected final static int NUM_BIN_MARKERS = 11;
 	protected final static int MARKER_PADDING = 15;
 
-	private final Histogram histogram = new Histogram( NUM_HISTOGRAM_BUCKETS, NUM_FRAMES_PER_BUCKET );
+	private final Histogram histogram = new Histogram( NUM_HISTOGRAM_BUCKETS, HISTOGRAM_LAST_BUCKET_UPPER_NANOS );
 
 	private final HistogramGraph graph;
 	private final HistogramBinAxisLabels binAxisLabels;
@@ -37,8 +39,6 @@ public class HistogramDisplay extends JPanel implements HistogramListener
 	private boolean shouldRepaint;
 
 	private int mouseX = -1;
-
-	private int sampleRate = DataRate.CD_QUALITY.getValue();
 
 	public HistogramDisplay( final ControllerHistogramMadUiInstance uiInstance )
 	{
@@ -96,11 +96,11 @@ public class HistogramDisplay extends JPanel implements HistogramListener
 			g.setColor( HistogramColours.AXIS_LINES);
 
 			final int graphWidth = graph.getGraphWidth();
-			final float normPos = (float)mouseX / (graphWidth - 1);
+			final float normPos = (float)mouseX / graphWidth;
 
 //			log.debug( "Calculated normalised position for pixel " + mouseX + " as " + normPos );
-			final int normFrames = (int)(normPos * buckets[numBuckets-1].getBucketEndDiff());
-			final long numNanosAtPos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, normFrames );
+			final long lastBucketEndNanos = buckets[numBuckets-1].getBucketEndNanos();
+			final long numNanosAtPos = (long)(normPos * lastBucketEndNanos);
 			final float numMillisAtPos = numNanosAtPos/1000000.0f;
 
 			final StringBuilder tooltipTextBuilder = new StringBuilder();
@@ -152,16 +152,10 @@ public class HistogramDisplay extends JPanel implements HistogramListener
 		shouldRepaint = true;
 	}
 
-	public void addNoteDiff( final int noteDiffFrames )
+	public void addNoteDiffNano( final int noteDiffNanos )
 	{
 //		log.debug("Added note diff");
-		histogram.addNoteDiff( noteDiffFrames );
-	}
-
-	public void setSampleRate( final int sampleRate )
-	{
-		this.sampleRate = sampleRate;
-		binAxisLabels.setSampleRate( sampleRate );
+		histogram.addNoteDiffNanos( noteDiffNanos );
 	}
 
 	public void setMousePosition( final int mouseX )

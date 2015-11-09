@@ -41,8 +41,8 @@ public class HistogramDisplayMouseListener implements MouseListener, MouseMotion
 			final int adjustedX = curX - (HistogramDisplay.EVENTS_LABELS_WIDTH + HistogramDisplay.AXIS_MARKER_LENGTH);
 			final int curY = me.getY();
 			final int adjustedY = curY - (HistogramDisplay.BINS_LABELS_HEIGHT + HistogramDisplay.AXIS_MARKER_LENGTH);
-			if( adjustedX > 0 && adjustedX < graph.getGraphWidth() &&
-					adjustedY > 0 && adjustedY < graph.getGraphHeight() )
+			if( adjustedX >= 0 && adjustedX <= graph.getGraphWidth() &&
+					adjustedY >= 0 && adjustedY <= graph.getGraphHeight() )
 			{
 				display.setMousePosition( adjustedX );
 				graph.setMousePosition( adjustedX );

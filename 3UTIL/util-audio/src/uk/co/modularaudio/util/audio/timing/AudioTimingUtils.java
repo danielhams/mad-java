@@ -27,7 +27,8 @@ public class AudioTimingUtils
 	private final static int HARDCODED_MILLIS = 10;
 	private final static float HARDCODED_NEW_RATIO = 0.01f;
 
-	private final static long HERTZ_TO_NANOSECONDS_RATIO = 1000 * 1000 * 1000;
+	public final static long MILLIS_TO_NANOS_RATIO = 1000 * 1000;
+	public final static long SECONDS_TO_NANOS_RATIO = MILLIS_TO_NANOS_RATIO * 1000;
 
 	public static float calculateNewValueRatioHandwaveyVersion( final long inSampleRate, final float millisForChase )
 	{
@@ -63,7 +64,7 @@ public class AudioTimingUtils
 
 	public static long getNumNanosecondsForBufferLengthFloat( final int sampleRate, final float hardwareBufferLength )
 	{
-		final double numNanosecondsPerSample = (HERTZ_TO_NANOSECONDS_RATIO / (double)sampleRate);
+		final double numNanosecondsPerSample = (SECONDS_TO_NANOS_RATIO / (double)sampleRate);
 		return (long)(numNanosecondsPerSample * hardwareBufferLength);
 	}
 

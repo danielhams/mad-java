@@ -8,12 +8,12 @@
     <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 1"/>
     <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Sub Rack 1" rackComponentChannelInstanceName="Output Channel 2"/>
     <rackComponent name="CV To Audio (Four Channels) 1" definitionId="cvtoaudio4">
-        <rackPosition column="0" row="5"/>
+        <rackPosition column="2" row="4"/>
     </rackComponent>
     <rackComponent name="Controller To CV 1" definitionId="controller_to_cv">
         <rackPosition column="0" row="0"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
@@ -22,8 +22,8 @@
     <rackComponent name="Controller To CV 2" definitionId="controller_to_cv">
         <rackPosition column="0" row="4"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 0"/>
-        <rackControl name="InterpolationChoice" value="LinLP12"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="RecLinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
         <rackControl name="RespectTimestamps" value="true"/>
@@ -31,8 +31,8 @@
     <rackComponent name="Controller To CV 3" definitionId="controller_to_cv">
         <rackPosition column="0" row="3"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 0"/>
-        <rackControl name="InterpolationChoice" value="Lin"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
+        <rackControl name="InterpolationChoice" value="LinLP12"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
         <rackControl name="RespectTimestamps" value="false"/>
@@ -40,14 +40,14 @@
     <rackComponent name="Controller To CV 4" definitionId="controller_to_cv">
         <rackPosition column="0" row="2"/>
         <rackControl name="ChannelSelection" value="Chan 0"/>
-        <rackControl name="ControllerSelection" value="Cntl 0"/>
+        <rackControl name="ControllerSelection" value="Cntl 1"/>
         <rackControl name="InterpolationChoice" value="None"/>
         <rackControl name="Learn" value=""/>
         <rackControl name="MappingCurve" value="Linear"/>
         <rackControl name="RespectTimestamps" value="true"/>
     </rackComponent>
     <rackComponent name="Note Time Diff Histogram 1" definitionId="controller_histogram">
-        <rackPosition column="2" row="6"/>
+        <rackPosition column="2" row="5"/>
         <rackControl name="DataReceivedLight" value=""/>
         <rackControl name="Display" value=""/>
         <rackControl name="ResetButton" value=""/>
@@ -59,7 +59,7 @@
     </rackComponent>
     <rackComponent name="Scope 1" definitionId="scope">
         <rackPosition column="2" row="0"/>
-        <rackControl name="CaptureLength" value="300.0"/>
+        <rackControl name="CaptureLength" value="82.11686"/>
         <rackControl name="Recapture" value=""/>
         <rackControl name="RepetitionChoice" value="Continuous"/>
         <rackControl name="SaveButton" value="false|false&#x9;Trigger|true&#x9;Signal 1|true&#x9;Signal 2|true&#x9;Signal 3|true&#x9;Signal 4"/>
@@ -67,7 +67,7 @@
         <rackControl name="WaveDisplay" value=""/>
     </rackComponent>
     <rackComponent name="Screencaster 1" definitionId="screencaster">
-        <rackPosition column="2" row="10"/>
+        <rackPosition column="2" row="9"/>
         <rackControl name="Audio Checkbox" value="true"/>
         <rackControl name="Choose Directory" value="/home/dan/Screencasts/ComponentDesigner"/>
         <rackControl name="Directory Label" value=""/>
@@ -76,25 +76,32 @@
         <rackControl name="Video Checkbox" value="false"/>
     </rackComponent>
     <rackComponent name="Spectral Amp 1" definitionId="spectral_amp">
-        <rackPosition column="0" row="6"/>
+        <rackPosition column="0" row="5"/>
         <rackControl name="Amp Ceil" value="0dB"/>
-        <rackControl name="Amp Floor" value="-192dB"/>
+        <rackControl name="Amp Floor" value="-96dB"/>
         <rackControl name="Amp Scale" value="dB"/>
         <rackControl name="Display" value=""/>
-        <rackControl name="Frequency Max" value="8285.24"/>
+        <rackControl name="Frequency Max" value="24000.0"/>
         <rackControl name="Frequency Min" value="0.0"/>
         <rackControl name="Frequency Scale" value="Log"/>
         <rackControl name="Peak Reset" value=""/>
         <rackControl name="Resolution" value="16384"/>
-        <rackControl name="Running Average" value="Peak Hold"/>
+        <rackControl name="Running Average" value="Peak Detect"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="true" libraryPath="" name="Sub Rack 1" definitionId="sub_rack">
-        <rackPosition column="0" row="10"/>
+        <rackPosition column="0" row="9"/>
         <rack name="Sub Rack 1" cols="4" rows="29">
+            <rackIOLink rackChannelName="Input CV Channel 1" rackComponentName="Linear CV Amplifier 1" rackComponentChannelInstanceName="Input CV amplification factor"/>
             <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Left"/>
             <rackIOLink rackChannelName="Output Channel 1" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Left"/>
             <rackIOLink rackChannelName="Output Channel 2" rackComponentName="Mixer (Three Stereo Lanes) 1" rackComponentChannelInstanceName="Output Wave Right"/>
+            <rackComponent name="Band Limited Oscillator 1" definitionId="band_limited_oscillator">
+                <rackPosition column="0" row="6"/>
+                <rackControl name="Frequency" value="60.0"/>
+                <rackControl name="Pulsewidth" value="1.0"/>
+                <rackControl name="Shape" value="Sine"/>
+            </rackComponent>
             <rackComponent name="DC Trap 1" definitionId="dc_trap">
                 <rackPosition column="0" row="1"/>
             </rackComponent>
@@ -112,12 +119,15 @@
                 <rackControl name="Knee" value="3500.0"/>
                 <rackControl name="Toggle 24 dB" value="true"/>
             </rackComponent>
+            <rackComponent name="Linear CV Amplifier 1" definitionId="linear_cva">
+                <rackPosition column="0" row="8"/>
+            </rackComponent>
             <rackComponent name="Mixer (Three Stereo Lanes) 1" definitionId="imixer3">
                 <rackPosition column="2" row="2"/>
                 <rackControl name="Master Lane" value="0.0:0.0"/>
-                <rackControl name="Mixer Lane 0" value="10.0:0.0:  "/>
-                <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
-                <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+                <rackControl name="Mixer Lane 0" value="10.0:0.0:M "/>
+                <rackControl name="Mixer Lane 1" value="-3.25:0.0:MS"/>
+                <rackControl name="Mixer Lane 2" value="-Infinity:0.0:M "/>
             </rackComponent>
             <rackComponent name="Wave Roller 1" definitionId="wave_roller">
                 <rackPosition column="2" row="6"/>
@@ -127,10 +137,13 @@
                 <rackControl name="Right Scale" value=""/>
                 <rackControl name="ScaleChoice" value="0dB"/>
             </rackComponent>
+            <rackLink producerRackComponentName="Band Limited Oscillator 1" producerChannelName="Output Wave" consumerRackComponentName="Linear CV Amplifier 1" consumerChannelName="Input Wave"/>
             <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Frequency Filter 1" consumerChannelName="Input Wave Left"/>
             <rackLink producerRackComponentName="Frequency Filter 1" producerChannelName="Output Wave Left" consumerRackComponentName="Frequency Filter 2" consumerChannelName="Input Wave Left"/>
             <rackLink producerRackComponentName="Frequency Filter 2" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Left"/>
             <rackLink producerRackComponentName="Frequency Filter 2" producerChannelName="Output Wave Left" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Right"/>
+            <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Left"/>
+            <rackLink producerRackComponentName="Linear CV Amplifier 1" producerChannelName="Output Wave" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 2 Input Wave Right"/>
             <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Wave Roller 1" consumerChannelName="Input Wave 0"/>
         </rack>
     </rackComponent>

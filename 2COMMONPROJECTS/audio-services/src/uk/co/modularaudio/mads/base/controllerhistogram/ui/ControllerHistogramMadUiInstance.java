@@ -31,10 +31,8 @@ import uk.co.modularaudio.mads.base.controllerhistogram.mu.ControllerHistogramMa
 import uk.co.modularaudio.mads.base.controllerhistogram.util.HistogramDisplay;
 import uk.co.modularaudio.mads.base.controllerhistogram.util.ControllerEventReceivedListener;
 import uk.co.modularaudio.util.audio.gui.mad.helper.AbstractNoNameChangeNonConfigurableMadUiInstance;
-import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
-import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
 public class ControllerHistogramMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance>
@@ -48,15 +46,6 @@ public class ControllerHistogramMadUiInstance extends AbstractNoNameChangeNonCon
 			final ControllerHistogramMadUiDefinition uiDefinition )
 	{
 		super( uiDefinition.getCellSpan(), instance, uiDefinition );
-	}
-
-	@Override
-	public void receiveStartup( final HardwareIOChannelSettings ratesAndLatency, final MadTimingParameters timingParameters,
-			final MadFrameTimeFactory frameTimeFactory )
-	{
-		super.receiveStartup( ratesAndLatency, timingParameters, frameTimeFactory );
-		final int sampleRate = ratesAndLatency.getAudioChannelSetting().getDataRate().getValue();
-		noteHistogramDisplay.setSampleRate( sampleRate );
 	}
 
 	@Override
@@ -74,11 +63,11 @@ public class ControllerHistogramMadUiInstance extends AbstractNoNameChangeNonCon
 	{
 		switch( nextOutgoingEntry.command )
 		{
-			case ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF:
+			case ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_NANOS:
 			{
 				final int value = (int)nextOutgoingEntry.value;
-//				log.debug( "Received note diff" );
-				noteHistogramDisplay.addNoteDiff( value );
+//				log.debug( "Received note nanos" );
+				noteHistogramDisplay.addNoteDiffNano( value );
 				for( final ControllerEventReceivedListener nrl : noteReceivedListeners )
 				{
 					nrl.receivedNote();

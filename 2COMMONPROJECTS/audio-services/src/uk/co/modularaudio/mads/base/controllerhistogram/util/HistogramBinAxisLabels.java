@@ -9,8 +9,6 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
-import uk.co.modularaudio.util.audio.format.DataRate;
-import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
@@ -20,7 +18,6 @@ public class HistogramBinAxisLabels extends JPanel
 
 //	private static Log log = LogFactory.getLog( HistogramBinAxisLabels.class.getName() );
 
-	private int sampleRate = DataRate.CD_QUALITY.getValue();
 	private int pixelsPerMarker = 10;
 
 	private final Histogram histogram;
@@ -57,10 +54,10 @@ public class HistogramBinAxisLabels extends JPanel
 		final HistogramBucket[] buckets = histogram.getBuckets();
 		final int numBuckets = buckets.length;
 
-		final int lastBucketEnd = buckets[numBuckets-1].getBucketEndDiff();
-//		log.debug( "Last bucket end is "  + lastBucketStart );
+		final long lastBucketEndNanos = buckets[numBuckets-1].getBucketEndNanos();
+//		log.debug( "Last bucket end is "  + lastBucketEndNanos );
 
-		final float incrementPerBucket = lastBucketEnd / (HistogramDisplay.NUM_BIN_MARKERS);
+		final double incrementPerBucket = (double)lastBucketEndNanos / (HistogramDisplay.NUM_BIN_MARKERS-1);
 
 		final int yOffset = fm.getAscent() + 2;
 
@@ -70,11 +67,10 @@ public class HistogramBinAxisLabels extends JPanel
 					HistogramDisplay.AXIS_MARKER_LENGTH +
 					(b * pixelsPerMarker);
 
-			final int bucketStartDifference = (int)(b * incrementPerBucket);
-//			log.debug( "Bucket start diff is "  + bucketStartDifference );
+			final long bucketStartNanos = (long)(b * incrementPerBucket);
+//;			log.debug( "Bucket start nanos is "  + bucketStartNanos );
 
-			final long asNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, bucketStartDifference );
-			final float asMillis = (asNanos / 1000000.0f);
+			final float asMillis = (bucketStartNanos / 1000000.0f);
 
 			final String labelString = MathFormatter.fastFloatPrint( asMillis, 2, false ) + "ms";
 
@@ -101,12 +97,5 @@ public class HistogramBinAxisLabels extends JPanel
 
 		pixelsPerMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing(
 				(width - HistogramDisplay.AXIS_MARKER_LENGTH - HistogramDisplay.EVENTS_LABELS_WIDTH) );
-	}
-
-	public void setSampleRate( final int sampleRate )
-	{
-		this.sampleRate = sampleRate;
-		// We force a repaint so that even when stopped the labels get updated.
-		repaint();
 	}
 }

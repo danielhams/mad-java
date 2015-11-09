@@ -34,12 +34,14 @@ import uk.co.modularaudio.util.audio.mad.hardwareio.HardwareIOChannelSettings;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadFrameTimeFactory;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
+import uk.co.modularaudio.util.audio.timing.AudioTimingUtils;
 import uk.co.modularaudio.util.thread.RealtimeMethodReturnCodeEnum;
 
 public class ControllerHistogramMadInstance extends MadInstance<ControllerHistogramMadDefinition,ControllerHistogramMadInstance>
 {
 //	private static Log log = LogFactory.getLog( NoteHistogramMadInstance.class.getName() );
 
+	private int sampleRate;
 	private long lastNoteFrameTime = -1;
 
 	public ControllerHistogramMadInstance( final BaseComponentsCreationContext creationContext,
@@ -55,6 +57,7 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 	public void start( final HardwareIOChannelSettings hardwareChannelSettings, final MadTimingParameters timingParameters, final MadFrameTimeFactory frameTimeFactory )
 			throws MadProcessingException
 	{
+		this.sampleRate = hardwareChannelSettings.getAudioChannelSetting().getDataRate().getValue();
 	}
 
 	@Override
@@ -112,10 +115,12 @@ public class ControllerHistogramMadInstance extends MadInstance<ControllerHistog
 			final long frameTime,
 			final int noteDiff )
 	{
+		final long asNanos = AudioTimingUtils.getNumNanosecondsForBufferLength( sampleRate, noteDiff );
+
 		localBridge.queueTemporalEventToUi( tses,
 				frameTime,
-				ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_DIFF,
-				noteDiff,
+				ControllerHistogramIOQueueBridge.COMMAND_OUT_NOTE_NANOS,
+				asNanos,
 				null );
 
 	}

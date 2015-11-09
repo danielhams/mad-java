@@ -26,7 +26,7 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventSto
 
 public class ControllerHistogramIOQueueBridge extends MadLocklessQueueBridge<ControllerHistogramMadInstance>
 {
-	public static final int COMMAND_OUT_NOTE_DIFF = 0;
+	public static final int COMMAND_OUT_NOTE_NANOS = 0;
 
 	public ControllerHistogramIOQueueBridge()
 	{

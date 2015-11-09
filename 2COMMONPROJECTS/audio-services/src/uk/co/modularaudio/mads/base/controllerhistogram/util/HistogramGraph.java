@@ -64,17 +64,17 @@ public class HistogramGraph extends JPanel
 		final HistogramBucket[] buckets = histogram.getBuckets();
 		final int numBuckets = buckets.length;
 		final HistogramBucket lastBucket = buckets[numBuckets-1];
-		final int framesLastBucketEnd = lastBucket.getBucketEndDiff();
+		final long nanosLastBucketEnd = lastBucket.getBucketEndNanos();
 
 		for( int b = 0 ; b < buckets.length ; ++b )
 		{
 			final HistogramBucket bucket = buckets[b];
-			final int bucketStartFrames = bucket.getBucketStartDiff();
-			final int bucketEndFrames = bucket.getBucketEndDiff();
+			final long bucketStartNanos = bucket.getBucketStartNanos();
+			final long bucketEndNanos = bucket.getBucketEndNanos();
 			final int numInBucket = bucket.getBucketCount();
 
-			final int bucketStartPixel = framesToPixel( framesLastBucketEnd, maxWidth, bucketStartFrames );
-			final int bucketEndPixel = framesToPixel( framesLastBucketEnd, maxWidth, bucketEndFrames );
+			final int bucketStartPixel = nanosToPixel( nanosLastBucketEnd, maxWidth, bucketStartNanos );
+			final int bucketEndPixel = nanosToPixel( nanosLastBucketEnd, maxWidth, bucketEndNanos );
 
 //			log.debug( "Bucket " + b + " pixels(" + bucketStartPixel + "->" + bucketEndPixel + ")");
 
@@ -108,9 +108,9 @@ public class HistogramGraph extends JPanel
 		}
 	}
 
-	private final static int framesToPixel( final int framesLastBucketEnd, final int availableWidth, final int frames )
+	private final static int nanosToPixel( final long nanosLastBucketEnd, final int availableWidth, final long nanos )
 	{
-		final float normPosition = (float)frames / framesLastBucketEnd;
+		final double normPosition = (double)nanos / nanosLastBucketEnd;
 		final int pixelPosition = (int)(normPosition * availableWidth);
 
 		return pixelPosition;
