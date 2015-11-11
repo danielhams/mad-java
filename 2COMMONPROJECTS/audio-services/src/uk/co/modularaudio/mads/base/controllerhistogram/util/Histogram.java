@@ -141,4 +141,16 @@ public class Histogram
 	{
 		return buckets;
 	}
+
+	public HistogramBucket getBucketForNanos( final long nanos )
+	{
+		for( final HistogramBucket b : buckets )
+		{
+			if( b.getBucketStartNanos() <= nanos && b.getBucketEndNanos() > nanos )
+			{
+				return b;
+			}
+		}
+		return null;
+	}
 }

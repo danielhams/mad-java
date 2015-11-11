@@ -4,21 +4,27 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
+import uk.co.modularaudio.util.math.MathFormatter;
+import uk.co.modularaudio.util.tuple.TwoTuple;
+
 public class HistogramGraph extends JPanel
 {
 	private static final long serialVersionUID = -2219255959276577110L;
 
+	private static final int BUCKET_INFO_DATA_WIDTH = 135;
+	private static final int BUCKET_INFO_DATA_HEIGHT = 70;
+	private static final int BUCKET_INFO_INDICATOR_WIDTH = 15;
+	private static final int BUCKET_INFO_TOTAL_WIDTH = BUCKET_INFO_DATA_WIDTH + BUCKET_INFO_INDICATOR_WIDTH;
+	private static final int BUCKET_INFO_TOTAL_HEIGHT = BUCKET_INFO_DATA_HEIGHT;
+
+	private final static int NUM_BUBBLE_POINTS = 7;
+
 //	private static Log log = LogFactory.getLog( HistogramGraph.class.getName() );
 
-	private int pixelsPerBinMarker = 10;
+	private int pixelsPerBucketMarker = 10;
 	private int pixelsPerEventMarker = 10;
 
 	private final Histogram histogram;
-
-	private final static int NUM_COORDS_FOR_LINE = HistogramDisplay.NUM_HISTOGRAM_BUCKETS * 4;
-
-	private final int[] histogramLineXValues = new int[ NUM_COORDS_FOR_LINE ];
-	private final int[] histogramLineYValues = new int[ NUM_COORDS_FOR_LINE ];
 
 	private int mouseX = -1;
 
@@ -36,7 +42,10 @@ public class HistogramGraph extends JPanel
 	{
 		final int width = getWidth();
 		final int height = getHeight();
-//		log.debug("Height=" + height );
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("GraphWidthHeight(" + getGraphWidth() + ", " + getGraphHeight() + ")" );
+//		}
 		final int heightMinusOne = height-1;
 
 		g.setColor( HistogramColours.GRAPH_BACKGROUND );
@@ -47,10 +56,10 @@ public class HistogramGraph extends JPanel
 		final int availableHeight = ((HistogramDisplay.NUM_EVENT_MARKERS-1) * pixelsPerEventMarker);
 //		log.debug("AvailableHeight=" + availableHeight );
 		final int maxHeight = heightMinusOne - availableHeight;
-		final int maxWidth = ((HistogramDisplay.NUM_BIN_MARKERS-1) * pixelsPerBinMarker);
-		for( int x = 0 ; x < HistogramDisplay.NUM_BIN_MARKERS ; ++x )
+		final int maxWidth = ((HistogramDisplay.NUM_BUCKET_MARKERS-1) * pixelsPerBucketMarker);
+		for( int x = 0 ; x < HistogramDisplay.NUM_BUCKET_MARKERS ; ++x )
 		{
-			final int xPixelOffset = x * pixelsPerBinMarker;
+			final int xPixelOffset = x * pixelsPerBucketMarker;
 			g.drawLine( xPixelOffset, heightMinusOne, xPixelOffset, maxHeight );
 		}
 		for( int y = 0 ; y < HistogramDisplay.NUM_EVENT_MARKERS ; ++y )
@@ -66,6 +75,8 @@ public class HistogramGraph extends JPanel
 		final HistogramBucket lastBucket = buckets[numBuckets-1];
 		final long nanosLastBucketEnd = lastBucket.getBucketEndNanos();
 
+		g.setColor( HistogramColours.GRAPH_CONTENT );
+
 		for( int b = 0 ; b < buckets.length ; ++b )
 		{
 			final HistogramBucket bucket = buckets[b];
@@ -76,36 +87,147 @@ public class HistogramGraph extends JPanel
 			final int bucketStartPixel = nanosToPixel( nanosLastBucketEnd, maxWidth, bucketStartNanos );
 			final int bucketEndPixel = nanosToPixel( nanosLastBucketEnd, maxWidth, bucketEndNanos );
 
-//			log.debug( "Bucket " + b + " pixels(" + bucketStartPixel + "->" + bucketEndPixel + ")");
-
 			final float normBarHeight = (float)numInBucket / numTotalEvents;
 			final int barHeightThisBucket = (int)(availableHeight * normBarHeight);
 
-			// Fill in line coords
-			final int bucketCoordsStartIndex = (b*4);
-			// axis line to bucket start
-			histogramLineXValues[bucketCoordsStartIndex] = bucketStartPixel+1;
-			histogramLineYValues[bucketCoordsStartIndex] = heightMinusOne;
-			// Line up to height
-			histogramLineXValues[bucketCoordsStartIndex+1] = bucketStartPixel+1;
-			histogramLineYValues[bucketCoordsStartIndex+1] = heightMinusOne - barHeightThisBucket;
-			// Across the top
-			histogramLineXValues[bucketCoordsStartIndex+2] = bucketEndPixel-1;
-			histogramLineYValues[bucketCoordsStartIndex+2] = heightMinusOne - barHeightThisBucket;
-			// And back down
-			histogramLineXValues[bucketCoordsStartIndex+3] = bucketEndPixel-1;
-			histogramLineYValues[bucketCoordsStartIndex+3] = heightMinusOne;
+			final int barStartX = bucketStartPixel + 1;
+			final int barEndX = bucketEndPixel - 1;
+			int barBottomY = heightMinusOne - barHeightThisBucket;
+			final int barTopY = heightMinusOne;
+
+			if( barBottomY == barTopY )
+			{
+				barBottomY -= 1;
+			}
+
+			g.fillRect( barStartX, barBottomY, barEndX - barStartX, barTopY - barBottomY );
 		}
-
-		g.setColor( HistogramColours.GRAPH_CONTENT );
-
-		g.drawPolyline( histogramLineXValues, histogramLineYValues, NUM_COORDS_FOR_LINE );
 
 		if( mouseX != -1 )
 		{
 			g.setColor( HistogramColours.AXIS_LINES);
-			g.drawLine( mouseX, 0, mouseX, height );
+			g.drawLine( mouseX, heightMinusOne, mouseX, heightMinusOne - availableHeight );
+
+			final HistogramBucket b = getBucketForXPos( mouseX );
+			final TwoTuple<Integer,Integer> bucketCoords = getBucketTopCoords( b );
+			final int bucketTopX = bucketCoords.getHead();
+			final int bucketTopY = bucketCoords.getTail();
+
+			displayBucketInfo( g, b, maxWidth, availableHeight, bucketTopX, bucketTopY );
 		}
+	}
+
+	private void displayBucketInfo( final Graphics g,
+			final HistogramBucket bucket,
+			final int availableWidth,
+			final int availableHeight,
+			final int bucketTopX,
+			final int bucketTopY )
+	{
+		final long bucketStartNanos = bucket.getBucketStartNanos();
+		final long bucketEndNanos = bucket.getBucketEndNanos();
+		final float bucketStartMillis = bucketStartNanos / 1000000.0f;
+		final float bucketEndMillis = bucketEndNanos / 1000000.0f;
+		final int numEvents = bucket.getBucketCount();
+
+		final float numMillisAtPos = (bucketStartMillis + bucketEndMillis) / 2.0f;
+		final float numSecondsAtPos = numMillisAtPos / 1000.0f;
+
+		final String freqText = ( numSecondsAtPos > 0.0f ?
+				"~" + MathFormatter.fastFloatPrint( 1.0f / numSecondsAtPos, 2, false ) + "hz" :
+					"-" );
+//		log.debug( "Would display bucket info at (" +
+//					bucketTopX + ", " +
+//					bucketTopY + ")" );
+//		log.debug( "Nanos FT(" + bucketStartNanos + "->" + bucketEndNanos + ")" );
+//		log.debug( "Millis(" + numMillisAtPos + ")" );
+//		log.debug( "Seconds(" + numSecondsAtPos + ") Freq(" + freqText + ")" );
+//		log.debug( "NumEvents(" + numEvents +")" );
+
+		g.setColor( HistogramColours.AXIS_LINES );
+
+		final boolean isToRight = bucketTopX < (availableWidth - BUCKET_INFO_TOTAL_WIDTH);
+
+		final int actualY = HistogramDisplay.MARKER_PADDING + availableHeight - bucketTopY;
+		final boolean isDownwards = actualY < (availableHeight - BUCKET_INFO_TOTAL_HEIGHT);
+		final int adjustedY = (isDownwards
+				?
+				actualY
+				:
+				actualY - BUCKET_INFO_TOTAL_HEIGHT );
+
+//		log.debug("Drawing rect at " + adjustedX + " " + adjustedY );
+
+		final int[] xPoints = new int[NUM_BUBBLE_POINTS];
+		final int[] yPoints = new int[NUM_BUBBLE_POINTS];
+		// Origin of bucket
+		xPoints[0] = bucketTopX;
+		yPoints[0] = actualY;
+		// bubble top join
+		xPoints[1] = isToRight
+				?
+				bucketTopX + BUCKET_INFO_INDICATOR_WIDTH
+				:
+				bucketTopX - BUCKET_INFO_INDICATOR_WIDTH;
+		yPoints[1] = (adjustedY + (BUCKET_INFO_DATA_HEIGHT/4));
+		// top closest corner of rectangle
+		xPoints[2] = xPoints[1];
+		yPoints[2] = adjustedY;
+		// top furthest corner of rectangle
+		xPoints[3] = isToRight
+				?
+				xPoints[2] + BUCKET_INFO_DATA_WIDTH
+				:
+				xPoints[2] - BUCKET_INFO_DATA_WIDTH;
+		yPoints[3] = yPoints[2];
+		// bottom furthest corner of rectangle
+		xPoints[4] = xPoints[3];
+		yPoints[4] = yPoints[3] + BUCKET_INFO_DATA_HEIGHT;
+		// bottom closest corner of rectangle
+		xPoints[5] = xPoints[2];
+		yPoints[5] = yPoints[4];
+		// bubble bottom join
+		xPoints[6] = xPoints[1];
+		yPoints[6] = adjustedY + BUCKET_INFO_DATA_HEIGHT - (BUCKET_INFO_DATA_HEIGHT/4);
+
+//		log.debug( "IsToRight " + isToRight );
+//		log.debug( "IsDownards " + isDownwards );
+//		log.debug( "Plotting points: " + Arrays.toString(xPoints) + " " + Arrays.toString(yPoints) );
+
+		g.fillPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
+
+		g.setColor( HistogramColours.GRAPH_CONTENT );
+		g.drawPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
+
+		// And draw the text
+		final int textStartX = (isToRight ? xPoints[2] : xPoints[3]) + 10;
+
+		StringBuilder sb = new StringBuilder(30);
+		sb.append( "Millis: [" );
+		sb.append( MathFormatter.fastFloatPrint( bucketStartMillis, 2, false ) );
+		sb.append( ',' );
+		sb.append( MathFormatter.fastFloatPrint( bucketEndMillis, 2, false ) );
+		sb.append( ")" );
+
+		drawString( g, sb.toString(), textStartX, yPoints[3] + 20 );
+
+		sb = new StringBuilder(30);
+		sb.append( "Freq: " );
+		sb.append( freqText );
+
+		drawString( g, sb.toString(), textStartX, yPoints[3] + 40 );
+
+		sb = new StringBuilder(30);
+		sb.append( "Num Events: " );
+		sb.append( numEvents );
+
+		drawString( g, sb.toString(), textStartX, yPoints[3] + 60 );
+	}
+
+	private void drawString( final Graphics g, final String s, final int x, final int y )
+	{
+		final char[] charData = s.toCharArray();
+		g.drawChars( charData, 0, charData.length, x, y );
 	}
 
 	private final static int nanosToPixel( final long nanosLastBucketEnd, final int availableWidth, final long nanos )
@@ -121,13 +243,13 @@ public class HistogramGraph extends JPanel
 	{
 		super.setBounds( x, y, width, height );
 
-		pixelsPerBinMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing( width );
+		pixelsPerBucketMarker = HistogramSpacingCalculator.calculateBucketMarkerSpacing( width );
 		pixelsPerEventMarker = HistogramSpacingCalculator.calculateEventMarkerSpacing( height );
 	}
 
 	public int getGraphWidth()
 	{
-		return (HistogramDisplay.NUM_BIN_MARKERS-1) * pixelsPerBinMarker;
+		return (HistogramDisplay.NUM_BUCKET_MARKERS-1) * pixelsPerBucketMarker;
 	}
 
 	public int getGraphHeight()
@@ -147,5 +269,39 @@ public class HistogramGraph extends JPanel
 	public void unsetMousePosition()
 	{
 		setMousePosition( -1 );
+	}
+
+	public TwoTuple<Integer, Integer> getBucketTopCoords( final HistogramBucket hb )
+	{
+		final HistogramBucket[] buckets = histogram.getBuckets();
+		final int numBuckets = buckets.length;
+		final HistogramBucket lastBucket = buckets[numBuckets-1];
+		final long nanosLastBucketEnd = lastBucket.getBucketEndNanos();
+
+		final int availableWidth = ((HistogramDisplay.NUM_BUCKET_MARKERS-1) * pixelsPerBucketMarker);
+
+		final long startNanos = hb.getBucketStartNanos();
+		final long endNanos = hb.getBucketEndNanos();
+		final long midNanos = (endNanos + startNanos) / 2;
+		final int bucketX = nanosToPixel( nanosLastBucketEnd, availableWidth, midNanos );
+
+		final int numInBucket = hb.getBucketCount();
+		final int numTotal = histogram.getNumTotalEvents();
+		final float normNumInBucket = (float)numInBucket / numTotal;
+		final int availableHeight = ((HistogramDisplay.NUM_EVENT_MARKERS-1) * pixelsPerEventMarker);
+		final int bucketY = (int)(availableHeight * normNumInBucket);
+		return new TwoTuple<Integer, Integer>( bucketX, bucketY );
+	}
+
+	public HistogramBucket getBucketForXPos( final int mouseXPosInGraph )
+	{
+		final int bucketNumber = (int)(((float)mouseXPosInGraph / getGraphWidth() ) * HistogramDisplay.NUM_HISTOGRAM_BUCKETS);
+		final HistogramBucket[] buckets = histogram.getBuckets();
+		if( bucketNumber >=0 && bucketNumber < buckets.length )
+		{
+//			log.debug( "For pos " + mouseXPosInGraph + " returning bucket " + bucketNumber );
+			return buckets[bucketNumber];
+		}
+		return null;
 	}
 }

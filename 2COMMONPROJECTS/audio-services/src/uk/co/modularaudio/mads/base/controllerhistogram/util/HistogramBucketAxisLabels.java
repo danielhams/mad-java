@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import uk.co.modularaudio.util.math.MathFormatter;
 import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 
-public class HistogramBinAxisLabels extends JPanel
+public class HistogramBucketAxisLabels extends JPanel
 {
 	private static final long serialVersionUID = -7832095706567222837L;
 
@@ -22,11 +22,11 @@ public class HistogramBinAxisLabels extends JPanel
 
 	private final Histogram histogram;
 
-	public HistogramBinAxisLabels( final Histogram histogram )
+	public HistogramBucketAxisLabels( final Histogram histogram )
 	{
 		setBackground( Color.BLACK );
 		setOpaque( true );
-		this.setMinimumSize( new Dimension( 5, HistogramDisplay.BINS_LABELS_HEIGHT ) );
+		this.setMinimumSize( new Dimension( 5, HistogramDisplay.BUCKETS_LABELS_HEIGHT ) );
 
 		setFont( LWTCControlConstants.LABEL_SMALL_FONT );
 
@@ -57,11 +57,11 @@ public class HistogramBinAxisLabels extends JPanel
 		final long lastBucketEndNanos = buckets[numBuckets-1].getBucketEndNanos();
 //		log.debug( "Last bucket end is "  + lastBucketEndNanos );
 
-		final double incrementPerBucket = (double)lastBucketEndNanos / (HistogramDisplay.NUM_BIN_MARKERS-1);
+		final double incrementPerBucket = (double)lastBucketEndNanos / (HistogramDisplay.NUM_BUCKET_MARKERS-1);
 
 		final int yOffset = fm.getAscent() + 2;
 
-		for( int b = 0 ; b < HistogramDisplay.NUM_BIN_MARKERS ; ++b )
+		for( int b = 0 ; b < HistogramDisplay.NUM_BUCKET_MARKERS ; ++b )
 		{
 			final int xOffset = HistogramDisplay.EVENTS_LABELS_WIDTH +
 					HistogramDisplay.AXIS_MARKER_LENGTH +
@@ -72,7 +72,7 @@ public class HistogramBinAxisLabels extends JPanel
 
 			final float asMillis = (bucketStartNanos / 1000000.0f);
 
-			final String labelString = MathFormatter.fastFloatPrint( asMillis, 2, false ) + "ms";
+			final String labelString = MathFormatter.fastFloatPrint( asMillis, 1, false ) + "ms";
 
 //			log.debug( "Drawing bin text " + labelString + " at " + xOffset + ", " + yOffset );
 			drawCenteredText( g2d, fm, xOffset, yOffset, labelString );
@@ -95,7 +95,7 @@ public class HistogramBinAxisLabels extends JPanel
 	{
 		super.setBounds( x, y, width, height );
 
-		pixelsPerMarker = HistogramSpacingCalculator.calculateBinMarkerSpacing(
+		pixelsPerMarker = HistogramSpacingCalculator.calculateBucketMarkerSpacing(
 				(width - HistogramDisplay.AXIS_MARKER_LENGTH - HistogramDisplay.EVENTS_LABELS_WIDTH) );
 	}
 }
