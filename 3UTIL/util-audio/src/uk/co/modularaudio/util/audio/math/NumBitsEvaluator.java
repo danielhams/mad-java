@@ -4,31 +4,29 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.mahout.math.list.DoubleArrayList;
-import org.apache.mahout.math.map.OpenDoubleLongHashMap;
-import org.apache.mahout.math.set.OpenDoubleHashSet;
+import org.apache.mahout.math.list.LongArrayList;
+import org.apache.mahout.math.map.OpenLongLongHashMap;
+import org.apache.mahout.math.set.OpenLongHashSet;
 
 import uk.co.modularaudio.util.math.FastMath;
-import uk.co.modularaudio.util.math.MathFormatter;
 
 public class NumBitsEvaluator
 {
 	private static Log log = LogFactory.getLog( NumBitsEvaluator.class.getName() );
 
 	// Map from int bits to num
-	private final OpenDoubleLongHashMap valueHashMap = new OpenDoubleLongHashMap();
+	private final OpenLongLongHashMap valueHashMap = new OpenLongLongHashMap();
 
-	public void addValue( final float sv )
+	public void addValue( final long sv )
 	{
-		final double dv = sv;
-		if( valueHashMap.containsKey( dv ) )
+		if( valueHashMap.containsKey( sv ) )
 		{
-			final long num = valueHashMap.get( dv );
-			valueHashMap.put( dv, num+1 );
+			final long num = valueHashMap.get( sv );
+			valueHashMap.put( sv, num+1 );
 		}
 		else
 		{
-			valueHashMap.put( dv, 1 );
+			valueHashMap.put( sv, 1 );
 		}
 	}
 
@@ -41,15 +39,15 @@ public class NumBitsEvaluator
 		}
 		// Work out what the min delta between values is and check that
 		// all deltas are a multiple of that min value
-		final DoubleArrayList keysArrayList = valueHashMap.keys();
-		final double[] keys = keysArrayList.elements();
-		final double[] sortedVals = new double[keys.length];
+		final LongArrayList keysArrayList = valueHashMap.keys();
+		final long[] keys = keysArrayList.elements();
+		final long[] sortedVals = new long[keys.length];
 		System.arraycopy( keys, 0, sortedVals, 0, keys.length );
 
 		Arrays.sort( sortedVals );
 		final int numDeltas = sortedVals.length - 1;
 
-		final double[] deltas = new double[numDeltas];
+		final long[] deltas = new long[numDeltas];
 
 		for( int f = 0 ; f < numDeltas ; ++f )
 		{
@@ -57,23 +55,23 @@ public class NumBitsEvaluator
 		}
 
 		// Now uniq and sort the deltas to work out minimum delta
-		final OpenDoubleHashSet deltaHashSet = new OpenDoubleHashSet();
-		for( final double d : deltas )
+		final OpenLongHashSet deltaHashSet = new OpenLongHashSet();
+		for( final long d : deltas )
 		{
 			deltaHashSet.add( d );
 		}
-		final double[] uniqDeltas = deltaHashSet.keys().elements();
+		final long[] uniqDeltas = deltaHashSet.keys().elements();
 		final int numUniqDeltas = uniqDeltas.length;
-		final double[] sortedDeltas = new double[numUniqDeltas];
+		final long[] sortedDeltas = new long[numUniqDeltas];
 		System.arraycopy( uniqDeltas, 0, sortedDeltas, 0, numUniqDeltas );
 		Arrays.sort( sortedDeltas );
 
-		final double minDelta = sortedDeltas[0];
-		final double numUniqValsForMinDeltaDouble = 1.0 / minDelta;
+		final long minDelta = sortedDeltas[0];
+		final double numUniqValsForMinDeltaDouble = Long.MAX_VALUE / minDelta;
 		final long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
 
-		assert( minDelta != 0.0 );
-		log.info( "Min delta is " + MathFormatter.slowDoublePrint( minDelta, 12, true ) );
+		assert( minDelta != 0 );
+		log.info( "Min delta is " + minDelta );
 
 		// Use a tenth of the min delta as the error bound for other deltas being a multiple
 		final double maxError = 0.1;
@@ -82,7 +80,7 @@ public class NumBitsEvaluator
 
 		for( int d = 1 ; d < numUniqDeltas ; ++d )
 		{
-			final double deltaToTest = sortedDeltas[d];
+			final long deltaToTest = sortedDeltas[d];
 			final double numMinDeltas = deltaToTest / minDelta;
 
 			final double remainder = numMinDeltas % 1;
@@ -115,16 +113,15 @@ public class NumBitsEvaluator
 
 	public void dumpNFirstUniqueValues( final int n )
 	{
-		final double[] sourceVals = valueHashMap.keys().elements();
-		final double[] sortedVals = new double[sourceVals.length];
+		final long[] sourceVals = valueHashMap.keys().elements();
+		final long[] sortedVals = new long[sourceVals.length];
 		System.arraycopy( sourceVals, 0, sortedVals, 0, sourceVals.length );
 		Arrays.sort( sortedVals );
 		for( int i = 0 ; i < n ; ++i )
 		{
-			final double k = sortedVals[i];
+			final long k = sortedVals[i];
 			final long numForVal = valueHashMap.get( k );
-			log.debug("Have " + numForVal + " occurences of delta " + MathFormatter.slowDoublePrint( k, 8, true ) );
+			log.debug("Have " + numForVal + " occurences of value " + k );
 		}
 	}
-
 }
