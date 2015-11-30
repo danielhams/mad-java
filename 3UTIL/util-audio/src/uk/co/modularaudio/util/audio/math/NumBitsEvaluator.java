@@ -8,6 +8,7 @@ import org.apache.mahout.math.list.DoubleArrayList;
 import org.apache.mahout.math.map.OpenDoubleLongHashMap;
 import org.apache.mahout.math.set.OpenDoubleHashSet;
 
+import uk.co.modularaudio.util.math.FastMath;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 public class NumBitsEvaluator
@@ -16,18 +17,6 @@ public class NumBitsEvaluator
 
 	// Map from int bits to num
 	private final OpenDoubleLongHashMap valueHashMap = new OpenDoubleLongHashMap();
-
-	private final static int log2( final int n )
-	{
-		if( n<=0 ) throw new IllegalArgumentException();
-		return 31 - Integer.numberOfLeadingZeros( n );
-	}
-
-	private final static int log2( final long n )
-	{
-		if( n<=0 ) throw new IllegalArgumentException();
-		return 63 - Long.numberOfLeadingZeros( n );
-	}
 
 	public void addValue( final float sv )
 	{
@@ -108,7 +97,7 @@ public class NumBitsEvaluator
 		}
 
 		// Now convert num unique values into number of bits
-		final int numBits = log2( numUniqValsForMinDelta+1 );
+		final int numBits = FastMath.log2( numUniqValsForMinDelta+1 );
 		if( log.isDebugEnabled() )
 		{
 			log.debug( "Estimated number of bits at " + numBits );

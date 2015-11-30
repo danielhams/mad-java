@@ -79,4 +79,16 @@ public strictfp class FastMath
 		abs = 6+abs * (6+abs * (3+abs));
 		return sign * (abs-6)/(abs+6);
 	}
+
+	public final static int log2( final int n )
+	{
+		if( n<=0 ) throw new IllegalArgumentException();
+		return 31 - Integer.numberOfLeadingZeros( n );
+	}
+
+	public final static int log2( final long n )
+	{
+		if( n<=0 ) throw new IllegalArgumentException();
+		return 63 - Long.numberOfLeadingZeros( n );
+	}
 }
