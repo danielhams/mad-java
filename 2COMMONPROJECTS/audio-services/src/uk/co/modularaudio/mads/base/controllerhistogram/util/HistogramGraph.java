@@ -1,17 +1,20 @@
 package uk.co.modularaudio.mads.base.controllerhistogram.util;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
 import uk.co.modularaudio.util.math.MathFormatter;
+import uk.co.modularaudio.util.swing.lwtc.LWTCControlConstants;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
 public class HistogramGraph extends JPanel
 {
 	private static final long serialVersionUID = -2219255959276577110L;
 
-	private static final int BUCKET_INFO_DATA_WIDTH = 135;
+	private static final int BUCKET_INFO_DATA_WIDTH = 130;
 	private static final int BUCKET_INFO_DATA_HEIGHT = 70;
 	private static final int BUCKET_INFO_INDICATOR_WIDTH = 15;
 	private static final int BUCKET_INFO_TOTAL_WIDTH = BUCKET_INFO_DATA_WIDTH + BUCKET_INFO_INDICATOR_WIDTH;
@@ -40,6 +43,9 @@ public class HistogramGraph extends JPanel
 	@Override
 	public void paint( final Graphics g )
 	{
+		final Graphics2D g2d = (Graphics2D)g;
+		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
 		final int width = getWidth();
 		final int height = getHeight();
 //		if( log.isDebugEnabled() )
@@ -48,10 +54,10 @@ public class HistogramGraph extends JPanel
 //		}
 		final int heightMinusOne = height-1;
 
-		g.setColor( HistogramColours.GRAPH_BACKGROUND );
-		g.fillRect( 0, 0, width, height );
+		g2d.setColor( HistogramColours.GRAPH_BACKGROUND );
+		g2d.fillRect( 0, 0, width, height );
 
-		g.setColor( HistogramColours.AXIS_LINES );
+		g2d.setColor( HistogramColours.AXIS_LINES );
 
 		final int availableHeight = ((HistogramDisplay.NUM_EVENT_MARKERS-1) * pixelsPerEventMarker);
 //		log.debug("AvailableHeight=" + availableHeight );
@@ -60,13 +66,13 @@ public class HistogramGraph extends JPanel
 		for( int x = 0 ; x < HistogramDisplay.NUM_BUCKET_MARKERS ; ++x )
 		{
 			final int xPixelOffset = x * pixelsPerBucketMarker;
-			g.drawLine( xPixelOffset, heightMinusOne, xPixelOffset, maxHeight );
+			g2d.drawLine( xPixelOffset, heightMinusOne, xPixelOffset, maxHeight );
 		}
 		for( int y = 0 ; y < HistogramDisplay.NUM_EVENT_MARKERS ; ++y )
 		{
 			final int yPixelOffset = heightMinusOne - (y * pixelsPerEventMarker);
 
-			g.drawLine( 0, yPixelOffset, maxWidth, yPixelOffset );
+			g2d.drawLine( 0, yPixelOffset, maxWidth, yPixelOffset );
 		}
 
 		final int numTotalEvents = histogram.getNumTotalEvents();
@@ -75,7 +81,7 @@ public class HistogramGraph extends JPanel
 		final HistogramBucket lastBucket = buckets[numBuckets-1];
 		final long nanosLastBucketEnd = lastBucket.getBucketEndNanos();
 
-		g.setColor( HistogramColours.GRAPH_CONTENT );
+		g2d.setColor( HistogramColours.GRAPH_CONTENT );
 
 		for( int b = 0 ; b < buckets.length ; ++b )
 		{
@@ -100,24 +106,26 @@ public class HistogramGraph extends JPanel
 				barBottomY -= 1;
 			}
 
-			g.fillRect( barStartX, barBottomY, barEndX - barStartX, barTopY - barBottomY );
+			g2d.fillRect( barStartX, barBottomY, barEndX - barStartX, barTopY - barBottomY );
 		}
 
 		if( mouseX != -1 )
 		{
-			g.setColor( HistogramColours.AXIS_LINES);
-			g.drawLine( mouseX, heightMinusOne, mouseX, heightMinusOne - availableHeight );
+			g2d.setColor( HistogramColours.AXIS_LINES);
+			g2d.drawLine( mouseX, heightMinusOne, mouseX, heightMinusOne - availableHeight );
+
+			g2d.setFont( LWTCControlConstants.LABEL_FONT );
 
 			final HistogramBucket b = getBucketForXPos( mouseX );
 			final TwoTuple<Integer,Integer> bucketCoords = getBucketTopCoords( b );
 			final int bucketTopX = bucketCoords.getHead();
 			final int bucketTopY = bucketCoords.getTail();
 
-			displayBucketInfo( g, b, maxWidth, availableHeight, bucketTopX, bucketTopY );
+			displayBucketInfo( g2d, b, maxWidth, availableHeight, bucketTopX, bucketTopY );
 		}
 	}
 
-	private void displayBucketInfo( final Graphics g,
+	private void displayBucketInfo( final Graphics2D g2d,
 			final HistogramBucket bucket,
 			final int availableWidth,
 			final int availableHeight,
@@ -144,7 +152,7 @@ public class HistogramGraph extends JPanel
 //		log.debug( "Seconds(" + numSecondsAtPos + ") Freq(" + freqText + ")" );
 //		log.debug( "NumEvents(" + numEvents +")" );
 
-		g.setColor( HistogramColours.AXIS_LINES );
+		g2d.setColor( HistogramColours.AXIS_LINES );
 
 		final boolean isToRight = bucketTopX < (availableWidth - BUCKET_INFO_TOTAL_WIDTH);
 
@@ -194,10 +202,10 @@ public class HistogramGraph extends JPanel
 //		log.debug( "IsDownards " + isDownwards );
 //		log.debug( "Plotting points: " + Arrays.toString(xPoints) + " " + Arrays.toString(yPoints) );
 
-		g.fillPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
+		g2d.fillPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
 
-		g.setColor( HistogramColours.GRAPH_CONTENT );
-		g.drawPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
+		g2d.setColor( HistogramColours.GRAPH_CONTENT );
+		g2d.drawPolygon( xPoints, yPoints, NUM_BUBBLE_POINTS );
 
 		// And draw the text
 		final int textStartX = (isToRight ? xPoints[2] : xPoints[3]) + 10;
@@ -209,25 +217,25 @@ public class HistogramGraph extends JPanel
 		sb.append( MathFormatter.fastFloatPrint( bucketEndMillis, 2, false ) );
 		sb.append( ")" );
 
-		drawString( g, sb.toString(), textStartX, yPoints[3] + 20 );
+		drawString( g2d, sb.toString(), textStartX, yPoints[3] + 20 );
 
 		sb = new StringBuilder(30);
 		sb.append( "Freq: " );
 		sb.append( freqText );
 
-		drawString( g, sb.toString(), textStartX, yPoints[3] + 40 );
+		drawString( g2d, sb.toString(), textStartX, yPoints[3] + 40 );
 
 		sb = new StringBuilder(30);
 		sb.append( "Num Events: " );
 		sb.append( numEvents );
 
-		drawString( g, sb.toString(), textStartX, yPoints[3] + 60 );
+		drawString( g2d, sb.toString(), textStartX, yPoints[3] + 60 );
 	}
 
-	private void drawString( final Graphics g, final String s, final int x, final int y )
+	private void drawString( final Graphics2D g2d, final String s, final int x, final int y )
 	{
 		final char[] charData = s.toCharArray();
-		g.drawChars( charData, 0, charData.length, x, y );
+		g2d.drawChars( charData, 0, charData.length, x, y );
 	}
 
 	private final static int nanosToPixel( final long nanosLastBucketEnd, final int availableWidth, final long nanos )
