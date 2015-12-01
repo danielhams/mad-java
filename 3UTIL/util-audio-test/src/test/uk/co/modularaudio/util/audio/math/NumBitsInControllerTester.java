@@ -14,6 +14,7 @@ public class NumBitsInControllerTester
 	private static Log log = LogFactory.getLog( NumBitsInControllerTester.class.getName() );
 
 	private static final int NUM_TEST_VALUES = 60 * 2;
+//	private static final int NUM_TEST_VALUES = 8192 * 10;
 
 	private static final int NUM_BITS = 14;
 
