@@ -16,6 +16,7 @@ public class NumBitsEvaluator
 
 	// Map from int bits to num
 	private final OpenLongLongHashMap valueHashMap = new OpenLongLongHashMap();
+//	private final TreeMap<Long, Long> valueHashMap = new TreeMap<Long, Long>();
 
 	public void addValue( final long sv )
 	{
@@ -26,7 +27,7 @@ public class NumBitsEvaluator
 		}
 		else
 		{
-			valueHashMap.put( sv, 1 );
+			valueHashMap.put( sv, 1L );
 		}
 	}
 
@@ -41,11 +42,13 @@ public class NumBitsEvaluator
 		// all deltas are a multiple of that min value
 		final LongArrayList keysArrayList = valueHashMap.keys();
 		final long[] keys = keysArrayList.elements();
+
 		final long[] sortedVals = new long[keys.length];
 		System.arraycopy( keys, 0, sortedVals, 0, keys.length );
 
 		Arrays.sort( sortedVals );
 		final int numDeltas = sortedVals.length - 1;
+//		log.debug( "Have " + numDeltas + " source deltas");
 
 		final long[] deltas = new long[numDeltas];
 
@@ -62,16 +65,20 @@ public class NumBitsEvaluator
 		}
 		final long[] uniqDeltas = deltaHashSet.keys().elements();
 		final int numUniqDeltas = uniqDeltas.length;
+//		log.debug( "Have " + numUniqDeltas + " unique deltas");
 		final long[] sortedDeltas = new long[numUniqDeltas];
 		System.arraycopy( uniqDeltas, 0, sortedDeltas, 0, numUniqDeltas );
 		Arrays.sort( sortedDeltas );
+//		log.debug( "Have " + sortedDeltas.length + " sorted deltas");
 
 		final long minDelta = sortedDeltas[0];
-		final double numUniqValsForMinDeltaDouble = Long.MAX_VALUE / minDelta;
+		assert( minDelta != 0 );
+//		log.debug( "Min delta is " + minDelta );
+
+		final double numUniqValsForMinDeltaDouble = ((double)Long.MAX_VALUE) / minDelta;
 		final long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
 
-		assert( minDelta != 0 );
-		log.info( "Min delta is " + minDelta );
+//		log.info( "Min delta is " + minDelta );
 
 		// Use a tenth of the min delta as the error bound for other deltas being a multiple
 		final double maxError = 0.1;
@@ -81,24 +88,20 @@ public class NumBitsEvaluator
 		for( int d = 1 ; d < numUniqDeltas ; ++d )
 		{
 			final long deltaToTest = sortedDeltas[d];
-			final double numMinDeltas = deltaToTest / minDelta;
+			final double numMinDeltas = ((double)deltaToTest) / minDelta;
 
 			final double remainder = numMinDeltas % 1;
 			if( remainder > maxError )
 			{
-//				log.error( "For delta of " + MathFormatter.slowDoublePrint( deltaToTest, 12, true ) );
-//				log.error( "Delta remainder of " + MathFormatter.slowDoublePrint( remainder, 12, true ) +
-//						" when maxError is " + MathFormatter.slowDoublePrint( maxError, 12, true ) );
 				deltasConform = false;
-//				break;
 			}
 		}
 
 		// Now convert num unique values into number of bits
 		final int numBits = FastMath.log2( numUniqValsForMinDelta+1 );
-		if( log.isDebugEnabled() )
+		if( log.isTraceEnabled() )
 		{
-			log.debug( "Estimated number of bits at " + numBits );
+			log.trace( "Estimated number of bits at " + numBits );
 		}
 
 		if( !deltasConform )

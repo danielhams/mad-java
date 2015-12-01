@@ -13,9 +13,9 @@ public class NumBitsInControllerTester
 {
 	private static Log log = LogFactory.getLog( NumBitsInControllerTester.class.getName() );
 
-	private static final int NUM_TEST_VALUES = 8192 * 16;
+	private static final int NUM_TEST_VALUES = 60 * 2;
 
-	private static final int NUM_BITS = 30;
+	private static final int NUM_BITS = 14;
 
 	private long[] generateValuesWithLimitedBits( final int numBits )
 	{
@@ -35,7 +35,8 @@ public class NumBitsInControllerTester
 
 			final double scaledValue = randVal * maxIntForBits;
 
-			final long asLong = Math.round(scaledValue);
+			//final long asLong = Math.round(scaledValue);
+			final long asLong = (long)scaledValue;
 
 			// And shift to fill the signed space of long
 
@@ -72,11 +73,21 @@ public class NumBitsInControllerTester
 		{
 			log.info( "Have enough values to make num bits estimate" );
 			log.info( "After " + numValuesSoFar + " values num bits estimate is " + numBitsEstimate );
+			final BigInteger bi = BigInteger.valueOf( 2 );
+			final long numValuesForBits = bi.pow( numBitsEstimate ).longValue();
+			log.info( "This is " + numValuesForBits + " unique values");
 		}
 		else
 		{
 			log.info( "Failed to estimate number of bits" );
 		}
+
+//		log.info( "About to do 1000 calls" );
+//		for( int i = 0 ; i < 1000 ; ++i )
+//		{
+//			numBitsEstimate = numBitsEvaluator.getNumBitsEstimate();
+//		}
+//		log.info( "Done 1000 calls" );
 	}
 
 }
