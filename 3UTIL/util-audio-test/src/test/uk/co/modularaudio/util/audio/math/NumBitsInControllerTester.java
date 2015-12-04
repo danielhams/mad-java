@@ -15,34 +15,40 @@ public class NumBitsInControllerTester
 	private static Log log = LogFactory.getLog( NumBitsInControllerTester.class.getName() );
 
 //	private static final int NUM_TEST_VALUES = 60;
-	private static final int NUM_TEST_VALUES = 60 * 2;
+//	private static final int NUM_TEST_VALUES = 60 * 2;
+	private static final int NUM_TEST_VALUES = 300;
 //	private static final int NUM_TEST_VALUES = 1024;
+//	private static final int NUM_TEST_VALUES = 4192;
 //	private static final int NUM_TEST_VALUES = 8192;
 //	private static final int NUM_TEST_VALUES = 8192 * 10;
 
 //	private static final int NUM_BITS = 4;
 //	private static final int NUM_BITS = 6;
 //	private static final int NUM_BITS = 7;
+//	private static final int NUM_BITS = 8;
 //	private static final int NUM_BITS = 10;
-	private static final int NUM_BITS = 14;
+//	private static final int NUM_BITS = 14;
 //	private static final int NUM_BITS = 16;
 //	private static final int NUM_BITS = 20;
-//	private static final int NUM_BITS = 32;
+	private static final int NUM_BITS = 32;
+//	private static final int NUM_BITS = 60;
 
 //	private static final int NUM_SIGNIFICANT_BITS = 4;
-	private static final int NUM_SIGNIFICANT_BITS = 7;
+//	private static final int NUM_SIGNIFICANT_BITS = 5;
+//	private static final int NUM_SIGNIFICANT_BITS = 7;
 //	private static final int NUM_SIGNIFICANT_BITS = 10;
 //	private static final int NUM_SIGNIFICANT_BITS = 14;
-//	private static final int NUM_SIGNIFICANT_BITS = 20;
+	private static final int NUM_SIGNIFICANT_BITS = 20;
+//	private static final int NUM_SIGNIFICANT_BITS = 24;
 //	private static final int NUM_SIGNIFICANT_BITS = 32;
 
 	private long[] generateValuesWithLimitedBits( final int totalBits, final int significantBits )
 		throws IndexOutOfBoundsException
 	{
 		final int numShiftBits = totalBits - significantBits;
-		if( totalBits > 63 )
+		if( totalBits > 63 || significantBits > totalBits )
 		{
-			throw new IndexOutOfBoundsException( "Cannot do more than 63 bits" );
+			throw new IndexOutOfBoundsException( "Cannot do more than 63 bits and significant bits must be < total bits" );
 		}
 		final BigInteger bi = BigInteger.valueOf( 2 );
 		final BigInteger bMaxSigIntForBits = bi.pow( significantBits );

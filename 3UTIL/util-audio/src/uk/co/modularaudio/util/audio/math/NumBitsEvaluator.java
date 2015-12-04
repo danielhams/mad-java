@@ -80,10 +80,6 @@ public class NumBitsEvaluator
 		}
 		final int numNoBoundariesKeys = noBoundariesKeysList.size();
 //		log.trace( "NumNoBoundariesKeys=" + numNoBoundariesKeys );
-		if( numNoBoundariesKeys != numOrigKeys )
-		{
-			log.trace( "Eliminated boundary value(s)" );
-		}
 
 		final long[] noBoundariesKeys = noBoundariesKeysList.toArray( new long[numNoBoundariesKeys] );
 
@@ -124,9 +120,6 @@ public class NumBitsEvaluator
 //			log.trace( "UniqueDelta[" + i + "]=" + uniqDeltaArray[i] );
 //		}
 
-		double numUniqValsForMinDeltaDouble = ((double)maxIntForBits) / minDelta;
-		long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
-
 		// Use a tenth of the min delta as the error bound for other deltas being a multiple
 		final double maxError = 0.1;
 
@@ -166,12 +159,12 @@ public class NumBitsEvaluator
 				}
 				numMinDeltas = (deltaToTest) / curMinDelta;
 				remainder = numMinDeltas % 1;
-				numUniqValsForMinDeltaDouble = ((double)maxIntForBits) / minDelta;
-				numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
 			}
 			while( remainder > maxError );
 		}
 //		log.trace( "Calculating num bits" );
+		double numUniqValsForMinDeltaDouble = ((double)maxIntForBits) / curMinDelta;
+		long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
 
 		// Now convert num unique values into number of bits
 		final int numBits = FastMath.log2( numUniqValsForMinDelta+1 );

@@ -166,23 +166,23 @@ public class MidiToHardwareMidiNoteRingDecoder
 			}
 			case 0xe0:
 			{
-//				final int rawValue = get14bitValue( data1, data2 );
-//				if( log.isDebugEnabled() )
-//				{
-//					log.debug( "Pitch wheel change p1(" + data1 + ") p2(" + data2 + ") 14bitval(" + rawValue +")");
-//				}
-//				if( rawValue == 8192 )
-//				{
-//					log.debug("No pitch bend");
-//				}
-//				else if( rawValue < 8192 )
-//				{
-//					log.debug( "Pitch down" );
-//				}
-//				else if( rawValue > 8192 )
-//				{
-//					log.debug( "Pitch up" );
-//				}
+				final int rawValue = get14bitValue( data1, data2 );
+				if( log.isDebugEnabled() )
+				{
+					log.debug( "Pitch wheel change p1(" + data1 + ") p2(" + data2 + ") 14bitval(" + rawValue +")");
+				}
+				if( rawValue == 8192 )
+				{
+					log.debug("No pitch bend");
+				}
+				else if( rawValue < 8192 )
+				{
+					log.debug( "Pitch down" );
+				}
+				else if( rawValue > 8192 )
+				{
+					log.debug( "Pitch up" );
+				}
 				break;
 			}
 			case 0xF0:
@@ -193,12 +193,11 @@ public class MidiToHardwareMidiNoteRingDecoder
 		return RealtimeMethodReturnCodeEnum.SUCCESS;
 	}
 
-//	private static final int get14bitValue( final int lower, final int higher )
-//	{
-//		final int lowerVal = lower & 0x7F;
-//		final int upperVal = higher & 0x7F;
-//		final int shiftedUpper = upperVal << 7;
-//		return lowerVal | shiftedUpper;
-//	}
-
+	private static final int get14bitValue( final int lower, final int higher )
+	{
+		final int lowerVal = lower & 0x7F;
+		final int upperVal = higher & 0x7F;
+		final int shiftedUpper = upperVal << 7;
+		return lowerVal | shiftedUpper;
+	}
 }
