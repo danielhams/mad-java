@@ -35,7 +35,8 @@ import uk.co.modularaudio.util.audio.mad.ioqueue.IOQueueEvent;
 import uk.co.modularaudio.util.audio.mad.ioqueue.ThreadSpecificTemporaryEventStorage;
 import uk.co.modularaudio.util.audio.mad.timing.MadTimingParameters;
 
-public class ControllerHistogramMadUiInstance extends AbstractNoNameChangeNonConfigurableMadUiInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance>
+public class ControllerHistogramMadUiInstance
+	extends AbstractNoNameChangeNonConfigurableMadUiInstance<ControllerHistogramMadDefinition, ControllerHistogramMadInstance>
 {
 	private static Log log = LogFactory.getLog( ControllerHistogramMadUiInstance.class.getName() );
 

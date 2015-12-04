@@ -14,7 +14,7 @@ public class HistogramGraph extends JPanel
 {
 	private static final long serialVersionUID = -2219255959276577110L;
 
-	private static final int BUCKET_INFO_DATA_WIDTH = 130;
+	private static final int BUCKET_INFO_DATA_WIDTH = 150;
 	private static final int BUCKET_INFO_DATA_HEIGHT = 70;
 	private static final int BUCKET_INFO_INDICATOR_WIDTH = 15;
 	private static final int BUCKET_INFO_TOTAL_WIDTH = BUCKET_INFO_DATA_WIDTH + BUCKET_INFO_INDICATOR_WIDTH;
@@ -138,19 +138,10 @@ public class HistogramGraph extends JPanel
 		final float bucketEndMillis = bucketEndNanos / 1000000.0f;
 		final int numEvents = bucket.getBucketCount();
 
-		final float numMillisAtPos = (bucketStartMillis + bucketEndMillis) / 2.0f;
-		final float numSecondsAtPos = numMillisAtPos / 1000.0f;
-
-		final String freqText = ( numSecondsAtPos > 0.0f ?
-				"~" + MathFormatter.fastFloatPrint( 1.0f / numSecondsAtPos, 2, false ) + "hz" :
-					"-" );
-//		log.debug( "Would display bucket info at (" +
-//					bucketTopX + ", " +
-//					bucketTopY + ")" );
-//		log.debug( "Nanos FT(" + bucketStartNanos + "->" + bucketEndNanos + ")" );
-//		log.debug( "Millis(" + numMillisAtPos + ")" );
-//		log.debug( "Seconds(" + numSecondsAtPos + ") Freq(" + freqText + ")" );
-//		log.debug( "NumEvents(" + numEvents +")" );
+		final float numSecondsAtStart = bucketStartMillis / 1000.0f;
+		final float numSecondsAtEnd = bucketEndMillis / 1000.0f;
+		final float freqAtStart = (numSecondsAtStart == 0 ? Float.POSITIVE_INFINITY : 1.0f / numSecondsAtStart );
+		final float freqAtEnd = (numSecondsAtEnd == 0 ? Float.POSITIVE_INFINITY : 1.0f / numSecondsAtEnd );
 
 		g2d.setColor( HistogramColours.AXIS_LINES );
 
@@ -215,13 +206,16 @@ public class HistogramGraph extends JPanel
 		sb.append( MathFormatter.fastFloatPrint( bucketStartMillis, 2, false ) );
 		sb.append( ',' );
 		sb.append( MathFormatter.fastFloatPrint( bucketEndMillis, 2, false ) );
-		sb.append( ")" );
+		sb.append( ')' );
 
 		drawString( g2d, sb.toString(), textStartX, yPoints[3] + 20 );
 
 		sb = new StringBuilder(30);
-		sb.append( "Freq: " );
-		sb.append( freqText );
+		sb.append( "Freq: [" );
+		sb.append( MathFormatter.fastFloatPrint( freqAtStart, 2, false ) );
+		sb.append( ',' );
+		sb.append( MathFormatter.fastFloatPrint( freqAtEnd, 2, false ) );
+		sb.append( ')' );
 
 		drawString( g2d, sb.toString(), textStartX, yPoints[3] + 40 );
 

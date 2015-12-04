@@ -21,11 +21,11 @@ public class HistogramDisplay extends JPanel implements HistogramListener
 	protected final static int AXIS_MARKER_LENGTH = 5;
 
 	// Define our histogram in terms of the final marker that appears on the graph
-	public final static int HISTOGRAM_LAST_BUCKET_UPPER_MILLIS = 25;
+	public final static int HISTOGRAM_LAST_BUCKET_UPPER_MILLIS = 26;
 	public final static long HISTOGRAM_LAST_BUCKET_UPPER_NANOS = HISTOGRAM_LAST_BUCKET_UPPER_MILLIS * AudioTimingUtils.MILLIS_TO_NANOS_RATIO;
 
 //	public final static int NUM_HISTOGRAM_BUCKETS = 100;
-	public final static int NUM_HISTOGRAM_BUCKETS = 96;
+	public final static int NUM_HISTOGRAM_BUCKETS = 130;
 
 	protected final static int NUM_EVENT_MARKERS = 11;
 	protected final static int NUM_BUCKET_MARKERS = 11;
