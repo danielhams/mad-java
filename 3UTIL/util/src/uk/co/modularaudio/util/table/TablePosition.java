@@ -24,16 +24,17 @@ public class TablePosition
 {
 	public int x;
 	public int y;
-	
-	public TablePosition(int x, int y)
+
+	public TablePosition(final int x, final int y)
 	{
 		this.x = x;
 		this.y = y;
 	}
-	
+
+	@Override
 	public String toString()
 	{
-		StringBuilder retVal = new StringBuilder(10);
+		final StringBuilder retVal = new StringBuilder(10);
 		retVal.append("(");
 		retVal.append(x);
 		retVal.append(", ");
@@ -43,16 +44,39 @@ public class TablePosition
 	}
 
 	@Override
-	public boolean equals(Object o)
+	public int hashCode()
 	{
-		if( o instanceof TablePosition )
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + x;
+		result = prime * result + y;
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if( this == obj )
 		{
-			TablePosition htp = (TablePosition)o;
-			return( htp.x == x && htp.y == y );
+			return true;
 		}
-		else
+		if( obj == null )
 		{
 			return false;
 		}
+		if( !(obj instanceof TablePosition) )
+		{
+			return false;
+		}
+		final TablePosition other = (TablePosition) obj;
+		if( x != other.x )
+		{
+			return false;
+		}
+		if( y != other.y )
+		{
+			return false;
+		}
+		return true;
 	}
 }

@@ -26,8 +26,8 @@ public class IdStringComboItem implements ComboItem
 {
 	private String id = null;
 	private String displayString = null;
-	
-	public IdStringComboItem( String id, String displayString )
+
+	public IdStringComboItem( final String id, final String displayString )
 	{
 		this.id = id;
 		this.displayString = displayString;
@@ -46,18 +46,54 @@ public class IdStringComboItem implements ComboItem
 	}
 
 	@Override
-	public boolean equals(Object obj)
+	public int hashCode()
 	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((displayString == null) ? 0 : displayString.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals( final Object obj )
+	{
+		if( this == obj )
+		{
+			return true;
+		}
 		if( obj == null )
 		{
 			return false;
 		}
-		else if( obj.getClass() == this.getClass() )
+		if( !(obj instanceof IdStringComboItem) )
 		{
-			IdStringComboItem o = (IdStringComboItem)obj;
-			return o.getId().equals( id );
+			return false;
 		}
-		return false;
+		final IdStringComboItem other = (IdStringComboItem) obj;
+		if( displayString == null )
+		{
+			if( other.displayString != null )
+			{
+				return false;
+			}
+		}
+		else if( !displayString.equals( other.displayString ) )
+		{
+			return false;
+		}
+		if( id == null )
+		{
+			if( other.id != null )
+			{
+				return false;
+			}
+		}
+		else if( !id.equals( other.id ) )
+		{
+			return false;
+		}
+		return true;
 	}
 
 }
