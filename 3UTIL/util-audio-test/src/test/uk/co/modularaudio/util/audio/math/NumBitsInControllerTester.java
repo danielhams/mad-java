@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import uk.co.modularaudio.util.audio.math.NumBitsEvaluator;
+import uk.co.modularaudio.util.audio.math.TooManyBitsException;
 import uk.co.modularaudio.util.tuple.TwoTuple;
 
 public class NumBitsInControllerTester
@@ -16,45 +17,46 @@ public class NumBitsInControllerTester
 
 //	private static final int NUM_TEST_VALUES = 60;
 //	private static final int NUM_TEST_VALUES = 60 * 2;
-	private static final int NUM_TEST_VALUES = 300;
-//	private static final int NUM_TEST_VALUES = 1024;
+//	private static final int NUM_TEST_VALUES = 300;
+	private static final int NUM_TEST_VALUES = 1024;
 //	private static final int NUM_TEST_VALUES = 4192;
 //	private static final int NUM_TEST_VALUES = 8192;
 //	private static final int NUM_TEST_VALUES = 8192 * 10;
 
-//	private static final int NUM_BITS = 4;
-//	private static final int NUM_BITS = 6;
-//	private static final int NUM_BITS = 7;
-//	private static final int NUM_BITS = 8;
-//	private static final int NUM_BITS = 10;
-//	private static final int NUM_BITS = 14;
-//	private static final int NUM_BITS = 16;
-//	private static final int NUM_BITS = 20;
-	private static final int NUM_BITS = 32;
-//	private static final int NUM_BITS = 60;
-
 //	private static final int NUM_SIGNIFICANT_BITS = 4;
-//	private static final int NUM_SIGNIFICANT_BITS = 5;
+//	private static final int NUM_SIGNIFICANT_BITS = 6;
 //	private static final int NUM_SIGNIFICANT_BITS = 7;
+//	private static final int NUM_SIGNIFICANT_BITS = 8;
 //	private static final int NUM_SIGNIFICANT_BITS = 10;
 //	private static final int NUM_SIGNIFICANT_BITS = 14;
-	private static final int NUM_SIGNIFICANT_BITS = 20;
-//	private static final int NUM_SIGNIFICANT_BITS = 24;
+//	private static final int NUM_SIGNIFICANT_BITS = 16;
+//	private static final int NUM_SIGNIFICANT_BITS = 20;
 //	private static final int NUM_SIGNIFICANT_BITS = 32;
+	private static final int NUM_SIGNIFICANT_BITS = 48;
+//	private static final int NUM_SIGNIFICANT_BITS = 60;
 
-	private long[] generateValuesWithLimitedBits( final int totalBits, final int significantBits )
-		throws IndexOutOfBoundsException
+//	private static final int NUM_USED_BITS = 4;
+//	private static final int NUM_USED_BITS = 5;
+//	private static final int NUM_USED_BITS = 7;
+//	private static final int NUM_USED_BITS = 10;
+	private static final int NUM_USED_BITS = 14;
+//	private static final int NUM_USED_BITS = 20;
+//	private static final int NUM_USED_BITS = 24;
+//	private static final int NUM_USED_BITS = 32;
+
+	private long[] generateValuesWithLimitedBits( final int significantBits, final int usedBits )
+		throws TooManyBitsException
 	{
-		final int numShiftBits = totalBits - significantBits;
-		if( totalBits > 63 || significantBits > totalBits )
+		final int numShiftBits = significantBits - usedBits;
+		if( significantBits > 63 || usedBits > significantBits )
 		{
-			throw new IndexOutOfBoundsException( "Cannot do more than 63 bits and significant bits must be < total bits" );
+			throw new TooManyBitsException( "Cannot do more than 63 bits and used bits must be < significant bits" );
 		}
 		final BigInteger bi = BigInteger.valueOf( 2 );
-		final BigInteger bMaxSigIntForBits = bi.pow( significantBits );
+		final BigInteger bMaxSigIntForBits = bi.pow( usedBits );
 		final long maxSigIntForBits = bMaxSigIntForBits.longValue() - 1;
 
-		final BigInteger bMaxTotIntForBits = bi.pow( totalBits );
+		final BigInteger bMaxTotIntForBits = bi.pow( significantBits );
 		final long maxTotIntForBits = bMaxTotIntForBits.longValue() - 1;
 
 		final Random r = new Random();
@@ -92,18 +94,18 @@ public class NumBitsInControllerTester
 	}
 
 	@Test
-	public void test()
+	public void test() throws TooManyBitsException
 	{
 		log.debug("Doing it!");
 
-		final long[] sourceValuesToEvaluate = generateValuesWithLimitedBits( NUM_BITS, NUM_SIGNIFICANT_BITS );
+		final long[] sourceValuesToEvaluate = generateValuesWithLimitedBits( NUM_SIGNIFICANT_BITS, NUM_USED_BITS );
 
-		final NumBitsEvaluator numBitsEvaluator = new NumBitsEvaluator( NUM_BITS );
+		final NumBitsEvaluator numBitsEvaluator = new NumBitsEvaluator( NUM_SIGNIFICANT_BITS );
 		int numValuesSoFar = 0;
 
 		for( final long sv : sourceValuesToEvaluate )
 		{
-			numBitsEvaluator.addValue( sv );
+			numBitsEvaluator.addValue( NUM_SIGNIFICANT_BITS, sv );
 
 			numValuesSoFar++;
 		}

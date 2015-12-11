@@ -16,23 +16,36 @@ public class NumBitsEvaluator
 {
 	private static Log log = LogFactory.getLog( NumBitsEvaluator.class.getName() );
 
+	public final static int MAX_BITS = 63;
+
 	// Map from int bits to num
 	private final OpenLongIntHashMap valueHashMap = new OpenLongIntHashMap();
 
 	private int numSignificantBits;
 
-	public NumBitsEvaluator( final int numSignificantBits )
+	public NumBitsEvaluator( final int numSignificantBits ) throws TooManyBitsException
 	{
 		reset( numSignificantBits );
 	}
 
-	public final void reset( final int numSignificantBits )
+	public final void reset( final int numSignificantBits ) throws TooManyBitsException
 	{
+		if( numSignificantBits > MAX_BITS )
+		{
+			throw new TooManyBitsException( "Max bits exceeded - only support up to " + MAX_BITS );
+		}
+		log.trace("Resetting num significant bits to " + numSignificantBits );
+		valueHashMap.clear();
 		this.numSignificantBits = numSignificantBits;
 	}
 
-	public void addValue( final long sv )
+	public void addValue( final int numSignificantBits, final long sv ) throws TooManyBitsException
 	{
+		if( this.numSignificantBits != numSignificantBits )
+		{
+			reset( numSignificantBits );
+		}
+
 		if( valueHashMap.containsKey( sv ) )
 		{
 			final int num = valueHashMap.get( sv );
@@ -163,8 +176,8 @@ public class NumBitsEvaluator
 			while( remainder > maxError );
 		}
 //		log.trace( "Calculating num bits" );
-		double numUniqValsForMinDeltaDouble = ((double)maxIntForBits) / curMinDelta;
-		long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
+		final double numUniqValsForMinDeltaDouble = (maxIntForBits) / curMinDelta;
+		final long numUniqValsForMinDelta = (long)numUniqValsForMinDeltaDouble;
 
 		// Now convert num unique values into number of bits
 		final int numBits = FastMath.log2( numUniqValsForMinDelta+1 );
