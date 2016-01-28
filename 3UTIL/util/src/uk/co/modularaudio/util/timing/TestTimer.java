@@ -53,13 +53,14 @@ public class TestTimer
 		{
 			final long curTs = sectorTimestamps.get(i);
 			final long delta = curTs - prevTs;
+
 			sb.append( linePrefix );
 			sb.append( " Sector " );
 			sb.append( i );
 			sb.append( ": " );
-			sb.append( sectorNames.get( i ) );
+			sb.append( String.format("%15s", sectorNames.get( i ) ) );
 			sb.append( " " );
-			sb.append( Long.toString(delta) );
+			sb.append( NanosTimestampFormatter.formatTimestampForLogging( delta, true ) );
 			sb.append( "\n" );
 			prevTs = curTs;
 		}

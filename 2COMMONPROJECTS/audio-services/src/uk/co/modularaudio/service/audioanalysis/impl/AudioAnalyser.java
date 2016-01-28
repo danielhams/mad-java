@@ -26,9 +26,9 @@ import uk.co.modularaudio.util.audio.format.DataRate;
 
 public interface AudioAnalyser
 {
-	void dataStart( DataRate dataRate, int numChannels, long totalFrames );
-	void receiveFrames( float[] data, int numFrames );
-	void dataEnd( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef );
-	void completeAnalysis( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef );
+	void dataStart( DataRate dataRate, int numChannels, long totalFrames, int maxFramesPerCall ) throws AnalysisException;
+	void receiveFrames( float[] data, int numFrames ) throws AnalysisException;
+	void dataEnd( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef ) throws AnalysisException;
+	void completeAnalysis( AnalysisContext context, AnalysedData analysedData, HashedRef hashedRef ) throws AnalysisException;
 
 }

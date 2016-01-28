@@ -80,27 +80,6 @@ public class AudioTimingUtils
 		return getNumSamplesFloatForMillisAtSampleRate( sampleRate, timeInMillis );
 	}
 
-	public static String formatTimestampForLogging( final long rawNanosTimestamp )
-	{
-		final long nanosPart = rawNanosTimestamp % 1000;
-		final long totalMicros = rawNanosTimestamp / 1000;
-		final long microsPart = totalMicros % 1000;
-		final long totalMillis = totalMicros /  1000;
-		final long millisPart = totalMillis % 1000;
-		final long totalSeconds = totalMillis / 1000;
-		final long secondsPart = totalSeconds % 60;
-
-		final StringBuilder sb = new StringBuilder( 3 + 3 + 3 + 3 + 2 );
-		sb.append( String.format( "%02d", secondsPart ) );
-		sb.append( "." );
-		sb.append( String.format( "%03d", millisPart ) );
-		sb.append( "." );
-		sb.append( String.format( "%03d", microsPart ) );
-		sb.append( "." );
-		sb.append( String.format( "%03d", nanosPart ) );
-		return sb.toString();
-	}
-
 	public static float nanosToMillisFloat(final long currentGuiTime)
 	{
 		return (currentGuiTime) / 1000000.0f;

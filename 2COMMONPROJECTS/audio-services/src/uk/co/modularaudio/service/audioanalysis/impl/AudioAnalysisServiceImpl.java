@@ -37,6 +37,7 @@ import org.hibernate.Session;
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.AnalysisFillCompletionListener;
 import uk.co.modularaudio.service.audioanalysis.AudioAnalysisService;
+import uk.co.modularaudio.service.audioanalysis.impl.analysers.BpmAnalyser;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainAnalyser;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailAnalyser;
 import uk.co.modularaudio.service.audiofileio.AudioFileHandleAtom;
@@ -199,7 +200,9 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 				hashedStorageService,
 				staticThumbnailWarehouse );
 
-		final AnalysisContext ac = new AnalysisContext( gainAnalyser, thumbnailAnalyser );
+		final BpmAnalyser bpmAnalyser = new BpmAnalyser();
+
+		final AnalysisContext ac = new AnalysisContext( gainAnalyser, thumbnailAnalyser, bpmAnalyser );
 
 		final AnalysedData analysedData = new AnalysedData();
 
@@ -227,7 +230,7 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 		analysisBufferFrames = analysisBufferSize / numChannels;
 
-		ac.dataStart( dataRate, numChannels, totalFrames );
+		ac.dataStart( dataRate, numChannels, totalFrames, analysisBufferFrames );
 
 		int percentageComplete = 0;
 

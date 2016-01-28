@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.impl.AnalysisContext;
+import uk.co.modularaudio.service.audioanalysis.impl.AnalysisException;
 import uk.co.modularaudio.service.audioanalysis.impl.AudioAnalyser;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.service.hashedstorage.HashedStorageService;
@@ -99,7 +100,8 @@ public class StaticThumbnailAnalyser implements AudioAnalyser
 	}
 
 	@Override
-	public void dataStart(final DataRate dataRate, final int numChannels, final long totalFrames )
+	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames, final int maxFramesPerCall )
+		throws AnalysisException
 	{
 		this.numChannels = numChannels;
 

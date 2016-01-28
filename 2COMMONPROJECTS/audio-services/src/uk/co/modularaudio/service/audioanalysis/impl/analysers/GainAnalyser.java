@@ -22,6 +22,7 @@ package uk.co.modularaudio.service.audioanalysis.impl.analysers;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
 import uk.co.modularaudio.service.audioanalysis.impl.AnalysisContext;
+import uk.co.modularaudio.service.audioanalysis.impl.AnalysisException;
 import uk.co.modularaudio.service.audioanalysis.impl.AudioAnalyser;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
 import uk.co.modularaudio.util.audio.format.DataRate;
@@ -32,7 +33,8 @@ public class GainAnalyser implements AudioAnalyser
 //	private static Log log = LogFactory.getLog( GainAnalyser.class.getName() );
 
 	@Override
-	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames )
+	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames, final int maxFramesPerCall )
+		throws AnalysisException
 	{
 	}
 

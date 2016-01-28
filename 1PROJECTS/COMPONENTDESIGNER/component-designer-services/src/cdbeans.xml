@@ -23,8 +23,8 @@
         <property name="blockResamplerService"><ref bean="blockResamplerService"></ref></property>
         <property name="jobExecutorService"><ref bean="jobExecutorService"></ref></property>
         <property name="audioAnalysisService"><ref bean="audioAnalysisService"></ref></property>
-	</bean>
-	<bean id="guiController" class="uk.co.modularaudio.componentdesigner.controller.gui.impl.GuiControllerImpl" init-method="init" destroy-method="destroy">
+    </bean>
+    <bean id="guiController" class="uk.co.modularaudio.componentdesigner.controller.gui.impl.GuiControllerImpl" init-method="init" destroy-method="destroy">
 		<property name="guiService"><ref bean="guiService"></ref></property>
 	</bean>
 	<bean id="rackController" class="uk.co.modularaudio.controller.rack.impl.RackControllerImpl" init-method="init" destroy-method="destroy">

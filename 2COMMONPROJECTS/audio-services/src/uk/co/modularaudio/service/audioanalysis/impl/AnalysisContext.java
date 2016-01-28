@@ -21,6 +21,7 @@
 package uk.co.modularaudio.service.audioanalysis.impl;
 
 import uk.co.modularaudio.service.audioanalysis.AnalysedData;
+import uk.co.modularaudio.service.audioanalysis.impl.analysers.BpmAnalyser;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.GainAnalyser;
 import uk.co.modularaudio.service.audioanalysis.impl.analysers.StaticThumbnailAnalyser;
 import uk.co.modularaudio.service.hashedstorage.HashedRef;
@@ -30,12 +31,15 @@ public class AnalysisContext
 {
 	private final GainAnalyser gainAnalyser;
 	private final StaticThumbnailAnalyser thumbnailAnalyser;
+	private final BpmAnalyser bpmAnalyser;
 
 	public AnalysisContext( final GainAnalyser gainAnalyser,
-			final StaticThumbnailAnalyser thumbnailAnalyser )
+			final StaticThumbnailAnalyser thumbnailAnalyser,
+			final BpmAnalyser bpmAnalyser )
 	{
 		this.gainAnalyser = gainAnalyser;
 		this.thumbnailAnalyser = thumbnailAnalyser;
+		this.bpmAnalyser = bpmAnalyser;
 	}
 
 	public GainAnalyser getGainAnalyser()
@@ -48,27 +52,37 @@ public class AnalysisContext
 		return thumbnailAnalyser;
 	}
 
-	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames )
+	public BpmAnalyser getBpmAnalyser()
 	{
-		thumbnailAnalyser.dataStart( dataRate, numChannels, totalFrames );
-		gainAnalyser.dataStart( dataRate, numChannels, totalFrames );
+		return bpmAnalyser;
 	}
 
-	public void receiveFrames( final float[] data, final int numFrames )
+	public void dataStart( final DataRate dataRate, final int numChannels, final long totalFrames, final int maxFramesPerCall )
+		throws AnalysisException
+	{
+		thumbnailAnalyser.dataStart( dataRate, numChannels, totalFrames, maxFramesPerCall );
+		gainAnalyser.dataStart( dataRate, numChannels, totalFrames, maxFramesPerCall );
+		bpmAnalyser.dataStart( dataRate, numChannels, totalFrames, maxFramesPerCall );
+	}
+
+	public void receiveFrames( final float[] data, final int numFrames ) throws AnalysisException
 	{
 		thumbnailAnalyser.receiveFrames( data, numFrames );
 		gainAnalyser.receiveFrames( data, numFrames );
+		bpmAnalyser.receiveFrames( data, numFrames );
 	}
 
-	public void dataEnd( final AnalysedData analysedData, final HashedRef hashedRef )
+	public void dataEnd( final AnalysedData analysedData, final HashedRef hashedRef ) throws AnalysisException
 	{
 		thumbnailAnalyser.dataEnd( this, analysedData, hashedRef );
 		gainAnalyser.dataEnd( this, analysedData, hashedRef );
+		bpmAnalyser.dataEnd( this, analysedData, hashedRef );
 	}
 
-	public void completeAnalysis( final AnalysedData analysedData, final HashedRef hashedRef )
+	public void completeAnalysis( final AnalysedData analysedData, final HashedRef hashedRef ) throws AnalysisException
 	{
 		thumbnailAnalyser.completeAnalysis( this, analysedData, hashedRef );
 		gainAnalyser.completeAnalysis( this, analysedData, hashedRef );
+		bpmAnalyser.completeAnalysis( this, analysedData, hashedRef );
 	}
 }
