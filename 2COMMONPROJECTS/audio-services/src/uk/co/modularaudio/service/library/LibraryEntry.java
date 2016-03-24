@@ -37,9 +37,11 @@ public class LibraryEntry
 	private String format;
 	private String location;
 
+	private List<TempoPoint> tempoPoints;
+
 	public LibraryEntry()
 	{
-		this( -1, new ArrayList<CuePoint>(), 0, 0, 0, "", "", "");
+		this( -1, new ArrayList<CuePoint>(), 0, 0, 0, "", "", "", new ArrayList<TempoPoint>() );
 	}
 
 	public LibraryEntry( final int libraryEntryId,
@@ -49,7 +51,8 @@ public class LibraryEntry
 			final long totalNumFrames,
 			final String title,
 			final String format,
-			final String location )
+			final String location,
+			final List<TempoPoint> tempoPoints )
 	{
 		this.libraryEntryId = libraryEntryId;
 		this.cuePoints = cuePoints;
@@ -60,6 +63,7 @@ public class LibraryEntry
 		this.title = title;
 		this.format = format;
 		this.location = location;
+		this.tempoPoints = tempoPoints;
 	}
 
 	public void setLibraryEntryId( final int libraryEntryId )
@@ -107,6 +111,11 @@ public class LibraryEntry
 		this.cuePoints = cuePoints;
 	}
 
+	public void setTempoPoints( final List<TempoPoint> tempoPoints )
+	{
+		this.tempoPoints = tempoPoints;
+	}
+
 	public int getLibraryEntryId()
 	{
 		return libraryEntryId;
@@ -140,6 +149,11 @@ public class LibraryEntry
 	public String getLocation()
 	{
 		return location;
+	}
+
+	public List<TempoPoint> getTempoPoints()
+	{
+		return tempoPoints;
 	}
 
 	public void setSampleRate( final int sampleRate )

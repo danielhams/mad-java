@@ -81,6 +81,8 @@ import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.ui.ScopeSmallMadUiDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.ui.SoundfilePlayerMadUiDefinition;
+import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
+import uk.co.modularaudio.mads.base.soundfile_player2.ui.SoundfilePlayer2MadUiDefinition;
 import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
 import uk.co.modularaudio.mads.base.specamplarge.ui.SpecAmpLargeMadUiDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
@@ -137,6 +139,7 @@ public class BaseComponentsUiFactory
 	private BandLimitedOscillatorMadUiDefinition bloMud;
 	private WaveRollerMadUiDefinition wrMud;
 	private SoundfilePlayerMadUiDefinition sfpMud;
+	private SoundfilePlayer2MadUiDefinition sfp2Mud;
 	private RBJFilterMadUiDefinition rjbMud;
 	private MoogFilterMadUiDefinition moogMud;
 	private InterpTesterMadUiDefinition interpMud;
@@ -321,6 +324,11 @@ public class BaseComponentsUiFactory
             sfpMud = new SoundfilePlayerMadUiDefinition( bufferedImageAllocationService, sfpMd );
             muds.add( sfpMud );
             mdIdToMudMap.put( SoundfilePlayerMadDefinition.DEFINITION_ID, sfpMud );
+            final SoundfilePlayer2MadDefinition sfp2Md = (SoundfilePlayer2MadDefinition)
+            	componentService.findDefinitionById( SoundfilePlayer2MadDefinition.DEFINITION_ID );
+            sfp2Mud = new SoundfilePlayer2MadUiDefinition( bufferedImageAllocationService, sfp2Md );
+            muds.add( sfp2Mud );
+            mdIdToMudMap.put( SoundfilePlayer2MadDefinition.DEFINITION_ID, sfp2Mud );
 			final RBJFilterMadDefinition rjbMd = (RBJFilterMadDefinition)
                 componentService.findDefinitionById( RBJFilterMadDefinition.DEFINITION_ID );
             rjbMud = new RBJFilterMadUiDefinition( rjbMd );

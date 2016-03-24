@@ -166,5 +166,7 @@ public class BpmAnalyser implements AudioAnalyser
 	@Override
 	public void completeAnalysis( final AnalysisContext context, final AnalysedData analysedData, final HashedRef hashedRef )
 	{
+		// Hardcoded BPM for now
+		analysedData.setBpm( 126.0f );
 	}
 }

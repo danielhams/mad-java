@@ -37,6 +37,7 @@ import uk.co.modularaudio.service.hibsession.HibernateSessionService;
 import uk.co.modularaudio.service.library.CuePoint;
 import uk.co.modularaudio.service.library.LibraryEntry;
 import uk.co.modularaudio.service.library.LibraryService;
+import uk.co.modularaudio.service.library.TempoPoint;
 import uk.co.modularaudio.util.component.ComponentWithLifecycle;
 import uk.co.modularaudio.util.exception.ComponentConfigurationException;
 import uk.co.modularaudio.util.exception.DatastoreException;
@@ -68,6 +69,10 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 
 		hibernateBeanDefs.add( new HibernatePersistedBeanDefinition( ReflectionUtils.getClassPackageAsPath( this ) +
 				"/hbm/CuePoint.hbm.xml",
+				databaseTablePrefix ) );
+
+		hibernateBeanDefs.add( new HibernatePersistedBeanDefinition( ReflectionUtils.getClassPackageAsPath( this ) +
+				"/hbm/TempoPoint.hbm.xml",
 				databaseTablePrefix ) );
 	}
 
@@ -113,6 +118,10 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 			final CuePoint trackStartCuePoint = new CuePoint( -1, 0, "track_start" );
 			cueList.add( trackStartCuePoint );
 
+			final ArrayList<TempoPoint> tempoPoints = new ArrayList<TempoPoint>();
+			final TempoPoint initialTempoPoint = new TempoPoint( -1, 0 );
+			tempoPoints.add( initialTempoPoint );
+
 			final StaticMetadata sm = audioFileHandle.getStaticMetadata();
 			final String audioFilePath = sm.path;
 			final AudioFileFormat format = sm.format;
@@ -133,8 +142,10 @@ public class LibraryServiceImpl implements ComponentWithLifecycle, ComponentWith
 					numFrames,
 					title,
 					format.name(),
-					location );
+					location,
+					tempoPoints );
 			hibernateSession.save( trackStartCuePoint );
+			hibernateSession.save( initialTempoPoint );
 			hibernateSession.save( newEntry );
 			return newEntry;
 		}

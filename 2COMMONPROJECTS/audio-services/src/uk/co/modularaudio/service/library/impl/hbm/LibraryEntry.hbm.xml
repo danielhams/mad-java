@@ -25,9 +25,15 @@
             <property name="location" column="LOCATION" length="1024" unique="true"/>
 
             <list name="cuePoints" cascade="all" lazy="false">
-				<key column="LIBRARY_ENTRY_ID"/>
-				<list-index column="CP_INDEX"/>
-				<one-to-many class="CuePoint"/>
+                <key column="LIBRARY_ENTRY_ID"/>
+                <list-index column="CP_INDEX"/>
+                <one-to-many class="CuePoint"/>
+            </list>
+
+            <list name="tempoPoints" cascade="all" lazy="false">
+                <key column="LIBRARY_ENTRY_ID"/>
+                <list-index column="TP_INDEX"/>
+                <one-to-many class="TempoPoint"/>
             </list>
 		</class>
 	</hibernate-mapping>

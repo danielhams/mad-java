@@ -56,6 +56,7 @@ import uk.co.modularaudio.mads.base.scaleandoffset.mu.ScaleAndOffsetMadDefinitio
 import uk.co.modularaudio.mads.base.scopelarge.mu.ScopeLargeMadDefinition;
 import uk.co.modularaudio.mads.base.scopesmall.mu.ScopeSmallMadDefinition;
 import uk.co.modularaudio.mads.base.soundfile_player.mu.SoundfilePlayerMadDefinition;
+import uk.co.modularaudio.mads.base.soundfile_player2.mu.SoundfilePlayer2MadDefinition;
 import uk.co.modularaudio.mads.base.specamplarge.mu.SpecAmpLargeMadDefinition;
 import uk.co.modularaudio.mads.base.specampsmall.mu.SpecAmpSmallMadDefinition;
 import uk.co.modularaudio.mads.base.staticvalue.mu.StaticValueMadDefinition;
@@ -105,6 +106,7 @@ public class BaseComponentsFactory
 	private BandLimitedOscillatorMadDefinition bloMD;
 	private WaveRollerMadDefinition wrMD;
 	private SoundfilePlayerMadDefinition sfpMD;
+	private SoundfilePlayer2MadDefinition sfp2MD;
 	private RBJFilterMadDefinition rjbMD;
 	private MoogFilterMadDefinition moogMD;
 	private InterpTesterMadDefinition interpMD;
@@ -194,6 +196,8 @@ public class BaseComponentsFactory
 			addDef( wrMD );
 			sfpMD = new SoundfilePlayerMadDefinition( creationContext, classificationService );
 			addDef( sfpMD );
+			sfp2MD = new SoundfilePlayer2MadDefinition( creationContext, classificationService );
+			addDef( sfp2MD );
 			rjbMD = new RBJFilterMadDefinition( creationContext, classificationService );
 			addDef( rjbMD );
 			moogMD = new MoogFilterMadDefinition( creationContext, classificationService );
