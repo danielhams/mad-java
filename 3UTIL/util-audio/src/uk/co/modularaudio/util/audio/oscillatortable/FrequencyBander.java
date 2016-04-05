@@ -20,7 +20,8 @@
 
 package uk.co.modularaudio.util.audio.oscillatortable;
 
-import java.util.Vector;
+import org.apache.mahout.math.list.FloatArrayList;
+import org.apache.mahout.math.list.IntArrayList;
 
 import uk.co.modularaudio.util.audio.midi.MidiNote;
 import uk.co.modularaudio.util.audio.midi.MidiUtils;
@@ -28,44 +29,44 @@ import uk.co.modularaudio.util.audio.midi.MidiUtils;
 public class FrequencyBander
 {
 //	private static Log log = LogFactory.getLog( FrequencyBander.class.getName() );
-	
+
 	private int numBands = 0;
 	private float[] baseFreqPerBand;
 	private int[] numHarmsPerBand;
-	
+
 	private final MidiNote startMidiNote;
 	private final MidiNote endMidiNote;
 	private final int numNotesBetweenBand;
 
-	
-	public FrequencyBander( MidiNote startMidiNote, MidiNote endMidiNote, int numNotesBetweenBand )
+
+	public FrequencyBander( final MidiNote startMidiNote, final MidiNote endMidiNote, final int numNotesBetweenBand )
 	{
 		this.startMidiNote = startMidiNote;
 		this.endMidiNote = endMidiNote;
 		this.numNotesBetweenBand = numNotesBetweenBand;
 		decideBands();
 	}
-	
+
 	private void decideBands()
 	{
-		Vector<Float> baseFreqForBands = new Vector<Float>();
-		Vector<Integer> numHarmsForBands = new Vector<Integer>();
+		final FloatArrayList baseFreqForBands = new FloatArrayList();
+		final IntArrayList numHarmsForBands = new IntArrayList();
 		// We'll start from the third octave effectively
-		
-		int startNoteNum = startMidiNote.getMidiNumber();
-		int endNoteNum = endMidiNote.getMidiNumber();
-		
+
+		final int startNoteNum = startMidiNote.getMidiNumber();
+		final int endNoteNum = endMidiNote.getMidiNumber();
+
 		float prevFreq = 0.0f;
 		int prevNumHarmonics = -1;
 
 		for( int curNoteNum = startNoteNum ; curNoteNum < endNoteNum ; curNoteNum += numNotesBetweenBand )
 		{
-			MidiNote thisNote = MidiUtils.getMidiNoteFromNumberReturnNull( curNoteNum );
-			float thisNoteFreq = thisNote.getFrequency();
-			int numHarmonics = calcMaxHarmonicsForFreq( thisNoteFreq );
+			final MidiNote thisNote = MidiUtils.getMidiNoteFromNumberReturnNull( curNoteNum );
+			final float thisNoteFreq = thisNote.getFrequency();
+			final int numHarmonics = calcMaxHarmonicsForFreq( thisNoteFreq );
 //			log.debug("So for note(" + thisNote.toString() + ") at freq(" + MathFormatter.fastFloatPrint( thisNoteFreq, 3, false) + ") harms(" +
 //					numHarmonics +")");
-			
+
 			// Only create a band for it if it's a new number of harmonics (don't repeat)
 			if( numHarmonics != prevNumHarmonics )
 			{
@@ -81,7 +82,7 @@ public class FrequencyBander
 			prevFreq = thisNoteFreq;
 			prevNumHarmonics = numHarmonics;
 		}
-		
+
 		baseFreqPerBand = new float[ numBands ];
 		numHarmsPerBand = new int[ numBands ];
 		// Stupid autoboxing/unboxing won't work with a toArray call...
@@ -91,8 +92,8 @@ public class FrequencyBander
 			numHarmsPerBand[ i ] = numHarmsForBands.get( i );
 		}
 	}
-	
-	private int calcMaxHarmonicsForFreq( float inFreq )
+
+	private int calcMaxHarmonicsForFreq( final float inFreq )
 	{
 		int numHarmonics = 1;
 		float curFreq = inFreq;
@@ -111,7 +112,7 @@ public class FrequencyBander
 		}
 		return numHarmonics;
 	}
-	
+
 	public float[] getBaseFreqPerBand()
 	{
 		return baseFreqPerBand;
@@ -121,7 +122,7 @@ public class FrequencyBander
 	{
 		return numHarmsPerBand;
 	}
-	
+
 	public int getNumBands()
 	{
 		return numBands;

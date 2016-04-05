@@ -204,6 +204,7 @@ public class UserPreferencesServiceImpl implements ComponentWithLifecycle, UserP
 	{
 	}
 
+	@SuppressWarnings("boxing")
 	public int getSingleUserPreferenceIntByKey( final String key, final Integer defaultValue ) throws DatastoreException,
 			RecordNotFoundException
 	{

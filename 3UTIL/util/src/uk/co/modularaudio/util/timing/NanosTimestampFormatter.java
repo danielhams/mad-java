@@ -1,19 +1,28 @@
 package uk.co.modularaudio.util.timing;
 
+import uk.co.modularaudio.util.lang.StringUtils;
+
 public class NanosTimestampFormatter
 {
 	public static String formatTimestampForLogging( final long rawNanosTimestamp, final boolean displayHoursMinSeconds )
 	{
-		final long nanosPart = rawNanosTimestamp % 1000;
+		return formatTimestampForLogging( rawNanosTimestamp, displayHoursMinSeconds, ':', '.' );
+	}
+
+	public static String formatTimestampForLogging( final long rawNanosTimestamp, final boolean displayHoursMinSeconds,
+			final char dateSep,
+			final char timeSep )
+	{
+		final int nanosPart = (int)(rawNanosTimestamp % 1000);
 		final long totalMicros = rawNanosTimestamp / 1000;
-		final long microsPart = totalMicros % 1000;
+		final int microsPart = (int)(totalMicros % 1000);
 		final long totalMillis = totalMicros /  1000;
-		final long millisPart = totalMillis % 1000;
+		final int millisPart = (int)(totalMillis % 1000);
 		final long totalSeconds = totalMillis / 1000;
-		final long secondsPart = totalSeconds % 60;
+		final int secondsPart = (int)(totalSeconds % 60);
 		final long totalMinutes = totalSeconds / 60;
-		final long minutesPart = totalMinutes % 60;
-		final long hoursPart = totalMinutes / 60;
+		final int minutesPart = (int)(totalMinutes % 60);
+		final int hoursPart = (int)(totalMinutes / 60);
 
 		// HH:MM:SS_MIL_MIC_NAN
 		// 12345678901234567890
@@ -22,18 +31,18 @@ public class NanosTimestampFormatter
 		final StringBuilder sb = new StringBuilder( stringLength );
 		if( displayHoursMinSeconds )
 		{
-			sb.append( String.format( "%02d", hoursPart ) );
-			sb.append( ':' );
-			sb.append( String.format( "%02d", minutesPart ) );
-			sb.append( ':' );
+			StringUtils.appendFormattedInt( sb, 2, hoursPart );
+			sb.append( dateSep );
+			StringUtils.appendFormattedInt( sb, 2, minutesPart );
+			sb.append( dateSep );
 		}
-		sb.append( String.format( "%02d", secondsPart ) );
-		sb.append( '.' );
-		sb.append( String.format( "%03d", millisPart ) );
-		sb.append( '.' );
-		sb.append( String.format( "%03d", microsPart ) );
-		sb.append( '.' );
-		sb.append( String.format( "%03d", nanosPart ) );
+		StringUtils.appendFormattedInt( sb, 2, secondsPart );
+		sb.append( timeSep );
+		StringUtils.appendFormattedInt( sb, 3, millisPart );
+		sb.append( timeSep );
+		StringUtils.appendFormattedInt( sb, 3, microsPart );
+		sb.append( timeSep );
+		StringUtils.appendFormattedInt( sb, 3, nanosPart );
 		return sb.toString();
 	}
 }

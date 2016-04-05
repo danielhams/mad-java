@@ -23,11 +23,12 @@ package uk.co.modularaudio.util.timing;
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
+import org.apache.mahout.math.list.LongArrayList;
 
 public class TestTimer
 {
 	private final ArrayList<String> sectorNames = new ArrayList<String>();
-	private final ArrayList<Long> sectorTimestamps = new ArrayList<Long>();
+	private final LongArrayList sectorTimestamps = new LongArrayList();
 
 	public TestTimer()
 	{

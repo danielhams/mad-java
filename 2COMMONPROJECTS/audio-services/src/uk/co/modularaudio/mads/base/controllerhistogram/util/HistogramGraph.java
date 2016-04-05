@@ -40,6 +40,7 @@ public class HistogramGraph extends JPanel
 		setOpaque( false );
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void paint( final Graphics g )
 	{
@@ -273,6 +274,7 @@ public class HistogramGraph extends JPanel
 		setMousePosition( -1 );
 	}
 
+	@SuppressWarnings("boxing")
 	public TwoTuple<Integer, Integer> getBucketTopCoords( final HistogramBucket hb )
 	{
 		final HistogramBucket[] buckets = histogram.getBuckets();

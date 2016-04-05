@@ -93,6 +93,7 @@ public class DndRackDragRegionHintDecoration extends LayeredPaneDndTableDecorati
 	{
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void setActive( final boolean activeBool )
 	{

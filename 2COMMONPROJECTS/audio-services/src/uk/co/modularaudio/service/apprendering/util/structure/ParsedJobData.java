@@ -20,6 +20,8 @@
 
 package uk.co.modularaudio.service.apprendering.util.structure;
 
+import uk.co.modularaudio.util.timing.NanosTimestampFormatter;
+
 public class ParsedJobData
 {
 	private final long jobOffsetFromStart;
@@ -43,13 +45,15 @@ public class ParsedJobData
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder();
-		final String jobStr = String.format(
-				"JobStart(%8d) JobLength(%8d) JobThreadNum(%d) JobName(%s)",
-				jobOffsetFromStart,
-				jobLength,
-				jobThreadNum,
-				jobName );
-		sb.append( jobStr );
+		sb.append( "JobStart(" );
+		sb.append( NanosTimestampFormatter.formatTimestampForLogging( jobOffsetFromStart, false ) );
+		sb.append( ") JobLength(" );
+		sb.append(  NanosTimestampFormatter.formatTimestampForLogging( jobLength, false ) );
+		sb.append( ") JobThreadNum(" );
+		sb.append( jobThreadNum );
+		sb.append( ") JobName(" );
+		sb.append( jobName );
+		sb.append( ')' );
 
 		return sb.toString();
 	}

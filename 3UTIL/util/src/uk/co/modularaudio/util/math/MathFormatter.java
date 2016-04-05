@@ -59,117 +59,113 @@ public class MathFormatter
 			throw new RuntimeException("FastFloatPrint doesn't support more than " + MAX_DECIMALS + " decimal digits due to rounding errors. Use slowFloatPrint instead."); // NOPMD by dan on 08/07/15 13:35
 		}
 
-		final String retVal;
 		if( val == Float.NEGATIVE_INFINITY )
 		{
-			retVal = "-Inf";
+			return "-Inf";
 		}
 		else if( val == Float.POSITIVE_INFINITY )
 		{
-			retVal = "Inf";
+			return "Inf";
 		}
 		else if( val == Float.NaN )
 		{
-			retVal = "NaN";
+			return "NaN";
 		}
-		else
+
+		final StringBuilder sb = new StringBuilder( 20 );
+		if( val < 0.0f )
 		{
-			final StringBuilder sb = new StringBuilder( 20 );
-			if( val < 0.0f )
-			{
-				sb.append('-');
-				val = -val;
-			}
-			else if( echoPlus )
-			{
-				sb.append('+');
-			}
-
-			long integerPortion = (long)val;
-
-			final double remainder = ((double)val) - integerPortion;
-
-			final long oExp = POW10[numDecimals+1];
-			final double overScaledRemainder = remainder * oExp;
-			final int extraTen = (overScaledRemainder % 10.0 >= 5.0 ? 10 : 0 );
-			long roundedRemainder = (long)(overScaledRemainder + extraTen);
-
-			if( roundedRemainder >= oExp )
-			{
-				integerPortion += 1;
-				roundedRemainder -= oExp;
-			}
-			final long decimalsForPrint = roundedRemainder / 10;
-
-			sb.append( integerPortion );
-
-			if( numDecimals > 0 )
-			{
-				sb.append('.');
-				for( int p = numDecimals - 1 ; p > 0 && decimalsForPrint < POW10[p]; --p )
-				{
-					sb.append('0');
-				}
-
-				sb.append(decimalsForPrint);
-			}
-
-			retVal = sb.toString();
+			sb.append('-');
+			val = -val;
+		}
+		else if( echoPlus )
+		{
+			sb.append('+');
 		}
 
-		return retVal;
+		long integerPortion = (long)val;
+
+		final double remainder = ((double)val) - integerPortion;
+
+		final long oExp = POW10[numDecimals+1];
+		final double overScaledRemainder = remainder * oExp;
+		final int extraTen = (overScaledRemainder % 10.0 >= 5.0 ? 10 : 0 );
+		long roundedRemainder = (long)(overScaledRemainder + extraTen);
+
+		if( roundedRemainder >= oExp )
+		{
+			integerPortion += 1;
+			roundedRemainder -= oExp;
+		}
+		final long decimalsForPrint = roundedRemainder / 10;
+
+		sb.append( integerPortion );
+
+		if( numDecimals > 0 )
+		{
+			sb.append( '.' );
+			for( int p = numDecimals - 1 ; p > 0 && decimalsForPrint < POW10[p]; --p )
+			{
+				sb.append('0');
+			}
+
+			sb.append(decimalsForPrint);
+		}
+
+		return sb.toString();
 	}
 
+	@SuppressWarnings("boxing")
 	public static String slowFloatPrint( final float f, final int numDecimals, final boolean echoPlus )
 	{
-		String retVal;
 		if( f == Float.NEGATIVE_INFINITY )
 		{
-			retVal = "-Inf";
+			return "-Inf";
 		}
 		else if( f == Float.POSITIVE_INFINITY )
 		{
-			retVal = "Inf";
+			return "Inf";
 		}
 		else if( f == Float.NaN )
 		{
-			retVal = "NaN";
+			return "NaN";
 		}
-		else if( echoPlus )
+
+
+		if( echoPlus )
 		{
-			retVal = String.format( "%+1." + numDecimals + "f", f);
+			return String.format( "%+1." + numDecimals + "f", f);
 		}
 		else
 		{
-			retVal = String.format( "%1." + numDecimals + "f", f);
+			return String.format( "%1." + numDecimals + "f", f);
 		}
-		return retVal;
 	}
 
+	@SuppressWarnings("boxing")
 	public static String slowDoublePrint( final double d, final int numDecimals, final boolean echoPlus )
 	{
-		String retVal;
 		if( d == Double.NEGATIVE_INFINITY )
 		{
-			retVal = "-Inf";
+			return "-Inf";
 		}
 		else if( d == Double.POSITIVE_INFINITY )
 		{
-			retVal = "Inf";
+			return "Inf";
 		}
 		else if( d == Double.NaN )
 		{
-			retVal = "NaN";
+			return "NaN";
 		}
-		else if( echoPlus )
+
+		if( echoPlus && d >= 0.0 )
 		{
-			retVal = String.format( "%+1." + numDecimals + "f", d );
+			return String.format("%1." + numDecimals + "f", d );
 		}
 		else
 		{
-			retVal = String.format( "%1." + numDecimals + "f", d );
+			return String.format("%1." + numDecimals + "f", d );
 		}
-		return retVal;
 	}
 
 	public static String floatArrayPrint( final float[] floats )
@@ -181,7 +177,7 @@ public class MathFormatter
 			retVal.append( slowFloatPrint( floats[ i ] ) );
 			if( i < floats.length - 1 )
 			{
-				retVal.append( ",");
+				retVal.append( ',' );
 			}
 		}
 
@@ -197,16 +193,11 @@ public class MathFormatter
 			retVal.append( fastFloatPrint( floats[ i ], numDecimalPlaces, true ) );
 			if( i < floats.length - 1 )
 			{
-				retVal.append( ",");
+				retVal.append( ',' );
 			}
 		}
 
 		return retVal.toString();
-	}
-
-	public static String intPrint( final int d )
-	{
-		return String.format( "%04d", d );
 	}
 
 	public static String floatRadianToDegrees( final float iRadiansIn, final int numDecimalPlaces )

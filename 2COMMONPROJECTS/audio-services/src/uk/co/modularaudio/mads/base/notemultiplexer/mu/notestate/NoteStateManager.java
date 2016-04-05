@@ -21,12 +21,11 @@
 package uk.co.modularaudio.mads.base.notemultiplexer.mu.notestate;
 
 import java.nio.BufferOverflowException;
-import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
-import java.util.Queue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.list.IntArrayList;
 import org.apache.mahout.math.map.OpenObjectIntHashMap;
 
 import uk.co.modularaudio.util.audio.mad.MadChannelBuffer;
@@ -43,7 +42,8 @@ public class NoteStateManager
 	private final int polyphony;
 
 	private final OpenObjectIntHashMap<MidiNote> noteToChannelMap = new OpenObjectIntHashMap<MidiNote>();
-	private final Queue<Integer> freeChannelStack = new ArrayDeque<Integer>();
+
+	private final IntArrayList freeChannelStack = new IntArrayList();
 
 	private final LocklessChannelNoteRingBuffer[] outputChannelNoteRings;
 
@@ -151,7 +151,9 @@ public class NoteStateManager
 		// Try and find a free channel
 		try
 		{
-			final int freeChannelNumber = freeChannelStack.remove();
+			final int lastIndex = freeChannelStack.size() - 1;
+			final int freeChannelNumber = freeChannelStack.get( lastIndex );
+			freeChannelStack.remove( lastIndex );
 			final MadChannelNoteEvent onEvent = new MadChannelNoteEvent();
 			noteCopier.copyValues( ne, onEvent );
 

@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.math.AudioMath;
+import uk.co.modularaudio.util.lang.StringUtils;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 public class TestHighResolutionWaveFileWritingReading extends TestCase
@@ -161,7 +162,9 @@ public class TestHighResolutionWaveFileWritingReading extends TestCase
 			final float outputFloat = myInputFloats[f];
 			final float inputFloat = finalFloats[f];
 			final float absDiff = Math.abs( outputFloat - inputFloat );
-			final String index = String.format("%02d", f );
+			final StringBuilder sb = new StringBuilder();
+			StringUtils.appendFormattedInt( sb, 2, f );
+			final String index = sb.toString();
 			log.debug("MW Abs orig("  +
 					MathFormatter.slowDoublePrint( knownGoodOutputFloats[f], 12, true ) +
 					") diff " + index + "(" +

@@ -25,27 +25,29 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.apache.mahout.math.list.FloatArrayList;
+
 public class FreqTreeMap<E extends FreqTreeMapEntry> extends TreeSet<E>
 {
 	private static final long serialVersionUID = -7405910914674103864L;
 //	private static Log log = LogFactory.getLog( FreqTreeMap.class.getName() );
-	
+
 	public FreqTreeMap()
 	{
 	}
 
-	public CubicPaddedRawWaveTable findLeafForFreq( E entryForFinds, float freq )
+	public CubicPaddedRawWaveTable findLeafForFreq( final E entryForFinds, final float freq )
 	{
 		entryForFinds.setFreq( freq );
-		
-		FreqTreeMapEntry foundEntry = floor( entryForFinds );
+
+		final FreqTreeMapEntry foundEntry = floor( entryForFinds );
 		if( foundEntry != null )
 		{
 			return foundEntry.getValue();
 		}
 		else
 		{
-			FreqTreeMapEntry first = first();
+			final FreqTreeMapEntry first = first();
 			if( first != null )
 			{
 				return first.getValue();
@@ -59,28 +61,28 @@ public class FreqTreeMap<E extends FreqTreeMapEntry> extends TreeSet<E>
 
 	public FixedFreqTreeMap fix()
 	{
-		List<Float> floatPivots = new ArrayList<Float>();
-		List<CubicPaddedRawWaveTable> valuesAtPivots = new ArrayList<CubicPaddedRawWaveTable>();
-		
-		Iterator<E> eIter = iterator();
+		final FloatArrayList floatPivots = new FloatArrayList();
+		final List<CubicPaddedRawWaveTable> valuesAtPivots = new ArrayList<CubicPaddedRawWaveTable>();
+
+		final Iterator<E> eIter = iterator();
 		while( eIter.hasNext() )
 		{
-			FreqTreeMapEntry entry = eIter.next();
-			float pivot = entry.getEntryPivot();
-			CubicPaddedRawWaveTable value = entry.getValue();
+			final FreqTreeMapEntry entry = eIter.next();
+			final float pivot = entry.getEntryPivot();
+			final CubicPaddedRawWaveTable value = entry.getValue();
 			floatPivots.add( pivot );
 			valuesAtPivots.add( value );
 		}
-		
-		int numPivots = floatPivots.size();
-		float[] pivotsArray = new float[ numPivots ];
-		CubicPaddedRawWaveTable[] valuesArray = new CubicPaddedRawWaveTable[ numPivots ];
+
+		final int numPivots = floatPivots.size();
+		final float[] pivotsArray = new float[ numPivots ];
+		final CubicPaddedRawWaveTable[] valuesArray = new CubicPaddedRawWaveTable[ numPivots ];
 		for( int i =0 ; i < numPivots ; ++i )
 		{
 			pivotsArray[ i ] = floatPivots.get( i );
 			valuesArray[ i ] = valuesAtPivots.get( i );
 		}
-		FixedFreqTreeMap fixedMap = new FixedFreqTreeMap( pivotsArray, valuesArray );
+		final FixedFreqTreeMap fixedMap = new FixedFreqTreeMap( pivotsArray, valuesArray );
 
 		return fixedMap;
 	}

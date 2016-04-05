@@ -20,15 +20,14 @@
 
 package uk.co.modularaudio.mads.base.specampgen.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+
+import org.apache.mahout.math.map.OpenObjectIntHashMap;
 
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadDefinition;
 import uk.co.modularaudio.mads.base.specampgen.mu.SpectralAmpGenMadInstance;
@@ -56,7 +55,7 @@ public class SpectralAmpGenFFTResolutionChoiceUiJComponent<D extends SpectralAmp
 
 	public static final int DEFAULT_RESOLUTION = 4096;
 
-	private final Map<String, Integer> runAvToCalculatorMap = new HashMap<String, Integer> ();
+	private final OpenObjectIntHashMap<String> runAvToCalculatorMap = new OpenObjectIntHashMap<String>();
 
 	public SpectralAmpGenFFTResolutionChoiceUiJComponent( final D definition,
 			final I instance,

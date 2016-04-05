@@ -28,6 +28,7 @@ import java.util.ArrayList;
 
 public class EventLoader
 {
+	@SuppressWarnings("boxing")
 	public final static TestEvent[] loadEventsFromFile( final String fileName )
 		throws IOException
 	{

@@ -114,6 +114,7 @@ public class SoundfilePlayer2ZoomToggleGroupUiJComponent extends JPanel
 //		{
 //			log.debug("Receiving control value " + value );
 //		}
+		@SuppressWarnings("boxing")
 		final int intValue = Integer.valueOf(value);
 		toggleGroup.setSelectedItemIndex( intValue );
 	}

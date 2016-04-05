@@ -27,6 +27,7 @@ import uk.co.modularaudio.util.audio.fft.FftWindow;
 import uk.co.modularaudio.util.audio.fft.HannFftWindow;
 import uk.co.modularaudio.util.audio.format.DataRate;
 import uk.co.modularaudio.util.audio.stft.StftParameters;
+import uk.co.modularaudio.util.lang.StringUtils;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 public class FindBinFreqForTests
@@ -47,7 +48,9 @@ public class FindBinFreqForTests
 
 		for( int i = 0 ; i < 400 ; ++i )
 		{
-			final String index = String.format( "%04d", i );
+			final StringBuilder sb = new StringBuilder();
+			StringUtils.appendFormattedInt( sb, 4, i );
+			final String index = sb.toString();
 			log.info( "Bin " + index + " has center frequency " +
 					MathFormatter.slowFloatPrint( binCenterFreqs[i], 12, true ));
 		}

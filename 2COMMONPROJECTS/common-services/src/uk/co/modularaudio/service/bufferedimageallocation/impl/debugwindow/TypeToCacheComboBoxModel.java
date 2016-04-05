@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataListener;
 
+import org.apache.mahout.math.list.IntArrayList;
 import org.apache.mahout.math.list.LongArrayList;
 import org.apache.mahout.math.map.OpenLongObjectHashMap;
 import org.apache.mahout.math.map.OpenObjectLongHashMap;
@@ -36,7 +37,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class TypeToCacheComboBoxModel implements ComboBoxModel<String>
 {
-	private final ArrayList<Integer> imageTypeValues = new ArrayList<Integer>();
+	private final IntArrayList imageTypeValues = new IntArrayList();
 	private final ArrayList<String> displayValues = new ArrayList<String>();
 
 	private final OpenObjectLongHashMap<String> displayNameToCacheKeyMap = new OpenObjectLongHashMap<String>();

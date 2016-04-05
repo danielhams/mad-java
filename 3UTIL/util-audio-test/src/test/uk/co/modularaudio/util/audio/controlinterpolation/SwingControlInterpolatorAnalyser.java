@@ -21,8 +21,6 @@
 package test.uk.co.modularaudio.util.audio.controlinterpolation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -31,6 +29,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.list.IntArrayList;
 
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass12Interpolator;
 import uk.co.modularaudio.util.audio.controlinterpolation.CDLowPass24Interpolator;
@@ -247,7 +246,7 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		reader.readFrames( samples, 0, 0, numSamplesInt );
 
 		// Work out the offsets for control value changes
-		final ArrayList<Integer> controlValueChanges = new ArrayList<Integer>();
+		final IntArrayList controlValueChanges = new IntArrayList();
 
 		float curSample = samples[0];
 
@@ -280,8 +279,10 @@ public class SwingControlInterpolatorAnalyser extends JFrame
 		}
 
 		int prevOffset = 0;
-		for( final int valueChangeOffset : controlValueChanges )
+		for( int vc = 0 ; vc < controlValueChanges.size() ; ++vc )
 		{
+			final int valueChangeOffset = controlValueChanges.get( vc );
+
 			final float sampleAtChange = samples[valueChangeOffset];
 
 			for( final ControlValueInterpolator cvi : interpolators )

@@ -32,10 +32,10 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-5.8376484"/>
-        <rackControl name="PlayStop" value="true"/>
+        <rackControl name="Gain" value="-8.951057"/>
+        <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/JonMoyer/Jon Moyer - freq.shift 176 (22 April 2013).mp3|138826177"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/eric_sneo_lets_go_techno_141_with_loco_jam.mp3|139950748"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -48,7 +48,7 @@
         <rackControl name="Gain" value="-5.8117266"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Run DMC Discography/Run DMC (1985) - King Of Rock (Expanded Edition)/09. Darryl and Joe (Krush-Groove 3).mp3|922257"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Run DMC Discography/Run DMC (1985) - King Of Rock (Expanded Edition)/09. Darryl and Joe (Krush-Groove 3).mp3|1234415"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>

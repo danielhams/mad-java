@@ -62,6 +62,7 @@ public class YesNoQuestionPanel extends JPanel implements ActionListener
 		this.add( buttonPanel, "growx, align center");
 	}
 
+	@SuppressWarnings("boxing")
 	public void setValues( final String message,
 			final int messageType,
 			final String[] options,
@@ -89,6 +90,7 @@ public class YesNoQuestionPanel extends JPanel implements ActionListener
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void actionPerformed( final ActionEvent e )
 	{

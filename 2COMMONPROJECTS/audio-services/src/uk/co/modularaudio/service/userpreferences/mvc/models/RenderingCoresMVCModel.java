@@ -31,11 +31,13 @@ public class RenderingCoresMVCModel extends SpinnerNumberModel
 		super( 1, 1, maxCores-1, 1 );
 	}
 
+	@SuppressWarnings("boxing")
 	public int getIntValue()
 	{
-		return (Integer)(super.getValue());
+		return (int)(super.getValue());
 	}
 
+	@SuppressWarnings("boxing")
 	public void setIntValue( final int value )
 	{
 		super.setValue( value );

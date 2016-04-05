@@ -26,9 +26,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -36,6 +33,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.set.OpenIntHashSet;
 
 import uk.co.modularaudio.componentdesigner.controller.front.ComponentDesignerFrontController;
 import uk.co.modularaudio.componentdesigner.profiling.tracks.TracksVisualiser;
@@ -163,7 +161,7 @@ public class ProfilingWindow extends JFrame
 
 		ParsedJobData shortestJob = null;
 
-		final Set<Integer> uniqueThreadSet = new HashSet<Integer>();
+		final OpenIntHashSet uniqueThreadSet = new OpenIntHashSet();
 		long dspJobDuration = 0;
 		for( final RenderingJob rj : jobToProfileResultMap.keySet() )
 		{

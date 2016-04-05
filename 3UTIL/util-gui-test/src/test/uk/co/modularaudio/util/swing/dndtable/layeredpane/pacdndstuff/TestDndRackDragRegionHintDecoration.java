@@ -88,6 +88,7 @@ public class TestDndRackDragRegionHintDecoration extends LayeredPaneDndTableDeco
 		SOURCE, VALID, INVALID
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void setActive( final boolean activeBool )
 	{

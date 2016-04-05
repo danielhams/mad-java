@@ -35,6 +35,7 @@ import uk.co.modularaudio.util.audio.fileio.WaveFileReader;
 import uk.co.modularaudio.util.audio.fileio.WaveFileWriter;
 import uk.co.modularaudio.util.audio.math.AudioMath;
 import uk.co.modularaudio.util.exception.DatastoreException;
+import uk.co.modularaudio.util.lang.StringUtils;
 import uk.co.modularaudio.util.math.MathFormatter;
 
 public class TestJavaWavIOAgainstLibsndfile extends TestCase
@@ -128,7 +129,9 @@ public class TestJavaWavIOAgainstLibsndfile extends TestCase
 			final float diff = Math.abs( lsfReadValues[i] - lsfReadValues2[i] );
 			if( diff != 0.0f )
 			{
-				final String index = String.format( "%02d",  i );
+				final StringBuilder sb = new StringBuilder();
+				StringUtils.appendFormattedInt( sb, 2, i );
+				final String index = sb.toString();
 				log.error("MU Round trip error on value " + index + "(" +
 						MathFormatter.slowFloatPrint( lsfReadValues[i], 12, true) + ")->(" +
 						MathFormatter.slowFloatPrint( lsfReadValues2[i], 12, true) +

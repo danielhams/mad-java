@@ -65,6 +65,7 @@ public class InternalMadUiControlDefinition extends MadUiControlDefinition
 					int.class
 			};
 			final Constructor cons = actualUiControlClass.getConstructor( consParamTypes );
+			@SuppressWarnings("boxing")
 			final Object[] consParams = new Object[] {
 					definition,
 					instance,

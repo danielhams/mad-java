@@ -22,21 +22,31 @@ package uk.co.modularaudio.util.lang;
 
 public class ArrayUtils
 {
-	public static void reverse( float[] array )
+	public static void reverse( final float[] array )
 	{
 		for( int left = 0, right = array.length - 1 ; left < right ; left++, right-- )
 		{
-			float val = array[left];
+			final float val = array[left];
 			array[left] = array[right];
 			array[right] = val;
 		}
 	}
 
-	public static void reverse( float[] array, int offset, int length )
+	public static void reverse( final char[] array )
+	{
+		for( int left = 0, right = array.length - 1 ; left < right ; left++, right-- )
+		{
+			final char val = array[left];
+			array[left] = array[right];
+			array[right] = val;
+		}
+	}
+
+	public static void reverse( final float[] array, final int offset, final int length )
 	{
 		for( int left = offset, right = (offset + length -1) ; left < right ; left++, right-- )
 		{
-			float val = array[left];
+			final float val = array[left];
 			array[left] = array[right];
 			array[right] = val;
 		}

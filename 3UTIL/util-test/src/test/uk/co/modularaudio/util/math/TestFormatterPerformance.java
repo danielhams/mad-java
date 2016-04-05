@@ -18,7 +18,7 @@
  *
  */
 
-package test.uk.co.modularaudio.util.formatter;
+package test.uk.co.modularaudio.util.math;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

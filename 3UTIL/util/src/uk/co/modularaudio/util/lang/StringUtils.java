@@ -22,11 +22,47 @@ package uk.co.modularaudio.util.lang;
 
 public class StringUtils
 {
-	public final static String ucInitialChar( String inputString )
+	public final static String ucInitialChar( final String inputString )
 	{
-		StringBuilder retVal = new StringBuilder( inputString.length() );
+		final StringBuilder retVal = new StringBuilder( inputString.length() );
 		retVal.append( inputString.substring( 0, 1 ).toUpperCase() );
 		retVal.append( inputString.substring( 1 ) );
 		return retVal.toString();
+	}
+
+	public final static void appendFormattedInt( final StringBuilder sb, final int numSigFigures, final int val )
+	{
+		int iVal = (val < 0 ? -val : val);
+		final char[] tmpChars = new char[numSigFigures];
+		for( int i = 0 ; i < numSigFigures ; ++i )
+		{
+			final int fig = iVal % 10;
+			tmpChars[i] = (char)('0' + fig);
+			iVal = iVal / 10;
+		}
+		ArrayUtils.reverse( tmpChars );
+		if( val < 0 )
+		{
+			tmpChars[0] = '-';
+		}
+		sb.append( tmpChars );
+	}
+
+	public final static void appendFormattedLong( final StringBuilder sb, final int numSigFigures, final long val )
+	{
+		long iVal = (val < 0 ? -val : val );
+		final char[] tmpChars = new char[numSigFigures];
+		for( int i = 0 ; i < numSigFigures ; ++i )
+		{
+			final int fig = (int)(iVal % 10);
+			tmpChars[i] = (char)('0' + fig);
+			iVal = iVal / 10;
+		}
+		ArrayUtils.reverse( tmpChars );
+		if( val < 0 )
+		{
+			tmpChars[0] = '-';
+		}
+		sb.append( tmpChars );
 	}
 }

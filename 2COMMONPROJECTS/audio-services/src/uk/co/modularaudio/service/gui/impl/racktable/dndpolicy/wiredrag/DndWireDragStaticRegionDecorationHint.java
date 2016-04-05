@@ -91,6 +91,7 @@ public class DndWireDragStaticRegionDecorationHint extends LayeredPaneDndTableDe
 	{
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void setActive( final boolean activeBool )
 	{

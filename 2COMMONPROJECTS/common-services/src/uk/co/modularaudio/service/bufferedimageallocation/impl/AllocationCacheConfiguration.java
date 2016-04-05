@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.mahout.math.list.IntArrayList;
 import org.apache.mahout.math.map.OpenLongIntHashMap;
 
 import uk.co.modularaudio.service.configuration.ConfigurationService;
@@ -64,7 +65,7 @@ public class AllocationCacheConfiguration
 		ConfigurationServiceHelper.errorCheck( errors );
 
 		final List<AllocationBufferType> typesFound = new ArrayList<AllocationBufferType>();
-		final List<Integer> numInitialPagesForType = new ArrayList<Integer>();
+		final IntArrayList numInitialPagesForType = new IntArrayList();
 		final List<AllocationLifetime> allocLifetimes = new ArrayList<AllocationLifetime>();
 		int numFound = 0;
 		try
