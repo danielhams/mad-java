@@ -55,6 +55,8 @@ public class NumBitsInControllerTester
 	private static final int NUM_USED_BITS = 24;
 //	private static final int NUM_USED_BITS = 32;
 
+	private final static int VALS_PER_CONF_CHECK = 60;
+
 	private long[] generateValuesWithLimitedBits( final int significantBits, final int usedBits )
 		throws TooManyBitsException
 	{
@@ -103,8 +105,6 @@ public class NumBitsInControllerTester
 
 		return retVal;
 	}
-
-	private final static int VALS_PER_CONF_CHECK = 60;
 
 	private NumBitsAndConfidence doNumBitsEvaluatorLoop(
 			final String nbName,
@@ -162,6 +162,9 @@ public class NumBitsInControllerTester
 		}
 
 		timer.logTimes( nbName, log );
+		
+		log.info( "Processed " + numBitsEvaluator.getNumTotalKeys() + " total keys" );
+		log.info( "Processed " + numBitsEvaluator.getNumKeysAdded() + " non boundary keys" );
 
 		return numBitsAndConfidence;
 	}
@@ -219,6 +222,12 @@ public class NumBitsInControllerTester
 					")");
 			log.info( "ACCUTREEM(" + NanosTimestampFormatter.formatTimestampForLogging( tmbeDiff, false ) +
 					")");
+					
+			ornbe.reset( NUM_SIGNIFICANT_BITS );
+			otmnbe.reset( NUM_SIGNIFICANT_BITS );
+			rnbe.reset( NUM_SIGNIFICANT_BITS );
+			tmbe.reset( NUM_SIGNIFICANT_BITS );
+				
 		}
 
 		// Finally do and assertion test that the results are the same

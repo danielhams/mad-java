@@ -38,6 +38,10 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 		LongArrayList getAllSourceValues();
 
 		NumDeltasAndIterator getSortedDeltaIterator();
+
+		long getNumKeysAdded();
+
+		long getNumTotalKeys();
 	};
 
 	private int numSignificantBits;
@@ -195,5 +199,17 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 			sb.append( (v & testVal) == 0 ? '0' : '1' );
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public long getNumKeysAdded()
+	{
+		return accumulator.getNumKeysAdded();
+	}
+
+	@Override
+	public long getNumTotalKeys()
+	{
+		return accumulator.getNumTotalKeys();
 	}
 }

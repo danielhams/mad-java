@@ -25,6 +25,9 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 
 	private int numSignificantBits;
 	private long maxIntForBits;
+	
+	private long numTotalKeys;
+	private long numKeysAdded;
 
 	public OldNumBitsEvaluatorTreeMap( final int numSignificantBits ) throws TooManyBitsException
 	{
@@ -50,6 +53,9 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		allKeys.clear();
 		noBoundaryKeys.clear();
 		deltas.clear();
+		
+		numTotalKeys = 0;
+		numKeysAdded = 0;
 	}
 
 	private long[] insertNewValue( final long newValue )
@@ -64,6 +70,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 
 		if( insertionIndex <= 0 )
 		{
+			numKeysAdded++;
 			final int realInsertionIndex = -(insertionIndex+1);
 			if( realInsertionIndex > 0 )
 			{
@@ -115,6 +122,8 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 	@Override
 	public void addValue( final int numSignificantBits, final long sv ) throws TooManyBitsException
 	{
+		numTotalKeys++;
+
 		if( this.numSignificantBits != numSignificantBits )
 		{
 			reset( numSignificantBits );
@@ -128,7 +137,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		else
 		{
 			allKeys.put( sv, 1 );
-
+			
 			// Avoid boundary value bias skewing results.
 			if( sv != 0 && sv != maxIntForBits )
 			{
@@ -273,5 +282,17 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 			sb.append( (v & testVal) == 0 ? '0' : '1' );
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public long getNumKeysAdded()
+	{
+		return numKeysAdded;
+	}
+
+	@Override
+	public long getNumTotalKeys()
+	{
+		return numTotalKeys;
 	}
 }

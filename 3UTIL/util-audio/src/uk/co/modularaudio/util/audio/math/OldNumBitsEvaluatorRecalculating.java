@@ -19,6 +19,9 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 	private final OpenLongIntHashMap valueHashMap = new OpenLongIntHashMap();
 
 	private int numSignificantBits;
+	
+	private long numTotalKeys;
+	private long numKeysAdded;
 
 	public OldNumBitsEvaluatorRecalculating( final int numSignificantBits ) throws TooManyBitsException
 	{
@@ -41,6 +44,9 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 		}
 		this.numSignificantBits = numSignificantBits;
 		valueHashMap.clear();
+		
+		numTotalKeys = 0;
+		numKeysAdded = 0;
 	}
 
 	/* (non-Javadoc)
@@ -63,6 +69,8 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 		{
 			valueHashMap.put( sv, 1 );
 		}
+		numTotalKeys++;
+		numKeysAdded++;
 	}
 
 	/* (non-Javadoc)
@@ -237,5 +245,17 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 			sb.append( (v & testVal) == 0 ? '0' : '1' );
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public long getNumKeysAdded()
+	{
+		return numKeysAdded;
+	}
+
+	@Override
+	public long getNumTotalKeys()
+	{
+		return numTotalKeys;
 	}
 }

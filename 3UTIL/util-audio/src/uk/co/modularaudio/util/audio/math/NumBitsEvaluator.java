@@ -88,4 +88,7 @@ public interface NumBitsEvaluator
 
 	public abstract void dumpNFirstUniqueValues( int n );
 
+	public abstract long getNumKeysAdded();
+	public abstract long getNumTotalKeys();
+
 }
