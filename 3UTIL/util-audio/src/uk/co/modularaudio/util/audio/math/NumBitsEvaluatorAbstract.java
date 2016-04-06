@@ -42,6 +42,8 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 		long getNumKeysAdded();
 
 		long getNumTotalKeys();
+
+		long getNumDeltas();
 	};
 
 	private int numSignificantBits;
@@ -211,5 +213,11 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 	public long getNumTotalKeys()
 	{
 		return accumulator.getNumTotalKeys();
+	}
+
+	@Override
+	public long getNumDeltas()
+	{
+		return accumulator.getNumDeltas();
 	}
 }

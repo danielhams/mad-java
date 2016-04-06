@@ -16,7 +16,7 @@ public class RecalculatingAccumulator implements Accumulator
 	private final OpenLongIntHashMap valueHashMap = new OpenLongIntHashMap();
 
 	private long maxIntForBits;
-	
+
 	private long numTotalKeys;
 	private long numKeysAdded;
 
@@ -28,7 +28,7 @@ public class RecalculatingAccumulator implements Accumulator
 		maxIntForBits = bMaxIntForBits.longValue() - 1;
 
 		valueHashMap.clear();
-		
+
 		numTotalKeys = 0;
 		numKeysAdded = 0;
 	}
@@ -141,6 +141,12 @@ public class RecalculatingAccumulator implements Accumulator
 	public long getNumTotalKeys()
 	{
 		return numTotalKeys;
+	}
+
+	@Override
+	public long getNumDeltas()
+	{
+		return numKeysAdded;
 	}
 
 }

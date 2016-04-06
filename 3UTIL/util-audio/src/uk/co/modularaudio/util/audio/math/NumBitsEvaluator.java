@@ -91,4 +91,6 @@ public interface NumBitsEvaluator
 	public abstract long getNumKeysAdded();
 	public abstract long getNumTotalKeys();
 
+	public abstract long getNumDeltas();
+
 }

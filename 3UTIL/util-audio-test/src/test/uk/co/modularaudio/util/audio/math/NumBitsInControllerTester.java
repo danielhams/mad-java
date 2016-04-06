@@ -27,10 +27,10 @@ public class NumBitsInControllerTester
 //	private static final int NUM_TEST_VALUES = 60;
 //	private static final int NUM_TEST_VALUES = 60 * 2;
 //	private static final int NUM_TEST_VALUES = 300;
-//	private static final int NUM_TEST_VALUES = 1024;
+	private static final int NUM_TEST_VALUES = 1024;
 //	private static final int NUM_TEST_VALUES = 2048;
 //	private static final int NUM_TEST_VALUES = 4192;
-	private static final int NUM_TEST_VALUES = 8192;
+//	private static final int NUM_TEST_VALUES = 8192;
 //	private static final int NUM_TEST_VALUES = 8192 * 10;
 //	private static final int NUM_TEST_VALUES = 8192 * 50;
 
@@ -39,20 +39,20 @@ public class NumBitsInControllerTester
 //	private static final int NUM_SIGNIFICANT_BITS = 7;
 //	private static final int NUM_SIGNIFICANT_BITS = 8;
 //	private static final int NUM_SIGNIFICANT_BITS = 10;
-//	private static final int NUM_SIGNIFICANT_BITS = 14;
+	private static final int NUM_SIGNIFICANT_BITS = 14;
 //	private static final int NUM_SIGNIFICANT_BITS = 16;
 //	private static final int NUM_SIGNIFICANT_BITS = 20;
-	private static final int NUM_SIGNIFICANT_BITS = 32;
+//	private static final int NUM_SIGNIFICANT_BITS = 32;
 //	private static final int NUM_SIGNIFICANT_BITS = 48;
 //	private static final int NUM_SIGNIFICANT_BITS = 60;
 
 //	private static final int NUM_USED_BITS = 4;
 //	private static final int NUM_USED_BITS = 5;
 //	private static final int NUM_USED_BITS = 7;
-//	private static final int NUM_USED_BITS = 10;
+	private static final int NUM_USED_BITS = 10;
 //	private static final int NUM_USED_BITS = 14;
 //	private static final int NUM_USED_BITS = 20;
-	private static final int NUM_USED_BITS = 24;
+//	private static final int NUM_USED_BITS = 24;
 //	private static final int NUM_USED_BITS = 32;
 
 	private final static int VALS_PER_CONF_CHECK = 60;
@@ -72,7 +72,7 @@ public class NumBitsInControllerTester
 		final BigInteger bMaxTotIntForBits = bi.pow( significantBits );
 		final long maxTotIntForBits = bMaxTotIntForBits.longValue() - 1;
 
-		final Random r = new Random();
+		final Random r = new Random( System.nanoTime() );
 		final long[] retVal = new long[ NUM_TEST_VALUES ];
 
 		int writePos = 0;
@@ -144,7 +144,7 @@ public class NumBitsInControllerTester
 
 		timer.markBoundary( "Made Estimate" );
 
-		if( shouldLog )
+		if( log.isInfoEnabled() )
 		{
 			if( confidence > 0.0f )
 			{
@@ -162,9 +162,11 @@ public class NumBitsInControllerTester
 		}
 
 		timer.logTimes( nbName, log );
-		
+
+		log.info( "Loop inserted " + numValuesSoFar + " keys" );
 		log.info( "Processed " + numBitsEvaluator.getNumTotalKeys() + " total keys" );
 		log.info( "Processed " + numBitsEvaluator.getNumKeysAdded() + " non boundary keys" );
+		log.info( "Processed " + numBitsEvaluator.getNumDeltas() + " deltas" );
 
 		return numBitsAndConfidence;
 	}
@@ -222,12 +224,12 @@ public class NumBitsInControllerTester
 					")");
 			log.info( "ACCUTREEM(" + NanosTimestampFormatter.formatTimestampForLogging( tmbeDiff, false ) +
 					")");
-					
+
 			ornbe.reset( NUM_SIGNIFICANT_BITS );
 			otmnbe.reset( NUM_SIGNIFICANT_BITS );
 			rnbe.reset( NUM_SIGNIFICANT_BITS );
 			tmbe.reset( NUM_SIGNIFICANT_BITS );
-				
+
 		}
 
 		// Finally do and assertion test that the results are the same

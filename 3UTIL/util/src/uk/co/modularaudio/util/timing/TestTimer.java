@@ -46,7 +46,8 @@ public class TestTimer
 	{
 		final int numSectors = sectorTimestamps.size();
 		final StringBuilder sb = new StringBuilder();
-		long prevTs = sectorTimestamps.get(0);
+		final long firstTs = sectorTimestamps.get(0);
+		long prevTs = firstTs;
 		sb.append( linePrefix );
 		sb.append( "\n" );
 
@@ -65,6 +66,11 @@ public class TestTimer
 			sb.append( "\n" );
 			prevTs = curTs;
 		}
+		final long total = prevTs - firstTs;
+		sb.append( linePrefix );
+		sb.append( " Total " );
+		sb.append( NanosTimestampFormatter.formatTimestampForLogging( total, true ) );
+		sb.append( "\n" );
 		log.info( sb.toString() );
 	}
 }

@@ -15,7 +15,7 @@ public class TreeMapAccumulator implements Accumulator
 {
 
 	private long maxIntForBits;
-	
+
 	private long numTotalKeys;
 	private long numKeysAdded;
 
@@ -34,7 +34,7 @@ public class TreeMapAccumulator implements Accumulator
 		allKeys.clear();
 		noBoundaryKeys.clear();
 		deltas.clear();
-		
+
 		numTotalKeys = 0;
 		numKeysAdded = 0;
 	}
@@ -52,7 +52,7 @@ public class TreeMapAccumulator implements Accumulator
 		if( insertionIndex <= 0 )
 		{
 			numKeysAdded++;
-			
+
 			final int realInsertionIndex = -(insertionIndex+1);
 			if( realInsertionIndex > 0 )
 			{
@@ -97,7 +97,7 @@ public class TreeMapAccumulator implements Accumulator
 		}
 		else
 		{
-			deltas.put( deltaToDeref, count - 1 );
+			deltas.put( deltaToDeref, count-1 );
 		}
 	}
 
@@ -189,6 +189,12 @@ public class TreeMapAccumulator implements Accumulator
 	public long getNumTotalKeys()
 	{
 		return numTotalKeys;
+	}
+
+	@Override
+	public long getNumDeltas()
+	{
+		return deltas.size();
 	}
 
 }

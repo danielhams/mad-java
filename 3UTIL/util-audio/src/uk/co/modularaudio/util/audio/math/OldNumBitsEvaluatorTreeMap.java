@@ -25,7 +25,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 
 	private int numSignificantBits;
 	private long maxIntForBits;
-	
+
 	private long numTotalKeys;
 	private long numKeysAdded;
 
@@ -53,7 +53,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		allKeys.clear();
 		noBoundaryKeys.clear();
 		deltas.clear();
-		
+
 		numTotalKeys = 0;
 		numKeysAdded = 0;
 	}
@@ -137,7 +137,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		else
 		{
 			allKeys.put( sv, 1 );
-			
+
 			// Avoid boundary value bias skewing results.
 			if( sv != 0 && sv != maxIntForBits )
 			{
@@ -294,5 +294,11 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 	public long getNumTotalKeys()
 	{
 		return numTotalKeys;
+	}
+
+	@Override
+	public long getNumDeltas()
+	{
+		return deltas.size();
 	}
 }

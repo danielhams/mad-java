@@ -9,6 +9,7 @@ import org.apache.mahout.math.list.LongArrayList;
 import org.apache.mahout.math.map.OpenLongIntHashMap;
 import org.apache.mahout.math.set.OpenLongHashSet;
 
+import uk.co.modularaudio.util.audio.math.NumBitsEvaluatorAbstract.Accumulator.NumDeltasAndIterator;
 import uk.co.modularaudio.util.math.FastMath;
 
 public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
@@ -19,7 +20,7 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 	private final OpenLongIntHashMap valueHashMap = new OpenLongIntHashMap();
 
 	private int numSignificantBits;
-	
+
 	private long numTotalKeys;
 	private long numKeysAdded;
 
@@ -44,7 +45,7 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 		}
 		this.numSignificantBits = numSignificantBits;
 		valueHashMap.clear();
-		
+
 		numTotalKeys = 0;
 		numKeysAdded = 0;
 	}
@@ -257,5 +258,11 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 	public long getNumTotalKeys()
 	{
 		return numTotalKeys;
+	}
+
+	@Override
+	public long getNumDeltas()
+	{
+		return numKeysAdded;
 	}
 }
