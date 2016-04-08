@@ -27,11 +27,11 @@ public class NumBitsInControllerTester
 //	private static final int NUM_TEST_VALUES = 60;
 //	private static final int NUM_TEST_VALUES = 60 * 2;
 //	private static final int NUM_TEST_VALUES = 300;
-	private static final int NUM_TEST_VALUES = 1024;
+//	private static final int NUM_TEST_VALUES = 1024;
 //	private static final int NUM_TEST_VALUES = 2048;
 //	private static final int NUM_TEST_VALUES = 4192;
 //	private static final int NUM_TEST_VALUES = 8192;
-//	private static final int NUM_TEST_VALUES = 8192 * 10;
+	private static final int NUM_TEST_VALUES = 8192 * 10;
 //	private static final int NUM_TEST_VALUES = 8192 * 50;
 
 //	private static final int NUM_SIGNIFICANT_BITS = 4;
@@ -39,8 +39,8 @@ public class NumBitsInControllerTester
 //	private static final int NUM_SIGNIFICANT_BITS = 7;
 //	private static final int NUM_SIGNIFICANT_BITS = 8;
 //	private static final int NUM_SIGNIFICANT_BITS = 10;
-	private static final int NUM_SIGNIFICANT_BITS = 14;
-//	private static final int NUM_SIGNIFICANT_BITS = 16;
+//	private static final int NUM_SIGNIFICANT_BITS = 14;
+	private static final int NUM_SIGNIFICANT_BITS = 16;
 //	private static final int NUM_SIGNIFICANT_BITS = 20;
 //	private static final int NUM_SIGNIFICANT_BITS = 32;
 //	private static final int NUM_SIGNIFICANT_BITS = 48;
@@ -49,13 +49,15 @@ public class NumBitsInControllerTester
 //	private static final int NUM_USED_BITS = 4;
 //	private static final int NUM_USED_BITS = 5;
 //	private static final int NUM_USED_BITS = 7;
-	private static final int NUM_USED_BITS = 10;
-//	private static final int NUM_USED_BITS = 14;
+//	private static final int NUM_USED_BITS = 10;
+	private static final int NUM_USED_BITS = 14;
+//	private static final int NUM_USED_BITS = 16;
 //	private static final int NUM_USED_BITS = 20;
 //	private static final int NUM_USED_BITS = 24;
 //	private static final int NUM_USED_BITS = 32;
 
-	private final static int VALS_PER_CONF_CHECK = 60;
+//	private final static int VALS_PER_CONF_CHECK = 1000;
+	private final static int VALS_PER_CONF_CHECK = 1000 / 60;
 
 	private long[] generateValuesWithLimitedBits( final int significantBits, final int usedBits )
 		throws TooManyBitsException

@@ -121,30 +121,22 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 
 			double numMinDeltas = (deltaToTest) / curMinDelta;
 			double remainder = numMinDeltas % 1;
-			do
+
+			while( remainder > maxError )
 			{
-				if( remainder > maxError )
+				if( divisor >= 8 )
 				{
-					if( divisor < 8 )
-					{
-						curMinDelta = minDelta / divisor;
-						divisor++;
-						confidence = confidence / 2;
-					}
-					else
-					{
-						deltasConform = false;
-						break;
-					}
-				}
-				else
-				{
+					deltasConform = false;
 					break;
 				}
+
+				curMinDelta = minDelta / divisor;
+				divisor++;
+				confidence = confidence / 2;
+
 				numMinDeltas = (deltaToTest) / curMinDelta;
 				remainder = numMinDeltas % 1;
 			}
-			while( remainder > maxError );
 		}
 //		log.trace( "Calculating num bits" );
 		final double numUniqValsForMinDeltaDouble = (maxIntForBits) / curMinDelta;

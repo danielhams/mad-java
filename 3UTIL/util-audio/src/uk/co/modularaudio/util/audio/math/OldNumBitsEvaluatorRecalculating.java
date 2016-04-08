@@ -9,7 +9,6 @@ import org.apache.mahout.math.list.LongArrayList;
 import org.apache.mahout.math.map.OpenLongIntHashMap;
 import org.apache.mahout.math.set.OpenLongHashSet;
 
-import uk.co.modularaudio.util.audio.math.NumBitsEvaluatorAbstract.Accumulator.NumDeltasAndIterator;
 import uk.co.modularaudio.util.math.FastMath;
 
 public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
@@ -171,30 +170,21 @@ public class OldNumBitsEvaluatorRecalculating implements NumBitsEvaluator
 
 			double numMinDeltas = (deltaToTest) / curMinDelta;
 			double remainder = numMinDeltas % 1;
-			do
+
+			while( remainder > maxError )
 			{
-				if( remainder > maxError )
+				if( divisor >= 8 )
 				{
-					if( divisor < 8 )
-					{
-						curMinDelta = minDelta / divisor;
-						divisor++;
-						confidence = confidence / 2;
-					}
-					else
-					{
-						deltasConform = false;
-						break;
-					}
-				}
-				else
-				{
+					deltasConform = false;
 					break;
 				}
+				curMinDelta = minDelta / divisor;
+				divisor++;
+				confidence = confidence / 2;
+
 				numMinDeltas = (deltaToTest) / curMinDelta;
 				remainder = numMinDeltas % 1;
 			}
-			while( remainder > maxError );
 		}
 //		log.trace( "Calculating num bits" );
 		final double numUniqValsForMinDeltaDouble = (maxIntForBits) / curMinDelta;

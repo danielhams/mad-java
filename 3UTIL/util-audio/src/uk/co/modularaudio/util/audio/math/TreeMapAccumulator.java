@@ -21,7 +21,6 @@ public class TreeMapAccumulator implements Accumulator
 
 	private final OpenLongIntHashMap allKeys = new OpenLongIntHashMap();
 	private final ArrayList<Long> noBoundaryKeys = new ArrayList<Long>();
-
 	private final TreeMap<Long,Integer> deltas = new TreeMap<Long,Integer>();
 
 	@Override
