@@ -32,23 +32,25 @@
         <rackPosition column="0" row="0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-9.162834"/>
+        <rackControl name="Gain" value="-7.992135"/>
         <rackControl name="PlayStop" value="true"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/eric_sneo_lets_go_techno_138_with_george_perry.mp3|111942724"/>
+        <rackControl name="SelectFile" value="CanLoseMusic/DJMixes/EricSneoLGT/LGT154_M.I.T.A..mp3|160193927"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
         <rackControl name="ZoomToggleGroup" value="2"/>
     </rackComponent>
-    <rackComponent name="Soundfile Player 1" definitionId="soundfile_player">
+    <rackComponent name="Soundfile Player 2 1" definitionId="soundfile_player2">
         <rackPosition column="2" row="0"/>
+        <rackControl name="Desired BPM" value="127.0"/>
         <rackControl name="FastForward" value=""/>
         <rackControl name="FileInfo" value=""/>
-        <rackControl name="Gain" value="-5.8117266"/>
+        <rackControl name="Gain" value="0.0"/>
         <rackControl name="PlayStop" value="false"/>
         <rackControl name="Rewind" value=""/>
-        <rackControl name="SelectFile" value="CanLoseMusic/Albums/Run DMC Discography/Run DMC (1985) - King Of Rock (Expanded Edition)/09. Darryl and Joe (Krush-Groove 3).mp3|1234411"/>
+        <rackControl name="SelectFile" value=""/>
+        <rackControl name="Song BPM" value="127.0"/>
         <rackControl name="SpeedSlider" value="100.0"/>
         <rackControl name="WaveDisplay" value=""/>
         <rackControl name="WaveOverview" value=""/>
@@ -68,7 +70,7 @@
         <rackControl name="Running Average" value="Short Average"/>
         <rackControl name="Window" value="Hann"/>
     </rackComponent>
-    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 1" definitionId="sub_rack">
+    <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="ibass_booster.xml" name="Sub Rack 1" definitionId="sub_rack">
         <rackPosition column="2" row="6"/>
     </rackComponent>
     <rackComponent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="SubRackXmlType" localSubRack="false" libraryPath="mid_side_processing.xml" name="Sub Rack 2" definitionId="sub_rack">
@@ -80,11 +82,11 @@
     <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mixer (Three Stereo Lanes) 1" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Left" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Left"/>
     <rackLink producerRackComponentName="Mixer (Three Stereo Lanes) 1" producerChannelName="Output Wave Right" consumerRackComponentName="Output Amp" consumerChannelName="Lane 2 Input Wave Right"/>
-    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Left" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
+    <rackLink producerRackComponentName="Output Amp" producerChannelName="Output Wave Right" consumerRackComponentName="Spectral Amp 1" consumerChannelName="Input Wave"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Left"/>
     <rackLink producerRackComponentName="Soundfile Player" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 1 Right"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>
-    <rackLink producerRackComponentName="Soundfile Player 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Right"/>
+    <rackLink producerRackComponentName="Soundfile Player 2 1" producerChannelName="Output Wave Left" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Left"/>
+    <rackLink producerRackComponentName="Soundfile Player 2 1" producerChannelName="Output Wave Right" consumerRackComponentName="Cross Fader 1" consumerChannelName="Input Channel 2 Right"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 1" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Left"/>
     <rackLink producerRackComponentName="Sub Rack 1" producerChannelName="Output Channel 2" consumerRackComponentName="Output Amp" consumerChannelName="Lane 1 Input Wave Right"/>
     <rackLink producerRackComponentName="Sub Rack 2" producerChannelName="Output Channel 1" consumerRackComponentName="Sub Rack 1" consumerChannelName="Input Channel 1"/>

@@ -23,6 +23,9 @@ package uk.co.modularaudio.service.audioanalysis.impl;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -78,6 +81,11 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 	private static final String CONFIG_KEY_STATIC_RMS_COLOR = "StaticThumbnailRmsColor";
 	private static final String CONFIG_KEY_STATIC_THUMB_WIDTH = "StaticThumbnailWidth";
 	private static final String CONFIG_KEY_STATIC_THUMB_HEIGHT = "StaticThumbnailHeight";
+
+	// Half a second
+//	private static final long NANOS_BETWEEN_EMITS = 1000 * 1000 * 100 * 5;
+	// Quarter of a second
+	private static final long NANOS_BETWEEN_EMITS = 1000 * 1000 * 10 * 25;
 
 	private String databaseTablePrefix;
 
@@ -232,6 +240,8 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 
 		ac.dataStart( dataRate, numChannels, totalFrames, analysisBufferFrames );
 
+		LocalDateTime analysisLastProgressEmitDateTime = LocalDateTime.now();
+
 		int percentageComplete = 0;
 
 		long framesLeft = totalFrames;
@@ -257,8 +267,15 @@ public class AudioAnalysisServiceImpl implements ComponentWithLifecycle, AudioAn
 			ac.receiveFrames( analysisBuffer, numFramesRead );
 
 			final int newPercentageComplete = (int)((curFramePos / (float)totalFrames) * 100.0f);
-			if( newPercentageComplete != percentageComplete )
+
+			final LocalDateTime now = LocalDateTime.now();
+
+			final Duration durationSinceLastProgress = Duration.between( analysisLastProgressEmitDateTime, now );
+
+			if( durationSinceLastProgress.get( ChronoUnit.NANOS ) > NANOS_BETWEEN_EMITS &&
+					newPercentageComplete != percentageComplete )
 			{
+				analysisLastProgressEmitDateTime = now;
 				percentageComplete = newPercentageComplete;
 				progressListener.receivePercentageComplete( percentageComplete );
 			}

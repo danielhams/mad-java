@@ -160,7 +160,7 @@ public class MathFormatter
 
 		if( echoPlus && d >= 0.0 )
 		{
-			return String.format("%1." + numDecimals + "f", d );
+			return String.format("%+1." + numDecimals + "f", d );
 		}
 		else
 		{
