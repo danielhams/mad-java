@@ -182,11 +182,11 @@ public class WaveRollerBufferSampleFactory
 		final float multiplier = (displayBounds.height / 2.0f);
 
 		g.setColor( WaveRollerColours.DISPLAY_VALUE_COLOUR );
-		int yMinVal =  (int)(-minValue * multiplier * maxDbScaleMultiplier);
-		int yMaxVal = (int)(-maxValue * multiplier * maxDbScaleMultiplier);
+		final float yMinValFloat =  (-minValue * multiplier * maxDbScaleMultiplier);
+		final float yMaxValFloat = (-maxValue * multiplier * maxDbScaleMultiplier);
 
-		yMinVal = (int)((yMinVal * valueScaleForMargins) + multiplier);
-		yMaxVal = (int)((yMaxVal * valueScaleForMargins) + multiplier);
+		final int yMinVal = (int)((yMinValFloat * valueScaleForMargins) + multiplier);
+		final int yMaxVal = (int)((yMaxValFloat * valueScaleForMargins) + multiplier);
 		g.drawLine(pixelX, yMinVal, pixelX, yMaxVal );
 	}
 
