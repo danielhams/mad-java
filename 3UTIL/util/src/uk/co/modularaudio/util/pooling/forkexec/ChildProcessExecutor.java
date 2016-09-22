@@ -79,8 +79,8 @@ public class ChildProcessExecutor
 		if (wasError)
 		{
 			throw new IOException( "Unable to create child process " + cmdArray[0] );
-
 		}
+
 		inputStream = process.getInputStream();
 		outputStream = process.getOutputStream();
 		errorStream = process.getErrorStream();
@@ -153,7 +153,7 @@ public class ChildProcessExecutor
 		catch (final Exception e)
 		{
 		}
-		;
+
 		try
 		{
 			outputStream.close();
@@ -161,7 +161,7 @@ public class ChildProcessExecutor
 		catch (final Exception e)
 		{
 		}
-		;
+
 		try
 		{
 			errorStream.close();
@@ -169,7 +169,7 @@ public class ChildProcessExecutor
 		catch (final Exception e)
 		{
 		}
-		;
+
 		try
 		{
 			process.destroy();
@@ -178,6 +178,7 @@ public class ChildProcessExecutor
 		{
 			throw new IOException( "Error destroying child process: " + e.toString() );
 		}
+
 		inputStream = null;
 		outputStream = null;
 		errorStream = null;

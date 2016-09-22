@@ -21,6 +21,7 @@
 package uk.co.modularaudio.util.audio.mad.ioqueue;
 
 import uk.co.modularaudio.util.audio.buffer.LocklessPreallocatingGenericRingBuffer;
+import uk.co.modularaudio.util.audio.math.AudioMath;
 
 public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<IOQueueEvent>
 {
@@ -29,6 +30,8 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 	private static final IOQueueEventCopier COPIER = new IOQueueEventCopier();
 
 	public final static int DEFAULT_QUEUE_LENGTH = 64;
+
+	private final static long HALF_32BIT_UINT_VALUE = AudioMath.MAX_32BIT_UINT_VALUE / 2L;
 
 	public MadLocklessIOQueue( final Class<IOQueueEvent> clazz, final int capacity )
 	{
@@ -83,7 +86,20 @@ public class MadLocklessIOQueue extends LocklessPreallocatingGenericRingBuffer<I
 			{
 				int posToCheck = curReadPosition + i;
 				posToCheck = (posToCheck >= bufferLength ? posToCheck - bufferLength : posToCheck );
-				if( buffer[ posToCheck].frameTime <= queuePullingFrameTime )
+
+				// Need to account for wrapped frame time
+				// We'll assume it wraps at 32bit uint (C) since
+				// we can handle that in a long
+				final long eventCheckFrameTime = buffer[ posToCheck ].frameTime;
+				final long ftDiff = queuePullingFrameTime - eventCheckFrameTime;
+				final long absFtDiff = (ftDiff < 0 ? -ftDiff : ftDiff );
+				if( ftDiff >= 0 )
+				{
+					COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
+					numCopied++;
+				}
+				else if( absFtDiff >= HALF_32BIT_UINT_VALUE &&
+						(queuePullingFrameTime - (absFtDiff - AudioMath.MAX_32BIT_UINT_VALUE)) >= 0 )
 				{
 					COPIER.copyValues( buffer[ posToCheck ], destinationEventStorage[ i ] );
 					numCopied++;

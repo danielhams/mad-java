@@ -20,11 +20,14 @@
 
 package uk.co.modularaudio.util.audio.gui.mad.rollpainter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RollPainter<RPBT, RPBTClearer extends RollPainterBufferClearer<RPBT>>
 {
-//	private static Log log = LogFactory.getLog( RollPainter2.class.getName() );
+	private static Log log = LogFactory.getLog( RollPainter.class.getName() );
 
 	private final int numViewingSamples;
 	private final int numViewingSamplesNeg;

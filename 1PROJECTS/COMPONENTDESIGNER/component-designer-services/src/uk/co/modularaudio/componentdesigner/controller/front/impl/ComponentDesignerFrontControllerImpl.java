@@ -531,7 +531,10 @@ public class ComponentDesignerFrontControllerImpl implements ComponentWithLifecy
 		final MadTimingParameters timingParameters = timingService.getTimingSource().getTimingParameters();
 
 		final long currentGuiFrameTime = appRenderingSession.getCurrentUiFrameTime();
-//		log.debug("Estimated GUI frame time is " + currentGuiFrameTime );
+//		if( log.isDebugEnabled() )
+//		{
+//			log.debug("Estimated GUI frame time is " + currentGuiFrameTime );
+//		}
 
 		final List<RackComponent> rackComponents = userVisibleRack.getEntriesAsList();
 

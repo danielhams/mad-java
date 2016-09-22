@@ -303,7 +303,10 @@ public class JNAJackAppRenderingSession extends AbstractAppRenderingSession impl
 			periodStartFrameTime = client.getLastFrameTime();
 
 //			log.debug("jack time is " + jackTime );
-//			log.debug("Period start frame time is " + periodStartFrameTime );
+//			if( log.isDebugEnabled() )
+//			{
+//				log.debug("Period start frame time is " + periodStartFrameTime );
+//			}
 		}
 		catch (final JackException e)
 		{

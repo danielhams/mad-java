@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rack xmlns="http://www.modular-audio.co.uk/projects/mad/0_0_3" name="In Signal Processing" cols="4" rows="20">
+    <rackIOLink rackChannelName="Input Channel 1" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Left"/>
+    <rackIOLink rackChannelName="Input Channel 2" rackComponentName="DC Trap 1" rackComponentChannelInstanceName="Input Wave Right"/>
+    <rackIOLink rackChannelName="Output Channel 1" rackComponentName="BackToStereoMixer" rackComponentChannelInstanceName="Output Wave Left"/>
+    <rackIOLink rackChannelName="Output Channel 2" rackComponentName="BackToStereoMixer" rackComponentChannelInstanceName="Output Wave Right"/>
+    <rackComponent name="BackToStereoMixer" definitionId="imixer3">
+        <rackPosition column="2" row="3"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="-Infinity:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="DC Trap 1" definitionId="dc_trap">
+        <rackPosition column="0" row="0"/>
+    </rackComponent>
+    <rackComponent name="Mid Side Level Mixer" definitionId="imixer3">
+        <rackPosition column="0" row="2"/>
+        <rackControl name="Master Lane" value="0.0:0.0"/>
+        <rackControl name="Mixer Lane 0" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 1" value="0.0:0.0:  "/>
+        <rackControl name="Mixer Lane 2" value="-Infinity:0.0:  "/>
+    </rackComponent>
+    <rackComponent name="Mid Side Processor 18" definitionId="midside">
+        <rackPosition column="0" row="1"/>
+        <rackControl name="MidSideType" value="Left Right To Mid Side"/>
+    </rackComponent>
+    <rackComponent name="Mid Side Processor 19" definitionId="midside">
+        <rackPosition column="0" row="6"/>
+        <rackControl name="MidSideType" value="Mid Side To Left Right"/>
+    </rackComponent>
+    <rackComponent name="WetDryMixer" definitionId="cross_fader">
+        <rackPosition column="2" row="2"/>
+        <rackControl name="AmpAKill" value="false"/>
+        <rackControl name="AmpBKill" value="false"/>
+        <rackControl name="PowerCurve" value="Additive"/>
+        <rackControl name="Slider" value="1.0"/>
+    </rackComponent>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 18" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Left" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 1 Left"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 18" consumerChannelName="Input Wave 2"/>
+    <rackLink producerRackComponentName="DC Trap 1" producerChannelName="Output Wave Right" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 1 Right"/>
+    <rackLink producerRackComponentName="Mid Side Level Mixer" producerChannelName="Output Wave Left" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 1"/>
+    <rackLink producerRackComponentName="Mid Side Level Mixer" producerChannelName="Output Wave Right" consumerRackComponentName="Mid Side Processor 19" consumerChannelName="Input Wave 2"/>
+    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 1" consumerRackComponentName="Mid Side Level Mixer" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 18" producerChannelName="Output Wave 2" consumerRackComponentName="Mid Side Level Mixer" consumerChannelName="Lane 2 Input Wave Right"/>
+    <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 1" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Left"/>
+    <rackLink producerRackComponentName="Mid Side Processor 19" producerChannelName="Output Wave 2" consumerRackComponentName="WetDryMixer" consumerChannelName="Input Channel 2 Right"/>
+    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Left" consumerRackComponentName="BackToStereoMixer" consumerChannelName="Lane 1 Input Wave Left"/>
+    <rackLink producerRackComponentName="WetDryMixer" producerChannelName="Output Wave Right" consumerRackComponentName="BackToStereoMixer" consumerChannelName="Lane 1 Input Wave Right"/>
+</rack>
