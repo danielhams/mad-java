@@ -110,6 +110,7 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 
 //		log.trace( "Testing delta conformity" );
 
+		@SuppressWarnings("boxing")
 		final long minDelta = dIter.next();
 		double curMinDelta = minDelta;
 		float confidence = 1.0f;
@@ -117,6 +118,7 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 
 		while( dIter.hasNext() )
 		{
+			@SuppressWarnings("boxing")
 			final long deltaToTest = dIter.next();
 
 			double numMinDeltas = (deltaToTest) / curMinDelta;
@@ -155,6 +157,7 @@ public class NumBitsEvaluatorAbstract implements NumBitsEvaluator
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public void dumpNFirstUniqueValues( final int n )
 	{

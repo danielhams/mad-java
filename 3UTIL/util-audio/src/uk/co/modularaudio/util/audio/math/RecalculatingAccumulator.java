@@ -114,8 +114,9 @@ public class RecalculatingAccumulator implements Accumulator
 		{
 			int curIndex = 0;
 			int size = deltas.size();
-			LongArrayList ds = deltas;
+//			LongArrayList ds = deltas;
 
+			@SuppressWarnings("boxing")
 			@Override
 			public Long next()
 			{

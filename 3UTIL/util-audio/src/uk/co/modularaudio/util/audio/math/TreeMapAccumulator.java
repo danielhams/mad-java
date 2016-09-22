@@ -38,6 +38,7 @@ public class TreeMapAccumulator implements Accumulator
 		numKeysAdded = 0;
 	}
 
+	@SuppressWarnings("boxing")
 	private long[] insertNewValue( final long newValue )
 	{
 		final long[] retVal = new long[2];
@@ -74,6 +75,7 @@ public class TreeMapAccumulator implements Accumulator
 		return retVal;
 	}
 
+	@SuppressWarnings("boxing")
 	private void refDelta( final long deltaToRef )
 	{
 		if( deltas.containsKey( deltaToRef ) )
@@ -87,6 +89,7 @@ public class TreeMapAccumulator implements Accumulator
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private void derefDelta( final long deltaToDeref )
 	{
 		final int count = deltas.get( deltaToDeref );

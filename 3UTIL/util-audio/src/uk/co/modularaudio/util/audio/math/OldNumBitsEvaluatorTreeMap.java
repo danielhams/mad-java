@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mahout.math.map.OpenLongIntHashMap;
+
 import uk.co.modularaudio.util.math.FastMath;
 
 public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
@@ -58,6 +60,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		numKeysAdded = 0;
 	}
 
+	@SuppressWarnings("boxing")
 	private long[] insertNewValue( final long newValue )
 	{
 		final long[] retVal = new long[2];
@@ -93,6 +96,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		return retVal;
 	}
 
+	@SuppressWarnings("boxing")
 	private void refDelta( final long deltaToRef )
 	{
 		if( deltas.containsKey( deltaToRef ) )
@@ -106,6 +110,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	private void derefDelta( final long deltaToDeref )
 	{
 		final int count = deltas.get( deltaToDeref );
@@ -177,6 +182,7 @@ public class OldNumBitsEvaluatorTreeMap implements NumBitsEvaluator
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	public NumBitsAndConfidence getNumBitsAndConfidence()
 	{

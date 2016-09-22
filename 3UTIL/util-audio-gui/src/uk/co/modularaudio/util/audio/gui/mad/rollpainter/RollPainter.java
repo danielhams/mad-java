@@ -27,6 +27,7 @@ import uk.co.modularaudio.util.exception.DatastoreException;
 
 public class RollPainter<RPBT, RPBTClearer extends RollPainterBufferClearer<RPBT>>
 {
+	@SuppressWarnings("unused")
 	private static Log log = LogFactory.getLog( RollPainter.class.getName() );
 
 	private final int numViewingSamples;
